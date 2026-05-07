@@ -426,6 +426,25 @@ theorem durrett2019_theorem_2_1_11_iIndepFun_hasLaw_pi
   exact hX_indep.hasLaw_pi hX_law
 
 /--
+Durrett 2019, Theorem 2.1.11, iid finite-family product-law form.
+
+Independent random variables with a common marginal law `ν` have joint law
+`ν × ... × ν`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_hasLaw_pi
+    {Ω : Type u} [MeasurableSpace Ω] {ι : Type v} [Fintype ι]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {ν : Measure S}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_law : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω i => X i ω)
+      (Measure.pi fun _ : ι => ν) P := by
+  exact durrett2019_theorem_2_1_11_iIndepFun_hasLaw_pi
+    (P := P) (S := fun _ : ι => S) (X := X)
+    (ν := fun _ : ι => ν) hX_indep hX_law
+
+/--
 Durrett 2019, Theorem 2.1.11 finite-family product-law criterion.
 
 For a finite family on a probability space, independence is equivalent to the
@@ -440,6 +459,48 @@ theorem durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_pi
     _root_.ProbabilityTheory.iIndepFun (μ := P) X ↔
       _root_.ProbabilityTheory.HasLaw (fun ω i => X i ω) (Measure.pi ν) P := by
   exact _root_.ProbabilityTheory.iIndepFun_iff_hasLaw_pi_pi hX_law
+
+/--
+Durrett 2019, Theorem 2.1.11, iid finite-family product-law criterion.
+
+For a finite family with common law `ν`, independence is equivalent to the
+joint law being the finite product `ν × ... × ν`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_iff_hasLaw_pi
+    {Ω : Type u} [MeasurableSpace Ω] {ι : Type v} [Fintype ι]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {ν : Measure S}
+    (hX_law : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν P) :
+    _root_.ProbabilityTheory.iIndepFun (μ := P) X ↔
+      _root_.ProbabilityTheory.HasLaw (fun ω i => X i ω)
+        (Measure.pi fun _ : ι => ν) P := by
+  exact durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_pi
+    (P := P) (S := fun _ : ι => S) (X := X)
+    (ν := fun _ : ι => ν) hX_law
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical iid product-space coordinates.
+
+On the finite product probability space `ν × ... × ν`, the coordinate
+projections are independent, have common law `ν`, and have joint product law.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_product_coordinates
+    {ι : Type v} [Fintype ι]
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S) :
+    (∀ i,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : (ι -> S) => sample i) (ν : Measure S)
+        (Measure.pi fun _ : ι => (ν : Measure S))) ∧
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i => fun sample : (ι -> S) => sample i)
+        (Measure.pi fun _ : ι => (ν : Measure S)) ∧
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : (ι -> S) => sample)
+        (Measure.pi fun _ : ι => (ν : Measure S))
+        (Measure.pi fun _ : ι => (ν : Measure S)) :=
+  StatInference.ProbabilityMeasure.probability_pi_iid_coordinates_with_joint_law ν
 
 /--
 Durrett 2019, Theorem 2.1.12 product-measure/Fubini form.

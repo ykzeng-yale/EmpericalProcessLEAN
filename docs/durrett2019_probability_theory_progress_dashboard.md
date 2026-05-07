@@ -55,7 +55,10 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `durrett2019_theorem_2_1_10_product_coordinate_functions_independent`;
 - `durrett2019_theorem_2_1_11_indepFun_hasLaw_prod`;
 - `durrett2019_theorem_2_1_11_iIndepFun_hasLaw_pi`;
+- `durrett2019_theorem_2_1_11_iid_hasLaw_pi`;
 - `durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_pi`;
+- `durrett2019_theorem_2_1_11_iid_iff_hasLaw_pi`;
+- `durrett2019_theorem_2_1_11_canonical_iid_product_coordinates`;
 - `durrett2019_theorem_2_1_12_product_integral`;
 - `durrett2019_theorem_2_1_12_product_integral_mul`;
 - `durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral`;
@@ -114,8 +117,9 @@ Immediate proof route:
 3. source-facing empirical-CDF notation now compiles: the finite-sample
    `F_n(x)` notation, the population `F(x)` bridge, and the local
    `sup_x |F_n(x) - F(x)| -> 0` predicate are packaged;
-4. keep Chapter 2.1 iid/product notation polish as the next near-term Durrett
-   packet before moving to Chapter 3;
+4. Chapter 2.1 iid/product notation polish now includes common-law finite
+   product laws, the iid product-law criterion, and canonical iid
+   product-coordinate support;
 5. promote exact source statements once the wrapper statements line up with the
    PDF/Markdown.
 
@@ -128,7 +132,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Lane | Status | Current Lean anchor | Notes |
 | --- | --- | --- | --- |
 | Chapter 1 measure/probability foundations | source-wrapper/reused-local | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/GeneratedSigma.lean`; `Tail.lean`; `ProductMeasure.lean` | Durrett wrappers for Theorem 1.1.1 measure properties and Theorems 1.3.1/1.3.4 measurability facts now compile over mathlib/local generator APIs. |
-| Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact iid/product notation polish. |
+| Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, iid same-law finite product law, iid product-law criterion, canonical iid product-coordinate support, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact polish only when a later theorem route demands it. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
 | Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, punctured-cover cell splitting, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, arbitrary-law punctured monotone-subdivision cutpoint-chain, arbitrary-law cutpoint-chain, arbitrary-law half-line GC, source-facing empirical-CDF predicate, EDF theorem wrapper, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile. Next work is Chapter 2.1 iid/product polish, not center insertion or EDF notation. |
 | Chapter 3 CLT/characteristic functions | pending-local | none | Needs mathlib API search for characteristic functions, normal laws, weak convergence, and scalar asymptotics. |
@@ -172,9 +176,13 @@ Every Lean packet should pass:
 ## Current Next Goal Cycle Contract
 
 The next in-thread goal cycle should not just reread the source.  It should
-polish the remaining Chapter 2.1 iid/product notation wrappers before moving
-to the next Durrett chapter spine.  The previous EDF target is now closed by
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`.
+start the Chapter 3 theorem-spine search by checking mathlib/local APIs for
+weak convergence, characteristic functions, normal laws, convolutions, and
+finite-dimensional real/vector limit statements.  The previous EDF target is
+closed by
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`,
+and the Chapter 2.1 iid/product notation target is closed by the common-law
+finite product and canonical iid product-coordinate wrappers.
 
 Before choosing, apply the high-accuracy protocol from the current blocker
 plan: sync remote once, check whether other-agent work changed the route,

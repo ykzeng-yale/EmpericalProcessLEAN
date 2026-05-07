@@ -130,7 +130,10 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_1_10_product_coordinate_functions_independent`
 - `durrett2019_theorem_2_1_11_indepFun_hasLaw_prod`
 - `durrett2019_theorem_2_1_11_iIndepFun_hasLaw_pi`
+- `durrett2019_theorem_2_1_11_iid_hasLaw_pi`
 - `durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_pi`
+- `durrett2019_theorem_2_1_11_iid_iff_hasLaw_pi`
+- `durrett2019_theorem_2_1_11_canonical_iid_product_coordinates`
 - `durrett2019_theorem_2_1_12_product_integral`
 - `durrett2019_theorem_2_1_12_product_integral_mul`
 - `durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral`
@@ -325,11 +328,13 @@ The source-facing empirical distribution-function statement also compiles:
 bridges the arbitrary-law half-line GC theorem to Durrett's Theorem 2.4.9
 source notation.
 
-Parallel target: Chapter 2.1 exact iid/product notation refinements only if
-the next chapter route blocks.  Theorem 2.1.7 generated-pi-system bridges, Theorem 2.1.8
-generated-rectangle and real lower-halfline criteria, Theorem 2.1.9 grouped
-sigma-field bridge, Theorem 2.1.10 finite disjoint-block function bridges, and
-Theorem 2.1.11 finite product-law wrappers now compile.
+Parallel target: Chapter 2.1 exact iid/product notation refinements only if a
+later route reopens an exact source-shape gap.  Theorem 2.1.7
+generated-pi-system bridges, Theorem 2.1.8 generated-rectangle and real
+lower-halfline criteria, Theorem 2.1.9 grouped sigma-field bridge, Theorem
+2.1.10 finite disjoint-block function bridges, and Theorem 2.1.11 finite
+product-law, iid same-law product-law, iid criterion, and canonical iid
+product-coordinate wrappers now compile.
 
 Do not start with raw Chapter 1 extension theorem formalization, Stieltjes
 measure construction, or appendix foundations unless an exact Durrett theorem
@@ -393,9 +398,10 @@ Pinned mathlib search scope:
    criterion, real lower-halfline distribution-function criterion, grouped
    sigma-field independence, measurable-function preservation, finite
    disjoint-block functions, product-coordinate independence, pair and finite
-   product-law, and expectation-factorization wrappers now compile; remaining
-   Chapter 2.1 work is optional source-shape polish around exact iid/product
-   notation.
+   product-law, iid same-law product law, canonical iid product-coordinate
+   source wrapper, and expectation-factorization wrappers now compile;
+   remaining Chapter 2.1 work is optional only when a later theorem requires a
+   sharper source shape.
 7. After Chapter 2 has a stable theorem spine, start Chapter 3 by searching
    characteristic-function, normal-law, and weak-convergence APIs.
 
@@ -408,11 +414,12 @@ this file plus the Durrett dashboard and blueprint, and scanning the current
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean` modules.  Primary target:
 do not return to the old center-insertion blocker.  Durrett Theorem 2.4.9
 arbitrary-law half-line GC now compiles through the punctured-cell splitting
-route, and the source-facing empirical-distribution-function statement around
-Durrett's `F_n` notation now compiles.  The next aggressive primitive should
-polish Chapter 2.1 iid/product notation wrappers now that the GC grid and EDF
-source statement are closed.  After that, start the next high-value Durrett
-chapter spine by searching mathlib/local weak-convergence,
-characteristic-function, and normal-law APIs.  Verify, update docs,
-commit/push, and keep this in-thread `/goal` state current.  Report progress
-and blockers in Chinese/English mix.
+route, the source-facing empirical-distribution-function statement around
+Durrett's `F_n` notation now compiles, and the Chapter 2.1 iid/product-law
+notation wrappers now cover common-law finite products and canonical iid
+product coordinates.  The next aggressive primitive should start the next
+high-value Durrett chapter spine by searching mathlib/local weak-convergence,
+characteristic-function, and normal-law APIs for Chapter 3, while treating
+Chapter 2.1 as reusable support unless an exact later theorem needs a sharper
+wrapper.  Verify, update docs, commit/push, and keep this in-thread `/goal`
+state current.  Report progress and blockers in Chinese/English mix.

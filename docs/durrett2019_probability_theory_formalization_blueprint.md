@@ -157,6 +157,12 @@ Compiled first source wrappers:
   measurable-function preservation/finite disjoint-block/product-coordinate
   independence, 2.1.11 pair and finite-family product laws, 2.1.12
   product/Fubini expectation, and 2.1.13 expectation-factorization wrappers.
+- Durrett Theorem 2.1.11 iid notation polish:
+  `probability_pi_iid_coordinates_with_joint_law`,
+  `durrett2019_theorem_2_1_11_iid_hasLaw_pi`,
+  `durrett2019_theorem_2_1_11_iid_iff_hasLaw_pi`, and
+  `durrett2019_theorem_2_1_11_canonical_iid_product_coordinates` package the
+  common-law finite product and canonical iid product-space source shapes.
 - Durrett Theorem 2.4.9 conditional Glivenko-Cantelli handoffs from supplied
   endpoint grids and supplied middle CDF partitions.
 - Durrett Theorem 2.4.9 one-cell middle CDF partition base case:

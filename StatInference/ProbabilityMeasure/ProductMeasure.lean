@@ -179,6 +179,35 @@ theorem probability_pi_independent_mapped_coordinates_with_joint_law
     by simpa [μ] using hjoint⟩
 
 /--
+Canonical iid finite-product coordinates.
+
+On the product probability space `∏ i, ν`, the coordinate projections are
+independent, all have law `ν`, and the full coordinate vector has joint law
+`∏ i, ν`.
+-/
+theorem probability_pi_iid_coordinates_with_joint_law
+    {ι : Type w} [Fintype ι]
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S) :
+    (∀ i,
+      HasLaw (fun sample : (ι -> S) => sample i) (ν : Measure S)
+        (Measure.pi fun _ : ι => (ν : Measure S))) ∧
+      iIndepFun (fun i => fun sample : (ι -> S) => sample i)
+        (Measure.pi fun _ : ι => (ν : Measure S)) ∧
+      HasLaw (fun sample : (ι -> S) => sample)
+        (Measure.pi fun _ : ι => (ν : Measure S))
+        (Measure.pi fun _ : ι => (ν : Measure S)) := by
+  let P : ι -> MeasureTheory.ProbabilityMeasure S := fun _ => ν
+  have h :=
+    probability_pi_independent_mapped_coordinates_with_joint_law
+      (P := P) (X := fun _ => id) (fun _ => measurable_id)
+  refine ⟨?_, ?_, ?_⟩
+  · intro i
+    simpa [P] using h.1 i
+  · simpa [P] using h.2.1
+  · simpa [P] using h.2.2
+
+/--
 Splitting every coordinate of a finite product of binary product probability
 spaces sends `∏ i (Pᵢ × Qᵢ)` to `(∏ i Pᵢ) × (∏ i Qᵢ)`.
 
