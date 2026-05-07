@@ -495,6 +495,192 @@ theorem chewi127ScalarCharFun_condExp_taylor_expansion
     simpa [linear, quadratic, remainder] using hcalc
 
 /--
+Conditional Taylor expansion after substituting a mean-zero linear term and a
+named quadratic conditional expectation.  This is the next algebraic interface
+before plugging in Chewi's projected conditional covariance process.
+-/
+theorem chewi127ScalarCharFun_condExp_taylor_expansion_of_zero_quadratic
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] (m : MeasurableSpace Ω) (hm : m ≤ mΩ)
+    {x : Ω -> ℝ} (a : ℝ) {q : Ω -> ℂ}
+    (hlinear : Integrable
+      (fun ω => ((a * x ω : ℝ) : ℂ) * Complex.I) P)
+    (hquadratic : Integrable
+      (fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ)) P)
+    (hremainder : Integrable (chewi127ScalarCharFunTaylorRemainder a x) P)
+    (hlinear_zero :
+      P[fun ω => ((a * x ω : ℝ) : ℂ) * Complex.I | m]
+        =ᵐ[P] fun _ => 0)
+    (hquadratic_eq :
+      P[fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ) | m]
+        =ᵐ[P] q) :
+    P[fun ω => Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I) | m]
+      =ᵐ[P] fun ω =>
+        1 - q ω + P[chewi127ScalarCharFunTaylorRemainder a x | m] ω := by
+  refine
+    (chewi127ScalarCharFun_condExp_taylor_expansion
+      (mΩ := mΩ) (P := P) (m := m) (hm := hm) (x := x)
+      a hlinear hquadratic hremainder).trans ?_
+  filter_upwards [hlinear_zero, hquadratic_eq] with ω hzero hquad
+  calc
+    (1 : ℂ)
+        + P[fun ω => ((a * x ω : ℝ) : ℂ) * Complex.I | m] ω
+        - P[fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ) | m] ω
+        + P[chewi127ScalarCharFunTaylorRemainder a x | m] ω
+        = 1 + 0 - q ω
+            + P[chewi127ScalarCharFunTaylorRemainder a x | m] ω := by
+          rw [hzero, hquad]
+    _ = 1 - q ω
+          + P[chewi127ScalarCharFunTaylorRemainder a x | m] ω := by abel
+
+/--
+If a real scalar increment has conditional mean zero, then its complex
+characteristic-function linear term also has conditional mean zero.
+-/
+theorem chewi127ScalarCharFun_condExp_linear_zero_of_condExp_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] (m : MeasurableSpace Ω)
+    {x : Ω -> ℝ} (a : ℝ)
+    (hx : Integrable x P)
+    (hzero : P[x | m] =ᵐ[P] fun _ => 0) :
+    P[fun ω => ((a * x ω : ℝ) : ℂ) * Complex.I | m]
+      =ᵐ[P] fun _ => 0 := by
+  have hofReal :
+      P[fun ω => ((x ω : ℝ) : ℂ) | m]
+        =ᵐ[P] fun ω => ((P[x | m] ω : ℝ) : ℂ) := by
+    have hcomm :
+        (fun ω => Complex.ofRealCLM (P[x | m] ω))
+          =ᵐ[P] P[fun ω => Complex.ofRealCLM (x ω) | m] := by
+      simpa [Function.comp_def, Complex.ofRealCLM_apply] using
+        (ContinuousLinearMap.comp_condExp_comm
+          (μ := P) (m := m) (f := x) (T := Complex.ofRealCLM) hx)
+    exact hcomm.symm
+  have hsmul :
+      P[fun ω => ((a * x ω : ℝ) : ℂ) * Complex.I | m]
+        =ᵐ[P] fun ω =>
+          (Complex.I * (a : ℂ)) •
+            P[fun ω => ((x ω : ℝ) : ℂ) | m] ω := by
+    have harg :
+        (fun ω => ((a * x ω : ℝ) : ℂ) * Complex.I)
+          =ᵐ[P] (Complex.I * (a : ℂ)) •
+            (fun ω => ((x ω : ℝ) : ℂ)) := by
+      exact ae_of_all P fun ω => by
+        simp [Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm]
+    exact (condExp_congr_ae harg).trans
+      (condExp_smul (μ := P) (m := m) (Complex.I * (a : ℂ))
+        (fun ω => ((x ω : ℝ) : ℂ)))
+  filter_upwards [hsmul, hofReal, hzero] with ω hlin hof hzeroω
+  rw [hlin, hof, hzeroω]
+  simp
+
+/--
+The real conditional second-moment identity gives the complex scaled quadratic
+term in the one-step characteristic-function Taylor expansion.
+-/
+theorem chewi127ScalarCharFun_condExp_quadratic_eq_of_condExp_square
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] (m : MeasurableSpace Ω)
+    {x v : Ω -> ℝ} (a : ℝ)
+    (hsq : Integrable (fun ω => (x ω) ^ 2) P)
+    (hsq_cond : P[fun ω => (x ω) ^ 2 | m] =ᵐ[P] v) :
+    P[fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ) | m]
+      =ᵐ[P] fun ω => (((a ^ 2 * v ω) / 2 : ℝ) : ℂ) := by
+  let c : ℂ := ((a ^ 2 / 2 : ℝ) : ℂ)
+  have hofReal :
+      P[fun ω => (((x ω) ^ 2 : ℝ) : ℂ) | m]
+        =ᵐ[P] fun ω => ((P[fun ω => (x ω) ^ 2 | m] ω : ℝ) : ℂ) := by
+    have hcomm :
+        (fun ω => Complex.ofRealCLM (P[fun ω => (x ω) ^ 2 | m] ω))
+          =ᵐ[P] P[fun ω => Complex.ofRealCLM ((x ω) ^ 2) | m] := by
+      simpa [Function.comp_def, Complex.ofRealCLM_apply] using
+        (ContinuousLinearMap.comp_condExp_comm
+          (μ := P) (m := m) (f := fun ω => (x ω) ^ 2)
+          (T := Complex.ofRealCLM) hsq)
+    exact hcomm.symm
+  have hscale :
+      P[fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ) | m]
+        =ᵐ[P] fun ω =>
+          c • P[fun ω => (((x ω) ^ 2 : ℝ) : ℂ) | m] ω := by
+    have harg :
+        (fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ))
+          =ᵐ[P] c • (fun ω => (((x ω) ^ 2 : ℝ) : ℂ)) := by
+      exact ae_of_all P fun ω => by
+        simp [c, Pi.smul_apply, smul_eq_mul]
+        ring
+    exact (condExp_congr_ae harg).trans
+      (condExp_smul (μ := P) (m := m) c
+        (fun ω => (((x ω) ^ 2 : ℝ) : ℂ)))
+  filter_upwards [hscale, hofReal, hsq_cond] with ω hscaleω hofω hsqω
+  rw [hscaleω, hofω, hsqω]
+  simp [c, smul_eq_mul]
+  ring
+
+/--
+Conditional Taylor expansion after consuming a real conditional mean-zero
+identity.  The quadratic term is kept as a named conditional expectation so it
+can be filled by either a source covariance field or a later tower/product
+argument.
+-/
+theorem chewi127ScalarCharFun_condExp_taylor_expansion_of_condExp_zero_quadratic
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] (m : MeasurableSpace Ω) (hm : m ≤ mΩ)
+    {x : Ω -> ℝ} (a : ℝ) {q : Ω -> ℂ}
+    (hx : Integrable x P)
+    (hquadratic : Integrable
+      (fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ)) P)
+    (hremainder : Integrable (chewi127ScalarCharFunTaylorRemainder a x) P)
+    (hzero : P[x | m] =ᵐ[P] fun _ => 0)
+    (hquadratic_eq :
+      P[fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ) | m]
+        =ᵐ[P] q) :
+    P[fun ω => Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I) | m]
+      =ᵐ[P] fun ω =>
+        1 - q ω + P[chewi127ScalarCharFunTaylorRemainder a x | m] ω := by
+  have hlinear :
+      Integrable (fun ω => ((a * x ω : ℝ) : ℂ) * Complex.I) P := by
+    simpa using ((hx.const_mul a).ofReal.mul_const Complex.I)
+  exact chewi127ScalarCharFun_condExp_taylor_expansion_of_zero_quadratic
+    (mΩ := mΩ) (P := P) (m := m) (hm := hm) (x := x) a
+    hlinear hquadratic hremainder
+    (chewi127ScalarCharFun_condExp_linear_zero_of_condExp_zero
+      (mΩ := mΩ) (P := P) (m := m) (x := x) a hx hzero)
+    hquadratic_eq
+
+/--
+Conditional Taylor expansion after consuming real conditional mean-zero and
+conditional square identities.  This is the scalar martingale one-step
+expansion in the exact form needed before the finite product/tower estimate.
+-/
+theorem chewi127ScalarCharFun_condExp_taylor_expansion_of_condExp_zero_square
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] (m : MeasurableSpace Ω) (hm : m ≤ mΩ)
+    {x v : Ω -> ℝ} (a : ℝ)
+    (hx : Integrable x P)
+    (hsq : Integrable (fun ω => (x ω) ^ 2) P)
+    (hremainder : Integrable (chewi127ScalarCharFunTaylorRemainder a x) P)
+    (hzero : P[x | m] =ᵐ[P] fun _ => 0)
+    (hsq_cond : P[fun ω => (x ω) ^ 2 | m] =ᵐ[P] v) :
+    P[fun ω => Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I) | m]
+      =ᵐ[P] fun ω =>
+        1 - (((a ^ 2 * v ω) / 2 : ℝ) : ℂ)
+          + P[chewi127ScalarCharFunTaylorRemainder a x | m] ω := by
+  let c : ℂ := ((a ^ 2 / 2 : ℝ) : ℂ)
+  have hquadratic :
+      Integrable (fun ω => (((a * x ω) ^ 2 / 2 : ℝ) : ℂ)) P := by
+    have hbase : Integrable (fun ω => (((x ω) ^ 2 : ℝ) : ℂ)) P := hsq.ofReal
+    have hscaled : Integrable (fun ω => c * (((x ω) ^ 2 : ℝ) : ℂ)) P :=
+      hbase.const_mul c
+    refine hscaled.congr ?_
+    exact ae_of_all P fun ω => by
+      simp [c]
+      ring
+  exact chewi127ScalarCharFun_condExp_taylor_expansion_of_condExp_zero_quadratic
+    (mΩ := mΩ) (P := P) (m := m) (hm := hm) (x := x) a
+    hx hquadratic hremainder hzero
+    (chewi127ScalarCharFun_condExp_quadratic_eq_of_condExp_square
+      (mΩ := mΩ) (P := P) (m := m) (x := x) (v := v) a hsq hsq_cond)
+
+/--
 The projected vector sum is the scalar sum of the projected increments.
 -/
 theorem chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum
@@ -914,6 +1100,44 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_conditional_second_moment
       =ᵐ[P] fun ω => S.covariance.Xi (n + 1) ω L L := by
   simpa [S.same_noise, S.same_filtration] using
     S.covariance.condExp_projected_square_eq L n
+
+/--
+Source-facing one-step characteristic-function Taylor expansion for each
+projected martingale increment.  The martingale mean-zero and conditional
+second-moment identities have already been substituted; the remaining
+conditional remainder is the term controlled in the finite product/tower
+argument.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (n : ℕ) (a : ℝ)
+    (hsq : Integrable
+      (fun ω => (L (S.martingale.xi (n + 1) ω)) ^ 2) P)
+    (hremainder : Integrable
+      (chewi127ScalarCharFunTaylorRemainder a
+        (fun ω => L (S.martingale.xi (n + 1) ω))) P) :
+    P[fun ω =>
+        Complex.exp
+          (((a * L (S.martingale.xi (n + 1) ω) : ℝ) : ℂ) * Complex.I) |
+        S.martingale.filtration n]
+      =ᵐ[P] fun ω =>
+        1 - (((a ^ 2 * S.covariance.Xi (n + 1) ω L L) / 2 : ℝ) : ℂ)
+          + P[chewi127ScalarCharFunTaylorRemainder a
+              (fun ω => L (S.martingale.xi (n + 1) ω)) |
+              S.martingale.filtration n] ω := by
+  exact chewi127ScalarCharFun_condExp_taylor_expansion_of_condExp_zero_square
+    (mΩ := mΩ) (P := P) (m := S.martingale.filtration n)
+    (hm := S.martingale.filtration.le n)
+    (x := fun ω => L (S.martingale.xi (n + 1) ω))
+    (v := fun ω => S.covariance.Xi (n + 1) ω L L) a
+    (S.martingale.projected_integrable L (n + 1)) hsq hremainder
+    (S.projected_condExp_zero L n)
+    (S.projected_conditional_second_moment L n)
 
 /--
 The averaged conditional covariance limit gives the projected scalar variance

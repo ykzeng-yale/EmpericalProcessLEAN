@@ -261,7 +261,12 @@ Stable substrate:
   of the scalar characteristic-function factor, boundedness-to-integrability
   lemmas for `x`, `x^2`, and the Taylor remainder, and the conditional
   one-step Taylor expansion
-  `chewi127ScalarCharFun_condExp_taylor_expansion`.
+  `chewi127ScalarCharFun_condExp_taylor_expansion`.  The substitution layer is
+  now compiled too: the generic zero/quadratic conditional Taylor wrapper,
+  real conditional-mean-zero to complex-linear bridge, real conditional-square
+  to complex quadratic bridge, the combined mean-zero/square wrapper, and the
+  source-facing
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`.
 
 Current priority packet sequence:
 
@@ -283,13 +288,15 @@ Current priority packet sequence:
    otherwise stall.
 
 Execution rule for the next proof run: the conditional one-step
-characteristic-function Taylor expansion is now compiled.  Do not repeat the
-Taylor setup.  The next packet should substitute the projected martingale
-mean-zero and conditional second-moment identities into that expansion, expose
-the named conditional remainder term, and then move directly to the finite
-product/tower estimate for `projected_charFun_tendsto_exp`.  Cached scout
-results found no direct martingale CLT in pinned mathlib/local code.  Useful
-mathlib APIs are
+characteristic-function Taylor expansion and the projected mean-zero/second-
+moment substitution layer are now compiled.  Do not repeat Taylor setup,
+linear mean-zero conversion, quadratic conditional-square conversion, or the
+source-facing one-step Taylor wrapper.  The next packet should prove the finite
+product/tower characteristic-function estimate for
+`projected_charFun_tendsto_exp`, using the named conditional remainder term
+from `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`
+and the averaged conditional variance convergence.  Cached scout results found
+no direct martingale CLT in pinned mathlib/local code.  Useful mathlib APIs are
 `MeasureTheory.Filtration.condExp_condExp`,
 `MeasureTheory.condExp_condExp_of_le`, `MeasureTheory.integral_condExp`,
 `condExp_mul_of_aestronglyMeasurable_left/right`,
@@ -304,9 +311,10 @@ mathlib APIs are
 `chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound`,
 `chewi127ScalarScaledSum_tendstoInDistribution_of_charFun`, the new
 `Chewi127BoundedMartingaleCharFunCLTSource` conversion layer, and the new
-quadratic exponential/scalar Taylor remainder lemmas.  The next packet should
-reuse `chewi127ScalarCharFun_condExp_taylor_expansion`, not reprove its
-linearity algebra.
+quadratic exponential/scalar Taylor remainder and conditional substitution
+lemmas.  The next packet should reuse
+`Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`,
+not reprove its conditional-expectation algebra.
 
 Keep exercise statements and cheap reusable exercise proofs in
 `StatInference/Optimization/Exercises.lean`, but never let exercises block the

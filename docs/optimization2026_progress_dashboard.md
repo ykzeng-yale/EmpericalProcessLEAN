@@ -145,6 +145,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   `E[exp(i a X) | m]`; the next ASGD packet should substitute projected
   martingale mean-zero and conditional second-moment identities, retain the
   named conditional remainder, and move to the finite product/tower estimate.
+- New ASGD conditional substitution declarations:
+  `chewi127ScalarCharFun_condExp_taylor_expansion_of_zero_quadratic`,
+  `chewi127ScalarCharFun_condExp_linear_zero_of_condExp_zero`,
+  `chewi127ScalarCharFun_condExp_quadratic_eq_of_condExp_square`,
+  `chewi127ScalarCharFun_condExp_taylor_expansion_of_condExp_zero_quadratic`,
+  `chewi127ScalarCharFun_condExp_taylor_expansion_of_condExp_zero_square`,
+  and
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`.
+  These consume the projected martingale mean-zero and conditional second-
+  moment identities and leave the finite product/tower characteristic-function
+  estimate as the next hard ASGD scalar CLT step.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
