@@ -1,3 +1,4 @@
+import StatInference.ProbabilityTheory.ProductBounds
 import StatInference.AsymptoticStatistics.MomentEstimators
 import StatInference.Optimization.StochasticGradient
 import Mathlib.Analysis.Complex.Exponential
@@ -164,6 +165,43 @@ one-based martingale increments, represented as `x (k+1)` over `range n`.
 noncomputable def chewi127ScalarCharFunProduct
     {Ω : Type*} (x : ℕ -> Ω -> ℝ) (n : ℕ) (a : ℝ) (ω : Ω) : ℂ :=
   ∏ k ∈ Finset.range n, chewi127ScalarCharFunFactor a (x (k + 1)) ω
+
+/--
+Finite product error bound used in the Chewi martingale characteristic-function
+route.  This is the ASGD-facing specialization of the shared finite-product
+difference estimate.
+-/
+theorem chewi127_norm_prod_sub_prod_le_sum_norm_sub
+    (N : ℕ) (z w : ℕ -> ℂ)
+    (hz : ∀ k ∈ Finset.range N, ‖z k‖ ≤ 1)
+    (hw : ∀ k ∈ Finset.range N, ‖w k‖ ≤ 1) :
+    ‖(∏ k ∈ Finset.range N, z k) - ∏ k ∈ Finset.range N, w k‖ ≤
+      ∑ k ∈ Finset.range N, ‖z k - w k‖ :=
+  StatInference.norm_prod_sub_prod_le_sum_norm_sub
+    (Finset.range N) z w hz hw
+
+/--
+If the row-sum of one-factor errors vanishes and both rows of factors are
+eventually bounded by one, then the finite product difference vanishes.  This
+is the deterministic product-accumulation bridge needed after the ASGD tower
+peel has reduced the characteristic-function proof to one-step errors.
+-/
+theorem chewi127_product_sub_product_tendsto_zero_of_sum_norm
+    (z w : ℕ -> ℕ -> ℂ)
+    (hz : ∀ᶠ N : ℕ in atTop, ∀ k ∈ Finset.range N, ‖z N k‖ ≤ 1)
+    (hw : ∀ᶠ N : ℕ in atTop, ∀ k ∈ Finset.range N, ‖w N k‖ ≤ 1)
+    (herror :
+      Tendsto
+        (fun N : ℕ => ∑ k ∈ Finset.range N, ‖z N k - w N k‖)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ => (∏ k ∈ Finset.range N, z N k) -
+        ∏ k ∈ Finset.range N, w N k)
+      atTop (𝓝 0) := by
+  rw [tendsto_zero_iff_norm_tendsto_zero]
+  refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ herror
+  filter_upwards [hz, hw] with N hzN hwN
+  exact chewi127_norm_prod_sub_prod_le_sum_norm_sub N (z N) (w N) hzN hwN
 
 /--
 Scalar Lindeberg tail summand for Chewi's one-dimensional martingale CLT

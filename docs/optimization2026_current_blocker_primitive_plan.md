@@ -143,30 +143,32 @@ allowing exercise statements/proofs in `Exercises.lean` when they unlock
 main-text theorems.  All code/docs/comments stay in English; chat reports may
 be Chinese/English mix.
 
-Current frontier: `b6bc4cf Add Chewi ASGD product tower peel` is verified and
-pushed.  The active source lane is Chapter 12 ASGD Theorem 12.7/12.3.  The
-only active Lean module is `StatInference/Optimization/ASGD.lean` unless a
-small disjoint helper module is clearly cheaper.
+Current frontier: the ASGD finite product/error bridge is verified.  The active
+source lane is Chapter 12 ASGD Theorem 12.7/12.3.  The active Lean module is
+`StatInference/Optimization/ASGD.lean`, with the lightweight shared helper
+`StatInference/ProbabilityTheory/ProductBounds.lean` available for finite
+complex product estimates.
 
-Next theorem-sized packet: prove the finite product/error accumulation step
-toward
+Next theorem-sized packet: instantiate the product/error bridge toward
 `Chewi127BoundedMartingaleCharFunCLTSource.projected_charFun_tendsto_exp`.
-This should consume the compiled tower peel and reduce the scalar martingale
-characteristic-function proof to explicit variance-product convergence plus
-conditional-remainder control.
+This should consume the compiled tower peel and
+`chewi127_product_sub_product_tendsto_zero_of_sum_norm`, reducing the scalar
+martingale characteristic-function proof to explicit variance-product
+convergence plus conditional-remainder row-sum control.
 
 Do not redo these solved layers: Chapter 3 GD, Taylor expansion, scalar
 Lindeberg tail vanishing, Levy/Gaussian target, conditional mean-zero/second
 moment substitution, finite product representation, prefix measurability, or
-the first tower peel.
+the first tower peel, or the deterministic finite product/error accumulation
+bound.
 
 Search-first budget: one bounded API search only for the current blocker.
-First check local Durrett product-error work, especially
-`durrett2019_norm_prod_sub_prod_le_sum_norm_sub` and surrounding
-Lindeberg-Feller product-approximation wrappers in
-`StatInference/ProbabilityTheory/Basic.lean`; then check mathlib only if that
-does not fit.  Do not import heavy unrelated modules into ASGD unless the build
-cost is justified by the theorem endpoint.
+First reuse `StatInference.norm_prod_sub_prod_le_sum_norm_sub`,
+`chewi127_norm_prod_sub_prod_le_sum_norm_sub`, and
+`chewi127_product_sub_product_tendsto_zero_of_sum_norm`; then search only for
+the current missing variance-product or conditional-remainder row-sum API.  Do
+not import heavy unrelated modules into ASGD unless the build cost is justified
+by the theorem endpoint.
 
 Execution loop: state the exact Lean theorem before editing, prove it in the
 isolated worktree `/private/tmp/chewi-smpgd-probability`, run

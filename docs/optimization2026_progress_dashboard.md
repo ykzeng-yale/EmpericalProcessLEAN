@@ -179,6 +179,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   into a finite product/error estimate toward `projected_charFun_tendsto_exp`,
   focusing on conditional variance product convergence and accumulated
   remainder control rather than prefix measurability or Taylor substitution.
+- New ASGD finite product/error accumulation declarations:
+  `StatInference.norm_prod_sub_prod_le_sum_norm_sub` in
+  `StatInference/ProbabilityTheory/ProductBounds.lean`,
+  `chewi127_norm_prod_sub_prod_le_sum_norm_sub`, and
+  `chewi127_product_sub_product_tendsto_zero_of_sum_norm`.  These give the
+  deterministic complex product-distance bound and the row-sum-to-zero bridge
+  needed after the martingale tower peel.  The next ASGD packet should
+  instantiate this bridge with the Chewi tower factors, prove the variance
+  product limit, and prove the conditional Taylor-remainder row-sum control;
+  it should not re-search or re-prove the finite product estimate.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
