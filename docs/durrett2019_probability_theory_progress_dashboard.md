@@ -32,24 +32,25 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V6` in
+Route from `Live In-Thread Goal Prompt V7` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Section 3.10 in
-`StatInference/ProbabilityTheory/Multivariate.lean`.  The Gaussian
-characteristic-function and covariance-table display for Durrett Theorem 3.10.7
-now compiles for theta projections.  The next packet is the all-dual covariance
-source handoff: represent arbitrary finite-coordinate continuous linear
-functionals as theta projections, then use coordinate covariance-table
-equalities to discharge the existing all-projection covariance hypothesis
-consumed by the compiled multivariate CLT wrappers.  The compiled declaration
-inventory below is dependency context only; it is not a prompt to revisit
-solved Chapter 2 or early Chapter 3 work.
+`StatInference/ProbabilityTheory/Multivariate.lean`.  Durrett Theorem 3.10.7
+now has the theta-projection Gaussian display, finite-coordinate dual
+representation, all-dual mean/covariance handoffs, and a vector Gaussian CLT
+wrapper from centered theta means plus coordinate covariance tables.  The next
+packet is the coordinate-source endpoint: derive those theta/table hypotheses
+from Durrett's literal coordinate centering and covariance assumptions, then add
+the common-vector-law coordinate-table wrapper if it directly reuses the
+compiled handoff.  The compiled declaration inventory below is dependency
+context only; it is not a prompt to revisit solved Chapter 2 or early Chapter 3
+work.
 
 Current verified Durrett Lean frontier:
 `StatInference/ProbabilityTheory/Multivariate.lean` compiles with the Section
-3.10 Cramer-Wold, multivariate CLT, Gaussian display, and covariance-table
-wrappers; `StatInference/ProbabilityTheory/Basic.lean` remains compiled
-root-imported support.  Compiled declarations:
+3.10 Cramer-Wold, multivariate CLT, Gaussian display, all-dual source-handoff,
+and coordinate-table CLT wrappers; `StatInference/ProbabilityTheory/Basic.lean`
+remains compiled root-imported support.  Compiled declarations:
 
 - `durrett2019_theorem_2_3_1_borelCantelli_first`;
 - `durrett2019_theorem_2_3_1_eventually_notMem`;
@@ -288,9 +289,14 @@ Current proof route:
 31. Durrett Theorem 3.10.7 now has the compiled theta-projection Gaussian
     characteristic-function display and covariance-table variance expansion:
     `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_covarianceBilinDualTable`.
-    Next target: package the finite-coordinate all-dual representation and use
-    it to discharge the all-projection covariance source hypothesis from
-    coordinate covariance-table equalities.
+32. Durrett Theorem 3.10.7 now has finite-coordinate dual-coordinate
+    representation, all-dual centered-mean and covariance-table handoffs, and
+    the vector Gaussian CLT wrapper from centered theta means plus coordinate
+    covariance tables:
+    `durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianThetaMeanCoordinateCovarianceTable`.
+    Next target: coordinate-source endpoint from Durrett's literal coordinate
+    centering/covariance assumptions, plus common-vector-law coordinate-table
+    packaging if immediate.
 
 The route should not duplicate raw measure theory from Chapter 1 unless an
 exact source theorem needs a missing local theorem.  Chapter 1 is currently
@@ -304,7 +310,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, iid same-law finite product law, iid product-law criterion, canonical iid product-coordinate support, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact polish only when a later theorem route demands it. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
 | Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, punctured-cover cell splitting, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, arbitrary-law punctured monotone-subdivision cutpoint-chain, arbitrary-law cutpoint-chain, arbitrary-law half-line GC, source-facing empirical-CDF predicate, EDF theorem wrapper, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile. Treat this lane as reusable support unless a later theorem reopens an exact source-shape gap. |
-| Chapter 3 weak convergence, CLT, and characteristic functions | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityTheory/Multivariate.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution`, characteristic-function, Levy, Taylor, and CLT APIs | Section 3.2 weak convergence now has compiled wrappers for Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.10 continuous mapping continuous case, and Theorem 3.2.11 Portmanteau. Section 3.3 now has compiled Theorem 3.3.1 basic characteristic-function wrappers, Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem wrappers, Theorem 3.3.19 scalar Taylor remainder estimate, and Theorem 3.3.20 centered Taylor support. Section 3.4 now has Theorem 3.4.1 i.i.d. CLT wrappers plus Theorem 3.4.10 triangular-array characteristic-function product, explicit Gaussian display, row Gaussian target, quadratic variance product, Exercise 3.1.1 row-sum/max/absolute-bound/product interfaces, the proved Exercise 3.1.1 real triangular-array product theorem, variance-tail-to-max-smallness bridges, the variance-tail split proved from square-integrable rows, max-row-variance-to-factor-norm bridges, Lemma 3.4.3 product-difference control, analytic-certificate bridges from supplied split product approximations, a named characteristic/quadratic error row sum, compiled finite-row/one-factor/scalar-Taylor/expansion/remainder bridges, and a final square-integrable Lindeberg-Feller source wrapper. Section 3.10 has a finite-coordinate law-level Cramer-Wold wrapper, Theorem 3.10.7 projected scalar/summand and covariance/Gaussian source wrappers, and the theta-projection Gaussian characteristic-function covariance-table display. Next target: finite-coordinate all-dual covariance source handoff. |
+| Chapter 3 weak convergence, CLT, and characteristic functions | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityTheory/Multivariate.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution`, characteristic-function, Levy, Taylor, and CLT APIs | Section 3.2 weak convergence now has compiled wrappers for Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.10 continuous mapping continuous case, and Theorem 3.2.11 Portmanteau. Section 3.3 now has compiled Theorem 3.3.1 basic characteristic-function wrappers, Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem wrappers, Theorem 3.3.19 scalar Taylor remainder estimate, and Theorem 3.3.20 centered Taylor support. Section 3.4 now has Theorem 3.4.1 i.i.d. CLT wrappers plus Theorem 3.4.10 triangular-array characteristic-function product, explicit Gaussian display, row Gaussian target, quadratic variance product, Exercise 3.1.1 row-sum/max/absolute-bound/product interfaces, the proved Exercise 3.1.1 real triangular-array product theorem, variance-tail-to-max-smallness bridges, the variance-tail split proved from square-integrable rows, max-row-variance-to-factor-norm bridges, Lemma 3.4.3 product-difference control, analytic-certificate bridges from supplied split product approximations, a named characteristic/quadratic error row sum, compiled finite-row/one-factor/scalar-Taylor/expansion/remainder bridges, and a final square-integrable Lindeberg-Feller source wrapper. Section 3.10 has a finite-coordinate law-level Cramer-Wold wrapper, Theorem 3.10.7 projected scalar/summand and covariance/Gaussian source wrappers, theta-projection Gaussian characteristic-function covariance-table display, all-dual source handoffs, and the vector Gaussian coordinate-table CLT wrapper. Next target: coordinate-source endpoint for Durrett's literal centering/covariance assumptions. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
 | Chapters 6-8 ergodic/Brownian/Donsker | pending-local | none | Defer until early probability spine is stable or remote agents land reusable support. |
@@ -349,9 +355,9 @@ whenever the app-level wording lags.  Active frontier only: Section 3.10
 finite-dimensional limit theory in
 `StatInference/ProbabilityTheory/Multivariate.lean`.
 
-Next proof packet: Durrett Theorem 3.10.7 all-dual covariance source handoff,
-using the compiled theta-projection covariance-table display and local Vaart
-finite-coordinate Cramer-Wold constructors.
+Next proof packet: Durrett Theorem 3.10.7 coordinate-source endpoint from
+literal coordinate centering/covariance assumptions, using the compiled
+theta-projection and all-dual source handoffs.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
 one compiled Lean packet, verify focused Lean plus targeted build/scans and root

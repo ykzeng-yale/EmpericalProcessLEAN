@@ -50,6 +50,57 @@ theorem durrett2019_theorem_3_10_7_thetaProjection_apply
   simp [durrett2019_theorem_3_10_7_thetaProjection]
 
 /--
+Coordinates of an arbitrary finite-dimensional continuous linear functional in
+Durrett's dot-product notation.
+-/
+noncomputable def durrett2019_theorem_3_10_7_dualCoordinates
+    {Coordinate : Type*} [Fintype Coordinate]
+    (L : StrongDual ℝ (Coordinate -> ℝ)) : Coordinate -> ℝ := by
+  classical
+  exact fun i => L (fun j => if i = j then (1 : ℝ) else 0)
+
+/--
+Every continuous linear functional on a finite real coordinate space is one of
+Durrett's theta projections.
+-/
+theorem durrett2019_theorem_3_10_7_thetaProjection_dualCoordinates
+    {Coordinate : Type*} [Fintype Coordinate]
+    (L : StrongDual ℝ (Coordinate -> ℝ)) :
+    durrett2019_theorem_3_10_7_thetaProjection
+        (durrett2019_theorem_3_10_7_dualCoordinates L) = L := by
+  classical
+  ext x
+  have hL :=
+    _root_.LinearMap.pi_apply_eq_sum_univ
+      (R := ℝ) (M₂ := ℝ) L.toLinearMap x
+  rw [durrett2019_theorem_3_10_7_thetaProjection_apply]
+  simpa [durrett2019_theorem_3_10_7_dualCoordinates, smul_eq_mul, mul_comm]
+    using hL.symm
+
+/--
+Centered theta projections imply centered arbitrary continuous linear
+projections in finite coordinates.
+-/
+theorem durrett2019_theorem_3_10_7_allProjectionMean_zero_of_thetaProjectionMean_zero
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    {Q : Measure Ω'} {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_theta_mean : ∀ theta : Coordinate -> ℝ,
+      (∫ ω, (∑ i, theta i * Z ω i) ∂Q) = 0) :
+    ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      (∫ ω, L (Z ω) ∂Q) = 0 := by
+  intro L
+  let theta := durrett2019_theorem_3_10_7_dualCoordinates L
+  have hL :
+      durrett2019_theorem_3_10_7_thetaProjection theta = L :=
+    durrett2019_theorem_3_10_7_thetaProjection_dualCoordinates L
+  have hfun :
+      (fun ω => L (Z ω)) = (fun ω => ∑ i, theta i * Z ω i) := by
+    funext ω
+    rw [← hL]
+    simp
+  simpa [hfun] using hZ_theta_mean theta
+
+/--
 The covariance bilinear form of Durrett's projection is the double sum of the
 coordinate covariance table.
 -/
@@ -281,6 +332,106 @@ theorem durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_o
         simpa using hvar_map.symm.trans hvar_projection)
 
 /--
+Durrett 2019, Theorem 3.10.7, all-projection covariance source handoff from
+coordinate covariance tables.
+
+The compiled multivariate CLT wrappers consume an all-dual covariance
+identification.  In finite coordinates this follows from the coordinate
+covariance table, because every continuous linear functional is a
+`thetaProjection`.
+-/
+theorem durrett2019_theorem_3_10_7_allProjectionCovariance_of_covarianceBilinDualTables
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hX_sample_aemeas :
+      AEMeasurable
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0) P)
+    (hX_sample_map_memLp :
+      MemLp id 2
+        (P.map
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0)))
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_table : ∀ i j,
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j) =
+        Gamma i j)
+    (hX_table : ∀ i j,
+      _root_.ProbabilityTheory.covarianceBilinDual
+          (P.map
+            (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0))
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j) =
+        Gamma i j) :
+    ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        _root_.ProbabilityTheory.variance
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateProjectedSample L X 0) P := by
+  classical
+  intro L
+  let theta := durrett2019_theorem_3_10_7_dualCoordinates L
+  let sampleVector :=
+    StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0
+  letI : IsProbabilityMeasure (P.map sampleVector) :=
+    P.isProbabilityMeasure_map hX_sample_aemeas
+  have hL :
+      durrett2019_theorem_3_10_7_thetaProjection theta = L :=
+    durrett2019_theorem_3_10_7_thetaProjection_dualCoordinates L
+  have hZ_projection :
+      _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_3_10_7_thetaProjection theta) (Q.map Z) =
+        durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma :=
+    durrett2019_theorem_3_10_7_thetaProjection_variance_eq_covarianceTableQuadratic
+      (μ := Q.map Z) hZ_memLp Gamma theta
+      (fun i j => (hZ_table i j).symm)
+  have hX_projection :
+      _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_3_10_7_thetaProjection theta) (P.map sampleVector) =
+        durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma :=
+    durrett2019_theorem_3_10_7_thetaProjection_variance_eq_covarianceTableQuadratic
+      (μ := P.map sampleVector) hX_sample_map_memLp Gamma theta
+      (fun i j => (hX_table i j).symm)
+  have hX_map :
+      _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_3_10_7_thetaProjection theta) (P.map sampleVector) =
+        _root_.ProbabilityTheory.variance
+          (fun ω => durrett2019_theorem_3_10_7_thetaProjection theta (sampleVector ω)) P := by
+    simpa [Function.comp_def] using
+      (_root_.ProbabilityTheory.variance_map
+        (X := durrett2019_theorem_3_10_7_thetaProjection theta)
+        (Y := sampleVector) (μ := P) (by fun_prop) hX_sample_aemeas)
+  calc
+    _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_3_10_7_thetaProjection theta) (Q.map Z) := by
+          rw [← hL]
+          exact _root_.ProbabilityTheory.covarianceBilinDual_self_eq_variance
+            hZ_memLp (durrett2019_theorem_3_10_7_thetaProjection theta)
+    _ = durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma :=
+          hZ_projection
+    _ = _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_3_10_7_thetaProjection theta) (P.map sampleVector) :=
+          hX_projection.symm
+    _ = _root_.ProbabilityTheory.variance
+          (fun ω => durrett2019_theorem_3_10_7_thetaProjection theta (sampleVector ω)) P :=
+          hX_map
+    _ = _root_.ProbabilityTheory.variance
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateProjectedSample L X 0) P := by
+          rw [hL]
+          rfl
+
+/--
 Durrett 2019, Theorem 3.10.6, Cramér-Wold device, finite-coordinate law form.
 
 For finite real coordinate spaces, weak convergence of every continuous linear
@@ -425,6 +576,162 @@ theorem durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianSource
       (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
       (hZ_mean := hZ_mean) (hZ_covariance := hZ_covariance)
       (hX_indep := hX_indep) (hX_ident := hX_ident))
+
+/--
+Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from
+coordinate covariance tables.
+
+This is the source-facing covariance-table form of Durrett's proof.  The
+coordinate covariance tables for the Gaussian limit and the first summand
+discharge the all-projection covariance hypothesis used by the compiled
+Cramér-Wold CLT wrapper.
+-/
+theorem durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCoordinateCovarianceTable
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hX_coordinate_memLp : ∀ coordinate, MemLp (X coordinate 0) 2 P)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      (∫ ω, L (Z ω) ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_table : ∀ i j,
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j) =
+        Gamma i j)
+    (hX_table : ∀ i j,
+      _root_.ProbabilityTheory.covarianceBilinDual
+          (P.map
+            (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0))
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j) =
+        Gamma i j)
+    (hX_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i => StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        P)
+    (hX_ident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0)
+        P P) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+            StatInference.AsymptoticStatistics.vaart1998_finiteCoordinatePopulationMoment P X))
+      atTop Z (fun _ => P) Q := by
+  let sampleVector :=
+    StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0
+  have hX_vector_memLp : MemLp sampleVector 2 P := by
+    simpa [sampleVector] using
+      StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector_memLp_of_coordinate_memLp
+        (P := P) (X := X) 0 hX_coordinate_memLp
+  have hX_sample_aemeas : AEMeasurable sampleVector P :=
+    hX_vector_memLp.aemeasurable
+  have hX_sample_map_memLp : MemLp id 2 (P.map sampleVector) := by
+    simpa [sampleVector] using
+      (MeasureTheory.memLp_map_measure_iff aestronglyMeasurable_id hX_sample_aemeas).2
+        hX_vector_memLp
+  exact
+    durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianSource
+      (P := P) (Q := Q) (X := X) (Z := Z)
+      (hX_meas := hX_meas) (hZ_aemeas := hZ_aemeas)
+      (hX_coordinate_memLp := hX_coordinate_memLp)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (hZ_mean := hZ_mean)
+      (hZ_covariance :=
+        durrett2019_theorem_3_10_7_allProjectionCovariance_of_covarianceBilinDualTables
+          (P := P) (Q := Q) (X := X) (Z := Z)
+          (hZ_memLp := hZ_memLp)
+          (hX_sample_aemeas := by simpa [sampleVector] using hX_sample_aemeas)
+          (hX_sample_map_memLp := by simpa [sampleVector] using hX_sample_map_memLp)
+          (Gamma := Gamma) (hZ_table := hZ_table) (hX_table := hX_table))
+      (hX_indep := hX_indep) (hX_ident := hX_ident)
+
+/--
+Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from centered
+theta means and coordinate covariance tables.
+
+This packages both finite-coordinate source handoffs: centered theta
+projections imply the all-dual centered Gaussian mean hypothesis, and coordinate
+covariance tables imply the all-dual covariance hypothesis.
+-/
+theorem durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianThetaMeanCoordinateCovarianceTable
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hX_coordinate_memLp : ∀ coordinate, MemLp (X coordinate 0) 2 P)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_theta_mean : ∀ theta : Coordinate -> ℝ,
+      (∫ ω, (∑ i, theta i * Z ω i) ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_table : ∀ i j,
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j) =
+        Gamma i j)
+    (hX_table : ∀ i j,
+      _root_.ProbabilityTheory.covarianceBilinDual
+          (P.map
+            (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0))
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j) =
+        Gamma i j)
+    (hX_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i => StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        P)
+    (hX_ident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0)
+        P P) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+            StatInference.AsymptoticStatistics.vaart1998_finiteCoordinatePopulationMoment P X))
+      atTop Z (fun _ => P) Q :=
+  durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCoordinateCovarianceTable
+    (P := P) (Q := Q) (X := X) (Z := Z)
+    (hX_meas := hX_meas) (hZ_aemeas := hZ_aemeas)
+    (hX_coordinate_memLp := hX_coordinate_memLp)
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (hZ_mean :=
+      durrett2019_theorem_3_10_7_allProjectionMean_zero_of_thetaProjectionMean_zero
+        (Q := Q) (Z := Z) hZ_theta_mean)
+    (Gamma := Gamma) (hZ_table := hZ_table) (hX_table := hX_table)
+    (hX_indep := hX_indep) (hX_ident := hX_ident)
 
 /--
 Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from an i.i.d.
