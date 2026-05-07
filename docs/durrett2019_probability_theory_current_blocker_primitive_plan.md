@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V21
+## Live In-Thread Goal Prompt V22
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -24,14 +24,17 @@ integrability, all-times conditional-expectation identities/inequalities,
 one-step `n+1 | n` identities/inequalities, real-valued one-step constructors,
 and Example 4.2.1 linear random-walk martingale/supermartingale/submartingale
 wrappers over the natural filtration of independent increments, including the
-centered-increment display `S_n - n * μ`.
+centered-increment display `S_n - n * μ`, plus the Example 4.2.2 quadratic
+martingale source bridge from the textbook square expansion, pull-out cross
+term, centered increment condition, and conditional second moment.
 
-Next theorem-sized packet: move to Example 4.2.2 quadratic martingale and add
-only the narrow bridge needed for the source calculation, such as conditional
-expectation of `ξ_{n+1}^2`, pull-out of the `S_n * ξ_{n+1}` cross term, or
-finite-square integrability support.  Do not repackage solved Chapter 4.1
-facts or the compiled Chapter 4.2 starter, linear-random-walk, and centered
-display wrappers.
+Next theorem-sized packet: instantiate Example 4.2.2 for the natural random
+walk if direct, focusing only on the missing side-condition bridges:
+conditional expectation of `ξ_{n+1}^2`, finite-square/cross integrability, and
+the conditional second-moment display `E(ξ_{n+1}^2 | F_n)=σ^2`.  If that route
+is not direct, move to Example 4.2.3 exponential martingales.  Do not repackage
+solved Chapter 4.1 facts or the compiled Chapter 4.2 starter, linear,
+centered, and quadratic source wrappers.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -330,8 +333,9 @@ theorem exposes an exact missing dependency.
 
 Current aggressive target: continue the Chapter 4.2 martingale spine beyond the
 compiled Example 4.2.1 linear random-walk martingale/supermartingale/
-submartingale and centered-display wrappers.  The following Chapter 3, Chapter
-4.1, and Chapter 4.2 packets now compile:
+submartingale and centered-display wrappers and the compiled Example 4.2.2
+quadratic source bridge.  The following Chapter 3, Chapter 4.1, and Chapter 4.2
+packets now compile:
 
 - Durrett Theorem 3.2.9 bounded-continuous test characterization, including
   the `integral_map` bridge from map-law integrals to textbook expectations
@@ -392,9 +396,10 @@ submartingale and centered-display wrappers.  The following Chapter 3, Chapter
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should move directly to Example 4.2.2 quadratic
-martingale.  Keep Theorem 4.1.16 deferred unless a targeted kernel search finds
-a direct source-shaped API.
+The next likely packet should instantiate Example 4.2.2 for the natural random
+walk if the conditional-square and integrability side conditions are direct.
+Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
+source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -506,6 +511,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V21` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V22` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

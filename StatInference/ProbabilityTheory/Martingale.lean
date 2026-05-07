@@ -517,5 +517,194 @@ theorem durrett2019_example_4_2_1_centeredLinearRandomWalk_martingale_of_iIndepF
   exact durrett2019_example_4_2_1_centeredIncrement_integral_eq_zero
     (μ := μ) hξ_int hξ_mean n
 
+/-! ## Durrett, Example 4.2.2 -/
+
+/--
+Durrett 2019, Example 4.2.2, the quadratic martingale candidate
+`S_n^2 - n * σ^2`.
+-/
+def durrett2019_example_4_2_2_quadraticMartingaleProcess
+    {Ω : Type*} (sigmaSq : ℝ) (S : ℕ -> Ω -> ℝ) : ℕ -> Ω -> ℝ :=
+  fun n ω => S n ω ^ 2 - (n : ℝ) * sigmaSq
+
+/--
+Durrett 2019, Example 4.2.2: the quadratic martingale candidate is adapted
+when the underlying process is adapted.
+-/
+theorem durrett2019_example_4_2_2_quadraticMartingaleProcess_stronglyAdapted
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ℱ : Filtration ℕ mΩ}
+    {S : ℕ -> Ω -> ℝ} (hS_adapted : StronglyAdapted ℱ S) (sigmaSq : ℝ) :
+    StronglyAdapted ℱ
+      (durrett2019_example_4_2_2_quadraticMartingaleProcess sigmaSq S) := by
+  intro n
+  exact ((hS_adapted n).pow 2).sub stronglyMeasurable_const
+
+/--
+Durrett 2019, Example 4.2.2: integrability of the quadratic martingale
+candidate follows from square integrability of `S_n`.
+-/
+theorem durrett2019_example_4_2_2_quadraticMartingaleProcess_integrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    {S : ℕ -> Ω -> ℝ} (sigmaSq : ℝ)
+    (hS_sq_int : ∀ n, Integrable (fun ω => S n ω ^ 2) μ) :
+    ∀ n, Integrable
+      (durrett2019_example_4_2_2_quadraticMartingaleProcess sigmaSq S n) μ :=
+  fun n => (hS_sq_int n).sub (integrable_const ((n : ℝ) * sigmaSq))
+
+/--
+Durrett 2019, Example 4.2.2: random-walk square expansion
+`S_{n+1}^2 = S_n^2 + 2 S_n ξ_{n+1} + ξ_{n+1}^2`.
+-/
+theorem durrett2019_example_4_2_2_linearRandomWalk_square_succ
+    {Ω : Type*} (s0 : ℝ) (ξ : ℕ -> Ω -> ℝ) (n : ℕ) :
+    (fun ω => durrett2019_example_4_2_1_linearRandomWalk s0 ξ (n + 1) ω ^ 2) =
+      fun ω =>
+        durrett2019_example_4_2_1_linearRandomWalk s0 ξ n ω ^ 2 +
+          2 *
+            (durrett2019_example_4_2_1_linearRandomWalk s0 ξ n ω *
+              ξ (n + 1) ω) +
+          ξ (n + 1) ω ^ 2 := by
+  ext ω
+  rw [durrett2019_example_4_2_1_linearRandomWalk_succ]
+  change
+    (durrett2019_example_4_2_1_linearRandomWalk s0 ξ n ω +
+        ξ (n + 1) ω) ^ 2 =
+      durrett2019_example_4_2_1_linearRandomWalk s0 ξ n ω ^ 2 +
+          2 *
+            (durrett2019_example_4_2_1_linearRandomWalk s0 ξ n ω *
+              ξ (n + 1) ω) +
+        ξ (n + 1) ω ^ 2
+  ring_nf
+
+/--
+Durrett 2019, Example 4.2.2, source conditional-expectation calculation.
+
+This packages the textbook computation after expanding
+`S_{n+1}^2`: the adapted term pulls out, the centered cross term vanishes, and
+the conditional second moment contributes `σ^2`.
+-/
+theorem durrett2019_example_4_2_2_quadraticMartingaleProcess_condExp_succ_eq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {S eta : ℕ -> Ω -> ℝ} {sigmaSq : ℝ}
+    (hS_adapted : StronglyAdapted ℱ S)
+    (hS_sq_int : ∀ n, Integrable (fun ω => S n ω ^ 2) μ)
+    (heta_int : ∀ n, Integrable (eta n) μ)
+    (heta_sq_int : ∀ n, Integrable (fun ω => eta n ω ^ 2) μ)
+    (hcross_int : ∀ n, Integrable (fun ω => S n ω * eta (n + 1) ω) μ)
+    (hStepSq : ∀ n,
+      (fun ω => S (n + 1) ω ^ 2) =ᵐ[μ]
+        fun ω =>
+          S n ω ^ 2 + 2 * (S n ω * eta (n + 1) ω) +
+            eta (n + 1) ω ^ 2)
+    (heta_cond_zero : ∀ n, μ[eta (n + 1) | ℱ n] =ᵐ[μ] 0)
+    (heta_sq_cond_sigma : ∀ n, μ[(fun ω => eta (n + 1) ω ^ 2) | ℱ n] =ᵐ[μ]
+      fun _ => sigmaSq)
+    (n : ℕ) :
+    μ[durrett2019_example_4_2_2_quadraticMartingaleProcess sigmaSq S (n + 1) |
+        ℱ n] =ᵐ[μ]
+      durrett2019_example_4_2_2_quadraticMartingaleProcess sigmaSq S n := by
+  have htwo_cross_int :
+      Integrable (fun ω => 2 * (S n ω * eta (n + 1) ω)) μ :=
+    (hcross_int n).const_mul 2
+  have hPastSq :
+      μ[(fun ω => S n ω ^ 2) | ℱ n] = fun ω => S n ω ^ 2 :=
+    condExp_of_stronglyMeasurable (ℱ.le n) ((hS_adapted n).pow 2)
+      (hS_sq_int n)
+  have hTwoCross :
+      μ[(fun ω => 2 * (S n ω * eta (n + 1) ω)) | ℱ n] =ᵐ[μ]
+        fun ω => 2 * μ[(fun ω => S n ω * eta (n + 1) ω) | ℱ n] ω := by
+    filter_upwards
+      [condExp_ofNat (μ := μ) (m := ℱ n) 2
+        (fun ω => S n ω * eta (n + 1) ω)] with ω hω
+    simpa using hω
+  have hPullCross :
+      μ[(fun ω => S n ω * eta (n + 1) ω) | ℱ n] =ᵐ[μ]
+        fun ω => S n ω * μ[eta (n + 1) | ℱ n] ω := by
+    filter_upwards
+      [condExp_mul_of_stronglyMeasurable_left (hS_adapted n)
+        (hcross_int n) (heta_int (n + 1))] with ω hω
+    simpa [Pi.mul_apply] using hω
+  have hSquareCond :
+      μ[(fun ω => S (n + 1) ω ^ 2) | ℱ n] =ᵐ[μ]
+        fun ω => S n ω ^ 2 + sigmaSq := by
+    refine (condExp_congr_ae (hStepSq n)).trans ?_
+    filter_upwards
+      [condExp_add ((hS_sq_int n).add htwo_cross_int)
+        (heta_sq_int (n + 1)) (ℱ n),
+       condExp_add (hS_sq_int n) htwo_cross_int (ℱ n),
+       hTwoCross,
+       hPullCross,
+       heta_cond_zero n,
+       heta_sq_cond_sigma n,
+       EventuallyEq.of_eq hPastSq] with
+      ω hAddAll hAddPast hTwo hPull hZero hSq hPast
+    change
+      μ[((fun ω => S n ω ^ 2) +
+          fun ω => 2 * (S n ω * eta (n + 1) ω)) +
+          fun ω => eta (n + 1) ω ^ 2 | ℱ n] ω =
+        S n ω ^ 2 + sigmaSq
+    rw [hAddAll]
+    simp only [Pi.add_apply]
+    rw [hAddPast]
+    simp only [Pi.add_apply]
+    rw [hTwo, hPull, hZero, hSq, hPast]
+    simp only [Pi.zero_apply]
+    ring_nf
+  have hConst :
+      μ[(fun _ : Ω => (((n + 1 : ℕ) : ℝ) * sigmaSq)) | ℱ n] =
+        fun _ => (((n + 1 : ℕ) : ℝ) * sigmaSq) :=
+    condExp_const (μ := μ) (ℱ.le n) (((n + 1 : ℕ) : ℝ) * sigmaSq)
+  unfold durrett2019_example_4_2_2_quadraticMartingaleProcess
+  change
+    μ[(fun ω => S (n + 1) ω ^ 2 - (((n + 1 : ℕ) : ℝ) * sigmaSq)) | ℱ n] =ᵐ[μ]
+      fun ω => S n ω ^ 2 - (n : ℝ) * sigmaSq
+  refine
+    (condExp_sub (hS_sq_int (n + 1))
+      (integrable_const (((n + 1 : ℕ) : ℝ) * sigmaSq)) (ℱ n)).trans ?_
+  filter_upwards [hSquareCond, EventuallyEq.of_eq hConst] with ω hSq hConstEq
+  simp only [Pi.sub_apply]
+  rw [hSq, hConstEq]
+  rw [Nat.cast_add, Nat.cast_one]
+  ring
+
+/--
+Durrett 2019, Example 4.2.2, source theorem-sized bridge.
+
+If the textbook one-step square expansion, centered cross-term condition, and
+conditional second-moment condition are available, then
+`S_n^2 - n * σ^2` is a martingale.
+-/
+theorem durrett2019_example_4_2_2_quadraticMartingaleProcess_martingale_of_source
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {S eta : ℕ -> Ω -> ℝ} {sigmaSq : ℝ}
+    (hS_adapted : StronglyAdapted ℱ S)
+    (hS_sq_int : ∀ n, Integrable (fun ω => S n ω ^ 2) μ)
+    (heta_int : ∀ n, Integrable (eta n) μ)
+    (heta_sq_int : ∀ n, Integrable (fun ω => eta n ω ^ 2) μ)
+    (hcross_int : ∀ n, Integrable (fun ω => S n ω * eta (n + 1) ω) μ)
+    (hStepSq : ∀ n,
+      (fun ω => S (n + 1) ω ^ 2) =ᵐ[μ]
+        fun ω =>
+          S n ω ^ 2 + 2 * (S n ω * eta (n + 1) ω) +
+            eta (n + 1) ω ^ 2)
+    (heta_cond_zero : ∀ n, μ[eta (n + 1) | ℱ n] =ᵐ[μ] 0)
+    (heta_sq_cond_sigma : ∀ n, μ[(fun ω => eta (n + 1) ω ^ 2) | ℱ n] =ᵐ[μ]
+      fun _ => sigmaSq) :
+    Martingale
+      (durrett2019_example_4_2_2_quadraticMartingaleProcess sigmaSq S)
+      ℱ μ := by
+  refine durrett2019_section_4_2_real_martingale_nat_of_condExp_succ
+    (durrett2019_example_4_2_2_quadraticMartingaleProcess_stronglyAdapted
+      hS_adapted sigmaSq)
+    (durrett2019_example_4_2_2_quadraticMartingaleProcess_integrable
+      (μ := μ) sigmaSq hS_sq_int)
+    ?_
+  intro n
+  exact durrett2019_example_4_2_2_quadraticMartingaleProcess_condExp_succ_eq
+    (μ := μ) (ℱ := ℱ) hS_adapted hS_sq_int heta_int heta_sq_int
+    hcross_int hStepSq heta_cond_zero heta_sq_cond_sigma n
+
 end ProbabilityTheory
 end StatInference
