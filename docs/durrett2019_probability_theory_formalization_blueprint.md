@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V10`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V12`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -391,15 +391,16 @@ Compiled Section 3.2 packets:
 
 Next packet:
 
-- Section 3.10: package Durrett's Gaussian-coordinate independence criterion.
-  The theta-projection display, finite-coordinate dual representation,
-  all-dual handoffs, coordinatewise zero-mean handoff, scalar coordinate
-  covariance and centered-product source endpoints, vector Gaussian
+- Section 3.10: package Durrett source item 3.10.8, the
+  linear-combination characterization of finite-coordinate multivariate
+  Gaussian laws.  The theta-projection display, finite-coordinate dual
+  representation, all-dual handoffs, coordinatewise zero-mean handoff, scalar
+  coordinate covariance and centered-product source endpoints, vector Gaussian
   coordinate-covariance CLT wrappers, common-vector-law coordinate-covariance
-  wrapper, and canonical i.i.d. product-sample endpoints now compile.  Next
-  prove/package that a finite-coordinate multivariate Gaussian vector with zero
-  off-diagonal covariance table has independent coordinate variables, reusing
-  mathlib `HasGaussianLaw.iIndepFun_of_covariance_eq_zero`.
+  wrapper, canonical i.i.d. product-sample endpoints, and
+  Gaussian-coordinate independence criterion wrappers now compile.  Next search
+  mathlib `HasGaussianLaw` and local theta-projection characteristic-function
+  support before adding any new primitive.
 
 Support-only dependencies:
 

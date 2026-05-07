@@ -235,6 +235,156 @@ theorem durrett2019_theorem_3_10_7_canonicalSampleCoordinateCovariance_eq_vector
       (hcoordinate_meas j).aemeasurable)
 
 /--
+Durrett 2019, Section 3.10, Gaussian coordinate independence criterion.
+
+For a finite-coordinate Gaussian vector, zero off-diagonal scalar coordinate
+covariances imply independence of the coordinate random variables.
+-/
+theorem durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_coordinateCovariance_zero
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z P)
+    (hcov_zero : ∀ i j : Coordinate, i ≠ j ->
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) P = 0) :
+    _root_.ProbabilityTheory.iIndepFun (fun i ω => Z ω i) P := by
+  let X : Coordinate -> Ω -> ℝ := fun i ω => Z ω i
+  have hgauss :
+      _root_.ProbabilityTheory.HasGaussianLaw (fun ω => fun i => X i ω) P := by
+    simpa [X] using hZ_gaussian
+  simpa [X] using
+    hgauss.iIndepFun_of_covariance_eq_zero
+      (fun i j hij => by
+        simpa [X] using hcov_zero i j hij)
+
+/--
+Durrett 2019, Section 3.10, Gaussian coordinate independence criterion in
+`iff` form.
+
+For a finite-coordinate Gaussian vector, coordinate independence is equivalent
+to zero off-diagonal scalar covariance, once coordinate square-integrability is
+available for the easy forward implication.
+-/
+theorem durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_coordinateCovariance_zero
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z P)
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 P) :
+    _root_.ProbabilityTheory.iIndepFun (fun i ω => Z ω i) P ↔
+      ∀ i j : Coordinate, i ≠ j ->
+        _root_.ProbabilityTheory.covariance
+          (fun ω => Z ω i) (fun ω => Z ω j) P = 0 := by
+  constructor
+  · intro hindep i j hij
+    exact (hindep.indepFun hij).covariance_eq_zero
+      (hZ_coordinate_memLp i) (hZ_coordinate_memLp j)
+  · exact
+      durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_coordinateCovariance_zero
+        (P := P) (Z := Z) hZ_gaussian
+
+/--
+Durrett 2019, Section 3.10, covariance-table form of the Gaussian coordinate
+independence criterion.
+
+If the coordinate covariance table of a finite-coordinate Gaussian vector is
+`Gamma` and all off-diagonal entries of `Gamma` vanish, then the coordinates
+are independent.
+-/
+theorem durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_covarianceBilinDualTable
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z P)
+    (hZ_memLp : MemLp id 2 (P.map Z))
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_table : ∀ i j,
+      _root_.ProbabilityTheory.covarianceBilinDual (P.map Z)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j) =
+        Gamma i j)
+    (hGamma_offDiagonal_zero : ∀ i j : Coordinate, i ≠ j -> Gamma i j = 0) :
+    _root_.ProbabilityTheory.iIndepFun (fun i ω => Z ω i) P :=
+  durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_coordinateCovariance_zero
+    (P := P) (Z := Z) hZ_gaussian
+    (fun i j hij => by
+      calc
+        _root_.ProbabilityTheory.covariance
+            (fun ω => Z ω i) (fun ω => Z ω j) P =
+          _root_.ProbabilityTheory.covarianceBilinDual (P.map Z)
+            (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+              (Coordinate := Coordinate) i)
+            (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+              (Coordinate := Coordinate) j) := by
+            rw [durrett2019_theorem_3_10_7_covarianceBilinDual_eval_eq_coordinateCovariance
+              (μ := P) (Y := Z) hZ_memLp hZ_gaussian.aemeasurable i j]
+        _ = Gamma i j := hZ_table i j
+        _ = 0 := hGamma_offDiagonal_zero i j hij)
+
+/--
+Durrett 2019, Section 3.10, covariance-table `iff` form of the Gaussian
+coordinate independence criterion.
+
+For a finite-coordinate Gaussian vector with supplied covariance table `Gamma`,
+the coordinates are independent if and only if the off-diagonal entries of
+`Gamma` are zero.
+-/
+theorem durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_covarianceBilinDualTable
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z P)
+    (hZ_memLp : MemLp id 2 (P.map Z))
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 P)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_table : ∀ i j,
+      _root_.ProbabilityTheory.covarianceBilinDual (P.map Z)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j) =
+        Gamma i j) :
+    _root_.ProbabilityTheory.iIndepFun (fun i ω => Z ω i) P ↔
+      ∀ i j : Coordinate, i ≠ j -> Gamma i j = 0 := by
+  constructor
+  · intro hindep i j hij
+    have hcov_zero :
+        _root_.ProbabilityTheory.covariance
+          (fun ω => Z ω i) (fun ω => Z ω j) P = 0 :=
+      (hindep.indepFun hij).covariance_eq_zero
+        (hZ_coordinate_memLp i) (hZ_coordinate_memLp j)
+    calc
+      Gamma i j =
+          _root_.ProbabilityTheory.covarianceBilinDual (P.map Z)
+            (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+              (Coordinate := Coordinate) i)
+            (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+              (Coordinate := Coordinate) j) := (hZ_table i j).symm
+      _ = _root_.ProbabilityTheory.covariance
+            (fun ω => Z ω i) (fun ω => Z ω j) P := by
+          rw [durrett2019_theorem_3_10_7_covarianceBilinDual_eval_eq_coordinateCovariance
+            (μ := P) (Y := Z) hZ_memLp hZ_gaussian.aemeasurable i j]
+      _ = 0 := hcov_zero
+  · exact
+      durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_covarianceBilinDualTable
+        (P := P) (Z := Z) hZ_gaussian hZ_memLp Gamma hZ_table
+
+/--
 The covariance bilinear form of Durrett's projection is the double sum of the
 coordinate covariance table.
 -/

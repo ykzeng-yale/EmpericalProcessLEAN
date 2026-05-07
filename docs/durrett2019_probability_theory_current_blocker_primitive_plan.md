@@ -4,31 +4,24 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V10
+## Live In-Thread Goal Prompt V12
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Current lane only: Section 3.10 finite-dimensional limit theory
-in `StatInference/ProbabilityTheory/Multivariate.lean`.
+synced `main`.  Current frontier only: Section 3.10 finite-dimensional limit
+theory in `StatInference/ProbabilityTheory/Multivariate.lean`.
 
-Preserve the compiled Durrett Theorem 3.10.7 source chain:
-theta-projection Gaussian display, finite-coordinate dual representation,
-all-dual mean/covariance handoffs, coordinatewise-zero-mean to theta-mean
-handoff, covariance-table handoff from scalar coordinate covariance, centered
-product-to-covariance handoff, vector Gaussian CLT wrappers from literal
-coordinate covariance/product assumptions, common-vector-law
-coordinate-covariance wrapper, and canonical i.i.d. product-sample endpoints
-from scalar coordinate covariance or centered products.
+Treat the compiled Chapter 2 / early Chapter 3 support and the compiled
+Theorem 3.10.7 stack, including canonical product-sample CLT endpoints and
+Gaussian-coordinate independence wrappers, as closed dependencies.
 
-Next packet only: move to the Durrett Section 3.10 Gaussian-coordinate
-independence criterion from the source anchor: if a finite-coordinate vector has
-a multivariate Gaussian law and covariance table `Gamma`, prove/package that
-zero off-diagonal entries imply independence of the coordinate random
-variables, reusing mathlib `HasGaussianLaw.iIndepFun_of_covariance_eq_zero`.
-Do not revisit CLT/canonical-product plumbing unless this independence wrapper
-exposes a missing covariance-table lemma.
+Next theorem-sized packet: Durrett source item 3.10.8, the finite-coordinate
+multivariate Gaussian characterization by one-dimensional linear combinations.
+Search and reuse existing `HasGaussianLaw`, characteristic-function, and local
+theta-projection APIs first; add only the narrow wrapper or bridge needed for
+3.10.8.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -514,6 +507,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V10` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V12` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
