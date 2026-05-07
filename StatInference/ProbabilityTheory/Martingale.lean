@@ -280,6 +280,19 @@ theorem durrett2019_example_4_2_1_linearRandomWalk_integrable
   exact integrable_finsetSum _ fun k _hk => hξ_int (k + 1)
 
 /--
+Durrett 2019, Example 4.2.1: finite random-walk sums are square-integrable
+when each increment is square-integrable.
+-/
+theorem durrett2019_example_4_2_1_linearRandomWalk_memLp_two
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsFiniteMeasure μ]
+    (s0 : ℝ) {ξ : ℕ -> Ω -> ℝ} (hξ_memLp_two : ∀ n, MemLp (ξ n) 2 μ) :
+    ∀ n, MemLp (durrett2019_example_4_2_1_linearRandomWalk s0 ξ n) 2 μ := by
+  intro n
+  simpa [durrett2019_example_4_2_1_linearRandomWalk] using
+    (memLp_const (α := Ω) (μ := μ) s0).add
+      (memLp_finsetSum (Finset.range n) fun k _hk => hξ_memLp_two (k + 1))
+
+/--
 Durrett 2019, Example 4.2.1: centered increments are strongly measurable.
 -/
 theorem durrett2019_example_4_2_1_centeredIncrement_stronglyMeasurable
@@ -577,6 +590,46 @@ theorem durrett2019_example_4_2_2_linearRandomWalk_square_succ
   ring_nf
 
 /--
+Durrett 2019, Example 4.2.2: the square of an independent future increment is
+independent of the natural filtration of the past, so its conditional
+expectation is its ordinary expectation.
+-/
+theorem durrett2019_example_4_2_2_incrementSquare_condExp_natural_ae_eq_integral_of_iIndepFun
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {ξ : ℕ -> Ω -> ℝ}
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n))
+    (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ μ) (n : ℕ) :
+    μ[(fun ω => ξ (n + 1) ω ^ 2) | Filtration.natural ξ hξ_sm n] =ᵐ[μ]
+      fun _ => ∫ ω, ξ (n + 1) ω ^ 2 ∂μ := by
+  have hbase_indep :
+      _root_.ProbabilityTheory.Indep
+        (MeasurableSpace.comap (ξ (n + 1)) (borel ℝ))
+        (Filtration.natural ξ hξ_sm n) μ :=
+    _root_.ProbabilityTheory.iIndepFun.indep_comap_natural_of_lt
+      hξ_sm hξ_indep n.lt_succ_self
+  have hsq_comap_le :
+      MeasurableSpace.comap (fun ω : Ω => ξ (n + 1) ω ^ 2) (borel ℝ) ≤
+        MeasurableSpace.comap (ξ (n + 1)) (borel ℝ) := by
+    rw [show (fun ω : Ω => ξ (n + 1) ω ^ 2) =
+        (fun x : ℝ => x ^ 2) ∘ ξ (n + 1) by rfl]
+    rw [← MeasurableSpace.comap_comp]
+    exact MeasurableSpace.comap_mono (measurable_id.pow_const 2).comap_le
+  have hsq_indep :
+      _root_.ProbabilityTheory.Indep
+        (MeasurableSpace.comap (fun ω : Ω => ξ (n + 1) ω ^ 2) (borel ℝ))
+        (Filtration.natural ξ hξ_sm n) μ :=
+    _root_.ProbabilityTheory.indep_of_indep_of_le_left hbase_indep hsq_comap_le
+  simpa using
+    (_root_.MeasureTheory.condExp_indep_eq (μ := μ)
+      (m₁ := MeasurableSpace.comap (fun ω : Ω => ξ (n + 1) ω ^ 2) (borel ℝ))
+      (m₂ := Filtration.natural ξ hξ_sm n)
+      (f := fun ω : Ω => ξ (n + 1) ω ^ 2)
+      (by exact (hξ_sm (n + 1)).pow 2 |>.measurable.comap_le)
+      (Filtration.le _ _)
+      (comap_measurable (fun ω : Ω => ξ (n + 1) ω ^ 2)).stronglyMeasurable
+      hsq_indep)
+
+/--
 Durrett 2019, Example 4.2.2, source conditional-expectation calculation.
 
 This packages the textbook computation after expanding
@@ -705,6 +758,54 @@ theorem durrett2019_example_4_2_2_quadraticMartingaleProcess_martingale_of_sourc
   exact durrett2019_example_4_2_2_quadraticMartingaleProcess_condExp_succ_eq
     (μ := μ) (ℱ := ℱ) hS_adapted hS_sq_int heta_int heta_sq_int
     hcross_int hStepSq heta_cond_zero heta_sq_cond_sigma n
+
+/--
+Durrett 2019, Example 4.2.2: the natural-filtration quadratic martingale for
+independent mean-zero increments with common second moment `σ^2`.
+-/
+theorem durrett2019_example_4_2_2_linearRandomWalk_quadraticMartingale_of_iIndepFun_zeroMean_commonSecondMoment
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    (s0 sigmaSq : ℝ) {ξ : ℕ -> Ω -> ℝ}
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n))
+    (hξ_memLp_two : ∀ n, MemLp (ξ n) 2 μ)
+    (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ μ)
+    (hξ_mean_zero : ∀ n, (∫ ω, ξ n ω ∂μ) = 0)
+    (hξ_second_moment : ∀ n, (∫ ω, ξ n ω ^ 2 ∂μ) = sigmaSq) :
+    Martingale
+      (durrett2019_example_4_2_2_quadraticMartingaleProcess sigmaSq
+        (durrett2019_example_4_2_1_linearRandomWalk s0 ξ))
+      (Filtration.natural ξ hξ_sm) μ := by
+  have hξ_int : ∀ n, Integrable (ξ n) μ :=
+    fun n => (hξ_memLp_two n).integrable one_le_two
+  have hS_memLp_two :
+      ∀ n,
+        MemLp (durrett2019_example_4_2_1_linearRandomWalk s0 ξ n) 2 μ :=
+    durrett2019_example_4_2_1_linearRandomWalk_memLp_two
+      (μ := μ) (s0 := s0) hξ_memLp_two
+  refine durrett2019_example_4_2_2_quadraticMartingaleProcess_martingale_of_source
+    (S := durrett2019_example_4_2_1_linearRandomWalk s0 ξ) (eta := ξ)
+    (ℱ := Filtration.natural ξ hξ_sm)
+    (durrett2019_example_4_2_1_linearRandomWalk_stronglyAdapted_natural
+      (s0 := s0) hξ_sm)
+    (fun n => (hS_memLp_two n).integrable_sq)
+    hξ_int
+    (fun n => (hξ_memLp_two n).integrable_sq)
+    (fun n => MemLp.integrable_mul (hS_memLp_two n) (hξ_memLp_two (n + 1)))
+    (fun n =>
+      EventuallyEq.of_eq
+        (durrett2019_example_4_2_2_linearRandomWalk_square_succ s0 ξ n))
+    ?_
+    ?_
+  · intro n
+    filter_upwards
+      [durrett2019_example_4_2_1_increment_condExp_natural_ae_eq_integral_of_iIndepFun
+        (μ := μ) hξ_sm hξ_indep n] with ω hω
+    simpa [hξ_mean_zero (n + 1)] using hω
+  · intro n
+    filter_upwards
+      [durrett2019_example_4_2_2_incrementSquare_condExp_natural_ae_eq_integral_of_iIndepFun
+        (μ := μ) hξ_sm hξ_indep n] with ω hω
+    simpa [hξ_second_moment (n + 1)] using hω
 
 end ProbabilityTheory
 end StatInference

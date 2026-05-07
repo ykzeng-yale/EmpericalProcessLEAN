@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V22`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V23`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -403,10 +403,10 @@ Next packet:
   now compile and should be treated as closed support.  Chapter 4.2
   definition-level martingale wrappers and Example 4.2.1 linear random-walk
   martingale/supermartingale/submartingale and centered-display wrappers now
-  compile.  The Example 4.2.2 quadratic martingale source bridge now compiles;
-  its natural-random-walk instantiation remains the next target if the square
-  side conditions are direct.  Theorem 4.1.16 remains deferred unless a direct
-  kernel API appears.
+  compile.  The Example 4.2.2 quadratic martingale source bridge and its
+  natural-random-walk instantiation now compile.  The next active target is
+  Example 4.2.3 product/exponential martingales.  Theorem 4.1.16 remains
+  deferred unless a direct kernel API appears.
 
 Support-only dependencies:
 
@@ -443,7 +443,8 @@ Source anchors:
   Theorem 4.1.13 near line 4183, and Theorem 4.1.14 near line 4196.
 - The same Markdown chunk contains Chapter 4.2 martingales near line 4348,
   Example 4.2.1 linear martingales near line 4358, and Example 4.2.2 quadratic
-  martingales near line 4378.
+  martingales near line 4378, followed by Example 4.2.3 exponential
+  martingales.
 
 Initial Lean reuse anchors:
 
