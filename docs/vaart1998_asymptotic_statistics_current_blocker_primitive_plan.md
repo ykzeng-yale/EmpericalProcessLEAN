@@ -624,22 +624,30 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_on_event_with_probability_tending_to_one`.
 199. Finite-coordinate target-localization estimator endpoint:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_targetProbabilityLocalization_eq_on_target_real`.
+200. Canonical finite-coordinate selected estimator with fixed fallback:
+   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator`.
+201. Measurability of the canonical selected estimator:
+   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_measurable_real`.
+202. Equality on the inverse-function-theorem target event:
+   `vaart1998_finiteCoordinateLocalInverseSelectedEstimator_eq_on_target_real`.
+203. Finite-coordinate selected-estimator Theorem 4.1 endpoint:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_selectedEstimator_delta_method_of_targetProbabilityLocalization_real`.
 
-Latest remote base before this packet: `073fac8`.
-Latest pushed Vaart packet before this packet: `073fac8`
-(`Add Vaart finite-coordinate estimator equivalence wrapper`).
+Latest remote base before this packet: `6a599be`.
+Latest pushed Vaart packet before this packet: `6a599be`
+(`Add Vaart target event estimator bridge`).
 
-The current theorem-sized packet turns the previous equality-with-probability
-wrapper into a source-shaped event certificate.  If a selected estimator agrees
-with the local-inverse candidate on the inverse-function-theorem target event,
-and that target event has probability tending to one, then the selected
-estimator inherits the same `sqrt n` weak limit and the local moment equation is
-solved with probability tending to one.
+The current theorem-sized packet constructs the canonical selected moment
+estimator: use the local inverse on the inverse-function-theorem target event
+and a fixed fallback outside it.  It proves measurability, equality on target,
+and the selected estimator's `sqrt n` weak limit from the target-localization
+certificate.
 
-The next aggressive packet should construct a measurable selected estimator
-from the local inverse on the target event and a fixed fallback outside it, then
-prove the required equality-on-target field.  Do not use probability tending to
-one as a substitute for per-`n` a.e. target membership.
+The next aggressive packet should reduce the remaining global
+`Measurable (he.localInverse e De theta0)` assumption by building the selected
+estimator from local target measurability or a measurable extension of the
+open-partial-homeomorphism inverse.  Do not use probability tending to one as a
+substitute for per-`n` a.e. target membership.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

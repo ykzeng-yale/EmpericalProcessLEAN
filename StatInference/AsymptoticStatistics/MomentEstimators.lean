@@ -4206,6 +4206,152 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimat
           exact hThetaHat_eq_on_target n hω)
 
 /--
+Selected finite-coordinate moment estimator: use the local inverse on the
+inverse-function-theorem target event and a fixed fallback outside the event.
+-/
+noncomputable def vaart1998_finiteCoordinateLocalInverseSelectedEstimator
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (fallback : Θ) (n : ℕ) (ω : Ω) :
+    Θ :=
+  by
+    classical
+    exact
+      if vaart1998_finiteCoordinateEmpiricalMoment X n ω ∈
+          (he.toOpenPartialHomeomorph e).target then
+        he.localInverse e De theta0 (vaart1998_finiteCoordinateEmpiricalMoment X n ω)
+      else
+        fallback
+
+/--
+The selected finite-coordinate local-inverse estimator is measurable whenever
+the local inverse and coordinates are measurable.
+-/
+theorem vaart1998_finiteCoordinateLocalInverseSelectedEstimator_measurable_real
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (hInv_meas : Measurable (he.localInverse e De theta0))
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (fallback : Θ) :
+    ∀ n : ℕ,
+      Measurable
+        (vaart1998_finiteCoordinateLocalInverseSelectedEstimator
+          e De he X fallback n) := by
+  intro n
+  classical
+  have htarget :
+      MeasurableSet
+        {ω : Ω |
+          vaart1998_finiteCoordinateEmpiricalMoment X n ω ∈
+            (he.toOpenPartialHomeomorph e).target} :=
+    (vaart1998_finiteCoordinate_empiricalMoment_measurable_real X hX_meas n)
+      (he.toOpenPartialHomeomorph e).open_target.measurableSet
+  have hlocal :
+      Measurable
+        (fun ω : Ω =>
+          he.localInverse e De theta0
+            (vaart1998_finiteCoordinateEmpiricalMoment X n ω)) :=
+    hInv_meas.comp
+      (vaart1998_finiteCoordinate_empiricalMoment_measurable_real X hX_meas n)
+  simpa [vaart1998_finiteCoordinateLocalInverseSelectedEstimator] using
+    Measurable.ite htarget hlocal measurable_const
+
+/--
+On the target event, the selected finite-coordinate estimator is exactly the
+local-inverse candidate.
+-/
+theorem vaart1998_finiteCoordinateLocalInverseSelectedEstimator_eq_on_target_real
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (fallback : Θ) :
+    ∀ n : ℕ, ∀ ⦃ω : Ω⦄,
+      vaart1998_finiteCoordinateEmpiricalMoment X n ω ∈
+          (he.toOpenPartialHomeomorph e).target ->
+        vaart1998_finiteCoordinateLocalInverseSelectedEstimator
+            e De he X fallback n ω =
+          he.localInverse e De theta0
+            (vaart1998_finiteCoordinateEmpiricalMoment X n ω) := by
+  intro n ω htarget
+  simp [vaart1998_finiteCoordinateLocalInverseSelectedEstimator, htarget]
+
+/--
+Finite-coordinate Theorem 4.1 endpoint for the canonical selected estimator
+with a fixed fallback outside the inverse-function-theorem target event.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_selectedEstimator_delta_method_of_targetProbabilityLocalization_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (hInv_meas : Measurable (he.localInverse e De theta0))
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (targetProbability :
+      Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+        Coordinate Ω Θ P e theta0 De he X)
+    (fallback : Θ)
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (vaart1998_finiteCoordinateLocalInverseSelectedEstimator
+              e De he X fallback n ω - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q :=
+  vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_targetProbabilityLocalization_eq_on_target_real
+    (P := P) (Q := Q) e De he hInv_meas X hX_meas targetProbability
+    (thetaHat :=
+      vaart1998_finiteCoordinateLocalInverseSelectedEstimator
+        e De he X fallback)
+    (vaart1998_finiteCoordinateLocalInverseSelectedEstimator_measurable_real
+      e De he hInv_meas X hX_meas fallback)
+    (vaart1998_finiteCoordinateLocalInverseSelectedEstimator_eq_on_target_real
+      e De he X fallback)
+    hCLT
+
+/--
 Measurable-coordinate Theorem 4.1 wrapper deriving composed local-inverse
 a.e.-measurability from a.e. localization in the open moment range.
 -/
