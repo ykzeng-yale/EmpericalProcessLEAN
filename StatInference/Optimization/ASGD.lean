@@ -2298,6 +2298,143 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_mu
     ← Complex.exp_add]
 
 /--
+The row product of inverse compensation factors is the exponential of the
+negative scaled averaged conditional variance.  This is the deterministic
+algebra behind the remaining variance-convergence comparison in Chewi's
+bounded martingale characteristic-function proof.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_eq_exp_averageVariance
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (ω : Ω) :
+    (∏ k ∈ Finset.range N,
+        S.projectedInverseCompensationFactor L N t k ω) =
+      Complex.exp
+        (((-(t ^ 2 *
+          chewi127AverageConditionalVariance S.covariance.Xi N ω L / 2) : ℝ) : ℂ)) := by
+  by_cases hN : N = 0
+  · subst N
+    simp [chewi127AverageConditionalVariance, chewi127AverageConditionalCovariance]
+  · have hN_pos_nat : 0 < N := Nat.pos_of_ne_zero hN
+    have hN_real_pos : 0 < (N : ℝ) := by exact_mod_cast hN_pos_nat
+    have hsqrt_sq : (Real.sqrt (N : ℝ)) ^ 2 = (N : ℝ) :=
+      Real.sq_sqrt hN_real_pos.le
+    have hsqrt_ne : Real.sqrt (N : ℝ) ≠ 0 :=
+      ne_of_gt (Real.sqrt_pos.2 hN_real_pos)
+    have hinv_sqrt_sq : ((Real.sqrt (N : ℝ))⁻¹) ^ 2 = (N : ℝ)⁻¹ := by
+      field_simp [hsqrt_ne]
+      nlinarith [hsqrt_sq]
+    let target : ℝ :=
+      -(t ^ 2 * chewi127AverageConditionalVariance S.covariance.Xi N ω L / 2)
+    let term : ℕ -> ℝ := fun k =>
+      ((t * (Real.sqrt (N : ℝ))⁻¹) ^ 2 *
+        S.covariance.Xi (k + 1) ω L L) / 2
+    change (∏ k ∈ Finset.range N,
+        S.projectedInverseCompensationFactor L N t k ω) =
+      Complex.exp (target : ℂ)
+    have hsum_arg_real :
+        (∑ k ∈ Finset.range N, -term k) =
+          target := by
+      rw [Finset.sum_neg_distrib, ← Finset.sum_div]
+      simp [target, chewi127AverageConditionalVariance,
+        chewi127AverageConditionalCovariance]
+      rw [mul_pow, hinv_sqrt_sq]
+      calc
+        (∑ x ∈ Finset.range N,
+            t ^ 2 * (N : ℝ)⁻¹ * S.covariance.Xi (x + 1) ω L L)
+            = ∑ x ∈ Finset.range N,
+                t ^ 2 * ((N : ℝ)⁻¹ * S.covariance.Xi (x + 1) ω L L) := by
+              apply Finset.sum_congr rfl
+              intro x _hx
+              ring
+        _ = t ^ 2 *
+              ((N : ℝ)⁻¹ *
+                ∑ x ∈ Finset.range N,
+                  S.covariance.Xi (x + 1) ω L L) := by
+              rw [Finset.mul_sum]
+              rw [Finset.mul_sum]
+    have hsum_arg :
+        (∑ k ∈ Finset.range N, -((term k : ℝ) : ℂ)) =
+          (target : ℂ) := by
+      calc
+        (∑ k ∈ Finset.range N, -((term k : ℝ) : ℂ))
+            = ((∑ k ∈ Finset.range N, -term k : ℝ) : ℂ) := by
+              simp
+        _ = (target : ℂ) := by
+              rw [hsum_arg_real]
+    calc
+      (∏ k ∈ Finset.range N,
+          S.projectedInverseCompensationFactor L N t k ω)
+          = ∏ k ∈ Finset.range N,
+              Complex.exp (-((term k : ℝ) : ℂ)) := by
+            simp [Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor,
+              term]
+      _ = Complex.exp
+            (∑ k ∈ Finset.range N, -((term k : ℝ) : ℂ)) := by
+            rw [Complex.exp_sum]
+      _ = Complex.exp
+            (target : ℂ) := by
+            rw [hsum_arg]
+
+/--
+Integral form of `projectedInverseCompensationProduct_eq_exp_averageVariance`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_integral_eq_exp_averageVariance
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) :
+    (∫ ω, ∏ k ∈ Finset.range N,
+        S.projectedInverseCompensationFactor L N t k ω ∂P) =
+      ∫ ω,
+        Complex.exp
+          (((-(t ^ 2 *
+            chewi127AverageConditionalVariance S.covariance.Xi N ω L / 2) : ℝ) : ℂ)) ∂P := by
+  refine integral_congr_ae <| ae_of_all P fun ω => ?_
+  exact S.projectedInverseCompensationProduct_eq_exp_averageVariance L N t ω
+
+/--
+Reduction of inverse-compensation product convergence to the bounded-
+continuous expectation limit for the averaged conditional variance.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_integral
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (haverageVariance_integral :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            Complex.exp
+              (((-(t ^ 2 *
+                chewi127AverageConditionalVariance S.covariance.Xi N ω L / 2) : ℝ) : ℂ)) ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (((-(t ^ 2 * S.covariance_limit.S_infty L L / 2) : ℝ) : ℂ))))) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω, ∏ k ∈ Finset.range N,
+          S.projectedInverseCompensationFactor L N t k ω ∂P)
+      atTop
+      (𝓝 (Complex.exp
+        (((-(t ^ 2 * S.covariance_limit.S_infty L L / 2) : ℝ) : ℂ)))) :=
+  haverageVariance_integral.congr'
+    (Eventually.of_forall fun N =>
+      (S.projectedInverseCompensationProduct_integral_eq_exp_averageVariance
+        L N t).symm)
+
+/--
 The normalized model factor is algebraically the Taylor model itself.  Keeping
 both names is useful: `projectedTaylorModelFactor` is the one-step Taylor
 output, while `projectedNormalizedTaylorFactor` is the product factor used in

@@ -173,6 +173,9 @@ plus the normalized compensated-product bridge:
 `projectedInverseCompensationFactor`,
 `projectedNormalizedTaylorFactor`,
 `projectedInverseCompensationFactor_mul_compensationFactor`,
+`projectedInverseCompensationProduct_eq_exp_averageVariance`,
+`projectedInverseCompensationProduct_integral_eq_exp_averageVariance`,
+`projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_integral`,
 `projectedNormalizedTaylorFactor_eq_taylorModel`,
 `projected_charFun_normalized_taylor_step_mul_scaled`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
@@ -182,11 +185,12 @@ Next theorem packet: prove the finite martingale tower representation into the
 normalized product model required by
 `projected_charFun_tendsto_exp_of_normalized_product_model`.  The one-step
 normalized peel is already compiled; do not prove another compensation
-algebra wrapper.  In parallel or immediately after, prove the inverse-
-compensation variance/convergence comparison from
-`n⁻¹ ∑ Xi_k -> S_infty` in probability to the Gaussian
-`exp (-(S_infty L L) t^2 / 2)` characteristic-function limit, then wire both
-pieces into the existing Theorem 12.7/12.3 certificate constructors.
+algebra wrapper.  In parallel or immediately after, prove the remaining
+bounded-continuous expectation limit for
+`exp (-(t^2/2) * chewi127AverageConditionalVariance ...)` from
+`n⁻¹ ∑ Xi_k -> S_infty` in probability; the inverse-compensation product
+algebra and integral reduction are now compiled.  Then wire both pieces into
+the existing Theorem 12.7/12.3 certificate constructors.
 
 Reuse boundary: do not redo scaled-sum definitions, Cramér-Wold plumbing,
 bounded-tail/Lindeberg, Taylor expansion, conditional mean-zero/quadratic
