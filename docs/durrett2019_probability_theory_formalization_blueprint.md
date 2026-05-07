@@ -207,8 +207,11 @@ Compiled first source wrappers:
   `cdf_leftLim_sub_lt_of_subdivision_endpoint_center_cover_cell`,
   `SuppliedRealMiddleCDFPartitionChain.of_monotone_subdivision_prefix_endpoint_center_cover_to_index`,
   `SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_endpoint_center_cover`,
+  `SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_center_mem_cover`,
   and
-  `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_endpoint_center_cover`.
+  `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_endpoint_center_cover`;
+  the Durrett center-range wrapper is
+  `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_center_mem_cover`.
 - Durrett Theorem 2.4.9 arbitrary-law atom-aware local ingredients:
   `exists_realOpenInterval_diff_singleton_measureReal_lt`,
   `exists_finset_realOpenInterval_punctured_cover_Icc_measureReal_lt`,

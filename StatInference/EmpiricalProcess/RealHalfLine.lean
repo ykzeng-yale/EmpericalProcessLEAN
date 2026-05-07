@@ -1422,6 +1422,37 @@ theorem SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subd
   simpa [hm_eq] using hchain
 
 /--
+A monotone subdivision whose values include every selected center consumes the
+punctured finite-cover assignments directly.
+
+This is the convenient target for the next insertion theorem: once all finite
+cover centers are inserted into the monotone subdivision, each cell can reuse
+the corresponding center witness from the global range hypothesis.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_center_mem_cover
+    {μ : Measure ℝ} [IsProbabilityMeasure μ]
+    {epsilon a b : ℝ} {t : ℕ -> Set.Icc a b}
+    (ht0 : (t 0 : ℝ) = a)
+    (hmono : Monotone fun n => (t n : ℝ))
+    (heventually : ∃ m, ∀ n ≥ m, (t n : ℝ) = b)
+    (hab : a < b)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hcenter : ∀ x ∈ centers, ∃ k : ℕ, (t k : ℝ) = x)
+    (hrefine : ∀ n,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        μ.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon a b := by
+  refine
+    SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_endpoint_center_cover
+      (centers := centers) (l := l) (r := r) ht0 hmono heventually hab ?_
+  intro n
+  rcases hrefine n with ⟨x, hx, hclosed, hsmall⟩
+  rcases hcenter x hx with ⟨k, hk⟩
+  exact ⟨x, hx, k, hk, hclosed, hsmall⟩
+
+/--
 Every finite small-increment cutpoint chain supplies a bounded middle CDF
 partition.
 -/

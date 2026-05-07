@@ -890,6 +890,31 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_endpoint
     ht0 (fun i j hij => by simpa using hmono hij) heventually hab hrefine
 
 /--
+Durrett 2019, Theorem 2.4.9 center-range monotone-subdivision package.
+
+If every selected finite-cover center occurs somewhere in the monotone
+subdivision, then the endpoint-center monotone-subdivision handoff can consume
+ordinary cell refinement assignments into punctured cover neighborhoods.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_center_mem_cover
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon a b : ℝ} {t : ℕ -> Set.Icc a b}
+    (ht0 : (t 0 : ℝ) = a)
+    (hmono : Monotone t)
+    (heventually : ∃ m, ∀ n ≥ m, (t n : ℝ) = b)
+    (hab : a < b)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hcenter : ∀ x ∈ centers, ∃ k : ℕ, (t k : ℝ) = x)
+    (hrefine : ∀ n,
+      ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x) \ {x}) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon a b :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_center_mem_cover
+    ht0 (fun i j hij => by simpa using hmono hij) heventually hab hcenter hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9 atom-aware local grid ingredient.
 
 For locally finite real measures, every point has an open neighborhood whose

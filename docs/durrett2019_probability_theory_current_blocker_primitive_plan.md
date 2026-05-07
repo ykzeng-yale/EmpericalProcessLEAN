@@ -97,6 +97,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`
 - `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_endpoint_center_cover`
+- `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_center_mem_cover`
 - `durrett2019_theorem_2_4_9_punctured_small_open_interval`
 - `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`
 - `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`
@@ -152,6 +153,7 @@ compile, via
 `durrett2019_theorem_2_4_9_cutpointChain_of_extracted_subdivision_adjacencies`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision`,
 `durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_endpoint_center_cover`,
+`durrett2019_theorem_2_4_9_cutpointChain_of_monotone_subdivision_center_mem_cover`,
 `durrett2019_theorem_2_4_9_punctured_small_open_interval`,
 `durrett2019_theorem_2_4_9_finite_punctured_open_interval_cover`,
 `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`,
@@ -213,10 +215,14 @@ one of the strict grid endpoints.  The monotone-subdivision analogues
 `cdf_leftLim_sub_lt_of_subdivision_endpoint_center_cover_cell`, and
 `SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_endpoint_center_cover`
 now consume mathlib-shaped monotone subdivisions directly, provided each
-selected center occurs somewhere among the subdivision values.  The fully
-arbitrary distribution route still needs the finite ordering/splitting theorem
-that inserts the selected centers into the monotone subdivision and makes each
-closed adjacent cell refine a selected finite cover interval.
+selected center occurs somewhere among the subdivision values.  The convenience
+bridge
+`SuppliedRealMiddleCDFPartitionChain.of_monotone_eventually_constant_subdivision_center_mem_cover`
+reduces the per-cell witness to the global statement that every finite cover
+center occurs in the subdivision range.  The fully arbitrary distribution route
+still needs the finite ordering/splitting theorem that inserts all selected
+centers into the monotone subdivision and makes each closed adjacent cell
+refine a selected finite cover interval.
 The supplied-grid and middle-partition-to-GC handoffs already compile.
 
 Parallel target: Chapter 2.1 exact iid/product notation refinements only if
