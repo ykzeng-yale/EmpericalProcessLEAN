@@ -708,6 +708,23 @@ theorem vaart1998_finiteCoordinate_localInverse_comp_empiricalMoment_aemeasurabl
       (hEmpiricalMoment := hEmpiricalMoment) (hTarget := hTarget n)
 
 /--
+Source-shaped certificate that the finite-coordinate empirical moments lie
+a.e. in the inverse-function-theorem local target.
+-/
+structure Vaart1998FiniteCoordinateEmpiricalTargetLocalizationCertificate
+    (Coordinate Ω Θ : Type*) [Fintype Coordinate] [MeasurableSpace Ω]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    (P : Measure Ω)
+    (e : Θ -> Coordinate -> ℝ) (theta0 : Θ)
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ) where
+  empiricalMoment_mem_target : ∀ n : ℕ,
+    ∀ᵐ ω ∂P,
+      vaart1998_finiteCoordinateEmpiricalMoment X n ω ∈
+        (he.toOpenPartialHomeomorph e).target
+
+/--
 Source-shaped certificate for the empirical local-inverse measurability field
 used by the finite-coordinate Vaart Theorem 4.1 endpoints.
 -/
@@ -783,6 +800,35 @@ theorem Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.o
     vaart1998_finiteCoordinate_localInverse_comp_empiricalMoment_aemeasurable_of_ae_mem_open_momentRange_real
       (P := P) (e := e) (theta0 := theta0) (De := De) (he := he)
       (X := X) (hX_meas := hX_meas) (hTarget := hTarget)
+
+/--
+Build the empirical local-inverse measurability certificate from the named
+empirical target-localization certificate.
+-/
+theorem Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_targetLocalization_real
+    {Coordinate Ω Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [BorelSpace Θ]
+    {P : Measure Ω}
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (targetLocalization :
+      Vaart1998FiniteCoordinateEmpiricalTargetLocalizationCertificate
+        Coordinate Ω Θ P e theta0 De he X) :
+    Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate
+      Coordinate Ω Θ P e theta0 De he X :=
+  Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_ae_mem_open_momentRange_real
+    (P := P) (e := e) (theta0 := theta0) (De := De) (he := he)
+    (X := X) (hX_meas := hX_meas)
+    (hTarget := targetLocalization.empiricalMoment_mem_target)
 
 /--
 Law of the scaled centered finite-coordinate empirical moment vector.
@@ -6075,6 +6121,88 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gauss
     (hZ_covarianceν := hZ_covarianceν)
     (heta0ν := heta0ν)
     (hInvEmpirical := localization.empiricalLocalInverse_aemeasurable)
+
+/--
+Canonical iid product-space Theorem 4.1 covariance-table endpoint using the
+finite-coordinate vector-law source certificate and a named empirical
+target-localization certificate.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_targetLocalization_real
+    {I Coordinate Ω' Θ : Type*} [Fintype I] [Fintype Coordinate]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    (source : Vaart1998FiniteCoordinateVectorLawSource Coordinate ν)
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (targetLocalization :
+      Vaart1998FiniteCoordinateEmpiricalTargetLocalizationCertificate
+        Coordinate (ℕ -> Coordinate -> ℝ) Θ
+        (Measure.infinitePi (fun _ : ℕ => ν)) e theta0 De he
+        (fun coordinate i sample => sample i coordinate))
+    (coordinates : I -> StrongDual ℝ Θ) {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hZ_gaussian : HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean_zero : (Q.map Z)[id] = 0)
+    (hZ_covarianceν : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        Var[L; ν])
+    (heta0ν :
+      e theta0 =
+        fun coordinate : Coordinate =>
+          ∫ sampleVector, sampleVector coordinate ∂ν) :
+    (Tendsto (fun n : ℕ =>
+      (Measure.infinitePi (fun _ : ℕ => ν)).real
+        {sample : ℕ -> Coordinate -> ℝ |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (vaart1998_finiteCoordinateEmpiricalMoment
+                (fun coordinate i sample => sample i coordinate) n sample)) =
+            vaart1998_finiteCoordinateEmpiricalMoment
+              (fun coordinate i sample => sample i coordinate) n sample})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) sample =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (vaart1998_finiteCoordinateEmpiricalMoment
+                (fun coordinate i sample => sample i coordinate) n sample) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => Measure.infinitePi (fun _ : ℕ => ν)) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q ∧
+    (∀ i j : I,
+      vaart1998_covarianceTable coordinates
+          (fun L K =>
+            ProbabilityTheory.covarianceBilinDual
+              (Q.map fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+              L K) i j =
+        vaart1998_covarianceTable
+          (fun k => (coordinates k).comp (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ))
+          (fun L K => ProbabilityTheory.covarianceBilinDual ν L K) i j) :=
+  vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_localInverseCertificate_real
+    (source := source) (e := e) (theta0 := theta0) (De := De) (he := he)
+    (localization :=
+      Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_targetLocalization_real
+        (P := Measure.infinitePi (fun _ : ℕ => ν))
+        (e := e) (theta0 := theta0) (De := De) (he := he)
+        (X := fun coordinate i sample => sample i coordinate)
+        (hX_meas := source.canonicalCoordinateSource.2)
+        targetLocalization)
+    (coordinates := coordinates) (Z := Z)
+    (hZ_aemeas := hZ_aemeas)
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (hZ_mean_zero := hZ_mean_zero)
+    (hZ_covarianceν := hZ_covarianceν)
+    (heta0ν := heta0ν)
 
 /--
 Canonical iid product-space Theorem 4.1 covariance-table endpoint using the

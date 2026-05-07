@@ -347,6 +347,13 @@ Initial modules:
   localization.  The canonical endpoint
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_localInverseCertificate_real`
   consumes that certificate directly.
+  The named target-localization certificate
+  `Vaart1998FiniteCoordinateEmpiricalTargetLocalizationCertificate` now
+  packages a.e. membership of empirical moments in the local inverse target;
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_targetLocalization_real`
+  bridges it into the local-inverse measurability certificate, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_targetLocalization_real`
+  consumes it at the canonical source boundary.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

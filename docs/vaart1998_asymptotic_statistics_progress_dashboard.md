@@ -383,10 +383,18 @@ Chapter 4 handoff:
 - Canonical local-inverse-certificate endpoint:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_localInverseCertificate_real`
   consumes the named certificate at the canonical source boundary.
+- Named target-localization certificate:
+  `Vaart1998FiniteCoordinateEmpiricalTargetLocalizationCertificate` packages
+  the a.e. membership of empirical moments in the inverse-function-theorem
+  target.
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_targetLocalization_real`
+  bridges it into the local-inverse measurability certificate, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_targetLocalization_real`
+  consumes it at the canonical source boundary.
 
-Latest remote base before this packet: `1839670`.  Latest pushed Vaart packet
-before this packet: `1839670`
-(`Add Vaart measurable local inverse source endpoint`).
+Latest remote base before this packet: `26fefe9`.  Latest pushed Vaart packet
+before this packet: `232407b`
+(`Add Vaart empirical local inverse certificate`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -399,11 +407,10 @@ for this packet is the focused Lean check and targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled named empirical local-inverse
-certificate route.  The next useful proof step is to make the target
-localization certificate easier to instantiate from the actual local-range
-existence proof, or prove a measurable extension of the local inverse if the
-mathlib inverse-function API supports it.
+Continue Vaart Chapter 4.1 from the compiled named target-localization
+certificate route.  The next useful proof step is to derive that certificate
+from the local-range/existence probability machinery where possible, or prove a
+measurable extension of the local inverse if mathlib supports it.
 
 ## Reuse Dependencies
 
