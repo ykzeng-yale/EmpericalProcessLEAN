@@ -618,19 +618,27 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_with_probability_tending_to_one`.
 196. Finite-coordinate measurable-estimator asymptotic-equivalence wrapper:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_eq_with_probability_tending_to_one_real`.
+197. Chapter 2 high-probability event monotonicity helper:
+   `vaart1998_probability_tending_to_one_of_subset`.
+198. Chapter 4 event-certificate measurable-estimator delta wrapper:
+   `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_on_event_with_probability_tending_to_one`.
+199. Finite-coordinate target-localization estimator endpoint:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_targetProbabilityLocalization_eq_on_target_real`.
 
-Latest remote base before this packet: `61b042a`.
-Latest pushed Vaart packet before this packet: `030a5e8`
-(`Add Vaart estimator equivalence delta wrapper`).
+Latest remote base before this packet: `073fac8`.
+Latest pushed Vaart packet before this packet: `073fac8`
+(`Add Vaart finite-coordinate estimator equivalence wrapper`).
 
-The current theorem-sized packet specializes the measurable-estimator
-asymptotic-equivalence wrapper to finite-coordinate Theorem 4.1 source routes.
-It returns the local-solving probability conclusion and the actual estimator's
-`sqrt n` delta-method limit.
+The current theorem-sized packet turns the previous equality-with-probability
+wrapper into a source-shaped event certificate.  If a selected estimator agrees
+with the local-inverse candidate on the inverse-function-theorem target event,
+and that target event has probability tending to one, then the selected
+estimator inherits the same `sqrt n` weak limit and the local moment equation is
+solved with probability tending to one.
 
-The next aggressive packet should derive the scaled equality event
-measurability and high-probability equality fields from a source-shaped
-measurable-selection/existence certificate.  Do not use probability tending to
+The next aggressive packet should construct a measurable selected estimator
+from the local inverse on the target event and a fixed fallback outside it, then
+prove the required equality-on-target field.  Do not use probability tending to
 one as a substitute for per-`n` a.e. target membership.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent

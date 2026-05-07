@@ -409,6 +409,8 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_targetProbabilityLocalization_real`
   consume the finite-coordinate target-probability certificate directly.
 - Chapter 2 asymptotic equivalence:
+  `vaart1998_probability_tending_to_one_of_subset` packages the monotone
+  high-probability-event transfer used by source estimator-selection events.
   `vaart1998_tendstoInMeasure_zero_of_eq_with_probability_tending_to_one`
   proves that equality with probability tending to one gives a zero
   convergence-in-probability difference, and
@@ -424,12 +426,22 @@ Chapter 4 handoff:
   specializes the previous wrapper to the finite-coordinate Theorem 4.1 source
   route and returns both local solving with probability tending to one and the
   actual estimator's `sqrt n` weak limit.
+- Event-certificate measurable-estimator endpoint:
+  `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_on_event_with_probability_tending_to_one`
+  derives the equality-probability and scaled equality measurability fields
+  from a high-probability good event plus ordinary measurability of the
+  estimator, empirical moment, and local inverse.
+- Target-localization finite-coordinate endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_targetProbabilityLocalization_eq_on_target_real`
+  consumes the inverse-function-theorem target-probability certificate and an
+  equality-on-target field for the selected estimator.
 
-Latest remote base before this packet: `61b042a`.  Latest pushed Vaart packet
-before this packet: `030a5e8`
-(`Add Vaart estimator equivalence delta wrapper`).
+Latest remote base before this packet: `073fac8`.  Latest pushed Vaart packet
+before this packet: `073fac8`
+(`Add Vaart finite-coordinate estimator equivalence wrapper`).
 Current packet verification passed for:
 
+- manual `lake env lean StatInference/AsymptoticStatistics/Basic.lean -o .../Basic.olean -i .../Basic.ilean`
 - manual `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .../MomentEstimators.olean -i .../MomentEstimators.ilean`
 - `git diff --check`
 - proof-hole and secret scans on changed Vaart files
@@ -439,10 +451,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 by deriving the scaled equality event measurability
-and high-probability equality fields from a source-shaped measurable-selection
-or estimator-existence certificate.  After that, continue toward measurable-
-extension infrastructure.
+Continue Vaart Chapter 4.1 by constructing a measurable selected estimator
+from the local inverse on the target event and a fixed fallback outside it, then
+prove the equality-on-target field consumed by the new target-localization
+endpoint.  After that, continue toward measurable-extension infrastructure.
 
 ## Reuse Dependencies
 

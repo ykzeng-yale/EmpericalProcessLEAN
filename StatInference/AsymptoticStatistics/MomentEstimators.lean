@@ -3291,6 +3291,72 @@ theorem vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_with_prob
       hCandidate hScaledEq_meas hScaledEq_prob hDiff_meas
 
 /--
+Textbook `sqrt n` delta-method handoff for an estimator that agrees with the
+local-inverse candidate on a high-probability event.
+
+This is the source-facing version of the asymptotic-equivalence wrapper: later
+existence or measurable-selection work only has to produce a good event whose
+probability tends to one and on which the selected estimator equals the local
+inverse.
+-/
+theorem vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_on_event_with_probability_tending_to_one
+    {Ω : Type u} {Ω' : Type v} {M : Type w} {Θ : Type x}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup M] [NormedSpace ℝ M]
+    [MeasurableSpace M] [SecondCountableTopology M] [BorelSpace M]
+    [OpensMeasurableSpace M] [CompleteSpace M]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    {empiricalMoment : ℕ -> Ω -> M} {Z : Ω' -> M}
+    {eInv : M -> Θ} {eta0 : M} {theta0 : Θ}
+    {thetaHat : ℕ -> Ω -> Θ} {good : ℕ -> Set Ω}
+    (Dinv : M →L[ℝ] Θ)
+    (hInv_deriv : HasFDerivAt eInv Dinv eta0)
+    (hInv_meas : Measurable eInv)
+    (heta0 : eInv eta0 = theta0)
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω => √(n : ℝ) • (empiricalMoment n ω - eta0)) atTop Z
+        (fun _ => P) Q)
+    (hEmpiricalMoment_meas : ∀ n, Measurable (empiricalMoment n))
+    (hThetaHat_meas : ∀ n, Measurable (thetaHat n))
+    (hGood_prob : Tendsto (fun n : ℕ => P.real (good n)) atTop (𝓝 1))
+    (hGood_subset : ∀ n : ℕ,
+      good n ⊆ {ω : Ω | thetaHat n ω = eInv (empiricalMoment n ω)}) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω => √(n : ℝ) • (thetaHat n ω - theta0)) atTop
+      (fun ω => Dinv (Z ω)) (fun _ => P) Q := by
+  have hInvEmpirical : ∀ n : ℕ,
+      AEMeasurable (fun ω : Ω => eInv (empiricalMoment n ω)) P := by
+    intro n
+    exact (hInv_meas.comp (hEmpiricalMoment_meas n)).aemeasurable
+  have hScaledEq_meas : ∀ n : ℕ,
+      MeasurableSet
+        {ω : Ω |
+          √(n : ℝ) • (thetaHat n ω - theta0) =
+            √(n : ℝ) • (eInv (empiricalMoment n ω) - theta0)} := by
+    intro n
+    refine measurableSet_eq_fun ?_ ?_
+    · exact
+        (((hThetaHat_meas n).sub measurable_const).const_smul (√(n : ℝ)))
+    · exact
+        ((((hInv_meas.comp (hEmpiricalMoment_meas n)).sub measurable_const).const_smul
+          (√(n : ℝ))))
+  have hEq_prob :
+      Tendsto (fun n : ℕ =>
+        P.real {ω : Ω | thetaHat n ω = eInv (empiricalMoment n ω)})
+        atTop (𝓝 1) :=
+    vaart1998_probability_tending_to_one_of_subset hGood_prob hGood_subset
+  exact
+    vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_with_probability_tending_to_one
+      (P := P) (Q := Q) (empiricalMoment := empiricalMoment) (Z := Z)
+      (eInv := eInv) (eta0 := eta0) (theta0 := theta0)
+      (thetaHat := thetaHat) (Dinv := Dinv) hInv_deriv heta0 hCLT
+      (fun n => (hEmpiricalMoment_meas n).aemeasurable) hInvEmpirical
+      (fun n => (hThetaHat_meas n).aemeasurable) hScaledEq_meas hEq_prob
+
+/--
 Certificate form of van der Vaart Theorem 4.1's delta-method step.
 -/
 theorem vaart1998_theorem_4_1_moment_estimator_delta_method_of_certificate
@@ -4055,6 +4121,89 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimat
         simpa [vaart1998_finiteCoordinateEmpiricalMoment] using hScaledEq_meas n)
       (by
         simpa [vaart1998_finiteCoordinateEmpiricalMoment] using hEq_prob)
+
+/--
+Finite-coordinate Theorem 4.1 wrapper for a selected estimator that agrees with
+the local-inverse candidate on the inverse-function-theorem target event.
+
+The target-localization certificate is the source-shaped "existence with
+probability tending to one" field from van der Vaart's proof.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_targetProbabilityLocalization_eq_on_target_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (hInv_meas : Measurable (he.localInverse e De theta0))
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (targetProbability :
+      Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate
+        Coordinate Ω Θ P e theta0 De he X)
+    {thetaHat : ℕ -> Ω -> Θ}
+    (hThetaHat_meas : ∀ n : ℕ, Measurable (thetaHat n))
+    (hThetaHat_eq_on_target : ∀ n : ℕ, ∀ ⦃ω : Ω⦄,
+      vaart1998_finiteCoordinateEmpiricalMoment X n ω ∈
+          (he.toOpenPartialHomeomorph e).target ->
+        thetaHat n ω =
+          he.localInverse e De theta0
+            (vaart1998_finiteCoordinateEmpiricalMoment X n ω))
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω => √(n : ℝ) • (thetaHat n ω - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q := by
+  refine ⟨?_, ?_⟩
+  · exact
+      vaart1998_theorem_4_1_moment_equation_solved_with_probability_of_targetProbabilityLocalization_real
+        e De he X targetProbability
+  · exact
+      vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_on_event_with_probability_tending_to_one
+        (P := P) (Q := Q)
+        (empiricalMoment := fun n : ℕ =>
+          vaart1998_finiteCoordinateEmpiricalMoment X n)
+        (Z := Z) (eInv := he.localInverse e De theta0)
+        (eta0 := e theta0) (theta0 := theta0) (thetaHat := thetaHat)
+        (good := fun n : ℕ =>
+          {ω : Ω |
+            vaart1998_finiteCoordinateEmpiricalMoment X n ω ∈
+              (he.toOpenPartialHomeomorph e).target})
+        (Dinv := (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ))
+        he.to_localInverse.hasFDerivAt hInv_meas he.localInverse_apply_image
+        (by
+          simpa [vaart1998_finiteCoordinateEmpiricalMoment] using hCLT)
+        (fun n => vaart1998_finiteCoordinate_empiricalMoment_measurable_real
+          X hX_meas n)
+        hThetaHat_meas
+        targetProbability.empiricalMoment_mem_target_probability
+        (fun n => by
+          intro ω hω
+          exact hThetaHat_eq_on_target n hω)
 
 /--
 Measurable-coordinate Theorem 4.1 wrapper deriving composed local-inverse

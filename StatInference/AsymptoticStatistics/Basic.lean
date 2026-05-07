@@ -336,6 +336,25 @@ theorem vaart1998_lemma_2_8_slutsky_add
   hXZ.add_of_tendstoInMeasure_const hY hY_meas
 
 /--
+If a high-probability event is contained in another event pointwise, then the
+larger event also has probability tending to one.
+-/
+theorem vaart1998_probability_tending_to_one_of_subset
+    {ι Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] {l : Filter ι} {A B : ι -> Set Ω}
+    (hA : Tendsto (fun i : ι => P.real (A i)) l (𝓝 1))
+    (hAB : ∀ i : ι, A i ⊆ B i) :
+    Tendsto (fun i : ι => P.real (B i)) l (𝓝 1) := by
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le
+    hA tendsto_const_nhds ?_ ?_
+  · intro i
+    exact measureReal_mono (hAB i)
+  · intro i
+    have hle : P.real (B i) ≤ P.real Set.univ :=
+      measureReal_mono (μ := P) (Set.subset_univ _)
+    simpa using hle
+
+/--
 Equality with probability tending to one gives a zero convergence-in-probability
 difference.
 

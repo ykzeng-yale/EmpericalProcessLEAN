@@ -120,6 +120,10 @@ Initial modules:
   `vaart1998_tendstoInDistribution_of_eq_with_probability_tending_to_one`, so
   estimators equal to a theorem-facing candidate with probability tending to
   one can inherit the same weak limit by Slutsky.
+  The event form
+  `vaart1998_probability_tending_to_one_of_subset` supports source-shaped
+  selection arguments by transferring probability tending to one from a good
+  event to any event containing it.
 - `DeltaMethod.lean`: full finite-dimensional delta method and uniform delta
   method, starting with source reports and uniform variants rather than the
   now-compiled scalar scaled-ball and measurability certificates.
@@ -389,6 +393,14 @@ Initial modules:
   packages the same transfer at the measurable finite-coordinate Theorem 4.1
   boundary, returning both local solving with probability tending to one and
   the actual estimator's `sqrt n` weak limit.
+  The event-certificate endpoint
+  `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_on_event_with_probability_tending_to_one`
+  derives the scaled-equality measurability and equality-probability fields
+  from ordinary measurability plus a high-probability good event.  The
+  finite-coordinate target-localization endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_targetProbabilityLocalization_eq_on_target_real`
+  consumes the inverse-function-theorem target-probability certificate and an
+  equality-on-target proof for the selected estimator.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
