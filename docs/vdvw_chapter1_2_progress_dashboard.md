@@ -183,6 +183,11 @@ The deterministic convergence of such a penalty is now reduced further by
 `VdVWTheorem243_chebyshevPenalty_tendsto_zero_of_eventual_invNat_bound`: an
 eventual nonnegative `C(epsilon) / (n + 1)` bound is enough.  The remaining
 beta work is the variance/Chebyshev source proof producing that bound.
+The combined consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_of_chebyshevPenalty_invNat_bound_scaledSelectedFiniteNetHoeffdingUpper`
+now composes that penalty estimate with the variable-beta selected comparison,
+so the next proof task is the actual Lemma 2.3.7 selected-cover/Rademacher
+source theorem and its variance bound.
 
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely

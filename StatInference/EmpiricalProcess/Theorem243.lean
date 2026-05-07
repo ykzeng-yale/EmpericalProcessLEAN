@@ -32426,6 +32426,101 @@ theorem
       hselected_le hbeta_lower hbeta_selected
 
 /--
+Fixed-`M` centered-truncated convergence from stochastic entropy, a varying
+beta-weighted selected comparison, and a Chebyshev-scale penalty bound.
+
+This is the theorem-facing consumer closest to VdV&W Lemma 2.3.7: the source
+argument may leave `β_n(epsilon)` as `ofReal (1 - penalty epsilon n)`, while the
+variance/Chebyshev calculation only has to prove the deterministic
+`O(1 / n)` penalty estimate.  This theorem composes that estimate into the
+compiled selected finite-net Hoeffding route with the fixed lower bound `1/2`.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_of_chebyshevPenalty_invNat_bound_scaledSelectedFiniteNetHoeffdingUpper
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ} {A : ℝ≥0∞}
+    {beta : ℝ -> ℕ -> ℝ≥0∞} {penalty : ℝ -> ℕ -> ℝ}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hA_ne_top : A ≠ ∞) (hM_pos : 0 < M) (hC_pos : 0 < C)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n)
+    (hpenalty_nonneg :
+      ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop, 0 ≤ penalty epsilon n)
+    (hpenalty_le :
+      ∀ epsilon, 0 < epsilon ->
+        ∃ Cpenalty : ℝ, 0 ≤ Cpenalty ∧
+          ∀ᶠ n in atTop,
+            penalty epsilon n ≤ Cpenalty / ((n : ℝ) + 1))
+    (hbeta_eq :
+      ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          beta epsilon n = ENNReal.ofReal (1 - penalty epsilon n))
+    (hbeta_selected :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          beta epsilon n *
+            VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)}
+            ≤
+          A *
+            VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                        (selectedCardinality eta n sample n) n M + eta)
+                    (0 : ℝ)}) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_scaledSelectedFiniteNetHoeffdingUpper
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := C) (A := A)
+      (B := ENNReal.ofReal (1 / 2 : ℝ)) (beta := beta)
+      (selectedCardinality := selectedCardinality) (cardinality := cardinality)
+      hA_ne_top
+      (ENNReal.ofReal_ne_zero_iff.mpr (by norm_num : 0 < (1 / 2 : ℝ)))
+      ENNReal.ofReal_ne_top hM_pos hC_pos hlog hselected_le
+      (VdVWTheorem243_eventualBetaLower_half_of_eventually_eq_one_sub_penalty
+        (VdVWTheorem243_chebyshevPenalty_tendsto_zero_of_eventual_invNat_bound
+          hpenalty_nonneg hpenalty_le)
+        hbeta_eq)
+      hbeta_selected
+
+/--
 Fixed-`M` centered-truncated convergence from stochastic entropy and eventual
 a.e. scaled finite-net domination.
 

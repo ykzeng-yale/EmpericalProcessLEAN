@@ -179,6 +179,15 @@ remaining source proof should therefore focus on the variance/Chebyshev
 calculation that supplies this inverse-`n` penalty bound from the bounded
 fixed-`M` truncated variables.
 
+The composed Chebyshev-beta consumer is now compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_of_chebyshevPenalty_invNat_bound_scaledSelectedFiniteNetHoeffdingUpper`.
+It consumes the variable-beta selected comparison, the eventual formula
+`β_n(epsilon) = ofReal (1 - penalty epsilon n)`, and the inverse-`n`
+penalty bound, then feeds the existing fixed-`M` stochastic-entropy route.  The
+remaining Lean target is therefore exactly the textbook source proof: selected
+cover/Rademacher probability comparison plus the variance/Chebyshev estimate
+for that displayed penalty.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and
