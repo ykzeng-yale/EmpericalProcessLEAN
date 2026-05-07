@@ -34,6 +34,11 @@ before the averaged display `(12.5)`.
 The next packet triangulates that averaged nested sum into Chewi's source
 coefficients `M_k^n`, splits around `A^{-1}`, and records the corresponding
 `sqrt n`-scaled display.
+
+The current packet adds the projected martingale-CLT handoff for Theorem 12.7:
+the exact scalar projections of `n^{-1/2} sum xi_k`, a covariance-variance
+convergence accessor, and a Cramér-Wold bridge that turns supplied scalar
+projected martingale CLTs into the vector certificate consumed by Theorem 12.3.
 -/
 
 noncomputable section
@@ -128,6 +133,27 @@ noncomputable def chewi127ScaledNoiseSum
   (Real.sqrt (n : ℝ))⁻¹ • ∑ k ∈ Finset.range n, xi (k + 1) ω
 
 /--
+The scalar projection of Chewi's scaled martingale sum along a continuous
+linear coordinate.
+-/
+noncomputable def chewi127ScaledProjectedNoiseSum
+    {Ω E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (xi : ℕ -> Ω -> E) (L : StrongDual ℝ E) (n : ℕ) (ω : Ω) : ℝ :=
+  (Real.sqrt (n : ℝ))⁻¹ * ∑ k ∈ Finset.range n, L (xi (k + 1) ω)
+
+/--
+The source scalar projection is exactly the coordinate applied to the vector
+scaled martingale sum.
+-/
+theorem chewi127ScaledProjectedNoiseSum_eq_apply_scaledNoiseSum
+    {Ω E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (xi : ℕ -> Ω -> E) (L : StrongDual ℝ E) (n : ℕ) (ω : Ω) :
+    chewi127ScaledProjectedNoiseSum xi L n ω =
+      L (chewi127ScaledNoiseSum xi n ω) := by
+  simp [chewi127ScaledProjectedNoiseSum, chewi127ScaledNoiseSum,
+    map_sum, smul_eq_mul]
+
+/--
 The averaged conditional covariance process appearing in Chewi Theorem 12.7,
 tested against two continuous linear coordinates.
 -/
@@ -152,6 +178,184 @@ structure Chewi127AveragedConditionalCovarianceLimit
     TendstoInMeasure P
       (fun N ω => chewi127AverageConditionalCovariance Xi N ω L K)
       atTop (fun _ => S_infty L K)
+
+/--
+The diagonal averaged conditional covariance, i.e. the projected conditional
+variance process used by the scalar martingale CLT for a coordinate `L`.
+-/
+noncomputable def chewi127AverageConditionalVariance
+    {Ω E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (Xi : ℕ -> Ω -> StrongDual ℝ E -> StrongDual ℝ E -> ℝ)
+    (N : ℕ) (ω : Ω) (L : StrongDual ℝ E) : ℝ :=
+  chewi127AverageConditionalCovariance Xi N ω L L
+
+/--
+The covariance-limit interface immediately gives the variance convergence
+needed by each projected scalar martingale CLT.
+-/
+theorem Chewi127AveragedConditionalCovarianceLimit.variance_tendstoInMeasure
+    {Ω E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {Xi : ℕ -> Ω -> StrongDual ℝ E -> StrongDual ℝ E -> ℝ}
+    (V : Chewi127AveragedConditionalCovarianceLimit Ω E P Xi)
+    (L : StrongDual ℝ E) :
+    TendstoInMeasure P
+      (fun N ω => chewi127AverageConditionalVariance Xi N ω L)
+      atTop (fun _ => V.S_infty L L) :=
+  V.tendstoInMeasure L L
+
+/--
+Continuous mapping gives each projected scalar CLT from the vector CLT for the
+exact scaled martingale sum.
+-/
+theorem chewi127_projected_clt_of_scaledNoiseSum_clt
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [OpensMeasurableSpace E] [BorelSpace E]
+    (xi : ℕ -> Ω -> E) {Z : Ω' -> E}
+    (hCLT :
+      TendstoInDistribution (chewi127ScaledNoiseSum xi) atTop Z
+        (fun _ => P) Q)
+    (L : StrongDual ℝ E) :
+    TendstoInDistribution (chewi127ScaledProjectedNoiseSum xi L)
+      atTop (fun ω => L (Z ω)) (fun _ => P) Q := by
+  simpa [Function.comp_def, chewi127ScaledProjectedNoiseSum,
+    chewi127ScaledNoiseSum, map_sum, smul_eq_mul] using
+    (TendstoInDistribution.continuous_comp
+      (g := fun x : E => L x) L.continuous hCLT)
+
+/--
+ASGD-specific Cramér-Wold bridge for Chewi Theorem 12.7.
+
+The scalar martingale CLT remains a deliberately named source obligation:
+prove every continuous-linear projection of the exact scaled martingale sum,
+then use the supplied Cramér-Wold implication to recover the vector CLT.
+-/
+structure Chewi127ProjectedMartingaleCLTBridge
+    (Ω Ω' E : Type*) [MeasurableSpace Ω] (P : Measure Ω)
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] (Q : Measure Ω')
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [OpensMeasurableSpace E] [BorelSpace E] where
+  /-- The martingale-difference increments. -/
+  xi : ℕ -> Ω -> E
+  /-- The vector Gaussian limit. -/
+  Z : Ω' -> E
+  /-- Scalar projected martingale CLTs for all continuous linear coordinates. -/
+  projected_clt : ∀ L : StrongDual ℝ E,
+    TendstoInDistribution (chewi127ScaledProjectedNoiseSum xi L)
+      atTop (fun ω => L (Z ω)) (fun _ => P) Q
+  /-- Cramér-Wold implication from all scalar projections to vector convergence. -/
+  cramerWold_vector_clt :
+    (∀ L : StrongDual ℝ E,
+      TendstoInDistribution (chewi127ScaledProjectedNoiseSum xi L)
+        atTop (fun ω => L (Z ω)) (fun _ => P) Q) ->
+      TendstoInDistribution (chewi127ScaledNoiseSum xi) atTop Z (fun _ => P) Q
+  /-- The limit law is Gaussian. -/
+  gaussian_limit : HasGaussianLaw Z Q
+  /-- Square-integrability needed for covariance displays. -/
+  limit_memLp : MemLp id 2 (Q.map Z)
+
+/--
+The projected Cramér-Wold bridge produces the supplied Chewi martingale CLT
+certificate consumed by the ASGD endpoint.
+-/
+def Chewi127ProjectedMartingaleCLTBridge.toMartingaleCLTCertificate
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [OpensMeasurableSpace E] [BorelSpace E]
+    (B : Chewi127ProjectedMartingaleCLTBridge Ω Ω' E P Q) :
+    Chewi127MartingaleCLTCertificate Ω Ω' E P Q where
+  noiseScaled := chewi127ScaledNoiseSum B.xi
+  Z := B.Z
+  clt := B.cramerWold_vector_clt B.projected_clt
+  gaussian_limit := B.gaussian_limit
+  limit_memLp := B.limit_memLp
+
+/--
+Source-shaped bounded martingale CLT source for Chewi Theorem 12.7.
+
+The field `projected_clt` is the remaining scalar bounded-martingale CLT proof
+obligation; the surrounding fields tie that scalar theorem to the
+martingale-difference, conditional-covariance, and covariance-limit interfaces
+already present in the ASGD lane.
+-/
+structure Chewi127BoundedMartingaleCLTSource
+    (Ω Ω' E : Type*) [mΩ : MeasurableSpace Ω] (P : Measure Ω)
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] (Q : Measure Ω')
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E] where
+  /-- Martingale-difference process for the noise increments. -/
+  martingale : Chewi127MartingaleDifferenceProcess Ω E P
+  /-- Conditional covariance process for the same increments. -/
+  covariance : Chewi127ConditionalCovarianceProcess Ω E P
+  /-- The covariance process uses the martingale increments. -/
+  same_noise : covariance.xi = martingale.xi
+  /-- Averaged conditional covariance convergence in probability. -/
+  covariance_limit :
+    Chewi127AveragedConditionalCovarianceLimit Ω E P covariance.Xi
+  /-- Uniform boundedness source hypothesis for Chewi's bounded martingale CLT. -/
+  uniform_bound :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ n : ℕ, ∀ᵐ ω ∂P, ‖martingale.xi (n + 1) ω‖ ≤ B
+  /-- The vector Gaussian limit. -/
+  Z : Ω' -> E
+  /-- Scalar projected martingale CLTs, to be discharged from boundedness and covariance. -/
+  projected_clt : ∀ L : StrongDual ℝ E,
+    TendstoInDistribution (chewi127ScaledProjectedNoiseSum martingale.xi L)
+      atTop (fun ω => L (Z ω)) (fun _ => P) Q
+  /-- Cramér-Wold implication from all scalar projections to vector convergence. -/
+  cramerWold_vector_clt :
+    (∀ L : StrongDual ℝ E,
+      TendstoInDistribution (chewi127ScaledProjectedNoiseSum martingale.xi L)
+        atTop (fun ω => L (Z ω)) (fun _ => P) Q) ->
+      TendstoInDistribution (chewi127ScaledNoiseSum martingale.xi)
+        atTop Z (fun _ => P) Q
+  /-- The limit law is Gaussian. -/
+  gaussian_limit : HasGaussianLaw Z Q
+  /-- Square-integrability needed for covariance displays. -/
+  limit_memLp : MemLp id 2 (Q.map Z)
+  /-- Coordinate covariance of the limit matches the limiting conditional covariance. -/
+  limit_covariance : ∀ L K : StrongDual ℝ E,
+    ProbabilityTheory.covarianceBilinDual (Q.map Z) L K =
+      covariance_limit.S_infty L K
+
+/--
+Forget the process/covariance bookkeeping and keep the projected Cramér-Wold
+bridge needed to build the vector martingale CLT certificate.
+-/
+def Chewi127BoundedMartingaleCLTSource.toProjectedBridge
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q) :
+    Chewi127ProjectedMartingaleCLTBridge Ω Ω' E P Q where
+  xi := S.martingale.xi
+  Z := S.Z
+  projected_clt := S.projected_clt
+  cramerWold_vector_clt := S.cramerWold_vector_clt
+  gaussian_limit := S.gaussian_limit
+  limit_memLp := S.limit_memLp
+
+/--
+Constructor for the supplied Chewi Theorem 12.7 martingale CLT certificate
+from the source-shaped bounded martingale CLT fields.
+-/
+def Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q) :
+    Chewi127MartingaleCLTCertificate Ω Ω' E P Q :=
+  S.toProjectedBridge.toMartingaleCLTCertificate
 
 /--
 Constructor for the supplied Chewi Theorem 12.7 martingale CLT certificate

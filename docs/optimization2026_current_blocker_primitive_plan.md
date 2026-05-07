@@ -126,14 +126,16 @@ Stable substrate:
 - Chapter 12 ASGD: `ASGD.lean` is stable through the supplied martingale CLT
   handoff/covariance package, exact scaled-noise and averaged-covariance
   definitions, quadratic ASGD recurrence/unrolling, triangular regrouping
-  around `A^{-1}`, and the `sqrt N` source display.
+  around `A^{-1}`, the `sqrt N` source display, exact projected scaled-noise
+  sums, the projected variance convergence accessor, and the source-shaped
+  projected Cramér-Wold martingale CLT bridge/source constructor.
 
 Current priority packet sequence:
 
-1. `ASGD-CLT`: bounded martingale CLT certificate constructor from
-   `Chewi127MartingaleDifferenceProcess`,
-   `Chewi127ConditionalCovarianceProcess`, and
-   `Chewi127AveragedConditionalCovarianceLimit`.
+1. `ASGD-scalar-martingale-CLT`: discharge the projected scalar bounded
+   martingale CLT field behind `Chewi127BoundedMartingaleCLTSource` using
+   the martingale-difference, boundedness, and averaged conditional variance
+   convergence interfaces.
 2. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
    decomposition, and certificate to the source Theorem 12.7/12.3 ASGD limit
    statement.
@@ -142,11 +144,11 @@ Current priority packet sequence:
    otherwise stall.
 
 Execution rule for the next proof run: spend at most one bounded search pass
-refreshing mathlib/local CLT, Cramér-Wold, conditional expectation, covariance,
-integral-sum, and finite-dimensional APIs; then implement the highest-leverage
-ASGD-CLT theorem layer found by that search.  If no direct martingale CLT is
-available, add a reusable projected-sum/Cramér-Wold bridge and record the
-remaining scalar bounded martingale CLT proof obligation precisely.
+refreshing mathlib/local scalar martingale CLT, characteristic-function,
+conditional expectation, covariance/variance, uniform boundedness/Lindeberg,
+and finite-dimensional Cramér-Wold APIs; then implement the highest-leverage
+scalar martingale CLT theorem layer.  The reusable projected-sum/Cramér-Wold
+bridge is now compiled, so do not repeat it.
 
 Keep exercise statements and cheap reusable exercise proofs in
 `StatInference/Optimization/Exercises.lean`, but never let exercises block the

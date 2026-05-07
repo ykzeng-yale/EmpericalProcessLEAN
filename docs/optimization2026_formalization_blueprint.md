@@ -51,8 +51,8 @@ before inventing primitives, keep the main thread on the active proof while
 scouts handle disjoint read-only questions when explicitly authorized, verify
 with focused Lean/module builds during development, and batch route-doc
 updates, scans, final rebase, commit, and push once per verified packet.  The
-current active sequence after `2c1a160` is bounded martingale CLT certificate
-construction from the ASGD process/covariance interfaces, source ASGD endpoint
+current active sequence after the ASGD projected martingale-CLT bridge packet
+is projected scalar bounded martingale CLT discharge, source ASGD endpoint
 assembly, then the concrete Sinkhorn KL identity layer if ASGD stalls.
 
 Historical manual frontier after focused Lean verification of Chapter 7
@@ -464,9 +464,20 @@ triangular-regrouping packet adds `chewi123InitialCoefficient`,
 `chewi123_quadratic_average_delta_source_decomposition`, and
 `chewi123_quadratic_sqrt_average_delta_source_decomposition`, so Chewi's
 `M_k^n` source coefficients, split around `A^{-1}`, and `sqrt n` display are
-now compiled.  The next ASGD target is the bounded martingale CLT certificate
-constructor from the process/covariance interfaces, then the exact endpoint
-handoff to Theorem 12.7/12.3.
+now compiled.  The projected martingale-CLT bridge packet adds
+`chewi127ScaledProjectedNoiseSum`,
+`chewi127ScaledProjectedNoiseSum_eq_apply_scaledNoiseSum`,
+`chewi127AverageConditionalVariance`,
+`Chewi127AveragedConditionalCovarianceLimit.variance_tendstoInMeasure`,
+`chewi127_projected_clt_of_scaledNoiseSum_clt`,
+`Chewi127ProjectedMartingaleCLTBridge`,
+`Chewi127ProjectedMartingaleCLTBridge.toMartingaleCLTCertificate`,
+`Chewi127BoundedMartingaleCLTSource`,
+`Chewi127BoundedMartingaleCLTSource.toProjectedBridge`, and
+`Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate`.  The next
+ASGD target is the projected scalar bounded martingale CLT discharge behind
+the `projected_clt` field, then the exact endpoint handoff to Theorem
+12.7/12.3.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the

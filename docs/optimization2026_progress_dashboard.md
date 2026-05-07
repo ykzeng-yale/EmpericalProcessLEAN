@@ -43,9 +43,9 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/private/tmp/chewi-smpgd-probability` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
-- Current priority sequence: `ASGD-CLT` bounded martingale certificate
-  constructor, `ASGD-endpoint` source ASGD limit wrapper, then the concrete
-  Sinkhorn row/column KL identity layer if ASGD stalls.
+- Current priority sequence: `ASGD-scalar-martingale-CLT` projected scalar
+  bounded martingale CLT discharge, `ASGD-endpoint` source ASGD limit wrapper,
+  then the concrete Sinkhorn row/column KL identity layer if ASGD stalls.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
   stale route replay, repeated broad searches, micro-packet commit overhead,
   and shared-worktree/build-artifact contention.  The active protocol is now:
@@ -525,8 +525,23 @@ triangular-regrouping packet compiles `chewi123InitialCoefficient`,
 It uses mathlib `Finset.sum_comm'`, `Finset.sum_Ico_eq_sum_range`, and
 `ContinuousLinearMap.sum_apply`, and closes the source `M_k^N` regrouping,
 the split around `A^{-1}`, and the `sqrt N`-scaled display.  The active
-Chapter 12 blocker is now a bounded martingale CLT certificate constructor
-from the process/covariance interfaces, then final ASGD endpoint wiring.
+Chapter 12 blocker is now the scalar bounded martingale CLT proof behind the
+projected CLT field, then final ASGD endpoint wiring.  The newest projected
+martingale-CLT packet compiles `chewi127ScaledProjectedNoiseSum`,
+`chewi127ScaledProjectedNoiseSum_eq_apply_scaledNoiseSum`,
+`chewi127AverageConditionalVariance`,
+`Chewi127AveragedConditionalCovarianceLimit.variance_tendstoInMeasure`,
+`chewi127_projected_clt_of_scaledNoiseSum_clt`,
+`Chewi127ProjectedMartingaleCLTBridge`,
+`Chewi127ProjectedMartingaleCLTBridge.toMartingaleCLTCertificate`,
+`Chewi127BoundedMartingaleCLTSource`,
+`Chewi127BoundedMartingaleCLTSource.toProjectedBridge`, and
+`Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate`.  Search-first
+result: no direct pinned mathlib or local Chewi-style bounded martingale CLT
+was found; local reuse is the finite-dimensional Cramér-Wold and projected CLT
+infrastructure in `StatInference/AsymptoticStatistics/MomentEstimators.lean`,
+plus mathlib continuous mapping and local conditional-expectation/covariance
+interfaces.
 
 ## Initial Reuse Audit
 
