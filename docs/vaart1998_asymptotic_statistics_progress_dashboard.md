@@ -256,9 +256,11 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateProjectedScalarCLT_of_projectedSummandCLT`.
 - Projected-summand-CLT Theorem 4.1 covariance-table endpoint:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_real`.
+- Mathlib one-dimensional CLT source theorem for projected summands:
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT`.
 
-Latest remote base before this packet: `4c54e12`.  Latest pushed Vaart packet
-before this packet: `9704461` (`Add Vaart finite-dimensional Cramer Wold law`).
+Latest remote base before this packet: `a14fdcb`.  Latest pushed Vaart packet
+before this packet: `a14fdcb` (`Add Vaart projected summand CLT bridge`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -281,15 +283,14 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. instantiate `vaart1998_finiteCoordinateProjectedSummandCLT` from mathlib's
-   one-dimensional CLT
-   `ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub`, starting
-   with a source-shaped theorem whose hypotheses are the projected summand
-   `MemLp`, `iIndepFun`, `IdentDistrib`, and Gaussian `HasLaw` fields;
+1. prove the projected summand mean field from finite-coordinate integrability
+   and the population-moment definition;
 2. prove projected summand independence/identical-distribution/measurability
    obligations from coordinate assumptions only when they are directly needed;
-3. add further covariance-table consumers only if they remove a real caller-side
-   hypothesis from an existing Theorem 4.1 wrapper.
+3. package the Gaussian projected `HasLaw` field from the finite-coordinate
+   Gaussian limit and covariance bilinear form, adding further covariance-table
+   consumers only if they remove a real caller-side hypothesis from an existing
+   Theorem 4.1 wrapper.
 
 If this blocks, record the exact missing theorem shape for the supplied
 empirical-moment CLT, covariance-display, or local-inverse measurability field

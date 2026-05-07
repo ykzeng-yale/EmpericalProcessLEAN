@@ -3,6 +3,7 @@ import StatInference.ProbabilityMeasure.StrongLaw
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.MeasureTheory.Measure.LevyConvergence
+import Mathlib.Probability.CentralLimitTheorem
 import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
 import Mathlib.Probability.Moments.CovarianceBilinDual
 
@@ -1065,6 +1066,59 @@ theorem vaart1998_finiteCoordinateProjectedScalarCLT_of_projectedSummandCLT
   exact Filter.Eventually.of_forall fun ω =>
     (vaart1998_finiteCoordinateProjectedScalarCLT_expression_eq_sum
       L P X n ω).symm
+
+/--
+Mathlib's one-dimensional central limit theorem instantiates the projected
+summand CLT family once each tested summand sequence has the usual source
+fields.
+-/
+theorem vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hMean : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      P[vaart1998_finiteCoordinateProjectedSample L X 0] =
+        vaart1998_finiteCoordinateProjectedPopulationMoment L P X)
+    (hLimitLaw : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      HasLaw (fun ω => L (Z ω))
+        (gaussianReal 0
+          (Var[vaart1998_finiteCoordinateProjectedSample L X 0; P]).toNNReal) Q)
+    (hMemLp : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      MemLp (vaart1998_finiteCoordinateProjectedSample L X 0) 2 P)
+    (hIndep : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      iIndepFun (vaart1998_finiteCoordinateProjectedSample L X) P)
+    (hIdent : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      ∀ i : ℕ,
+        IdentDistrib
+          (vaart1998_finiteCoordinateProjectedSample L X i)
+          (vaart1998_finiteCoordinateProjectedSample L X 0) P P) :
+    vaart1998_finiteCoordinateProjectedSummandCLT (P := P) (Q := Q) X Z := by
+  intro L
+  have hclt :
+      TendstoInDistribution
+        (fun (n : ℕ) ω =>
+          (√(n : ℝ))⁻¹ *
+            ((∑ k ∈ Finset.range n,
+                vaart1998_finiteCoordinateProjectedSample L X k ω) -
+              (n : ℝ) *
+                P[vaart1998_finiteCoordinateProjectedSample L X 0]))
+        atTop (fun ω => L (Z ω)) (fun _ => P) Q :=
+    ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub
+      (P := P) (P' := Q)
+      (X := vaart1998_finiteCoordinateProjectedSample L X)
+      (Y := fun ω => L (Z ω))
+      (hY := hLimitLaw L) (hX := hMemLp L)
+      (hindep := hIndep L) (hident := hIdent L)
+  refine TendstoInDistribution.congr ?_ Filter.EventuallyEq.rfl hclt
+  intro n
+  exact Filter.Eventually.of_forall fun ω => by
+    rw [hMean L]
 
 /--
 The scalar projected CLT family feeds the projected vector CLT family by

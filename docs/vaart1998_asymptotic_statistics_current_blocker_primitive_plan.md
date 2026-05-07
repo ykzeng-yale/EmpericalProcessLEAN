@@ -394,32 +394,34 @@ Chapter 3 theorem-facing wrappers compiling:
 128. Theorem 4.1 finite-coordinate covariance-table endpoint fed directly by
    projected summand scalar CLTs:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_real`.
+129. Mathlib one-dimensional CLT instantiates the source-shaped projected
+   summand scalar CLT family:
+   `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT`.
 
-Latest remote base before this packet: `4c54e12`.
-Latest pushed Vaart packet before this packet: `9704461`
-(`Add Vaart finite-dimensional Cramer Wold law`).
+Latest remote base before this packet: `a14fdcb`.
+Latest pushed Vaart packet before this packet: `a14fdcb`
+(`Add Vaart projected summand CLT bridge`).
 
-The current theorem-sized packet moves the remaining scalar-CLT source
-hypothesis one layer closer to mathlib's one-dimensional CLT.  It defines the
-projected scalar summands, proves that the projected empirical average is their
-ordinary scalar average, rewrites the `sqrt n` centered-average expression as
-the usual `1 / sqrt n` sum-centered CLT normalization, and packages a
-projected-summand CLT family into both the projected scalar CLT family and the
-Vaart Theorem 4.1 covariance-table endpoint.
+The current theorem-sized packet connects mathlib's one-dimensional central
+limit theorem to the Vaart Chapter 4 projected-summand interface.  The new
+source theorem assumes the projected summand mean, `MemLp`, `iIndepFun`,
+`IdentDistrib`, and Gaussian `HasLaw` fields and produces
+`vaart1998_finiteCoordinateProjectedSummandCLT`; the existing projected-scalar,
+Cramér-Wold, and Theorem 4.1 covariance-table consumers then remain internal
+plumbing.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. instantiate `vaart1998_finiteCoordinateProjectedSummandCLT` from mathlib's
-   one-dimensional CLT
-   `ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub`, starting
-   with a source-shaped theorem whose hypotheses are the projected summand
-   `MemLp`, `iIndepFun`, `IdentDistrib`, and Gaussian `HasLaw` fields;
+1. prove the projected summand mean field from finite-coordinate integrability
+   and the population-moment definition;
 2. prove the projected summand independence/identical-distribution/measurability
    obligations from the existing coordinate assumptions only when they are
    directly needed by that scalar CLT instantiation;
-3. add further covariance-table consumers only if they remove a real caller-side
-   hypothesis from an existing Theorem 4.1 wrapper.
+3. package the Gaussian projected `HasLaw` field from the finite-coordinate
+   Gaussian limit and covariance bilinear form, adding covariance-table
+   consumers only if they remove a real caller-side hypothesis from an existing
+   Theorem 4.1 wrapper.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

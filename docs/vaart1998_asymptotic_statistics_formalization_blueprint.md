@@ -235,8 +235,11 @@ Initial modules:
   sum-centered normalization identities, records
   `vaart1998_finiteCoordinateProjectedSummandCLT`, and exposes
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_real`.
-  It still deliberately leaves the mathlib one-dimensional CLT instantiation
-  for these projected summands as the next source theorem.
+  The newest source theorem
+  `vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT` instantiates
+  that projected-summand interface from mathlib's one-dimensional CLT once the
+  tested summand mean, `MemLp`, `iIndepFun`, `IdentDistrib`, and Gaussian
+  `HasLaw` fields are available.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
