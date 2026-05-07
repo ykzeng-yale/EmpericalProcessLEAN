@@ -132,50 +132,54 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## One-Screen Current Run Card
+## Live Goal Prompt V2
 
-This card is the fastest entry point for the next manual `/goal` run.  It
-should be updated only when the actual frontier changes.
+Use this as the current `/goal` replacement.  The app-level objective text is
+stale and cannot be edited until the whole textbook goal is complete.
 
-- Latest verified Optimization proof frontier: the ASGD scalar product/tower
-  peel packet after `41698a9 Add Chewi ASGD finite product tower layer`.
-- Active source theorem lane: Chewi Chapter 12 ASGD, Theorem 12.7/12.3
-  martingale-CLT handoff.
-- Active Lean module: `StatInference/Optimization/ASGD.lean`.
-- Primary packet: prove the finite recursive product estimate that accumulates
-  the one-step Taylor/tower peels toward
-  `projected_charFun_tendsto_exp`, separating the conditional variance product
-  from the accumulated conditional remainders.
-- Candidate owner theorem names:
-  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_bound`
-  or
-  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_error_le`.
-- Required reuse:
-  `chewi127ScalarCharFunFactor`,
-  `chewi127ScalarCharFunProduct`,
-  `chewi127ScalarScaledSum_charFun_eq_integral_prod`,
-  `integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left`,
-  `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`,
-  `Chewi127MartingaleDifferenceProcess.projected_charFun_prefix_aestronglyMeasurable`,
-  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ`,
-  `chewi127ScalarCharFunFactor_integrable`,
-  mathlib `StronglyAdapted.stronglyMeasurable_le`,
-  `Finset.prod_range_succ`, `Finset.aestronglyMeasurable_fun_prod`, and
-  `AEStronglyMeasurable.cexp`.
-- One bounded extra search pass is allowed only for finite product norm/error
-  bounds, scalar exponential-product comparison, or convergence of accumulated
-  conditional variance/remainder terms.  Do not repeat broad searches for
-  Taylor, prefix measurability, conditional pull-out, Lindeberg, Levy,
-  Gaussian target, or Chapter 3 deterministic GD material.
-- Verification:
-  `lake env lean StatInference/Optimization/ASGD.lean`, then
-  `lake build StatInference.Optimization.ASGD`, then proof-hole scan, secret
-  scan, and `git diff --check`.
-- Failure record requirement: if the theorem does not close, record the exact
-  Lean statement attempted, whether the blocker is product-error algebra,
-  integrability of products, conditional-remainder accumulation, variance
-  product convergence, or exponential comparison, plus two concrete next
-  routes.
+Continue the Chewi Optimization 2026 Lean formalization aggressively under
+`StatInference/Optimization`, skipping exercise-solving as a priority but
+allowing exercise statements/proofs in `Exercises.lean` when they unlock
+main-text theorems.  All code/docs/comments stay in English; chat reports may
+be Chinese/English mix.
+
+Current frontier: `b6bc4cf Add Chewi ASGD product tower peel` is verified and
+pushed.  The active source lane is Chapter 12 ASGD Theorem 12.7/12.3.  The
+only active Lean module is `StatInference/Optimization/ASGD.lean` unless a
+small disjoint helper module is clearly cheaper.
+
+Next theorem-sized packet: prove the finite product/error accumulation step
+toward
+`Chewi127BoundedMartingaleCharFunCLTSource.projected_charFun_tendsto_exp`.
+This should consume the compiled tower peel and reduce the scalar martingale
+characteristic-function proof to explicit variance-product convergence plus
+conditional-remainder control.
+
+Do not redo these solved layers: Chapter 3 GD, Taylor expansion, scalar
+Lindeberg tail vanishing, Levy/Gaussian target, conditional mean-zero/second
+moment substitution, finite product representation, prefix measurability, or
+the first tower peel.
+
+Search-first budget: one bounded API search only for the current blocker.
+First check local Durrett product-error work, especially
+`durrett2019_norm_prod_sub_prod_le_sum_norm_sub` and surrounding
+Lindeberg-Feller product-approximation wrappers in
+`StatInference/ProbabilityTheory/Basic.lean`; then check mathlib only if that
+does not fit.  Do not import heavy unrelated modules into ASGD unless the build
+cost is justified by the theorem endpoint.
+
+Execution loop: state the exact Lean theorem before editing, prove it in the
+isolated worktree `/private/tmp/chewi-smpgd-probability`, run
+`lake env lean StatInference/Optimization/ASGD.lean`, promote with
+`lake build StatInference.Optimization.ASGD`, scan Optimization for
+`sorry`/`admit`/`axiom`/`unsafe`, scan changed files for secrets, run
+`git diff --check`, update this prompt only if the frontier changes, then
+commit/rebase/push once.
+
+Failure rule: if the packet does not close, record the exact attempted theorem,
+the stuck subgoal, searched APIs, and two concrete next routes.  No vague
+"next small gap" labels and no prompt churn without verified proof progress or
+a precise blocker.
 
 ## Accuracy And Speed Corrections From Process Audit
 
@@ -183,7 +187,7 @@ The main observed slowdown was not a lack of effort; it was spending too much
 of each run rediscovering context and producing small verified wrappers that
 did not remove the current endpoint assumption.  The current process is:
 
-1. Use the run card above before reading any archived route history.  Read
+1. Use `Live Goal Prompt V2` above before reading any archived route history.  Read
    older sections only when a named declaration cannot be found.
 2. Start each proof packet by writing or checking the exact target statement in
    Lean.  This prevents proving a convenient lemma that does not compose into
@@ -254,7 +258,7 @@ Use this shorter loop for each live `/goal` turn.  It is stricter than the
 archived automation prompts and should override them when they conflict.
 
 1. Orient once.  Check the worktree status, `origin/main`, the latest local
-   Optimization commit, and this file's `Current Frontier Contract`.  Do not
+   Optimization commit, and this file's `Live Goal Prompt V2`.  Do not
    spend the proof budget rereading old archived prompts unless a named
    dependency is missing.
 2. State the packet.  Before editing Lean, name one primary theorem-sized

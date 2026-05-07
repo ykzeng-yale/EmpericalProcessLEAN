@@ -25,11 +25,10 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  the current frontier contract near the top of
+  `Live Goal Prompt V2` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
-  history and must not override the current `41698a9` ASGD frontier and its
-  one-screen run card.
+  history and must not override the current `b6bc4cf` ASGD frontier.
 - Collaboration policy: for broad future packets, use isolated `git worktree`
   checkouts per book/lane when several local agents are active, then merge only
   scoped verified work back to shared `main`.
@@ -74,14 +73,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   precisely block that diff before doing strategy/doc-only work.  No uncompiled
   theorem should be carried across a process update.
 - Process correction from the May 7 audit: future manual runs should enter
-  through the one-screen current run card in
+  through `Live Goal Prompt V2` in
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
-  route-planning or wrapper loop: it is the ASGD scalar product/tower peel in
-  `ASGD.lean`, consuming the compiled conditional Taylor step and prefix
-  conditional-expectation pull-out.  Broad searches, old Chapter 3 routing, and
-  repeated Git sync loops are explicitly out of budget unless they answer the
-  active proof blocker.
+  route-planning loop and not the already-solved ASGD tower peel; it is finite
+  product/error accumulation toward the scalar martingale characteristic-
+  function limit.  Broad searches, old Chapter 3 routing, and repeated Git
+  sync loops are explicitly out of budget unless they answer that blocker.
 - New ASGD scalar Lindeberg declarations:
   `chewi127ScalarLindebergSummand`,
   `chewi127ScalarLindebergAverage`,
