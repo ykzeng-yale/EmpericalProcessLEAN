@@ -15399,6 +15399,87 @@ theorem VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover
         cover hindexClass_nonempty henvelope hn hM_pos sign hindep hsubG
 
 /--
+Eventual a.e. half-radius finite-net domination from the finite-sample
+symmetrization precursor and the remaining `Phi(x)=x` comparison.
+
+This is the source-facing bridge for the selected-cover route: once the
+per-sample precursor has been built for the selected empirical cover at radius
+`eta / 2`, and the theorem-specific `hphi_id` comparison holds on the same
+a.e. samples, the real centered supremum bound has exactly the native
+half-radius form consumed by the displayed-beta source primitive.
+-/
+theorem
+    VdVWTheorem243_eventualAe_centered_le_two_finiteNetHoeffdingUpper_add_halfRadius_of_symmetrizationPrecursor_hphi_id
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_nonneg : 0 ≤ M)
+    (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (hUcover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        VdVWMeasurableCover μsign
+          (fun ω => ENNReal.ofReal
+            (vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i ω))
+              sample)))
+    (hprecursor :
+      ∀ (eta : ℝ) (heta : 0 < eta),
+        ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          VdVWTheorem243SymmetrizationPrecursor
+            (μ := μsign) (P := P) (sample := sample)
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (epsilon := eta / 2)
+            (cover := cover eta heta n sample) (sign := sign n))
+    (hphiComp :
+      ∀ (eta : ℝ), 0 < eta ->
+        ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          ENNReal.ofReal
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) ≤
+            (2 : ℝ≥0∞) *
+              VdVWOuterExpectation μsign
+                (fun ω => ENNReal.ofReal
+                  (vdVWWeightedClassSupremum indexClass
+                    (vdVWTruncatedClassFun classFun envelope M)
+                    (vdVWRademacherWeights (fun i : Fin n => sign n i ω))
+                    sample))) :
+    ∀ eta, 0 < eta ->
+      ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+        vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ≤
+        2 * (vdVWTheorem243FiniteNetHoeffdingUpper
+            (selectedCardinality eta n sample n) n M + eta / 2) := by
+  intro eta heta
+  filter_upwards [hprecursor eta heta, hphiComp eta heta] with n hprecursor_n hphi_n
+  filter_upwards [hprecursor_n, hphi_n] with sample hprecursor_sample hphi_sample
+  exact
+    VdVWTheorem243SymmetrizationPrecursor.centered_le_two_finiteNetHoeffdingUpper_add_of_hphi_id
+      (μ := μsign) (P := P) (sample := sample)
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := eta / 2)
+      (cover := cover eta heta n sample) (sign := sign n)
+      hprecursor_sample (hUcover eta heta n sample) (by linarith) hM_nonneg
+      hphi_sample
+
+/--
 Common-domain VdV&W stochastic little-o in outer probability.
 
 `VdVWOuterProbabilityLittleOAtTop μ process scale` means
@@ -33534,6 +33615,79 @@ theorem
           (selectedCardinality eta n sample n) n M + eta := by
     ring
   simpa [hrewrite] using hsample
+
+/--
+The selected-cover symmetrization precursor plus the remaining `Phi(x)=x`
+comparison supplies the named displayed-Chebyshev-beta source primitive.
+
+This is the direct source-facing constructor for the current Theorem 2.4.3
+frontier.  It reduces the displayed beta comparison to the two genuine
+mathematical inputs: building the finite-sample precursor for the selected
+half-radius cover and proving the fixed-sample `Phi(x)=x` comparison on the
+same eventual a.e. sample set.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_symmetrizationPrecursor_hphi_id
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_nonneg : 0 ≤ M)
+    (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (hUcover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        VdVWMeasurableCover μsign
+          (fun ω => ENNReal.ofReal
+            (vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign n i ω))
+              sample)))
+    (hprecursor :
+      ∀ (eta : ℝ) (heta : 0 < eta),
+        ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          VdVWTheorem243SymmetrizationPrecursor
+            (μ := μsign) (P := P) (sample := sample)
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (epsilon := eta / 2)
+            (cover := cover eta heta n sample) (sign := sign n))
+    (hphiComp :
+      ∀ (eta : ℝ), 0 < eta ->
+        ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          ENNReal.ofReal
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample) ≤
+            (2 : ℝ≥0∞) *
+              VdVWOuterExpectation μsign
+                (fun ω => ENNReal.ofReal
+                  (vdVWWeightedClassSupremum indexClass
+                    (vdVWTruncatedClassFun classFun envelope M)
+                    (vdVWRademacherWeights (fun i : Fin n => sign n i ω))
+                    sample))) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 2 1 selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_two_finiteNetHoeffdingUpper_add_halfRadius_bound
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M)
+      (selectedCardinality := selectedCardinality) hM_nonneg ?_
+  exact
+    VdVWTheorem243_eventualAe_centered_le_two_finiteNetHoeffdingUpper_add_halfRadius_of_symmetrizationPrecursor_hphi_id
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (selectedCardinality := selectedCardinality) hM_nonneg sign cover
+      hUcover hprecursor hphiComp
 
 /--
 A lossless fixed-radius finite-net comparison implies the displayed-beta source

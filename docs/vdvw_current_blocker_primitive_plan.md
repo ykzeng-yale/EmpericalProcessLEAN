@@ -7854,3 +7854,18 @@ external cardinality transport gap; the upstream textbook blocker is still to
 prove the selected a.e. finite-net domination itself from ghost samples,
 Rademacher symmetrization, and selected empirical covers, or to prove the
 equivalent nonmeasurable entropy-to-comparison primitive.
+
+2026-05-07 Theorem 2.4.3 selected-cover symmetrization source bridge:
+`Theorem243.lean` now proves
+`VdVWTheorem243_eventualAe_centered_le_two_finiteNetHoeffdingUpper_add_halfRadius_of_symmetrizationPrecursor_hphi_id`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_symmetrizationPrecursor_hphi_id`.
+These are source-side closures: they turn the per-sample symmetrization
+precursor for the selected empirical cover at radius `eta / 2`, plus the
+remaining fixed-sample `Phi(x)=x` comparison on the same eventual a.e. sample
+set, into the named displayed-Chebyshev-beta comparison primitive.  The next
+atomic source target is therefore sharper: prove the actual `hphi_id`
+comparison for the selected half-radius cover, and instantiate the compiled
+`VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover` hypotheses for
+that selected cover.  Do not add more endpoint wrappers before attacking those
+two inputs or recording an exact missing nonmeasurable primitive.

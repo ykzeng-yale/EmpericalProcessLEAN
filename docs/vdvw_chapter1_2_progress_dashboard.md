@@ -3212,3 +3212,13 @@ This is theorem-facing support for the exact Theorem 2.4.3 source route, not a
 new final endpoint.  Remaining blocker: prove the selected a.e. domination or
 an equivalent VdV&W nonmeasurable entropy comparison from the textbook
 ghost/Rademacher selected-cover argument.
+
+2026-05-07 source-bridge refinement:
+`Theorem243.lean` now also proves
+`VdVWTheorem243_eventualAe_centered_le_two_finiteNetHoeffdingUpper_add_halfRadius_of_symmetrizationPrecursor_hphi_id`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_symmetrizationPrecursor_hphi_id`.
+The selected-cover route now reduces to two explicit source inputs: build the
+finite-sample symmetrization precursor for the selected radius-`eta / 2`
+empirical cover, and prove the fixed-sample `Phi(x)=x` comparison on the same
+eventual a.e. samples.  Those are the next proof targets.
