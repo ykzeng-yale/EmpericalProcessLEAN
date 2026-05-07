@@ -7891,3 +7891,16 @@ comparison and the pathwise finite-center Hoeffding/maximal event; remaining
 mean-route work is to connect the selected expected-maximal bound through the
 existing integral finite-net convergence hypotheses without adding endpoint
 aliases.
+
+2026-05-07 selected expected-maximal product-integral handoff:
+`Theorem243.lean` now proves
+`integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_ae_expectedMaximal`
+and
+`eventually_integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_selectedHalfRadius_expectedMaximal`.
+These close the gap between the sample-a.e. selected-cover expected-maximal
+source theorem and the product-integrated finite-net bound used by the
+mean/outer-expectation proof route.  The next non-duplicative mean-route target
+is to prove the selected finite-net Hoeffding-upper integral tends to zero
+from the existing selected entropy/tail side conditions; the event-route target
+remains the fixed-sample `Phi(x)=x` comparison plus pathwise finite-center
+Hoeffding event.

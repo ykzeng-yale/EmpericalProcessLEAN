@@ -3235,3 +3235,12 @@ from the compiled Rademacher sub-Gaussian/Mills/Hoeffding route.  The weaker
 mean/outer-expectation route no longer needs a separate selected-cover maximal
 primitive; the displayed-beta event route still needs the actual fixed-sample
 `hphi_id` comparison and the stronger pathwise finite-center Hoeffding event.
+
+The selected expected-maximal bridge now feeds the product-integrated
+finite-net handoff through
+`integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_ae_expectedMaximal`
+and
+`eventually_integral_prod_vdVWWeightedClassSupremum_le_integral_finiteNetHoeffdingUpper_add_of_selectedHalfRadius_expectedMaximal`.
+This closes the sample-a.e. versus all-sample mismatch for the mean route.
+The remaining mean-route analytic target is the convergence to zero of the
+selected finite-net Hoeffding-upper integral.
