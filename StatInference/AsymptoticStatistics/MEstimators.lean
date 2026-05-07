@@ -647,6 +647,59 @@ theorem vaart1998_theorem_5_7_mEstimator_consistent_of_vdVWOuterProbabilityPGliv
     exact lt_of_le_of_lt hmeasure_le htail_lt
 
 /--
+van der Vaart 1998, Theorem 5.7, book-style VdV&W `P`-Glivenko-Cantelli
+empirical-average endpoint.
+
+The VdV&W predicate allows either an outer-probability or an outer-a.s. uniform
+law.  In the outer-a.s. branch, countability and coordinate a.e.-measurability
+convert it to the outer-probability branch before applying the direct
+event-level consumer above.
+-/
+theorem vaart1998_theorem_5_7_mEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage
+    {Ω : Type u} {Observation : Type*} {Θ : Type v}
+    [MeasurableSpace Ω] [MeasurableSpace Observation] [PseudoMetricSpace Θ]
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Pobs : Measure Observation}
+    (X : ℕ -> Ω -> Observation) (loss : Θ -> Observation -> ℝ)
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (approxError : ℕ -> Ω -> ℝ)
+    (h_gc :
+      VdVWPGlivenkoCantelliClass μ Pobs (Set.univ : Set Θ) loss X)
+    (h_count : (Set.univ : Set Θ).Countable)
+    (h_empirical :
+      ∀ sampleSize theta, theta ∈ (Set.univ : Set Θ) ->
+        AEMeasurable
+          (fun omega =>
+            empiricalAverage (samplePath X omega sampleSize) (loss theta))
+          μ)
+    (h_approx :
+      ∀ n : ℕ, ∀ omega : Ω,
+        empiricalAverage (samplePath X omega n) (loss theta0) ≤
+          empiricalAverage (samplePath X omega n) (loss (thetaHat n omega)) +
+            approxError n omega)
+    (h_approx_outer :
+      VdVWConvergesInOuterProbability μ approxError atTop (fun _ : Ω => 0))
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            populationRiskOfFunction Pobs (loss theta) ≤
+              populationRiskOfFunction Pobs (loss theta0) - eta) :
+    TendstoInMeasure μ thetaHat atTop (fun _ : Ω => theta0) := by
+  rcases h_gc with h_outer | h_outer_as
+  · exact
+      vaart1998_theorem_5_7_mEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage
+        (μ := μ) (Pobs := Pobs) X loss approxError h_outer h_approx
+        h_approx_outer h_separated
+  · exact
+      vaart1998_theorem_5_7_mEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage
+        (μ := μ) (Pobs := Pobs) X loss approxError
+        (VdVWOuterProbabilityPGlivenkoCantelliClass_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalAverage
+          (μ := μ) (P := Pobs) (indexClass := (Set.univ : Set Θ))
+          (classFun := loss) (X := X) h_outer_as h_count h_empirical)
+        h_approx h_approx_outer h_separated
+
+/--
 Norm-criterion uniform deviation used to reduce Z-estimator consistency to
 M-estimator consistency.
 
@@ -1197,6 +1250,63 @@ theorem vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWOuterProbabilityPGliv
           μ.real (gcBad n) + μ.real approxTail :=
       (measureReal_mono hbad_subset).trans (measureReal_union_le _ _)
     exact lt_of_le_of_lt hmeasure_le htail_lt
+
+/--
+van der Vaart 1998, Theorem 5.9, book-style VdV&W `P`-Glivenko-Cantelli
+scalar empirical-average endpoint.
+
+This is the scalar estimating-equation analogue of the Theorem 5.7 book-style
+consumer.  The outer-a.s. branch is converted using the existing VdV&W
+countable/a.e.-measurable bridge.
+-/
+theorem vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage_real
+    {Ω : Type u} {Observation : Type*} {Θ : Type v}
+    [MeasurableSpace Ω] [MeasurableSpace Observation] [PseudoMetricSpace Θ]
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Pobs : Measure Observation}
+    (X : ℕ -> Ω -> Observation)
+    (estimatingFunction : Θ -> Observation -> ℝ)
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (approxError : ℕ -> Ω -> ℝ)
+    (h_gc :
+      VdVWPGlivenkoCantelliClass μ Pobs (Set.univ : Set Θ)
+        estimatingFunction X)
+    (h_count : (Set.univ : Set Θ).Countable)
+    (h_empirical :
+      ∀ sampleSize theta, theta ∈ (Set.univ : Set Θ) ->
+        AEMeasurable
+          (fun omega =>
+            empiricalAverage (samplePath X omega sampleSize)
+              (estimatingFunction theta))
+          μ)
+    (h_near_zero :
+      ∀ n : ℕ, ∀ omega : Ω,
+        ‖empiricalAverage (samplePath X omega n)
+          (estimatingFunction (thetaHat n omega))‖ ≤ approxError n omega)
+    (h_approx_outer :
+      VdVWConvergesInOuterProbability μ approxError atTop (fun _ : Ω => 0))
+    (h_zero :
+      populationRiskOfFunction Pobs (estimatingFunction theta0) = 0)
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            eta ≤ ‖populationRiskOfFunction Pobs
+              (estimatingFunction theta)‖) :
+    TendstoInMeasure μ thetaHat atTop (fun _ : Ω => theta0) := by
+  rcases h_gc with h_outer | h_outer_as
+  · exact
+      vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage_real
+        (μ := μ) (Pobs := Pobs) X estimatingFunction approxError
+        h_outer h_near_zero h_approx_outer h_zero h_separated
+  · exact
+      vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage_real
+        (μ := μ) (Pobs := Pobs) X estimatingFunction approxError
+        (VdVWOuterProbabilityPGlivenkoCantelliClass_of_outerAlmostSure_of_countable_of_aemeasurable_empiricalAverage
+          (μ := μ) (P := Pobs) (indexClass := (Set.univ : Set Θ))
+          (classFun := estimatingFunction) (X := X) h_outer_as h_count
+          h_empirical)
+        h_near_zero h_approx_outer h_zero h_separated
 
 /--
 van der Vaart 1998, Theorem 5.9, vector empirical-average estimating-equation

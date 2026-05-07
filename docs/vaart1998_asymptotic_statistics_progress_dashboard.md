@@ -544,10 +544,16 @@ Chapter 4 handoff:
   consume event-level outer-probability `P`-GC class laws directly, so real
   criteria `P_n m_theta` and scalar equations `P_n psi_theta` do not need a
   manually supplied random uniform-error process.
+- Book-style VdV&W `P`-Glivenko-Cantelli empirical-average consumers:
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage`
+  and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage_real`
+  accept either the outer-probability GC branch directly or the outer-a.s.
+  branch with countability and coordinate a.e.-measurability.
 
-Latest remote base before this packet: `51c9d8e`.  Latest pushed Vaart packet
-before this packet: `51c9d8e`
-(`Add Vaart vector empirical-average Z endpoint`).
+Latest remote base before this packet: `c41c519`.  Latest pushed Vaart packet
+before this packet: `c41c519`
+(`Add Vaart direct P-GC empirical-average endpoints`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -560,10 +566,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Add book-style `VdVWPGlivenkoCantelliClass` consumers that accept either the
-outer-probability branch directly or the outer-a.s. branch plus
-countability/a.e.-measurability bridges, then move to Chapter 5 asymptotic
-normality/rates once the consistency source layer is settled.
+Move to Chapter 5 asymptotic normality for Z-estimators or the M-estimator
+rate/argmax layer, reusing the Chapter 3 delta method and existing
+empirical-process/Donsker interfaces instead of adding more consistency
+plumbing.
 
 ## Reuse Dependencies
 

@@ -731,22 +731,27 @@ Chapter 3 theorem-facing wrappers compiling:
 242. Theorem 5.9 direct VdV&W `P`-Glivenko-Cantelli scalar empirical-average
    endpoint:
    `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage_real`.
+243. Theorem 5.7 book-style VdV&W `P`-Glivenko-Cantelli empirical-average
+   endpoint:
+   `vaart1998_theorem_5_7_mEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage`.
+244. Theorem 5.9 book-style VdV&W `P`-Glivenko-Cantelli scalar
+   empirical-average endpoint:
+   `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage_real`.
 
-Latest remote base before this packet: `51c9d8e`.
-Latest pushed Vaart packet before this packet: `51c9d8e`
-(`Add Vaart vector empirical-average Z endpoint`).
+Latest remote base before this packet: `c41c519`.
+Latest pushed Vaart packet before this packet: `c41c519`
+(`Add Vaart direct P-GC empirical-average endpoints`).
 
-The current theorem-sized packet consumes the VdV&W
-`VdVWOuterProbabilityPGlivenkoCantelliClass` event-level uniform law directly
-for empirical averages.  Real criteria `P_n m_theta` and scalar estimating
-equations `P_n psi_theta` no longer need a manually supplied random
-uniform-error process when a `P`-GC class predicate is available.
+The current theorem-sized packet adds book-style
+`VdVWPGlivenkoCantelliClass` consumers for real empirical criteria and scalar
+estimating equations.  The outer-probability branch is used directly; the
+outer-a.s. branch is converted through the existing countable/a.e.-measurable
+VdV&W bridge.
 
-The next aggressive packet should add book-style `VdVWPGlivenkoCantelliClass`
-consumers that accept either the outer-probability branch directly or the
-outer-a.s. branch plus countability/a.e.-measurability bridges, then move to
-Chapter 5 asymptotic normality/rates once the consistency source layer is
-settled.
+The next aggressive packet should move to Chapter 5 asymptotic normality for
+Z-estimators or the M-estimator rate/argmax layer, reusing the Chapter 3 delta
+method and existing empirical-process/Donsker interfaces instead of adding more
+consistency plumbing.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

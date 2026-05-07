@@ -477,6 +477,12 @@ Initial modules:
   and
   `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage_real`
   use the event-level outer-probability `P`-GC class predicate directly.
+  The book-style branch consumers
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage`
+  and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWPGlivenkoCantelliClass_empiricalAverage_real`
+  also accept an outer-a.s. `P`-GC branch when countability and coordinate
+  a.e.-measurability discharge the VdV&W bridge.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
