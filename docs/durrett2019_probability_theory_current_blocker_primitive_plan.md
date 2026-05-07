@@ -219,6 +219,10 @@ namespace now has a compiled starter module:
 - `durrett2019_lindebergFellerCondition`
 - `durrett2019_lindebergFellerCharacteristicProduct`
 - `durrett2019_lindebergFellerRowGaussianExpTarget`
+- `durrett2019_lindebergFellerQuadraticVarianceFactor`
+- `durrett2019_lindebergFellerQuadraticVarianceProduct`
+- `durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVarianceProduct`
+- `durrett2019_lindebergFellerQuadraticVarianceProductApproximationToRowGaussianExp`
 - `durrett2019_lindebergFellerProductApproximationToRowGaussianExp`
 - `durrett2019_lindebergFellerGaussianProductConvergence`
 - `durrett2019_lindebergFellerGaussianProductConvergenceExp`
@@ -228,7 +232,9 @@ namespace now has a compiled starter module:
 - `Durrett2019LindebergFellerAnalyticCertificate.gaussianProductConvergence`
 - `durrett2019_theorem_3_4_10_rowGaussianExpTarget_tendsto_of_varianceSum`
 - `durrett2019_theorem_3_4_10_product_tendsto_exp_of_varianceSum_and_rowGaussianApprox`
+- `durrett2019_theorem_3_4_10_productApproximationToRowGaussianExp_of_quadraticVarianceProductApproximations`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_productApproximationToRowGaussianExp`
+- `Durrett2019LindebergFellerAnalyticCertificate.of_quadraticVarianceProductApproximations`
 - `durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_exp_of_product_tendsto_exp`
@@ -287,9 +293,10 @@ compile:
   independence, textbook mean-zero/variance-sum/Lindeberg-tail predicates, the
   explicit `exp(-sigma^2 t^2 / 2)` product-convergence interface, the Gaussian
   characteristic-function display, the row characteristic-function product
-  formula, row Gaussian exponential targets, the variance-sum-to-row-target
-  convergence bridge, and source-facing bridges from a supplied row-product
-  approximation to convergence in distribution.
+  formula, quadratic variance factors/products, row Gaussian exponential
+  targets, the variance-sum-to-row-target convergence bridge, and source-facing
+  bridges from supplied quadratic-product approximations to convergence in
+  distribution.
 
 The next likely packet should attack the analytic Lindeberg-Feller estimate
 layer before moving to multivariate CLT reuse:
@@ -300,12 +307,13 @@ layer before moving to multivariate CLT reuse:
 - Section 3.3 characteristic functions: the basic, continuity-theorem, and
   centered second-order Taylor wrappers now compile; only add inversion or
   uniqueness support when a later source theorem needs it directly.
-- Section 3.4 central limit theorems: prove
-  `durrett2019_lindebergFellerProductApproximationToRowGaussianExp` from the
-  mean-zero and Lindeberg-tail hypotheses.  Variance-sum convergence now
-  handles the row Gaussian target limit, and the finite-row independence/product,
-  explicit Gaussian characteristic-function display, and Levy-continuity
-  plumbing compile.
+- Section 3.4 central limit theorems: prove the two split obligations
+  `durrett2019_lindebergFellerCharacteristicProductApproximationToQuadraticVarianceProduct`
+  and
+  `durrett2019_lindebergFellerQuadraticVarianceProductApproximationToRowGaussianExp`.
+  The first is the Taylor/Lindeberg part; the second is the finite-product to
+  exponential part.  Their assembly into the row-product approximation and the
+  final analytic certificate now compiles.
 - Section 3.10 characteristic-function convergence, Cramer-Wold, and
   multivariate CLT: search `StatInference/AsymptoticStatistics` and local
   weak-convergence files before adding new primitives.
@@ -430,9 +438,9 @@ Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem,
 and Theorem 3.3.20 centered second-order Taylor wrapper.  Chapter 3.4 now has
 Theorem 3.4.1 i.i.d. CLT wrappers and Theorem 3.4.10
 triangular-array characteristic-function/product/certificate plumbing.  Next
-prove `durrett2019_lindebergFellerProductApproximationToRowGaussianExp` from
-the textbook mean-zero and Lindeberg-tail hypotheses before moving to Section
-3.10 Cramer-Wold/multivariate CLT wrappers while checking local
-asymptotic-statistics reuse first.
+prove the Taylor/Lindeberg characteristic-product-to-quadratic-product
+approximation and the quadratic-product-to-row-Gaussian-exponential
+approximation before moving to Section 3.10 Cramer-Wold/multivariate CLT
+wrappers while checking local asymptotic-statistics reuse first.
 Verify, update docs, commit/push, and keep this in-thread `/goal` state current.
 Report progress and blockers in Chinese/English mix.
