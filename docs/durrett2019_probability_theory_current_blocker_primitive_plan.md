@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V26
+## Live In-Thread Goal Prompt V27
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -42,14 +42,16 @@ source-facing all-times and strict-index conditional-expectation wrappers for
 supermartingales, submartingales, and martingales.  The generic Theorem 4.2.6
 convex-image submartingale wrapper now compiles from the Chapter 4.1
 conditional Jensen theorem.
+Theorem 4.2.6 now also has the textbook `|X_n|^p` consequence for `p ≥ 1`,
+using a reusable convexity wrapper for `x ↦ |x|^p`.
 
-Next theorem-sized packet: finish the remaining Theorem 4.2.6 consequence
-`|X_n|^p` for `p ≥ 1` by locating or adding the reusable convexity wrapper for
-`x ↦ |x|^p`/`x ↦ ‖x‖^p`, then feed it into the compiled generic convex-image
-submartingale theorem.  If the power-convexity route is not immediate, move to
-Theorem 4.2.7 increasing-convex transforms using the same conditional Jensen
-bridge.  Do not repackage solved Chapter 4.1 facts, examples 4.2.1-4.2.3, or
-Theorems 4.2.4-4.2.6 generic wrappers.
+Next theorem-sized packet: move to Theorem 4.2.7 increasing-convex transforms.
+Package the source theorem for a real submartingale `X_n` and an increasing
+convex `φ`, using conditional Jensen plus the compiled submartingale
+one-step inequality.  If direct, add the positive-part consequence
+`(X_n - a)^+` as a submartingale and the supermartingale minimum consequence
+`X_n ∧ a` via negation.  Do not repackage solved Chapter 4.1 facts, examples
+4.2.1-4.2.3, or Theorems 4.2.4-4.2.6.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -412,10 +414,10 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should finish the Theorem 4.2.6 `|X_n|^p` consequence,
-or move to Theorem 4.2.7 increasing-convex transforms if the power-convexity
-route is not immediate.  Keep Theorem 4.1.16 deferred unless a targeted kernel
-search finds a direct source-shaped API.
+The next likely packet should package Theorem 4.2.7 increasing-convex
+transforms and, if direct, its positive-part/minimum consequences.  Keep
+Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
+source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -527,6 +529,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V26` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V27` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

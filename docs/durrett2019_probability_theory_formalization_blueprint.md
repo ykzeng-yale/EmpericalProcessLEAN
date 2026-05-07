@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V26`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V27`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -409,11 +409,11 @@ Next packet:
   normalized exponential display/wrapper now compiles from a nonzero common
   exponential moment.  Theorems 4.2.4 and 4.2.5 now compile as all-times and
   strict-index conditional-expectation wrappers, and the generic Theorem 4.2.6
-  convex-image submartingale wrapper now compiles from conditional Jensen.  The
-  next active target is the Theorem 4.2.6 `|X_n|^p` consequence, then Theorem
-  4.2.7 increasing-convex transforms if the power-convexity route is not
-  immediate.  Theorem 4.1.16 remains deferred unless a direct kernel API
-  appears.
+  convex-image submartingale wrapper and `|X_n|^p` consequence now compile
+  from conditional Jensen and the `x ↦ |x|^p` convexity wrapper.  The next
+  active target is Theorem 4.2.7 increasing-convex transforms and, if direct,
+  its positive-part/minimum consequences.  Theorem 4.1.16 remains deferred
+  unless a direct kernel API appears.
 
 Support-only dependencies:
 

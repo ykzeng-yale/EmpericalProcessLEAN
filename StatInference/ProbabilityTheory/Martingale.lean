@@ -299,6 +299,50 @@ theorem durrett2019_theorem_4_2_6_convex_comp_submartingale
         simp [hω]
     exact hLeft.symm.le.trans hJensen
 
+/--
+Durrett 2019, Theorem 4.2.6 consequence: for `p ≥ 1`, the function
+`x ↦ |x|^p` is convex.
+-/
+theorem durrett2019_theorem_4_2_6_abs_rpow_convex {p : ℝ} (hp : 1 ≤ p) :
+    ConvexOn ℝ Set.univ (fun x : ℝ => |x| ^ p) := by
+  have hp_nonneg : 0 ≤ p := zero_le_one.trans hp
+  have habs_image : (fun x : ℝ => |x|) '' Set.univ = Set.Ici 0 := by
+    ext y
+    constructor
+    · rintro ⟨x, -, rfl⟩
+      exact abs_nonneg x
+    · intro hy
+      exact ⟨y, trivial, abs_of_nonneg hy⟩
+  have hpow :
+      ConvexOn ℝ ((fun x : ℝ => |x|) '' Set.univ) (fun x : ℝ => x ^ p) := by
+    simpa [habs_image] using convexOn_rpow hp
+  have hpow_mono :
+      MonotoneOn (fun x : ℝ => x ^ p) ((fun x : ℝ => |x|) '' Set.univ) := by
+    simpa [habs_image] using Real.monotoneOn_rpow_Ici_of_exponent_nonneg hp_nonneg
+  have habs : ConvexOn ℝ Set.univ (fun x : ℝ => |x|) := by
+    simpa [Real.norm_eq_abs] using
+      (convexOn_univ_norm : ConvexOn ℝ Set.univ (norm : ℝ -> ℝ))
+  simpa [Function.comp_def] using hpow.comp habs hpow_mono
+
+/--
+Durrett 2019, Theorem 4.2.6 consequence: if `p ≥ 1` and `|X_n|^p` is
+integrable for every `n`, then `|X_n|^p` is a submartingale.
+-/
+theorem durrett2019_theorem_4_2_6_abs_rpow_submartingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hX : Martingale X ℱ μ) (hp : 1 ≤ p)
+    (h_abs_int : ∀ n, Integrable (fun ω => |X n ω| ^ p) μ) :
+    Submartingale (fun n ω => |X n ω| ^ p) ℱ μ := by
+  have hφ_int :
+      ∀ n, Integrable ((fun x : ℝ => |x| ^ p) ∘ X n) μ := by
+    simpa [Function.comp_def] using h_abs_int
+  simpa [Function.comp_def] using
+    durrett2019_theorem_4_2_6_convex_comp_submartingale
+      (μ := μ) (ℱ := ℱ) (X := X) (φ := fun x : ℝ => |x| ^ p)
+      hX (durrett2019_theorem_4_2_6_abs_rpow_convex hp) hφ_int
+
 /-! ## Durrett, Example 4.2.1 -/
 
 /--
