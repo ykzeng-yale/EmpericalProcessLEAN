@@ -526,6 +526,127 @@ theorem vaart1998_theorem_5_7_mEstimator_consistent_of_empiricalAverage_outerPro
     h_uniform_outer h_approx_outer h_separated
 
 /--
+van der Vaart 1998, Theorem 5.7, direct VdV&W `P`-Glivenko-Cantelli
+empirical-average endpoint.
+
+This consumes the VdV&W outer-probability `P`-GC class predicate as an event
+level uniform law.  Future users no longer need to introduce a separate random
+uniform-error process when their criterion is the empirical average
+`P_n m_theta`.
+-/
+theorem vaart1998_theorem_5_7_mEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage
+    {Ω : Type u} {Observation : Type*} {Θ : Type v}
+    [MeasurableSpace Ω] [MeasurableSpace Observation] [PseudoMetricSpace Θ]
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Pobs : Measure Observation}
+    (X : ℕ -> Ω -> Observation) (loss : Θ -> Observation -> ℝ)
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (approxError : ℕ -> Ω -> ℝ)
+    (h_gc :
+      VdVWOuterProbabilityPGlivenkoCantelliClass μ Pobs (Set.univ : Set Θ)
+        loss X)
+    (h_approx :
+      ∀ n : ℕ, ∀ omega : Ω,
+        empiricalAverage (samplePath X omega n) (loss theta0) ≤
+          empiricalAverage (samplePath X omega n) (loss (thetaHat n omega)) +
+            approxError n omega)
+    (h_approx_outer :
+      VdVWConvergesInOuterProbability μ approxError atTop (fun _ : Ω => 0))
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            populationRiskOfFunction Pobs (loss theta) ≤
+              populationRiskOfFunction Pobs (loss theta0) - eta) :
+    TendstoInMeasure μ thetaHat atTop (fun _ : Ω => theta0) := by
+  rw [MeasureTheory.tendstoInMeasure_iff_measureReal_dist]
+  intro epsilon hepsilon
+  rcases h_separated epsilon hepsilon with
+    ⟨eta, heta_pos, h_separated_eta⟩
+  have h_eta_quarter : 0 < eta / 4 := by positivity
+  have h_eta_half : 0 < eta / 2 := by positivity
+  let M : Θ -> ℝ := fun theta => populationRiskOfFunction Pobs (loss theta)
+  let empiricalRisk : Ω -> ℕ -> Θ -> ℝ :=
+    fun omega n theta => empiricalAverage (samplePath X omega n) (loss theta)
+  let gcBad : ℕ -> Set Ω := fun n =>
+    {omega : Ω |
+      ¬ EmpiricalDeviationBoundOn (Set.univ : Set Θ) M
+        (empiricalRisk omega n) (eta / 4)}
+  have h_gc_tail_enn :
+      Tendsto
+        (fun n : ℕ => VdVWOuterProbability μ (gcBad n))
+        atTop (𝓝 0) := by
+    simpa [VdVWOuterProbabilityPGlivenkoCantelliClass,
+      VdVWOuterProbabilityUniformDeviationTendstoZeroOn, M, empiricalRisk,
+      gcBad] using h_gc (eta / 4) h_eta_quarter
+  have h_gc_tail_real :
+      Tendsto (fun n : ℕ => μ.real (gcBad n)) atTop (𝓝 0) := by
+    simpa [VdVWOuterProbability, Measure.real] using
+      (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp h_gc_tail_enn
+  have h_approx_tail :
+      Tendsto
+        (fun n : ℕ =>
+          μ.real {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖})
+        atTop (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm).mp
+      (tendstoInMeasure_of_vdVWConvergesInOuterProbability h_approx_outer)
+      (eta / 2) h_eta_half
+  have h_tail_sum :
+      Tendsto
+        (fun n : ℕ =>
+          μ.real (gcBad n) +
+            μ.real {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖})
+        atTop (𝓝 0) := by
+    simpa using h_gc_tail_real.add h_approx_tail
+  rw [tendsto_order]
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun _ =>
+      lt_of_lt_of_le ha measureReal_nonneg
+  · intro a ha
+    filter_upwards [h_tail_sum.eventually_lt_const ha] with n htail_lt
+    let approxTail : Set Ω :=
+      {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖}
+    have hbad_subset :
+        {omega : Ω | epsilon ≤ dist (thetaHat n omega) theta0} ⊆
+          gcBad n ∪ approxTail := by
+      intro omega hbad
+      by_contra hnot
+      have hnot_gc : omega ∉ gcBad n := by
+        exact fun hmem => hnot (Or.inl hmem)
+      have hnot_approx : omega ∉ approxTail := by
+        exact fun hmem => hnot (Or.inr hmem)
+      have hgc_good :
+          EmpiricalDeviationBoundOn (Set.univ : Set Θ) M
+            (empiricalRisk omega n) (eta / 4) :=
+        of_not_not hnot_gc
+      have happrox_norm_lt :
+          ‖approxError n omega - 0‖ < eta / 2 :=
+        lt_of_not_ge hnot_approx
+      have happrox_lt : approxError n omega < eta / 2 := by
+        have hle_norm :
+            approxError n omega ≤ ‖approxError n omega - 0‖ := by
+          simpa [sub_zero, Real.norm_eq_abs] using
+            (le_abs_self (approxError n omega))
+        linarith
+      have hsmall : 2 * (eta / 4) + approxError n omega < eta := by
+        nlinarith
+      have hdist_lt :
+          dist (thetaHat n omega) theta0 < epsilon :=
+        vaart1998_theorem_5_7_dist_lt_of_uniformDeviation_approxMax
+          M (empiricalRisk omega n) (thetaHat n omega) theta0
+          (eta / 4) (approxError n omega) epsilon eta
+          (fun theta => hgc_good theta trivial)
+          (h_approx n omega)
+          h_separated_eta hsmall
+      exact (not_le_of_gt hdist_lt) hbad
+    have hmeasure_le :
+        μ.real {omega : Ω | epsilon ≤ dist (thetaHat n omega) theta0} ≤
+          μ.real (gcBad n) + μ.real approxTail :=
+      (measureReal_mono hbad_subset).trans (measureReal_union_le _ _)
+    exact lt_of_le_of_lt hmeasure_le htail_lt
+
+/--
 Norm-criterion uniform deviation used to reduce Z-estimator consistency to
 M-estimator consistency.
 
@@ -951,6 +1072,131 @@ theorem vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_real_out
     (theta0 := theta0) (thetaHat := thetaHat)
     uniformError approxError h_uniform h_near_zero
     h_uniform_outer h_approx_outer h_zero h_separated
+
+/--
+van der Vaart 1998, Theorem 5.9, direct VdV&W `P`-Glivenko-Cantelli scalar
+empirical-average endpoint.
+
+This consumes the VdV&W outer-probability `P`-GC predicate for the real
+estimating-function class itself.  It avoids asking downstream proofs to first
+package the uniform estimating-equation error as a random scalar process.
+-/
+theorem vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage_real
+    {Ω : Type u} {Observation : Type*} {Θ : Type v}
+    [MeasurableSpace Ω] [MeasurableSpace Observation] [PseudoMetricSpace Θ]
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Pobs : Measure Observation}
+    (X : ℕ -> Ω -> Observation)
+    (estimatingFunction : Θ -> Observation -> ℝ)
+    {theta0 : Θ} {thetaHat : ℕ -> Ω -> Θ}
+    (approxError : ℕ -> Ω -> ℝ)
+    (h_gc :
+      VdVWOuterProbabilityPGlivenkoCantelliClass μ Pobs (Set.univ : Set Θ)
+        estimatingFunction X)
+    (h_near_zero :
+      ∀ n : ℕ, ∀ omega : Ω,
+        ‖empiricalAverage (samplePath X omega n)
+          (estimatingFunction (thetaHat n omega))‖ ≤ approxError n omega)
+    (h_approx_outer :
+      VdVWConvergesInOuterProbability μ approxError atTop (fun _ : Ω => 0))
+    (h_zero :
+      populationRiskOfFunction Pobs (estimatingFunction theta0) = 0)
+    (h_separated :
+      ∀ epsilon : ℝ, 0 < epsilon ->
+        ∃ eta : ℝ, 0 < eta ∧
+          ∀ theta : Θ, epsilon ≤ dist theta theta0 ->
+            eta ≤ ‖populationRiskOfFunction Pobs
+              (estimatingFunction theta)‖) :
+    TendstoInMeasure μ thetaHat atTop (fun _ : Ω => theta0) := by
+  rw [MeasureTheory.tendstoInMeasure_iff_measureReal_dist]
+  intro epsilon hepsilon
+  rcases h_separated epsilon hepsilon with
+    ⟨eta, heta_pos, h_separated_eta⟩
+  have h_eta_quarter : 0 < eta / 4 := by positivity
+  have h_eta_half : 0 < eta / 2 := by positivity
+  let Psi : Θ -> ℝ :=
+    fun theta => populationRiskOfFunction Pobs (estimatingFunction theta)
+  let empiricalPsi : Ω -> ℕ -> Θ -> ℝ :=
+    fun omega n theta =>
+      empiricalAverage (samplePath X omega n) (estimatingFunction theta)
+  let gcBad : ℕ -> Set Ω := fun n =>
+    {omega : Ω |
+      ¬ EmpiricalDeviationBoundOn (Set.univ : Set Θ) Psi
+        (empiricalPsi omega n) (eta / 4)}
+  have h_gc_tail_enn :
+      Tendsto
+        (fun n : ℕ => VdVWOuterProbability μ (gcBad n))
+        atTop (𝓝 0) := by
+    simpa [VdVWOuterProbabilityPGlivenkoCantelliClass,
+      VdVWOuterProbabilityUniformDeviationTendstoZeroOn, Psi, empiricalPsi,
+      gcBad] using h_gc (eta / 4) h_eta_quarter
+  have h_gc_tail_real :
+      Tendsto (fun n : ℕ => μ.real (gcBad n)) atTop (𝓝 0) := by
+    simpa [VdVWOuterProbability, Measure.real] using
+      (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp h_gc_tail_enn
+  have h_approx_tail :
+      Tendsto
+        (fun n : ℕ =>
+          μ.real {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖})
+        atTop (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm).mp
+      (tendstoInMeasure_of_vdVWConvergesInOuterProbability h_approx_outer)
+      (eta / 2) h_eta_half
+  have h_tail_sum :
+      Tendsto
+        (fun n : ℕ =>
+          μ.real (gcBad n) +
+            μ.real {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖})
+        atTop (𝓝 0) := by
+    simpa using h_gc_tail_real.add h_approx_tail
+  rw [tendsto_order]
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun _ =>
+      lt_of_lt_of_le ha measureReal_nonneg
+  · intro a ha
+    filter_upwards [h_tail_sum.eventually_lt_const ha] with n htail_lt
+    let approxTail : Set Ω :=
+      {omega : Ω | eta / 2 ≤ ‖approxError n omega - 0‖}
+    have hbad_subset :
+        {omega : Ω | epsilon ≤ dist (thetaHat n omega) theta0} ⊆
+          gcBad n ∪ approxTail := by
+      intro omega hbad
+      by_contra hnot
+      have hnot_gc : omega ∉ gcBad n := by
+        exact fun hmem => hnot (Or.inl hmem)
+      have hnot_approx : omega ∉ approxTail := by
+        exact fun hmem => hnot (Or.inr hmem)
+      have hgc_good :
+          EmpiricalDeviationBoundOn (Set.univ : Set Θ) Psi
+            (empiricalPsi omega n) (eta / 4) :=
+        of_not_not hnot_gc
+      have happrox_norm_lt :
+          ‖approxError n omega - 0‖ < eta / 2 :=
+        lt_of_not_ge hnot_approx
+      have happrox_lt : approxError n omega < eta / 2 := by
+        have hle_norm :
+            approxError n omega ≤ ‖approxError n omega - 0‖ := by
+          simpa [sub_zero, Real.norm_eq_abs] using
+            (le_abs_self (approxError n omega))
+        linarith
+      have hsmall : 2 * (eta / 4) + approxError n omega < eta := by
+        nlinarith
+      have hdist_lt :
+          dist (thetaHat n omega) theta0 < epsilon :=
+        vaart1998_theorem_5_9_dist_lt_of_uniformDeviation_nearZero
+          Psi (empiricalPsi omega n) (thetaHat n omega) theta0
+          (eta / 4) (approxError n omega) epsilon eta
+          (fun theta => by
+            simpa [Real.norm_eq_abs] using hgc_good theta trivial)
+          (h_near_zero n omega)
+          h_zero h_separated_eta hsmall
+      exact (not_le_of_gt hdist_lt) hbad
+    have hmeasure_le :
+        μ.real {omega : Ω | epsilon ≤ dist (thetaHat n omega) theta0} ≤
+          μ.real (gcBad n) + μ.real approxTail :=
+      (measureReal_mono hbad_subset).trans (measureReal_union_le _ _)
+    exact lt_of_le_of_lt hmeasure_le htail_lt
 
 /--
 van der Vaart 1998, Theorem 5.9, vector empirical-average estimating-equation

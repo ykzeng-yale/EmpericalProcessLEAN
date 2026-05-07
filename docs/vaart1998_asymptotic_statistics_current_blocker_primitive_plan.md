@@ -726,20 +726,27 @@ Chapter 3 theorem-facing wrappers compiling:
    `empiricalAverageVector_eq_inv_smul_sum`.
 240. Theorem 5.9 vector empirical-average estimating-equation endpoint:
    `vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_outerProbabilityUniformErrors`.
+241. Theorem 5.7 direct VdV&W `P`-Glivenko-Cantelli empirical-average endpoint:
+   `vaart1998_theorem_5_7_mEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage`.
+242. Theorem 5.9 direct VdV&W `P`-Glivenko-Cantelli scalar empirical-average
+   endpoint:
+   `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage_real`.
 
-Latest remote base before this packet: `d0cd769`.
-Latest pushed Vaart packet before this packet: `0c3f190`
-(`Add Vaart chapter 5 outer probability endpoints`).
+Latest remote base before this packet: `51c9d8e`.
+Latest pushed Vaart packet before this packet: `51c9d8e`
+(`Add Vaart vector empirical-average Z endpoint`).
 
-The current theorem-sized packet extends the sample-average notation layer from
-real criteria to real-normed-vector estimating equations.  Vector empirical
-averages `P_n psi_theta` now feed the VdV&W outer-probability Theorem 5.9
-endpoint directly.
+The current theorem-sized packet consumes the VdV&W
+`VdVWOuterProbabilityPGlivenkoCantelliClass` event-level uniform law directly
+for empirical averages.  Real criteria `P_n m_theta` and scalar estimating
+equations `P_n psi_theta` no longer need a manually supplied random
+uniform-error process when a `P`-GC class predicate is available.
 
-The next aggressive packet should build source-shaped GC/outer-probability
-constructors that turn existing VdV&W class-level uniform laws directly into
-the Chapter 5 empirical-average M/Z endpoints, rather than asking future users
-to supply the random uniform-error process manually.
+The next aggressive packet should add book-style `VdVWPGlivenkoCantelliClass`
+consumers that accept either the outer-probability branch directly or the
+outer-a.s. branch plus countability/a.e.-measurability bridges, then move to
+Chapter 5 asymptotic normality/rates once the consistency source layer is
+settled.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

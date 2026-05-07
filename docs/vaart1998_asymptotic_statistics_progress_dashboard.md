@@ -537,10 +537,17 @@ Chapter 4 handoff:
   `vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_outerProbabilityUniformErrors`
   extend the sample-average route to real-normed-vector equations
   `P_n psi_theta`.
+- Direct VdV&W `P`-Glivenko-Cantelli empirical-average consumers:
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage`
+  and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage_real`
+  consume event-level outer-probability `P`-GC class laws directly, so real
+  criteria `P_n m_theta` and scalar equations `P_n psi_theta` do not need a
+  manually supplied random uniform-error process.
 
-Latest remote base before this packet: `d0cd769`.  Latest pushed Vaart packet
-before this packet: `0c3f190`
-(`Add Vaart chapter 5 outer probability endpoints`).
+Latest remote base before this packet: `51c9d8e`.  Latest pushed Vaart packet
+before this packet: `51c9d8e`
+(`Add Vaart vector empirical-average Z endpoint`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -553,10 +560,10 @@ checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Build source-shaped GC/outer-probability constructors that turn existing VdV&W
-class-level uniform laws directly into the Chapter 5 empirical-average M/Z
-endpoints, rather than asking future users to supply the random uniform-error
-process manually.
+Add book-style `VdVWPGlivenkoCantelliClass` consumers that accept either the
+outer-probability branch directly or the outer-a.s. branch plus
+countability/a.e.-measurability bridges, then move to Chapter 5 asymptotic
+normality/rates once the consistency source layer is settled.
 
 ## Reuse Dependencies
 

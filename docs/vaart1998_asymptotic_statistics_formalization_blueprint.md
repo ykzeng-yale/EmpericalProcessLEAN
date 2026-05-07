@@ -472,6 +472,11 @@ Initial modules:
   average `empiricalAverageVector`, consumed by
   `vaart1998_theorem_5_9_zEstimator_consistent_of_empiricalAverage_vector_outerProbabilityUniformErrors`
   for vector-valued estimating equations `P_n psi_theta`.
+  The newest direct VdV&W source consumers
+  `vaart1998_theorem_5_7_mEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage`
+  and
+  `vaart1998_theorem_5_9_zEstimator_consistent_of_vdVWOuterProbabilityPGlivenkoCantelliClass_empiricalAverage_real`
+  use the event-level outer-probability `P`-GC class predicate directly.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
