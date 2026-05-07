@@ -150,9 +150,36 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative`.
 - measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_real`.
+- coordinate-free covariance display helpers:
+  `vaart1998_limitCovarianceFunctional`,
+  `vaart1998_inverseDerivativeCovarianceFunctional`, and
+  `vaart1998_limitCovarianceFunctional_inverseDerivative_apply`.
+- measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper with
+  covariance display:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_real`.
+- covarianceBilinDual bridges for square-integrable laws:
+  `vaart1998_limitCovarianceFunctional_eq_covarianceBilinDual_map` and
+  `vaart1998_covarianceBilinDual_inverseDerivative_map_apply`.
+- inverse-derivative measurability and square-integrability propagation:
+  `vaart1998_inverseDerivative_aemeasurable_of_aemeasurable`,
+  `vaart1998_inverseDerivative_map_memLp_of_memLp`, and
+  `vaart1998_covarianceBilinDual_inverseDerivative_map_apply_of_memLp`.
+- measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper with the
+  canonical covarianceBilinDual display:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_real`.
+- local-inverse a.e.-measurability helpers:
+  `vaart1998_openPartialHomeomorph_symm_aemeasurable_on_target`,
+  `vaart1998_localInverse_aemeasurable_on_open_momentRange`, and
+  `vaart1998_localInverse_aemeasurable_of_ae_mem_open_momentRange`.
+- empirical-moment composition bridge for localized local inverses:
+  `vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_ae_mem_open_momentRange`.
+- Chapter 4.1 delta handoffs that require only a.e.-measurability of the
+  composed local inverse:
+  `vaart1998_theorem_4_1_moment_estimator_delta_method_aemeasurable` and
+  `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_aemeasurable`.
 
 Verification passed for the latest pushed Vaart packet before this run,
-`1d574e8`:
+`9e16530`; the current packet is rebased over remote base `7bfd3e1`:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MomentEstimators`
@@ -175,15 +202,14 @@ targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled delta handoff:
+Continue Vaart Chapter 4.1 from the compiled Gaussian, canonical
+covarianceBilinDual source wrapper, and a.e.-measurable local-inverse delta
+handoff:
 
-1. package the exact covariance display for the Gaussian estimator limit so the
-   theorem statement visibly matches Vaart's covariance formula after applying
-   the inverse derivative;
-2. add a local-inverse measurability convenience from the open partial
-   homeomorphism/local continuity API if it can be done without widening the
-   topology assumptions too much;
-3. keep the actual multivariate CLT supplied until a local vector CLT is
+1. replace global local-inverse measurability hypotheses in finite-coordinate
+   Chapter 4 source assemblers by the compiled a.e.-localized local-inverse
+   composition theorem where the empirical-moment target event is available;
+2. keep the actual multivariate CLT supplied until a local vector CLT is
    formalized from the scalar mathlib CLT or another local dependency.
 
 If this blocks, record the exact missing theorem shape for the supplied

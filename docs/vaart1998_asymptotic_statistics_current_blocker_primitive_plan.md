@@ -212,27 +212,69 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_theorem_4_1_gaussian_limit_of_linear_inverse_derivative`.
 63. Measurable-coordinate Theorem 4.1 Gaussian-limit source wrapper:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_real`.
+64. Limit covariance functional tested against continuous linear coordinates:
+   `vaart1998_limitCovarianceFunctional`.
+65. Inverse-derivative covariance pullback functional:
+   `vaart1998_inverseDerivativeCovarianceFunctional`.
+66. Inverse-derivative covariance pullback identity:
+   `vaart1998_limitCovarianceFunctional_inverseDerivative_apply`.
+67. Measurable-coordinate Theorem 4.1 Gaussian-limit wrapper with covariance
+   display:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceDisplay_real`.
+68. Square-integrable law bridge from the coordinate covariance functional to
+   mathlib's covariance bilinear form:
+   `vaart1998_limitCovarianceFunctional_eq_covarianceBilinDual_map`.
+69. Inverse-derivative pushed-law covariance bilinear form as the pullback of
+   the original covariance bilinear form:
+   `vaart1998_covarianceBilinDual_inverseDerivative_map_apply`.
+70. Inverse-derivative a.e. measurability propagation:
+   `vaart1998_inverseDerivative_aemeasurable_of_aemeasurable`.
+71. Inverse-derivative square-integrable law propagation:
+   `vaart1998_inverseDerivative_map_memLp_of_memLp`.
+72. CovarianceBilinDual inverse-derivative pullback using only the original
+   square-integrable law hypothesis:
+   `vaart1998_covarianceBilinDual_inverseDerivative_map_apply_of_memLp`.
+73. Measurable-coordinate Theorem 4.1 Gaussian-limit wrapper with the canonical
+   covarianceBilinDual display:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_real`.
+74. Open-partial-homeomorphism inverse a.e.-measurability on its target:
+   `vaart1998_openPartialHomeomorph_symm_aemeasurable_on_target`.
+75. Inverse-function-theorem local inverse a.e.-measurability on the local
+   moment range:
+   `vaart1998_localInverse_aemeasurable_on_open_momentRange`.
+76. Concentrated-measure local inverse a.e.-measurability:
+   `vaart1998_localInverse_aemeasurable_of_ae_mem_open_momentRange`.
+77. Empirical-moment composition bridge for the local inverse under a.e.
+   target localization:
+   `vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_ae_mem_open_momentRange`.
+78. Theorem 4.1 delta-method handoff using a.e.-measurability of the composed
+   local inverse:
+   `vaart1998_theorem_4_1_moment_estimator_delta_method_aemeasurable`.
+79. Theorem 4.1 textbook `sqrt n` delta-method handoff using
+   a.e.-measurability of the composed local inverse:
+   `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_aemeasurable`.
 
-Latest pushed Vaart packet before this run: `1d574e8`
-(`Add Vaart finite coordinate measurability wrapper`).
+Latest remote base after rebase before this packet: `7bfd3e1`.
+Latest pushed Vaart packet before this run: `9e16530`
+(`Add Vaart local inverse aemeasurability bridge`).
 
-The current theorem-sized packet propagates a supplied Gaussian
-empirical-moment limit through the inverse derivative.  The measurable
-finite-coordinate Chapter 4.1 wrapper now returns local existence, the
-delta-method distributional convergence, and the fact that the estimator limit
-is Gaussian.  Local-inverse measurability, the multivariate empirical-moment
-CLT, and the exact covariance matrix display remain explicit.
+The current theorem-sized packet connects that local-inverse measurability
+layer to the Chapter 4 delta-method handoff.  If an empirical moment is
+a.e.-localized in the inverse-function-theorem target, then composing it with
+the local inverse is a.e.-measurable; the Theorem 4.1 delta wrappers can now
+consume this composed a.e.-measurability directly instead of requiring global
+measurability of the off-target local inverse.  The multivariate
+empirical-moment CLT and finite-matrix specialization remain explicit next
+source layers.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. package the exact covariance display for the Gaussian estimator limit so
-   the conclusion visibly matches Vaart's
-   `N(0, e'_theta0^{-1} P f f^T (e'_theta0^{-1})^T)` statement;
-2. add a local-inverse measurability convenience if a clean continuity/open
-   partial homeomorphism API can discharge it without broad topological
-   refactoring;
-3. keep a true multivariate empirical-moment CLT supplied until a local vector
+1. connect the a.e.-measurable local inverse convenience to the delta-method
+   wrapper inside the finite-coordinate/source assemblers, replacing global
+   local-inverse measurability hypotheses where a.e. target localization is
+   available;
+2. keep a true multivariate empirical-moment CLT supplied until a local vector
    CLT is formalized from the scalar mathlib CLT.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent

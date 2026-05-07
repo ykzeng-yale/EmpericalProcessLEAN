@@ -696,6 +696,28 @@ theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid
     endpoint hstrict hinc
 
 /--
+Durrett 2019, Theorem 2.4.9 endpoint-grid refinement package.
+
+Once the source proof has extracted a strict finite endpoint sequence from the
+monotone subdivision, it is enough to show each closed adjacent cell lies in
+one of the finite small-measure cover intervals.
+-/
+theorem durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement
+    {P : Measure ℝ} [IsProbabilityMeasure P] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Icc (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        P.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain P epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) :=
+  _root_.StatInference.SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement
+    endpoint hstrict hrefine
+
+/--
 Durrett 2019, Theorem 2.4.9 non-atomic local grid ingredient.
 
 For non-atomic locally finite real measures, every point has an open
@@ -725,6 +747,29 @@ theorem durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms
         l x < x ∧ x < r x ∧ P.real (Set.Ioo (l x) (r x)) < epsilon) ∧
       Set.Icc a b ⊆ ⋃ x ∈ centers, Set.Ioo (l x) (r x) :=
   exists_finset_realOpenInterval_cover_Icc_measureReal_lt_of_noAtoms P hepsilon
+
+/--
+Durrett 2019, Theorem 2.4.9 non-atomic monotone-subdivision ingredient.
+
+The non-atomic compact cover can be refined into a monotone subdivision of the
+compact interval.  The remaining endpoint-grid packet removes repeated
+subdivision points and packages the strict real endpoint sequence.
+-/
+theorem durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms
+    {P : Measure ℝ} [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) (hab : a ≤ b) :
+    ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ, ∃ t : ℕ -> Set.Icc a b,
+      (∀ x ∈ centers, x ∈ Set.Icc a b) ∧
+      (∀ x ∈ centers,
+        l x < x ∧ x < r x ∧ P.real (Set.Ioo (l x) (r x)) < epsilon) ∧
+      (t 0 : ℝ) = a ∧
+      Monotone t ∧
+      (∃ m, ∀ n ≥ m, (t n : ℝ) = b) ∧
+      ∀ n, ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        P.real (Set.Ioo (l x) (r x)) < epsilon :=
+  exists_monotone_subdivision_Icc_measureReal_lt_of_noAtoms P hepsilon hab
 
 /--
 Durrett 2019, Theorem 2.4.9, middle-partition-to-GC package.

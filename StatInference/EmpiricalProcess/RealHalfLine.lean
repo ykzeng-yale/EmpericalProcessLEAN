@@ -407,6 +407,74 @@ theorem exists_finset_realOpenInterval_cover_Icc_measureReal_lt_of_noAtoms
   exact hlr x
 
 /--
+A finite cover of `[a, b]` by small open real intervals supplies a monotone
+closed-subinterval subdivision whose cells refine that cover.
+
+This is the ordered-grid skeleton needed before removing repeated subdivision
+points and converting the result into a strict endpoint grid.
+-/
+theorem exists_monotone_subdivision_of_finset_realOpenInterval_cover_Icc
+    {μ : Measure ℝ} {epsilon a b : ℝ} (hab : a ≤ b)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hsmall : ∀ x ∈ centers,
+      l x < x ∧ x < r x ∧ μ.real (Set.Ioo (l x) (r x)) < epsilon)
+    (hcover : Set.Icc a b ⊆ ⋃ x ∈ centers, Set.Ioo (l x) (r x)) :
+    ∃ t : ℕ -> Set.Icc a b,
+      (t 0 : ℝ) = a ∧
+      Monotone t ∧
+      (∃ m, ∀ n ≥ m, (t n : ℝ) = b) ∧
+      ∀ n, ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        μ.real (Set.Ioo (l x) (r x)) < epsilon := by
+  classical
+  let cover : {x // x ∈ centers} -> Set (Set.Icc a b) := fun x =>
+    {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x.1) (r x.1)}
+  have hopen : ∀ i, IsOpen (cover i) := by
+    intro i
+    exact isOpen_Ioo.preimage continuous_subtype_val
+  have huniv : Set.univ ⊆ ⋃ i, cover i := by
+    intro y _hy
+    rcases Set.mem_iUnion₂.mp (hcover y.2) with ⟨x, hx, hyx⟩
+    exact Set.mem_iUnion.mpr ⟨⟨x, hx⟩, hyx⟩
+  rcases exists_monotone_Icc_subset_open_cover_Icc hab (c := cover) hopen huniv with
+    ⟨t, ht0, hmono, heventually, hrefine⟩
+  refine ⟨t, ht0, hmono, heventually, ?_⟩
+  intro n
+  rcases hrefine n with ⟨i, hi⟩
+  exact ⟨i.1, i.2, hi, (hsmall i.1 i.2).2.2⟩
+
+/--
+For a non-atomic locally finite real measure, every compact real interval has a
+monotone closed-subinterval subdivision whose cells refine small-measure open
+intervals.
+
+The remaining endpoint-grid step is to erase repeated subdivision points and
+package the resulting strict real endpoint sequence.
+-/
+theorem exists_monotone_subdivision_Icc_measureReal_lt_of_noAtoms
+    (μ : Measure ℝ) [IsFiniteMeasureOnCompacts μ] [NoAtoms μ]
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) (hab : a ≤ b) :
+    ∃ centers : Finset ℝ, ∃ l r : ℝ -> ℝ, ∃ t : ℕ -> Set.Icc a b,
+      (∀ x ∈ centers, x ∈ Set.Icc a b) ∧
+      (∀ x ∈ centers,
+        l x < x ∧ x < r x ∧ μ.real (Set.Ioo (l x) (r x)) < epsilon) ∧
+      (t 0 : ℝ) = a ∧
+      Monotone t ∧
+      (∃ m, ∀ n ≥ m, (t n : ℝ) = b) ∧
+      ∀ n, ∃ x ∈ centers,
+        Set.Icc (t n) (t (n + 1)) ⊆
+          {y : Set.Icc a b | (y : ℝ) ∈ Set.Ioo (l x) (r x)} ∧
+        μ.real (Set.Ioo (l x) (r x)) < epsilon := by
+  rcases exists_finset_realOpenInterval_cover_Icc_measureReal_lt_of_noAtoms
+      μ hepsilon with
+    ⟨centers, l, r, hcenters, hsmall, hcover⟩
+  rcases exists_monotone_subdivision_of_finset_realOpenInterval_cover_Icc
+      (μ := μ) (epsilon := epsilon) hab hsmall hcover with
+    ⟨t, ht0, hmono, heventually, hrefine⟩
+  exact ⟨centers, l, r, t, hcenters, hsmall, ht0, hmono, heventually, hrefine⟩
+
+/--
 A proof-carrying bounded middle CDF partition for the empirical-CDF
 half-line class.
 
@@ -734,6 +802,63 @@ theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid
       refine SuppliedRealMiddleCDFPartitionChain.snoc hchain ?_ ?_
       · simpa [endpoint'] using hstrict (Fin.castSucc_lt_last (Fin.last (cells + 1)))
       · simpa [endpoint'] using hinc (Fin.last (cells + 1))
+
+/--
+A strict finite endpoint grid whose open cells refine small real-measure cover
+sets produces a cutpoint chain.
+
+This separates the future endpoint extraction problem from the measure/CDF
+conversion: once the source proof supplies a strict endpoint tuple and a
+small-measure cover set for each adjacent open cell, the existing endpoint-grid
+handoff applies.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_measureReal_refinement
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ coverCell : Set ℝ,
+        Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆ coverCell ∧
+        μ.real coverCell < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) := by
+  refine SuppliedRealMiddleCDFPartitionChain.of_endpointGrid endpoint hstrict ?_
+  intro cell
+  have hlt : endpoint (Fin.castSucc cell) < endpoint (Fin.succ cell) :=
+    hstrict Fin.castSucc_lt_succ
+  rcases hrefine cell with ⟨coverCell, hsubset, hcover_lt⟩
+  have hmeasure :
+      μ.real (Set.Ioo (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell))) <
+        epsilon := by
+    exact (measureReal_mono hsubset).trans_lt hcover_lt
+  rw [← measureReal_Ioo_eq_cdf_leftLim_sub μ hlt]
+  exact hmeasure
+
+/--
+A strict finite endpoint grid whose closed adjacent cells refine the finite
+small-interval cover produces a cutpoint chain.
+
+This is the direct consumer for a future duplicate-erasure theorem applied to
+the non-atomic monotone subdivision.
+-/
+theorem SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement
+    {μ : Measure ℝ} [IsProbabilityMeasure μ] {epsilon : ℝ} {cells : ℕ}
+    (endpoint : Fin (cells + 2) -> ℝ)
+    (hstrict : StrictMono endpoint)
+    {centers : Finset ℝ} {l r : ℝ -> ℝ}
+    (hrefine : ∀ cell : Fin (cells + 1),
+      ∃ x ∈ centers,
+        Set.Icc (endpoint (Fin.castSucc cell)) (endpoint (Fin.succ cell)) ⊆
+          Set.Ioo (l x) (r x) ∧
+        μ.real (Set.Ioo (l x) (r x)) < epsilon) :
+    SuppliedRealMiddleCDFPartitionChain μ epsilon (endpoint 0)
+      (endpoint (Fin.last (cells + 1))) := by
+  refine SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_measureReal_refinement
+    endpoint hstrict ?_
+  intro cell
+  rcases hrefine cell with ⟨x, _hx, hclosed, hsmall⟩
+  refine ⟨Set.Ioo (l x) (r x), ?_, hsmall⟩
+  exact Set.Ioo_subset_Icc_self.trans hclosed
 
 /--
 Every finite small-increment cutpoint chain supplies a bounded middle CDF

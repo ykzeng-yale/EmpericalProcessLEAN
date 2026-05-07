@@ -155,8 +155,27 @@ Initial modules:
   and `hmeas` fields.  The latest Gaussian-limit wrapper uses mathlib's
   `HasGaussianLaw.map_fun` to propagate a supplied Gaussian empirical-moment
   limit through the inverse derivative, so the estimator limit is now certified
-  Gaussian.  It still deliberately leaves local-inverse measurability, the
-  multivariate empirical-moment CLT, and exact covariance identification as
+  Gaussian.  The newest covariance-display layer records the coordinate-free
+  pullback formula for all continuous linear coordinates, matching the
+  finite-dimensional `Dinv * Sigma * Dinv^T` statement without prematurely
+  committing to a concrete matrix representation.  The current bridge connects
+  that coordinate covariance functional to mathlib's `covarianceBilinDual`
+  under square-integrable-law hypotheses and proves the inverse-derivative
+  pushed-law covariance bilinear form is the pullback of the original one.  The
+  newest side-condition layer proves a.e. measurability and `MemLp` propagate
+  through the continuous linear inverse derivative, so the covarianceBilinDual
+  pullback now needs only the original square-integrable limit law.  The
+  current source wrapper packages that canonical covarianceBilinDual pullback
+  together with local existence, delta-method convergence, and Gaussianity in
+  the measurable finite-coordinate Theorem 4.1 statement.  The newest
+  local-inverse measurability layer proves the inverse of the open partial
+  homeomorphism is a.e.-measurable on its open target/local moment range and
+  for measures concentrated on that range.  The current handoff layer composes
+  this localized local inverse with empirical moments and adds Chapter 4.1
+  delta-method wrappers that consume a.e.-measurability of the composed local
+  inverse directly.  It still deliberately leaves replacement of global
+  local-inverse measurability in the finite-coordinate source assemblers, the
+  multivariate empirical-moment CLT, and a finite-matrix specialization as
   explicit next layers.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.

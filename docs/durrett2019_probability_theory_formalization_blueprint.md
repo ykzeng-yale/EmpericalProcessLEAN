@@ -172,13 +172,19 @@ Compiled first source wrappers:
   `durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain`.
 - Durrett Theorem 2.4.9 endpoint-grid-to-cutpoint-chain handoff:
   `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid` and
-  `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`.
+  `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid`; plus
+  `SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement`
+  and
+  `durrett2019_theorem_2_4_9_cutpointChain_of_endpointGrid_closed_cover_refinement`.
 - Durrett Theorem 2.4.9 non-atomic local grid ingredient:
   `exists_realOpenInterval_measureReal_lt_of_noAtoms` and
   `durrett2019_theorem_2_4_9_small_open_interval_of_noAtoms`.
 - Durrett Theorem 2.4.9 non-atomic finite compact-cover ingredient:
   `exists_finset_realOpenInterval_cover_Icc_measureReal_lt_of_noAtoms` and
   `durrett2019_theorem_2_4_9_finite_open_interval_cover_of_noAtoms`.
+- Durrett Theorem 2.4.9 non-atomic monotone-subdivision ingredient:
+  `exists_monotone_subdivision_Icc_measureReal_lt_of_noAtoms` and
+  `durrett2019_theorem_2_4_9_monotone_subdivision_of_noAtoms`.
 - Durrett Theorem 2.4.9 cutpoint-chain-to-GC handoff:
   `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_cutpoint_chains`.
 
@@ -221,12 +227,17 @@ filling the arbitrary-CDF finite quantile grid/squeezing layer.  The supplied
 endpoint-grid and supplied middle-CDF-partition handoffs now compile, and the
 one-cell, two-cell, right-append, and finite cutpoint-chain middle-partition
 consumers now compile.  A strict endpoint-grid-to-cutpoint-chain handoff, a
+closed-cover endpoint-grid refinement handoff, a
 non-atomic local small-neighborhood lemma, a non-atomic finite compact-cover
-lemma, and a Durrett-named cutpoint-chain-to-GC handoff also compile.  The next
-non-atomic theorem-core primitive is the finite-cover-to-endpoint-grid
-construction.  The remaining arbitrary-distribution primitive is the
-atom-aware construction of strict finite endpoint grids for intervals whose
-total CDF increment is not already below the requested radius.
+lemma, a non-atomic monotone-subdivision lemma, and a Durrett-named
+cutpoint-chain-to-GC handoff also compile.  The next non-atomic theorem-core
+primitive is the monotone-subdivision-to-strict-endpoint-grid construction:
+erase repeated subdivision points while preserving the small-cover assignment
+for each nondegenerate adjacent cell, then feed
+`SuppliedRealMiddleCDFPartitionChain.of_endpointGrid_closed_cover_refinement`.
+The remaining arbitrary-distribution primitive is the atom-aware construction
+of strict finite endpoint grids for intervals whose total CDF increment is not
+already below the requested radius.
 
 ### Lane D: CLT and characteristic functions
 

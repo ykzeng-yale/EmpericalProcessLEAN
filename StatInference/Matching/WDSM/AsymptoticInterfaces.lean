@@ -104,6 +104,84 @@ theorem residual_variance_formula_of_clt_variance_bridge
     hresidual hquad).2
 
 /--
+More explicit martingale-array residual CLT input.
+
+This is still a named probability-layer interface, not a local proof of the
+martingale CLT.  It splits the previous broad residual CLT bridge into the
+ingredients that the WDSM proof has to port or prove: exact reuse-moment
+limits, residual moment regularity, a martingale-difference array, conditional
+Lindeberg control, and predictable quadratic-variation stabilization.
+-/
+structure ResidualMartingaleArrayCLTVarianceInput where
+  exact_weighted_reuse_moment_limits : Prop
+  residual_moment_regularity : Prop
+  martingale_difference_array : Prop
+  conditional_lindeberg : Prop
+  predictable_quadratic_variation_stabilization : Prop
+  residual_clt : Prop
+  residual_variance_formula : Prop
+  martingale_clt_bridge :
+    exact_weighted_reuse_moment_limits ->
+    residual_moment_regularity ->
+    martingale_difference_array ->
+    conditional_lindeberg ->
+    predictable_quadratic_variation_stabilization ->
+    residual_clt ∧ residual_variance_formula
+
+theorem residual_clt_and_variance_formula_of_martingale_array_input
+    (b : ResidualMartingaleArrayCLTVarianceInput)
+    (hmoments : b.exact_weighted_reuse_moment_limits)
+    (hresidual : b.residual_moment_regularity)
+    (hmartingale : b.martingale_difference_array)
+    (hlindeberg : b.conditional_lindeberg)
+    (hquad : b.predictable_quadratic_variation_stabilization) :
+    b.residual_clt ∧ b.residual_variance_formula :=
+  b.martingale_clt_bridge hmoments hresidual hmartingale hlindeberg hquad
+
+theorem residual_clt_of_martingale_array_input
+    (b : ResidualMartingaleArrayCLTVarianceInput)
+    (hmoments : b.exact_weighted_reuse_moment_limits)
+    (hresidual : b.residual_moment_regularity)
+    (hmartingale : b.martingale_difference_array)
+    (hlindeberg : b.conditional_lindeberg)
+    (hquad : b.predictable_quadratic_variation_stabilization) :
+    b.residual_clt :=
+  (residual_clt_and_variance_formula_of_martingale_array_input b hmoments
+    hresidual hmartingale hlindeberg hquad).1
+
+theorem residual_variance_formula_of_martingale_array_input
+    (b : ResidualMartingaleArrayCLTVarianceInput)
+    (hmoments : b.exact_weighted_reuse_moment_limits)
+    (hresidual : b.residual_moment_regularity)
+    (hmartingale : b.martingale_difference_array)
+    (hlindeberg : b.conditional_lindeberg)
+    (hquad : b.predictable_quadratic_variation_stabilization) :
+    b.residual_variance_formula :=
+  (residual_clt_and_variance_formula_of_martingale_array_input b hmoments
+    hresidual hmartingale hlindeberg hquad).2
+
+/--
+Package an explicit martingale-array CLT input as the existing residual
+CLT/variance bridge once the martingale-difference and conditional Lindeberg
+conditions have been supplied.
+-/
+def residualArrayCLTVarianceBridgeOfMartingaleArrayInput
+    (b : ResidualMartingaleArrayCLTVarianceInput)
+    (hmartingale : b.martingale_difference_array)
+    (hlindeberg : b.conditional_lindeberg) :
+    ResidualArrayCLTVarianceBridge where
+  exact_weighted_reuse_moment_limits := b.exact_weighted_reuse_moment_limits
+  residual_moment_regularity := b.residual_moment_regularity
+  quadratic_variation_stabilization :=
+    b.predictable_quadratic_variation_stabilization
+  residual_clt := b.residual_clt
+  residual_variance_formula := b.residual_variance_formula
+  bridge := by
+    intro hmoments hresidual hquad
+    exact b.martingale_clt_bridge hmoments hresidual hmartingale
+      hlindeberg hquad
+
+/--
 Heterogeneity bridge that records both the centered treatment-effect CLT and
 its variance formula.  The finite square-target algebra is already verified in
 `HeterogeneityVarianceAlgebra`; this interface names the remaining probability
@@ -315,6 +393,56 @@ theorem known_score_asymptotic_normality_and_residual_variance_formula_of_geomet
   exact ⟨hknown, hresidual_pair.2⟩
 
 /--
+Known-score composition using the explicit martingale-array residual CLT input.
+This theorem exposes the probability obligations for the residual term as
+martingale-difference, conditional Lindeberg, and predictable
+quadratic-variation hypotheses before feeding them into the existing
+known-score asymptotic-normality bridge.
+-/
+theorem known_score_asymptotic_normality_and_residual_variance_formula_of_geometry_martingale_array
+    (geometry : WeightedGeometryMomentBridge)
+    (residual : ResidualMartingaleArrayCLTVarianceInput)
+    (bias : AverageRadiusBiasBridge)
+    (known : KnownScoreAsymptoticBridge)
+    (hregular : geometry.score_space_regularity)
+    (hchen_han : geometry.chen_han_catchment_input)
+    (hmoment_transfer :
+      geometry.exact_weighted_reuse_moment_limits ->
+        residual.exact_weighted_reuse_moment_limits)
+    (hresidual_reg : residual.residual_moment_regularity)
+    (hmartingale : residual.martingale_difference_array)
+    (hlindeberg : residual.conditional_lindeberg)
+    (hquad : residual.predictable_quadratic_variation_stabilization)
+    (hresidual_transfer : residual.residual_clt -> known.residual_clt)
+    (hfinite : bias.eventual_finite_matching_regular)
+    (hlipschitz : bias.lipschitz_score_mean_regular)
+    (hradius : bias.weighted_average_radius_rate)
+    (hbias_transfer :
+      bias.matching_discrepancy_negligible ->
+        known.matching_discrepancy_negligible)
+    (hdecomp : known.aggregate_hajek_decomposition)
+    (hden : known.denominator_stabilization)
+    (hheterogeneity : known.heterogeneity_clt) :
+    known.asymptotic_normality ∧ residual.residual_variance_formula := by
+  have hgeometry_moments :
+      geometry.exact_weighted_reuse_moment_limits :=
+    exact_weighted_reuse_moments_of_geometry geometry hregular hchen_han
+  have hresidual_pair :
+      residual.residual_clt ∧ residual.residual_variance_formula :=
+    residual_clt_and_variance_formula_of_martingale_array_input residual
+      (hmoment_transfer hgeometry_moments) hresidual_reg hmartingale
+      hlindeberg hquad
+  have hbias : bias.matching_discrepancy_negligible :=
+    matching_discrepancy_negligible_of_average_radius bias
+      hfinite hlipschitz hradius
+  have hknown : known.asymptotic_normality :=
+    known_score_asymptotic_normality_of_bridge known
+      hdecomp hden hheterogeneity
+      (hresidual_transfer hresidual_pair.1)
+      (hbias_transfer hbias)
+  exact ⟨hknown, hresidual_pair.2⟩
+
+/--
 Known-score composition carrying both major variance component formulas.  The
 heterogeneity bridge supplies the centered-effect CLT and variance formula,
 the residual bridge supplies the residual CLT and variance formula, and the
@@ -458,6 +586,69 @@ theorem estimated_score_asymptotic_normality_of_bridge
   b.bridge hknown hfirst hlocal hgodambe
 
 /--
+More explicit estimated-score local-experiment input.
+
+This is a named probability/local-asymptotic interface, not a local proof of
+the nonsmooth matching expansion.  It separates the broad
+`matching_functional_local_expansion` premise into the score-estimator local
+linearity, the matching-functional local derivative/expansion, and stochastic
+equicontinuity of the local matching process.
+-/
+structure EstimatedScoreLocalExperimentInput where
+  known_score_asymptotic_normality : Prop
+  first_step_asymptotic_linearization : Prop
+  score_estimator_local_asymptotic_linearity : Prop
+  matching_functional_local_derivative : Prop
+  local_stochastic_equicontinuity : Prop
+  godambe_variance_identity : Prop
+  estimated_score_asymptotic_normality : Prop
+  local_experiment_bridge :
+    known_score_asymptotic_normality ->
+    first_step_asymptotic_linearization ->
+    score_estimator_local_asymptotic_linearity ->
+    matching_functional_local_derivative ->
+    local_stochastic_equicontinuity ->
+    godambe_variance_identity ->
+    estimated_score_asymptotic_normality
+
+theorem estimated_score_asymptotic_normality_of_local_experiment_input
+    (b : EstimatedScoreLocalExperimentInput)
+    (hknown : b.known_score_asymptotic_normality)
+    (hfirst : b.first_step_asymptotic_linearization)
+    (hscore :
+      b.score_estimator_local_asymptotic_linearity)
+    (hfunctional : b.matching_functional_local_derivative)
+    (hequicontinuity : b.local_stochastic_equicontinuity)
+    (hgodambe : b.godambe_variance_identity) :
+    b.estimated_score_asymptotic_normality :=
+  b.local_experiment_bridge hknown hfirst hscore hfunctional
+    hequicontinuity hgodambe
+
+/--
+Package an explicit local-experiment input as the existing estimated-score
+asymptotic bridge.  The broad local-expansion premise in the packaged bridge
+is the conjunction of score-estimator local linearity, matching-functional
+local derivative, and local stochastic equicontinuity.
+-/
+def estimatedScoreAsymptoticBridgeOfLocalExperimentInput
+    (b : EstimatedScoreLocalExperimentInput) :
+    EstimatedScoreAsymptoticBridge where
+  known_score_asymptotic_normality := b.known_score_asymptotic_normality
+  first_step_asymptotic_linearization :=
+    b.first_step_asymptotic_linearization
+  matching_functional_local_expansion :=
+    b.score_estimator_local_asymptotic_linearity ∧
+      b.matching_functional_local_derivative ∧
+        b.local_stochastic_equicontinuity
+  godambe_variance_identity := b.godambe_variance_identity
+  estimated_score_asymptotic_normality :=
+    b.estimated_score_asymptotic_normality
+  bridge := by
+    intro hknown hfirst hlocal hgodambe
+    exact b.local_experiment_bridge hknown hfirst hlocal.1 hlocal.2.1
+      hlocal.2.2 hgodambe
+
+/--
 Interface for the estimated-score limiting variance formula.  The deterministic
 variance algebra proves the scalar and finite quadratic-form identities; this
 bridge records the remaining probability/local-experiment step that connects a
@@ -481,6 +672,87 @@ theorem estimated_score_variance_formula_of_bridge
     (hgodambe : b.godambe_variance_identity) :
     b.estimated_score_variance_formula :=
   b.bridge hknown_variance hadjustment hgodambe
+
+/--
+Combined estimated-score local-experiment and variance-formula input.
+
+This interface ties the final estimated-score asymptotic normality and
+estimated-score variance formula to one local experiment and one Godambe
+identity.  It is useful for the paper's final theorem because the normality
+statement and variance statement should not silently use unrelated Godambe
+premises.
+-/
+structure EstimatedScoreLocalExperimentVarianceInput where
+  known_score_asymptotic_normality : Prop
+  known_score_variance_formula : Prop
+  first_step_asymptotic_linearization : Prop
+  score_estimator_local_asymptotic_linearity : Prop
+  matching_functional_local_derivative : Prop
+  local_stochastic_equicontinuity : Prop
+  score_adjustment_algebra : Prop
+  godambe_identity : Prop
+  estimated_score_asymptotic_normality : Prop
+  estimated_score_variance_formula : Prop
+  local_experiment_bridge :
+    known_score_asymptotic_normality ->
+    first_step_asymptotic_linearization ->
+    score_estimator_local_asymptotic_linearity ->
+    matching_functional_local_derivative ->
+    local_stochastic_equicontinuity ->
+    godambe_identity ->
+    estimated_score_asymptotic_normality
+  variance_formula_bridge :
+    known_score_variance_formula ->
+    score_adjustment_algebra ->
+    godambe_identity ->
+    estimated_score_variance_formula
+
+theorem estimated_score_asymptotic_normality_and_variance_formula_of_local_experiment_variance_input
+    (b : EstimatedScoreLocalExperimentVarianceInput)
+    (hknown : b.known_score_asymptotic_normality)
+    (hknown_variance : b.known_score_variance_formula)
+    (hfirst : b.first_step_asymptotic_linearization)
+    (hscore : b.score_estimator_local_asymptotic_linearity)
+    (hfunctional : b.matching_functional_local_derivative)
+    (hequicontinuity : b.local_stochastic_equicontinuity)
+    (hadjustment : b.score_adjustment_algebra)
+    (hgodambe : b.godambe_identity) :
+    b.estimated_score_asymptotic_normality ∧
+      b.estimated_score_variance_formula :=
+  ⟨b.local_experiment_bridge hknown hfirst hscore hfunctional
+      hequicontinuity hgodambe,
+    b.variance_formula_bridge hknown_variance hadjustment hgodambe⟩
+
+/--
+Forget the variance-formula part of a combined estimated-score local experiment.
+-/
+def estimatedScoreLocalExperimentInputOfVarianceInput
+    (b : EstimatedScoreLocalExperimentVarianceInput) :
+    EstimatedScoreLocalExperimentInput where
+  known_score_asymptotic_normality := b.known_score_asymptotic_normality
+  first_step_asymptotic_linearization :=
+    b.first_step_asymptotic_linearization
+  score_estimator_local_asymptotic_linearity :=
+    b.score_estimator_local_asymptotic_linearity
+  matching_functional_local_derivative :=
+    b.matching_functional_local_derivative
+  local_stochastic_equicontinuity := b.local_stochastic_equicontinuity
+  godambe_variance_identity := b.godambe_identity
+  estimated_score_asymptotic_normality :=
+    b.estimated_score_asymptotic_normality
+  local_experiment_bridge := b.local_experiment_bridge
+
+/--
+Forget the normality part of a combined estimated-score local experiment.
+-/
+def estimatedScoreVarianceFormulaBridgeOfLocalExperimentVarianceInput
+    (b : EstimatedScoreLocalExperimentVarianceInput) :
+    EstimatedScoreVarianceFormulaBridge where
+  known_score_variance_formula := b.known_score_variance_formula
+  score_adjustment_algebra := b.score_adjustment_algebra
+  godambe_variance_identity := b.godambe_identity
+  estimated_score_variance_formula := b.estimated_score_variance_formula
+  bridge := b.variance_formula_bridge
 
 /--
 Full abstract WDSM estimated-score composition from the currently isolated
@@ -525,6 +797,54 @@ theorem estimated_score_asymptotic_normality_of_geometry_residual_average_radius
       hbias_transfer hdecomp hden hheterogeneity
   exact estimated_score_asymptotic_normality_of_bridge estimated
     (hknown_transfer hknown) hfirst hlocal hgodambe
+
+/--
+Estimated-score composition using the explicit local-experiment input.  This
+theorem exposes the estimated-score probability/local-asymptotic obligations as
+first-step linearization, score-estimator local linearity,
+matching-functional local derivative, local stochastic equicontinuity, and the
+Godambe identity.
+-/
+theorem estimated_score_asymptotic_normality_of_geometry_residual_average_radius_local_experiment
+    (geometry : WeightedGeometryMomentBridge)
+    (residual : ResidualArrayCLTBridge)
+    (bias : AverageRadiusBiasBridge)
+    (known : KnownScoreAsymptoticBridge)
+    (estimated : EstimatedScoreLocalExperimentInput)
+    (hregular : geometry.score_space_regularity)
+    (hchen_han : geometry.chen_han_catchment_input)
+    (hmoment_transfer :
+      geometry.exact_weighted_reuse_moment_limits ->
+        residual.exact_weighted_reuse_moment_limits)
+    (hresidual_reg : residual.residual_moment_regularity)
+    (hquad : residual.quadratic_variation_stabilization)
+    (hresidual_transfer : residual.residual_clt -> known.residual_clt)
+    (hfinite : bias.eventual_finite_matching_regular)
+    (hlipschitz : bias.lipschitz_score_mean_regular)
+    (hradius : bias.weighted_average_radius_rate)
+    (hbias_transfer :
+      bias.matching_discrepancy_negligible ->
+        known.matching_discrepancy_negligible)
+    (hdecomp : known.aggregate_hajek_decomposition)
+    (hden : known.denominator_stabilization)
+    (hheterogeneity : known.heterogeneity_clt)
+    (hknown_transfer :
+      known.asymptotic_normality ->
+        estimated.known_score_asymptotic_normality)
+    (hfirst : estimated.first_step_asymptotic_linearization)
+    (hscore : estimated.score_estimator_local_asymptotic_linearity)
+    (hfunctional : estimated.matching_functional_local_derivative)
+    (hequicontinuity : estimated.local_stochastic_equicontinuity)
+    (hgodambe : estimated.godambe_variance_identity) :
+    estimated.estimated_score_asymptotic_normality := by
+  have hknown : known.asymptotic_normality :=
+    known_score_asymptotic_normality_of_geometry_residual_and_average_radius
+      geometry residual bias known hregular hchen_han hmoment_transfer
+      hresidual_reg hquad hresidual_transfer hfinite hlipschitz hradius
+      hbias_transfer hdecomp hden hheterogeneity
+  exact estimated_score_asymptotic_normality_of_local_experiment_input
+    estimated (hknown_transfer hknown) hfirst hscore hfunctional
+    hequicontinuity hgodambe
 
 /--
 Full abstract WDSM estimated-score composition carrying the estimated-score
@@ -598,6 +918,78 @@ theorem estimated_score_asymptotic_normality_and_variance_formula_of_geometry
     estimated_score_variance_formula_of_bridge estimatedVariance
       (hknown_variance_transfer hknown.2) hadjustment hgodambe_variance
   exact ⟨hnormal, hvariance⟩
+
+/--
+Final estimated-score WDSM composition using the explicit combined
+local-experiment and variance-formula input.  Compared with
+`estimated_score_asymptotic_normality_and_variance_formula_of_geometry`, this
+version exposes score-estimator local linearity, matching-functional local
+derivative, stochastic equicontinuity, score-adjustment algebra, and one shared
+Godambe identity directly.
+-/
+theorem estimated_score_asymptotic_normality_and_variance_formula_of_geometry_local_experiment
+    (geometry : WeightedGeometryMomentBridge)
+    (heterogeneity : HeterogeneityCLTVarianceBridge)
+    (residual : ResidualArrayCLTVarianceBridge)
+    (bias : AverageRadiusBiasBridge)
+    (known : KnownScoreAsymptoticBridge)
+    (knownVariance : KnownScoreVarianceFormulaBridge)
+    (estimated : EstimatedScoreLocalExperimentVarianceInput)
+    (hregular : geometry.score_space_regularity)
+    (hchen_han : geometry.chen_han_catchment_input)
+    (hmoment_transfer :
+      geometry.exact_weighted_reuse_moment_limits ->
+        residual.exact_weighted_reuse_moment_limits)
+    (hheterogeneity_moment : heterogeneity.effect_moment_regularity)
+    (hheterogeneity_variance :
+      heterogeneity.centered_effect_variance_stabilization)
+    (hheterogeneity_transfer :
+      heterogeneity.heterogeneity_clt -> known.heterogeneity_clt)
+    (hheterogeneity_variance_transfer :
+      heterogeneity.heterogeneity_variance_formula ->
+        knownVariance.heterogeneity_variance_formula)
+    (hresidual_reg : residual.residual_moment_regularity)
+    (hquad : residual.quadratic_variation_stabilization)
+    (hresidual_transfer : residual.residual_clt -> known.residual_clt)
+    (hresidual_variance_transfer :
+      residual.residual_variance_formula ->
+        knownVariance.residual_variance_formula)
+    (hfinite : bias.eventual_finite_matching_regular)
+    (hlipschitz : bias.lipschitz_score_mean_regular)
+    (hradius : bias.weighted_average_radius_rate)
+    (hbias_transfer :
+      bias.matching_discrepancy_negligible ->
+        known.matching_discrepancy_negligible)
+    (hdecomp : known.aggregate_hajek_decomposition)
+    (hden : known.denominator_stabilization)
+    (horthogonality : knownVariance.component_orthogonality)
+    (hknown_normality_transfer :
+      known.asymptotic_normality ->
+        estimated.known_score_asymptotic_normality)
+    (hknown_variance_transfer :
+      knownVariance.known_score_variance_formula ->
+        estimated.known_score_variance_formula)
+    (hfirst : estimated.first_step_asymptotic_linearization)
+    (hscore : estimated.score_estimator_local_asymptotic_linearity)
+    (hfunctional : estimated.matching_functional_local_derivative)
+    (hequicontinuity : estimated.local_stochastic_equicontinuity)
+    (hadjustment : estimated.score_adjustment_algebra)
+    (hgodambe : estimated.godambe_identity) :
+    estimated.estimated_score_asymptotic_normality ∧
+      estimated.estimated_score_variance_formula := by
+  have hknown :=
+    known_score_asymptotic_normality_and_variance_formula_of_geometry
+      geometry heterogeneity residual bias known knownVariance hregular
+      hchen_han hmoment_transfer hheterogeneity_moment
+      hheterogeneity_variance hheterogeneity_transfer
+      hheterogeneity_variance_transfer hresidual_reg hquad hresidual_transfer
+      hresidual_variance_transfer hfinite hlipschitz hradius hbias_transfer
+      hdecomp hden horthogonality
+  exact
+    estimated_score_asymptotic_normality_and_variance_formula_of_local_experiment_variance_input
+      estimated (hknown_normality_transfer hknown.1)
+      (hknown_variance_transfer hknown.2) hfirst hscore hfunctional
+      hequicontinuity hadjustment hgodambe
 
 end WDSM
 end Matching
