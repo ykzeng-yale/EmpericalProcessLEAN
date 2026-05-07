@@ -13,10 +13,11 @@ Continue Durrett 2019 Probability Theory formalization from the latest synced
 `main` and these route docs.  Active frontier only: Section 3.10
 finite-dimensional limit theory in
 `StatInference/ProbabilityTheory/Multivariate.lean`.
-Preserve the compiled Theorem 3.10.6 Cramér-Wold law wrapper, then implement the
-next theorem-sized packet: Theorem 3.10.7 finite-coordinate multivariate CLT,
-turning projected scalar CLTs into vector law convergence through the local
-Vaart Cramér-Wold bridge.
+Preserve the compiled Theorem 3.10.6 Cramér-Wold law wrapper and the compiled
+Theorem 3.10.7 projected scalar/summand CLT wrappers.  Next theorem-sized
+packet: source-shaped covariance/Gaussian packaging for Theorem 3.10.7, using
+the local Vaart projected one-dimensional CLT constructors and finite-coordinate
+Cramér-Wold bridge.
 
 Operating loop: fetch/rebase, inspect only APIs/source anchors needed for this
 theorem, reuse mathlib/local/GitHub contributions, write one compiled
@@ -266,6 +267,8 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_remainderBound_integrableSq`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_integrableSq`
 - `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto`
+- `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedScalarCLT`
+- `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedSummandCLT`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -388,11 +391,12 @@ layer before moving to multivariate CLT reuse:
   max-row-variance work should therefore not re-prove this split, but consume
   `durrett2019_lindebergFellerVarianceSplitByTailRowSum_of_integrableSq`.
 - Section 3.10 characteristic-function convergence, Cramér-Wold, and
-  multivariate CLT: the finite-coordinate law-level Cramér-Wold wrapper now
-  compiles in `StatInference/ProbabilityTheory/Multivariate.lean`.  Next,
-  connect projected scalar CLTs to a Durrett Theorem 3.10.7 finite-coordinate
-  multivariate CLT wrapper, reusing local Vaart Cramér-Wold bridge machinery
-  before adding any new vector probability primitives.
+  multivariate CLT: the finite-coordinate law-level Cramér-Wold wrapper and the
+  Durrett Theorem 3.10.7 projected scalar/summand CLT wrappers now compile in
+  `StatInference/ProbabilityTheory/Multivariate.lean`.  Next, package the
+  textbook covariance/Gaussian-limit source assumptions by reusing local Vaart
+  projected one-dimensional CLT constructors before adding any new vector
+  probability primitives.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:

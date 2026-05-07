@@ -393,10 +393,11 @@ Next packet:
 
 - Section 3.10 Cramér-Wold and multivariate CLT wrappers over existing local
   finite-dimensional law-convergence machinery.  The finite-coordinate law-level
-  Durrett Theorem 3.10.6 wrapper now compiles in
-  `StatInference/ProbabilityTheory/Multivariate.lean`; next package Durrett
-  Theorem 3.10.7 by connecting projected scalar CLTs to vector convergence via
-  that Cramér-Wold wrapper and the local Vaart bridge machinery.
+  Durrett Theorem 3.10.6 wrapper and the Durrett Theorem 3.10.7 projected
+  scalar/summand CLT wrappers now compile in
+  `StatInference/ProbabilityTheory/Multivariate.lean`; next package Durrett's
+  covariance/Gaussian-limit source assumptions for i.i.d. finite-coordinate
+  vectors by reusing the local Vaart projected one-dimensional CLT constructors.
 
 Support-only dependencies:
 
