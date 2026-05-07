@@ -49,7 +49,7 @@ namespace Optimization
 open Filter MeasureTheory ProbabilityTheory
 open StatInference.AsymptoticStatistics
 open Finset
-open scoped BigOperators
+open scoped BigOperators Topology
 
 /--
 Process-level martingale-difference interface for Chewi Theorem 12.7.
@@ -220,6 +220,50 @@ theorem chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound
         chewi127ScalarLindebergSummand x ε N k ω) = 0 := by
     exact Finset.sum_eq_zero fun k _hk => hω k
   simp [chewi127ScalarLindebergAverage, hsum]
+
+/--
+Measurability of Chewi's scalar `sqrt N`-scaled martingale sum follows from
+measurability of the scalar increments.
+-/
+theorem chewi127ScalarScaledSum_aemeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {x : ℕ -> Ω -> ℝ}
+    (hx : ∀ n : ℕ, AEMeasurable (x n) P) :
+    ∀ N : ℕ, AEMeasurable (chewi127ScalarScaledSum x N) P := by
+  intro N
+  change
+    AEMeasurable
+      (fun ω => (Real.sqrt (N : ℝ))⁻¹ *
+        ∑ k ∈ Finset.range N, x (k + 1) ω) P
+  exact ((Finset.range N).aemeasurable_fun_sum fun k _hk => hx (k + 1)).const_mul _
+
+/--
+Lévy's characteristic-function theorem specialized to Chewi's scalar scaled
+martingale sums.
+
+This turns the remaining one-dimensional martingale CLT proof into the
+source-facing task of proving pointwise characteristic-function convergence.
+-/
+theorem chewi127ScalarScaledSum_tendstoInDistribution_of_charFun
+    {Ω Ω' : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    {x : ℕ -> Ω -> ℝ} {Z : Ω' -> ℝ}
+    (hX : ∀ N : ℕ, AEMeasurable (chewi127ScalarScaledSum x N) P)
+    (hZ : AEMeasurable Z Q)
+    (hchar : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          MeasureTheory.charFun (P.map (chewi127ScalarScaledSum x N)) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun (Q.map Z) t))) :
+    TendstoInDistribution (chewi127ScalarScaledSum x) atTop Z (fun _ => P) Q where
+  forall_aemeasurable := hX
+  aemeasurable_limit := hZ
+  tendsto := by
+    refine ProbabilityMeasure.tendsto_iff_tendsto_charFun.mpr ?_
+    intro t
+    simpa using hchar t
 
 /--
 The projected vector sum is the scalar sum of the projected increments.
@@ -709,6 +753,42 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_lindeberg_average_eventuall
         (fun n ω => L (S.martingale.xi n ω)) ε N ω = 0 :=
   chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound
     (P := P) hε (S.projected_uniform_bound L)
+
+/--
+Characteristic-function form of the projected scalar martingale CLT.  The
+bounded martingale data already supply measurability of the scaled sums and of
+the projected Gaussian limit, so the only remaining probabilistic proof
+obligation is pointwise convergence of characteristic functions.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_charFun
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hchar : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          MeasureTheory.charFun
+            (P.map
+              (chewi127ScalarScaledSum
+                (fun n ω => L (S.martingale.xi n ω)) N)) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun
+          (Q.map (fun ω => L (S.Z ω))) t))) :
+    TendstoInDistribution
+      (chewi127ScalarScaledSum (fun n ω => L (S.martingale.xi n ω)))
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q := by
+  refine chewi127ScalarScaledSum_tendstoInDistribution_of_charFun
+    (P := P) (Q := Q)
+    (x := fun n ω => L (S.martingale.xi n ω))
+    (Z := fun ω => L (S.Z ω)) ?_ ?_ hchar
+  · exact chewi127ScalarScaledSum_aemeasurable
+      (P := P) (x := fun n ω => L (S.martingale.xi n ω))
+      (fun n => (S.martingale.projected_integrable L n).aemeasurable)
+  · exact (S.gaussian_limit.map_fun L).aemeasurable
 
 /--
 The projected CLT field can be read in the pure scalar-sum notation used by a

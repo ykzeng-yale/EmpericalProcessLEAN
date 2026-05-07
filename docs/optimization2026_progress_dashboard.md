@@ -47,9 +47,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   bounded martingale CLT discharge, `ASGD-endpoint` source ASGD limit wrapper,
   then the concrete Sinkhorn row/column KL identity layer if ASGD stalls.  The
   boundedness-to-Lindeberg scalar tail layer now compiles, so the remaining
-  scalar CLT work should focus on characteristic functions, conditional
-  variance convergence, and the martingale product/Taylor argument rather than
-  tail control.
+  scalar CLT work should focus on the characteristic-function convergence
+  theorem for martingale arrays, conditional variance convergence, and the
+  martingale product/Taylor argument rather than tail control or Lévy
+  conversion.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
   stale route replay, repeated broad searches, micro-packet commit overhead,
   and shared-worktree/build-artifact contention.  The active protocol is now:
@@ -70,6 +71,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projected_lindeberg_summand_eventually_ae_eq_zero`,
   and
   `Chewi127BoundedMartingaleCLTSource.projected_lindeberg_average_eventually_ae_eq_zero`.
+- New ASGD scalar characteristic-function bridge declarations:
+  `chewi127ScalarScaledSum_aemeasurable`,
+  `chewi127ScalarScaledSum_tendstoInDistribution_of_charFun`, and
+  `Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_charFun`.  These
+  reuse mathlib `ProbabilityMeasure.tendsto_iff_tendsto_charFun` and local
+  `vaart1998_sqrt_nat_tendsto_atTop`; the next blocker is proving the actual
+  pointwise characteristic-function convergence from the martingale
+  conditional mean-zero, conditional variance convergence, and Lindeberg
+  layers.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

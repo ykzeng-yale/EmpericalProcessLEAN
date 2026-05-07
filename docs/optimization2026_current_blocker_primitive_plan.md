@@ -145,10 +145,11 @@ archived automation prompts and should override them when they conflict.
 
 ## Current Frontier Contract
 
-This is the authoritative manual route after the ASGD scalar-projection and
-scalar-Lindeberg packets.  The app-level `/goal` objective and the archived
-long prompt below may still mention older Chapter 3 or `029d017` frontiers; do
-not use those older references to choose work.
+This is the authoritative manual route after the ASGD scalar-projection,
+scalar-Lindeberg, and scalar characteristic-function bridge packets.  The
+app-level `/goal` objective and the archived long prompt below may still
+mention older Chapter 3 or `029d017` frontiers; do not use those older
+references to choose work.
 
 Stable substrate:
 
@@ -169,7 +170,10 @@ Stable substrate:
   projected martingale-data accessors for adaptedness, integrability,
   conditional mean-zero, conditional second moment, variance convergence,
   uniform boundedness, and boundedness-implied scalar Lindeberg summand/average
-  eventual a.e. vanishing.
+  eventual a.e. vanishing.  The scalar scaled-sum measurability and
+  Lévy/characteristic-function bridge are also compiled, reducing each
+  projected scalar CLT to pointwise convergence of characteristic functions for
+  the scalar scaled sums.
 
 Current priority packet sequence:
 
@@ -177,8 +181,10 @@ Current priority packet sequence:
    one-dimensional bounded martingale CLT from the compiled scalar projection
    data: conditional mean-zero, conditional second moment, averaged conditional
    variance convergence, uniform boundedness, and the now-compiled scalar
-   Lindeberg a.e.-zero layer.  The vector-to-scalar plumbing and Lindeberg
-   bounded-tail discharge are compiled; do not repeat them.
+   Lindeberg a.e.-zero and characteristic-function bridge layers.  The
+   vector-to-scalar plumbing, Lindeberg bounded-tail discharge, and
+   distribution-from-characteristic-functions bridge are compiled; do not
+   repeat them.
 2. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
    decomposition, and certificate to the source Theorem 12.7/12.3 ASGD limit
    statement.
@@ -187,13 +193,12 @@ Current priority packet sequence:
    otherwise stall.
 
 Execution rule for the next proof run: spend at most one bounded search pass
-refreshing mathlib/local scalar martingale CLT, characteristic-function,
-Lévy continuity theorem, Gaussian characteristic functions, Taylor remainder,
-and conditional expectation tower/product APIs; then implement the
-highest-leverage scalar martingale CLT theorem layer.  The reusable
-projected-sum/Cramér-Wold bridge, scalar projection side-condition accessors,
-and boundedness-to-Lindeberg a.e.-zero layer are now compiled, so do not repeat
-them.
+refreshing mathlib/local scalar martingale CLT, Gaussian characteristic
+functions, Taylor remainder, and conditional expectation tower/product APIs;
+then implement the highest-leverage characteristic-function convergence layer
+for scalar martingale arrays.  The reusable projected-sum/Cramér-Wold bridge,
+scalar projection side-condition accessors, boundedness-to-Lindeberg a.e.-zero
+layer, and scalar Lévy bridge are now compiled, so do not repeat them.
 
 Keep exercise statements and cheap reusable exercise proofs in
 `StatInference/Optimization/Exercises.lean`, but never let exercises block the
