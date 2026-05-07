@@ -3227,3 +3227,11 @@ The selected half-radius precursor is now instantiated by
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_hphi_id`.
 The remaining source proof targets are the selected-cover `hphi_id` comparison
 and the finite-center Hoeffding/maximal event for those selected cover centers.
+
+The selected half-radius expected-maximal route now also has its source bridge:
+`VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover`.
+This discharges the expected finite-center maximal input for selected covers
+from the compiled Rademacher sub-Gaussian/Mills/Hoeffding route.  The weaker
+mean/outer-expectation route no longer needs a separate selected-cover maximal
+primitive; the displayed-beta event route still needs the actual fixed-sample
+`hphi_id` comparison and the stronger pathwise finite-center Hoeffding event.

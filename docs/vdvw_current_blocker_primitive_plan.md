@@ -7878,3 +7878,16 @@ for the eventual a.e. selected radius-`eta / 2` covers.  The precursor
 instantiation is no longer a separate blocker.  The remaining source inputs
 are now exactly the fixed-sample `Phi(x)=x` comparison and the finite-center
 Hoeffding/maximal event for the selected cover centers.
+
+2026-05-07 selected half-radius expected-maximal source bridge:
+`Theorem243.lean` now proves
+`VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover`.
+This turns the existing finite-empirical-cover Rademacher expected-maximal
+bound at the VdV&W finite-net Hoeffding scale into an eventual a.e. selected
+cover theorem.  It is the correct selected-cover source input for the weaker
+mean/outer-expectation route, separate from the stronger displayed-beta event
+route.  Remaining event-route blockers are the selected-cover `Phi(x)=x`
+comparison and the pathwise finite-center Hoeffding/maximal event; remaining
+mean-route work is to connect the selected expected-maximal bound through the
+existing integral finite-net convergence hypotheses without adding endpoint
+aliases.

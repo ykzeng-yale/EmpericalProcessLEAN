@@ -14511,6 +14511,55 @@ theorem
         (cover.cardinality_pos_of_nonempty hindexClass_nonempty) hn hM_pos)
 
 /--
+Eventual a.e. expected-maximal finite-net bound for selected half-radius
+empirical covers.
+
+This is the source-side selected-cover version of the compiled Rademacher
+finite-center expectation route.  It avoids the stronger pathwise Hoeffding
+maximal event used by the displayed-beta source primitive, and it lets the
+mean/outer-expectation route consume the same selected cover family.
+-/
+theorem
+    VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ)
+    (hindep : ∀ n, iIndepFun (sign n) μsign)
+    (hsubG : ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n)) :
+    ∀ (eta : ℝ) (heta : 0 < eta),
+      ∀ᶠ n in atTop,
+        ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          VdVWTheorem243FiniteCenterExpectedMaximalBound μsign
+            (fun centerIndex : Fin (selectedCardinality eta n sample n) =>
+              fun ω =>
+                vdVWWeightedSampleSum
+                  (vdVWTruncatedClassFun classFun envelope M)
+                  (vdVWRademacherWeights (fun i : Fin n => sign n i ω))
+                  ((cover eta heta n sample).center centerIndex) sample)
+            (vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality eta n sample n) n M) := by
+  intro eta heta
+  filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hn_pos
+  exact ae_of_all _ fun sample =>
+    vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard_of_pos
+      (cover eta heta n sample) hindexClass_nonempty henvelope hn_pos hM_pos
+      (sign n) (hindep n) (hsubG n)
+
+/--
 Closed-form value of the finite-center sub-Gaussian tail majorant over
 `(0, ∞)`.
 -/
