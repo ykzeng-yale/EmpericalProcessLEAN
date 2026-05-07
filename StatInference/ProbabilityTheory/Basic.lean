@@ -4,7 +4,9 @@ import StatInference.ProbabilityMeasure.GeneratedSigma
 import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.StrongLaw
 import StatInference.ProbabilityMeasure.WeakConvergence
+import Mathlib.MeasureTheory.Measure.LevyConvergence
 import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
+import Mathlib.Probability.CentralLimitTheorem
 import Mathlib.Probability.Independence.CharacteristicFunction
 
 /-!
@@ -20,7 +22,7 @@ namespace ProbabilityTheory
 
 open Filter MeasureTheory
 
-open scoped BigOperators BoundedContinuousFunction ENNReal Topology Function
+open scoped BigOperators BoundedContinuousFunction ENNReal Topology Function ProbabilityTheory
 
 universe u v w x
 
@@ -1681,6 +1683,221 @@ theorem durrett2019_theorem_3_3_2_characteristicFunction_independent_sum
     _root_.ProbabilityTheory.IndepFun.charFun_map_fun_add_eq_mul
       (P := P) (X := X) (Y := Y) hX hY hXY
   simpa [durrett2019_characteristicFunction, Pi.mul_apply] using congrFun hfun t
+
+/--
+Durrett 2019, Theorem 3.3.17(i), characteristic-function convergence from weak
+convergence of real probability laws.
+-/
+theorem durrett2019_theorem_3_3_17_characteristicFunction_tendsto_of_weakConvergence
+    {μs : ℕ -> MeasureTheory.ProbabilityMeasure ℝ}
+    {μ : MeasureTheory.ProbabilityMeasure ℝ}
+    (h : Tendsto μs atTop (𝓝 μ)) :
+    ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ => durrett2019_characteristicFunction ((μs n : Measure ℝ)) t)
+        atTop
+        (𝓝 (durrett2019_characteristicFunction ((μ : Measure ℝ)) t)) := by
+  intro t
+  simpa [durrett2019_characteristicFunction] using
+    (MeasureTheory.ProbabilityMeasure.tendsto_iff_tendsto_charFun.mp h t)
+
+/--
+Durrett 2019, Theorem 3.3.17(ii), weak convergence from pointwise convergence
+of characteristic functions to the characteristic function of a real probability
+law.
+-/
+theorem durrett2019_theorem_3_3_17_weakConvergence_of_characteristicFunction_tendsto
+    {μs : ℕ -> MeasureTheory.ProbabilityMeasure ℝ}
+    {μ : MeasureTheory.ProbabilityMeasure ℝ}
+    (hchar : ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ => durrett2019_characteristicFunction ((μs n : Measure ℝ)) t)
+        atTop
+        (𝓝 (durrett2019_characteristicFunction ((μ : Measure ℝ)) t))) :
+    Tendsto μs atTop (𝓝 μ) := by
+  refine MeasureTheory.ProbabilityMeasure.tendsto_iff_tendsto_charFun.mpr ?_
+  intro t
+  simpa [durrett2019_characteristicFunction] using hchar t
+
+/--
+Durrett 2019, Theorem 3.3.17, law-level Lévy continuity theorem for real
+probability laws.
+-/
+theorem durrett2019_theorem_3_3_17_weakConvergence_iff_characteristicFunction_tendsto
+    {μs : ℕ -> MeasureTheory.ProbabilityMeasure ℝ}
+    {μ : MeasureTheory.ProbabilityMeasure ℝ} :
+    Tendsto μs atTop (𝓝 μ) ↔
+      ∀ t : ℝ,
+        Tendsto
+          (fun n : ℕ => durrett2019_characteristicFunction ((μs n : Measure ℝ)) t)
+          atTop
+          (𝓝 (durrett2019_characteristicFunction ((μ : Measure ℝ)) t)) :=
+  ⟨durrett2019_theorem_3_3_17_characteristicFunction_tendsto_of_weakConvergence,
+    durrett2019_theorem_3_3_17_weakConvergence_of_characteristicFunction_tendsto⟩
+
+/--
+Durrett 2019, Theorem 3.3.17(ii), tightness from pointwise characteristic
+function convergence to a limit continuous at zero.
+-/
+theorem durrett2019_theorem_3_3_17_tight_of_characteristicFunction_tendsto
+    {μs : ℕ -> Measure ℝ} [∀ n, IsProbabilityMeasure (μs n)]
+    {φ : ℝ -> ℂ} (hφ : ContinuousAt φ 0)
+    (hchar : ∀ t : ℝ,
+      Tendsto (fun n : ℕ => durrett2019_characteristicFunction (μs n) t)
+        atTop (𝓝 (φ t))) :
+    IsTightMeasureSet (Set.range μs) := by
+  refine MeasureTheory.isTightMeasureSet_of_tendsto_charFun (μ := μs) (f := φ) hφ ?_
+  intro t
+  simpa [durrett2019_characteristicFunction] using hchar t
+
+/--
+Durrett 2019, Theorem 3.3.17(ii), bundled real-law form: if characteristic
+functions converge to a continuous-at-zero limit already identified as the
+characteristic function of `μ`, then the laws are tight and converge weakly to
+`μ`.
+-/
+theorem durrett2019_theorem_3_3_17_tight_and_weakConvergence_of_characteristicFunction_limit
+    {μs : ℕ -> MeasureTheory.ProbabilityMeasure ℝ}
+    {μ : MeasureTheory.ProbabilityMeasure ℝ}
+    {φ : ℝ -> ℂ} (hφ : ContinuousAt φ 0)
+    (hchar : ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ => durrett2019_characteristicFunction ((μs n : Measure ℝ)) t)
+        atTop (𝓝 (φ t)))
+    (hμ : ∀ t : ℝ, durrett2019_characteristicFunction ((μ : Measure ℝ)) t = φ t) :
+    IsTightMeasureSet
+        (Set.range (fun n : ℕ => ((μs n : MeasureTheory.ProbabilityMeasure ℝ) : Measure ℝ))) ∧
+      Tendsto μs atTop (𝓝 μ) := by
+  refine ⟨?_, ?_⟩
+  · refine durrett2019_theorem_3_3_17_tight_of_characteristicFunction_tendsto
+      (μs := fun n : ℕ => ((μs n : MeasureTheory.ProbabilityMeasure ℝ) : Measure ℝ))
+      hφ ?_
+    intro t
+    simpa using hchar t
+  · refine durrett2019_theorem_3_3_17_weakConvergence_of_characteristicFunction_tendsto ?_
+    intro t
+    simpa [hμ t] using hchar t
+
+/--
+Durrett 2019, Theorem 3.3.17(i), random-variable form: convergence in
+distribution implies pointwise convergence of the characteristic functions of
+the laws.
+-/
+theorem durrett2019_theorem_3_3_17_characteristicFunction_tendsto_of_tendstoInDistribution
+    {Ω : ℕ -> Type u} {Ω' : Type v}
+    {mΩ : (n : ℕ) -> MeasurableSpace (Ω n)}
+    {μ : (n : ℕ) -> @Measure (Ω n) (mΩ n)}
+    [∀ n, IsProbabilityMeasure (μ n)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    {X : (n : ℕ) -> Ω n -> ℝ} {Z : Ω' -> ℝ}
+    (h : TendstoInDistribution X atTop Z μ μ') :
+    ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ => durrett2019_characteristicFunction ((μ n).map (X n)) t)
+        atTop
+        (𝓝 (durrett2019_characteristicFunction (μ'.map Z) t)) := by
+  intro t
+  have hconv :=
+    durrett2019_theorem_3_3_17_characteristicFunction_tendsto_of_weakConvergence
+      (μs := fun n : ℕ =>
+        ⟨(μ n).map (X n), Measure.isProbabilityMeasure_map (h.forall_aemeasurable n)⟩)
+      (μ := ⟨μ'.map Z, Measure.isProbabilityMeasure_map h.aemeasurable_limit⟩)
+      h.tendsto
+  simpa using hconv t
+
+/--
+Durrett 2019, Theorem 3.3.17(ii), random-variable form: pointwise convergence
+of the characteristic functions of the laws implies convergence in distribution.
+-/
+theorem durrett2019_theorem_3_3_17_tendstoInDistribution_of_characteristicFunction_tendsto
+    {Ω : ℕ -> Type u} {Ω' : Type v}
+    {mΩ : (n : ℕ) -> MeasurableSpace (Ω n)}
+    {μ : (n : ℕ) -> @Measure (Ω n) (mΩ n)}
+    [∀ n, IsProbabilityMeasure (μ n)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    {X : (n : ℕ) -> Ω n -> ℝ} {Z : Ω' -> ℝ}
+    (hX : ∀ n, AEMeasurable (X n) (μ n))
+    (hZ : AEMeasurable Z μ')
+    (hchar : ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ => durrett2019_characteristicFunction ((μ n).map (X n)) t)
+        atTop
+        (𝓝 (durrett2019_characteristicFunction (μ'.map Z) t))) :
+    TendstoInDistribution X atTop Z μ μ' where
+  forall_aemeasurable := hX
+  aemeasurable_limit := hZ
+  tendsto := by
+    refine
+      durrett2019_theorem_3_3_17_weakConvergence_of_characteristicFunction_tendsto
+        (μs := fun n : ℕ =>
+          ⟨(μ n).map (X n), Measure.isProbabilityMeasure_map (hX n)⟩)
+        (μ := ⟨μ'.map Z, Measure.isProbabilityMeasure_map hZ⟩) ?_
+    intro t
+    simpa using hchar t
+
+/--
+Durrett 2019, Theorem 3.3.20, centered unit-variance second-order expansion of
+the characteristic function at zero.
+
+This is the source-shaped Taylor estimate used in the proof of the i.i.d.
+central limit theorem.
+-/
+theorem durrett2019_theorem_3_3_20_characteristicFunction_secondOrder_centered_unitVariance
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : Ω -> ℝ} (hX : AEMeasurable X P)
+    (h0 : (∫ ω, X ω ∂P) = 0) (h1 : (∫ ω, (X ω) ^ 2 ∂P) = 1) :
+    (fun t : ℝ => durrett2019_characteristicFunction (P.map X) t - (1 - t ^ 2 / 2))
+      =o[𝓝 0] fun t : ℝ => t ^ 2 := by
+  simpa [durrett2019_characteristicFunction] using
+    (MeasureTheory.taylor_charFun_two (P := P) (X := X) hX h0 h1)
+
+/-! ## Durrett, Section 3.4 -/
+
+/--
+Durrett 2019, Theorem 3.4.1, centered unit-variance i.i.d. central limit
+theorem.
+-/
+theorem durrett2019_theorem_3_4_1_centralLimitTheorem_centered_unitVariance
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> Ω -> ℝ} {Y : Ω' -> ℝ}
+    (hY : _root_.ProbabilityTheory.HasLaw Y (_root_.ProbabilityTheory.gaussianReal 0 1) P')
+    (h0 : (∫ ω, X 0 ω ∂P) = 0) (h1 : (∫ ω, (X 0 ω) ^ 2 ∂P) = 1)
+    (hindep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hident : ∀ i : ℕ, _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω => (√(n : ℝ))⁻¹ * ∑ k ∈ Finset.range n, X k ω)
+      atTop Y (fun _ => P) P' :=
+  _root_.ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum
+    hY h0 h1 hindep hident
+
+/--
+Durrett 2019, Theorem 3.4.1, variance-display i.i.d. central limit theorem.
+
+This is mathlib's unstandardized form: the centered sum divided by `sqrt n`
+converges to the centered Gaussian law with the common variance.
+-/
+theorem durrett2019_theorem_3_4_1_centralLimitTheorem_varianceGaussian
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> Ω -> ℝ} {Y : Ω' -> ℝ}
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0
+        (_root_.ProbabilityTheory.variance (X 0) P).toNNReal) P')
+    (hX : MemLp (X 0) 2 P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hident : ∀ i : ℕ, _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        (√(n : ℝ))⁻¹ * (∑ k ∈ Finset.range n, X k ω -
+          (n : ℝ) * ∫ ω, X 0 ω ∂P))
+      atTop Y (fun _ => P) P' :=
+  _root_.ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub
+    hY hX hindep hident
 
 /--
 Durrett early-chapter pi-system uniqueness shape.

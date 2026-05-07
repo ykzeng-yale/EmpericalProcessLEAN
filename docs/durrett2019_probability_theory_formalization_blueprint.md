@@ -356,14 +356,20 @@ Compiled Section 3.2 packets:
   law-level notation, Theorem 3.3.1 zero, conjugation, norm bound, continuous
   consequence, affine-map formula, and Theorem 3.3.2 independent-sum product
   law.
+- Durrett Theorem 3.3.17, continuity theorem.  The compiled wrappers cover both
+  directions of law-level characteristic-function convergence, the tightness
+  branch from pointwise convergence to a continuous-at-zero limit, a bundled
+  identified-limit form, and random-variable `TendstoInDistribution` wrappers.
+- Durrett Theorem 3.3.20, centered unit-variance second-order expansion.  This
+  exposes the Taylor estimate used in the i.i.d. CLT proof.
+- Durrett Theorem 3.4.1, i.i.d. central limit theorem.  The compiled wrappers
+  cover centered unit-variance and variance-Gaussian display forms.
 
 Next packet candidates:
 
-- Section 3.3 characteristic-function convergence theorem, if local
-  asymptotic-statistics characteristic-function infrastructure can be reused
-  directly.
 - Section 3.3 inversion or uniqueness support, only when it is directly needed
   for the convergence theorem route.
+- Section 3.4 Lindeberg-Feller Theorem 3.4.10 and triangular-array CLT support.
 - Section 3.10 Cramer-Wold and multivariate CLT wrappers over existing local
   asymptotic-statistics finite-dimensional convergence code.
 
@@ -384,7 +390,9 @@ Source anchors:
 - `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`
   contains Section 3.2 near line 41, Theorem 3.2.9 near line 158, Theorem
   3.2.10 near line 188, Theorem 3.2.11 near line 197, Section 3.3 near line
-  411, and Section 3.10 near line 3643.
+  411, Theorem 3.3.17 near line 748, Theorem 3.3.20 near line 898, Section
+  3.4 near line 1228, Theorem 3.4.1 near line 1234, and Section 3.10 near line
+  3643.
 
 Initial Lean reuse anchors:
 
@@ -394,7 +402,9 @@ Initial Lean reuse anchors:
 - `.lake/packages/mathlib/Mathlib/MeasureTheory/Function/ConvergenceInDistribution.lean`
 - `.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/CharacteristicFunction/Basic.lean`
 - `.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/CharacteristicFunction/TaylorExpansion.lean`
+- `.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/LevyConvergence.lean`
 - `.lake/packages/mathlib/Mathlib/Probability/Independence/CharacteristicFunction.lean`
+- `.lake/packages/mathlib/Mathlib/Probability/CentralLimitTheorem.lean`
 
 ### Lane E: martingales, Markov chains, Brownian motion
 

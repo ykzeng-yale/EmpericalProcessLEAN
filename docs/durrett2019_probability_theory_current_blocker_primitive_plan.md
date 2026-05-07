@@ -194,6 +194,16 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_3_1_characteristicFunction_continuous`
 - `durrett2019_theorem_3_3_1_characteristicFunction_affine_map`
 - `durrett2019_theorem_3_3_2_characteristicFunction_independent_sum`
+- `durrett2019_theorem_3_3_17_characteristicFunction_tendsto_of_weakConvergence`
+- `durrett2019_theorem_3_3_17_weakConvergence_of_characteristicFunction_tendsto`
+- `durrett2019_theorem_3_3_17_weakConvergence_iff_characteristicFunction_tendsto`
+- `durrett2019_theorem_3_3_17_tight_of_characteristicFunction_tendsto`
+- `durrett2019_theorem_3_3_17_tight_and_weakConvergence_of_characteristicFunction_limit`
+- `durrett2019_theorem_3_3_17_characteristicFunction_tendsto_of_tendstoInDistribution`
+- `durrett2019_theorem_3_3_17_tendstoInDistribution_of_characteristicFunction_tendsto`
+- `durrett2019_theorem_3_3_20_characteristicFunction_secondOrder_centered_unitVariance`
+- `durrett2019_theorem_3_4_1_centralLimitTheorem_centered_unitVariance`
+- `durrett2019_theorem_3_4_1_centralLimitTheorem_varianceGaussian`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -221,9 +231,9 @@ Do not spend the next cycle on center insertion, EDF notation, or Chapter 2.1
 polish unless a later Chapter 3 statement exposes an exact missing dependency.
 
 Current aggressive target: move from the Chapter 3.2 weak-convergence
-foundations and basic Chapter 3.3 characteristic-function wrappers into the
-Chapter 3.3 characteristic-function convergence spine.  The first Section 3.2
-and 3.3 packets now compile:
+foundations and Chapter 3.3 characteristic-function spine into Chapter 3.4
+central-limit support.  The first Section 3.2, 3.3, and 3.4 packets now
+compile:
 
 - Durrett Theorem 3.2.9 bounded-continuous test characterization, including
   the `integral_map` bridge from map-law integrals to textbook expectations
@@ -236,16 +246,25 @@ and 3.3 packets now compile:
   continuity consequence, and affine-map wrappers.
 - Durrett Theorem 3.3.2 independent-sum product law for characteristic
   functions.
+- Durrett Theorem 3.3.17 characteristic-function continuity theorem in
+  law-level and random-variable forms, plus the tightness statement from
+  pointwise convergence to a limit continuous at zero.
+- Durrett Theorem 3.3.20 centered unit-variance second-order characteristic
+  function expansion at zero.
+- Durrett Theorem 3.4.1 i.i.d. central limit theorem wrappers, both centered
+  unit-variance and variance-Gaussian display forms.
 
-The next likely packet should search convergence-theorem and CLT reuse before
+The next likely packet should search Lindeberg-Feller and multivariate CLT reuse before
 adding new primitives:
 
 - Definition/Section 3.2 weak convergence of random variables: reuse
   `MeasureTheory.TendstoInDistribution` and
   `StatInference/ProbabilityMeasure/WeakConvergence.lean`.
-- Section 3.3 characteristic functions: basic law-level wrappers now compile;
-  next search characteristic-function convergence, inversion/uniqueness support,
-  and CLT-facing source wrappers.
+- Section 3.3 characteristic functions: the basic, continuity-theorem, and
+  centered second-order Taylor wrappers now compile; only add inversion or
+  uniqueness support when a later source theorem needs it directly.
+- Section 3.4 central limit theorems: search for Lindeberg-Feller and
+  triangular-array support before building local abstractions.
 - Section 3.10 characteristic-function convergence, Cramer-Wold, and
   multivariate CLT: search `StatInference/AsymptoticStatistics` and local
   weak-convergence files before adding new primitives.
@@ -260,6 +279,10 @@ High-value Chapter 3 source anchors are in
 - Section 3.3 Characteristic Functions starts near line 411.
 - Theorem 3.3.1 appears near line 425.
 - Theorem 3.3.2 appears near line 451.
+- Theorem 3.3.17 appears near line 748.
+- Theorem 3.3.20 appears near line 898.
+- Section 3.4 Central Limit Theorems starts near line 1228.
+- Theorem 3.4.1 appears near line 1234.
 - Section 3.10 multivariate weak convergence starts near line 3643.
 - Theorems 3.10.1, 3.10.5, 3.10.6, and 3.10.7 appear near lines
   3647, 3778, 3784, and 3789.
@@ -301,7 +324,9 @@ Pinned mathlib search scope:
 - `Mathlib.MeasureTheory.Function.ConvergenceInDistribution`
 - `Mathlib.MeasureTheory.Measure.CharacteristicFunction.Basic`
 - `Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion`
+- `Mathlib.MeasureTheory.Measure.LevyConvergence`
 - `Mathlib.Probability.Independence.CharacteristicFunction`
+- `Mathlib.Probability.CentralLimitTheorem`
 
 ## Primitive Sequence
 
@@ -339,9 +364,12 @@ Pinned mathlib search scope:
    continuous case, and 3.2.11 now compile as source-facing weak-convergence
    wrappers.  Durrett Theorem 3.3.1 characteristic-function zero, conjugation,
    norm bound, continuity consequence, and affine-map wrappers, plus Theorem
-   3.3.2 independent-sum product law, now compile over mathlib
-   characteristic-function APIs.  Next search the characteristic-function
-   convergence theorem and CLT-facing wrappers before adding new primitives.
+   3.3.2 independent-sum product law, Theorem 3.3.17 characteristic-function
+   continuity theorem, Theorem 3.3.20 centered second-order expansion, and
+   Theorem 3.4.1 i.i.d. CLT wrappers now compile over mathlib
+   characteristic-function, Lévy-convergence, Taylor, and CLT APIs.  Next search
+   Lindeberg-Feller, triangular-array, and multivariate CLT routes before adding
+   new primitives.
 
 ## Current In-Thread Goal Prompt Seed
 
@@ -355,8 +383,10 @@ polish blockers.  Chapter 3.2 weak convergence now has compiled Durrett
 Theorem 3.2.9 bounded-continuous test, 3.2.10 continuous-mapping continuous
 case, and 3.2.11 Portmanteau wrappers.  Chapter 3.3 now has compiled
 characteristic-function notation, Theorem 3.3.1 basic property wrappers, and
-Theorem 3.3.2 independent-sum product law.  Next search the
-characteristic-function convergence theorem, inversion/uniqueness support, and
-Chapter 3.4 CLT wrappers while checking local asymptotic-statistics reuse first.
+Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem,
+and Theorem 3.3.20 centered second-order Taylor wrapper.  Chapter 3.4 now has
+Theorem 3.4.1 i.i.d. CLT wrappers.  Next search Lindeberg-Feller Theorem 3.4.10,
+triangular-array support, and Section 3.10 Cramer-Wold/multivariate CLT wrappers
+while checking local asymptotic-statistics reuse first.
 Verify, update docs, commit/push, and keep this in-thread `/goal` state current.
 Report progress and blockers in Chinese/English mix.

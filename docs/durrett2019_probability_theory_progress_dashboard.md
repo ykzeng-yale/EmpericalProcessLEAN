@@ -113,6 +113,16 @@ compiles and root-imports the new namespace.  Compiled declarations:
 - `durrett2019_theorem_3_3_1_characteristicFunction_continuous`;
 - `durrett2019_theorem_3_3_1_characteristicFunction_affine_map`;
 - `durrett2019_theorem_3_3_2_characteristicFunction_independent_sum`.
+- `durrett2019_theorem_3_3_17_characteristicFunction_tendsto_of_weakConvergence`;
+- `durrett2019_theorem_3_3_17_weakConvergence_of_characteristicFunction_tendsto`;
+- `durrett2019_theorem_3_3_17_weakConvergence_iff_characteristicFunction_tendsto`;
+- `durrett2019_theorem_3_3_17_tight_of_characteristicFunction_tendsto`;
+- `durrett2019_theorem_3_3_17_tight_and_weakConvergence_of_characteristicFunction_limit`;
+- `durrett2019_theorem_3_3_17_characteristicFunction_tendsto_of_tendstoInDistribution`;
+- `durrett2019_theorem_3_3_17_tendstoInDistribution_of_characteristicFunction_tendsto`;
+- `durrett2019_theorem_3_3_20_characteristicFunction_secondOrder_centered_unitVariance`;
+- `durrett2019_theorem_3_4_1_centralLimitTheorem_centered_unitVariance`;
+- `durrett2019_theorem_3_4_1_centralLimitTheorem_varianceGaussian`.
 
 The current aggressive theorem frontier is Chapter 3.  The old large Chapter
 2 targets are closed as reusable source wrappers:
@@ -137,9 +147,16 @@ Current proof route:
    notation, Theorem 3.3.1 zero/conjugation/norm/continuity/affine wrappers, and
    Theorem 3.3.2 independent-sum product law over mathlib
    characteristic-function APIs;
-8. next search the characteristic-function convergence theorem, inversion or
-   uniqueness support, Chapter 3.4 CLT wrappers, and Section 3.10 multivariate
-   weak-convergence anchors before introducing new primitives.
+8. Durrett Theorem 3.3.17 now compiles as law-level and random-variable
+   characteristic-function continuity theorem wrappers, including the tightness
+   branch from pointwise convergence to a continuous-at-zero limit;
+9. Durrett Theorem 3.3.20 centered unit-variance second-order characteristic
+   function expansion now compiles over mathlib Taylor support;
+10. Durrett Theorem 3.4.1 now compiles as centered unit-variance and
+    variance-Gaussian i.i.d. CLT wrappers over mathlib's one-dimensional CLT;
+11. next search Lindeberg-Feller Theorem 3.4.10, triangular-array support, and
+    Section 3.10 Cramer-Wold/multivariate CLT anchors before introducing new
+    primitives.
 
 The route should not duplicate raw measure theory from Chapter 1 unless an
 exact source theorem needs a missing local theorem.  Chapter 1 is currently
@@ -153,7 +170,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 2.1 independence/product laws | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/ProductMeasure.lean`; mathlib independence APIs | Generated pi-system independence, generated-rectangle and real lower-halfline distribution-function criteria, grouped sigma-field independence, finite disjoint-block functions, product-coordinate independence, pair and finite product-law, iid same-law finite product law, iid product-law criterion, canonical iid product-coordinate support, product/Fubini integral, and expectation-factorization wrappers now compile. Remaining work is optional exact polish only when a later theorem route demands it. |
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
 | Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, punctured-cover cell splitting, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, arbitrary-law punctured monotone-subdivision cutpoint-chain, arbitrary-law cutpoint-chain, arbitrary-law half-line GC, source-facing empirical-CDF predicate, EDF theorem wrapper, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile. Treat this lane as reusable support unless a later theorem reopens an exact source-shape gap. |
-| Chapter 3 weak convergence, CLT, and characteristic functions | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution` and characteristic-function APIs | Section 3.2 weak convergence now has compiled wrappers for Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.10 continuous mapping continuous case, and Theorem 3.2.11 Portmanteau. Section 3.3 now has compiled Theorem 3.3.1 basic characteristic-function wrappers and Theorem 3.3.2 independent-sum product law. Next candidates: characteristic-function convergence theorem, Section 3.4 CLT wrappers, and Section 3.10 Cramer-Wold/multivariate CLT. |
+| Chapter 3 weak convergence, CLT, and characteristic functions | next-active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution`, characteristic-function, Lévy, Taylor, and CLT APIs | Section 3.2 weak convergence now has compiled wrappers for Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.10 continuous mapping continuous case, and Theorem 3.2.11 Portmanteau. Section 3.3 now has compiled Theorem 3.3.1 basic characteristic-function wrappers, Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem wrappers, and Theorem 3.3.20 centered Taylor support. Section 3.4 now has Theorem 3.4.1 i.i.d. CLT wrappers. Next candidates: Lindeberg-Feller Theorem 3.4.10, triangular-array support, and Section 3.10 Cramer-Wold/multivariate CLT. |
 | Chapter 4 martingales | pending-local | none | Search mathlib martingale/conditional expectation APIs first. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
 | Chapters 6-8 ergodic/Brownian/Donsker | pending-local | none | Defer until early probability spine is stable or remote agents land reusable support. |
