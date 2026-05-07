@@ -240,9 +240,17 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cramerWoldBridge_real`.
 - Projected-law characteristic-function bridge:
   `vaart1998_finiteCoordinateProjectedLawConvergence_charFunDual`.
+- Euclidean/`PiLp 2` law convergence from projected finite-coordinate laws:
+  `vaart1998_finiteCoordinateProjectedLawConvergence_euclideanLaw`.
+- Pure law-level finite-dimensional Cramér-Wold theorem:
+  `vaart1998_finiteCoordinateProjectedLawConvergence_lawTendsto`.
+- Projected-scalar-CLT Cramér-Wold bridge constructor:
+  `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_finiteDimensional`.
+- Projected-scalar-CLT Theorem 4.1 covariance-table endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedScalarCLT_real`.
 
-Latest remote base before this packet: `d11e367`.  Latest pushed Vaart packet
-before this packet: `d11e367` (`Add Vaart Cramer Wold table endpoint`).
+Latest remote base before this packet: `35395d5`.  Latest pushed Vaart packet
+before this packet: `726fa46` (`Add Vaart projected charfun bridge`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -265,11 +273,12 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. prove the pure law-level finite-dimensional Cramér-Wold implication feeding
-   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`;
-2. if direct Lévy convergence on `(Coordinate -> ℝ)` blocks, transfer through
-   the smallest finite-vector Hilbert/`PiLp 2` presentation needed to turn the
-   compiled `charFunDual` convergence into `charFun` convergence;
+1. prove or package `vaart1998_finiteCoordinateProjectedScalarCLT` from reusable
+   scalar CLT infrastructure for finite weighted sums of coordinate empirical
+   averages;
+2. if that scalar CLT infrastructure is not locally available, add the smallest
+   source-shaped weighted-scalar-CLT certificate that feeds the compiled
+   finite-dimensional Cramér-Wold bridge;
 3. add further covariance-table consumers only if they remove a real caller-side
    hypothesis from an existing Theorem 4.1 wrapper.
 

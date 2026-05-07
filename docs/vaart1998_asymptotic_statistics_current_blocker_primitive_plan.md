@@ -368,28 +368,37 @@ Chapter 3 theorem-facing wrappers compiling:
 118. Projected-law convergence to pointwise convergence of Banach-space
    characteristic functions:
    `vaart1998_finiteCoordinateProjectedLawConvergence_charFunDual`.
+119. Euclidean/`PiLp 2` law convergence from projected finite-coordinate laws:
+   `vaart1998_finiteCoordinateProjectedLawConvergence_euclideanLaw`.
+120. Pure law-level finite-dimensional Cramér-Wold theorem:
+   `vaart1998_finiteCoordinateProjectedLawConvergence_lawTendsto`.
+121. Projected-scalar-CLT Cramér-Wold bridge constructor using the compiled
+   finite-dimensional theorem:
+   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_finiteDimensional`.
+122. Theorem 4.1 finite-coordinate covariance-table endpoint fed directly by
+   projected scalar CLTs:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedScalarCLT_real`.
 
-Latest remote base before this packet: `d11e367`.
-Latest pushed Vaart packet before this packet: `d11e367`
-(`Add Vaart Cramer Wold table endpoint`).
+Latest remote base before this packet: `35395d5`.
+Latest pushed Vaart packet before this packet: `726fa46`
+(`Add Vaart projected charfun bridge`).
 
-The current theorem-sized packet adds the characteristic-function handoff for
-the finite-dimensional Cramér-Wold route.  Projected probability-law
-convergence now implies pointwise convergence of `charFunDual` for every
-continuous linear functional.  The proof uses the one-dimensional Lévy
-characteristic-function characterization for the projected real laws and the
-identity `charFunDual μ L = charFun (μ.map L) 1`.
+The current theorem-sized packet discharges the pure finite-dimensional
+Cramér-Wold law-convergence step.  It transfers finite real vectors to
+`EuclideanSpace`/`PiLp 2`, applies Lévy's characteristic-function theorem there
+using the compiled `charFunDual` convergence, transfers the weak convergence
+back to `(Coordinate -> ℝ)`, and then packages the result into the projected
+scalar CLT bridge and the Vaart Theorem 4.1 covariance-table endpoint.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. upgrade the compiled `charFunDual` convergence endpoint to the pure
-   law-level finite-dimensional Cramér-Wold implication feeding
-   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_projectedLaw`;
-2. if direct Lévy convergence on `(Coordinate -> ℝ)` blocks, add the smallest
-   reusable finite-vector Hilbert/`PiLp 2` transfer that converts the current
-   Banach-space `charFunDual` convergence into the `charFun` convergence needed
-   by `ProbabilityMeasure.tendsto_iff_tendsto_charFun`;
+1. prove or package the projected scalar CLT family
+   `vaart1998_finiteCoordinateProjectedScalarCLT` from reusable scalar CLT
+   infrastructure for finite weighted sums of coordinate empirical averages;
+2. if that scalar CLT infrastructure is not locally available, add the smallest
+   source-shaped certificate bridge that records exactly the weighted scalar
+   CLT and feeds `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_finiteDimensional`;
 3. add further covariance-table consumers only if they remove a real caller-side
    hypothesis from an existing Theorem 4.1 wrapper.
 

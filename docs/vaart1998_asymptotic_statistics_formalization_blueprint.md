@@ -221,11 +221,17 @@ Initial modules:
   Cramér-Wold bridge.  The characteristic-function handoff
   `vaart1998_finiteCoordinateProjectedLawConvergence_charFunDual` now shows
   that projected law convergence gives pointwise convergence of `charFunDual`
-  for every continuous linear functional.
-  It still deliberately leaves a concrete finite-dimensional Cramér-Wold
-  law-convergence proof, namely the Levy/finite-vector transfer from this
-  `charFunDual` convergence to weak convergence, and any downstream table
-  consumers as explicit next layers.
+  for every continuous linear functional.  The finite-dimensional
+  Cramér-Wold theorem is now compiled as
+  `vaart1998_finiteCoordinateProjectedLawConvergence_lawTendsto`, using a
+  `EuclideanSpace`/`PiLp 2` transfer and Lévy's characteristic-function
+  theorem, and
+  `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_finiteDimensional`
+  feeds that theorem into the Cramér-Wold bridge.  The newest endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedScalarCLT_real`
+  lets Vaart Theorem 4.1 consume projected scalar CLTs directly.
+  It still deliberately leaves the projected scalar CLT family itself as the
+  next source theorem to instantiate from reusable scalar CLT infrastructure.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
