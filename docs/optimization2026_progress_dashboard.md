@@ -472,9 +472,14 @@ The newest ASGD packet compiles `Chewi127MartingaleDifferenceProcess`,
 `chewi123_asgd_limit_package_of_martingale_certificate`.  This packages Chewi
 Theorem 12.7 as a supplied martingale CLT certificate and reuses the Vaart
 covarianceBilinDual/table pullback primitives to identify the `-Ainv` pushed
-Gaussian covariance.  The active Chapter 12 blocker is now a bounded
-martingale CLT certificate constructor from the process/covariance interfaces,
-averaged conditional covariance convergence, and exact quadratic ASGD
+Gaussian covariance.  The newest source-interface packet compiles
+`chewi127ScaledNoiseSum`, `chewi127AverageConditionalCovariance`,
+`Chewi127AveragedConditionalCovarianceLimit`,
+`chewi127_martingaleCLTCertificate_of_scaledNoiseSum`,
+`Chewi127MartingaleDifferenceProcess.integral_linear_next_eq_zero`, and
+`Chewi127ConditionalCovarianceProcess.integral_Xi_next_eq_integral_second_moment`.
+The active Chapter 12 blocker is now a bounded martingale CLT certificate
+constructor from these process/covariance interfaces and exact quadratic ASGD
 recurrence assembly.
 
 ## Initial Reuse Audit

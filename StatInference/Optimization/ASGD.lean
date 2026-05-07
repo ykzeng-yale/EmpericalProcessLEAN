@@ -20,6 +20,11 @@ scaled averaged iterate has the pushed-forward Gaussian weak limit.
 The third packet packages the supplied martingale-CLT interface from Chewi
 Theorem 12.7 and connects it to the covariance-pushforward display used in
 Theorem 12.3.
+
+The next packet adds the concrete source definitions for the scaled martingale
+sum and averaged conditional covariance, plus deterministic conditional-
+expectation consequences that later discharge the bounded martingale CLT
+constructor.
 -/
 
 noncomputable section
@@ -104,6 +109,66 @@ structure Chewi127MartingaleCLTCertificate
   limit_memLp : MemLp id 2 (Q.map Z)
 
 /--
+The scaled martingale sum in Chewi Theorem 12.7:
+`n^{-1/2} sum_{k=1}^n xi_k`, indexed in Lean as `xi (k+1)` over
+`Finset.range n`.
+-/
+noncomputable def chewi127ScaledNoiseSum
+    {Ω E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (xi : ℕ -> Ω -> E) (n : ℕ) (ω : Ω) : E :=
+  (Real.sqrt (n : ℝ))⁻¹ • ∑ k ∈ Finset.range n, xi (k + 1) ω
+
+/--
+The averaged conditional covariance process appearing in Chewi Theorem 12.7,
+tested against two continuous linear coordinates.
+-/
+noncomputable def chewi127AverageConditionalCovariance
+    {Ω E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (Xi : ℕ -> Ω -> StrongDual ℝ E -> StrongDual ℝ E -> ℝ)
+    (N : ℕ) (ω : Ω) (L K : StrongDual ℝ E) : ℝ :=
+  (N : ℝ)⁻¹ * ∑ k ∈ Finset.range N, Xi (k + 1) ω L K
+
+/--
+Source-shaped convergence-in-probability assumption for the averaged
+conditional covariances in Chewi Theorem 12.7.
+-/
+structure Chewi127AveragedConditionalCovarianceLimit
+    (Ω E : Type*) [MeasurableSpace Ω] (P : Measure Ω)
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (Xi : ℕ -> Ω -> StrongDual ℝ E -> StrongDual ℝ E -> ℝ) where
+  /-- The limiting covariance functional `S_infty`. -/
+  S_infty : StrongDual ℝ E -> StrongDual ℝ E -> ℝ
+  /-- Coordinatewise convergence in probability of averaged conditional covariances. -/
+  tendstoInMeasure : ∀ L K : StrongDual ℝ E,
+    TendstoInMeasure P
+      (fun N ω => chewi127AverageConditionalCovariance Xi N ω L K)
+      atTop (fun _ => S_infty L K)
+
+/--
+Constructor for the supplied Chewi Theorem 12.7 martingale CLT certificate
+when the source CLT has already been proved for the exact scaled martingale
+sum `n^{-1/2} sum_{k=1}^n xi_k`.
+-/
+def chewi127_martingaleCLTCertificate_of_scaledNoiseSum
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [OpensMeasurableSpace E] [BorelSpace E]
+    (xi : ℕ -> Ω -> E) (Z : Ω' -> E)
+    (hCLT :
+      TendstoInDistribution (chewi127ScaledNoiseSum xi) atTop Z
+        (fun _ => P) Q)
+    (hGaussian : HasGaussianLaw Z Q)
+    (hMemLp : MemLp id 2 (Q.map Z)) :
+    Chewi127MartingaleCLTCertificate Ω Ω' E P Q where
+  noiseScaled := chewi127ScaledNoiseSum xi
+  Z := Z
+  clt := hCLT
+  gaussian_limit := hGaussian
+  limit_memLp := hMemLp
+
+/--
 A martingale-difference increment has unconditional mean zero.
 
 This is the same conditional-to-unconditional expectation handoff used in the
@@ -117,6 +182,42 @@ theorem Chewi127MartingaleDifferenceProcess.integral_next_eq_zero
     (∫ ω, M.xi (n + 1) ω ∂P) = 0 :=
   integral_eq_const_of_filtration_condExp_ae_eq_const
     (μ := P) M.filtration n (M.xi (n + 1)) 0 (M.condExp_zero n)
+
+/--
+Continuous linear coordinates of a martingale-difference increment also have
+unconditional mean zero.
+-/
+theorem Chewi127MartingaleDifferenceProcess.integral_linear_next_eq_zero
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (M : Chewi127MartingaleDifferenceProcess Ω E P)
+    (L : StrongDual ℝ E) (n : ℕ) :
+    (∫ ω, L (M.xi (n + 1) ω) ∂P) = 0 := by
+  calc
+    (∫ ω, L (M.xi (n + 1) ω) ∂P)
+        = L (∫ ω, M.xi (n + 1) ω ∂P) := by
+          rw [ContinuousLinearMap.integral_comp_comm L (M.integrable (n + 1))]
+    _ = 0 := by rw [M.integral_next_eq_zero n, map_zero]
+
+/--
+Integrating the conditional covariance identity recovers the unconditional
+coordinate second moment.  This is the deterministic bridge from Chewi's
+`Xi_{n+1}` field to ordinary covariance/moment expressions.
+-/
+theorem Chewi127ConditionalCovarianceProcess.integral_Xi_next_eq_integral_second_moment
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (C : Chewi127ConditionalCovarianceProcess Ω E P)
+    (L K : StrongDual ℝ E) (n : ℕ) :
+    (∫ ω, C.Xi (n + 1) ω L K ∂P) =
+      ∫ ω, L (C.xi (n + 1) ω) * K (C.xi (n + 1) ω) ∂P := by
+  rw [← integral_condExp
+    (m := C.filtration n) (m₀ := mΩ) (μ := P)
+    (f := fun ω => L (C.xi (n + 1) ω) * K (C.xi (n + 1) ω))
+    (C.filtration.le n)]
+  exact integral_congr_ae (C.conditional_second_moment n L K).symm
 
 /--
 Source-facing CLT conclusion accessor for a Chewi Theorem 12.7 certificate.

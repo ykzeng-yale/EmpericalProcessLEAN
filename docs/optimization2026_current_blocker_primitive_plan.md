@@ -109,7 +109,8 @@ source-displayed stochastic-error RHS bridges, and the full source-displayed
 smooth/non-smooth averaged-iterate wrappers, plus the filtration-level
 conditional-mean wrappers and the first ASGD quadratic-decomposition algebra
 packet, the first ASGD probabilistic CLT handoff packet, and the
-martingale-CLT certificate/covariance package:
+martingale-CLT certificate/covariance package, plus the exact scaled-noise and
+averaged-conditional-covariance definitions:
 aggressively formalize and prove all main theorem content of Sinho Chewi's
 Optimization 2026 notes in Lean under
 `StatInference/Optimization`, with exercise statements and cheap reusable
@@ -134,11 +135,13 @@ gate.
 Immediate aggressive target: move from the now-compiled ASGD finite-sum
 decomposition algebra, Slutsky/continuous-mapping handoff, process-level
 martingale-difference/covariance interfaces, supplied martingale-CLT
-certificate, and covarianceBilinDual/table pushforward package toward the
-actual Theorem 12.7 proof obligations: derive the supplied CLT certificate
-from bounded martingale differences and averaged conditional covariance
-convergence, then connect it to the source quadratic ASGD recurrence.  Theorem
-12.1 SMPGD now sits on
+certificate, covarianceBilinDual/table pushforward package, exact scaled
+martingale sum, averaged conditional covariance interface, and
+conditional-expectation integral bridges toward the actual Theorem 12.7 proof
+obligations: derive the supplied CLT certificate from bounded martingale
+differences and the averaged conditional covariance convergence interface,
+then connect it to the source quadratic ASGD recurrence.  Theorem 12.1 SMPGD
+now sits on
 top of the compiled
 integral-component final-rate wrappers, the smooth L2 noise wrapper, the
 finite sampled smooth/pointwise-bounded non-smooth rate endpoints, the
@@ -171,14 +174,16 @@ handoff to unconditional unbiasedness/relative-subgradient mean fields, or the
 ASGD `(12.5)` finite-sum splitting/scaled-average algebra, or the ASGD
 continuous-mapping/Slutsky handoff from the martingale CLT term plus
 `o_P(1)` initial/remainder terms to the averaged-iterate weak limit, or the
-new supplied martingale-CLT/covariance certificate package.  First search local
+new supplied martingale-CLT/covariance certificate package, or the exact
+scaled-noise/averaged-covariance definitions and their conditional-expectation
+integral consequences.  First search local
 `MirrorDescent.lean`, `Bregman.lean`, `ProjectedSubgradient.lean`,
 `StochasticGradient.lean`, `ASGD.lean`, local probability/expectation and
 asymptotic-statistics wrappers, and pinned mathlib expectation/Jensen/
 conditional expectation/Bochner/L2/process/martingale/covariance APIs.  Then
 formalize the next ASGD primitives: source-shaped bounded martingale CLT
-proof/certificate constructor, convergence-in-probability of averaged
-conditional covariances, and exact quadratic ASGD recurrence assembly.
+proof/certificate constructor from the already-defined process/covariance
+interfaces, and exact quadratic ASGD recurrence assembly.
 Keep the concrete Sinkhorn row/column KL identity layer as the next Chapter
 11.8 blocker, but do not let it stall Chapter 12 coverage.
 
@@ -336,9 +341,10 @@ handoff, or the ASGD `(12.5)` finite-sum splitting/scaled-average algebra; it
 handoff, or the ASGD `(12.5)` finite-sum splitting/scaled-average algebra, or
 the first ASGD continuous-mapping/Slutsky weak-limit handoff, or the
 process-level martingale-difference/covariance interfaces and supplied CLT
-certificate/covariance-pushforward package; it is the ASGD/martingale proof
-frontier: bounded martingale CLT constructor, averaged conditional covariance
-convergence, and then exact source quadratic ASGD recurrence assembly.
+certificate/covariance-pushforward package, or the exact scaled-noise/
+averaged-covariance definitions and conditional-expectation integral bridges;
+it is the ASGD/martingale proof frontier: bounded martingale CLT constructor
+and exact source quadratic ASGD recurrence assembly.
 
 Fresh Chapter 12 Bochner search result: mathlib has `integral_mono_ae` and
 `integral_mono` for pointwise or a.e. real integral inequalities,

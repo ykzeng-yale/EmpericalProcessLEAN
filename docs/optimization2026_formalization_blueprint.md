@@ -431,10 +431,16 @@ the scaled averaged-iterate weak limit.  The next packet compiles
 `Chewi127MartingaleCLTCertificate.neg_linear_covarianceTable`, and
 `chewi123_asgd_limit_package_of_martingale_certificate`, reusing the Vaart
 covarianceBilinDual/table pullback primitives for the Chewi `-A^{-1}` pushed
-Gaussian limit.  The next ASGD target is a bounded martingale CLT certificate
-constructor from the process/covariance interfaces, convergence in probability
-of averaged conditional covariances, and exact quadratic ASGD recurrence
-assembly.
+Gaussian limit.  The next packet compiles `chewi127ScaledNoiseSum`,
+`chewi127AverageConditionalCovariance`,
+`Chewi127AveragedConditionalCovarianceLimit`,
+`chewi127_martingaleCLTCertificate_of_scaledNoiseSum`,
+`Chewi127MartingaleDifferenceProcess.integral_linear_next_eq_zero`, and
+`Chewi127ConditionalCovarianceProcess.integral_Xi_next_eq_integral_second_moment`.
+These definitions and integral identities are the exact source interfaces for
+`n^{-1/2} sum xi_k` and `n^{-1} sum Xi_k`.  The next ASGD target is a bounded
+martingale CLT certificate constructor from these process/covariance
+interfaces and exact quadratic ASGD recurrence assembly.
 
 Historical manual frontier after focused Lean and promoted module build of
 the Theorem 6.25 feasibility-instance/topological-interior packet: the
