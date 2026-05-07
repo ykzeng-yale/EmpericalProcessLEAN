@@ -540,27 +540,35 @@ Chapter 3 theorem-facing wrappers compiling:
    the vector-law source certificate for coordinate measurability and
    square-integrability:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`.
+173. CLT-certificate covarianceBilinDual endpoint with direct a.e.
+   measurability of the composed empirical local inverse:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_aemeasurable_real`.
+174. CLT-certificate covariance-table endpoint with the same direct
+   `AEMeasurable` local-inverse statistic interface:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_aemeasurable_real`.
+175. Projected-summand CLT covariance-table endpoint that bypasses the
+   per-`n` target-membership field and consumes direct a.e. measurability of
+   `he.localInverse e De theta0 (vaart1998_finiteCoordinateEmpiricalMoment X n ω)`:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_aemeasurable_real`.
 
-Latest remote base before this packet: `9075e07`.
-Latest pushed Vaart packet before this packet: `8bc662b`
-(`Add Vaart canonical covariance law endpoint`).
+Latest remote base before this packet: `0ca595b`.
+Latest pushed Vaart packet before this packet: `012836a`
+(`Add Vaart vector law source certificate`).
 
-The current theorem-sized packet packages the observation-law side conditions.
-The vector-law source certificate bundles coordinate evaluation measurability
-and coordinate `MemLp 2` under `ν`; it also exposes `MemLp id 2 ν` and the
-canonical product coordinate source fields.  The newest canonical endpoint now
-uses that certificate instead of taking coordinate measurability and
-coordinate-projection `MemLp` as separate arguments.  The remaining
-non-sample-space source hypotheses are now Gaussian limit law and the
-inverse-function target event.
+The current theorem-sized packet replaces a too-strong downstream target-event
+interface by direct a.e.-measurability at the estimator layer.  The new
+certificate and projected-summand endpoints still prove the same Vaart Theorem
+4.1 local-existence, delta-Gaussian limit, Gaussian pullback, and covariance
+table conclusions, but callers no longer need to restate
+`vaart1998_finiteCoordinateEmpiricalMoment X n ω ∈ target` when they have
+already constructed the composed local inverse as an a.e.-measurable statistic.
 
-The next aggressive packet should continue Chapter 4 by discharging the
-remaining source hypotheses without overclaiming unavailable infrastructure:
-
-1. attack the remaining inverse-function target event only through a real
-   local-inverse/measurability theorem or keep it as a named source certificate;
-2. keep endpoint variants narrow and add them only when they remove a real
-   caller-side field.
+The next aggressive packet should continue Chapter 4 by adding the canonical
+vector-law/source-certificate wrapper that feeds this
+`projectedSummandCLT_aemeasurable` endpoint.  If that wrapper blocks, record the
+exact missing theorem shape for the canonical product empirical local-inverse
+measurability field rather than reintroducing the stronger target-event
+assumption.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

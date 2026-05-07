@@ -1,6 +1,6 @@
 # van der Vaart 1998 Progress Dashboard
 
-Status date: 2026-05-06.
+Status date: 2026-05-07.
 
 ## Current Lane
 
@@ -350,10 +350,20 @@ Chapter 4 handoff:
   the reusable consequences, and
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_real`
   consumes that certificate at the canonical Theorem 4.1 endpoint.
+- Direct a.e.-measurable local-inverse endpoints:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_aemeasurable_real`
+  and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_aemeasurable_real`
+  expose the CLT-certificate route without requiring a separate target-event
+  field for every empirical moment.
+- Projected-summand a.e.-measurable endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_aemeasurable_real`
+  keeps the projected scalar-CLT/Cramér-Wold construction internal while
+  consuming direct a.e. measurability of the empirical local inverse.
 
-Latest remote base before this packet: `9075e07`.  Latest pushed Vaart packet
-before this packet: `8bc662b`
-(`Add Vaart canonical covariance law endpoint`).
+Latest remote base before this packet: `0ca595b`.  Latest pushed Vaart packet
+before this packet: `012836a`
+(`Add Vaart vector law source certificate`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -366,20 +376,15 @@ for this packet is the focused Lean check and targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled Gaussian, canonical
-covarianceBilinDual source wrapper, and a.e.-localized finite-coordinate
-delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
-certificate interface, real-valued projected scalar CLT conversion, and
-projected probability-law Cramér-Wold handoff:
+Continue Vaart Chapter 4.1 from the compiled direct-a.e.-measurable
+projected-summand endpoint.  The next useful proof step is the canonical
+vector-law/source-certificate wrapper that supplies the empirical
+local-inverse `AEMeasurable` field directly instead of routing through the
+stronger target-event assumption.
 
-1. attack the remaining inverse-function target event only through a real
-   local-inverse/measurability theorem or keep it as a named source certificate;
-2. keep endpoint variants narrow and add them only when they remove a real
-   caller-side field.
-
-If this blocks, record the exact missing theorem shape for the supplied
-empirical-moment CLT, covariance-display, or local-inverse measurability field
-and continue with the widest Chapter 4 wrapper that compiles.
+If this blocks, record the exact missing theorem shape for the canonical
+product empirical local-inverse measurability field and keep the target-event
+route as a separate, explicitly named certificate path.
 
 ## Reuse Dependencies
 

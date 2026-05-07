@@ -4286,6 +4286,94 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gauss
       (hZ_memLp := CLT.limit_memLp)
 
 /--
+Theorem 4.1 finite-coordinate CLT-certificate wrapper with the composed
+local-inverse empirical estimator supplied directly as an a.e.-measurable map.
+
+This is the certificate-level sibling of the open-target wrapper above.  It is
+useful when localization has already been packaged at the estimator level, so
+downstream source certificates do not need to restate a separate
+target-membership hypothesis for every empirical moment.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_aemeasurable_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (CLT :
+      Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate
+        Coordinate Ω Ω' P Q)
+    (heta0 :
+      e theta0 = vaart1998_finiteCoordinatePopulationMoment P CLT.X)
+    (hX_integrable : ∀ coordinate, Integrable (CLT.X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (CLT.X coordinate i) (CLT.X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (CLT.X coordinate i) (CLT.X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (CLT.X coordinate i))
+    (hInvEmpirical : ∀ n : ℕ,
+      AEMeasurable
+        (fun ω : Ω =>
+          he.localInverse e De theta0
+            (vaart1998_finiteCoordinateEmpiricalMoment CLT.X n ω)) P) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (vaart1998_finiteCoordinateEmpiricalMoment CLT.X n ω)) =
+            vaart1998_finiteCoordinateEmpiricalMoment CLT.X n ω})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (vaart1998_finiteCoordinateEmpiricalMoment CLT.X n ω) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (CLT.Z ω))
+      (fun _ => P) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (CLT.Z ω)) Q ∧
+    (∀ L K : StrongDual ℝ Θ,
+      ProbabilityTheory.covarianceBilinDual
+          (Q.map fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (CLT.Z ω)) L K =
+        vaart1998_inverseDerivativeCovarianceFunctional
+          (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ)
+          (fun L0 K0 =>
+            ProbabilityTheory.covarianceBilinDual (Q.map CLT.Z) L0 K0) L K) := by
+  have hCLT :
+      TendstoInDistribution
+        (fun (n : ℕ) ω =>
+          √(n : ℝ) •
+            ((fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, CLT.X coordinate i ω) / n) -
+              e theta0))
+        atTop CLT.Z (fun _ => P) Q := by
+    simpa [vaart1998_finiteCoordinateEmpiricalMoment,
+      vaart1998_finiteCoordinatePopulationMoment, heta0] using
+      CLT.empiricalMoment_clt
+  simpa [vaart1998_finiteCoordinateEmpiricalMoment] using
+    vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_aemeasurable_real
+      (e := e) (theta0 := theta0) (De := De) (he := he)
+      (X := CLT.X) (heta0 := by
+        simpa [vaart1998_finiteCoordinatePopulationMoment] using heta0)
+      (hX_integrable := hX_integrable) (hX_indep := hX_indep)
+      (hX_ident := hX_ident) (hX_meas := hX_meas)
+      (hInvEmpirical := fun n => by
+        simpa [vaart1998_finiteCoordinateEmpiricalMoment] using
+          hInvEmpirical n)
+      (hCLT := hCLT) (hZ_gaussian := CLT.gaussian_limit)
+      (hZ_memLp := CLT.limit_memLp)
+
+/--
 Theorem 4.1 finite-coordinate source wrapper with a finite covariance table,
 fed by the supplied multivariate empirical-moment CLT certificate.
 
@@ -4357,6 +4445,81 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gauss
       (heta0 := heta0) (hX_integrable := hX_integrable)
       (hX_indep := hX_indep) (hX_ident := hX_ident)
       (hX_meas := hX_meas) (hTarget := hTarget)
+  exact
+    ⟨hbase.1, hbase.2.1, hbase.2.2.1, fun i j => by
+      simpa [vaart1998_covarianceTable,
+        vaart1998_inverseDerivativeCovarianceFunctional] using
+        hbase.2.2.2 (coordinates i) (coordinates j)⟩
+
+/--
+Finite covariance-table version of the CLT-certificate a.e.-measurable
+local-inverse wrapper.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_aemeasurable_real
+    {I Coordinate Ω Ω' Θ : Type*} [Fintype I] [Fintype Coordinate]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (coordinates : I -> StrongDual ℝ Θ)
+    (CLT :
+      Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate
+        Coordinate Ω Ω' P Q)
+    (heta0 :
+      e theta0 = vaart1998_finiteCoordinatePopulationMoment P CLT.X)
+    (hX_integrable : ∀ coordinate, Integrable (CLT.X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (CLT.X coordinate i) (CLT.X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (CLT.X coordinate i) (CLT.X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (CLT.X coordinate i))
+    (hInvEmpirical : ∀ n : ℕ,
+      AEMeasurable
+        (fun ω : Ω =>
+          he.localInverse e De theta0
+            (vaart1998_finiteCoordinateEmpiricalMoment CLT.X n ω)) P) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (vaart1998_finiteCoordinateEmpiricalMoment CLT.X n ω)) =
+            vaart1998_finiteCoordinateEmpiricalMoment CLT.X n ω})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (vaart1998_finiteCoordinateEmpiricalMoment CLT.X n ω) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (CLT.Z ω))
+      (fun _ => P) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (CLT.Z ω)) Q ∧
+    (∀ i j : I,
+      vaart1998_covarianceTable coordinates
+          (fun L K =>
+            ProbabilityTheory.covarianceBilinDual
+              (Q.map fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (CLT.Z ω))
+              L K) i j =
+        vaart1998_covarianceTable
+          (fun k => (coordinates k).comp (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ))
+          (fun L K =>
+            ProbabilityTheory.covarianceBilinDual (Q.map CLT.Z) L K) i j) := by
+  have hbase :=
+    vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceBilinDual_of_cltCertificate_aemeasurable_real
+      (e := e) (theta0 := theta0) (De := De) (he := he) (CLT := CLT)
+      (heta0 := heta0) (hX_integrable := hX_integrable)
+      (hX_indep := hX_indep) (hX_ident := hX_ident)
+      (hX_meas := hX_meas) (hInvEmpirical := hInvEmpirical)
   exact
     ⟨hbase.1, hbase.2.1, hbase.2.2.1, fun i j => by
       simpa [vaart1998_covarianceTable,
@@ -4597,6 +4760,111 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gauss
     (heta0 := heta0) (hX_integrable := hX_integrable)
     (hX_indep := hX_indep) (hX_ident := hX_ident)
     (hX_meas := hX_meas) (hTarget := hTarget)
+
+/--
+Theorem 4.1 finite-coordinate covariance-table endpoint fed by projected
+summand scalar CLTs and direct a.e.-measurability of the localized empirical
+estimator.
+
+This is the reusable handoff for source wrappers that already construct the
+composed local inverse as an a.e.-measurable statistic, avoiding a separate
+per-`n` target-membership assumption at this layer.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_aemeasurable_real
+    {I Coordinate Ω Ω' Θ : Type*} [Fintype I] [Fintype Coordinate]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (coordinates : I -> StrongDual ℝ Θ)
+    (X : Coordinate -> ℕ -> Ω -> ℝ) {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hsummand :
+      vaart1998_finiteCoordinateProjectedSummandCLT (P := P) (Q := Q) X Z)
+    (hZ_gaussian : HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (heta0 :
+      e theta0 = vaart1998_finiteCoordinatePopulationMoment P X)
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hInvEmpirical : ∀ n : ℕ,
+      AEMeasurable
+        (fun ω : Ω =>
+          he.localInverse e De theta0
+            (vaart1998_finiteCoordinateEmpiricalMoment X n ω)) P) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (vaart1998_finiteCoordinateEmpiricalMoment X n ω)) =
+            vaart1998_finiteCoordinateEmpiricalMoment X n ω})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (vaart1998_finiteCoordinateEmpiricalMoment X n ω) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q ∧
+    (∀ i j : I,
+      vaart1998_covarianceTable coordinates
+          (fun L K =>
+            ProbabilityTheory.covarianceBilinDual
+              (Q.map fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+              L K) i j =
+        vaart1998_covarianceTable
+          (fun k => (coordinates k).comp (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ))
+          (fun L K =>
+            ProbabilityTheory.covarianceBilinDual (Q.map Z) L K) i j) := by
+  let B :=
+    vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_finiteDimensional
+      (P := P) (Q := Q) X Z hX_meas hZ_aemeas
+      (vaart1998_finiteCoordinateProjectedScalarCLT_of_projectedSummandCLT
+        (P := P) (Q := Q) hsummand)
+  let CLT :=
+    vaart1998_finiteCoordinateEmpiricalMomentCLTCertificate_of_cramerWoldBridge
+      B hZ_gaussian hZ_memLp
+  have hInvCLT : ∀ n : ℕ,
+      AEMeasurable
+        (fun ω : Ω =>
+          he.localInverse e De theta0
+            (vaart1998_finiteCoordinateEmpiricalMoment CLT.X n ω)) P := by
+    intro n
+    simpa [CLT, B] using hInvEmpirical n
+  simpa [CLT, B] using
+    vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_cltCertificate_aemeasurable_real
+      (e := e) (theta0 := theta0) (De := De) (he := he)
+      (coordinates := coordinates) (CLT := CLT)
+      (heta0 := by simpa [CLT, B] using heta0)
+      (hX_integrable := by
+        intro coordinate
+        simpa [CLT, B] using hX_integrable coordinate)
+      (hX_indep := by
+        intro coordinate
+        simpa [CLT, B] using hX_indep coordinate)
+      (hX_ident := by
+        intro coordinate i
+        simpa [CLT, B] using hX_ident coordinate i)
+      (hX_meas := by
+        intro coordinate i
+        simpa [CLT, B] using hX_meas coordinate i)
+      (hInvEmpirical := hInvCLT)
 
 /--
 Theorem 4.1 finite-coordinate covariance-table endpoint fed by vector-valued
