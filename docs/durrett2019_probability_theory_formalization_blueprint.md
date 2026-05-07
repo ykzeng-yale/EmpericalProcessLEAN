@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V12`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V13`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -391,16 +391,14 @@ Compiled Section 3.2 packets:
 
 Next packet:
 
-- Section 3.10: package Durrett source item 3.10.8, the
-  linear-combination characterization of finite-coordinate multivariate
-  Gaussian laws.  The theta-projection display, finite-coordinate dual
-  representation, all-dual handoffs, coordinatewise zero-mean handoff, scalar
-  coordinate covariance and centered-product source endpoints, vector Gaussian
-  coordinate-covariance CLT wrappers, common-vector-law coordinate-covariance
-  wrapper, canonical i.i.d. product-sample endpoints, and
-  Gaussian-coordinate independence criterion wrappers now compile.  Next search
-  mathlib `HasGaussianLaw` and local theta-projection characteristic-function
-  support before adding any new primitive.
+- Chapter 4.1: start the conditional-expectation layer.  The Section 3.10
+  multivariate CLT chain, Gaussian-coordinate independence criterion, and
+  Exercise 3.10.8 linear-combination characterization wrappers now compile and
+  should be treated as closed support.  Next search mathlib
+  `Probability/ConditionalExpectation.lean`, `Probability/Martingale/*`, and
+  local probability wrappers, then add one narrow Durrett-facing wrapper for
+  Lemma 4.1.1, Theorem 4.1.2, or Example 4.1.3 if the API already discharges
+  it.
 
 Support-only dependencies:
 
