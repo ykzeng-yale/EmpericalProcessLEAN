@@ -1579,5 +1579,50 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreEquati
       (residual := residual) (scaledEstimator := scaledEstimator) (Z := Z)
       hScoreCLT hResidual hResidual_meas hLinearization
 
+/--
+van der Vaart 1998, Theorem 5.41, scaled-estimator handoff from the Taylor
+zero display.
+
+The Taylor expansion in the text first appears as
+`score_n + V x_n + residual_n = 0`.  This theorem performs the final additive
+algebra to obtain the score equation consumed by
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreEquation`.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {score residual : ℕ -> Ω -> Score}
+    {scaledEstimator : ℕ -> Ω -> Θ} {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hResidual : TendstoInMeasure P residual atTop 0)
+    (hResidual_meas : ∀ n, AEMeasurable (residual n) P)
+    (hTaylorZero : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + V (scaledEstimator n ω) + residual n ω = 0) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hScoreEquation : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, V (scaledEstimator n ω) = -(score n ω + residual n ω) := by
+    intro n
+    exact (hTaylorZero n).mono fun ω hω => by
+      have hsum :
+          V (scaledEstimator n ω) + (score n ω + residual n ω) = 0 := by
+        simpa [add_assoc, add_comm, add_left_comm] using hω
+      exact add_eq_zero_iff_eq_neg.mp hsum
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreEquation
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv) (score := score)
+      (residual := residual) (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hScoreCLT hResidual hResidual_meas hScoreEquation
+
 end AsymptoticStatistics
 end StatInference

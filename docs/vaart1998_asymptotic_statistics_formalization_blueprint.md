@@ -495,7 +495,11 @@ Initial modules:
   dominated second derivatives.  The score-equation bridge
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreEquation`
   now also packages the left-inverse algebra from
-  `V scaledEstimator = -(score + residual)` into that residual handoff.
+  `V scaledEstimator = -(score + residual)` into that residual handoff.  The
+  Taylor-zero bridge
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero`
+  further accepts the source display
+  `score + V scaledEstimator + residual = 0` directly.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
