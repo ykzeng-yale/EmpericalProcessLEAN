@@ -510,8 +510,14 @@ Initial modules:
   `vaart1998_tendstoInMeasure_zero_of_norm_le_mul_stochasticBounded`,
   `vaart1998_theorem_5_41_derivativeResidual_tendstoInMeasure_of_opNorm`, and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN`,
-  so the remaining critical path is the dominated second-derivative Taylor
-  residual plus the a.e. four-term Taylor display.
+  discharging the derivative residual from the empirical derivative LLN.  The
+  second-derivative residual packet now adds
+  `vaart1998_stochasticBounded_of_norm_le_mul_stochasticBounded`,
+  `vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_bound`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeBound`,
+  so the remaining critical path is the deterministic Taylor residual bound,
+  residual measurability, and the a.e. four-term Taylor display.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

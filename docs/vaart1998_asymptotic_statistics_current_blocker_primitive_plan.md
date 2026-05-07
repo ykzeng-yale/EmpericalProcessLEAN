@@ -10,16 +10,19 @@ Continue the Vaart 1998 Lean formalization from the latest pushed frontier.
 Do not spend the next run on process text or Gaussian endpoint packaging
 unless it directly unblocks the source theorem.  The primary target is Vaart
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`: finish
-the source-shaped Taylor inputs that feed the derivative-LLN handoff.
+the deterministic Taylor source inputs that feed the derivative and
+second-derivative residual handoff.
 
 Next proof packet:
 
-- Define/package the dominated second-derivative Taylor residual and prove it
-  is `o_P(1)` from consistency plus bounded/dominated second derivatives.
+- Instantiate the deterministic bound for the second-derivative quadratic
+  residual from Taylor's theorem and the dominated second-derivative average.
 - Prove the a.e. four-term Taylor zero display consumed by the compiled
-  derivative-LLN bridge:
+  derivative and second-derivative residual bridge:
   `score_n + V (scaledEstimator_n) + derivativeResidual_n +
     secondResidual_n = 0`.
+- Package the residual measurability fields only as far as they are needed by
+  that compiled handoff.
 
 Efficiency rules for the next run: search local `StatInference` and mathlib
 reuse first, keep edits in the Vaart worktree, make one theorem-sized Lean
@@ -705,19 +708,29 @@ Chapter 3 theorem-facing wrappers compiling:
 255. Theorem 5.41 Taylor-zero handoff with the derivative LLN residual
    discharged:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN`.
+256. Theorem 5.41 product of stochastically bounded terms:
+   `vaart1998_stochasticBounded_of_norm_le_mul_stochasticBounded`.
+257. Theorem 5.41 second-derivative Taylor residual from consistency and
+   bounded dominated curvature:
+   `vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_bound`.
+258. Theorem 5.41 Taylor-zero handoff with derivative and second-derivative
+   residual negligibility discharged:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeBound`.
 
-Latest verified repository base before this packet: `9e7f024`
-(`Condense Chewi optimization live goal prompt`).
+Latest verified repository base before this packet: `5d8b858`
+(`Add Chewi ASGD product error bridge`).
 
 The current theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by proving the derivative LLN
-residual from source-shaped assumptions: empirical derivative convergence in
-probability in operator norm and stochastic boundedness of the scaled
-estimator.  The remaining Taylor bridge no longer needs a supplied
-`hDerivativeResidual`; it can consume the empirical derivative LLN directly.
+asymptotic-normality route for Z-estimators by proving the second-derivative
+Taylor residual from source-shaped assumptions: consistency of the unscaled
+estimator difference, boundedness in probability of the dominated
+second-derivative average, stochastic boundedness of the scaled estimator, and
+the deterministic quadratic residual bound.  The main handoff now consumes both
+the empirical derivative LLN and the second-derivative residual bound directly.
 
-The next aggressive packet should discharge the source-shaped second-derivative
-Taylor residual and the a.e. four-term Taylor zero display
+The next aggressive packet should prove the source-shaped Taylor expansion
+fields themselves: the deterministic/a.e. second-derivative residual bound,
+the residual measurability fields, and the a.e. four-term Taylor zero display
 `sqrt n Psi_n(theta0)
  + (P dot psi_theta0) (sqrt n (thetaHat_n - theta0))
  + (dotPsi_n(theta0) - P dot psi_theta0) (sqrt n (thetaHat_n - theta0))

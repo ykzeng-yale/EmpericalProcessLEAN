@@ -588,9 +588,20 @@ Chapter 4 handoff:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN`
   feeds the empirical derivative LLN directly into the compiled separated
   residual handoff.
+- Chapter 5.41 second-derivative residual bridge:
+  `vaart1998_stochasticBounded_of_norm_le_mul_stochasticBounded` packages
+  `O_P(1) * O_P(1) = O_P(1)`.  The source-shaped residual theorem
+  `vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_bound`
+  proves the quadratic Taylor residual is `o_P(1)` from consistency,
+  stochastic boundedness of the dominated second-derivative average, stochastic
+  boundedness of the scaled estimator, and the deterministic residual bound.
+  The consumer
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeBound`
+  feeds both the empirical derivative LLN and second-derivative residual bound
+  into the compiled Taylor-zero handoff.
 
-Latest verified repository base before this packet: `9e7f024`
-(`Condense Chewi optimization live goal prompt`).
+Latest verified repository base before this packet: `5d8b858`
+(`Add Chewi ASGD product error bridge`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -608,10 +619,11 @@ source Taylor/LLN proof packet.
 ## Next Aggressive Target
 
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41:
-prove the dominated second-derivative Taylor residual is `o_P(1)` from
-consistency plus bounded/dominated second derivatives, then prove the a.e.
-four-term Taylor zero display consumed by the derivative-LLN handoff.  Keep
-Gaussian-law preservation out of the critical path until the source Taylor
+prove the deterministic/a.e. second-derivative residual bound from Taylor's
+theorem and the dominated second-derivative average, package the residual
+measurability fields, then prove the a.e. four-term Taylor zero display
+consumed by the derivative and second-derivative residual handoff.  Keep
+Gaussian-law preservation out of the critical path until this source Taylor
 bridge is complete.
 
 ## Reuse Dependencies
