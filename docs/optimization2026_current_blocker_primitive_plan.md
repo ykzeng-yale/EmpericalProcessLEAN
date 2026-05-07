@@ -146,22 +146,27 @@ English; chat status may be Chinese/English mix.
 Active packet: Chapter 12 ASGD Theorem 12.7/12.3 in
 `StatInference/Optimization/ASGD.lean`.  Reuse the compiled ASGD stack through
 the concrete scaled factors, random product bridge, characteristic-product
-integrability, and
-`Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_scaled'`.
+integrability, the arbitrary `F_n`-measurable multiplier tower step
+`Chewi127BoundedMartingaleCLTSource.projected_charFun_taylor_step_mul_scaled`,
+and the conditional-remainder row comparison
+`Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_le`.
 
-Next endpoint: prove a finite projected tower/telescoping estimate for
-`projectedVarianceFactor`, `projectedRemainderFactor`, and
-`projectedTaylorModelFactor`; only claim exact full product replacement if the
-future-factor measurability hypothesis is available.  Then close the concrete
-variance expected-product convergence and conditional Taylor-remainder row-sum
-estimates needed for the scalar martingale characteristic-function limit.
+Next endpoint: formalize Chewi's compensated martingale characteristic-function
+iteration
+`E exp(i X_N + compensated conditional variance) -> 1` using the arbitrary
+multiplier step; do not return to the exact random full-product model unless an
+extra future-factor measurability hypothesis is explicitly supplied.  Then
+close the concrete conditional Taylor-remainder row-sum convergence from the
+row comparison plus the uniform boundedness remainder envelope.
 
 Reuse boundary: start from
 `StatInference.norm_prod_sub_prod_le_sum_norm_sub`,
-`chewi127_norm_prod_sub_prod_le_sum_norm_sub`, the `chewi127ScalarCharFunProduct`
-measurability/integrability/norm lemmas, and the named Chewi 12.7 factor
-definitions.  Run at most one bounded API search for the exact missing tower,
-variance, or remainder estimate; then prove instead of re-planning.
+`chewi127_norm_prod_sub_prod_le_sum_norm_sub`, `integral_norm_condExp_le_integral_norm`,
+the `chewi127ScalarCharFunProduct` measurability/integrability/norm lemmas,
+the named Chewi 12.7 factor definitions, and mathlib conditional Jensen
+`norm_condExp_le`.  Run at most one bounded API search for the exact missing
+compensated-iteration, variance-convergence, or remainder-envelope estimate;
+then prove instead of re-planning.
 
 Execution gate: work in `/private/tmp/chewi-smpgd-probability`; state the exact
 Lean theorem before editing; run

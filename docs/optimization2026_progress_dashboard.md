@@ -76,12 +76,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   through `Live Goal Prompt V3` in
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
-  route-planning loop and not an already-solved ASGD tower peel; it is the
-  finite projected tower/telescoping estimate plus the concrete variance and
-  conditional-remainder estimates needed for the scalar martingale
-  characteristic-function limit.  Broad searches, old Chapter 3 routing, and
-  repeated Git sync loops are explicitly out of budget unless they answer that
-  blocker.
+  route-planning loop and not an already-solved ASGD tower peel; it is Chewi's
+  compensated martingale characteristic-function iteration plus the concrete
+  conditional-remainder row-sum convergence needed for the scalar martingale
+  characteristic-function limit.  Broad searches, old Chapter 3 routing, exact
+  random full-product replacement without the needed measurability hypothesis,
+  and repeated Git sync loops are explicitly out of budget unless they answer
+  that blocker.
 - New ASGD scalar Lindeberg declarations:
   `chewi127ScalarLindebergSummand`,
   `chewi127ScalarLindebergAverage`,
@@ -220,13 +221,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedTaylorModelFactor`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_scaled`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_scaled'`,
+  `integral_norm_condExp_le_integral_norm`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_taylor_step_mul`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_taylor_step_mul_scaled`,
+  `Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_le`,
   and
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_concrete_random_product_model`.
   These name the actual row factors with `a = t / sqrt N` and specialize the
   random expected-product bridge to those factors; the primed tower wrapper
-  also discharges the characteristic-product integrability side condition.
-  The next ASGD packet should prove the finite tower/telescoping estimate, then
-  prove the concrete variance and remainder estimates.
+  also discharges the characteristic-product integrability side condition.  The
+  arbitrary-multiplier tower step is the correct source interface for Chewi's
+  compensated iteration, while the row comparison reduces conditional
+  Taylor-remainder control to the unconditioned bounded-remainder envelope.
+  The next ASGD packet should formalize the finite compensated iteration and
+  then prove the concrete remainder-envelope convergence.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

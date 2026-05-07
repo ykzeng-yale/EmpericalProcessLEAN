@@ -628,6 +628,29 @@ theorem integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left
               hf hfg hg)
 
 /--
+The conditional expectation is an `L1` contraction after taking norms.  This
+is the complex-valued form needed to bound conditional Taylor remainders by
+their unconditioned envelope.
+-/
+theorem integral_norm_condExp_le_integral_norm
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (m : MeasurableSpace Ω) (hm : m ≤ mΩ) {f : Ω -> E}
+    (_hf : Integrable f P) :
+    (∫ ω, ‖P[f | m] ω‖ ∂P) ≤ ∫ ω, ‖f ω‖ ∂P := by
+  calc
+    (∫ ω, ‖P[f | m] ω‖ ∂P)
+        ≤ ∫ ω, P[(fun ω => ‖f ω‖) | m] ω ∂P := by
+          refine integral_mono_ae ?_ ?_ ?_
+          · exact integrable_condExp.norm
+          · exact integrable_condExp
+          · exact norm_condExp_le
+    _ = ∫ ω, ‖f ω‖ ∂P := by
+          rw [integral_condExp (m := m) (m₀ := mΩ) (μ := P)
+            (f := fun ω => ‖f ω‖) hm]
+
+/--
 Lévy's characteristic-function theorem specialized to Chewi's scalar scaled
 martingale sums.
 
@@ -1574,6 +1597,89 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step
     (S.projected_conditional_second_moment L n)
 
 /--
+One projected characteristic-function Taylor/tower step with an arbitrary
+`F_n`-measurable multiplier.  This is the reusable martingale step needed for
+Chewi's compensated iteration: the multiplier can carry any already-revealed
+terms, not only the raw characteristic-function prefix.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_taylor_step_mul
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (n : ℕ) (a : ℝ) (A : Ω -> ℂ)
+    (hA : AEStronglyMeasurable[S.martingale.filtration n] A P)
+    (hsq : Integrable
+      (fun ω => (L (S.martingale.xi (n + 1) ω)) ^ 2) P)
+    (hremainder : Integrable
+      (chewi127ScalarCharFunTaylorRemainder a
+        (fun ω => L (S.martingale.xi (n + 1) ω))) P)
+    (hproduct : Integrable
+      (fun ω =>
+        A ω *
+          chewi127ScalarCharFunFactor a
+            (fun ω => L (S.martingale.xi (n + 1) ω)) ω) P) :
+    (∫ ω,
+        A ω *
+          chewi127ScalarCharFunFactor a
+            (fun ω => L (S.martingale.xi (n + 1) ω)) ω ∂P) =
+      ∫ ω,
+        A ω *
+          (1 - (((a ^ 2 * S.covariance.Xi (n + 1) ω L L) / 2 : ℝ) : ℂ)
+            + MeasureTheory.condExp (S.martingale.filtration n) P
+                (chewi127ScalarCharFunTaylorRemainder a
+                  (fun ω => L (S.martingale.xi (n + 1) ω))) ω) ∂P := by
+  let x : Ω -> ℝ := fun ω => L (S.martingale.xi (n + 1) ω)
+  let lastFactor : Ω -> ℂ := chewi127ScalarCharFunFactor a x
+  let rem : Ω -> ℂ := chewi127ScalarCharFunTaylorRemainder a x
+  have hnext : Integrable lastFactor P := by
+    simpa [lastFactor, x, chewi127ScalarCharFunFactor, Complex.ofReal_mul] using
+      chewi127ScalarCharFunFactor_integrable
+        (P := P) (x := x)
+        (S.martingale.projected_integrable L (n + 1)).aemeasurable a
+  have hpull :
+      (∫ ω, A ω * lastFactor ω ∂P) =
+        ∫ ω,
+          A ω *
+            MeasureTheory.condExp (S.martingale.filtration n) P lastFactor ω ∂P :=
+    integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left
+      (m := S.martingale.filtration n) (hm := S.martingale.filtration.le n)
+      hA (by simpa [lastFactor, x] using hproduct) hnext
+  have htaylor :
+      MeasureTheory.condExp (S.martingale.filtration n) P lastFactor
+        =ᵐ[P] fun ω =>
+          1 - (((a ^ 2 * S.covariance.Xi (n + 1) ω L L) / 2 : ℝ) : ℂ)
+            + MeasureTheory.condExp (S.martingale.filtration n) P rem ω := by
+    simpa [lastFactor, rem, x, chewi127ScalarCharFunFactor, Complex.ofReal_mul] using
+      S.projected_charFun_condExp_taylor_step L n a hsq hremainder
+  calc
+    (∫ ω,
+        A ω *
+          chewi127ScalarCharFunFactor a
+            (fun ω => L (S.martingale.xi (n + 1) ω)) ω ∂P)
+        = ∫ ω, A ω * lastFactor ω ∂P := by
+          rfl
+    _ = ∫ ω,
+          A ω *
+            MeasureTheory.condExp (S.martingale.filtration n) P lastFactor ω ∂P :=
+          hpull
+    _ = ∫ ω, A ω *
+          (1 - (((a ^ 2 * S.covariance.Xi (n + 1) ω L L) / 2 : ℝ) : ℂ)
+            + MeasureTheory.condExp (S.martingale.filtration n) P rem ω) ∂P := by
+          refine integral_congr_ae ?_
+          filter_upwards [htaylor] with ω hω
+          rw [hω]
+    _ = ∫ ω,
+        A ω *
+          (1 - (((a ^ 2 * S.covariance.Xi (n + 1) ω L L) / 2 : ℝ) : ℂ)
+            + MeasureTheory.condExp (S.martingale.filtration n) P
+                (chewi127ScalarCharFunTaylorRemainder a
+                  (fun ω => L (S.martingale.xi (n + 1) ω))) ω) ∂P := by
+          rfl
+
+/--
 One recursive product/tower peel for the projected scalar martingale
 characteristic function.  The last factor is replaced by its conditional
 Taylor model, while the preceding product is pulled out through the
@@ -1716,6 +1822,61 @@ noncomputable def Chewi127BoundedMartingaleCLTSource.projectedRemainderFactor
       (fun ω => L (S.martingale.xi (k + 1) ω))) ω
 
 /--
+The expected row-sum of conditional Taylor remainders is bounded by the
+expected row-sum of the unconditioned Taylor-remainder envelopes.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_le
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ)
+    (hremainder :
+      ∀ k ∈ Finset.range N,
+        Integrable
+          (chewi127ScalarCharFunTaylorRemainder
+            (t * (Real.sqrt (N : ℝ))⁻¹)
+            (fun ω => L (S.martingale.xi (k + 1) ω))) P) :
+    (∫ ω,
+        ∑ k ∈ Finset.range N,
+          ‖S.projectedRemainderFactor L N t k ω‖ ∂P) ≤
+      ∫ ω,
+        ∑ k ∈ Finset.range N,
+          ‖chewi127ScalarCharFunTaylorRemainder
+            (t * (Real.sqrt (N : ℝ))⁻¹)
+            (fun ω => L (S.martingale.xi (k + 1) ω)) ω‖ ∂P := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  let rem : ℕ -> Ω -> ℂ := fun k =>
+    chewi127ScalarCharFunTaylorRemainder a
+      (fun ω => L (S.martingale.xi (k + 1) ω))
+  have hleft_int :
+      ∀ k ∈ Finset.range N,
+        Integrable
+          (fun ω => ‖S.projectedRemainderFactor L N t k ω‖) P := by
+    intro k hk
+    have hcond : Integrable (P[rem k | S.martingale.filtration k]) P :=
+      integrable_condExp
+    simpa [Chewi127BoundedMartingaleCLTSource.projectedRemainderFactor, rem, a]
+      using hcond.norm
+  have hright_int :
+      ∀ k ∈ Finset.range N,
+        Integrable (fun ω => ‖rem k ω‖) P := by
+    intro k hk
+    exact (hremainder k hk).norm
+  rw [integral_finsetSum (Finset.range N) hleft_int,
+    integral_finsetSum (Finset.range N) hright_int]
+  refine Finset.sum_le_sum ?_
+  intro k hk
+  simpa [rem, a, Chewi127BoundedMartingaleCLTSource.projectedRemainderFactor]
+    using
+      integral_norm_condExp_le_integral_norm
+        (P := P) (m := S.martingale.filtration k)
+        (hm := S.martingale.filtration.le k) (f := rem k)
+        (hremainder k hk)
+
+/--
 The full variance-plus-remainder factor produced by the projected tower peel.
 -/
 noncomputable def Chewi127BoundedMartingaleCLTSource.projectedTaylorModelFactor
@@ -1817,6 +1978,56 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_
   simpa [x, a] using
     S.projected_charFun_product_tower_succ_scaled L N n t hsq hremainder
       hprod_int
+
+/--
+Scaled Chewi-factor version of the arbitrary-multiplier tower step.  The
+multiplier is supplied as an integrable `F_n`-measurable term, so the
+characteristic-function factor's unit norm discharges the product-integrability
+side condition.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_taylor_step_mul_scaled
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N n : ℕ) (t : ℝ) (A : Ω -> ℂ)
+    (hA_meas : AEStronglyMeasurable[S.martingale.filtration n] A P)
+    (hA_int : Integrable A P)
+    (hsq : Integrable
+      (fun ω => (L (S.martingale.xi (n + 1) ω)) ^ 2) P)
+    (hremainder : Integrable
+      (chewi127ScalarCharFunTaylorRemainder
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        (fun ω => L (S.martingale.xi (n + 1) ω))) P) :
+    (∫ ω,
+        A ω *
+          chewi127ScalarCharFunFactor
+            (t * (Real.sqrt (N : ℝ))⁻¹)
+            (fun ω => L (S.martingale.xi (n + 1) ω)) ω ∂P) =
+      ∫ ω, A ω * S.projectedTaylorModelFactor L N t n ω ∂P := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  let x : Ω -> ℝ := fun ω => L (S.martingale.xi (n + 1) ω)
+  have hfactor_meas :
+      AEStronglyMeasurable (chewi127ScalarCharFunFactor a x) P := by
+    have hx : AEMeasurable x P :=
+      (S.martingale.projected_integrable L (n + 1)).aemeasurable
+    have hfactor : AEMeasurable
+        (fun ω => Complex.exp (((a * x ω : ℝ) : ℂ) * Complex.I)) P := by
+      fun_prop
+    simpa [chewi127ScalarCharFunFactor, Complex.ofReal_mul] using
+      hfactor.aestronglyMeasurable
+  have hproduct :
+      Integrable
+        (fun ω => A ω * chewi127ScalarCharFunFactor a x ω) P := by
+    refine hA_int.mul_bdd (c := 1) hfactor_meas ?_
+    exact ae_of_all P fun ω => by
+      rw [chewi127ScalarCharFunFactor_norm_eq_one]
+  simpa [a, x, Chewi127BoundedMartingaleCLTSource.projectedTaylorModelFactor,
+    Chewi127BoundedMartingaleCLTSource.projectedVarianceFactor,
+    Chewi127BoundedMartingaleCLTSource.projectedRemainderFactor] using
+    S.projected_charFun_taylor_step_mul L n a A hA_meas hsq hremainder hproduct
 
 /--
 Projected characteristic-function convergence from the finite product model
