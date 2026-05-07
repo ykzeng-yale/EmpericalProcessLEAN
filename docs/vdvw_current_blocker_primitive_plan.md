@@ -7940,3 +7940,15 @@ source theorem deriving that selected finite-net integral convergence from the
 book's random empirical entropy/tail/UI hypothesis; the event route remains
 the selected-cover `Phi(x)=x` comparison and pathwise finite-center Hoeffding
 event.
+
+2026-05-07 selected inverse-radius half-radius projection:
+`Theorem243.lean` now proves
+`VdVWTheorem243SelectedInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_doubleInvRadius_half_tendsto_zero`.
+This aligns the selected inverse-radius entropy package with the exact
+`coverRadius n / 2` syntax consumed by the selected expected-maximal Markov
+handoff: choosing `coverRadius n = 2 / (n + 1)` recovers the canonical
+`1 / (n + 1)` additive term.  This is a side-condition projection, not a final
+endpoint; the next theorem-facing step is to feed this projection into a clean
+selected-cover convergence consumer only if the selected cover object can be
+kept direct, otherwise return to the genuine source blockers
+(`Phi(x)=x`/pathwise finite-center event or stochastic entropy-to-mean/UI).

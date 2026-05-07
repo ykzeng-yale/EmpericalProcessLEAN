@@ -3268,3 +3268,10 @@ The next non-duplicative mean-route target is to prove the selected finite-net
 Hoeffding-upper integral convergence from the stochastic entropy/tail/UI
 condition; the event-route blocker remains the selected-cover `Phi(x)=x`
 comparison plus pathwise finite-center Hoeffding event.
+
+The selected inverse-radius entropy package now also exposes that mean input
+in the exact half-radius syntax needed by the selected Markov theorem via
+`VdVWTheorem243SelectedInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_doubleInvRadius_half_tendsto_zero`.
+This projects the canonical `1 / (n + 1)` additive term as
+`(2 / (n + 1)) / 2`; it prepares, but does not by itself complete, the direct
+selected-cover convergence consumer.

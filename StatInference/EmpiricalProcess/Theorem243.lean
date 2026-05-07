@@ -30387,6 +30387,57 @@ theorem
       hM_pos hK_nonneg hselected.log_cardinality_div_bound
 
 /--
+Selected inverse-radius side conditions in the exact half-radius shape consumed
+by the selected expected-maximal Markov handoff.
+
+The new selected-cover Markov route takes a radius process `coverRadius` and
+adds `coverRadius n / 2` to the finite-net upper bound.  For the canonical
+inverse-radius selected covers, choosing `coverRadius n = 2 / (n + 1)` gives
+the already proved `1 / (n + 1)` mean convergence in that exact syntactic
+shape.
+-/
+theorem
+    VdVWTheorem243SelectedInvRadiusEntropySideConditions.integral_finiteNetHoeffdingUpper_add_doubleInvRadius_half_tendsto_zero
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M K : ℝ}
+    {cardinality : (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hselected :
+      VdVWTheorem243SelectedInvRadiusEntropySideConditions P X indexClass
+        classFun envelope M K cardinality)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hM_pos : 0 < M)
+    (hK_nonneg : 0 ≤ K) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality n sample n) n M +
+            (2 / ((n : ℝ) + 1)) / 2 ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  have hbase :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWTheorem243FiniteNetHoeffdingUpper
+                (cardinality n sample n) n M +
+              1 / ((n : ℝ) + 1) ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) :=
+    hselected.integral_finiteNetHoeffdingUpper_add_invRadius_tendsto_zero
+      hX_samplePath hclass henvelope_meas hM_pos hK_nonneg
+  refine Tendsto.congr' ?_ hbase
+  exact Eventually.of_forall fun n => by
+    refine integral_congr_ae <| ae_of_all _ fun sample => ?_
+    ring_nf
+
+/--
 Finite empirical covers at radius `1 / (n + 1)` plus the diagonal selected
 entropy inputs imply convergence of the finite-net Hoeffding upper mean.
 
