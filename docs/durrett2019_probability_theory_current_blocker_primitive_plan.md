@@ -147,6 +147,27 @@ Corrections for the next cycle:
 7. Commit docs-only protocol changes only when they encode a user correction or
    a blocker discovery that materially improves the next handoff.
 
+Additional accuracy gates after the conversation review:
+
+1. Before editing Lean, write down the exact source item, the intended Lean
+   declaration name, and the existing theorem or primitive it will consume.
+   If one of the three is missing, search for it before inventing a new layer.
+2. Do not call a conditional certificate bridge an exact textbook theorem.
+   Report it as a bridge or wrapper until the primitive obligations are proved
+   and the final source-shaped theorem compiles.
+3. Avoid "progress by assumption growth": a new assumption is acceptable only
+   when it replaces a larger opaque blocker with a named smaller primitive, or
+   when it packages a textbook hypothesis verbatim for downstream reuse.
+4. Prefer one locally checkable proof packet over parallel activity.  Use an
+   isolated worktree only when the main checkout is dirty, a build is long
+   enough to block sync, or the user explicitly authorizes disjoint local lanes.
+5. Treat other agents' GitHub contributions as a reuse cache, not as permission
+   to spawn new agents.  Sync and inspect their commits; delegate only after a
+   fresh explicit user request for parallel agent work.
+6. Stop a cycle with one of two artifacts: a pushed verified Lean packet, or a
+   precise blocker note naming the failed theorem shape, attempted APIs, and
+   next smallest proof obligation.
+
 ## Current Blocker
 
 The Durrett source assets are present locally, and the Durrett-specific Lean

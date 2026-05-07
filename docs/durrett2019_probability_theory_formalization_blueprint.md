@@ -50,6 +50,21 @@ Otherwise, keep the active proof in this thread and improve throughput with
 search caching, isolated worktrees for long builds or disjoint local lanes, and
 one fetch/rebase pass at the start plus one immediately before push.
 
+Accuracy gates for each proof packet:
+
+1. Start from the latest route docs and pushed commit when the app-level
+   `/goal` text is stale.
+2. Name the source theorem/exercise, target Lean declaration, and consumed
+   local/mathlib primitive before editing.
+3. Prefer a compiled theorem-sized packet over broad exploration.  A new
+   assumption or certificate field must either match a textbook hypothesis or
+   shrink a named blocker into a smaller primitive.
+4. Report conditional wrappers as wrappers or bridges, not as completed exact
+   textbook theorem reports.
+5. End with focused verification for touched Lean files, promoted builds only
+   when the touched import surface requires them, scans, docs, final GitHub
+   sync, and a pushed commit.
+
 ## Status Vocabulary
 
 - `exact-local`: exact textbook item statement is formalized and proved with no

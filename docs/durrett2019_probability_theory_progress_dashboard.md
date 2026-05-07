@@ -19,6 +19,10 @@ must reuse Billingsley/local probability primitives whenever possible.
 - Goal policy: Durrett is tracked by the active in-thread `/goal`, not a
   recurring automation.  Refresh the route docs and next target after each
   verified proof step, blocker refinement, merge, or route change.
+- Stale-goal policy: if the app-level `/goal` text names an older theorem,
+  route from this dashboard, the current blocker plan, the blueprint, and the
+  latest pushed commit.  Do not create an automation or duplicate goal to work
+  around stale wording.
 - Throughput policy: default to single-thread theorem-sized proof packets with
   search-first reuse, start/final GitHub sync checks, and isolated worktrees for
   long Durrett builds or disjoint local lanes.  Use subagents only after
@@ -287,7 +291,10 @@ a search-only cycle.
 Process correction for the next cycle: treat the route docs and latest pushed
 commit as the live target when the app-level `/goal` wording lags.  Do not
 create an automation or spawn subagents unless the user explicitly asks for
-parallel agent work.  The source-shaped variance-tail split bridge now proves
+parallel agent work.  First name the exact source item, intended Lean
+declaration, and consumed local/mathlib primitive before editing; this prevents
+assumption-only drift and broad search churn.  The source-shaped variance-tail
+split bridge now proves
 `durrett2019_lindebergFellerVarianceRowsEventuallySmall` from the Lindeberg
 condition plus a supplied Durrett inequality
 `variance <= cutoff ^ 2 + tail row sum`; the Exercise 3.1.1 source theorem now
