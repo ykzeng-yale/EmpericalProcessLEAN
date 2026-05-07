@@ -204,6 +204,80 @@ theorem chewi127_product_sub_product_tendsto_zero_of_sum_norm
   exact chewi127_norm_prod_sub_prod_le_sum_norm_sub N (z N) (w N) hzN hwN
 
 /--
+ASGD-facing product limit bridge after the martingale tower peel: a Taylor
+product with additive conditional-remainder factors has the same Gaussian
+exponential limit as its variance-only product once the remainder row-sum
+vanishes.
+-/
+theorem chewi127_product_with_remainder_tendsto_exp_of_variance_product
+    (varianceFactor remainderFactor : ℕ -> ℕ -> ℂ)
+    (varianceLimit t : ℝ)
+    (hvariance_bound :
+      ∀ᶠ N : ℕ in atTop,
+        ∀ k ∈ Finset.range N, ‖varianceFactor N k‖ ≤ 1)
+    (hfull_bound :
+      ∀ᶠ N : ℕ in atTop,
+        ∀ k ∈ Finset.range N,
+          ‖varianceFactor N k + remainderFactor N k‖ ≤ 1)
+    (hremainder :
+      Tendsto
+        (fun N : ℕ => ∑ k ∈ Finset.range N, ‖remainderFactor N k‖)
+        atTop (𝓝 0))
+    (hvariance_product :
+      Tendsto
+        (fun N : ℕ => ∏ k ∈ Finset.range N, varianceFactor N k)
+        atTop
+        (𝓝 (Complex.exp (-(varianceLimit * t ^ 2 / 2 : ℝ))))) :
+    Tendsto
+      (fun N : ℕ =>
+        ∏ k ∈ Finset.range N,
+          (varianceFactor N k + remainderFactor N k))
+      atTop
+      (𝓝 (Complex.exp (-(varianceLimit * t ^ 2 / 2 : ℝ)))) :=
+  StatInference.product_add_error_tendsto_of_product_tendsto
+    varianceFactor remainderFactor hvariance_bound hfull_bound
+    hremainder hvariance_product
+
+/--
+Characteristic-function convergence bridge for the Chewi 12.7 scalar
+martingale CLT route.  Once the tower recursion identifies the characteristic
+function with a variance-plus-remainder product, the remaining obligations are
+exactly the variance-product convergence and conditional-remainder row-sum
+control.
+-/
+theorem chewi127_charFun_tendsto_exp_of_eventually_eq_product_with_remainder
+    (phi : ℕ -> ℂ) (varianceFactor remainderFactor : ℕ -> ℕ -> ℂ)
+    (varianceLimit t : ℝ)
+    (hphi :
+      ∀ᶠ N : ℕ in atTop,
+        phi N =
+          ∏ k ∈ Finset.range N,
+            (varianceFactor N k + remainderFactor N k))
+    (hvariance_bound :
+      ∀ᶠ N : ℕ in atTop,
+        ∀ k ∈ Finset.range N, ‖varianceFactor N k‖ ≤ 1)
+    (hfull_bound :
+      ∀ᶠ N : ℕ in atTop,
+        ∀ k ∈ Finset.range N,
+          ‖varianceFactor N k + remainderFactor N k‖ ≤ 1)
+    (hremainder :
+      Tendsto
+        (fun N : ℕ => ∑ k ∈ Finset.range N, ‖remainderFactor N k‖)
+        atTop (𝓝 0))
+    (hvariance_product :
+      Tendsto
+        (fun N : ℕ => ∏ k ∈ Finset.range N, varianceFactor N k)
+        atTop
+        (𝓝 (Complex.exp (-(varianceLimit * t ^ 2 / 2 : ℝ))))) :
+    Tendsto phi atTop
+      (𝓝 (Complex.exp (-(varianceLimit * t ^ 2 / 2 : ℝ)))) := by
+  exact
+    (chewi127_product_with_remainder_tendsto_exp_of_variance_product
+      varianceFactor remainderFactor varianceLimit t hvariance_bound
+      hfull_bound hremainder hvariance_product).congr'
+        (hphi.mono fun _ hN => hN.symm)
+
+/--
 Scalar Lindeberg tail summand for Chewi's one-dimensional martingale CLT
 route.  It is the source expression
 `x_{k+1}^2 1_{ε sqrt(N) < |x_{k+1}|}`.
@@ -1399,6 +1473,64 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_variance_tendstoInMeasure
       (fun N ω => chewi127AverageConditionalVariance S.covariance.Xi N ω L)
       atTop (fun _ => S.covariance_limit.S_infty L L) :=
   S.covariance_limit.variance_tendstoInMeasure L
+
+/--
+Projected characteristic-function convergence from the finite product model
+left by the martingale tower peel.  This is the source-facing reduction of the
+hard Chewi 12.7 scalar CLT field to a variance-product limit and a conditional
+Taylor-remainder row-sum estimate.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_product_model
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (varianceFactor remainderFactor : ℕ -> ℕ -> ℂ)
+    (hproduct_model :
+      ∀ᶠ N : ℕ in atTop,
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t =
+          ∏ k ∈ Finset.range N,
+            (varianceFactor N k + remainderFactor N k))
+    (hvariance_bound :
+      ∀ᶠ N : ℕ in atTop,
+        ∀ k ∈ Finset.range N, ‖varianceFactor N k‖ ≤ 1)
+    (hfull_bound :
+      ∀ᶠ N : ℕ in atTop,
+        ∀ k ∈ Finset.range N,
+          ‖varianceFactor N k + remainderFactor N k‖ ≤ 1)
+    (hremainder :
+      Tendsto
+        (fun N : ℕ => ∑ k ∈ Finset.range N, ‖remainderFactor N k‖)
+        atTop (𝓝 0))
+    (hvariance_product :
+      Tendsto
+        (fun N : ℕ => ∏ k ∈ Finset.range N, varianceFactor N k)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ))))) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) :=
+  chewi127_charFun_tendsto_exp_of_eventually_eq_product_with_remainder
+    (fun N : ℕ =>
+      MeasureTheory.charFun
+        (P.map
+          (chewi127ScalarScaledSum
+            (fun n ω => L (S.martingale.xi n ω)) N)) t)
+    varianceFactor remainderFactor (S.covariance_limit.S_infty L L) t
+    hproduct_model hvariance_bound hfull_bound hremainder hvariance_product
 
 /--
 The source package supplies uniform boundedness of every scalar projection.
