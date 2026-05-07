@@ -2018,6 +2018,24 @@ def durrett2019_exercise_3_1_1_realTriangularArrayRowSumTendsto
     atTop (𝓝 lambda)
 
 /--
+Durrett 2019, Exercise 3.1.1, the max row coefficient hypothesis
+`max_{m <= n} |c_{n,m}| -> 0`, expressed without choosing a finite maximum.
+-/
+def durrett2019_exercise_3_1_1_realTriangularArrayMaxAbsTendstoZero
+    (c : ℕ -> ℕ -> ℝ) : Prop :=
+  ∀ epsilon : ℝ, 0 < epsilon ->
+    ∀ᶠ n : ℕ in atTop,
+      ∀ m ∈ Finset.range n, |c n m| < epsilon
+
+/--
+Durrett 2019, Exercise 3.1.1, the uniform absolute row-sum boundedness
+hypothesis `sup_n sum_m |c_{n,m}| < infinity`.
+-/
+def durrett2019_exercise_3_1_1_realTriangularArrayAbsRowSumBounded
+    (c : ℕ -> ℕ -> ℝ) : Prop :=
+  ∃ bound : ℝ, ∀ n : ℕ, ∑ m ∈ Finset.range n, |c n m| ≤ bound
+
+/--
 Durrett 2019, Exercise 3.1.1, product-convergence conclusion for a real
 triangular array `c_{n,m}`:
 `prod_m (1 + c_{n,m}) -> exp(lambda)`.
@@ -2027,6 +2045,17 @@ def durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp
   Tendsto
     (fun n : ℕ => ∏ m ∈ Finset.range n, (1 + ((c n m : ℝ) : ℂ)))
     atTop (𝓝 (Complex.exp (lambda : ℂ)))
+
+/--
+Durrett 2019, Exercise 3.1.1, source theorem schema for real triangular-array
+products.
+-/
+def durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem : Prop :=
+  ∀ (c : ℕ -> ℕ -> ℝ) (lambda : ℝ),
+    durrett2019_exercise_3_1_1_realTriangularArrayMaxAbsTendstoZero c ->
+    durrett2019_exercise_3_1_1_realTriangularArrayRowSumTendsto c lambda ->
+    durrett2019_exercise_3_1_1_realTriangularArrayAbsRowSumBounded c ->
+    durrett2019_exercise_3_1_1_realTriangularArrayProductTendstoExp c lambda
 
 /--
 Durrett 2019, Theorem 3.4.10, the Exercise 3.1.1 coefficient
@@ -2061,6 +2090,52 @@ theorem durrett2019_theorem_3_4_10_quadraticVarianceCoefficient_rowSum_tendsto
     durrett2019_lindebergFellerQuadraticVarianceCoefficient,
     durrett2019_lindebergFellerVarianceRowSum, Finset.sum_mul, Finset.mul_sum,
     div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm] using hscaled
+
+/--
+Durrett 2019, Theorem 3.4.10, variance-sum convergence gives the Exercise
+3.1.1 uniform absolute row-sum bound for
+`c_{n,m} = -t^2 sigma_{n,m}^2 / 2`.
+-/
+theorem durrett2019_theorem_3_4_10_quadraticVarianceCoefficient_absRowSumBounded_of_varianceSum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (t : ℝ) :
+    durrett2019_exercise_3_1_1_realTriangularArrayAbsRowSumBounded
+      (durrett2019_lindebergFellerQuadraticVarianceCoefficient P X t) := by
+  rcases hvariance.bddAbove_range with ⟨bound, hbound⟩
+  refine ⟨(t ^ 2 / 2) * bound, ?_⟩
+  intro n
+  have hscale_nonneg : 0 ≤ t ^ 2 / 2 := by
+    exact div_nonneg (sq_nonneg t) (by norm_num)
+  have hrow_le :
+      durrett2019_lindebergFellerVarianceRowSum P X n ≤ bound :=
+    hbound ⟨n, rfl⟩
+  have hsum_eq :
+      ∑ m ∈ Finset.range n,
+          |durrett2019_lindebergFellerQuadraticVarianceCoefficient P X t n m| =
+        (t ^ 2 / 2) * durrett2019_lindebergFellerVarianceRowSum P X n := by
+    calc
+      ∑ m ∈ Finset.range n,
+          |durrett2019_lindebergFellerQuadraticVarianceCoefficient P X t n m|
+          =
+        ∑ m ∈ Finset.range n,
+          _root_.ProbabilityTheory.variance (X n m) P * t ^ 2 / 2 := by
+          refine Finset.sum_congr rfl ?_
+          intro m hm
+          rw [durrett2019_lindebergFellerQuadraticVarianceCoefficient, abs_neg]
+          exact abs_of_nonneg
+            (div_nonneg
+              (mul_nonneg
+                (_root_.ProbabilityTheory.variance_nonneg (X n m) P)
+                (sq_nonneg t))
+              (by norm_num))
+      _ = (t ^ 2 / 2) * durrett2019_lindebergFellerVarianceRowSum P X n := by
+          simp [durrett2019_lindebergFellerVarianceRowSum, div_eq_mul_inv,
+            Finset.mul_sum, mul_assoc, mul_comm, mul_left_comm]
+  rw [hsum_eq]
+  exact mul_le_mul_of_nonneg_left hrow_le hscale_nonneg
 
 /--
 Durrett 2019, Theorem 3.4.10, quadratic variance factor
@@ -2308,6 +2383,92 @@ theorem durrett2019_theorem_3_4_10_varianceRowsEventuallySmall_of_lindeberg_and_
         epsilon := by
     nlinarith
   exact lt_of_le_of_lt hvariance_le hsum_lt
+
+/--
+Durrett 2019, Theorem 3.4.10, max-smallness of row variances gives the
+Exercise 3.1.1 max-coefficient hypothesis for
+`c_{n,m} = -t^2 sigma_{n,m}^2 / 2`.
+-/
+theorem durrett2019_theorem_3_4_10_quadraticVarianceCoefficient_maxAbsTendstoZero_of_varianceRowsEventuallySmall
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ}
+    (hsmall : durrett2019_lindebergFellerVarianceRowsEventuallySmall P X)
+    (t : ℝ) :
+    durrett2019_exercise_3_1_1_realTriangularArrayMaxAbsTendstoZero
+      (durrett2019_lindebergFellerQuadraticVarianceCoefficient P X t) := by
+  intro epsilon hepsilon
+  by_cases ht : t = 0
+  · filter_upwards with n m hm
+    simp [durrett2019_lindebergFellerQuadraticVarianceCoefficient, ht, hepsilon]
+  · have ht_sq_pos : 0 < t ^ 2 := sq_pos_of_ne_zero ht
+    have hthreshold_pos : 0 < 2 * epsilon / t ^ 2 := by
+      exact div_pos (mul_pos (by norm_num) hepsilon) ht_sq_pos
+    filter_upwards [hsmall (2 * epsilon / t ^ 2) hthreshold_pos] with n hn m hm
+    have hv_lt :
+        _root_.ProbabilityTheory.variance (X n m) P < 2 * epsilon / t ^ 2 :=
+      hn m hm
+    have hscale_pos : 0 < t ^ 2 / 2 := div_pos ht_sq_pos (by norm_num)
+    have hmul := mul_lt_mul_of_pos_right hv_lt hscale_pos
+    have hcoeff_abs :
+        |durrett2019_lindebergFellerQuadraticVarianceCoefficient P X t n m| =
+          _root_.ProbabilityTheory.variance (X n m) P * t ^ 2 / 2 := by
+      rw [durrett2019_lindebergFellerQuadraticVarianceCoefficient, abs_neg]
+      exact abs_of_nonneg
+        (div_nonneg
+          (mul_nonneg
+            (_root_.ProbabilityTheory.variance_nonneg (X n m) P)
+            (sq_nonneg t))
+          (by norm_num))
+    rw [hcoeff_abs]
+    have hright : (2 * epsilon / t ^ 2) * (t ^ 2 / 2) = epsilon := by
+      field_simp [ht_sq_pos.ne']
+    nlinarith
+
+/--
+Durrett 2019, Theorem 3.4.10, apply Exercise 3.1.1 to the quadratic variance
+coefficients.
+-/
+theorem durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_varianceRowsEventuallySmall_and_exercise311
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hexercise311 :
+      durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hsmall : durrett2019_lindebergFellerVarianceRowsEventuallySmall P X) :
+    durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp
+      P X varianceLimit := by
+  intro t
+  exact hexercise311
+    (durrett2019_lindebergFellerQuadraticVarianceCoefficient P X t)
+    (-(varianceLimit * t ^ 2 / 2))
+    (durrett2019_theorem_3_4_10_quadraticVarianceCoefficient_maxAbsTendstoZero_of_varianceRowsEventuallySmall
+      (P := P) (X := X) hsmall t)
+    (durrett2019_theorem_3_4_10_quadraticVarianceCoefficient_rowSum_tendsto
+      (P := P) (X := X) (varianceLimit := varianceLimit) hvariance t)
+    (durrett2019_theorem_3_4_10_quadraticVarianceCoefficient_absRowSumBounded_of_varianceSum
+      (P := P) (X := X) (varianceLimit := varianceLimit) hvariance t)
+
+/--
+Durrett 2019, Theorem 3.4.10, apply Exercise 3.1.1 to the quadratic variance
+coefficients using the Lindeberg route to max-row-variance smallness.
+-/
+theorem durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_lindeberg_varianceSplit_and_exercise311
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {varianceLimit : ℝ}
+    (hexercise311 :
+      durrett2019_exercise_3_1_1_realTriangularArrayProductTheorem)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X varianceLimit)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hsplit : durrett2019_lindebergFellerVarianceSplitByTailRowSum P X) :
+    durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp
+      P X varianceLimit :=
+  durrett2019_theorem_3_4_10_quadraticVarianceProductConvergenceExp_of_varianceSum_varianceRowsEventuallySmall_and_exercise311
+    (P := P) (X := X) (varianceLimit := varianceLimit)
+    hexercise311 hvariance
+    (durrett2019_theorem_3_4_10_varianceRowsEventuallySmall_of_lindeberg_and_varianceSplitByTailRowSum
+      hlindeberg hsplit)
 
 /--
 Durrett 2019, Theorem 3.4.10, scaled variance condition sufficient for
