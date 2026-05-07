@@ -3,6 +3,7 @@ import StatInference.ProbabilityMeasure.BorelCantelli
 import StatInference.ProbabilityMeasure.GeneratedSigma
 import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.StrongLaw
+import StatInference.ProbabilityMeasure.WeakConvergence
 
 /-!
 # Durrett 2019 probability-theory wrappers
@@ -17,9 +18,9 @@ namespace ProbabilityTheory
 
 open Filter MeasureTheory
 
-open scoped BigOperators ENNReal Topology Function
+open scoped BigOperators BoundedContinuousFunction ENNReal Topology Function
 
-universe u v w
+universe u v w x
 
 /-! ## Durrett, Theorem 1.1.1 -/
 
@@ -1351,6 +1352,247 @@ theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms
     X hLaw hindep
     (fun hepsilon hab =>
       durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms hepsilon hab)
+
+/-! ## Durrett, Section 3.2 -/
+
+/--
+Durrett 2019, Theorem 3.2.9, bounded-continuous test-function
+characterization of convergence in distribution.
+
+The statement includes the a.e.-measurability fields carried by mathlib's
+`TendstoInDistribution`; the test-function clause is Durrett's
+`E g(X_i) -> E g(Z)` formulation for every bounded continuous real-valued
+function `g`.
+-/
+theorem durrett2019_theorem_3_2_9_tendstoInDistribution_iff_forall_boundedContinuous_integral
+    {ι : Type u} {E : Type v} {Ω : ι -> Type x} {Ω' : Type x}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    {X : (i : ι) -> Ω i -> E} {Z : Ω' -> E} {l : Filter ι} :
+    TendstoInDistribution X l Z μ μ' ↔
+      (∀ i, AEMeasurable (X i) (μ i)) ∧
+        AEMeasurable Z μ' ∧
+          ∀ g : E →ᵇ ℝ,
+            Tendsto (fun i => ∫ ω, g (X i ω) ∂(μ i)) l
+              (𝓝 (∫ ω, g (Z ω) ∂μ')) := by
+  constructor
+  · intro h
+    refine ⟨h.forall_aemeasurable, h.aemeasurable_limit, ?_⟩
+    intro g
+    have htest :=
+      (StatInference.ProbabilityMeasure.weakConvergence_iff_forall_integral_tendsto.mp
+        h.tendsto) g
+    have hsource_map :
+        (fun i => ∫ s, g s ∂((μ i).map (X i))) =
+          fun i => ∫ ω, g (X i ω) ∂(μ i) := by
+      funext i
+      exact integral_map (h.forall_aemeasurable i)
+        g.continuous.measurable.aestronglyMeasurable
+    have htarget_map :
+        (∫ s, g s ∂(μ'.map Z)) = ∫ ω, g (Z ω) ∂μ' :=
+      integral_map h.aemeasurable_limit
+        g.continuous.measurable.aestronglyMeasurable
+    simpa [hsource_map, htarget_map] using htest
+  · rintro ⟨hX, hZ, htest⟩
+    refine
+      { forall_aemeasurable := hX
+        aemeasurable_limit := hZ
+        tendsto := ?_ }
+    exact
+      (StatInference.ProbabilityMeasure.weakConvergence_iff_forall_integral_tendsto
+        (μs := fun i =>
+          ⟨(μ i).map (X i), Measure.isProbabilityMeasure_map (hX i)⟩)
+        (μ := ⟨μ'.map Z, Measure.isProbabilityMeasure_map hZ⟩)).mpr
+        (fun g => by
+          have hsource_map :
+              (fun i => ∫ s, g s ∂((μ i).map (X i))) =
+                fun i => ∫ ω, g (X i ω) ∂(μ i) := by
+            funext i
+            exact integral_map (hX i)
+              g.continuous.measurable.aestronglyMeasurable
+          have htarget_map :
+              (∫ s, g s ∂(μ'.map Z)) = ∫ ω, g (Z ω) ∂μ' :=
+            integral_map hZ g.continuous.measurable.aestronglyMeasurable
+          simpa [hsource_map, htarget_map] using htest g)
+
+/--
+Durrett 2019, Theorem 3.2.10, continuous mapping theorem, continuous case.
+
+The textbook states a sharper measurable-map theorem under the condition that
+the limit law gives zero mass to the discontinuity set of `g`.  This compiled
+source wrapper records the continuous-map specialization, where that
+discontinuity condition is automatic, and delegates to the local
+weak-convergence layer.
+-/
+theorem durrett2019_theorem_3_2_10_continuous_mapping
+    {ι : Type u} {E : Type v} {F : Type w} {Ω : ι -> Type x}
+    {Ω' : Type x} {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    [TopologicalSpace F] [MeasurableSpace F] [BorelSpace F]
+    {X : (i : ι) -> Ω i -> E} {Z : Ω' -> E} {l : Filter ι}
+    {g : E -> F}
+    (h : TendstoInDistribution X l Z μ μ')
+    (hg : Continuous g) :
+    TendstoInDistribution (fun i => g ∘ X i) l (g ∘ Z) μ μ' :=
+  StatInference.ProbabilityMeasure.tendstoInDistribution_continuous_comp h hg
+
+/--
+Durrett 2019, Theorem 3.2.10, common-probability-space continuous mapping
+form.
+
+This is the common sequence-of-random-variables shape used in the text:
+if `X_i` converges in distribution to `Z` under the same probability measure
+and `g` is continuous, then `g (X_i)` converges in distribution to `g Z`.
+-/
+theorem durrett2019_theorem_3_2_10_continuous_mapping_common_probability_space
+    {ι : Type u} {Ω : Type x} {E : Type v} {F : Type w}
+    [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    [TopologicalSpace F] [MeasurableSpace F] [BorelSpace F]
+    {X : ι -> Ω -> E} {Z : Ω -> E} {l : Filter ι}
+    {g : E -> F}
+    (h : TendstoInDistribution X l Z (fun _ => μ) μ)
+    (hg : Continuous g) :
+    TendstoInDistribution (fun i => g ∘ X i) l (g ∘ Z) (fun _ => μ) μ :=
+  durrett2019_theorem_3_2_10_continuous_mapping h hg
+
+/--
+Durrett 2019, Theorem 3.2.11, Portmanteau open-set implication.
+
+If `X_i` converges in distribution to `Z`, then every open set has the
+Durrett lower-semicontinuity inequality for the laws of the random variables.
+-/
+theorem durrett2019_theorem_3_2_11_portmanteau_open_of_tendstoInDistribution
+    {ι : Type u} {E : Type v} {Ω : ι -> Type x} {Ω' : Type x}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    [HasOuterApproxClosed E]
+    {X : (i : ι) -> Ω i -> E} {Z : Ω' -> E} {l : Filter ι}
+    (h : TendstoInDistribution X l Z μ μ')
+    {G : Set E} (hG : IsOpen G) :
+    (μ'.map Z) G ≤ l.liminf (fun i => (μ i).map (X i) G) :=
+  StatInference.ProbabilityMeasure.WeakConvergenceProbabilityMeasures.le_liminf_measure_open
+    (h := h.tendsto) hG
+
+/--
+Durrett 2019, Theorem 3.2.11, Portmanteau closed-set implication.
+
+If `X_i` converges in distribution to `Z`, then every closed set has the
+Durrett upper-semicontinuity inequality for the laws of the random variables.
+-/
+theorem durrett2019_theorem_3_2_11_portmanteau_closed_of_tendstoInDistribution
+    {ι : Type u} {E : Type v} {Ω : ι -> Type x} {Ω' : Type x}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    [HasOuterApproxClosed E]
+    {X : (i : ι) -> Ω i -> E} {Z : Ω' -> E} {l : Filter ι}
+    (h : TendstoInDistribution X l Z μ μ')
+    {K : Set E} (hK : IsClosed K) :
+    l.limsup (fun i => (μ i).map (X i) K) ≤ (μ'.map Z) K :=
+  StatInference.ProbabilityMeasure.WeakConvergenceProbabilityMeasures.limsup_measure_closed_le
+    (h := h.tendsto) hK
+
+/--
+Durrett 2019, Theorem 3.2.11, Portmanteau continuity-set implication.
+
+If the limit law gives zero mass to the frontier of `A`, then the probabilities
+of `A` under the laws of `X_i` converge to the probability of `A` under the
+law of `Z`.
+-/
+theorem durrett2019_theorem_3_2_11_portmanteau_continuity_set_of_tendstoInDistribution
+    {ι : Type u} {E : Type v} {Ω : ι -> Type x} {Ω' : Type x}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    [HasOuterApproxClosed E]
+    {X : (i : ι) -> Ω i -> E} {Z : Ω' -> E} {l : Filter ι}
+    (h : TendstoInDistribution X l Z μ μ')
+    {A : Set E} (hA : (μ'.map Z) (frontier A) = 0) :
+    Tendsto (fun i => (μ i).map (X i) A) l
+      (𝓝 ((μ'.map Z) A)) :=
+  StatInference.ProbabilityMeasure.WeakConvergenceProbabilityMeasures.tendsto_measure_of_null_frontier
+    (h := h.tendsto) hA
+
+/--
+Durrett 2019, Theorem 3.2.11, closed-set Portmanteau converse.
+
+For countably generated index filters, the closed-set limsup inequality for
+the laws of the random variables implies convergence in distribution.
+-/
+theorem durrett2019_theorem_3_2_11_tendstoInDistribution_of_forall_closed_limsup_le
+    {ι : Type u} {E : Type v} {Ω : ι -> Type x} {Ω' : Type x}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    {X : (i : ι) -> Ω i -> E} {Z : Ω' -> E} {l : Filter ι}
+    [l.IsCountablyGenerated]
+    (hX : ∀ i, AEMeasurable (X i) (μ i))
+    (hZ : AEMeasurable Z μ')
+    (hclosed : ∀ K : Set E, IsClosed K ->
+      l.limsup (fun i => (μ i).map (X i) K) ≤ (μ'.map Z) K) :
+    TendstoInDistribution X l Z μ μ' where
+  forall_aemeasurable := hX
+  aemeasurable_limit := hZ
+  tendsto := by
+    exact
+      StatInference.ProbabilityMeasure.weakConvergence_of_forall_isClosed_limsup_measure_le
+        (μs := fun i =>
+          ⟨(μ i).map (X i), Measure.isProbabilityMeasure_map (hX i)⟩)
+        (μ := ⟨μ'.map Z, Measure.isProbabilityMeasure_map hZ⟩)
+        hclosed
+
+/--
+Durrett 2019, Theorem 3.2.11, open-set Portmanteau converse.
+
+For countably generated index filters, the open-set liminf inequality for the
+laws of the random variables implies convergence in distribution.
+-/
+theorem durrett2019_theorem_3_2_11_tendstoInDistribution_of_forall_open_le_liminf
+    {ι : Type u} {E : Type v} {Ω : ι -> Type x} {Ω' : Type x}
+    {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    {X : (i : ι) -> Ω i -> E} {Z : Ω' -> E} {l : Filter ι}
+    [l.IsCountablyGenerated]
+    (hX : ∀ i, AEMeasurable (X i) (μ i))
+    (hZ : AEMeasurable Z μ')
+    (hopen : ∀ G : Set E, IsOpen G ->
+      (μ'.map Z) G ≤ l.liminf (fun i => (μ i).map (X i) G)) :
+    TendstoInDistribution X l Z μ μ' where
+  forall_aemeasurable := hX
+  aemeasurable_limit := hZ
+  tendsto := by
+    exact
+      StatInference.vdVWWeakConvergenceProbabilityMeasures_of_forall_isOpen_measure_le_liminf
+        (μs := fun i =>
+          ⟨(μ i).map (X i), Measure.isProbabilityMeasure_map (hX i)⟩)
+        (μ := ⟨μ'.map Z, Measure.isProbabilityMeasure_map hZ⟩)
+        hopen
 
 /--
 Durrett early-chapter pi-system uniqueness shape.

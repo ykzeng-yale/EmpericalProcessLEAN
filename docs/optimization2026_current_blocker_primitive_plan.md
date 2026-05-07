@@ -106,12 +106,118 @@ micro-packet overhead.
    must not consume the main theorem packet budget unless it unlocks a
    main-text theorem.
 
+## Proof Packet Contract
+
+Every manual proof run should begin by fixing the packet contract below before
+editing Lean.  This is the live replacement for the stale app-level `/goal`
+objective and should be preferred over archived prompts.
+
+- Primary theorem packet: one theorem-sized endpoint or one hard proof layer
+  that directly removes a supplied assumption.  Name the exact Lean statement
+  to prove, the source theorem/lemma it supports, and the module that owns it.
+- Reuse boundary: list the already-compiled local declarations and mathlib APIs
+  that must be reused.  Run at most one bounded extra search pass for the
+  active blocker, then stop searching and prove.
+- Edit set: keep writes scoped to the packet owner module plus material route
+  docs.  Introduce a new module only when it isolates a reusable theorem family
+  or prevents multiple agents from editing the same large file.
+- Success gate: state the focused Lean command and, for public theorem layers,
+  the targeted `lake build StatInference.Optimization.<Module>` promotion
+  command.  Root builds are reserved for root-import or broad cross-module
+  changes.
+- Failure gate: if the endpoint does not close, record the exact attempted
+  theorem, the stuck subgoal or missing API, the search tried, and two viable
+  next routes.  Avoid vague labels such as "next small gap".
+
+For the current ASGD frontier, acceptable primary packets are:
+
+- prove the projected scalar bounded-martingale characteristic-function
+  convergence to `exp (-(S_infty L L) t^2 / 2)` from the compiled conditional
+  mean-zero, conditional second-moment, averaged variance convergence, uniform
+  boundedness, Lindeberg, scalar Lévy, and projected Gaussian target layers;
+- introduce a source-shaped scalar martingale characteristic-function
+  structure only if it removes the existing supplied `projected_clt` field from
+  an endpoint constructor and records the exact hard Taylor/product theorem
+  still to discharge;
+- connect a proved scalar characteristic-function packet through the existing
+  Cramér-Wold/projected-Gaussian bridge into the Chewi Theorem 12.7 ASGD
+  certificate.
+
+Do not spend ASGD packet time redoing projected scaled sums, bounded-tail
+Lindeberg discharge, Lévy conversion from characteristic functions, or Gaussian
+target identification; those layers already compile.
+
+## Multi-Agent And Worktree Routing
+
+Use multiple agents only when they can reduce the critical path without
+duplicating the main proof thread.
+
+- Main thread: owns the active theorem statement, Lean integration, final
+  verification, route-doc update, commit, and push.
+- Mathlib scout: read-only search for exact APIs, theorem names, and nearby
+  proof patterns.  It should return file paths and declaration names, not
+  speculative rewrites.
+- Local reuse scout: read-only search through `StatInference` for reusable
+  probability, asymptotic, convex, and finite-sum wrappers.
+- Source-anchor scout: read-only source mapping for theorem numbers, displayed
+  equations, omitted proof steps, and external references when the textbook
+  proof is incomplete.
+- Lean worker: may edit only a disjoint new module or a clearly assigned file
+  range.  It must not rewrite the main thread's active proof or revert another
+  agent's changes.
+- Verification scout: runs scans/builds after the packet has a stable diff and
+  reports exact failures.
+
+During heavy collaboration, keep broad packets in isolated book/lane worktrees.
+Avoid sharing mutable `.lake/build` artifacts between active root builds.  If a
+focused Lean check succeeds but a root build fails because another worktree
+invalidated `.olean` files, treat that as build-artifact contention and rerun a
+targeted module build before changing theorem code.
+
+## Manual Run Operating Loop
+
+Use this shorter loop for each live `/goal` turn.  It is stricter than the
+archived automation prompts and should override them when they conflict.
+
+1. Orient once.  Check the worktree status, `origin/main`, the latest local
+   Optimization commit, and this file's `Current Frontier Contract`.  Do not
+   spend the proof budget rereading old archived prompts unless a named
+   dependency is missing.
+2. State the packet.  Before editing Lean, name one primary theorem-sized
+   target, the exact module to edit, the expected verification command, and the
+   fallback blocker statement if the proof does not close.
+3. Reuse before invention.  Read cached search notes here first.  Then run at
+   most one bounded search pass for the active blocker.  Record only search
+   results that change the route or prevent duplicate primitives.
+4. Keep the main thread on the proof.  If subagents are explicitly authorized,
+   use them for read-only scouting or disjoint adjacent proof files; the main
+   thread owns the active theorem, integration, and final verification.
+5. Prefer endpoint packets.  Bundle small algebra/interface lemmas into the
+   theorem packet that uses them.  A wrapper-only packet is acceptable only if
+   it removes a blocker for the current endpoint or replaces a supplied
+   interface with verified assumptions.
+6. Verify in tiers.  Run focused `lake env lean` repeatedly while proving,
+   then `lake build StatInference.Optimization.<Module>` after the public
+   theorem layer compiles.  Use root `lake build StatInference` only after
+   root-import or broad cross-module changes.
+7. Push once.  After code, material docs, proof-hole scan, and secret scan pass,
+   fetch/rebase once immediately before pushing.  If the push is rejected,
+   rebase once, rerun the focused build and scans, then push again.  If it is
+   rejected again because other textbook lanes are racing, keep the verified
+   local packet and report the exact commit/base instead of restarting the
+   search loop.
+8. Block sharply.  If the primary proof cannot close, leave behind a precise
+   blocker: the theorem statement attempted, the failing Lean subgoal shape or
+   missing API, the APIs already searched, and the next two viable routes.
+   Avoid vague "next small gap" language.
+
 ## Current Frontier Contract
 
-This is the authoritative manual route after pushed frontier `2c1a160`
-(`Add Chewi ASGD triangular decomposition`).  The app-level `/goal` objective
-and the archived long prompt below may still mention older Chapter 3 or
-`029d017` frontiers; do not use those older references to choose work.
+This is the authoritative manual route after the ASGD scalar-projection,
+scalar-Lindeberg, scalar characteristic-function bridge, and projected
+Gaussian characteristic-function target packets.  The app-level `/goal`
+objective and the archived long prompt below may still mention older Chapter 3
+or `029d017` frontiers; do not use those older references to choose work.
 
 Stable substrate:
 
@@ -130,16 +236,26 @@ Stable substrate:
   sums, the projected variance convergence accessor, and the source-shaped
   projected Cramér-Wold martingale CLT bridge/source constructor, plus scalar
   projected martingale-data accessors for adaptedness, integrability,
-  conditional mean-zero, conditional second moment, variance convergence, and
-  uniform boundedness.
+  conditional mean-zero, conditional second moment, variance convergence,
+  uniform boundedness, and boundedness-implied scalar Lindeberg summand/average
+  eventual a.e. vanishing.  The scalar scaled-sum measurability and
+  Lévy/characteristic-function bridge are also compiled, reducing each
+  projected scalar CLT to pointwise convergence of characteristic functions for
+  the scalar scaled sums.  The projected Gaussian limit has a compiled
+  source-shaped scalar law and characteristic-function display
+  `exp (-(S_infty L L) t^2 / 2)` once the projected Gaussian mean is identified
+  as zero.
 
 Current priority packet sequence:
 
 1. `ASGD-scalar-martingale-CLT`: prove or sharply source-package the actual
    one-dimensional bounded martingale CLT from the compiled scalar projection
    data: conditional mean-zero, conditional second moment, averaged conditional
-   variance convergence, and uniform boundedness.  The vector-to-scalar
-   plumbing is now compiled; do not repeat it.
+   variance convergence, uniform boundedness, and the now-compiled scalar
+   Lindeberg a.e.-zero, characteristic-function bridge, and projected Gaussian
+   target layers.  The vector-to-scalar plumbing, Lindeberg bounded-tail
+   discharge, distribution-from-characteristic-functions bridge, and Gaussian
+   target identification are compiled; do not repeat them.
 2. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
    decomposition, and certificate to the source Theorem 12.7/12.3 ASGD limit
    statement.
@@ -148,12 +264,13 @@ Current priority packet sequence:
    otherwise stall.
 
 Execution rule for the next proof run: spend at most one bounded search pass
-refreshing mathlib/local scalar martingale CLT, characteristic-function,
-Lévy continuity theorem, Gaussian characteristic functions, Taylor remainder,
-conditional expectation tower/product APIs, and bounded/Lindeberg estimates;
-then implement the highest-leverage scalar martingale CLT theorem layer.  The
-reusable projected-sum/Cramér-Wold bridge and scalar projection side-condition
-accessors are now compiled, so do not repeat them.
+refreshing mathlib/local scalar martingale CLT, Gaussian characteristic
+functions, Taylor remainder, and conditional expectation tower/product APIs;
+then implement the highest-leverage characteristic-function convergence layer
+for scalar martingale arrays.  The reusable projected-sum/Cramér-Wold bridge,
+scalar projection side-condition accessors, boundedness-to-Lindeberg a.e.-zero
+layer, scalar Lévy bridge, and explicit projected Gaussian characteristic target
+are now compiled, so do not repeat them.
 
 Keep exercise statements and cheap reusable exercise proofs in
 `StatInference/Optimization/Exercises.lean`, but never let exercises block the

@@ -333,6 +333,38 @@ Initial modules:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_aemeasurable_real`
   now applies that route to the canonical iid product sample space and displays
   the final covariance table under the common vector law `ν`.
+  The measurable-local-inverse constructors
+  `vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_measurable` and
+  `vaart1998_finiteCoordinate_localInverse_comp_empiricalMoment_aemeasurable_of_measurable_real`
+  discharge the empirical local-inverse a.e.-measurability field from global
+  measurability of `he.localInverse e De theta0`, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_measurableLocalInverse_real`
+  packages that route at the canonical source-certificate boundary.
+  The named certificate
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate`
+  now packages the empirical local-inverse a.e.-measurability family, with
+  constructors from global local-inverse measurability and from a.e. target
+  localization.  The canonical endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_localInverseCertificate_real`
+  consumes that certificate directly.
+  The named target-localization certificate
+  `Vaart1998FiniteCoordinateEmpiricalTargetLocalizationCertificate` now
+  packages a.e. membership of empirical moments in the local inverse target;
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_targetLocalization_real`
+  bridges it into the local-inverse measurability certificate, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_targetLocalization_real`
+  consumes it at the canonical source boundary.
+  The target-probability localization certificate
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate`
+  records Vaart's existence/local-range probability conclusion separately from
+  the stronger a.e. target-localization certificate.  Its constructors
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_tendstoInMeasure_real`
+  and
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_finiteCoordinateStrongLaw_real`
+  discharge it from convergence in probability and from the finite-coordinate
+  strong law, and
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.to_momentEstimatorLocalRangeProbabilityCertificate`
+  bridges it back to the generic local-range probability certificate.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

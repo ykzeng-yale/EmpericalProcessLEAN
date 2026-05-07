@@ -554,23 +554,62 @@ Chapter 3 theorem-facing wrappers compiling:
    source certificate and direct a.e. measurability of the empirical
    local-inverse statistic:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_aemeasurable_real`.
+177. Generic local-inverse composition measurability constructor:
+   `vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_measurable`.
+178. Finite-coordinate empirical local-inverse measurability constructor from
+   global local-inverse measurability and coordinatewise sample measurability:
+   `vaart1998_finiteCoordinate_localInverse_comp_empiricalMoment_aemeasurable_of_measurable_real`.
+179. Canonical iid product-space covariance-table endpoint using the vector-law
+   source certificate and global measurability of
+   `he.localInverse e De theta0`:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_measurableLocalInverse_real`.
+180. Finite-coordinate empirical local-inverse measurability constructor from
+   coordinatewise sample measurability plus a.e. localization in the
+   inverse-function-theorem target:
+   `vaart1998_finiteCoordinate_localInverse_comp_empiricalMoment_aemeasurable_of_ae_mem_open_momentRange_real`.
+181. Named empirical local-inverse measurability certificate:
+   `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate`.
+182. Certificate constructors from global local-inverse measurability and from
+   a.e. target localization:
+   `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_measurableLocalInverse_real`
+   and
+   `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_ae_mem_open_momentRange_real`.
+183. Canonical iid product-space covariance-table endpoint consuming the named
+   empirical local-inverse measurability certificate:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_localInverseCertificate_real`.
+184. Named empirical target-localization certificate:
+   `Vaart1998FiniteCoordinateEmpiricalTargetLocalizationCertificate`.
+185. Bridge from target localization to empirical local-inverse measurability:
+   `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_targetLocalization_real`.
+186. Canonical iid product-space covariance-table endpoint consuming the named
+   target-localization certificate:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_targetLocalization_real`.
+187. Finite-coordinate target-probability localization certificate:
+   `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate`.
+188. Bridge from the finite-coordinate target-probability certificate to the
+   generic local-range probability certificate:
+   `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.to_momentEstimatorLocalRangeProbabilityCertificate`.
+189. Constructors for target-probability localization from convergence in
+   probability and from the finite-coordinate strong law:
+   `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_tendstoInMeasure_real`
+   and
+   `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_finiteCoordinateStrongLaw_real`.
 
-Latest remote base before this packet: `7a3d6c1`.
-Latest pushed Vaart packet before this packet: `7a3d6c1`
-(`Add Vaart aemeasurable projected summand endpoint`).
+Latest remote base before this packet: `ff791d1`.
+Latest pushed Vaart packet before this packet: `232407b`
+(`Add Vaart empirical local inverse certificate`).
 
-The current theorem-sized packet lifts the direct a.e.-measurable local-inverse
-route to the canonical iid product source with a vector-law source certificate.
-It reuses the projected-summand CLT endpoint, canonical product-law source
-fields, vector-law mean and covariance identities, and the covariance
-polarization bridge to expose the final Vaart Theorem 4.1 covariance table
-under the common vector law `ν`.
+The current theorem-sized packet separates target-probability localization from
+the stronger a.e. target-localization needed for local-inverse measurability.
+It packages Vaart's existence/local-range probability conclusion as a named
+finite-coordinate certificate and discharges it from either convergence in
+probability of empirical moments or the finite-coordinate strong law.
 
-The next aggressive packet should continue Chapter 4 by proving or packaging
-the canonical product empirical local-inverse `AEMeasurable` field itself from
-honest local inverse measurability/localization assumptions.  Do not collapse
-that obligation back into an unnamed target-event assumption; keep the older
-target-event route as a separate explicit certificate path.
+The next aggressive packet should continue Chapter 4 by connecting this
+probability-localization certificate to a localized measurable estimator route
+or by proving a measurable extension of the local inverse when that is
+available from mathlib.  Do not use probability tending to one as a substitute
+for per-`n` a.e. target membership.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

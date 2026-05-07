@@ -365,10 +365,46 @@ Chapter 4 handoff:
   specializes the direct local-inverse measurability route to the canonical iid
   product sample space and vector-law source certificate, with the final
   covariance table displayed under the common vector law `ν`.
+- Local-inverse measurability constructors:
+  `vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_measurable` and
+  `vaart1998_finiteCoordinate_localInverse_comp_empiricalMoment_aemeasurable_of_measurable_real`
+  build the empirical local-inverse `AEMeasurable` field from ordinary
+  measurability of `he.localInverse e De theta0`.
+- Canonical measurable-local-inverse endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_measurableLocalInverse_real`
+  feeds those constructors into the canonical vector-law source certificate.
+- Named empirical local-inverse measurability certificate:
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate`
+  packages the empirical local-inverse `AEMeasurable` family.
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_measurableLocalInverse_real`
+  and
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_ae_mem_open_momentRange_real`
+  build it from the two current source routes.
+- Canonical local-inverse-certificate endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_localInverseCertificate_real`
+  consumes the named certificate at the canonical source boundary.
+- Named target-localization certificate:
+  `Vaart1998FiniteCoordinateEmpiricalTargetLocalizationCertificate` packages
+  the a.e. membership of empirical moments in the inverse-function-theorem
+  target.
+  `Vaart1998FiniteCoordinateEmpiricalLocalInverseMeasurabilityCertificate.of_targetLocalization_real`
+  bridges it into the local-inverse measurability certificate, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_targetLocalization_real`
+  consumes it at the canonical source boundary.
+- Target-probability localization certificate:
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate`
+  packages the Vaart existence/local-range probability conclusion that
+  empirical moments enter the inverse-function-theorem target with probability
+  tending to one.
+  `Vaart1998FiniteCoordinateEmpiricalTargetProbabilityLocalizationCertificate.of_tendstoInMeasure_real`
+  and
+  `.of_finiteCoordinateStrongLaw_real`
+  construct it from convergence in probability and from the coordinatewise
+  strong law.
 
-Latest remote base before this packet: `7a3d6c1`.  Latest pushed Vaart packet
-before this packet: `7a3d6c1`
-(`Add Vaart aemeasurable projected summand endpoint`).
+Latest remote base before this packet: `ff791d1`.  Latest pushed Vaart packet
+before this packet: `232407b`
+(`Add Vaart empirical local inverse certificate`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -381,11 +417,10 @@ for this packet is the focused Lean check and targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled canonical source-certificate
-a.e.-measurable endpoint.  The next useful proof step is to construct the
-canonical product empirical local-inverse `AEMeasurable` field itself from
-local inverse measurability/localization assumptions, keeping the target-event
-route separate as an explicit certificate path.
+Continue Vaart Chapter 4.1 from the compiled target-probability localization
+certificate route.  The next useful proof step is to connect probability
+localization to a localized measurable estimator/asymptotic-equivalence route,
+or prove a measurable extension of the local inverse if mathlib supports it.
 
 ## Reuse Dependencies
 

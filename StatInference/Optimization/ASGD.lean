@@ -49,7 +49,7 @@ namespace Optimization
 open Filter MeasureTheory ProbabilityTheory
 open StatInference.AsymptoticStatistics
 open Finset
-open scoped BigOperators
+open scoped BigOperators Topology
 
 /--
 Process-level martingale-difference interface for Chewi Theorem 12.7.
@@ -148,6 +148,122 @@ normalization used by the projected martingale CLT.
 noncomputable def chewi127ScalarScaledSum
     {Ω : Type*} (x : ℕ -> Ω -> ℝ) (n : ℕ) (ω : Ω) : ℝ :=
   (Real.sqrt (n : ℝ))⁻¹ * ∑ k ∈ Finset.range n, x (k + 1) ω
+
+/--
+Scalar Lindeberg tail summand for Chewi's one-dimensional martingale CLT
+route.  It is the source expression
+`x_{k+1}^2 1_{ε sqrt(N) < |x_{k+1}|}`.
+-/
+noncomputable def chewi127ScalarLindebergSummand
+    {Ω : Type*} (x : ℕ -> Ω -> ℝ) (ε : ℝ) (N k : ℕ) (ω : Ω) : ℝ :=
+  Set.indicator {ω' : Ω | ε * Real.sqrt (N : ℝ) < |x (k + 1) ω'|}
+    (fun ω' => (x (k + 1) ω') ^ 2) ω
+
+/--
+Scalar Lindeberg average associated with Chewi's bounded martingale CLT route.
+-/
+noncomputable def chewi127ScalarLindebergAverage
+    {Ω : Type*} (x : ℕ -> Ω -> ℝ) (ε : ℝ) (N : ℕ) (ω : Ω) : ℝ :=
+  (N : ℝ)⁻¹ *
+    ∑ k ∈ Finset.range N, chewi127ScalarLindebergSummand x ε N k ω
+
+/--
+A uniform almost-sure bound makes every scalar Lindeberg tail summand
+eventually vanish almost surely.  This is the bounded-increment half of the
+one-dimensional martingale CLT used in Chewi Theorem 12.7.
+-/
+theorem chewi127ScalarLindebergSummand_eventually_ae_eq_zero_of_uniform_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {x : ℕ -> Ω -> ℝ} {ε : ℝ}
+    (hε : 0 < ε)
+    (hbound : ∃ B : ℝ, 0 ≤ B ∧
+      ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B) :
+    ∀ᶠ N in atTop, ∀ᵐ ω ∂P, ∀ k : ℕ,
+      chewi127ScalarLindebergSummand x ε N k ω = 0 := by
+  rcases hbound with ⟨B, _hB_nonneg, hB⟩
+  have hB_all : ∀ᵐ ω ∂P, ∀ k : ℕ, |x (k + 1) ω| ≤ B :=
+    ae_all_iff.2 hB
+  have hscale :
+      Tendsto (fun N : ℕ => ε * Real.sqrt (N : ℝ)) atTop atTop :=
+    Tendsto.const_mul_atTop hε vaart1998_sqrt_nat_tendsto_atTop
+  have hthreshold : ∀ᶠ N : ℕ in atTop, B ≤ ε * Real.sqrt (N : ℝ) :=
+    hscale.eventually_ge_atTop B
+  filter_upwards [hthreshold] with N hN
+  filter_upwards [hB_all] with ω hω k
+  have hnot :
+      ω ∉ {ω' : Ω | ε * Real.sqrt (N : ℝ) < |x (k + 1) ω'|} := by
+    intro htail
+    have hxB : |x (k + 1) ω| ≤ B := hω k
+    have : ε * Real.sqrt (N : ℝ) < ε * Real.sqrt (N : ℝ) :=
+      lt_of_lt_of_le htail (hxB.trans hN)
+    exact (lt_irrefl _ this).elim
+  rw [chewi127ScalarLindebergSummand, Set.indicator_of_notMem hnot]
+
+/--
+The scalar Lindeberg average is eventually zero almost surely under a uniform
+almost-sure bound.
+-/
+theorem chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {x : ℕ -> Ω -> ℝ} {ε : ℝ}
+    (hε : 0 < ε)
+    (hbound : ∃ B : ℝ, 0 ≤ B ∧
+      ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B) :
+    ∀ᶠ N in atTop, ∀ᵐ ω ∂P,
+      chewi127ScalarLindebergAverage x ε N ω = 0 := by
+  filter_upwards
+    [chewi127ScalarLindebergSummand_eventually_ae_eq_zero_of_uniform_bound
+      (P := P) hε hbound] with N hN
+  filter_upwards [hN] with ω hω
+  have hsum :
+      (∑ k ∈ Finset.range N,
+        chewi127ScalarLindebergSummand x ε N k ω) = 0 := by
+    exact Finset.sum_eq_zero fun k _hk => hω k
+  simp [chewi127ScalarLindebergAverage, hsum]
+
+/--
+Measurability of Chewi's scalar `sqrt N`-scaled martingale sum follows from
+measurability of the scalar increments.
+-/
+theorem chewi127ScalarScaledSum_aemeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {x : ℕ -> Ω -> ℝ}
+    (hx : ∀ n : ℕ, AEMeasurable (x n) P) :
+    ∀ N : ℕ, AEMeasurable (chewi127ScalarScaledSum x N) P := by
+  intro N
+  change
+    AEMeasurable
+      (fun ω => (Real.sqrt (N : ℝ))⁻¹ *
+        ∑ k ∈ Finset.range N, x (k + 1) ω) P
+  exact ((Finset.range N).aemeasurable_fun_sum fun k _hk => hx (k + 1)).const_mul _
+
+/--
+Lévy's characteristic-function theorem specialized to Chewi's scalar scaled
+martingale sums.
+
+This turns the remaining one-dimensional martingale CLT proof into the
+source-facing task of proving pointwise characteristic-function convergence.
+-/
+theorem chewi127ScalarScaledSum_tendstoInDistribution_of_charFun
+    {Ω Ω' : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    {x : ℕ -> Ω -> ℝ} {Z : Ω' -> ℝ}
+    (hX : ∀ N : ℕ, AEMeasurable (chewi127ScalarScaledSum x N) P)
+    (hZ : AEMeasurable Z Q)
+    (hchar : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          MeasureTheory.charFun (P.map (chewi127ScalarScaledSum x N)) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun (Q.map Z) t))) :
+    TendstoInDistribution (chewi127ScalarScaledSum x) atTop Z (fun _ => P) Q where
+  forall_aemeasurable := hX
+  aemeasurable_limit := hZ
+  tendsto := by
+    refine ProbabilityMeasure.tendsto_iff_tendsto_charFun.mpr ?_
+    intro t
+    simpa using hchar t
 
 /--
 The projected vector sum is the scalar sum of the projected increments.
@@ -601,6 +717,176 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_uniform_bound
     ∃ B : ℝ, 0 ≤ B ∧
       ∀ n : ℕ, ∀ᵐ ω ∂P, |L (S.martingale.xi (n + 1) ω)| ≤ B :=
   S.martingale.projected_uniform_bound L S.uniform_bound
+
+/--
+The projected scalar Lindeberg summands vanish eventually almost surely for
+the source package.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_lindeberg_summand_eventually_ae_eq_zero
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N in atTop, ∀ᵐ ω ∂P, ∀ k : ℕ,
+      chewi127ScalarLindebergSummand
+        (fun n ω => L (S.martingale.xi n ω)) ε N k ω = 0 :=
+  chewi127ScalarLindebergSummand_eventually_ae_eq_zero_of_uniform_bound
+    (P := P) hε (S.projected_uniform_bound L)
+
+/--
+The projected scalar Lindeberg average vanishes eventually almost surely for
+the source package.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_lindeberg_average_eventually_ae_eq_zero
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N in atTop, ∀ᵐ ω ∂P,
+      chewi127ScalarLindebergAverage
+        (fun n ω => L (S.martingale.xi n ω)) ε N ω = 0 :=
+  chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound
+    (P := P) hε (S.projected_uniform_bound L)
+
+/--
+Characteristic-function form of the projected scalar martingale CLT.  The
+bounded martingale data already supply measurability of the scaled sums and of
+the projected Gaussian limit, so the only remaining probabilistic proof
+obligation is pointwise convergence of characteristic functions.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_charFun
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hchar : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          MeasureTheory.charFun
+            (P.map
+              (chewi127ScalarScaledSum
+                (fun n ω => L (S.martingale.xi n ω)) N)) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun
+          (Q.map (fun ω => L (S.Z ω))) t))) :
+    TendstoInDistribution
+      (chewi127ScalarScaledSum (fun n ω => L (S.martingale.xi n ω)))
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q := by
+  refine chewi127ScalarScaledSum_tendstoInDistribution_of_charFun
+    (P := P) (Q := Q)
+    (x := fun n ω => L (S.martingale.xi n ω))
+    (Z := fun ω => L (S.Z ω)) ?_ ?_ hchar
+  · exact chewi127ScalarScaledSum_aemeasurable
+      (P := P) (x := fun n ω => L (S.martingale.xi n ω))
+      (fun n => (S.martingale.projected_integrable L n).aemeasurable)
+  · exact (S.gaussian_limit.map_fun L).aemeasurable
+
+/--
+The projected Gaussian limit has the scalar Gaussian law with variance
+`S_infty L L`, once its projected mean is identified as zero.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_gaussian_hasLaw
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0) :
+    HasLaw (fun ω => L (S.Z ω))
+      (gaussianReal 0 (S.covariance_limit.S_infty L L).toNNReal) Q := by
+  let Y : Ω' -> ℝ := fun ω => L (S.Z ω)
+  have hY_gaussian : HasGaussianLaw Y Q := S.gaussian_limit.map_fun L
+  refine ⟨hY_gaussian.aemeasurable, ?_⟩
+  have hmap :
+      Q.map Y =
+        gaussianReal (Q.map Y)[id] (Var[id; Q.map Y]).toNNReal :=
+    ProbabilityTheory.IsGaussian.eq_gaussianReal
+      (Q.map Y) hY_gaussian.isGaussian_map
+  calc
+    Q.map (fun ω => L (S.Z ω)) = Q.map Y := rfl
+    _ = gaussianReal (Q.map Y)[id] (Var[id; Q.map Y]).toNNReal := hmap
+    _ = gaussianReal (Q[Y]) (Var[Y; Q]).toNNReal := by
+          rw [integral_map hY_gaussian.aemeasurable (by fun_prop),
+            variance_map (by fun_prop) hY_gaussian.aemeasurable]
+          rfl
+    _ = gaussianReal 0 (S.covariance_limit.S_infty L L).toNNReal := by
+          rw [hmean]
+          have hvar_map :
+              Var[L; Q.map S.Z] = Var[Y; Q] := by
+            simpa [Y, Function.comp_def] using
+              (variance_map (X := L) (Y := S.Z) (μ := Q) (by fun_prop)
+                S.gaussian_limit.aemeasurable)
+          have hvar_eq :
+              Var[Y; Q] = S.covariance_limit.S_infty L L := by
+            calc
+              Var[Y; Q] = Var[L; Q.map S.Z] := hvar_map.symm
+              _ = ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L L :=
+                    (ProbabilityTheory.covarianceBilinDual_self_eq_variance
+                      S.limit_memLp L).symm
+              _ = S.covariance_limit.S_infty L L := S.limit_covariance L L
+          rw [hvar_eq]
+
+/--
+Source-shaped characteristic function of the projected Gaussian limit.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_gaussian_charFun_eq
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0) (t : ℝ) :
+    MeasureTheory.charFun (Q.map (fun ω => L (S.Z ω))) t =
+      Complex.exp (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)) := by
+  have hLaw := S.projected_gaussian_hasLaw L hmean
+  have hnonneg : 0 ≤ S.covariance_limit.S_infty L L := by
+    rw [← S.limit_covariance L L]
+    exact ProbabilityTheory.covarianceBilinDual_self_nonneg L
+  rw [hLaw.map_eq, ProbabilityTheory.charFun_gaussianReal]
+  rw [Real.coe_toNNReal _ hnonneg]
+  simp
+
+/--
+Projected scalar CLT from convergence to the explicit Gaussian characteristic
+function `exp (-(S_infty L L) t^2 / 2)`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_charFun_exp
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0)
+    (hchar : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          MeasureTheory.charFun
+            (P.map
+              (chewi127ScalarScaledSum
+                (fun n ω => L (S.martingale.xi n ω)) N)) t)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ))))) :
+    TendstoInDistribution
+      (chewi127ScalarScaledSum (fun n ω => L (S.martingale.xi n ω)))
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q :=
+  S.projected_scalar_clt_of_charFun L fun t => by
+    simpa [S.projected_gaussian_charFun_eq L hmean t] using hchar t
 
 /--
 The projected CLT field can be read in the pure scalar-sum notation used by a

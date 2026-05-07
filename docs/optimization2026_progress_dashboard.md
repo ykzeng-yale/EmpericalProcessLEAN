@@ -45,13 +45,55 @@ This dashboard tracks the Chewi optimization formalization lane for
   local state without `.lake` or working-tree interference.
 - Current priority sequence: `ASGD-scalar-martingale-CLT` projected scalar
   bounded martingale CLT discharge, `ASGD-endpoint` source ASGD limit wrapper,
-  then the concrete Sinkhorn row/column KL identity layer if ASGD stalls.
+  then the concrete Sinkhorn row/column KL identity layer if ASGD stalls.  The
+  boundedness-to-Lindeberg scalar tail layer now compiles, so the remaining
+  scalar CLT work should focus on the characteristic-function convergence
+  theorem for martingale arrays, conditional variance convergence, and the
+  martingale product/Taylor argument rather than tail control or Lévy
+  conversion.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
   stale route replay, repeated broad searches, micro-packet commit overhead,
   and shared-worktree/build-artifact contention.  The active protocol is now:
   one bounded search pass, one theorem-sized Lean packet, focused module
   verification, route-doc update only when material, then one final
   fetch/rebase/scan/commit/push gate.
+- Manual operating loop: each `/goal` run should orient once from the current
+  frontier contract, state one theorem-sized packet before edits, keep the main
+  thread on proof integration, use subagents only for explicitly authorized
+  read-only scouting or disjoint adjacent files, verify in focused tiers, push
+  once after a final rebase, and record a sharp Lean blocker if the endpoint
+  cannot close.
+- Process upgrade: each manual run now has a required proof packet contract:
+  primary theorem endpoint, reuse boundary, edit set, verification gate, and
+  failure gate.  Multi-agent work should use explicit ownership: main thread
+  for the active proof/integration, read-only scouts for mathlib/local/source
+  mapping, at most one disjoint Lean worker, and a verification scout after the
+  diff stabilizes.
+- New ASGD scalar Lindeberg declarations:
+  `chewi127ScalarLindebergSummand`,
+  `chewi127ScalarLindebergAverage`,
+  `chewi127ScalarLindebergSummand_eventually_ae_eq_zero_of_uniform_bound`,
+  `chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound`,
+  `Chewi127BoundedMartingaleCLTSource.projected_lindeberg_summand_eventually_ae_eq_zero`,
+  and
+  `Chewi127BoundedMartingaleCLTSource.projected_lindeberg_average_eventually_ae_eq_zero`.
+- New ASGD scalar characteristic-function bridge declarations:
+  `chewi127ScalarScaledSum_aemeasurable`,
+  `chewi127ScalarScaledSum_tendstoInDistribution_of_charFun`, and
+  `Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_charFun`.  These
+  reuse mathlib `ProbabilityMeasure.tendsto_iff_tendsto_charFun` and local
+  `vaart1998_sqrt_nat_tendsto_atTop`; the next blocker is proving the actual
+  pointwise characteristic-function convergence from the martingale
+  conditional mean-zero, conditional variance convergence, and Lindeberg
+  layers.
+- New ASGD projected Gaussian characteristic target declarations:
+  `Chewi127BoundedMartingaleCLTSource.projected_gaussian_hasLaw`,
+  `Chewi127BoundedMartingaleCLTSource.projected_gaussian_charFun_eq`, and
+  `Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_charFun_exp`.
+  These reuse mathlib `IsGaussian.eq_gaussianReal`, `charFun_gaussianReal`,
+  `variance_map`, and `covarianceBilinDual_self_eq_variance`, plus the source
+  covariance identity `limit_covariance`.  The next martingale CLT packet can
+  target the explicit limit `exp (-(S_infty L L) t^2 / 2)` directly.
 - Current manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
