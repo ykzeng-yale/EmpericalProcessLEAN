@@ -1,6 +1,6 @@
 # VdV&W Current Blocker Primitive Plan
 
-Status date: 2026-05-06.
+Status date: 2026-05-07.
 
 This file pins down the active blocker and the primitive Lean declarations
 needed to close it.  It is not a theorem report.  A formal report is created
@@ -85,11 +85,25 @@ textbook random empirical-cover/symmetrization argument.
 
 ## Current `/goal` Target
 
-Authoritative `/goal` rebase, 2026-05-06 after the finite-index 1.4.8
-weak-convergence/tightness iff wrappers: local `main` should be kept synced
-with `origin/main`, and the active Codex goal object remains a broad
-orchestration label because it cannot be edited in place.  Use this paragraph,
-not older rebase paragraphs below, as the operative continuation prompt.
+Authoritative `/goal` reset, 2026-05-07: the active Codex goal object is now
+the whole VdV&W empirical-process textbook formalization, with Chapters 1-2
+and Theorem 2.4.3 as the current frontier.  The clean VdVW lane is
+`/private/tmp/ep-vdvw-selected-log-route` on `origin/main`; the Desktop
+worktree contains unrelated Matching/WDSM edits and should not be used for
+VdVW proof commits.  Use this paragraph, not older rebase paragraphs below, as
+the operative continuation prompt.
+
+Newest source-side comparison support in `Theorem243.lean` is now:
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`,
+which transports an already proved comparison from a selected cardinality to a
+larger entropy-controlled cardinality, and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_selected_truncated_positiveRadius_ae_bound`,
+which packages the selected positive-radius `Nat.find` cardinality into the
+comparison record.  These are source-side bookkeeping closures, not endpoint
+aliases.  They reduce the next real source proof to the selected-cardinality
+event itself: prove the VdV&W ghost/Rademacher/random-cover a.e. finite-net
+domination, or construct the exact selected-cardinality fixed-radius
+outer-probability comparison directly.
 
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
@@ -242,6 +256,21 @@ should construct this structure from the existing product-copy, ghost-sample,
 Rademacher, finite-cover, and outer-probability APIs.  If construction blocks,
 record the exact lower-level primitive missing from that construction rather
 than adding another endpoint alias.
+
+2026-05-07 comparison transport follow-up: local search plus the agent review
+confirmed `origin/main` contains no newer VdVW Lean closure after
+`d2fe571`; the only later main commit was an optimization prompt refresh.
+`Theorem243.lean` now proves
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_selected_truncated_positiveRadius_ae_bound`.
+The first lets a selected-cardinality comparison feed any eventually larger
+entropy-controlled cardinality.  The second derives the selected-cardinality
+comparison constructor directly from the positive-radius selected empirical
+cover cardinality and the terminal minimal-cardinality bound.  The next
+non-duplicative theorem is therefore not another selected-cardinality
+transport; it is the actual selected-cover ghost/Rademacher a.e. domination or
+the exact selected-cardinality outer-probability comparison.
 
 2026-05-06 fixed-FDD selected-coordinate congruence follow-up: local search
 found only the whole-sample-path finite-dimensional congruence wrappers

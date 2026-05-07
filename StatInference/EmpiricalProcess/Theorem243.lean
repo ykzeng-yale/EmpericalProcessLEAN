@@ -30924,6 +30924,204 @@ theorem
   exact hsample.trans (add_le_add hupper_le le_rfl)
 
 /--
+Record-level cardinality transport for the fixed-radius finite-net comparison.
+
+If the exact event comparison has been proved for a selected empirical-cover
+cardinality, and that selected cardinality is eventually bounded by the
+entropy-controlled cardinality, then the same comparison holds for the larger
+cardinality.  This keeps the remaining ghost/Rademacher work focused on the
+selected cover while letting downstream entropy consumers use the externally
+recorded covering-number process.
+-/
+theorem
+    VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_nonneg : 0 ≤ M)
+    (hcomparison :
+      VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison P
+        indexClass classFun envelope M selectedCardinality)
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n) :
+    VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison P
+      indexClass classFun envelope M cardinality where
+  outerProbability_bound := by
+    intro eta heta epsilon hepsilon
+    filter_upwards [hcomparison.outerProbability_bound eta heta epsilon hepsilon,
+      hselected_le eta heta] with n hcomparison_n hselected_le_n
+    calc
+      VdVWOuterProbability (vdVWProductMeasure P n)
+          {sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                (0 : ℝ)}
+          ≤
+        VdVWOuterProbability (vdVWProductMeasure P n)
+          {sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (vdVWTheorem243FiniteNetHoeffdingUpper
+                    (selectedCardinality eta n sample n) n M + eta)
+                (0 : ℝ)} := hcomparison_n
+      _ ≤
+        VdVWOuterProbability (vdVWProductMeasure P n)
+          {sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (vdVWTheorem243FiniteNetHoeffdingUpper
+                    (cardinality eta n sample n) n M + eta)
+                (0 : ℝ)} := by
+          dsimp [VdVWOuterProbability]
+          refine measure_mono ?_
+          intro sample hsample
+          have hupper_le :
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                  (selectedCardinality eta n sample n) n M ≤
+                vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality eta n sample n) n M :=
+            vdVWTheorem243FiniteNetHoeffdingUpper_mono_cardinality
+              hM_nonneg (hselected_le_n sample)
+          have hselected_nonneg :
+              0 ≤
+                vdVWTheorem243FiniteNetHoeffdingUpper
+                    (selectedCardinality eta n sample n) n M + eta := by
+            have hfinite_nonneg :
+                0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper
+                  (selectedCardinality eta n sample n) n M :=
+              vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+                (selectedCardinality eta n sample n) n hM_nonneg
+            linarith
+          have hcardinality_nonneg :
+              0 ≤
+                vdVWTheorem243FiniteNetHoeffdingUpper
+                    (cardinality eta n sample n) n M + eta := by
+            have hfinite_nonneg :
+                0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality eta n sample n) n M :=
+              vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+                (cardinality eta n sample n) n hM_nonneg
+            linarith
+          have hbad_selected :
+              epsilon <
+                vdVWTheorem243FiniteNetHoeffdingUpper
+                    (selectedCardinality eta n sample n) n M + eta := by
+            have hsample' :
+                epsilon <
+                  dist
+                    (vdVWTheorem243FiniteNetHoeffdingUpper
+                        (selectedCardinality eta n sample n) n M + eta)
+                    (0 : ℝ) := by
+              simpa using hsample
+            rw [Real.dist_eq, sub_zero, abs_of_nonneg hselected_nonneg] at hsample'
+            exact hsample'
+          have hbad_cardinality :
+              epsilon <
+                vdVWTheorem243FiniteNetHoeffdingUpper
+                    (cardinality eta n sample n) n M + eta :=
+            lt_of_lt_of_le hbad_selected (add_le_add hupper_le le_rfl)
+          have hmem :
+              epsilon <
+                dist
+                  (vdVWTheorem243FiniteNetHoeffdingUpper
+                      (cardinality eta n sample n) n M + eta)
+                  (0 : ℝ) := by
+            rw [Real.dist_eq, sub_zero, abs_of_nonneg hcardinality_nonneg]
+            exact hbad_cardinality
+          simpa using hmem
+
+/--
+Selected positive-radius empirical-cover domination supplies the fixed-radius
+outer-probability comparison.
+
+This is the bookkeeping bridge for the remaining source proof: the
+ghost/Rademacher argument may prove the a.e. finite-net domination for the
+least selected empirical cover at each positive radius.  The theorem converts
+that selected statement to the comparison record whose entropy side is stated
+with the externally recorded cardinality process.
+-/
+theorem
+    VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_selected_truncated_positiveRadius_ae_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hcovering_all :
+      ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality eta n))
+    (hM_pos : 0 < M)
+    (hae_selected :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ≤
+          vdVWTheorem243FiniteNetHoeffdingUpper
+              ((vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M)
+                (cardinality := cardinality) X hcovering_all eta)
+                n sample n) n M + eta) :
+    VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison P
+      indexClass classFun envelope M cardinality := by
+  let selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun eta =>
+      vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (cardinality := cardinality)
+        X hcovering_all eta
+  refine
+    VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_selected_bound
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (selectedCardinality := selectedCardinality)
+      (cardinality := cardinality) hM_pos ?_ ?_
+  · intro eta heta
+    refine Eventually.of_forall ?_
+    intro n sample
+    let hfinite :
+        ∀ n (sample : SampleAt Observation n) m,
+          HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+            (vdVWTruncatedClassFun classFun envelope M) eta :=
+      hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (coverRadius := fun _ : ℕ => eta)
+        (cardinality := cardinality) X hcovering_all
+        (by intro _; exact heta)
+    have hle :
+        finiteEmpiricalL1CoveringNumberCard (hfinite n sample n) ≤
+          cardinality eta n sample n :=
+      finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (coverRadius := fun _ : ℕ => eta)
+        (cardinality := fun n => cardinality eta n)
+        X (hcovering_all eta heta) hfinite n sample
+    simpa [selectedCardinality,
+      vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard, heta]
+      using hle
+  · intro eta heta
+    simpa [selectedCardinality] using hae_selected eta heta
+
+/--
 Fixed-`M` centered-truncated convergence from a pure outer-probability finite-net
 comparison.
 

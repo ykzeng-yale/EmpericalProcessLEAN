@@ -5,13 +5,24 @@ van der Vaart and Wellner Chapters 1 and 2.  The authoritative detailed
 inventory is `docs/vdvw_chapter1_2_formalization_blueprint.md`; this file is a
 human-facing monitor for what is proved, what is in progress, and what remains.
 
-Status snapshot date: 2026-05-06.
+Status snapshot date: 2026-05-07.
 
 Active blocker/primitives register:
 
 ```text
 docs/vdvw_current_blocker_primitive_plan.md
 ```
+
+Authoritative current `/goal` override, 2026-05-07: the active goal object is
+the whole VdV&W empirical-process textbook formalization, with Chapters 1-2
+and Theorem 2.4.3 as the current frontier.  The clean VdVW proof lane is
+`/private/tmp/ep-vdvw-selected-log-route` at `origin/main`; the Desktop
+worktree is intentionally avoided for VdVW commits because it contains
+unrelated Matching/WDSM work.  Current next target: prove the selected-cover
+ghost/Rademacher a.e. finite-net domination or exact selected-cardinality
+outer-probability comparison.  Do not spend the next batch on more endpoint
+aliases, code-set/quantizer restatements, finite-index wrappers, or additional
+selected-cardinality transport unless it directly consumes that source proof.
 
 Authoritative current `/goal` override, 2026-05-06 after the finite-index
 1.4.8 weak-convergence/tightness iff wrappers: local `main` should equal
@@ -110,6 +121,19 @@ minimal consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbabilityComparison`.
 This is not a theorem completion; it is the source-side proof target for the
 next batch.
+
+2026-05-07 comparison transport follow-up: agent-assisted search confirmed
+that `origin/main` has no newer VdVW Lean work after the selected comparison
+transport commit; the only later main commit refreshes an optimization prompt.
+`Theorem243.lean` now adds
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_selected_truncated_positiveRadius_ae_bound`.
+These keep the source proof focused on selected empirical covers while letting
+the entropy side use a larger externally recorded cardinality.  The remaining
+Theorem 2.4.3 source gap is the selected-cover ghost/Rademacher a.e.
+finite-net domination or exact selected-cardinality outer-probability
+comparison.
 
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
