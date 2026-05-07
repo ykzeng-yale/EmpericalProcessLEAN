@@ -176,6 +176,8 @@ plus the normalized compensated-product bridge:
 `projectedInverseCompensationProduct_eq_exp_averageVariance`,
 `projectedInverseCompensationProduct_integral_eq_exp_averageVariance`,
 `projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_integral`,
+`projectedAverageVariance_exp_integral_tendsto_of_boundedContinuous`,
+`projectedInverseCompensationProduct_tendsto_exp_of_boundedContinuous_averageVariance`,
 `projectedNormalizedTaylorFactor_eq_taylorModel`,
 `projected_charFun_normalized_taylor_step_mul_scaled`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
@@ -184,13 +186,13 @@ and `projected_charFun_tendsto_exp_of_normalized_product_model`.
 Next theorem packet: prove the finite martingale tower representation into the
 normalized product model required by
 `projected_charFun_tendsto_exp_of_normalized_product_model`.  The one-step
-normalized peel is already compiled; do not prove another compensation
-algebra wrapper.  In parallel or immediately after, prove the remaining
-bounded-continuous expectation limit for
-`exp (-(t^2/2) * chewi127AverageConditionalVariance ...)` from
-`n⁻¹ ∑ Xi_k -> S_infty` in probability; the inverse-compensation product
-algebra and integral reduction are now compiled.  Then wire both pieces into
-the existing Theorem 12.7/12.3 certificate constructors.
+normalized peel, inverse-compensation algebra, and bounded-continuous
+expectation handoff are already compiled; do not prove another compensation
+or generic weak-convergence wrapper.  In parallel or immediately after,
+instantiate the bounded continuous extension for the variance exponential on
+the uniformly bounded variance interval and prove the AEMeasurable finite
+average side condition from the conditional second-moment interface.  Then
+wire these pieces into the existing Theorem 12.7/12.3 certificate constructors.
 
 Reuse boundary: do not redo scaled-sum definitions, Cramér-Wold plumbing,
 bounded-tail/Lindeberg, Taylor expansion, conditional mean-zero/quadratic
@@ -205,7 +207,7 @@ the product-to-one, row-error, and compensation-bound bridges,
 `chewi127ScalarCharFunProduct` lemmas, and local product perturbation bridges.
 One bounded API search is allowed only for the exact finite compensated
 iteration measurability side condition, normalized-product induction shape, or
-bounded-continuous variance-convergence estimate; after that, prove.
+bounded-extension/clamp instantiation; after that, prove.
 
 Execution gate: use `/private/tmp/chewi-smpgd-probability`; before Lean edits
 state the exact theorem-sized target and fallback blocker.  Verify with

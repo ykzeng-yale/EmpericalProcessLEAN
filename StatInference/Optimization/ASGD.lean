@@ -2435,6 +2435,142 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_t
         L N t).symm)
 
 /--
+Bounded-continuous handoff for the averaged conditional variance exponential.
+
+The exponential `x ↦ exp (-(t^2/2) x)` is not globally bounded on `ℝ`, so the
+source proof will later instantiate `g` with a bounded continuous extension
+that agrees with the exponential on the uniformly bounded variance interval.
+This theorem isolates the purely probabilistic handoff from convergence in
+measure to convergence of expectations.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedAverageVariance_exp_integral_tendsto_of_boundedContinuous
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ) (g : BoundedContinuousFunction ℝ ℂ)
+    (haverage_meas :
+      ∀ N : ℕ,
+        AEMeasurable
+          (fun ω => chewi127AverageConditionalVariance S.covariance.Xi N ω L) P)
+    (haverage_eq : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P,
+        g (chewi127AverageConditionalVariance S.covariance.Xi N ω L) =
+          Complex.exp
+            (((-(t ^ 2 *
+              chewi127AverageConditionalVariance S.covariance.Xi N ω L / 2) : ℝ) : ℂ)))
+    (hlimit_eq :
+      g (S.covariance_limit.S_infty L L) =
+        Complex.exp
+          (((-(t ^ 2 * S.covariance_limit.S_infty L L / 2) : ℝ) : ℂ))) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          Complex.exp
+            (((-(t ^ 2 *
+              chewi127AverageConditionalVariance S.covariance.Xi N ω L / 2) : ℝ) : ℂ)) ∂P)
+      atTop
+      (𝓝 (Complex.exp
+        (((-(t ^ 2 * S.covariance_limit.S_infty L L / 2) : ℝ) : ℂ)))) := by
+  let X : ℕ -> Ω -> ℝ := fun N ω =>
+    chewi127AverageConditionalVariance S.covariance.Xi N ω L
+  let xlim : Ω -> ℝ := fun _ => S.covariance_limit.S_infty L L
+  have hdist : TendstoInDistribution X atTop xlim (fun _ => P) P :=
+    (S.projected_variance_tendstoInMeasure L).tendstoInDistribution haverage_meas
+  have hweak :=
+    (ProbabilityMeasure.tendsto_iff_forall_integral_rclike_tendsto ℂ).mp
+      hdist.tendsto g
+  have hmap_source :
+      Tendsto
+        (fun N : ℕ => ∫ ω, g (X N ω) ∂P)
+        atTop (𝓝 (g (S.covariance_limit.S_infty L L))) := by
+    have hseq :
+        ∀ N : ℕ,
+          (∫ x, g x ∂(P.map (X N))) = ∫ ω, g (X N ω) ∂P := by
+      intro N
+      rw [integral_map (haverage_meas N) g.continuous.aestronglyMeasurable]
+    have hlim :
+        (∫ x, g x ∂(P.map xlim)) = g (S.covariance_limit.S_infty L L) := by
+      rw [integral_map aemeasurable_const g.continuous.aestronglyMeasurable]
+      simp
+      change (1 : ℝ) • g (S.covariance_limit.S_infty L L) =
+        g (S.covariance_limit.S_infty L L)
+      exact one_smul ℝ _
+    have hweak_source :
+        Tendsto
+          (fun N : ℕ => ∫ ω, g (X N ω) ∂P)
+          atTop (𝓝 (∫ x, g x ∂(P.map xlim))) := by
+      exact hweak.congr' (Eventually.of_forall fun N => hseq N)
+    simpa [hlim] using hweak_source
+  have hexp_from_g :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            Complex.exp
+              (((-(t ^ 2 *
+                chewi127AverageConditionalVariance S.covariance.Xi N ω L / 2) : ℝ) : ℂ)) ∂P)
+        atTop (𝓝 (g (S.covariance_limit.S_infty L L))) := by
+    refine hmap_source.congr' ?_
+    filter_upwards [haverage_eq] with N hN
+    exact integral_congr_ae (hN.mono fun ω hω => hω)
+  simpa [hlimit_eq] using hexp_from_g
+
+/--
+Inverse-compensation product convergence from a bounded continuous extension of
+the averaged-variance exponential.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_tendsto_exp_of_boundedContinuous_averageVariance
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ) (g : BoundedContinuousFunction ℝ ℂ)
+    (haverage_meas :
+      ∀ N : ℕ,
+        AEMeasurable
+          (fun ω => chewi127AverageConditionalVariance S.covariance.Xi N ω L) P)
+    (haverage_eq : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P,
+        g (chewi127AverageConditionalVariance S.covariance.Xi N ω L) =
+          Complex.exp
+            (((-(t ^ 2 *
+              chewi127AverageConditionalVariance S.covariance.Xi N ω L / 2) : ℝ) : ℂ)))
+    (hlimit_eq :
+      g (S.covariance_limit.S_infty L L) =
+        Complex.exp
+          (((-(t ^ 2 * S.covariance_limit.S_infty L L / 2) : ℝ) : ℂ))) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω, ∏ k ∈ Finset.range N,
+          S.projectedInverseCompensationFactor L N t k ω ∂P)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  have haverage :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            Complex.exp
+              (((-(t ^ 2 *
+                chewi127AverageConditionalVariance S.covariance.Xi N ω L / 2) : ℝ) : ℂ)) ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (((-(t ^ 2 * S.covariance_limit.S_infty L L / 2) : ℝ) : ℂ)))) :=
+    S.projectedAverageVariance_exp_integral_tendsto_of_boundedContinuous
+      L t g haverage_meas haverage_eq hlimit_eq
+  have hproduct :=
+    S.projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_integral
+      L t haverage
+  convert hproduct using 1
+  congr 1
+  norm_num
+  ring_nf
+
+/--
 The normalized model factor is algebraically the Taylor model itself.  Keeping
 both names is useful: `projectedTaylorModelFactor` is the one-step Taylor
 output, while `projectedNormalizedTaylorFactor` is the product factor used in
