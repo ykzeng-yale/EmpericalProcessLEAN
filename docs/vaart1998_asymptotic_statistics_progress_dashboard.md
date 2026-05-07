@@ -607,30 +607,26 @@ Chapter 4 handoff:
   residual before applying the derivative and second-derivative residual
   bridge.
 
-Latest verified repository base before this packet: `aa67db9`
-(`Add Chewi ASGD random product bridge`).
+Latest verified Vaart frontier: `486cd51`
+(`Add Vaart theorem 5.41 Taylor equation handoff`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
 - `git diff --check`
-- proof-hole and secret scans on changed Vaart files
+- proof-hole and credential-pattern scans on changed Vaart files
 
 Root build note: this worktree uses a symlinked `.lake` directory; focused
 checks must compile the Vaart-worktree artifacts directly.
 
 Live continuation prompt: use the compact prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
-Avoid repeating settled process issues; spend the next run on the Theorem 5.41
-source Taylor/LLN proof packet.
 
 ## Next Aggressive Target
 
-Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41:
-prove the deterministic/a.e. second-derivative residual bound from Taylor's
-theorem and the dominated second-derivative average, package the residual
-measurability fields, then prove the textbook-shaped a.e. Taylor equation
-consumed by the source-equation handoff.  Keep Gaussian-law preservation out of
-the critical path until this source Taylor bridge is complete.
+Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
+`MEstimators.lean`: derivative-residual measurability, the textbook Taylor
+equation, and the second-derivative residual bound consumed by the compiled
+source-equation handoff.
 
 ## Reuse Dependencies
 

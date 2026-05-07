@@ -6,27 +6,23 @@ manual `/goal` continuation before selecting a proof target.
 
 ## Live Continuation Prompt
 
-Continue the Vaart 1998 Lean formalization from the latest pushed frontier.
-Do not spend the next run on process text or Gaussian endpoint packaging
-unless it directly unblocks the source theorem.  The primary target is Vaart
-Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`: finish
-the deterministic Taylor source inputs that feed the derivative and
-second-derivative residual handoff.
+Continue the Vaart 1998 Lean formalization from frontier `486cd51`.  Work in
+`StatInference/AsymptoticStatistics/MEstimators.lean` on Theorem 5.41 only.
 
-Next proof packet:
+Next packet: discharge the remaining source Taylor inputs for the compiled
+handoff
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_derivativeLLN_secondDerivativeBound`.
+First derive derivative-residual measurability from empirical-derivative and
+scaled-estimator measurability.  Then prove the textbook Taylor equation
+`score_n + dotPsi_n(theta0) x_n + secondResidual_n = 0` and the
+second-derivative residual bound from Taylor's theorem plus the dominated
+second-derivative average.
 
-- Instantiate the deterministic bound for the second-derivative quadratic
-  residual from Taylor's theorem and the dominated second-derivative average.
-- Prove the textbook-shaped a.e. Taylor equation consumed by the compiled
-  source-equation bridge:
-  `score_n + dotPsi_n(theta0) (scaledEstimator_n) + secondResidual_n = 0`.
-- Package the residual measurability fields only as far as they are needed by
-  that compiled handoff.
-
-Efficiency rules for the next run: search local `StatInference` and mathlib
-reuse first, keep edits in the Vaart worktree, make one theorem-sized Lean
-packet, compile the changed Vaart file directly with explicit artifacts, then
-update route docs and push only after the exact rebased tree is verified.
+Reuse local/mathlib APIs before inventing infrastructure.  Skip solved
+Chapter 2-4 routing, Gaussian endpoints, and broad process edits unless they
+directly unblock this packet.  Verify with focused direct compilation of the
+changed Vaart Lean file, then update these route docs, rebase over current
+`origin/main`, rerun the focused checks, and push the verified packet.
 
 ## Current Blocker
 
@@ -719,10 +715,10 @@ Chapter 3 theorem-facing wrappers compiling:
    `dotPsi_n(theta0)` into `P dot psi_theta0` plus derivative residual:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorEquation_derivativeLLN_secondDerivativeBound`.
 
-Latest verified repository base before this packet: `aa67db9`
-(`Add Chewi ASGD random product bridge`).
+Latest verified Vaart frontier before the next packet: `486cd51`
+(`Add Vaart theorem 5.41 Taylor equation handoff`).
 
-The current theorem-sized packet strengthens the Chapter 5.41
+The latest theorem-sized packet strengthens the Chapter 5.41
 asymptotic-normality route for Z-estimators by letting the main handoff consume
 the textbook-shaped Taylor equation
 `score_n + dotPsi_n(theta0) x_n + secondResidual_n = 0` directly.  It now
@@ -739,32 +735,13 @@ measurability, and the textbook-shaped a.e. Taylor equation
  + dotPsi_n(theta0) (sqrt n (thetaHat_n - theta0))
  + secondResidual_n = 0`.
 
-Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
-geometry, or bootstrap conditional weak convergence before the Chapter 2-3
-spine is stable.  Those later chapters should be scouted in parallel only.
+## Execution Notes
 
-## Chat Operating Protocol Corrections
-
-- Treat this chat's `/goal` as the active Vaart formalization lane; do not
-  create recurring automations for this work.
-- Keep all repository-facing text in English.  The chat can use mixed
-  English/Chinese, but files, Lean names, comments, and route docs should not.
-- Keep Vaart work in the dedicated Vaart worktree, and preserve unrelated
-  commits or dirty files from other local agents.
-- After a context compaction or interruption, re-read the active `/goal`, this
-  file, the latest commit log, and the current source anchor before continuing;
-  do not resume from memory alone.
-- Verify Vaart Lean packets with direct artifact compilation for the exact
-  worktree source when `.lake` is symlinked, rather than relying only on
-  module-level `lake build` output.
-- Rebase over current `origin/main` before staging, update the route-document
-  base hash, rerun focused Lean and hygiene scans, then push.
-- Prefer theorem-sized Lean packets that remove source-facing assumptions or
-  package a textbook statement, and update the next blocker only after the
-  packet compiles.
-- Use helper agents only for independent source/reuse/verification tasks or
-  disjoint write scopes.  Keep the main thread on the critical proof path and
-  integrate agent output only after local verification.
+- Keep all repository-facing text in English.
+- Preserve unrelated local-agent work and rebase over current `origin/main`
+  before pushing.
+- Use helper agents or extra worktrees only for independent API searches,
+  verification, or disjoint Lean write scopes.
 
 ## Search-First Record
 
@@ -889,15 +866,7 @@ the Chapter 4 local-range probability constructors.
 7. Keep Chapters 18-20 and 23-25 as dependency-aware later routes tied to the
    active VdV&W empirical-process lane.
 
-## Current Manual Goal Prompt Seed
+## Compact Manual Goal Prompt
 
-Start every run by inspecting git status, fetching origin/main, reviewing
-recent remote commits for other-agent Lean contributions, reading this file
-plus the Vaart dashboard and blueprint, and scanning
-`StatInference/AsymptoticStatistics`, `StatInference/Asymptotics`,
-`StatInference/ProbabilityMeasure`, `StatInference/ProbabilityTheory`, and
-`StatInference/EmpiricalProcess`.  Then choose the next largest source-shaped
-proof step that can compile.  Verify, update docs, commit/push when safe, and
-refresh the manual `/goal` continuation state when the frontier changes.  Do
-not create a recurring automation unless the user explicitly asks for one.
-Report progress/blockers in Chinese/English mix.
+Use the Live Continuation Prompt above as the active manual `/goal` prompt.
+Do not maintain a second expanded prompt in this file.
