@@ -333,6 +333,13 @@ Initial modules:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_aemeasurable_real`
   now applies that route to the canonical iid product sample space and displays
   the final covariance table under the common vector law `ν`.
+  The measurable-local-inverse constructors
+  `vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_measurable` and
+  `vaart1998_finiteCoordinate_localInverse_comp_empiricalMoment_aemeasurable_of_measurable_real`
+  discharge the empirical local-inverse a.e.-measurability field from global
+  measurability of `he.localInverse e De theta0`, and
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_measurableLocalInverse_real`
+  packages that route at the canonical source-certificate boundary.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

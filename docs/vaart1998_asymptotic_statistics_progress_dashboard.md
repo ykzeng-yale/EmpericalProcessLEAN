@@ -365,10 +365,18 @@ Chapter 4 handoff:
   specializes the direct local-inverse measurability route to the canonical iid
   product sample space and vector-law source certificate, with the final
   covariance table displayed under the common vector law `ν`.
+- Local-inverse measurability constructors:
+  `vaart1998_localInverse_comp_empiricalMoment_aemeasurable_of_measurable` and
+  `vaart1998_finiteCoordinate_localInverse_comp_empiricalMoment_aemeasurable_of_measurable_real`
+  build the empirical local-inverse `AEMeasurable` field from ordinary
+  measurability of `he.localInverse e De theta0`.
+- Canonical measurable-local-inverse endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_measurableLocalInverse_real`
+  feeds those constructors into the canonical vector-law source certificate.
 
-Latest remote base before this packet: `7a3d6c1`.  Latest pushed Vaart packet
-before this packet: `7a3d6c1`
-(`Add Vaart aemeasurable projected summand endpoint`).
+Latest remote base before this packet: `652b72c`.  Latest pushed Vaart packet
+before this packet: `edea17f`
+(`Add Vaart canonical aemeasurable source endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -381,11 +389,11 @@ for this packet is the focused Lean check and targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled canonical source-certificate
-a.e.-measurable endpoint.  The next useful proof step is to construct the
-canonical product empirical local-inverse `AEMeasurable` field itself from
-local inverse measurability/localization assumptions, keeping the target-event
-route separate as an explicit certificate path.
+Continue Vaart Chapter 4.1 from the compiled canonical
+measurable-local-inverse endpoint.  The next useful proof step is to replace or
+weaken global local-inverse measurability by an honest local/on-target
+localization certificate where possible, keeping the target-event route
+separate as an explicit certificate path.
 
 ## Reuse Dependencies
 
