@@ -3956,6 +3956,107 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_m
     hInvEmpirical hCLT
 
 /--
+Finite-coordinate Theorem 4.1 wrapper for an explicit estimator that agrees
+with the local-inverse candidate with probability tending to one.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_eq_with_probability_tending_to_one_real
+    {Coordinate Ω Ω' Θ : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (X : Coordinate -> ℕ -> Ω -> ℝ)
+    (heta0 :
+      e theta0 =
+        (fun coordinate : Coordinate => ∫ sample, X coordinate 0 sample ∂P))
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hInvEmpirical : ∀ n : ℕ,
+      AEMeasurable
+        (fun ω : Ω =>
+          he.localInverse e De theta0
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)) P)
+    {thetaHat : ℕ -> Ω -> Θ}
+    (hThetaHat : ∀ n : ℕ, AEMeasurable (thetaHat n) P)
+    (hScaledEq_meas : ∀ n : ℕ,
+      MeasurableSet
+        {ω : Ω |
+          √(n : ℝ) • (thetaHat n ω - theta0) =
+            √(n : ℝ) •
+              (he.localInverse e De theta0
+                (fun coordinate : Coordinate =>
+                  (∑ i ∈ Finset.range n, X coordinate i ω) / n) - theta0)})
+    (hEq_prob : Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          thetaHat n ω =
+            he.localInverse e De theta0
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+      atTop (𝓝 1))
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hCLT : TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          ((fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n) - e theta0))
+      atTop Z (fun _ => P) Q) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (fun coordinate : Coordinate =>
+                (∑ i ∈ Finset.range n, X coordinate i ω) / n)) =
+            (fun coordinate : Coordinate =>
+              (∑ i ∈ Finset.range n, X coordinate i ω) / n)})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω => √(n : ℝ) • (thetaHat n ω - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q := by
+  have hbase :=
+    vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_delta_method_aemeasurable_real
+      e De he X heta0 hX_integrable hX_indep hX_ident hX_meas
+      hInvEmpirical hCLT
+  refine ⟨hbase.1, ?_⟩
+  exact
+    vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_with_probability_tending_to_one
+      (P := P) (Q := Q)
+      (empiricalMoment := fun n : ℕ =>
+        vaart1998_finiteCoordinateEmpiricalMoment X n)
+      (Z := Z) (eInv := he.localInverse e De theta0)
+      (eta0 := e theta0) (theta0 := theta0) (thetaHat := thetaHat)
+      (Dinv := (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ))
+      he.to_localInverse.hasFDerivAt he.localInverse_apply_image
+      (by
+        simpa [vaart1998_finiteCoordinateEmpiricalMoment] using hCLT)
+      (fun n =>
+        (vaart1998_finiteCoordinate_empiricalMoment_aestronglyMeasurable_real
+          X hX_meas n).aemeasurable)
+      (fun n => by
+        simpa [vaart1998_finiteCoordinateEmpiricalMoment] using hInvEmpirical n)
+      hThetaHat
+      (fun n => by
+        simpa [vaart1998_finiteCoordinateEmpiricalMoment] using hScaledEq_meas n)
+      (by
+        simpa [vaart1998_finiteCoordinateEmpiricalMoment] using hEq_prob)
+
+/--
 Measurable-coordinate Theorem 4.1 wrapper deriving composed local-inverse
 a.e.-measurability from a.e. localization in the open moment range.
 -/

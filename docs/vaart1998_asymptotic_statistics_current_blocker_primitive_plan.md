@@ -27,9 +27,10 @@ The refreshed prompt should name:
 - the search-first scope: pinned mathlib, local `StatInference`, existing
   `ProbabilityMeasure`, `ProbabilityTheory`, `Asymptotics`, `EmpiricalProcess`,
   and recent remote contributions;
-- the verification gate: focused `lake env lean`, targeted `lake build`, root
-  build if imports changed, `git diff --check`, proof-hole scan, and secret
-  scan;
+- the verification gate: focused `lake env lean` on the actual Vaart worktree
+  source, targeted `lake build` only when the `.lake` build root is known to
+  match this worktree, root build only when imports changed and the build root
+  is correct, `git diff --check`, proof-hole scan, and secret scan;
 - the report gate: no Vaart theorem report until an exact source theorem
   compiles and source evidence is captured from Markdown/PDF.
 
@@ -55,14 +56,19 @@ but keep every packet small and rebase-aware:
 
 - start by checking `git status`, `origin/main`, this blocker file, the
   dashboard, and the blueprint;
+- treat the Vaart worktree's symlinked `.lake` directory as a verification
+  hazard: use direct artifact compilation such as
+  `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .lake/build/lib/lean/StatInference/AsymptoticStatistics/MomentEstimators.olean -i .lake/build/lib/lean/StatInference/AsymptoticStatistics/MomentEstimators.ilean`
+  unless the build root has been fixed or revalidated;
 - search pinned mathlib and local `StatInference` before introducing a new
   primitive;
 - prove one theorem-sized packet at a time, with names and comments in English;
 - run the focused Lean file before editing docs;
 - update route docs only after a real Lean declaration or precise blocker is
   known;
-- fetch and rebase immediately before commit/push, then rerun at least the
-  focused Lean gate on the rebased tree;
+- fetch once early for awareness and once immediately before commit/push; after
+  the final rebase, rerun the focused direct Lean gate and scans on the exact
+  tree to be pushed;
 - push only clean verified packets and preserve unrelated user or agent
   changes.
 
@@ -610,20 +616,22 @@ Chapter 3 theorem-facing wrappers compiling:
    `vaart1998_tendstoInDistribution_of_eq_with_probability_tending_to_one`.
 195. Chapter 4 measurable-estimator asymptotic-equivalence wrapper:
    `vaart1998_theorem_4_1_moment_estimator_sqrt_delta_method_of_eq_with_probability_tending_to_one`.
+196. Finite-coordinate measurable-estimator asymptotic-equivalence wrapper:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_eq_with_probability_tending_to_one_real`.
 
-Latest remote base before this packet: `0f2b44f`.
-Latest pushed Vaart packet before this packet: `1bb6ccb`
-(`Add Vaart asymptotic equivalence bridge`).
+Latest remote base before this packet: `61b042a`.
+Latest pushed Vaart packet before this packet: `030a5e8`
+(`Add Vaart estimator equivalence delta wrapper`).
 
-The current theorem-sized packet consumes the Chapter 2
-asymptotic-equivalence bridge in Chapter 4.  A measurable estimator whose
-scaled version agrees with the local-inverse candidate with probability tending
-to one inherits the same `sqrt n` delta-method limit.
+The current theorem-sized packet specializes the measurable-estimator
+asymptotic-equivalence wrapper to finite-coordinate Theorem 4.1 source routes.
+It returns the local-solving probability conclusion and the actual estimator's
+`sqrt n` delta-method limit.
 
-The next aggressive packet should specialize this generic estimator wrapper to
-the finite-coordinate Theorem 4.1 source routes, then connect it to
-measurable-selection or measurable-extension infrastructure.  Do not use
-probability tending to one as a substitute for per-`n` a.e. target membership.
+The next aggressive packet should derive the scaled equality event
+measurability and high-probability equality fields from a source-shaped
+measurable-selection/existence certificate.  Do not use probability tending to
+one as a substitute for per-`n` a.e. target membership.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

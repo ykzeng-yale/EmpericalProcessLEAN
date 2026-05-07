@@ -419,26 +419,29 @@ Chapter 4 handoff:
   proves that any a.e.-measurable estimator whose scaled version agrees with
   the local-inverse candidate with probability tending to one inherits the same
   `sqrt n` delta-method limit.
+- Finite-coordinate measurable-estimator endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_eq_with_probability_tending_to_one_real`
+  specializes the previous wrapper to the finite-coordinate Theorem 4.1 source
+  route and returns both local solving with probability tending to one and the
+  actual estimator's `sqrt n` weak limit.
 
-Latest remote base before this packet: `0f2b44f`.  Latest pushed Vaart packet
-before this packet: `1bb6ccb`
-(`Add Vaart asymptotic equivalence bridge`).
+Latest remote base before this packet: `61b042a`.  Latest pushed Vaart packet
+before this packet: `030a5e8`
+(`Add Vaart estimator equivalence delta wrapper`).
 Current packet verification passed for:
 
-- manual `lake env lean StatInference/AsymptoticStatistics/Basic.lean -o .../Basic.olean -i .../Basic.ilean`
 - manual `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean -o .../MomentEstimators.olean -i .../MomentEstimators.ilean`
 - `git diff --check`
 - proof-hole and secret scans on changed Vaart files
 
 Root build note: this worktree uses a symlinked `.lake` directory; focused
-checks must compile the Vaart-worktree `Basic.lean` artifact before compiling
-`MomentEstimators.lean`.
+checks must compile the Vaart-worktree artifacts directly.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 by specializing the generic measurable-estimator
-asymptotic-equivalence wrapper to the finite-coordinate Theorem 4.1 source
-routes.  After that, continue toward measurable-selection or measurable-
+Continue Vaart Chapter 4.1 by deriving the scaled equality event measurability
+and high-probability equality fields from a source-shaped measurable-selection
+or estimator-existence certificate.  After that, continue toward measurable-
 extension infrastructure.
 
 ## Reuse Dependencies

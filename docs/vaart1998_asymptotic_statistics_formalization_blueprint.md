@@ -384,6 +384,11 @@ Initial modules:
   transfers the local-inverse candidate's `sqrt n` delta-method limit to any
   estimator whose scaled version agrees with that candidate with probability
   tending to one.
+  The finite-coordinate endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_and_estimator_delta_method_of_eq_with_probability_tending_to_one_real`
+  packages the same transfer at the measurable finite-coordinate Theorem 4.1
+  boundary, returning both local solving with probability tending to one and
+  the actual estimator's `sqrt n` weak limit.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
