@@ -329,6 +329,10 @@ Initial modules:
   composed empirical local inverse has already been constructed as an
   a.e.-measurable statistic; keep the older target-event endpoints as explicit
   localization-certificate consumers.
+  The canonical source-certificate endpoint
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_aemeasurable_real`
+  now applies that route to the canonical iid product sample space and displays
+  the final covariance table under the common vector law `ν`.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

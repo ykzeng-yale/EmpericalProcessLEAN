@@ -550,25 +550,27 @@ Chapter 3 theorem-facing wrappers compiling:
    per-`n` target-membership field and consumes direct a.e. measurability of
    `he.localInverse e De theta0 (vaart1998_finiteCoordinateEmpiricalMoment X n ω)`:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_aemeasurable_real`.
+176. Canonical iid product-space covariance-table endpoint using the vector-law
+   source certificate and direct a.e. measurability of the empirical
+   local-inverse statistic:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_aemeasurable_real`.
 
-Latest remote base before this packet: `0ca595b`.
-Latest pushed Vaart packet before this packet: `012836a`
-(`Add Vaart vector law source certificate`).
+Latest remote base before this packet: `7a3d6c1`.
+Latest pushed Vaart packet before this packet: `7a3d6c1`
+(`Add Vaart aemeasurable projected summand endpoint`).
 
-The current theorem-sized packet replaces a too-strong downstream target-event
-interface by direct a.e.-measurability at the estimator layer.  The new
-certificate and projected-summand endpoints still prove the same Vaart Theorem
-4.1 local-existence, delta-Gaussian limit, Gaussian pullback, and covariance
-table conclusions, but callers no longer need to restate
-`vaart1998_finiteCoordinateEmpiricalMoment X n ω ∈ target` when they have
-already constructed the composed local inverse as an a.e.-measurable statistic.
+The current theorem-sized packet lifts the direct a.e.-measurable local-inverse
+route to the canonical iid product source with a vector-law source certificate.
+It reuses the projected-summand CLT endpoint, canonical product-law source
+fields, vector-law mean and covariance identities, and the covariance
+polarization bridge to expose the final Vaart Theorem 4.1 covariance table
+under the common vector law `ν`.
 
-The next aggressive packet should continue Chapter 4 by adding the canonical
-vector-law/source-certificate wrapper that feeds this
-`projectedSummandCLT_aemeasurable` endpoint.  If that wrapper blocks, record the
-exact missing theorem shape for the canonical product empirical local-inverse
-measurability field rather than reintroducing the stronger target-event
-assumption.
+The next aggressive packet should continue Chapter 4 by proving or packaging
+the canonical product empirical local-inverse `AEMeasurable` field itself from
+honest local inverse measurability/localization assumptions.  Do not collapse
+that obligation back into an unnamed target-event assumption; keep the older
+target-event route as a separate explicit certificate path.
 
 Do not start with LAN, contiguity, semiparametric Hilbert-space tangent
 geometry, or bootstrap conditional weak convergence before the Chapter 2-3

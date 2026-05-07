@@ -360,10 +360,15 @@ Chapter 4 handoff:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_aemeasurable_real`
   keeps the projected scalar-CLT/Cramér-Wold construction internal while
   consuming direct a.e. measurability of the empirical local inverse.
+- Canonical source-certificate a.e.-measurable endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_canonicalMeanVectorLawCovarianceSourceCertificate_aemeasurable_real`
+  specializes the direct local-inverse measurability route to the canonical iid
+  product sample space and vector-law source certificate, with the final
+  covariance table displayed under the common vector law `ν`.
 
-Latest remote base before this packet: `0ca595b`.  Latest pushed Vaart packet
-before this packet: `012836a`
-(`Add Vaart vector law source certificate`).
+Latest remote base before this packet: `7a3d6c1`.  Latest pushed Vaart packet
+before this packet: `7a3d6c1`
+(`Add Vaart aemeasurable projected summand endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -376,15 +381,11 @@ for this packet is the focused Lean check and targeted Vaart module build.
 
 ## Next Aggressive Target
 
-Continue Vaart Chapter 4.1 from the compiled direct-a.e.-measurable
-projected-summand endpoint.  The next useful proof step is the canonical
-vector-law/source-certificate wrapper that supplies the empirical
-local-inverse `AEMeasurable` field directly instead of routing through the
-stronger target-event assumption.
-
-If this blocks, record the exact missing theorem shape for the canonical
-product empirical local-inverse measurability field and keep the target-event
-route as a separate, explicitly named certificate path.
+Continue Vaart Chapter 4.1 from the compiled canonical source-certificate
+a.e.-measurable endpoint.  The next useful proof step is to construct the
+canonical product empirical local-inverse `AEMeasurable` field itself from
+local inverse measurability/localization assumptions, keeping the target-event
+route separate as an explicit certificate path.
 
 ## Reuse Dependencies
 
