@@ -378,27 +378,46 @@ Chapter 3 theorem-facing wrappers compiling:
 122. Theorem 4.1 finite-coordinate covariance-table endpoint fed directly by
    projected scalar CLTs:
    `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedScalarCLT_real`.
+123. Projected scalar summand for a continuous linear projection:
+   `vaart1998_finiteCoordinateProjectedSample`.
+124. Projected empirical average as an ordinary scalar average of projected
+   summands:
+   `vaart1998_finiteCoordinateProjectedEmpiricalAverage_eq_inv_mul_sum_sample`.
+125. Projected centered-average expression as the usual scalar CLT
+   sum-centered normalization:
+   `vaart1998_finiteCoordinateProjectedScalarCLT_expression_eq_sum`.
+126. Source-shaped projected summand scalar CLT family:
+   `vaart1998_finiteCoordinateProjectedSummandCLT`.
+127. Projected summand scalar CLTs imply the projected scalar empirical-moment
+   CLT family:
+   `vaart1998_finiteCoordinateProjectedScalarCLT_of_projectedSummandCLT`.
+128. Theorem 4.1 finite-coordinate covariance-table endpoint fed directly by
+   projected summand scalar CLTs:
+   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_real`.
 
-Latest remote base before this packet: `35395d5`.
-Latest pushed Vaart packet before this packet: `726fa46`
-(`Add Vaart projected charfun bridge`).
+Latest remote base before this packet: `4c54e12`.
+Latest pushed Vaart packet before this packet: `9704461`
+(`Add Vaart finite-dimensional Cramer Wold law`).
 
-The current theorem-sized packet discharges the pure finite-dimensional
-Cramér-Wold law-convergence step.  It transfers finite real vectors to
-`EuclideanSpace`/`PiLp 2`, applies Lévy's characteristic-function theorem there
-using the compiled `charFunDual` convergence, transfers the weak convergence
-back to `(Coordinate -> ℝ)`, and then packages the result into the projected
-scalar CLT bridge and the Vaart Theorem 4.1 covariance-table endpoint.
+The current theorem-sized packet moves the remaining scalar-CLT source
+hypothesis one layer closer to mathlib's one-dimensional CLT.  It defines the
+projected scalar summands, proves that the projected empirical average is their
+ordinary scalar average, rewrites the `sqrt n` centered-average expression as
+the usual `1 / sqrt n` sum-centered CLT normalization, and packages a
+projected-summand CLT family into both the projected scalar CLT family and the
+Vaart Theorem 4.1 covariance-table endpoint.
 
 The next aggressive packet should continue Chapter 4 by discharging the
 remaining source hypotheses without overclaiming unavailable infrastructure:
 
-1. prove or package the projected scalar CLT family
-   `vaart1998_finiteCoordinateProjectedScalarCLT` from reusable scalar CLT
-   infrastructure for finite weighted sums of coordinate empirical averages;
-2. if that scalar CLT infrastructure is not locally available, add the smallest
-   source-shaped certificate bridge that records exactly the weighted scalar
-   CLT and feeds `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_finiteDimensional`;
+1. instantiate `vaart1998_finiteCoordinateProjectedSummandCLT` from mathlib's
+   one-dimensional CLT
+   `ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub`, starting
+   with a source-shaped theorem whose hypotheses are the projected summand
+   `MemLp`, `iIndepFun`, `IdentDistrib`, and Gaussian `HasLaw` fields;
+2. prove the projected summand independence/identical-distribution/measurability
+   obligations from the existing coordinate assumptions only when they are
+   directly needed by that scalar CLT instantiation;
 3. add further covariance-table consumers only if they remove a real caller-side
    hypothesis from an existing Theorem 4.1 wrapper.
 

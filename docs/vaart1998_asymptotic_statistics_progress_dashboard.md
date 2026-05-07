@@ -248,9 +248,17 @@ Chapter 4 handoff:
   `vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_finiteDimensional`.
 - Projected-scalar-CLT Theorem 4.1 covariance-table endpoint:
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedScalarCLT_real`.
+- Projected summand scalar CLT source layer:
+  `vaart1998_finiteCoordinateProjectedSample`,
+  `vaart1998_finiteCoordinateProjectedEmpiricalAverage_eq_inv_mul_sum_sample`,
+  `vaart1998_finiteCoordinateProjectedScalarCLT_expression_eq_sum`,
+  `vaart1998_finiteCoordinateProjectedSummandCLT`, and
+  `vaart1998_finiteCoordinateProjectedScalarCLT_of_projectedSummandCLT`.
+- Projected-summand-CLT Theorem 4.1 covariance-table endpoint:
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_real`.
 
-Latest remote base before this packet: `35395d5`.  Latest pushed Vaart packet
-before this packet: `726fa46` (`Add Vaart projected charfun bridge`).
+Latest remote base before this packet: `4c54e12`.  Latest pushed Vaart packet
+before this packet: `9704461` (`Add Vaart finite-dimensional Cramer Wold law`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MomentEstimators.lean`
@@ -273,12 +281,13 @@ delta/Gaussian/covariance source assemblers plus the supplied vector-CLT
 certificate interface, real-valued projected scalar CLT conversion, and
 projected probability-law Cramér-Wold handoff:
 
-1. prove or package `vaart1998_finiteCoordinateProjectedScalarCLT` from reusable
-   scalar CLT infrastructure for finite weighted sums of coordinate empirical
-   averages;
-2. if that scalar CLT infrastructure is not locally available, add the smallest
-   source-shaped weighted-scalar-CLT certificate that feeds the compiled
-   finite-dimensional Cramér-Wold bridge;
+1. instantiate `vaart1998_finiteCoordinateProjectedSummandCLT` from mathlib's
+   one-dimensional CLT
+   `ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub`, starting
+   with a source-shaped theorem whose hypotheses are the projected summand
+   `MemLp`, `iIndepFun`, `IdentDistrib`, and Gaussian `HasLaw` fields;
+2. prove projected summand independence/identical-distribution/measurability
+   obligations from coordinate assumptions only when they are directly needed;
 3. add further covariance-table consumers only if they remove a real caller-side
    hypothesis from an existing Theorem 4.1 wrapper.
 

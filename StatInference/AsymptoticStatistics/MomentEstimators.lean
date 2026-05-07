@@ -914,6 +914,74 @@ noncomputable def vaart1998_finiteCoordinateProjectedPopulationMoment
   L (vaart1998_finiteCoordinatePopulationMoment P X)
 
 /--
+Scalar summand obtained by testing one finite-coordinate sample vector with a
+continuous linear functional.
+-/
+noncomputable def vaart1998_finiteCoordinateProjectedSample
+    {Coordinate Ω : Type*} [Fintype Coordinate]
+    (L : StrongDual ℝ (Coordinate -> ℝ))
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (i : ℕ) (ω : Ω) : ℝ :=
+  L (fun coordinate => X coordinate i ω)
+
+/--
+The projected empirical average is the ordinary scalar average of the projected
+sample summands.
+-/
+theorem vaart1998_finiteCoordinateProjectedEmpiricalAverage_eq_inv_mul_sum_sample
+    {Coordinate Ω : Type*} [Fintype Coordinate]
+    (L : StrongDual ℝ (Coordinate -> ℝ))
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (n : ℕ) (ω : Ω) :
+    vaart1998_finiteCoordinateProjectedEmpiricalAverage L X n ω =
+      (n : ℝ)⁻¹ *
+        ∑ i ∈ Finset.range n,
+          vaart1998_finiteCoordinateProjectedSample L X i ω := by
+  let v : ℕ -> Coordinate -> ℝ := fun i coordinate => X coordinate i ω
+  have hemp :
+      vaart1998_finiteCoordinateEmpiricalMoment X n ω =
+        (n : ℝ)⁻¹ • ∑ i ∈ Finset.range n, v i := by
+    ext coordinate
+    simp [vaart1998_finiteCoordinateEmpiricalMoment, v, div_eq_inv_mul,
+      smul_eq_mul, Finset.sum_apply]
+  calc
+    vaart1998_finiteCoordinateProjectedEmpiricalAverage L X n ω
+        = L ((n : ℝ)⁻¹ • ∑ i ∈ Finset.range n, v i) := by
+          simp [vaart1998_finiteCoordinateProjectedEmpiricalAverage, hemp]
+    _ = (n : ℝ)⁻¹ *
+        ∑ i ∈ Finset.range n,
+          vaart1998_finiteCoordinateProjectedSample L X i ω := by
+          simp [vaart1998_finiteCoordinateProjectedSample, v]
+
+/--
+Projected centered empirical averages can be written in the usual scalar
+CLT sum-centered normalization.
+-/
+theorem vaart1998_finiteCoordinateProjectedScalarCLT_expression_eq_sum
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    (L : StrongDual ℝ (Coordinate -> ℝ)) (P : Measure Ω)
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (n : ℕ) (ω : Ω) :
+    √(n : ℝ) *
+        (vaart1998_finiteCoordinateProjectedEmpiricalAverage L X n ω -
+          vaart1998_finiteCoordinateProjectedPopulationMoment L P X) =
+      (√(n : ℝ))⁻¹ *
+        ((∑ i ∈ Finset.range n,
+            vaart1998_finiteCoordinateProjectedSample L X i ω) -
+          (n : ℝ) *
+            vaart1998_finiteCoordinateProjectedPopulationMoment L P X) := by
+  rw [vaart1998_finiteCoordinateProjectedEmpiricalAverage_eq_inv_mul_sum_sample]
+  by_cases hn : n = 0
+  · subst n
+    simp
+  · have hnpos_nat : 0 < n := Nat.pos_of_ne_zero hn
+    have hnpos : 0 < (n : ℝ) := Nat.cast_pos.mpr hnpos_nat
+    have hsqrt_pos : 0 < √(n : ℝ) := Real.sqrt_pos_of_pos hnpos
+    have hsqrt_ne : √(n : ℝ) ≠ 0 := ne_of_gt hsqrt_pos
+    have hn_ne : (n : ℝ) ≠ 0 := ne_of_gt hnpos
+    have hsqrt_sq : (√(n : ℝ)) ^ 2 = (n : ℝ) :=
+      Real.sq_sqrt hnpos.le
+    field_simp [hsqrt_ne, hn_ne]
+    rw [hsqrt_sq]
+
+/--
 Linearity identity for projected centered empirical moments.
 -/
 theorem vaart1998_finiteCoordinateProjected_scaled_centered_empiricalMoment_eq
@@ -950,6 +1018,53 @@ def vaart1998_finiteCoordinateProjectedScalarCLT
           (vaart1998_finiteCoordinateProjectedEmpiricalAverage L X n ω -
             vaart1998_finiteCoordinateProjectedPopulationMoment L P X))
       atTop (fun ω => L (Z ω)) (fun _ => P) Q
+
+/--
+Source-shaped scalar CLT for the projected finite-coordinate summands.
+-/
+def vaart1998_finiteCoordinateProjectedSummandCLT
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    (X : Coordinate -> ℕ -> Ω -> ℝ) (Z : Ω' -> Coordinate -> ℝ) : Prop :=
+  ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        (√(n : ℝ))⁻¹ *
+          ((∑ i ∈ Finset.range n,
+              vaart1998_finiteCoordinateProjectedSample L X i ω) -
+            (n : ℝ) *
+              vaart1998_finiteCoordinateProjectedPopulationMoment L P X))
+      atTop (fun ω => L (Z ω)) (fun _ => P) Q
+
+/--
+Projected summand scalar CLTs feed the projected scalar empirical-moment CLT
+family by the finite-average algebra used in Cramér-Wold.
+-/
+theorem vaart1998_finiteCoordinateProjectedScalarCLT_of_projectedSummandCLT
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace Ω'] [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hsummand :
+      vaart1998_finiteCoordinateProjectedSummandCLT (P := P) (Q := Q) X Z) :
+    vaart1998_finiteCoordinateProjectedScalarCLT (P := P) (Q := Q) X Z := by
+  intro L
+  refine TendstoInDistribution.congr ?_ Filter.EventuallyEq.rfl (hsummand L)
+  intro n
+  exact Filter.Eventually.of_forall fun ω =>
+    (vaart1998_finiteCoordinateProjectedScalarCLT_expression_eq_sum
+      L P X n ω).symm
 
 /--
 The scalar projected CLT family feeds the projected vector CLT family by
@@ -3491,6 +3606,88 @@ theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gauss
     (B :=
       vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_finiteDimensional
         (P := P) (Q := Q) X Z hX_meas hZ_aemeas hscalar)
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (heta0 := heta0) (hX_integrable := hX_integrable)
+    (hX_indep := hX_indep) (hX_ident := hX_ident)
+    (hX_meas := hX_meas) (hTarget := hTarget)
+
+/--
+Theorem 4.1 finite-coordinate covariance-table endpoint fed by projected
+summand scalar CLTs.
+
+This is the handoff closest to the one-dimensional CLT infrastructure: once
+every continuous linear projection has the scalar sum-centered CLT, the
+finite-dimensional Cramér-Wold bridge and covariance-table endpoint are
+assembled internally.
+-/
+theorem vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_real
+    {I Coordinate Ω Ω' Θ : Type*} [Fintype I] [Fintype Coordinate]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ] [CompleteSpace Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (e : Θ -> Coordinate -> ℝ) {theta0 : Θ}
+    (De : Θ ≃L[ℝ] (Coordinate -> ℝ))
+    (he : HasStrictFDerivAt e (De : Θ →L[ℝ] (Coordinate -> ℝ)) theta0)
+    (coordinates : I -> StrongDual ℝ Θ)
+    (X : Coordinate -> ℕ -> Ω -> ℝ) {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hsummand :
+      vaart1998_finiteCoordinateProjectedSummandCLT (P := P) (Q := Q) X Z)
+    (hZ_gaussian : HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (heta0 :
+      e theta0 = vaart1998_finiteCoordinatePopulationMoment P X)
+    (hX_integrable : ∀ coordinate, Integrable (X coordinate 0) P)
+    (hX_indep :
+      ∀ coordinate, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (X coordinate i) (X coordinate j) P)
+    (hX_ident :
+      ∀ coordinate i, IdentDistrib (X coordinate i) (X coordinate 0) P P)
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hTarget : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        vaart1998_finiteCoordinateEmpiricalMoment X n ω ∈
+          (he.toOpenPartialHomeomorph e).target) :
+    (Tendsto (fun n : ℕ =>
+      P.real
+        {ω : Ω |
+          e ((he.toOpenPartialHomeomorph e).symm
+              (vaart1998_finiteCoordinateEmpiricalMoment X n ω)) =
+            vaart1998_finiteCoordinateEmpiricalMoment X n ω})
+        atTop (𝓝 1)) ∧
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (he.localInverse e De theta0
+              (vaart1998_finiteCoordinateEmpiricalMoment X n ω) - theta0))
+      atTop (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q ∧
+    HasGaussianLaw
+      (fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω)) Q ∧
+    (∀ i j : I,
+      vaart1998_covarianceTable coordinates
+          (fun L K =>
+            ProbabilityTheory.covarianceBilinDual
+              (Q.map fun ω => (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ) (Z ω))
+              L K) i j =
+        vaart1998_covarianceTable
+          (fun k => (coordinates k).comp (De.symm : (Coordinate -> ℝ) →L[ℝ] Θ))
+          (fun L K =>
+            ProbabilityTheory.covarianceBilinDual (Q.map Z) L K) i j) :=
+  vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedScalarCLT_real
+    (e := e) (theta0 := theta0) (De := De) (he := he)
+    (coordinates := coordinates) (X := X) (Z := Z)
+    (hZ_aemeas := hZ_aemeas)
+    (hscalar :=
+      vaart1998_finiteCoordinateProjectedScalarCLT_of_projectedSummandCLT
+        (P := P) (Q := Q) hsummand)
     (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
     (heta0 := heta0) (hX_integrable := hX_integrable)
     (hX_indep := hX_indep) (hX_ident := hX_ident)

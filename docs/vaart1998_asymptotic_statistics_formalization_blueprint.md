@@ -230,8 +230,13 @@ Initial modules:
   feeds that theorem into the Cramér-Wold bridge.  The newest endpoint
   `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedScalarCLT_real`
   lets Vaart Theorem 4.1 consume projected scalar CLTs directly.
-  It still deliberately leaves the projected scalar CLT family itself as the
-  next source theorem to instantiate from reusable scalar CLT infrastructure.
+  The projected summand layer now defines
+  `vaart1998_finiteCoordinateProjectedSample`, proves the average and
+  sum-centered normalization identities, records
+  `vaart1998_finiteCoordinateProjectedSummandCLT`, and exposes
+  `vaart1998_theorem_4_1_finiteCoordinateMeasurable_sqrt_exists_delta_gaussianLimit_covarianceTable_of_projectedSummandCLT_real`.
+  It still deliberately leaves the mathlib one-dimensional CLT instantiation
+  for these projected summands as the next source theorem.
 - `Estimators.lean`: Chapter 5 M/Z-estimator consistency and asymptotic
   normality certificates.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
