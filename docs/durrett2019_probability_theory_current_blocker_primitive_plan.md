@@ -321,12 +321,18 @@ namespace now has a compiled starter module:
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
+- `durrett2019_lindebergFeller_min_taylor_remainder_le_split`
+- `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound_of_expansionBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_taylorBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound_of_expansionBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_oneFactorBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_taylorBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound_of_expansionBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_rowBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_oneFactorBound`
 - `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_taylorBound`
+- `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero_of_expansionBound`
 - `durrett2019_lindebergFellerQuadraticVarianceFactorsEventuallyNormLeOne`
 - `durrett2019_lindebergFellerVarianceRowsEventuallySmall`
 - `durrett2019_theorem_3_4_10_varianceRowsEventuallySmall_of_lindeberg_and_varianceSplitByTailRowSum`
@@ -357,6 +363,7 @@ namespace now has a compiled starter module:
 - `Durrett2019LindebergFellerAnalyticCertificate.of_errorRowSumBound_integrableSq`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_oneFactorBound_integrableSq`
 - `Durrett2019LindebergFellerAnalyticCertificate.of_taylorBound_integrableSq`
+- `Durrett2019LindebergFellerAnalyticCertificate.of_expansionBound_integrableSq`
 - `durrett2019_theorem_3_4_10_characteristicFunction_rowSum_eq_product`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_of_product_tendsto`
 - `durrett2019_theorem_3_4_10_rowSum_characteristicFunction_tendsto_exp_of_product_tendsto_exp`
@@ -368,6 +375,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_errorRowSumBound_integrableSq`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_oneFactorBound_integrableSq`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_taylorBound_integrableSq`
+- `durrett2019_theorem_3_4_10_lindebergFeller_of_expansionBound_integrableSq`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -436,8 +444,11 @@ compile:
   assumptions, a named characteristic/quadratic error row sum, a source-shaped
   finite-row Taylor/Lindeberg bound predicate, a source-shaped one-factor
   Taylor/Lindeberg bound predicate, a scalar Taylor-bound predicate written
-  with second moments, and compiled bridges from the scalar Taylor bound through
-  mean-zero variance rewriting to the one-factor bound, finite-row bound,
+  with second moments, a scalar expansion-bound predicate that retains the
+  linear `i t E X` term, the pointwise truncation split
+  `durrett2019_lindebergFeller_min_taylor_remainder_le_split`, and compiled
+  bridges from the expansion bound through mean-zero cancellation and variance
+  rewriting to the scalar Taylor bound, one-factor bound, finite-row bound,
   row-sum error convergence, analytic certificate, and final
   convergence-in-distribution constructor.
 
@@ -451,17 +462,19 @@ layer before moving to multivariate CLT reuse:
   centered second-order Taylor wrappers now compile; only add inversion or
   uniqueness support when a later source theorem needs it directly.
 - Section 3.4 central limit theorems: prove the remaining analytic obligations.
-  The scalar Taylor-bound predicate
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound`
-  now feeds the variance-based one-factor bound
+  The scalar expansion-bound predicate
+  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
+  now feeds the scalar Taylor-bound predicate
+  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound`,
+  the variance-based one-factor bound
   `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound`, then the
   finite-row bound
   `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound`, which
   then feeds
   `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
-  through compiled bridges.  The next proof target is therefore Durrett's
-  scalar characteristic-function Taylor estimate (3.3.3), split at
-  `|X_{n,m}| <= cutoff`, to instantiate the scalar Taylor-bound predicate.  The
+  through compiled bridges.  The pointwise truncation split of the minimum term
+  also compiles, so the next proof target is the integrated
+  characteristic-function Taylor expansion bound from Durrett (3.3.3).  The
   quadratic-product obligation
   `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp` now has
   a compiled bridge from variance-sum convergence and max-row-variance
@@ -608,11 +621,11 @@ including a final source-facing constructor from square-integrable rows plus
 the finite-row Taylor/Lindeberg bound predicate.  Exercise 3.1.1 is now proved
 locally and feeds the quadratic product route without a supplied theorem
 assumption.  The variance-tail split is now proved from square-integrable rows,
-and the scalar-Taylor-bound-to-final-source-wrapper bridge now compiles, so the
+and the expansion-bound-to-final-source-wrapper bridge now compiles, so the
 next aggressive target is
-`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound` from
-Durrett's scalar characteristic-function Taylor estimate (3.3.3) and the
-truncated second-moment split before moving to Section
+`durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
+from Durrett's characteristic-function Taylor estimate (3.3.3) plus the
+compiled pointwise truncation split before moving to Section
 3.10 Cramer-Wold/multivariate CLT wrappers while checking local
 asymptotic-statistics reuse first.
 Verify, update docs, commit/push, and keep this in-thread `/goal` state current.

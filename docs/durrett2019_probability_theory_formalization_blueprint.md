@@ -398,17 +398,21 @@ Compiled Section 3.2 packets:
   source-shaped finite-row Taylor/Lindeberg bound predicate, a compiled bridge
   from that finite-row bound plus Lindeberg to row-sum error convergence, a
   source-shaped one-factor Taylor/Lindeberg bound predicate, a scalar
-  Taylor-bound predicate written with second moments, and compiled constructors
-  from the scalar Taylor bound to the one-factor bound, finite-row bound,
-  analytic certificate, and final convergence-in-distribution theorem.
+  Taylor-bound predicate written with second moments, a scalar expansion-bound
+  predicate retaining the linear term, the pointwise truncation split of
+  Durrett's minimum term, and compiled constructors from the expansion bound to
+  the scalar Taylor bound, one-factor bound, finite-row bound, analytic
+  certificate, and final convergence-in-distribution theorem.
 
 Next packet candidates:
 
 - Section 3.4 Lindeberg-Feller analytic estimates: prove or instantiate the
-  scalar Taylor-bound predicate
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound` from
-  Durrett's characteristic-function Taylor estimate (3.3.3) and truncated
-  second moments.  The bridges from this scalar predicate to the variance-based
+  scalar expansion-bound predicate
+  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
+  from Durrett's characteristic-function Taylor estimate (3.3.3).  The
+  pointwise truncation split of the minimum term already compiles as
+  `durrett2019_lindebergFeller_min_taylor_remainder_le_split`, and the bridges
+  from the expansion bound to the scalar Taylor bound, variance-based
   one-factor bound, finite-row bound, and
   `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
   already compile, so do not re-prove the finite-row summation or limiting
