@@ -22433,6 +22433,107 @@ theorem
   exact hi.trans hsmall_i
 
 /--
+Pure outer-probability fixed-radius perturbation with a finite multiplicative
+probability loss.
+
+The VdV&W probability symmetrization lemma carries constants outside the
+outer-probability term, through the `β_n(x)` factor and the leading `2`.
+This variant keeps that source shape usable: a fixed finite constant times an
+error bad-event probability still tends to zero.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_const_mul_add_bound
+    {ι : Type v} {Ω : ι -> Type u}
+    [(i : ι) -> MeasurableSpace (Ω i)]
+    (μ : (i : ι) -> Measure (Ω i)) {l : Filter ι}
+    {X : (i : ι) -> Ω i -> ℝ} {error : ℝ -> (i : ι) -> Ω i -> ℝ}
+    {K : ℝ≥0∞} (hK_ne_top : K ≠ ∞)
+    (herror_nonneg :
+      ∀ eta i (ω : Ω i), 0 ≤ error eta i ω)
+    (herror :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ
+          (error eta) l (0 : ℝ))
+    (hbound :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ i in l,
+          @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω : Ω i | epsilon < dist (X i ω) (0 : ℝ)}
+            ≤
+          K *
+            @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω : Ω i | epsilon < dist (error eta i ω + eta) (0 : ℝ)}) :
+    VdVWConvergesInOuterProbabilityConst Ω (fun _ => inferInstance) μ X l
+      (0 : ℝ) := by
+  intro epsilon hepsilon
+  let eta : ℝ := epsilon / 4
+  have heta_pos : 0 < eta := by
+    dsimp [eta]
+    linarith
+  have hhalf_pos : 0 < epsilon / 2 := by
+    linarith
+  have herror_add :
+      Tendsto
+        (fun i =>
+          @VdVWOuterProbability (Ω i) inferInstance (μ i)
+            {ω : Ω i | epsilon < dist (error eta i ω + eta) (0 : ℝ)})
+        l (𝓝 0) := by
+    have hsmall := (herror eta heta_pos) (epsilon / 2) hhalf_pos
+    refine
+      tendsto_of_tendsto_of_tendsto_of_le_of_le'
+        (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+          tendsto_const_nhds)
+        hsmall
+        (Eventually.of_forall fun _ => bot_le)
+        ?_
+    exact Eventually.of_forall fun i => by
+      dsimp [VdVWOuterProbability]
+      refine measure_mono ?_
+      intro ω hω
+      have herr_nonneg : 0 ≤ error eta i ω :=
+        herror_nonneg eta i ω
+      have herr_eta_nonneg : 0 ≤ error eta i ω + eta := by
+        linarith
+      have hdist_add :
+          dist (error eta i ω + eta) (0 : ℝ) =
+            error eta i ω + eta := by
+        rw [Real.dist_eq, sub_zero, abs_of_nonneg herr_eta_nonneg]
+      have hdist_error :
+          dist (error eta i ω) (0 : ℝ) = error eta i ω := by
+        rw [Real.dist_eq, sub_zero, abs_of_nonneg herr_nonneg]
+      have hgt : epsilon < error eta i ω + eta := by
+        have hω' :
+            epsilon < dist (error eta i ω + eta) (0 : ℝ) := by
+          simpa using hω
+        rw [hdist_add] at hω'
+        exact hω'
+      have hhalf : epsilon / 2 < error eta i ω := by
+        dsimp [eta] at hgt
+        linarith
+      have hmem : epsilon / 2 < dist (error eta i ω) (0 : ℝ) := by
+        rw [hdist_error]
+        exact hhalf
+      simpa using hmem
+  have hscaled :
+      Tendsto
+        (fun i =>
+          K *
+            @VdVWOuterProbability (Ω i) inferInstance (μ i)
+              {ω : Ω i | epsilon < dist (error eta i ω + eta) (0 : ℝ)})
+        l (𝓝 0) := by
+    have hmul :=
+      ENNReal.Tendsto.const_mul herror_add (Or.inr hK_ne_top)
+    simpa using hmul
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ι => (0 : ℝ≥0∞)) l (𝓝 0) from
+        tendsto_const_nhds)
+      hscaled
+      (Eventually.of_forall fun _ => bot_le)
+      ?_
+  exact hbound eta heta_pos epsilon hepsilon
+
+/--
 Bounded variable-domain convergence of the random finite-net Hoeffding upper
 implies convergence of its ordinary real mean.
 
@@ -31585,6 +31686,276 @@ theorem
       (envelope := envelope) (M := M) (C := C)
       (selectedCardinality := selectedCardinality) (cardinality := cardinality)
       hM_pos hC_pos
+      (hfiniteNetUpper := by
+        intro eta heta
+        exact
+          vdVWTheorem243FiniteNetHoeffdingUpper_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero
+            (P := P) (M := M) (cardinality := cardinality eta)
+            (hlog eta heta) hM_pos)
+      hselected_le hprob_selected
+
+/--
+Fixed-`M` centered-truncated convergence from a constant-loss scaled selected
+outer-probability comparison.
+
+This matches the probability-symmetrization source shape more closely than the
+lossless comparison: VdV&W Lemma 2.3.7 introduces a finite multiplicative
+probability loss through its `β_n(x)` factor and leading constant.  The
+selected finite-net bad event is then transported to the larger
+entropy-controlled cardinality by Hoeffding-scale monotonicity.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_const_scaledSelectedFiniteNetHoeffdingUpper
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ} {K : ℝ≥0∞}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hK_ne_top : K ≠ ∞) (hM_pos : 0 < M) (hC_pos : 0 < C)
+    (hfiniteNetUpper :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality eta n sample n) n M)
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n)
+    (hprob_selected :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)}
+            ≤
+          K *
+            VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                        (selectedCardinality eta n sample n) n M + eta)
+                    (0 : ℝ)}) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWConvergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_const_mul_add_bound
+      (μ := fun n : ℕ => vdVWProductMeasure P n)
+      (K := K)
+      (X := fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      (error := fun eta n sample =>
+        C * vdVWTheorem243FiniteNetHoeffdingUpper
+          (cardinality eta n sample n) n M)
+      hK_ne_top
+      (herror_nonneg := by
+        intro eta n sample
+        exact mul_nonneg hC_pos.le
+          (vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+            (cardinality eta n sample n) n hM_pos.le))
+      (herror := by
+        intro eta heta
+        exact
+          VdVWConvergesInOuterProbabilityConst_zero_of_const_mul_nonneg
+            (μ := fun n : ℕ => vdVWProductMeasure P n)
+            (C := C) hC_pos
+            (fun n sample =>
+              vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+                (cardinality eta n sample n) n hM_pos.le)
+            (hfiniteNetUpper eta heta))
+      (hbound := by
+        intro eta heta epsilon hepsilon
+        filter_upwards [hprob_selected eta heta epsilon hepsilon,
+          hselected_le eta heta] with n hprob_n hselected_le_n
+        have hselected_event_le :
+            VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                        (selectedCardinality eta n sample n) n M + eta)
+                    (0 : ℝ)}
+              ≤
+            VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                        (cardinality eta n sample n) n M + eta)
+                    (0 : ℝ)} := by
+          dsimp [VdVWOuterProbability]
+          refine measure_mono ?_
+          intro sample hsample
+          have hupper_le :
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                  (selectedCardinality eta n sample n) n M ≤
+                vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality eta n sample n) n M :=
+            vdVWTheorem243FiniteNetHoeffdingUpper_mono_cardinality
+              hM_pos.le (hselected_le_n sample)
+          have hselected_nonneg :
+              0 ≤
+                C * vdVWTheorem243FiniteNetHoeffdingUpper
+                    (selectedCardinality eta n sample n) n M + eta := by
+            have hfinite_nonneg :
+                0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper
+                  (selectedCardinality eta n sample n) n M :=
+              vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+                (selectedCardinality eta n sample n) n hM_pos.le
+            have hscaled_nonneg :
+                0 ≤ C * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (selectedCardinality eta n sample n) n M :=
+              mul_nonneg hC_pos.le hfinite_nonneg
+            linarith
+          have hcardinality_nonneg :
+              0 ≤
+                C * vdVWTheorem243FiniteNetHoeffdingUpper
+                    (cardinality eta n sample n) n M + eta := by
+            have hfinite_nonneg :
+                0 ≤ vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality eta n sample n) n M :=
+              vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+                (cardinality eta n sample n) n hM_pos.le
+            have hscaled_nonneg :
+                0 ≤ C * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality eta n sample n) n M :=
+              mul_nonneg hC_pos.le hfinite_nonneg
+            linarith
+          have hbad_selected :
+              epsilon <
+                C * vdVWTheorem243FiniteNetHoeffdingUpper
+                    (selectedCardinality eta n sample n) n M + eta := by
+            have hsample' :
+                epsilon <
+                  dist
+                    (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                        (selectedCardinality eta n sample n) n M + eta)
+                    (0 : ℝ) := by
+              simpa using hsample
+            rw [Real.dist_eq, sub_zero,
+              abs_of_nonneg hselected_nonneg] at hsample'
+            exact hsample'
+          have hscaled_le :
+              C * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (selectedCardinality eta n sample n) n M + eta ≤
+                C * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality eta n sample n) n M + eta := by
+            exact add_le_add
+              (mul_le_mul_of_nonneg_left hupper_le hC_pos.le) le_rfl
+          have hbad_cardinality :
+              epsilon <
+                C * vdVWTheorem243FiniteNetHoeffdingUpper
+                    (cardinality eta n sample n) n M + eta :=
+            lt_of_lt_of_le hbad_selected hscaled_le
+          have hmem :
+              epsilon <
+                dist
+                  (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                      (cardinality eta n sample n) n M + eta)
+                  (0 : ℝ) := by
+            rw [Real.dist_eq, sub_zero,
+              abs_of_nonneg hcardinality_nonneg]
+            exact hbad_cardinality
+          simpa using hmem
+        exact hprob_n.trans (mul_le_mul_right hselected_event_le K))
+
+/--
+Fixed-`M` centered-truncated convergence from stochastic entropy and a
+constant-loss scaled selected outer-probability comparison.
+
+This is the theorem-facing consumer for the eventual formal VdV&W Lemma 2.3.7
+probability symmetrization step: finite constants outside the selected bad
+event are harmless for convergence, while the selected cardinality is
+transported to the entropy-controlled one.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_const_scaledSelectedFiniteNetHoeffdingUpper
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ} {K : ℝ≥0∞}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hK_ne_top : K ≠ ∞) (hM_pos : 0 < M) (hC_pos : 0 < C)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n)
+    (hprob_selected :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)}
+            ≤
+          K *
+            VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                        (selectedCardinality eta n sample n) n M + eta)
+                    (0 : ℝ)}) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_const_scaledSelectedFiniteNetHoeffdingUpper
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := C) (K := K)
+      (selectedCardinality := selectedCardinality) (cardinality := cardinality)
+      hK_ne_top hM_pos hC_pos
       (hfiniteNetUpper := by
         intro eta heta
         exact

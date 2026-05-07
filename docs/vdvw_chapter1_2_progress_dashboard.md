@@ -146,6 +146,16 @@ argument proves the selected outer-probability bad-event comparison with its
 constant, the existing entropy/Hoeffding machinery closes fixed-`M` centered
 truncated convergence.
 
+2026-05-07 constant-loss symmetrization route: the fixed-radius
+outer-probability handoff now also accepts a finite multiplicative probability
+loss through
+`VdVWConvergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_const_mul_add_bound`.
+The Theorem 2.4.3 selected route consumes this via
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_const_scaledSelectedFiniteNetHoeffdingUpper`.
+This matches Lemma 2.3.7 more closely: the next proof should establish the
+selected-cover probability symmetrization comparison with its `β_n(x)` lower
+bound, rather than forcing a lossless event comparison.
+
 The operative target is no longer another endpoint alias.  The remaining exact
 Theorem 2.4.3 mismatch is the generic random-entropy step: prove, or precisely
 block, the theorem that turns

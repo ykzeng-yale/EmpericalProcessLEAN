@@ -119,6 +119,19 @@ ghost-sample/Rademacher selected-cover argument, or record the exact
 nonmeasurable primitive needed for Lemma 2.3.7 if local/mathlib search still
 finds no reusable proof.
 
+2026-05-07 constant-loss probability symmetrization handoff:
+`Theorem243.lean` now proves
+`VdVWConvergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_const_mul_add_bound`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_const_scaledSelectedFiniteNetHoeffdingUpper`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_const_scaledSelectedFiniteNetHoeffdingUpper`.
+This removes the artificial lossless-comparison requirement from the next
+source theorem: Lemma 2.3.7 may now feed Theorem 2.4.3 in its natural shape,
+with a finite multiplicative outer-probability loss from the `β_n(x)` factor
+and a scaled selected finite-net event.  The next primitive should therefore
+be the exact selected-cover Lemma 2.3.7 comparison plus the eventual lower
+bound on `β_n(x)`, not another downstream convergence wrapper.
+
 Current closed support is much stronger than the older finite-code target
 paragraphs indicate.  Theorem 2.4.3 now has proof-hole-free endpoint
 infrastructure for selected fixed-radius tail/UI, finite code-set and
