@@ -33283,6 +33283,90 @@ theorem VdVWTheorem243_displayedChebyshevBeta_le_one
   linarith
 
 /--
+A scaled selected outer-probability comparison without the displayed beta factor
+implies the displayed-beta source primitive.
+
+This keeps the source target flexible: a later ghost/Rademacher selected-cover
+proof may prove the non-beta scaled comparison, and the Chebyshev factor is then
+absorbed because it is bounded by one.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_scaledOuterProbabilityBound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ} {A : ℝ≥0∞}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hA_ne_top : A ≠ ∞) (hC_pos : 0 < C)
+    (hprob_selected :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          VdVWOuterProbability (vdVWProductMeasure P n)
+            {sample : SampleAt Observation n |
+              epsilon <
+                dist
+                  (vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      vdVWTruncatedClassFun classFun envelope M index observation -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                  (0 : ℝ)}
+          ≤
+        A *
+          VdVWOuterProbability (vdVWProductMeasure P n)
+            {sample : SampleAt Observation n |
+              epsilon <
+                dist
+                  (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                      (selectedCardinality eta n sample n) n M + eta)
+                  (0 : ℝ)}) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M C A selectedCardinality where
+  constant_ne_top := hA_ne_top
+  scale_pos := hC_pos
+  outerProbability_bound := by
+    intro eta heta epsilon hepsilon
+    filter_upwards [hprob_selected eta heta epsilon hepsilon] with n hprob_n
+    let left : ℝ≥0∞ :=
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+              (0 : ℝ)}
+    let right : ℝ≥0∞ :=
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (selectedCardinality eta n sample n) n M + eta)
+              (0 : ℝ)}
+    have hbeta_le_one :
+        ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+          (1 : ℝ≥0∞) :=
+      VdVWTheorem243_displayedChebyshevBeta_le_one M epsilon n hepsilon
+    have hmul_le_left :
+        ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) * left ≤
+          (1 : ℝ≥0∞) * left :=
+      mul_le_mul_left hbeta_le_one left
+    have hone_mul_left_le_right : (1 : ℝ≥0∞) * left ≤ A * right := by
+      simpa [left, right] using hprob_n
+    have hmul_le_right :
+        ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) * left ≤
+          A * right :=
+      hmul_le_left.trans hone_mul_left_le_right
+    simpa [left, right] using hmul_le_right
+
+/--
 A lossless fixed-radius finite-net comparison implies the displayed-beta source
 primitive with constants `A = 1` and `C = 1`.
 
