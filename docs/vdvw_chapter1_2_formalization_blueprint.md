@@ -216,6 +216,17 @@ entropy, selected empirical covers, ghost samples, and Rademacher
 symmetrization without adding measurability assumptions that the book does not
 make.
 
+The displayed-beta selected-cover lane now has a localized-countability
+measurable-cover discharge:
+`VdVWMeasurableCover.truncated_rademacher_sign_of_countable` supplies the
+fixed-sample sign-side cover,
+`VdVWTheorem243_signSideRademacherMeasurableCover_of_set_countable` packages
+it as the older radius-indexed `hUcover` field, and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_countable_hphi_id`
+removes that field from the non-common-iid selected-cover constructor.  This
+leaves the real source work as the `hphi_id` comparison and selected
+finite-center maximal event.
+
 For the faithful Markov/symmetrization route, the source input has also been
 lowered from finite-net Hoeffding tail/UI to selected normalized-log tail/UI:
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_tailExpectation`.
@@ -1754,6 +1765,9 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWMeasurableCover.truncated_rademacher_product_of_finite`, using
    mathlib `HasSubgaussianMGF.integrable`, `Integrable.mul_prod`, Fubini
    integrability, and finite `biSup` measurability.
+   Countable classes now also have the fixed-sample sign-side cover
+   `VdVWMeasurableCover.truncated_rademacher_sign_of_countable`, used by the
+   displayed-beta selected-cover countability constructors.
    The finite-class route also now has
    `exists_common_iid_vdVWRademacherSigns` and
    `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_finite_indexClass_iidRademacher`,
