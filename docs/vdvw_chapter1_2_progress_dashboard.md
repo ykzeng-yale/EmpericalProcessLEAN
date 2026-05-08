@@ -89,6 +89,12 @@ and finite-center side of the selected-cover source argument through
 the deterministic selected-cover finite-net Hoeffding handoff itself now
 commutes with the same simultaneous sample/sign permutation through
 `vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector_finCoordinatePerm`.
+The selected-cover expected-maximal source side can now use canonical
+finite-product Rademacher coordinates directly through
+`ae_vdVWProductMeasure_vdVWRademacherSignVector`,
+`iIndepFun_vdVWProductMeasure_vdVWRademacher`,
+`hasSubgaussianMGF_vdVWProductMeasure_eval_vdVWRademacher`, and
+`VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover_canonicalRademacher`.
 Current next target: prove the event-level displayed-beta Lemma 2.3.7 source
 primitive, preferably through product/Fubini averaged `Phi(x)=x` plus
 selected-cover finite-center maximal control; in the countable common-iid lane

@@ -11813,6 +11813,77 @@ theorem exists_common_iid_vdVWRademacherSigns :
   · exact ae_of_all _ (fun ω i =>
       vdVWBoolToRademacherSign_eq_neg_one_or_one (boolSign i ω))
 
+/-- The identity map under the real-valued Rademacher law has support `{−1, 1}`. -/
+theorem ae_id_vdVWRademacherLaw_eq_neg_one_or_one :
+    ∀ᵐ x ∂vdVWRademacherLaw, x = -1 ∨ x = 1 := by
+  have hident :
+      IdentDistrib vdVWBoolToRademacherSign id
+        vdVWRademacherBoolLaw vdVWRademacherLaw :=
+    vdVWBoolToRademacherSign_hasLaw.identDistrib HasLaw.id
+  have hmeas : MeasurableSet ({x : ℝ | x = -1 ∨ x = 1}) := by
+    convert
+      (measurableSet_singleton (-1 : ℝ)).union
+        (measurableSet_singleton (1 : ℝ)) using 1
+  exact
+    hident.ae_snd hmeas
+      (ae_of_all _ fun b => vdVWBoolToRademacherSign_eq_neg_one_or_one b)
+
+/--
+The coordinate process on the canonical finite product of real-valued
+Rademacher laws is a Rademacher sign vector almost surely.
+-/
+theorem ae_vdVWProductMeasure_vdVWRademacherSignVector (n : ℕ) :
+    ∀ᵐ signSample : SampleAt ℝ n ∂vdVWProductMeasure vdVWRademacherLaw n,
+      VdVWRademacherSignVector signSample := by
+  have hcoord :
+      ∀ i : Fin n,
+        ∀ᵐ signSample : SampleAt ℝ n ∂vdVWProductMeasure vdVWRademacherLaw n,
+          signSample i = -1 ∨ signSample i = 1 := by
+    intro i
+    have hmp :
+        MeasurePreserving (fun signSample : SampleAt ℝ n => signSample i)
+          (vdVWProductMeasure vdVWRademacherLaw n) vdVWRademacherLaw := by
+      simpa [SampleAt, vdVWProductMeasure] using
+        (MeasureTheory.measurePreserving_eval
+          (μ := fun _ : Fin n => vdVWRademacherLaw) i)
+    exact hmp.quasiMeasurePreserving.ae ae_id_vdVWRademacherLaw_eq_neg_one_or_one
+  simpa [VdVWRademacherSignVector] using (eventually_all.2 hcoord)
+
+/--
+The canonical finite product of real-valued Rademacher laws has independent
+coordinate signs.
+-/
+theorem iIndepFun_vdVWProductMeasure_vdVWRademacher (n : ℕ) :
+    iIndepFun (fun i : Fin n => fun signSample : SampleAt ℝ n => signSample i)
+      (vdVWProductMeasure vdVWRademacherLaw n) := by
+  simpa [SampleAt, vdVWProductMeasure] using
+    (ProbabilityTheory.iIndepFun_pi
+      (μ := fun _ : Fin n => vdVWRademacherLaw)
+      (X := fun _ : Fin n => id)
+      (fun _ : Fin n => aemeasurable_id))
+
+/--
+Each canonical finite-product Rademacher coordinate is sub-Gaussian with the
+same proxy as the one-dimensional Rademacher law.
+-/
+theorem hasSubgaussianMGF_vdVWProductMeasure_eval_vdVWRademacher
+    {n : ℕ} (i : Fin n) :
+    HasSubgaussianMGF (fun signSample : SampleAt ℝ n => signSample i) 1
+      (vdVWProductMeasure vdVWRademacherLaw n) := by
+  have hmp :
+      MeasurePreserving (fun signSample : SampleAt ℝ n => signSample i)
+        (vdVWProductMeasure vdVWRademacherLaw n) vdVWRademacherLaw := by
+    simpa [SampleAt, vdVWProductMeasure] using
+      (MeasureTheory.measurePreserving_eval
+        (μ := fun _ : Fin n => vdVWRademacherLaw) i)
+  have htarget :
+      HasSubgaussianMGF id 1
+        ((vdVWProductMeasure vdVWRademacherLaw n).map
+          (fun signSample : SampleAt ℝ n => signSample i)) := by
+    simpa [hmp.map_eq] using id_vdVWRademacherLaw_hasSubgaussianMGF
+  simpa [Function.comp_def] using
+    (HasSubgaussianMGF.of_map hmp.measurable.aemeasurable htarget)
+
 /-- Rademacher sign vectors are uniformly bounded by one in absolute value. -/
 theorem VdVWRademacherSignVector.abs_le_one
     {n : ℕ} {sign : Fin n -> ℝ}
@@ -14726,6 +14797,56 @@ theorem
     vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard_of_pos
       (cover eta heta n sample) hindexClass_nonempty henvelope hn_pos hM_pos
       (sign n) (hindep n) (hsubG n)
+
+/--
+Canonical finite-product Rademacher version of the selected half-radius
+expected-maximal source bridge.
+
+This removes the auxiliary sign-space choice from the finite-center
+expectation side: the random signs are the coordinate projections on
+`vdVWProductMeasure vdVWRademacherLaw n`.
+-/
+theorem
+    VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover_canonicalRademacher
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n)) :
+    ∀ (eta : ℝ) (heta : 0 < eta),
+      ∀ᶠ n in atTop,
+        ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+          VdVWTheorem243FiniteCenterExpectedMaximalBound
+            (vdVWProductMeasure vdVWRademacherLaw n)
+            (fun centerIndex : Fin (selectedCardinality eta n sample n) =>
+              fun signSample : SampleAt ℝ n =>
+                vdVWWeightedSampleSum
+                  (vdVWTruncatedClassFun classFun envelope M)
+                  (vdVWRademacherWeights signSample)
+                  ((cover eta heta n sample).center centerIndex) sample)
+            (vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality eta n sample n) n M) := by
+  intro eta heta
+  filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hn_pos
+  exact ae_of_all _ fun sample => by
+    simpa using
+      (vdVWTheorem243_truncated_rademacher_expectedMaximalBound_le_finiteNetHoeffdingUpper_of_finiteEmpiricalL1CoverAtCard_of_pos
+        (μ := vdVWProductMeasure vdVWRademacherLaw n)
+        (cover eta heta n sample) hindexClass_nonempty henvelope hn_pos
+        hM_pos
+        (fun i : Fin n => fun signSample : SampleAt ℝ n => signSample i)
+        (iIndepFun_vdVWProductMeasure_vdVWRademacher n)
+        (fun i : Fin n =>
+          hasSubgaussianMGF_vdVWProductMeasure_eval_vdVWRademacher i))
 
 /--
 Closed-form value of the finite-center sub-Gaussian tail majorant over

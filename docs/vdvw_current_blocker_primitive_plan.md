@@ -202,6 +202,19 @@ therefore still the product/Fubini `Phi(x)=x` comparison plus the genuine
 finite-center probability input, or the selected-log mean/UI route under
 honest strengthened hypotheses.
 
+2026-05-08 canonical finite-product Rademacher source support: `Theorem243.lean`
+now proves `ae_id_vdVWRademacherLaw_eq_neg_one_or_one`,
+`ae_vdVWProductMeasure_vdVWRademacherSignVector`,
+`iIndepFun_vdVWProductMeasure_vdVWRademacher`, and
+`hasSubgaussianMGF_vdVWProductMeasure_eval_vdVWRademacher`, then uses them in
+`VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover_canonicalRademacher`.
+This removes the auxiliary finite sign-space choice from the selected-cover
+expected-maximal source side by realizing the signs as coordinate projections
+on `vdVWProductMeasure vdVWRademacherLaw n`.  It does not prove the
+displayed-beta event comparison; the open event-route inputs remain the
+product/Fubini `Phi(x)=x` comparison and a genuine finite-center probability
+input rather than a pathwise maximal assertion.
+
 Newest source-side comparison support in `Theorem243.lean` is now:
 `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`,
 which transports an already proved comparison from a selected cardinality to a
