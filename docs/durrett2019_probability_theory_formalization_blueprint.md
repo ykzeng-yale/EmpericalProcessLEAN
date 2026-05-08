@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V42`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V43`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -430,10 +430,12 @@ Next packet:
   support wrappers, plus symmetric bounded-above and one-sided-bounded union
   convergence wrappers, plus the range-form convergence-or-unbounded
   dichotomy wrapper, the threshold-form oscillation wrapper, and the exact
-  extended-real liminf/limsup display.  The next active target is Durrett
-  Theorem 4.3.2, Doob's decomposition, using mathlib's
-  `predictablePart`/`martingalePart` centering API.  Theorem 4.1.16 remains
-  deferred unless a direct kernel API appears.
+  extended-real liminf/limsup display.  The existence/formula side of Durrett
+  Theorem 4.3.2 now compiles using mathlib's
+  `predictablePart`/`martingalePart` centering API.  The next active target is
+  the uniqueness side of Doob's decomposition, then Example 4.3.3 if the
+  uniqueness wrapper is immediate.  Theorem 4.1.16 remains deferred unless a
+  direct kernel API appears.
 
 Support-only dependencies:
 

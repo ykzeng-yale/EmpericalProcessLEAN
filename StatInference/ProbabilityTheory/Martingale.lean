@@ -1,5 +1,6 @@
 import Mathlib.Probability.BorelCantelli
 import Mathlib.Probability.Martingale.Basic
+import Mathlib.Probability.Martingale.Centering
 import Mathlib.Probability.Martingale.Convergence
 import Mathlib.Probability.Martingale.OptionalStopping
 import Mathlib.Probability.Martingale.Upcrossing
@@ -2326,6 +2327,37 @@ theorem durrett2019_theorem_4_3_1_converges_or_ereal_liminf_limsup
         (u := fun n => X n ω)
         (fun a => durrett2019_frequently_lt_atTop_of_not_bddBelow_range hnotBelow a)
         (fun a => durrett2019_frequently_atTop_lt_of_not_bddAbove_range hnotAbove a)
+
+/-! ### Durrett, Theorem 4.3.2 -/
+
+/--
+Durrett 2019, Theorem 4.3.2, Doob decomposition, existence and formula part.
+Any real-valued submartingale decomposes as a martingale plus a predictable
+increasing process starting at zero.  The predictable part is displayed in the
+textbook finite-sum form.
+
+The uniqueness part is left to the next wrapper, using mathlib's
+`martingalePart_add_ae_eq` and `predictablePart_add_ae_eq`.
+-/
+theorem durrett2019_theorem_4_3_2_doob_decomposition
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ μ) :
+    ∃ M A : ℕ -> Ω -> ℝ,
+      Martingale M ℱ μ ∧
+        IsStronglyPredictable ℱ A ∧
+        (∀ᵐ ω ∂μ, Monotone fun n => A n ω) ∧
+        A 0 = 0 ∧
+        M + A = X ∧
+        (∀ n, A n = fun ω => ∑ i ∈ Finset.range n, μ[X (i + 1) - X i | ℱ i] ω) := by
+  refine
+    ⟨martingalePart X ℱ μ, predictablePart X ℱ μ,
+      martingale_martingalePart hX.stronglyAdapted hX.integrable,
+      isPredictable_predictablePart, hX.monotone_predictablePart,
+      predictablePart_zero, martingalePart_add_predictablePart ℱ μ X, ?_⟩
+  intro n
+  ext ω
+  simp [predictablePart]
 
 end ProbabilityTheory
 end StatInference
