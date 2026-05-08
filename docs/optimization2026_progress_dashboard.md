@@ -315,6 +315,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorProduct_Ico_terminal_aestronglyMeasurable`,
   `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_terminal_aestronglyMeasurable`,
   `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_integrable_of_uniform_bound`,
+  `Chewi127BoundedMartingaleCLTSource.projectedMixedTowerStepDefect`,
+  `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero_add_defect_sum`,
+  `Chewi127BoundedMartingaleCLTSource.projected_scalarScaledSum_charFun_eq_integral_normalized_product_add_mixedTowerDefect_sum`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -418,13 +422,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   gives `F_N`-measurability for `r <= N`, and
   `projectedRawPrefixNormalizedTailProduct_integrable_of_uniform_bound` proves
   source-level integrability from the unit bound on normalized factors.
+  The newest defect packet names the remaining exact obstruction as
+  `projectedMixedTowerStepDefect`, telescopes it across the row, derives the
+  exact characteristic-function decomposition as normalized-product integral
+  plus defect sum, and adds the convergence adapter
+  `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
-  earlier `F_r` for `r < k`.  Next target: either add a correct predictable or
-  frozen-tail source condition for the concrete ASGD application, or use the
-  new natural `F_k`/`F_N` measurability facts to replace the future-tail
-  product route by a backward/telescoping conditional multiplier formulation
-  that does not require false future measurability.
+  earlier `F_r` for `r < k`.  Next target: prove the compensated martingale
+  defect-sum bound, not another future-tail measurability wrapper.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
@@ -1047,13 +1053,14 @@ the variance-side clamp, finite-average measurability, average abs-bound,
 covariance-limit abs-bound, inverse-compensation product convergence, guarded
 finite mixed-product tower, source-facing future-tail CLT/certificate wrappers,
 honest `F_k`/`F_N` normalized-factor measurability, and terminal
-measurability/integrability of the raw-prefix/normalized-tail split product.
-Next theorem-sized packet: replace the false future-tail route by a
-backward/telescoping conditional-multiplier formulation using those natural
-measurability facts, then feed the existing Chewi Theorem 12.7/12.3 ASGD
-certificate constructors.  Do not return to old Chapter 3, SMPGD source
-probability packaging, raw tower-peel tasks, or already-compiled ASGD
-integrability/measurability wrappers unless a regression makes them relevant.
+measurability/integrability of the raw-prefix/normalized-tail split product,
+and the explicit mixed-tower defect decomposition/adaptor.  Next theorem-sized
+packet: prove the compensated martingale defect-sum bound consumed by
+`projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`,
+then feed the existing Chewi Theorem 12.7/12.3 ASGD certificate constructors.
+Do not return to old Chapter 3, SMPGD source probability packaging, raw
+tower-peel tasks, or already-compiled ASGD integrability/measurability wrappers
+unless a regression makes them relevant.
 Keep the concrete finite Sinkhorn KL identity layer as the next Chapter 11.8
 blocker, but do not let it stall Chapter 12 coverage.
 This paragraph supersedes older Chapter 6, Chapter 7, Chapter 8, Chapter 11.4,

@@ -254,15 +254,20 @@ plus the normalized compensated-product bridge:
 `projectedNormalizedTaylorProduct_Ico_terminal_aestronglyMeasurable`,
 `projectedRawPrefixNormalizedTailProduct_terminal_aestronglyMeasurable`,
 `projectedRawPrefixNormalizedTailProduct_integrable_of_uniform_bound`,
+`projectedMixedTowerStepDefect`,
+`projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero_add_defect_sum`,
+`projected_scalarScaledSum_charFun_eq_integral_normalized_product_add_mixedTowerDefect_sum`,
+`projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
 `projected_charFun_tendsto_exp_of_normalized_product_model`,
 and
 `projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
 
-Next theorem packet: prove the finite martingale tower representation into the
-normalized product model required by
-`projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
-The one-step
+Next theorem packet: prove the standard compensated martingale defect bound
+`Tendsto (fun N => ∑ r in Finset.range N,
+S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`, then feed
+`projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`
+into the existing scalar/vector ASGD certificate constructors.  The one-step
 normalized peel, inverse-compensation algebra, and bounded-continuous
 expectation handoff are already compiled; the raw-product start and normalized
 successor peel are also compiled as
@@ -336,6 +341,15 @@ the raw-prefix/normalized-tail product is `F_N`-measurable when `r <= N`, and
 is integrable from the source bound and the a.e. unit bound on normalized
 factors.  This is the correct measurability/integrability interface for an
 honest backward/telescoping conditional-multiplier route.
+The newest defect packet names the honest obstruction as
+`projectedMixedTowerStepDefect`, proves the finite telescope
+`projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero_add_defect_sum`,
+derives the exact characteristic-function decomposition
+`projected_scalarScaledSum_charFun_eq_integral_normalized_product_add_mixedTowerDefect_sum`,
+and provides the convergence adapter
+`projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`.
+This is now the preferred no-false-predictability route: prove the defect sum
+vanishes using the compensated martingale prefix argument.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform
@@ -347,7 +361,8 @@ multiplier integrability wrapper, prefix-times-tail measurability wrapper,
 future-tail scalar CLT wrapper, certificate-level future-tail bridge, or
 ASGD future-tail endpoint wrapper, factorwise future-tail product wrapper,
 forward normalized-factor measurability wrapper, mixed terminal measurability or
-integrability wrapper, or generic weak-convergence wrapper.
+integrability wrapper, mixed-tower defect telescope/decomposition adapter, or
+generic weak-convergence wrapper.
 The variance
 side is now source-facing:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
@@ -368,9 +383,10 @@ requires only the honest measurability/integrability of the current multiplier.
 If the future random product route needs unavailable measurability, switch to
 a telescoping/error representation with explicit conditional multipliers
 instead of forcing a false exact product model.
-The next ASGD packet should now build the backward/telescoping conditional
-multiplier formulation from the compiled `F_k`/`F_N` and mixed-terminal
-measurability/integrability facts.  Use
+The next ASGD packet should now prove the compensated martingale defect-sum
+bound behind
+`projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`.
+Use
 `asgd_limit_package_of_factorwise_future_tail_measurability` only for an
 explicit predictable/frozen-tail source condition, or
 `asgd_limit_package_of_mixed_tower_future_tail_measurability` only if a caller

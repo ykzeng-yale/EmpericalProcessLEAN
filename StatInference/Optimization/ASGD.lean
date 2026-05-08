@@ -5118,6 +5118,61 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProdu
           ring
 
 /--
+The one-step defect left by the mixed raw-prefix/normalized-tail route when the
+future tail is not assumed to be measurable at the earlier filtration.  This
+names the genuine remaining martingale-CLT obligation instead of hiding it
+behind a false predictability claim.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedMixedTowerStepDefect
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) : ℂ :=
+  (∫ ω, S.projectedRawPrefixNormalizedTailProduct L N t (r + 1) ω ∂P) -
+    ∫ ω, S.projectedRawPrefixNormalizedTailProduct L N t r ω ∂P
+
+/--
+Finite telescoping of the mixed-tower step defects.  This theorem is purely
+algebraic: it does not assume future-tail measurability, and therefore records
+the exact defect sum that must be controlled by a compensated martingale proof.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero_add_defect_sum
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) :
+    (∫ ω,
+        S.projectedRawPrefixNormalizedTailProduct L N t N ω ∂P) =
+      (∫ ω,
+        S.projectedRawPrefixNormalizedTailProduct L N t 0 ω ∂P) +
+        ∑ r ∈ Finset.range N,
+          S.projectedMixedTowerStepDefect L N r t := by
+  let I : ℕ -> ℂ := fun r =>
+    ∫ ω, S.projectedRawPrefixNormalizedTailProduct L N t r ω ∂P
+  have hsum :
+      (∑ r ∈ Finset.range N,
+          S.projectedMixedTowerStepDefect L N r t) = I N - I 0 := by
+    simpa [Chewi127BoundedMartingaleCLTSource.projectedMixedTowerStepDefect, I]
+      using Finset.sum_range_sub I N
+  calc
+    (∫ ω,
+        S.projectedRawPrefixNormalizedTailProduct L N t N ω ∂P) = I N := rfl
+    _ = I 0 + (I N - I 0) := by abel
+    _ = I 0 +
+        ∑ r ∈ Finset.range N,
+          S.projectedMixedTowerStepDefect L N r t := by rw [hsum]
+    _ = (∫ ω,
+        S.projectedRawPrefixNormalizedTailProduct L N t 0 ω ∂P) +
+        ∑ r ∈ Finset.range N,
+          S.projectedMixedTowerStepDefect L N r t := rfl
+
+/--
 Finite accumulation of the guarded mixed-product successor step.  Under the
 explicit future-tail measurability and integrability hypotheses, integrating
 the raw product at split `N` gives the same value as integrating the fully
@@ -5242,6 +5297,57 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_scalarScaledSum_charFun_eq_
           S.projectedRawPrefixNormalizedTailProduct L N t 0 ω ∂P := htower
     _ = ∫ ω, ∏ k ∈ Finset.range N,
           S.projectedNormalizedTaylorFactor L N t k ω ∂P := by
+          refine integral_congr_ae <| ae_of_all P fun ω => ?_
+          exact S.projectedRawPrefixNormalizedTailProduct_zero L N t ω
+
+/--
+Exact characteristic-function decomposition with an explicit mixed-tower defect
+sum.  Unlike the guarded mixed-tower theorem, this statement needs no
+future-tail measurability assumption; the price is the displayed defect sum.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalarScaledSum_charFun_eq_integral_normalized_product_add_mixedTowerDefect_sum
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) :
+    MeasureTheory.charFun
+      (P.map
+        (chewi127ScalarScaledSum
+          (fun n ω => L (S.martingale.xi n ω)) N)) t =
+      (∫ ω, ∏ k ∈ Finset.range N,
+        S.projectedNormalizedTaylorFactor L N t k ω ∂P) +
+        ∑ r ∈ Finset.range N,
+          S.projectedMixedTowerStepDefect L N r t := by
+  have hraw :=
+    S.projected_scalarScaledSum_charFun_eq_integral_product L N t
+  have hdefect :=
+    S.projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero_add_defect_sum
+      L N t
+  calc
+    MeasureTheory.charFun
+        (P.map
+          (chewi127ScalarScaledSum
+            (fun n ω => L (S.martingale.xi n ω)) N)) t
+        = ∫ ω,
+            chewi127ScalarCharFunProduct
+              (fun k ω => L (S.martingale.xi k ω)) N
+              (t * (Real.sqrt (N : ℝ))⁻¹) ω ∂P := hraw
+    _ = ∫ ω,
+          S.projectedRawPrefixNormalizedTailProduct L N t N ω ∂P := by
+          refine integral_congr_ae <| ae_of_all P fun ω => ?_
+          exact (S.projectedRawPrefixNormalizedTailProduct_self L N t ω).symm
+    _ = (∫ ω,
+          S.projectedRawPrefixNormalizedTailProduct L N t 0 ω ∂P) +
+          ∑ r ∈ Finset.range N,
+            S.projectedMixedTowerStepDefect L N r t := hdefect
+    _ = (∫ ω, ∏ k ∈ Finset.range N,
+          S.projectedNormalizedTaylorFactor L N t k ω ∂P) +
+          ∑ r ∈ Finset.range N,
+            S.projectedMixedTowerStepDefect L N r t := by
+          congr 1
           refine integral_congr_ae <| ae_of_all P fun ω => ?_
           exact S.projectedRawPrefixNormalizedTailProduct_zero L N t ω
 
@@ -5619,6 +5725,49 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_norm
     (S.projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance
       L t hvariance_error_int hremainder_int)
     (S.projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound L t)
+
+/--
+Characteristic-function convergence from a normalized-product limit plus a
+vanishing mixed-tower defect sum.  This is the honest adapter for the route
+where future normalized tails are not predictable.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hnormalized_product :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedNormalizedTaylorFactor L N t k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))))
+    (hdefect :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            S.projectedMixedTowerStepDefect L N r t)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  have hsum := hnormalized_product.add hdefect
+  simpa only [add_zero] using
+    hsum.congr' (Eventually.of_forall fun N => by
+      exact
+        (S.projected_scalarScaledSum_charFun_eq_integral_normalized_product_add_mixedTowerDefect_sum
+          L N t).symm)
 
 /--
 Source-facing characteristic-function convergence from the guarded finite
