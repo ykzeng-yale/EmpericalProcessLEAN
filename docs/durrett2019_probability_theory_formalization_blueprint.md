@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V98`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V99`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -546,11 +546,11 @@ Next packet:
   canonical-ratio handoff into these range-limit consumers now also compiles:
   the canonical `mu + nu` ratio supplies `toReal = dmu/dnu` and
   `nu {canonicalRatio = infinity} = 0` automatically.  Canonical-ratio real
-  integrability, the real-valued full-prefix convergence consumer, and the
-  quotient-limit convergence bridge also now compile.  The active target is
-  now identifying finite prefix likelihoods with the quotient of the two
-  trimmed density sequences for the canonical prefix filtration, proving
-  denominator-limit nonzeroness, and discharging the canonical ratio
+  integrability, the real-valued full-prefix convergence consumer, the
+  quotient-limit convergence bridge, and the canonical prefix-filtration
+  measurability/inclusion support also now compile.  The active target is now
+  the trimmed-measure finite-prefix RN-ratio identity over the canonical prefix
+  filtration, followed by denominator-limit nonzeroness and the canonical ratio
   nonzero-lower-integral/product inputs for the remaining Kakutani criterion
   assembly.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
