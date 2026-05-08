@@ -2843,6 +2843,48 @@ theorem durrett2019_theorem_4_3_5_withDensity_eq_of_generate_finite
     simp
 
 /--
+Durrett 2019, Theorem 4.3.5 top-set separation primitive: if `Z`
+represents `nu` as a density with respect to `rho`, then a finite numerator
+`Y` makes the ratio top set `nu`-null.
+-/
+theorem durrett2019_theorem_4_3_5_density_ratio_top_set_nu_zero_of_withDensity
+    {Ω : Type*} [MeasurableSpace Ω]
+    {ν ρ : Measure Ω} {Y Z : Ω -> ℝ≥0∞}
+    (hν : ν = ρ.withDensity Z) (hZ : AEMeasurable Z ρ)
+    (hYfin : ∀ ω, Y ω ≠ ∞) :
+    ν {ω | Y ω / Z ω = ∞} = 0 := by
+  rw [hν, withDensity_apply_eq_zero' hZ]
+  have hsubset :
+      {ω | Z ω ≠ 0} ∩ {ω | Y ω / Z ω = ∞} ⊆ (∅ : Set Ω) := by
+    rintro ω ⟨hZω_ne_zero, htopω⟩
+    rcases (ENNReal.div_eq_top.mp htopω) with hzero | htop
+    · exact False.elim (hZω_ne_zero hzero.2)
+    · exact False.elim (hYfin ω htop.1)
+  exact measure_mono_null hsubset (measure_empty : ρ (∅ : Set Ω) = 0)
+
+/--
+Durrett 2019, Theorem 4.3.5 generator-level top-set separation primitive:
+once bounded convergence has proved that `Z` represents `nu`, the ratio top
+set is `nu`-null whenever the numerator density is finite.
+-/
+theorem durrett2019_theorem_4_3_5_density_ratio_top_set_nu_zero_of_generate_finite
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {ν ρ : Measure Ω} [IsFiniteMeasure ν] [SigmaFinite ρ]
+    {Y Z : Ω -> ℝ≥0∞} (C : Set (Set Ω))
+    (hZ : AEMeasurable Z ρ)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hνC : ∀ s ∈ C, ν s = ∫⁻ ω in s, Z ω ∂ρ)
+    (hνuniv : ν Set.univ = ∫⁻ ω, Z ω ∂ρ)
+    (hYfin : ∀ ω, Y ω ≠ ∞) :
+    ν {ω | Y ω / Z ω = ∞} = 0 := by
+  have hνeq : ν = ρ.withDensity Z :=
+    durrett2019_theorem_4_3_5_withDensity_eq_of_generate_finite
+      (μ := ν) (ρ := ρ) C hgen hC hνC hνuniv
+  exact
+    durrett2019_theorem_4_3_5_density_ratio_top_set_nu_zero_of_withDensity
+      (ν := ν) (ρ := ρ) (Y := Y) (Z := Z) hνeq hZ hYfin
+
+/--
 Durrett 2019, Theorem 4.3.5 generator-to-all-sets bridge: the pi-system
 identities from the bounded-convergence argument extend to every measurable
 set.
@@ -2930,6 +2972,36 @@ theorem durrett2019_theorem_4_3_5_source_real_identity_of_generate_finite_ratio_
     (durrett2019_theorem_4_3_5_forall_setLIntegral_of_generate_finite
       (μ := ν) (ρ := ρ) C hgen hC hνC hνuniv)
     hX hμtop hνtop
+
+/--
+Durrett 2019, Theorem 4.3.5 generator-level ratio endpoint with the `nu`-null
+top-set obligation discharged from the denominator density representation.
+The remaining top-set obligation is the singular-part support statement.
+-/
+theorem durrett2019_theorem_4_3_5_source_real_identity_of_generate_finite_ratio_mu_top
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν ρ : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν] [SigmaFinite ρ]
+    [μ.HaveLebesgueDecomposition ν]
+    {Y Z : Ω -> ℝ≥0∞} {A : Set Ω} (hA : MeasurableSet A)
+    (C : Set (Set Ω)) (hY : AEMeasurable Y ρ) (hZ : AEMeasurable Z ρ)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hμC : ∀ s ∈ C, μ s = ∫⁻ ω in s, Y ω ∂ρ)
+    (hνC : ∀ s ∈ C, ν s = ∫⁻ ω in s, Z ω ∂ρ)
+    (hμuniv : μ Set.univ = ∫⁻ ω, Y ω ∂ρ)
+    (hνuniv : ν Set.univ = ∫⁻ ω, Z ω ∂ρ)
+    (hYfin : ∀ ω, Y ω ≠ ∞)
+    (hμtop : μ.singularPart ν {ω | Y ω / Z ω = ∞}ᶜ = 0) :
+    μ.real A =
+      ∫ ω in A, (Y ω / Z ω).toReal ∂ν +
+        μ.real (A ∩ {ω | Y ω / Z ω = ∞}) := by
+  have hνtop : ν {ω | Y ω / Z ω = ∞} = 0 :=
+    durrett2019_theorem_4_3_5_density_ratio_top_set_nu_zero_of_generate_finite
+      (ν := ν) (ρ := ρ) (Y := Y) (Z := Z) C hZ hgen hC hνC hνuniv hYfin
+  exact
+    durrett2019_theorem_4_3_5_source_real_identity_of_generate_finite_ratio_top_set
+      (μ := μ) (ν := ν) (ρ := ρ) (X := fun ω => Y ω / Z ω)
+      hA C hY hZ hgen hC hμC hνC hμuniv hνuniv
+      Filter.EventuallyEq.rfl hμtop hνtop
 
 /--
 Durrett 2019, Theorem 4.3.5 bounded-convergence primitive: a uniformly
@@ -3370,6 +3442,63 @@ theorem
       hA C hC_meas hY hZ hgen hC hYlim hZlim hX hμtop hνtop
 
 /--
+Durrett 2019, Theorem 4.3.5 denominator-density representation under the
+natural dominating measure `mu + nu`: real convergence of the trimmed
+denominator likelihood process identifies the limiting `Z` as the density of
+`nu` with respect to `mu + nu`.
+-/
+theorem
+    durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_toReal_limit_nu_withDensity_eq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ} {Z : Ω -> ℝ≥0∞}
+    (C : Set (Set Ω))
+    (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hZfin : ∀ᵐ ω ∂(μ + ν), Z ω ≠ ∞)
+    (hZlim_real : ∀ᵐ ω ∂(μ + ν),
+      Tendsto
+        (fun n =>
+          ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        atTop (𝓝 ((Z ω).toReal))) :
+    ν = (μ + ν).withDensity Z := by
+  have hνρ : ∀ n, ν.trim (ℱ.le n) ≪ (μ + ν).trim (ℱ.le n) := by
+    intro n
+    refine Measure.absolutelyContinuous_of_le ?_
+    rw [trim_add]
+    exact Measure.le_add_left le_rfl
+  obtain ⟨_, hZbound⟩ :=
+    durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_bounds
+      (μ := μ) (ν := ν) (ℱ := ℱ)
+  have hZlim : ∀ᵐ ω ∂(μ + ν),
+      Tendsto (fun n => (ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+        atTop (𝓝 (Z ω)) :=
+    durrett2019_theorem_4_3_5_ae_ennreal_tendsto_of_toReal_tendsto_le_one
+      (ρ := μ + ν)
+      (Yseq := fun n ω => (ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+      (Y := Z) hZbound hZfin hZlim_real
+  have hZseq : ∀ n,
+      AEMeasurable
+        (fun ω => (ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+        (μ + ν) := by
+    intro n
+    exact
+      ((Measure.measurable_rnDeriv (ν.trim (ℱ.le n)) ((μ + ν).trim (ℱ.le n))).mono
+        (ℱ.le n) le_rfl).aemeasurable
+  obtain ⟨hνCevent, hνuniv_event⟩ :=
+    durrett2019_theorem_4_3_5_generator_eventual_trimmed_rnDeriv_setLIntegral
+      (μ := ν) (ρ := μ + ν) (ℱ := ℱ) C hC_meas hνρ
+  obtain ⟨hνC, hνuniv⟩ :=
+    durrett2019_theorem_4_3_5_generator_integrals_of_bounded_convergence
+      (μ := ν) (ρ := μ + ν)
+      (Yseq := fun n ω => (ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+      (Y := Z) (B := 1) C hZseq hZbound (by simp)
+      hZlim hνCevent hνuniv_event
+  exact
+    durrett2019_theorem_4_3_5_withDensity_eq_of_generate_finite
+      (μ := ν) (ρ := μ + ν) C hgen hC hνC hνuniv
+
+/--
 Durrett 2019, Theorem 4.3.5 bounded-real bridge: an integrable real function
 whose norm is bounded by one a.e. has the L1/eLpNorm bound supplied by the
 total mass of the finite measure.
@@ -3674,6 +3803,83 @@ noncomputable def durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
       durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω
 
 /--
+Durrett 2019, Theorem 4.3.5 canonical ratio top-set separation on the
+denominator side: the top set of the canonical likelihood ratio is `nu`-null.
+-/
+theorem durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_nu_top_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ}
+    (C : Set (Set Ω)) (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C) :
+    ν {ω | durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ ω = ∞} = 0 := by
+  obtain ⟨_, hZlim_lp⟩ :=
+    durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_toReal_limitProcess_convergence
+      (μ := μ) (ν := ν) (ℱ := ℱ)
+  have hZreal :
+      AEMeasurable
+        (durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit μ ν ℱ)
+        (μ + ν) := by
+    change AEMeasurable
+      (ℱ.limitProcess
+        (fun n ω => ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        (μ + ν)) (μ + ν)
+    exact
+      (Filtration.stronglyMeasurable_limit_process'
+        (f := fun n ω =>
+          ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        (ℱ := ℱ) (μ := μ + ν)).aemeasurable
+  have hZ :
+      AEMeasurable
+        (durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ)
+        (μ + ν) := by
+    simpa [durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity] using
+      hZreal.ennreal_ofReal
+  have hZfin : ∀ᵐ ω ∂(μ + ν),
+      durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω ≠ ∞ := by
+    filter_upwards with ω
+    simp [durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity]
+  have hZnonneg : ∀ᵐ ω ∂(μ + ν),
+      0 ≤ durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit μ ν ℱ ω := by
+    filter_upwards [hZlim_lp] with ω hlimω
+    have hnonneg :=
+      le_of_tendsto_of_tendsto' tendsto_const_nhds hlimω
+        (fun n => ENNReal.toReal_nonneg)
+    simpa [durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit] using hnonneg
+  have hZlim_real : ∀ᵐ ω ∂(μ + ν),
+      Tendsto
+        (fun n =>
+          ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        atTop
+        (𝓝 ((durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω).toReal)) := by
+    filter_upwards [hZlim_lp, hZnonneg] with ω hlimω hnonnegω
+    have htarget :
+        (durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω).toReal =
+          durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit μ ν ℱ ω := by
+      rw [durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity]
+      exact ENNReal.toReal_ofReal hnonnegω
+    simpa [durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit, htarget] using hlimω
+  have hνeq :
+      ν =
+        (μ + ν).withDensity
+          (durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ) :=
+    durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_toReal_limit_nu_withDensity_eq
+      (μ := μ) (ν := ν) (ℱ := ℱ)
+      (Z := durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ)
+      C hC_meas hgen hC hZfin hZlim_real
+  have hYfin : ∀ ω,
+      durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ ω ≠ ∞ := by
+    intro ω
+    simp [durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity]
+  have hνtop :=
+    durrett2019_theorem_4_3_5_density_ratio_top_set_nu_zero_of_withDensity
+      (ν := ν) (ρ := μ + ν)
+      (Y := durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ)
+      (Z := durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ)
+      hνeq hZ hYfin
+  simpa [durrett2019_theorem_4_3_5_add_dominating_canonicalRatio] using hνtop
+
+/--
 Durrett 2019, Theorem 4.3.5 canonical-ratio endpoint: the `X = Y / Z`
 source obligation is discharged by choosing the canonical ratio of the
 canonical `mu + nu` limit densities.  The remaining source obligations are the
@@ -3704,6 +3910,33 @@ theorem
       hA C hC_meas hgen hC
       Filter.EventuallyEq.rfl
       hμtop hνtop
+
+/--
+Durrett 2019, Theorem 4.3.5 canonical-ratio endpoint with the `nu`-null top
+set discharged automatically.  The only remaining top-set source obligation is
+the singular-part support statement for the canonical ratio.
+-/
+theorem
+    durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_canonicalRatio_mu_top
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ} [μ.HaveLebesgueDecomposition ν]
+    {A : Set Ω}
+    (hA : MeasurableSet A) (C : Set (Set Ω))
+    (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hμtop : μ.singularPart ν
+      {ω | durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ ω = ∞}ᶜ = 0) :
+    μ.real A =
+      ∫ ω in A,
+        (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ ω).toReal ∂ν +
+        μ.real
+          (A ∩ {ω | durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ ω = ∞}) := by
+  exact
+    durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_canonicalRatio
+      (μ := μ) (ν := ν) (ℱ := ℱ) hA C hC_meas hgen hC hμtop
+      (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_nu_top_zero
+        (μ := μ) (ν := ν) (ℱ := ℱ) C hC_meas hgen hC)
 
 end ProbabilityTheory
 end StatInference
