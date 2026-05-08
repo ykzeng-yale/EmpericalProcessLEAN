@@ -1239,9 +1239,22 @@ vector supplied-Hessian layer for Definitions 13.2, 13.5, and 13.7:
 `constantHessian_zeroThird_selfConcordantOn`.  This proves the source
 observation that quadratic models, represented by zero third derivative and a
 positive-semidefinite supplied Hessian, are self-concordant for every positive
-parameter.  Next Chapter 13 work should use these declarations for Lemma 13.6
-and Newton decrement estimates rather than reintroducing local-norm
-interfaces.
+parameter.  The latest Lemma 13.6 algebra packet adds
+`HessianQuadraticBounds`,
+`localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticUpper`,
+`sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticLower`,
+`localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticBounds`,
+`sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticBounds`,
+`localNorm_le_div_one_sub_of_hessianQuadraticUpper`, and
+`mul_one_sub_localNorm_le_of_hessianQuadraticLower`, giving the source-shaped
+local-norm lower/upper consequences once the analytic self-concordance
+argument supplies Hessian quadratic-form bounds.  Search-first result: reuse
+mathlib `sq_le_sq₀`, `Real.sq_sqrt`, `Real.sqrt_sq`, and, for later finite
+coordinate work, `ContinuousLinearMap.IsPositive`/matrix `PosSemidef` APIs;
+no direct Chewi Lemma 13.6 Hessian-stability theorem exists locally or in
+pinned mathlib.  Next Chapter 13 work should prove the segment analytic
+Hessian-bound path for Lemma 13.6 and then Newton decrement estimates rather
+than reintroducing local-norm interfaces.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,

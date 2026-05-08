@@ -314,9 +314,21 @@ local norm identity, and parameter-`1` self-concordance inequality.  It now
 also contains the vector supplied-Hessian local norm, dual local norm, Dikin
 ellipsoid, Newton step/decrement, generic `SelfConcordantOn`, and zero-third
 derivative certificate proving that positive-semidefinite quadratic models are
-self-concordant.  The next Chapter 13 packets should reuse these interfaces
-for Lemma 13.6 and Newton-decrement convergence rather than rebuilding the
-local-norm layer.
+self-concordant.  The newest Chapter 13 packet adds the Lemma 13.6
+local-norm comparison algebra from supplied Hessian quadratic-form bounds:
+`HessianQuadraticBounds`,
+`localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticUpper`,
+`sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticLower`,
+`localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticBounds`,
+`sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticBounds`,
+`localNorm_le_div_one_sub_of_hessianQuadraticUpper`, and
+`mul_one_sub_localNorm_le_of_hessianQuadraticLower`.  Search-first result:
+mathlib supplies the required square-root/order algebra (`sq_le_sq₀`,
+`Real.sq_sqrt`, `Real.sqrt_sq`) and operator/matrix positivity APIs, but no
+Chewi self-concordance Hessian-stability theorem.  The next Chapter 13 packet
+should prove the analytic self-concordance path that supplies these Hessian
+quadratic-form bounds along a segment, then assemble Lemma 13.6 and the Newton
+decrement convergence layer rather than rebuilding local-norm comparisons.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

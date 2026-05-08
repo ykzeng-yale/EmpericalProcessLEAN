@@ -87,6 +87,129 @@ theorem sub_newtonStep
   simp [newtonStep]
 
 /--
+Supplied quadratic-form comparison between two Hessian oracles.
+
+This is the algebraic output needed from the analytic self-concordance
+argument in Chewi Lemma 13.6: once the Hessian at `y` is sandwiched between
+scalar multiples of the Hessian at `x`, local-norm comparison follows by
+taking square roots.
+-/
+structure HessianQuadraticBounds
+    (hess : E -> E →L[ℝ] E) (x y : E) (lower upper : ℝ) : Prop where
+  lower_bound : ∀ v : E,
+    lower * inner ℝ v (hess x v) ≤ inner ℝ v (hess y v)
+  upper_bound : ∀ v : E,
+    inner ℝ v (hess y v) ≤ upper * inner ℝ v (hess x v)
+
+theorem localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticUpper
+    {hess : E -> E →L[ℝ] E} {x y : E} {upper : ℝ}
+    (hupper_nonneg : 0 ≤ upper)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hupper : ∀ v : E,
+      inner ℝ v (hess y v) ≤ upper * inner ℝ v (hess x v))
+    (v : E) :
+    localNorm hess y v ≤ Real.sqrt upper * localNorm hess x v := by
+  refine (sq_le_sq₀ (localNorm_nonneg hess y v) ?hrhs_nonneg).mp ?hsq
+  · exact mul_nonneg (Real.sqrt_nonneg _) (localNorm_nonneg hess x v)
+  rw [localNorm_sq_eq_inner (hy_nonneg v)]
+  rw [mul_pow, Real.sq_sqrt hupper_nonneg,
+    localNorm_sq_eq_inner (hx_nonneg v)]
+  exact hupper v
+
+theorem sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticLower
+    {hess : E -> E →L[ℝ] E} {x y : E} {lower : ℝ}
+    (hlower_nonneg : 0 ≤ lower)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hlower : ∀ v : E,
+      lower * inner ℝ v (hess x v) ≤ inner ℝ v (hess y v))
+    (v : E) :
+    Real.sqrt lower * localNorm hess x v ≤ localNorm hess y v := by
+  refine (sq_le_sq₀ ?hlhs_nonneg (localNorm_nonneg hess y v)).mp ?hsq
+  · exact mul_nonneg (Real.sqrt_nonneg _) (localNorm_nonneg hess x v)
+  rw [mul_pow, Real.sq_sqrt hlower_nonneg,
+    localNorm_sq_eq_inner (hx_nonneg v)]
+  rw [localNorm_sq_eq_inner (hy_nonneg v)]
+  exact hlower v
+
+theorem localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticBounds
+    {hess : E -> E →L[ℝ] E} {x y : E} {lower upper : ℝ}
+    (hupper_nonneg : 0 ≤ upper)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hbounds : HessianQuadraticBounds hess x y lower upper)
+    (v : E) :
+    localNorm hess y v ≤ Real.sqrt upper * localNorm hess x v :=
+  localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticUpper
+    hupper_nonneg hx_nonneg hy_nonneg hbounds.upper_bound v
+
+theorem sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticBounds
+    {hess : E -> E →L[ℝ] E} {x y : E} {lower upper : ℝ}
+    (hlower_nonneg : 0 ≤ lower)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hbounds : HessianQuadraticBounds hess x y lower upper)
+    (v : E) :
+    Real.sqrt lower * localNorm hess x v ≤ localNorm hess y v :=
+  sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticLower
+    hlower_nonneg hx_nonneg hy_nonneg hbounds.lower_bound v
+
+/--
+Chewi Lemma 13.6(4), upper local-norm side, after the analytic proof has
+supplied the corresponding Hessian quadratic-form upper bound.
+-/
+theorem localNorm_le_div_one_sub_of_hessianQuadraticUpper
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    (hMr_lt : M * r < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hupper : ∀ v : E,
+      inner ℝ v (hess y v) ≤
+        ((1 - M * r)⁻¹) ^ (2 : ℕ) * inner ℝ v (hess x v))
+    (v : E) :
+    localNorm hess y v ≤ localNorm hess x v / (1 - M * r) := by
+  have hden_pos : 0 < 1 - M * r := by nlinarith
+  have hupper_nonneg : 0 ≤ ((1 - M * r)⁻¹) ^ (2 : ℕ) := sq_nonneg _
+  have hbase :=
+    localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticUpper
+      (hess := hess) (x := x) (y := y)
+      (upper := ((1 - M * r)⁻¹) ^ (2 : ℕ))
+      hupper_nonneg hx_nonneg hy_nonneg hupper v
+  have hsqrt :
+      Real.sqrt (((1 - M * r)⁻¹) ^ (2 : ℕ)) =
+        (1 - M * r)⁻¹ := by
+    exact Real.sqrt_sq (inv_nonneg.mpr hden_pos.le)
+  rw [hsqrt] at hbase
+  simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hbase
+
+/--
+Chewi Lemma 13.6(4), lower local-norm side, after the analytic proof has
+supplied the corresponding Hessian quadratic-form lower bound.
+-/
+theorem mul_one_sub_localNorm_le_of_hessianQuadraticLower
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    (hMr_lt : M * r < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hlower : ∀ v : E,
+      (1 - M * r) ^ (2 : ℕ) * inner ℝ v (hess x v) ≤
+        inner ℝ v (hess y v))
+    (v : E) :
+    (1 - M * r) * localNorm hess x v ≤ localNorm hess y v := by
+  have hden_pos : 0 < 1 - M * r := by nlinarith
+  have hlower_nonneg : 0 ≤ (1 - M * r) ^ (2 : ℕ) := sq_nonneg _
+  have hbase :=
+    sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticLower
+      (hess := hess) (x := x) (y := y)
+      (lower := (1 - M * r) ^ (2 : ℕ))
+      hlower_nonneg hx_nonneg hy_nonneg hlower v
+  have hsqrt :
+      Real.sqrt ((1 - M * r) ^ (2 : ℕ)) = 1 - M * r := by
+    exact Real.sqrt_sq hden_pos.le
+  simpa [hsqrt, mul_comm, mul_left_comm, mul_assoc] using hbase
+
+/--
 Chewi Definition 13.3, source-shaped self-concordance interface using only the
 directional cubic `∇³ f(x)[v,v,v]` and a supplied Hessian oracle.
 -/

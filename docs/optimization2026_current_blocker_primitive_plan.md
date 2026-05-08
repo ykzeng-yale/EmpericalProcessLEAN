@@ -1880,11 +1880,19 @@ Active aggressive target ladder:
    `negLogBarrier_second_deriv`, `negLogBarrier_third_deriv`,
    `negLogBarrier_localNorm_eq_abs_div`,
    `negLogBarrier_selfConcordance_ineq`, and
-   `negLogBarrier_oneDimSelfConcordantOn_Ioi`; the next bounded packet is
-   Lemma 13.6 supplied-interface local-norm/Hessian-stability algebra,
-   reusing mathlib matrix/spectral/operator-norm APIs and the existing
-   ellipsoid matrix infrastructure only when the generic supplied-Hessian
-   interface is insufficient.
+   `negLogBarrier_oneDimSelfConcordantOn_Ioi`, plus the compiled Lemma 13.6
+   algebra layer `HessianQuadraticBounds`,
+   `localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticUpper`,
+   `sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticLower`,
+   `localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticBounds`,
+   `sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticBounds`,
+   `localNorm_le_div_one_sub_of_hessianQuadraticUpper`, and
+   `mul_one_sub_localNorm_le_of_hessianQuadraticLower`.  The next bounded
+   packet is the analytic self-concordance segment argument that supplies the
+   Hessian quadratic-form lower/upper bounds for Lemma 13.6; reuse mathlib
+   `sq_le_sq₀`, `Real.sq_sqrt`, `Real.sqrt_sq`,
+   `ContinuousLinearMap.IsPositive`, and matrix `PosSemidef` APIs only when
+   the generic supplied-Hessian interface is insufficient.
 5. If exact Theorem 10.13 source-report packaging is requested, add an `sInf`
    wrapper for the fixed-comparator regret theorem and/or a proof-carrying
    arbitrary norm/dual-norm interface.  If exact Lemma 11.2 reporting is
