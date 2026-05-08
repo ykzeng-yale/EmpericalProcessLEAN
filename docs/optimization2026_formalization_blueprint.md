@@ -42,11 +42,15 @@ For deterministic tail-core approximations, use the corresponding
 so callers do not need to pass a normalized-product limit separately.
 For direct asymptotic predictability estimates, use
 `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound`; it packages the
-future-tail residual into the ASGD certificate route without a proxy.
+future-tail residual into the ASGD certificate route without a proxy.  Its
+Chewi 12.3 endpoint wrapper is
+`asgd_limit_package_of_futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound`.
 For the shortest preferred ASGD martingale route, use
 `futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound`; it
 packages row-summed `L1` predictability of the mixed-tower future multiplier
-directly into the charFun/CLT/bridge/certificate stack.
+directly into the charFun/CLT/bridge/certificate stack.  Its Chewi 12.3
+endpoint wrapper is
+`asgd_limit_package_of_futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound`.
 For the stronger weighted suffix route, use
 `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`;
 it packages weighted variance-error/Taylor-remainder convergence and the

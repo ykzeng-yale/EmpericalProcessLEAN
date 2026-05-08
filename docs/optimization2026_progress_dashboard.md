@@ -106,13 +106,17 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Direct future-tail residual route: the new
   `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers turn
   row-summed `L1` predictability of the normalized future tail directly into
-  charFun convergence, projected CLT, bridge, and certificate statements.
+  charFun convergence, projected CLT, bridge, and certificate statements.  The
+  newest ASGD endpoint packet adds
+  `asgd_limit_package_of_futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound`.
 - Direct future-multiplier residual route: the new
   `futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers
   turn row-summed `L1` predictability of the mixed-tower future multiplier
   directly into charFun convergence, scalar CLT, projected CLT, bridge, and
   certificate statements.  This is now the shortest preferred certificate path
-  for the non-false-predictability ASGD tower route.
+  for the non-false-predictability ASGD tower route.  The newest ASGD endpoint
+  packet adds
+  `asgd_limit_package_of_futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound`.
 - Weighted inverse-tail fallback: the new
   `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`
   wrappers compose the existing weighted variance-error/Taylor-remainder
@@ -629,8 +633,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   projected characteristic function, so it is not an independent same-limit
   input.  The preferred ASGD 12.7 route is now the compiled right-product
   source-variance limit plus row-summed `L1` asymptotic predictability of the
-  mixed-tower future multiplier; the certificate path for that residual is
-  already packaged.  Weighted variance/remainder convergence and inverse-tail
+  mixed-tower future multiplier; the certificate and Chewi 12.3 ASGD endpoint
+  paths for that residual are already packaged.  Weighted variance/remainder
+  convergence and inverse-tail
   conditional residual convergence are now packaged through the stronger
   future-tail fallback certificate route; what remains, if using that path, is
   to prove those weighted source estimates rather than restating the certificate

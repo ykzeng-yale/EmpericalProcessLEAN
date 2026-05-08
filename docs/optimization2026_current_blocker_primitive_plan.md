@@ -163,12 +163,16 @@ The direct future-tail residual route now has
 `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers through
 the certificate layer.  This is the preferred route when the normalized future
 tail is proved asymptotically predictable in row-summed `L1`; no proxy object
-or normalized-product argument is needed.
+or normalized-product argument is needed.  It now also has the Chewi 12.3 ASGD
+endpoint wrapper
+`asgd_limit_package_of_futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound`.
 The even more direct preferred route now has
 `futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers
 through charFun/scalar/projected CLT, bridge, and certificate: once the
 mixed-tower future multiplier is asymptotically predictable in row-summed
-`L1`, Theorem 12.7 certificate plumbing is complete.
+`L1`, Theorem 12.7 certificate plumbing is complete.  It now also has the
+Chewi 12.3 ASGD endpoint wrapper
+`asgd_limit_package_of_futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound`.
 The weighted inverse-tail fallback is now packaged through the certificate
 layer as
 `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`:
@@ -621,12 +625,15 @@ enough for suffix sums, because triangular regrouping counts the one-step error
 at index `k` exactly `k` times.
 The remaining ASGD proof obligations for the preferred route are now precisely:
 1. prove row-summed `L1` asymptotic predictability of
-   `S.projectedMixedTowerFutureMultiplier L N t r`; the certificate route is
-   already packaged as
-   `futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound`;
+   `S.projectedMixedTowerFutureMultiplier L N t r`; the certificate and ASGD
+   endpoint routes are already packaged as
+   `futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound` and
+   `asgd_limit_package_of_futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound`;
 2. alternatively prove row-summed `L1` asymptotic predictability of
-   `S.projectedMixedTowerFutureTail L N t r`, whose certificate route is
-   `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound`;
+   `S.projectedMixedTowerFutureTail L N t r`, whose certificate and ASGD
+   endpoint routes are
+   `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound` and
+   `asgd_limit_package_of_futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound`;
 3. prove/discharge the weighted variance-only and weighted Taylor-remainder
    assumptions only if deliberately using the stronger weighted-suffix
    fallback; the fallback now already has charFun/scalar/projected/bridge/
