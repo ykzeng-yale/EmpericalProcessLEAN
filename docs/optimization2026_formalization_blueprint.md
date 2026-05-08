@@ -403,6 +403,10 @@ certificate with finite row/column Sinkhorn normalization KL identities,
 terminal KL nonnegativity, monotone row-marginal KL gap, and the zero-error
 Bregman recurrence for Theorem 11.8, not redo RAM scalar recurrence, block
 averaging, 11.7 selector algebra, or the 11.8 endpoint algebra.  The newest
+monotonicity adapter now also exposes
+`chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations_succ_le`,
+so an adjacent nonincrease proof for the displayed row objective is sufficient
+for the concrete finite Sinkhorn rate wrapper.
 Chapter 12 packet creates root-imported
 `StatInference/Optimization/StochasticGradient.lean` and compiles
 `weightedSumBound_of_gronwall_negative_forcing_with_error`,

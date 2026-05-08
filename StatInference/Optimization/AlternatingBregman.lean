@@ -1832,6 +1832,78 @@ theorem chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhorn
       (fun x y => (hgamma_pos 0 (Nat.zero_le N) x y).ne') hmassN hmass0 hN
 
 /--
+Scalar monotonicity adapter for Chewi Theorem 11.8: if the displayed
+row-objective sequence is antitone, then the terminal objective is below every
+earlier selected objective used by the entropy recurrence.
+-/
+theorem chewi118_last_le_of_antitone
+    {a : ℕ -> ℝ} {N : ℕ} (ha : Antitone a) :
+    ∀ n, n < N -> a N ≤ a (n + 1) := by
+  intro n hn
+  exact ha (Nat.succ_le_of_lt hn)
+
+/--
+Concrete finite Sinkhorn Theorem 11.8 endpoint with the monotonicity field
+supplied as an antitone row-objective sequence.
+-/
+theorem chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations_antitone
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {N : ℕ}
+    (hstep : ∀ n, n < N ->
+      gamma (n + 1) = columnNormalizedCoupling ν
+        (rowNormalizedCoupling μ (gamma n)))
+    (hstar_row : gammaStar ∈ finiteRowMarginalConstraint μ)
+    (hstar_col : gammaStar ∈ finiteColumnMarginalConstraint ν)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hstar_pos : ∀ x y, 0 < gammaStar x y)
+    (hgamma_pos : ∀ n, n ≤ N -> ∀ x y, 0 < gamma n x y)
+    (hgamma_mass : ∀ n, n < N -> (∑ x, μ x) = finiteCouplingMass (gamma n))
+    (htarget_mass : (∑ y, ν y) = ∑ x, μ x)
+    (hobjective_antitone :
+      Antitone fun n => sinkhornRowObjective μ (gamma n))
+    (hN : N ≠ 0) :
+    sinkhornRowObjective μ (gamma N) ≤
+      finiteCouplingKL gammaStar (gamma 0) / (N : ℝ) :=
+  chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations
+    μ ν hstep hstar_row hstar_col hμ_pos hν_pos hstar_pos hgamma_pos
+    hgamma_mass htarget_mass
+    (chewi118_last_le_of_antitone hobjective_antitone) hN
+
+/--
+Concrete finite Sinkhorn Theorem 11.8 endpoint with the monotonicity field
+supplied by adjacent nonincrease of the displayed row objective.
+-/
+theorem chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations_succ_le
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {N : ℕ}
+    (hstep : ∀ n, n < N ->
+      gamma (n + 1) = columnNormalizedCoupling ν
+        (rowNormalizedCoupling μ (gamma n)))
+    (hstar_row : gammaStar ∈ finiteRowMarginalConstraint μ)
+    (hstar_col : gammaStar ∈ finiteColumnMarginalConstraint ν)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hstar_pos : ∀ x y, 0 < gammaStar x y)
+    (hgamma_pos : ∀ n, n ≤ N -> ∀ x y, 0 < gamma n x y)
+    (hgamma_mass : ∀ n, n < N -> (∑ x, μ x) = finiteCouplingMass (gamma n))
+    (htarget_mass : (∑ y, ν y) = ∑ x, μ x)
+    (hobjective_succ_le : ∀ n,
+      sinkhornRowObjective μ (gamma (n + 1)) ≤
+        sinkhornRowObjective μ (gamma n))
+    (hN : N ≠ 0) :
+    sinkhornRowObjective μ (gamma N) ≤
+      finiteCouplingKL gammaStar (gamma 0) / (N : ℝ) :=
+  chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations_antitone
+    μ ν hstep hstar_row hstar_col hμ_pos hν_pos hstar_pos hgamma_pos
+    hgamma_mass htarget_mass
+    (antitone_nat_of_succ_le hobjective_succ_le) hN
+
+/--
 Source-shaped certificate for Chewi Theorem 11.8 after interpreting Sinkhorn
 as mirror descent.  The concrete finite Sinkhorn/KL work is isolated in these
 fields: the zero-error Bregman recurrence, monotonicity of the marginal KL

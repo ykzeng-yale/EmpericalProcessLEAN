@@ -1605,7 +1605,13 @@ which feeds the concrete trajectory equation into the existing
 finite-entropy last-iterate rate theorem, derives the initial/terminal
 equal-mass side conditions from the target marginals and the final column
 normalization step, and leaves only the source monotone-row-objective field as
-the remaining concrete 11.8 rate blocker.
+the remaining concrete 11.8 rate blocker.  The newest monotonicity adapter
+adds `chewi118_last_le_of_antitone`,
+`chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations_antitone`,
+and
+`chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations_succ_le`,
+reducing the certificate field to adjacent nonincrease of the displayed row
+objective along the concrete Sinkhorn trajectory.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,

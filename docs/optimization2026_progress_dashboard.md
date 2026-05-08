@@ -1004,8 +1004,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   feeding that concrete trajectory equation into the finite-entropy
   last-iterate theorem and deriving initial/terminal equal-mass side
   conditions from the target marginals plus the final column-normalization
-  step.  The remaining Chapter 11 blocker is the source monotone
-  row-objective field, if exact Theorem 11.8 reporting is pursued now.
+  step.  The newest monotonicity adapter adds
+  `chewi118_last_le_of_antitone`,
+  `chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations_antitone`,
+  and
+  `chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations_succ_le`,
+  so adjacent nonincrease of the displayed row objective is now enough to
+  instantiate the concrete Theorem 11.8 rate.  The remaining Chapter 11 blocker
+  is the source proof of that adjacent row-objective nonincrease, if exact
+  Theorem 11.8 reporting is pursued now.
   The
   current local focused Lean check also verifies
   `chewi118_last_gap_le_of_recurrence` and
