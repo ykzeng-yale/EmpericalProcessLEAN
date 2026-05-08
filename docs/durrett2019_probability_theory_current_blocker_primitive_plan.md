@@ -4,23 +4,22 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V34
+## Live In-Thread Goal Prompt V35
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane only: Durrett Chapter 4.2 martingales in
+synced `main`.  Active lane only: Durrett Chapter 4.3 martingale applications in
 `StatInference/ProbabilityTheory/Martingale.lean`.  Treat compiled Chapter 2,
 Chapter 3, Chapter 4.1 through Theorem 4.1.15, Examples 4.2.1-4.2.3, and
-Theorems 4.2.4-4.2.11 as closed dependencies, including the exact
-positive-part-boundedness source bridge for Theorem 4.2.11.  Treat Theorem
-4.2.12's nonnegative-supermartingale convergence and integrable-limit wrappers
-as compiled support; its explicit Fatou expectation inequality remains the
-active target.  Theorem 4.1.16 remains deferred unless a future targeted kernel
-search finds a direct source-shaped API.
+Theorems 4.2.4-4.2.12 as closed dependencies, including the exact
+positive-part-boundedness source bridge for Theorem 4.2.11 and the Fatou
+expectation inequality `E X ≤ E X_0` for Theorem 4.2.12.  Theorem 4.1.16
+remains deferred unless a future targeted kernel search finds a direct
+source-shaped API.
 
-Current compiled Chapter 4.2 frontier: Durrett-facing martingale,
+Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
 quadratic, product, and normalized exponential martingales; Theorems
 4.2.4/4.2.5 conditional-expectation wrappers; Theorem 4.2.6 convex-image and
@@ -35,16 +34,17 @@ almost-sure existence, convergence to `ℱ.limitProcess`, L1 membership,
 integrability of the limit, martingale specializations, and source-facing
 positive-part-boundedness wrappers matching Durrett's `sup_n E X_n^+ < ∞`
 hypothesis through a compiled `eLpNorm` bridge; and Theorem 4.2.12
-nonnegative-supermartingale convergence and integrable-limit wrappers, obtained
-by applying Theorem 4.2.11 to the negated process.
+nonnegative-supermartingale convergence, integrable-limit, Fatou expectation
+bridge, and final existential source wrapper.
 
-Next theorem-sized packet: finish Theorem 4.2.12 by proving the explicit
-expectation inequality `E X ≤ E X_0` for the integrable a.s. limit already
-constructed.  Search only the relevant Fatou/lower-semicontinuity APIs
-(`lintegral_liminf_le`, `lintegral_enorm_le_liminf_of_tendsto`,
-nonnegative `integral_eq_lintegral_of_nonneg_ae`) and the existing
-supermartingale expectation monotonicity proof pattern.  Do not revisit solved
-Chapter 4.1 facts, examples, or Theorems 4.2.4-4.2.11.
+Next theorem-sized packet: start Durrett Theorem 4.3.1, the bounded-increments
+martingale convergence-or-oscillation dichotomy.  Search only the relevant
+stopped-process, bounded-below/nonnegative-supermartingale, limsup/liminf, and
+event-union APIs needed to turn Theorem 4.2.12 into the source argument.  A
+good first compiled packet is the stopped-below-by-`K` convergence-on-survival
+bridge used in the proof of Theorem 4.3.1, before attempting the full
+`P(C ∪ D) = 1` event classification.  Do not revisit solved Chapter 4.1 facts,
+examples, or Theorems 4.2.4-4.2.12.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -407,10 +407,10 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should finish Theorem 4.2.12 by adding the Fatou
-expectation inequality for the compiled nonnegative-supermartingale limit.
-Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
-source-shaped API.
+The next likely packet should start Theorem 4.3.1 by packaging the
+stopped-below martingale convergence bridge that Durrett obtains from Theorem
+4.2.12.  Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a
+direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -522,6 +522,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V34` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V35` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

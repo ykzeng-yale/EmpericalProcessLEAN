@@ -916,6 +916,85 @@ theorem durrett2019_theorem_4_2_12_nonnegative_supermartingale_exists_integrable
     filter_upwards [hconv] with ω hω
     simpa [Y] using hω.neg
 
+/--
+Durrett 2019, Theorem 4.2.12, Fatou expectation bridge: any integrable
+almost-sure limit of a nonnegative supermartingale has expectation bounded by
+the initial expectation.
+-/
+theorem durrett2019_theorem_4_2_12_nonnegative_supermartingale_limit_integral_le_initial
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Supermartingale X ℱ μ)
+    (h_nonneg : ∀ n, 0 ≤ᵐ[μ] X n)
+    {Z : Ω -> ℝ} (hZ_int : Integrable Z μ)
+    (hZ_lim : ∀ᵐ ω ∂μ, Tendsto (fun n => X n ω) atTop (𝓝 (Z ω))) :
+    ∫ ω, Z ω ∂μ ≤ ∫ ω, X 0 ω ∂μ := by
+  have h_all_nonneg : ∀ᵐ ω ∂μ, ∀ n, 0 ≤ X n ω := ae_all_iff.2 h_nonneg
+  have hZ_nonneg : 0 ≤ᵐ[μ] Z := by
+    filter_upwards [hZ_lim, h_all_nonneg] with ω hlimω hnonnegω
+    exact ge_of_tendsto' hlimω (fun n => hnonnegω n)
+  have h_super_integral_le : ∀ n, ∫ ω, X n ω ∂μ ≤ ∫ ω, X 0 ω ∂μ := by
+    intro n
+    have hle : μ[X n | ℱ 0] ≤ᵐ[μ] X 0 :=
+      hX.condExp_ae_le (Nat.zero_le n)
+    have hmono := integral_mono_ae integrable_condExp (hX.integrable 0) hle
+    simpa [integral_condExp (ℱ.le 0)] using hmono
+  have hX0_integral_nonneg : 0 ≤ ∫ ω, X 0 ω ∂μ :=
+    integral_nonneg_of_ae (h_nonneg 0)
+  have hlintegral_le : ∀ n,
+      ∫⁻ ω, ENNReal.ofReal (X n ω) ∂μ ≤
+        ENNReal.ofReal (∫ ω, X 0 ω ∂μ) := by
+    intro n
+    rw [← ofReal_integral_eq_lintegral_ofReal (hX.integrable n) (h_nonneg n)]
+    exact ENNReal.ofReal_le_ofReal (h_super_integral_le n)
+  have hfatou :
+      ∫⁻ ω, ENNReal.ofReal (Z ω) ∂μ ≤
+        liminf (fun n => ∫⁻ ω, ENNReal.ofReal (X n ω) ∂μ) atTop := by
+    calc
+      ∫⁻ ω, ENNReal.ofReal (Z ω) ∂μ
+          = ∫⁻ ω, liminf (fun n => ENNReal.ofReal (X n ω)) atTop ∂μ := by
+              apply lintegral_congr_ae
+              filter_upwards [hZ_lim] with ω hlimω
+              have hlim_ofReal :
+                  Tendsto (fun n => ENNReal.ofReal (X n ω)) atTop
+                    (𝓝 (ENNReal.ofReal (Z ω))) :=
+                ENNReal.continuous_ofReal.continuousAt.tendsto.comp hlimω
+              exact hlim_ofReal.liminf_eq.symm
+      _ ≤ liminf (fun n => ∫⁻ ω, ENNReal.ofReal (X n ω) ∂μ) atTop :=
+          lintegral_liminf_le' fun n =>
+            (hX.integrable n).aestronglyMeasurable.aemeasurable.ennreal_ofReal
+  have hliminf_le :
+      liminf (fun n => ∫⁻ ω, ENNReal.ofReal (X n ω) ∂μ) atTop ≤
+        ENNReal.ofReal (∫ ω, X 0 ω ∂μ) :=
+    Filter.liminf_le_of_frequently_le' (Frequently.of_forall hlintegral_le)
+  have hofReal :
+      ENNReal.ofReal (∫ ω, Z ω ∂μ) ≤
+        ENNReal.ofReal (∫ ω, X 0 ω ∂μ) := by
+    rw [ofReal_integral_eq_lintegral_ofReal hZ_int hZ_nonneg]
+    exact hfatou.trans hliminf_le
+  exact (ENNReal.ofReal_le_ofReal_iff hX0_integral_nonneg).1 hofReal
+
+/--
+Durrett 2019, Theorem 4.2.12: a nonnegative supermartingale has an integrable
+almost-sure limit whose expectation is bounded by the initial expectation.
+-/
+theorem durrett2019_theorem_4_2_12_nonnegative_supermartingale_exists_integrable_limit_integral_le_initial
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Supermartingale X ℱ μ)
+    (h_nonneg : ∀ n, 0 ≤ᵐ[μ] X n) :
+    ∃ Z : Ω -> ℝ, Integrable Z μ ∧
+      (∀ᵐ ω ∂μ, Tendsto (fun n => X n ω) atTop (𝓝 (Z ω))) ∧
+      ∫ ω, Z ω ∂μ ≤ ∫ ω, X 0 ω ∂μ := by
+  rcases
+    durrett2019_theorem_4_2_12_nonnegative_supermartingale_exists_integrable_limit
+      hX h_nonneg with
+    ⟨Z, hZ_int, hZ_lim⟩
+  exact
+    ⟨Z, hZ_int, hZ_lim,
+      durrett2019_theorem_4_2_12_nonnegative_supermartingale_limit_integral_le_initial
+        hX h_nonneg hZ_int hZ_lim⟩
+
 /-! ## Durrett, Example 4.2.1 -/
 
 /--
