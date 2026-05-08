@@ -191,6 +191,11 @@ future-multiplier defect layer
 `projected_clt_of_futureTail_predictable_l1_approx`,
 `toProjectedBridge_of_futureTail_predictable_l1_approx`,
 `toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx`,
+`projected_charFun_tendsto_exp_of_deterministic_futureTail_l1_approx`,
+`projected_scalar_clt_of_deterministic_futureTail_l1_approx`,
+`projected_clt_of_deterministic_futureTail_l1_approx`,
+`toProjectedBridge_of_deterministic_futureTail_l1_approx`,
+`toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx`,
 and
 `projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`, the
 conditional Taylor-remainder row convergence from `a94b579` and the
@@ -347,9 +352,17 @@ projected-noise CLT and vector certificate constructors
 `projected_clt_of_futureTail_predictable_l1_approx`,
 `toProjectedBridge_of_futureTail_predictable_l1_approx`, and
 `toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx` are also
-compiled.  After the proxy estimate is closed, instantiate these constructors;
-do not spend another run on characteristic-function or certificate adapter
-wiring.  The one-step
+compiled.  If the proxy is deterministic, the constant-in-`ω` source-facing
+constructors
+`projected_charFun_tendsto_exp_of_deterministic_futureTail_l1_approx`,
+`projected_scalar_clt_of_deterministic_futureTail_l1_approx`,
+`projected_clt_of_deterministic_futureTail_l1_approx`,
+`toProjectedBridge_of_deterministic_futureTail_l1_approx`, and
+`toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx` discharge
+proxy measurability/integrability plus bounded-source square/remainder
+integrability automatically.  After the proxy estimate is closed, instantiate
+these constructors; do not spend another run on characteristic-function or
+certificate adapter wiring.  The one-step
 normalized peel, inverse-compensation algebra, and bounded-continuous
 expectation handoff are already compiled; the raw-product start and normalized
 successor peel are also compiled as
@@ -484,6 +497,23 @@ The newest predictable-proxy reduction proves the general L1 inequality
 to the ASGD defect theorem.  The active blocker is now to choose a concrete
 `F_r`-measurable proxy for the normalized future tail and prove its row-summed
 L1 approximation error vanishes.
+The newest deterministic-proxy wrapper specializes this to constant-in-`ω`
+tail proxies and automatically discharges proxy measurability/integrability
+and bounded-source square/remainder integrability gates.  A material scout
+result for the next proof packet: the natural deterministic core is the
+inverse-compensation future tail
+`∏ k in Finset.Ico (r+1) N, S.projectedInverseCompensationFactor L N t k`,
+but this raw random tail is not itself `F_r`-measurable.  The honest
+predictable candidate is its conditional expectation onto `F_r`; proving this
+route still needs either a direct row-summed L1 estimate against that
+conditional inverse-tail proxy, or two smaller estimates: a suffix/weighted
+product perturbation bound from normalized factors to inverse factors, plus a
+separate inverse-tail conditional residual bound.  Reuse
+`chewi127_norm_prod_sub_prod_le_sum_norm_sub`,
+`chewi127_integral_product_sub_product_tendsto_zero_of_integral_sum_norm`,
+`projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`,
+and the inverse-factor norm/measurability lemmas before adding new product
+machinery.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform

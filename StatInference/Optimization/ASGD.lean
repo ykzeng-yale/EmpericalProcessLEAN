@@ -8656,6 +8656,78 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_futu
       L t proxy hproxy_meas hproxy_int hsq hremainder hproxy_approx)
 
 /--
+Characteristic-function convergence from a deterministic future-tail proxy.
+The proxy side conditions are automatic because the proxy is constant in
+`ω`, and the bounded-source assumptions discharge the square and Taylor
+remainder integrability gates.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_deterministic_futureTail_l1_approx
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hnormalized_product :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedNormalizedTaylorFactor L N t k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))))
+    (proxy : ℕ -> ℕ -> ℂ)
+    (hproxy_approx :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                proxy N r‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+    ⟨B, hB_nonneg, hbound⟩
+  let x : ℕ -> Ω -> ℝ := fun n ω => L (S.martingale.xi n ω)
+  have hx : ∀ k : ℕ, AEMeasurable (x (k + 1)) P := by
+    intro k
+    exact (S.martingale.projected_integrable L (k + 1)).aemeasurable
+  have hbound_x : ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B := by
+    intro k
+    simpa [x] using hbound k
+  refine
+    S.projected_charFun_tendsto_exp_of_futureTail_predictable_l1_approx
+      L t hnormalized_product (fun N r _ω => proxy N r) ?_ ?_ ?_ ?_ ?_
+  · intro N r
+    simpa using
+      (aestronglyMeasurable_const :
+        AEStronglyMeasurable[S.martingale.filtration r]
+          (fun _ω : Ω => proxy N r) P)
+  · intro N r
+    simp
+  · intro N r _hr
+    simpa [x] using
+      chewi127Scalar_sq_integrable_of_uniform_bound
+        (P := P) (x := x (r + 1)) (hx r)
+        ⟨B, hB_nonneg, hbound_x r⟩
+  · intro N r _hr
+    simpa [x] using
+      chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+        (P := P) (x := x (r + 1)) (hx r)
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        ⟨B, hB_nonneg, hbound_x r⟩
+  · simpa using hproxy_approx
+
+/--
 The mixed-tower multiplier is `F_r`-measurable once the future normalized tail
 product is supplied as `F_r`-measurable.  The raw prefix measurability follows
 from adaptedness of the martingale increments.
@@ -9250,6 +9322,160 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_futureTail_pr
     S.projected_charFun_tendsto_exp_of_futureTail_predictable_l1_approx
       L t (hnormalized_product t) (proxy t) (hproxy_meas t)
       (hproxy_int t) hsq (hremainder t) (hproxy_approx t)
+
+/--
+Projected scalar CLT from a deterministic future-tail proxy approximation.
+This is the same route as
+`projected_scalar_clt_of_futureTail_predictable_l1_approx`, specialized to
+constant-in-`ω` proxies and with bounded-source integrability side conditions
+discharged.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_deterministic_futureTail_l1_approx
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0)
+    (hnormalized_product : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedNormalizedTaylorFactor L N t k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))))
+    (proxy : ℝ -> ℕ -> ℕ -> ℂ)
+    (hproxy_approx : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                proxy t N r‖ ∂P)
+        atTop (𝓝 0)) :
+    TendstoInDistribution
+      (chewi127ScalarScaledSum (fun n ω => L (S.martingale.xi n ω)))
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q :=
+  S.projected_scalar_clt_of_charFun_exp L hmean fun t =>
+    S.projected_charFun_tendsto_exp_of_deterministic_futureTail_l1_approx
+      L t (hnormalized_product t) (proxy t) (hproxy_approx t)
+
+/--
+Projected martingale CLT in Chewi's displayed projected-noise notation from a
+deterministic future-tail proxy approximation.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_clt_of_deterministic_futureTail_l1_approx
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0)
+    (hnormalized_product : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedNormalizedTaylorFactor L N t k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))))
+    (proxy : ℝ -> ℕ -> ℕ -> ℂ)
+    (hproxy_approx : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                proxy t N r‖ ∂P)
+        atTop (𝓝 0)) :
+    TendstoInDistribution
+      (chewi127ScaledProjectedNoiseSum S.martingale.xi L)
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q := by
+  refine
+    (S.projected_scalar_clt_of_deterministic_futureTail_l1_approx
+      L hmean hnormalized_product proxy hproxy_approx).congr
+      (fun n => ?_) Filter.EventuallyEq.rfl
+  exact Filter.Eventually.of_forall fun ω =>
+    (chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum
+      S.martingale.xi L n ω).symm
+
+/--
+Projected Cramér-Wold bridge from a deterministic future-tail proxy
+approximation.  This is the compact vector-facing interface for deterministic
+tail-core approximations.
+-/
+def Chewi127BoundedMartingaleCLTSource.toProjectedBridge_of_deterministic_futureTail_l1_approx
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hnormalized_product : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedNormalizedTaylorFactor L N t k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))))
+    (proxy : StrongDual ℝ E -> ℝ -> ℕ -> ℕ -> ℂ)
+    (hproxy_approx : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                proxy L t N r‖ ∂P)
+        atTop (𝓝 0)) :
+    Chewi127ProjectedMartingaleCLTBridge Ω Ω' E P Q where
+  xi := S.martingale.xi
+  Z := S.Z
+  projected_clt := fun L =>
+    S.projected_clt_of_deterministic_futureTail_l1_approx
+      L (hmean L) (hnormalized_product L) (proxy L) (hproxy_approx L)
+  cramerWold_vector_clt := S.cramerWold_vector_clt
+  gaussian_limit := S.gaussian_limit
+  limit_memLp := S.limit_memLp
+
+/--
+Chewi Theorem 12.7 certificate from a deterministic future-tail proxy
+approximation.
+-/
+def Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hnormalized_product : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedNormalizedTaylorFactor L N t k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))))
+    (proxy : StrongDual ℝ E -> ℝ -> ℕ -> ℕ -> ℂ)
+    (hproxy_approx : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                proxy L t N r‖ ∂P)
+        atTop (𝓝 0)) :
+    Chewi127MartingaleCLTCertificate Ω Ω' E P Q :=
+  (S.toProjectedBridge_of_deterministic_futureTail_l1_approx
+    hmean hnormalized_product proxy hproxy_approx).toMartingaleCLTCertificate
 
 /--
 Projected martingale CLT in Chewi's displayed projected-noise notation from

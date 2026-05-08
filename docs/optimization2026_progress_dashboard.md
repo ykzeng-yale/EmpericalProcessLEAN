@@ -518,11 +518,23 @@ This dashboard tracks the Chewi optimization formalization lane for
   `projected_scalar_clt_of_futureTail_predictable_l1_approx`, plus
   `projected_clt_of_futureTail_predictable_l1_approx`,
   `toProjectedBridge_of_futureTail_predictable_l1_approx`, and
-  `toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx`.
+  `toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx`.  The
+  deterministic-proxy specialization now also proves
+  `projected_charFun_tendsto_exp_of_deterministic_futureTail_l1_approx`,
+  `projected_scalar_clt_of_deterministic_futureTail_l1_approx`,
+  `projected_clt_of_deterministic_futureTail_l1_approx`,
+  `toProjectedBridge_of_deterministic_futureTail_l1_approx`, and
+  `toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx`, which
+  discharge constant-proxy side conditions and bounded-source square/remainder
+  integrability automatically.
   This turns the remaining residual blocker into constructing an
   `F_r`-measurable future-tail proxy with vanishing row-summed L1 error, with
   characteristic-function, scalar/projected CLT, and vector certificate adapter
-  wiring already closed.
+  wiring already closed.  Fresh scout result: the natural inverse-compensation
+  future tail is the deterministic-core comparison object, but because it is a
+  future random product it must be conditionally projected to `F_r` or replaced
+  by a genuinely deterministic proxy; raw inverse-tail `F_r` measurability is
+  not available from adaptedness alone.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
   earlier `F_r` for `r < k`.  Next target: build and bound a predictable proxy
@@ -1206,15 +1218,24 @@ projected-noise wrapper
 `projected_clt_of_futureTail_predictable_l1_approx`, and the vector
 certificate constructors
 `toProjectedBridge_of_futureTail_predictable_l1_approx` and
-`toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx`.
+`toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx`.  The
+deterministic-proxy specialization also contains
+`projected_charFun_tendsto_exp_of_deterministic_futureTail_l1_approx`,
+`projected_scalar_clt_of_deterministic_futureTail_l1_approx`,
+`projected_clt_of_deterministic_futureTail_l1_approx`,
+`toProjectedBridge_of_deterministic_futureTail_l1_approx`, and
+`toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx`.
 Next theorem-sized packet: construct a concrete `F_r`-measurable proxy for the
 normalized future tail and prove the row-summed L1 approximation convergence
 consumed by
 `projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`,
-then instantiate the already-compiled Chewi Theorem 12.7/12.3 ASGD certificate
-constructors.  Do not re-open characteristic-function, scalar CLT, projected
-CLT, or certificate adapter wiring unless the proxy theorem changes its
-interface.
+or prove a deterministic scalar proxy approximation and instantiate the
+deterministic constructors.  The best next candidate is the conditional
+expectation of the inverse-compensation future tail; the missing proof work is
+the suffix/weighted product perturbation estimate and/or the inverse-tail
+conditional residual estimate.  Do not re-open characteristic-function, scalar
+CLT, projected CLT, or certificate adapter wiring unless the proxy theorem
+changes its interface.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw
 tower-peel tasks, or already-compiled ASGD integrability/measurability wrappers
 unless a regression makes them relevant.
