@@ -10474,5 +10474,29 @@ theorem durrett2019_theorem_4_4_2_doob_maximal_inequality_positivePart
         exact le_max_right (X k ω) 0)
       n
 
+/--
+Durrett 2019, Theorem 4.4.2, textbook endpoint display.  The maximal
+positive-part event is bounded by the total positive-part expectation at time
+`n`.
+-/
+theorem durrett2019_theorem_4_4_2_doob_maximal_inequality_positivePart_total
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {ε : ℝ≥0} (n : ℕ) :
+    ε * P {ω |
+        (ε : ℝ) ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => max (X k ω) 0} ≤
+      ENNReal.ofReal (∫ ω, max (X n ω) 0 ∂P) := by
+  refine
+    (durrett2019_theorem_4_4_2_doob_maximal_inequality_positivePart
+      (P := P) (ℱ := ℱ) (X := X) hX n).trans ?_
+  refine ENNReal.ofReal_le_ofReal ?_
+  exact
+    setIntegral_le_integral
+      ((hX.integrable n).pos_part)
+      (Eventually.of_forall fun ω => le_max_right (X n ω) 0)
+
 end ProbabilityTheory
 end StatInference
