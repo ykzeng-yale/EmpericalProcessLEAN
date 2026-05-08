@@ -72,6 +72,12 @@ Lean-safe infimum direction through
 `le_vdVWFinitePermutationOrbitInfReal_of_majorizes_symmetric`,
 `vdVWFinitePermutationOrbitInfReal_minimal_ae`, and
 `VdVWMeasurableCover.finPermutationInf`.
+Finite empirical `L1(P_n)` cover data are now stable under sample-coordinate
+permutations through `empiricalL1Distance_finCoordinatePerm`,
+`FiniteEmpiricalL1CoverAtCard.finCoordinatePerm`,
+`nonempty_finiteEmpiricalL1CoverAtCard_finCoordinatePerm_iff`,
+`finiteEmpiricalL1CoveringNumberCard_finCoordinatePerm`, and
+`empiricalL1CoveringNumber_finCoordinatePerm`.
 Current next target: prove the event-level displayed-beta Lemma 2.3.7 source
 primitive, preferably through product/Fubini averaged `Phi(x)=x` plus
 selected-cover finite-center maximal control; in the countable common-iid lane

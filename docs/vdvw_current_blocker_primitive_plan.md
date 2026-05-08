@@ -152,6 +152,26 @@ ghost/Rademacher event comparison and the finite-center maximal/`Phi(x)=x`
 probability inequality feeding
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison`.
 
+2026-05-08 finite empirical-cover permutation invariance: search found
+finite-coordinate product-measure permutation support in `PMeasurable.lean`
+and empirical-cover/cardinality support in `CoveringPrimitive.lean`, but no
+bridge proving that empirical `L1(P_n)` distances or selected finite empirical
+covering numbers are invariant under sample-coordinate permutations.
+`PMeasurable.lean` now proves `empiricalAverage_finCoordinatePerm`,
+`empiricalL1Distance_finCoordinatePerm`,
+`FiniteEmpiricalL1CoverAtCard.finCoordinatePerm`,
+`FiniteEmpiricalL1CoverAtCard.ofFinCoordinatePerm`,
+`nonempty_finiteEmpiricalL1CoverAtCard_finCoordinatePerm_iff`,
+`hasFiniteEmpiricalL1Cover_finCoordinatePerm_iff`,
+`finiteEmpiricalL1CoveringNumberCard_finCoordinatePerm`, and
+`empiricalL1CoveringNumber_finCoordinatePerm`.  This is a selected-cover
+source dependency: the empirical entropy/cardinality side of a chosen finite
+cover is now stable under the finite sample permutations used by the
+ghost/Rademacher symmetrization argument.  It does not prove the remaining
+event comparison by itself; the precise open source theorem remains the
+displayed-beta selected-cover probability comparison or, on the mean route,
+the stochastic selected-entropy-to-mean/UI input.
+
 Newest source-side comparison support in `Theorem243.lean` is now:
 `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`,
 which transports an already proved comparison from a selected cardinality to a

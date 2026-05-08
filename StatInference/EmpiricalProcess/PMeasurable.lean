@@ -130,6 +130,194 @@ theorem vdVWFinCoordinatePermMeasurableEquiv_comp
   simp [vdVWFinCoordinatePermMeasurableEquiv, MeasurableEquiv.coe_piCongrLeft,
     Equiv.piCongrLeft_apply, Equiv.Perm.mul_def]
 
+/-- Empirical averages are invariant under finite-coordinate permutations. -/
+theorem empiricalAverage_finCoordinatePerm
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) (sample : SampleAt Observation n)
+    (statistic : Observation -> ℝ) :
+    empiricalAverage
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample) statistic =
+      empiricalAverage sample statistic := by
+  unfold empiricalAverage
+  congr 1
+  simpa [vdVWFinCoordinatePermMeasurableEquiv, MeasurableEquiv.coe_piCongrLeft,
+    Equiv.piCongrLeft_apply] using
+    (Equiv.sum_comp perm.symm (fun i : Fin n => statistic (sample i)))
+
+/-- Empirical `L1(P_n)` distances are invariant under finite sample permutations. -/
+theorem empiricalL1Distance_finCoordinatePerm
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) (sample : SampleAt Observation n)
+    (f g : Observation -> ℝ) :
+    empiricalL1Distance
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample) f g =
+      empiricalL1Distance sample f g := by
+  exact empiricalAverage_finCoordinatePerm perm sample
+    (fun observation => |f observation - g observation|)
+
+namespace FiniteEmpiricalL1CoverAtCard
+
+/--
+Transport a supplied empirical `L1(P_n)` cover across a finite permutation of
+the sample coordinates.
+-/
+def finCoordinatePerm
+    {Observation : Type u} [MeasurableSpace Observation] {Index : Type v}
+    {n : ℕ} {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality)
+    (perm : Equiv.Perm (Fin n)) :
+    FiniteEmpiricalL1CoverAtCard
+      (vdVWFinCoordinatePermMeasurableEquiv perm sample) indexClass classFun
+      epsilon cardinality where
+  center := cover.center
+  center_mem := cover.center_mem
+  centerOf := cover.centerOf
+  dist_le := by
+    intro index hindex
+    simpa [empiricalL1Distance_finCoordinatePerm] using
+      cover.dist_le index hindex
+
+/--
+Transport a supplied empirical `L1(P_n)` cover from a permuted sample back to
+the original sample.
+-/
+def ofFinCoordinatePerm
+    {Observation : Type u} [MeasurableSpace Observation] {Index : Type v}
+    {n : ℕ} {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (perm : Equiv.Perm (Fin n))
+    (cover :
+      FiniteEmpiricalL1CoverAtCard
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample) indexClass classFun
+        epsilon cardinality) :
+    FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+      cardinality where
+  center := cover.center
+  center_mem := cover.center_mem
+  centerOf := cover.centerOf
+  dist_le := by
+    intro index hindex
+    have hdist := cover.dist_le index hindex
+    simpa [empiricalL1Distance_finCoordinatePerm] using hdist
+
+end FiniteEmpiricalL1CoverAtCard
+
+/--
+Existence of a fixed-cardinality empirical cover is invariant under finite
+sample permutations.
+-/
+theorem nonempty_finiteEmpiricalL1CoverAtCard_finCoordinatePerm_iff
+    {Observation : Type u} [MeasurableSpace Observation] {Index : Type v}
+    {n : ℕ} {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ} (perm : Equiv.Perm (Fin n)) :
+    Nonempty
+        (FiniteEmpiricalL1CoverAtCard
+          (vdVWFinCoordinatePermMeasurableEquiv perm sample) indexClass
+          classFun epsilon cardinality) ↔
+      Nonempty
+        (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+          cardinality) := by
+  constructor
+  · intro hcover
+    exact hcover.elim fun cover =>
+      ⟨cover.ofFinCoordinatePerm perm⟩
+  · intro hcover
+    exact hcover.elim fun cover =>
+      ⟨cover.finCoordinatePerm perm⟩
+
+/-- Finite empirical-cover existence is invariant under finite sample permutations. -/
+theorem hasFiniteEmpiricalL1Cover_finCoordinatePerm_iff
+    {Observation : Type u} [MeasurableSpace Observation] {Index : Type v}
+    {n : ℕ} {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (perm : Equiv.Perm (Fin n)) :
+    HasFiniteEmpiricalL1Cover
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample) indexClass classFun
+        epsilon ↔
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon := by
+  constructor
+  · rintro ⟨cardinality, hcover⟩
+    exact ⟨cardinality,
+      (nonempty_finiteEmpiricalL1CoverAtCard_finCoordinatePerm_iff
+        (sample := sample) (indexClass := indexClass) (classFun := classFun)
+        (epsilon := epsilon) (cardinality := cardinality) perm).1 hcover⟩
+  · rintro ⟨cardinality, hcover⟩
+    exact ⟨cardinality,
+      (nonempty_finiteEmpiricalL1CoverAtCard_finCoordinatePerm_iff
+        (sample := sample) (indexClass := indexClass) (classFun := classFun)
+        (epsilon := epsilon) (cardinality := cardinality) perm).2 hcover⟩
+
+/--
+The least finite empirical-cover cardinality is invariant under finite sample
+permutations.
+-/
+theorem finiteEmpiricalL1CoveringNumberCard_finCoordinatePerm
+    {Observation : Type u} [MeasurableSpace Observation] {Index : Type v}
+    {n : ℕ} {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (perm : Equiv.Perm (Fin n))
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon)
+    (hfinite_perm :
+      HasFiniteEmpiricalL1Cover
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample) indexClass classFun
+        epsilon) :
+    finiteEmpiricalL1CoveringNumberCard hfinite_perm =
+      finiteEmpiricalL1CoveringNumberCard hfinite := by
+  classical
+  apply le_antisymm
+  · have hcover :=
+      empiricalL1CoveringNumber_find_spec hfinite
+    refine Nat.find_min' hfinite_perm ?_
+    exact hcover.elim fun cover =>
+      ⟨cover.finCoordinatePerm perm⟩
+  · have hcover_perm :=
+      empiricalL1CoveringNumber_find_spec hfinite_perm
+    refine Nat.find_min' hfinite ?_
+    exact hcover_perm.elim fun cover =>
+      ⟨cover.ofFinCoordinatePerm perm⟩
+
+/-- The empirical `L1(P_n)` covering number is invariant under finite permutations. -/
+theorem empiricalL1CoveringNumber_finCoordinatePerm
+    {Observation : Type u} [MeasurableSpace Observation] {Index : Type v}
+    {n : ℕ} (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (epsilon : ℝ) (perm : Equiv.Perm (Fin n)) :
+    empiricalL1CoveringNumber
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample) indexClass classFun
+        epsilon =
+      empiricalL1CoveringNumber sample indexClass classFun epsilon := by
+  classical
+  by_cases hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon
+  · have hfinite_perm :
+        HasFiniteEmpiricalL1Cover
+          (vdVWFinCoordinatePermMeasurableEquiv perm sample) indexClass classFun
+          epsilon :=
+      (hasFiniteEmpiricalL1Cover_finCoordinatePerm_iff
+        (sample := sample) (indexClass := indexClass) (classFun := classFun)
+        (epsilon := epsilon) perm).2 hfinite
+    rw [empiricalL1CoveringNumber_eq_find hfinite_perm,
+      empiricalL1CoveringNumber_eq_find hfinite,
+      finiteEmpiricalL1CoveringNumberCard_finCoordinatePerm perm hfinite
+        hfinite_perm]
+  · have hfinite_perm :
+        ¬ HasFiniteEmpiricalL1Cover
+          (vdVWFinCoordinatePermMeasurableEquiv perm sample) indexClass classFun
+          epsilon := by
+      intro hperm
+      exact hfinite
+        ((hasFiniteEmpiricalL1Cover_finCoordinatePerm_iff
+          (sample := sample) (indexClass := indexClass) (classFun := classFun)
+          (epsilon := epsilon) perm).1 hperm)
+    simp [empiricalL1CoveringNumber, hfinite, hfinite_perm]
+
 /--
 The finite permutation that identifies the sample with coordinate `omitted`
 removed with the sample with the last coordinate removed.

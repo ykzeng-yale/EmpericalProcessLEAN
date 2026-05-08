@@ -2169,7 +2169,16 @@ above, so they do not change the theorem-level dashboard counts.
    `measurable_vdVWPermutationSymmetricMeasurableSpace_finitePermutationOrbitInfReal`,
    `le_vdVWFinitePermutationOrbitInfReal_of_majorizes_symmetric`,
    `vdVWFinitePermutationOrbitInfReal_minimal_ae`, and
-   `VdVWMeasurableCover.finPermutationInf`.  The first adapted
+   `VdVWMeasurableCover.finPermutationInf`.  Empirical-cover cardinality
+   invariance under finite sample permutations is now also compiled as
+   `empiricalAverage_finCoordinatePerm`,
+   `empiricalL1Distance_finCoordinatePerm`,
+   `FiniteEmpiricalL1CoverAtCard.finCoordinatePerm`,
+   `FiniteEmpiricalL1CoverAtCard.ofFinCoordinatePerm`,
+   `nonempty_finiteEmpiricalL1CoverAtCard_finCoordinatePerm_iff`,
+   `hasFiniteEmpiricalL1Cover_finCoordinatePerm_iff`,
+   `finiteEmpiricalL1CoveringNumberCard_finCoordinatePerm`, and
+   `empiricalL1CoveringNumber_finCoordinatePerm`.  The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
    and its Chapter 1.2 cover-shaped counterpart is compiled as
