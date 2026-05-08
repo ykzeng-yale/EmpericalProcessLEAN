@@ -6785,6 +6785,243 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_tendsto
         L N t).symm)
 
 /--
+The right compensated full-inverse product has the inverse-compensation
+Gaussian limit once the compensated-error product is close to one in the
+unweighted row-sum sense.  The proof compares the two rows factorwise:
+`inverse_k * (1 + error_k)` versus `inverse_k`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedFullInverseRight_tendsto_exp_of_compensated_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (herror_factor_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖1 + S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ≤ 1)
+    (hcombined_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω *
+                (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (herror :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          (∏ k ∈ Finset.range N,
+            S.projectedInverseCompensationFactor L N t k ω) *
+          ∏ k ∈ Finset.range N,
+            (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  let z : ℕ -> ℕ -> Ω -> ℂ := fun N k ω =>
+    S.projectedInverseCompensationFactor L N t k ω *
+      (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)
+  let w : ℕ -> ℕ -> Ω -> ℂ := fun N k ω =>
+    S.projectedInverseCompensationFactor L N t k ω
+  have hz_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N, ‖z N k ω‖ ≤ 1 := by
+    filter_upwards
+      [S.projectedInverseCompensationFactor_eventually_row_norm_le_one L t,
+        herror_factor_bound] with N hinv herr
+    filter_upwards [hinv, herr] with ω hinvω herrω
+    intro k hk
+    calc
+      ‖z N k ω‖ =
+          ‖S.projectedInverseCompensationFactor L N t k ω‖ *
+            ‖1 + S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+            simp [z]
+      _ ≤ 1 * 1 :=
+            mul_le_mul (hinvω k hk) (herrω k hk)
+              (norm_nonneg _) zero_le_one
+      _ = 1 := by simp
+  have hw_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N, ‖w N k ω‖ ≤ 1 := by
+    simpa [w] using
+      S.projectedInverseCompensationFactor_eventually_row_norm_le_one L t
+  have hdiff_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω => ∑ k ∈ Finset.range N, ‖z N k ω - w N k ω‖) P := by
+    intro N
+    have hmeas :
+        AEStronglyMeasurable
+          (fun ω => ∑ k ∈ Finset.range N, ‖z N k ω - w N k ω‖) P := by
+      exact (Finset.range N).aestronglyMeasurable_fun_sum fun k _hk =>
+        ((((S.projectedInverseCompensationFactor_aestronglyMeasurable
+          L N t k).mul
+          (aestronglyMeasurable_const.add
+            (S.projectedCompensatedTaylorErrorFactor_aestronglyMeasurable
+              L N t k))).sub
+          (S.projectedInverseCompensationFactor_aestronglyMeasurable
+            L N t k)).norm)
+    refine Integrable.mono' (herror_int N) hmeas ?_
+    filter_upwards [S.projectedInverseCompensationFactor_row_norm_le_one_ae
+      L N t] with ω hinvω
+    have hsum_nonneg :
+        0 ≤ ∑ k ∈ Finset.range N, ‖z N k ω - w N k ω‖ := by
+      exact Finset.sum_nonneg fun k _hk => norm_nonneg _
+    rw [Real.norm_of_nonneg hsum_nonneg]
+    refine Finset.sum_le_sum ?_
+    intro k hk
+    have hdiff :
+        z N k ω - w N k ω =
+          S.projectedInverseCompensationFactor L N t k ω *
+            S.projectedCompensatedTaylorErrorFactor L N t k ω := by
+      simp [z, w]
+      ring
+    calc
+      ‖z N k ω - w N k ω‖ =
+          ‖S.projectedInverseCompensationFactor L N t k ω *
+            S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+            rw [hdiff]
+      _ = ‖S.projectedInverseCompensationFactor L N t k ω‖ *
+            ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+            rw [norm_mul]
+      _ ≤ 1 * ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ :=
+            mul_le_mul_of_nonneg_right (hinvω k hk)
+              (norm_nonneg
+                (S.projectedCompensatedTaylorErrorFactor L N t k ω))
+      _ = ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+            simp
+  have hdiff_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∑ k ∈ Finset.range N, ‖z N k ω - w N k ω‖ ∂P)
+        atTop (𝓝 0) := by
+    refine squeeze_zero'
+      (Eventually.of_forall fun N =>
+        integral_nonneg fun ω =>
+          Finset.sum_nonneg fun k _hk => norm_nonneg (z N k ω - w N k ω))
+      ?_ herror
+    exact Eventually.of_forall fun N => by
+      refine integral_mono_ae (hdiff_int N) (herror_int N) ?_
+      filter_upwards [S.projectedInverseCompensationFactor_row_norm_le_one_ae
+        L N t] with ω hinvω
+      refine Finset.sum_le_sum ?_
+      intro k hk
+      have hdiff :
+          z N k ω - w N k ω =
+            S.projectedInverseCompensationFactor L N t k ω *
+              S.projectedCompensatedTaylorErrorFactor L N t k ω := by
+        simp [z, w]
+        ring
+      calc
+        ‖z N k ω - w N k ω‖ =
+            ‖S.projectedInverseCompensationFactor L N t k ω *
+              S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+              rw [hdiff]
+        _ = ‖S.projectedInverseCompensationFactor L N t k ω‖ *
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+              rw [norm_mul]
+        _ ≤ 1 * ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ :=
+              mul_le_mul_of_nonneg_right (hinvω k hk)
+                (norm_nonneg
+                  (S.projectedCompensatedTaylorErrorFactor L N t k ω))
+        _ = ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+              simp
+  have hdiff_products :
+      Tendsto
+        (fun N : ℕ =>
+          (∫ ω, ∏ k ∈ Finset.range N, z N k ω ∂P) -
+            ∫ ω, ∏ k ∈ Finset.range N, w N k ω ∂P)
+        atTop (𝓝 0) :=
+    chewi127_integral_product_sub_product_tendsto_zero_of_integral_sum_norm
+      z w hz_bound hw_bound hcombined_int
+      (fun N => S.projectedInverseCompensationProduct_integrable L N t)
+      hdiff_int hdiff_error
+  have hcombined_limit :=
+    hdiff_products.add
+      (S.projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound L t)
+  have hz_limit :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N, z N k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+    simpa only [zero_add] using
+      hcombined_limit.congr' (Eventually.of_forall fun N => by
+        ring)
+  exact hz_limit.congr' (Eventually.of_forall fun N => by
+    refine integral_congr_ae <| ae_of_all P fun ω => ?_
+    simp [z, Finset.prod_mul_distrib])
+
+/--
+Source-facing right compensated full-inverse product convergence.  The
+compensated-error row convergence is discharged from the source variance and
+Taylor-remainder rows.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (herror_factor_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖1 + S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ≤ 1)
+    (hcombined_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω *
+                (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedRemainderFactor L N t k ω‖) P) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          (∏ k ∈ Finset.range N,
+            S.projectedInverseCompensationFactor L N t k ω) *
+          ∏ k ∈ Finset.range N,
+            (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) :=
+  S.projectedCompensatedFullInverseRight_tendsto_exp_of_compensated_error
+    L t herror_factor_bound hcombined_int herror_int
+    (S.projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance
+      L t hvariance_error_int hremainder_int)
+
+/--
 Finite accumulation of the guarded mixed-product successor step.  Under the
 explicit future-tail measurability and integrability hypotheses, integrating
 the raw product at split `N` gives the same value as integrating the fully

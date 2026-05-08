@@ -535,6 +535,11 @@ The newest same-limit defect packet proves
 `projectedMixedTowerDefect_sum_tendsto_zero_of_compensated_full_inverse_same_limit`
 and
 `projected_charFun_tendsto_exp_of_compensated_full_inverse_same_limit`.
+The newest right-product packet proves
+`projectedCompensatedFullInverseRight_tendsto_exp_of_compensated_error` and
+`projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance`, comparing
+`∏ inverse_k * ∏ (1 + error_k)` to `∏ inverse_k` by the existing product
+perturbation bridge and the unweighted compensated-error row convergence.
 This is now the preferred ASGD 12.7 route: prove the two compensated
 full-inverse products in the exact defect identity have the same limit, then
 feed the compiled normalized-product convergence bridge.  The weighted suffix
@@ -543,10 +548,12 @@ unweighted row convergence is not enough for suffix sums, because the
 triangular regrouping counts the one-step error at index `k` exactly `k`
 times.
 The remaining ASGD proof obligations for the preferred route are now precisely:
-1. prove same-limit convergence of
-   `∫ compensatedRawPrefix_N * inverseProduct_N` and
-   `∫ inverseProduct_N * ∏ (1 + compensatedError_k)` consumed by
-   `projected_charFun_tendsto_exp_of_compensated_full_inverse_same_limit`;
+1. prove convergence of the left product
+   `∫ compensatedRawPrefix_N * inverseProduct_N` to the same Gaussian
+   exponential limit; the right product
+   `∫ inverseProduct_N * ∏ (1 + compensatedError_k)` now has a compiled source
+   wrapper under the honest factor-bound and product-integrability side
+   conditions;
 2. prove or replace the weighted variance-only and weighted Taylor-remainder
    assumptions only if deliberately using the stronger weighted-suffix
    fallback;

@@ -560,10 +560,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `projectedMixedTowerDefect_sum_tendsto_zero_of_compensated_full_inverse_same_limit`
   and
   `projected_charFun_tendsto_exp_of_compensated_full_inverse_same_limit`.
+  The newest right-product packet adds
+  `projectedCompensatedFullInverseRight_tendsto_exp_of_compensated_error` and
+  `projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance`,
+  proving the right product in the same-limit gate by comparing
+  `∏ inverse_k * ∏ (1 + error_k)` with `∏ inverse_k`.
   This makes the preferred ASGD 12.7 route the direct compensated
   full-inverse same-limit gate, not the weighted suffix fallback.  The active
-  estimates are now same-limit convergence of the two compensated
-  full-inverse products; weighted variance/remainder convergence and
+  estimate is now convergence of the left compensated full-inverse product;
+  weighted variance/remainder convergence and
   inverse-tail conditional residual convergence remain available only for the
   stronger future-tail fallback route.  Ordinary unweighted row-error
   convergence is not sufficient for the suffix sum because index `k` is
