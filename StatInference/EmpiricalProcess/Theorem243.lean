@@ -54044,63 +54044,92 @@ theorem
             classFun index observation - ∫ x, classFun index x ∂P)
           (fun _ : Fin n => (n : ℝ)⁻¹) sample)
       atTop (0 : ℝ) := by
-  refine
-    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated
-      (P := P) (indexClass := indexClass) (classFun := classFun)
-      (envelope := envelope) henvelope hclass henv henv_integrable
-      hclassIntegrable htruncIntegrable hbdd_truncated ?_
-  intro M hM_pos
   let selectedCardinality :
-      (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
-    fun n sample m =>
-      finiteEmpiricalL1CoveringNumberCard
-        (hasFiniteEmpiricalL1Cover_invRadius_of_forAllRadius_samplePath
-          (indexClass := indexClass)
-          (classFun := vdVWTruncatedClassFun classFun envelope M)
-          (cardinality := cardinality M) (X M)
-          (hcovering_all M hM_pos) n sample m)
-  have hentropy :
-      VdVWTheorem243FixedMInvRadiusEntropySideConditions P (X M)
-        indexClass classFun envelope M selectedCardinality := by
-    simpa [selectedCardinality] using
-      (VdVWTheorem243FixedMInvRadiusEntropySideConditions.of_selected_truncated
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun M =>
+      if hM_pos : 0 < M then
+        vdVWSelectedTruncatedInvRadiusEmpiricalL1CoveringNumberCard
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (cardinality := cardinality M)
+          (X M) (hcovering_all M hM_pos)
+      else
+        fun _n _sample _m => 1
+  have hselected :
+      ∀ M, 0 < M ->
+        VdVWTheorem243SelectedInvRadiusEntropySideConditions P (X M)
+          indexClass classFun envelope M (K M) (selectedCardinality M) := by
+    intro M hM_pos
+    have hdiag_selected :
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality
+                ((vdVWSelectedTruncatedInvRadiusEmpiricalL1CoveringNumberCard
+                  (indexClass := indexClass) (classFun := classFun)
+                  (envelope := envelope) (M := M)
+                  (cardinality := cardinality M) (X M)
+                  (hcovering_all M hM_pos)) n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ) := by
+      change
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality
+                (fun sample m =>
+                  finiteEmpiricalL1CoveringNumberCard
+                    (hasFiniteEmpiricalL1Cover_invRadius_of_forAllRadius_samplePath
+                      (indexClass := indexClass)
+                      (classFun := vdVWTruncatedClassFun classFun envelope M)
+                      (cardinality := cardinality M) (X M)
+                      (hcovering_all M hM_pos) n sample m))
+                sample n / (n : ℝ))
+          atTop (0 : ℝ)
+      exact hdiag M hM_pos
+    have hselected_base :
+        VdVWTheorem243SelectedInvRadiusEntropySideConditions P (X M)
+          indexClass classFun envelope M (K M)
+          (vdVWSelectedTruncatedInvRadiusEmpiricalL1CoveringNumberCard
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (cardinality := cardinality M)
+            (X M) (hcovering_all M hM_pos)) :=
+      VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_selected_truncated
         (P := P) (X := X M) (indexClass := indexClass)
         (classFun := classFun) (envelope := envelope) (M := M)
-        (cardinality := cardinality M) (hX_samplePath M)
-        (hcovering_all M hM_pos) hclass henv (hdiag M hM_pos))
-  have hselected_log_bound :
-      ∀ n (sample : SampleAt Observation n),
-        vdVWLogEmpiricalL1CoveringCardinality (selectedCardinality n)
-            sample n / (n : ℝ) ≤ K M := by
-    simpa [selectedCardinality] using
-      (vdVWLogEmpiricalL1CoveringCardinality_selected_invRadius_terminal_div_le_of_forAllRadius_samplePath
-        (indexClass := indexClass)
-        (classFun := vdVWTruncatedClassFun classFun envelope M)
-        (cardinality := cardinality M) (K := K M) (X M)
-        (hcovering_all M hM_pos) (hlog_div_bound M hM_pos))
+        (K := K M) (cardinality := cardinality M)
+        (hcovering_all M hM_pos) hdiag_selected
+        (hlog_div_bound M hM_pos)
+    simpa [selectedCardinality, dif_pos hM_pos] using hselected_base
   exact
-    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_invRadiusEntropy_logCardinality_div_bound
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedInvRadiusEntropy
       (μsign := μsign) (P := P) (indexClass := indexClass)
-      (classFun := classFun) (envelope := envelope) (M := M)
-      (K := K M) (cardinality := selectedCardinality) (X := X M)
-      (hX_samplePath := hX_samplePath M) (hentropy := hentropy)
+      (classFun := classFun) (envelope := envelope) (K := K)
+      (cardinality := selectedCardinality) (X := X)
+      (hX_samplePath := hX_samplePath) (hselected := hselected)
       (hindexClass := hindexClass) (henvelope := henvelope)
-      (hM_pos := hM_pos) (hK_nonneg := hK_nonneg M hM_pos)
+      (hclass := hclass) (henv := henv)
+      (henv_integrable := henv_integrable)
+      (hclassIntegrable := hclassIntegrable)
+      (hK_nonneg := hK_nonneg)
       (sign := sign) (hsign := hsign) (hindep := hindep)
-      (hsubG := hsubG) (htruncIntegrable := htruncIntegrable M)
-      (hpairSupIntegrable := hpairSupIntegrable M)
-      (hcenteredSupIntegrable := hcenteredSupIntegrable M)
-      (hghostExpectationIntegrable := hghostExpectationIntegrable M)
-      (hsplitSupIntegrable := hsplitSupIntegrable M)
-      (hsampleSupIntegrable := hsampleSupIntegrable M)
-      (hrandomIntegralIntegrable := hrandomIntegralIntegrable M)
-      (Urandom := Urandom M) (hproductSupIntegrable := hproductSupIntegrable M)
-      (hsignSupIntegrable := hsignSupIntegrable M)
+      (hsubG := hsubG) (htruncIntegrable := htruncIntegrable)
+      (hbdd_truncated := hbdd_truncated)
+      (hpairSupIntegrable := hpairSupIntegrable)
+      (hcenteredSupIntegrable := hcenteredSupIntegrable)
+      (hghostExpectationIntegrable := hghostExpectationIntegrable)
+      (hsplitSupIntegrable := hsplitSupIntegrable)
+      (hsampleSupIntegrable := hsampleSupIntegrable)
+      (hrandomIntegralIntegrable := hrandomIntegralIntegrable)
+      (Urandom := Urandom) (hproductSupIntegrable := hproductSupIntegrable)
+      (hsignSupIntegrable := hsignSupIntegrable)
       (hfiniteCenterSupIntegrable := by
-        intro n sample
+        intro M hM_pos n sample
         exact hfiniteCenterSupIntegrable M n sample
-          (hentropy.coveringNumber_le n))
-      (Ucentered := Ucentered M)
-      (hlog_div_bound := hselected_log_bound)
+          ((hselected M hM_pos).coveringNumber_le n))
+      (Ucentered := Ucentered)
 
 end StatInference

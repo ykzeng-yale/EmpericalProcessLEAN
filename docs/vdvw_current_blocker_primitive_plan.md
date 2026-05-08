@@ -7977,3 +7977,16 @@ the syntactic mismatch between selected empirical-cover witnesses over
 upstream: prove the selected-cover source theorem (`Phi(x)=x` plus the
 pathwise finite-center Hoeffding/maximal event), or prove the stochastic
 entropy-to-mean/UI theorem feeding the selected finite-net integral.
+
+2026-05-07 all-radius selected inverse-radius route refactor:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_invRadiusEntropy_logCardinality_div_bound`
+now builds
+`VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_selected_truncated`
+and factors through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedInvRadiusEntropy`.
+This keeps the theorem-facing all-positive-radius diagonal route aligned with
+the selected-cover/direct-cover mean path instead of falling back to the older
+non-selected fixed-`M` inverse-radius consumer.  The mathematical blocker is
+unchanged and now cleaner: either prove the selected-cover `Phi(x)=x`/finite-
+center event theorem, or prove the stochastic entropy-to-mean/UI theorem that
+justifies the selected finite-net integral input.

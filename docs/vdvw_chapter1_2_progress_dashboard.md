@@ -3294,3 +3294,13 @@ new endpoint; it removes the remaining syntactic obstacle to feeding a future
 selected-cover source proof into the mean route.  The next target remains the
 selected-cover `Phi(x)=x`/finite-center event theorem or the stochastic
 entropy-to-mean/UI theorem.
+
+The all-positive-radius selected inverse-radius theorem now factors through
+the selected side-condition package and direct selected-cover consumer:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selected_truncated_invRadiusEntropy_logCardinality_div_bound`
+constructs
+`VdVWTheorem243SelectedInvRadiusEntropySideConditions.of_selected_truncated`
+and then uses
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedInvRadiusEntropy`.
+This keeps the active mean route on the same selected-cover object introduced
+by the textbook random empirical-cover construction.
