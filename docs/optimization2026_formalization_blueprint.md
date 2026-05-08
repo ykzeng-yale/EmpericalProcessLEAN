@@ -310,9 +310,13 @@ only when source-report packaging or a later theorem demands it.  In parallel,
 continue Chapter 13 from the new `InteriorPoint.lean` one-dimensional
 self-concordance substrate: it already formalizes Chewi Example 13.4 for
 `x ↦ -log x` on `ℝ_{>0}` via the displayed first/second/third derivatives,
-local norm identity, and parameter-`1` self-concordance inequality.  The next
-Chapter 13 packets should lift this source-shaped interface to vector/matrix
-local norms before tackling Lemma 13.6 and Newton-decrement convergence.
+local norm identity, and parameter-`1` self-concordance inequality.  It now
+also contains the vector supplied-Hessian local norm, dual local norm, Dikin
+ellipsoid, Newton step/decrement, generic `SelfConcordantOn`, and zero-third
+derivative certificate proving that positive-semidefinite quadratic models are
+self-concordant.  The next Chapter 13 packets should reuse these interfaces
+for Lemma 13.6 and Newton-decrement convergence rather than rebuilding the
+local-norm layer.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

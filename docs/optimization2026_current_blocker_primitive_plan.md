@@ -1872,14 +1872,19 @@ Active aggressive target ladder:
    Theorem 11.6 reporting is requested.
 4. Continue Chapter 13 from the new root-imported
    `StatInference/Optimization/InteriorPoint.lean` layer.  Reuse the compiled
-   one-dimensional Example 13.4 declarations `negLogBarrier_deriv`,
+   vector Definitions 13.2/13.5/13.7 substrate `localNorm`,
+   `dualLocalNorm`, `dikinEllipsoid`, `newtonStep`, `newtonDecrement`,
+   `SelfConcordantOn`, `SelfConcordantOn.of_zero_third`, and
+   `constantHessian_zeroThird_selfConcordantOn`, plus the one-dimensional
+   Example 13.4 declarations `negLogBarrier_deriv`,
    `negLogBarrier_second_deriv`, `negLogBarrier_third_deriv`,
    `negLogBarrier_localNorm_eq_abs_div`,
    `negLogBarrier_selfConcordance_ineq`, and
-   `negLogBarrier_oneDimSelfConcordantOn_Ioi`; the next bounded packet is the
-   vector/matrix local-norm interface for Definitions 13.2/13.3 and Lemma
-   13.6, reusing mathlib matrix/spectral/operator-norm APIs and the existing
-   ellipsoid matrix infrastructure.
+   `negLogBarrier_oneDimSelfConcordantOn_Ioi`; the next bounded packet is
+   Lemma 13.6 supplied-interface local-norm/Hessian-stability algebra,
+   reusing mathlib matrix/spectral/operator-norm APIs and the existing
+   ellipsoid matrix infrastructure only when the generic supplied-Hessian
+   interface is insufficient.
 5. If exact Theorem 10.13 source-report packaging is requested, add an `sInf`
    wrapper for the fixed-comparator regret theorem and/or a proof-carrying
    arbitrary norm/dual-norm interface.  If exact Lemma 11.2 reporting is
