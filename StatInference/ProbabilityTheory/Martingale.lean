@@ -4744,5 +4744,97 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_lintegral
             durrett2019_theorem_4_3_8_finiteProductLikelihood_rpow_half_lintegral
               (ν := fun i : I => ν i) (q := fun i : I => q i) fun i => hq i
 
+/--
+Durrett 2019, Theorem 4.3.8 zero-product support: if the finite likelihoods
+converge almost surely and their Hellinger integrals tend to zero, then the
+limiting likelihood vanishes almost surely.
+
+This packages the Fatou step in the textbook proof of the singular side of
+Kakutani's dichotomy.
+-/
+theorem durrett2019_theorem_4_3_8_ae_eq_zero_of_hellinger_lintegral_tendsto_zero
+    {Ω : Type*} [MeasurableSpace Ω] {ν : Measure Ω}
+    {Xseq : ℕ -> Ω -> ℝ≥0∞} {X : Ω -> ℝ≥0∞}
+    (hXseq : ∀ n, Measurable (Xseq n)) (hX : Measurable X)
+    (hlim : ∀ᵐ ω ∂ν, Tendsto (fun n => Xseq n ω) atTop (𝓝 (X ω)))
+    (hhellinger :
+      Tendsto (fun n => ∫⁻ ω, (Xseq n ω) ^ ((1 : ℝ) / 2) ∂ν) atTop (𝓝 0)) :
+    X =ᵐ[ν] 0 := by
+  let half : ℝ := (1 : ℝ) / 2
+  have hhalf_pos : 0 < half := by
+    norm_num [half]
+  have hhalf_nonneg : 0 ≤ half := le_of_lt hhalf_pos
+  have hlim_half :
+      ∀ᵐ ω ∂ν, Tendsto (fun n => (Xseq n ω) ^ half) atTop (𝓝 ((X ω) ^ half)) := by
+    filter_upwards [hlim] with ω hω
+    exact ENNReal.continuous_rpow_const.continuousAt.tendsto.comp hω
+  have hfatou :
+      ∫⁻ ω, (X ω) ^ half ∂ν ≤
+        Filter.liminf (fun n => ∫⁻ ω, (Xseq n ω) ^ half ∂ν) atTop := by
+    calc
+      ∫⁻ ω, (X ω) ^ half ∂ν
+          = ∫⁻ ω, Filter.liminf (fun n => (Xseq n ω) ^ half) atTop ∂ν := by
+              apply lintegral_congr_ae
+              filter_upwards [hlim_half] with ω hω
+              exact hω.liminf_eq.symm
+      _ ≤ Filter.liminf (fun n => ∫⁻ ω, (Xseq n ω) ^ half ∂ν) atTop := by
+          exact MeasureTheory.lintegral_liminf_le fun n =>
+            ENNReal.continuous_rpow_const.measurable.comp (hXseq n)
+  have hliminf_zero :
+      Filter.liminf (fun n => ∫⁻ ω, (Xseq n ω) ^ half ∂ν) atTop = 0 := by
+    simpa [half] using hhellinger.liminf_eq
+  have hlintegral_zero : ∫⁻ ω, (X ω) ^ half ∂ν = 0 := by
+    refine le_antisymm ?_ bot_le
+    simpa [hliminf_zero] using hfatou
+  have hpow_zero : (fun ω => (X ω) ^ half) =ᵐ[ν] 0 := by
+    exact
+      (MeasureTheory.lintegral_eq_zero_iff
+        (ENNReal.continuous_rpow_const.measurable.comp hX)).1 hlintegral_zero
+  filter_upwards [hpow_zero] with ω hω
+  rcases (ENNReal.rpow_eq_zero_iff.mp hω) with hzero | htop
+  · exact hzero.1
+  · exact False.elim ((not_lt.mpr hhalf_nonneg) htop.2)
+
+/--
+Durrett 2019, Theorem 4.3.8 zero-product source handoff: for finite-coordinate
+cylinder likelihoods, convergence of the finite Hellinger products to zero
+forces the limiting likelihood to vanish almost surely.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_ae_eq_zero_of_hellinger_products_tendsto_zero
+    {ι S : Type*} [MeasurableSpace S]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i)) {X : (ι -> S) -> ℝ≥0∞}
+    (hX : Measurable X)
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x)
+          atTop (𝓝 (X x)))
+    (hhellinger :
+      Tendsto
+        (fun n => ∏ i : Iseq n, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)
+        atTop (𝓝 0)) :
+    X =ᵐ[Measure.infinitePi ν] 0 := by
+  refine
+    durrett2019_theorem_4_3_8_ae_eq_zero_of_hellinger_lintegral_tendsto_zero
+      (ν := Measure.infinitePi ν)
+      (Xseq := fun n x => durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x)
+      (X := X)
+      (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood_measurable (Iseq n) hq)
+      hX hlim ?_
+  have hfun :
+      (fun n =>
+          ∫⁻ x,
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+              ((1 : ℝ) / 2) ∂Measure.infinitePi ν) =
+        fun n => ∏ i : Iseq n, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i := by
+    funext n
+    exact
+      durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_lintegral
+        (ν := ν) (Iseq n) hq
+  rw [hfun]
+  exact hhellinger
+
 end ProbabilityTheory
 end StatInference
