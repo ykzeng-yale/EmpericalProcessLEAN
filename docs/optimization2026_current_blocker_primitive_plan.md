@@ -1101,11 +1101,13 @@ level.  The newest concrete Sinkhorn normalization packet adds
 `chewi118_entropy_one_step_trajectory_of_concreteSinkhornNormalizations`.
 This discharges the previous actual-normalization projection-certificate
 blocker and gives the zero-error Theorem 11.8 one-step recurrence for concrete
-finite row-then-column Sinkhorn cycles.  The next concrete 11.8 blocker is
-source packaging: connect the compiled concrete recurrence to the existing
-last-iterate certificate/rate wrappers with the exact source trajectory
-assumptions, and prove any remaining row-objective monotonicity field if the
-chosen source wrapper needs it.
+finite row-then-column Sinkhorn cycles.  The newest source-rate wrapper adds
+`chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations`,
+which feeds the concrete trajectory equation into the existing
+finite-entropy last-iterate rate theorem, derives the initial/terminal
+equal-mass side conditions from the target marginals and the final column
+normalization step, and leaves only the source monotone-row-objective field as
+the remaining concrete 11.8 rate blocker.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -1343,9 +1345,9 @@ Active aggressive target ladder:
    ABP/Pinsker selectors, and the new `finiteKL`/`finiteCouplingKL`
    row/column normalization plus entropic-Bregman identities and the finite
    array entropy certificate endpoint, plus
-   `chewi118_entropy_one_step_trajectory_of_concreteSinkhornNormalizations`;
-   only formalize the remaining source trajectory/support assumptions and any
-   monotone gap field needed by the source Sinkhorn model.
+   `chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations`;
+   only formalize the remaining monotone gap/source trajectory field needed by
+   the source Sinkhorn model.
 3. Finish exact Sinkhorn Theorem 11.7/11.8 source packaging from the compiled
    ABP and mirror-descent layers; do not expand full EOT duality unless exact
    Theorem 11.6 reporting is requested.

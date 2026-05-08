@@ -638,9 +638,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi118_entropy_one_step_trajectory_of_concreteSinkhornNormalizations`.
   This discharges the actual-normalization projection-certificate blocker and
   proves the zero-error Theorem 11.8 one-step recurrence for concrete finite
-  row-then-column Sinkhorn cycles.  The next Chapter 11 blocker is exact
-  source packaging into the existing last-iterate certificate/rate wrappers,
-  plus any remaining monotone row-objective field required by that wrapper.
+  row-then-column Sinkhorn cycles.  The newest source-rate wrapper adds
+  `chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations`,
+  feeding that concrete trajectory equation into the finite-entropy
+  last-iterate theorem and deriving initial/terminal equal-mass side
+  conditions from the target marginals plus the final column-normalization
+  step.  The remaining Chapter 11 blocker is the source monotone
+  row-objective field, if exact Theorem 11.8 reporting is pursued now.
   The
   current local focused Lean check also verifies
   `chewi118_last_gap_le_of_recurrence` and

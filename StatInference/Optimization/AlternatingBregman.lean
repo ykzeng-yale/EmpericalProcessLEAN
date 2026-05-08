@@ -1749,6 +1749,89 @@ theorem chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_entropyRecurrenc
       hstar_pos hgammaN_pos hgamma0_ne hmassN hmass0 hN
 
 /--
+Concrete finite Sinkhorn Theorem 11.8 endpoint for a row-then-column
+normalization trajectory.  The actual normalization equation supplies the
+zero-error entropy recurrence; the only remaining source-side rate hypothesis
+is monotonicity of the displayed row objective along the selected iterates.
+-/
+theorem chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {N : ℕ}
+    (hstep : ∀ n, n < N ->
+      gamma (n + 1) = columnNormalizedCoupling ν
+        (rowNormalizedCoupling μ (gamma n)))
+    (hstar_row : gammaStar ∈ finiteRowMarginalConstraint μ)
+    (hstar_col : gammaStar ∈ finiteColumnMarginalConstraint ν)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hstar_pos : ∀ x y, 0 < gammaStar x y)
+    (hgamma_pos : ∀ n, n ≤ N -> ∀ x y, 0 < gamma n x y)
+    (hgamma_mass : ∀ n, n < N -> (∑ x, μ x) = finiteCouplingMass (gamma n))
+    (htarget_mass : (∑ y, ν y) = ∑ x, μ x)
+    (hmono : ∀ n, n < N ->
+      sinkhornRowObjective μ (gamma N) ≤
+        sinkhornRowObjective μ (gamma (n + 1)))
+    (hN : N ≠ 0) :
+    sinkhornRowObjective μ (gamma N) ≤
+      finiteCouplingKL gammaStar (gamma 0) / (N : ℝ) := by
+  classical
+  have hN_pos : 0 < N := Nat.pos_of_ne_zero hN
+  have hone_step :
+      ∀ n, n < N ->
+        finiteCouplingEntropyBregman gammaStar (gamma (n + 1)) ≤
+          finiteCouplingEntropyBregman gammaStar (gamma n) -
+            sinkhornRowObjective μ (gamma (n + 1)) :=
+    chewi118_entropy_one_step_trajectory_of_concreteSinkhornNormalizations
+      μ ν gamma gammaStar hstep hstar_row hstar_col hμ_pos hν_pos
+      (fun n hn => hgamma_pos n (le_of_lt hn)) hgamma_mass htarget_mass
+  have hstar_col_eq : ∀ y, columnMarginal gammaStar y = ν y := by
+    simpa [finiteColumnMarginalConstraint] using hstar_col
+  have hstar_mass :
+      finiteCouplingMass gammaStar = ∑ y, ν y := by
+    rw [← sum_columnMarginal_eq_finiteCouplingMass gammaStar]
+    exact Finset.sum_congr rfl fun y _hy => hstar_col_eq y
+  let m : ℕ := N - 1
+  have hm_lt : m < N := by
+    dsimp [m]
+    exact Nat.sub_one_lt hN
+  have hm_le : m ≤ N := le_of_lt hm_lt
+  have hm_succ : m + 1 = N := by
+    dsimp [m]
+    omega
+  have hm_pos : ∀ x y, 0 < gamma m x y :=
+    hgamma_pos m hm_le
+  have hm_row_pos : ∀ x, 0 < rowMarginal (gamma m) x :=
+    rowMarginal_pos_of_pos hm_pos
+  have hhalf_pos :
+      ∀ x y, 0 < rowNormalizedCoupling μ (gamma m) x y :=
+    rowNormalizedCoupling_pos_of_pos μ (gamma m) hμ_pos hm_pos hm_row_pos
+  have hhalf_col_pos :
+      ∀ y, 0 < columnMarginal (rowNormalizedCoupling μ (gamma m)) y :=
+    columnMarginal_pos_of_pos hhalf_pos
+  have hgammaN_col : ∀ y, columnMarginal (gamma N) y = ν y := by
+    intro y
+    have hstep_m := hstep m hm_lt
+    rw [← hm_succ, hstep_m]
+    exact columnMarginal_columnNormalizedCoupling ν
+      (rowNormalizedCoupling μ (gamma m))
+      (fun y => (hhalf_col_pos y).ne') y
+  have hgammaN_mass :
+      finiteCouplingMass (gamma N) = ∑ y, ν y := by
+    rw [← sum_columnMarginal_eq_finiteCouplingMass (gamma N)]
+    exact Finset.sum_congr rfl fun y _hy => hgammaN_col y
+  have hmassN : finiteCouplingMass gammaStar = finiteCouplingMass (gamma N) := by
+    rw [hstar_mass, hgammaN_mass]
+  have hmass0 : finiteCouplingMass gammaStar = finiteCouplingMass (gamma 0) := by
+    rw [hstar_mass, htarget_mass, hgamma_mass 0 hN_pos]
+  exact
+    chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_entropyRecurrence_pos_initialKL
+      (μ := μ) (gamma := gamma) (gammaStar := gammaStar) (N := N)
+      hone_step hmono hstar_pos (hgamma_pos N le_rfl)
+      (fun x y => (hgamma_pos 0 (Nat.zero_le N) x y).ne') hmassN hmass0 hN
+
+/--
 Source-shaped certificate for Chewi Theorem 11.8 after interpreting Sinkhorn
 as mirror descent.  The concrete finite Sinkhorn/KL work is isolated in these
 fields: the zero-error Bregman recurrence, monotonicity of the marginal KL
