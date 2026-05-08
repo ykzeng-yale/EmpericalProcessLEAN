@@ -4972,6 +4972,50 @@ theorem durrett2019_theorem_4_3_8_coordinateSigma_le_prefixFiltration
       (S := S) hi).comap_le
 
 /--
+Durrett 2019, Theorem 4.3.8 prefix support: a reusable trim/comap density
+bridge.  If a pushforward measure has density `f` with respect to another
+pushforward measure, then the source measures trimmed to the comap sigma-field
+have density `f ∘ g`.
+-/
+theorem durrett2019_theorem_4_3_8_trim_comap_withDensity_eq_of_map_withDensity_eq
+    {α β : Type*} [mα : MeasurableSpace α] [mβ : MeasurableSpace β]
+    {μ ν : Measure α} {g : α -> β} {f : β -> ℝ≥0∞}
+    (hg : Measurable g) (hf : Measurable f)
+    (hmap : μ.map g = (ν.map g).withDensity f) :
+    μ.trim hg.comap_le = (ν.trim hg.comap_le).withDensity (f ∘ g) := by
+  refine @Measure.ext α (MeasurableSpace.comap g mβ)
+    (μ₁ := μ.trim hg.comap_le)
+    (μ₂ := (ν.trim hg.comap_le).withDensity (f ∘ g)) ?_
+  intro A hA
+  rcases (MeasurableSpace.measurableSet_comap.mp hA) with ⟨B, hB, hBA⟩
+  rw [← hBA]
+  let νc : @Measure α (MeasurableSpace.comap g mβ) := ν.trim hg.comap_le
+  change μ.trim hg.comap_le (g ⁻¹' B) = (νc.withDensity (f ∘ g)) (g ⁻¹' B)
+  have hg_trim : @Measurable α β (MeasurableSpace.comap g mβ) mβ g :=
+    Measurable.of_comap_le le_rfl
+  have hpre : MeasurableSet[MeasurableSpace.comap g mβ] (g ⁻¹' B) :=
+    ⟨B, hB, rfl⟩
+  have hmap_trim :
+      @Measure.map α β (MeasurableSpace.comap g mβ) mβ g νc = ν.map g := by
+    simpa [νc] using (map_trim_comap (μ := ν) hg)
+  calc
+    μ.trim hg.comap_le (g ⁻¹' B) = (μ.map g) B := by
+      exact trim_comap_apply hg hB
+    _ = ((ν.map g).withDensity f) B := by
+      rw [hmap]
+    _ = ∫⁻ y in B, f y ∂ν.map g := by
+      rw [withDensity_apply _ hB]
+    _ = ∫⁻ y in B, f y ∂(@Measure.map α β (MeasurableSpace.comap g mβ) mβ g νc) := by
+      rw [hmap_trim]
+    _ = ∫⁻ x in g ⁻¹' B, f (g x) ∂νc := by
+      exact @setLIntegral_map α β (MeasurableSpace.comap g mβ) mβ νc f g B hB hf hg_trim
+    _ = ((ν.trim hg.comap_le).withDensity (f ∘ g)) (g ⁻¹' B) := by
+      change ∫⁻ x in g ⁻¹' B, f (g x) ∂νc =
+        (νc.withDensity (f ∘ g)) (g ⁻¹' B)
+      rw [withDensity_apply _ hpre]
+      rfl
+
+/--
 Durrett 2019, Theorem 4.3.8 tail-coordinate support: under the denominator
 infinite product law, the coordinate sigma-fields are independent.
 -/
@@ -5592,6 +5636,164 @@ theorem durrett2019_theorem_4_3_8_infiniteProduct_map_restrict_withDensity_eq
     durrett2019_theorem_4_3_8_finiteProduct_withDensity_eq
       (μ := fun i : I => μ i) (ν := fun i : I => ν i)
       (q := fun i : I => q i) (fun i => hq i) (fun i => hμ i)
+
+/--
+Durrett 2019, Theorem 4.3.8 prefix support: trimming the infinite product laws
+to the canonical finite-prefix filtration gives the finite prefix likelihood
+as a density.
+-/
+theorem durrett2019_theorem_4_3_8_infiniteProduct_trim_prefix_withDensity_eq
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)] {q : ℕ -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) (n : ℕ) :
+    (Measure.infinitePi μ).trim
+        ((durrett2019_theorem_4_3_8_prefixFiltration S).le n) =
+      ((Measure.infinitePi ν).trim
+        ((durrett2019_theorem_4_3_8_prefixFiltration S).le n)).withDensity
+        (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q) := by
+  classical
+  let I : Finset ℕ := Finset.range n
+  let fI : (I -> S) -> ℝ≥0∞ :=
+    durrett2019_theorem_4_3_8_finiteProductLikelihood (fun i : I => q i)
+  have hfI : Measurable fI :=
+    durrett2019_theorem_4_3_8_finiteProductLikelihood_measurable
+      (q := fun i : I => q i) fun i => hq i
+  have hmap :
+      (Measure.infinitePi μ).map (I.restrict : (ℕ -> S) -> I -> S) =
+        ((Measure.infinitePi ν).map
+          (I.restrict : (ℕ -> S) -> I -> S)).withDensity fI := by
+    simpa [fI, I] using
+      durrett2019_theorem_4_3_8_infiniteProduct_map_restrict_withDensity_eq
+        (μ := μ) (ν := ν) I (q := q) hq hμ
+  have htrim :=
+    durrett2019_theorem_4_3_8_trim_comap_withDensity_eq_of_map_withDensity_eq
+      (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν)
+      (g := (I.restrict : (ℕ -> S) -> I -> S)) (f := fI)
+      (Finset.measurable_restrict I) hfI hmap
+  simpa [durrett2019_theorem_4_3_8_prefixFiltration,
+    durrett2019_theorem_4_3_8_cylinderLikelihood, fI, I, Function.comp_def] using htrim
+
+/--
+Durrett 2019, Theorem 4.3.8 prefix support: the finite prefix likelihood is
+the Radon-Nikodym derivative of the prefix-trimmed numerator product law with
+respect to the prefix-trimmed denominator product law.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_ae_eq_trimmedPrefix_rnDeriv
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)] {q : ℕ -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) (n : ℕ) :
+    (fun x =>
+      ((Measure.infinitePi μ).trim
+        ((durrett2019_theorem_4_3_8_prefixFiltration S).le n)).rnDeriv
+        ((Measure.infinitePi ν).trim
+          ((durrett2019_theorem_4_3_8_prefixFiltration S).le n)) x)
+      =ᵐ[Measure.infinitePi ν]
+        durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q := by
+  classical
+  let ℱ := durrett2019_theorem_4_3_8_prefixFiltration S
+  let M := Measure.infinitePi μ
+  let N := Measure.infinitePi ν
+  have hwith :
+      M.trim (ℱ.le n) =
+        (N.trim (ℱ.le n)).withDensity
+          (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q) := by
+    simpa [M, N, ℱ] using
+      durrett2019_theorem_4_3_8_infiniteProduct_trim_prefix_withDensity_eq
+        (μ := μ) (ν := ν) (q := q) hq hμ n
+  have hmeas :
+      Measurable[ℱ n]
+        (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q) :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_prefixFiltration_measurable
+      (S := S) hq n
+  have htrim :
+      (fun x => (M.trim (ℱ.le n)).rnDeriv (N.trim (ℱ.le n)) x)
+        =ᵐ[N.trim (ℱ.le n)]
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q := by
+    rw [hwith]
+    exact Measure.rnDeriv_withDensity (N.trim (ℱ.le n)) hmeas
+  exact ae_eq_of_ae_eq_trim (hm := ℱ.le n) htrim
+
+/--
+Durrett 2019, Theorem 4.3.8 prefix support: the finite prefix likelihood is the
+quotient of the numerator and denominator prefix-trimmed RN derivatives with
+respect to the common trimmed dominating measure.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_ae_eq_trimmedPrefix_ratio
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)] {q : ℕ -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) (n : ℕ) :
+    ∀ᵐ x ∂Measure.infinitePi ν,
+      durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x =
+        ((Measure.infinitePi μ).trim
+          ((durrett2019_theorem_4_3_8_prefixFiltration S).le n)).rnDeriv
+            ((Measure.infinitePi μ + Measure.infinitePi ν).trim
+              ((durrett2019_theorem_4_3_8_prefixFiltration S).le n)) x /
+          ((Measure.infinitePi ν).trim
+            ((durrett2019_theorem_4_3_8_prefixFiltration S).le n)).rnDeriv
+              ((Measure.infinitePi μ + Measure.infinitePi ν).trim
+                ((durrett2019_theorem_4_3_8_prefixFiltration S).le n)) x := by
+  classical
+  let ℱ := durrett2019_theorem_4_3_8_prefixFiltration S
+  let M := Measure.infinitePi μ
+  let N := Measure.infinitePi ν
+  have hderiv :
+      (fun x => (M.trim (ℱ.le n)).rnDeriv (N.trim (ℱ.le n)) x)
+        =ᵐ[N]
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_ae_eq_trimmedPrefix_rnDeriv
+      (μ := μ) (ν := ν) (q := q) hq hμ n
+  have hratio_trim :
+      (fun x =>
+        (M.trim (ℱ.le n)).rnDeriv (N.trim (ℱ.le n)) x)
+        =ᵐ[N.trim (ℱ.le n)]
+          fun x =>
+            (M.trim (ℱ.le n)).rnDeriv ((M + N).trim (ℱ.le n)) x /
+              (N.trim (ℱ.le n)).rnDeriv ((M + N).trim (ℱ.le n)) x := by
+    simpa [trim_add] using
+      Measure.rnDeriv_eq_div_rnDeriv_add (M.trim (ℱ.le n)) (N.trim (ℱ.le n))
+  have hratio :
+      (fun x =>
+        (M.trim (ℱ.le n)).rnDeriv (N.trim (ℱ.le n)) x)
+        =ᵐ[N]
+          fun x =>
+            (M.trim (ℱ.le n)).rnDeriv ((M + N).trim (ℱ.le n)) x /
+              (N.trim (ℱ.le n)).rnDeriv ((M + N).trim (ℱ.le n)) x :=
+    ae_eq_of_ae_eq_trim (hm := ℱ.le n) hratio_trim
+  filter_upwards [hderiv, hratio] with x hx_deriv hx_ratio
+  rw [← hx_deriv, hx_ratio]
+
+/--
+Durrett 2019, Theorem 4.3.8 prefix support: the quotient identification holds
+simultaneously for all standard finite prefixes.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_trimmedPrefix_ratio_ae_all
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)] {q : ℕ -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) :
+    ∀ᵐ x ∂Measure.infinitePi ν,
+      ∀ n,
+        durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x =
+          ((Measure.infinitePi μ).trim
+            ((durrett2019_theorem_4_3_8_prefixFiltration S).le n)).rnDeriv
+              ((Measure.infinitePi μ + Measure.infinitePi ν).trim
+                ((durrett2019_theorem_4_3_8_prefixFiltration S).le n)) x /
+            ((Measure.infinitePi ν).trim
+              ((durrett2019_theorem_4_3_8_prefixFiltration S).le n)).rnDeriv
+                ((Measure.infinitePi μ + Measure.infinitePi ν).trim
+                  ((durrett2019_theorem_4_3_8_prefixFiltration S).le n)) x := by
+  rw [ae_all_iff]
+  intro n
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_ae_eq_trimmedPrefix_ratio
+      (μ := μ) (ν := ν) (q := q) hq hμ n
 
 /--
 Durrett 2019, Theorem 4.3.8 cylinder support: on a measurable cylinder, the

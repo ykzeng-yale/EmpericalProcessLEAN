@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V99
+## Live In-Thread Goal Prompt V100
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -321,14 +321,19 @@ coordinates `0, ..., n - 1`; coordinates before `n` and the standard finite
 prefix cylinder likelihood are measurable from it; and
 `durrett2019_theorem_4_3_8_coordinateSigma_le_prefixFiltration` turns that
 visibility into a sigma-field inclusion.
+Also treat the canonical trimmed-prefix RN-ratio identity as compiled support:
+`durrett2019_theorem_4_3_8_infiniteProduct_trim_prefix_withDensity_eq` gives the
+finite prefix likelihood as the density of prefix-trimmed product laws, and
+`durrett2019_theorem_4_3_8_cylinderLikelihood_trimmedPrefix_ratio_ae_all`
+identifies every finite prefix likelihood with the quotient of the numerator
+and denominator prefix-trimmed RN derivatives with respect to the common
+trimmed dominating measure.
 Move to the remaining Kakutani criterion assembly:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`) and logarithm/tail-measurability support.  Add only
-source-shaped wrappers that identify trimmed measures over this canonical
-prefix filtration and prove the finite prefix likelihood equals the quotient
-of the two trimmed density sequences, prove the denominator-limit nonzero
-input, discharge the nonzero-lower-integral input for the canonical ratio, or
-directly feed the infinite-product
+source-shaped wrappers that prove the denominator-limit nonzero input,
+discharge the nonzero-lower-integral input for the canonical ratio, or directly
+feed the infinite-product
 criterion hypotheses consumed by the compiled branch assemblers and
 eliminator.  Do
 not redo the already compiled RN martingale/convergence
@@ -342,7 +347,8 @@ ratio endpoint, denominator-side top-set null endpoint, singular-support
 top-set endpoint, full canonical-ratio real identity, canonical
 `toReal = dmu/dnu` endpoint, canonical `toReal` integrability endpoint,
 canonical quotient-limit convergence bridge, canonical prefix-filtration
-measurability/inclusion support, canonical 4.3.8 positive-branch consumers, any Example 4.3.7
+measurability/inclusion support, canonical trimmed-prefix RN-ratio identity,
+canonical 4.3.8 positive-branch consumers, any Example 4.3.7
 finite-partition likelihood, finite-union, or generator endpoint, the
 finite-product likelihood/rectangle/`withDensity` layer, infinite-product
 cylinder/restriction handoff, Hellinger factorization layer, zero-product Fatou
@@ -816,12 +822,13 @@ these range-limit consumers now also compiles, so `toReal = dmu/dnu` and
 `nu {canonicalRatio = infinity} = 0` no longer need to be supplied as open
 inputs.  Canonical-ratio real integrability, the real-valued full-prefix
 convergence consumer, the quotient-limit bridge, and the canonical
-prefix-filtration measurability/inclusion support now also compile.  Move
-forward to the trimmed-measure identity over this canonical prefix filtration:
-identify the finite prefix likelihood with the quotient of the two trimmed
-density sequences, prove the denominator-limit nonzero input, and discharge the
-canonical ratio nonzero-lower-integral/product inputs needed to finish the
-remaining Kakutani criterion assembly.
+prefix-filtration measurability/inclusion support now also compile.  The
+trimmed-prefix RN-ratio identity now also compiles, identifying every finite
+prefix likelihood with the quotient of the two prefix-trimmed RN derivative
+sequences over the common trimmed dominating measure.  Move forward to proving
+the denominator-limit nonzero input and discharging the canonical ratio
+nonzero-lower-integral/product inputs needed to finish the remaining Kakutani
+criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -935,6 +942,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V99` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V100` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
