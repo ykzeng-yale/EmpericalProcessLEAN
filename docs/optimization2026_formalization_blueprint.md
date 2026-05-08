@@ -42,6 +42,12 @@ For deterministic tail-core approximations, use the corresponding
 so callers do not need to pass a normalized-product limit separately.  Its
 Chewi 12.3 endpoint wrapper is
 `asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
+For source construction of a deterministic tail-core approximation, first use
+the new deterministic suffix-proxy bridge:
+`projectedMixedTowerFutureTail_deterministicTailProxy_l1_sum_tendsto_zero_of_weighted_factor_error`.
+It reduces row-summed future-tail `L1` approximation to a weighted one-step
+factor error against unit-ball deterministic complex factors, reusing the
+existing finite product and triangular suffix-sum APIs.
 The residual layer now exposes
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,

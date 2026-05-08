@@ -161,6 +161,20 @@ characteristic-function, scalar/projected CLT, bridge, and certificate
 wrappers; use them when the proxy is constant in `ω`.  It now also has the
 Chewi 12.3 ASGD endpoint wrapper
 `asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
+Newest source-construction bridge: `ASGD.lean` now also proves
+`projectedNormalizedTaylorFactor_integrable_of_uniform_bound`,
+`projectedMixedTowerFutureTail_sub_deterministicTailProxy_norm_le`,
+`projectedMixedTowerFutureTail_deterministicTailProxy_l1_le_suffix_error`,
+`projectedMixedTowerFutureTail_deterministicTailProxy_l1_row_sum_le_suffix_error`,
+`projectedMixedTowerFutureTail_deterministicTailProxy_l1_sum_tendsto_zero_of_suffix_error`,
+and
+`projectedMixedTowerFutureTail_deterministicTailProxy_l1_sum_tendsto_zero_of_weighted_factor_error`.
+These theorems promote weighted one-step deterministic proxy-factor error to
+row-summed future-tail `L1` approximation, reusing
+`StatInference.norm_prod_sub_prod_le_sum_norm_sub` and
+`chewi127_integral_sum_range_sum_Ico_succ_eq_integral_weighted`.  The next
+ASGD source task is to construct/prove the concrete deterministic factor proxy
+error estimate, not to rework suffix-product algebra.
 The newest residual-estimate packet extracts the actual row-summed residual
 handoffs as reusable theorems:
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,

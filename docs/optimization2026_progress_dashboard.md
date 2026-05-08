@@ -104,6 +104,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   removing the old normalized-product argument from deterministic proxy
   certificates.  The newest ASGD endpoint packet adds
   `asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
+- Deterministic suffix-proxy source bridge: the newest ASGD packet adds
+  `projectedNormalizedTaylorFactor_integrable_of_uniform_bound`,
+  `projectedMixedTowerFutureTail_sub_deterministicTailProxy_norm_le`,
+  `projectedMixedTowerFutureTail_deterministicTailProxy_l1_le_suffix_error`,
+  `projectedMixedTowerFutureTail_deterministicTailProxy_l1_row_sum_le_suffix_error`,
+  `projectedMixedTowerFutureTail_deterministicTailProxy_l1_sum_tendsto_zero_of_suffix_error`,
+  and
+  `projectedMixedTowerFutureTail_deterministicTailProxy_l1_sum_tendsto_zero_of_weighted_factor_error`.
+  This closes the generic product-lifting step from weighted one-step
+  deterministic proxy errors to row-summed future-tail `L1` approximation.
+  The next source blocker is now a concrete deterministic factor proxy
+  approximation, not another product/suffix algebra layer.
 - Residual-estimate extraction: the newest ASGD packet adds
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
@@ -1345,15 +1357,14 @@ deterministic-proxy specialization also contains
 `projected_clt_of_deterministic_futureTail_l1_approx`,
 `toProjectedBridge_of_deterministic_futureTail_l1_approx`, and
 `toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx`.
-Next theorem-sized packet: construct a concrete `F_r`-measurable proxy for the
-normalized future tail and prove the row-summed L1 approximation convergence
-consumed by
-`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`,
-or prove a deterministic scalar proxy approximation and instantiate the
-deterministic constructors.  The best next candidate is the conditional
-expectation of the inverse-compensation future tail; the missing proof work is
-now narrowed to the suffix/weighted normalized-minus-inverse error convergence
-and the inverse-tail conditional residual estimate.  Do not re-open
+Next theorem-sized packet: construct a concrete deterministic unit-ball factor
+proxy for `S.projectedNormalizedTaylorFactor L N t k` and prove the weighted
+one-step factor-error convergence consumed by
+`projectedMixedTowerFutureTail_deterministicTailProxy_l1_sum_tendsto_zero_of_weighted_factor_error`,
+then feed the resulting row-summed future-tail approximation into the existing
+deterministic future-tail certificate/ASGD endpoint.  The competing fallback
+is the inverse-tail conditional-residual route, but the generic suffix product
+and triangular weighted-counting algebra are now closed.  Do not re-open
 characteristic-function, scalar CLT, projected CLT, or certificate adapter
 wiring unless the proxy theorem changes its interface.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw

@@ -3460,6 +3460,49 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_row_n
   exact (ae_all_iff.2 hrow).mono fun ω hω k _hk => hω k
 
 /--
+Each normalized Taylor factor is integrable under Chewi's uniform boundedness
+hypothesis.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_integrable_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) :
+    Integrable
+      (fun ω => S.projectedNormalizedTaylorFactor L N t k ω) P := by
+  rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+    ⟨B, hB_nonneg, hbound⟩
+  let x : Ω -> ℝ := fun ω => L (S.martingale.xi (k + 1) ω)
+  have hx : AEMeasurable x P := by
+    simpa [x] using (S.martingale.projected_integrable L (k + 1)).aemeasurable
+  have hbound_x : ∀ᵐ ω ∂P, |x ω| ≤ B := by
+    simpa [x] using hbound k
+  have hsq :
+      Integrable (fun ω => (L (S.martingale.xi (k + 1) ω)) ^ 2) P := by
+    simpa [x] using
+      chewi127Scalar_sq_integrable_of_uniform_bound
+        (P := P) (x := x) hx ⟨B, hB_nonneg, hbound_x⟩
+  have hremainder :
+      Integrable
+        (chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (k + 1) ω))) P := by
+    simpa [x] using
+      chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+        (P := P) (x := x) hx
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        ⟨B, hB_nonneg, hbound_x⟩
+  refine Integrable.of_bound (C := 1)
+    ((S.projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable_of_uniform_bound
+      L N t k).mono (S.martingale.filtration.le k)) ?_
+  exact
+    S.projectedNormalizedTaylorFactor_norm_le_one_ae
+      L N t k hsq hremainder
+
+/--
 Chewi's uniform boundedness hypothesis supplies the eventual a.e. row bound on
 all normalized Taylor factors.
 -/
@@ -9653,6 +9696,201 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_integra
   refine Integrable.of_bound (C := 1) htail_meas ?_
   simpa [Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail] using
     htail_bound
+
+/--
+Pointwise suffix product perturbation against a deterministic proxy tail.  This
+is the reusable product estimate for replacing future normalized Taylor
+factors by a deterministic row of unit-ball complex factors.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_sub_deterministicTailProxy_norm_le
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ)
+    (proxy : ℕ -> ℂ)
+    (hproxy_norm : ∀ k ∈ Finset.range N, ‖proxy k‖ ≤ 1) :
+    ∀ᵐ ω ∂P,
+      ‖S.projectedMixedTowerFutureTail L N t r ω -
+        ∏ k ∈ Finset.Ico (r + 1) N, proxy k‖ ≤
+        ∑ k ∈ Finset.Ico (r + 1) N,
+          ‖S.projectedNormalizedTaylorFactor L N t k ω - proxy k‖ := by
+  filter_upwards [S.projectedNormalizedTaylorFactor_row_norm_le_one_ae L N t]
+    with ω hnormalized
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail] using
+    StatInference.norm_prod_sub_prod_le_sum_norm_sub
+      (Finset.Ico (r + 1) N)
+      (fun k => S.projectedNormalizedTaylorFactor L N t k ω)
+      proxy
+      (fun k hk => hnormalized k (Finset.mem_range.mpr (Finset.mem_Ico.mp hk).2))
+      (fun k hk => hproxy_norm k (Finset.mem_range.mpr (Finset.mem_Ico.mp hk).2))
+
+/--
+Integrated suffix product perturbation against a deterministic proxy tail.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_deterministicTailProxy_l1_le_suffix_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ)
+    (proxy : ℕ -> ℂ)
+    (hproxy_norm : ∀ k ∈ Finset.range N, ‖proxy k‖ ≤ 1) :
+    (∫ ω,
+      ‖S.projectedMixedTowerFutureTail L N t r ω -
+        ∏ k ∈ Finset.Ico (r + 1) N, proxy k‖ ∂P) ≤
+      ∫ ω,
+        ∑ k ∈ Finset.Ico (r + 1) N,
+          ‖S.projectedNormalizedTaylorFactor L N t k ω - proxy k‖ ∂P := by
+  have hproxy_tail_int :
+      Integrable
+        (fun _ : Ω => ∏ k ∈ Finset.Ico (r + 1) N, proxy k) P :=
+    integrable_const _
+  have hleft_int :
+      Integrable
+        (fun ω =>
+          ‖S.projectedMixedTowerFutureTail L N t r ω -
+            ∏ k ∈ Finset.Ico (r + 1) N, proxy k‖) P :=
+    ((S.projectedMixedTowerFutureTail_integrable_of_uniform_bound L N r t).sub
+      hproxy_tail_int).norm
+  have hright_int :
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.Ico (r + 1) N,
+            ‖S.projectedNormalizedTaylorFactor L N t k ω - proxy k‖) P := by
+    refine integrable_finsetSum (Finset.Ico (r + 1) N) ?_
+    intro k _hk
+    have hproxy_int : Integrable (fun _ : Ω => proxy k) P :=
+      integrable_const _
+    exact
+      ((S.projectedNormalizedTaylorFactor_integrable_of_uniform_bound
+        L N t k).sub hproxy_int).norm
+  exact integral_mono_ae hleft_int hright_int
+    (S.projectedMixedTowerFutureTail_sub_deterministicTailProxy_norm_le
+      L N r t proxy hproxy_norm)
+
+/--
+Row-summed integrated suffix product perturbation against a deterministic
+proxy row.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_deterministicTailProxy_l1_row_sum_le_suffix_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ)
+    (proxy : ℕ -> ℂ)
+    (hproxy_norm : ∀ k ∈ Finset.range N, ‖proxy k‖ ≤ 1) :
+    (∑ r ∈ Finset.range N,
+      ∫ ω,
+        ‖S.projectedMixedTowerFutureTail L N t r ω -
+          ∏ k ∈ Finset.Ico (r + 1) N, proxy k‖ ∂P) ≤
+      ∑ r ∈ Finset.range N,
+        ∫ ω,
+          ∑ k ∈ Finset.Ico (r + 1) N,
+            ‖S.projectedNormalizedTaylorFactor L N t k ω - proxy k‖ ∂P := by
+  refine Finset.sum_le_sum ?_
+  intro r _hr
+  exact
+    S.projectedMixedTowerFutureTail_deterministicTailProxy_l1_le_suffix_error
+      L N r t proxy hproxy_norm
+
+/--
+If the deterministic proxy suffix errors vanish in row-summed `L1`, then the
+normalized future tails are close in row-summed `L1` to the deterministic
+proxy tails.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_deterministicTailProxy_l1_sum_tendsto_zero_of_suffix_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (proxy : ℕ -> ℕ -> ℂ)
+    (hproxy_norm : ∀ N k, k ∈ Finset.range N -> ‖proxy N k‖ ≤ 1)
+    (hsuffix_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ∑ k ∈ Finset.Ico (r + 1) N,
+                ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  proxy N k‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              ∏ k ∈ Finset.Ico (r + 1) N, proxy N k‖ ∂P)
+      atTop (𝓝 0) := by
+  refine squeeze_zero'
+    (Eventually.of_forall fun N =>
+      Finset.sum_nonneg fun r _hr =>
+        integral_nonneg fun ω => norm_nonneg _)
+    ?_ hsuffix_error
+  exact Eventually.of_forall fun N =>
+    S.projectedMixedTowerFutureTail_deterministicTailProxy_l1_row_sum_le_suffix_error
+      L N t (proxy N) (fun k hk => hproxy_norm N k hk)
+
+/--
+Weighted one-step deterministic proxy error convergence implies row-summed
+`L1` convergence of normalized future tails to deterministic proxy tails.  The
+triangular regrouping counts a one-step error at index `k` exactly `k` times.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_deterministicTailProxy_l1_sum_tendsto_zero_of_weighted_factor_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (proxy : ℕ -> ℕ -> ℂ)
+    (hproxy_norm : ∀ N k, k ∈ Finset.range N -> ‖proxy N k‖ ≤ 1)
+    (hweighted_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  proxy N k‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              ∏ k ∈ Finset.Ico (r + 1) N, proxy N k‖ ∂P)
+      atTop (𝓝 0) := by
+  refine
+    S.projectedMixedTowerFutureTail_deterministicTailProxy_l1_sum_tendsto_zero_of_suffix_error
+      L t proxy hproxy_norm ?_
+  refine hweighted_error.congr' (Eventually.of_forall fun N => ?_)
+  symm
+  refine
+    chewi127_integral_sum_range_sum_Ico_succ_eq_integral_weighted
+      (P := P)
+      (fun k ω =>
+        ‖S.projectedNormalizedTaylorFactor L N t k ω - proxy N k‖)
+      N ?_
+  intro r _hr
+  refine integrable_finsetSum (Finset.Ico (r + 1) N) ?_
+  intro k _hk
+  have hproxy_int : Integrable (fun _ : Ω => proxy N k) P :=
+    integrable_const _
+  exact
+    ((S.projectedNormalizedTaylorFactor_integrable_of_uniform_bound
+      L N t k).sub hproxy_int).norm
 
 /--
 The inverse-compensation future tail over the same suffix interval as
