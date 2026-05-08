@@ -267,6 +267,16 @@ and
 The preferred ASGD route can now start from an explicit predictable or
 deterministic proxy approximation of the mixed-tower future multiplier, rather
 than a raw conditional-expectation residual statement.
+Newest concrete proxy packet: `ASGD.lean` now defines the predictable
+limit-variance future-multiplier proxy
+`projectedLimitVarianceFutureMultiplierProxy`, proves its
+`F_r`-measurability, integrability, unit-ball bound, and the approximation
+theorem
+`projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error`.
+It also exposes the ASGD endpoint
+`asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
+This routes the canonical limit-variance factor-error lane through the
+preferred future-multiplier proxy interface.
 The weighted inverse-tail fallback is now packaged through the certificate
 layer as
 `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`:
@@ -293,7 +303,12 @@ or
 If a stronger absolute row hypothesis is being formalized, feed it through
 `asgd_limit_package_of_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
 Under only Chewi's averaged covariance convergence, prefer the compensated
-full-inverse/product or direct future-multiplier residual route.
+full-inverse/product or direct future-multiplier residual route.  The canonical
+limit-variance future-multiplier proxy is now available for any source proof
+that can produce the weighted one-step factor error; the next genuinely new
+source target is still to derive such a one-step/future-multiplier
+approximation from Chewi's actual averaged covariance assumptions without
+assuming an unjustified absolute row estimate.
 The stable ASGD stack now includes the
 conditional residual/correlation primitives
 `integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left` and

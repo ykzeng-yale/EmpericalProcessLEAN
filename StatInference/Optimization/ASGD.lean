@@ -10051,6 +10051,224 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_limitVa
       hproxy_norm hweighted_factor_error
 
 /--
+The limit-variance future-tail proxy is bounded by one in norm.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedLimitVarianceFutureTailProxy_norm_le_one
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (r : ℕ) :
+    ‖S.projectedLimitVarianceFutureTailProxy L N t r‖ ≤ 1 := by
+  exact (Finset.norm_prod_le (Finset.Ico (r + 1) N)
+    (fun _k =>
+      chewi127LimitVarianceProxyFactor
+        (S.covariance_limit.S_infty L L) N t)).trans
+      (Finset.prod_le_one
+        (fun _k _hk =>
+          norm_nonneg
+            (chewi127LimitVarianceProxyFactor
+              (S.covariance_limit.S_infty L L) N t))
+        (fun _k _hk =>
+          chewi127LimitVarianceProxyFactor_norm_le_one
+            (S.covariance_limit_self_nonneg L) N t))
+
+/--
+The predictable limit-variance proxy for the mixed-tower future multiplier:
+the raw characteristic-function prefix times the deterministic limit-variance
+future-tail proxy.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedLimitVarianceFutureMultiplierProxy
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (r : ℕ) (ω : Ω) : ℂ :=
+  chewi127ScalarCharFunProduct
+    (fun k ω => L (S.martingale.xi k ω)) r
+    (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+    S.projectedLimitVarianceFutureTailProxy L N t r
+
+/--
+The limit-variance future-multiplier proxy is `F_r`-measurable.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedLimitVarianceFutureMultiplierProxy_aestronglyMeasurable
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    AEStronglyMeasurable[S.martingale.filtration r]
+      (fun ω => S.projectedLimitVarianceFutureMultiplierProxy L N t r ω) P := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  have hprefix :
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) r a) P :=
+    S.martingale.projected_charFun_prefix_aestronglyMeasurable L r a
+  have htail :
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun _ω : Ω => S.projectedLimitVarianceFutureTailProxy L N t r) P :=
+    aestronglyMeasurable_const
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedLimitVarianceFutureMultiplierProxy,
+    a] using hprefix.mul htail
+
+/--
+The limit-variance future-multiplier proxy is bounded by one in norm.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedLimitVarianceFutureMultiplierProxy_norm_le_one
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (r : ℕ) (ω : Ω) :
+    ‖S.projectedLimitVarianceFutureMultiplierProxy L N t r ω‖ ≤ 1 := by
+  let x : ℕ -> Ω -> ℝ := fun k ω => L (S.martingale.xi k ω)
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  have hprefix_norm :
+      ‖chewi127ScalarCharFunProduct x r a ω‖ ≤ 1 :=
+    chewi127ScalarCharFunProduct_norm_le_one x r a ω
+  have htail_norm :
+      ‖S.projectedLimitVarianceFutureTailProxy L N t r‖ ≤ 1 :=
+    S.projectedLimitVarianceFutureTailProxy_norm_le_one L N t r
+  calc
+    ‖S.projectedLimitVarianceFutureMultiplierProxy L N t r ω‖
+        = ‖chewi127ScalarCharFunProduct x r a ω‖ *
+            ‖S.projectedLimitVarianceFutureTailProxy L N t r‖ := by
+          simp [Chewi127BoundedMartingaleCLTSource.projectedLimitVarianceFutureMultiplierProxy,
+            x, a]
+    _ ≤ 1 * 1 :=
+        mul_le_mul hprefix_norm htail_norm
+          (norm_nonneg (S.projectedLimitVarianceFutureTailProxy L N t r))
+          zero_le_one
+    _ = 1 := by norm_num
+
+/--
+The limit-variance future-multiplier proxy is integrable.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedLimitVarianceFutureMultiplierProxy_integrable
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    Integrable
+      (fun ω => S.projectedLimitVarianceFutureMultiplierProxy L N t r ω) P := by
+  refine Integrable.of_bound (C := 1)
+    ((S.projectedLimitVarianceFutureMultiplierProxy_aestronglyMeasurable
+      L N r t).mono (S.martingale.filtration.le r)) ?_
+  exact ae_of_all P fun ω =>
+    S.projectedLimitVarianceFutureMultiplierProxy_norm_le_one L N t r ω
+
+/--
+The future multiplier differs from the limit-variance future-multiplier proxy
+by at most the future-tail error against the deterministic limit-variance
+future-tail proxy.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_sub_limitVarianceProxy_norm_le_tail_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (r : ℕ) (ω : Ω) :
+    ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+        S.projectedLimitVarianceFutureMultiplierProxy L N t r ω‖ ≤
+      ‖S.projectedMixedTowerFutureTail L N t r ω -
+        S.projectedLimitVarianceFutureTailProxy L N t r‖ := by
+  let x : ℕ -> Ω -> ℝ := fun k ω => L (S.martingale.xi k ω)
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  let rawPrefix : Ω -> ℂ := chewi127ScalarCharFunProduct x r a
+  let tail : Ω -> ℂ := fun ω => S.projectedMixedTowerFutureTail L N t r ω
+  let proxyTail : ℂ := S.projectedLimitVarianceFutureTailProxy L N t r
+  have hprefix_norm : ‖rawPrefix ω‖ ≤ 1 :=
+    chewi127ScalarCharFunProduct_norm_le_one x r a ω
+  calc
+    ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+        S.projectedLimitVarianceFutureMultiplierProxy L N t r ω‖
+        = ‖rawPrefix ω * tail ω - rawPrefix ω * proxyTail‖ := by
+          rfl
+    _ = ‖rawPrefix ω * (tail ω - proxyTail)‖ := by ring_nf
+    _ = ‖rawPrefix ω‖ * ‖tail ω - proxyTail‖ := by rw [norm_mul]
+    _ ≤ 1 * ‖tail ω - proxyTail‖ :=
+        mul_le_mul_of_nonneg_right hprefix_norm (norm_nonneg _)
+    _ = ‖S.projectedMixedTowerFutureTail L N t r ω -
+        S.projectedLimitVarianceFutureTailProxy L N t r‖ := by
+        rw [one_mul]
+
+/--
+Weighted one-step error against the canonical limit-variance proxy factors
+also gives row-summed `L1` approximation of the mixed-tower future multipliers
+by the predictable limit-variance future-multiplier proxy.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hweighted_factor_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              S.projectedLimitVarianceFutureMultiplierProxy L N t r ω‖ ∂P)
+      atTop (𝓝 0) := by
+  have htail :=
+    S.projectedMixedTowerFutureTail_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error
+      L t hweighted_factor_error
+  refine squeeze_zero'
+    (Eventually.of_forall fun N =>
+      Finset.sum_nonneg fun r _hr =>
+        integral_nonneg fun ω => norm_nonneg _)
+    ?_ htail
+  exact Eventually.of_forall fun N => by
+    refine Finset.sum_le_sum ?_
+    intro r _hr
+    have hleft_int :
+        Integrable
+          (fun ω =>
+            ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              S.projectedLimitVarianceFutureMultiplierProxy L N t r ω‖) P :=
+      ((S.projectedMixedTowerFutureMultiplier_integrable_of_uniform_bound
+        L N r t).sub
+        (S.projectedLimitVarianceFutureMultiplierProxy_integrable L N r t)).norm
+    have hright_int :
+        Integrable
+          (fun ω =>
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              S.projectedLimitVarianceFutureTailProxy L N t r‖) P :=
+      ((S.projectedMixedTowerFutureTail_integrable_of_uniform_bound L N r t).sub
+        (integrable_const _)).norm
+    exact integral_mono_ae hleft_int hright_int
+      (ae_of_all P fun ω =>
+        S.projectedMixedTowerFutureMultiplier_sub_limitVarianceProxy_norm_le_tail_error
+          L N t r ω)
+
+/--
 Weighted normalized-factor approximation by the canonical limit-variance proxy
 follows from two one-step estimates: the inverse-compensation factor is close
 to the same deterministic proxy, and the compensated Taylor error has
@@ -17102,6 +17320,64 @@ theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVariancePr
   exact
     S.projectedMixedTowerFutureTail_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error
       L t (hweighted_factor_error L t)
+
+/--
+The same weighted one-step factor approximation, routed through the preferred
+future-multiplier proxy interface.  The proxy is the raw prefix times the
+deterministic limit-variance future-tail proxy, so it is `F_r`-measurable.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_factor_error_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hweighted_factor_error : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖ ∂P)
+        atTop (𝓝 0))
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K :=
+  S.asgd_limit_package_of_futureMultiplier_predictable_l1_approx_of_uniform_bound_no_factor_bound
+    Ainv hmean
+    (fun L t N r ω =>
+      S.projectedLimitVarianceFutureMultiplierProxy L N t r ω)
+    (fun L t N r =>
+      S.projectedLimitVarianceFutureMultiplierProxy_aestronglyMeasurable
+        L N r t)
+    (fun L t N r =>
+      S.projectedLimitVarianceFutureMultiplierProxy_integrable L N r t)
+    (fun L t =>
+      S.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error
+        L t (hweighted_factor_error L t))
+    hInitial hRemainder hInitial_meas hRemainder_meas hDecomp
 
 /--
 Source-shaped Chewi Theorem 12.3 ASGD limit package from the two natural

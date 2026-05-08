@@ -113,6 +113,15 @@ and
 `asgd_limit_package_of_futureMultiplier_deterministic_l1_approx_of_uniform_bound_no_factor_bound`.
 Use these when a source argument naturally freezes or predicts the mixed-tower
 future multiplier before estimating the raw conditional residual.
+The canonical concrete proxy for this route is now also compiled:
+`projectedLimitVarianceFutureMultiplierProxy`, together with
+`projectedLimitVarianceFutureMultiplierProxy_aestronglyMeasurable`,
+`projectedLimitVarianceFutureMultiplierProxy_integrable`,
+`projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error`,
+and
+`asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
+It is the raw prefix multiplied by the deterministic limit-variance future
+tail proxy.
 For the stronger weighted suffix route, use
 `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`;
 it packages weighted variance-error/Taylor-remainder convergence and the

@@ -203,6 +203,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   The preferred route now accepts an explicit predictable or deterministic
   proxy approximation of the future multiplier, then packages it all the way
   to the ASGD limit theorem.
+- Concrete limit-variance future-multiplier proxy: the newest ASGD packet adds
+  `projectedLimitVarianceFutureMultiplierProxy`,
+  `projectedLimitVarianceFutureMultiplierProxy_aestronglyMeasurable`,
+  `projectedLimitVarianceFutureMultiplierProxy_integrable`,
+  `projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error`,
+  and
+  `asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
+  This gives the preferred future-multiplier route a named predictable proxy
+  built from the raw prefix and the deterministic limit-variance future tail.
 - Weighted inverse-tail fallback: the new
   `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`
   wrappers compose the existing weighted variance-error/Taylor-remainder
