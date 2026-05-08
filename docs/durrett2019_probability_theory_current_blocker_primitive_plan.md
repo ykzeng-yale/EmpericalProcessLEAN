@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V35
+## Live In-Thread Goal Prompt V36
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -35,16 +35,20 @@ integrability of the limit, martingale specializations, and source-facing
 positive-part-boundedness wrappers matching Durrett's `sup_n E X_n^+ < ∞`
 hypothesis through a compiled `eLpNorm` bridge; and Theorem 4.2.12
 nonnegative-supermartingale convergence, integrable-limit, Fatou expectation
-bridge, and final existential source wrapper.
+bridge, and final existential source wrapper.  The first Theorem 4.3.1 support
+packet now compiles: a shifted nonnegative stopped martingale converges almost
+surely, and that stopped convergence transfers back to the original martingale
+on the survival event `{N = ⊤}`.
 
-Next theorem-sized packet: start Durrett Theorem 4.3.1, the bounded-increments
-martingale convergence-or-oscillation dichotomy.  Search only the relevant
-stopped-process, bounded-below/nonnegative-supermartingale, limsup/liminf, and
-event-union APIs needed to turn Theorem 4.2.12 into the source argument.  A
-good first compiled packet is the stopped-below-by-`K` convergence-on-survival
-bridge used in the proof of Theorem 4.3.1, before attempting the full
-`P(C ∪ D) = 1` event classification.  Do not revisit solved Chapter 4.1 facts,
-examples, or Theorems 4.2.4-4.2.12.
+Next theorem-sized packet: continue Durrett Theorem 4.3.1 by instantiating the
+stopping time `N = inf {n : X_n ≤ -K}` and proving the bounded-increment lower
+bound `0 ≤ X_{n ∧ N} + K + M` needed by the compiled stopped-shifted bridge.
+Search only the relevant hitting-time/stopping-time APIs (`hittingAfter`,
+`leastGE` applied to `-X`, or direct `IsStoppingTime` constructors),
+`stoppedProcess_eq_of_le`/`stoppedProcess_eq_of_ge`, and absolute-increment
+algebra.  Do not redo the already compiled 4.3.1 stopped-shifted convergence
+and survival-transfer bridge, and do not attempt the full `P(C ∪ D) = 1`
+event classification until this first-below instantiation compiles.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -407,10 +411,11 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should start Theorem 4.3.1 by packaging the
-stopped-below martingale convergence bridge that Durrett obtains from Theorem
-4.2.12.  Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a
-direct source-shaped API.
+The next likely packet should continue Theorem 4.3.1 by defining or reusing the
+first-below stopping time `inf {n : X_n ≤ -K}` and proving the shifted stopped
+process is nonnegative from the bounded-increment hypothesis.  Keep Theorem
+4.1.16 deferred unless a targeted kernel search finds a direct source-shaped
+API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -522,6 +527,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V35` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V36` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

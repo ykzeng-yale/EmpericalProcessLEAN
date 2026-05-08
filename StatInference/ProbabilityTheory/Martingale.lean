@@ -1882,5 +1882,73 @@ theorem durrett2019_example_4_2_3_normalizedExponentialProduct_martingale_of_iIn
   exact durrett2019_example_4_2_3_normalizedExponentialFactor_integral_eq_one
     (μ := μ) hphi_ne hξ_exp_moment
 
+/-! ## Durrett, Section 4.3 -/
+
+/--
+Durrett 2019, Theorem 4.3.1 support: if a stopped martingale becomes
+nonnegative after adding a constant, then the stopped process converges almost
+surely.
+
+This packages the proof step where Durrett applies Theorem 4.2.12 to
+`X_{n ∧ N} + K + M`.
+-/
+theorem durrett2019_theorem_4_3_1_stopped_shifted_exists_ae_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {c : ℝ}
+    (hX : Martingale X ℱ μ) (hN : IsStoppingTime ℱ N)
+    (h_nonneg : ∀ n, 0 ≤ᵐ[μ] fun ω => stoppedProcess X N n ω + c) :
+    ∀ᵐ ω ∂μ, ∃ z : ℝ,
+      Tendsto (fun n => stoppedProcess X N n ω) atTop (𝓝 z) := by
+  have hstopped : Martingale (stoppedProcess X N) ℱ μ :=
+    durrett2019_theorem_4_2_9_martingale_stoppedProcess hX hN
+  have hshift : Martingale (fun n ω => stoppedProcess X N n ω + c) ℱ μ := by
+    simpa [Pi.add_apply] using hstopped.add (martingale_const ℱ μ c)
+  have hconv :
+      ∀ᵐ ω ∂μ, ∃ z : ℝ,
+        Tendsto (fun n => stoppedProcess X N n ω + c) atTop (𝓝 z) :=
+    durrett2019_theorem_4_2_12_nonnegative_supermartingale_exists_ae_tendsto
+      hshift.supermartingale h_nonneg
+  filter_upwards [hconv] with ω hω
+  rcases hω with ⟨z, hz⟩
+  refine ⟨z - c, ?_⟩
+  simpa [sub_eq_add_neg, add_assoc] using hz.sub_const c
+
+/--
+Durrett 2019, Theorem 4.3.1 support: convergence of a stopped process transfers
+to the original process on the event that the stopping time never occurs.
+-/
+theorem durrett2019_theorem_4_3_1_stopped_tendsto_on_survival
+    {Ω : Type*} [MeasurableSpace Ω] {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {μ : Measure Ω}
+    (hconv : ∀ᵐ ω ∂μ, ∃ z : ℝ,
+      Tendsto (fun n => stoppedProcess X N n ω) atTop (𝓝 z)) :
+    ∀ᵐ ω ∂μ, N ω = ⊤ ->
+      ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+  filter_upwards [hconv] with ω hω hN_top
+  rcases hω with ⟨z, hz⟩
+  refine ⟨z, ?_⟩
+  have heq : (fun n => stoppedProcess X N n ω) = fun n => X n ω := by
+    funext n
+    exact stoppedProcess_eq_of_le (by rw [hN_top]; exact le_top)
+  simpa [heq] using hz
+
+/--
+Durrett 2019, Theorem 4.3.1 stopped-below bridge: a nonnegative shifted
+stopped martingale converges on the event that the stopping time is infinite.
+-/
+theorem durrett2019_theorem_4_3_1_stopped_shifted_tendsto_on_survival
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {c : ℝ}
+    (hX : Martingale X ℱ μ) (hN : IsStoppingTime ℱ N)
+    (h_nonneg : ∀ n, 0 ≤ᵐ[μ] fun ω => stoppedProcess X N n ω + c) :
+    ∀ᵐ ω ∂μ, N ω = ⊤ ->
+      ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) :=
+  durrett2019_theorem_4_3_1_stopped_tendsto_on_survival
+    (durrett2019_theorem_4_3_1_stopped_shifted_exists_ae_tendsto
+      hX hN h_nonneg)
+
 end ProbabilityTheory
 end StatInference
