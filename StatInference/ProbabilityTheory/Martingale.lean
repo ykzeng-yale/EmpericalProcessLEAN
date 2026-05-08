@@ -4,6 +4,7 @@ import Mathlib.Probability.Martingale.Centering
 import Mathlib.Probability.Martingale.Convergence
 import Mathlib.Probability.Martingale.OptionalStopping
 import Mathlib.Probability.Martingale.Upcrossing
+import Mathlib.MeasureTheory.Integral.Lebesgue.DominatedConvergence
 import StatInference.ProbabilityTheory.ConditionalExpectation
 
 /-!
@@ -2929,6 +2930,124 @@ theorem durrett2019_theorem_4_3_5_source_real_identity_of_generate_finite_ratio_
     (durrett2019_theorem_4_3_5_forall_setLIntegral_of_generate_finite
       (μ := ν) (ρ := ρ) C hgen hC hνC hνuniv)
     hX hμtop hνtop
+
+/--
+Durrett 2019, Theorem 4.3.5 bounded-convergence primitive: a uniformly
+bounded nonnegative density sequence that converges almost surely has
+convergent set `lintegral`s on every event.
+-/
+theorem durrett2019_theorem_4_3_5_setLIntegral_tendsto_of_bounded_convergence
+    {Ω : Type*} [MeasurableSpace Ω] {ρ : Measure Ω} [IsFiniteMeasure ρ]
+    {Yseq : ℕ -> Ω -> ℝ≥0∞} {Y : Ω -> ℝ≥0∞} {B : ℝ≥0∞}
+    (hYseq : ∀ n, AEMeasurable (Yseq n) ρ)
+    (hbound : ∀ n, Yseq n ≤ᵐ[ρ] fun _ => B) (hB : B ≠ ∞)
+    (hlim : ∀ᵐ ω ∂ρ, Tendsto (fun n => Yseq n ω) atTop (𝓝 (Y ω)))
+    (s : Set Ω) :
+    Tendsto (fun n => ∫⁻ ω in s, Yseq n ω ∂ρ) atTop
+      (𝓝 (∫⁻ ω in s, Y ω ∂ρ)) := by
+  have hfin : ∫⁻ ω, (fun _ : Ω => B) ω ∂(ρ.restrict s) ≠ ∞ := by
+    rw [lintegral_const]
+    exact ENNReal.mul_ne_top hB (measure_ne_top (ρ.restrict s) Set.univ)
+  exact
+    tendsto_lintegral_of_dominated_convergence'
+      (μ := ρ.restrict s) (F := Yseq) (f := Y) (fun _ : Ω => B)
+      (fun n => (hYseq n).mono_measure Measure.restrict_le_self)
+      (fun n => ae_restrict_of_ae (hbound n)) hfin
+      (ae_restrict_of_ae hlim)
+
+/--
+Durrett 2019, Theorem 4.3.5 bounded-convergence identity step: if the
+restricted-density integral is eventually equal to a finite measure value, the
+limit density has that set integral.
+-/
+theorem durrett2019_theorem_4_3_5_set_integral_identity_of_bounded_convergence
+    {Ω : Type*} [MeasurableSpace Ω] {μ ρ : Measure Ω} [IsFiniteMeasure ρ]
+    {Yseq : ℕ -> Ω -> ℝ≥0∞} {Y : Ω -> ℝ≥0∞} {B : ℝ≥0∞} {s : Set Ω}
+    (hYseq : ∀ n, AEMeasurable (Yseq n) ρ)
+    (hbound : ∀ n, Yseq n ≤ᵐ[ρ] fun _ => B) (hB : B ≠ ∞)
+    (hlim : ∀ᵐ ω ∂ρ, Tendsto (fun n => Yseq n ω) atTop (𝓝 (Y ω)))
+    (hevent : ∀ᶠ n in atTop, μ s = ∫⁻ ω in s, Yseq n ω ∂ρ) :
+    μ s = ∫⁻ ω in s, Y ω ∂ρ := by
+  have htend :
+      Tendsto (fun n => ∫⁻ ω in s, Yseq n ω ∂ρ) atTop
+        (𝓝 (∫⁻ ω in s, Y ω ∂ρ)) :=
+    durrett2019_theorem_4_3_5_setLIntegral_tendsto_of_bounded_convergence
+      (ρ := ρ) hYseq hbound hB hlim s
+  exact tendsto_nhds_unique (tendsto_const_nhds.congr' hevent) htend
+
+/--
+Durrett 2019, Theorem 4.3.5 generator production bridge: Durrett's bounded
+convergence computation supplies the generator-class and `univ` set-integral
+identities for a limiting density.
+-/
+theorem durrett2019_theorem_4_3_5_generator_integrals_of_bounded_convergence
+    {Ω : Type*} [MeasurableSpace Ω] {μ ρ : Measure Ω} [IsFiniteMeasure ρ]
+    {Yseq : ℕ -> Ω -> ℝ≥0∞} {Y : Ω -> ℝ≥0∞} {B : ℝ≥0∞}
+    (C : Set (Set Ω))
+    (hYseq : ∀ n, AEMeasurable (Yseq n) ρ)
+    (hbound : ∀ n, Yseq n ≤ᵐ[ρ] fun _ => B) (hB : B ≠ ∞)
+    (hlim : ∀ᵐ ω ∂ρ, Tendsto (fun n => Yseq n ω) atTop (𝓝 (Y ω)))
+    (hCevent : ∀ s ∈ C, ∀ᶠ n in atTop, μ s = ∫⁻ ω in s, Yseq n ω ∂ρ)
+    (huniv_event : ∀ᶠ n in atTop, μ Set.univ = ∫⁻ ω, Yseq n ω ∂ρ) :
+    (∀ s ∈ C, μ s = ∫⁻ ω in s, Y ω ∂ρ) ∧
+      μ Set.univ = ∫⁻ ω, Y ω ∂ρ := by
+  refine ⟨?_, ?_⟩
+  · intro s hs
+    exact
+      durrett2019_theorem_4_3_5_set_integral_identity_of_bounded_convergence
+        (μ := μ) (ρ := ρ) (Yseq := Yseq) (Y := Y) (B := B) (s := s)
+        hYseq hbound hB hlim (hCevent s hs)
+  · have huniv_set :
+        ∀ᶠ n in atTop, μ Set.univ = ∫⁻ ω in Set.univ, Yseq n ω ∂ρ :=
+      huniv_event.mono fun n hn => by
+        simpa [setLIntegral_univ] using hn
+    have h :=
+      durrett2019_theorem_4_3_5_set_integral_identity_of_bounded_convergence
+        (μ := μ) (ρ := ρ) (Yseq := Yseq) (Y := Y) (B := B) (s := Set.univ)
+        hYseq hbound hB hlim huniv_set
+    simpa [setLIntegral_univ] using h
+
+/--
+Durrett 2019, Theorem 4.3.5 source endpoint with the bounded-convergence
+generator step included.  The remaining source obligations are the eventual
+restricted-density identities for `Yseq` and `Zseq`, the ratio `X = Y / Z`,
+and the top-set singular separation.
+-/
+theorem
+    durrett2019_theorem_4_3_5_source_real_identity_of_bounded_convergence_ratio_top_set
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν ρ : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν] [IsFiniteMeasure ρ]
+    [μ.HaveLebesgueDecomposition ν]
+    {X Y Z : Ω -> ℝ≥0∞} {Yseq Zseq : ℕ -> Ω -> ℝ≥0∞}
+    {BY BZ : ℝ≥0∞} {A : Set Ω} (hA : MeasurableSet A)
+    (C : Set (Set Ω)) (hY : AEMeasurable Y ρ) (hZ : AEMeasurable Z ρ)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hYseq : ∀ n, AEMeasurable (Yseq n) ρ)
+    (hYbound : ∀ n, Yseq n ≤ᵐ[ρ] fun _ => BY) (hBY : BY ≠ ∞)
+    (hYlim : ∀ᵐ ω ∂ρ, Tendsto (fun n => Yseq n ω) atTop (𝓝 (Y ω)))
+    (hZseq : ∀ n, AEMeasurable (Zseq n) ρ)
+    (hZbound : ∀ n, Zseq n ≤ᵐ[ρ] fun _ => BZ) (hBZ : BZ ≠ ∞)
+    (hZlim : ∀ᵐ ω ∂ρ, Tendsto (fun n => Zseq n ω) atTop (𝓝 (Z ω)))
+    (hμCevent : ∀ s ∈ C, ∀ᶠ n in atTop, μ s = ∫⁻ ω in s, Yseq n ω ∂ρ)
+    (hνCevent : ∀ s ∈ C, ∀ᶠ n in atTop, ν s = ∫⁻ ω in s, Zseq n ω ∂ρ)
+    (hμuniv_event : ∀ᶠ n in atTop, μ Set.univ = ∫⁻ ω, Yseq n ω ∂ρ)
+    (hνuniv_event : ∀ᶠ n in atTop, ν Set.univ = ∫⁻ ω, Zseq n ω ∂ρ)
+    (hX : X =ᵐ[ν] fun ω => Y ω / Z ω)
+    (hμtop : μ.singularPart ν {ω | X ω = ∞}ᶜ = 0)
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ.real A = ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}) := by
+  obtain ⟨hμC, hμuniv⟩ :=
+    durrett2019_theorem_4_3_5_generator_integrals_of_bounded_convergence
+      (μ := μ) (ρ := ρ) (Yseq := Yseq) (Y := Y) (B := BY) C
+      hYseq hYbound hBY hYlim hμCevent hμuniv_event
+  obtain ⟨hνC, hνuniv⟩ :=
+    durrett2019_theorem_4_3_5_generator_integrals_of_bounded_convergence
+      (μ := ν) (ρ := ρ) (Yseq := Zseq) (Y := Z) (B := BZ) C
+      hZseq hZbound hBZ hZlim hνCevent hνuniv_event
+  exact
+    durrett2019_theorem_4_3_5_source_real_identity_of_generate_finite_ratio_top_set
+      (μ := μ) (ν := ν) (ρ := ρ) hA C hY hZ hgen hC hμC hνC
+      hμuniv hνuniv hX hμtop hνtop
 
 end ProbabilityTheory
 end StatInference

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V50
+## Live In-Thread Goal Prompt V51
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -91,21 +91,26 @@ ratio/top-set source assembly.  The generator-extension layer also now
 compiles: finite-measure equality on a generating pi-system plus `univ`
 extends to a `withDensity` identity, then to all measurable set-integral
 identities, RN-derivative identification, paired `Y`/`Z` handoff, and the
-ratio/top-set source endpoint.
+ratio/top-set source endpoint.  The bounded-convergence generator-production
+layer also now compiles: a uniformly bounded nonnegative density sequence with
+an a.e. limit sends eventual restricted-density set-integral identities to
+generator/univ identities, and the source endpoint consumes those identities
+directly for `Y` and `Z`.
 
-Next theorem-sized packet: continue Theorem 4.3.5 by producing the actual
-generator-level set-integral identities for the bounded martingale limits `Y`
-and `Z`: show `mu s = ∫_s Y d rho` and `nu s = ∫_s Z d rho` on the source
-generating class and on `univ`, from Durrett's bounded-convergence argument.
-Alternatively, prove the remaining `X = Y / Z` no-`0/0` a.e. bridge or
-`{X = infinity}` singular separation.  Search/reuse bounded convergence,
-`tendsto`/`lintegral` or real-integral convergence APIs for bounded
-nonnegative functions, filtration/generator restriction identities,
-`Measure.trim`, `withDensity_apply`, ENNReal limsup/top, and a.e.-restriction
-APIs.  Do not redo the already compiled RN martingale/convergence bridge,
-regular/singular decomposition identity, density-ratio bridge, top-set
-endpoint assembly, integral-representation to RN-derivative bridge, or
-generator-extension bridge.  Defer Polya urn as a model-specific construction
+Next theorem-sized packet: continue Theorem 4.3.5 by proving the actual
+eventual restricted-density identities for the source sequence densities:
+for each generator event `s` and for `univ`, show that `mu s` is eventually
+`∫_s Yseq_n d rho` and `nu s` is eventually `∫_s Zseq_n d rho`, using the
+trimmed RN derivative restriction identities and the finite dominating measure
+`rho`.  Alternatively, prove the remaining `X = Y / Z` no-`0/0` a.e. bridge or
+`{X = infinity}` singular separation.  Search/reuse filtration/generator
+restriction identities, `Measure.trim`, `withDensity_apply`, `lintegral_trim`,
+restricted RN derivative set-integral APIs, ENNReal limsup/top, and
+a.e.-restriction APIs.  Do not redo the already compiled RN
+martingale/convergence bridge, regular/singular decomposition identity,
+density-ratio bridge, top-set endpoint assembly, integral-representation to
+RN-derivative bridge, generator-extension bridge, or bounded-convergence
+generator-production bridge.  Defer Polya urn as a model-specific construction
 unless a direct existing primitive is found.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
@@ -473,11 +478,11 @@ The next likely packet should continue Theorem 4.3.5 after the compiled
 likelihood-ratio martingale/convergence bridge and the compiled
 regular/singular decomposition identity plus the compiled density-ratio/top-set
 assembly and the compiled integral-representation to RN-derivative bridge.
-The generator-extension bridge also now compiles.  Aim at the first real
-source-production obligation: prove the generator-level bounded-convergence
-integral identities for `Y` and `Z`, or prove `X = Y/Z` / top-set singular
-separation.  Keep Theorem 4.1.16 deferred unless a targeted kernel search finds
-a direct source-shaped API.
+The generator-extension and bounded-convergence generator-production bridges
+also now compile.  Aim at the first real source-production obligation: prove
+the eventual restricted-density identities for `Yseq` and `Zseq`, or prove
+`X = Y/Z` / top-set singular separation.  Keep Theorem 4.1.16 deferred unless a
+targeted kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -589,6 +594,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V50` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V51` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

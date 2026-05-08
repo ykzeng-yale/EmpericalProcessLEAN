@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V50`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V51`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -449,11 +449,14 @@ Next packet:
   produce the `Y = dmu/drho` and `Z = dnu/drho` hypotheses consumed by the
   assembly.  The generator-extension bridge also now compiles, turning
   generator pi-system plus `univ` set-integral identities into all-measurable
-  identities and the final source endpoint.  The next active target is one real
-  Durrett source-production obligation: prove the generator-level
-  bounded-convergence identities for `Y` and `Z`, or prove `X = Y/Z` /
-  top-set singular separation.  Theorem 4.1.16 remains deferred unless a
-  direct kernel API appears.
+  identities and the final source endpoint.  The bounded-convergence
+  generator-production bridge also now compiles, turning eventual
+  restricted-density identities for uniformly bounded nonnegative sequence
+  densities into the generator/univ identities consumed by the endpoint.  The
+  next active target is one real Durrett source-production obligation: prove
+  the eventual restricted-density identities for `Yseq` and `Zseq`, or prove
+  `X = Y/Z` / top-set singular separation.  Theorem 4.1.16 remains deferred
+  unless a direct kernel API appears.
 
 Support-only dependencies:
 
