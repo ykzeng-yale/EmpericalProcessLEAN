@@ -783,9 +783,10 @@ textbook-facing shape as the strongest full-subgraph package through
 compiled theorem packages finite-class `P`-measurability, finite measurable
 integrable-envelope outer expectation, outer-probability `P`-GC, outer-a.s.
 `P`-GC, local `P`-GC, in-mean centered-supremum convergence, and Lemma 2.4.5
-a.s. centered-supremum convergence.  This is a closed finite-class building
-block; the main non-finite Theorem 2.4.3 gap remains the book random-entropy
-tail/UI or structural cardinality bridge.
+a.s. centered-supremum convergence.  A 2026-05-08 cleanup removed the exposed
+nonempty-class assumption by splitting off the empty class directly.  This is a
+closed finite-class building block; the main non-finite Theorem 2.4.3 gap
+remains the book random-entropy tail/UI or structural cardinality bridge.
 
 2026-05-05 first-sample entropy-tail follow-up:
 `Theorem243.lean` now exposes

@@ -994,7 +994,7 @@ and the direct finite-class Theorem 2.4.3/Lemma 2.4.5 package
 collects finite-class `P`-measurability, finite measurable integrable-envelope
 outer expectation, outer-probability/a.s./local `P`-GC, in-mean convergence,
 and Lemma 2.4.5 a.s. centered-supremum convergence without invoking the
-full-subgraph/VC route;
+full-subgraph/VC route and now without a nonempty-class assumption;
 and the direct bounded separability-to-Definition 2.3.3 handoff
 `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_bddAbove`,
 which combines the existing pointwise-approximability supremum-equality bridge

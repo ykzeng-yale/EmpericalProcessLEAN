@@ -782,9 +782,10 @@ route also now has a textbook-facing package
 `VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln`, combining
 finite-class `P`-measurability, finite measurable integrable-envelope outer
 expectation, outer-probability/a.s./local `P`-GC, in-mean convergence, and
-Lemma 2.4.5 a.s. centered-supremum convergence.  Treat this as closed
-finite-class infrastructure; the remaining main-line gap is still the
-non-finite book entropy/tail-UI or structural cardinality bridge.
+Lemma 2.4.5 a.s. centered-supremum convergence, with the empty-class case now
+handled without a nonempty-class assumption.  Treat this as closed finite-class
+infrastructure; the remaining main-line gap is still the non-finite book
+entropy/tail-UI or structural cardinality bridge.
 The separability-to-Definition 2.3.3 route now also has the direct local
 handoff
 `VdVWPMeasurableClass.of_pointwiseApproximableByCountableSubclass_of_bddAbove`,

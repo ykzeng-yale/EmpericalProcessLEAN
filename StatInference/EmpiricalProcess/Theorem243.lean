@@ -51853,7 +51853,8 @@ theorem
       (envelope := envelope) hindex_finite henvelope hclass henv_integrable)
 
 /--
-Canonical finite-class theorem package from the direct iid SLLN route.
+Canonical finite-class theorem package from the direct iid SLLN route, with no
+nonempty-class assumption.
 
 For genuinely finite classes, this gives the direct outer-probability
 `P`-GC endpoint, the direct outer-a.s. endpoint, the local book-style
@@ -51922,7 +51923,6 @@ theorem
     {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
     {envelope : Observation -> ℝ}
     (hindex_finite : indexClass.Finite)
-    (hindexClass : ∃ index, index ∈ indexClass)
     (henvelope : VdVWClassEnvelope indexClass classFun envelope)
     (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
     (henv : Measurable envelope)
@@ -51952,15 +51952,29 @@ theorem
           (fun n : ℕ =>
             vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
           atTop (𝓝 0)) := by
+  classical
   have hpkg :=
     VdVWTheorem243_finite_indexClass_pGlivenkoCantelli_and_lemma245_canonical_slln
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope) hindex_finite henvelope hclass henv_integrable
-  have hinmean :=
-    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical
-      (P := P) (indexClass := indexClass) (classFun := classFun)
-      (envelope := envelope) hindex_finite hindexClass henvelope hclass henv
-      henv_integrable
+  have hinmean :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) := by
+    rcases Set.eq_empty_or_nonempty indexClass with h_empty | h_nonempty
+    · subst indexClass
+      simp
+    · exact
+        integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) hindex_finite h_nonempty henvelope hclass henv
+          henv_integrable
   exact
     ⟨VdVWPMeasurableClass.of_countable_of_measurable
         (P := P) hindex_finite.countable hclass,
