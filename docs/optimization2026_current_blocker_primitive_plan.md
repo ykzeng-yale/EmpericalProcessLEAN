@@ -531,16 +531,29 @@ The newest weighted compensated-error packet proves
 `projectedCompensatedTaylorError_weighted_row_integral_tendsto_zero_of_variance_remainder`,
 and the future-tail consumer
 `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_variance_remainder`.
-The remaining ASGD proof obligations for this route are now precisely:
-1. prove or replace the weighted variance-only and weighted Taylor-remainder
-   convergence assumptions consumed by
-   `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_variance_remainder`.
-   The unweighted row convergence is not enough for suffix sums, because the
-   triangular regrouping counts the one-step error at index `k` exactly `k`
-   times;
-2. prove the row-summed conditional residual convergence of
+The newest same-limit defect packet proves
+`projectedMixedTowerDefect_sum_tendsto_zero_of_compensated_full_inverse_same_limit`
+and
+`projected_charFun_tendsto_exp_of_compensated_full_inverse_same_limit`.
+This is now the preferred ASGD 12.7 route: prove the two compensated
+full-inverse products in the exact defect identity have the same limit, then
+feed the compiled normalized-product convergence bridge.  The weighted suffix
+route is a strong-assumption fallback, not the default source route: the
+unweighted row convergence is not enough for suffix sums, because the
+triangular regrouping counts the one-step error at index `k` exactly `k`
+times.
+The remaining ASGD proof obligations for the preferred route are now precisely:
+1. prove same-limit convergence of
+   `∫ compensatedRawPrefix_N * inverseProduct_N` and
+   `∫ inverseProduct_N * ∏ (1 + compensatedError_k)` consumed by
+   `projected_charFun_tendsto_exp_of_compensated_full_inverse_same_limit`;
+2. prove or replace the weighted variance-only and weighted Taylor-remainder
+   assumptions only if deliberately using the stronger weighted-suffix
+   fallback;
+3. prove the row-summed conditional residual convergence of
    `projectedMixedTowerInverseFutureTail -
-   E[projectedMixedTowerInverseFutureTail | F_r]`.
+   E[projectedMixedTowerInverseFutureTail | F_r]` only if deliberately using
+   the future-tail predictable-proxy route.
 Reuse `projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`,
 the one-step error bounds, inverse-factor norm/measurability, and finite-sum
 reindexing/counting APIs before adding new product machinery.

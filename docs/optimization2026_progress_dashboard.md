@@ -556,10 +556,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   `projectedCompensatedTaylorError_weighted_row_integral_tendsto_zero_of_variance_remainder`,
   and
   `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_variance_remainder`.
-  The active estimates are now the weighted variance-only error convergence,
-  weighted Taylor-remainder convergence, and the inverse-tail conditional
-  residual convergence; ordinary unweighted row-error convergence is not
-  sufficient for the suffix sum because index `k` is counted `k` times.
+  The newest same-limit defect packet adds
+  `projectedMixedTowerDefect_sum_tendsto_zero_of_compensated_full_inverse_same_limit`
+  and
+  `projected_charFun_tendsto_exp_of_compensated_full_inverse_same_limit`.
+  This makes the preferred ASGD 12.7 route the direct compensated
+  full-inverse same-limit gate, not the weighted suffix fallback.  The active
+  estimates are now same-limit convergence of the two compensated
+  full-inverse products; weighted variance/remainder convergence and
+  inverse-tail conditional residual convergence remain available only for the
+  stronger future-tail fallback route.  Ordinary unweighted row-error
+  convergence is not sufficient for the suffix sum because index `k` is
+  counted `k` times.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
   earlier `F_r` for `r < k`.  Next target: build and bound a predictable proxy

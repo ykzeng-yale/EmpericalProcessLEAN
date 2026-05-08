@@ -6730,6 +6730,61 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_eq_comp
   rw [hsum, hRN, hR0]
 
 /--
+The mixed-tower defect vanishes once the two compensated full-inverse products
+in the exact algebraic identity have the same limit.  This is the direct
+non-suffix route: it avoids the triangular absolute-value overcount and leaves
+only product/correlation convergence estimates.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_tendsto_zero_of_compensated_full_inverse_same_limit
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ) (z : ℂ)
+    (hleft :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            S.projectedCompensatedRawPrefixProduct L N t N ω *
+              (∏ k ∈ Finset.range N,
+                S.projectedInverseCompensationFactor L N t k ω) ∂P)
+        atTop (𝓝 z))
+    (hright :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            (∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω) *
+            ∏ k ∈ Finset.range N,
+              (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P)
+        atTop (𝓝 z)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          S.projectedMixedTowerStepDefect L N r t)
+      atTop (𝓝 0) := by
+  have hdiff :
+      Tendsto
+        (fun N : ℕ =>
+          (∫ ω,
+            S.projectedCompensatedRawPrefixProduct L N t N ω *
+              (∏ k ∈ Finset.range N,
+                S.projectedInverseCompensationFactor L N t k ω) ∂P) -
+          ∫ ω,
+            (∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω) *
+            ∏ k ∈ Finset.range N,
+              (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P)
+        atTop (𝓝 (z - z)) :=
+    hleft.sub hright
+  simpa using
+    hdiff.congr' (Eventually.of_forall fun N =>
+      (S.projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product
+        L N t).symm)
+
+/--
 Finite accumulation of the guarded mixed-product successor step.  Under the
 explicit future-tail measurability and integrability hypotheses, integrating
 the raw product at split `N` gives the same value as integrating the fully
@@ -7325,6 +7380,59 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_norm
       exact
         (S.projected_scalarScaledSum_charFun_eq_integral_normalized_product_add_mixedTowerDefect_sum
           L N t).symm)
+
+/--
+Characteristic-function convergence from the normalized-product limit and the
+direct compensated full-inverse same-limit gate for the mixed-tower defect.
+This is the preferred non-suffix route when the triangular absolute-value
+bound would require unrealistically weighted row estimates.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_compensated_full_inverse_same_limit
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ) (z : ℂ)
+    (hnormalized_product :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω, ∏ k ∈ Finset.range N,
+            S.projectedNormalizedTaylorFactor L N t k ω ∂P)
+        atTop
+        (𝓝 (Complex.exp
+          (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))))
+    (hleft :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            S.projectedCompensatedRawPrefixProduct L N t N ω *
+              (∏ k ∈ Finset.range N,
+                S.projectedInverseCompensationFactor L N t k ω) ∂P)
+        atTop (𝓝 z))
+    (hright :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            (∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω) *
+            ∏ k ∈ Finset.range N,
+              (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P)
+        atTop (𝓝 z)) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) :=
+  S.projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect
+    L t hnormalized_product
+    (S.projectedMixedTowerDefect_sum_tendsto_zero_of_compensated_full_inverse_same_limit
+      L t z hleft hright)
 
 /--
 Characteristic-function convergence from the normalized-product limit and the
