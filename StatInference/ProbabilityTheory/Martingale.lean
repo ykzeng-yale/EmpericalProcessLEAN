@@ -3369,5 +3369,139 @@ theorem
       (μ := μ) (ν := ν) (ℱ := ℱ)
       hA C hC_meas hY hZ hgen hC hYlim hZlim hX hμtop hνtop
 
+/--
+Durrett 2019, Theorem 4.3.5 bounded-real bridge: an integrable real function
+whose norm is bounded by one a.e. has the L1/eLpNorm bound supplied by the
+total mass of the finite measure.
+-/
+theorem durrett2019_eLpNorm_one_le_measureReal_of_ae_norm_le_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {ρ : Measure Ω} [IsFiniteMeasure ρ] {X : Ω -> ℝ}
+    (hX : Integrable X ρ) (hbound : ∀ᵐ ω ∂ρ, ‖X ω‖ ≤ (1 : ℝ)) :
+    eLpNorm X 1 ρ ≤ ENNReal.ofReal (ρ.real Set.univ) := by
+  have h_integral_bound : ∫ ω, ‖X ω‖ ∂ρ ≤ ρ.real Set.univ := by
+    calc
+      ∫ ω, ‖X ω‖ ∂ρ ≤ ∫ _ω, (1 : ℝ) ∂ρ :=
+        integral_mono_ae hX.norm (integrable_const (1 : ℝ)) hbound
+      _ = ρ.real Set.univ := by simp
+  have h :=
+    durrett2019_eLpNorm_one_le_of_integral_norm_le
+      (μ := ρ) hX measureReal_nonneg h_integral_bound
+  simpa using h
+
+/--
+Durrett 2019, Theorem 4.3.5 bounded-real martingale convergence bridge:
+a martingale whose entries are a.e. norm-bounded by one converges almost
+surely to mathlib's filtration limit process.
+-/
+theorem durrett2019_theorem_4_3_5_bounded_martingale_ae_tendsto_limitProcess
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {ρ : Measure Ω} [IsFiniteMeasure ρ] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ ρ)
+    (hbound : ∀ n, ∀ᵐ ω ∂ρ, ‖X n ω‖ ≤ (1 : ℝ)) :
+    ∀ᵐ ω ∂ρ, Tendsto (fun n => X n ω) atTop (𝓝 (ℱ.limitProcess X ρ ω)) :=
+  durrett2019_theorem_4_2_11_martingale_ae_tendsto_limitProcess_of_eLpNorm_bdd
+    (R := ⟨ρ.real Set.univ, measureReal_nonneg⟩) hX
+    (fun n => by
+      simpa [ENNReal.ofReal_eq_coe_nnreal measureReal_nonneg] using
+        durrett2019_eLpNorm_one_le_measureReal_of_ae_norm_le_one
+          (ρ := ρ) (X := X n) (hX.integrable n) (hbound n))
+
+/--
+Durrett 2019, Theorem 4.3.5 `toReal` bound primitive: an `ENNReal` density
+bounded by one has real cast with norm bounded by one.
+-/
+theorem durrett2019_theorem_4_3_5_toReal_norm_le_one_of_ennreal_le_one
+    {Ω : Type*} [MeasurableSpace Ω] {ρ : Measure Ω} {Y : Ω -> ℝ≥0∞}
+    (hY : Y ≤ᵐ[ρ] fun _ => (1 : ℝ≥0∞)) :
+    (fun ω => ‖(Y ω).toReal‖) ≤ᵐ[ρ] fun _ => (1 : ℝ) := by
+  filter_upwards [hY] with ω hω
+  have hle : (Y ω).toReal ≤ (1 : ℝ) := by
+    simpa using ENNReal.toReal_mono ENNReal.one_ne_top hω
+  simpa [Real.norm_eq_abs, abs_of_nonneg ENNReal.toReal_nonneg] using hle
+
+/--
+Durrett 2019, Theorem 4.3.5 trimmed RN `toReal` convergence bridge: if the
+trimmed RN derivative sequence is bounded by one, its real-valued likelihood
+ratio martingale converges to the filtration limit process.
+-/
+theorem
+    durrett2019_theorem_4_3_5_trimmed_rnDeriv_toReal_ae_tendsto_limitProcess_of_le_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {η ρ : Measure Ω} [IsFiniteMeasure η] [IsFiniteMeasure ρ]
+    {ℱ : Filtration ℕ mΩ}
+    (hηρ : ∀ n, η.trim (ℱ.le n) ≪ ρ.trim (ℱ.le n))
+    (hbound : ∀ n,
+      (fun ω => (η.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω) ≤ᵐ[ρ]
+        fun _ => (1 : ℝ≥0∞)) :
+    ∀ᵐ ω ∂ρ,
+      Tendsto
+        (fun n => ((η.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω).toReal)
+        atTop
+        (𝓝 (ℱ.limitProcess
+          (fun n ω => ((η.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω).toReal)
+          ρ ω)) := by
+  have hM :
+      Martingale
+        (fun n ω => ((η.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω).toReal)
+        ℱ ρ :=
+    durrett2019_lemma_4_3_6_trimmed_rnDeriv_martingale
+      (μ := η) (ν := ρ) (ℱ := ℱ) hηρ
+  have hreal_bound : ∀ n, ∀ᵐ ω ∂ρ,
+      ‖((η.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω).toReal‖ ≤ (1 : ℝ) := by
+    intro n
+    exact
+      durrett2019_theorem_4_3_5_toReal_norm_le_one_of_ennreal_le_one
+        (ρ := ρ)
+        (Y := fun ω => (η.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω)
+        (hbound n)
+  exact
+    durrett2019_theorem_4_3_5_bounded_martingale_ae_tendsto_limitProcess
+      (ρ := ρ) (ℱ := ℱ) hM hreal_bound
+
+/--
+Durrett 2019, Theorem 4.3.5 with the natural dominating measure `mu + nu`:
+both real-valued trimmed RN derivative sequences converge to their filtration
+limit processes.
+-/
+theorem
+    durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_toReal_limitProcess_convergence
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ} :
+    (∀ᵐ ω ∂(μ + ν),
+      Tendsto
+        (fun n => ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        atTop
+        (𝓝 (ℱ.limitProcess
+          (fun n ω => ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+          (μ + ν) ω))) ∧
+      (∀ᵐ ω ∂(μ + ν),
+        Tendsto
+          (fun n => ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+          atTop
+          (𝓝 (ℱ.limitProcess
+            (fun n ω =>
+              ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+            (μ + ν) ω))) := by
+  have hμρ : ∀ n, μ.trim (ℱ.le n) ≪ (μ + ν).trim (ℱ.le n) := by
+    intro n
+    refine Measure.absolutelyContinuous_of_le ?_
+    rw [trim_add]
+    exact Measure.le_add_right le_rfl
+  have hνρ : ∀ n, ν.trim (ℱ.le n) ≪ (μ + ν).trim (ℱ.le n) := by
+    intro n
+    refine Measure.absolutelyContinuous_of_le ?_
+    rw [trim_add]
+    exact Measure.le_add_left le_rfl
+  obtain ⟨hμbound, hνbound⟩ :=
+    durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_bounds
+      (μ := μ) (ν := ν) (ℱ := ℱ)
+  exact
+    ⟨durrett2019_theorem_4_3_5_trimmed_rnDeriv_toReal_ae_tendsto_limitProcess_of_le_one
+        (η := μ) (ρ := μ + ν) (ℱ := ℱ) hμρ hμbound,
+      durrett2019_theorem_4_3_5_trimmed_rnDeriv_toReal_ae_tendsto_limitProcess_of_le_one
+        (η := ν) (ρ := μ + ν) (ℱ := ℱ) hνρ hνbound⟩
+
 end ProbabilityTheory
 end StatInference
