@@ -98,6 +98,17 @@ theorem rowMarginal_nonneg_of_nonneg
   unfold rowMarginal
   exact Finset.sum_nonneg fun y _hy => hγ_nonneg x y
 
+/-- Positive finite couplings have positive row marginals when `Y` is nonempty. -/
+theorem rowMarginal_pos_of_pos
+    {X Y : Type*} [Fintype Y] [Nonempty Y] {γ : X -> Y -> ℝ}
+    (hγ_pos : ∀ x y, 0 < γ x y) (x : X) :
+    0 < rowMarginal γ x := by
+  classical
+  let y0 : Y := Classical.choice (inferInstance : Nonempty Y)
+  unfold rowMarginal
+  exact Finset.sum_pos (fun y _hy => hγ_pos x y)
+    ⟨y0, Finset.mem_univ y0⟩
+
 /-- Nonnegative finite couplings have nonnegative column marginals. -/
 theorem columnMarginal_nonneg_of_nonneg
     {X Y : Type*} [Fintype X] {γ : X -> Y -> ℝ}
@@ -106,6 +117,17 @@ theorem columnMarginal_nonneg_of_nonneg
   classical
   unfold columnMarginal
   exact Finset.sum_nonneg fun x _hx => hγ_nonneg x y
+
+/-- Positive finite couplings have positive column marginals when `X` is nonempty. -/
+theorem columnMarginal_pos_of_pos
+    {X Y : Type*} [Fintype X] [Nonempty X] {γ : X -> Y -> ℝ}
+    (hγ_pos : ∀ x y, 0 < γ x y) (y : Y) :
+    0 < columnMarginal γ y := by
+  classical
+  let x0 : X := Classical.choice (inferInstance : Nonempty X)
+  unfold columnMarginal
+  exact Finset.sum_pos (fun x _hx => hγ_pos x y)
+    ⟨x0, Finset.mem_univ x0⟩
 
 /--
 The row-marginal objective in Chewi Theorem 11.8:
@@ -335,6 +357,147 @@ theorem finiteKL_nonneg_of_nonneg_of_pos_of_sum_eq
     rw [Finset.sum_sub_distrib, hsum]
     ring
   nlinarith
+
+/-- Pointwise term used in the finite log-sum inequality. -/
+theorem finiteKL_logSum_term_le {a b A B : ℝ}
+    (ha : 0 < a) (hb : 0 < b) (hA : 0 < A) (hB : 0 < B) :
+    a * Real.log (A / B) - a * Real.log (a / b) ≤ A * b / B - a := by
+  have hz : 0 < (A / B) / (a / b) := by
+    exact div_pos (div_pos hA hB) (div_pos ha hb)
+  have hlog := Real.log_le_sub_one_of_pos hz
+  have hmul := mul_le_mul_of_nonneg_left hlog ha.le
+  have hlog_eq :
+      Real.log ((A / B) / (a / b)) =
+        Real.log (A / B) - Real.log (a / b) := by
+    rw [Real.log_div]
+    · exact div_ne_zero hA.ne' hB.ne'
+    · exact div_ne_zero ha.ne' hb.ne'
+  have hleft :
+      a * Real.log ((A / B) / (a / b)) =
+        a * Real.log (A / B) - a * Real.log (a / b) := by
+    rw [hlog_eq]
+    ring
+  have hright :
+      a * ((A / B) / (a / b) - 1) = A * b / B - a := by
+    field_simp [ha.ne', hb.ne', hB.ne']
+  simpa [hleft, hright] using hmul
+
+/--
+Finite log-sum inequality for one row.  This is the row-level data-processing
+step for the finite Sinkhorn KL display.
+-/
+theorem finiteKL_row_logSum_le
+    {Y : Type*} [Fintype Y] (a b : Y -> ℝ)
+    (ha : ∀ y, 0 < a y) (hb : ∀ y, 0 < b y)
+    (hA : 0 < ∑ y, a y) (hB : 0 < ∑ y, b y) :
+    (∑ y, a y) * Real.log ((∑ y, a y) / (∑ y, b y)) ≤
+      ∑ y, a y * Real.log (a y / b y) := by
+  classical
+  let A : ℝ := ∑ y, a y
+  let B : ℝ := ∑ y, b y
+  have hdiff_le :
+      (∑ y, (a y * Real.log (A / B) -
+          a y * Real.log (a y / b y))) ≤ 0 := by
+    calc
+      (∑ y, (a y * Real.log (A / B) -
+          a y * Real.log (a y / b y)))
+          ≤ ∑ y, (A * b y / B - a y) := by
+              exact Finset.sum_le_sum fun y _hy =>
+                finiteKL_logSum_term_le (ha y) (hb y) (by simpa [A] using hA)
+                  (by simpa [B] using hB)
+      _ = 0 := by
+              rw [Finset.sum_sub_distrib]
+              have hsum_first : (∑ y, A * b y / B) = A := by
+                calc
+                  (∑ y, A * b y / B) = A / B * ∑ y, b y := by
+                      rw [Finset.mul_sum]
+                      refine Finset.sum_congr rfl ?_
+                      intro y _hy
+                      ring
+                  _ = A / B * B := by
+                      rw [show (∑ y, b y) = B by simp [B]]
+                  _ = A := by
+                      have hB_ne : B ≠ 0 := by
+                        simpa [B] using hB.ne'
+                      field_simp [hB_ne]
+              have hsum_second : (∑ y, a y) = A := by
+                simp [A]
+              rw [hsum_first, hsum_second]
+              ring
+  have hdiff_eq :
+      (∑ y, (a y * Real.log (A / B) -
+          a y * Real.log (a y / b y))) =
+        A * Real.log (A / B) - ∑ y, a y * Real.log (a y / b y) := by
+    rw [Finset.sum_sub_distrib]
+    have hconst :
+        (∑ y, a y * Real.log (A / B)) = A * Real.log (A / B) := by
+      simpa [A] using
+        (Finset.sum_mul (s := Finset.univ) (f := a) (a := Real.log (A / B))).symm
+    rw [hconst]
+  have hmain : A * Real.log (A / B) - ∑ y, a y * Real.log (a y / b y) ≤ 0 := by
+    simpa [hdiff_eq] using hdiff_le
+  have hrewrite :
+      A * Real.log (A / B) =
+        (∑ y, a y) * Real.log ((∑ y, a y) / (∑ y, b y)) := by
+    simp [A, B]
+  rw [← hrewrite]
+  nlinarith
+
+/--
+Finite row-marginal data-processing/log-sum bridge for positive coupling
+arrays.
+-/
+theorem finiteKL_rowMarginal_le_finiteCouplingKL_of_pos
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (γ η : X -> Y -> ℝ)
+    (hγ_pos : ∀ x y, 0 < γ x y)
+    (hη_pos : ∀ x y, 0 < η x y)
+    (hrowγ_pos : ∀ x, 0 < rowMarginal γ x)
+    (hrowη_pos : ∀ x, 0 < rowMarginal η x) :
+    finiteKL (rowMarginal γ) (rowMarginal η) ≤ finiteCouplingKL γ η := by
+  classical
+  unfold finiteKL finiteCouplingKL
+  exact Finset.sum_le_sum fun x _hx =>
+    finiteKL_row_logSum_le
+      (a := fun y => γ x y) (b := fun y => η x y)
+      (hγ_pos x) (hη_pos x)
+      (by simpa [rowMarginal] using hrowγ_pos x)
+      (by simpa [rowMarginal] using hrowη_pos x)
+
+/--
+Row-marginal data-processing bridge with the reference row marginal identified
+as the target row law `μ`.
+-/
+theorem finiteKL_rowMarginal_le_finiteCouplingKL_of_rowMarginal_eq_of_pos
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (γ γStar : X -> Y -> ℝ) (μ : X -> ℝ)
+    (hγ_pos : ∀ x y, 0 < γ x y)
+    (hstar_pos : ∀ x y, 0 < γStar x y)
+    (hrowγ_pos : ∀ x, 0 < rowMarginal γ x)
+    (hrowStar_pos : ∀ x, 0 < rowMarginal γStar x)
+    (hstar_row : ∀ x, rowMarginal γStar x = μ x) :
+    finiteKL (rowMarginal γ) μ ≤ finiteCouplingKL γ γStar := by
+  have hrow_fun : rowMarginal γStar = μ := funext hstar_row
+  rw [← hrow_fun]
+  exact finiteKL_rowMarginal_le_finiteCouplingKL_of_pos
+    γ γStar hγ_pos hstar_pos hrowγ_pos hrowStar_pos
+
+/--
+Sinkhorn row-objective data-processing bridge with the reference row marginal
+identified as `μ`.
+-/
+theorem sinkhornRowObjective_le_finiteCouplingKL_of_rowMarginal_eq_of_pos
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (μ : X -> ℝ) (γ γStar : X -> Y -> ℝ)
+    (hγ_pos : ∀ x y, 0 < γ x y)
+    (hstar_pos : ∀ x y, 0 < γStar x y)
+    (hrowγ_pos : ∀ x, 0 < rowMarginal γ x)
+    (hrowStar_pos : ∀ x, 0 < rowMarginal γStar x)
+    (hstar_row : ∀ x, rowMarginal γStar x = μ x) :
+    sinkhornRowObjective μ γ ≤ finiteCouplingKL γ γStar := by
+  simpa [sinkhornRowObjective] using
+    finiteKL_rowMarginal_le_finiteCouplingKL_of_rowMarginal_eq_of_pos
+      γ γStar μ hγ_pos hstar_pos hrowγ_pos hrowStar_pos hstar_row
 
 /-- Finite Gibbs nonnegativity for the Sinkhorn row objective. -/
 theorem sinkhornRowObjective_nonneg_of_nonneg_of_pos_of_mass_eq

@@ -1068,11 +1068,17 @@ couplings, identifies the initial Bregman term with the source
 `KL(rowMarginal gamma^N || mu)` orientation.  Fresh search-first result:
 mathlib has measure-level KL/data-processing material in
 `Mathlib.InformationTheory.KullbackLeibler.*` and convex Jensen APIs, but no
-ready finite curried-array Sinkhorn/log-sum theorem.  The next concrete 11.8
-blocker is the finite log-sum/data-processing bridge
-`finiteKL (rowMarginal gamma) (rowMarginal eta) <= finiteCouplingKL gamma eta`,
-then the exact Sinkhorn mirror-descent recurrence and objective monotonicity
-fields from the row/column normalization updates.
+ready finite curried-array Sinkhorn/log-sum theorem.  The newest
+data-processing packet proves the missing finite real-array bridge directly:
+`finiteKL_logSum_term_le`, `finiteKL_row_logSum_le`,
+`finiteKL_rowMarginal_le_finiteCouplingKL_of_pos`,
+`finiteKL_rowMarginal_le_finiteCouplingKL_of_rowMarginal_eq_of_pos`, and
+`sinkhornRowObjective_le_finiteCouplingKL_of_rowMarginal_eq_of_pos`, plus
+positive row/column marginal lemmas for positive nonempty finite arrays.  The
+next concrete 11.8 blocker is now the exact Sinkhorn mirror-descent recurrence
+and row-objective monotonicity fields from the row/column normalization
+updates, using the compiled row/column normalization identities and this
+finite data-processing bridge.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,

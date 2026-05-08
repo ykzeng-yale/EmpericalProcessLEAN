@@ -607,10 +607,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `KL(gammaStar || gamma^0) / N`.  Fresh search result: mathlib's
   `InformationTheory.KullbackLeibler` files provide measure-level KL
   machinery, and `Real.self_sub_one_le_mul_log` supplies scalar Gibbs, but no
-  plug-in finite Sinkhorn log-sum/data-processing theorem was found.  The next
-  blocker is the finite log-sum bridge from row-marginal KL to coupling KL,
-  followed by the concrete zero-error Sinkhorn mirror-descent recurrence and
-  row-objective monotonicity fields.  The
+  plug-in finite Sinkhorn log-sum/data-processing theorem was found.  The new
+  data-processing packet now proves that bridge directly via
+  `finiteKL_logSum_term_le`, `finiteKL_row_logSum_le`,
+  `finiteKL_rowMarginal_le_finiteCouplingKL_of_pos`,
+  `finiteKL_rowMarginal_le_finiteCouplingKL_of_rowMarginal_eq_of_pos`, and
+  `sinkhornRowObjective_le_finiteCouplingKL_of_rowMarginal_eq_of_pos`, with
+  positive row/column marginal helpers for nonempty finite index sets.  The
+  next blocker is the concrete zero-error Sinkhorn mirror-descent recurrence
+  and row-objective monotonicity fields from the normalization updates.  The
   current local focused Lean check also verifies
   `chewi118_last_gap_le_of_recurrence` and
   `chewi118_last_gap_le_of_oneStep` in `MirrorDescent.lean`, turning the
