@@ -620,8 +620,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi118_entropy_one_step_trajectory_of_columnNormalized_projection_decrease`.
   This converts a supplied column-normalization projection decrease into the
   exact Theorem 11.8 one-step recurrence for the concrete row objective.  The
-  next blocker is the source projection-decrease field from the finite
-  row/column Bregman projection identities, plus row-objective monotonicity
+  finite projection certificate packet now adds
+  `IsFiniteCouplingEntropyProjectionStep`,
+  `finiteCouplingEntropyProjection_two_step_decrease`,
+  `chewi118_entropy_one_step_of_finiteEntropyProjectionSteps_columnNormalized`,
+  and
+  `chewi118_entropy_one_step_trajectory_of_finiteEntropyProjectionSteps_columnNormalized`,
+  closing the projection-decrease field at the supplied finite-certificate
+  layer.  The next blocker is proving row/column normalizations instantiate
+  `IsFiniteCouplingEntropyProjectionStep`, plus row-objective monotonicity
   from mirror-descent descent.  The
   current local focused Lean check also verifies
   `chewi118_last_gap_le_of_recurrence` and

@@ -1082,10 +1082,16 @@ newest recurrence bridge packet adds
 `chewi118_entropy_one_step_trajectory_of_columnNormalized_projection_decrease`.
 This turns a supplied column-normalization Pythagorean/projection decrease
 into the exact Theorem 11.8 one-step recurrence with the concrete
-`sinkhornRowObjective` gap.  The next concrete 11.8 blocker is now the source
-projection-decrease field itself, assembled from the row-normalization and
-column-normalization Bregman projection identities, plus row-objective
-monotonicity from the mirror-descent descent lemma.
+`sinkhornRowObjective` gap.  The newest finite projection certificate packet
+adds `IsFiniteCouplingEntropyProjectionStep`,
+`finiteCouplingEntropyProjection_two_step_decrease`,
+`chewi118_entropy_one_step_of_finiteEntropyProjectionSteps_columnNormalized`,
+and
+`chewi118_entropy_one_step_trajectory_of_finiteEntropyProjectionSteps_columnNormalized`.
+This closes the projection-decrease field at the supplied finite-certificate
+level.  The next concrete 11.8 blocker is proving the actual row/column
+normalization maps satisfy `IsFiniteCouplingEntropyProjectionStep`, plus
+row-objective monotonicity from the mirror-descent descent lemma.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,

@@ -630,6 +630,105 @@ theorem chewi118_entropy_one_step_trajectory_of_columnNormalized_projection_decr
   rw [hstep]
   exact hbase (by simpa [← hstep] using hprojection_decrease n hn)
 
+/--
+Finite-array entropic Bregman projection certificate, mirroring the generic
+`IsBregmanProjectionStep` API without transporting finite coupling arrays into
+a Hilbert-space wrapper.
+-/
+structure IsFiniteCouplingEntropyProjectionStep
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (C : Set (X -> Y -> ℝ)) (base proj : X -> Y -> ℝ) : Prop where
+  mem : proj ∈ C
+  divergence_nonneg : 0 ≤ finiteCouplingEntropyBregman proj base
+  pythagorean : ∀ ⦃z : X -> Y -> ℝ⦄, z ∈ C ->
+    finiteCouplingEntropyBregman z proj +
+        finiteCouplingEntropyBregman proj base ≤
+      finiteCouplingEntropyBregman z base
+
+/--
+Two finite entropic Bregman projection steps give the projection-decrease field
+needed by the Chewi 11.8 Sinkhorn recurrence.
+-/
+theorem finiteCouplingEntropyProjection_two_step_decrease
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    {CRow CCol : Set (X -> Y -> ℝ)}
+    {gammaStar gammaPrev gammaHalf gammaNext : X -> Y -> ℝ}
+    (hrow : IsFiniteCouplingEntropyProjectionStep CRow gammaPrev gammaHalf)
+    (hcol : IsFiniteCouplingEntropyProjectionStep CCol gammaHalf gammaNext)
+    (hstar_row : gammaStar ∈ CRow) (hstar_col : gammaStar ∈ CCol) :
+    finiteCouplingEntropyBregman gammaStar gammaNext +
+        finiteCouplingEntropyBregman gammaNext gammaHalf ≤
+      finiteCouplingEntropyBregman gammaStar gammaPrev := by
+  have hrow_pyth := hrow.pythagorean hstar_row
+  have hcol_pyth := hcol.pythagorean hstar_col
+  have hrow_nonneg := hrow.divergence_nonneg
+  nlinarith
+
+/--
+Finite projection-step version of the Chewi 11.8 one-step recurrence for a
+column-normalized Sinkhorn full step.
+-/
+theorem chewi118_entropy_one_step_of_finiteEntropyProjectionSteps_columnNormalized
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    {CRow CCol : Set (X -> Y -> ℝ)}
+    (gammaStar gammaPrev gammaHalf : X -> Y -> ℝ)
+    (hrow : IsFiniteCouplingEntropyProjectionStep CRow gammaPrev gammaHalf)
+    (hcol : IsFiniteCouplingEntropyProjectionStep CCol gammaHalf
+      (columnNormalizedCoupling ν gammaHalf))
+    (hstar_row : gammaStar ∈ CRow) (hstar_col : gammaStar ∈ CCol)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hhalf_pos : ∀ x y, 0 < gammaHalf x y)
+    (hhalf_row : ∀ x, rowMarginal gammaHalf x = μ x)
+    (hmass : (∑ y, ν y) = finiteCouplingMass gammaHalf) :
+    finiteCouplingEntropyBregman gammaStar
+        (columnNormalizedCoupling ν gammaHalf) ≤
+      finiteCouplingEntropyBregman gammaStar gammaPrev -
+        sinkhornRowObjective μ (columnNormalizedCoupling ν gammaHalf) := by
+  exact
+    chewi118_entropy_one_step_of_columnNormalized_projection_decrease
+      μ ν gammaStar gammaPrev gammaHalf hν_pos hhalf_pos hhalf_row hmass
+      (finiteCouplingEntropyProjection_two_step_decrease
+        (hrow := hrow) (hcol := hcol) hstar_row hstar_col)
+
+/--
+Trajectory-indexed finite projection-step version of the Chewi 11.8 one-step
+recurrence.
+-/
+theorem chewi118_entropy_one_step_trajectory_of_finiteEntropyProjectionSteps_columnNormalized
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    {CRow CCol : Set (X -> Y -> ℝ)}
+    (gamma : ℕ -> X -> Y -> ℝ) (gammaHalf : ℕ -> X -> Y -> ℝ)
+    (gammaStar : X -> Y -> ℝ) {N : ℕ}
+    (hcolumn_step : ∀ n, n < N ->
+      gamma (n + 1) = columnNormalizedCoupling ν (gammaHalf n))
+    (hrow : ∀ n, n < N ->
+      IsFiniteCouplingEntropyProjectionStep CRow (gamma n) (gammaHalf n))
+    (hcol : ∀ n, n < N ->
+      IsFiniteCouplingEntropyProjectionStep CCol (gammaHalf n) (gamma (n + 1)))
+    (hstar_row : gammaStar ∈ CRow) (hstar_col : gammaStar ∈ CCol)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hhalf_pos : ∀ n, n < N -> ∀ x y, 0 < gammaHalf n x y)
+    (hhalf_row : ∀ n, n < N -> ∀ x, rowMarginal (gammaHalf n) x = μ x)
+    (hmass : ∀ n, n < N -> (∑ y, ν y) = finiteCouplingMass (gammaHalf n)) :
+    ∀ n, n < N ->
+      finiteCouplingEntropyBregman gammaStar (gamma (n + 1)) ≤
+        finiteCouplingEntropyBregman gammaStar (gamma n) -
+          sinkhornRowObjective μ (gamma (n + 1)) := by
+  intro n hn
+  have hstep := hcolumn_step n hn
+  have hcol' :
+      IsFiniteCouplingEntropyProjectionStep CCol (gammaHalf n)
+        (columnNormalizedCoupling ν (gammaHalf n)) := by
+    simpa [← hstep] using hcol n hn
+  rw [hstep]
+  exact
+    chewi118_entropy_one_step_of_finiteEntropyProjectionSteps_columnNormalized
+      μ ν gammaStar (gamma n) (gammaHalf n)
+      (hrow n hn) hcol' hstar_row hstar_col hν_pos
+      (hhalf_pos n hn) (hhalf_row n hn) (hmass n hn)
+
 /-- Finite Gibbs nonnegativity for the Sinkhorn row objective. -/
 theorem sinkhornRowObjective_nonneg_of_nonneg_of_pos_of_mass_eq
     {X Y : Type*} [Fintype X] [Fintype Y]
