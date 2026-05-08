@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V36`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V37`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -424,11 +424,12 @@ Next packet:
   the exact positive-part-boundedness bridge for Durrett's source hypothesis.
   Theorem 4.2.12 now has nonnegative-supermartingale convergence,
   integrable-limit, Fatou expectation, and final expectation-bounded limit
-  wrappers.  Theorem 4.3.1 now has stopped-shifted convergence and
-  survival-transfer support wrappers.  The next active target is the
-  first-below stopping-time instantiation and bounded-increment lower bound
-  needed to feed those wrappers.  Theorem 4.1.16 remains deferred unless a
-  direct kernel API appears.
+  wrappers.  Theorem 4.3.1 now has stopped-shifted convergence,
+  survival-transfer, first-below stopping-time, bounded-increment lower-bound,
+  and first-below survival convergence support wrappers.  The next active
+  target is upgrading this to convergence on the bounded-below path event,
+  matching Durrett's `{liminf X_n > -∞}` step.  Theorem 4.1.16 remains
+  deferred unless a direct kernel API appears.
 
 Support-only dependencies:
 

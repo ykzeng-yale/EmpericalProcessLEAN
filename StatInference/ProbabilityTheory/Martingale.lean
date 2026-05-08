@@ -1885,6 +1885,69 @@ theorem durrett2019_example_4_2_3_normalizedExponentialProduct_martingale_of_iIn
 /-! ## Durrett, Section 4.3 -/
 
 /--
+Durrett 2019, Theorem 4.3.1 support: the first time the martingale falls
+below `-K`.
+-/
+noncomputable def durrett2019_theorem_4_3_1_firstBelow
+    {Ω : Type*} (X : ℕ -> Ω -> ℝ) (K : ℝ) : Ω -> ℕ∞ :=
+  hittingAfter X (Set.Iic (-K)) 0
+
+/--
+Durrett 2019, Theorem 4.3.1 support: the first-below time is a stopping time
+for an adapted process.
+-/
+theorem durrett2019_theorem_4_3_1_firstBelow_isStoppingTime
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (K : ℝ) (hX_adapted : StronglyAdapted ℱ X) :
+    IsStoppingTime ℱ (durrett2019_theorem_4_3_1_firstBelow X K) :=
+  hX_adapted.adapted.isStoppingTime_hittingAfter measurableSet_Iic
+
+/--
+Durrett 2019, Theorem 4.3.1 support: for the first time `N` at which
+`X_N ≤ -K`, bounded increments imply the stopped process is bounded below by
+`-K - M`, equivalently `X_{n ∧ N} + K + M ≥ 0`.
+-/
+theorem durrett2019_theorem_4_3_1_firstBelow_stopped_shift_nonneg
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {K M : ℝ}
+    (hK_nonneg : 0 ≤ K) (hM_nonneg : 0 ≤ M)
+    (hX0 : ∀ᵐ ω ∂μ, X 0 ω = 0)
+    (hinc : ∀ᵐ ω ∂μ, ∀ i, |X (i + 1) ω - X i ω| ≤ M) :
+    ∀ n, 0 ≤ᵐ[μ] fun ω =>
+      stoppedProcess X (durrett2019_theorem_4_3_1_firstBelow X K) n ω + (K + M) := by
+  intro n
+  filter_upwards [hX0, hinc] with ω hX0ω hincω
+  change (0 : ℝ) ≤
+    stoppedProcess X (durrett2019_theorem_4_3_1_firstBelow X K) n ω + (K + M)
+  rw [durrett2019_theorem_4_3_1_firstBelow, stoppedProcess]
+  by_cases h_zero :
+      (min (n : ℕ∞) (hittingAfter X (Set.Iic (-K)) 0 ω)).untopA = 0
+  · change (0 : ℝ) ≤
+      X ((min (n : ℕ∞) (hittingAfter X (Set.Iic (-K)) 0 ω)).untopA) ω + (K + M)
+    rw [h_zero, hX0ω]
+    linarith
+  · obtain ⟨k, hk⟩ := Nat.exists_eq_add_one_of_ne_zero h_zero
+    change (0 : ℝ) ≤
+      X ((min (n : ℕ∞) (hittingAfter X (Set.Iic (-K)) 0 ω)).untopA) ω + (K + M)
+    rw [hk]
+    have hk_lt_min :
+        (k : ℕ∞) < min (n : ℕ∞) (hittingAfter X (Set.Iic (-K)) 0 ω) := by
+      have h_top : min (n : ℕ∞) (hittingAfter X (Set.Iic (-K)) 0 ω) ≠ ⊤ :=
+        ne_top_of_le_ne_top (by simp) (min_le_left _ _)
+      lift min (n : ℕ∞) (hittingAfter X (Set.Iic (-K)) 0 ω) to ℕ using h_top with p
+      simp only [untopD_coe_enat, Nat.cast_lt, gt_iff_lt] at *
+      omega
+    have hk_lt_hit : (k : ℕ∞) < hittingAfter X (Set.Iic (-K)) 0 ω :=
+      hk_lt_min.trans_le (min_le_right _ _)
+    have hprev_not : X k ω ∉ Set.Iic (-K) :=
+      notMem_of_lt_hittingAfter hk_lt_hit (Nat.zero_le k)
+    have hprev_gt : -K < X k ω := by
+      simpa [Set.mem_Iic, not_le] using hprev_not
+    have hdiff_ge : -M ≤ X (k + 1) ω - X k ω :=
+      (abs_le.mp (hincω k)).1
+    linarith
+
+/--
 Durrett 2019, Theorem 4.3.1 support: if a stopped martingale becomes
 nonnegative after adding a constant, then the stopped process converges almost
 surely.
@@ -1949,6 +2012,29 @@ theorem durrett2019_theorem_4_3_1_stopped_shifted_tendsto_on_survival
   durrett2019_theorem_4_3_1_stopped_tendsto_on_survival
     (durrett2019_theorem_4_3_1_stopped_shifted_exists_ae_tendsto
       hX hN h_nonneg)
+
+/--
+Durrett 2019, Theorem 4.3.1 first-below instantiation: if `X_0 = 0` and the
+increments are bounded by `M`, then applying Theorem 4.2.12 to
+`X_{n ∧ N} + K + M` gives convergence on the event that the first-below time
+`N = inf {n : X_n ≤ -K}` is infinite.
+-/
+theorem durrett2019_theorem_4_3_1_firstBelow_tendsto_on_survival
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {K M : ℝ}
+    (hX : Martingale X ℱ μ) (hK_nonneg : 0 ≤ K) (hM_nonneg : 0 ≤ M)
+    (hX0 : ∀ᵐ ω ∂μ, X 0 ω = 0)
+    (hinc : ∀ᵐ ω ∂μ, ∀ i, |X (i + 1) ω - X i ω| ≤ M) :
+    ∀ᵐ ω ∂μ, durrett2019_theorem_4_3_1_firstBelow X K ω = ⊤ ->
+      ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) :=
+  durrett2019_theorem_4_3_1_stopped_shifted_tendsto_on_survival
+    (N := durrett2019_theorem_4_3_1_firstBelow X K) (c := K + M)
+    hX
+    (durrett2019_theorem_4_3_1_firstBelow_isStoppingTime K hX.stronglyAdapted)
+    (durrett2019_theorem_4_3_1_firstBelow_stopped_shift_nonneg
+      hK_nonneg hM_nonneg hX0 hinc)
 
 end ProbabilityTheory
 end StatInference
