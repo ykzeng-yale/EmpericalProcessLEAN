@@ -116,6 +116,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   deterministic proxy errors to row-summed future-tail `L1` approximation.
   The next source blocker is now a concrete deterministic factor proxy
   approximation, not another product/suffix algebra layer.
+- Limit-variance proxy endpoint: the newest ASGD packet adds the canonical
+  deterministic factor/tail proxy route
+  `covariance_limit_self_nonneg`, `chewi127LimitVarianceProxyFactor`,
+  `chewi127LimitVarianceProxyFactor_norm_le_one`,
+  `projectedLimitVarianceFutureTailProxy`,
+  `projectedMixedTowerFutureTail_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error`,
+  and
+  `asgd_limit_package_of_limitVarianceProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
+  The live ASGD blocker is now exactly the weighted one-step error between
+  `projectedNormalizedTaylorFactor` and this limit-variance proxy factor.
 - Residual-estimate extraction: the newest ASGD packet adds
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
@@ -1357,14 +1367,14 @@ deterministic-proxy specialization also contains
 `projected_clt_of_deterministic_futureTail_l1_approx`,
 `toProjectedBridge_of_deterministic_futureTail_l1_approx`, and
 `toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx`.
-Next theorem-sized packet: construct a concrete deterministic unit-ball factor
-proxy for `S.projectedNormalizedTaylorFactor L N t k` and prove the weighted
-one-step factor-error convergence consumed by
-`projectedMixedTowerFutureTail_deterministicTailProxy_l1_sum_tendsto_zero_of_weighted_factor_error`,
-then feed the resulting row-summed future-tail approximation into the existing
-deterministic future-tail certificate/ASGD endpoint.  The competing fallback
-is the inverse-tail conditional-residual route, but the generic suffix product
-and triangular weighted-counting algebra are now closed.  Do not re-open
+Next theorem-sized packet: prove the weighted one-step factor-error convergence
+between `S.projectedNormalizedTaylorFactor L N t k` and
+`chewi127LimitVarianceProxyFactor (S.covariance_limit.S_infty L L) N t`.
+That exact theorem is consumed by
+`asgd_limit_package_of_limitVarianceProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
+The competing fallback is the inverse-tail conditional-residual route, but the
+generic suffix product, triangular weighted-counting algebra, canonical
+limit-variance proxy, and endpoint plumbing are now closed.  Do not re-open
 characteristic-function, scalar CLT, projected CLT, or certificate adapter
 wiring unless the proxy theorem changes its interface.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw

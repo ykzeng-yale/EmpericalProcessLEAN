@@ -48,6 +48,12 @@ the new deterministic suffix-proxy bridge:
 It reduces row-summed future-tail `L1` approximation to a weighted one-step
 factor error against unit-ball deterministic complex factors, reusing the
 existing finite product and triangular suffix-sum APIs.
+For the canonical Gaussian factor choice, use
+`chewi127LimitVarianceProxyFactor` and
+`projectedLimitVarianceFutureTailProxy`; the endpoint
+`asgd_limit_package_of_limitVarianceProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`
+reduces the Chewi 12.3 ASGD package to the weighted one-step error against
+that limit-variance proxy.
 The residual layer now exposes
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,

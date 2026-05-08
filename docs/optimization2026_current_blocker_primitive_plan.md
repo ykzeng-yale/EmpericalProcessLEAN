@@ -175,6 +175,15 @@ row-summed future-tail `L1` approximation, reusing
 `chewi127_integral_sum_range_sum_Ico_succ_eq_integral_weighted`.  The next
 ASGD source task is to construct/prove the concrete deterministic factor proxy
 error estimate, not to rework suffix-product algebra.
+Newest limit-variance proxy packet: `ASGD.lean` now defines the canonical
+deterministic factor `chewi127LimitVarianceProxyFactor`, proves its unit-ball
+bound from `covariance_limit_self_nonneg`, packages the suffix product as
+`projectedLimitVarianceFutureTailProxy`, proves
+`projectedMixedTowerFutureTail_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error`,
+and exposes the Chewi 12.3 endpoint
+`asgd_limit_package_of_limitVarianceProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
+The remaining proof obligation for this lane is precisely the weighted
+one-step factor-error convergence against this proxy.
 The newest residual-estimate packet extracts the actual row-summed residual
 handoffs as reusable theorems:
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
