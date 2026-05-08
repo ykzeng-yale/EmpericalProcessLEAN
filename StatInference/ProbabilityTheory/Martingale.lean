@@ -10366,5 +10366,56 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLike
       (ν := ν) (Iseq := Iseq) (q := q) (F := F) (G := G) (tail := tail)
       htail_le htail hD hF hG hF_sq hG_sq
 
+/-! ## Durrett, Lemma 4.3.9 -/
+
+/--
+Durrett 2019, Lemma 4.3.9 source martingale bridge.  If a nonnegative
+branching-count process has conditional mean
+`E[Z_{n+1} | F_n] = offspringMean * Z_n`, then the normalized process
+`Z_n / offspringMean^n` is a martingale.  This is the theorem-sized
+conditional-expectation core of the Galton-Watson argument.
+-/
+theorem durrett2019_lemma_4_3_9_normalized_branchingProcess_martingale_of_condExp_succ
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Z : ℕ -> Ω -> ℝ} {offspringMean : ℝ}
+    (hmean_pos : 0 < offspringMean)
+    (hAdapted : StronglyAdapted ℱ Z)
+    (hIntegrable : ∀ n, Integrable (Z n) P)
+    (hCond :
+      ∀ n, P[Z (n + 1) | ℱ n] =ᵐ[P] fun ω => offspringMean * Z n ω) :
+    Martingale (fun n ω => Z n ω / offspringMean ^ n) ℱ P := by
+  let W : ℕ -> Ω -> ℝ := fun n ω => (offspringMean ^ n)⁻¹ * Z n ω
+  suffices hW : Martingale W ℱ P by
+    simpa [W, div_eq_mul_inv, mul_comm] using hW
+  refine durrett2019_section_4_2_real_martingale_nat_of_condExp_succ
+    (μ := P) (ℱ := ℱ) (X := W) ?_ ?_ ?_
+  · intro n
+    have hsmul : StronglyMeasurable[ℱ n] fun ω => (offspringMean ^ n)⁻¹ • Z n ω :=
+      (hAdapted n).const_smul ((offspringMean ^ n)⁻¹)
+    simpa [W, smul_eq_mul] using hsmul
+  · intro n
+    have hsmul : Integrable (fun ω => (offspringMean ^ n)⁻¹ * Z n ω) P :=
+      (hIntegrable n).const_mul ((offspringMean ^ n)⁻¹)
+    simpa [W] using hsmul
+  · intro n
+    have hce :
+        P[W (n + 1) | ℱ n] =ᵐ[P]
+          fun ω => (offspringMean ^ (n + 1))⁻¹ * P[Z (n + 1) | ℱ n] ω := by
+      simpa [W, smul_eq_mul] using
+        (condExp_smul (μ := P) ((offspringMean ^ (n + 1))⁻¹)
+          (Z (n + 1)) (ℱ n))
+    refine hce.trans ?_
+    filter_upwards [hCond n] with ω hω
+    rw [hω]
+    have hpow_ne : offspringMean ^ n ≠ 0 := pow_ne_zero n hmean_pos.ne'
+    calc
+      (offspringMean ^ (n + 1))⁻¹ * (offspringMean * Z n ω)
+          = (offspringMean ^ n * offspringMean)⁻¹ * (offspringMean * Z n ω) := by
+              rw [pow_succ]
+      _ = (offspringMean ^ n)⁻¹ * Z n ω := by
+              field_simp [hmean_pos.ne', hpow_ne]
+      _ = W n ω := rfl
+
 end ProbabilityTheory
 end StatInference
