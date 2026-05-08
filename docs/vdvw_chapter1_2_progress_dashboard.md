@@ -13,12 +13,14 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Authoritative current `/goal` override, 2026-05-07: the active goal object is
-the whole VdV&W empirical-process textbook formalization, with Chapters 1-2
-and Theorem 2.4.3 as the current frontier.  The clean VdVW proof lane is
-`/private/tmp/ep-vdvw-selected-log-route` at `origin/main`; the Desktop
-worktree is intentionally avoided for VdVW commits because it contains
-unrelated Matching/WDSM work.  The registered
+Authoritative current `/goal` override, refreshed 2026-05-08: the active goal
+object is the whole VdV&W empirical-process textbook formalization, with
+Chapters 1-2 and Theorem 2.4.3 as the current frontier.  The current clean
+VdVW proof lane is `/private/tmp/ep-vdvw-goal-round-B6AplA` on branch
+`codex/vdvw-selected-cover-source` based at current `origin/main`; the
+Desktop `main` worktree is intentionally avoided for VdVW commits because it
+is far behind `origin/main` and contains unrelated Matching/WDSM work.  The
+registered
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive` now feeds untruncated
 centered convergence directly through
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.centered_untruncated_convergesInOuterProbabilityConst_zero`.
@@ -33,10 +35,14 @@ directly through
 The original-class full-subgraph VC route also feeds the same primitive via
 `VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive`,
 using the integer-grid fixed-mask transfer for truncated entropy.
-Current next target: prove that primitive from the stochastic
-selected-entropy argument, or prove the selected-cover ghost/Rademacher
-displayed-beta Lemma 2.3.7 event primitive (`Phi(x)=x` plus finite-center
-comparison).
+The selected-log mean route now has the localized countability constructor
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero_of_set_countable`,
+and the displayed-beta selected-cover route now has
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id`.
+Current next target: prove the event-level displayed-beta Lemma 2.3.7 source
+primitive, preferably through product/Fubini averaged `Phi(x)=x` plus
+selected-cover finite-center maximal control; use the selected-log mean route
+only under honest L1/UI/countability strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
 restatements, finite-index wrappers, or selected-cardinality transport unless
 it directly consumes that source proof.
@@ -3245,6 +3251,14 @@ The selected half-radius precursor is now instantiated by
 The remaining source proof targets are the selected-cover `hphi_id` comparison
 and the finite-center Hoeffding/maximal event for those selected cover centers.
 
+The same displayed-beta selected-cover source route now has a common iid
+Rademacher sign-space bridge:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id`.
+It removes the need to carry an externally supplied sign space at this handoff,
+while preserving the real source obligations: selected-cover measurability,
+pathwise finite-center maximal control, and the fixed-sample `Phi(x)=x`
+comparison.
+
 The selected half-radius expected-maximal route now also has its source bridge:
 `VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover`.
 This discharges the expected finite-center maximal input for selected covers
@@ -3370,6 +3384,13 @@ registered primitive through
 This is the source-facing L1 strengthened entropy handoff: once the selected-log
 mean convergence is proved, generic Theorem 2.4.3 can consume the primitive
 without another selected tail/UI wrapper.
+
+The selected-log ordinary-mean route now also has a localized countability
+primitive:
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero_of_set_countable`.
+It removes the global `[Countable Index]` requirement from the L1-strengthened
+selected-log handoff when `indexClass.Countable` is available, while keeping
+integrability and ordinary mean convergence as explicit hypotheses.
 
 The selected-cover measurability layer now has localized countability support:
 `measurableSet_finiteEmpiricalL1CoverAtCard_of_set_countable`,
