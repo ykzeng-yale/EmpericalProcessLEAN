@@ -5467,6 +5467,45 @@ theorem durrett2019_theorem_4_3_8_tail_zero_set_null_of_measure_ne_one
   · exact False.elim (hzero_ne_one hfull)
 
 /--
+Durrett 2019, Theorem 4.3.8 tail-event support: a nonzero lower integral
+prevents the tail zero set of the limiting likelihood from having full
+denominator probability.
+-/
+theorem durrett2019_theorem_4_3_8_tail_zero_set_measure_ne_one_of_lintegral_ne_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ν : Measure Ω}
+    {s : ℕ -> MeasurableSpace Ω} {X : Ω -> ℝ≥0∞}
+    (hs_le : ∀ n, s n ≤ mΩ)
+    (hs_indep : _root_.ProbabilityTheory.iIndep s ν)
+    (hzero_tail : MeasurableSet[limsup s atTop] {ω | X ω = 0})
+    (hInt : (∫⁻ ω, X ω ∂ν) ≠ 0) :
+    ν {ω | X ω = 0} ≠ 1 := by
+  haveI : IsProbabilityMeasure ν := hs_indep.isProbabilityMeasure
+  have hzero_meas : MeasurableSet {ω | X ω = 0} :=
+    (limsup_le_iSup.trans (iSup_le hs_le)) _ hzero_tail
+  intro hfull
+  have hzero_ae : X =ᵐ[ν] 0 :=
+    (mem_ae_iff_prob_eq_one hzero_meas).2 hfull
+  exact hInt (lintegral_eq_zero_of_ae_eq_zero hzero_ae)
+
+/--
+Durrett 2019, Theorem 4.3.8 tail-event support: if the zero set is a tail
+event and the limiting likelihood has nonzero lower integral, then the zero
+set is null.
+-/
+theorem durrett2019_theorem_4_3_8_tail_zero_set_null_of_lintegral_ne_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ν : Measure Ω}
+    {s : ℕ -> MeasurableSpace Ω} {X : Ω -> ℝ≥0∞}
+    (hs_le : ∀ n, s n ≤ mΩ)
+    (hs_indep : _root_.ProbabilityTheory.iIndep s ν)
+    (hzero_tail : MeasurableSet[limsup s atTop] {ω | X ω = 0})
+    (hInt : (∫⁻ ω, X ω ∂ν) ≠ 0) :
+    ν {ω | X ω = 0} = 0 :=
+  durrett2019_theorem_4_3_8_tail_zero_set_null_of_measure_ne_one
+    (ν := ν) (s := s) (X := X) hs_le hs_indep hzero_tail
+    (durrett2019_theorem_4_3_8_tail_zero_set_measure_ne_one_of_lintegral_ne_zero
+      (ν := ν) (s := s) (X := X) hs_le hs_indep hzero_tail hInt)
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-branch support: a non-full tail zero set
 rules out an a.e. zero limiting likelihood.
 -/
@@ -5484,6 +5523,25 @@ theorem durrett2019_theorem_4_3_8_not_ae_eq_zero_of_tail_zero_set_measure_ne_one
       (ν := ν) (X := X)
       (durrett2019_theorem_4_3_8_tail_zero_set_null_of_measure_ne_one
         (ν := ν) (s := s) (X := X) hs_le hs_indep hzero_tail hzero_ne_one)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-branch support: a tail zero set and
+nonzero lower integral rule out an a.e. zero limiting likelihood.
+-/
+theorem durrett2019_theorem_4_3_8_not_ae_eq_zero_of_tail_zero_set_lintegral_ne_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ν : Measure Ω}
+    {s : ℕ -> MeasurableSpace Ω} {X : Ω -> ℝ≥0∞}
+    (hs_le : ∀ n, s n ≤ mΩ)
+    (hs_indep : _root_.ProbabilityTheory.iIndep s ν)
+    (hzero_tail : MeasurableSet[limsup s atTop] {ω | X ω = 0})
+    (hInt : (∫⁻ ω, X ω ∂ν) ≠ 0) :
+    ¬ X =ᵐ[ν] 0 := by
+  haveI : IsProbabilityMeasure ν := hs_indep.isProbabilityMeasure
+  exact
+    durrett2019_theorem_4_3_8_not_ae_eq_zero_of_zero_set_null
+      (ν := ν) (X := X)
+      (durrett2019_theorem_4_3_8_tail_zero_set_null_of_lintegral_ne_zero
+        (ν := ν) (s := s) (X := X) hs_le hs_indep hzero_tail hInt)
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-branch eliminator: if an external
@@ -5545,6 +5603,28 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_tail_zero_se
     (μ := μ) (ν := ν) (X := X) hbranch hXrn hνtop
     (durrett2019_theorem_4_3_8_not_ae_eq_zero_of_tail_zero_set_measure_ne_one
       (ν := ν) (s := s) (X := X) hs_le hs_indep hzero_tail hzero_ne_one)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-branch eliminator specialized to a tail
+zero set and nonzero lower integral of the limiting likelihood.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_tail_zero_set_lintegral_ne_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ ν : Measure Ω}
+    {s : ℕ -> MeasurableSpace Ω} {X : Ω -> ℝ≥0∞}
+    (hbranch : μ ≪ ν ∨ μ ⟂ₘ ν)
+    (hXrn :
+      (fun ω => (X ω).toReal) =ᵐ[ν]
+        fun ω => (μ.rnDeriv ν ω).toReal)
+    (hνtop : ν {ω | X ω = ∞} = 0)
+    (hs_le : ∀ n, s n ≤ mΩ)
+    (hs_indep : _root_.ProbabilityTheory.iIndep s ν)
+    (hzero_tail : MeasurableSet[limsup s atTop] {ω | X ω = 0})
+    (hInt : (∫⁻ ω, X ω ∂ν) ≠ 0) :
+    μ ≪ ν :=
+  durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_not_ae_zero
+    (μ := μ) (ν := ν) (X := X) hbranch hXrn hνtop
+    (durrett2019_theorem_4_3_8_not_ae_eq_zero_of_tail_zero_set_lintegral_ne_zero
+      (ν := ν) (s := s) (X := X) hs_le hs_indep hzero_tail hInt)
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-branch eliminator specialized to a

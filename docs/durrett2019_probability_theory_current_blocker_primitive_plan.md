@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V87
+## Live In-Thread Goal Prompt V88
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -201,6 +201,9 @@ takes `X ≠ ∞` a.e. instead of a prepackaged top-set-null hypothesis.
 Kolmogorov tail-event zero-one support for independent sigma-fields now also
 compiles, including zero-set-not-full to zero-set-null and the corresponding
 positive-branch dichotomy eliminator.
+The lower-integral source bridge now also compiles: a tail zero set plus
+`∫⁻ X ≠ 0` automatically gives zero-set-not-full, zero-set-null, not-a.e.-zero,
+and the positive-branch dichotomy conclusion.
 
 Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
 layer, the Theorem 4.3.8 finite-product likelihood/`withDensity` layer, and the
@@ -242,12 +245,15 @@ compiled support.
 Also treat the Kolmogorov tail-event zero-one support, the zero-set-not-full
 to zero-set-null bridge, and the corresponding positive-branch dichotomy
 eliminator as compiled support.
+Also treat the lower-integral source bridge from tail zero set and `∫⁻ X ≠ 0`
+to zero-set-not-full, zero-set-null, not-a.e.-zero, and absolute continuity as
+compiled support.
 Move to the remaining Kakutani criterion assembly:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`) and logarithm/tail-measurability support.  Add only
 source-shaped wrappers that directly feed the remaining concrete zero-set
-tail-measurability/non-full endpoints or the infinite-product criterion
-hypotheses consumed by the compiled branch assemblers and eliminator.  Do
+tail-measurability endpoint or the infinite-product criterion hypotheses
+consumed by the compiled branch assemblers and eliminator.  Do
 not redo the already compiled RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
@@ -289,6 +295,8 @@ Do not redo the a.e.-finite no-top bridge or the standard source-density
 `HasProd` absolute-continuity consumer that uses it.
 Do not redo the Kolmogorov tail-event zero-one support or the zero-set-not-full
 positive-branch eliminator.
+Do not redo the lower-integral source bridge from tail zero set and `∫⁻ X ≠ 0`
+to the positive-branch conclusion.
 Defer Polya urn as a
 model-specific construction unless a direct existing primitive is found.
 
@@ -692,8 +700,10 @@ positive-product absolute-continuity handoff now also compiles.  The
 a.e.-finite no-top source bridge and the standard source-density `HasProd`
 absolute-continuity consumer using it now also compile.  Kolmogorov tail-event
 zero-one support and the zero-set-not-full positive-branch eliminator now also
-compile.  Move forward to the concrete zero-set tail-measurability/non-full
-endpoints and remaining Kakutani criterion assembly.
+compile.  The lower-integral source bridge from tail zero set and `∫⁻ X ≠ 0`
+to zero-set-null and the positive-branch conclusion now also compiles.  Move
+forward to the concrete zero-set tail-measurability endpoint and remaining
+Kakutani criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -807,6 +817,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V87` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V88` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V87`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V88`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -519,10 +519,11 @@ Next packet:
   source bridge and the standard source-density `HasProd`
   absolute-continuity consumer using it now also compile.  Kolmogorov
   tail-event zero-one support and the zero-set-not-full positive-branch
-  eliminator now also compile.  The active target is now the concrete
-  zero-set tail-measurability/non-full endpoints and remaining Kakutani
-  criterion assembly.  Theorem 4.1.16 remains deferred unless a direct kernel
-  API appears.
+  eliminator now also compile.  The lower-integral source bridge from tail
+  zero set and `∫⁻ X ≠ 0` to zero-set-null and the positive-branch conclusion
+  now also compiles.  The active target is now the concrete zero-set
+  tail-measurability endpoint and remaining Kakutani criterion assembly.
+  Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
 
