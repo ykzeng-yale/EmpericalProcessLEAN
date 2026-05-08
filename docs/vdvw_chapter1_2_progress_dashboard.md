@@ -78,6 +78,14 @@ permutations through `empiricalL1Distance_finCoordinatePerm`,
 `nonempty_finiteEmpiricalL1CoverAtCard_finCoordinatePerm_iff`,
 `finiteEmpiricalL1CoveringNumberCard_finCoordinatePerm`, and
 `empiricalL1CoveringNumber_finCoordinatePerm`.
+The same sample-coordinate permutation transport now reaches the Rademacher
+and finite-center side of the selected-cover source argument through
+`vdVWWeightedClassSupremum_finCoordinatePerm`,
+`VdVWRademacherSignVector_finCoordinatePerm`,
+`vdVWRademacherWeights_finCoordinatePerm`,
+`vdVWWeightedClassSupremum_rademacherWeights_finCoordinatePerm`,
+`vdVWFiniteCenterWeightedSupremum_finCoordinatePerm`, and
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm`.
 Current next target: prove the event-level displayed-beta Lemma 2.3.7 source
 primitive, preferably through product/Fubini averaged `Phi(x)=x` plus
 selected-cover finite-center maximal control; in the countable common-iid lane

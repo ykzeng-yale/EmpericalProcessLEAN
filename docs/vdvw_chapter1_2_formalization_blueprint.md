@@ -2178,7 +2178,17 @@ above, so they do not change the theorem-level dashboard counts.
    `nonempty_finiteEmpiricalL1CoverAtCard_finCoordinatePerm_iff`,
    `hasFiniteEmpiricalL1Cover_finCoordinatePerm_iff`,
    `finiteEmpiricalL1CoveringNumberCard_finCoordinatePerm`, and
-   `empiricalL1CoveringNumber_finCoordinatePerm`.  The first adapted
+   `empiricalL1CoveringNumber_finCoordinatePerm`.  The Rademacher and
+   finite-center sides of the same permutation step are now compiled as
+   `vdVWWeightedClassSupremum_finCoordinatePerm`,
+   `VdVWRademacherSignVector_finCoordinatePerm`,
+   `vdVWRademacherWeights_finCoordinatePerm`,
+   `vdVWWeightedClassSupremum_rademacherWeights_finCoordinatePerm`,
+   `vdVWFiniteCenterWeightedSupremum_finCoordinatePerm`,
+   `vdVWFiniteCenterWeightedSupremum_rademacherWeights_finCoordinatePerm`,
+   `VdVWTheorem243FiniteCenterMaximalBound_finCoordinatePerm`, and
+   `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm`.
+   The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
    and its Chapter 1.2 cover-shaped counterpart is compiled as

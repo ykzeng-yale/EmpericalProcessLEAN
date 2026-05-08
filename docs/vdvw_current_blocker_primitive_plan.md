@@ -172,6 +172,25 @@ event comparison by itself; the precise open source theorem remains the
 displayed-beta selected-cover probability comparison or, on the mean route,
 the stochastic selected-entropy-to-mean/UI input.
 
+2026-05-08 Rademacher finite-center permutation transport: after the empirical
+covering-number invariance above, the selected-cover symmetry layer still
+needed the sign and finite-center sides of the same coordinate-permutation
+argument.  `PMeasurable.lean` now proves the general weighted-supremum
+transport `vdVWWeightedClassSupremum_finCoordinatePerm`; `Theorem243.lean`
+adds `VdVWRademacherSignVector_finCoordinatePerm`,
+`vdVWRademacherWeights_finCoordinatePerm`,
+`vdVWWeightedClassSupremum_rademacherWeights_finCoordinatePerm`,
+`vdVWFiniteCenterWeightedSupremum_finCoordinatePerm`,
+`vdVWFiniteCenterWeightedSupremum_rademacherWeights_finCoordinatePerm`,
+`VdVWTheorem243FiniteCenterMaximalBound_finCoordinatePerm`, and
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm`.
+Thus the sample-coordinate permutation step can now move empirical covers,
+Rademacher weights, finite-center suprema, and the finite-center maximal
+predicate together.  The remaining displayed-beta source theorem is no longer
+blocked on this transport bookkeeping; it must prove the actual
+product/Fubini `Phi(x)=x` comparison and the genuine finite-center probability
+input, or switch to the selected-log mean/UI route.
+
 Newest source-side comparison support in `Theorem243.lean` is now:
 `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`,
 which transports an already proved comparison from a selected cardinality to a

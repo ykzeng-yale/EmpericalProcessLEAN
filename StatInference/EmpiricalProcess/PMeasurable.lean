@@ -1492,6 +1492,22 @@ theorem vdVWWeightedClassSupremum_empty
   simp [vdVWWeightedClassSupremum]
 
 /--
+Finite-coordinate permutations preserve the weighted class supremum after the
+corresponding inverse permutation of the weights.
+-/
+theorem vdVWWeightedClassSupremum_finCoordinatePerm
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {n : ℕ} (weights : Fin n -> ℝ) (perm : Equiv.Perm (Fin n))
+    (sample : Fin n -> Observation) :
+    vdVWWeightedClassSupremum indexClass classFun
+        (fun i : Fin n => weights (perm.symm i))
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample) =
+      vdVWWeightedClassSupremum indexClass classFun weights sample := by
+  simp [vdVWWeightedClassSupremum,
+    vdVWWeightedSampleSum_finCoordinatePerm]
+
+/--
 The uniform-weight finite-sample supremum in VdV&W display `(2.3.2)` is
 permutation-invariant.
 -/
@@ -1505,8 +1521,10 @@ theorem vdVWWeightedClassSupremum_uniform_finCoordinatePerm
         (vdVWFinCoordinatePermMeasurableEquiv perm sample) =
       vdVWWeightedClassSupremum indexClass classFun
         (fun _ : Fin n => (n : ℝ)⁻¹) sample := by
-  simp [vdVWWeightedClassSupremum,
-    vdVWWeightedSampleSum_uniform_finCoordinatePerm]
+  simpa using
+    (vdVWWeightedClassSupremum_finCoordinatePerm
+      (indexClass := indexClass) (classFun := classFun)
+      (weights := fun _ : Fin n => (n : ℝ)⁻¹) perm sample)
 
 /--
 Leave-one-out transport for the uniform class supremum on the infinite product
