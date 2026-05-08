@@ -5707,6 +5707,67 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_tendsto_of_range_ten
   exact (ENNReal.tendsto_toReal hXx).comp hlimx
 
 /--
+Durrett 2019, Theorem 4.3.8 source-convergence support in the reverse
+direction: real-valued convergence of finite prefix likelihoods to the
+`toReal` of an a.e. finite limit upgrades to `ENNReal` convergence whenever
+all finite prefix likelihoods are themselves finite a.e.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_tendsto_of_toReal_tendsto
+    {S : Type*} [MeasurableSpace S] {ρ : Measure (ℕ -> S)}
+    {q : ℕ -> S -> ℝ≥0∞} {X : (ℕ -> S) -> ℝ≥0∞}
+    (hseq_ne_top :
+      ∀ n,
+        ∀ᵐ x ∂ρ,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞)
+    (hXfinite : ∀ᵐ x ∂ρ, X x ≠ ∞)
+    (hlim :
+      ∀ᵐ x ∂ρ,
+        Tendsto
+          (fun n =>
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal)
+          atTop (𝓝 ((X x).toReal))) :
+    ∀ᵐ x ∂ρ,
+      Tendsto
+        (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x)
+        atTop (𝓝 (X x)) := by
+  have hseq_all :
+      ∀ᵐ x ∂ρ,
+        ∀ n,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞ :=
+    ae_all_iff.2 hseq_ne_top
+  filter_upwards [hseq_all, hXfinite, hlim] with x hseqx hXx hlimx
+  exact (ENNReal.tendsto_toReal_iff hseqx hXx).mp hlimx
+
+/--
+Durrett 2019, Theorem 4.3.8 source-convergence support: pointwise finite
+coordinate densities discharge the a.e. finite-prefix side condition needed to
+upgrade real-valued convergence to `ENNReal` convergence.
+-/
+theorem
+    durrett2019_theorem_4_3_8_cylinderLikelihood_range_tendsto_of_toReal_tendsto_forall_ne_top
+    {S : Type*} [MeasurableSpace S] {ρ : Measure (ℕ -> S)}
+    {q : ℕ -> S -> ℝ≥0∞} {X : (ℕ -> S) -> ℝ≥0∞}
+    (hq_ne_top : ∀ i s, q i s ≠ ∞)
+    (hXfinite : ∀ᵐ x ∂ρ, X x ≠ ∞)
+    (hlim :
+      ∀ᵐ x ∂ρ,
+        Tendsto
+          (fun n =>
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal)
+          atTop (𝓝 ((X x).toReal))) :
+    ∀ᵐ x ∂ρ,
+      Tendsto
+        (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x)
+        atTop (𝓝 (X x)) := by
+  refine
+    durrett2019_theorem_4_3_8_cylinderLikelihood_range_tendsto_of_toReal_tendsto
+      (ρ := ρ) (q := q) (X := X) ?_ hXfinite hlim
+  intro n
+  exact Filter.Eventually.of_forall fun x =>
+    durrett2019_theorem_4_3_8_cylinderLikelihood_range_ne_top_of_forall_ne_top
+      (q := q) hq_ne_top n x
+
+/--
 Durrett 2019, Theorem 4.3.8 quotient-convergence support: real convergence of
 two finite likelihood-density components, with nonzero denominator limit, gives
 real convergence of their `ENNReal` quotient.
@@ -6082,6 +6143,61 @@ theorem
       (Yseq := fun n x => (M.trim (ℱ.le n)).rnDeriv ((M + N).trim (ℱ.le n)) x)
       (Zseq := fun n x => (N.trim (ℱ.le n)).rnDeriv ((M + N).trim (ℱ.le n)) x)
       hratio hY hZ hZ0
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical prefix convergence in `ENNReal`: the
+trimmed-prefix RN-ratio identity gives real-valued convergence to the canonical
+`mu + nu` ratio, while canonical top-null and pointwise finite coordinate
+densities upgrade it to full `ENNReal` convergence.
+-/
+theorem
+    durrett2019_theorem_4_3_8_cylinderLikelihood_tendsto_canonicalRatio_of_trimmedPrefix_ratio
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)] {q : ℕ -> S -> ℝ≥0∞}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas :
+      ∀ s ∈ C,
+        ∃ m, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S m] s)
+    (hgen :
+      (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    ∀ᵐ x ∂Measure.infinitePi ν,
+      Tendsto
+        (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x)
+        atTop
+        (𝓝
+          (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+            (Measure.infinitePi μ) (Measure.infinitePi ν)
+            (durrett2019_theorem_4_3_8_prefixFiltration S) x)) := by
+  let ℱ := durrett2019_theorem_4_3_8_prefixFiltration S
+  let M := Measure.infinitePi μ
+  let N := Measure.infinitePi ν
+  let X : (ℕ -> S) -> ℝ≥0∞ :=
+    durrett2019_theorem_4_3_5_add_dominating_canonicalRatio M N ℱ
+  have hνtop : N {x | X x = ∞} = 0 := by
+    simpa [M, N, X, ℱ] using
+      durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_nu_top_zero
+        (μ := M) (ν := N) (ℱ := ℱ) C hC_meas hgen hC
+  have hXfinite : ∀ᵐ x ∂N, X x ≠ ∞ := by
+    exact
+      (measure_eq_zero_iff_ae_notMem.mp hνtop).mono
+        (fun _ hx htop => hx htop)
+  have hlim_toReal :
+      ∀ᵐ x ∂N,
+        Tendsto
+          (fun n =>
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal)
+          atTop (𝓝 ((X x).toReal)) := by
+    simpa [M, N, X, ℱ] using
+      durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_tendsto_canonicalRatio_of_trimmedPrefix_ratio
+        (μ := μ) (ν := ν) (q := q) C hC_meas hgen hC hq hμ
+  simpa [M, N, X, ℱ] using
+    durrett2019_theorem_4_3_8_cylinderLikelihood_range_tendsto_of_toReal_tendsto_forall_ne_top
+      (ρ := N) (q := q) (X := X) hq_ne_top hXfinite hlim_toReal
 
 /--
 Durrett 2019, Theorem 4.3.8 cylinder support: on a measurable cylinder, the
@@ -9566,6 +9682,44 @@ theorem
         (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν)
         (ℱ := durrett2019_theorem_4_3_8_prefixFiltration S))
       hXlim hprod hq_ne_top
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical Kakutani branch criterion with the
+canonical-ratio measurability and full-prefix convergence obligations both
+discharged from the trimmed-prefix RN-ratio construction.  The remaining
+inputs are the source density hypotheses, the ambient dichotomy, and the
+Hellinger `HasProd` value.
+-/
+theorem
+    durrett2019_theorem_4_3_8_canonicalRatio_range_hasProd_density_trimmedPrefix_zero_or_pos_closed
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {P : ℝ≥0∞}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas :
+      ∀ s ∈ C,
+        ∃ m, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S m] s)
+    (hgen :
+      (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    (P = 0 -> Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν) ∧
+      (0 < P -> Measure.infinitePi μ ≪ Measure.infinitePi ν) := by
+  exact
+    durrett2019_theorem_4_3_8_canonicalRatio_range_hasProd_density_trimmedPrefix_zero_or_pos_measurable
+      (μ := μ) (ν := ν) (q := q) (P := P)
+      C hC_meas hgen hC hq hμ hbranch
+      (durrett2019_theorem_4_3_8_cylinderLikelihood_tendsto_canonicalRatio_of_trimmedPrefix_ratio
+        (μ := μ) (ν := ν) (q := q) C hC_meas hgen hC hq hμ hq_ne_top)
+      hprod hq_ne_top
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-branch final handoff: once full-prefix

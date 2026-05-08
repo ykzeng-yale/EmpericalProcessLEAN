@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V105
+## Live In-Thread Goal Prompt V106
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -373,12 +373,22 @@ the canonical `mu + nu` likelihood ratio is measurable.  The branch criterion
 wrapper
 `durrett2019_theorem_4_3_8_canonicalRatio_range_hasProd_density_trimmedPrefix_zero_or_pos_measurable`
 therefore no longer asks for a separate canonical-ratio measurability input.
+Also treat the ENNReal full-prefix convergence input as compiled support:
+`durrett2019_theorem_4_3_8_cylinderLikelihood_range_tendsto_of_toReal_tendsto`
+and its pointwise-finite-density source wrapper upgrade real-valued prefix
+convergence to ENNReal convergence, and
+`durrett2019_theorem_4_3_8_cylinderLikelihood_tendsto_canonicalRatio_of_trimmedPrefix_ratio`
+discharges that convergence for the canonical trimmed-prefix RN-ratio
+construction.  The closed branch wrapper
+`durrett2019_theorem_4_3_8_canonicalRatio_range_hasProd_density_trimmedPrefix_zero_or_pos_closed`
+now packages the zero/positive Kakutani consequences without separate
+canonical-ratio measurability or full-prefix convergence inputs.
 Move to the remaining Kakutani criterion assembly:
-add only source-shaped wrappers that discharge the remaining ENNReal full-prefix
-likelihood convergence input needed by the new zero/positive branch criterion,
-discharge the canonical-ratio nonzero-lower-integral input if it remains useful,
-or promote the branch criterion into the final textbook Kakutani statement.  Do
-not redo the already compiled RN martingale/convergence
+add only source-shaped wrappers that remove the remaining ambient dichotomy or
+one-coordinate density finiteness assumptions if there is a direct route, or
+promote the closed branch criterion into the final textbook Kakutani statement.
+Do not redo the already compiled ENNReal prefix convergence, canonical
+measurability, RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
 generator-extension bridge, bounded-convergence generator-production bridge,
@@ -881,10 +891,11 @@ positive-product finite-limit side-condition bridge, canonical
 product-tail/`tprod` positive-product wrappers, the first canonical
 zero/positive product criterion wrapper, and canonical ratio measurability now
 also compile, including strict-positive product variants and the zero-product
-`HasProd h 0` singular handoff.  Move forward to discharging the remaining
-ENNReal full-prefix convergence input for the branch criterion, the
-canonical-ratio nonzero-lower-integral input if still needed, or the final
-textbook Kakutani statement.
+`HasProd h 0` singular handoff.  The ENNReal full-prefix convergence upgrade and
+closed zero/positive branch wrapper now also compile.  Move forward to final
+textbook Kakutani packaging, or only source-shaped wrappers that remove the
+remaining ambient dichotomy or coordinate-finiteness assumptions when a direct
+route is visible.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -998,6 +1009,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V105` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V106` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
