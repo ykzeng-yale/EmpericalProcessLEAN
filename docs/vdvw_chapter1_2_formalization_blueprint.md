@@ -2155,7 +2155,15 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWPermutationSymmetricMeasurableSpace_antitone`, and
    `measurable_vdVWPermutationSymmetricMeasurableSpace_of_symmetric`, with
    the direct infinite-permutation empirical-supremum bridge
-   `VdVWPermutationSymmetricFrom_uniformClassSupremum`.  The first adapted
+   `VdVWPermutationSymmetricFrom_uniformClassSupremum`.  The `Σ_n`
+   invariant-set theorem now also has the function-level selected-cover
+   support
+   `vdVWPermutationSymmetricMeasurableSpace_comp_permuteNatSequence_eq`,
+   `vdVWPermutationSymmetricMeasurableSpace_apply_permuteNatSequence_eq`, and
+   `vdVWPermutationSymmetricMeasurableSpace_apply_permuteFirstN_eq`, with
+   `vdVWPermuteFirstN_eq_permuteNatSequence_natPermOfFin` identifying the
+   explicit first-`n` permutation with the natural-coordinate extension.  The
+   first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
    and its Chapter 1.2 cover-shaped counterpart is compiled as

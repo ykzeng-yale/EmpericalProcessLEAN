@@ -1,6 +1,6 @@
 # VdV&W Current Blocker Primitive Plan
 
-Status date: 2026-05-07.
+Status date: 2026-05-08.
 
 This file pins down the active blocker and the primitive Lean declarations
 needed to close it.  It is not a theorem report.  A formal report is created
@@ -114,6 +114,23 @@ obligations are now exactly the finite-center Hoeffding/maximal event and the
 `Phi(x)=x` comparison; in parallel, use the selected-log mean route only under
 honest L1/UI/countability strengthening and do not claim it follows from bare
 stochastic entropy.
+
+Newest permutation-symmetric support: search found the existing set-level
+`Σ_n` invariant theorem
+`preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetric`,
+the finite-to-natural permutation extension `vdVWNatPermOfFin`, and first-`n`
+permutation infrastructure, but no function-level invariant-statistic theorem
+for `Σ_n`-measurable competitors.  `PMeasurable.lean` now fills that source
+primitive with
+`vdVWPermuteFirstN_eq_permuteNatSequence_natPermOfFin`,
+`vdVWPermutationSymmetricMeasurableSpace_comp_permuteNatSequence_eq`,
+`vdVWPermutationSymmetricMeasurableSpace_apply_permuteNatSequence_eq`, and
+`vdVWPermutationSymmetricMeasurableSpace_apply_permuteFirstN_eq`.  These are
+the Chapter 1 ingredients needed for the selected-cover symmetrization
+minimality step: a `Σ_n`-measurable competitor is constant along finite
+first-`n` orbits.  The next patchable structural primitive is still the
+selected-cover/orbit-supremum comparison carrying this invariance into the
+Lemma 2.3.7 event-level probability bound.
 
 Newest source-side comparison support in `Theorem243.lean` is now:
 `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`,

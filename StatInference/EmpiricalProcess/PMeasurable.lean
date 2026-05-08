@@ -586,6 +586,38 @@ def vdVWPermuteNatSequence {Observation : Type u}
     (perm : Equiv.Perm ℕ) (sequence : ℕ -> Observation) : ℕ -> Observation :=
   fun k => sequence (perm.symm k)
 
+/--
+The explicit first-`n` permutation agrees with the infinite-coordinate
+permutation induced by extending the finite permutation and fixing the tail.
+-/
+theorem vdVWPermuteFirstN_eq_permuteNatSequence_natPermOfFin
+    {Observation : Type u} {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) (sequence : ℕ -> Observation) :
+    vdVWPermuteFirstN perm sequence =
+      vdVWPermuteNatSequence (Observation := Observation) (vdVWNatPermOfFin perm)
+        sequence := by
+  funext k
+  by_cases hk : k < n
+  · have hsymm :
+        (vdVWNatPermOfFin perm).symm k =
+          ((perm.symm ⟨k, hk⟩ : Fin n) : ℕ) := by
+      apply (vdVWNatPermOfFin perm).injective
+      rw [Equiv.apply_symm_apply]
+      symm
+      calc
+        vdVWNatPermOfFin perm ((perm.symm ⟨k, hk⟩ : Fin n) : ℕ)
+            = ((perm (perm.symm ⟨k, hk⟩) : Fin n) : ℕ) := by
+                exact vdVWNatPermOfFin_apply_fin perm (perm.symm ⟨k, hk⟩)
+        _ = k := by simp
+    simp [vdVWPermuteFirstN, vdVWPermuteNatSequence, hk, hsymm]
+  · have hkge : n ≤ k := Nat.le_of_not_gt hk
+    have hsymm : (vdVWNatPermOfFin perm).symm k = k := by
+      apply (vdVWNatPermOfFin perm).injective
+      rw [Equiv.apply_symm_apply]
+      symm
+      exact VdVWNatPermFixesFrom_natPermOfFin perm k hkge
+    simp [vdVWPermuteFirstN, vdVWPermuteNatSequence, hk, hsymm]
+
 /-- Infinite-coordinate permutation of the sample sequence space. -/
 noncomputable def vdVWNatCoordinatePermMeasurableEquiv
     {Observation : Type u} [MeasurableSpace Observation]
@@ -808,6 +840,76 @@ theorem preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetric
   · intro sets _hsets hpre
     ext sequence
     simp [hpre]
+
+/--
+A `Σ_n`-measurable statistic is invariant under every coordinate permutation
+fixing the tail from `n` onward.
+
+This upgrades the invariant-set primitive to the function-level form needed
+when comparing `Σ_n`-measurable competitors in selected-cover arguments.
+-/
+theorem vdVWPermutationSymmetricMeasurableSpace_comp_permuteNatSequence_eq
+    {Observation : Type u} [MeasurableSpace Observation]
+    {Target : Type v} [MeasurableSpace Target] [MeasurableSingletonClass Target]
+    {n : ℕ} {statistic : (ℕ -> Observation) -> Target}
+    (hmeas :
+      Measurable[vdVWPermutationSymmetricMeasurableSpace Observation n] statistic)
+    (perm : Equiv.Perm ℕ) (hfix : VdVWNatPermFixesFrom n perm) :
+    (fun sequence =>
+      statistic (vdVWPermuteNatSequence (Observation := Observation) perm sequence)) =
+      statistic := by
+  funext sequence
+  let fiber : Set (ℕ -> Observation) := statistic ⁻¹' {statistic sequence}
+  have hfiber :
+      MeasurableSet[vdVWPermutationSymmetricMeasurableSpace Observation n] fiber := by
+    exact hmeas (measurableSet_singleton (statistic sequence))
+  have hpre :
+      vdVWPermuteNatSequence (Observation := Observation) perm ⁻¹' fiber = fiber :=
+    preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetric
+      (Observation := Observation) perm hfix hfiber
+  have hmem : sequence ∈ fiber := by
+    simp [fiber]
+  have hmem_pre :
+      sequence ∈ vdVWPermuteNatSequence (Observation := Observation) perm ⁻¹' fiber := by
+    simpa [hpre] using hmem
+  simpa [fiber] using hmem_pre
+
+/--
+Pointwise form of
+`vdVWPermutationSymmetricMeasurableSpace_comp_permuteNatSequence_eq`.
+-/
+theorem vdVWPermutationSymmetricMeasurableSpace_apply_permuteNatSequence_eq
+    {Observation : Type u} [MeasurableSpace Observation]
+    {Target : Type v} [MeasurableSpace Target] [MeasurableSingletonClass Target]
+    {n : ℕ} {statistic : (ℕ -> Observation) -> Target}
+    (hmeas :
+      Measurable[vdVWPermutationSymmetricMeasurableSpace Observation n] statistic)
+    (perm : Equiv.Perm ℕ) (hfix : VdVWNatPermFixesFrom n perm)
+    (sequence : ℕ -> Observation) :
+    statistic (vdVWPermuteNatSequence (Observation := Observation) perm sequence) =
+      statistic sequence := by
+  have hfun :=
+    vdVWPermutationSymmetricMeasurableSpace_comp_permuteNatSequence_eq
+      (Observation := Observation) (statistic := statistic) hmeas perm hfix
+  exact congrFun hfun sequence
+
+/--
+Finite first-`n` version of
+`vdVWPermutationSymmetricMeasurableSpace_apply_permuteNatSequence_eq`.
+-/
+theorem vdVWPermutationSymmetricMeasurableSpace_apply_permuteFirstN_eq
+    {Observation : Type u} [MeasurableSpace Observation]
+    {Target : Type v} [MeasurableSpace Target] [MeasurableSingletonClass Target]
+    {n : ℕ} {statistic : (ℕ -> Observation) -> Target}
+    (hmeas :
+      Measurable[vdVWPermutationSymmetricMeasurableSpace Observation n] statistic)
+    (perm : Equiv.Perm (Fin n)) (sequence : ℕ -> Observation) :
+    statistic (vdVWPermuteFirstN perm sequence) = statistic sequence := by
+  rw [vdVWPermuteFirstN_eq_permuteNatSequence_natPermOfFin]
+  exact
+    vdVWPermutationSymmetricMeasurableSpace_apply_permuteNatSequence_eq
+      (Observation := Observation) (statistic := statistic) hmeas
+      (vdVWNatPermOfFin perm) (VdVWNatPermFixesFrom_natPermOfFin perm) sequence
 
 /--
 Coordinate permutations fixing the tail are measurable maps from `Σ_n` to
