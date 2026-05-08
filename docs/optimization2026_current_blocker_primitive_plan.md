@@ -150,6 +150,11 @@ projected CLT, projected bridge, and certificate wrappers.  The previous
 `herror_factor_bound : ‖1 + error‖ ≤ 1` gate is superseded for the active
 source-variance ASGD route; keep the older declarations only for API
 compatibility and do not route new proof work through that assumption.
+Newest source-facing shrink: the `_of_uniform_bound_no_factor_bound` wrappers
+also discharge the variance-error row integrability from the bounded source via
+`projectedCompensationVarianceError_row_norm_integrable_of_uniform_bound`.
+Use these newest wrappers for future-tail/inverse-tail ASGD certificates unless
+an external theorem really needs to expose the variance-error row.
 
 Mission: finish the main-text Chewi Optimization 2026 Lean formalization under
 `StatInference/Optimization` as fast as correctness allows.  Keep all

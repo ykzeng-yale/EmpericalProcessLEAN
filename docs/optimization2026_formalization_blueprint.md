@@ -33,6 +33,10 @@ As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers
 in `StatInference/Optimization/ASGD.lean`.  The older right-product path with a
 separate `‖1 + error‖ ≤ 1` assumption is retained only for compatibility.
+Prefer the newest `_of_uniform_bound_no_factor_bound` ASGD wrappers: they also
+hide the variance-error row integrability behind the bounded-source package,
+so the live theorem route can focus on the actual future-tail proxy/residual
+conditions.
 
 ## Automation Prompt Maintenance
 

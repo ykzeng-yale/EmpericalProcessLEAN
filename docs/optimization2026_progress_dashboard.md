@@ -92,6 +92,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   scalar CLT, projected CLT, bridge, and certificate wrappers.  Future ASGD
   work should use the `_no_factor_bound` declarations and treat the older
   factor-bound route as compatibility only.
+- Latest ASGD assumption-shrink packet: the newest
+  `_of_uniform_bound_no_factor_bound` future-tail/inverse-tail wrappers also
+  remove the explicit variance-error row integrability input by reusing
+  `projectedCompensationVarianceError_row_norm_integrable_of_uniform_bound`.
+  The active ASGD certificate route should now expose only mean-zero plus the
+  genuine future-tail proxy/residual convergence assumptions.
 - New ASGD scalar Lindeberg declarations:
   `chewi127ScalarLindebergSummand`,
   `chewi127ScalarLindebergAverage`,
