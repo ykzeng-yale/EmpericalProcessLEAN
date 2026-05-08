@@ -6267,6 +6267,50 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_eq_one
   simpa [cylinder_univ] using h
 
 /--
+Durrett 2019, Theorem 4.3.8 source finiteness support: a finite-coordinate
+likelihood with denominator integral one is finite denominator-a.e.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_ae_ne_top_of_density
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)] (I : Finset ι) {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) :
+    ∀ᵐ x ∂Measure.infinitePi ν,
+      durrett2019_theorem_4_3_8_cylinderLikelihood I q x ≠ ∞ := by
+  have hmeas :
+      Measurable (durrett2019_theorem_4_3_8_cylinderLikelihood I q) :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_measurable I hq
+  have hint :
+      ∫⁻ x,
+          durrett2019_theorem_4_3_8_cylinderLikelihood I q x ∂Measure.infinitePi ν =
+        1 :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_eq_one
+      (μ := μ) (ν := ν) I hq hμ
+  have hint_ne_top :
+      (∫⁻ x,
+          durrett2019_theorem_4_3_8_cylinderLikelihood I q x ∂Measure.infinitePi ν) ≠
+        ∞ := by
+    rw [hint]
+    exact ENNReal.one_ne_top
+  exact (ae_lt_top hmeas hint_ne_top).mono fun _ hx => ne_of_lt hx
+
+/--
+Durrett 2019, Theorem 4.3.8 source finiteness support: every standard finite
+prefix likelihood is finite denominator-a.e. under the source density identity.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_ae_ne_top_of_density
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)] {q : ℕ -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) (n : ℕ) :
+    ∀ᵐ x ∂Measure.infinitePi ν,
+      durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞ :=
+  durrett2019_theorem_4_3_8_cylinderLikelihood_ae_ne_top_of_density
+    (μ := μ) (ν := ν) (q := q) (Finset.range n) hq hμ
+
+/--
 Durrett 2019, Theorem 4.3.8 Hellinger support: the square-root power of the
 pulled-back cylinder likelihood is measurable.
 -/
@@ -8904,6 +8948,30 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_ne_top_of_fo
           (q := q) hq_ne_top m x⟩
 
 /--
+Durrett 2019, Theorem 4.3.8 source no-top support: the finite-cylinder
+no-top condition used by the positive-product Cauchy branch follows from the
+finite-prefix likelihood integral-one identities, so it does not need pointwise
+coordinate finiteness.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_ne_top_of_density
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) :
+    ∀ n, ∀ᶠ m in atTop,
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞ ∧
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x ≠ ∞ := by
+  intro n
+  exact Filter.Eventually.of_forall fun m =>
+    (durrett2019_theorem_4_3_8_cylinderLikelihood_range_ae_ne_top_of_density
+      (μ := μ) (ν := ν) (q := q) hq hμ n).and
+      (durrett2019_theorem_4_3_8_cylinderLikelihood_range_ae_ne_top_of_density
+        (μ := μ) (ν := ν) (q := q) hq hμ m)
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
 finite cylinder-likelihood integrals to the limiting likelihood mass supplies
 the mass-one input consumed by the positive-branch eliminator.
@@ -9757,6 +9825,133 @@ theorem
       (μ := μ) (ν := ν) (q := q)
       (P := ∏' i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)
       C hC_meas hgen hC hq hμ hbranch hmult.hasProd hq_ne_top
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical Kakutani branch criterion with the
+textbook infinite Hellinger product and with coordinate finiteness discharged
+from the finite-prefix likelihood mass identities.  The remaining structural
+input is the Kakutani ambient dichotomy.
+-/
+theorem
+    durrett2019_theorem_4_3_8_canonicalRatio_range_tprod_density_trimmedPrefix_zero_or_pos_no_top
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas :
+      ∀ s ∈ C,
+        ∃ m, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S m] s)
+    (hgen :
+      (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hmult :
+      Multipliable (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)) :
+    ((∏' i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) = 0 ->
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν) ∧
+      (0 < (∏' i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) ->
+        Measure.infinitePi μ ≪ Measure.infinitePi ν) := by
+  let ℱ := durrett2019_theorem_4_3_8_prefixFiltration S
+  let M := Measure.infinitePi μ
+  let N := Measure.infinitePi ν
+  let h : ℕ -> ℝ≥0∞ := fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i
+  constructor
+  · intro hprod_zero
+    have hprod_zero' : HasProd h 0 := by
+      have hprod : HasProd h (∏' i, h i) := hmult.hasProd
+      have hprod_zero_h : (∏' i, h i) = 0 := by
+        simpa [h] using hprod_zero
+      simpa [hprod_zero_h] using hprod
+    exact
+      durrett2019_theorem_4_3_8_mutuallySingular_of_canonicalRatio_range_hasProd_zero
+        (μ := μ) (ν := ν) (q := q) (ℱ := ℱ)
+        C hC_meas hgen hC hq
+        (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_measurable
+          (μ := M) (ν := N) (ℱ := ℱ))
+        (by
+          let X : (ℕ -> S) -> ℝ≥0∞ :=
+            durrett2019_theorem_4_3_5_add_dominating_canonicalRatio M N ℱ
+          have hνtop : N {x | X x = ∞} = 0 := by
+            simpa [M, N, X, ℱ] using
+              durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_nu_top_zero
+                (μ := M) (ν := N) (ℱ := ℱ) C hC_meas hgen hC
+          have hXfinite : ∀ᵐ x ∂N, X x ≠ ∞ := by
+            exact
+              (measure_eq_zero_iff_ae_notMem.mp hνtop).mono
+                (fun _ hx htop => hx htop)
+          have hlim_toReal :
+              ∀ᵐ x ∂N,
+                Tendsto
+                  (fun n =>
+                    (durrett2019_theorem_4_3_8_cylinderLikelihood
+                      (Finset.range n) q x).toReal)
+                  atTop (𝓝 ((X x).toReal)) := by
+            simpa [M, N, X, ℱ] using
+              durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_tendsto_canonicalRatio_of_trimmedPrefix_ratio
+                (μ := μ) (ν := ν) (q := q) C hC_meas hgen hC hq hμ
+          have hseq :
+              ∀ n,
+                ∀ᵐ x ∂N,
+                  durrett2019_theorem_4_3_8_cylinderLikelihood
+                    (Finset.range n) q x ≠ ∞ := by
+            intro n
+            simpa [N] using
+              durrett2019_theorem_4_3_8_cylinderLikelihood_range_ae_ne_top_of_density
+                (μ := μ) (ν := ν) (q := q) hq hμ n
+          simpa [M, N, X, ℱ] using
+            durrett2019_theorem_4_3_8_cylinderLikelihood_range_tendsto_of_toReal_tendsto
+              (ρ := N) (q := q) (X := X) hseq hXfinite hlim_toReal)
+        (by simpa [h] using hprod_zero')
+  · intro hprod_pos
+    have hprod_pos' : 0 < (∏' i, h i) := by
+      simpa [h] using hprod_pos
+    have hprod : HasProd h (∏' i, h i) := hmult.hasProd
+    have hPtop : (∏' i, h i) ≠ ∞ := by
+      have hhellinger_le_one : ∀ i, h i ≤ 1 :=
+        durrett2019_theorem_4_3_8_oneCoordinate_hellingerAffinities_le_one
+          (μ := μ) (ν := ν) (q := q) hq hμ
+      exact
+        durrett2019_theorem_4_3_8_hasProd_limit_ne_top_of_le_one
+          (h := h) (P := ∏' i, h i) hprod hhellinger_le_one
+    let X : (ℕ -> S) -> ℝ≥0∞ :=
+      durrett2019_theorem_4_3_5_add_dominating_canonicalRatio M N ℱ
+    have hνtop : N {x | X x = ∞} = 0 := by
+      simpa [M, N, X, ℱ] using
+        durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_nu_top_zero
+          (μ := M) (ν := N) (ℱ := ℱ) C hC_meas hgen hC
+    have hXfinite : ∀ᵐ x ∂N, X x ≠ ∞ := by
+      exact
+        (measure_eq_zero_iff_ae_notMem.mp hνtop).mono
+          (fun _ hx htop => hx htop)
+    have hlim_toReal :
+        ∀ᵐ x ∂N,
+          Tendsto
+            (fun n =>
+              (durrett2019_theorem_4_3_8_cylinderLikelihood
+                (Finset.range n) q x).toReal)
+            atTop (𝓝 ((X x).toReal)) := by
+      simpa [M, N, X, ℱ] using
+        durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_tendsto_canonicalRatio_of_trimmedPrefix_ratio
+          (μ := μ) (ν := ν) (q := q) C hC_meas hgen hC hq hμ
+    simpa [M, N, X, ℱ, h] using
+      durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_range_hasProd_density_ae_ne_top
+        (μ := μ) (ν := ν) (q := q)
+        (tail := fun n => (∏' i, h i) / (∏ i ∈ Finset.range n, h i))
+        (P := ∏' i, h i) (X := X)
+        hq hμ hbranch
+        (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_ae_rnDeriv
+          (μ := M) (ν := N) (ℱ := ℱ) C hC_meas hgen hC)
+        hXfinite
+        (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_integrable
+          (μ := M) (ν := N) (ℱ := ℱ) C hC_meas hgen hC)
+        hlim_toReal (ne_of_gt hprod_pos') hPtop hprod (by intro n; rfl)
+        (durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_ne_top_of_density
+          (μ := μ) (ν := ν) (q := q) hq hμ)
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-branch final handoff: once full-prefix
