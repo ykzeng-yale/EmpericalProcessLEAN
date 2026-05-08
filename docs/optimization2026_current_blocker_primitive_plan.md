@@ -137,6 +137,20 @@ objective and should be preferred over archived prompts.
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
+Latest verified ASGD packet: the right compensated full-inverse
+route has been sharpened to the normalized Taylor product route.  Reuse the
+new no-factor-bound declarations in `StatInference/Optimization/ASGD.lean`:
+`projectedCompensatedFullInverseRight_integral_eq_normalizedTaylorProduct_integral`,
+`projectedNormalizedTaylorProduct_tendsto_exp_of_compensated_error`,
+`projectedNormalizedTaylorProduct_tendsto_exp_of_source_variance_of_variance_error`,
+`projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance_of_variance_error_no_factor_bound`,
+`projected_charFun_tendsto_exp_of_compensated_full_inverse_right_source_variance_and_mixedTowerDefect_of_variance_error_no_factor_bound`,
+and the downstream `_no_factor_bound` future-tail/inverse-tail scalar CLT,
+projected CLT, projected bridge, and certificate wrappers.  The previous
+`herror_factor_bound : ‖1 + error‖ ≤ 1` gate is superseded for the active
+source-variance ASGD route; keep the older declarations only for API
+compatibility and do not route new proof work through that assumption.
+
 Mission: finish the main-text Chewi Optimization 2026 Lean formalization under
 `StatInference/Optimization` as fast as correctness allows.  Keep all
 code/docs/comments in English; chat updates may be Chinese/English mix.

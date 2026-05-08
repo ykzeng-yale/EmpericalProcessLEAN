@@ -83,6 +83,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   random full-product replacement without the needed measurability hypothesis,
   and repeated Git sync loops are explicitly out of budget unless they answer
   that blocker.
+- Latest ASGD source-variance route improvement: the active right compensated
+  full-inverse product no longer needs the suspicious auxiliary
+  `‖1 + projectedCompensatedTaylorErrorFactor‖ ≤ 1` gate.  The new route
+  compares the normalized Taylor product directly with the inverse
+  compensation product using the already-compiled normalized factor bound, and
+  compiles no-factor-bound future-tail/inverse-tail characteristic-function,
+  scalar CLT, projected CLT, bridge, and certificate wrappers.  Future ASGD
+  work should use the `_no_factor_bound` declarations and treat the older
+  factor-bound route as compatibility only.
 - New ASGD scalar Lindeberg declarations:
   `chewi127ScalarLindebergSummand`,
   `chewi127ScalarLindebergAverage`,
