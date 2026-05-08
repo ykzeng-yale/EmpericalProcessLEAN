@@ -10417,5 +10417,62 @@ theorem durrett2019_lemma_4_3_9_normalized_branchingProcess_martingale_of_condEx
               field_simp [hmean_pos.ne', hpow_ne]
       _ = W n ω := rfl
 
+/-! ## Durrett, Section 4.4 -/
+
+/--
+Durrett 2019, Theorem 4.4.2, Doob's maximal inequality in mathlib's
+nonnegative-submartingale form.
+-/
+theorem durrett2019_theorem_4_4_2_doob_maximal_inequality_nonnegative
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    (hX_nonneg : 0 ≤ X) {ε : ℝ≥0} (n : ℕ) :
+    ε * P {ω |
+        (ε : ℝ) ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => X k ω} ≤
+      ENNReal.ofReal
+        (∫ ω in {ω |
+            (ε : ℝ) ≤
+              (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                fun k => X k ω},
+          X n ω ∂P) :=
+  maximal_ineq hX hX_nonneg n
+
+/--
+Durrett 2019, Theorem 4.4.2, source positive-part form.  For a real
+submartingale `X`, the maximum of the positive parts up to time `n` satisfies
+Doob's maximal inequality.
+-/
+theorem durrett2019_theorem_4_4_2_doob_maximal_inequality_positivePart
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {ε : ℝ≥0} (n : ℕ) :
+    ε * P {ω |
+        (ε : ℝ) ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => max (X k ω) 0} ≤
+      ENNReal.ofReal
+        (∫ ω in {ω |
+            (ε : ℝ) ≤
+              (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                fun k => max (X k ω) 0},
+          max (X n ω) 0 ∂P) := by
+  have hpos :
+      Submartingale (fun k ω => max (X k ω) 0) ℱ P := by
+    simpa using
+      (durrett2019_theorem_4_2_7_positivePart_submartingale
+        (μ := P) (ℱ := ℱ) hX 0)
+  exact
+    durrett2019_theorem_4_4_2_doob_maximal_inequality_nonnegative
+      (P := P) (ℱ := ℱ) (X := fun k ω => max (X k ω) 0)
+      hpos
+      (by
+        intro k ω
+        exact le_max_right (X k ω) 0)
+      n
+
 end ProbabilityTheory
 end StatInference

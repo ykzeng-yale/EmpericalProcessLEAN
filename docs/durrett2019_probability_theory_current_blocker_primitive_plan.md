@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V110
+## Live In-Thread Goal Prompt V111
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -401,14 +401,17 @@ input.  The direct source-identity likelihood-mass bridge
 and its cylinder/L1/pairwise/range `HasProd` wrappers are compiled support.
 Move forward from Theorem 4.3.8.  Do not add another repackaging of the
 already closed `HasProd`, `tprod`, no-top, or no-dichotomy branch criterion.
-Next aggressive target: start the next textbook block.  Prefer Lemma 4.3.9 and
-the branching-process martingale `Z_n / μ^n`; its conditional-expectation core
+Next aggressive target: continue the next textbook block.  Lemma 4.3.9 and
+the branching-process martingale `Z_n / μ^n` have their conditional-expectation core
 `durrett2019_lemma_4_3_9_normalized_branchingProcess_martingale_of_condExp_succ`
-is now compiled support.  Next try the actual Galton-Watson conditional-mean
-instantiation only if it can be encoded source-shaped from local
-independence/conditional-expectation APIs in one packet; otherwise move
-directly to Section 4.4 Doob maximal and Lp inequalities using mathlib's
-`MeasureTheory.maximal_ineq` and martingale optional-stopping APIs.
+as compiled support.  Section 4.4 Theorem 4.4.2 Doob maximal inequality now
+also has nonnegative-submartingale and positive-part source wrappers:
+`durrett2019_theorem_4_4_2_doob_maximal_inequality_nonnegative` and
+`durrett2019_theorem_4_4_2_doob_maximal_inequality_positivePart`.  Next target:
+derive the textbook second inequality `E X_n 1_A ≤ E X_n^+` / probability
+display if immediate, then Example 4.4.3 Kolmogorov maximal inequality or
+Theorem 4.4.4 Lp maximal inequality.  Do not detour back into full
+Galton-Watson random-sum infrastructure unless a local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -918,10 +921,11 @@ closed zero/positive branch wrapper now also compile.  The textbook `tprod`
 zero/positive branch wrapper and the no-coordinate-finiteness `tprod` branch
 wrapper now also compile without the ambient dichotomy input.  Move forward
 from Theorem 4.3.8.  The source-shaped Lemma 4.3.9 normalized-process
-martingale packet now compiles; next try only the actual Galton-Watson
-conditional-mean instantiation if local APIs make it cheap, otherwise move to
-Section 4.4 Doob inequalities through the existing mathlib maximal-inequality
-and optional-stopping APIs.
+martingale packet now compiles, and Section 4.4 Theorem 4.4.2 now has
+nonnegative-submartingale and positive-part Doob maximal inequality wrappers.
+Next move to the remaining Theorem 4.4.2 display, Example 4.4.3 Kolmogorov
+maximal inequality, or Theorem 4.4.4 Lp maximal inequality, whichever gives the
+largest compiled step without building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1035,6 +1039,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V110` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V111` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
