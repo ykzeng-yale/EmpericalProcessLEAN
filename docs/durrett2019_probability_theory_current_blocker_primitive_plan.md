@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V83
+## Live In-Thread Goal Prompt V84
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -187,7 +187,11 @@ exhaustion handoff that feeds the finite tail-product Cauchy consumer.  The
 finite tail-product lower bound from positive prefix/tail monotonicity now
 also compiles, including the final standard `Finset.range n` positive-product
 pairwise-liminf consumer from `HasProd`, `P ≠ 0`, `P ≠ ∞`, and
-one-coordinate Hellinger affinities bounded by one.
+one-coordinate Hellinger affinities bounded by one.  The source-density
+one-coordinate Hellinger affinity bound `≤ 1` now also compiles, along with
+the normalized positive-product tail bound `tail n ≤ 1` and a standard
+positive-product range pairwise-liminf consumer that derives both facts
+directly from `μ i = (ν i).withDensity (q i)`.
 
 Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
 layer, the Theorem 4.3.8 finite-product likelihood/`withDensity` layer, and the
@@ -218,14 +222,16 @@ support.  Also treat the HasProd/Multipliable prefix-tail bridge and the
 standard `Finset.range n` HasProd-to-pairwise-liminf handoff as compiled
 support.  Also treat the finite tail-product lower bound from positive
 prefix/tail monotonicity and the standard positive-product range consumer as
-compiled support.
+compiled support.  Also treat the source-density one-coordinate Hellinger
+affinity bound, the normalized positive-product tail `≤ 1` bridge, and the
+standard source-density positive-product range consumer as compiled support.
 Move to the remaining Kakutani criterion assembly and tail-event support:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`), logarithm/tail-event support, and local Kolmogorov
 zero-one/tail sigma-field wrappers.  Add only source-shaped wrappers that
-directly feed the one-coordinate Hellinger affinity bound `≤ 1`, tail-event
-support, or the infinite-product criterion hypotheses consumed by the compiled
-branch assemblers and eliminator.  Do
+directly feed tail-event support, no-top/null-zero-set source endpoints, or
+the infinite-product criterion hypotheses consumed by the compiled branch
+assemblers and eliminator.  Do
 not redo the already compiled RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
@@ -258,6 +264,9 @@ Do not redo the HasProd/Multipliable prefix-tail bridge or the standard
 `Finset.range n` HasProd-to-pairwise-liminf handoff.
 Do not redo the finite tail-product lower bound from positive prefix/tail
 monotonicity or the standard positive-product range consumer.
+Do not redo the source-density one-coordinate Hellinger affinity `≤ 1` bound,
+the normalized positive-product tail `≤ 1` bridge, or the standard
+source-density positive-product range consumer.
 Defer Polya urn as a
 model-specific construction unless a direct existing primitive is found.
 
@@ -653,9 +662,11 @@ overlap factorization, and finite Hellinger tail-product overlap handoff now
 also compile.  The HasProd/Multipliable prefix-tail bridge and the standard
 `Finset.range n` HasProd-to-pairwise-liminf handoff now also compile.  The
 finite tail-product lower bound from positive prefix/tail monotonicity and the
-standard positive-product range consumer now also compile.  Move forward to
-the one-coordinate Hellinger affinity `≤ 1` source bound and tail-event
-zero-one support for Kakutani's dichotomy.
+standard positive-product range consumer now also compile.  The source-density
+one-coordinate Hellinger affinity bound `≤ 1`, normalized positive-product
+tail `≤ 1` bridge, and standard source-density positive-product range consumer
+now also compile.  Move forward to tail-event zero-one support and final
+Kakutani positive-product assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -769,6 +780,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V83` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V84` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

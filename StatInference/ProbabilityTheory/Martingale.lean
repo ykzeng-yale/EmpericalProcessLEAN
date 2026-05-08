@@ -4522,6 +4522,55 @@ theorem durrett2019_theorem_4_3_8_finiteProduct_withDensity_eq
   rw [hμ i, withDensity_apply _ (hA i)]
 
 /--
+Durrett 2019, Theorem 4.3.8 one-coordinate Hellinger support: if `q` is the
+Radon-Nikodym density of a probability measure with respect to another
+probability measure, then the Hellinger affinity `∫ sqrt q dν` is at most one.
+-/
+theorem durrett2019_theorem_4_3_8_oneCoordinate_hellingerAffinity_le_one
+    {S : Type*} [MeasurableSpace S] {μ ν : Measure S}
+    [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {q : S -> ℝ≥0∞} (hq : Measurable q)
+    (hμ : μ = ν.withDensity q) :
+    (∫⁻ y, (q y) ^ ((1 : ℝ) / 2) ∂ν) ≤ 1 := by
+  have hq_int : ∫⁻ y, q y ∂ν = 1 := by
+    calc
+      ∫⁻ y, q y ∂ν = ν.withDensity q Set.univ := by
+        rw [withDensity_apply _ MeasurableSet.univ]
+        simp
+      _ = μ Set.univ := by rw [← hμ]
+      _ = 1 := measure_univ
+  have hholder :
+      ∫⁻ y, (q y) ^ ((1 : ℝ) / 2) ∂ν ≤
+        (∫⁻ y, q y ∂ν) ^ ((1 : ℝ) / 2) *
+          (∫⁻ _ : S, (1 : ℝ≥0∞) ∂ν) ^ ((1 : ℝ) / 2) := by
+    have h :=
+      ENNReal.lintegral_mul_norm_pow_le
+        (μ := ν) (f := q) (g := fun _ : S => (1 : ℝ≥0∞))
+        hq.aemeasurable measurable_const.aemeasurable
+        (by norm_num : 0 ≤ ((1 : ℝ) / 2))
+        (by norm_num : 0 ≤ ((1 : ℝ) / 2))
+        (by norm_num : ((1 : ℝ) / 2) + ((1 : ℝ) / 2) = 1)
+    simpa using h
+  simpa [hq_int, measure_univ] using hholder
+
+/--
+Durrett 2019, Theorem 4.3.8 one-coordinate Hellinger support: sequence-shaped
+version of the Hellinger affinity bound for product measures.
+-/
+theorem durrett2019_theorem_4_3_8_oneCoordinate_hellingerAffinities_le_one
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) :
+    ∀ i, (∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) ≤ 1 := by
+  intro i
+  exact
+    durrett2019_theorem_4_3_8_oneCoordinate_hellingerAffinity_le_one
+      (μ := μ i) (ν := ν i) (q := q i) (hq i) (hμ i)
+
+/--
 Durrett 2019, Theorem 4.3.8 Hellinger support: the square-root power of the
 finite-coordinate likelihood is the product of the square-root powers of the
 one-coordinate likelihoods.
@@ -5896,6 +5945,36 @@ theorem durrett2019_theorem_4_3_8_range_tailProduct_lower_bound_of_hasProd_le_on
       htail_eq
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product support: the normalized
+Hellinger tail `P / prefix n` is automatically bounded by one when the
+coordinate affinities are at most one and the infinite product is positive.
+-/
+theorem durrett2019_theorem_4_3_8_hellingerTail_le_one_of_hasProd_le_one
+    {h tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hP0 : P ≠ 0)
+    (hprod : HasProd h P) (hle_one : ∀ i, h i ≤ 1)
+    (htail_eq :
+      ∀ n, tail n = P / (∏ i ∈ Finset.range n, h i)) :
+    ∀ n, tail n ≤ 1 := by
+  have hP_le_prefix :
+      ∀ n, P ≤ ∏ i ∈ Finset.range n, h i :=
+    durrett2019_theorem_4_3_8_prefixProduct_limit_le_prefix_of_hasProd_le_one
+      hprod hle_one
+  have hprefix_ne_zero :
+      ∀ n, (∏ i ∈ Finset.range n, h i) ≠ 0 :=
+    durrett2019_theorem_4_3_8_prefixProduct_ne_zero_of_positive_limit hP0
+      hP_le_prefix
+  have hprefix_ne_top :
+      ∀ n, (∏ i ∈ Finset.range n, h i) ≠ ∞ :=
+    durrett2019_theorem_4_3_8_prefixProduct_ne_top_of_le_one hle_one
+  intro n
+  rw [htail_eq n]
+  exact
+    (ENNReal.div_le_iff_le_mul
+      (Or.inl (hprefix_ne_zero n)) (Or.inl (hprefix_ne_top n))).2
+      (by simpa [one_mul] using hP_le_prefix n)
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: if the Hellinger
 tail affinities tend to one, then the textbook Hellinger-tail L1 bound tends
 to zero.
@@ -6916,6 +6995,55 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_ha
       durrett2019_theorem_4_3_8_range_tailProduct_lower_bound_of_hasProd_le_one
         (h := fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)
         (tail := tail) (P := P) hP0 hprod hhellinger_le_one htail_eq
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy handoff for the
+standard prefix exhaustion of `ℕ`: the source density hypotheses themselves
+provide both one-coordinate Hellinger affinity bounds and the normalized
+tail bound consumed by the positive-product range Cauchy wrapper.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_hasProd_density
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hP0 : P ≠ 0) (hPtop : P ≠ ∞)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (htail_eq :
+      ∀ n,
+        tail n =
+          P / (∏ i ∈ Finset.range n,
+            ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x ≠ ∞) :
+    Tendsto
+      (fun n =>
+        Filter.liminf
+          (fun m =>
+            ∫⁻ x,
+              ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal -
+                (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x).toReal‖ₑ
+              ∂Measure.infinitePi ν)
+          atTop)
+      atTop (𝓝 0) := by
+  let h : ℕ -> ℝ≥0∞ :=
+    fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i
+  have hhellinger_le_one : ∀ i, h i ≤ 1 :=
+    durrett2019_theorem_4_3_8_oneCoordinate_hellingerAffinities_le_one
+      (μ := μ) (ν := ν) (q := q) hq hμ
+  have htail_le : ∀ n, tail n ≤ 1 :=
+    durrett2019_theorem_4_3_8_hellingerTail_le_one_of_hasProd_le_one
+      (h := h) (tail := tail) (P := P) hP0 hprod hhellinger_le_one htail_eq
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_hasProd_le_one
+      (μ := μ) (ν := ν) (q := q) (tail := tail) (P := P)
+      hq hμ hP0 hPtop hprod hhellinger_le_one htail_le htail_eq hfinite
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
