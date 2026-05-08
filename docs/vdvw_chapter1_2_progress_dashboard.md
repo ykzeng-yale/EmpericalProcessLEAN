@@ -3415,3 +3415,8 @@ and
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_unifIntegrable_liftIntegrable_of_set_countable`.
 This lets future proofs state lifted integrability and UI on the same infinite
 iid product space before feeding the selected finite-net mean primitive.
+
+The same common-space route now also has the compact mathlib interface
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_uniformIntegrable_of_set_countable`.
+It consumes one `UniformIntegrable` selected-log hypothesis and derives both
+lifted integrability and `UnifIntegrable` for the primitive route.

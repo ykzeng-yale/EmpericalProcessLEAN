@@ -31031,6 +31031,65 @@ theorem
       hselectedLogUI
 
 /--
+First-sample `UniformIntegrable` selected normalized log-cardinality proves the
+registered selected entropy-to-finite-net mean primitive under localized class
+countability.
+
+Mathlib's `UniformIntegrable` package supplies both the `UnifIntegrable` field
+and `L^1` integrability of each lifted statistic, so this is the compact
+standard-interface version of the first-sample Vitali route.
+-/
+theorem
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_uniformIntegrable_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hcount : indexClass.Countable)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hselectedLogUniformIntegrable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta),
+        UniformIntegrable
+          (fun n sequence =>
+            vdVWLogEmpiricalL1CoveringCardinality
+              (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                  (indexClass := indexClass) (classFun := classFun)
+                  (envelope := envelope) (M := M) (eta := eta)
+                  (cardinality := cardinality M) (X M)
+                  (hentropy.coveringNumber_le M hM) heta) n sample' m)
+              (vdVWFirstNSample (Observation := Observation) n sequence) n /
+                (n : ℝ))
+          1 (vdVWInfiniteProductMeasure P)) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P X indexClass
+      classFun envelope cardinality hentropy := by
+  exact
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_unifIntegrable_liftIntegrable_of_set_countable
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (cardinality := cardinality)
+      hentropy hcount hX_samplePath hclass henvelope_meas
+      (hselectedLogLiftIntegrable := by
+        intro M hM eta heta n
+        exact
+          memLp_one_iff_integrable.mp
+            ((hselectedLogUniformIntegrable M hM eta heta).memLp n))
+      (hselectedLogUI := by
+        intro M hM eta heta
+        exact
+          (hselectedLogUniformIntegrable M hM eta heta).unifIntegrable)
+
+/--
 A uniform first-sample `nnnorm` bound for the selected normalized
 log-cardinality process proves the registered selected entropy-to-finite-net
 mean primitive under localized class countability.

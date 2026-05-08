@@ -8143,3 +8143,13 @@ The first-sample Vitali/UI route can now keep both integrability and UI on the
 canonical infinite iid product space, then transport finite-product
 integrability back through the first-`n` projection.  The open source input is
 now the actual lifted integrability/UI proof or the displayed-beta event route.
+
+2026-05-08 first-sample `UniformIntegrable` selected-log primitive:
+`Theorem243.lean` now proves
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_uniformIntegrable_of_set_countable`.
+Mathlib's stronger `UniformIntegrable` package supplies both lifted `L^1`
+integrability and `UnifIntegrable`, so a countable theorem class can now feed
+the registered selected finite-net mean primitive from one standard
+first-sample UI hypothesis.  The remaining source work is proving that
+`UniformIntegrable` selected-log hypothesis from stochastic entropy/counting,
+or proving the displayed-beta selected-cover event comparison.
