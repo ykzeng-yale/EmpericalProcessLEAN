@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V91
+## Live In-Thread Goal Prompt V92
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -220,7 +220,14 @@ finite-prefix zero-set algebra layer now also compiles: if
 `{X = 0} = {Y = 0}`; finite cylinder likelihoods are nonzero under the
 source coordinate-density nonzero hypotheses; and the prefix-cylinder
 factorization handoff turns a tail-coordinate measurable `Y` into
-every-tail-coordinate measurability of `{X = 0}`.
+every-tail-coordinate measurability of `{X = 0}`.  The prefix/tail finite-block
+limit layer now also compiles: `range m` cylinder likelihoods factor into
+`range n` prefixes times `Ico n m` tail blocks; finite tail-block likelihoods
+and their pointwise limits are tail-coordinate measurable; convergence of full
+prefixes and tail blocks gives the limiting prefix/tail factorization under
+the finite-prefix no-top side condition; and the resulting tail-block-limit
+zero-set handoff feeds the compiled every-tail-coordinate measurability
+consumer.
 
 Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
 layer, the Theorem 4.3.8 finite-product likelihood/`withDensity` layer, and the
@@ -275,12 +282,16 @@ support.
 Also treat the finite-prefix zero-set algebra layer, finite cylinder
 likelihood nonzero bridge, and prefix-cylinder factorization handoff to
 every-tail-coordinate measurability as compiled support.
+Also treat the finite prefix/tail cylinder-likelihood factorization, finite
+tail-block likelihood measurability, pointwise tail-block-limit measurability,
+limiting prefix/tail factorization, and tail-block-limit zero-set handoff as
+compiled support.
 Move to the remaining Kakutani criterion assembly:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`) and logarithm/tail-measurability support.  Add only
-source-shaped wrappers that construct the actual tail-coordinate measurable
-tail-limit candidate and prove the canonical prefix/tail cylinder-likelihood
-factorization needed by the compiled zero-set handoff, or
+source-shaped wrappers that supply the textbook convergence hypotheses for the
+full-prefix and tail-block likelihood limits, discharge finite-prefix no-top
+and coordinate-density nonzero side conditions, or
 directly feed the infinite-product criterion hypotheses
 consumed by the compiled branch assemblers and eliminator.  Do
 not redo the already compiled RN martingale/convergence
@@ -319,6 +330,8 @@ Do not redo the tail-coordinate sigma-field layer or finite tail cylinder
 likelihood measurability layer.
 Do not redo the finite-prefix zero-set algebra or prefix-cylinder zero-set
 handoff layer.
+Do not redo the finite prefix/tail cylinder-likelihood factorization,
+tail-block-limit measurability, or tail-block-limit zero-set handoff layer.
 Do not redo the finite tail-product lower bound from positive prefix/tail
 monotonicity or the standard positive-product range consumer.
 Do not redo the source-density one-coordinate Hellinger affinity `≤ 1` bound,
@@ -744,9 +757,10 @@ sigma-field and finite tail cylinder likelihood measurability layer now also
 compiles, including finite tail cylinder zero-set measurability and the
 zero-set-equality handoff to every-tail-coordinate measurability.  The
 finite-prefix zero-set algebra and prefix-cylinder zero-set handoff now also
-compile.  Move forward to constructing the actual tail-coordinate measurable
-tail-limit candidate and proving the canonical prefix/tail cylinder-likelihood
-factorization, then finish the remaining Kakutani criterion assembly.
+compile.  The prefix/tail finite-block and tail-block-limit handoff layer now
+also compiles.  Move forward to supplying the source convergence, finite-prefix
+no-top, and coordinate-density nonzero hypotheses needed by that handoff, then
+finish the remaining Kakutani criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -860,6 +874,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V91` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V92` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

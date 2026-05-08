@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V91`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V92`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -528,10 +528,13 @@ Next packet:
   likelihood measurability layer now also compiles, including finite tail
   cylinder zero-set measurability and the zero-set-equality handoff to
   every-tail-coordinate measurability.  The finite-prefix zero-set algebra and
-  prefix-cylinder zero-set handoff now also compile.  The active target is now
-  the actual tail-coordinate measurable tail-limit candidate plus the
-  canonical prefix/tail cylinder-likelihood factorization needed for the
-  remaining Kakutani criterion assembly.
+  prefix-cylinder zero-set handoff now also compile.  The prefix/tail
+  finite-block and tail-block-limit handoff layer now also compiles, including
+  finite tail-block measurability, pointwise tail-block-limit measurability,
+  limiting prefix/tail factorization, and the zero-set handoff from tail-block
+  limits.  The active target is now supplying the source convergence,
+  finite-prefix no-top, and coordinate-density nonzero hypotheses needed for
+  the remaining Kakutani criterion assembly.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:

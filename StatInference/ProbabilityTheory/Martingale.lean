@@ -4860,6 +4860,139 @@ theorem durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_prefixCy
           hq_ne_zero n x i hi
 
 /--
+Durrett 2019, Theorem 4.3.8 prefix/tail support: a longer finite prefix
+likelihood factors into the old prefix likelihood and the finite tail block.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_prefix_tail_factorization
+    {S : Type*} {q : ℕ -> S -> ℝ≥0∞} (x : ℕ -> S) {n m : ℕ} (hnm : n ≤ m) :
+    durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x =
+      durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x *
+        durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.Ico n m) q x := by
+  rw [durrett2019_theorem_4_3_8_cylinderLikelihood_eq_finset_prod,
+    durrett2019_theorem_4_3_8_cylinderLikelihood_eq_finset_prod,
+    durrett2019_theorem_4_3_8_cylinderLikelihood_eq_finset_prod]
+  exact (Finset.prod_range_mul_prod_Ico (fun i => q i (x i)) hnm).symm
+
+/--
+Durrett 2019, Theorem 4.3.8 prefix/tail support: a finite tail-block
+likelihood is measurable from the tail-coordinate sigma-field beginning at the
+block's left endpoint.
+-/
+theorem durrett2019_theorem_4_3_8_tailBlockLikelihood_tailCoordinateSigma_measurable
+    {S : Type*} [MeasurableSpace S] {q : ℕ -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i)) (n m : ℕ) :
+    Measurable[durrett2019_theorem_4_3_8_tailCoordinateSigma S n]
+      (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.Ico n m) q) :=
+  durrett2019_theorem_4_3_8_cylinderLikelihood_tailCoordinateSigma_measurable
+    (S := S) (I := Finset.Ico n m) (q := q) hq (n := n) fun _i hi =>
+      (Finset.mem_Ico.mp hi).1
+
+/--
+Durrett 2019, Theorem 4.3.8 prefix/tail support: a pointwise limit of finite
+tail-block likelihoods is measurable from the corresponding tail-coordinate
+sigma-field.
+-/
+theorem durrett2019_theorem_4_3_8_tailBlockLikelihood_limit_tailCoordinateSigma_measurable
+    {S : Type*} [MeasurableSpace S] {q : ℕ -> S -> ℝ≥0∞}
+    {Y : (ℕ -> S) -> ℝ≥0∞} (hq : ∀ i, Measurable (q i)) (n : ℕ)
+    (hYlim :
+      ∀ x : ℕ -> S,
+        Tendsto
+          (fun m => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.Ico n m) q x)
+          atTop (𝓝 (Y x))) :
+    Measurable[durrett2019_theorem_4_3_8_tailCoordinateSigma S n] Y := by
+  exact
+    @measurable_of_tendsto_metrizable (ℕ -> S) ℝ≥0∞
+      (durrett2019_theorem_4_3_8_tailCoordinateSigma S n) _ _ _ _
+      (f := fun m x =>
+        durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.Ico n m) q x)
+      (g := Y)
+      (fun m =>
+        durrett2019_theorem_4_3_8_tailBlockLikelihood_tailCoordinateSigma_measurable
+          (S := S) (q := q) hq n m)
+      (tendsto_pi_nhds.2 hYlim)
+
+/--
+Durrett 2019, Theorem 4.3.8 prefix/tail support: if the full finite-prefix
+likelihoods converge to `X` and each finite tail-block likelihood converges to
+`Y n`, then `X` factors as the finite prefix likelihood times the `n`th tail
+limit.
+-/
+theorem durrett2019_theorem_4_3_8_likelihoodLimit_eq_prefixCylinder_mul_tailBlockLimit
+    {S : Type*} {q : ℕ -> S -> ℝ≥0∞} {X : (ℕ -> S) -> ℝ≥0∞}
+    {Y : ℕ -> (ℕ -> S) -> ℝ≥0∞}
+    (hXlim :
+      ∀ x : ℕ -> S,
+        Tendsto
+          (fun m => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x)
+          atTop (𝓝 (X x)))
+    (hYlim :
+      ∀ (n : ℕ) (x : ℕ -> S),
+        Tendsto
+          (fun m => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.Ico n m) q x)
+          atTop (𝓝 (Y n x)))
+    (hprefix_ne_top :
+      ∀ (n : ℕ) (x : ℕ -> S),
+        durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞) :
+    ∀ (n : ℕ) (x : ℕ -> S),
+      X x =
+        durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x *
+          Y n x := by
+  intro n x
+  let C : ℝ≥0∞ :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x
+  let tail : ℕ -> ℝ≥0∞ := fun m =>
+    durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.Ico n m) q x
+  let full : ℕ -> ℝ≥0∞ := fun m =>
+    durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x
+  have hprodlim : Tendsto (fun m => C * tail m) atTop (𝓝 (C * Y n x)) :=
+    ENNReal.Tendsto.const_mul (hYlim n x) (Or.inr (by simpa [C] using hprefix_ne_top n x))
+  have hprod_eq_full : (fun m => C * tail m) =ᶠ[atTop] full := by
+    filter_upwards [eventually_ge_atTop n] with m hnm
+    dsimp [C, tail, full]
+    exact
+      (durrett2019_theorem_4_3_8_cylinderLikelihood_range_prefix_tail_factorization
+        (q := q) x hnm).symm
+  exact tendsto_nhds_unique (hXlim x) (hprodlim.congr' hprod_eq_full)
+
+/--
+Durrett 2019, Theorem 4.3.8 prefix/tail support: pointwise convergence of the
+full prefixes and every finite tail block supplies the tail-coordinate
+measurable zero-set handoff for the limiting likelihood.
+-/
+theorem durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_tailBlockLimits
+    {S : Type*} [MeasurableSpace S] {q : ℕ -> S -> ℝ≥0∞}
+    {X : (ℕ -> S) -> ℝ≥0∞} {Y : ℕ -> (ℕ -> S) -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hXlim :
+      ∀ x : ℕ -> S,
+        Tendsto
+          (fun m => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x)
+          atTop (𝓝 (X x)))
+    (hYlim :
+      ∀ (n : ℕ) (x : ℕ -> S),
+        Tendsto
+          (fun m => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.Ico n m) q x)
+          atTop (𝓝 (Y n x)))
+    (hprefix_ne_top :
+      ∀ (n : ℕ) (x : ℕ -> S),
+        durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞)
+    (hq_ne_zero :
+      ∀ (n : ℕ) (x : ℕ -> S) (i : ℕ),
+        i ∈ Finset.range n -> q i (x i) ≠ 0) :
+    ∀ n,
+      MeasurableSet[durrett2019_theorem_4_3_8_tailCoordinateSigma S n]
+        {x : ℕ -> S | X x = 0} :=
+  durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_prefixCylinder_mul
+    (S := S) (q := q) (X := X) (Y := Y)
+    (fun n =>
+      durrett2019_theorem_4_3_8_tailBlockLikelihood_limit_tailCoordinateSigma_measurable
+        (S := S) (q := q) (Y := Y n) hq n (hYlim n))
+    (durrett2019_theorem_4_3_8_likelihoodLimit_eq_prefixCylinder_mul_tailBlockLimit
+      (q := q) (X := X) (Y := Y) hXlim hYlim hprefix_ne_top)
+    hq_ne_zero
+
+/--
 Durrett 2019, Theorem 4.3.8 cylinder support: restricting an infinite product
 law to finitely many coordinates gives the finite product likelihood ratio.
 -/
