@@ -11391,6 +11391,23 @@ theorem vdVWFiniteCenterWeightedSupremum_nonneg
   exact Real.iSup_nonneg fun centerIndex =>
     abs_nonneg (vdVWWeightedSampleSum classFun weights (center centerIndex) sample)
 
+/--
+Finite-coordinate permutations preserve the finite-center weighted supremum
+after the corresponding inverse permutation of the weights.
+-/
+theorem vdVWFiniteCenterWeightedSupremum_finCoordinatePerm
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n : ℕ} (perm : Equiv.Perm (Fin n))
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) {cardinality : ℕ}
+    (center : Fin cardinality -> Index) (weights : Fin n -> ℝ) :
+    vdVWFiniteCenterWeightedSupremum
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample)
+        classFun center (fun i : Fin n => weights (perm.symm i)) =
+      vdVWFiniteCenterWeightedSupremum sample classFun center weights := by
+  simp [vdVWFiniteCenterWeightedSupremum,
+    vdVWWeightedSampleSum_finCoordinatePerm]
+
 /-- Each center sum is bounded by the finite-center weighted supremum. -/
 theorem abs_vdVWWeightedSampleSum_center_le_finiteCenterWeightedSupremum
     {Observation : Type u} {Index : Type v} {n : ℕ}
@@ -11474,6 +11491,27 @@ def VdVWTheorem243FiniteCenterMaximalBound
   ∀ centerIndex : Fin cardinality,
     |vdVWWeightedSampleSum classFun weights (center centerIndex) sample| ≤
       vdVWTheorem243FiniteNetMaximalUpper cardinality centerScale
+
+/--
+Finite-coordinate permutations transport the finite-center maximal-bound
+predicate when the weights are inversely permuted.
+-/
+theorem VdVWTheorem243FiniteCenterMaximalBound_finCoordinatePerm
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n : ℕ} (perm : Equiv.Perm (Fin n))
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {cardinality : ℕ}
+    {center : Fin cardinality -> Index} {weights : Fin n -> ℝ}
+    {centerScale : ℝ}
+    (hmaximal :
+      VdVWTheorem243FiniteCenterMaximalBound sample classFun center weights
+        centerScale) :
+    VdVWTheorem243FiniteCenterMaximalBound
+      (vdVWFinCoordinatePermMeasurableEquiv perm sample) classFun center
+      (fun i : Fin n => weights (perm.symm i)) centerScale := by
+  intro centerIndex
+  simpa [VdVWTheorem243FiniteCenterMaximalBound,
+    vdVWWeightedSampleSum_finCoordinatePerm] using hmaximal centerIndex
 
 /--
 The finite-center maximal-inequality output plugs into the empirical-net
@@ -11791,6 +11829,65 @@ in the proof of Theorem 2.4.3.
 -/
 noncomputable def vdVWRademacherWeights {n : ℕ} (sign : Fin n -> ℝ) : Fin n -> ℝ :=
   fun i => (n : ℝ)⁻¹ * sign i
+
+/--
+Rademacher sign-vector support is stable under finite-coordinate
+permutations.
+-/
+theorem VdVWRademacherSignVector_finCoordinatePerm
+    {n : ℕ} (perm : Equiv.Perm (Fin n)) {sign : Fin n -> ℝ}
+    (hsign : VdVWRademacherSignVector sign) :
+    VdVWRademacherSignVector fun i : Fin n => sign (perm.symm i) := by
+  intro i
+  exact hsign (perm.symm i)
+
+/-- Rademacher weights commute with inverse coordinate permutation of signs. -/
+theorem vdVWRademacherWeights_finCoordinatePerm
+    {n : ℕ} (perm : Equiv.Perm (Fin n)) (sign : Fin n -> ℝ) :
+    vdVWRademacherWeights (fun i : Fin n => sign (perm.symm i)) =
+      fun i : Fin n => vdVWRademacherWeights sign (perm.symm i) := by
+  funext i
+  simp [vdVWRademacherWeights]
+
+/--
+The Rademacher-weighted class supremum is invariant under simultaneous
+permutation of the sample coordinates and signs.
+-/
+theorem vdVWWeightedClassSupremum_rademacherWeights_finCoordinatePerm
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    {n : ℕ} (perm : Equiv.Perm (Fin n)) (sign : Fin n -> ℝ)
+    (sample : SampleAt Observation n) :
+    vdVWWeightedClassSupremum indexClass classFun
+        (vdVWRademacherWeights (fun i : Fin n => sign (perm.symm i)))
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample) =
+      vdVWWeightedClassSupremum indexClass classFun
+        (vdVWRademacherWeights sign) sample := by
+  simpa [vdVWRademacherWeights_finCoordinatePerm] using
+    (vdVWWeightedClassSupremum_finCoordinatePerm
+      (indexClass := indexClass) (classFun := classFun)
+      (weights := vdVWRademacherWeights sign) perm sample)
+
+/--
+The finite-center Rademacher supremum is invariant under simultaneous
+permutation of the sample coordinates and signs.
+-/
+theorem vdVWFiniteCenterWeightedSupremum_rademacherWeights_finCoordinatePerm
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n : ℕ} (perm : Equiv.Perm (Fin n))
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) {cardinality : ℕ}
+    (center : Fin cardinality -> Index) (sign : Fin n -> ℝ) :
+    vdVWFiniteCenterWeightedSupremum
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample)
+        classFun center
+        (vdVWRademacherWeights (fun i : Fin n => sign (perm.symm i))) =
+      vdVWFiniteCenterWeightedSupremum sample classFun center
+        (vdVWRademacherWeights sign) := by
+  simpa [vdVWRademacherWeights_finCoordinatePerm] using
+    (vdVWFiniteCenterWeightedSupremum_finCoordinatePerm
+      (Observation := Observation) (Index := Index) perm sample classFun center
+      (vdVWRademacherWeights sign))
 
 /--
 For finite classes, a fixed-sample Rademacher-weighted truncated supremum is
@@ -14783,6 +14880,27 @@ def VdVWTheorem243RademacherFiniteCenterHoeffdingBound
     (sign : Fin n -> ℝ) (M : ℝ) : Prop :=
   VdVWTheorem243FiniteCenterMaximalBound sample classFun center
     (vdVWRademacherWeights sign) (vdVWTheorem243HoeffdingCenterScale n M)
+
+/--
+The finite-center Hoeffding/maximal predicate is stable under simultaneous
+permutation of sample coordinates and Rademacher signs.
+-/
+theorem VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n : ℕ} (perm : Equiv.Perm (Fin n))
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {cardinality : ℕ}
+    {center : Fin cardinality -> Index} {sign : Fin n -> ℝ} {M : ℝ}
+    (hmaximal :
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun
+        center sign M) :
+    VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+      (vdVWFinCoordinatePermMeasurableEquiv perm sample) classFun center
+      (fun i : Fin n => sign (perm.symm i)) M := by
+  simpa [VdVWTheorem243RademacherFiniteCenterHoeffdingBound,
+    vdVWRademacherWeights_finCoordinatePerm] using
+    (VdVWTheorem243FiniteCenterMaximalBound_finCoordinatePerm
+      (Observation := Observation) (Index := Index) perm hmaximal)
 
 /--
 Rademacher-sign specialization of the finite empirical-net Hoeffding handoff.
