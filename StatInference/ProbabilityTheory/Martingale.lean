@@ -4326,5 +4326,80 @@ theorem durrett2019_example_4_3_7_finitePartitionLikelihood_setLIntegral_cell
   · simp [hνzero, hzero k hνzero]
   · exact ENNReal.div_mul_cancel hνzero (measure_ne_top ν (cell k))
 
+/--
+Durrett 2019, Example 4.3.7: the elementary finite-partition likelihood
+approximation has the correct set integral on every finite union of partition
+cells.
+-/
+theorem durrett2019_example_4_3_7_finitePartitionLikelihood_setLIntegral_cellUnion
+    {κ Ω : Type*} [Fintype κ] [DecidableEq κ] [MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure ν] {cell : κ -> Set Ω}
+    (hcell : ∀ k, MeasurableSet (cell k))
+    (hdisj : Pairwise (fun i j => Disjoint (cell i) (cell j)))
+    (hzero : ∀ k, ν (cell k) = 0 -> μ (cell k) = 0) (S : Finset κ) :
+    ∫⁻ ω in ⋃ k ∈ S, cell k,
+        durrett2019_example_4_3_7_finitePartitionLikelihood μ ν cell ω ∂ν =
+      μ (⋃ k ∈ S, cell k) := by
+  classical
+  have hSdisj : Set.PairwiseDisjoint (↑S) cell := by
+    intro i _hi j _hj hij
+    exact hdisj hij
+  rw [lintegral_biUnion_finset hSdisj (fun k _ => hcell k),
+    measure_biUnion_finset hSdisj (fun k _ => hcell k)]
+  exact Finset.sum_congr rfl fun k _ =>
+    durrett2019_example_4_3_7_finitePartitionLikelihood_setLIntegral_cell
+      (μ := μ) (ν := ν) (cell := cell) hcell hdisj hzero k
+
+/--
+Durrett 2019, Example 4.3.7: if the finite cells cover the whole space, then
+the elementary finite-partition likelihood approximation has the correct
+universe integral.
+-/
+theorem durrett2019_example_4_3_7_finitePartitionLikelihood_lintegral_univ
+    {κ Ω : Type*} [Fintype κ] [DecidableEq κ] [MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure ν] {cell : κ -> Set Ω}
+    (hcell : ∀ k, MeasurableSet (cell k))
+    (hdisj : Pairwise (fun i j => Disjoint (cell i) (cell j)))
+    (hcover : (⋃ k, cell k) = Set.univ)
+    (hzero : ∀ k, ν (cell k) = 0 -> μ (cell k) = 0) :
+    ∫⁻ ω, durrett2019_example_4_3_7_finitePartitionLikelihood μ ν cell ω ∂ν =
+      μ Set.univ := by
+  classical
+  simpa [hcover] using
+    (durrett2019_example_4_3_7_finitePartitionLikelihood_setLIntegral_cellUnion
+      (μ := μ) (ν := ν) (cell := cell) hcell hdisj hzero Finset.univ)
+
+/--
+Durrett 2019, Example 4.3.7 generator-facing endpoint: if a finite
+partition-generated pi-system consists of finite unions of the cells, then the
+elementary partition likelihood approximation represents `mu` as a density
+with respect to `nu`.
+-/
+theorem durrett2019_example_4_3_7_finitePartitionLikelihood_withDensity_eq_of_generator
+    {κ Ω : Type*} [Fintype κ] [DecidableEq κ] [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν] {cell : κ -> Set Ω}
+    (C : Set (Set Ω))
+    (hcell : ∀ k, MeasurableSet (cell k))
+    (hdisj : Pairwise (fun i j => Disjoint (cell i) (cell j)))
+    (hcover : (⋃ k, cell k) = Set.univ)
+    (hzero : ∀ k, ν (cell k) = 0 -> μ (cell k) = 0)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hC_union : ∀ s ∈ C, ∃ S : Finset κ, s = ⋃ k ∈ S, cell k) :
+    μ = ν.withDensity (durrett2019_example_4_3_7_finitePartitionLikelihood μ ν cell) := by
+  classical
+  refine
+    durrett2019_theorem_4_3_5_withDensity_eq_of_generate_finite
+      (μ := μ) (ρ := ν)
+      (Y := durrett2019_example_4_3_7_finitePartitionLikelihood μ ν cell)
+      C hgen hC ?_ ?_
+  · intro s hs
+    rcases hC_union s hs with ⟨S, rfl⟩
+    exact
+      (durrett2019_example_4_3_7_finitePartitionLikelihood_setLIntegral_cellUnion
+        (μ := μ) (ν := ν) (cell := cell) hcell hdisj hzero S).symm
+  · exact
+      (durrett2019_example_4_3_7_finitePartitionLikelihood_lintegral_univ
+        (μ := μ) (ν := ν) (cell := cell) hcell hdisj hcover hzero).symm
+
 end ProbabilityTheory
 end StatInference

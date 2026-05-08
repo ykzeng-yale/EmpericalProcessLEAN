@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V60
+## Live In-Thread Goal Prompt V61
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -125,17 +125,18 @@ Example 4.3.7 finite-partition packet also now compiles: the elementary
 partition likelihood approximation is defined, proved measurable, proved equal
 to the cell ratio on each disjoint cell, and shown to integrate over each cell
 to the numerator cell mass under the textbook finite-cell absolute-continuity
-condition.
+condition; its finite-union and generator-facing endpoint now also compile,
+so finite unions of cells have the correct set integral and a pi-system
+generator made of such finite unions yields
+`mu = nu.withDensity finitePartitionLikelihood`.
 
-Next theorem-sized packet: extend Example 4.3.7 from individual cell identities
-to the finite generated sigma-field/refinement assembly consumed by the
-existing Theorem 4.3.5 generator and trimmed-RN machinery, then move to
-Theorem 4.3.8 Kakutani dichotomy.  First search local/mathlib APIs for finite
-partition-generated measurable spaces, atoms of finite sigma-fields,
-`Measure.pi`, product-coordinate laws, independence, RN derivatives of product
-measures, finite product likelihood ratios on cylinders, infinite products, and
-tail-event zero-one/singularity support.  Add only source-shaped partition or
-product likelihood-ratio wrappers that directly feed the Example 4.3.7 or
+Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
+layer as closed support and move to Theorem 4.3.8 Kakutani dichotomy.  First
+search local/mathlib APIs for `Measure.pi`, `Measure.infinitePi`, cylinder
+events, product-coordinate laws, independence, finite product likelihood ratios
+on cylinders, finite-coordinate RN derivatives of product measures, infinite
+products of Hellinger integrals, and tail-event zero-one/singularity support.
+Add only source-shaped product likelihood-ratio wrappers that directly feed the
 Kakutani route.  Do not redo the already compiled RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
@@ -144,9 +145,10 @@ trimmed-RN eventual restricted-density bridge, `mu + nu` boundedness bridge,
 real-to-`ENNReal` convergence-transfer bridge, bounded real-martingale
 limitProcess convergence bridge, canonical limit-density endpoint, canonical
 ratio endpoint, denominator-side top-set null endpoint, singular-support
-top-set endpoint, full canonical-ratio real identity, or the basic
-finite-partition likelihood/cell-integral packet.  Defer Polya urn as a
-model-specific construction unless a direct existing primitive is found.
+top-set endpoint, full canonical-ratio real identity, or any Example 4.3.7
+finite-partition likelihood, finite-union, or generator endpoint.  Defer Polya
+urn as a model-specific construction unless a direct existing primitive is
+found.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -516,12 +518,11 @@ integral-representation to RN-derivative bridge, generator-extension bridge,
 bounded-convergence generator-production bridge, trimmed-RN eventual
 restricted-density bridge, `mu + nu` boundedness bridge, canonical ratio,
 denominator-side top-set null endpoint, singular-support top-set endpoint, and
-full canonical-ratio real identity, plus the first Example 4.3.7
-finite-partition likelihood/cell-integral packet.  Move forward by extending
-Example 4.3.7 from individual cells to finite generated sigma-fields and
-partition refinements, then to Theorem 4.3.8 Kakutani dichotomy for infinite
-product measures.  Keep Theorem 4.1.16 deferred unless a targeted kernel search
-finds a direct source-shaped API.
+full canonical-ratio real identity, plus the Example 4.3.7 finite-partition
+likelihood, finite-union, and generator-facing endpoint.  Move forward to
+Theorem 4.3.8 Kakutani dichotomy for infinite product measures.  Keep Theorem
+4.1.16 deferred unless a targeted kernel search finds a direct source-shaped
+API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -633,6 +634,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V60` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V61` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
