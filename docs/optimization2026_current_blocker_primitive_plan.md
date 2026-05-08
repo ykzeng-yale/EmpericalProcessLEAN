@@ -565,6 +565,13 @@ and certificate wrappers for those two routes:
 `toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx_source_variance`,
 and
 `toMartingaleCLTCertificate_of_inverseFutureTail_condExp_source_variance`.
+The newest reduced-source packet adds
+`projectedCompensatedFullInverseRight_integrable_of_uniform_bound`,
+`projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance_of_variance_error`,
+and
+`projected_charFun_tendsto_exp_of_compensated_full_inverse_right_source_variance_and_mixedTowerDefect_of_variance_error`,
+discharging the routine right-product, compensated-error, and remainder
+integrability gates from existing source boundedness and the variance-error row.
 This shows the left compensated full-inverse product is exactly the target
 projected characteristic function, so left convergence is not an independent
 blocker.  The preferred ASGD 12.7 route is now: use the compiled right-product

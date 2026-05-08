@@ -7022,6 +7022,71 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedFullInverseRight_
       L t hvariance_error_int hremainder_int)
 
 /--
+The combined right compensated full-inverse product is integrable under the
+bounded martingale source assumptions, because it is exactly the normalized
+Taylor product.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedFullInverseRight_integrable_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) :
+    Integrable
+      (fun ω =>
+        ∏ k ∈ Finset.range N,
+          S.projectedInverseCompensationFactor L N t k ω *
+            (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)) P := by
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor]
+    using S.projectedNormalizedTaylorProduct_integrable_of_uniform_bound L N t
+
+/--
+Right compensated full-inverse product convergence with all routine
+integrability gates discharged from source boundedness and the variance-error
+row.  The only non-routine side condition left is the factor bound on
+`1 +` the compensated Taylor error.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance_of_variance_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (herror_factor_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖1 + S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ≤ 1)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          (∏ k ∈ Finset.range N,
+            S.projectedInverseCompensationFactor L N t k ω) *
+          ∏ k ∈ Finset.range N,
+            (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) :=
+  S.projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance
+    L t herror_factor_bound
+    (fun N => S.projectedCompensatedFullInverseRight_integrable_of_uniform_bound
+      L N t)
+    (fun N =>
+      S.projectedCompensatedTaylorError_row_norm_integrable_of_variance_error
+        L N t (hvariance_error_int N))
+    hvariance_error_int
+    (fun N => S.projected_remainder_row_norm_integrable_of_uniform_bound L N t)
+
+/--
 The left compensated full-inverse product is exactly the raw projected
 characteristic-function product.  Thus its convergence is not an independent
 probabilistic input: it is the characteristic-function convergence target
@@ -7230,6 +7295,50 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_comp
     (S.projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance
       L t herror_factor_bound hcombined_int herror_int
       hvariance_error_int hremainder_int)
+
+/--
+Reduced source-facing compensated full-inverse route.  Routine right-product,
+compensated-error, and remainder integrability gates are discharged from the
+bounded source and the variance-error row.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_compensated_full_inverse_right_source_variance_and_mixedTowerDefect_of_variance_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hdefect :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            S.projectedMixedTowerStepDefect L N r t)
+        atTop (𝓝 0))
+    (herror_factor_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖1 + S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ≤ 1)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) :=
+  S.projected_charFun_tendsto_of_compensated_full_inverse_right_and_mixedTowerDefect
+    L t (Complex.exp (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))
+    hdefect
+    (S.projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance_of_variance_error
+      L t herror_factor_bound hvariance_error_int)
 
 /--
 Finite accumulation of the guarded mixed-product successor step.  Under the

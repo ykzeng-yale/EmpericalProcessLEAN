@@ -583,6 +583,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx_source_variance`
   and
   `toMartingaleCLTCertificate_of_inverseFutureTail_condExp_source_variance`.
+  The newest reduced-source packet adds
+  `projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance_of_variance_error`
+  and
+  `projected_charFun_tendsto_exp_of_compensated_full_inverse_right_source_variance_and_mixedTowerDefect_of_variance_error`,
+  eliminating routine right-product, compensated-error, and remainder
+  integrability assumptions from that route.
   This shows the left compensated full-inverse product is exactly the target
   projected characteristic function, so it is not an independent same-limit
   input.  The preferred ASGD 12.7 route is now the compiled right-product
