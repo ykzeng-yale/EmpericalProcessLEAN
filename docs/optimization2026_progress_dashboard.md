@@ -254,6 +254,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_integral_eq_exp_averageVariance`,
   `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_integral`,
   `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_eq_taylorModel`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_ae_eq_condExp_charFun`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_norm_le_one_ae`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_row_norm_le_one_ae`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_eventually_row_norm_le_one`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorProduct_aestronglyMeasurable_of_uniform_bound`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorProduct_integrable_of_uniform_bound`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_normalized_taylor_step_mul_scaled`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_normalized_taylor_step_mul_scaled_of_measurable`,
   `Chewi127BoundedMartingaleCLTSource.projected_scalarScaledSum_charFun_eq_integral_product`,
@@ -268,6 +275,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower`,
   `Chewi127BoundedMartingaleCLTSource.projected_remainder_row_norm_integrable_of_uniform_bound`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_normalized_bound`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_normalized_controls`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -326,12 +335,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   accumulates those successor equalities, proves the normalized-product model
   from the mixed tower, and packages the resulting source-facing
   characteristic-function convergence theorem.  The next ASGD packet should
-  now starts from the newest uniform-integrability wrapper, which discharges
-  square integrability, one-step Taylor-remainder integrability, and
-  conditional-remainder row integrability from the source uniform bound.  The
-  remaining work is the finite mixed-tower future-tail
-  measurability/integrability plus normalized/inverse product and row-error
-  integrability/boundedness assumptions.
+  now start from the newest normalized-control wrapper.  This wrapper first
+  identifies each normalized Taylor factor a.e. with the conditional
+  characteristic function of the next projected martingale increment, then uses
+  mathlib `norm_condExp_le`, `condExp_const`, `condExp_congr_ae`, and
+  `stronglyMeasurable_condExp` to prove the a.e. norm bound,
+  finite-product measurability, and finite-product integrability from the
+  source uniform bound.  The remaining work is the finite mixed-tower
+  future-tail measurability/integrability plus inverse product
+  boundedness/integrability, compensated-error row-sum integrability, and
+  variance-error row-sum integrability assumptions.  Next target: prove
+  conditional-variance nonnegativity for `Xi (k+1) L L`, derive the inverse
+  compensation factor/product controls, then revisit the mixed-tower
+  future-tail measurability gate.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
