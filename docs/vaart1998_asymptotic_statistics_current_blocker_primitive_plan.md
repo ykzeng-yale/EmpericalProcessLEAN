@@ -9,35 +9,23 @@ manual `/goal` continuation before selecting a proof target.
 Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
-Current endpoint:
+Verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativeRegularity_envelope`.
-It already packages the finite-coordinate empirical score, derivative,
-Hessian action, estimating equation, envelope hypotheses, common normalizing
-scalar, the actual segment `theta0 + t • delta`, endpoint identification,
-Frechet differentiability of the estimating map along the segment,
-coordinate path derivatives by the chain rule, vector-valued path continuity,
-the empirical derivative specialized to `derivativeAt theta0`, and the vector
-derivative Taylor identity derived from source continuity of `derivativeAt` on
-the segment image plus a Frechet derivative of `derivativeAt` along the open
-segment.
+It now consumes source continuity of `derivativeAt` on the segment image plus a
+Frechet derivative of `derivativeAt` on the open segment.
 
-Next packet only: instantiate these source second-derivative regularity fields
-from a standard smoothness package for the estimating map or derivative map.
-Do not revisit the solved derivative-path regularity bridge, vector derivative
-Taylor bridge, `derivativeAt theta0` specialization, vector-to-coordinate
-continuity reduction, coordinate scalar derivative-at-zero/display reduction,
-Frechet-to-one-dimensional chain rule, estimating-map segment instantiation,
-second-derivative action matching, path-selected Taylor bridge, coordinate
-assembly, scalar Taylor bridge, scaling bridge, auxiliary residual, curvature
-envelope, empirical Taylor aggregation, endpoint assembly, Chapter 2-4
-substrate, Gaussian endpoints, or generic empirical-process plumbing unless a
-direct dependency is missing.
+Next packet: prove the shortest source-level smoothness wrapper feeding that
+endpoint, preferably an open-set `ContDiffOn ℝ 1 derivativeAt` or equivalent
+derivative-map theorem that yields the required segment continuity and
+open-segment `HasFDerivAt derivativeAt secondDerivative` fields.  Add the final
+`...ContDiff..._envelope` wrapper only if it is immediate from that lemma.
 
 Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
 run the focused file and target module checks plus hygiene scans, fetch/rebase
 over `origin/main`, rerun affected checks, update route docs, commit, and push.
 Use a disjoint worktree or agent only when it shortens this exact path while
-preserving other agents' changes.
+preserving other agents' changes.  Treat the long ledger below as evidence only,
+not as a prompt to replay solved layers.
 
 ## Current Blocker
 
