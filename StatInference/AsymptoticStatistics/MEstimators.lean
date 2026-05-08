@@ -4167,6 +4167,126 @@ theorem vaart1998_theorem_5_41_estimatingMap_coordinate_path_hasDerivAt_ae_of_ha
       (hω i x hx)
 
 /--
+van der Vaart 1998, Theorem 5.41, vector derivative Taylor bridge from a
+constant second-derivative action.
+
+If the path `t ↦ derivativePath t` has constant derivative `secondAction` on
+`(0, 1)` and is continuous on `[0, 1]`, then the vector derivative increment
+has the source Taylor form used by the finite-coordinate Z-estimator handoff.
+-/
+theorem vaart1998_theorem_5_41_vector_derivativeTaylor_of_constant_secondDerivativeAction
+    {Coord : Type*} [Fintype Coord]
+    (derivativePath : ℝ -> Coord -> ℝ) (secondAction : Coord -> ℝ)
+    (hContinuous : ContinuousOn derivativePath (Set.Icc (0 : ℝ) 1))
+    (hDerivative : ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+      HasDerivAt derivativePath secondAction x) :
+    ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+      derivativePath x - derivativePath 0 = (x - 0 : ℝ) • secondAction := by
+  intro x hx
+  ext j
+  have hx01 : 0 < x := hx.1
+  have hx1 : x < 1 := hx.2
+  have hxle1 : x ≤ 1 := le_of_lt hx1
+  have hsubset : Set.Icc (0 : ℝ) x ⊆ Set.Icc (0 : ℝ) 1 := by
+    intro y hy
+    exact ⟨hy.1, le_trans hy.2 hxle1⟩
+  have hcont_coord :
+      ContinuousOn (fun t : ℝ => derivativePath t j)
+        (Set.Icc (0 : ℝ) x) := by
+    simpa [Function.comp_def] using
+      (continuous_apply j).comp_continuousOn (hContinuous.mono hsubset)
+  have hderiv_coord : ∀ y ∈ Set.Ioo (0 : ℝ) x,
+      HasDerivAt (fun t : ℝ => derivativePath t j) (secondAction j) y := by
+    intro y hy
+    have hy01 : y ∈ Set.Ioo (0 : ℝ) 1 := ⟨hy.1, lt_trans hy.2 hx1⟩
+    have hproj :
+        HasFDerivAt (fun z : Coord -> ℝ => z j)
+          (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Coord => ℝ) j)
+          (derivativePath y) := by
+      simpa using
+        (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Coord => ℝ) j).hasFDerivAt
+    have hcoord :
+        HasDerivAt
+          ((fun z : Coord -> ℝ => z j) ∘ derivativePath)
+          ((ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Coord => ℝ) j)
+            secondAction) y :=
+      HasFDerivAt.comp_hasDerivAt
+        (𝕜 := ℝ) (F := Coord -> ℝ) (E := ℝ)
+        (f := derivativePath) (f' := secondAction)
+        (l := fun z : Coord -> ℝ => z j)
+        (l' := ContinuousLinearMap.proj j) y hproj (hDerivative y hy01)
+    simpa [Function.comp_def] using hcoord
+  obtain ⟨c, _hc, hslope⟩ :=
+    exists_hasDerivAt_eq_slope
+      (fun t : ℝ => derivativePath t j) (fun _ : ℝ => secondAction j)
+      hx01 hcont_coord hderiv_coord
+  have hxne : x - 0 ≠ 0 := sub_ne_zero.mpr hx01.ne'
+  have hmul : (x - 0 : ℝ) * secondAction j =
+      derivativePath x j - derivativePath 0 j := by
+    rw [hslope]
+    field_simp [hxne]
+  simpa [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, mul_comm] using hmul.symm
+
+/--
+van der Vaart 1998, Theorem 5.41, a.e. sampled vector derivative Taylor bridge
+from a constant second-derivative action.
+
+This random-sample wrapper turns path continuity and a path derivative equal to
+the selected second-derivative action into the vector Taylor identity consumed
+by the current finite-coordinate empirical-average endpoint.
+-/
+theorem vaart1998_theorem_5_41_vector_derivativeTaylor_ae_of_constant_secondDerivativeAction
+    {Ω Observation Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> Θ -> Θ →L[ℝ] (Coord -> ℝ))
+    (secondDerivative :
+      ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))
+    (theta0 delta : ℕ -> Ω -> Θ)
+    (hContinuousDerivativePath : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContinuousOn
+          (fun t : ℝ =>
+            derivativeAt n ω (samples n ω i)
+              (theta0 n ω + t • delta n ω) (delta n ω))
+          (Set.Icc (0 : ℝ) 1))
+    (hSecondDerivativePath : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          HasDerivAt
+            (fun t : ℝ =>
+              derivativeAt n ω (samples n ω i)
+                (theta0 n ω + t • delta n ω) (delta n ω))
+            (secondDerivative n ω (samples n ω i)
+              (delta n ω) (delta n ω)) x) :
+    ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          derivativeAt n ω (samples n ω i)
+                (theta0 n ω + x • delta n ω) (delta n ω) -
+              derivativeAt n ω (samples n ω i)
+                (theta0 n ω) (delta n ω) =
+            (x - 0 : ℝ) •
+              secondDerivative n ω (samples n ω i)
+                (delta n ω) (delta n ω) := by
+  intro n
+  filter_upwards [hContinuousDerivativePath n, hSecondDerivativePath n] with
+    ω hcontω hderivω
+  intro i x hx
+  have hTaylor :=
+    vaart1998_theorem_5_41_vector_derivativeTaylor_of_constant_secondDerivativeAction
+      (derivativePath := fun t : ℝ =>
+        derivativeAt n ω (samples n ω i)
+          (theta0 n ω + t • delta n ω) (delta n ω))
+      (secondAction :=
+        secondDerivative n ω (samples n ω i) (delta n ω) (delta n ω))
+      (hcontω i) (hderivω i)
+      x hx
+  simpa using hTaylor
+
+/--
 van der Vaart 1998, Theorem 5.41, finite-coordinate empirical-average source
 handoff from Frechet derivatives along the actual estimating-map path.
 
@@ -4741,6 +4861,147 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hScaledEstimator_meas hRoot hScore_scaled hEstimator_scaled
       hScaledEstimator_eq hEstimator_segment hDerivativeAt0 hContinuous
       hFDeriv hDerivativeTaylor
+
+/--
+van der Vaart 1998, Theorem 5.41, finite-coordinate empirical-average source
+handoff from a theta0 Frechet derivative and a constant second-derivative path.
+
+This wrapper discharges the vector derivative Taylor identity by applying the
+one-dimensional mean-value bridge to the vector path
+`t ↦ derivativeAt (theta0 + t • delta) delta`, with derivative equal to the
+selected second-derivative action.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativePath_envelope
+    {Ω Ω' Observation Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] (Coord -> ℝ)) (Vinv : (Coord -> ℝ) →L[ℝ] Θ)
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scale : ℕ -> Ω -> ℝ)
+    (estimatingMap : ℕ -> Ω -> Observation -> Θ -> Coord -> ℝ)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> Θ -> Θ →L[ℝ] (Coord -> ℝ))
+    (scoreAtTheta0 estimatingAtEstimator :
+      ℕ -> Ω -> Observation -> Coord -> ℝ)
+    (secondDerivative :
+      ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))
+    (envelope : Observation -> ℝ)
+    {theta0 estimator delta scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Coord -> ℝ}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT :
+      TendstoInDistribution
+        (fun n ω => empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω))
+        atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω =>
+          ‖empiricalAverageVector (samples n ω)
+              (fun x => derivativeAt n ω x (theta0 n ω)) - V‖)
+        atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hCurvatureBounded :
+      StochasticBounded P
+        (fun n ω => empiricalAverage (samples n ω) envelope))
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hEnvelopeBound : ∀ᶠ n in atTop, ∀ ω x,
+      ‖secondDerivative n ω x‖ ≤ envelope x)
+    (hEmpiricalDerivative_meas : ∀ n,
+      AEMeasurable
+        (fun ω =>
+          empiricalAverageVector (samples n ω)
+            (fun x => derivativeAt n ω x (theta0 n ω))) P)
+    (hSecondDerivativeAction_meas : ∀ n,
+      AEMeasurable
+        (fun ω =>
+          empiricalAverageVector (samples n ω) (secondDerivative n ω)) P)
+    (hDelta_meas : ∀ n, AEMeasurable (delta n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P)
+    (hRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω) (estimatingAtEstimator n ω) = 0)
+    (hScore_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i) (theta0 n ω))
+    (hEstimator_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        estimatingAtEstimator n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i)
+            (estimator n ω))
+    (hScaledEstimator_eq : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, scaledEstimator n ω = scale n ω • delta n ω)
+    (hEstimator_segment : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, theta0 n ω + delta n ω = estimator n ω)
+    (hContinuous : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContinuousOn
+          (fun t : ℝ =>
+            estimatingMap n ω (samples n ω i)
+              (theta0 n ω + t • delta n ω))
+          (Set.Icc (0 : ℝ) 1))
+    (hFDeriv : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          HasFDerivAt (estimatingMap n ω (samples n ω i))
+            (derivativeAt n ω (samples n ω i)
+              (theta0 n ω + x • delta n ω))
+            (theta0 n ω + x • delta n ω))
+    (hContinuousDerivativePath : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContinuousOn
+          (fun t : ℝ =>
+            derivativeAt n ω (samples n ω i)
+              (theta0 n ω + t • delta n ω) (delta n ω))
+          (Set.Icc (0 : ℝ) 1))
+    (hSecondDerivativePath : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          HasDerivAt
+            (fun t : ℝ =>
+              derivativeAt n ω (samples n ω i)
+                (theta0 n ω + t • delta n ω) (delta n ω))
+            (secondDerivative n ω (samples n ω i)
+              (delta n ω) (delta n ω)) x) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hDerivativeTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          derivativeAt n ω (samples n ω i)
+                (theta0 n ω + x • delta n ω) (delta n ω) -
+              derivativeAt n ω (samples n ω i)
+                (theta0 n ω) (delta n ω) =
+            (x - 0 : ℝ) •
+              secondDerivative n ω (samples n ω i)
+                (delta n ω) (delta n ω) :=
+    vaart1998_theorem_5_41_vector_derivativeTaylor_ae_of_constant_secondDerivativeAction
+      (P := P) (samples := samples) (derivativeAt := derivativeAt)
+      (secondDerivative := secondDerivative) (theta0 := theta0)
+      (delta := delta) hContinuousDerivativePath hSecondDerivativePath
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0FDerivVectorTaylor_envelope
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (samples := samples) (scale := scale)
+      (estimatingMap := estimatingMap) (derivativeAt := derivativeAt)
+      (scoreAtTheta0 := scoreAtTheta0)
+      (estimatingAtEstimator := estimatingAtEstimator)
+      (secondDerivative := secondDerivative)
+      (envelope := envelope) (theta0 := theta0) (estimator := estimator)
+      (delta := delta) (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hScoreCLT hDerivativeLLN hDelta hEnvelope_nonneg
+      hCurvatureBounded hScaledEstimator hEnvelopeBound
+      hEmpiricalDerivative_meas hSecondDerivativeAction_meas hDelta_meas
+      hScaledEstimator_meas hRoot hScore_scaled hEstimator_scaled
+      hScaledEstimator_eq hEstimator_segment hContinuous hFDeriv
+      hDerivativeTaylor
 
 end AsymptoticStatistics
 end StatInference

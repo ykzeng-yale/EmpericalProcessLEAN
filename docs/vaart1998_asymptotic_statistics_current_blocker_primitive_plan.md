@@ -10,24 +10,27 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0FDerivVectorTaylor_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativePath_envelope`.
 It already packages the finite-coordinate empirical score, derivative,
 Hessian action, estimating equation, envelope hypotheses, common normalizing
 scalar, the actual segment `theta0 + t • delta`, endpoint identification,
 Frechet differentiability of the estimating map along the segment,
 coordinate path derivatives by the chain rule, vector-valued path continuity,
-the empirical derivative specialized to `derivativeAt theta0`, and vector
-derivative Taylor hypotheses into the compiled Theorem 5.41 probability handoff.
+the empirical derivative specialized to `derivativeAt theta0`, and the vector
+derivative Taylor identity derived from derivative-path continuity plus a
+constant second-derivative path derivative.
 
-Next packet only: instantiate the vector derivative Taylor identity from the
-chosen second-derivative action.  Do not revisit the solved `derivativeAt theta0`
-specialization, vector-to-coordinate continuity reduction, coordinate scalar
-derivative-at-zero/display reduction, Frechet-to-one-dimensional chain rule,
-estimating-map segment instantiation, second-derivative action matching,
-path-selected Taylor bridge, coordinate assembly, scalar Taylor bridge,
-scaling bridge, auxiliary residual, curvature envelope, empirical Taylor
-aggregation, endpoint assembly, Chapter 2-4 substrate, Gaussian endpoints, or
-generic empirical-process plumbing unless a direct dependency is missing.
+Next packet only: instantiate derivative-path continuity and the
+second-derivative path `HasDerivAt` assumption from the chosen source
+second-derivative regularity.  Do not revisit the solved vector derivative
+Taylor bridge, `derivativeAt theta0` specialization, vector-to-coordinate
+continuity reduction, coordinate scalar derivative-at-zero/display reduction,
+Frechet-to-one-dimensional chain rule, estimating-map segment instantiation,
+second-derivative action matching, path-selected Taylor bridge, coordinate
+assembly, scalar Taylor bridge, scaling bridge, auxiliary residual, curvature
+envelope, empirical Taylor aggregation, endpoint assembly, Chapter 2-4
+substrate, Gaussian endpoints, or generic empirical-process plumbing unless a
+direct dependency is missing.
 
 Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
 run the focused file and target module checks plus hygiene scans, fetch/rebase
@@ -827,17 +830,27 @@ compiling:
 297. Theorem 5.41 finite-coordinate empirical-average source handoff with the
    empirical derivative specialized to `derivativeAt theta0`:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0FDerivVectorTaylor_envelope`.
+298. Theorem 5.41 vector derivative Taylor bridge from a constant
+   second-derivative action:
+   `vaart1998_theorem_5_41_vector_derivativeTaylor_of_constant_secondDerivativeAction`.
+299. Theorem 5.41 a.e. sampled vector derivative Taylor bridge from a constant
+   second-derivative action:
+   `vaart1998_theorem_5_41_vector_derivativeTaylor_ae_of_constant_secondDerivativeAction`.
+300. Theorem 5.41 finite-coordinate empirical-average source handoff from a
+   theta0 Frechet derivative and a constant second-derivative path:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativePath_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 theta0 Frechet derivative handoff`).
+(`Add Vaart theorem 5.41 second derivative path handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by specializing the empirical
-derivative to the Frechet derivative at `theta0`, making
-`derivativeAt theta0 = derivative` definitional.
+asymptotic-normality route for Z-estimators by proving the vector derivative
+Taylor identity from derivative-path continuity and a constant path derivative
+equal to the selected second-derivative action.
 
-The next aggressive packet should instantiate the vector derivative Taylor
-identity from the selected second-derivative action.
+The next aggressive packet should instantiate derivative-path continuity and
+the second-derivative path `HasDerivAt` assumption from the chosen source
+second-derivative regularity.
 
 ## Execution Notes
 
