@@ -3294,5 +3294,80 @@ theorem
       hA C hC_meas hY hZ hgen hC hμρ hνρ hYbound (by simp)
       hYlim hZbound (by simp) hZlim hX hμtop hνtop
 
+/--
+Durrett 2019, Theorem 4.3.5 convergence-transfer primitive: a sequence of
+finite `ENNReal` values that is uniformly bounded by one a.e. converges in
+`ENNReal` whenever its `toReal` sequence converges to the `toReal` of a finite
+limit.
+-/
+theorem durrett2019_theorem_4_3_5_ae_ennreal_tendsto_of_toReal_tendsto_le_one
+    {Ω : Type*} [MeasurableSpace Ω] {ρ : Measure Ω}
+    {Yseq : ℕ -> Ω -> ℝ≥0∞} {Y : Ω -> ℝ≥0∞}
+    (hbound : ∀ n, Yseq n ≤ᵐ[ρ] fun _ => (1 : ℝ≥0∞))
+    (hYfin : ∀ᵐ ω ∂ρ, Y ω ≠ ∞)
+    (hlim : ∀ᵐ ω ∂ρ,
+      Tendsto (fun n => (Yseq n ω).toReal) atTop (𝓝 ((Y ω).toReal))) :
+    ∀ᵐ ω ∂ρ, Tendsto (fun n => Yseq n ω) atTop (𝓝 (Y ω)) := by
+  have hbound_all : ∀ᵐ ω ∂ρ, ∀ n, Yseq n ω ≤ (1 : ℝ≥0∞) :=
+    ae_all_iff.2 hbound
+  filter_upwards [hbound_all, hYfin, hlim] with ω hω_bound hYω hlimω
+  have hseq_fin : ∀ n, Yseq n ω ≠ ∞ := fun n =>
+    ne_top_of_le_ne_top ENNReal.one_ne_top (hω_bound n)
+  exact (ENNReal.tendsto_toReal_iff hseq_fin hYω).mp hlimω
+
+/--
+Durrett 2019, Theorem 4.3.5 source endpoint specialized to `mu + nu`, with
+the remaining convergence hypotheses stated for the real-valued `toReal`
+trimmed RN derivative sequences.  This packages the bounded `ENNReal`
+transfer needed before applying bounded martingale convergence APIs.
+-/
+theorem
+    durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_trimmed_rnDeriv_toReal_limits
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ} [μ.HaveLebesgueDecomposition ν]
+    {X Y Z : Ω -> ℝ≥0∞} {A : Set Ω}
+    (hA : MeasurableSet A) (C : Set (Set Ω))
+    (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hY : AEMeasurable Y (μ + ν)) (hZ : AEMeasurable Z (μ + ν))
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hYfin : ∀ᵐ ω ∂(μ + ν), Y ω ≠ ∞)
+    (hZfin : ∀ᵐ ω ∂(μ + ν), Z ω ≠ ∞)
+    (hYlim_real : ∀ᵐ ω ∂(μ + ν),
+      Tendsto
+        (fun n =>
+          ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        atTop (𝓝 ((Y ω).toReal)))
+    (hZlim_real : ∀ᵐ ω ∂(μ + ν),
+      Tendsto
+        (fun n =>
+          ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        atTop (𝓝 ((Z ω).toReal)))
+    (hX : X =ᵐ[ν] fun ω => Y ω / Z ω)
+    (hμtop : μ.singularPart ν {ω | X ω = ∞}ᶜ = 0)
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ.real A = ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}) := by
+  obtain ⟨hYbound, hZbound⟩ :=
+    durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_bounds
+      (μ := μ) (ν := ν) (ℱ := ℱ)
+  have hYlim : ∀ᵐ ω ∂(μ + ν),
+      Tendsto (fun n => (μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+        atTop (𝓝 (Y ω)) :=
+    durrett2019_theorem_4_3_5_ae_ennreal_tendsto_of_toReal_tendsto_le_one
+      (ρ := μ + ν)
+      (Yseq := fun n ω => (μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+      (Y := Y) hYbound hYfin hYlim_real
+  have hZlim : ∀ᵐ ω ∂(μ + ν),
+      Tendsto (fun n => (ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+        atTop (𝓝 (Z ω)) :=
+    durrett2019_theorem_4_3_5_ae_ennreal_tendsto_of_toReal_tendsto_le_one
+      (ρ := μ + ν)
+      (Yseq := fun n ω => (ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+      (Y := Z) hZbound hZfin hZlim_real
+  exact
+    durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_trimmed_rnDeriv_limits
+      (μ := μ) (ν := ν) (ℱ := ℱ)
+      hA C hC_meas hY hZ hgen hC hYlim hZlim hX hμtop hνtop
+
 end ProbabilityTheory
 end StatInference

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V53
+## Live In-Thread Goal Prompt V54
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -101,22 +101,28 @@ derivatives integrate over `s` to the original measure, and the source endpoint
 is specialized to the actual trimmed RN derivative sequences.  The natural
 dominating-measure boundedness layer also now compiles: for `rho = mu + nu`,
 both trimmed RN derivative sequences are bounded by `1`, and the final source
-endpoint is specialized to this bound automatically.
+endpoint is specialized to this bound automatically.  The real-convergence
+handoff layer also now compiles: a one-bounded finite `ENNReal` sequence whose
+`toReal` values converge to a finite target converges in `ENNReal`, and the
+`mu + nu` source endpoint now accepts real-valued convergence hypotheses for
+the two trimmed RN derivative sequences.
 
-Next theorem-sized packet: continue Theorem 4.3.5 by proving convergence of the
-`mu/(mu+nu)` and `nu/(mu+nu)` trimmed RN derivative sequences to `Y` and `Z`,
-the remaining `X = Y / Z` no-`0/0` a.e. bridge, or `{X = infinity}` singular
-separation.  Search/reuse nonnegative/bounded martingale convergence wrappers
-for ENNReal-valued or real-valued bounded martingales, conversion between
-ENNReal bounded limits and real martingale convergence, RN derivative
-addition/scaling APIs, ENNReal limsup/top, and a.e.-restriction APIs.  Do not
-redo the already compiled RN martingale/convergence bridge,
+Next theorem-sized packet: continue Theorem 4.3.5 by producing those real-valued
+bounded martingale convergence hypotheses for
+`((mu.trim F_n).rnDeriv ((mu + nu).trim F_n)).toReal` and
+`((nu.trim F_n).rnDeriv ((mu + nu).trim F_n)).toReal`, or by proving the
+remaining `X = Y / Z` no-`0/0` a.e. bridge or `{X = infinity}` singular
+separation if those discharge faster.  Search/reuse real-valued bounded
+martingale convergence wrappers, conditional-expectation preservation for
+`toReal` RN derivatives bounded by one, RN derivative addition/scaling APIs,
+ENNReal limsup/top, and a.e.-restriction APIs.  Do not redo the already
+compiled RN martingale/convergence bridge,
 regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
 generator-extension bridge, bounded-convergence generator-production bridge,
-trimmed-RN eventual restricted-density bridge, or `mu + nu` boundedness bridge.
-Defer Polya urn as a model-specific construction unless a direct existing
-primitive is found.
+trimmed-RN eventual restricted-density bridge, `mu + nu` boundedness bridge, or
+real-to-`ENNReal` convergence-transfer bridge.  Defer Polya urn as a
+model-specific construction unless a direct existing primitive is found.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -600,6 +606,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V53` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V54` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
