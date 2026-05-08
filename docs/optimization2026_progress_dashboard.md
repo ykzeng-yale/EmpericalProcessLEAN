@@ -307,6 +307,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.toProjectedBridge_of_mixed_tower_future_tail_measurability`,
   `Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate_of_mixed_tower_future_tail_measurability`,
   `Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_mixed_tower_future_tail_measurability`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFutureTail_aestronglyMeasurable_of_factorwise`,
+  `Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_factorwise_future_tail_measurability`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -393,6 +395,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   newest ASGD endpoint packet composes that certificate with the existing
   Chewi 12.3 initial/remainder decomposition theorem, yielding the full ASGD
   distribution/Gaussian/covariance package under the same future-tail gate.
+  The newest factorwise-source packet proves the future tail product is
+  `F_r`-measurable from factorwise `F_r`-measurability by finite-product
+  induction, and exposes a matching full ASGD endpoint theorem for predictable
+  or frozen-tail source models.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
   earlier `F_r` for `r < k`.  Next target: either add a correct predictable or

@@ -6050,6 +6050,49 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerMultiplier_aestron
   simpa [x, a] using hprefix.mul hfuture_tail_meas
 
 /--
+Factorwise predictable/frozen-tail source condition for the mixed tower:
+if every future normalized Taylor factor in `[r+1, N)` is already
+`F_r`-measurable, then the whole normalized tail product is `F_r`-measurable.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFutureTail_aestronglyMeasurable_of_factorwise
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ)
+    (hfactor_tail_meas :
+      ∀ k ∈ Finset.Ico (r + 1) N,
+        AEStronglyMeasurable[S.martingale.filtration r]
+          (fun ω => S.projectedNormalizedTaylorFactor L N t k ω) P) :
+    AEStronglyMeasurable[S.martingale.filtration r]
+      (fun ω =>
+        ∏ k ∈ Finset.Ico (r + 1) N,
+          S.projectedNormalizedTaylorFactor L N t k ω) P := by
+  classical
+  let tailSet : Finset ℕ := Finset.Ico (r + 1) N
+  have hprod :
+      ∀ s : Finset ℕ, s ⊆ tailSet ->
+        AEStronglyMeasurable[S.martingale.filtration r]
+          (fun ω =>
+            ∏ k ∈ s, S.projectedNormalizedTaylorFactor L N t k ω) P := by
+    intro s
+    refine Finset.induction_on s ?empty ?insert
+    · intro _hsub
+      simpa using aestronglyMeasurable_const
+    · intro k s hks ih hsub
+      have hk_tail : k ∈ tailSet := hsub (Finset.mem_insert_self k s)
+      have hs_tail : s ⊆ tailSet := fun j hj =>
+        hsub (Finset.mem_insert_of_mem hj)
+      have hfactor : AEStronglyMeasurable[S.martingale.filtration r]
+          (fun ω => S.projectedNormalizedTaylorFactor L N t k ω) P := by
+        simpa [tailSet] using hfactor_tail_meas k hk_tail
+      have hrest := ih hs_tail
+      simpa [Finset.prod_insert hks] using hfactor.mul hrest
+  simpa [tailSet] using hprod tailSet (fun k hk => hk)
+
+/--
 Mixed-tower convergence with all row-integrability inputs and the mixed-tower
 integrability inputs discharged from source boundedness.  The only remaining
 finite-tower hypothesis is the genuine future-tail `F_r`-measurability
@@ -7717,6 +7760,54 @@ theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_mixed_tower_fut
     chewi123_asgd_limit_package_of_martingale_certificate
       (C := C) Ainv hInitial hRemainder
       hInitial_meas hRemainder_meas hDecomp
+
+/--
+Source-shaped Chewi Theorem 12.3 ASGD limit package from a factorwise
+predictable/frozen-tail condition.  This is a stronger but often easier-to-use
+form of the future-tail gate: callers may prove each future normalized Taylor
+factor is already `F_r`-measurable, and this theorem assembles the product,
+the Chewi 12.7 certificate, and the final ASGD limit package.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_factorwise_future_tail_measurability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hfactor_tail_meas : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      ∀ N r : ℕ, r < N ->
+        ∀ k ∈ Finset.Ico (r + 1) N,
+          AEStronglyMeasurable[S.martingale.filtration r]
+            (fun ω => S.projectedNormalizedTaylorFactor L N t k ω) P)
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K :=
+  S.asgd_limit_package_of_mixed_tower_future_tail_measurability
+    Ainv hmean
+    (fun L t N r _hr =>
+      S.projectedNormalizedTaylorFutureTail_aestronglyMeasurable_of_factorwise
+        L N r t (hfactor_tail_meas L t N r _hr))
+    hInitial hRemainder hInitial_meas hRemainder_meas hDecomp
 
 end Optimization
 end StatInference

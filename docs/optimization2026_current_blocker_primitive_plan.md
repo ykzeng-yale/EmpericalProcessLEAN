@@ -246,6 +246,8 @@ plus the normalized compensated-product bridge:
 `toProjectedBridge_of_mixed_tower_future_tail_measurability`,
 `toMartingaleCLTCertificate_of_mixed_tower_future_tail_measurability`,
 `asgd_limit_package_of_mixed_tower_future_tail_measurability`,
+`projectedNormalizedTaylorFutureTail_aestronglyMeasurable_of_factorwise`,
+`asgd_limit_package_of_factorwise_future_tail_measurability`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
 `projected_charFun_tendsto_exp_of_normalized_product_model`,
 and
@@ -307,6 +309,12 @@ obligations are compiled, and the only remaining displayed input is
 `∀ t N r, r < N -> AEStronglyMeasurable[S.martingale.filtration r]
   (fun ω => ∏ k ∈ Finset.Ico (r + 1) N,
     S.projectedNormalizedTaylorFactor L N t k ω) P`.
+The newest factorwise-source packet also proves
+`projectedNormalizedTaylorFutureTail_aestronglyMeasurable_of_factorwise` by
+finite-product induction over the sub-filtration measurability API and exposes
+`asgd_limit_package_of_factorwise_future_tail_measurability`, where callers
+may instead prove the stronger but often natural condition that each future
+normalized Taylor factor in `[r+1, N)` is already `F_r`-measurable.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform
@@ -316,7 +324,8 @@ wrapper, normalized-minus-inverse row integrability wrapper, compensated-error
 row integrability wrapper, variance-error row integrability wrapper, mixed
 multiplier integrability wrapper, prefix-times-tail measurability wrapper,
 future-tail scalar CLT wrapper, certificate-level future-tail bridge, or
-ASGD future-tail endpoint wrapper, or generic weak-convergence wrapper.
+ASGD future-tail endpoint wrapper, factorwise future-tail product wrapper, or
+generic weak-convergence wrapper.
 The variance
 side is now source-facing:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
@@ -338,15 +347,17 @@ If the future random product route needs unavailable measurability, switch to
 a telescoping/error representation with explicit conditional multipliers
 instead of forcing a false exact product model.
 The next ASGD packet should start from
-`asgd_limit_package_of_mixed_tower_future_tail_measurability`.  The remaining
+`asgd_limit_package_of_factorwise_future_tail_measurability` if using a
+predictable/frozen-tail source condition, or from
+`asgd_limit_package_of_mixed_tower_future_tail_measurability` if the application
+can prove the whole tail product is `F_r`-measurable directly.  The remaining
 source gap is not integrability and not raw-prefix adaptedness: the scouts and
 local proof search agree that the current increasing martingale filtration
 does not imply that a future normalized-tail product is `F_r`-measurable,
-because each tail factor is naturally measurable at `F_k` with `r < k`.  Either
-add a mathematically correct source condition such as predictable/frozen tail
-factors for the concrete application, or restructure the martingale tower with
-backward conditional multipliers so no false future-tail measurability is
-required.  Do not attempt to prove this gate from `StronglyAdapted` alone.
+because each tail factor is naturally measurable at `F_k` with `r < k`.  The
+other route is to restructure the martingale tower with backward conditional
+multipliers so no false future-tail measurability is required.  Do not attempt
+to prove this gate from `StronglyAdapted` alone.
 
 Search cache for the finite tower packet: no ready-made martingale CLT or
 martingale product theorem was found in pinned mathlib or local
