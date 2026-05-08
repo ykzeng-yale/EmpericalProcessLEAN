@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V90
+## Live In-Thread Goal Prompt V91
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -214,7 +214,13 @@ tail-coordinate map is measurable from its tail sigma-field, finite cylinder
 likelihoods using only coordinates from `n` onward have tail-coordinate
 measurability, their zero sets are tail-coordinate measurable, and a
 zero-set equality with tail-coordinate measurable candidates gives
-every-tail-coordinate measurability for a limiting likelihood.
+every-tail-coordinate measurability for a limiting likelihood.  The
+finite-prefix zero-set algebra layer now also compiles: if
+`X = C * Y` pointwise and the finite-prefix factor `C` is nonzero, then
+`{X = 0} = {Y = 0}`; finite cylinder likelihoods are nonzero under the
+source coordinate-density nonzero hypotheses; and the prefix-cylinder
+factorization handoff turns a tail-coordinate measurable `Y` into
+every-tail-coordinate measurability of `{X = 0}`.
 
 Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
 layer, the Theorem 4.3.8 finite-product likelihood/`withDensity` layer, and the
@@ -266,11 +272,15 @@ Also treat the tail-coordinate sigma-field layer, finite tail cylinder
 likelihood measurability, finite tail cylinder zero-set measurability, and the
 zero-set-equality handoff to every-tail-coordinate measurability as compiled
 support.
+Also treat the finite-prefix zero-set algebra layer, finite cylinder
+likelihood nonzero bridge, and prefix-cylinder factorization handoff to
+every-tail-coordinate measurability as compiled support.
 Move to the remaining Kakutani criterion assembly:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`) and logarithm/tail-measurability support.  Add only
-source-shaped wrappers that directly prove the canonical limiting likelihood
-zero set agrees with a tail-coordinate measurable tail-limit candidate, or
+source-shaped wrappers that construct the actual tail-coordinate measurable
+tail-limit candidate and prove the canonical prefix/tail cylinder-likelihood
+factorization needed by the compiled zero-set handoff, or
 directly feed the infinite-product criterion hypotheses
 consumed by the compiled branch assemblers and eliminator.  Do
 not redo the already compiled RN martingale/convergence
@@ -307,6 +317,8 @@ Do not redo the every-tail-block measurability bridge into the `limsup` tail
 sigma-field.
 Do not redo the tail-coordinate sigma-field layer or finite tail cylinder
 likelihood measurability layer.
+Do not redo the finite-prefix zero-set algebra or prefix-cylinder zero-set
+handoff layer.
 Do not redo the finite tail-product lower bound from positive prefix/tail
 monotonicity or the standard positive-product range consumer.
 Do not redo the source-density one-coordinate Hellinger affinity `≤ 1` bound,
@@ -730,10 +742,11 @@ also compiles, including zero-set-null and absolute-continuity consumers from
 every-tail-block measurability plus `∫⁻ X ≠ 0`.  The tail-coordinate
 sigma-field and finite tail cylinder likelihood measurability layer now also
 compiles, including finite tail cylinder zero-set measurability and the
-zero-set-equality handoff to every-tail-coordinate measurability.  Move
-forward to the canonical limiting-likelihood zero-set equality with a
-tail-coordinate measurable tail-limit candidate and the remaining Kakutani
-criterion assembly.
+zero-set-equality handoff to every-tail-coordinate measurability.  The
+finite-prefix zero-set algebra and prefix-cylinder zero-set handoff now also
+compile.  Move forward to constructing the actual tail-coordinate measurable
+tail-limit candidate and proving the canonical prefix/tail cylinder-likelihood
+factorization, then finish the remaining Kakutani criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -847,6 +860,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V90` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V91` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

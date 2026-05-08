@@ -4779,6 +4779,87 @@ theorem durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_forall_z
   exact measurableSet_eq_fun (hY n) measurable_const
 
 /--
+Durrett 2019, Theorem 4.3.8 tail-coordinate support: multiplying a
+tail-coordinate candidate by a pointwise nonzero finite-prefix factor does not
+change its zero set.
+-/
+theorem durrett2019_theorem_4_3_8_zeroSet_eq_of_prefix_mul
+    {Ω : Type*} {X Y C : Ω -> ℝ≥0∞}
+    (hfactor : ∀ ω, X ω = C ω * Y ω)
+    (hC_ne_zero : ∀ ω, C ω ≠ 0) :
+    {ω | X ω = 0} = {ω | Y ω = 0} := by
+  ext ω
+  constructor
+  · intro hXzero
+    have hmul : C ω * Y ω = 0 := by
+      simpa [hfactor ω] using hXzero
+    rcases (mul_eq_zero.mp hmul) with hC | hY
+    · exact False.elim ((hC_ne_zero ω) hC)
+    · exact hY
+  · intro hYzero
+    have hYzero' : Y ω = 0 := hYzero
+    change X ω = 0
+    rw [hfactor ω, hYzero', mul_zero]
+
+/--
+Durrett 2019, Theorem 4.3.8 tail-coordinate support: a finite cylinder
+likelihood is nonzero whenever each coordinate density used in it is nonzero.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_ne_zero
+    {ι S : Type*} {I : Finset ι} {q : ι -> S -> ℝ≥0∞} {x : ι -> S}
+    (hq_ne_zero : ∀ i ∈ I, q i (x i) ≠ 0) :
+    durrett2019_theorem_4_3_8_cylinderLikelihood I q x ≠ 0 := by
+  rw [durrett2019_theorem_4_3_8_cylinderLikelihood_eq_finset_prod]
+  exact Finset.prod_ne_zero_iff.2 hq_ne_zero
+
+/--
+Durrett 2019, Theorem 4.3.8 tail-coordinate support: if a limiting likelihood
+factors into a pointwise nonzero finite-prefix term and a tail-coordinate
+measurable candidate, then its zero set is measurable from every tail
+coordinate sigma-field.
+-/
+theorem durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_prefix_mul
+    {S : Type*} [MeasurableSpace S] {X : (ℕ -> S) -> ℝ≥0∞}
+    {Y C : ℕ -> (ℕ -> S) -> ℝ≥0∞}
+    (hY : ∀ n, Measurable[durrett2019_theorem_4_3_8_tailCoordinateSigma S n] (Y n))
+    (hfactor : ∀ n x, X x = C n x * Y n x)
+    (hC_ne_zero : ∀ n x, C n x ≠ 0) :
+    ∀ n,
+      MeasurableSet[durrett2019_theorem_4_3_8_tailCoordinateSigma S n]
+        {x : ℕ -> S | X x = 0} :=
+  durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_forall_zeroSet_eq
+    (S := S) (X := X) (Y := Y) hY fun n =>
+      durrett2019_theorem_4_3_8_zeroSet_eq_of_prefix_mul
+        (X := X) (Y := Y n) (C := C n) (hfactor n) (hC_ne_zero n)
+
+/--
+Durrett 2019, Theorem 4.3.8 tail-coordinate support specialized to the usual
+finite-prefix cylinder likelihood factor.
+-/
+theorem durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_prefixCylinder_mul
+    {S : Type*} [MeasurableSpace S] {q : ℕ -> S -> ℝ≥0∞}
+    {X : (ℕ -> S) -> ℝ≥0∞} {Y : ℕ -> (ℕ -> S) -> ℝ≥0∞}
+    (hY : ∀ n, Measurable[durrett2019_theorem_4_3_8_tailCoordinateSigma S n] (Y n))
+    (hfactor :
+      ∀ (n : ℕ) (x : ℕ -> S),
+        X x =
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x *
+            Y n x)
+    (hq_ne_zero :
+      ∀ (n : ℕ) (x : ℕ -> S) (i : ℕ),
+        i ∈ Finset.range n -> q i (x i) ≠ 0) :
+    ∀ n,
+      MeasurableSet[durrett2019_theorem_4_3_8_tailCoordinateSigma S n]
+        {x : ℕ -> S | X x = 0} :=
+  durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_prefix_mul
+    (S := S) (X := X) (Y := Y)
+    (C := fun n x => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x)
+    hY hfactor fun n x =>
+      durrett2019_theorem_4_3_8_cylinderLikelihood_ne_zero
+        (I := Finset.range n) (q := q) (x := x) fun i hi =>
+          hq_ne_zero n x i hi
+
+/--
 Durrett 2019, Theorem 4.3.8 cylinder support: restricting an infinite product
 law to finitely many coordinates gives the finite product likelihood ratio.
 -/
