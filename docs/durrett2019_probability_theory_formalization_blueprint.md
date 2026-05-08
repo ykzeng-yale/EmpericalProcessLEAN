@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V67`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V68`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -488,9 +488,11 @@ Next packet:
   real-identities plus `X = 0` denominator-a.e., including top-set,
   Hellinger, and cylinder-product handoffs.  The positive-product
   absolute-continuity bridge now also compiles from no-top-mass source
-  real-identities, including a two-sided absolute-continuity handoff.  The next
-  active target is final positive-product equivalence assembly, final
-  zero-product Kakutani assembly, and tail-event zero-one support for
+  real-identities, including a two-sided absolute-continuity handoff.  The
+  first final branch assemblers now also compile for the zero Hellinger-product
+  singular side and the two-sided no-top-mass positive side.  The next active
+  target is positive-product L1 convergence/no-top-mass input support,
+  infinite-product criterion support, and tail-event zero-one support for
   Kakutani's dichotomy.  Theorem 4.1.16 remains deferred unless a
   direct kernel API appears.
 

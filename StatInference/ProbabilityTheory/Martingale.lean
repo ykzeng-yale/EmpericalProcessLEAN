@@ -5044,5 +5044,79 @@ theorem durrett2019_theorem_4_3_8_mutuallyAbsolutelyContinuous_of_source_real_id
       durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_no_top_mass
         (μ := ν) (ν := μ) (X := Y) hνidentity hνtop⟩
 
+/--
+Durrett 2019, Theorem 4.3.8 zero-product final assembly: finite-coordinate
+Hellinger products tending to zero, the cylinder likelihood convergence, and
+the Theorem 4.3.5 top-set identity imply mutual singularity.
+-/
+theorem durrett2019_theorem_4_3_8_mutuallySingular_of_cylinderLikelihood_hellinger_products_tendsto_zero_top_set_identity
+    {ι S : Type*} [MeasurableSpace S]
+    {μ : Measure (ι -> S)} [IsFiniteMeasure μ]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    [μ.HaveLebesgueDecomposition (Measure.infinitePi ν)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i)) {X : (ι -> S) -> ℝ≥0∞}
+    (hX : Measurable X)
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x)
+          atTop (𝓝 (X x)))
+    (hhellinger :
+      Tendsto
+        (fun n => ∏ i : Iseq n, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)
+        atTop (𝓝 0))
+    (hXrn :
+      (fun x => (X x).toReal) =ᵐ[Measure.infinitePi ν]
+        fun x => (μ.rnDeriv (Measure.infinitePi ν) x).toReal)
+    (hμsingTop :
+      μ.singularPart (Measure.infinitePi ν) {x | X x = ∞}ᶜ = 0)
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0) :
+    μ ⟂ₘ Measure.infinitePi ν := by
+  exact
+    durrett2019_theorem_4_3_8_mutuallySingular_of_cylinderLikelihood_hellinger_products_tendsto_zero
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) hq hX hlim hhellinger
+      (by
+        intro A hA
+        exact
+          durrett2019_theorem_4_3_5_source_real_identity_of_top_set
+            (μ := μ) (ν := Measure.infinitePi ν) (X := X) hA hXrn hμsingTop hνtop)
+      hνtop
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product final assembly: paired top-set
+Radon-Nikodym identities, with no numerator mass on either infinite-density
+top set, give absolute continuity in both directions.
+-/
+theorem durrett2019_theorem_4_3_8_mutuallyAbsolutelyContinuous_of_top_set_identities_no_top_mass
+    {Ω : Type*} [MeasurableSpace Ω] {μ ν : Measure Ω}
+    [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    [μ.HaveLebesgueDecomposition ν] [ν.HaveLebesgueDecomposition μ]
+    {X Y : Ω -> ℝ≥0∞}
+    (hXrn :
+      (fun ω => (X ω).toReal) =ᵐ[ν]
+        fun ω => (μ.rnDeriv ν ω).toReal)
+    (hYrn :
+      (fun ω => (Y ω).toReal) =ᵐ[μ]
+        fun ω => (ν.rnDeriv μ ω).toReal)
+    (hμsingTop : μ.singularPart ν {ω | X ω = ∞}ᶜ = 0)
+    (hνXtop : ν {ω | X ω = ∞} = 0)
+    (hνsingTop : ν.singularPart μ {ω | Y ω = ∞}ᶜ = 0)
+    (hμYtop : μ {ω | Y ω = ∞} = 0)
+    (hμXtop : μ {ω | X ω = ∞} = 0)
+    (hνYtop : ν {ω | Y ω = ∞} = 0) :
+    μ ≪ ν ∧ ν ≪ μ := by
+  refine
+    durrett2019_theorem_4_3_8_mutuallyAbsolutelyContinuous_of_source_real_identities_no_top_mass
+      (μ := μ) (ν := ν) (X := X) (Y := Y) ?_ ?_ hμXtop hνYtop
+  · intro A hA
+    exact
+      durrett2019_theorem_4_3_5_source_real_identity_of_top_set
+        (μ := μ) (ν := ν) (X := X) hA hXrn hμsingTop hνXtop
+  · intro A hA
+    exact
+      durrett2019_theorem_4_3_5_source_real_identity_of_top_set
+        (μ := ν) (ν := μ) (X := Y) hA hYrn hνsingTop hμYtop
+
 end ProbabilityTheory
 end StatInference
