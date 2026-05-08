@@ -5421,6 +5421,17 @@ theorem durrett2019_theorem_4_3_8_not_ae_eq_zero_of_lintegral_ne_zero
   exact hInt (lintegral_eq_zero_of_ae_eq_zero hXzero)
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-branch support: an a.e. finite limiting
+likelihood has null infinite-density top set.
+-/
+theorem durrett2019_theorem_4_3_8_top_set_null_of_ae_ne_top
+    {Ω : Type*} [MeasurableSpace Ω] {ν : Measure Ω}
+    {X : Ω -> ℝ≥0∞} (hXfinite : ∀ᵐ ω ∂ν, X ω ≠ ∞) :
+    ν {ω | X ω = ∞} = 0 :=
+  measure_eq_zero_iff_ae_notMem.2 <|
+    hXfinite.mono fun _ hne htop => hne htop
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-branch eliminator: if an external
 tail-event or L1 argument has ruled out `X = 0` denominator-a.e., then a
 source dichotomy `mu << nu or mu singular nu` collapses to absolute continuity.
@@ -7215,6 +7226,54 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_range_hasPro
     durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_hasProd_density
       (μ := μ) (ν := ν) (q := q) (tail := tail) (P := P)
       hq hμ hP0 hPtop hprod htail_eq hfinite
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product final handoff for the standard
+prefix exhaustion of `ℕ`, with the no-top obligation supplied in the usual
+source form as a.e. finiteness of the limiting likelihood.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_range_hasProd_density_ae_ne_top
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ℕ -> S) -> ℝ≥0∞}
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hXrn :
+      (fun x => (X x).toReal) =ᵐ[Measure.infinitePi ν]
+        fun x => ((Measure.infinitePi μ).rnDeriv (Measure.infinitePi ν) x).toReal)
+    (hXfinite : ∀ᵐ x ∂Measure.infinitePi ν, X x ≠ ∞)
+    (hXint : Integrable (fun x => (X x).toReal) (Measure.infinitePi ν))
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n =>
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal)
+          atTop (𝓝 ((X x).toReal)))
+    (hP0 : P ≠ 0) (hPtop : P ≠ ∞)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (htail_eq :
+      ∀ n,
+        tail n =
+          P / (∏ i ∈ Finset.range n,
+            ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x ≠ ∞) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν :=
+  durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_range_hasProd_density
+    (μ := μ) (ν := ν) (q := q) (tail := tail) (P := P)
+    hq hμ hbranch hXrn
+    (durrett2019_theorem_4_3_8_top_set_null_of_ae_ne_top
+      (ν := Measure.infinitePi ν) (X := X) hXfinite)
+    hXint hlim hP0 hPtop hprod htail_eq hfinite
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product final handoff from the Hellinger
