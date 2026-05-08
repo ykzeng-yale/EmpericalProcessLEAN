@@ -2359,5 +2359,57 @@ theorem durrett2019_theorem_4_3_2_doob_decomposition
   ext ω
   simp [predictablePart]
 
+/--
+Durrett 2019, Theorem 4.3.2, uniqueness against the canonical
+`martingalePart`/`predictablePart` decomposition.  Any martingale plus
+predictable zero-start decomposition of `X` agrees with the canonical parts
+almost surely at each fixed time.
+-/
+theorem durrett2019_theorem_4_3_2_doob_decomposition_canonical_unique
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration μ ℱ]
+    {X M A : ℕ -> Ω -> ℝ}
+    (hM : Martingale M ℱ μ) (hA : IsStronglyPredictable ℱ A)
+    (hA0 : A 0 = 0) (hAint : ∀ n, Integrable (A n) μ)
+    (hdecomp : M + A = X) :
+    ∀ n,
+      martingalePart X ℱ μ n =ᵐ[μ] M n ∧
+        predictablePart X ℱ μ n =ᵐ[μ] A n := by
+  intro n
+  constructor
+  · have h := martingalePart_add_ae_eq (f := M) (g := A) hM
+      (fun n => hA.measurable_add_one n) hA0 hAint n
+    rwa [hdecomp] at h
+  · have h := predictablePart_add_ae_eq (f := M) (g := A) hM
+      (fun n => hA.measurable_add_one n) hA0 hAint n
+    rwa [hdecomp] at h
+
+/--
+Durrett 2019, Theorem 4.3.2, source-facing uniqueness: two martingale plus
+predictable zero-start decompositions of the same process agree almost surely
+at each fixed time.
+-/
+theorem durrett2019_theorem_4_3_2_doob_decomposition_unique
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration μ ℱ]
+    {X M₁ A₁ M₂ A₂ : ℕ -> Ω -> ℝ}
+    (hM₁ : Martingale M₁ ℱ μ) (hA₁ : IsStronglyPredictable ℱ A₁)
+    (hA₁0 : A₁ 0 = 0) (hA₁int : ∀ n, Integrable (A₁ n) μ)
+    (hdecomp₁ : M₁ + A₁ = X)
+    (hM₂ : Martingale M₂ ℱ μ) (hA₂ : IsStronglyPredictable ℱ A₂)
+    (hA₂0 : A₂ 0 = 0) (hA₂int : ∀ n, Integrable (A₂ n) μ)
+    (hdecomp₂ : M₂ + A₂ = X) :
+    ∀ n, M₁ n =ᵐ[μ] M₂ n ∧ A₁ n =ᵐ[μ] A₂ n := by
+  have h₁ :=
+    durrett2019_theorem_4_3_2_doob_decomposition_canonical_unique
+      (X := X) hM₁ hA₁ hA₁0 hA₁int hdecomp₁
+  have h₂ :=
+    durrett2019_theorem_4_3_2_doob_decomposition_canonical_unique
+      (X := X) hM₂ hA₂ hA₂0 hA₂int hdecomp₂
+  intro n
+  constructor
+  · exact (h₁ n).1.symm.trans (h₂ n).1
+  · exact (h₁ n).2.symm.trans (h₂ n).2
+
 end ProbabilityTheory
 end StatInference
