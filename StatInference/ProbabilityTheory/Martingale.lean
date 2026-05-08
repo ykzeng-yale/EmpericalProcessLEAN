@@ -7400,6 +7400,20 @@ theorem durrett2019_theorem_4_3_8_prefixProduct_limit_le_prefix_of_hasProd_le_on
       (fun i _ _ => hle_one i)
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product support: if all one-coordinate
+Hellinger affinities are at most one, then the `HasProd` limit is finite.
+-/
+theorem durrett2019_theorem_4_3_8_hasProd_limit_ne_top_of_le_one
+    {h : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hprod : HasProd h P) (hle_one : ∀ i, h i ≤ 1) :
+    P ≠ ∞ := by
+  have hP_le_one : P ≤ 1 := by
+    simpa using
+      (durrett2019_theorem_4_3_8_prefixProduct_limit_le_prefix_of_hasProd_le_one
+        (h := h) (P := P) hprod hle_one 0)
+  exact ne_top_of_le_ne_top (by norm_num : (1 : ℝ≥0∞) ≠ ∞) hP_le_one
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product support: the positive infinite
 product branch makes every finite prefix product nonzero.
 -/
@@ -8580,6 +8594,54 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_ha
       hq hμ hP0 hPtop hprod hhellinger_le_one htail_le htail_eq hfinite
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy handoff with the
+finite-limit side condition derived from the source density hypotheses.
+-/
+theorem
+    durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_hasProd_density_positive
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hP0 : P ≠ 0)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (htail_eq :
+      ∀ n,
+        tail n =
+          P / (∏ i ∈ Finset.range n,
+            ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x ≠ ∞) :
+    Tendsto
+      (fun n =>
+        Filter.liminf
+          (fun m =>
+            ∫⁻ x,
+              ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal -
+                (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x).toReal‖ₑ
+              ∂Measure.infinitePi ν)
+          atTop)
+      atTop (𝓝 0) := by
+  let h : ℕ -> ℝ≥0∞ :=
+    fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i
+  have hhellinger_le_one : ∀ i, h i ≤ 1 :=
+    durrett2019_theorem_4_3_8_oneCoordinate_hellingerAffinities_le_one
+      (μ := μ) (ν := ν) (q := q) hq hμ
+  have hPtop : P ≠ ∞ :=
+    durrett2019_theorem_4_3_8_hasProd_limit_ne_top_of_le_one
+      (h := h) (P := P) hprod hhellinger_le_one
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_hasProd_density
+      (μ := μ) (ν := ν) (q := q) (tail := tail) (P := P)
+      hq hμ hP0 hPtop hprod htail_eq hfinite
+
+/--
 Durrett 2019, Theorem 4.3.8 source no-top support: pointwise finite
 coordinate densities discharge the pairwise finite-cylinder no-top condition
 used by the positive-product Cauchy branch.
@@ -9040,6 +9102,52 @@ theorem
   exact
     durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_tendsto_canonicalRatio_of_trimmedPrefix_ratio
       (μ := μ) (ν := ν) (q := q) C hC_meas hgen hC hq hμ
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical-ratio positive-product handoff with both
+the prefix convergence and finite-product-limit side conditions discharged from
+the source density hypotheses.
+-/
+theorem
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix_positive
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas :
+      ∀ s ∈ C,
+        ∃ m, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S m] s)
+    (hgen :
+      (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hP0 : P ≠ 0)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (htail_eq :
+      ∀ n,
+        tail n =
+          P / (∏ i ∈ Finset.range n,
+            ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  let h : ℕ -> ℝ≥0∞ :=
+    fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i
+  have hhellinger_le_one : ∀ i, h i ≤ 1 :=
+    durrett2019_theorem_4_3_8_oneCoordinate_hellingerAffinities_le_one
+      (μ := μ) (ν := ν) (q := q) hq hμ
+  have hPtop : P ≠ ∞ :=
+    durrett2019_theorem_4_3_8_hasProd_limit_ne_top_of_le_one
+      (h := h) (P := P) hprod hhellinger_le_one
+  exact
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix
+      (μ := μ) (ν := ν) (q := q) (tail := tail) (P := P)
+      C hC_meas hgen hC hq hμ hbranch hP0 hPtop hprod htail_eq hq_ne_top
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-branch final handoff: once full-prefix

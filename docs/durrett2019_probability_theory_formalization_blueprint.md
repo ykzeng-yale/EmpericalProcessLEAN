@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V101`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V102`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -551,9 +551,10 @@ Next packet:
   measurability/inclusion support, the trimmed-prefix RN-ratio identity, the
   denominator-limit nonzero bridge, canonical prefix convergence from the
   trimmed-prefix ratio, and the positive Hellinger-product wrapper with that
-  convergence supplied also now compile.  The active target is now the canonical
-  ratio nonzero-lower-integral/product inputs for the remaining Kakutani
-  criterion assembly.
+  convergence supplied also now compile.  The positive-product finite-limit side
+  condition is also discharged from the source Hellinger affinity bounds.  The
+  active target is now the canonical ratio nonzero-lower-integral/product inputs
+  for the remaining Kakutani criterion assembly.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:

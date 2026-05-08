@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V101
+## Live In-Thread Goal Prompt V102
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -339,6 +339,13 @@ finite-prefix likelihoods to the canonical ratio.  The positive Hellinger-produc
 wrapper
 `durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix`
 now consumes this convergence directly.
+Also treat the positive-product finite-limit side condition as compiled support:
+`durrett2019_theorem_4_3_8_hasProd_limit_ne_top_of_le_one` derives `P ≠ ∞`
+from the `HasProd` limit and one-coordinate Hellinger affinity bounds `≤ 1`,
+and
+`durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix_positive`
+uses it to remove the external `hPtop` input from the canonical positive-product
+handoff.
 Move to the remaining Kakutani criterion assembly:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`) and logarithm/tail-measurability support.  Add only
@@ -358,6 +365,7 @@ top-set endpoint, full canonical-ratio real identity, canonical
 canonical quotient-limit convergence bridge, canonical prefix-filtration
 measurability/inclusion support, canonical trimmed-prefix RN-ratio identity,
 canonical denominator-limit nonzero bridge, canonical prefix convergence handoff,
+positive-product finite-limit side-condition bridge,
 canonical 4.3.8 positive-branch consumers, any Example 4.3.7
 finite-partition likelihood, finite-union, or generator endpoint, the
 finite-product likelihood/rectangle/`withDensity` layer, infinite-product
@@ -836,11 +844,11 @@ prefix-filtration measurability/inclusion support now also compile.  The
 trimmed-prefix RN-ratio identity now also compiles, identifying every finite
 prefix likelihood with the quotient of the two prefix-trimmed RN derivative
 sequences over the common trimmed dominating measure.  The denominator-limit
-nonzero bridge, canonical prefix convergence from the trimmed-prefix ratio, and
-positive Hellinger-product wrapper with that convergence supplied now also
-compile.  Move forward to discharging the canonical-ratio
-nonzero-lower-integral/product inputs needed to finish the remaining Kakutani
-criterion assembly.
+nonzero bridge, canonical prefix convergence from the trimmed-prefix ratio,
+positive Hellinger-product wrapper with that convergence supplied, and
+positive-product finite-limit side-condition bridge now also compile.  Move
+forward to discharging the canonical-ratio nonzero-lower-integral/product inputs
+needed to finish the remaining Kakutani criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -954,6 +962,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V101` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V102` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
