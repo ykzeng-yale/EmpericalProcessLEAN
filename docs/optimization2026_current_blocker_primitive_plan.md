@@ -194,20 +194,47 @@ plus the normalized compensated-product bridge:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound`,
 `projectedNormalizedTaylorFactor_eq_taylorModel`,
 `projected_charFun_normalized_taylor_step_mul_scaled`,
+`projected_charFun_normalized_taylor_step_mul_scaled_of_measurable`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
-and `projected_charFun_tendsto_exp_of_normalized_product_model`.
+`projected_charFun_tendsto_exp_of_normalized_product_model`,
+and
+`projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
 
 Next theorem packet: prove the finite martingale tower representation into the
 normalized product model required by
-`projected_charFun_tendsto_exp_of_normalized_product_model`.  The one-step
+`projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
+The one-step
 normalized peel, inverse-compensation algebra, and bounded-continuous
-expectation handoff are already compiled; do not prove another compensation
-or generic weak-convergence wrapper.  The variance side is now source-facing:
+expectation handoff are already compiled; do not prove another compensation,
+row-error, inverse-product, or generic weak-convergence wrapper.  The variance
+side is now source-facing:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
 uniform martingale source bound, averaged-variance convergence in measure, and
-the clamp bridge.  Next prove the finite martingale tower representation into
-the normalized product integral, then wire it into the existing Theorem 12.7/12.3
-certificate constructors.
+the clamp bridge, and the new source-variance normalized-product wrapper also
+discharges the compensated row-error convergence from the source variance and
+remainder integrability hypotheses.  Next prove the finite martingale tower
+representation into the normalized product integral, then wire it into the
+existing Theorem 12.7/12.3 certificate constructors.
+
+Accuracy note for the next packet: do not claim an unconditional exact finite
+equality with a product of all random future normalized factors unless the
+needed future-tail `F_n` measurability is supplied or proved.  The safe
+one-step interface is
+`projected_charFun_normalized_taylor_step_mul_scaled_of_measurable`, which
+requires only the honest measurability/integrability of the current multiplier.
+If the future random product route needs unavailable measurability, switch to
+a telescoping/error representation with explicit conditional multipliers
+instead of forcing a false exact product model.
+
+Search cache for the finite tower packet: no ready-made martingale CLT or
+martingale product theorem was found in pinned mathlib or local
+`StatInference`.  Reuse mathlib/local APIs
+`Finset.prod_range_succ`, `Finset.prod_range_induction`,
+`condExp_condExp_of_le`, `condExp_mul_of_aestronglyMeasurable_left`,
+`StronglyAdapted.stronglyMeasurable_le`, `Finset.aestronglyMeasurable_prod`,
+`integral_sub`, `integral_congr_ae`, `norm_integral_le_integral_norm`, and
+local product bounds in `StatInference/ProbabilityTheory/ProductBounds.lean`.
+Do not repeat a broad CLT search unless the theorem shape changes.
 
 Reuse boundary: do not redo scaled-sum definitions, Cramér-Wold plumbing,
 bounded-tail/Lindeberg, Taylor expansion, conditional mean-zero/quadratic
