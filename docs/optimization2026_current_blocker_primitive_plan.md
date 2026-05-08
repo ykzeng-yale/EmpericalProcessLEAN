@@ -164,6 +164,11 @@ The direct future-tail residual route now has
 the certificate layer.  This is the preferred route when the normalized future
 tail is proved asymptotically predictable in row-summed `L1`; no proxy object
 or normalized-product argument is needed.
+The even more direct preferred route now has
+`futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers
+through charFun/scalar/projected CLT, bridge, and certificate: once the
+mixed-tower future multiplier is asymptotically predictable in row-summed
+`L1`, Theorem 12.7 certificate plumbing is complete.
 The weighted inverse-tail fallback is now packaged through the certificate
 layer as
 `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`:
@@ -615,15 +620,19 @@ fallback, not the default source route: unweighted row convergence is not
 enough for suffix sums, because triangular regrouping counts the one-step error
 at index `k` exactly `k` times.
 The remaining ASGD proof obligations for the preferred route are now precisely:
-1. prove
-   `Tendsto (fun N => ∑ r in Finset.range N,
-   S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`;
-2. prove/discharge the weighted variance-only and weighted Taylor-remainder
+1. prove row-summed `L1` asymptotic predictability of
+   `S.projectedMixedTowerFutureMultiplier L N t r`; the certificate route is
+   already packaged as
+   `futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound`;
+2. alternatively prove row-summed `L1` asymptotic predictability of
+   `S.projectedMixedTowerFutureTail L N t r`, whose certificate route is
+   `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound`;
+3. prove/discharge the weighted variance-only and weighted Taylor-remainder
    assumptions only if deliberately using the stronger weighted-suffix
    fallback; the fallback now already has charFun/scalar/projected/bridge/
    certificate wrappers through
    `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`;
-3. prove the row-summed conditional residual convergence of
+4. prove the row-summed conditional residual convergence of
    `projectedMixedTowerInverseFutureTail -
    E[projectedMixedTowerInverseFutureTail | F_r]` only if deliberately using
    the future-tail predictable-proxy route.

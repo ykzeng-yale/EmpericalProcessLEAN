@@ -43,6 +43,10 @@ so callers do not need to pass a normalized-product limit separately.
 For direct asymptotic predictability estimates, use
 `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound`; it packages the
 future-tail residual into the ASGD certificate route without a proxy.
+For the shortest preferred ASGD martingale route, use
+`futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound`; it
+packages row-summed `L1` predictability of the mixed-tower future multiplier
+directly into the charFun/CLT/bridge/certificate stack.
 For the stronger weighted suffix route, use
 `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`;
 it packages weighted variance-error/Taylor-remainder convergence and the
@@ -83,9 +87,10 @@ scouts handle disjoint read-only questions when explicitly authorized, verify
 with focused Lean/module builds during development, and batch route-doc
 updates, scans, final rebase, commit, and push once per verified packet.  The
 current active sequence after the ASGD scalar projection data packet is to
-discharge the actual future-tail or inverse-tail residual estimates for the
-one-dimensional bounded martingale CLT, assemble the source ASGD endpoint, then
-move to the concrete Sinkhorn KL identity layer if ASGD stalls.
+discharge the actual future-multiplier, future-tail, or inverse-tail residual
+estimates for the one-dimensional bounded martingale CLT, assemble the source
+ASGD endpoint, then move to the concrete Sinkhorn KL identity layer if ASGD
+stalls.
 
 Historical manual frontier after focused Lean verification of Chapter 7
 `StatInference/Optimization/FrankWolfe.lean` rebased over pushed frontier
