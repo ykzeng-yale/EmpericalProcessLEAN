@@ -575,6 +575,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   respectively the column-correct full iterate `gamma^n` or row-correct half
   iterate `gamma^(n+1/2)` and proving the displayed total marginal-error bound
   from one finite marginal identity plus one Pinsker/KL lower bound.  The
+  newest finite Sinkhorn KL packet adds `finiteKL`, `finiteCouplingKL`,
+  `rowMarginal`, `columnMarginal`, row/column normalized coupling definitions,
+  their marginal identities, generic row/column ratio-to-KL identities, and
+  concrete row/column normalization KL identities.  This discharges the
+  textbook algebra behind
+  `KL(gamma^(n+1/2) || gamma^n) = KL(mu || mu^n)` and the column analogue
+  under explicit nonzero support/denominator assumptions.  The
   current local focused Lean check also verifies
   `chewi118_last_gap_le_of_recurrence` and
   `chewi118_last_gap_le_of_oneStep` in `MirrorDescent.lean`, turning the

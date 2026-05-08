@@ -17,6 +17,187 @@ open scoped InnerProductSpace
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 
+/-- Finite real-valued KL display used for the Sinkhorn marginal identities. -/
+noncomputable def finiteKL {ι : Type*} [Fintype ι] (p q : ι -> ℝ) : ℝ :=
+  ∑ i, p i * Real.log (p i / q i)
+
+/-- Finite coupling KL display for arrays indexed by `X × Y`. -/
+noncomputable def finiteCouplingKL {X Y : Type*} [Fintype X] [Fintype Y]
+    (γ η : X -> Y -> ℝ) : ℝ :=
+  ∑ x, ∑ y, γ x y * Real.log (γ x y / η x y)
+
+/-- Row marginal of a finite coupling array. -/
+noncomputable def rowMarginal {X Y : Type*} [Fintype Y]
+    (γ : X -> Y -> ℝ) (x : X) : ℝ :=
+  ∑ y, γ x y
+
+/-- Column marginal of a finite coupling array. -/
+noncomputable def columnMarginal {X Y : Type*} [Fintype X]
+    (γ : X -> Y -> ℝ) (y : Y) : ℝ :=
+  ∑ x, γ x y
+
+/-- Row normalization of a finite coupling array toward a target row law `μ`. -/
+noncomputable def rowNormalizedCoupling {X Y : Type*} [Fintype Y]
+    (μ : X -> ℝ) (γ : X -> Y -> ℝ) : X -> Y -> ℝ :=
+  fun x y => μ x * γ x y / rowMarginal γ x
+
+/-- Column normalization of a finite coupling array toward a target column law `ν`. -/
+noncomputable def columnNormalizedCoupling {X Y : Type*} [Fintype X]
+    (ν : Y -> ℝ) (γ : X -> Y -> ℝ) : X -> Y -> ℝ :=
+  fun x y => γ x y * ν y / columnMarginal γ y
+
+theorem rowMarginal_rowNormalizedCoupling
+    {X Y : Type*} [Fintype Y]
+    (μ : X -> ℝ) (γ : X -> Y -> ℝ)
+    (hrow_ne : ∀ x, rowMarginal γ x ≠ 0) (x : X) :
+    rowMarginal (rowNormalizedCoupling μ γ) x = μ x := by
+  classical
+  unfold rowMarginal rowNormalizedCoupling
+  calc
+    (∑ y, μ x * γ x y / ∑ y, γ x y)
+        = ∑ y, (μ x / (∑ y, γ x y)) * γ x y := by
+          refine Finset.sum_congr rfl ?_
+          intro y _hy
+          ring
+    _ = (μ x / (∑ y, γ x y)) * ∑ y, γ x y := by
+          exact (Finset.mul_sum (s := Finset.univ)
+            (a := μ x / (∑ y, γ x y)) (f := fun y => γ x y)).symm
+    _ = μ x := by
+          have hsum_ne : (∑ y, γ x y) ≠ 0 := by
+            simpa [rowMarginal] using hrow_ne x
+          field_simp [hsum_ne]
+
+theorem columnMarginal_columnNormalizedCoupling
+    {X Y : Type*} [Fintype X]
+    (ν : Y -> ℝ) (γ : X -> Y -> ℝ)
+    (hcol_ne : ∀ y, columnMarginal γ y ≠ 0) (y : Y) :
+    columnMarginal (columnNormalizedCoupling ν γ) y = ν y := by
+  classical
+  unfold columnMarginal columnNormalizedCoupling
+  calc
+    (∑ x, γ x y * ν y / ∑ x, γ x y)
+        = ∑ x, (ν y / (∑ x, γ x y)) * γ x y := by
+          refine Finset.sum_congr rfl ?_
+          intro x _hx
+          ring
+    _ = (ν y / (∑ x, γ x y)) * ∑ x, γ x y := by
+          exact (Finset.mul_sum (s := Finset.univ)
+            (a := ν y / (∑ x, γ x y)) (f := fun x => γ x y)).symm
+    _ = ν y := by
+          have hsum_ne : (∑ x, γ x y) ≠ 0 := by
+            simpa [columnMarginal] using hcol_ne y
+          field_simp [hsum_ne]
+
+/--
+Finite Sinkhorn row-normalization KL identity, in the algebraic form needed by
+Theorem 11.7: if a half-step has row marginal `μ` and pointwise likelihood
+ratio `μ x / row x`, then its coupling KL against the previous coupling is
+exactly the marginal KL `KL(μ || row)`.
+-/
+theorem finiteCouplingKL_eq_finiteKL_of_row_ratio
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (γ η : X -> Y -> ℝ) (μ row : X -> ℝ)
+    (hrow : ∀ x, ∑ y, γ x y = μ x)
+    (hratio : ∀ x y, γ x y / η x y = μ x / row x) :
+    finiteCouplingKL γ η = finiteKL μ row := by
+  classical
+  unfold finiteCouplingKL finiteKL
+  calc
+    (∑ x, ∑ y, γ x y * Real.log (γ x y / η x y))
+        = ∑ x, ∑ y, γ x y * Real.log (μ x / row x) := by
+          refine Finset.sum_congr rfl ?_
+          intro x _hx
+          refine Finset.sum_congr rfl ?_
+          intro y _hy
+          rw [hratio x y]
+    _ = ∑ x, (∑ y, γ x y) * Real.log (μ x / row x) := by
+          refine Finset.sum_congr rfl ?_
+          intro x _hx
+          exact (Finset.sum_mul (s := Finset.univ)
+            (f := fun y => γ x y) (a := Real.log (μ x / row x))).symm
+    _ = ∑ x, μ x * Real.log (μ x / row x) := by
+          refine Finset.sum_congr rfl ?_
+          intro x _hx
+          rw [hrow x]
+
+/--
+Finite Sinkhorn column-normalization KL identity, in the algebraic form needed
+by Theorem 11.7: if a half-step has column marginal `ν` and pointwise
+likelihood ratio `ν y / col y`, then its coupling KL against the previous
+coupling is exactly the marginal KL `KL(ν || col)`.
+-/
+theorem finiteCouplingKL_eq_finiteKL_of_column_ratio
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (γ η : X -> Y -> ℝ) (ν col : Y -> ℝ)
+    (hcol : ∀ y, ∑ x, γ x y = ν y)
+    (hratio : ∀ x y, γ x y / η x y = ν y / col y) :
+    finiteCouplingKL γ η = finiteKL ν col := by
+  classical
+  unfold finiteCouplingKL finiteKL
+  calc
+    (∑ x, ∑ y, γ x y * Real.log (γ x y / η x y))
+        = ∑ x, ∑ y, γ x y * Real.log (ν y / col y) := by
+          refine Finset.sum_congr rfl ?_
+          intro x _hx
+          refine Finset.sum_congr rfl ?_
+          intro y _hy
+          rw [hratio x y]
+    _ = ∑ y, ∑ x, γ x y * Real.log (ν y / col y) := by
+          rw [Finset.sum_comm]
+    _ = ∑ y, (∑ x, γ x y) * Real.log (ν y / col y) := by
+          refine Finset.sum_congr rfl ?_
+          intro y _hy
+          exact (Finset.sum_mul (s := Finset.univ)
+            (f := fun x => γ x y) (a := Real.log (ν y / col y))).symm
+    _ = ∑ y, ν y * Real.log (ν y / col y) := by
+          refine Finset.sum_congr rfl ?_
+          intro y _hy
+          rw [hcol y]
+
+/--
+Concrete finite Sinkhorn row-normalization KL identity.  Under nonzero support
+and row denominators, normalizing rows toward `μ` makes the coupling KL against
+the previous array exactly the row-marginal KL.
+-/
+theorem finiteCouplingKL_rowNormalizedCoupling_eq_finiteKL
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (μ : X -> ℝ) (γ : X -> Y -> ℝ)
+    (hrow_ne : ∀ x, rowMarginal γ x ≠ 0)
+    (hγ_ne : ∀ x y, γ x y ≠ 0) :
+    finiteCouplingKL (rowNormalizedCoupling μ γ) γ =
+      finiteKL μ (rowMarginal γ) := by
+  classical
+  refine finiteCouplingKL_eq_finiteKL_of_row_ratio
+    (γ := rowNormalizedCoupling μ γ) (η := γ)
+    (μ := μ) (row := rowMarginal γ) ?_ ?_
+  · intro x
+    exact rowMarginal_rowNormalizedCoupling μ γ hrow_ne x
+  · intro x y
+    unfold rowNormalizedCoupling
+    field_simp [hrow_ne x, hγ_ne x y]
+
+/--
+Concrete finite Sinkhorn column-normalization KL identity.  Under nonzero
+support and column denominators, normalizing columns toward `ν` makes the
+coupling KL against the previous array exactly the column-marginal KL.
+-/
+theorem finiteCouplingKL_columnNormalizedCoupling_eq_finiteKL
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (ν : Y -> ℝ) (γ : X -> Y -> ℝ)
+    (hcol_ne : ∀ y, columnMarginal γ y ≠ 0)
+    (hγ_ne : ∀ x y, γ x y ≠ 0) :
+    finiteCouplingKL (columnNormalizedCoupling ν γ) γ =
+      finiteKL ν (columnMarginal γ) := by
+  classical
+  refine finiteCouplingKL_eq_finiteKL_of_column_ratio
+    (γ := columnNormalizedCoupling ν γ) (η := γ)
+    (ν := ν) (col := columnMarginal γ) ?_ ?_
+  · intro y
+    exact columnMarginal_columnNormalizedCoupling ν γ hcol_ne y
+  · intro x y
+    unfold columnNormalizedCoupling
+    field_simp [hcol_ne y, hγ_ne x y]
+
 /--
 Source-shaped Bregman projection certificate.
 

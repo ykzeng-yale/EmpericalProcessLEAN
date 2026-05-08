@@ -1016,6 +1016,17 @@ selectors add `chewi117_exists_sinkhorn_full_iterate_error_sum_le_of_abp` and
 respectively the column-correct full iterate `gamma^n` or row-correct half
 iterate `gamma^(n+1/2)` and proving the displayed total marginal-error bound
 from one finite marginal identity plus one Pinsker/KL lower bound.
+The newest finite Sinkhorn KL packet in `AlternatingBregman.lean` adds
+`finiteKL`, `finiteCouplingKL`, `rowMarginal`, `columnMarginal`,
+`rowNormalizedCoupling`, `columnNormalizedCoupling`,
+`rowMarginal_rowNormalizedCoupling`,
+`columnMarginal_columnNormalizedCoupling`,
+`finiteCouplingKL_eq_finiteKL_of_row_ratio`,
+`finiteCouplingKL_eq_finiteKL_of_column_ratio`,
+`finiteCouplingKL_rowNormalizedCoupling_eq_finiteKL`, and
+`finiteCouplingKL_columnNormalizedCoupling_eq_finiteKL`, proving the finite
+row/column normalization KL identities behind Theorem 11.7/11.8 under explicit
+nonzero support/denominator assumptions.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -1249,9 +1260,10 @@ Active aggressive target ladder:
    certificate with concrete finite row/column-normalization KL identities.
    Reuse `IsChewi118SinkhornMirrorDescentCertificate`,
    `chewi118_sinkhorn_last_rowMarginalKL_le_of_mirrorDescent`, the 11.7
-   ABP/Pinsker selectors, and existing finite KL/Pinsker/marginal interfaces;
-   only formalize the missing row/column-normalization KL identities and
-   monotone gap/zero-error recurrence fields.
+   ABP/Pinsker selectors, and the new `finiteKL`/`finiteCouplingKL`
+   row/column normalization identities; only formalize the remaining monotone
+   gap/zero-error recurrence fields and any concrete support assumptions needed
+   by the source Sinkhorn model.
 3. Finish exact Sinkhorn Theorem 11.7/11.8 source packaging from the compiled
    ABP and mirror-descent layers; do not expand full EOT duality unless exact
    Theorem 11.6 reporting is requested.
