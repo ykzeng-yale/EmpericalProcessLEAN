@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V71`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V72`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -495,10 +495,11 @@ Next packet:
   likelihood to vanish a.e., so a source dichotomy plus nonzero likelihood or
   null zero-set input yields absolute continuity.  The lintegral-nonzero and
   mass-one consumers now also compile for the positive branch.  The
-  finite-cylinder mass-one and integral-convergence handoffs now also compile.
-  The next active target is positive-product L1 convergence into that
-  finite-cylinder integral-convergence input, infinite-product criterion
-  support, and tail-event zero-one support for Kakutani's dichotomy.  Theorem 4.1.16 remains deferred unless a
+  finite-cylinder mass-one/integral-convergence handoffs and the
+  positive-product L1-to-integral handoff now also compile.  The next active
+  target is the actual positive infinite-product L1/Cauchy estimate,
+  infinite-product criterion support, and tail-event zero-one support for
+  Kakutani's dichotomy.  Theorem 4.1.16 remains deferred unless a
   direct kernel API appears.
 
 Support-only dependencies:

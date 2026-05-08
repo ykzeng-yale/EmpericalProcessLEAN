@@ -5307,6 +5307,94 @@ theorem durrett2019_theorem_4_3_8_lintegral_eq_one_of_cylinderLikelihood_lintegr
   exact tendsto_nhds_unique hlim tendsto_const_nhds
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product L1 bridge: real-valued L1
+convergence of finite nonnegative likelihoods implies convergence of their
+lower integrals.
+-/
+theorem durrett2019_theorem_4_3_8_lintegral_tendsto_of_toReal_L1
+    {Ω : Type*} [MeasurableSpace Ω] {ν : Measure Ω}
+    {Xseq : ℕ -> Ω -> ℝ≥0∞} {X : Ω -> ℝ≥0∞}
+    (hXseq : ∀ n, AEMeasurable (Xseq n) ν)
+    (hXseqInt : ∀ n, ∫⁻ ω, Xseq n ω ∂ν ≠ ∞)
+    (hXfinite : ∀ᵐ ω ∂ν, X ω ≠ ∞)
+    (hXint : Integrable (fun ω => (X ω).toReal) ν)
+    (hL1 :
+      Tendsto
+        (fun n => ∫⁻ ω, ‖(Xseq n ω).toReal - (X ω).toReal‖ₑ ∂ν)
+        atTop (𝓝 0)) :
+    Tendsto (fun n => ∫⁻ ω, Xseq n ω ∂ν)
+      atTop (𝓝 (∫⁻ ω, X ω ∂ν)) := by
+  have hseqIntReal :
+      ∀ n, Integrable (fun ω => (Xseq n ω).toReal) ν := fun n =>
+    integrable_toReal_of_lintegral_ne_top (hXseq n) (hXseqInt n)
+  have hreal :
+      Tendsto (fun n => ∫ ω, (Xseq n ω).toReal ∂ν)
+        atTop (𝓝 (∫ ω, (X ω).toReal ∂ν)) := by
+    refine
+      tendsto_integral_of_L1 (μ := ν) (f := fun ω => (X ω).toReal)
+        hXint ?_ hL1
+    exact Eventually.of_forall hseqIntReal
+  have hseq_eq :
+      (fun n => ∫⁻ ω, Xseq n ω ∂ν) =
+        fun n => ENNReal.ofReal (∫ ω, (Xseq n ω).toReal ∂ν) := by
+    funext n
+    have hfinite : ∀ᵐ ω ∂ν, Xseq n ω ≠ ∞ :=
+      (ae_lt_top' (hXseq n) (hXseqInt n)).mono fun ω hω => hω.ne
+    symm
+    rw [ofReal_integral_eq_lintegral_ofReal (hseqIntReal n)
+      (Eventually.of_forall fun ω => ENNReal.toReal_nonneg)]
+    exact lintegral_congr_ae <|
+      hfinite.mono fun ω hω => ENNReal.ofReal_toReal hω
+  have htarget_eq :
+      ∫⁻ ω, X ω ∂ν = ENNReal.ofReal (∫ ω, (X ω).toReal ∂ν) := by
+    symm
+    rw [ofReal_integral_eq_lintegral_ofReal hXint
+      (Eventually.of_forall fun ω => ENNReal.toReal_nonneg)]
+    exact lintegral_congr_ae <|
+      hXfinite.mono fun ω hω => ENNReal.ofReal_toReal hω
+  simpa [hseq_eq, htarget_eq] using ENNReal.tendsto_ofReal hreal
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder handoff: L1 convergence
+of the finite cylinder likelihoods to the limiting likelihood supplies the
+finite-cylinder integral-convergence input used by the mass-one bridge.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_tendsto_of_toReal_L1
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ι -> S) -> ℝ≥0∞}
+    (hXfinite : ∀ᵐ x ∂Measure.infinitePi ν, X x ≠ ∞)
+    (hXint : Integrable (fun x => (X x).toReal) (Measure.infinitePi ν))
+    (hL1 :
+      Tendsto
+        (fun n =>
+          ∫⁻ x,
+            ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+              (X x).toReal‖ₑ ∂Measure.infinitePi ν)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun n =>
+        ∫⁻ x,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x
+            ∂Measure.infinitePi ν)
+      atTop (𝓝 (∫⁻ x, X x ∂Measure.infinitePi ν)) := by
+  refine
+    durrett2019_theorem_4_3_8_lintegral_tendsto_of_toReal_L1
+      (ν := Measure.infinitePi ν)
+      (Xseq := fun n x => durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x)
+      (X := X)
+      (fun n => (durrett2019_theorem_4_3_8_cylinderLikelihood_measurable (Iseq n) hq).aemeasurable)
+      ?_ hXfinite hXint hL1
+  intro n
+  rw [durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_eq_one
+    (μ := μ) (ν := ν) (Iseq n) hq hμ]
+  simp
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
 finite cylinder-likelihood integrals to the limiting likelihood mass supplies
 the mass-one input consumed by the positive-branch eliminator.
@@ -5341,6 +5429,44 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLike
   exact
     durrett2019_theorem_4_3_8_lintegral_eq_one_of_cylinderLikelihood_lintegral_tendsto
       (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) hq hμ hIntTendsto
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product final handoff: once the external
+positive-product estimate proves L1 convergence of the finite cylinder
+likelihoods to the limiting likelihood, the source dichotomy collapses to the
+absolute-continuity branch.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLikelihood_toReal_L1
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ι -> S) -> ℝ≥0∞}
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hXrn :
+      (fun x => (X x).toReal) =ᵐ[Measure.infinitePi ν]
+        fun x => ((Measure.infinitePi μ).rnDeriv (Measure.infinitePi ν) x).toReal)
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0)
+    (hXint : Integrable (fun x => (X x).toReal) (Measure.infinitePi ν))
+    (hL1 :
+      Tendsto
+        (fun n =>
+          ∫⁻ x,
+            ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+              (X x).toReal‖ₑ ∂Measure.infinitePi ν)
+        atTop (𝓝 0)) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  refine
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLikelihood_lintegral_tendsto
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) hq hμ hbranch hXrn hνtop ?_
+  refine
+    durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_tendsto_of_toReal_L1
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) hq hμ ?_ hXint hL1
+  exact measure_eq_zero_iff_ae_notMem.mp hνtop
 
 end ProbabilityTheory
 end StatInference

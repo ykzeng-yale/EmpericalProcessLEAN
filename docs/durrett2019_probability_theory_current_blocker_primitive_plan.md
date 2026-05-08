@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V71
+## Live In-Thread Goal Prompt V72
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -164,7 +164,11 @@ likelihood, or the mass-one input `lintegral X = 1`, feeds the same
 absolute-continuity conclusion.  The finite cylinder-likelihood mass handoff
 also now compiles: every pulled-back finite likelihood integrates to one, and
 convergence of these integrals to the limiting likelihood mass gives the
-mass-one input consumed by the positive branch.
+mass-one input consumed by the positive branch.  The positive-product L1
+handoff now also compiles: real-valued L1 convergence of finite cylinder
+likelihoods to the limiting likelihood gives the finite-cylinder integral
+convergence input, and hence collapses the source dichotomy to the
+absolute-continuity branch.
 
 Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
 layer, the Theorem 4.3.8 finite-product likelihood/`withDensity` layer, and the
@@ -174,13 +178,14 @@ positive-product absolute-continuity bridge, and final branch assemblers as
 compiled support, together with the positive-branch eliminator.
 Also treat the lintegral-nonzero and mass-one positive-branch consumers as
 compiled support, along with the finite-cylinder mass-one and
-integral-convergence handoffs.
+integral-convergence handoffs and the positive-product L1-to-integral
+handoff.
 Move to the remaining Kakutani criterion assembly and tail-event support:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`), logarithm/tail-event support, and local Kolmogorov
 zero-one/tail sigma-field wrappers.  Add only source-shaped wrappers that
-directly feed tail-event support, positive-product L1 convergence into the
-compiled finite-cylinder integral-convergence input, or the infinite-product
+directly feed tail-event support, the positive infinite-product estimate that
+proves the compiled cylinder-likelihood L1 hypothesis, or the infinite-product
 criterion hypotheses consumed by the compiled branch assemblers and
 eliminator.  Do
 not redo the already compiled RN martingale/convergence
@@ -198,7 +203,7 @@ cylinder/restriction handoff, Hellinger factorization layer, zero-product Fatou
 endpoint, zero-product singularity bridge, positive-product
 absolute-continuity bridge, final branch assembler, or positive-branch
 eliminator, lintegral-nonzero consumer, mass-one consumer, or finite-cylinder
-mass handoff for Theorem 4.3.8.
+mass handoff, or positive-product L1-to-integral handoff for Theorem 4.3.8.
 Defer Polya urn as a
 model-specific construction unless a direct existing primitive is found.
 
@@ -580,10 +585,11 @@ endpoints, plus the zero-product Fatou endpoint, cylinder Hellinger-product
 handoff, zero-product singularity bridge, positive-product
 absolute-continuity bridge, final zero/positive branch assemblers, and
 positive-branch eliminator plus lintegral-nonzero/mass-one consumers.  Move
-The finite-cylinder mass-one and integral-convergence handoffs also now
-compile.  Move forward to infinite-product criterion support, positive-product
-L1 convergence into the finite-cylinder integral-convergence input, and
-tail-event zero-one support for Kakutani's dichotomy.  Keep Theorem 4.1.16 deferred unless a
+The finite-cylinder mass-one/integral-convergence handoffs and the
+positive-product L1-to-integral handoff also now compile.  Move forward to the
+actual positive infinite-product L1/Cauchy estimate, infinite-product
+criterion support, and tail-event zero-one support for Kakutani's dichotomy.
+Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
@@ -696,6 +702,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V71` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V72` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
