@@ -2036,5 +2036,56 @@ theorem durrett2019_theorem_4_3_1_firstBelow_tendsto_on_survival
     (durrett2019_theorem_4_3_1_firstBelow_stopped_shift_nonneg
       hK_nonneg hM_nonneg hX0 hinc)
 
+/--
+Durrett 2019, Theorem 4.3.1 support: if a path stays strictly above `-K`,
+then the first-below stopping time is infinite.
+-/
+theorem durrett2019_theorem_4_3_1_firstBelow_eq_top_of_forall_neg_lt
+    {Ω : Type*} {X : ℕ -> Ω -> ℝ} {K : ℝ} {ω : Ω}
+    (h_above : ∀ n, -K < X n ω) :
+    durrett2019_theorem_4_3_1_firstBelow X K ω = ⊤ := by
+  rw [durrett2019_theorem_4_3_1_firstBelow]
+  exact hittingAfter_eq_top_iff.mpr fun j _hj => by
+    simpa [Set.mem_Iic, not_le] using h_above j
+
+/--
+Durrett 2019, Theorem 4.3.1 bounded-below bridge: if `X_0 = 0` and the
+increments are bounded, then `X_n` converges on every path whose range is
+bounded below.
+
+This packages Durrett's step "letting `K -> ∞`, the limit exists on
+`{liminf X_n > -∞}`" in the countable-threshold form used by Lean.
+-/
+theorem durrett2019_theorem_4_3_1_tendsto_on_bddBelow_range
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {M : ℝ}
+    (hX : Martingale X ℱ μ) (hM_nonneg : 0 ≤ M)
+    (hX0 : ∀ᵐ ω ∂μ, X 0 ω = 0)
+    (hinc : ∀ᵐ ω ∂μ, ∀ i, |X (i + 1) ω - X i ω| ≤ M) :
+    ∀ᵐ ω ∂μ, BddBelow (Set.range fun n => X n ω) ->
+      ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+  have hsurv_all :
+      ∀ᵐ ω ∂μ, ∀ k : ℕ,
+        durrett2019_theorem_4_3_1_firstBelow X (k : ℝ) ω = ⊤ ->
+          ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+    rw [ae_all_iff]
+    intro k
+    exact
+      durrett2019_theorem_4_3_1_firstBelow_tendsto_on_survival
+        (X := X) (K := (k : ℝ)) (M := M) hX (by positivity)
+        hM_nonneg hX0 hinc
+  filter_upwards [hsurv_all] with ω hsurvω hbdd
+  rcases hbdd with ⟨b, hb⟩
+  obtain ⟨k, hk⟩ := exists_nat_gt (-b)
+  have hneg_lt_b : -(k : ℝ) < b := by
+    linarith
+  have h_above : ∀ n, -(k : ℝ) < X n ω := by
+    intro n
+    exact hneg_lt_b.trans_le (hb ⟨n, rfl⟩)
+  exact hsurvω k
+    (durrett2019_theorem_4_3_1_firstBelow_eq_top_of_forall_neg_lt h_above)
+
 end ProbabilityTheory
 end StatInference
