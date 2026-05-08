@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V51`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V52`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -453,10 +453,12 @@ Next packet:
   generator-production bridge also now compiles, turning eventual
   restricted-density identities for uniformly bounded nonnegative sequence
   densities into the generator/univ identities consumed by the endpoint.  The
-  next active target is one real Durrett source-production obligation: prove
-  the eventual restricted-density identities for `Yseq` and `Zseq`, or prove
-  `X = Y/Z` / top-set singular separation.  Theorem 4.1.16 remains deferred
-  unless a direct kernel API appears.
+  trimmed-RN eventual restricted-density bridge also now compiles, specializing
+  that endpoint to the actual trimmed RN derivative sequences.  The next active
+  target is one real Durrett source-production obligation: prove
+  boundedness/convergence of those sequences, or prove `X = Y/Z` / top-set
+  singular separation.  Theorem 4.1.16 remains deferred unless a direct kernel
+  API appears.
 
 Support-only dependencies:
 

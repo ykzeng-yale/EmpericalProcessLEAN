@@ -3049,5 +3049,146 @@ theorem
       (μ := μ) (ν := ν) (ρ := ρ) hA C hY hZ hgen hC hμC hνC
       hμuniv hνuniv hX hμtop hνtop
 
+/--
+Durrett 2019, Theorem 4.3.5 restricted-density identity in `lintegral` form:
+the RN derivative of the trimmed measures integrates over an `ℱ n`-event to
+the original measure of that event.
+-/
+theorem durrett2019_theorem_4_3_5_trimmed_rnDeriv_setLIntegral
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ρ : Measure Ω} {ℱ : Filtration ℕ mΩ} (n : ℕ)
+    [SigmaFinite (μ.trim (ℱ.le n))] [SigmaFinite (ρ.trim (ℱ.le n))]
+    (hμρ : μ.trim (ℱ.le n) ≪ ρ.trim (ℱ.le n))
+    {A : Set Ω} (hA : MeasurableSet[ℱ n] A) :
+    μ A =
+      ∫⁻ ω in A, (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω ∂ρ := by
+  have hf :
+      Measurable[ℱ n]
+        (fun ω => (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω) :=
+    Measure.measurable_rnDeriv (μ.trim (ℱ.le n)) (ρ.trim (ℱ.le n))
+  calc
+    μ A = (μ.trim (ℱ.le n)) A := by
+      rw [trim_measurableSet_eq (ℱ.le n) hA]
+    _ = ∫⁻ ω in A, (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω
+          ∂(ρ.trim (ℱ.le n)) := by
+      exact (Measure.setLIntegral_rnDeriv hμρ A).symm
+    _ = ∫⁻ ω in A, (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω ∂ρ :=
+      setLIntegral_trim (ℱ.le n) hf hA
+
+/--
+Durrett 2019, Theorem 4.3.5 eventual restricted-density identity: if an event
+is visible at time `m`, then all later trimmed RN derivatives integrate to the
+same original measure value.
+-/
+theorem durrett2019_theorem_4_3_5_eventually_trimmed_rnDeriv_setLIntegral
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ρ : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    [IsFiniteMeasure μ] [IsFiniteMeasure ρ]
+    (hμρ : ∀ n, μ.trim (ℱ.le n) ≪ ρ.trim (ℱ.le n))
+    {A : Set Ω} {m : ℕ} (hA : MeasurableSet[ℱ m] A) :
+    ∀ᶠ n in atTop,
+      μ A =
+        ∫⁻ ω in A, (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω ∂ρ := by
+  filter_upwards [eventually_ge_atTop m] with n hmn
+  exact
+    durrett2019_theorem_4_3_5_trimmed_rnDeriv_setLIntegral
+      (μ := μ) (ρ := ρ) (ℱ := ℱ) n (hμρ n)
+      (ℱ.mono hmn A hA)
+
+/--
+Durrett 2019, Theorem 4.3.5 generator-class eventual restricted-density
+identities.  This packages the source observation
+`A ∈ ℱ_m ⊆ ℱ_n` for all later `n`.
+-/
+theorem durrett2019_theorem_4_3_5_generator_eventual_trimmed_rnDeriv_setLIntegral
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ρ : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    [IsFiniteMeasure μ] [IsFiniteMeasure ρ]
+    (C : Set (Set Ω)) (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hμρ : ∀ n, μ.trim (ℱ.le n) ≪ ρ.trim (ℱ.le n)) :
+    (∀ s ∈ C,
+      ∀ᶠ n in atTop,
+        μ s =
+          ∫⁻ ω in s, (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω ∂ρ) ∧
+      (∀ᶠ n in atTop,
+        μ Set.univ =
+          ∫⁻ ω, (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω ∂ρ) := by
+  refine ⟨?_, ?_⟩
+  · intro s hs
+    rcases hC_meas s hs with ⟨m, hsm⟩
+    exact
+      durrett2019_theorem_4_3_5_eventually_trimmed_rnDeriv_setLIntegral
+        (μ := μ) (ρ := ρ) (ℱ := ℱ) hμρ hsm
+  · refine (eventually_ge_atTop 0).mono ?_
+    intro n _
+    have h :=
+      durrett2019_theorem_4_3_5_trimmed_rnDeriv_setLIntegral
+        (μ := μ) (ρ := ρ) (ℱ := ℱ) n (hμρ n)
+        (A := Set.univ) MeasurableSet.univ
+    simpa [setLIntegral_univ] using h
+
+/--
+Durrett 2019, Theorem 4.3.5 source endpoint specialized to the trimmed RN
+derivative sequences used in the proof.  The generator-event identities are
+now discharged from `A ∈ ℱ_m`; remaining source obligations are the bounded
+convergence hypotheses, the density ratio, and top-set singular separation.
+-/
+theorem
+    durrett2019_theorem_4_3_5_source_real_identity_of_trimmed_rnDeriv_limits_ratio_top_set
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν ρ : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν] [IsFiniteMeasure ρ]
+    {ℱ : Filtration ℕ mΩ} [μ.HaveLebesgueDecomposition ν]
+    {X Y Z : Ω -> ℝ≥0∞} {BY BZ : ℝ≥0∞} {A : Set Ω}
+    (hA : MeasurableSet A) (C : Set (Set Ω))
+    (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hY : AEMeasurable Y ρ) (hZ : AEMeasurable Z ρ)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hμρ : ∀ n, μ.trim (ℱ.le n) ≪ ρ.trim (ℱ.le n))
+    (hνρ : ∀ n, ν.trim (ℱ.le n) ≪ ρ.trim (ℱ.le n))
+    (hYbound : ∀ n,
+      (fun ω => (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω) ≤ᵐ[ρ] fun _ => BY)
+    (hBY : BY ≠ ∞)
+    (hYlim : ∀ᵐ ω ∂ρ,
+      Tendsto (fun n => (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω)
+        atTop (𝓝 (Y ω)))
+    (hZbound : ∀ n,
+      (fun ω => (ν.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω) ≤ᵐ[ρ] fun _ => BZ)
+    (hBZ : BZ ≠ ∞)
+    (hZlim : ∀ᵐ ω ∂ρ,
+      Tendsto (fun n => (ν.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω)
+        atTop (𝓝 (Z ω)))
+    (hX : X =ᵐ[ν] fun ω => Y ω / Z ω)
+    (hμtop : μ.singularPart ν {ω | X ω = ∞}ᶜ = 0)
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ.real A = ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}) := by
+  have hYseq : ∀ n,
+      AEMeasurable
+        (fun ω => (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω) ρ := by
+    intro n
+    exact
+      ((Measure.measurable_rnDeriv (μ.trim (ℱ.le n)) (ρ.trim (ℱ.le n))).mono
+        (ℱ.le n) le_rfl).aemeasurable
+  have hZseq : ∀ n,
+      AEMeasurable
+        (fun ω => (ν.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω) ρ := by
+    intro n
+    exact
+      ((Measure.measurable_rnDeriv (ν.trim (ℱ.le n)) (ρ.trim (ℱ.le n))).mono
+        (ℱ.le n) le_rfl).aemeasurable
+  obtain ⟨hμCevent, hμuniv_event⟩ :=
+    durrett2019_theorem_4_3_5_generator_eventual_trimmed_rnDeriv_setLIntegral
+      (μ := μ) (ρ := ρ) (ℱ := ℱ) C hC_meas hμρ
+  obtain ⟨hνCevent, hνuniv_event⟩ :=
+    durrett2019_theorem_4_3_5_generator_eventual_trimmed_rnDeriv_setLIntegral
+      (μ := ν) (ρ := ρ) (ℱ := ℱ) C hC_meas hνρ
+  exact
+    durrett2019_theorem_4_3_5_source_real_identity_of_bounded_convergence_ratio_top_set
+      (μ := μ) (ν := ν) (ρ := ρ)
+      (Yseq := fun n ω => (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω)
+      (Zseq := fun n ω => (ν.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω)
+      hA C hY hZ hgen hC
+      hYseq hYbound hBY hYlim hZseq hZbound hBZ hZlim
+      hμCevent hνCevent hμuniv_event hνuniv_event hX hμtop hνtop
+
 end ProbabilityTheory
 end StatInference
