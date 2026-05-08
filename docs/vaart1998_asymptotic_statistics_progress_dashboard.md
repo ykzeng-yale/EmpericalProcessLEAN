@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 Frechet path derivative handoff`).
+(`Add Vaart theorem 5.41 Frechet vector Taylor handoff`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -630,16 +630,16 @@ Live continuation prompt: use the compact prompt in
 ## Next Aggressive Target
 
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
-`MEstimators.lean`: package the remaining source Taylor obligations along the
-actual segment `theta0 + t • delta`: coordinate-path continuity,
-derivative-at-zero identification, and the scalar derivative Taylor display
-from the selected second-derivative action.  The Frechet-to-one-dimensional
-chain rule, estimating-map segment instantiation, second-derivative action
-matching, path-selected Taylor bridge, coordinate assembly, the scalar Taylor
-bridge, scaling bridge, auxiliary quadratic residual object,
-empirical-Hessian dominated operator-norm bound, empirical aggregation of the
-Taylor display, and empirical-average endpoint assembly are no longer
-blockers.
+`MEstimators.lean`: instantiate the remaining vector source obligations:
+coordinate-path continuity along `theta0 + t • delta`,
+`derivativeAt theta0 = derivative`, and the vector derivative Taylor identity
+from the selected second-derivative action.  The coordinate scalar
+derivative-at-zero/display reduction, Frechet-to-one-dimensional chain rule,
+estimating-map segment instantiation, second-derivative action matching,
+path-selected Taylor bridge, coordinate assembly, the scalar Taylor bridge,
+scaling bridge, auxiliary quadratic residual object, empirical-Hessian
+dominated operator-norm bound, empirical aggregation of the Taylor display,
+and empirical-average endpoint assembly are no longer blockers.
 
 ## Reuse Dependencies
 
