@@ -3503,5 +3503,164 @@ theorem
       durrett2019_theorem_4_3_5_trimmed_rnDeriv_toReal_ae_tendsto_limitProcess_of_le_one
         (η := ν) (ρ := μ + ν) (ℱ := ℱ) hνρ hνbound⟩
 
+/--
+Durrett 2019, Theorem 4.3.5 canonical real limit candidate for the numerator
+trimmed RN derivatives under the natural dominating measure `mu + nu`.
+-/
+noncomputable def durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    (μ ν : Measure Ω) (ℱ : Filtration ℕ mΩ) : Ω -> ℝ :=
+  ℱ.limitProcess
+    (fun n ω => ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+    (μ + ν)
+
+/--
+Durrett 2019, Theorem 4.3.5 canonical real limit candidate for the denominator
+trimmed RN derivatives under the natural dominating measure `mu + nu`.
+-/
+noncomputable def durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    (μ ν : Measure Ω) (ℱ : Filtration ℕ mΩ) : Ω -> ℝ :=
+  ℱ.limitProcess
+    (fun n ω => ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+    (μ + ν)
+
+/--
+Durrett 2019, Theorem 4.3.5 canonical finite `ENNReal` density candidate for
+the numerator measure, obtained from the real limit process.
+-/
+noncomputable def durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    (μ ν : Measure Ω) (ℱ : Filtration ℕ mΩ) : Ω -> ℝ≥0∞ :=
+  fun ω => ENNReal.ofReal
+    (durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit μ ν ℱ ω)
+
+/--
+Durrett 2019, Theorem 4.3.5 canonical finite `ENNReal` density candidate for
+the denominator measure, obtained from the real limit process.
+-/
+noncomputable def durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    (μ ν : Measure Ω) (ℱ : Filtration ℕ mΩ) : Ω -> ℝ≥0∞ :=
+  fun ω => ENNReal.ofReal
+    (durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit μ ν ℱ ω)
+
+/--
+Durrett 2019, Theorem 4.3.5 canonical limit-candidate endpoint: the natural
+`mu + nu` trimmed RN `toReal` martingale limits are packaged as finite
+`ENNReal` density candidates and fed to the source endpoint.
+-/
+theorem
+    durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_limitDensities
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ} [μ.HaveLebesgueDecomposition ν]
+    {X : Ω -> ℝ≥0∞} {A : Set Ω}
+    (hA : MeasurableSet A) (C : Set (Set Ω))
+    (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hX : X =ᵐ[ν] fun ω =>
+      durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ ω /
+        durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω)
+    (hμtop : μ.singularPart ν {ω | X ω = ∞}ᶜ = 0)
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ.real A = ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}) := by
+  obtain ⟨hYlim_lp, hZlim_lp⟩ :=
+    durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_toReal_limitProcess_convergence
+      (μ := μ) (ν := ν) (ℱ := ℱ)
+  have hYreal :
+      AEMeasurable
+        (durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit μ ν ℱ)
+        (μ + ν) := by
+    change AEMeasurable
+      (ℱ.limitProcess
+        (fun n ω => ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        (μ + ν)) (μ + ν)
+    exact
+      (Filtration.stronglyMeasurable_limit_process'
+        (f := fun n ω =>
+          ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        (ℱ := ℱ) (μ := μ + ν)).aemeasurable
+  have hZreal :
+      AEMeasurable
+        (durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit μ ν ℱ)
+        (μ + ν) := by
+    change AEMeasurable
+      (ℱ.limitProcess
+        (fun n ω => ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        (μ + ν)) (μ + ν)
+    exact
+      (Filtration.stronglyMeasurable_limit_process'
+        (f := fun n ω =>
+          ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        (ℱ := ℱ) (μ := μ + ν)).aemeasurable
+  have hY :
+      AEMeasurable
+        (durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ)
+        (μ + ν) := by
+    simpa [durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity] using
+      hYreal.ennreal_ofReal
+  have hZ :
+      AEMeasurable
+        (durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ)
+        (μ + ν) := by
+    simpa [durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity] using
+      hZreal.ennreal_ofReal
+  have hYfin : ∀ᵐ ω ∂(μ + ν),
+      durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ ω ≠ ∞ := by
+    filter_upwards with ω
+    simp [durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity]
+  have hZfin : ∀ᵐ ω ∂(μ + ν),
+      durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω ≠ ∞ := by
+    filter_upwards with ω
+    simp [durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity]
+  have hYnonneg : ∀ᵐ ω ∂(μ + ν),
+      0 ≤ durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit μ ν ℱ ω := by
+    filter_upwards [hYlim_lp] with ω hlimω
+    have hnonneg :=
+      le_of_tendsto_of_tendsto' tendsto_const_nhds hlimω
+        (fun n => ENNReal.toReal_nonneg)
+    simpa [durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit] using hnonneg
+  have hZnonneg : ∀ᵐ ω ∂(μ + ν),
+      0 ≤ durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit μ ν ℱ ω := by
+    filter_upwards [hZlim_lp] with ω hlimω
+    have hnonneg :=
+      le_of_tendsto_of_tendsto' tendsto_const_nhds hlimω
+        (fun n => ENNReal.toReal_nonneg)
+    simpa [durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit] using hnonneg
+  have hYlim_real : ∀ᵐ ω ∂(μ + ν),
+      Tendsto
+        (fun n =>
+          ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        atTop
+        (𝓝 ((durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ ω).toReal)) := by
+    filter_upwards [hYlim_lp, hYnonneg] with ω hlimω hnonnegω
+    have htarget :
+        (durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ ω).toReal =
+          durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit μ ν ℱ ω := by
+      rw [durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity]
+      exact ENNReal.toReal_ofReal hnonnegω
+    simpa [durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit, htarget] using hlimω
+  have hZlim_real : ∀ᵐ ω ∂(μ + ν),
+      Tendsto
+        (fun n =>
+          ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        atTop
+        (𝓝 ((durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω).toReal)) := by
+    filter_upwards [hZlim_lp, hZnonneg] with ω hlimω hnonnegω
+    have htarget :
+        (durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω).toReal =
+          durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit μ ν ℱ ω := by
+      rw [durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity]
+      exact ENNReal.toReal_ofReal hnonnegω
+    simpa [durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit, htarget] using hlimω
+  exact
+    durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_trimmed_rnDeriv_toReal_limits
+      (μ := μ) (ν := ν) (ℱ := ℱ)
+      (Y := durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ)
+      (Z := durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ)
+      hA C hC_meas hY hZ hgen hC hYfin hZfin hYlim_real hZlim_real
+      hX hμtop hνtop
+
 end ProbabilityTheory
 end StatInference

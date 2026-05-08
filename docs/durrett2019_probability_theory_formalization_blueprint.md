@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V55`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V56`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -460,11 +460,13 @@ Next packet:
   handoff also now compiles, so the `mu + nu` endpoint consumes real-valued
   convergence of the bounded trimmed RN derivative sequences.  The bounded
   real-martingale layer also now compiles, giving limitProcess convergence for
-  both natural `mu + nu` trimmed RN `toReal` sequences.  The next active target
-  is one real Durrett source-production obligation: convert those limit
-  processes into finite nonnegative `ENNReal` density candidates and feed the
-  `mu + nu` endpoint, or prove `X = Y/Z` / top-set singular separation.
-  Theorem 4.1.16 remains deferred unless a direct kernel API appears.
+  both natural `mu + nu` trimmed RN `toReal` sequences.  The canonical
+  limit-density endpoint also now compiles, feeding finite nonnegative
+  `ENNReal` density candidates built from those limit processes into the
+  `mu + nu` endpoint.  The next active target is one real Durrett
+  source-production obligation: prove `X = Y/Z` / top-set singular separation
+  for those canonical densities.  Theorem 4.1.16 remains deferred unless a
+  direct kernel API appears.
 
 Support-only dependencies:
 

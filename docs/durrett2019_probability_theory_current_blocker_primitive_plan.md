@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V55
+## Live In-Thread Goal Prompt V56
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -109,24 +109,29 @@ the two trimmed RN derivative sequences.  The bounded real-martingale layer
 also now compiles: a real martingale with entries norm-bounded by `1` has the
 L1/eLpNorm bound required by Theorem 4.2.11, and both natural
 `mu + nu` trimmed RN `toReal` sequences converge to their filtration limit
-processes.
+processes.  The canonical limit-density endpoint also now compiles: those real
+limit processes are packaged as finite nonnegative `ENNReal` density
+candidates, shown a.e. measurable and finite, and fed to the existing
+`mu + nu` `toReal` source endpoint.
 
-Next theorem-sized packet: continue Theorem 4.3.5 by converting those real
-limit processes into finite nonnegative `ENNReal` density candidates and
-feeding the existing `mu + nu` `toReal` endpoint, or by proving the remaining
-`X = Y / Z` no-`0/0` a.e. bridge or `{X = infinity}` singular separation if
-those discharge faster.  Search/reuse `Filtration.limitProcess`
-measurability/integrability APIs, a.e. nonnegativity transfer from a
-nonnegative sequence to its real limit, `ENNReal.ofReal`/`toReal` conversion,
-RN derivative addition/scaling APIs, ENNReal limsup/top, and a.e.-restriction
-APIs.  Do not redo the already compiled RN martingale/convergence bridge,
+Next theorem-sized packet: continue Theorem 4.3.5 by proving the remaining
+ratio/top-set source obligations for the canonical limit densities:
+`X = Y / Z` with
+`Y = durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity mu nu F` and
+`Z = durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity mu nu F`, the
+no-`0/0` a.e. handoff if needed, or `{X = infinity}` singular separation.
+Search/reuse RN derivative ratio identities, `ENNReal` division/top/zero
+lemmas, singular-part support APIs, a.e.-restriction APIs, and any existing
+Lebesgue-decomposition ratio/top-set bridge already compiled in this file.
+Do not redo the already compiled RN martingale/convergence bridge,
 regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
 generator-extension bridge, bounded-convergence generator-production bridge,
 trimmed-RN eventual restricted-density bridge, `mu + nu` boundedness bridge, or
 real-to-`ENNReal` convergence-transfer bridge, or the bounded real-martingale
-limitProcess convergence bridge.  Defer Polya urn as a model-specific
-construction unless a direct existing primitive is found.
+limitProcess convergence bridge, or the canonical limit-density endpoint.
+Defer Polya urn as a model-specific construction unless a direct existing
+primitive is found.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -610,6 +615,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V55` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V56` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
