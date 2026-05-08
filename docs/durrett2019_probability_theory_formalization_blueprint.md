@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V82`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V83`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -509,10 +509,12 @@ Next packet:
   exact nested square-root overlap factorization, and finite Hellinger
   tail-product overlap handoff now also compile.  The HasProd/Multipliable
   prefix-tail bridge and standard `Finset.range n` HasProd-to-pairwise-liminf
-  handoff now also compile.  The next active target is the finite tail-product
-  lower bound from positive prefix/tail monotonicity and tail-event zero-one
-  support for Kakutani's dichotomy.  Theorem 4.1.16 remains deferred unless a
-  direct kernel API appears.
+  handoff now also compile.  The finite tail-product lower bound from positive
+  prefix/tail monotonicity and the standard positive-product range consumer
+  now also compile.  The next active target is the one-coordinate Hellinger
+  affinity `≤ 1` source bound and tail-event zero-one support for Kakutani's
+  dichotomy.  Theorem 4.1.16 remains deferred unless a direct kernel API
+  appears.
 
 Support-only dependencies:
 

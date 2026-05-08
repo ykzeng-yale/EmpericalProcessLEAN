@@ -5799,6 +5799,103 @@ theorem durrett2019_theorem_4_3_8_hellingerTail_tendsto_one_of_multipliable
       htail_eq
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product support: if all one-coordinate
+Hellinger affinities are at most one, then every finite prefix product
+dominates their `HasProd` limit.
+-/
+theorem durrett2019_theorem_4_3_8_prefixProduct_limit_le_prefix_of_hasProd_le_one
+    {h : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hprod : HasProd h P) (hle_one : ∀ i, h i ≤ 1) :
+    ∀ n, P ≤ ∏ i ∈ Finset.range n, h i := by
+  intro n
+  refine le_of_tendsto hprod.tendsto_prod_nat ?_
+  filter_upwards [eventually_ge_atTop n] with m hnm
+  exact
+    Finset.prod_le_prod_of_subset_of_le_one
+      (Finset.range_subset_range.2 hnm)
+      (fun _ _ => bot_le)
+      (fun i _ _ => hle_one i)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product support: the positive infinite
+product branch makes every finite prefix product nonzero.
+-/
+theorem durrett2019_theorem_4_3_8_prefixProduct_ne_zero_of_positive_limit
+    {h : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hP0 : P ≠ 0)
+    (hP_le_prefix : ∀ n, P ≤ ∏ i ∈ Finset.range n, h i) :
+    ∀ n, (∏ i ∈ Finset.range n, h i) ≠ 0 := by
+  intro n hzero
+  have hP_le_zero : P ≤ 0 := by
+    simpa [hzero] using hP_le_prefix n
+  exact hP0 (le_antisymm hP_le_zero bot_le)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product support: finite prefix products
+of one-coordinate Hellinger affinities bounded by one are finite.
+-/
+theorem durrett2019_theorem_4_3_8_prefixProduct_ne_top_of_le_one
+    {h : ℕ -> ℝ≥0∞} (hle_one : ∀ i, h i ≤ 1) :
+    ∀ n, (∏ i ∈ Finset.range n, h i) ≠ ∞ := by
+  intro n
+  exact
+    ne_top_of_le_ne_top (by norm_num : (1 : ℝ≥0∞) ≠ ∞)
+      (Finset.prod_le_one (fun _ _ => bot_le) (fun i _ => hle_one i))
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product support: if a normalized
+infinite Hellinger tail is `P / prefix n`, and `P` is below every finite
+prefix, then it is bounded by every later finite tail product.
+-/
+theorem durrett2019_theorem_4_3_8_range_tailProduct_lower_bound_of_prefix_lower_bound
+    {h tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hP_le_prefix : ∀ m, P ≤ ∏ i ∈ Finset.range m, h i)
+    (hprefix_ne_zero : ∀ n, (∏ i ∈ Finset.range n, h i) ≠ 0)
+    (hprefix_ne_top : ∀ n, (∏ i ∈ Finset.range n, h i) ≠ ∞)
+    (htail_eq :
+      ∀ n, tail n = P / (∏ i ∈ Finset.range n, h i)) :
+    ∀ n, ∀ᶠ m in atTop,
+      tail n ≤ (Finset.range m \ Finset.range n).prod h := by
+  intro n
+  filter_upwards [eventually_ge_atTop n] with m hnm
+  rw [htail_eq n]
+  have hsubset : Finset.range n ⊆ Finset.range m :=
+    Finset.range_subset_range.2 hnm
+  have hmul :
+      P ≤ (Finset.range m \ Finset.range n).prod h *
+          (∏ i ∈ Finset.range n, h i) := by
+    rw [Finset.prod_sdiff hsubset]
+    exact hP_le_prefix m
+  exact
+    (ENNReal.div_le_iff_le_mul
+      (Or.inl (hprefix_ne_zero n)) (Or.inl (hprefix_ne_top n))).2 hmul
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product support: a positive `HasProd`
+limit and coordinate affinities bounded by one automatically supply the finite
+tail-product lower bound for the normalized Hellinger tail.
+-/
+theorem durrett2019_theorem_4_3_8_range_tailProduct_lower_bound_of_hasProd_le_one
+    {h tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hP0 : P ≠ 0)
+    (hprod : HasProd h P) (hle_one : ∀ i, h i ≤ 1)
+    (htail_eq :
+      ∀ n, tail n = P / (∏ i ∈ Finset.range n, h i)) :
+    ∀ n, ∀ᶠ m in atTop,
+      tail n ≤ (Finset.range m \ Finset.range n).prod h := by
+  have hP_le_prefix :
+      ∀ n, P ≤ ∏ i ∈ Finset.range n, h i :=
+    durrett2019_theorem_4_3_8_prefixProduct_limit_le_prefix_of_hasProd_le_one
+      hprod hle_one
+  exact
+    durrett2019_theorem_4_3_8_range_tailProduct_lower_bound_of_prefix_lower_bound
+      (h := h) (tail := tail) (P := P) hP_le_prefix
+      (durrett2019_theorem_4_3_8_prefixProduct_ne_zero_of_positive_limit hP0
+        hP_le_prefix)
+      (durrett2019_theorem_4_3_8_prefixProduct_ne_top_of_le_one hle_one)
+      htail_eq
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: if the Hellinger
 tail affinities tend to one, then the textbook Hellinger-tail L1 bound tends
 to zero.
@@ -6770,6 +6867,55 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_ha
   · intro n
     filter_upwards [eventually_ge_atTop n] with m hnm
     exact Finset.range_subset_range.2 hnm
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy handoff for the
+standard prefix exhaustion of `ℕ`: if the one-coordinate Hellinger affinities
+have a positive finite product and are bounded by one, then the normalized
+infinite tail automatically supplies the finite tail-product lower bounds.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_hasProd_le_one
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hP0 : P ≠ 0) (hPtop : P ≠ ∞)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (hhellinger_le_one :
+      ∀ i, (∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) ≤ 1)
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail_eq :
+      ∀ n,
+        tail n =
+          P / (∏ i ∈ Finset.range n,
+            ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x ≠ ∞) :
+    Tendsto
+      (fun n =>
+        Filter.liminf
+          (fun m =>
+            ∫⁻ x,
+              ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal -
+                (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x).toReal‖ₑ
+              ∂Measure.infinitePi ν)
+          atTop)
+      atTop (𝓝 0) := by
+  refine
+    durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_hasProd_tailProduct
+      (μ := μ) (ν := ν) (q := q) (tail := tail) (P := P)
+      hq hμ hP0 hPtop hprod htail_le ?_ hfinite ?_
+  · exact Filter.Eventually.of_forall htail_eq
+  · exact
+      durrett2019_theorem_4_3_8_range_tailProduct_lower_bound_of_hasProd_le_one
+        (h := fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)
+        (tail := tail) (P := P) hP0 hprod hhellinger_le_one htail_eq
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
