@@ -518,10 +518,18 @@ arbitrary-`Finset.Ico` suffix product perturbation bound via
 `StatInference.norm_prod_sub_prod_le_sum_norm_sub`, lifts it to a row-summed
 L1 suffix-error convergence wrapper, and proves
 `projectedMixedTowerDefect_sum_tendsto_zero_of_inverseFutureTail_condExp`.
+The newest weighted-suffix bridge adds the finite triangular counting identity
+`chewi127_integral_sum_range_sum_Ico_succ_eq_integral_weighted`, using mathlib
+`Finset.sum_Ico_Ico_comm'`, and the ASGD consumers
+`projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_difference_error`
+and
+`projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_compensated_error`.
 The remaining ASGD proof obligations for this route are now precisely:
-1. prove the suffix/weighted row-summed normalized-minus-inverse error
-   convergence consumed by
-   `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_suffix_error`;
+1. prove the weighted compensated Taylor-error convergence consumed by
+   `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_compensated_error`.
+   The unweighted row convergence is not enough for suffix sums, because the
+   triangular regrouping counts the one-step error at index `k` exactly `k`
+   times;
 2. prove the row-summed conditional residual convergence of
    `projectedMixedTowerInverseFutureTail -
    E[projectedMixedTowerInverseFutureTail | F_r]`.

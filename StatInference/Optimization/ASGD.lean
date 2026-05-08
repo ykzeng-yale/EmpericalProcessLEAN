@@ -549,6 +549,38 @@ theorem chewi127_integral_product_with_remainder_tendsto_exp_of_variance_product
       ring)
 
 /--
+Triangular finite-sum regrouping under the integral: summing suffixes
+`∑_{k=r+1}^{N-1}` over `r < N` counts each index `k` exactly `k` times.
+-/
+theorem chewi127_integral_sum_range_sum_Ico_succ_eq_integral_weighted
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    (f : ℕ -> Ω -> ℝ) (N : ℕ)
+    (hIco_int : ∀ r ∈ Finset.range N,
+      Integrable (fun ω => ∑ k ∈ Finset.Ico (r + 1) N, f k ω) P) :
+    (∑ r ∈ Finset.range N,
+      ∫ ω, ∑ k ∈ Finset.Ico (r + 1) N, f k ω ∂P) =
+      ∫ ω, ∑ k ∈ Finset.range N, (k : ℝ) * f k ω ∂P := by
+  calc
+    (∑ r ∈ Finset.range N,
+      ∫ ω, ∑ k ∈ Finset.Ico (r + 1) N, f k ω ∂P)
+        = ∫ ω,
+            ∑ r ∈ Finset.range N,
+              ∑ k ∈ Finset.Ico (r + 1) N, f k ω ∂P := by
+          rw [integral_finsetSum (Finset.range N) hIco_int]
+    _ = ∫ ω, ∑ k ∈ Finset.range N, (k : ℝ) * f k ω ∂P := by
+          refine integral_congr_ae <| ae_of_all P fun ω => ?_
+          rw [← Nat.Ico_zero_eq_range N]
+          change
+            (∑ r ∈ Finset.Ico 0 N,
+              ∑ k ∈ Finset.Ico (r + 1) N, f k ω) =
+              ∑ k ∈ Finset.Ico 0 N, (k : ℝ) * f k ω
+          rw [Finset.sum_Ico_Ico_comm' 0 N (fun _r k => f k ω)]
+          refine Finset.sum_congr rfl ?_
+          intro k _hk
+          rw [Finset.sum_const]
+          simp [nsmul_eq_mul]
+
+/--
 Scalar Lindeberg tail summand for Chewi's one-dimensional martingale CLT
 route.  It is the source expression
 `x_{k+1}^2 1_{ε sqrt(N) < |x_{k+1}|}`.
@@ -8494,6 +8526,229 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_inverse
   exact Eventually.of_forall fun N =>
     S.projectedMixedTowerFutureTail_inverseFutureTail_l1_row_sum_le_suffix_error
       L N t
+
+/--
+Weighted one-step normalized-minus-inverse error convergence implies the
+suffix-error convergence needed to compare the normalized future tail with the
+inverse-compensation future tail.  The triangular regrouping counts the
+one-step error at index `k` exactly `k` times.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_difference_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hweighted_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  S.projectedInverseCompensationFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P)
+      atTop (𝓝 0) := by
+  refine
+    S.projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_suffix_error
+      L t ?_
+  refine hweighted_error.congr' (Eventually.of_forall fun N => ?_)
+  symm
+  refine
+    chewi127_integral_sum_range_sum_Ico_succ_eq_integral_weighted
+      (P := P)
+      (fun k ω =>
+        ‖S.projectedNormalizedTaylorFactor L N t k ω -
+          S.projectedInverseCompensationFactor L N t k ω‖)
+      N ?_
+  intro r _hr
+  have hrow_int :
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.range N,
+            ‖S.projectedNormalizedTaylorFactor L N t k ω -
+              S.projectedInverseCompensationFactor L N t k ω‖) P :=
+    S.projectedNormalizedInverseDifference_row_integrable_of_uniform_bound
+      L N t
+  have hmeas :
+      AEStronglyMeasurable
+        (fun ω =>
+          ∑ k ∈ Finset.Ico (r + 1) N,
+            ‖S.projectedNormalizedTaylorFactor L N t k ω -
+              S.projectedInverseCompensationFactor L N t k ω‖) P := by
+    exact (Finset.Ico (r + 1) N).aestronglyMeasurable_fun_sum fun k _hk =>
+      (((S.projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable_of_uniform_bound
+        L N t k).mono (S.martingale.filtration.le k)).sub
+        (S.projectedInverseCompensationFactor_aestronglyMeasurable
+          L N t k)).norm
+  refine Integrable.mono' hrow_int hmeas ?_
+  filter_upwards with ω
+  have hsuffix_nonneg :
+      0 ≤
+        ∑ k ∈ Finset.Ico (r + 1) N,
+          ‖S.projectedNormalizedTaylorFactor L N t k ω -
+            S.projectedInverseCompensationFactor L N t k ω‖ := by
+    exact Finset.sum_nonneg fun k _hk => norm_nonneg _
+  rw [Real.norm_of_nonneg hsuffix_nonneg]
+  exact Finset.sum_le_sum_of_subset_of_nonneg
+    (by
+      intro k hk
+      exact Finset.mem_range.mpr (Finset.mem_Ico.mp hk).2)
+    (fun k _hk _hnot => norm_nonneg
+      (S.projectedNormalizedTaylorFactor L N t k ω -
+        S.projectedInverseCompensationFactor L N t k ω))
+
+/--
+Weighted compensated Taylor-error convergence implies the suffix-error
+convergence needed to compare the normalized future tail with the
+inverse-compensation future tail.  This is the weighted counterpart of the
+unweighted normalized-product comparison: factor
+`normalized - inverse = inverse * compensatedError` and use the inverse-factor
+norm bound.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_compensated_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hweighted_comp_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hweighted_comp_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P)
+      atTop (𝓝 0) := by
+  have hweighted_diff_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  S.projectedInverseCompensationFactor L N t k ω‖) P := by
+    intro N
+    have hmeas :
+        AEStronglyMeasurable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  S.projectedInverseCompensationFactor L N t k ω‖) P := by
+      exact (Finset.range N).aestronglyMeasurable_fun_sum fun k _hk =>
+        ((((S.projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable_of_uniform_bound
+          L N t k).mono (S.martingale.filtration.le k)).sub
+          (S.projectedInverseCompensationFactor_aestronglyMeasurable
+            L N t k)).norm.const_mul (k : ℝ))
+    refine Integrable.mono' (hweighted_comp_int N) hmeas ?_
+    filter_upwards [S.projectedInverseCompensationFactor_row_norm_le_one_ae
+      L N t] with ω hω
+    have hdiff_nonneg :
+        0 ≤
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                S.projectedInverseCompensationFactor L N t k ω‖ := by
+      exact Finset.sum_nonneg fun k _hk =>
+        mul_nonneg (Nat.cast_nonneg k) (norm_nonneg _)
+    rw [Real.norm_of_nonneg hdiff_nonneg]
+    refine Finset.sum_le_sum ?_
+    intro k hk
+    have hsplit :
+        S.projectedNormalizedTaylorFactor L N t k ω -
+            S.projectedInverseCompensationFactor L N t k ω =
+          S.projectedInverseCompensationFactor L N t k ω *
+            S.projectedCompensatedTaylorErrorFactor L N t k ω := by
+      simp [Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor]
+      ring
+    have hdiff_le :
+        ‖S.projectedNormalizedTaylorFactor L N t k ω -
+          S.projectedInverseCompensationFactor L N t k ω‖ ≤
+            ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+      calc
+        ‖S.projectedNormalizedTaylorFactor L N t k ω -
+            S.projectedInverseCompensationFactor L N t k ω‖
+            = ‖S.projectedInverseCompensationFactor L N t k ω *
+                S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+              rw [hsplit]
+        _ = ‖S.projectedInverseCompensationFactor L N t k ω‖ *
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+              rw [norm_mul]
+        _ ≤ 1 * ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ :=
+              mul_le_mul_of_nonneg_right (hω k hk)
+                (norm_nonneg
+                  (S.projectedCompensatedTaylorErrorFactor L N t k ω))
+        _ = ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+              simp
+    exact mul_le_mul_of_nonneg_left hdiff_le (Nat.cast_nonneg k)
+  refine
+    S.projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_difference_error
+      L t ?_
+  refine squeeze_zero'
+    (Eventually.of_forall fun N =>
+      integral_nonneg fun ω =>
+        Finset.sum_nonneg fun k _hk =>
+          mul_nonneg (Nat.cast_nonneg k) (norm_nonneg _))
+    ?_ hweighted_comp_error
+  exact Eventually.of_forall fun N =>
+    integral_mono_ae (hweighted_diff_int N) (hweighted_comp_int N) <|
+      (S.projectedInverseCompensationFactor_row_norm_le_one_ae L N t).mono
+        fun ω hω => by
+          refine Finset.sum_le_sum ?_
+          intro k hk
+          have hsplit :
+              S.projectedNormalizedTaylorFactor L N t k ω -
+                  S.projectedInverseCompensationFactor L N t k ω =
+                S.projectedInverseCompensationFactor L N t k ω *
+                  S.projectedCompensatedTaylorErrorFactor L N t k ω := by
+            simp [Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor]
+            ring
+          have hdiff_le :
+              ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                S.projectedInverseCompensationFactor L N t k ω‖ ≤
+                  ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+            calc
+              ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  S.projectedInverseCompensationFactor L N t k ω‖
+                  = ‖S.projectedInverseCompensationFactor L N t k ω *
+                      S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+                    rw [hsplit]
+              _ = ‖S.projectedInverseCompensationFactor L N t k ω‖ *
+                    ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+                    rw [norm_mul]
+              _ ≤ 1 *
+                    ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ :=
+                    mul_le_mul_of_nonneg_right (hω k hk)
+                      (norm_nonneg
+                        (S.projectedCompensatedTaylorErrorFactor L N t k ω))
+              _ = ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+                    simp
+          exact mul_le_mul_of_nonneg_left hdiff_le (Nat.cast_nonneg k)
 
 /--
 The conditional expectation of the inverse-compensation future tail is a valid
