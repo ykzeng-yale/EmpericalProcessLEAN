@@ -18,8 +18,11 @@ the whole VdV&W empirical-process textbook formalization, with Chapters 1-2
 and Theorem 2.4.3 as the current frontier.  The clean VdVW proof lane is
 `/private/tmp/ep-vdvw-selected-log-route` at `origin/main`; the Desktop
 worktree is intentionally avoided for VdVW commits because it contains
-unrelated Matching/WDSM work.  Current next target: prove the registered
-`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive` from the stochastic
+unrelated Matching/WDSM work.  The registered
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive` now feeds untruncated
+centered convergence directly through
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.centered_untruncated_convergesInOuterProbabilityConst_zero`.
+Current next target: prove that primitive from the stochastic
 selected-entropy argument, or prove the selected-cover ghost/Rademacher
 displayed-beta Lemma 2.3.7 event primitive (`Phi(x)=x` plus finite-center
 comparison).
@@ -3317,3 +3320,11 @@ The next useful target is therefore sharply stated: prove the selected
 finite-net Hoeffding-upper integral tends to zero from the stochastic entropy
 argument, or prove the selected-cover `Phi(x)=x`/finite-center event theorem
 for the probability route.
+
+The registered selected entropy-to-finite-net mean primitive now has a direct
+untruncated centered-convergence consumer:
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.centered_untruncated_convergesInOuterProbabilityConst_zero`.
+This means the remaining source proof can be plugged into the generic Theorem
+2.4.3 route without another tail/UI or endpoint wrapper layer.  The active
+blocker remains the source proof of the primitive itself, or the alternative
+displayed-beta selected-cover event primitive.

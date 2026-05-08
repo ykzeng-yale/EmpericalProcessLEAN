@@ -8020,3 +8020,14 @@ positive truncation level and radius.  The next proof target is now explicit:
 prove this primitive from the ghost/sample-cover stochastic entropy argument,
 or instead prove the existing displayed-beta Lemma 2.3.7 event primitive
 (`Phi(x)=x` plus the finite-center comparison) and feed that event route.
+
+2026-05-07 selected entropy primitive untruncated consumer:
+`Theorem243.lean` now proves
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.centered_untruncated_convergesInOuterProbabilityConst_zero`.
+This is the direct main-route consumer for the registered source primitive:
+once the stochastic selected-entropy proof supplies
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive`, generic untruncated
+centered convergence follows through the existing selected finite-net mean
+route without additional tail/UI packaging.  The frontier is unchanged and now
+fully concentrated: prove the primitive itself, or prove the displayed-beta
+selected-cover event primitive and route through that probability comparison.
