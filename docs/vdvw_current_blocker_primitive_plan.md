@@ -228,6 +228,19 @@ selected-cover constructor.  It still deliberately leaves the two real source
 inputs explicit: the canonical finite-center maximal event and the canonical
 `Phi(x)=x` comparison under `vdVWProductMeasure vdVWRademacherLaw n`.
 
+2026-05-08 product-fiber beta bridge: `Theorem243.lean` now proves the
+measure-theoretic source handoff
+`measure_mul_le_prod_measure_of_fiber_lower_bound`, its outer-probability form
+`VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound`, and the
+displayed-beta constructor
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_product_fiber_lower_bound`.
+This is the direct product/Fubini interface for the remaining Lemma 2.3.7
+event proof: it suffices to build, eventually in `n`, a measurable joint
+ghost/Rademacher event with displayed-Chebyshev-beta-large fibers over the
+centered bad event and projection contained in the selected finite-net bad
+event.  The next source step should construct that joint event from the
+selected empirical cover and Rademacher symmetrization.
+
 Newest source-side comparison support in `Theorem243.lean` is now:
 `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`,
 which transports an already proved comparison from a selected cardinality to a

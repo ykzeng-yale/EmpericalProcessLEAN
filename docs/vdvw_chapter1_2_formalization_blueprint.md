@@ -2204,6 +2204,10 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_canonicalRademacher_hphi_id`,
    and
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`.
+   The product/Fubini beta-scaling step is now isolated as
+   `measure_mul_le_prod_measure_of_fiber_lower_bound`,
+   `VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound`, and
+   `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_product_fiber_lower_bound`.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
