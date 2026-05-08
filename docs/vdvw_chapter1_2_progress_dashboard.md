@@ -22,6 +22,8 @@ unrelated Matching/WDSM work.  The registered
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive` now feeds untruncated
 centered convergence directly through
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.centered_untruncated_convergesInOuterProbabilityConst_zero`.
+Concrete deterministic entropy bounds can also build the primitive through
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_bound`.
 Current next target: prove that primitive from the stochastic
 selected-entropy argument, or prove the selected-cover ghost/Rademacher
 displayed-beta Lemma 2.3.7 event primitive (`Phi(x)=x` plus finite-center
@@ -3328,3 +3330,12 @@ This means the remaining source proof can be plugged into the generic Theorem
 2.4.3 route without another tail/UI or endpoint wrapper layer.  The active
 blocker remains the source proof of the primitive itself, or the alternative
 displayed-beta selected-cover event primitive.
+
+The selected entropy-to-finite-net mean primitive now also has a deterministic
+normalized-log-cardinality constructor:
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_bound`.
+This packages the existing deterministic-bound selected fixed-radius route as a
+proof of the registered primitive, so concrete finite-trace/VC/grid arguments
+can reuse the same primitive-facing main route.  Parallel searches confirmed no
+current local or pinned-mathlib theorem proves the primitive from
+outer-probability entropy alone.

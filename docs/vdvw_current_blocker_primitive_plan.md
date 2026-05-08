@@ -8031,3 +8031,15 @@ centered convergence follows through the existing selected finite-net mean
 route without additional tail/UI packaging.  The frontier is unchanged and now
 fully concentrated: prove the primitive itself, or prove the displayed-beta
 selected-cover event primitive and route through that probability comparison.
+
+2026-05-07 deterministic-bound constructor for the selected entropy primitive:
+after parallel local searches, no existing declaration was found that proves
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive` from outer-probability
+entropy alone; the missing step is genuinely a uniform-integrability/mean or
+event-comparison theorem.  `Theorem243.lean` now proves
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_bound`.
+This lets concrete finite-trace, VC/Sauer, and grid-cardinality arguments that
+already supply deterministic normalized-log-cardinality bounds feed the
+registered primitive directly.  The generic textbook blocker remains the same:
+prove the stochastic selected-entropy-to-mean theorem, or prove the
+displayed-beta selected-cover Lemma 2.3.7 event primitive.

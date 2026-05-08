@@ -25326,6 +25326,69 @@ theorem
       hM_pos (hK_nonneg M hM_pos) (hbound M hM_pos)
 
 /--
+Deterministic normalized-log-cardinality bounds prove the registered selected
+entropy-to-finite-net-mean primitive.
+
+This is a source-side constructor, not a new endpoint: concrete finite-trace,
+VC/Sauer, or grid-cardinality arguments that already supply deterministic
+`log(cardinality + 1) / n` bounds can now feed
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive` directly.  The generic
+textbook stochastic-entropy-to-mean theorem remains the sharper open source
+step.
+-/
+theorem
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {K : ℝ -> ℝ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hK_nonneg : ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ K M eta)
+    (hbound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) /
+              (n : ℝ) ≤ K M eta) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P X indexClass
+      classFun envelope cardinality hentropy := by
+  classical
+  let hselected :
+      ∀ M, 0 < M ->
+        VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+          indexClass classFun envelope M (cardinality M) :=
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (K := K) (cardinality := cardinality) hentropy hX_samplePath
+      hclass henvelope_meas hK_nonneg hbound
+  refine
+    { finiteNetUpperIntegrable := ?_
+      finiteNetUpperIntegral_tendsto_zero := ?_ }
+  · intro M hM eta heta n
+    exact (hselected M hM).finiteNetUpperIntegrable eta heta n
+  · intro M hM eta heta
+    exact
+      integral_finiteNetHoeffdingUpper_tendsto_zero_of_selected_truncated_fixedRadius_logCardinality_div_bound
+        (P := P) (X := X M) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (eta := eta) (K := K M eta) (cardinality := cardinality M)
+        (hX_samplePath M) (hentropy.coveringNumber_le M hM) heta
+        hclass henvelope_meas (hentropy.log_cardinality_div_converges M hM eta heta)
+        hM (hK_nonneg M hM eta heta) (hbound M hM eta heta)
+
+/--
 Build the selected fixed-radius tail/UI package from a deterministic
 normalized log-cardinality rate.
 
