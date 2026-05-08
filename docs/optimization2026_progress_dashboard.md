@@ -253,6 +253,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_eq_exp_averageVariance`,
   `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_integral_eq_exp_averageVariance`,
   `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_integral`,
+  `Chewi127BoundedMartingaleCLTSource.projected_conditional_variance_nonneg_ae`,
+  `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_norm_le_one_of_variance_nonneg`,
+  `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_norm_le_one_ae`,
+  `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_row_norm_le_one_ae`,
+  `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_eventually_row_norm_le_one`,
+  `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_integrable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedInverseDifference_row_integrable_of_uniform_bound`,
   `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_eq_taylorModel`,
   `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_ae_eq_condExp_charFun`,
   `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_norm_le_one_ae`,
@@ -277,6 +286,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_normalized_bound`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_normalized_controls`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_product_controls`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -341,12 +351,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   mathlib `norm_condExp_le`, `condExp_const`, `condExp_congr_ae`, and
   `stronglyMeasurable_condExp` to prove the a.e. norm bound,
   finite-product measurability, and finite-product integrability from the
-  source uniform bound.  The remaining work is the finite mixed-tower
-  future-tail measurability/integrability plus inverse product
-  boundedness/integrability, compensated-error row-sum integrability, and
-  variance-error row-sum integrability assumptions.  Next target: prove
-  conditional-variance nonnegativity for `Xi (k+1) L L`, derive the inverse
-  compensation factor/product controls, then revisit the mixed-tower
+  source uniform bound.  The inverse-control packet then proves
+  conditional-variance nonnegativity for `Xi (k+1) L L` using
+  `condExp_nonneg`, bounds every inverse-compensation factor by one a.e. via
+  `Complex.norm_exp_ofReal` and `Real.exp_le_one_iff`, proves inverse-product
+  measurability/integrability, and discharges the normalized-minus-inverse row
+  integrability side condition.  The remaining work is the finite mixed-tower
+  future-tail measurability/integrability plus compensated-error row-sum
+  integrability and variance-error row-sum integrability assumptions.  Next
+  target: derive compensated-error row-sum integrability from the existing
+  norm split, compensation-factor row bound, conditional-remainder
+  integrability, and variance-error integrability; then revisit the mixed-tower
   future-tail measurability gate.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
