@@ -296,6 +296,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedCompensationVarianceError_row_norm_integrable_of_uniform_bound`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_error_integrability`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_row_integrability`,
+  `Chewi127BoundedMartingaleCLTSource.projectedMixedTowerMultiplier_integrable_of_uniform_bound`,
+  `Chewi127BoundedMartingaleCLTSource.projectedMixedTowerMultiplier_aestronglyMeasurable_of_future_tail`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_future_measurability`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_future_tail_measurability`,
+  `Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_mixed_tower_future_measurability`,
+  `Chewi127BoundedMartingaleCLTSource.projected_clt_of_mixed_tower_future_measurability`,
+  `Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_mixed_tower_future_tail_measurability`,
+  `Chewi127BoundedMartingaleCLTSource.projected_clt_of_mixed_tower_future_tail_measurability`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -370,13 +378,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   compensated-Taylor error factors, derives compensated-error row-sum
   integrability from variance-error row-sum integrability plus source
   boundedness, discharges the variance-error row-sum integrability directly
-  from source boundedness, and adds the source-facing mixed-tower wrapper whose
-  only remaining inputs are the finite future-tail measurability and
-  integrability assumptions.  Next target: discharge those future-tail
-  assumptions from normalized-tail product measurability/integrability,
-  adapted prefix characteristic products, and uniform norm bounds; if that is
-  not derivable from current fields, record the exact adaptedness condition and
-  use the wrapper as the supplied ASGD interface.
+  from source boundedness, and adds the source-facing mixed-tower row wrapper.
+  The latest mixed-tail packet then discharges the mixed multiplier
+  integrability from source boundedness, proves the multiplier
+  `F_r`-measurability from the precise future-tail product
+  `F_r`-measurability condition, and packages both characteristic-function
+  convergence and projected scalar CLT wrappers from that condition.  Scouts
+  and local proof search agree that the remaining source gap is genuine:
+  current adaptedness gives the tail factor at filtration `F_k`, not at the
+  earlier `F_r` for `r < k`.  Next target: either add a correct predictable or
+  frozen-tail source condition for the concrete ASGD application, or replace
+  the future-tail product route by a backward/telescoping conditional
+  multiplier formulation that does not require false future measurability.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

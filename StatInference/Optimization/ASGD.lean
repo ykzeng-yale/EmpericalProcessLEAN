@@ -5910,6 +5910,215 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixe
         L N t)
 
 /--
+Chewi's uniform boundedness hypothesis supplies integrability of the mixed
+prefix-characteristic-function times normalized-tail multiplier used in the
+finite martingale tower peel.  This is global integrability only; the
+filtration measurability of the future tail remains a separate source-facing
+condition.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerMultiplier_integrable_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    Integrable
+      (fun ω =>
+        chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) r
+          (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+        ∏ k ∈ Finset.Ico (r + 1) N,
+          S.projectedNormalizedTaylorFactor L N t k ω) P := by
+  let x : ℕ -> Ω -> ℝ := fun k ω => L (S.martingale.xi k ω)
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+    ⟨B, hB_nonneg, hbound⟩
+  have hx : ∀ k : ℕ, AEMeasurable (x k) P := by
+    intro k
+    exact (S.martingale.projected_integrable L k).aemeasurable
+  have hx_succ : ∀ k : ℕ, AEMeasurable (x (k + 1)) P := by
+    intro k
+    exact hx (k + 1)
+  have hbound_x : ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B := by
+    intro k
+    simpa [x] using hbound k
+  have hprefix_meas :
+      AEStronglyMeasurable (chewi127ScalarCharFunProduct x r a) P :=
+    chewi127ScalarCharFunProduct_aestronglyMeasurable (P := P) hx r a
+  have htail_meas :
+      AEStronglyMeasurable
+        (fun ω =>
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P := by
+    refine Finset.aestronglyMeasurable_fun_prod
+      (s := Finset.Ico (r + 1) N) ?_
+    intro k _hk
+    have hsq :
+        Integrable
+          (fun ω => (L (S.martingale.xi (k + 1) ω)) ^ 2) P := by
+      simpa [x] using
+        chewi127Scalar_sq_integrable_of_uniform_bound
+          (P := P) (x := x (k + 1)) (hx_succ k)
+          ⟨B, hB_nonneg, hbound_x k⟩
+    have hremainder :
+        Integrable
+          (chewi127ScalarCharFunTaylorRemainder
+            (t * (Real.sqrt (N : ℝ))⁻¹)
+            (fun ω => L (S.martingale.xi (k + 1) ω))) P := by
+      simpa [x] using
+        chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+          (P := P) (x := x (k + 1)) (hx_succ k)
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          ⟨B, hB_nonneg, hbound_x k⟩
+    exact
+      S.projectedNormalizedTaylorFactor_aestronglyMeasurable
+        L N t k hsq hremainder
+  have hmeas :
+      AEStronglyMeasurable
+        (fun ω =>
+          chewi127ScalarCharFunProduct x r a ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P :=
+    hprefix_meas.mul htail_meas
+  refine Integrable.of_bound (C := 1) hmeas ?_
+  filter_upwards [S.projectedNormalizedTaylorFactor_row_norm_le_one_ae L N t]
+    with ω hrow
+  have hprefix_norm :
+      ‖chewi127ScalarCharFunProduct x r a ω‖ ≤ 1 :=
+    chewi127ScalarCharFunProduct_norm_le_one x r a ω
+  have htail_norm :
+      ‖∏ k ∈ Finset.Ico (r + 1) N,
+          S.projectedNormalizedTaylorFactor L N t k ω‖ ≤ 1 := by
+    exact (Finset.norm_prod_le (Finset.Ico (r + 1) N)
+      (fun k => S.projectedNormalizedTaylorFactor L N t k ω)).trans
+        (Finset.prod_le_one
+          (fun k _hk => norm_nonneg
+            (S.projectedNormalizedTaylorFactor L N t k ω))
+          (fun k hk => by
+            have hk_lt : k < N := (Finset.mem_Ico.mp hk).2
+            exact hrow k (Finset.mem_range.mpr hk_lt)))
+  calc
+    ‖chewi127ScalarCharFunProduct x r a ω *
+        ∏ k ∈ Finset.Ico (r + 1) N,
+          S.projectedNormalizedTaylorFactor L N t k ω‖
+        = ‖chewi127ScalarCharFunProduct x r a ω‖ *
+            ‖∏ k ∈ Finset.Ico (r + 1) N,
+              S.projectedNormalizedTaylorFactor L N t k ω‖ := by
+          rw [norm_mul]
+    _ ≤ 1 * 1 :=
+          mul_le_mul hprefix_norm htail_norm
+            (norm_nonneg
+              (∏ k ∈ Finset.Ico (r + 1) N,
+                S.projectedNormalizedTaylorFactor L N t k ω))
+            zero_le_one
+    _ = 1 := by norm_num
+
+/--
+The mixed-tower multiplier is `F_r`-measurable once the future normalized tail
+product is supplied as `F_r`-measurable.  The raw prefix measurability follows
+from adaptedness of the martingale increments.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerMultiplier_aestronglyMeasurable_of_future_tail
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ)
+    (hfuture_tail_meas :
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P) :
+    AEStronglyMeasurable[S.martingale.filtration r]
+      (fun ω =>
+        chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) r
+          (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+        ∏ k ∈ Finset.Ico (r + 1) N,
+          S.projectedNormalizedTaylorFactor L N t k ω) P := by
+  let x : ℕ -> Ω -> ℝ := fun k ω => L (S.martingale.xi k ω)
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  have hprefix :
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (chewi127ScalarCharFunProduct x r a) P := by
+    simpa [x, a] using
+      S.martingale.projected_charFun_prefix_aestronglyMeasurable L r a
+  simpa [x, a] using hprefix.mul hfuture_tail_meas
+
+/--
+Mixed-tower convergence with all row-integrability inputs and the mixed-tower
+integrability inputs discharged from source boundedness.  The only remaining
+finite-tower hypothesis is the genuine future-tail `F_r`-measurability
+condition.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_future_measurability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hA_meas : ∀ N r : ℕ, r < N ->
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) :=
+  S.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_row_integrability
+    L t hA_meas
+    (fun N r _hr =>
+      S.projectedMixedTowerMultiplier_integrable_of_uniform_bound L N r t)
+
+/--
+Mixed-tower convergence from the precise future-tail predictability condition.
+The raw prefix measurability, mixed multiplier integrability, and all analytic
+row controls are discharged from the bounded martingale source.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_future_tail_measurability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hfuture_tail_meas : ∀ N r : ℕ, r < N ->
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) :=
+  S.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_future_measurability
+    L t
+    (fun N r hr =>
+      S.projectedMixedTowerMultiplier_aestronglyMeasurable_of_future_tail
+        L N r t (hfuture_tail_meas N r hr))
+
+/--
 Projected characteristic-function convergence from the finite product model
 left by the martingale tower peel.  This is the source-facing reduction of the
 hard Chewi 12.7 scalar CLT field to a variance-product limit and a conditional
@@ -6308,6 +6517,119 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_charFun_exp
       atTop (fun ω => L (S.Z ω)) (fun _ => P) Q :=
   S.projected_scalar_clt_of_charFun L fun t => by
     simpa [S.projected_gaussian_charFun_eq L hmean t] using hchar t
+
+/--
+Projected scalar CLT from the mixed-tower future-tail measurability condition.
+All bounded-source analytic row estimates and integrability hypotheses are
+discharged by the characteristic-function tower developed above.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_mixed_tower_future_measurability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0)
+    (hA_meas : ∀ t : ℝ, ∀ N r : ℕ, r < N ->
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P) :
+    TendstoInDistribution
+      (chewi127ScalarScaledSum (fun n ω => L (S.martingale.xi n ω)))
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q :=
+  S.projected_scalar_clt_of_charFun_exp L hmean fun t =>
+    S.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_future_measurability
+      L t (hA_meas t)
+
+/--
+Projected martingale CLT in Chewi's displayed projected-noise notation from
+the mixed-tower future-tail measurability condition.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_clt_of_mixed_tower_future_measurability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0)
+    (hA_meas : ∀ t : ℝ, ∀ N r : ℕ, r < N ->
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P) :
+    TendstoInDistribution
+      (chewi127ScaledProjectedNoiseSum S.martingale.xi L)
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q := by
+  refine
+    (S.projected_scalar_clt_of_mixed_tower_future_measurability
+      L hmean hA_meas).congr (fun n => ?_) Filter.EventuallyEq.rfl
+  exact Filter.Eventually.of_forall fun ω =>
+    (chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum
+      S.martingale.xi L n ω).symm
+
+/--
+Projected scalar CLT from the precise future-tail predictability condition.
+This is the preferred source-facing form of the current Chewi 12.7 frontier.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_mixed_tower_future_tail_measurability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0)
+    (hfuture_tail_meas : ∀ t : ℝ, ∀ N r : ℕ, r < N ->
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P) :
+    TendstoInDistribution
+      (chewi127ScalarScaledSum (fun n ω => L (S.martingale.xi n ω)))
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q :=
+  S.projected_scalar_clt_of_charFun_exp L hmean fun t =>
+    S.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_future_tail_measurability
+      L t (hfuture_tail_meas t)
+
+/--
+Projected martingale CLT in Chewi's displayed projected-noise notation from
+the precise future-tail predictability condition.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_clt_of_mixed_tower_future_tail_measurability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0)
+    (hfuture_tail_meas : ∀ t : ℝ, ∀ N r : ℕ, r < N ->
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P) :
+    TendstoInDistribution
+      (chewi127ScaledProjectedNoiseSum S.martingale.xi L)
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q := by
+  refine
+    (S.projected_scalar_clt_of_mixed_tower_future_tail_measurability
+      L hmean hfuture_tail_meas).congr (fun n => ?_) Filter.EventuallyEq.rfl
+  exact Filter.Eventually.of_forall fun ω =>
+    (chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum
+      S.martingale.xi L n ω).symm
 
 /--
 The projected CLT field can be read in the pure scalar-sum notation used by a
