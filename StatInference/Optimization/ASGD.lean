@@ -7579,6 +7579,285 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerMultiplier_integra
     _ = 1 := by norm_num
 
 /--
+The named future multiplier is integrable under the bounded martingale source
+assumptions.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_integrable_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    Integrable
+      (fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω) P := by
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier] using
+    S.projectedMixedTowerMultiplier_integrable_of_uniform_bound L N r t
+
+/--
+The future multiplier has norm at most one a.e.; its raw prefix has unit norm
+and the normalized future tail is a product of a.e. unit-ball factors.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_norm_le_one_ae
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    ∀ᵐ ω ∂P, ‖S.projectedMixedTowerFutureMultiplier L N t r ω‖ ≤ 1 := by
+  let x : ℕ -> Ω -> ℝ := fun k ω => L (S.martingale.xi k ω)
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  filter_upwards [S.projectedNormalizedTaylorFactor_row_norm_le_one_ae L N t]
+    with ω hrow
+  have hprefix_norm :
+      ‖chewi127ScalarCharFunProduct x r a ω‖ ≤ 1 :=
+    chewi127ScalarCharFunProduct_norm_le_one x r a ω
+  have htail_norm :
+      ‖∏ k ∈ Finset.Ico (r + 1) N,
+          S.projectedNormalizedTaylorFactor L N t k ω‖ ≤ 1 := by
+    exact (Finset.norm_prod_le (Finset.Ico (r + 1) N)
+      (fun k => S.projectedNormalizedTaylorFactor L N t k ω)).trans
+        (Finset.prod_le_one
+          (fun k _hk =>
+            norm_nonneg (S.projectedNormalizedTaylorFactor L N t k ω))
+          (fun k hk => by
+            have hk_lt : k < N := (Finset.mem_Ico.mp hk).2
+            exact hrow k (Finset.mem_range.mpr hk_lt)))
+  calc
+    ‖S.projectedMixedTowerFutureMultiplier L N t r ω‖
+        = ‖chewi127ScalarCharFunProduct x r a ω *
+            ∏ k ∈ Finset.Ico (r + 1) N,
+              S.projectedNormalizedTaylorFactor L N t k ω‖ := by
+          rfl
+    _ = ‖chewi127ScalarCharFunProduct x r a ω‖ *
+          ‖∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω‖ := by
+          rw [norm_mul]
+    _ ≤ 1 * 1 :=
+          mul_le_mul hprefix_norm htail_norm
+            (norm_nonneg
+              (∏ k ∈ Finset.Ico (r + 1) N,
+                S.projectedNormalizedTaylorFactor L N t k ω))
+            zero_le_one
+    _ = 1 := by norm_num
+
+/--
+The conditional expectation of the future multiplier is also a.e. bounded by
+one, by conditional Jensen and monotonicity.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_condExp_norm_le_one_ae
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    ∀ᵐ ω ∂P,
+      ‖P[fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω |
+          S.martingale.filtration r] ω‖ ≤ 1 := by
+  let M : Ω -> ℂ := fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω
+  have hM_int : Integrable M P := by
+    simpa [M] using
+      S.projectedMixedTowerFutureMultiplier_integrable_of_uniform_bound L N r t
+  have hM_bound : ∀ᵐ ω ∂P, ‖M ω‖ ≤ 1 := by
+    simpa [M] using
+      S.projectedMixedTowerFutureMultiplier_norm_le_one_ae L N r t
+  have hnorm_cond :
+      (fun ω => ‖P[M | S.martingale.filtration r] ω‖)
+        ≤ᵐ[P]
+      P[(fun ω => ‖M ω‖) | S.martingale.filtration r] := by
+    simpa using
+      (norm_condExp_le (μ := P) (m := S.martingale.filtration r) (f := M))
+  have hcond_norm_le :
+      P[(fun ω => ‖M ω‖) | S.martingale.filtration r]
+        ≤ᵐ[P] fun _ : Ω => (1 : ℝ) := by
+    have hmono :
+        P[(fun ω => ‖M ω‖) | S.martingale.filtration r]
+          ≤ᵐ[P] P[fun _ : Ω => (1 : ℝ) | S.martingale.filtration r] :=
+      condExp_mono hM_int.norm (integrable_const (1 : ℝ)) hM_bound
+    have hconst :
+        P[fun _ : Ω => (1 : ℝ) | S.martingale.filtration r]
+          =ᵐ[P] fun _ : Ω => (1 : ℝ) := by
+      exact
+        (condExp_const (μ := P) (S.martingale.filtration.le r)
+          (1 : ℝ)).eventuallyEq
+    filter_upwards [hmono, hconst] with ω hle heq
+    exact hle.trans_eq heq
+  filter_upwards [hnorm_cond, hcond_norm_le] with ω hle hcond_le
+  exact hle.trans hcond_le
+
+/--
+The raw one-step characteristic-function factor is integrable.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedRawCharFunStepFactor_integrable
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    Integrable
+      (fun ω => S.projectedRawCharFunStepFactor L N t r ω) P := by
+  have hx :
+      AEMeasurable (fun ω => L (S.martingale.xi (r + 1) ω)) P :=
+    (S.martingale.projected_integrable L (r + 1)).aemeasurable
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedRawCharFunStepFactor,
+    chewi127ScalarCharFunFactor, Complex.ofReal_mul, mul_assoc] using
+    chewi127ScalarCharFunFactor_integrable
+      (P := P) (x := fun ω => L (S.martingale.xi (r + 1) ω)) hx
+      (t * (Real.sqrt (N : ℝ))⁻¹)
+
+/--
+The raw one-step residual against its conditional expectation is integrable.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedRawCharFunStepFactor_residual_integrable
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    Integrable
+      (fun ω =>
+        S.projectedRawCharFunStepFactor L N t r ω -
+          P[fun ω => S.projectedRawCharFunStepFactor L N t r ω |
+            S.martingale.filtration r] ω) P := by
+  have hG_int :=
+    S.projectedRawCharFunStepFactor_integrable L N r t
+  exact hG_int.sub
+    (integrable_condExp
+      (μ := P) (m := S.martingale.filtration r)
+      (f := fun ω => S.projectedRawCharFunStepFactor L N t r ω))
+
+/--
+The conditional future-multiplier residual product is integrable under the
+bounded martingale source assumptions.  This discharges the remaining
+integrability gate in the future-multiplier residual row bound.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_condExp_mul_rawStepResidual_integrable
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    Integrable
+      (fun ω =>
+        P[fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω |
+            S.martingale.filtration r] ω *
+          (S.projectedRawCharFunStepFactor L N t r ω -
+            P[fun ω => S.projectedRawCharFunStepFactor L N t r ω |
+              S.martingale.filtration r] ω)) P := by
+  let condM : Ω -> ℂ := fun ω =>
+    P[fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω |
+        S.martingale.filtration r] ω
+  let residual : Ω -> ℂ := fun ω =>
+    S.projectedRawCharFunStepFactor L N t r ω -
+      P[fun ω => S.projectedRawCharFunStepFactor L N t r ω |
+        S.martingale.filtration r] ω
+  have hresidual_int : Integrable residual P := by
+    simpa [residual] using
+      S.projectedRawCharFunStepFactor_residual_integrable L N r t
+  have hcondM_meas : AEStronglyMeasurable condM P := by
+    simpa [condM] using
+      ((stronglyMeasurable_condExp
+        (m := S.martingale.filtration r)
+        (μ := P)
+        (f := fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω)).mono
+          (S.martingale.filtration.le r)).aestronglyMeasurable
+  have hcondM_bound : ∀ᵐ ω ∂P, ‖condM ω‖ ≤ 1 := by
+    simpa [condM] using
+      S.projectedMixedTowerFutureMultiplier_condExp_norm_le_one_ae L N r t
+  have hprod : Integrable (fun ω => residual ω * condM ω) P :=
+    hresidual_int.mul_bdd (c := 1) hcondM_meas hcondM_bound
+  refine hprod.congr ?_
+  exact ae_of_all P fun ω => by ring
+
+/--
+Row-sum future-multiplier residual bound with all integrability gates
+discharged from the bounded martingale source.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_norm_le_futureMultiplier_residual_sum_of_source_integrability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ)
+    (hsq : ∀ r ∈ Finset.range N,
+      Integrable (fun ω => (L (S.martingale.xi (r + 1) ω)) ^ 2) P)
+    (hremainder : ∀ r ∈ Finset.range N,
+      Integrable
+        (chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (r + 1) ω))) P) :
+    ‖∑ r ∈ Finset.range N, S.projectedMixedTowerStepDefect L N r t‖ ≤
+      ∑ r ∈ Finset.range N,
+        ∫ ω,
+          ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              P[fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω |
+                S.martingale.filtration r] ω‖ *
+            ‖S.projectedRawCharFunStepFactor L N t r ω -
+              P[fun ω => S.projectedRawCharFunStepFactor L N t r ω |
+                S.martingale.filtration r] ω‖ ∂P :=
+  S.projectedMixedTowerDefect_sum_norm_le_futureMultiplier_residual_sum_of_condResidual_integrable
+    L N t hsq hremainder
+    (fun r _hr =>
+      S.projectedMixedTowerFutureMultiplier_condExp_mul_rawStepResidual_integrable
+        L N r t)
+
+/--
+Convergence adapter with all integrability gates discharged from the bounded
+martingale source; only the residual row-sum convergence remains.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum_of_source_integrability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hsq : ∀ N r : ℕ, r ∈ Finset.range N ->
+      Integrable (fun ω => (L (S.martingale.xi (r + 1) ω)) ^ 2) P)
+    (hremainder : ∀ N r : ℕ, r ∈ Finset.range N ->
+      Integrable
+        (chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (r + 1) ω))) P)
+    (hresidual_sum :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+                  P[fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω |
+                    S.martingale.filtration r] ω‖ *
+                ‖S.projectedRawCharFunStepFactor L N t r ω -
+                  P[fun ω => S.projectedRawCharFunStepFactor L N t r ω |
+                    S.martingale.filtration r] ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          S.projectedMixedTowerStepDefect L N r t)
+      atTop (𝓝 0) :=
+  S.projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum_of_condResidual_integrable
+    L t hsq hremainder
+    (fun N r _hr =>
+      S.projectedMixedTowerFutureMultiplier_condExp_mul_rawStepResidual_integrable
+        L N r t)
+    hresidual_sum
+
+/--
 The mixed-tower multiplier is `F_r`-measurable once the future normalized tail
 product is supplied as `F_r`-measurable.  The raw prefix measurability follows
 from adaptedness of the martingale increments.

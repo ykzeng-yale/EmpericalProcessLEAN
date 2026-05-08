@@ -163,6 +163,14 @@ future-multiplier defect layer
 `projectedMixedTowerFutureMultiplier_mul_rawStepResidual_integrable`,
 `projectedMixedTowerDefect_sum_norm_le_futureMultiplier_residual_sum_of_condResidual_integrable`,
 `projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum_of_condResidual_integrable`,
+`projectedMixedTowerFutureMultiplier_integrable_of_uniform_bound`,
+`projectedMixedTowerFutureMultiplier_norm_le_one_ae`,
+`projectedMixedTowerFutureMultiplier_condExp_norm_le_one_ae`,
+`projectedRawCharFunStepFactor_integrable`,
+`projectedRawCharFunStepFactor_residual_integrable`,
+`projectedMixedTowerFutureMultiplier_condExp_mul_rawStepResidual_integrable`,
+`projectedMixedTowerDefect_sum_norm_le_futureMultiplier_residual_sum_of_source_integrability`,
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum_of_source_integrability`,
 and
 `projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`, the
 conditional Taylor-remainder row convergence from `a94b579` and the
@@ -298,13 +306,12 @@ plus the normalized compensated-product bridge:
 and
 `projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
 
-Next theorem packet: prove the remaining conditional future-multiplier residual
-product integrability and the future-multiplier residual row-sum convergence
+Next theorem packet: prove the future-multiplier residual row-sum convergence
 consumed by
-`projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum_of_condResidual_integrable`.
-The raw current-step, normalized current-step, and raw residual integrability
-gates are already discharged by the future-multiplier integrability bridge; do
-not re-prove them.  The next genuine estimate should control
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum_of_source_integrability`.
+All raw current-step, normalized current-step, raw residual, conditional future-
+multiplier residual, and source boundedness integrability gates are already
+discharged; do not re-prove them.  The next genuine estimate should control
 `M - E[M | F_r]` for the mixed future multiplier and combine it with the
 current one-step residual.  That will prove the standard compensated
 martingale defect bound
@@ -423,6 +430,13 @@ from the existing bounded-product and normalized-factor interfaces, then adds
 source-shaped row-sum and convergence adapters that leave only the conditional
 future-multiplier residual product integrability and residual row-sum
 convergence hypotheses exposed.
+The newest source-integrability bridge proves the future multiplier is
+integrable and a.e. bounded by one, proves the same a.e. bound for its
+conditional expectation using `norm_condExp_le`, `condExp_mono`, and
+`condExp_const`, proves raw-step and raw-step-residual integrability, and
+discharges the conditional future-multiplier residual product integrability
+gate.  The remaining blocker is therefore only the residual row-sum convergence
+estimate.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform
