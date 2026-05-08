@@ -85,13 +85,28 @@ textbook random empirical-cover/symmetrization argument.
 
 ## Current `/goal` Target
 
-Authoritative `/goal` reset, 2026-05-07: the active Codex goal object is now
-the whole VdV&W empirical-process textbook formalization, with Chapters 1-2
-and Theorem 2.4.3 as the current frontier.  The clean VdVW lane is
-`/private/tmp/ep-vdvw-selected-log-route` on `origin/main`; the Desktop
-worktree contains unrelated Matching/WDSM edits and should not be used for
-VdVW proof commits.  Use this paragraph, not older rebase paragraphs below, as
-the operative continuation prompt.
+Authoritative `/goal` reset, refreshed 2026-05-08: the active Codex goal
+object is the whole VdV&W empirical-process textbook formalization, with
+Chapters 1-2 and Theorem 2.4.3 as the current frontier.  The current clean
+VdVW lane is `/private/tmp/ep-vdvw-goal-round-B6AplA` on branch
+`codex/vdvw-selected-cover-source` based at current `origin/main`; the Desktop
+`main` worktree is far behind `origin/main` and contains unrelated
+Matching/WDSM edits, so do not use it for VdVW proof commits.  Use this
+paragraph, not older rebase paragraphs below, as the operative continuation
+prompt.
+
+Current newest source-side progress: the selected-log ordinary-mean route has
+the localized countability constructor
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero_of_set_countable`,
+and the displayed-beta selected-cover route has the common iid Rademacher
+constructor
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id`.
+Next exact target: prove the event-level
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison`
+source comparison itself, preferably through the product/Fubini averaged
+`Phi(x)=x` comparison plus selected-cover finite-center maximal control; in
+parallel, use the selected-log mean route only under honest L1/UI/countability
+strengthening and do not claim it follows from bare stochastic entropy.
 
 Newest source-side comparison support in `Theorem243.lean` is now:
 `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`,
@@ -7879,6 +7894,14 @@ instantiation is no longer a separate blocker.  The remaining source inputs
 are now exactly the fixed-sample `Phi(x)=x` comparison and the finite-center
 Hoeffding/maximal event for the selected cover centers.
 
+2026-05-08 common iid Rademacher sign-space bridge:
+`Theorem243.lean` now also proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id`.
+This is not an endpoint alias: it instantiates the auxiliary sign probability
+space in `of_finiteEmpiricalCover_hphi_id` from the common iid Rademacher
+construction, leaving the same selected-cover measurable-cover, maximal-event,
+and `Phi(x)=x` inputs as theorem-facing source obligations.
+
 2026-05-07 selected half-radius expected-maximal source bridge:
 `Theorem243.lean` now proves
 `VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover`.
@@ -8074,6 +8097,16 @@ therefore feed the registered primitive directly, via the already compiled
 selected fixed-radius tail/UI package.  This keeps the active source target
 focused on proving that selected-log mean input from the stochastic entropy
 argument, rather than adding another endpoint wrapper.
+
+2026-05-08 localized selected-log mean bridge:
+`Theorem243.lean` now also proves
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero_of_set_countable`.
+This is the countable-class version of the L1-strengthened selected-log route:
+selected-log measurability is discharged from `indexClass.Countable`, while
+finite-product integrability and ordinary mean convergence remain explicit
+additional hypotheses.  The generic source blocker is unchanged: stochastic
+entropy still has to supply that selected-log mean/UI input, or the
+displayed-beta selected-cover event primitive must be proved.
 
 2026-05-08 localized selected-cover measurability:
 `CoveringPrimitive.lean` now proves set-countable versions of the finite

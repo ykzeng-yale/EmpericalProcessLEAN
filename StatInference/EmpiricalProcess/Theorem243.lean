@@ -31661,6 +31661,80 @@ theorem
       hX_samplePath hclass henvelope_meas
 
 /--
+Ordinary mean convergence of the selected normalized log-cardinality process
+proves the registered selected entropy-to-finite-net-mean primitive under
+localized class countability.
+
+This is the countable-class version of
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero`:
+the selected-log measurability input is discharged from `indexClass.Countable`,
+while the finite-product integrability and ordinary mean convergence remain
+honest explicit L1-strengthened hypotheses.
+-/
+theorem
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hcount : indexClass.Countable)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hselectedLogIntegrable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWLogEmpiricalL1CoveringCardinality
+              (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                  (indexClass := indexClass) (classFun := classFun)
+                  (envelope := envelope) (M := M) (eta := eta)
+                  (cardinality := cardinality M) (X M)
+                  (hentropy.coveringNumber_le M hM) heta) n sample' m)
+              sample n / (n : ℝ))
+          (vdVWProductMeasure P n))
+    (hselectedLogIntegral :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta),
+        Tendsto
+          (fun n : ℕ =>
+            ∫ sample : SampleAt Observation n,
+              vdVWLogEmpiricalL1CoveringCardinality
+                (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                  (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M) (eta := eta)
+                    (cardinality := cardinality M) (X M)
+                    (hentropy.coveringNumber_le M hM) heta) n sample' m)
+                sample n / (n : ℝ) ∂(vdVWProductMeasure P n))
+          atTop (𝓝 0)) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P X indexClass
+      classFun envelope cardinality hentropy := by
+  exact
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_selectedFixedRadiusTailSideConditions_of_set_countable
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (cardinality := cardinality) (hentropy := hentropy)
+      (hcount := hcount)
+      (hselected :=
+        VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_logCardinality_div_integral_tendsto_zero
+          (P := P) (X := X) (indexClass := indexClass)
+          (classFun := classFun) (envelope := envelope)
+          (cardinality := cardinality) hentropy
+          (hentropy.selectedLogMeasurable_of_set_countable hcount
+            hX_samplePath hclass henvelope_meas)
+          hselectedLogIntegrable hselectedLogIntegral)
+      hX_samplePath hclass henvelope_meas
+
+/--
 Radius-added integrated mean convergence with the finite-net boundedness
 obligation discharged from a uniform deterministic bound on
 `log(cardinality) / n`.
@@ -36880,6 +36954,124 @@ theorem
       htruncIntegrable hindexClass_nonempty henvelope hn_pos hM_pos
       (sign n) (hsign n) (hindep n) (hsubG n) (by linarith)
       hmaximal_sample
+
+/--
+Finite empirical covers plus a common iid Rademacher sign space supply the
+displayed-Chebyshev-beta source primitive.
+
+This is the same selected-cover source bridge as
+`of_finiteEmpiricalCover_hphi_id`, but it instantiates the auxiliary sign
+probability space from `exists_common_iid_vdVWRademacherSigns`.  The remaining
+mathematical inputs are still the selected-cover measurable-cover/maximal
+facts and the theorem-specific `Phi(x)=x` comparison, now stated uniformly for
+any iid Rademacher sign realization.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (hUcover :
+      ∀ {Ωsign : Type} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+        [IsProbabilityMeasure μsign]
+        (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ),
+        (∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+          (fun i : Fin n => sign n i ω)) ->
+        (∀ n, iIndepFun (sign n) μsign) ->
+        (∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign) ->
+          ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+            VdVWMeasurableCover μsign
+              (fun ω => ENNReal.ofReal
+                (vdVWWeightedClassSupremum indexClass
+                  (vdVWTruncatedClassFun classFun envelope M)
+                  (vdVWRademacherWeights (fun i : Fin n => sign n i ω))
+                  sample)))
+    (hmaximal :
+      ∀ {Ωsign : Type} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+        [IsProbabilityMeasure μsign]
+        (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ),
+        (∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+          (fun i : Fin n => sign n i ω)) ->
+        (∀ n, iIndepFun (sign n) μsign) ->
+        (∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign) ->
+          ∀ (eta : ℝ) (heta : 0 < eta),
+            ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+              ∀ᵐ ω ∂μsign,
+                VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+                  (vdVWTruncatedClassFun classFun envelope M)
+                  (cover eta heta n sample).center
+                  (fun i : Fin n => sign n i ω) M)
+    (hphiComp :
+      ∀ {Ωsign : Type} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+        [IsProbabilityMeasure μsign]
+        (sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ),
+        (∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+          (fun i : Fin n => sign n i ω)) ->
+        (∀ n, iIndepFun (sign n) μsign) ->
+        (∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign) ->
+          ∀ (eta : ℝ), 0 < eta ->
+            ∀ᶠ n in atTop, ∀ᵐ sample : SampleAt Observation n ∂vdVWProductMeasure P n,
+              ENNReal.ofReal
+                  (vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      vdVWTruncatedClassFun classFun envelope M index observation -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample) ≤
+                (2 : ℝ≥0∞) *
+                  VdVWOuterExpectation μsign
+                    (fun ω => ENNReal.ofReal
+                      (vdVWWeightedClassSupremum indexClass
+                        (vdVWTruncatedClassFun classFun envelope M)
+                        (vdVWRademacherWeights (fun i : Fin n => sign n i ω))
+                        sample))) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 2 1 selectedCardinality := by
+  obtain ⟨Ωsign, mΩsign, μsign, signNat, _hmeas, _hlaw,
+      hindepNat, hprob, hsubGNat, hsupportNat⟩ :=
+    exists_common_iid_vdVWRademacherSigns
+  letI : MeasurableSpace Ωsign := mΩsign
+  haveI : IsProbabilityMeasure μsign := hprob
+  let sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ :=
+    fun _n i => signNat (i : ℕ)
+  have hsign :
+      ∀ n, ∀ᵐ ω ∂μsign, VdVWRademacherSignVector
+        (fun i : Fin n => sign n i ω) := by
+    intro n
+    exact hsupportNat.mono (fun ω hω i => hω (i : ℕ))
+  have hindep : ∀ n, iIndepFun (sign n) μsign := by
+    intro n
+    simpa [sign] using
+      hindepNat.precomp (g := fun i : Fin n => (i : ℕ)) Fin.val_injective
+  have hsubG :
+      ∀ n (i : Fin n), HasSubgaussianMGF (sign n i) 1 μsign := by
+    intro n i
+    simpa [sign] using hsubGNat (i : ℕ)
+  exact
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_hphi_id
+      (μsign := μsign) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (selectedCardinality := selectedCardinality) hclass henvelope_meas
+      htruncIntegrable hindexClass_nonempty henvelope hM_pos sign hsign
+      hindep hsubG cover
+      (hUcover sign hsign hindep hsubG)
+      (hmaximal sign hsign hindep hsubG)
+      (hphiComp sign hsign hindep hsubG)
 
 /--
 A lossless fixed-radius finite-net comparison implies the displayed-beta source
