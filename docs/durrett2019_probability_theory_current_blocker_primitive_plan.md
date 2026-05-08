@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V94
+## Live In-Thread Goal Prompt V95
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -295,13 +295,21 @@ convergence of the standard full-prefix likelihoods, together with pointwise
 finite and nonzero coordinate densities, supplies the canonical tail-block
 limit candidate `X / prefix_n` and hence the tail-coordinate zero-set
 measurability handoff.
+Also treat the range-limit positive-branch consumers as compiled support:
+under the denominator infinite product law, coordinate sigma-fields are
+independent; ENNReal full-prefix convergence to an a.e. finite limit supplies
+the real-valued convergence input for the L1/Cauchy branch; pointwise finite
+coordinate densities discharge the pairwise no-top side condition; and
+pointwise full-prefix convergence plus finite/nonzero coordinate densities and
+`∫⁻ X ≠ 0` feed the tail-zero-set positive-branch eliminator.
 Move to the remaining Kakutani criterion assembly:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`) and logarithm/tail-measurability support.  Add only
-source-shaped wrappers that prove or package the remaining convergence of the
-standard full-prefix likelihoods, or
-directly feed the infinite-product criterion hypotheses
-consumed by the compiled branch assemblers and eliminator.  Do
+source-shaped wrappers that construct or identify the limiting likelihood `X`,
+prove the standard full-prefix likelihood convergence to `X`, prove the
+corresponding RN/top-set identity inputs, or directly feed the infinite-product
+criterion hypotheses consumed by the compiled branch assemblers and
+eliminator.  Do
 not redo the already compiled RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
@@ -341,6 +349,8 @@ handoff layer.
 Do not redo the finite prefix/tail cylinder-likelihood factorization,
 tail-block-limit measurability, or tail-block-limit zero-set handoff layer.
 Do not redo the pointwise finite/nonzero coordinate side-condition bridge.
+Do not redo the range-limit tail handoff or the range-limit positive-branch
+consumer wrappers.
 Do not redo the finite tail-product lower bound from positive prefix/tail
 monotonicity or the standard positive-product range consumer.
 Do not redo the source-density one-coordinate Hellinger affinity `≤ 1` bound,
@@ -771,9 +781,16 @@ also compiles.  The pointwise finite/nonzero coordinate side-condition bridge
 now also compiles.  The range-limit tail handoff now also compiles: convergence
 of the full finite-prefix likelihoods supplies the canonical tail-block limit
 `X / prefix_n` and the tail-coordinate zero-set handoff under pointwise finite
-and nonzero coordinate densities.  Move forward to proving or packaging the
-source convergence of the standard full-prefix likelihoods, then finish the
-remaining Kakutani criterion assembly.
+and nonzero coordinate densities.  The range-limit positive-branch consumers
+now also compile: coordinate sigma-fields are independent under the denominator
+infinite product law; ENNReal full-prefix convergence supplies the `toReal`
+convergence input for the L1/Cauchy branch; pointwise finite coordinate
+densities supply the pairwise no-top side condition; and pointwise full-prefix
+convergence plus finite/nonzero coordinate densities and `∫⁻ X ≠ 0` feed the
+tail-zero-set positive-branch eliminator.  Move forward to constructing or
+identifying the limiting likelihood `X`, proving the standard full-prefix
+likelihood convergence to `X`, and supplying the corresponding RN/top-set
+identity inputs needed to finish the remaining Kakutani criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -887,6 +904,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V94` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V95` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

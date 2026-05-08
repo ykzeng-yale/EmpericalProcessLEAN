@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V94`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V95`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -536,9 +536,17 @@ Next packet:
   also compiles.  The range-limit tail handoff now also compiles: full-prefix
   likelihood convergence supplies the canonical tail-block limit
   `X / prefix_n` and tail-coordinate zero-set handoff under pointwise finite
-  and nonzero coordinate densities.  The active target is now proving or
-  packaging source convergence of the standard full-prefix likelihoods for the
-  remaining Kakutani criterion assembly.
+  and nonzero coordinate densities.  The range-limit positive-branch consumers
+  now also compile: coordinate sigma-fields are independent under the
+  denominator infinite product law; ENNReal full-prefix convergence supplies
+  the `toReal` convergence input for the L1/Cauchy branch; pointwise finite
+  coordinate densities supply the pairwise no-top side condition; and
+  pointwise full-prefix convergence plus finite/nonzero coordinate densities
+  and `∫⁻ X ≠ 0` feed the tail-zero-set positive-branch eliminator.  The
+  active target is now constructing or identifying the limiting likelihood
+  `X`, proving the standard full-prefix likelihood convergence to `X`, and
+  supplying the corresponding RN/top-set identity inputs for the remaining
+  Kakutani criterion assembly.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
