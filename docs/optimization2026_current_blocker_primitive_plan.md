@@ -540,20 +540,25 @@ The newest right-product packet proves
 `projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance`, comparing
 `∏ inverse_k * ∏ (1 + error_k)` to `∏ inverse_k` by the existing product
 perturbation bridge and the unweighted compensated-error row convergence.
-This is now the preferred ASGD 12.7 route: prove the two compensated
-full-inverse products in the exact defect identity have the same limit, then
-feed the compiled normalized-product convergence bridge.  The weighted suffix
-route is a strong-assumption fallback, not the default source route: the
-unweighted row convergence is not enough for suffix sums, because the
-triangular regrouping counts the one-step error at index `k` exactly `k`
-times.
+The newest route-correction packet proves
+`projectedCompensatedFullInverseLeft_eq_raw_product`,
+`projectedCompensatedFullInverseLeft_integral_eq_raw_product_integral`,
+`projectedCompensatedFullInverseLeft_integral_eq_charFun`,
+`projected_charFun_tendsto_of_compensated_full_inverse_right_and_mixedTowerDefect`,
+and
+`projected_charFun_tendsto_exp_of_compensated_full_inverse_right_source_variance_and_mixedTowerDefect`.
+This shows the left compensated full-inverse product is exactly the target
+projected characteristic function, so left convergence is not an independent
+blocker.  The preferred ASGD 12.7 route is now: use the compiled right-product
+source-variance limit, then prove the genuinely non-circular mixed-tower defect
+sum tends to zero.  The weighted suffix route remains a strong-assumption
+fallback, not the default source route: unweighted row convergence is not
+enough for suffix sums, because triangular regrouping counts the one-step error
+at index `k` exactly `k` times.
 The remaining ASGD proof obligations for the preferred route are now precisely:
-1. prove convergence of the left product
-   `∫ compensatedRawPrefix_N * inverseProduct_N` to the same Gaussian
-   exponential limit; the right product
-   `∫ inverseProduct_N * ∏ (1 + compensatedError_k)` now has a compiled source
-   wrapper under the honest factor-bound and product-integrability side
-   conditions;
+1. prove
+   `Tendsto (fun N => ∑ r in Finset.range N,
+   S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`;
 2. prove or replace the weighted variance-only and weighted Taylor-remainder
    assumptions only if deliberately using the stronger weighted-suffix
    fallback;
@@ -602,7 +607,7 @@ a telescoping/error representation with explicit conditional multipliers
 instead of forcing a false exact product model.
 The next ASGD packet should now prove the compensated martingale defect-sum
 bound behind
-`projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`.
+`projected_charFun_tendsto_exp_of_compensated_full_inverse_right_source_variance_and_mixedTowerDefect`.
 Use
 `asgd_limit_package_of_factorwise_future_tail_measurability` only for an
 explicit predictable/frozen-tail source condition, or

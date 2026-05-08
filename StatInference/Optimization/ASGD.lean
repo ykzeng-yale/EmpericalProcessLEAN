@@ -7022,6 +7022,216 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedFullInverseRight_
       L t hvariance_error_int hremainder_int)
 
 /--
+The left compensated full-inverse product is exactly the raw projected
+characteristic-function product.  Thus its convergence is not an independent
+probabilistic input: it is the characteristic-function convergence target
+itself.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedFullInverseLeft_eq_raw_product
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (ω : Ω) :
+    S.projectedCompensatedRawPrefixProduct L N t N ω *
+        (∏ k ∈ Finset.range N,
+          S.projectedInverseCompensationFactor L N t k ω) =
+      chewi127ScalarCharFunProduct
+        (fun k ω => L (S.martingale.xi k ω)) N
+        (t * (Real.sqrt (N : ℝ))⁻¹) ω := by
+  have hfull :=
+    S.projectedRawPrefixNormalizedTailProduct_eq_compensated_prefix_full_inverse_error_tail
+      L N N t ω le_rfl
+  calc
+    S.projectedCompensatedRawPrefixProduct L N t N ω *
+        (∏ k ∈ Finset.range N,
+          S.projectedInverseCompensationFactor L N t k ω)
+        = S.projectedRawPrefixNormalizedTailProduct L N t N ω := by
+          rw [hfull]
+          simp
+    _ = chewi127ScalarCharFunProduct
+        (fun k ω => L (S.martingale.xi k ω)) N
+        (t * (Real.sqrt (N : ℝ))⁻¹) ω :=
+          S.projectedRawPrefixNormalizedTailProduct_self L N t ω
+
+/--
+Integral form of
+`projectedCompensatedFullInverseLeft_eq_raw_product`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedFullInverseLeft_integral_eq_raw_product_integral
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) :
+    (∫ ω,
+      S.projectedCompensatedRawPrefixProduct L N t N ω *
+        (∏ k ∈ Finset.range N,
+          S.projectedInverseCompensationFactor L N t k ω) ∂P) =
+      ∫ ω,
+        chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) N
+          (t * (Real.sqrt (N : ℝ))⁻¹) ω ∂P := by
+  refine integral_congr_ae <| ae_of_all P fun ω => ?_
+  exact S.projectedCompensatedFullInverseLeft_eq_raw_product L N t ω
+
+/--
+The left compensated full-inverse integral is the projected scaled-sum
+characteristic function.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedFullInverseLeft_integral_eq_charFun
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) :
+    (∫ ω,
+      S.projectedCompensatedRawPrefixProduct L N t N ω *
+        (∏ k ∈ Finset.range N,
+          S.projectedInverseCompensationFactor L N t k ω) ∂P) =
+      MeasureTheory.charFun
+        (P.map
+          (chewi127ScalarScaledSum
+            (fun n ω => L (S.martingale.xi n ω)) N)) t := by
+  rw [S.projectedCompensatedFullInverseLeft_integral_eq_raw_product_integral]
+  exact (S.projected_scalarScaledSum_charFun_eq_integral_product L N t).symm
+
+/--
+Non-circular compensated full-inverse route: the characteristic functions have
+the same limit as the right compensated full-inverse product once the mixed
+tower defect sum tends to zero.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_of_compensated_full_inverse_right_and_mixedTowerDefect
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ) (z : ℂ)
+    (hdefect :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            S.projectedMixedTowerStepDefect L N r t)
+        atTop (𝓝 0))
+    (hright :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            (∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω) *
+            ∏ k ∈ Finset.range N,
+              (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P)
+        atTop (𝓝 z)) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop (𝓝 z) := by
+  have hleft :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            S.projectedCompensatedRawPrefixProduct L N t N ω *
+              (∏ k ∈ Finset.range N,
+                S.projectedInverseCompensationFactor L N t k ω) ∂P)
+        atTop (𝓝 z) := by
+    have hsum := hdefect.add hright
+    simpa only [zero_add] using
+      hsum.congr' (Eventually.of_forall fun N => by
+        calc
+          (∑ r ∈ Finset.range N,
+              S.projectedMixedTowerStepDefect L N r t) +
+              (∫ ω,
+                (∏ k ∈ Finset.range N,
+                  S.projectedInverseCompensationFactor L N t k ω) *
+                ∏ k ∈ Finset.range N,
+                  (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P)
+              =
+            (∫ ω,
+              S.projectedCompensatedRawPrefixProduct L N t N ω *
+                (∏ k ∈ Finset.range N,
+                  S.projectedInverseCompensationFactor L N t k ω) ∂P) := by
+              rw [S.projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product
+                L N t]
+              ring)
+  exact hleft.congr' (Eventually.of_forall fun N =>
+    S.projectedCompensatedFullInverseLeft_integral_eq_charFun L N t)
+
+/--
+Source-facing version of the non-circular compensated full-inverse route.
+The right product is discharged by the source variance and Taylor-error rows;
+the only remaining probabilistic input is the mixed-tower defect convergence.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_compensated_full_inverse_right_source_variance_and_mixedTowerDefect
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hdefect :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            S.projectedMixedTowerStepDefect L N r t)
+        atTop (𝓝 0))
+    (herror_factor_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖1 + S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ≤ 1)
+    (hcombined_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω *
+                (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedRemainderFactor L N t k ω‖) P) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) :=
+  S.projected_charFun_tendsto_of_compensated_full_inverse_right_and_mixedTowerDefect
+    L t (Complex.exp (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))
+    hdefect
+    (S.projectedCompensatedFullInverseRight_tendsto_exp_of_source_variance
+      L t herror_factor_bound hcombined_int herror_int
+      hvariance_error_int hremainder_int)
+
+/--
 Finite accumulation of the guarded mixed-product successor step.  Under the
 explicit future-tail measurability and integrability hypotheses, integrating
 the raw product at split `N` gives the same value as integrating the fully
