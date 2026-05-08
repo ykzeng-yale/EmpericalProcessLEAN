@@ -3392,3 +3392,10 @@ and
 These are the countable-class primitive handoffs for finite-trace, grid, and
 VC/Sauer-style counting routes; the remaining source work is to prove the
 needed boundedness/counting input or close the displayed-beta event route.
+
+The selected-log measurability input for these first-sample routes is now
+localized as
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.selectedLogMeasurable_of_set_countable`.
+This removes another global countability dependency from the source route; the
+remaining open analytic obligation is integrability/UI or a concrete
+boundedness/counting proof.

@@ -24625,6 +24625,81 @@ theorem
       hlog_selected hM_pos hK_nonneg hmeas_selected hselected_bound)
 
 /--
+The selected normalized log-cardinality process is measurable under localized
+class countability.
+
+This discharges the measurability input used by the first-sample UI/tail routes
+from the actual countability of the theorem class, rather than a global
+`[Countable Index]` instance.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.selectedLogMeasurable_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hcount : indexClass.Countable)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope) :
+    ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+      Measurable fun sample : SampleAt Observation n =>
+        vdVWLogEmpiricalL1CoveringCardinality
+          (fun sample' : SampleAt Observation n => fun m : ℕ =>
+            (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (cardinality := cardinality M) (X M)
+              (hentropy.coveringNumber_le M hM) heta) n sample' m)
+          sample n / (n : ℝ) := by
+  intro M hM eta heta n
+  let selectedCardinality :
+      (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (cardinality := cardinality M) (X M)
+      (hentropy.coveringNumber_le M hM) heta
+  let hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X M n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta :=
+    hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (coverRadius := fun _ : ℕ => eta)
+      (cardinality := cardinality M) (X M)
+      (hentropy.coveringNumber_le M hM) (by intro _; exact heta)
+  have hmeas_selected :
+      Measurable fun sample : SampleAt Observation n =>
+        selectedCardinality n sample n := by
+    have hmeas :
+        ∀ n,
+          Measurable fun sample : SampleAt Observation n =>
+            finiteEmpiricalL1CoveringNumberCard (hfinite n sample n) :=
+      measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_set_countable
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M)
+        (coverRadius := fun _ : ℕ => eta)
+        hcount (X M) (hX_samplePath M) hfinite hclass henvelope_meas
+    simpa [selectedCardinality,
+      vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard] using
+      hmeas n
+  simpa [selectedCardinality] using
+    (measurable_vdVWLogEmpiricalL1CoveringCardinality_of_measurable_cardinality
+      (cardinality := fun sample' : SampleAt Observation n => fun m : ℕ =>
+        selectedCardinality n sample' m)
+      (n := n) hmeas_selected).div_const (n : ℝ)
+
+/--
 Build selected fixed-radius side conditions from variable-domain book entropy
 and fixed-domain uniform integrability of the first-sample lifts of the raw
 selected normalized-log cardinality process.

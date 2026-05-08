@@ -8111,3 +8111,12 @@ registered selected finite-net mean primitive under `indexClass.Countable`
 without a global countable index type.  The generic theorem still needs the
 source stochastic-entropy proof of one of these concrete inputs, or the
 displayed-beta selected-cover event comparison.
+
+2026-05-08 localized selected-log measurability:
+`Theorem243.lean` now proves
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.selectedLogMeasurable_of_set_countable`.
+The selected normalized log-cardinality measurability hypothesis used by the
+first-sample UI/tail routes is now discharged from `indexClass.Countable`, the
+sample-path identity, and the coordinate measurability of the class/envelope.
+The remaining analytic input is integrability/UI or a concrete boundedness
+argument, not measurability of the selected cardinality.
