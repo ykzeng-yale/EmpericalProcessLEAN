@@ -8043,3 +8043,14 @@ already supply deterministic normalized-log-cardinality bounds feed the
 registered primitive directly.  The generic textbook blocker remains the same:
 prove the stochastic selected-entropy-to-mean theorem, or prove the
 displayed-beta selected-cover Lemma 2.3.7 event primitive.
+
+2026-05-07 selected side-condition package to primitive bridge:
+`Theorem243.lean` now proves
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_selectedFixedRadiusTailSideConditions`.
+Any route that already builds
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions` can now produce the
+registered selected entropy-to-finite-net mean primitive, because the package
+supplies finite-net upper integrability and its tail/UI field yields ordinary
+mean convergence through the compiled finite-net integral theorem.  This
+consolidates the existing L1/UI/deterministic routes around the primitive; it
+does not change the open source target.

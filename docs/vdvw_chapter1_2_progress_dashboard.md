@@ -24,6 +24,9 @@ centered convergence directly through
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.centered_untruncated_convergesInOuterProbabilityConst_zero`.
 Concrete deterministic entropy bounds can also build the primitive through
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_bound`.
+More generally, any compiled selected fixed-radius tail/UI package now feeds the
+primitive through
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_selectedFixedRadiusTailSideConditions`.
 Current next target: prove that primitive from the stochastic
 selected-entropy argument, or prove the selected-cover ghost/Rademacher
 displayed-beta Lemma 2.3.7 event primitive (`Phi(x)=x` plus finite-center
@@ -3339,3 +3342,9 @@ proof of the registered primitive, so concrete finite-trace/VC/grid arguments
 can reuse the same primitive-facing main route.  Parallel searches confirmed no
 current local or pinned-mathlib theorem proves the primitive from
 outer-probability entropy alone.
+
+The selected fixed-radius tail/UI package now also collapses to the registered
+primitive through
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_selectedFixedRadiusTailSideConditions`.
+This makes the primitive the common handoff for all existing L1/UI/deterministic
+selected finite-net routes while leaving the source theorem target unchanged.

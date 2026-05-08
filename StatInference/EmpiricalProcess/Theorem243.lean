@@ -30133,6 +30133,50 @@ theorem
       hselected.finiteNetUpper_tailExpectation
 
 /--
+Any selected fixed-radius tail/UI package proves the registered selected
+entropy-to-finite-net-mean primitive.
+
+This is the common source-side collapse from the already compiled selected
+fixed-radius interface to the newer primitive: all existing routes that produce
+`VdVWTheorem243SelectedFixedRadiusTailSideConditions` now automatically provide
+the finite-net upper integrability and ordinary mean convergence fields needed
+by `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive`.
+-/
+theorem
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_selectedFixedRadiusTailSideConditions
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality}
+    (hselected :
+      ∀ M, 0 < M ->
+        VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+          indexClass classFun envelope M (cardinality M))
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P X indexClass
+      classFun envelope cardinality hentropy := by
+  refine
+    { finiteNetUpperIntegrable := ?_
+      finiteNetUpperIntegral_tendsto_zero := ?_ }
+  · intro M hM eta heta n
+    exact (hselected M hM).finiteNetUpperIntegrable eta heta n
+  · intro M hM eta heta
+    exact
+      (hselected M hM).integral_finiteNetHoeffdingUpper_tendsto_zero
+        (hX_samplePath M) hclass henvelope_meas hM eta heta
+
+/--
 Radius-added integrated mean convergence with the finite-net boundedness
 obligation discharged from a uniform deterministic bound on
 `log(cardinality) / n`.
