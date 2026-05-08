@@ -1,5 +1,6 @@
 import StatInference.Optimization.Basic
 import Mathlib.Analysis.Calculus.Deriv.ZPow
+import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
@@ -14,6 +15,39 @@ barrier `x ↦ -log x` on `ℝ_{>0}`.
 
 namespace StatInference
 namespace Optimization
+
+section ScalarGronwall
+
+/--
+Constant-coefficient scalar Gronwall wrapper used as a reusable stepping stone
+for the Chewi Lemma 13.6 segment argument.
+-/
+theorem scalar_le_exp_of_abs_deriv_le
+    {q q' : ℝ -> ℝ} {a b c : ℝ}
+    (hqa_nonneg : 0 ≤ q a)
+    (hqcont : ContinuousOn q (Set.Icc a b))
+    (hq_nonneg : ∀ t, t ∈ Set.Icc a b -> 0 ≤ q t)
+    (hqderiv : ∀ t, t ∈ Set.Ico a b ->
+      HasDerivWithinAt q (q' t) (Set.Ici t) t)
+    (hbound : ∀ t, t ∈ Set.Ico a b -> |q' t| ≤ c * q t) :
+    ∀ t, t ∈ Set.Icc a b -> q t ≤ q a * Real.exp (c * (t - a)) := by
+  have hgr := norm_le_gronwallBound_of_norm_deriv_right_le
+    (f := q) (f' := q') (δ := q a) (K := c) (ε := 0)
+    (a := a) (b := b) hqcont hqderiv ?ha ?hbound'
+  · intro t ht
+    have ht_nonneg : 0 ≤ q t := hq_nonneg t ht
+    have ht_norm := hgr t ht
+    rw [Real.norm_eq_abs, abs_of_nonneg ht_nonneg] at ht_norm
+    rw [gronwallBound_ε0] at ht_norm
+    simpa using ht_norm
+  · rw [Real.norm_eq_abs, abs_of_nonneg hqa_nonneg]
+  · intro t ht
+    have htIcc : t ∈ Set.Icc a b := Set.Ico_subset_Icc_self ht
+    have hqt_nonneg : 0 ≤ q t := hq_nonneg t htIcc
+    have hb := hbound t ht
+    simpa [Real.norm_eq_abs, abs_of_nonneg hqt_nonneg] using hb
+
+end ScalarGronwall
 
 section VectorSelfConcordance
 
@@ -208,6 +242,109 @@ theorem mul_one_sub_localNorm_le_of_hessianQuadraticLower
       Real.sqrt ((1 - M * r) ^ (2 : ℕ)) = 1 - M * r := by
     exact Real.sqrt_sq hden_pos.le
   simpa [hsqrt, mul_comm, mul_left_comm, mul_assoc] using hbase
+
+/-- Chewi Lemma 13.6's displayed exponential constant for the `ψ(t)` step. -/
+noncomputable def chewi136HessianStabilityExponent (M r : ℝ) : ℝ :=
+  2 * Real.log ((1 - M * r)⁻¹)
+
+theorem chewi136_exp_stability_upper
+    {M r : ℝ} (hden_pos : 0 < 1 - M * r) :
+    Real.exp (chewi136HessianStabilityExponent M r) =
+      ((1 - M * r)⁻¹) ^ (2 : ℕ) := by
+  have hinv_pos : 0 < (1 - M * r)⁻¹ := inv_pos.mpr hden_pos
+  rw [chewi136HessianStabilityExponent]
+  rw [show 2 * Real.log ((1 - M * r)⁻¹) =
+      Real.log ((1 - M * r)⁻¹) + Real.log ((1 - M * r)⁻¹) by ring]
+  rw [Real.exp_add]
+  rw [Real.exp_log hinv_pos]
+  ring
+
+theorem chewi136_exp_stability_lower
+    {M r : ℝ} (hden_pos : 0 < 1 - M * r) :
+    Real.exp (-(chewi136HessianStabilityExponent M r)) =
+      (1 - M * r) ^ (2 : ℕ) := by
+  have hupper := chewi136_exp_stability_upper (M := M) (r := r) hden_pos
+  rw [Real.exp_neg, hupper]
+  field_simp [hden_pos.ne']
+
+/--
+Source-shaped output of Chewi Lemma 13.6's segment `ψ(t)` Gronwall argument.
+The hard analytic work is to prove these two endpoint exponential estimates;
+the theorems below turn them into the textbook Hessian and local-norm
+sandwiches.
+-/
+structure HessianSegmentExponentialBounds
+    (hess : E -> E →L[ℝ] E) (x y : E) (M r : ℝ) : Prop where
+  lower_exp : ∀ v : E,
+    inner ℝ v (hess x v) *
+        Real.exp (-(chewi136HessianStabilityExponent M r)) ≤
+      inner ℝ v (hess y v)
+  upper_exp : ∀ v : E,
+    inner ℝ v (hess y v) ≤
+      inner ℝ v (hess x v) *
+        Real.exp (chewi136HessianStabilityExponent M r)
+
+theorem HessianSegmentExponentialBounds.toHessianQuadraticBounds
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    (hden_pos : 0 < 1 - M * r)
+    (henv : HessianSegmentExponentialBounds hess x y M r) :
+    HessianQuadraticBounds hess x y
+      ((1 - M * r) ^ (2 : ℕ))
+      (((1 - M * r)⁻¹) ^ (2 : ℕ)) where
+  lower_bound := by
+    intro v
+    have h := henv.lower_exp v
+    rw [chewi136_exp_stability_lower hden_pos] at h
+    simpa [mul_comm, mul_left_comm, mul_assoc] using h
+  upper_bound := by
+    intro v
+    have h := henv.upper_exp v
+    rw [chewi136_exp_stability_upper hden_pos] at h
+    simpa [mul_comm, mul_left_comm, mul_assoc] using h
+
+theorem localNorm_le_div_one_sub_of_hessianSegmentExponentialBounds
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    (hMr_lt : M * r < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (henv : HessianSegmentExponentialBounds hess x y M r)
+    (v : E) :
+    localNorm hess y v ≤ localNorm hess x v / (1 - M * r) := by
+  have hden_pos : 0 < 1 - M * r := by nlinarith
+  have hbounds :=
+    henv.toHessianQuadraticBounds (hess := hess) (x := x) (y := y)
+      (M := M) (r := r) hden_pos
+  exact localNorm_le_div_one_sub_of_hessianQuadraticUpper
+    hMr_lt hx_nonneg hy_nonneg hbounds.upper_bound v
+
+theorem mul_one_sub_localNorm_le_of_hessianSegmentExponentialBounds
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    (hMr_lt : M * r < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (henv : HessianSegmentExponentialBounds hess x y M r)
+    (v : E) :
+    (1 - M * r) * localNorm hess x v ≤ localNorm hess y v := by
+  have hden_pos : 0 < 1 - M * r := by nlinarith
+  have hbounds :=
+    henv.toHessianQuadraticBounds (hess := hess) (x := x) (y := y)
+      (M := M) (r := r) hden_pos
+  exact mul_one_sub_localNorm_le_of_hessianQuadraticLower
+    hMr_lt hx_nonneg hy_nonneg hbounds.lower_bound v
+
+theorem localNorm_sandwich_of_hessianSegmentExponentialBounds
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    (hMr_lt : M * r < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (henv : HessianSegmentExponentialBounds hess x y M r)
+    (v : E) :
+    (1 - M * r) * localNorm hess x v ≤ localNorm hess y v ∧
+      localNorm hess y v ≤ localNorm hess x v / (1 - M * r) :=
+  ⟨mul_one_sub_localNorm_le_of_hessianSegmentExponentialBounds
+      hMr_lt hx_nonneg hy_nonneg henv v,
+    localNorm_le_div_one_sub_of_hessianSegmentExponentialBounds
+      hMr_lt hx_nonneg hy_nonneg henv v⟩
 
 /--
 Chewi Definition 13.3, source-shaped self-concordance interface using only the

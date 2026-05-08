@@ -1887,10 +1887,20 @@ Active aggressive target ladder:
    `localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticBounds`,
    `sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticBounds`,
    `localNorm_le_div_one_sub_of_hessianQuadraticUpper`, and
-   `mul_one_sub_localNorm_le_of_hessianQuadraticLower`.  The next bounded
-   packet is the analytic self-concordance segment argument that supplies the
-   Hessian quadratic-form lower/upper bounds for Lemma 13.6; reuse mathlib
-   `sq_le_sq₀`, `Real.sq_sqrt`, `Real.sqrt_sq`,
+   `mul_one_sub_localNorm_le_of_hessianQuadraticLower`, plus the segment
+   exponential-envelope bridge `scalar_le_exp_of_abs_deriv_le`,
+   `chewi136HessianStabilityExponent`,
+   `chewi136_exp_stability_upper`, `chewi136_exp_stability_lower`,
+   `HessianSegmentExponentialBounds`,
+   `HessianSegmentExponentialBounds.toHessianQuadraticBounds`,
+   `localNorm_le_div_one_sub_of_hessianSegmentExponentialBounds`,
+   `mul_one_sub_localNorm_le_of_hessianSegmentExponentialBounds`, and
+   `localNorm_sandwich_of_hessianSegmentExponentialBounds`.  The next bounded
+   packet is to derive `HessianSegmentExponentialBounds` from Chewi's actual
+   variable-coefficient `ψ(t)` self-concordance argument on the segment; reuse
+   mathlib `Analysis/ODE/Gronwall`, `gronwallBound`,
+   `norm_le_gronwallBound_of_norm_deriv_right_le`, `Real.exp_log`,
+   `Real.exp_neg`, `sq_le_sq₀`, `Real.sq_sqrt`, `Real.sqrt_sq`,
    `ContinuousLinearMap.IsPositive`, and matrix `PosSemidef` APIs only when
    the generic supplied-Hessian interface is insufficient.
 5. If exact Theorem 10.13 source-report packaging is requested, add an `sInf`

@@ -322,13 +322,24 @@ local-norm comparison algebra from supplied Hessian quadratic-form bounds:
 `localNorm_le_sqrt_mul_localNorm_of_hessianQuadraticBounds`,
 `sqrt_mul_localNorm_le_localNorm_of_hessianQuadraticBounds`,
 `localNorm_le_div_one_sub_of_hessianQuadraticUpper`, and
-`mul_one_sub_localNorm_le_of_hessianQuadraticLower`.  Search-first result:
-mathlib supplies the required square-root/order algebra (`sq_le_sq₀`,
-`Real.sq_sqrt`, `Real.sqrt_sq`) and operator/matrix positivity APIs, but no
-Chewi self-concordance Hessian-stability theorem.  The next Chapter 13 packet
-should prove the analytic self-concordance path that supplies these Hessian
-quadratic-form bounds along a segment, then assemble Lemma 13.6 and the Newton
-decrement convergence layer rather than rebuilding local-norm comparisons.
+`mul_one_sub_localNorm_le_of_hessianQuadraticLower`.  The follow-up packet
+adds the segment exponential-envelope bridge for the `ψ(t)` proof:
+`scalar_le_exp_of_abs_deriv_le`, `chewi136HessianStabilityExponent`,
+`chewi136_exp_stability_upper`, `chewi136_exp_stability_lower`,
+`HessianSegmentExponentialBounds`,
+`HessianSegmentExponentialBounds.toHessianQuadraticBounds`,
+`localNorm_le_div_one_sub_of_hessianSegmentExponentialBounds`,
+`mul_one_sub_localNorm_le_of_hessianSegmentExponentialBounds`, and
+`localNorm_sandwich_of_hessianSegmentExponentialBounds`.  Search-first
+result: mathlib supplies constant-coefficient continuous Gronwall
+(`Analysis/ODE/Gronwall`, `gronwallBound`,
+`norm_le_gronwallBound_of_norm_deriv_right_le`) and the required
+square-root/log/exponential algebra (`sq_le_sq₀`, `Real.sq_sqrt`,
+`Real.sqrt_sq`, `Real.exp_log`, `Real.exp_neg`) plus operator/matrix
+positivity APIs, but no Chewi self-concordance Hessian-stability theorem.  The
+next Chapter 13 packet should prove `HessianSegmentExponentialBounds` from the
+actual variable-coefficient segment self-concordance argument, then assemble
+Lemma 13.6 and the Newton decrement convergence layer.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

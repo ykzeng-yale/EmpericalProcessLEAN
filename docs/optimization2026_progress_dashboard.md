@@ -1248,13 +1248,25 @@ parameter.  The latest Lemma 13.6 algebra packet adds
 `localNorm_le_div_one_sub_of_hessianQuadraticUpper`, and
 `mul_one_sub_localNorm_le_of_hessianQuadraticLower`, giving the source-shaped
 local-norm lower/upper consequences once the analytic self-concordance
-argument supplies Hessian quadratic-form bounds.  Search-first result: reuse
-mathlib `sq_le_sq₀`, `Real.sq_sqrt`, `Real.sqrt_sq`, and, for later finite
-coordinate work, `ContinuousLinearMap.IsPositive`/matrix `PosSemidef` APIs;
-no direct Chewi Lemma 13.6 Hessian-stability theorem exists locally or in
-pinned mathlib.  Next Chapter 13 work should prove the segment analytic
-Hessian-bound path for Lemma 13.6 and then Newton decrement estimates rather
-than reintroducing local-norm interfaces.
+argument supplies Hessian quadratic-form bounds.  The newest segment-envelope
+packet adds `scalar_le_exp_of_abs_deriv_le`,
+`chewi136HessianStabilityExponent`, `chewi136_exp_stability_upper`,
+`chewi136_exp_stability_lower`, `HessianSegmentExponentialBounds`,
+`HessianSegmentExponentialBounds.toHessianQuadraticBounds`,
+`localNorm_le_div_one_sub_of_hessianSegmentExponentialBounds`,
+`mul_one_sub_localNorm_le_of_hessianSegmentExponentialBounds`, and
+`localNorm_sandwich_of_hessianSegmentExponentialBounds`, converting the
+Chewi `ψ(t)` Gronwall endpoint estimates into the compiled Hessian and
+local-norm sandwiches.  Search-first result: reuse mathlib
+`Analysis/ODE/Gronwall`, `gronwallBound`,
+`norm_le_gronwallBound_of_norm_deriv_right_le`, `Real.exp_log`,
+`Real.exp_neg`, `sq_le_sq₀`, `Real.sq_sqrt`, `Real.sqrt_sq`, and, for later
+finite-coordinate work, `ContinuousLinearMap.IsPositive`/matrix `PosSemidef`
+APIs; no direct Chewi Lemma 13.6 Hessian-stability theorem exists locally or
+in pinned mathlib.  Next Chapter 13 work should prove
+`HessianSegmentExponentialBounds` from the actual variable-coefficient segment
+self-concordance argument and then Newton decrement estimates rather than
+reintroducing local-norm interfaces.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,
