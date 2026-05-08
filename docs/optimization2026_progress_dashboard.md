@@ -98,6 +98,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `projectedCompensationVarianceError_row_norm_integrable_of_uniform_bound`.
   The active ASGD certificate route should now expose only mean-zero plus the
   genuine future-tail proxy/residual convergence assumptions.
+- Deterministic future-tail proxy route shrink: the new
+  `deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`
+  wrappers specialize the predictable proxy route to constant-in-`ω` proxies,
+  removing the old normalized-product argument from deterministic proxy
+  certificates.
 - New ASGD scalar Lindeberg declarations:
   `chewi127ScalarLindebergSummand`,
   `chewi127ScalarLindebergAverage`,

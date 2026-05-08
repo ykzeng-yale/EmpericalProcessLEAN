@@ -37,6 +37,9 @@ Prefer the newest `_of_uniform_bound_no_factor_bound` ASGD wrappers: they also
 hide the variance-error row integrability behind the bounded-source package,
 so the live theorem route can focus on the actual future-tail proxy/residual
 conditions.
+For deterministic tail-core approximations, use the corresponding
+`deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound` wrappers
+so callers do not need to pass a normalized-product limit separately.
 
 ## Automation Prompt Maintenance
 

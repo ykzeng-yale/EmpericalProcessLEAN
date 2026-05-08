@@ -155,6 +155,10 @@ also discharge the variance-error row integrability from the bounded source via
 `projectedCompensationVarianceError_row_norm_integrable_of_uniform_bound`.
 Use these newest wrappers for future-tail/inverse-tail ASGD certificates unless
 an external theorem really needs to expose the variance-error row.
+The deterministic future-tail proxy route now also has compact
+`deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`
+characteristic-function, scalar/projected CLT, bridge, and certificate
+wrappers; use them when the proxy is constant in `ω`.
 
 Mission: finish the main-text Chewi Optimization 2026 Lean formalization under
 `StatInference/Optimization` as fast as correctness allows.  Keep all
