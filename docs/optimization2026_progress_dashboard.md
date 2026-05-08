@@ -304,6 +304,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projected_clt_of_mixed_tower_future_measurability`,
   `Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_mixed_tower_future_tail_measurability`,
   `Chewi127BoundedMartingaleCLTSource.projected_clt_of_mixed_tower_future_tail_measurability`,
+  `Chewi127BoundedMartingaleCLTSource.toProjectedBridge_of_mixed_tower_future_tail_measurability`,
+  `Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate_of_mixed_tower_future_tail_measurability`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -383,7 +385,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   integrability from source boundedness, proves the multiplier
   `F_r`-measurability from the precise future-tail product
   `F_r`-measurability condition, and packages both characteristic-function
-  convergence and projected scalar CLT wrappers from that condition.  Scouts
+  convergence and projected scalar CLT wrappers from that condition.  The
+  newest certificate packet packages those scalar CLTs into the
+  `Chewi127ProjectedMartingaleCLTBridge` interface and the final Chewi 12.7
+  martingale CLT certificate through the stored Cramér-Wold bridge.  Scouts
   and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
   earlier `F_r` for `r < k`.  Next target: either add a correct predictable or

@@ -6632,6 +6632,59 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_clt_of_mixed_tower_future_t
       S.martingale.xi L n ω).symm
 
 /--
+Projected Cramér-Wold bridge obtained from the precise mixed-tower
+future-tail predictability condition.  This packages the scalar CLT theorem
+above in the exact interface consumed by the Chewi 12.7 vector certificate.
+-/
+def Chewi127BoundedMartingaleCLTSource.toProjectedBridge_of_mixed_tower_future_tail_measurability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hfuture_tail_meas : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      ∀ N r : ℕ, r < N ->
+        AEStronglyMeasurable[S.martingale.filtration r]
+          (fun ω =>
+            ∏ k ∈ Finset.Ico (r + 1) N,
+              S.projectedNormalizedTaylorFactor L N t k ω) P) :
+    Chewi127ProjectedMartingaleCLTBridge Ω Ω' E P Q where
+  xi := S.martingale.xi
+  Z := S.Z
+  projected_clt := fun L =>
+    S.projected_clt_of_mixed_tower_future_tail_measurability
+      L (hmean L) (hfuture_tail_meas L)
+  cramerWold_vector_clt := S.cramerWold_vector_clt
+  gaussian_limit := S.gaussian_limit
+  limit_memLp := S.limit_memLp
+
+/--
+Chewi Theorem 12.7 certificate obtained from the precise mixed-tower
+future-tail predictability condition.  All scalar analytic estimates are
+provided by the bounded-source ASGD tower lemmas; the remaining vector step is
+the source Cramér-Wold bridge already stored in `S`.
+-/
+def Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate_of_mixed_tower_future_tail_measurability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hfuture_tail_meas : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      ∀ N r : ℕ, r < N ->
+        AEStronglyMeasurable[S.martingale.filtration r]
+          (fun ω =>
+            ∏ k ∈ Finset.Ico (r + 1) N,
+              S.projectedNormalizedTaylorFactor L N t k ω) P) :
+    Chewi127MartingaleCLTCertificate Ω Ω' E P Q :=
+  (S.toProjectedBridge_of_mixed_tower_future_tail_measurability
+    hmean hfuture_tail_meas).toMartingaleCLTCertificate
+
+/--
 The projected CLT field can be read in the pure scalar-sum notation used by a
 one-dimensional martingale CLT theorem.
 -/
