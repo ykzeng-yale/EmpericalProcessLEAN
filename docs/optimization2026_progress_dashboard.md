@@ -256,6 +256,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_eq_taylorModel`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_normalized_taylor_step_mul_scaled`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_normalized_taylor_step_mul_scaled_of_measurable`,
+  `Chewi127BoundedMartingaleCLTSource.projected_scalarScaledSum_charFun_eq_integral_product`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_normalized_scaled'`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -305,10 +307,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   limit in the characteristic-function bridge from existing source variance
   machinery.  The latest natural-multiplier normalized one-step peel hides the
   inverse-compensation cancellation behind the honest `F_n`-measurability of
-  the multiplier.  The next ASGD packet should prove a safe finite martingale
-  tower/telescoping representation into the normalized product model, or record
-  the exact future-tail measurability assumption if an exact random future
-  product is used, then close the Gaussian characteristic-function limit.
+  the multiplier, and the newest finite-tower packet adds the named raw
+  charFun-product start plus the normalized successor peel with prefix
+  measurability/integrability discharged.  The next ASGD packet should
+  accumulate these successor peels into a safe finite martingale
+  tower/telescoping representation, or record the exact future-tail
+  measurability assumption if an exact random future product is used, then
+  close the Gaussian characteristic-function limit.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

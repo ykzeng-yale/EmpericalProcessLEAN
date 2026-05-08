@@ -195,6 +195,8 @@ plus the normalized compensated-product bridge:
 `projectedNormalizedTaylorFactor_eq_taylorModel`,
 `projected_charFun_normalized_taylor_step_mul_scaled`,
 `projected_charFun_normalized_taylor_step_mul_scaled_of_measurable`,
+`projected_scalarScaledSum_charFun_eq_integral_product`,
+`projected_charFun_product_tower_succ_normalized_scaled'`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
 `projected_charFun_tendsto_exp_of_normalized_product_model`,
 and
@@ -205,8 +207,12 @@ normalized product model required by
 `projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
 The one-step
 normalized peel, inverse-compensation algebra, and bounded-continuous
-expectation handoff are already compiled; do not prove another compensation,
-row-error, inverse-product, or generic weak-convergence wrapper.  The variance
+expectation handoff are already compiled; the raw-product start and normalized
+successor peel are also compiled as
+`projected_scalarScaledSum_charFun_eq_integral_product` and
+`projected_charFun_product_tower_succ_normalized_scaled'`.  Do not prove
+another compensation, row-error, inverse-product, raw charFun-product start,
+or generic weak-convergence wrapper.  The variance
 side is now source-facing:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
 uniform martingale source bound, averaged-variance convergence in measure, and

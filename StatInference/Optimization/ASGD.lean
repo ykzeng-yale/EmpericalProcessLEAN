@@ -3806,6 +3806,95 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_normalized_taylor_s
       hsq hremainder
 
 /--
+Named-source version of the scalar scaled-sum characteristic function as an
+integral of Chewi's raw one-step product.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalarScaledSum_charFun_eq_integral_product
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) :
+    MeasureTheory.charFun
+      (P.map
+        (chewi127ScalarScaledSum
+          (fun n ω => L (S.martingale.xi n ω)) N)) t =
+      ∫ ω,
+        chewi127ScalarCharFunProduct
+          (fun n ω => L (S.martingale.xi n ω)) N
+          (t * (Real.sqrt (N : ℝ))⁻¹) ω ∂P := by
+  have hx :
+      ∀ n : ℕ,
+        AEMeasurable (fun ω => L (S.martingale.xi n ω)) P := by
+    intro n
+    exact (S.martingale.projected_integrable L n).aemeasurable
+  simpa [chewi127ScalarCharFunProduct, chewi127ScalarCharFunFactor,
+    Complex.ofReal_mul, mul_assoc] using
+    chewi127ScalarScaledSum_charFun_eq_integral_prod
+      (P := P) (x := fun n ω => L (S.martingale.xi n ω)) hx N t
+
+/--
+Normalized successor tower peel for Chewi's raw finite characteristic-function
+product.  The raw prefix is filtration-measurable and integrable by the
+martingale source, so the natural-multiplier normalized one-step peel applies
+without extra product-integrability assumptions.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_normalized_scaled'
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N n : ℕ) (t : ℝ)
+    (hsq : Integrable
+      (fun ω => (L (S.martingale.xi (n + 1) ω)) ^ 2) P)
+    (hremainder : Integrable
+      (chewi127ScalarCharFunTaylorRemainder
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        (fun ω => L (S.martingale.xi (n + 1) ω))) P) :
+    (∫ ω,
+        chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) (n + 1)
+          (t * (Real.sqrt (N : ℝ))⁻¹) ω ∂P) =
+      ∫ ω,
+        chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) n
+          (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          S.projectedNormalizedTaylorFactor L N t n ω ∂P := by
+  let x : ℕ -> Ω -> ℝ := fun k ω => L (S.martingale.xi k ω)
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  have hx : ∀ k : ℕ, AEMeasurable (x k) P := by
+    intro k
+    exact (S.martingale.projected_integrable L k).aemeasurable
+  have hprefix_meas :
+      AEStronglyMeasurable[S.martingale.filtration n]
+        (chewi127ScalarCharFunProduct x n a) P := by
+    simpa [x, a] using
+      S.martingale.projected_charFun_prefix_aestronglyMeasurable L n a
+  have hprefix_int :
+      Integrable (chewi127ScalarCharFunProduct x n a) P :=
+    chewi127ScalarCharFunProduct_integrable (P := P) hx n a
+  have hstep :=
+    S.projected_charFun_normalized_taylor_step_mul_scaled_of_measurable
+      L N n t (chewi127ScalarCharFunProduct x n a)
+      hprefix_meas hprefix_int hsq hremainder
+  calc
+    (∫ ω,
+        chewi127ScalarCharFunProduct x (n + 1) a ω ∂P)
+        = ∫ ω,
+            chewi127ScalarCharFunProduct x n a ω *
+              chewi127ScalarCharFunFactor a
+                (fun ω => x (n + 1) ω) ω ∂P := by
+          refine integral_congr_ae <| ae_of_all P fun ω => ?_
+          simp [chewi127ScalarCharFunProduct, Finset.prod_range_succ]
+    _ = ∫ ω,
+        chewi127ScalarCharFunProduct x n a ω *
+          S.projectedNormalizedTaylorFactor L N t n ω ∂P := hstep
+
+/--
 Expected products of the projected compensated one-step errors converge to one
 once their factors are bounded by one and their expected row-sum vanishes.
 This is the product-to-one half of Chewi's compensated martingale iteration.
