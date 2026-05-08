@@ -4401,5 +4401,125 @@ theorem durrett2019_example_4_3_7_finitePartitionLikelihood_withDensity_eq_of_ge
       (durrett2019_example_4_3_7_finitePartitionLikelihood_lintegral_univ
         (μ := μ) (ν := ν) (cell := cell) hcell hdisj hcover hzero).symm
 
+/-! ## Durrett, Theorem 4.3.8 -/
+
+/--
+Durrett 2019, Theorem 4.3.8: the finite-coordinate likelihood ratio used in
+Kakutani's product-measure dichotomy.
+
+For finitely many coordinates, the textbook expression is the product of the
+one-coordinate densities.
+-/
+noncomputable def durrett2019_theorem_4_3_8_finiteProductLikelihood
+    {ι S : Type*} [Fintype ι] (q : ι -> S -> ℝ≥0∞) (x : ι -> S) : ℝ≥0∞ :=
+  ∏ i, q i (x i)
+
+/--
+Durrett 2019, Theorem 4.3.8 finite-coordinate support: the finite product
+likelihood is measurable when the one-coordinate densities are measurable.
+-/
+theorem durrett2019_theorem_4_3_8_finiteProductLikelihood_measurable
+    {ι S : Type*} [Fintype ι] [MeasurableSpace S] {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i)) :
+    Measurable (durrett2019_theorem_4_3_8_finiteProductLikelihood q) := by
+  classical
+  unfold durrett2019_theorem_4_3_8_finiteProductLikelihood
+  exact Finset.measurable_prod Finset.univ fun i _ =>
+    (hq i).comp (measurable_pi_apply i)
+
+/--
+Durrett 2019, Theorem 4.3.8 finite-coordinate support: on a measurable
+rectangle, integrating the finite product likelihood against the denominator
+product law factors into the one-coordinate density integrals.
+-/
+theorem durrett2019_theorem_4_3_8_finiteProductLikelihood_setLIntegral_rectangle
+    {ι S : Type*} [Fintype ι] [MeasurableSpace S]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ι -> S -> ℝ≥0∞} (hq : ∀ i, Measurable (q i))
+    (A : ι -> Set S) (hA : ∀ i, MeasurableSet (A i)) :
+    ∫⁻ x in Set.pi Set.univ A,
+        durrett2019_theorem_4_3_8_finiteProductLikelihood q x ∂Measure.pi ν =
+      ∏ i, ∫⁻ y in A i, q i y ∂ν i := by
+  classical
+  let X : ι -> (ι -> S) -> ℝ≥0∞ :=
+    fun i x => (A i).indicator (q i) (x i)
+  have hX_meas : ∀ i, Measurable (X i) := by
+    intro i
+    exact ((hq i).indicator (hA i)).comp (measurable_pi_apply i)
+  have hX_indep :
+      _root_.ProbabilityTheory.iIndepFun X (Measure.pi ν) := by
+    have h :=
+      _root_.ProbabilityTheory.iIndepFun_pi
+        (μ := ν) (X := fun i y => (A i).indicator (q i) y)
+        (fun i => ((hq i).indicator (hA i)).aemeasurable)
+    simpa [X, Function.comp_def] using h
+  have hrect :
+      MeasurableSet (Set.pi (Set.univ : Set ι) A) :=
+    MeasurableSet.pi Set.countable_univ fun i _ => hA i
+  have hpoint :
+      (fun x : ι -> S =>
+          (Set.pi Set.univ A).indicator
+            (durrett2019_theorem_4_3_8_finiteProductLikelihood q) x) =
+        fun x => ∏ i, X i x := by
+    funext x
+    by_cases hx : x ∈ Set.pi Set.univ A
+    · have hxA : ∀ i, x i ∈ A i := by
+        intro i
+        exact hx i trivial
+      simp [X, hx, hxA, durrett2019_theorem_4_3_8_finiteProductLikelihood]
+    · have hxA : ∃ i, x i ∉ A i := by
+        by_contra hnone
+        apply hx
+        intro i _hi
+        exact not_not.mp (not_exists.mp hnone i)
+      rcases hxA with ⟨i, hi⟩
+      have hzero : ∏ j, X j x = 0 := by
+        refine Finset.prod_eq_zero (Finset.mem_univ i) ?_
+        simp [X, hi]
+      simp [hx, hzero]
+  calc
+    ∫⁻ x in Set.pi Set.univ A,
+        durrett2019_theorem_4_3_8_finiteProductLikelihood q x ∂Measure.pi ν
+        = ∫⁻ x,
+            (Set.pi Set.univ A).indicator
+              (durrett2019_theorem_4_3_8_finiteProductLikelihood q) x ∂Measure.pi ν := by
+          rw [lintegral_indicator hrect]
+    _ = ∫⁻ x, ∏ i, X i x ∂Measure.pi ν := by
+          rw [hpoint]
+    _ = ∏ i, ∫⁻ x, X i x ∂Measure.pi ν := by
+          simpa using
+            (_root_.ProbabilityTheory.lintegral_prod_eq_prod_lintegral_of_indepFun
+              (μ := Measure.pi ν) (s := Finset.univ) (X := X) hX_indep hX_meas)
+    _ = ∏ i, ∫⁻ y in A i, q i y ∂ν i := by
+          refine Finset.prod_congr rfl ?_
+          intro i _hi
+          rw [show (∫⁻ x, X i x ∂Measure.pi ν) =
+              ∫⁻ y, (A i).indicator (q i) y ∂ν i from
+            (measurePreserving_eval (ν) i).lintegral_comp ((hq i).indicator (hA i))]
+          rw [lintegral_indicator (hA i)]
+
+/--
+Durrett 2019, Theorem 4.3.8 finite-coordinate support: finite product laws have
+the product of the one-coordinate densities as their likelihood ratio.
+-/
+theorem durrett2019_theorem_4_3_8_finiteProduct_withDensity_eq
+    {ι S : Type*} [Fintype ι] [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, SigmaFinite (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)] {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) :
+    Measure.pi μ =
+      (Measure.pi ν).withDensity
+        (durrett2019_theorem_4_3_8_finiteProductLikelihood q) := by
+  classical
+  refine Measure.pi_eq (μ := μ) ?_
+  intro A hA
+  rw [withDensity_apply _ (MeasurableSet.pi Set.countable_univ fun i _ => hA i)]
+  rw [durrett2019_theorem_4_3_8_finiteProductLikelihood_setLIntegral_rectangle
+    (ν := ν) (q := q) hq A hA]
+  refine Finset.prod_congr rfl ?_
+  intro i _hi
+  rw [hμ i, withDensity_apply _ (hA i)]
+
 end ProbabilityTheory
 end StatInference

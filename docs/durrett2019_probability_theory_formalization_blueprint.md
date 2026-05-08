@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V61`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V62`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -472,9 +472,12 @@ Next packet:
   partition likelihood approximation is measurable, equals the cell ratio on
   disjoint cells, and integrates over each cell to the numerator cell mass
   under the finite-cell absolute-continuity condition; its finite-union and
-  generator-facing endpoint now also compile.  The next active target is
-  Theorem 4.3.8 Kakutani dichotomy for infinite product measures.  Theorem
-  4.1.16 remains deferred unless a direct kernel API appears.
+  generator-facing endpoint now also compile.  The first Theorem 4.3.8
+  Kakutani finite-product packet also now compiles: finite-coordinate product
+  likelihood measurability, rectangle set-integrals under `Measure.pi`, and the
+  finite product-law `withDensity` identity.  The next active target is the
+  infinite-product cylinder/restriction handoff for Kakutani's dichotomy.
+  Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
 
