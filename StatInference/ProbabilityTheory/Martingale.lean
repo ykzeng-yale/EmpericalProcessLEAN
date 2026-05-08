@@ -2222,5 +2222,110 @@ theorem durrett2019_theorem_4_3_1_converges_or_crosses_all_thresholds
       rcases hy_mem with ⟨n, rfl⟩
       exact ⟨n, hy_lt⟩
 
+/--
+If the range of a real sequence is not bounded below, then every real lower
+threshold is crossed arbitrarily late.
+-/
+theorem durrett2019_frequently_lt_atTop_of_not_bddBelow_range
+    {u : ℕ -> ℝ} (h : ¬ BddBelow (Set.range u)) (a : ℝ) :
+    ∃ᶠ n in atTop, u n < a := by
+  rw [frequently_atTop]
+  intro N
+  by_contra hN
+  push Not at hN
+  have htail : ∀ n, N ≤ n -> a ≤ u n := fun n hn => hN n hn
+  have hprefixFinite : (Set.Iio N : Set ℕ).Finite := Set.finite_Iio N
+  have hprefix : BddBelow (u '' Set.Iio N) := hprefixFinite.image u |>.bddBelow
+  rcases hprefix with ⟨b, hb⟩
+  have hall : BddBelow (Set.range u) := by
+    refine ⟨min a b, ?_⟩
+    rintro y ⟨n, rfl⟩
+    by_cases hn : n < N
+    · exact (min_le_right _ _).trans (hb ⟨n, hn, rfl⟩)
+    · exact (min_le_left _ _).trans (htail n (le_of_not_gt hn))
+  exact h hall
+
+/--
+If the range of a real sequence is not bounded above, then every real upper
+threshold is crossed arbitrarily late.
+-/
+theorem durrett2019_frequently_atTop_lt_of_not_bddAbove_range
+    {u : ℕ -> ℝ} (h : ¬ BddAbove (Set.range u)) (a : ℝ) :
+    ∃ᶠ n in atTop, a < u n := by
+  rw [frequently_atTop]
+  intro N
+  by_contra hN
+  push Not at hN
+  have htail : ∀ n, N ≤ n -> u n ≤ a := fun n hn => hN n hn
+  have hprefixFinite : (Set.Iio N : Set ℕ).Finite := Set.finite_Iio N
+  have hprefix : BddAbove (u '' Set.Iio N) := hprefixFinite.image u |>.bddAbove
+  rcases hprefix with ⟨b, hb⟩
+  have hall : BddAbove (Set.range u) := by
+    refine ⟨max a b, ?_⟩
+    rintro y ⟨n, rfl⟩
+    by_cases hn : n < N
+    · exact (hb ⟨n, hn, rfl⟩).trans (le_max_right _ _)
+    · exact (htail n (le_of_not_gt hn)).trans (le_max_left _ _)
+  exact h hall
+
+/--
+Arbitrarily late crossings below and above every real threshold are exactly the
+extended-real `liminf = -∞` and `limsup = +∞` display used in Durrett.
+-/
+theorem durrett2019_ereal_liminf_limsup_of_frequently_crosses
+    {u : ℕ -> ℝ}
+    (hbelow : ∀ a : ℝ, ∃ᶠ n in atTop, u n < a)
+    (habove : ∀ a : ℝ, ∃ᶠ n in atTop, a < u n) :
+    liminf (fun n => (u n : EReal)) atTop = ⊥ ∧
+      limsup (fun n => (u n : EReal)) atTop = ⊤ := by
+  constructor
+  · exact (EReal.eq_bot_iff_forall_lt _).2 fun y => by
+      have hle :
+          liminf (fun n => (u n : EReal)) atTop ≤ ((y - 1 : ℝ) : EReal) := by
+        exact Filter.liminf_le_of_frequently_le' ((hbelow (y - 1)).mono fun n hn => by
+          exact EReal.coe_le_coe_iff.mpr hn.le)
+      have hlt : ((y - 1 : ℝ) : EReal) < (y : EReal) :=
+        EReal.coe_lt_coe_iff.mpr (sub_one_lt y)
+      exact lt_of_le_of_lt hle hlt
+  · exact (EReal.eq_top_iff_forall_lt _).2 fun y => by
+      have hle :
+          ((y + 1 : ℝ) : EReal) ≤ limsup (fun n => (u n : EReal)) atTop := by
+        exact Filter.le_limsup_of_frequently_le' ((habove (y + 1)).mono fun n hn => by
+          exact EReal.coe_le_coe_iff.mpr hn.le)
+      have hlt : (y : EReal) < ((y + 1 : ℝ) : EReal) :=
+        EReal.coe_lt_coe_iff.mpr (lt_add_one y)
+      exact lt_of_lt_of_le hlt hle
+
+/--
+Durrett 2019, Theorem 4.3.1 extended-real liminf/limsup display: a
+bounded-increment martingale with `X_0 = 0` either converges to a finite real
+limit, or its extended-real `liminf` is `-∞` and its extended-real `limsup` is
+`+∞`.
+-/
+theorem durrett2019_theorem_4_3_1_converges_or_ereal_liminf_limsup
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {M : ℝ}
+    (hX : Martingale X ℱ μ) (hM_nonneg : 0 ≤ M)
+    (hX0 : ∀ᵐ ω ∂μ, X 0 ω = 0)
+    (hinc : ∀ᵐ ω ∂μ, ∀ i, |X (i + 1) ω - X i ω| ≤ M) :
+    ∀ᵐ ω ∂μ,
+      (∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z)) ∨
+        (liminf (fun n => (X n ω : EReal)) atTop = ⊥ ∧
+          limsup (fun n => (X n ω : EReal)) atTop = ⊤) := by
+  have hrange :=
+    durrett2019_theorem_4_3_1_converges_or_unbounded_range
+      (X := X) (M := M) hX hM_nonneg hX0 hinc
+  filter_upwards [hrange] with ω hω
+  rcases hω with hconv | ⟨hnotBelow, hnotAbove⟩
+  · exact Or.inl hconv
+  · right
+    exact
+      durrett2019_ereal_liminf_limsup_of_frequently_crosses
+        (u := fun n => X n ω)
+        (fun a => durrett2019_frequently_lt_atTop_of_not_bddBelow_range hnotBelow a)
+        (fun a => durrett2019_frequently_atTop_lt_of_not_bddAbove_range hnotAbove a)
+
 end ProbabilityTheory
 end StatInference

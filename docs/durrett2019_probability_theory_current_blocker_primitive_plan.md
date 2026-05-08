@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V41
+## Live In-Thread Goal Prompt V42
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -49,15 +49,21 @@ one-sided-bounded union bridge is packaged.  The range-form event
 classification now compiles: almost surely, either the martingale converges to
 a finite real limit or its range is unbounded both below and above.  The
 threshold-form oscillation wrapper also now compiles: on the nonconvergent
-side, the path visits below and above every real threshold.
+side, the path visits below and above every real threshold.  The exact
+extended-real display for Theorem 4.3.1 also now compiles: almost surely, the
+martingale either converges to a finite real limit or has `EReal` `liminf = ⊥`
+and `EReal` `limsup = ⊤`, matching Durrett's `-∞/+∞` statement.
 
-Next theorem-sized packet: continue Durrett Theorem 4.3.1 by deriving the
-exact textbook `liminf X_n = -∞` and `limsup X_n = +∞` display from the
-compiled threshold-form oscillation wrapper, or by packaging the strongest
-direct mathlib order-filter API that is definitionally close to that display.
-Search only `limsup`/`liminf`, `Filter`, `EReal`, `atTop`/`atBot`, and the
-existing order-filter consequences of crossing every real threshold.  Do not
-redo the compiled range-form dichotomy or threshold-form wrapper.
+Next theorem-sized packet: move to Durrett Theorem 4.3.2, Doob's
+decomposition for submartingales.  Search and reuse only
+`Mathlib.Probability.Martingale.Centering`, especially `predictablePart`,
+`martingalePart`, `martingalePart_add_predictablePart`,
+`martingale_martingalePart`, `isPredictable_predictablePart`,
+`Submartingale.monotone_predictablePart`, and
+`Submartingale.predictablePart_nonneg`.  Package a source-facing wrapper:
+`X_n = M_n + A_n`, `M` is a martingale, `A` is predictable, increasing, and
+`A_0 = 0`, with the displayed finite-sum formula for `A_n` if it is immediate.
+Do not route back into Theorem 4.3.1.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -420,10 +426,10 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should continue Theorem 4.3.1 by deriving the textbook
-liminf/limsup oscillation display from the compiled threshold-form wrapper.
-Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
-source-shaped API.
+The next likely packet should start Theorem 4.3.2 by packaging mathlib's
+Doob-decomposition `predictablePart`/`martingalePart` API into Durrett's
+source statement.  Keep Theorem 4.1.16 deferred unless a targeted kernel
+search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -535,6 +541,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V41` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V42` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
