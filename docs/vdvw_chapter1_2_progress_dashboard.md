@@ -3364,3 +3364,13 @@ registered primitive through
 This is the source-facing L1 strengthened entropy handoff: once the selected-log
 mean convergence is proved, generic Theorem 2.4.3 can consume the primitive
 without another selected tail/UI wrapper.
+
+The selected-cover measurability layer now has localized countability support:
+`measurableSet_finiteEmpiricalL1CoverAtCard_of_set_countable`,
+`measurable_finiteEmpiricalL1CoveringNumberCard_of_set_countable_of_measurable`,
+and the Theorem 2.4.3 selected truncated-cardinality lifts remove the need for
+global `[Countable Index]` when the actual class is countable.  The selected
+fixed-radius tail/UI mean consumer and the selected entropy finite-net mean
+primitive bridge now have `_of_set_countable` forms.  This improves finite and
+countable-class reuse; the remaining generic blocker is still the selected-log
+mean theorem or the displayed-beta selected-cover event primitive.

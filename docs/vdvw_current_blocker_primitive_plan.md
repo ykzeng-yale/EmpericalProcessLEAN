@@ -8074,3 +8074,16 @@ therefore feed the registered primitive directly, via the already compiled
 selected fixed-radius tail/UI package.  This keeps the active source target
 focused on proving that selected-log mean input from the stochastic entropy
 argument, rather than adding another endpoint wrapper.
+
+2026-05-08 localized selected-cover measurability:
+`CoveringPrimitive.lean` now proves set-countable versions of the finite
+empirical-cover event and least-cover-cardinality measurability lemmas, and
+`Theorem243.lean` lifts them to selected random empirical-cover cardinalities
+for truncated classes.  The selected fixed-radius tail/UI mean theorem and
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_selectedFixedRadiusTailSideConditions`
+now have `_of_set_countable` forms, so finite/countable theorem classes no
+longer need an artificial `[Countable Index]` assumption at this source
+handoff.  This is a dependency cleanup, not a closure of the generic stochastic
+entropy theorem.  The active blocker remains: prove the selected-log mean input
+from the textbook stochastic entropy argument, or prove the displayed-beta
+selected-cover event primitive.
