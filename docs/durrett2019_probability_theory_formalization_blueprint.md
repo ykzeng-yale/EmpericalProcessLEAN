@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V44`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V45`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -433,10 +433,12 @@ Next packet:
   extended-real liminf/limsup display.  Durrett Theorem 4.3.2 now compiles
   through the Doob-decomposition existence/formula wrapper and canonical plus
   source-facing uniqueness wrappers using mathlib's
-  `predictablePart`/`martingalePart` centering API.  The next active target is
-  Example 4.3.3 and Theorem 4.3.4 conditional Borel-Cantelli via mathlib
-  `Probability.Martingale.BorelCantelli`.  Theorem 4.1.16 remains deferred
-  unless a direct kernel API appears.
+  `predictablePart`/`martingalePart` centering API.  Example 4.3.3 and Theorem
+  4.3.4 conditional Borel-Cantelli now compile via mathlib
+  `Probability.Martingale.BorelCantelli`.  The next active target is Theorem
+  4.3.5 Radon-Nikodym derivatives, beginning with a narrow Lemma 4.3.6
+  likelihood-ratio martingale bridge if the rn-deriv/restriction APIs line up.
+  Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
 

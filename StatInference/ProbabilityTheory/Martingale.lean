@@ -2411,5 +2411,69 @@ theorem durrett2019_theorem_4_3_2_doob_decomposition_unique
   · exact (h₁ n).1.symm.trans (h₂ n).1
   · exact (h₁ n).2.symm.trans (h₂ n).2
 
+/--
+Durrett 2019, Example 4.3.3: the martingale part of the counting process for
+events `B n` is a martingale.
+-/
+theorem durrett2019_example_4_3_3_borel_cantelli_process_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {B : ℕ -> Set Ω}
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n)) :
+    Martingale (martingalePart (MeasureTheory.BorelCantelli.process B) ℱ μ) ℱ μ :=
+  martingale_martingalePart
+    (MeasureTheory.BorelCantelli.stronglyAdapted_process (ℱ := ℱ) hB)
+    (MeasureTheory.BorelCantelli.integrable_process (ℱ := ℱ) μ hB)
+
+/--
+Durrett 2019, Example 4.3.3: finite-sum display for the martingale part
+`M_n = ∑_{k<n} (1_{B_{k+1}} - E(1_{B_{k+1}} | ℱ_k))`.
+-/
+theorem durrett2019_example_4_3_3_borel_cantelli_martingale_formula
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω) (n : ℕ) :
+    martingalePart (MeasureTheory.BorelCantelli.process B) ℱ μ n =
+      ∑ k ∈ Finset.range n,
+        ((B (k + 1)).indicator (1 : Ω -> ℝ) -
+          μ[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k]) :=
+  MeasureTheory.BorelCantelli.martingalePart_process_ae_eq ℱ μ B n
+
+/--
+Durrett 2019, Example 4.3.3: finite-sum display for the predictable part,
+the cumulative conditional probabilities.
+-/
+theorem durrett2019_example_4_3_3_borel_cantelli_predictable_formula
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω) (n : ℕ) :
+    predictablePart (MeasureTheory.BorelCantelli.process B) ℱ μ n =
+      ∑ k ∈ Finset.range n,
+        μ[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] :=
+  MeasureTheory.BorelCantelli.predictablePart_process_ae_eq ℱ μ B n
+
+/--
+Durrett 2019, Example 4.3.3: the event-counting process has one-step
+increments bounded by one.
+-/
+theorem durrett2019_example_4_3_3_borel_cantelli_process_difference_le
+    {Ω : Type*} [MeasurableSpace Ω] (B : ℕ -> Set Ω) (ω : Ω) (n : ℕ) :
+    |MeasureTheory.BorelCantelli.process B (n + 1) ω -
+      MeasureTheory.BorelCantelli.process B n ω| ≤ (1 : ℝ≥0) :=
+  MeasureTheory.BorelCantelli.process_difference_le B ω n
+
+/--
+Durrett 2019, Theorem 4.3.4: conditional Borel-Cantelli.  The event that
+`B n` occurs infinitely often agrees a.e. with divergence of the cumulative
+conditional probabilities.
+-/
+theorem durrett2019_theorem_4_3_4_conditional_borel_cantelli
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {B : ℕ -> Set Ω}
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n)) :
+    ∀ᵐ ω ∂μ, ω ∈ limsup B atTop ↔
+      Tendsto (fun n => ∑ k ∈ Finset.range n,
+        (μ[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k]) ω) atTop atTop :=
+  MeasureTheory.ae_mem_limsup_atTop_iff μ hB
+
 end ProbabilityTheory
 end StatInference
