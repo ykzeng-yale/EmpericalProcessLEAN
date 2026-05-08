@@ -161,6 +161,14 @@ characteristic-function, scalar/projected CLT, bridge, and certificate
 wrappers; use them when the proxy is constant in `ω`.  It now also has the
 Chewi 12.3 ASGD endpoint wrapper
 `asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
+The newest residual-estimate packet extracts the actual row-summed residual
+handoffs as reusable theorems:
+`projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
+`projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
+and
+`projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_futureTail_l1_residual_sum`.
+Use these when proving source proxy estimates; do not re-enter the mixed-tower
+defect proof just to recover a residual convergence statement.
 The direct future-tail residual route now has
 `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers through
 the certificate layer.  This is the preferred route when the normalized future
@@ -416,8 +424,11 @@ proxy measurability/integrability plus bounded-source square/remainder
 integrability automatically.  The compact no-factor deterministic-proxy route
 also reaches the Chewi 12.3 ASGD endpoint through
 `asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
-After the proxy estimate is closed, instantiate these constructors; do not
-spend another run on characteristic-function, certificate, or ASGD endpoint
+The residual-estimate layer now separately exposes the future-tail residual
+from predictable or deterministic proxy approximations, and the
+future-multiplier residual from the future-tail residual.  After the proxy
+estimate is closed, instantiate these residual and endpoint constructors; do
+not spend another run on characteristic-function, certificate, or ASGD endpoint
 adapter wiring.  The one-step
 normalized peel, inverse-compensation algebra, and bounded-continuous
 expectation handoff are already compiled; the raw-product start and normalized

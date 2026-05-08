@@ -10478,6 +10478,44 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_l
     L N r t
 
 /--
+The future-multiplier row-summed `L1` residual vanishes once the future-tail
+row-summed `L1` residual vanishes.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_futureTail_l1_residual_sum
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hfuture_tail_residual_sum :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                P[fun ω => S.projectedMixedTowerFutureTail L N t r ω |
+                  S.martingale.filtration r] ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              P[fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω |
+                S.martingale.filtration r] ω‖ ∂P)
+      atTop (𝓝 0) := by
+  refine squeeze_zero'
+    (Eventually.of_forall fun N =>
+      Finset.sum_nonneg fun r _hr =>
+        integral_nonneg fun ω => norm_nonneg _)
+    ?_ hfuture_tail_residual_sum
+  exact Eventually.of_forall fun N =>
+    S.projectedMixedTowerFutureMultiplier_l1_residual_row_sum_le_tail_l1_residual_row_sum
+      L N t
+
+/--
 It is enough to prove the L1 unpredictability row-sum for the future normalized
 Taylor tail; the raw characteristic prefix is already predictable and
 unit-bounded.
@@ -10519,18 +10557,136 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_tendsto
               ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
                 P[fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω |
                   S.martingale.filtration r] ω‖ ∂P)
-        atTop (𝓝 0) := by
-    refine squeeze_zero'
-      (Eventually.of_forall fun N =>
-        Finset.sum_nonneg fun r _hr =>
-          integral_nonneg fun ω => norm_nonneg _)
-      ?_ hfuture_tail_residual_sum
-    exact Eventually.of_forall fun N =>
-      S.projectedMixedTowerFutureMultiplier_l1_residual_row_sum_le_tail_l1_residual_row_sum
-        L N t
+        atTop (𝓝 0) :=
+    S.projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_futureTail_l1_residual_sum
+      L t hfuture_tail_residual_sum
   exact
     S.projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_l1_residual_sum
       L t hsq hremainder hfuture_multiplier_residual_sum
+
+/--
+An `F_r`-measurable proxy approximation controls the row-summed `L1` residual
+of the future normalized Taylor tail.  This isolates the probabilistic residual
+estimate used by the mixed-tower defect proof.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (proxy : ℕ -> ℕ -> Ω -> ℂ)
+    (hproxy_meas : ∀ N r : ℕ,
+      AEStronglyMeasurable[S.martingale.filtration r] (proxy N r) P)
+    (hproxy_int : ∀ N r : ℕ, Integrable (proxy N r) P)
+    (hproxy_approx :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                proxy N r ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              P[fun ω => S.projectedMixedTowerFutureTail L N t r ω |
+                S.martingale.filtration r] ω‖ ∂P)
+      atTop (𝓝 0) := by
+  refine squeeze_zero'
+    (f := fun N : ℕ =>
+      ∑ r ∈ Finset.range N,
+        ∫ ω,
+          ‖S.projectedMixedTowerFutureTail L N t r ω -
+            P[fun ω => S.projectedMixedTowerFutureTail L N t r ω |
+              S.martingale.filtration r] ω‖ ∂P)
+    (g := fun N : ℕ =>
+      2 * ∑ r ∈ Finset.range N,
+        ∫ ω,
+          ‖S.projectedMixedTowerFutureTail L N t r ω -
+            proxy N r ω‖ ∂P)
+    (Eventually.of_forall fun N =>
+      Finset.sum_nonneg fun r _hr =>
+        integral_nonneg fun ω => norm_nonneg _)
+    ?_ ?_
+  · exact Eventually.of_forall fun N => by
+      calc
+        (∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              P[fun ω => S.projectedMixedTowerFutureTail L N t r ω |
+                S.martingale.filtration r] ω‖ ∂P)
+            ≤ ∑ r ∈ Finset.range N,
+                2 * ∫ ω,
+                  ‖S.projectedMixedTowerFutureTail L N t r ω -
+                    proxy N r ω‖ ∂P := by
+              refine Finset.sum_le_sum ?_
+              intro r _hr
+              exact
+                integral_norm_sub_condExp_le_two_mul_integral_norm_sub_of_aestronglyMeasurable
+                  (P := P) (m := S.martingale.filtration r)
+                  (S.martingale.filtration.le r)
+                  (S.projectedMixedTowerFutureTail_integrable_of_uniform_bound L N r t)
+                  (hproxy_int N r)
+                  (hproxy_meas N r)
+        _ = 2 * ∑ r ∈ Finset.range N,
+              ∫ ω,
+                ‖S.projectedMixedTowerFutureTail L N t r ω -
+                  proxy N r ω‖ ∂P := by
+              rw [Finset.mul_sum]
+  · have hscaled :
+        Tendsto
+          (fun N : ℕ =>
+            2 * ∑ r ∈ Finset.range N,
+              ∫ ω,
+                ‖S.projectedMixedTowerFutureTail L N t r ω -
+                  proxy N r ω‖ ∂P)
+          atTop (𝓝 (2 * 0)) :=
+      tendsto_const_nhds.mul hproxy_approx
+    simpa using hscaled
+
+/--
+A deterministic future-tail approximation controls the row-summed `L1`
+residual of the future normalized Taylor tail.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (proxy : ℕ -> ℕ -> ℂ)
+    (hproxy_approx :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                proxy N r‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              P[fun ω => S.projectedMixedTowerFutureTail L N t r ω |
+                S.martingale.filtration r] ω‖ ∂P)
+      atTop (𝓝 0) :=
+  S.projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx
+    L t (fun N r _ω => proxy N r)
+    (fun N r => by
+      simpa using
+        (aestronglyMeasurable_const :
+          AEStronglyMeasurable[S.martingale.filtration r]
+            (fun _ω : Ω => proxy N r) P))
+    (fun N r => by simp)
+    (by simpa using hproxy_approx)
 
 /--
 It is enough to approximate each future normalized Taylor tail by an
@@ -10577,58 +10733,9 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_tendsto
               ‖S.projectedMixedTowerFutureTail L N t r ω -
                 P[fun ω => S.projectedMixedTowerFutureTail L N t r ω |
                   S.martingale.filtration r] ω‖ ∂P)
-        atTop (𝓝 0) := by
-    refine squeeze_zero'
-      (f := fun N : ℕ =>
-        ∑ r ∈ Finset.range N,
-          ∫ ω,
-            ‖S.projectedMixedTowerFutureTail L N t r ω -
-              P[fun ω => S.projectedMixedTowerFutureTail L N t r ω |
-                S.martingale.filtration r] ω‖ ∂P)
-      (g := fun N : ℕ =>
-        2 * ∑ r ∈ Finset.range N,
-          ∫ ω,
-            ‖S.projectedMixedTowerFutureTail L N t r ω -
-              proxy N r ω‖ ∂P)
-      (Eventually.of_forall fun N =>
-        Finset.sum_nonneg fun r _hr =>
-          integral_nonneg fun ω => norm_nonneg _)
-      ?_ ?_
-    · exact Eventually.of_forall fun N => by
-        calc
-          (∑ r ∈ Finset.range N,
-            ∫ ω,
-              ‖S.projectedMixedTowerFutureTail L N t r ω -
-                P[fun ω => S.projectedMixedTowerFutureTail L N t r ω |
-                  S.martingale.filtration r] ω‖ ∂P)
-              ≤ ∑ r ∈ Finset.range N,
-                  2 * ∫ ω,
-                    ‖S.projectedMixedTowerFutureTail L N t r ω -
-                      proxy N r ω‖ ∂P := by
-                refine Finset.sum_le_sum ?_
-                intro r _hr
-                exact
-                  integral_norm_sub_condExp_le_two_mul_integral_norm_sub_of_aestronglyMeasurable
-                    (P := P) (m := S.martingale.filtration r)
-                    (S.martingale.filtration.le r)
-                    (S.projectedMixedTowerFutureTail_integrable_of_uniform_bound L N r t)
-                    (hproxy_int N r)
-                    (hproxy_meas N r)
-          _ = 2 * ∑ r ∈ Finset.range N,
-                ∫ ω,
-                  ‖S.projectedMixedTowerFutureTail L N t r ω -
-                    proxy N r ω‖ ∂P := by
-                rw [Finset.mul_sum]
-    · have hscaled :
-          Tendsto
-            (fun N : ℕ =>
-              2 * ∑ r ∈ Finset.range N,
-                ∫ ω,
-                  ‖S.projectedMixedTowerFutureTail L N t r ω -
-                    proxy N r ω‖ ∂P)
-            atTop (𝓝 (2 * 0)) :=
-        tendsto_const_nhds.mul hproxy_approx
-      simpa using hscaled
+        atTop (𝓝 0) :=
+    S.projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx
+      L t proxy hproxy_meas hproxy_int hproxy_approx
   exact
     S.projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum
       L t hsq hremainder htail_residual_sum

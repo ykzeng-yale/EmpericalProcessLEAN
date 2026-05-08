@@ -42,6 +42,13 @@ For deterministic tail-core approximations, use the corresponding
 so callers do not need to pass a normalized-product limit separately.  Its
 Chewi 12.3 endpoint wrapper is
 `asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
+The residual layer now exposes
+`projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
+`projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
+and
+`projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_futureTail_l1_residual_sum`,
+so proxy approximations can be promoted directly into the preferred residual
+routes.
 For direct asymptotic predictability estimates, use
 `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound`; it packages the
 future-tail residual into the ASGD certificate route without a proxy.  Its

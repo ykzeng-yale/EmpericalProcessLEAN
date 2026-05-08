@@ -104,6 +104,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   removing the old normalized-product argument from deterministic proxy
   certificates.  The newest ASGD endpoint packet adds
   `asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
+- Residual-estimate extraction: the newest ASGD packet adds
+  `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
+  `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
+  and
+  `projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_futureTail_l1_residual_sum`.
+  These isolate the actual residual convergence estimates from the mixed-tower
+  defect proof, so source proxy estimates can feed the preferred route
+  directly.
 - Direct future-tail residual route: the new
   `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers turn
   row-summed `L1` predictability of the normalized future tail directly into
@@ -570,7 +578,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   integrability automatically.  The compact no-factor deterministic route now
   also reaches Chewi 12.3 via
   `asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
-  This turns the remaining residual blocker into constructing an
+  The residual-estimate layer now also exposes the future-tail residual from
+  predictable or deterministic proxy approximations, and the future-multiplier
+  residual from the future-tail residual.  This turns the remaining blocker
+  into constructing an
   `F_r`-measurable future-tail proxy with vanishing row-summed L1 error, with
   characteristic-function, scalar/projected CLT, and vector certificate adapter
   wiring already closed.  Fresh scout result: the natural inverse-compensation
