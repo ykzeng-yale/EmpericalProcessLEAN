@@ -1895,12 +1895,22 @@ Active aggressive target ladder:
    `HessianSegmentExponentialBounds.toHessianQuadraticBounds`,
    `localNorm_le_div_one_sub_of_hessianSegmentExponentialBounds`,
    `mul_one_sub_localNorm_le_of_hessianSegmentExponentialBounds`, and
-   `localNorm_sandwich_of_hessianSegmentExponentialBounds`.  The next bounded
-   packet is to derive `HessianSegmentExponentialBounds` from Chewi's actual
-   variable-coefficient `ψ(t)` self-concordance argument on the segment; reuse
-   mathlib `Analysis/ODE/Gronwall`, `gronwallBound`,
+   `localNorm_sandwich_of_hessianSegmentExponentialBounds`.  The newest
+   scalar analytic packet adds `scalar_le_exp_antideriv_of_abs_deriv_le`,
+   `scalar_exp_neg_antideriv_le_of_abs_deriv_le`,
+   `scalar_exp_sandwich_of_abs_deriv_le_antideriv`,
+   `chewi136HessianStabilityPrimitive`,
+   `chewi136HessianStabilityPrimitive_zero`,
+   `chewi136HessianStabilityPrimitive_one`, and
+   `chewi136HessianStabilityPrimitive_hasDerivAt`, formalizing the
+   variable-coefficient Gronwall antiderivative calculus for Chewi's displayed
+   `2 M r / (1 - M r t)` coefficient.  The next bounded packet is to package
+   the per-vector `ψ(t) = <v, Hess(z_t) v>` derivative bound and endpoint
+   identities so this scalar theorem proves `HessianSegmentExponentialBounds`;
+   reuse mathlib `Analysis/ODE/Gronwall`, `gronwallBound`,
    `norm_le_gronwallBound_of_norm_deriv_right_le`, `Real.exp_log`,
-   `Real.exp_neg`, `sq_le_sq₀`, `Real.sq_sqrt`, `Real.sqrt_sq`,
+   `Real.exp_neg`, `Real.log_inv`, `HasDerivAt.log`, `sq_le_sq₀`,
+   `Real.sq_sqrt`, `Real.sqrt_sq`,
    `ContinuousLinearMap.IsPositive`, and matrix `PosSemidef` APIs only when
    the generic supplied-Hessian interface is insufficient.
 5. If exact Theorem 10.13 source-report packaging is requested, add an `sInf`

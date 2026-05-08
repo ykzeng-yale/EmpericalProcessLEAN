@@ -337,8 +337,17 @@ result: mathlib supplies constant-coefficient continuous Gronwall
 square-root/log/exponential algebra (`sq_le_sq₀`, `Real.sq_sqrt`,
 `Real.sqrt_sq`, `Real.exp_log`, `Real.exp_neg`) plus operator/matrix
 positivity APIs, but no Chewi self-concordance Hessian-stability theorem.  The
-next Chapter 13 packet should prove `HessianSegmentExponentialBounds` from the
-actual variable-coefficient segment self-concordance argument, then assemble
+newest scalar analytic packet adds the variable-antiderivative Gronwall
+wrappers `scalar_le_exp_antideriv_of_abs_deriv_le`,
+`scalar_exp_neg_antideriv_le_of_abs_deriv_le`, and
+`scalar_exp_sandwich_of_abs_deriv_le_antideriv`, plus
+`chewi136HessianStabilityPrimitive`,
+`chewi136HessianStabilityPrimitive_zero`,
+`chewi136HessianStabilityPrimitive_one`, and
+`chewi136HessianStabilityPrimitive_hasDerivAt`, proving the calculus for the
+displayed coefficient `2 M r / (1 - M r t)`.  The next Chapter 13 packet
+should package the per-vector `ψ(t)` derivative bound and endpoint identities
+so this scalar theorem proves `HessianSegmentExponentialBounds`, then assemble
 Lemma 13.6 and the Newton decrement convergence layer.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem

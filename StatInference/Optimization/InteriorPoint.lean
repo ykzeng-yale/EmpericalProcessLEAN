@@ -47,6 +47,107 @@ theorem scalar_le_exp_of_abs_deriv_le
     have hb := hbound t ht
     simpa [Real.norm_eq_abs, abs_of_nonneg hqt_nonneg] using hb
 
+/--
+Variable-coefficient scalar Gronwall upper bound with an explicit
+antiderivative.  This is the source shape needed for Chewi Lemma 13.6's
+`ψ(t)` estimate once `A'` is the displayed coefficient.
+-/
+theorem scalar_le_exp_antideriv_of_abs_deriv_le
+    {q q' A A' : ℝ -> ℝ} {t : ℝ}
+    (hq : ∀ s, HasDerivAt q (q' s) s)
+    (hA : ∀ s, HasDerivAt A (A' s) s)
+    (hbound : ∀ s, |q' s| ≤ A' s * q s)
+    (ht : 0 ≤ t) :
+    q t ≤ q 0 * Real.exp (A t - A 0) := by
+  let z : ℝ -> ℝ := fun s => Real.exp (-(A s)) * q s
+  have hz : ∀ s, HasDerivAt z
+      (Real.exp (-(A s)) * (q' s - A' s * q s)) s := by
+    intro s
+    have hnegA : HasDerivAt (fun r => -(A r)) (-(A' s)) s := (hA s).neg
+    have hexp : HasDerivAt (fun r => Real.exp (-(A r)))
+        (Real.exp (-(A s)) * (-(A' s))) s := hnegA.exp
+    have hmul := hexp.mul (hq s)
+    convert hmul using 1
+    ring
+  have hanti : Antitone z := by
+    refine antitone_of_deriv_nonpos ?_ ?_
+    · intro s
+      exact (hz s).differentiableAt
+    · intro s
+      have hderiv := (hz s).deriv
+      rw [hderiv]
+      have hexp_nonneg : 0 ≤ Real.exp (-(A s)) := Real.exp_nonneg _
+      have hle : q' s - A' s * q s ≤ 0 := by
+        have hb := hbound s
+        have hqle : q' s ≤ A' s * q s :=
+          le_trans (le_abs_self _) hb
+        linarith
+      nlinarith
+  have hzt := hanti ht
+  have hm := mul_le_mul_of_nonneg_left hzt (Real.exp_nonneg (A t))
+  calc
+    q t = Real.exp (A t) * z t := by
+      simp [z, ← mul_assoc, ← Real.exp_add]
+    _ ≤ Real.exp (A t) * z 0 := hm
+    _ = q 0 * Real.exp (A t - A 0) := by
+      simp [z, ← mul_assoc, ← Real.exp_add]
+      ring_nf
+
+/--
+Variable-coefficient scalar Gronwall lower bound with an explicit
+antiderivative.
+-/
+theorem scalar_exp_neg_antideriv_le_of_abs_deriv_le
+    {q q' A A' : ℝ -> ℝ} {t : ℝ}
+    (hq : ∀ s, HasDerivAt q (q' s) s)
+    (hA : ∀ s, HasDerivAt A (A' s) s)
+    (hbound : ∀ s, |q' s| ≤ A' s * q s)
+    (ht : 0 ≤ t) :
+    q 0 * Real.exp (-(A t - A 0)) ≤ q t := by
+  let w : ℝ -> ℝ := fun s => Real.exp (A s) * q s
+  have hw : ∀ s, HasDerivAt w
+      (Real.exp (A s) * (A' s * q s + q' s)) s := by
+    intro s
+    have hexp : HasDerivAt (fun r => Real.exp (A r))
+        (Real.exp (A s) * A' s) s := (hA s).exp
+    have hmul := hexp.mul (hq s)
+    convert hmul using 1
+    ring
+  have hmono : Monotone w := by
+    refine monotone_of_deriv_nonneg ?_ ?_
+    · intro s
+      exact (hw s).differentiableAt
+    · intro s
+      have hderiv := (hw s).deriv
+      rw [hderiv]
+      have hexp_nonneg : 0 ≤ Real.exp (A s) := Real.exp_nonneg _
+      have hge : 0 ≤ A' s * q s + q' s := by
+        have hb := hbound s
+        have hnqle : -q' s ≤ A' s * q s := by
+          exact le_trans (by simpa using (le_abs_self (-q' s))) hb
+        linarith
+      nlinarith
+  have hwt := hmono ht
+  have hm := mul_le_mul_of_nonneg_left hwt (Real.exp_nonneg (-(A t)))
+  calc
+    q 0 * Real.exp (-(A t - A 0)) = Real.exp (-(A t)) * w 0 := by
+      simp [w, ← mul_assoc, ← Real.exp_add]
+      ring_nf
+    _ ≤ Real.exp (-(A t)) * w t := hm
+    _ = q t := by
+      simp [w, ← mul_assoc, ← Real.exp_add]
+
+theorem scalar_exp_sandwich_of_abs_deriv_le_antideriv
+    {q q' A A' : ℝ -> ℝ} {t : ℝ}
+    (hq : ∀ s, HasDerivAt q (q' s) s)
+    (hA : ∀ s, HasDerivAt A (A' s) s)
+    (hbound : ∀ s, |q' s| ≤ A' s * q s)
+    (ht : 0 ≤ t) :
+    q 0 * Real.exp (-(A t - A 0)) ≤ q t ∧
+      q t ≤ q 0 * Real.exp (A t - A 0) :=
+  ⟨scalar_exp_neg_antideriv_le_of_abs_deriv_le hq hA hbound ht,
+    scalar_le_exp_antideriv_of_abs_deriv_le hq hA hbound ht⟩
+
 end ScalarGronwall
 
 section VectorSelfConcordance
@@ -246,6 +347,40 @@ theorem mul_one_sub_localNorm_le_of_hessianQuadraticLower
 /-- Chewi Lemma 13.6's displayed exponential constant for the `ψ(t)` step. -/
 noncomputable def chewi136HessianStabilityExponent (M r : ℝ) : ℝ :=
   2 * Real.log ((1 - M * r)⁻¹)
+
+/-- Antiderivative of Chewi Lemma 13.6's variable coefficient. -/
+noncomputable def chewi136HessianStabilityPrimitive
+    (M r t : ℝ) : ℝ :=
+  2 * Real.log ((1 - M * r * t)⁻¹)
+
+theorem chewi136HessianStabilityPrimitive_zero (M r : ℝ) :
+    chewi136HessianStabilityPrimitive M r 0 = 0 := by
+  simp [chewi136HessianStabilityPrimitive]
+
+theorem chewi136HessianStabilityPrimitive_one (M r : ℝ) :
+    chewi136HessianStabilityPrimitive M r 1 =
+      chewi136HessianStabilityExponent M r := by
+  simp [chewi136HessianStabilityPrimitive, chewi136HessianStabilityExponent]
+
+theorem chewi136HessianStabilityPrimitive_hasDerivAt
+    {M r t : ℝ} (hden_ne : 1 - M * r * t ≠ 0) :
+    HasDerivAt (fun s : ℝ => chewi136HessianStabilityPrimitive M r s)
+      (2 * M * r / (1 - M * r * t)) t := by
+  have hu : HasDerivAt (fun s : ℝ => 1 - M * r * s) (-(M * r)) t := by
+    have hlin : HasDerivAt (fun s : ℝ => M * r * s) (M * r) t := by
+      simpa [mul_assoc] using (hasDerivAt_id t).const_mul (M * r)
+    simpa using (hasDerivAt_const t (1 : ℝ)).sub hlin
+  have hlog : HasDerivAt (fun s : ℝ => Real.log (1 - M * r * s))
+      (-(M * r) / (1 - M * r * t)) t := by
+    simpa using hu.log hden_ne
+  have hmul := hlog.neg.const_mul 2
+  have hcoef : 2 * - (-(M * r) / (1 - M * r * t)) =
+      2 * M * r / (1 - M * r * t) := by
+    ring
+  rw [← hcoef]
+  convert hmul using 1
+  funext s
+  simp [chewi136HessianStabilityPrimitive, Real.log_inv]
 
 theorem chewi136_exp_stability_upper
     {M r : ℝ} (hden_pos : 0 < 1 - M * r) :
