@@ -147,6 +147,9 @@ Current frontier: the active module is `StatInference/Optimization/ASGD.lean`;
 the active source packet is Chapter 12 ASGD Theorem 12.7/12.3, specifically the
 scalar bounded-martingale characteristic-function proof behind
 `projected_charFun_tendsto_exp`.  The stable ASGD stack now includes the
+conditional residual/correlation primitives
+`integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left` and
+`norm_integral_mul_condExp_residual_le_integral_norm_residual_mul_norm`, the
 conditional Taylor-remainder row convergence from `a94b579` and the
 compensated one-step/error interface:
 `projectedCompensationFactor`, `projectedCompensatedTaylorErrorFactor`,
@@ -280,10 +283,12 @@ plus the normalized compensated-product bridge:
 and
 `projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
 
-Next theorem packet: use the exact mixed-defect identity
+Next theorem packet: instantiate the conditional residual/correlation bound
+with the future inverse/error tail as the weight and the current raw
+characteristic factor minus its conditional expectation as the residual, then
+feed that estimate into the exact mixed-defect identity
 `projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product`
-to prove the weighted compensated-prefix/future-error correlation bound behind
-the standard compensated martingale defect bound
+to prove the standard compensated martingale defect bound
 `Tendsto (fun N => ∑ r in Finset.range N,
 S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`.  After that, feed
 `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`
@@ -442,6 +447,14 @@ martingale product theorem was found in pinned mathlib or local
 `StronglyAdapted.stronglyMeasurable_le`, `Finset.aestronglyMeasurable_prod`,
 `integral_sub`, `integral_congr_ae`, `norm_integral_le_integral_norm`, and
 local product bounds in `StatInference/ProbabilityTheory/ProductBounds.lean`.
+New conditional-residual search result: mathlib/local APIs
+`condExp_bilin_of_aestronglyMeasurable_left`, `condExp_sub`,
+`condExp_condExp_of_le`, `stronglyMeasurable_condExp`, and
+`integral_condExp` suffice to prove the compiled primitives
+`integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left` and
+`norm_integral_mul_condExp_residual_le_integral_norm_residual_mul_norm`.  Reuse
+these for the weighted martingale correlation estimate instead of reproving
+pull-out/tower algebra.
 For the adapted compensated-prefix route, reuse
 `Chewi127ConditionalCovarianceProcess.Xi_succ_filtration_aestronglyMeasurable`,
 `AEStronglyMeasurable.mono`, finite-product induction over `Finset.range`, and

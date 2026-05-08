@@ -332,6 +332,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_eq_compensated_prefix_inverse_tail`,
   `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_eq_compensated_prefix_full_inverse_error_tail`,
   `Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product`,
+  `integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left`,
+  `norm_integral_mul_condExp_residual_le_integral_norm_residual_mul_norm`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -449,11 +451,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   tail, then rewrites the whole defect sum as the exact weighted difference
   `compensated full prefix * full inverse product` minus
   `full inverse product * all compensated-error factors`.
+  The newest conditional-residual packet proves the reusable martingale
+  orthogonality primitive for an adapted multiplier against
+  `g - E[g | F]`, and the corresponding correlation bound reducing a weighted
+  residual integral to the `L1` size of the weight's non-predictable part.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
-  earlier `F_r` for `r < k`.  Next target: prove the weighted martingale
-  correlation/convergence estimate that makes this exact defect-sum difference
-  tend to zero, not another future-tail measurability wrapper.
+  earlier `F_r` for `r < k`.  Next target: instantiate the new correlation
+  bound with the future inverse/error tail weight and prove the defect-sum
+  convergence, not another future-tail measurability wrapper.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
@@ -1081,10 +1087,13 @@ the explicit mixed-tower defect decomposition/adaptor, and the adapted
 compensated-prefix one-step identity
 `projectedCompensatedRawPrefixProduct_integral_succ_eq`, plus the exact
 mixed-defect compensated algebra identity
-`projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product`.
-Next theorem-sized packet: prove the weighted martingale
-correlation/convergence estimate that makes the compensated defect sum vanish
-and is consumed by
+`projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product`,
+and the conditional residual/correlation primitives
+`integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left` and
+`norm_integral_mul_condExp_residual_le_integral_norm_residual_mul_norm`.
+Next theorem-sized packet: instantiate the weighted martingale correlation
+bound with the future inverse/error tail and prove the compensated defect sum
+vanishes for
 `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`,
 then feed the existing Chewi Theorem 12.7/12.3 ASGD certificate constructors.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw

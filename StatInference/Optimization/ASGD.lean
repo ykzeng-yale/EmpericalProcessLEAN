@@ -692,6 +692,102 @@ theorem integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left
               hf hfg hg)
 
 /--
+An `m`-measurable multiplier has zero integral against a conditional
+expectation residual.  This is the martingale-orthogonality primitive used
+when future weights are split into a predictable part plus an error.
+-/
+theorem integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] (m : MeasurableSpace Ω) (hm : m ≤ mΩ)
+    {f g : Ω -> ℂ}
+    (hf : AEStronglyMeasurable[m] f P)
+    (hfg :
+      Integrable (fun ω => f ω * (g ω - P[g | m] ω)) P)
+    (hg : Integrable g P) :
+    (∫ ω, f ω * (g ω - P[g | m] ω) ∂P) = 0 := by
+  let residual : Ω -> ℂ := fun ω => g ω - P[g | m] ω
+  have hres_int : Integrable residual P := by
+    exact hg.sub (integrable_condExp (μ := P) (m := m) (f := g))
+  have hstep :
+      (∫ ω, f ω * residual ω ∂P) =
+        ∫ ω, f ω * P[residual | m] ω ∂P :=
+    integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left
+      (mΩ := mΩ) (P := P) m hm hf (by simpa [residual] using hfg) hres_int
+  have hres_cond : P[residual | m] =ᵐ[P] 0 := by
+    have hsub :
+        P[residual | m] =ᵐ[P] P[g | m] - P[P[g | m] | m] := by
+      simpa [residual] using
+        (condExp_sub (μ := P) (f := g) (g := fun ω => P[g | m] ω)
+          hg (integrable_condExp (μ := P) (m := m) (f := g)) m)
+    have htower : P[P[g | m] | m] =ᵐ[P] P[g | m] := by
+      simpa using
+        (condExp_condExp_of_le (μ := P) (E := ℂ)
+          (m₁ := m) (m₂ := m) (m₀ := mΩ) le_rfl hm)
+    exact hsub.trans (by
+      filter_upwards [htower] with ω hω
+      simp [hω])
+  calc
+    (∫ ω, f ω * (g ω - P[g | m] ω) ∂P)
+        = ∫ ω, f ω * residual ω ∂P := rfl
+    _ = ∫ ω, f ω * P[residual | m] ω ∂P := hstep
+    _ = ∫ _ω, (0 : ℂ) ∂P := by
+          refine integral_congr_ae ?_
+          filter_upwards [hres_cond] with ω hω
+          simp [hω]
+    _ = 0 := by simp
+
+/--
+Correlation bound after removing the predictable part of the future weight.
+The predictable component of `f` has zero integral against the residual
+`g - E[g | m]`; only the non-predictable residual of `f` remains.
+-/
+theorem norm_integral_mul_condExp_residual_le_integral_norm_residual_mul_norm
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] (m : MeasurableSpace Ω) (hm : m ≤ mΩ)
+    {f g : Ω -> ℂ}
+    (hg : Integrable g P)
+    (hf_res :
+      Integrable (fun ω => f ω * (g ω - P[g | m] ω)) P)
+    (hcondf_res :
+      Integrable (fun ω => P[f | m] ω * (g ω - P[g | m] ω)) P) :
+    ‖∫ ω, f ω * (g ω - P[g | m] ω) ∂P‖ ≤
+      ∫ ω, ‖f ω - P[f | m] ω‖ * ‖g ω - P[g | m] ω‖ ∂P := by
+  let residual : Ω -> ℂ := fun ω => g ω - P[g | m] ω
+  let unpredictable : Ω -> ℂ := fun ω => f ω - P[f | m] ω
+  have hzero :
+      (∫ ω, P[f | m] ω * residual ω ∂P) = 0 := by
+    exact
+      integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left
+        (mΩ := mΩ) (P := P) m hm
+        (f := fun ω => P[f | m] ω) (g := g)
+        stronglyMeasurable_condExp.aestronglyMeasurable
+        (by simpa [residual] using hcondf_res) hg
+  have hintegral_eq :
+      (∫ ω, f ω * residual ω ∂P) =
+        ∫ ω, unpredictable ω * residual ω ∂P := by
+    calc
+      (∫ ω, f ω * residual ω ∂P)
+          = (∫ ω, f ω * residual ω ∂P) -
+              ∫ ω, P[f | m] ω * residual ω ∂P := by
+              rw [hzero, sub_zero]
+      _ = ∫ ω, f ω * residual ω -
+              P[f | m] ω * residual ω ∂P := by
+              rw [integral_sub (by simpa [residual] using hf_res)
+                (by simpa [residual] using hcondf_res)]
+      _ = ∫ ω, unpredictable ω * residual ω ∂P := by
+              refine integral_congr_ae <| ae_of_all P fun ω => ?_
+              simp [unpredictable]
+              ring
+  calc
+    ‖∫ ω, f ω * (g ω - P[g | m] ω) ∂P‖
+        = ‖∫ ω, unpredictable ω * residual ω ∂P‖ := by
+          rw [hintegral_eq]
+    _ ≤ ∫ ω, ‖unpredictable ω * residual ω‖ ∂P :=
+          norm_integral_le_integral_norm _
+    _ = ∫ ω, ‖f ω - P[f | m] ω‖ * ‖g ω - P[g | m] ω‖ ∂P := by
+          simp [unpredictable, residual]
+
+/--
 The conditional expectation is an `L1` contraction after taking norms.  This
 is the complex-valued form needed to bound conditional Taylor remainders by
 their unconditioned envelope.
