@@ -4,24 +4,24 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V12
+## Live In-Thread Goal Prompt V14
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Current frontier only: Section 3.10 finite-dimensional limit
-theory in `StatInference/ProbabilityTheory/Multivariate.lean`.
+synced `main`.  Treat the compiled Chapter 2 / Chapter 3 support, including the
+Section 3.10 multivariate CLT, Gaussian-coordinate independence criterion, and
+Exercise 3.10.8 linear-combination characterization, as closed dependencies.
 
-Treat the compiled Chapter 2 / early Chapter 3 support and the compiled
-Theorem 3.10.7 stack, including canonical product-sample CLT endpoints and
-Gaussian-coordinate independence wrappers, as closed dependencies.
-
-Next theorem-sized packet: Durrett source item 3.10.8, the finite-coordinate
-multivariate Gaussian characterization by one-dimensional linear combinations.
-Search and reuse existing `HasGaussianLaw`, characteristic-function, and local
-theta-projection APIs first; add only the narrow wrapper or bridge needed for
-3.10.8.
+Next theorem-sized packet: continue Chapter 4.1 conditional expectation after
+the compiled Durrett version predicate, mathlib-condExp version wrapper, and
+Example 4.1.3 self/constant wrappers in
+`StatInference/ProbabilityTheory/ConditionalExpectation.lean`.  Search and
+reuse mathlib `condExp_indep_eq`, `condExp_congr_ae`, set-integral uniqueness,
+and local conditional-expectation wrappers first.  The preferred next source
+target is Example 4.1.4, conditional expectation of a random variable
+independent of the conditioning sigma-field equals its expectation.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -507,6 +507,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V12` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V14` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

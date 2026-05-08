@@ -436,6 +436,257 @@ theorem durrett2019_theorem_3_10_7_thetaProjection_variance_eq_covarianceTableQu
   simp [durrett2019_theorem_3_10_7_covarianceTableQuadratic, hGamma]
 
 /--
+Durrett 2019, Exercise 3.10.8, mean of a finite-coordinate linear
+combination.
+
+This packages the textbook expression `c theta^t` for the mean of
+`sum_i c_i X_i`.
+-/
+theorem durrett2019_exercise_3_10_8_thetaProjectionMean_eq_coordinateMeanLinearCombination
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    {Q : Measure Ω} {Z : Ω -> Coordinate -> ℝ}
+    (mean : Coordinate -> ℝ) (theta : Coordinate -> ℝ)
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = mean coordinate) :
+    (∫ ω, (∑ i, theta i * Z ω i) ∂Q) =
+      ∑ i, theta i * mean i := by
+  classical
+  rw [integral_finsetSum]
+  · simp [integral_const_mul, hZ_coordinate_mean]
+  · intro i _
+    exact (hZ_coordinate_integrable i).const_mul (theta i)
+
+/--
+Durrett 2019, Exercise 3.10.8, forward direction.
+
+A finite-coordinate multivariate Gaussian vector has Gaussian law under every
+Durrett linear combination `sum_i c_i X_i`.
+-/
+theorem durrett2019_exercise_3_10_8_linearCombination_hasGaussianLaw_of_multivariateGaussian
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω} [IsProbabilityMeasure Q] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (theta : Coordinate -> ℝ) :
+    _root_.ProbabilityTheory.HasGaussianLaw
+      (fun ω => ∑ i, theta i * Z ω i) Q := by
+  classical
+  have hprojection :
+      _root_.ProbabilityTheory.HasGaussianLaw
+        (fun ω => durrett2019_theorem_3_10_7_thetaProjection theta (Z ω)) Q :=
+    hZ_gaussian.map_fun (durrett2019_theorem_3_10_7_thetaProjection theta)
+  exact hprojection.congr (Filter.Eventually.of_forall fun ω => by
+    simp [durrett2019_theorem_3_10_7_thetaProjection_apply])
+
+/--
+Durrett 2019, Exercise 3.10.8, reverse direction.
+
+If every Durrett finite linear combination has a one-dimensional Gaussian law,
+then the finite-coordinate random vector has a multivariate Gaussian law.
+-/
+theorem durrett2019_exercise_3_10_8_multivariateGaussian_of_linearCombination_hasGaussianLaw
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω} {Z : Ω -> Coordinate -> ℝ}
+    (hZ_aemeasurable : AEMeasurable Z Q)
+    (hlinear : ∀ theta : Coordinate -> ℝ,
+      _root_.ProbabilityTheory.HasGaussianLaw
+        (fun ω => ∑ i, theta i * Z ω i) Q) :
+    _root_.ProbabilityTheory.HasGaussianLaw Z Q := by
+  classical
+  refine ⟨?_⟩
+  refine _root_.ProbabilityTheory.isGaussian_of_isGaussian_map
+    (μ := Q.map Z) ?_
+  intro L
+  let theta := durrett2019_theorem_3_10_7_dualCoordinates L
+  have hL :
+      durrett2019_theorem_3_10_7_thetaProjection theta = L :=
+    durrett2019_theorem_3_10_7_thetaProjection_dualCoordinates L
+  have hmap :
+      (Q.map Z).map L =
+        Q.map (fun ω => ∑ i, theta i * Z ω i) := by
+    rw [← hL]
+    rw [AEMeasurable.map_map_of_aemeasurable
+      (by fun_prop : AEMeasurable
+        (durrett2019_theorem_3_10_7_thetaProjection theta) (Q.map Z))
+      hZ_aemeasurable]
+    congr 1
+    ext ω
+    simp [durrett2019_theorem_3_10_7_thetaProjection_apply]
+  rw [hmap]
+  exact (hlinear theta).isGaussian_map
+
+/--
+Durrett 2019, Exercise 3.10.8, the finite-coordinate `iff` in Lean's
+`HasGaussianLaw` language.
+-/
+theorem durrett2019_exercise_3_10_8_multivariateGaussian_iff_linearCombination_hasGaussianLaw
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω} [IsProbabilityMeasure Q] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_aemeasurable : AEMeasurable Z Q) :
+    _root_.ProbabilityTheory.HasGaussianLaw Z Q ↔
+      ∀ theta : Coordinate -> ℝ,
+        _root_.ProbabilityTheory.HasGaussianLaw
+          (fun ω => ∑ i, theta i * Z ω i) Q := by
+  constructor
+  · intro hZ_gaussian theta
+    exact
+      durrett2019_exercise_3_10_8_linearCombination_hasGaussianLaw_of_multivariateGaussian
+        (Q := Q) (Z := Z) hZ_gaussian theta
+  · exact
+      durrett2019_exercise_3_10_8_multivariateGaussian_of_linearCombination_hasGaussianLaw
+        (Q := Q) (Z := Z) hZ_aemeasurable
+
+/--
+Durrett 2019, Exercise 3.10.8, source-facing forward law statement.
+
+If the mean vector and covariance table are supplied in Durrett coordinates,
+then every linear combination has the corresponding real Gaussian law with mean
+`sum_i c_i theta_i` and variance `c Gamma c^t`.
+-/
+theorem durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_multivariateGaussian
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω} [IsProbabilityMeasure Q] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (mean : Coordinate -> ℝ) (Gamma : Coordinate -> Coordinate -> ℝ)
+    (theta : Coordinate -> ℝ)
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = mean coordinate)
+    (hGamma : ∀ i j,
+      Gamma i j =
+        _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j)) :
+    Q.map (fun ω => ∑ i, theta i * Z ω i) =
+      _root_.ProbabilityTheory.gaussianReal
+        (∑ i, theta i * mean i)
+        (durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma).toNNReal := by
+  classical
+  let L := durrett2019_theorem_3_10_7_thetaProjection theta
+  have hmean_L :
+      (∫ x, L x ∂(Q.map Z)) = ∑ i, theta i * mean i := by
+    rw [integral_map hZ_gaussian.aemeasurable
+      (by fun_prop : AEStronglyMeasurable L (Q.map Z))]
+    simpa [L, durrett2019_theorem_3_10_7_thetaProjection_apply] using
+      durrett2019_exercise_3_10_8_thetaProjectionMean_eq_coordinateMeanLinearCombination
+        (Q := Q) (Z := Z) mean theta hZ_coordinate_integrable
+        hZ_coordinate_mean
+  have hvar_L :
+      _root_.ProbabilityTheory.variance L (Q.map Z) =
+        durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma :=
+    durrett2019_theorem_3_10_7_thetaProjection_variance_eq_covarianceTableQuadratic
+      (μ := Q.map Z) hZ_memLp Gamma theta hGamma
+  calc
+    Q.map (fun ω => ∑ i, theta i * Z ω i) =
+        (Q.map Z).map L := by
+      rw [AEMeasurable.map_map_of_aemeasurable
+        (by fun_prop : AEMeasurable L (Q.map Z)) hZ_gaussian.aemeasurable]
+      congr 1
+      ext ω
+      simp [L, durrett2019_theorem_3_10_7_thetaProjection_apply]
+    _ = _root_.ProbabilityTheory.gaussianReal
+        (∫ x, L x ∂(Q.map Z))
+        (_root_.ProbabilityTheory.variance L (Q.map Z)).toNNReal := by
+      exact hZ_gaussian.isGaussian_map.map_eq_gaussianReal L
+    _ = _root_.ProbabilityTheory.gaussianReal
+        (∑ i, theta i * mean i)
+        (durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma).toNNReal := by
+      rw [hmean_L, hvar_L]
+
+/--
+Durrett 2019, Exercise 3.10.8, reverse direction from the source-facing real
+Gaussian laws of all linear combinations.
+-/
+theorem durrett2019_exercise_3_10_8_multivariateGaussian_of_linearCombination_law_eq_gaussianReal
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω} {Z : Ω -> Coordinate -> ℝ}
+    (mean : Coordinate -> ℝ) (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_aemeasurable : AEMeasurable Z Q)
+    (hlinear_law : ∀ theta : Coordinate -> ℝ,
+      Q.map (fun ω => ∑ i, theta i * Z ω i) =
+        _root_.ProbabilityTheory.gaussianReal
+          (∑ i, theta i * mean i)
+          (durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma).toNNReal) :
+    _root_.ProbabilityTheory.HasGaussianLaw Z Q := by
+  classical
+  exact
+    durrett2019_exercise_3_10_8_multivariateGaussian_of_linearCombination_hasGaussianLaw
+      (Q := Q) (Z := Z) hZ_aemeasurable
+      (fun theta => by
+        refine ⟨?_⟩
+        rw [hlinear_law theta]
+        infer_instance)
+
+/--
+Durrett 2019, Exercise 3.10.8, source-facing finite-coordinate `iff`.
+
+Under supplied mean and covariance coordinates, multivariate Gaussianity is
+equivalent to every Durrett linear combination having the corresponding real
+Gaussian law.
+-/
+theorem durrett2019_exercise_3_10_8_multivariateGaussian_iff_linearCombination_law_eq_gaussianReal
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω} [IsProbabilityMeasure Q] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_aemeasurable : AEMeasurable Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (mean : Coordinate -> ℝ) (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = mean coordinate)
+    (hGamma : ∀ i j,
+      Gamma i j =
+        _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j)) :
+    _root_.ProbabilityTheory.HasGaussianLaw Z Q ↔
+      ∀ theta : Coordinate -> ℝ,
+        Q.map (fun ω => ∑ i, theta i * Z ω i) =
+          _root_.ProbabilityTheory.gaussianReal
+            (∑ i, theta i * mean i)
+            (durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma).toNNReal := by
+  constructor
+  · intro hZ_gaussian theta
+    exact
+      durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_multivariateGaussian
+        (Q := Q) (Z := Z) hZ_gaussian hZ_memLp mean Gamma theta
+        hZ_coordinate_integrable hZ_coordinate_mean hGamma
+  · exact
+      durrett2019_exercise_3_10_8_multivariateGaussian_of_linearCombination_law_eq_gaussianReal
+        (Q := Q) (Z := Z) mean Gamma hZ_aemeasurable
+
+/--
 Durrett 2019, Theorem 3.10.7, Gaussian projected characteristic-function
 display.
 
