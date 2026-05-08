@@ -6044,6 +6044,183 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_sqrtSum_sq_lintegral_le_fou
           norm_num
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product Hellinger support: the scalar
+Pythagorean identity behind the finite cylinder overlap estimate.  For finite
+`a` and `b`, the square-root difference plus twice the square-root overlap is
+exactly `a + b`.
+-/
+theorem durrett2019_theorem_4_3_8_sqrtDiff_sq_add_two_mul_eq_add
+    {a b : ℝ≥0∞} (ha : a ≠ ∞) (hb : b ≠ ∞) :
+    (‖(a ^ ((1 : ℝ) / 2)).toReal -
+        (b ^ ((1 : ℝ) / 2)).toReal‖ₑ ^ (2 : ℝ)) +
+      (2 : ℝ≥0∞) *
+        (a ^ ((1 : ℝ) / 2) * b ^ ((1 : ℝ) / 2)) = a + b := by
+  let A : ℝ := (a ^ ((1 : ℝ) / 2)).toReal
+  let B : ℝ := (b ^ ((1 : ℝ) / 2)).toReal
+  have hA_nonneg : 0 ≤ A := by
+    dsimp [A]
+    exact ENNReal.toReal_nonneg
+  have hB_nonneg : 0 ≤ B := by
+    dsimp [B]
+    exact ENNReal.toReal_nonneg
+  have ha_half_ne_top : a ^ ((1 : ℝ) / 2) ≠ ∞ :=
+    ENNReal.rpow_ne_top_of_nonneg (by norm_num : 0 ≤ ((1 : ℝ) / 2)) ha
+  have hb_half_ne_top : b ^ ((1 : ℝ) / 2) ≠ ∞ :=
+    ENNReal.rpow_ne_top_of_nonneg (by norm_num : 0 ≤ ((1 : ℝ) / 2)) hb
+  have hA_sq : A ^ 2 = a.toReal := by
+    dsimp [A]
+    rw [← ENNReal.toReal_rpow]
+    rw [← Real.sqrt_eq_rpow]
+    exact Real.sq_sqrt ENNReal.toReal_nonneg
+  have hB_sq : B ^ 2 = b.toReal := by
+    dsimp [B]
+    rw [← ENNReal.toReal_rpow]
+    rw [← Real.sqrt_eq_rpow]
+    exact Real.sq_sqrt ENNReal.toReal_nonneg
+  have hA_sq_ofReal : ENNReal.ofReal (A ^ 2) = a := by
+    rw [hA_sq, ENNReal.ofReal_toReal ha]
+  have hB_sq_ofReal : ENNReal.ofReal (B ^ 2) = b := by
+    rw [hB_sq, ENNReal.ofReal_toReal hb]
+  have hdiff_sq :
+      ‖A - B‖ₑ ^ (2 : ℝ) = ENNReal.ofReal ((A - B) ^ 2) := by
+    rw [ENNReal.rpow_two]
+    rw [← ofReal_norm_eq_enorm (A - B), Real.norm_eq_abs]
+    rw [← ENNReal.ofReal_pow (abs_nonneg (A - B)) 2]
+    congr 1
+    simp
+  have hoverlap :
+      (2 : ℝ≥0∞) *
+          (a ^ ((1 : ℝ) / 2) * b ^ ((1 : ℝ) / 2)) =
+        ENNReal.ofReal (2 * (A * B)) := by
+    have hA_half : a ^ ((1 : ℝ) / 2) = ENNReal.ofReal A :=
+      (ENNReal.ofReal_toReal ha_half_ne_top).symm
+    have hB_half : b ^ ((1 : ℝ) / 2) = ENNReal.ofReal B :=
+      (ENNReal.ofReal_toReal hb_half_ne_top).symm
+    rw [hA_half, hB_half, ← ENNReal.ofReal_mul hA_nonneg]
+    rw [show (2 : ℝ≥0∞) = ENNReal.ofReal (2 : ℝ) by norm_num]
+    rw [← ENNReal.ofReal_mul (by norm_num : 0 ≤ (2 : ℝ))]
+  change
+    ‖A - B‖ₑ ^ (2 : ℝ) +
+      (2 : ℝ≥0∞) *
+        (a ^ ((1 : ℝ) / 2) * b ^ ((1 : ℝ) / 2)) = a + b
+  calc
+    ‖A - B‖ₑ ^ (2 : ℝ) +
+        (2 : ℝ≥0∞) *
+          (a ^ ((1 : ℝ) / 2) * b ^ ((1 : ℝ) / 2))
+        = ENNReal.ofReal ((A - B) ^ 2) +
+            ENNReal.ofReal (2 * (A * B)) := by
+          rw [hdiff_sq, hoverlap]
+    _ = ENNReal.ofReal (((A - B) ^ 2) + 2 * (A * B)) := by
+          rw [ENNReal.ofReal_add (sq_nonneg _) (by positivity)]
+    _ = ENNReal.ofReal (A ^ 2 + B ^ 2) := by
+          congr 1
+          ring
+    _ = ENNReal.ofReal (A ^ 2) + ENNReal.ofReal (B ^ 2) := by
+          rw [ENNReal.ofReal_add (sq_nonneg A) (sq_nonneg B)]
+    _ = a + b := by
+          rw [hA_sq_ofReal, hB_sq_ofReal]
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder overlap support: the
+concrete Pythagorean inequality
+`diffSq + 2 * overlap <= 2`.  This integrates the scalar identity against the
+infinite product denominator measure and uses the two finite-likelihood
+mass-one identities.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_sqrtDiff_sq_add_two_overlap_le_two
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x ≠ ∞) :
+    ∀ n, ∀ᶠ m in atTop,
+      (∫⁻ x,
+        (‖((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+              ((1 : ℝ) / 2)).toReal -
+            ((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+              ((1 : ℝ) / 2)).toReal‖ₑ ^ (2 : ℝ))
+        ∂Measure.infinitePi ν) +
+          (2 : ℝ≥0∞) *
+            (∫⁻ x,
+              (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+                  ((1 : ℝ) / 2) *
+                (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+                  ((1 : ℝ) / 2)
+              ∂Measure.infinitePi ν) ≤ (2 : ℝ≥0∞) := by
+  intro n
+  filter_upwards [hfinite n] with m hm
+  let Xn : (ι -> S) -> ℝ≥0∞ := fun x =>
+    durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x
+  let Xm : (ι -> S) -> ℝ≥0∞ := fun x =>
+    durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x
+  let Rn : (ι -> S) -> ℝ≥0∞ := fun x => Xn x ^ ((1 : ℝ) / 2)
+  let Rm : (ι -> S) -> ℝ≥0∞ := fun x => Xm x ^ ((1 : ℝ) / 2)
+  have hXn_meas : Measurable Xn :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_measurable (Iseq n) hq
+  have hXm_meas : Measurable Xm :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_measurable (Iseq m) hq
+  have hRn_meas : Measurable Rn :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_measurable (Iseq n) hq
+  have hRm_meas : Measurable Rm :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_measurable (Iseq m) hq
+  have hdiff_meas :
+      AEMeasurable
+        (fun x => ‖(Rn x).toReal - (Rm x).toReal‖ₑ ^ (2 : ℝ))
+        (Measure.infinitePi ν) :=
+    (((hRn_meas.ennreal_toReal.sub hRm_meas.ennreal_toReal).enorm).pow_const
+      (2 : ℝ)).aemeasurable
+  have hpoint :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        (‖(Rn x).toReal - (Rm x).toReal‖ₑ ^ (2 : ℝ)) +
+            (2 : ℝ≥0∞) * (Rn x * Rm x) ≤ Xn x + Xm x := by
+    filter_upwards [hm] with x hx
+    exact
+      le_of_eq
+        (durrett2019_theorem_4_3_8_sqrtDiff_sq_add_two_mul_eq_add
+          (a := Xn x) (b := Xm x) hx.1 hx.2)
+  have hXn_int : ∫⁻ x, Xn x ∂Measure.infinitePi ν = 1 :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_eq_one
+      (μ := μ) (ν := ν) (Iseq n) hq hμ
+  have hXm_int : ∫⁻ x, Xm x ∂Measure.infinitePi ν = 1 :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_eq_one
+      (μ := μ) (ν := ν) (Iseq m) hq hμ
+  change
+      (∫⁻ x, ‖(Rn x).toReal - (Rm x).toReal‖ₑ ^ (2 : ℝ)
+          ∂Measure.infinitePi ν) +
+        (2 : ℝ≥0∞) *
+          (∫⁻ x, Rn x * Rm x ∂Measure.infinitePi ν) ≤
+        (2 : ℝ≥0∞)
+  calc
+    (∫⁻ x, ‖(Rn x).toReal - (Rm x).toReal‖ₑ ^ (2 : ℝ)
+        ∂Measure.infinitePi ν) +
+        (2 : ℝ≥0∞) *
+          (∫⁻ x, Rn x * Rm x ∂Measure.infinitePi ν)
+        = (∫⁻ x, ‖(Rn x).toReal - (Rm x).toReal‖ₑ ^ (2 : ℝ)
+            ∂Measure.infinitePi ν) +
+            (∫⁻ x, (2 : ℝ≥0∞) * (Rn x * Rm x)
+              ∂Measure.infinitePi ν) := by
+          rw [lintegral_const_mul' _ _ (by norm_num : (2 : ℝ≥0∞) ≠ ∞)]
+    _ = ∫⁻ x,
+          (‖(Rn x).toReal - (Rm x).toReal‖ₑ ^ (2 : ℝ)) +
+            (2 : ℝ≥0∞) * (Rn x * Rm x)
+          ∂Measure.infinitePi ν := by
+          rw [lintegral_add_left' hdiff_meas]
+    _ ≤ ∫⁻ x, Xn x + Xm x ∂Measure.infinitePi ν :=
+          lintegral_mono_ae hpoint
+    _ = (∫⁻ x, Xn x ∂Measure.infinitePi ν) +
+          ∫⁻ x, Xm x ∂Measure.infinitePi ν := by
+          rw [lintegral_add_left hXn_meas]
+    _ = (2 : ℝ≥0∞) := by
+          rw [hXn_int, hXm_int]
+          norm_num
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product Hellinger support: scalar
 tail-subtraction algebra for the remaining square-difference estimate.  If a
 candidate overlap dominates the tail affinity and the square difference plus
@@ -6203,6 +6380,53 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_sqrtDiff
               ((1 : ℝ) / 2)
           ∂Measure.infinitePi ν)
       (tail := tail n) (htail_le n) hoverlap_nm hadd_nm
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy handoff after the
+concrete Pythagorean overlap inequality has been discharged.  The remaining
+analytic input is now only the lower bound saying that the concrete overlap
+dominates the Hellinger tail affinity.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_overlap_lower_bound
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    {tail : ℕ -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail : Tendsto tail atTop (𝓝 1))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x ≠ ∞)
+    (hoverlap :
+      ∀ n, ∀ᶠ m in atTop,
+        tail n ≤
+          ∫⁻ x,
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+                ((1 : ℝ) / 2) *
+              (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+                ((1 : ℝ) / 2)
+            ∂Measure.infinitePi ν) :
+    Tendsto
+      (fun n =>
+        Filter.liminf
+          (fun m =>
+            ∫⁻ x,
+              ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+                (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+              ∂Measure.infinitePi ν)
+          atTop)
+      atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_sqrtDiff_overlap_bound
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) (tail := tail)
+      hq hμ htail_le htail hfinite hoverlap
+      (durrett2019_theorem_4_3_8_cylinderLikelihood_sqrtDiff_sq_add_two_overlap_le_two
+        (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) hq hμ hfinite)
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the

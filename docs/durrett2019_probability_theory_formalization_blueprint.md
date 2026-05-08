@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V79`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V80`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -504,7 +504,8 @@ Next packet:
   Cauchy handoff with the textbook factors also now compile.  The
   `sqrt X_n + sqrt X_m` square-integral estimate and the overlap-to-tail
   algebra handoff for the `sqrt X_n - sqrt X_m` side also now compile.  The
-  next active target is the concrete Pythagorean overlap inequality, the
+  scalar/cylinder Pythagorean overlap inequality and lower-bound-only overlap
+  Cauchy handoff now also compile.  The next active target is the
   tail-overlap lower bound from finite Hellinger products/product tails, the
   HasProd/prefix instantiation of the product-tail convergence hypotheses,
   and tail-event zero-one support for Kakutani's dichotomy.  Theorem 4.1.16
