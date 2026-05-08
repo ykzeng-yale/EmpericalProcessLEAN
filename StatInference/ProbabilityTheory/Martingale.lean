@@ -5368,6 +5368,130 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_tendsto_of_range_ten
   exact (ENNReal.tendsto_toReal hXx).comp hlimx
 
 /--
+Durrett 2019, Theorem 4.3.8 quotient-convergence support: real convergence of
+two finite likelihood-density components, with nonzero denominator limit, gives
+real convergence of their `ENNReal` quotient.
+-/
+theorem durrett2019_theorem_4_3_8_toReal_div_tendsto_of_toReal_tendsto
+    {Yseq Zseq : ℕ -> ℝ≥0∞} {Y Z : ℝ≥0∞}
+    (hY : Tendsto (fun n => (Yseq n).toReal) atTop (𝓝 (Y.toReal)))
+    (hZ : Tendsto (fun n => (Zseq n).toReal) atTop (𝓝 (Z.toReal)))
+    (hZ0 : Z.toReal ≠ 0) :
+    Tendsto (fun n => (Yseq n / Zseq n).toReal) atTop (𝓝 ((Y / Z).toReal)) := by
+  have hdiv :
+      Tendsto (fun n => (Yseq n).toReal / (Zseq n).toReal) atTop
+        (𝓝 (Y.toReal / Z.toReal)) :=
+    hY.div hZ hZ0
+  simpa [ENNReal.toReal_div] using hdiv
+
+/--
+Durrett 2019, Theorem 4.3.8 quotient-convergence support under an a.e. filter:
+the previous pointwise quotient bridge in source-facing a.e. form.
+-/
+theorem durrett2019_theorem_4_3_8_ae_toReal_div_tendsto_of_toReal_tendsto
+    {Ω : Type*} [MeasurableSpace Ω] {ρ : Measure Ω}
+    {Yseq Zseq : ℕ -> Ω -> ℝ≥0∞} {Y Z : Ω -> ℝ≥0∞}
+    (hY :
+      ∀ᵐ x ∂ρ, Tendsto (fun n => (Yseq n x).toReal) atTop (𝓝 ((Y x).toReal)))
+    (hZ :
+      ∀ᵐ x ∂ρ, Tendsto (fun n => (Zseq n x).toReal) atTop (𝓝 ((Z x).toReal)))
+    (hZ0 : ∀ᵐ x ∂ρ, (Z x).toReal ≠ 0) :
+    ∀ᵐ x ∂ρ,
+      Tendsto (fun n => (Yseq n x / Zseq n x).toReal) atTop
+        (𝓝 ((Y x / Z x).toReal)) := by
+  filter_upwards [hY, hZ, hZ0] with x hYx hZx hZ0x
+  exact
+    durrett2019_theorem_4_3_8_toReal_div_tendsto_of_toReal_tendsto
+      (Yseq := fun n => Yseq n x) (Zseq := fun n => Zseq n x)
+      (Y := Y x) (Z := Z x) hYx hZx hZ0x
+
+/--
+Durrett 2019, Theorem 4.3.8 source-convergence support: if finite prefix
+likelihoods are identified with quotients of two real-convergent density
+components, then their real-valued limits are the quotient limit.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_tendsto_of_ratio_toReal_tendsto
+    {S : Type*} [MeasurableSpace S] {ρ : Measure (ℕ -> S)}
+    {q : ℕ -> S -> ℝ≥0∞}
+    {Yseq Zseq : ℕ -> (ℕ -> S) -> ℝ≥0∞}
+    {Y Z : (ℕ -> S) -> ℝ≥0∞}
+    (hratio :
+      ∀ᵐ x ∂ρ,
+        ∀ n,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x =
+            Yseq n x / Zseq n x)
+    (hY :
+      ∀ᵐ x ∂ρ, Tendsto (fun n => (Yseq n x).toReal) atTop (𝓝 ((Y x).toReal)))
+    (hZ :
+      ∀ᵐ x ∂ρ, Tendsto (fun n => (Zseq n x).toReal) atTop (𝓝 ((Z x).toReal)))
+    (hZ0 : ∀ᵐ x ∂ρ, (Z x).toReal ≠ 0) :
+    ∀ᵐ x ∂ρ,
+      Tendsto
+        (fun n =>
+          (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal)
+        atTop (𝓝 ((Y x / Z x).toReal)) := by
+  filter_upwards
+    [hratio,
+      durrett2019_theorem_4_3_8_ae_toReal_div_tendsto_of_toReal_tendsto
+        (ρ := ρ) (Yseq := Yseq) (Zseq := Zseq) (Y := Y) (Z := Z) hY hZ hZ0]
+    with x hratiox hlimx
+  exact hlimx.congr' <| Filter.Eventually.of_forall fun n => by
+    simp [hratiox n]
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical-ratio convergence support: once finite
+prefix likelihoods are identified with the quotients of two trimmed density
+sequences and those sequences converge to the canonical `mu + nu` limit
+densities, the finite prefix likelihoods converge in real form to the
+canonical ratio.
+-/
+theorem
+    durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_tendsto_canonicalRatio_of_trimmedRatio_toReal_tendsto
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} {q : ℕ -> S -> ℝ≥0∞}
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace (ℕ -> S))}
+    {Yseq Zseq : ℕ -> (ℕ -> S) -> ℝ≥0∞}
+    (hratio :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        ∀ n,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x =
+            Yseq n x / Zseq n x)
+    (hY :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto (fun n => (Yseq n x).toReal) atTop
+          (𝓝
+            ((durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity
+              (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ x).toReal)))
+    (hZ :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto (fun n => (Zseq n x).toReal) atTop
+          (𝓝
+            ((durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity
+              (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ x).toReal)))
+    (hZ0 :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        (durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity
+          (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ x).toReal ≠ 0) :
+    ∀ᵐ x ∂Measure.infinitePi ν,
+      Tendsto
+        (fun n =>
+          (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal)
+        atTop
+        (𝓝
+          ((durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+            (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ x).toReal)) := by
+  simpa [durrett2019_theorem_4_3_5_add_dominating_canonicalRatio] using
+    durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_tendsto_of_ratio_toReal_tendsto
+      (ρ := Measure.infinitePi ν) (q := q) (Yseq := Yseq) (Zseq := Zseq)
+      (Y :=
+        durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity
+          (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ)
+      (Z :=
+        durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity
+          (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ)
+      hratio hY hZ hZ0
+
+/--
 Durrett 2019, Theorem 4.3.8 cylinder support: restricting an infinite product
 law to finitely many coordinates gives the finite product likelihood ratio.
 -/

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V97
+## Live In-Thread Goal Prompt V98
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -311,12 +311,17 @@ convergence consumer as compiled support: for the Hellinger/product route, the
 remaining convergence input is now the real-valued convergence of finite-prefix
 likelihoods to `(canonicalRatio).toReal`, not an ENNReal convergence or a
 separate integrability proof.
+Also treat the quotient-limit bridge as compiled support: if finite prefix
+likelihoods are identified a.e. with quotients of two real-convergent trimmed
+density sequences, and the denominator limit is nonzero a.e., then their
+real-valued limits are `(canonicalRatio).toReal`.
 Move to the remaining Kakutani criterion assembly:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`) and logarithm/tail-measurability support.  Add only
-source-shaped wrappers that prove the standard real-valued full-prefix
-likelihood convergence to the canonical `mu + nu` ratio, discharge the
-nonzero-lower-integral input for that canonical ratio, or directly feed the
+source-shaped wrappers that identify the finite prefix likelihood with the
+quotient of the two trimmed density sequences for the canonical prefix
+filtration, prove the denominator-limit nonzero input, discharge the
+nonzero-lower-integral input for the canonical ratio, or directly feed the
 infinite-product
 criterion hypotheses consumed by the compiled branch assemblers and
 eliminator.  Do
@@ -330,7 +335,7 @@ limitProcess convergence bridge, canonical limit-density endpoint, canonical
 ratio endpoint, denominator-side top-set null endpoint, singular-support
 top-set endpoint, full canonical-ratio real identity, canonical
 `toReal = dmu/dnu` endpoint, canonical `toReal` integrability endpoint,
-canonical 4.3.8 positive-branch consumers, any Example 4.3.7
+canonical quotient-limit convergence bridge, canonical 4.3.8 positive-branch consumers, any Example 4.3.7
 finite-partition likelihood, finite-union, or generator endpoint, the
 finite-product likelihood/rectangle/`withDensity` layer, infinite-product
 cylinder/restriction handoff, Hellinger factorization layer, zero-product Fatou
@@ -802,11 +807,13 @@ convergence plus finite/nonzero coordinate densities and `∫⁻ X ≠ 0` feed t
 tail-zero-set positive-branch eliminator.  The canonical-ratio handoff into
 these range-limit consumers now also compiles, so `toReal = dmu/dnu` and
 `nu {canonicalRatio = infinity} = 0` no longer need to be supplied as open
-inputs.  Canonical-ratio real integrability and the real-valued full-prefix
-convergence consumer now also compile.  Move forward to proving standard
-real-valued full-prefix likelihood convergence to `(canonicalRatio).toReal`
-and discharging the canonical ratio nonzero-lower-integral/product inputs
-needed to finish the remaining Kakutani criterion assembly.
+inputs.  Canonical-ratio real integrability, the real-valued full-prefix
+convergence consumer, and the quotient-limit bridge now also compile.  Move
+forward to identifying the finite prefix likelihood with the quotient of the
+two trimmed density sequences for the canonical prefix filtration, proving the
+denominator-limit nonzero input, and discharging the canonical ratio
+nonzero-lower-integral/product inputs needed to finish the remaining Kakutani
+criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -920,6 +927,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V97` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V98` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
