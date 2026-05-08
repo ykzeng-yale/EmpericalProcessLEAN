@@ -2087,5 +2087,71 @@ theorem durrett2019_theorem_4_3_1_tendsto_on_bddBelow_range
   exact hsurvω k
     (durrett2019_theorem_4_3_1_firstBelow_eq_top_of_forall_neg_lt h_above)
 
+/--
+Durrett 2019, Theorem 4.3.1 bounded-above bridge: applying the bounded-below
+bridge to the negated martingale gives convergence on every path whose range is
+bounded above.
+-/
+theorem durrett2019_theorem_4_3_1_tendsto_on_bddAbove_range
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {M : ℝ}
+    (hX : Martingale X ℱ μ) (hM_nonneg : 0 ≤ M)
+    (hX0 : ∀ᵐ ω ∂μ, X 0 ω = 0)
+    (hinc : ∀ᵐ ω ∂μ, ∀ i, |X (i + 1) ω - X i ω| ≤ M) :
+    ∀ᵐ ω ∂μ, BddAbove (Set.range fun n => X n ω) ->
+      ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+  have hneg0 : ∀ᵐ ω ∂μ, (-X) 0 ω = 0 := by
+    filter_upwards [hX0] with ω hω
+    simp [hω]
+  have hneginc : ∀ᵐ ω ∂μ, ∀ i, |(-X) (i + 1) ω - (-X) i ω| ≤ M := by
+    filter_upwards [hinc] with ω hω i
+    have hstep : (-X) (i + 1) ω - (-X) i ω = -(X (i + 1) ω - X i ω) := by
+      simp only [Pi.neg_apply]
+      ring
+    rw [hstep, abs_neg]
+    exact hω i
+  have hneg_conv :
+      ∀ᵐ ω ∂μ, BddBelow (Set.range fun n => (-X) n ω) ->
+        ∃ z : ℝ, Tendsto (fun n => (-X) n ω) atTop (𝓝 z) :=
+    durrett2019_theorem_4_3_1_tendsto_on_bddBelow_range
+      (X := -X) (M := M) hX.neg hM_nonneg hneg0 hneginc
+  filter_upwards [hneg_conv] with ω hconvω hbddAbove
+  have hbddBelow_neg : BddBelow (Set.range fun n => (-X) n ω) := by
+    rcases hbddAbove with ⟨b, hb⟩
+    refine ⟨-b, ?_⟩
+    rintro _ ⟨n, rfl⟩
+    exact neg_le_neg (hb ⟨n, rfl⟩)
+  rcases hconvω hbddBelow_neg with ⟨z, hz⟩
+  exact ⟨-z, by simpa [Pi.neg_apply] using hz.neg⟩
+
+/--
+Durrett 2019, Theorem 4.3.1 one-sided-bounded bridge: a bounded-increment
+martingale with `X_0 = 0` converges on paths that are bounded below or bounded
+above.
+-/
+theorem durrett2019_theorem_4_3_1_tendsto_on_bddBelow_or_bddAbove_range
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {M : ℝ}
+    (hX : Martingale X ℱ μ) (hM_nonneg : 0 ≤ M)
+    (hX0 : ∀ᵐ ω ∂μ, X 0 ω = 0)
+    (hinc : ∀ᵐ ω ∂μ, ∀ i, |X (i + 1) ω - X i ω| ≤ M) :
+    ∀ᵐ ω ∂μ,
+      (BddBelow (Set.range fun n => X n ω) ∨ BddAbove (Set.range fun n => X n ω)) ->
+        ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+  have hbelow :=
+    durrett2019_theorem_4_3_1_tendsto_on_bddBelow_range
+      (X := X) (M := M) hX hM_nonneg hX0 hinc
+  have habove :=
+    durrett2019_theorem_4_3_1_tendsto_on_bddAbove_range
+      (X := X) (M := M) hX hM_nonneg hX0 hinc
+  filter_upwards [hbelow, habove] with ω hbelowω haboveω hbounded
+  rcases hbounded with hbounded | hbounded
+  · exact hbelowω hbounded
+  · exact haboveω hbounded
+
 end ProbabilityTheory
 end StatInference
