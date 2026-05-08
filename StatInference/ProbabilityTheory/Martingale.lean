@@ -1,4 +1,5 @@
 import Mathlib.Probability.BorelCantelli
+import Mathlib.Probability.Independence.ZeroOne
 import Mathlib.Probability.Martingale.Basic
 import Mathlib.Probability.Martingale.Centering
 import Mathlib.Probability.Martingale.Convergence
@@ -5432,6 +5433,59 @@ theorem durrett2019_theorem_4_3_8_top_set_null_of_ae_ne_top
     hXfinite.mono fun _ hne htop => hne htop
 
 /--
+Durrett 2019, Theorem 4.3.8 tail-event support: Kolmogorov's zero-one law for
+events in the tail sigma-field of an independent sequence of sigma-fields.
+-/
+theorem durrett2019_theorem_4_3_8_tail_event_measure_zero_or_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ν : Measure Ω}
+    {s : ℕ -> MeasurableSpace Ω} {A : Set Ω}
+    (hs_le : ∀ n, s n ≤ mΩ)
+    (hs_indep : _root_.ProbabilityTheory.iIndep s ν)
+    (hA_tail : MeasurableSet[limsup s atTop] A) :
+    ν A = 0 ∨ ν A = 1 :=
+  _root_.ProbabilityTheory.measure_zero_or_one_of_measurableSet_limsup_atTop
+    (s := s) (m0 := mΩ) (μ := ν) hs_le hs_indep hA_tail
+
+/--
+Durrett 2019, Theorem 4.3.8 tail-event support: if the zero set of the limiting
+likelihood is a tail event and is not full under the denominator measure, then
+it is null.
+-/
+theorem durrett2019_theorem_4_3_8_tail_zero_set_null_of_measure_ne_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ν : Measure Ω}
+    {s : ℕ -> MeasurableSpace Ω} {X : Ω -> ℝ≥0∞}
+    (hs_le : ∀ n, s n ≤ mΩ)
+    (hs_indep : _root_.ProbabilityTheory.iIndep s ν)
+    (hzero_tail : MeasurableSet[limsup s atTop] {ω | X ω = 0})
+    (hzero_ne_one : ν {ω | X ω = 0} ≠ 1) :
+    ν {ω | X ω = 0} = 0 := by
+  rcases
+      durrett2019_theorem_4_3_8_tail_event_measure_zero_or_one
+        (ν := ν) (s := s) (A := {ω | X ω = 0}) hs_le hs_indep hzero_tail with
+    hzero | hfull
+  · exact hzero
+  · exact False.elim (hzero_ne_one hfull)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-branch support: a non-full tail zero set
+rules out an a.e. zero limiting likelihood.
+-/
+theorem durrett2019_theorem_4_3_8_not_ae_eq_zero_of_tail_zero_set_measure_ne_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ν : Measure Ω}
+    {s : ℕ -> MeasurableSpace Ω} {X : Ω -> ℝ≥0∞}
+    (hs_le : ∀ n, s n ≤ mΩ)
+    (hs_indep : _root_.ProbabilityTheory.iIndep s ν)
+    (hzero_tail : MeasurableSet[limsup s atTop] {ω | X ω = 0})
+    (hzero_ne_one : ν {ω | X ω = 0} ≠ 1) :
+    ¬ X =ᵐ[ν] 0 := by
+  haveI : IsProbabilityMeasure ν := hs_indep.isProbabilityMeasure
+  exact
+    durrett2019_theorem_4_3_8_not_ae_eq_zero_of_zero_set_null
+      (ν := ν) (X := X)
+      (durrett2019_theorem_4_3_8_tail_zero_set_null_of_measure_ne_one
+        (ν := ν) (s := s) (X := X) hs_le hs_indep hzero_tail hzero_ne_one)
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-branch eliminator: if an external
 tail-event or L1 argument has ruled out `X = 0` denominator-a.e., then a
 source dichotomy `mu << nu or mu singular nu` collapses to absolute continuity.
@@ -5469,6 +5523,28 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_zero_set_nul
     (μ := μ) (ν := ν) (X := X) hbranch hXrn hνtop
     (durrett2019_theorem_4_3_8_not_ae_eq_zero_of_zero_set_null
       (ν := ν) (X := X) hzeroSet)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-branch eliminator specialized to a
+non-full tail zero set for the limiting likelihood.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_tail_zero_set_measure_ne_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ ν : Measure Ω}
+    {s : ℕ -> MeasurableSpace Ω} {X : Ω -> ℝ≥0∞}
+    (hbranch : μ ≪ ν ∨ μ ⟂ₘ ν)
+    (hXrn :
+      (fun ω => (X ω).toReal) =ᵐ[ν]
+        fun ω => (μ.rnDeriv ν ω).toReal)
+    (hνtop : ν {ω | X ω = ∞} = 0)
+    (hs_le : ∀ n, s n ≤ mΩ)
+    (hs_indep : _root_.ProbabilityTheory.iIndep s ν)
+    (hzero_tail : MeasurableSet[limsup s atTop] {ω | X ω = 0})
+    (hzero_ne_one : ν {ω | X ω = 0} ≠ 1) :
+    μ ≪ ν :=
+  durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_not_ae_zero
+    (μ := μ) (ν := ν) (X := X) hbranch hXrn hνtop
+    (durrett2019_theorem_4_3_8_not_ae_eq_zero_of_tail_zero_set_measure_ne_one
+      (ν := ν) (s := s) (X := X) hs_le hs_indep hzero_tail hzero_ne_one)
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-branch eliminator specialized to a
