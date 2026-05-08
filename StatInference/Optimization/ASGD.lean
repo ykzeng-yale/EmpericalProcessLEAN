@@ -811,6 +811,65 @@ theorem integral_norm_condExp_le_integral_norm
             (f := fun ω => ‖f ω‖) hm]
 
 /--
+If an integrable random variable is close in `L1` to an `m`-measurable proxy,
+then its residual after conditioning on `m` is controlled by twice that
+approximation error.
+-/
+theorem integral_norm_sub_condExp_le_two_mul_integral_norm_sub_of_aestronglyMeasurable
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (m : MeasurableSpace Ω) (hm : m ≤ mΩ) {f proxy : Ω -> E}
+    (hf : Integrable f P) (hproxy : Integrable proxy P)
+    (hproxy_meas : AEStronglyMeasurable[m] proxy P) :
+    (∫ ω, ‖f ω - P[f | m] ω‖ ∂P) ≤
+      2 * ∫ ω, ‖f ω - proxy ω‖ ∂P := by
+  let d : Ω -> E := fun ω => f ω - proxy ω
+  have hd_int : Integrable d P := hf.sub hproxy
+  have hproxy_cond : P[proxy | m] =ᵐ[P] proxy :=
+    condExp_of_aestronglyMeasurable' (μ := P) hm hproxy_meas hproxy
+  have hcond_sub :
+      P[d | m] =ᵐ[P] fun ω => P[f | m] ω - P[proxy | m] ω := by
+    simpa [d] using
+      (condExp_sub (μ := P) (f := f) (g := proxy) hf hproxy m)
+  have hres_eq :
+      (fun ω => f ω - P[f | m] ω)
+        =ᵐ[P]
+      fun ω => d ω - P[d | m] ω := by
+    filter_upwards [hcond_sub, hproxy_cond] with ω hsub hproxy_eq
+    simp [d, hsub, hproxy_eq]
+  have hleft_eq :
+      (∫ ω, ‖f ω - P[f | m] ω‖ ∂P) =
+        ∫ ω, ‖d ω - P[d | m] ω‖ ∂P := by
+    exact integral_congr_ae (hres_eq.mono fun ω hω => by simp [hω])
+  have hnorm_bound :
+      (∫ ω, ‖d ω - P[d | m] ω‖ ∂P) ≤
+        ∫ ω, ‖d ω‖ + ‖P[d | m] ω‖ ∂P := by
+    refine integral_mono_ae
+      (hd_int.sub
+        (integrable_condExp (μ := P) (m := m) (f := d))).norm
+      (hd_int.norm.add
+        (integrable_condExp (μ := P) (m := m) (f := d)).norm) ?_
+    exact ae_of_all P fun ω => norm_sub_le _ _
+  have hsplit :
+      (∫ ω, ‖d ω‖ + ‖P[d | m] ω‖ ∂P) =
+        (∫ ω, ‖d ω‖ ∂P) + ∫ ω, ‖P[d | m] ω‖ ∂P := by
+    rw [integral_add hd_int.norm
+      (integrable_condExp (μ := P) (m := m) (f := d)).norm]
+  have hcond_norm :
+      (∫ ω, ‖P[d | m] ω‖ ∂P) ≤ ∫ ω, ‖d ω‖ ∂P :=
+    integral_norm_condExp_le_integral_norm (mΩ := mΩ) (P := P) m hm hd_int
+  calc
+    (∫ ω, ‖f ω - P[f | m] ω‖ ∂P)
+        = ∫ ω, ‖d ω - P[d | m] ω‖ ∂P := hleft_eq
+    _ ≤ ∫ ω, ‖d ω‖ + ‖P[d | m] ω‖ ∂P := hnorm_bound
+    _ = (∫ ω, ‖d ω‖ ∂P) + ∫ ω, ‖P[d | m] ω‖ ∂P := hsplit
+    _ ≤ (∫ ω, ‖d ω‖ ∂P) + ∫ ω, ‖d ω‖ ∂P :=
+          add_le_add le_rfl hcond_norm
+    _ = 2 * ∫ ω, ‖f ω - proxy ω‖ ∂P := by
+          simp [d, two_mul]
+
+/--
 Lévy's characteristic-function theorem specialized to Chewi's scalar scaled
 martingale sums.
 
@@ -8438,6 +8497,107 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_tendsto
   exact
     S.projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_l1_residual_sum
       L t hsq hremainder hfuture_multiplier_residual_sum
+
+/--
+It is enough to approximate each future normalized Taylor tail by an
+`F_r`-measurable proxy in row-summed `L1`.  Conditional expectation then costs
+only the universal factor `2`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (proxy : ℕ -> ℕ -> Ω -> ℂ)
+    (hproxy_meas : ∀ N r : ℕ,
+      AEStronglyMeasurable[S.martingale.filtration r] (proxy N r) P)
+    (hproxy_int : ∀ N r : ℕ, Integrable (proxy N r) P)
+    (hsq : ∀ N r : ℕ, r ∈ Finset.range N ->
+      Integrable (fun ω => (L (S.martingale.xi (r + 1) ω)) ^ 2) P)
+    (hremainder : ∀ N r : ℕ, r ∈ Finset.range N ->
+      Integrable
+        (chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (r + 1) ω))) P)
+    (hproxy_approx :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                proxy N r ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          S.projectedMixedTowerStepDefect L N r t)
+      atTop (𝓝 0) := by
+  have htail_residual_sum :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                P[fun ω => S.projectedMixedTowerFutureTail L N t r ω |
+                  S.martingale.filtration r] ω‖ ∂P)
+        atTop (𝓝 0) := by
+    refine squeeze_zero'
+      (f := fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              P[fun ω => S.projectedMixedTowerFutureTail L N t r ω |
+                S.martingale.filtration r] ω‖ ∂P)
+      (g := fun N : ℕ =>
+        2 * ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              proxy N r ω‖ ∂P)
+      (Eventually.of_forall fun N =>
+        Finset.sum_nonneg fun r _hr =>
+          integral_nonneg fun ω => norm_nonneg _)
+      ?_ ?_
+    · exact Eventually.of_forall fun N => by
+        calc
+          (∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                P[fun ω => S.projectedMixedTowerFutureTail L N t r ω |
+                  S.martingale.filtration r] ω‖ ∂P)
+              ≤ ∑ r ∈ Finset.range N,
+                  2 * ∫ ω,
+                    ‖S.projectedMixedTowerFutureTail L N t r ω -
+                      proxy N r ω‖ ∂P := by
+                refine Finset.sum_le_sum ?_
+                intro r _hr
+                exact
+                  integral_norm_sub_condExp_le_two_mul_integral_norm_sub_of_aestronglyMeasurable
+                    (P := P) (m := S.martingale.filtration r)
+                    (S.martingale.filtration.le r)
+                    (S.projectedMixedTowerFutureTail_integrable_of_uniform_bound L N r t)
+                    (hproxy_int N r)
+                    (hproxy_meas N r)
+          _ = 2 * ∑ r ∈ Finset.range N,
+                ∫ ω,
+                  ‖S.projectedMixedTowerFutureTail L N t r ω -
+                    proxy N r ω‖ ∂P := by
+                rw [Finset.mul_sum]
+    · have hscaled :
+          Tendsto
+            (fun N : ℕ =>
+              2 * ∑ r ∈ Finset.range N,
+                ∫ ω,
+                  ‖S.projectedMixedTowerFutureTail L N t r ω -
+                    proxy N r ω‖ ∂P)
+            atTop (𝓝 (2 * 0)) :=
+        tendsto_const_nhds.mul hproxy_approx
+      simpa using hscaled
+  exact
+    S.projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum
+      L t hsq hremainder htail_residual_sum
 
 /--
 The mixed-tower multiplier is `F_r`-measurable once the future normalized tail

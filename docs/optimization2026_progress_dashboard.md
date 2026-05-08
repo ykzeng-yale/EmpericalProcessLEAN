@@ -511,10 +511,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum`.
   This pulls out the predictable raw prefix and leaves only normalized
   future-tail L1 unpredictability.
+  The newest predictable-proxy reduction proves
+  `integral_norm_sub_condExp_le_two_mul_integral_norm_sub_of_aestronglyMeasurable`
+  and
+  `projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`.
+  This turns the remaining residual blocker into constructing an
+  `F_r`-measurable future-tail proxy with vanishing row-summed L1 error.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
-  earlier `F_r` for `r < k`.  Next target: prove the normalized future-tail L1
-  residual row-sum convergence, not another future-tail measurability wrapper,
+  earlier `F_r` for `r < k`.  Next target: build and bound a predictable proxy
+  for the normalized future tail, not another future-tail measurability wrapper,
   prefix pull-out, integrability adapter, or raw-residual product estimate.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
@@ -1183,9 +1189,14 @@ The future-tail reduction also contains
 `projectedMixedTowerFutureMultiplier_l1_residual_row_sum_le_tail_l1_residual_row_sum`,
 and
 `projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum`.
-Next theorem-sized packet: prove the normalized future-tail L1 residual row-sum
-convergence consumed by
-`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum`,
+The predictable-proxy bridge also contains
+`integral_norm_sub_condExp_le_two_mul_integral_norm_sub_of_aestronglyMeasurable`
+and
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`.
+Next theorem-sized packet: construct a concrete `F_r`-measurable proxy for the
+normalized future tail and prove the row-summed L1 approximation convergence
+consumed by
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`,
 then feed the existing Chewi Theorem 12.7/12.3 ASGD certificate constructors.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw
 tower-peel tasks, or already-compiled ASGD integrability/measurability wrappers

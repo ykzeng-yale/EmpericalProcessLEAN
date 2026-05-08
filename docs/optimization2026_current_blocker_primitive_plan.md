@@ -184,6 +184,8 @@ future-multiplier defect layer
 `projectedMixedTowerFutureMultiplier_l1_residual_le_tail_l1_residual`,
 `projectedMixedTowerFutureMultiplier_l1_residual_row_sum_le_tail_l1_residual_row_sum`,
 `projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum`,
+`integral_norm_sub_condExp_le_two_mul_integral_norm_sub_of_aestronglyMeasurable`,
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`,
 and
 `projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`, the
 conditional Taylor-remainder row convergence from `a94b579` and the
@@ -319,9 +321,10 @@ plus the normalized compensated-product bridge:
 and
 `projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
 
-Next theorem packet: prove the future-tail L1 residual row-sum convergence
+Next theorem packet: construct a concrete predictable proxy for the future
+normalized tail and prove its row-summed L1 approximation error tends to zero,
 consumed by
-`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum`.
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`.
 All raw current-step, normalized current-step, raw residual, conditional future-
 multiplier residual, and source boundedness integrability gates are already
 discharged; the raw-step residual has also been uniformly bounded by two, so
@@ -329,8 +332,8 @@ the product row-sum is reduced to twice the future-multiplier L1 residual
 row-sum, and the raw characteristic prefix has been pulled out of the
 future-multiplier conditional expectation.  Do not re-prove these reductions.
 The next genuine estimate should control the normalized future tail
-`T_{N,r} - E[T_{N,r} | F_r]`.  That will prove the standard compensated
-martingale defect bound
+by an `F_r`-measurable proxy `A_{N,r}` in row-summed L1.  That will prove the
+standard compensated martingale defect bound
 `Tendsto (fun N => ∑ r in Finset.range N,
 S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`.  After that, feed
 `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`
@@ -464,6 +467,11 @@ integrability, pulls the raw prefix out of
 `E[rawPrefix * futureTail | F_r]`, and bounds the future-multiplier residual by
 the future-tail residual.  The active blocker is now only
 `∑_r ∫ ‖T_{N,r} - E[T_{N,r} | F_r]‖ -> 0` for the normalized future tails.
+The newest predictable-proxy reduction proves the general L1 inequality
+`∫ ‖X - E[X|F]‖ <= 2 ∫ ‖X - A‖` whenever `A` is `F`-measurable, then wires it
+to the ASGD defect theorem.  The active blocker is now to choose a concrete
+`F_r`-measurable proxy for the normalized future tail and prove its row-summed
+L1 approximation error vanishes.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform
