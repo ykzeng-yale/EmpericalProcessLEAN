@@ -3662,5 +3662,48 @@ theorem
       hA C hC_meas hY hZ hgen hC hYfin hZfin hYlim_real hZlim_real
       hX hμtop hνtop
 
+/--
+Durrett 2019, Theorem 4.3.5 canonical likelihood-ratio candidate, built from
+the canonical `mu + nu` limit densities.
+-/
+noncomputable def durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    (μ ν : Measure Ω) (ℱ : Filtration ℕ mΩ) : Ω -> ℝ≥0∞ :=
+  fun ω =>
+    durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ ω /
+      durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω
+
+/--
+Durrett 2019, Theorem 4.3.5 canonical-ratio endpoint: the `X = Y / Z`
+source obligation is discharged by choosing the canonical ratio of the
+canonical `mu + nu` limit densities.  The remaining source obligations are the
+top-set singular separation hypotheses for this canonical ratio.
+-/
+theorem
+    durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_canonicalRatio
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ} [μ.HaveLebesgueDecomposition ν]
+    {A : Set Ω}
+    (hA : MeasurableSet A) (C : Set (Set Ω))
+    (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hμtop : μ.singularPart ν
+      {ω | durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ ω = ∞}ᶜ = 0)
+    (hνtop : ν
+      {ω | durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ ω = ∞} = 0) :
+    μ.real A =
+      ∫ ω in A,
+        (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ ω).toReal ∂ν +
+        μ.real
+          (A ∩ {ω | durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ ω = ∞}) := by
+  exact
+    durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_limitDensities
+      (μ := μ) (ν := ν) (ℱ := ℱ)
+      (X := durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ)
+      hA C hC_meas hgen hC
+      Filter.EventuallyEq.rfl
+      hμtop hνtop
+
 end ProbabilityTheory
 end StatInference
