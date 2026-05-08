@@ -7166,6 +7166,57 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLike
       (ν := ν) (Iseq := Iseq) (q := q) hq hlim hpair
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product final handoff for the standard
+prefix exhaustion of `ℕ`: a positive finite product of the one-coordinate
+Hellinger affinities, together with the source density hypotheses and the
+finite-cylinder convergence data, selects the absolute-continuity branch.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_range_hasProd_density
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ℕ -> S) -> ℝ≥0∞}
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hXrn :
+      (fun x => (X x).toReal) =ᵐ[Measure.infinitePi ν]
+        fun x => ((Measure.infinitePi μ).rnDeriv (Measure.infinitePi ν) x).toReal)
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0)
+    (hXint : Integrable (fun x => (X x).toReal) (Measure.infinitePi ν))
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n =>
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal)
+          atTop (𝓝 ((X x).toReal)))
+    (hP0 : P ≠ 0) (hPtop : P ≠ ∞)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (htail_eq :
+      ∀ n,
+        tail n =
+          P / (∏ i ∈ Finset.range n,
+            ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x ≠ ∞) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  refine
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLikelihood_pairwise_liminf
+      (μ := μ) (ν := ν) (Iseq := fun n => Finset.range n) (q := q)
+      hq hμ hbranch hXrn hνtop hXint hlim ?_
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_hasProd_density
+      (μ := μ) (ν := ν) (q := q) (tail := tail) (P := P)
+      hq hμ hP0 hPtop hprod htail_eq hfinite
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product final handoff from the Hellinger
 tail estimate: if the textbook Hellinger-tail L1 bound is available and the
 tail affinities tend to one, the source dichotomy selects absolute continuity.

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V84`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V85`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -514,8 +514,10 @@ Next packet:
   now also compile.  The source-density one-coordinate Hellinger affinity
   bound `≤ 1`, normalized positive-product tail `≤ 1` bridge, and standard
   source-density positive-product range consumer now also compile.  The next
-  active target is tail-event zero-one support and final Kakutani
-  positive-product assembly.  Theorem 4.1.16 remains deferred unless a direct
+  standard `Finset.range n` source-density `HasProd` positive-product
+  absolute-continuity handoff now also compiles.  The active target is now
+  tail-event zero-one support and the remaining no-top/null-zero-set source
+  endpoints for Kakutani.  Theorem 4.1.16 remains deferred unless a direct
   kernel API appears.
 
 Support-only dependencies:
