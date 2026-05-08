@@ -158,6 +158,11 @@ future-multiplier defect layer
 `projectedMixedTowerStepDefect_norm_le_futureMultiplier_residual`,
 `projectedMixedTowerDefect_sum_norm_le_futureMultiplier_residual_sum`,
 `projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum`,
+`projectedMixedTowerFutureMultiplier_mul_rawStep_integrable`,
+`projectedMixedTowerFutureMultiplier_mul_condRawStep_integrable`,
+`projectedMixedTowerFutureMultiplier_mul_rawStepResidual_integrable`,
+`projectedMixedTowerDefect_sum_norm_le_futureMultiplier_residual_sum_of_condResidual_integrable`,
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum_of_condResidual_integrable`,
 and
 `projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`, the
 conditional Taylor-remainder row convergence from `a94b579` and the
@@ -293,10 +298,16 @@ plus the normalized compensated-product bridge:
 and
 `projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
 
-Next theorem packet: discharge the row integrability gates and prove the
-future-multiplier residual row-sum convergence consumed by
-`projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`.  That will
-prove the standard compensated martingale defect bound
+Next theorem packet: prove the remaining conditional future-multiplier residual
+product integrability and the future-multiplier residual row-sum convergence
+consumed by
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum_of_condResidual_integrable`.
+The raw current-step, normalized current-step, and raw residual integrability
+gates are already discharged by the future-multiplier integrability bridge; do
+not re-prove them.  The next genuine estimate should control
+`M - E[M | F_r]` for the mixed future multiplier and combine it with the
+current one-step residual.  That will prove the standard compensated
+martingale defect bound
 `Tendsto (fun N => ∑ r in Finset.range N,
 S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`.  After that, feed
 `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`
@@ -406,6 +417,12 @@ estimate, sums those bounds across the row, and adds the characteristic-
 function convergence adapter from normalized-product convergence plus
 future-multiplier residual row-sum convergence.  This is now the preferred
 frontier; do not return to exact defect algebra unless a regression breaks it.
+The newest future-multiplier integrability bridge discharges the raw step,
+conditional normalized step, and raw step-residual product integrability gates
+from the existing bounded-product and normalized-factor interfaces, then adds
+source-shaped row-sum and convergence adapters that leave only the conditional
+future-multiplier residual product integrability and residual row-sum
+convergence hypotheses exposed.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform

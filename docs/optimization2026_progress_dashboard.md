@@ -468,11 +468,22 @@ This dashboard tracks the Chewi optimization formalization lane for
   `r`, proves one-step and row-sum defect bounds from the conditional residual
   correlation estimate, and wires residual row-sum convergence into projected
   characteristic-function convergence.
+  The newest future-multiplier integrability bridge proves
+  `projectedMixedTowerFutureMultiplier_mul_rawStep_integrable`,
+  `projectedMixedTowerFutureMultiplier_mul_condRawStep_integrable`,
+  `projectedMixedTowerFutureMultiplier_mul_rawStepResidual_integrable`,
+  `projectedMixedTowerDefect_sum_norm_le_futureMultiplier_residual_sum_of_condResidual_integrable`,
+  and
+  `projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum_of_condResidual_integrable`.
+  This discharges the raw/normalized/raw-residual integrability gates and leaves
+  only conditional future-multiplier residual product integrability plus the
+  residual row-sum convergence estimate.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
-  earlier `F_r` for `r < k`.  Next target: discharge the integrability gates
-  and prove the future-multiplier residual row-sum convergence, not another
-  future-tail measurability wrapper.
+  earlier `F_r` for `r < k`.  Next target: prove conditional
+  future-multiplier residual product integrability and the
+  future-multiplier residual row-sum convergence, not another future-tail
+  measurability wrapper or raw-step integrability adapter.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
@@ -1105,14 +1116,21 @@ and the conditional residual/correlation primitives
 `integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left` and
 `norm_integral_mul_condExp_residual_le_integral_norm_residual_mul_norm`, plus
 the future-multiplier residual bridge
-`projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`.
-Next theorem-sized packet: discharge the residual-row integrability gates and
-prove the future-multiplier residual row-sum convergence consumed by
-`projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`,
+`projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`, and the
+future-multiplier integrability bridge
+`projectedMixedTowerFutureMultiplier_mul_rawStep_integrable`,
+`projectedMixedTowerFutureMultiplier_mul_condRawStep_integrable`,
+`projectedMixedTowerFutureMultiplier_mul_rawStepResidual_integrable`,
+`projectedMixedTowerDefect_sum_norm_le_futureMultiplier_residual_sum_of_condResidual_integrable`,
+and
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum_of_condResidual_integrable`.
+Next theorem-sized packet: prove conditional future-multiplier residual product
+integrability and the future-multiplier residual row-sum convergence consumed by
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum_of_condResidual_integrable`,
 then feed the existing Chewi Theorem 12.7/12.3 ASGD certificate constructors.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw
-tower-peel tasks, or already-compiled ASGD integrability/measurability wrappers
-unless a regression makes them relevant.
+tower-peel tasks, or already-compiled ASGD raw-step integrability/measurability
+wrappers unless a regression makes them relevant.
 Keep the concrete finite Sinkhorn KL identity layer as the next Chapter 11.8
 blocker, but do not let it stall Chapter 12 coverage.
 This paragraph supersedes older Chapter 6, Chapter 7, Chapter 8, Chapter 11.4,
