@@ -4251,5 +4251,80 @@ theorem durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_canonic
       (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_singularPart_compl_top_zero
         (μ := μ) (ν := ν) (ℱ := ℱ) C hC_meas hgen hC)
 
+/-! ## Durrett, Example 4.3.7 -/
+
+/--
+Durrett 2019, Example 4.3.7 finite-partition likelihood approximation:
+on each partition cell `cell k`, use the elementary ratio
+`mu (cell k) / nu (cell k)`.
+-/
+noncomputable def durrett2019_example_4_3_7_finitePartitionLikelihood
+    {κ Ω : Type*} [Fintype κ] [MeasurableSpace Ω]
+    (μ ν : Measure Ω) (cell : κ -> Set Ω) : Ω -> ℝ≥0∞ :=
+  fun ω => ∑ k, (cell k).indicator (fun _ => μ (cell k) / ν (cell k)) ω
+
+/--
+Durrett 2019, Example 4.3.7: the finite-partition likelihood approximation is
+measurable when all cells are measurable.
+-/
+theorem durrett2019_example_4_3_7_finitePartitionLikelihood_measurable
+    {κ Ω : Type*} [Fintype κ] [MeasurableSpace Ω]
+    {μ ν : Measure Ω} {cell : κ -> Set Ω}
+    (hcell : ∀ k, MeasurableSet (cell k)) :
+    Measurable (durrett2019_example_4_3_7_finitePartitionLikelihood μ ν cell) := by
+  classical
+  refine Finset.measurable_fun_sum Finset.univ fun k _ => ?_
+  exact measurable_const.indicator (hcell k)
+
+/--
+Durrett 2019, Example 4.3.7: on a disjoint partition cell, the elementary
+likelihood approximation is the corresponding cell ratio.
+-/
+theorem durrett2019_example_4_3_7_finitePartitionLikelihood_eq_on_cell
+    {κ Ω : Type*} [Fintype κ] [DecidableEq κ] [MeasurableSpace Ω]
+    {μ ν : Measure Ω} {cell : κ -> Set Ω}
+    (hdisj : Pairwise (fun i j => Disjoint (cell i) (cell j))) {k : κ} {ω : Ω}
+    (hω : ω ∈ cell k) :
+    durrett2019_example_4_3_7_finitePartitionLikelihood μ ν cell ω =
+      μ (cell k) / ν (cell k) := by
+  classical
+  unfold durrett2019_example_4_3_7_finitePartitionLikelihood
+  rw [Finset.sum_eq_single k]
+  · simp [hω]
+  · intro j _ hjk
+    have hωj : ω ∉ cell j := by
+      intro hmem
+      have hbot : ω ∈ (∅ : Set Ω) := by
+        exact (hdisj hjk).le_bot ⟨hmem, hω⟩
+      exact hbot.elim
+    simp [hωj]
+  · intro hk
+    exact False.elim (hk (Finset.mem_univ k))
+
+/--
+Durrett 2019, Example 4.3.7: on each finite partition cell, the elementary
+likelihood approximation integrates back to the numerator cell mass.  The
+hypothesis `nu (cell k) = 0 -> mu (cell k) = 0` is the finite-cell form of
+`mu_n << nu_n` in the textbook example.
+-/
+theorem durrett2019_example_4_3_7_finitePartitionLikelihood_setLIntegral_cell
+    {κ Ω : Type*} [Fintype κ] [DecidableEq κ] [MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure ν] {cell : κ -> Set Ω}
+    (hcell : ∀ k, MeasurableSet (cell k))
+    (hdisj : Pairwise (fun i j => Disjoint (cell i) (cell j)))
+    (hzero : ∀ k, ν (cell k) = 0 -> μ (cell k) = 0) (k : κ) :
+    ∫⁻ ω in cell k,
+        durrett2019_example_4_3_7_finitePartitionLikelihood μ ν cell ω ∂ν =
+      μ (cell k) := by
+  classical
+  rw [setLIntegral_congr_fun (hcell k)
+      (fun ω hω =>
+        durrett2019_example_4_3_7_finitePartitionLikelihood_eq_on_cell
+          (μ := μ) (ν := ν) (cell := cell) hdisj hω),
+    setLIntegral_const]
+  by_cases hνzero : ν (cell k) = 0
+  · simp [hνzero, hzero k hνzero]
+  · exact ENNReal.div_mul_cancel hνzero (measure_ne_top ν (cell k))
+
 end ProbabilityTheory
 end StatInference
