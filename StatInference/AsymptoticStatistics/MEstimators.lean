@@ -1644,6 +1644,129 @@ theorem vaart1998_theorem_5_41_scalar_selectedSecondOrderTaylor_of_derivativeTay
   nlinarith
 
 /--
+van der Vaart 1998, Theorem 5.41, coordinate path selected Taylor bridge.
+
+Applying the scalar Cauchy-MVT Taylor bridge to every coordinate path produces
+coordinatewise selected intermediate points and the raw Taylor identities with
+the selected scalar second-derivative values.
+-/
+theorem vaart1998_theorem_5_41_coordinate_selectedSecondAction_exists_of_scalarPathDerivativeTaylor
+    {Coord Θ : Type*}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (pathValue pathDerivative pathSecond : Coord -> ℝ -> ℝ)
+    (rawAtTheta0 rawAtEstimator : Coord -> ℝ)
+    (derivative : Θ →L[ℝ] (Coord -> ℝ))
+    (delta : Θ)
+    (hValue0 : ∀ j : Coord, pathValue j 0 = rawAtTheta0 j)
+    (hValue1 : ∀ j : Coord, pathValue j 1 = rawAtEstimator j)
+    (hDerivative0 : ∀ j : Coord, pathDerivative j 0 = derivative delta j)
+    (hContinuous : ∀ j : Coord,
+      ContinuousOn (pathValue j) (Set.Icc (0 : ℝ) 1))
+    (hDerivative : ∀ j : Coord, ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+      HasDerivAt (pathValue j) (pathDerivative j x) x)
+    (hDerivativeTaylor : ∀ j : Coord, ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+      pathDerivative j x - pathDerivative j 0 =
+        pathSecond j x * (x - 0)) :
+    ∃ selected : Coord -> ℝ,
+      (∀ j : Coord, selected j ∈ Set.Ioo (0 : ℝ) 1) ∧
+        ∀ j : Coord,
+          rawAtTheta0 j + derivative delta j +
+              (1 / 2 : ℝ) * pathSecond j (selected j) =
+            rawAtEstimator j := by
+  classical
+  have hExists : ∀ j : Coord,
+      ∃ c ∈ Set.Ioo (0 : ℝ) 1,
+        rawAtTheta0 j + derivative delta j +
+            (1 / 2 : ℝ) * pathSecond j c =
+          rawAtEstimator j := by
+    intro j
+    obtain ⟨c, hc, hTaylor⟩ :=
+      vaart1998_theorem_5_41_scalar_selectedSecondOrderTaylor_of_derivativeTaylor
+        (pathValue j) (pathDerivative j) (pathSecond j)
+        (a := 0) (b := 1) zero_lt_one
+        (hContinuous j) (hDerivative j) (hDerivativeTaylor j)
+    refine ⟨c, hc, ?_⟩
+    simpa [hValue0 j, hValue1 j, hDerivative0 j, sub_zero,
+      pow_two, mul_comm, mul_left_comm, mul_assoc] using hTaylor
+  refine ⟨fun j => Classical.choose (hExists j), ?_, ?_⟩
+  · intro j
+    exact (Classical.choose_spec (hExists j)).1
+  · intro j
+    exact (Classical.choose_spec (hExists j)).2
+
+/--
+van der Vaart 1998, Theorem 5.41, a.e. sampled coordinate path selected
+Taylor bridge.
+
+This random-sample wrapper prepares the coordinate raw Taylor hypotheses used
+by the finite-coordinate empirical-average endpoint.  It produces the selected
+coordinate intermediate points for each sampled observation.
+-/
+theorem vaart1998_theorem_5_41_coordinate_selectedSecondAction_exists_ae_of_scalarPathDerivativeTaylor
+    {Ω Observation Coord Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (pathValue pathDerivative pathSecond :
+      ℕ -> Ω -> Observation -> Coord -> ℝ -> ℝ)
+    (rawAtTheta0 rawAtEstimator :
+      ℕ -> Ω -> Observation -> Coord -> ℝ)
+    (derivative : ℕ -> Ω -> Observation -> Θ →L[ℝ] (Coord -> ℝ))
+    (delta : ℕ -> Ω -> Θ)
+    (hValue0 : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        pathValue n ω (samples n ω i) j 0 =
+          rawAtTheta0 n ω (samples n ω i) j)
+    (hValue1 : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        pathValue n ω (samples n ω i) j 1 =
+          rawAtEstimator n ω (samples n ω i) j)
+    (hDerivative0 : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        pathDerivative n ω (samples n ω i) j 0 =
+          derivative n ω (samples n ω i) (delta n ω) j)
+    (hContinuous : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        ContinuousOn (pathValue n ω (samples n ω i) j)
+          (Set.Icc (0 : ℝ) 1))
+    (hDerivative : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          HasDerivAt (pathValue n ω (samples n ω i) j)
+            (pathDerivative n ω (samples n ω i) j x) x)
+    (hDerivativeTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          pathDerivative n ω (samples n ω i) j x -
+              pathDerivative n ω (samples n ω i) j 0 =
+            pathSecond n ω (samples n ω i) j x * (x - 0)) :
+    ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∃ selected : Coord -> ℝ,
+          (∀ j : Coord, selected j ∈ Set.Ioo (0 : ℝ) 1) ∧
+            ∀ j : Coord,
+              rawAtTheta0 n ω (samples n ω i) j +
+                  derivative n ω (samples n ω i) (delta n ω) j +
+                  (1 / 2 : ℝ) *
+                    pathSecond n ω (samples n ω i) j (selected j) =
+                rawAtEstimator n ω (samples n ω i) j := by
+  intro n
+  filter_upwards [hValue0 n, hValue1 n, hDerivative0 n, hContinuous n,
+    hDerivative n, hDerivativeTaylor n] with
+    ω hValue0ω hValue1ω hDerivative0ω hContinuousω hDerivativeω hTaylorω
+  intro i
+  exact
+    vaart1998_theorem_5_41_coordinate_selectedSecondAction_exists_of_scalarPathDerivativeTaylor
+      (pathValue := fun j t => pathValue n ω (samples n ω i) j t)
+      (pathDerivative := fun j t => pathDerivative n ω (samples n ω i) j t)
+      (pathSecond := fun j t => pathSecond n ω (samples n ω i) j t)
+      (rawAtTheta0 := rawAtTheta0 n ω (samples n ω i))
+      (rawAtEstimator := rawAtEstimator n ω (samples n ω i))
+      (derivative := derivative n ω (samples n ω i))
+      (delta := delta n ω)
+      (hValue0ω i) (hValue1ω i) (hDerivative0ω i)
+      (hContinuousω i) (hDerivativeω i) (hTaylorω i)
+
+/--
 van der Vaart 1998, Theorem 5.41, coordinatewise raw Taylor assembly.
 
 For finite-dimensional real estimating equations, the selected second

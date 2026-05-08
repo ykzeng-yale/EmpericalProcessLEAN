@@ -563,8 +563,12 @@ Initial modules:
   `vaart1998_theorem_5_41_pi_rawTaylor_ae_of_coordinate_rawTaylor`,
   and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinateRawTaylor_envelope`,
-  so the remaining critical path is deriving the coordinatewise raw Taylor
-  hypotheses from scalar Cauchy-MVT paths of the estimating map.
+  and the coordinate path selected Taylor packet adds
+  `vaart1998_theorem_5_41_coordinate_selectedSecondAction_exists_of_scalarPathDerivativeTaylor`
+  plus
+  `vaart1998_theorem_5_41_coordinate_selectedSecondAction_exists_ae_of_scalarPathDerivativeTaylor`,
+  so the remaining critical path is identifying the endpoint coordinate
+  `secondDerivative` action with the selected path second-derivative values.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
