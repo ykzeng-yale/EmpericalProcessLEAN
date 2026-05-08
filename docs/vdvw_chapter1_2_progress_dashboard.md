@@ -103,6 +103,13 @@ and
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`;
 the remaining obligations are the canonical maximal event and canonical
 `Phi(x)=x` comparison, not auxiliary sign-space bookkeeping.
+The displayed-beta comparison now also has a product-fiber source constructor:
+`measure_mul_le_prod_measure_of_fiber_lower_bound`,
+`VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound`, and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_product_fiber_lower_bound`
+turn a measurable joint ghost/Rademacher event with beta-large fibers and
+projection into the selected finite-net bad event into the exact displayed
+outer-probability comparison.
 Current next target: prove the event-level displayed-beta Lemma 2.3.7 source
 primitive, preferably through product/Fubini averaged `Phi(x)=x` plus
 selected-cover finite-center maximal control; in the countable common-iid lane

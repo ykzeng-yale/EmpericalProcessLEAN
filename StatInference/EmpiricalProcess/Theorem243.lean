@@ -36983,6 +36983,148 @@ theorem VdVWTheorem243_displayedChebyshevBeta_le_one
   linarith
 
 /--
+Product-measure fiber lower bound.
+
+If every `left` fiber of a measurable joint event has measure at least `beta`,
+then the product measure of the joint event dominates `beta * μ left`.  This is
+the measure-theoretic core behind the beta factor in the VdV&W symmetrization
+argument.
+-/
+theorem measure_mul_le_prod_measure_of_fiber_lower_bound
+    {α : Type u} {β : Type v} [MeasurableSpace α] [MeasurableSpace β]
+    {μ : Measure α} {ν : Measure β} [SFinite ν]
+    {left : Set α} {joint : Set (α × β)} {beta : ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (hfiber : ∀ x : α, x ∈ left -> beta ≤ ν (Prod.mk x ⁻¹' joint)) :
+    beta * μ left ≤ μ.prod ν joint := by
+  have hsection_meas :
+      Measurable fun x : α => ν (Prod.mk x ⁻¹' joint) :=
+    measurable_measure_prodMk_left hjoint_meas
+  calc
+    beta * μ left = ∫⁻ _x in left, beta ∂μ := by
+      rw [setLIntegral_const]
+    _ ≤ ∫⁻ x in left, ν (Prod.mk x ⁻¹' joint) ∂μ :=
+      setLIntegral_mono hsection_meas hfiber
+    _ ≤ ∫⁻ x, ν (Prod.mk x ⁻¹' joint) ∂μ :=
+      lintegral_mono' Measure.restrict_le_self le_rfl
+    _ = μ.prod ν joint := (Measure.prod_apply hjoint_meas).symm
+
+/--
+Outer-probability form of `measure_mul_le_prod_measure_of_fiber_lower_bound`.
+
+If a measurable joint event has beta-large fibers over a left event and is
+contained in the pullback of a right event, then `beta * P*(left) <= P*(right)`.
+The events may be outer-probability events on the marginal side; only the joint
+witness needs measurability for the product/Fubini step.
+-/
+theorem
+    VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound
+    {α : Type u} {β : Type v} [MeasurableSpace α] [MeasurableSpace β]
+    {μ : Measure α} {ν : Measure β} [SFinite ν] [IsProbabilityMeasure ν]
+    {left right : Set α} {joint : Set (α × β)} {beta : ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (hfiber : ∀ x : α, x ∈ left -> beta ≤ ν (Prod.mk x ⁻¹' joint))
+    (hjoint_subset_right : ∀ z : α × β, z ∈ joint -> z.1 ∈ right) :
+    beta * VdVWOuterProbability μ left ≤ VdVWOuterProbability μ right := by
+  have hleft_joint :
+      beta * μ left ≤ μ.prod ν joint :=
+    measure_mul_le_prod_measure_of_fiber_lower_bound
+      (μ := μ) (ν := ν) hjoint_meas hfiber
+  have hjoint_le_right_prod :
+      μ.prod ν joint ≤ μ.prod ν (right ×ˢ (Set.univ : Set β)) := by
+    refine measure_mono ?_
+    intro z hz
+    exact ⟨hjoint_subset_right z hz, trivial⟩
+  have hright_prod :
+      μ.prod ν (right ×ˢ (Set.univ : Set β)) = μ right := by
+    rw [Measure.prod_prod, measure_univ]
+    simp
+  simpa [VdVWOuterProbability, hright_prod] using
+    hleft_joint.trans hjoint_le_right_prod
+
+/--
+Product-event source constructor for the displayed Chebyshev-beta comparison.
+
+This is the event-level interface the remaining ghost/Rademacher proof should
+feed.  For each fixed radius and threshold it asks for a measurable joint event
+on a product auxiliary space whose fibers over the centered bad event have the
+displayed Chebyshev beta lower bound and whose projection is contained in the
+selected finite-net bad event.  It then supplies the named displayed-beta
+outer-probability comparison directly, without a samplewise `hphi_id` premise.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_product_fiber_lower_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {Aux : ℕ -> Type x} [∀ n, MeasurableSpace (Aux n)]
+    (ν : ∀ n, Measure (Aux n)) [∀ n, IsProbabilityMeasure (ν n)]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hC_pos : 0 < C)
+    (hproduct :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∃ joint : Set (SampleAt Observation n × Aux n),
+            MeasurableSet joint ∧
+              (∀ sample : SampleAt Observation n,
+                sample ∈
+                  {sample : SampleAt Observation n |
+                    epsilon <
+                      dist
+                        (vdVWWeightedClassSupremum indexClass
+                          (fun index : Index => fun observation : Observation =>
+                            vdVWTruncatedClassFun classFun envelope M index observation -
+                              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                        (0 : ℝ)} ->
+                  ENNReal.ofReal
+                      (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                    (ν n) (Prod.mk sample ⁻¹' joint)) ∧
+              (∀ z : SampleAt Observation n × Aux n, z ∈ joint ->
+                z.1 ∈
+                  {sample : SampleAt Observation n |
+                    epsilon <
+                      dist
+                        (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                            (selectedCardinality eta n sample n) n M + eta)
+                        (0 : ℝ)})) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M C 1 selectedCardinality where
+  constant_ne_top := by norm_num
+  scale_pos := hC_pos
+  outerProbability_bound := by
+    intro eta heta epsilon hepsilon
+    filter_upwards [hproduct eta heta epsilon hepsilon] with n hproduct_n
+    rcases hproduct_n with ⟨joint, hjoint_meas, hfiber, hjoint_subset⟩
+    simpa [one_mul] using
+      VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound
+        (μ := vdVWProductMeasure P n) (ν := ν n)
+        (left :=
+          {sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                (0 : ℝ)})
+        (right :=
+          {sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                    (selectedCardinality eta n sample n) n M + eta)
+                (0 : ℝ)})
+        (joint := joint)
+        (beta :=
+          ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)))
+        hjoint_meas hfiber hjoint_subset
+
+/--
 A scaled selected outer-probability comparison without the displayed beta factor
 implies the displayed-beta source primitive.
 
