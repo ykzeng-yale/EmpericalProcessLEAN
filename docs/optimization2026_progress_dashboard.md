@@ -588,7 +588,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   entropic-Bregman-to-marginal-KL identities.  This is the reusable algebraic
   bridge for the Sinkhorn-as-Bregman-projection movement terms; the remaining
   11.8 work is the concrete zero-error recurrence and monotone marginal-KL
-  certificate fields.  The
+  certificate fields.  The newest finite-array endpoint packet adds
+  `IsChewi118FiniteSinkhornEntropyCertificate`,
+  `IsChewi118FiniteSinkhornEntropyCertificate.last_rowMarginalKL_le`, and
+  `chewi118_finiteSinkhorn_last_rowMarginalKL_le_of_entropyCertificate`,
+  giving a source-shaped Theorem 11.8 rate directly over curried finite
+  coupling arrays using `finiteCouplingEntropyBregman`.  The
   current local focused Lean check also verifies
   `chewi118_last_gap_le_of_recurrence` and
   `chewi118_last_gap_le_of_oneStep` in `MirrorDescent.lean`, turning the

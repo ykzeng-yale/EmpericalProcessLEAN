@@ -667,6 +667,59 @@ theorem chewi117_exists_sinkhorn_half_iterate_error_sum_le_of_abp
   nlinarith
 
 /--
+Finite-array source-shaped certificate for Chewi Theorem 11.8 after
+interpreting Sinkhorn as mirror descent with the entropic mirror map.  This
+version avoids an `InnerProductSpace` wrapper around curried finite arrays and
+uses `finiteCouplingEntropyBregman` directly.
+-/
+structure IsChewi118FiniteSinkhornEntropyCertificate
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (gamma : ℕ -> X -> Y -> ℝ) (gammaStar : X -> Y -> ℝ)
+    (rowMarginalKL : ℕ -> ℝ) (initialCouplingKL : ℝ) (N : ℕ) : Prop where
+  terminal_nonneg : 0 ≤ finiteCouplingEntropyBregman gammaStar (gamma N)
+  one_step : ∀ n, n < N ->
+    finiteCouplingEntropyBregman gammaStar (gamma (n + 1)) ≤
+      finiteCouplingEntropyBregman gammaStar (gamma n) -
+        rowMarginalKL (n + 1)
+  monotone_to_last : ∀ n, n < N ->
+    rowMarginalKL N ≤ rowMarginalKL (n + 1)
+  initial_eq : finiteCouplingEntropyBregman gammaStar (gamma 0) =
+    initialCouplingKL
+
+/--
+Chewi Theorem 11.8 finite-array endpoint: a zero-error entropic Bregman
+recurrence plus monotone marginal KL gaps yields the displayed last-iterate
+`KL(gammaStar || gamma^0) / N` bound.
+-/
+theorem IsChewi118FiniteSinkhornEntropyCertificate.last_rowMarginalKL_le
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {rowMarginalKL : ℕ -> ℝ} {initialCouplingKL : ℝ} {N : ℕ}
+    (hcert : IsChewi118FiniteSinkhornEntropyCertificate
+      gamma gammaStar rowMarginalKL initialCouplingKL N)
+    (hN : N ≠ 0) :
+    rowMarginalKL N ≤ initialCouplingKL / (N : ℝ) := by
+  have hmain :=
+    chewi118_last_gap_le_of_recurrence
+      (D := fun n => finiteCouplingEntropyBregman gammaStar (gamma n))
+      (gap := rowMarginalKL) hN
+      hcert.terminal_nonneg hcert.one_step hcert.monotone_to_last
+  simpa [hcert.initial_eq] using hmain
+
+/--
+Theorem-facing wrapper for the finite-array Sinkhorn entropy certificate.
+-/
+theorem chewi118_finiteSinkhorn_last_rowMarginalKL_le_of_entropyCertificate
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {rowMarginalKL : ℕ -> ℝ} {initialCouplingKL : ℝ} {N : ℕ}
+    (hcert : IsChewi118FiniteSinkhornEntropyCertificate
+      gamma gammaStar rowMarginalKL initialCouplingKL N)
+    (hN : N ≠ 0) :
+    rowMarginalKL N ≤ initialCouplingKL / (N : ℝ) :=
+  hcert.last_rowMarginalKL_le hN
+
+/--
 Source-shaped certificate for Chewi Theorem 11.8 after interpreting Sinkhorn
 as mirror descent.  The concrete finite Sinkhorn/KL work is isolated in these
 fields: the zero-error Bregman recurrence, monotonicity of the marginal KL

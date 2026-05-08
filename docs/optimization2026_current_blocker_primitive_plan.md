@@ -1040,6 +1040,12 @@ turns the finite row/column normalization identities into the entropic Bregman
 movement terms used by the Sinkhorn-as-ABP/Mirror-Descent route; the remaining
 11.8 concrete work is the zero-error recurrence, monotone marginal-KL fields,
 and any source support/positivity package.
+The newest finite-array endpoint packet adds
+`IsChewi118FiniteSinkhornEntropyCertificate`,
+`IsChewi118FiniteSinkhornEntropyCertificate.last_rowMarginalKL_le`, and
+`chewi118_finiteSinkhorn_last_rowMarginalKL_le_of_entropyCertificate`,
+reusing `chewi118_last_gap_le_of_recurrence` to provide the Theorem 11.8
+last-iterate KL rate directly over curried finite Sinkhorn arrays.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -1274,9 +1280,10 @@ Active aggressive target ladder:
    Reuse `IsChewi118SinkhornMirrorDescentCertificate`,
    `chewi118_sinkhorn_last_rowMarginalKL_le_of_mirrorDescent`, the 11.7
    ABP/Pinsker selectors, and the new `finiteKL`/`finiteCouplingKL`
-   row/column normalization plus entropic-Bregman identities; only formalize
-   the remaining monotone gap/zero-error recurrence fields and any concrete
-   support assumptions needed by the source Sinkhorn model.
+   row/column normalization plus entropic-Bregman identities and the finite
+   array entropy certificate endpoint; only formalize the remaining concrete
+   monotone gap/zero-error recurrence fields and any source support assumptions
+   needed by the source Sinkhorn model.
 3. Finish exact Sinkhorn Theorem 11.7/11.8 source packaging from the compiled
    ABP and mirror-descent layers; do not expand full EOT duality unless exact
    Theorem 11.6 reporting is requested.
