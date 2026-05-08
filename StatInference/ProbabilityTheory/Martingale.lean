@@ -2153,5 +2153,37 @@ theorem durrett2019_theorem_4_3_1_tendsto_on_bddBelow_or_bddAbove_range
   · exact hbelowω hbounded
   · exact haboveω hbounded
 
+/--
+Durrett 2019, Theorem 4.3.1 range-form dichotomy: a bounded-increment
+martingale with `X_0 = 0` either converges to a finite real limit, or its range
+is unbounded both below and above.
+
+This is the Lean range-form backbone for Durrett's event
+`C ∪ D`, before rewriting the unbounded-range side as the textbook
+`liminf = -∞` and `limsup = +∞` display.
+-/
+theorem durrett2019_theorem_4_3_1_converges_or_unbounded_range
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {M : ℝ}
+    (hX : Martingale X ℱ μ) (hM_nonneg : 0 ≤ M)
+    (hX0 : ∀ᵐ ω ∂μ, X 0 ω = 0)
+    (hinc : ∀ᵐ ω ∂μ, ∀ i, |X (i + 1) ω - X i ω| ≤ M) :
+    ∀ᵐ ω ∂μ,
+      (∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z)) ∨
+        (¬ BddBelow (Set.range fun n => X n ω) ∧
+          ¬ BddAbove (Set.range fun n => X n ω)) := by
+  have honeSided :=
+    durrett2019_theorem_4_3_1_tendsto_on_bddBelow_or_bddAbove_range
+      (X := X) (M := M) hX hM_nonneg hX0 hinc
+  filter_upwards [honeSided] with ω honeSidedω
+  by_cases hbounded :
+      BddBelow (Set.range fun n => X n ω) ∨ BddAbove (Set.range fun n => X n ω)
+  · exact Or.inl (honeSidedω hbounded)
+  · exact Or.inr
+      ⟨fun hbelow => hbounded (Or.inl hbelow),
+        fun habove => hbounded (Or.inr habove)⟩
+
 end ProbabilityTheory
 end StatInference
