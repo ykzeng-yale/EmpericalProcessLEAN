@@ -3459,3 +3459,10 @@ through
 `VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive`.
 This keeps VC control on `classFun` and uses the integer-grid fixed-mask
 transfer to produce the truncated threshold-code entropy cardinality.
+
+The original full-subgraph route now also has a textbook-aligned strong package:
+`VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`.
+It records `P`-measurability, finite outer-envelope expectation,
+outer-probability and outer-a.s. `P`-GC, local `P`-GC, in-mean convergence, and
+the canonical Lemma 2.4.5 a.s. centered-supremum conclusion from the original
+VC assumption on `classFun`.

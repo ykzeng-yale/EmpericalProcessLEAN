@@ -8196,3 +8196,13 @@ This is the original-class counterpart of the canonical handoff above: the VC
 assumption stays on `classFun`, while the integer-grid fixed-mask transfer
 builds the truncated threshold-code entropy cardinality consumed by the
 selected finite-net mean primitive.
+
+2026-05-08 original full-subgraph textbook-aligned strong package:
+`Theorem243.lean` now proves
+`VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`.
+It packages the original-class full-subgraph VC route with textbook-side
+`P`-measurability, finite nonnegative outer-envelope expectation,
+outer-probability `P`-GC, outer-a.s. `P`-GC, local `P`-GC, in-mean convergence,
+and the canonical Lemma 2.4.5 a.s. centered-supremum conclusion.  The exact
+general-textbook blocker remains the nonmeasurable selected entropy/event
+source comparison, not this canonical countable full-subgraph specialization.
