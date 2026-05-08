@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V75
+## Live In-Thread Goal Prompt V76
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -188,16 +188,17 @@ Also treat the lintegral-nonzero and mass-one positive-branch consumers as
 compiled support, along with the finite-cylinder mass-one and
 integral-convergence handoffs, the positive-product L1-to-integral handoff,
 the pairwise-liminf Cauchy-to-L1 handoff, the Hellinger-tail-bound consumer
-into the positive branch, and the square-root/Cauchy-Schwarz Hellinger L1
-bridge into that consumer.
+into the positive branch, the square-root/Cauchy-Schwarz Hellinger L1 bridge
+into that consumer, and the normalized positive-prefix product-tail convergence
+bridge.
 Move to the remaining Kakutani criterion assembly and tail-event support:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`), logarithm/tail-event support, and local Kolmogorov
 zero-one/tail sigma-field wrappers.  Add only source-shaped wrappers that
 directly feed tail-event support, the concrete cylinder square-root
 factorization and square-integral estimates consumed by the compiled
-Cauchy-Schwarz bridge, product tail convergence from the positive
-infinite-product criterion, or the
+Cauchy-Schwarz bridge, or the HasProd/prefix-product instantiation hypotheses
+consumed by the compiled normalized product-tail convergence bridge, or the
 infinite-product criterion hypotheses consumed by the compiled branch
 assemblers and eliminator.  Do
 not redo the already compiled RN martingale/convergence
@@ -219,6 +220,7 @@ mass handoff, or positive-product L1-to-integral handoff for Theorem 4.3.8.
 Do not redo the pairwise-liminf Cauchy-to-L1 handoff.
 Do not redo the Hellinger-tail-bound consumer layer.
 Do not redo the square-root/Cauchy-Schwarz Hellinger L1 bridge.
+Do not redo the normalized positive-prefix product-tail convergence bridge.
 Defer Polya urn as a
 model-specific construction unless a direct existing primitive is found.
 
@@ -602,11 +604,12 @@ absolute-continuity bridge, final zero/positive branch assemblers, and
 positive-branch eliminator plus lintegral-nonzero/mass-one consumers.  Move
 The finite-cylinder mass-one/integral-convergence handoffs, positive-product
 L1-to-integral handoff, pairwise-liminf Cauchy-to-L1 handoff,
-Hellinger-tail-bound positive consumer, and square-root/Cauchy-Schwarz
-Hellinger L1 bridge also now compile.  Move forward to the concrete cylinder
-square-root factorization and square-integral estimates consumed by that
-bridge, product-tail convergence from the positive infinite-product criterion,
-and tail-event zero-one support for Kakutani's dichotomy.
+Hellinger-tail-bound positive consumer, square-root/Cauchy-Schwarz Hellinger
+L1 bridge, and normalized positive-prefix product-tail convergence bridge also
+now compile.  Move forward to the concrete cylinder square-root factorization
+and square-integral estimates consumed by that bridge, the HasProd/prefix
+instantiation of the product-tail convergence hypotheses, and tail-event
+zero-one support for Kakutani's dichotomy.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -720,6 +723,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V75` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V76` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

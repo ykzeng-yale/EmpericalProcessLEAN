@@ -5510,6 +5510,30 @@ theorem durrett2019_theorem_4_3_8_eventual_hellingerTail_bound_of_squareRoot_cau
       (tail := tail) n hDnm (hF n m) (hG n m) hFnm hGnm
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product support: if the finite prefix
+Hellinger products converge to a positive finite product `P`, then the
+normalized product tail `P / prefix n` tends to one.  This isolates the
+analytic tail step used by the positive infinite-product branch.
+-/
+theorem durrett2019_theorem_4_3_8_hellingerTail_tendsto_one_of_prefix_tendsto
+    {pref tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hP0 : P ≠ 0) (hPtop : P ≠ ∞)
+    (hpref : Tendsto pref atTop (𝓝 P))
+    (htail_eq : ∀ᶠ n in atTop, tail n = P / pref n) :
+    Tendsto tail atTop (𝓝 1) := by
+  have hinv :
+      Tendsto (fun n => (pref n)⁻¹) atTop (𝓝 P⁻¹) :=
+    tendsto_inv_iff.2 hpref
+  have hratio :
+      Tendsto (fun n => P / pref n) atTop (𝓝 (P / P)) := by
+    simpa [div_eq_mul_inv] using
+      (ENNReal.Tendsto.const_mul (a := P) hinv (Or.inr hPtop))
+  have hratio_one :
+      Tendsto (fun n => P / pref n) atTop (𝓝 1) := by
+    simpa [ENNReal.div_self hP0 hPtop] using hratio
+  exact hratio_one.congr' (htail_eq.mono fun n hn => hn.symm)
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: if the Hellinger
 tail affinities tend to one, then the textbook Hellinger-tail L1 bound tends
 to zero.

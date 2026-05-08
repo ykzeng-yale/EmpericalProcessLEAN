@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V75`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V76`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -498,12 +498,13 @@ Next packet:
   finite-cylinder mass-one/integral-convergence handoffs, the
   positive-product L1-to-integral handoff, the pairwise-liminf Cauchy-to-L1
   handoff, the Hellinger-tail-bound positive consumer, and the
-  square-root/Cauchy-Schwarz Hellinger L1 bridge now also compile.  The next
+  square-root/Cauchy-Schwarz Hellinger L1 bridge, and normalized
+  positive-prefix product-tail convergence bridge now also compile.  The next
   active target is the concrete cylinder square-root factorization and
-  square-integral estimates consumed by that bridge, product-tail convergence
-  from the positive infinite-product criterion, and tail-event zero-one support
-  for Kakutani's dichotomy.  Theorem 4.1.16 remains deferred unless a direct
-  kernel API appears.
+  square-integral estimates consumed by that bridge, the HasProd/prefix
+  instantiation of the product-tail convergence hypotheses, and tail-event
+  zero-one support for Kakutani's dichotomy.  Theorem 4.1.16 remains deferred
+  unless a direct kernel API appears.
 
 Support-only dependencies:
 
