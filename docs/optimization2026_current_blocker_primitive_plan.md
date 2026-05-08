@@ -201,6 +201,10 @@ plus the normalized compensated-product bridge:
 `projectedRawPrefixNormalizedTailProduct_zero`,
 `projectedRawPrefixNormalizedTailProduct_self`,
 `projectedRawPrefixNormalizedTailProduct_integral_succ_eq`,
+`projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero`,
+`projected_scalarScaledSum_charFun_eq_integral_normalized_product_of_mixed_tower`,
+`projected_charFun_normalized_product_model_of_mixed_tower`,
+`projected_charFun_tendsto_exp_of_mixed_tower`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
 `projected_charFun_tendsto_exp_of_normalized_product_model`,
 and
@@ -219,9 +223,15 @@ raw-prefix/normalized-tail product and its endpoint/successor lemmas are now
 compiled as `projectedRawPrefixNormalizedTailProduct`,
 `projectedRawPrefixNormalizedTailProduct_zero`,
 `projectedRawPrefixNormalizedTailProduct_self`, and
-`projectedRawPrefixNormalizedTailProduct_integral_succ_eq`.  Do not prove
+`projectedRawPrefixNormalizedTailProduct_integral_succ_eq`.  The guarded
+finite induction and product-model handoff are now compiled as
+`projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero`,
+`projected_scalarScaledSum_charFun_eq_integral_normalized_product_of_mixed_tower`,
+`projected_charFun_normalized_product_model_of_mixed_tower`, and
+`projected_charFun_tendsto_exp_of_mixed_tower`.  Do not prove
 another compensation, row-error, inverse-product, raw charFun-product start,
-successor peel, mixed-product endpoint, or generic weak-convergence wrapper.
+successor peel, mixed-product endpoint, finite mixed-product accumulation,
+abstract product-model handoff, or generic weak-convergence wrapper.
 The variance
 side is now source-facing:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
@@ -241,11 +251,13 @@ requires only the honest measurability/integrability of the current multiplier.
 If the future random product route needs unavailable measurability, switch to
 a telescoping/error representation with explicit conditional multipliers
 instead of forcing a false exact product model.
-The next finite-induction theorem should accumulate
-`projectedRawPrefixNormalizedTailProduct_integral_succ_eq` across
-`r = 0, ..., N - 1`, using the endpoint lemmas to connect the raw product to
-the full normalized product under explicit future-tail measurability and
-integrability assumptions.
+The next ASGD packet should discharge or minimize the remaining routine
+assumptions of `projected_charFun_tendsto_exp_of_mixed_tower`: future-tail
+measurability/integrability for the mixed tower, normalized/inverse product
+boundedness and integrability, and row-sum integrability.  Start with the
+boundedness/integrability side if it is local and mechanical; otherwise record
+the exact future-tail measurability blocker and switch to the next theorem
+packet that closes the source ASGD certificate.
 
 Search cache for the finite tower packet: no ready-made martingale CLT or
 martingale product theorem was found in pinned mathlib or local

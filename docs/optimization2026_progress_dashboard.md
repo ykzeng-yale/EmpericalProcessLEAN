@@ -262,6 +262,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_zero`,
   `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_self`,
   `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_integral_succ_eq`,
+  `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero`,
+  `Chewi127BoundedMartingaleCLTSource.projected_scalarScaledSum_charFun_eq_integral_normalized_product_of_mixed_tower`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_normalized_product_model_of_mixed_tower`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -316,10 +320,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   measurability/integrability discharged.  The newest mixed-product packet
   adds the raw-prefix/normalized-tail induction object, its two endpoint
   lemmas, and the guarded successor integral equality with future-tail
-  measurability/integrability explicit.  The next ASGD packet should accumulate
-  these mixed-product successor equalities into the safe finite martingale
-  tower/telescoping representation, then close the Gaussian
-  characteristic-function limit.
+  measurability/integrability explicit.  The latest finite-induction packet
+  accumulates those successor equalities, proves the normalized-product model
+  from the mixed tower, and packages the resulting source-facing
+  characteristic-function convergence theorem.  The next ASGD packet should
+  discharge or reduce the remaining routine assumptions of
+  `projected_charFun_tendsto_exp_of_mixed_tower`, prioritizing local
+  boundedness/integrability and then the future-tail measurability side.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

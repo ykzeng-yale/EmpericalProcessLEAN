@@ -4028,6 +4028,180 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProdu
           ring
 
 /--
+Finite accumulation of the guarded mixed-product successor step.  Under the
+explicit future-tail measurability and integrability hypotheses, integrating
+the raw product at split `N` gives the same value as integrating the fully
+normalized product at split `0`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ)
+    (hA_meas : ∀ r : ℕ, r < N ->
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hA_int : ∀ r : ℕ, r < N ->
+      Integrable
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hsq : ∀ r : ℕ, r < N ->
+      Integrable (fun ω => (L (S.martingale.xi (r + 1) ω)) ^ 2) P)
+    (htower_remainder_int : ∀ r : ℕ, r < N ->
+      Integrable
+        (chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (r + 1) ω))) P) :
+    (∫ ω,
+        S.projectedRawPrefixNormalizedTailProduct L N t N ω ∂P) =
+      ∫ ω,
+        S.projectedRawPrefixNormalizedTailProduct L N t 0 ω ∂P := by
+  have haccum :
+      ∀ m : ℕ, m ≤ N ->
+        (∫ ω,
+            S.projectedRawPrefixNormalizedTailProduct L N t m ω ∂P) =
+          ∫ ω,
+            S.projectedRawPrefixNormalizedTailProduct L N t 0 ω ∂P := by
+    intro m hm
+    induction m with
+    | zero =>
+        rfl
+    | succ m ih =>
+        have hm_lt : m < N := Nat.lt_of_succ_le hm
+        have hm_le : m ≤ N := Nat.le_of_succ_le hm
+        have hstep :=
+          S.projectedRawPrefixNormalizedTailProduct_integral_succ_eq
+            L N m t hm_lt (hA_meas m hm_lt) (hA_int m hm_lt)
+            (hsq m hm_lt) (htower_remainder_int m hm_lt)
+        exact hstep.trans (ih hm_le)
+  exact haccum N le_rfl
+
+/--
+Finite guarded tower representation: the scalar scaled-sum characteristic
+function equals the expected full normalized Taylor product once the guarded
+future-tail hypotheses allow all mixed-product successor steps to accumulate.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalarScaledSum_charFun_eq_integral_normalized_product_of_mixed_tower
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ)
+    (hA_meas : ∀ r : ℕ, r < N ->
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hA_int : ∀ r : ℕ, r < N ->
+      Integrable
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hsq : ∀ r : ℕ, r < N ->
+      Integrable (fun ω => (L (S.martingale.xi (r + 1) ω)) ^ 2) P)
+    (htower_remainder_int : ∀ r : ℕ, r < N ->
+      Integrable
+        (chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (r + 1) ω))) P) :
+    MeasureTheory.charFun
+      (P.map
+        (chewi127ScalarScaledSum
+          (fun n ω => L (S.martingale.xi n ω)) N)) t =
+      ∫ ω, ∏ k ∈ Finset.range N,
+        S.projectedNormalizedTaylorFactor L N t k ω ∂P := by
+  have hraw :=
+    S.projected_scalarScaledSum_charFun_eq_integral_product L N t
+  have htower :=
+    S.projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero
+      L N t hA_meas hA_int hsq htower_remainder_int
+  calc
+    MeasureTheory.charFun
+        (P.map
+          (chewi127ScalarScaledSum
+            (fun n ω => L (S.martingale.xi n ω)) N)) t
+        = ∫ ω,
+            chewi127ScalarCharFunProduct
+              (fun k ω => L (S.martingale.xi k ω)) N
+              (t * (Real.sqrt (N : ℝ))⁻¹) ω ∂P := hraw
+    _ = ∫ ω,
+          S.projectedRawPrefixNormalizedTailProduct L N t N ω ∂P := by
+          refine integral_congr_ae <| ae_of_all P fun ω => ?_
+          exact (S.projectedRawPrefixNormalizedTailProduct_self L N t ω).symm
+    _ = ∫ ω,
+          S.projectedRawPrefixNormalizedTailProduct L N t 0 ω ∂P := htower
+    _ = ∫ ω, ∏ k ∈ Finset.range N,
+          S.projectedNormalizedTaylorFactor L N t k ω ∂P := by
+          refine integral_congr_ae <| ae_of_all P fun ω => ?_
+          exact S.projectedRawPrefixNormalizedTailProduct_zero L N t ω
+
+/--
+Eventually-shaped product-model hypothesis generated by the finite guarded
+mixed-product tower representation.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_normalized_product_model_of_mixed_tower
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hA_meas : ∀ N r : ℕ, r < N ->
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hA_int : ∀ N r : ℕ, r < N ->
+      Integrable
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hsq : ∀ N r : ℕ, r < N ->
+      Integrable (fun ω => (L (S.martingale.xi (r + 1) ω)) ^ 2) P)
+    (htower_remainder_int : ∀ N r : ℕ, r < N ->
+      Integrable
+        (chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (r + 1) ω))) P) :
+    ∀ᶠ N : ℕ in atTop,
+      MeasureTheory.charFun
+        (P.map
+          (chewi127ScalarScaledSum
+            (fun n ω => L (S.martingale.xi n ω)) N)) t =
+        ∫ ω, ∏ k ∈ Finset.range N,
+          S.projectedNormalizedTaylorFactor L N t k ω ∂P :=
+  Eventually.of_forall fun N =>
+    S.projected_scalarScaledSum_charFun_eq_integral_normalized_product_of_mixed_tower
+      L N t (hA_meas N) (hA_int N) (hsq N) (htower_remainder_int N)
+
+/--
 Expected products of the projected compensated one-step errors converge to one
 once their factors are bounded by one and their expected row-sum vanishes.
 This is the product-to-one half of Chewi's compensated martingale iteration.
@@ -4355,6 +4529,102 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_norm
     (S.projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance
       L t hvariance_error_int hremainder_int)
     (S.projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound L t)
+
+/--
+Source-facing characteristic-function convergence from the guarded finite
+mixed-product tower representation.  This removes the abstract
+`hproduct_model` input from the normalized-product convergence bridge.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hA_meas : ∀ N r : ℕ, r < N ->
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hA_int : ∀ N r : ℕ, r < N ->
+      Integrable
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hsq : ∀ N r : ℕ, r < N ->
+      Integrable (fun ω => (L (S.martingale.xi (r + 1) ω)) ^ 2) P)
+    (htower_remainder_int : ∀ N r : ℕ, r < N ->
+      Integrable
+        (chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (r + 1) ω))) P)
+    (hnormalized_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖S.projectedNormalizedTaylorFactor L N t k ω‖ ≤ 1)
+    (hinverse_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖S.projectedInverseCompensationFactor L N t k ω‖ ≤ 1)
+    (hnormalized_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hinverse_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω) P)
+    (hdiff_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  S.projectedInverseCompensationFactor L N t k ω‖) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hrow_remainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedRemainderFactor L N t k ω‖) P) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) :=
+  S.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance
+    L t
+    (S.projected_charFun_normalized_product_model_of_mixed_tower
+      L t hA_meas hA_int hsq htower_remainder_int)
+    hnormalized_bound hinverse_bound hnormalized_int hinverse_int
+    hdiff_int herror_int hvariance_error_int hrow_remainder_int
 
 /--
 Projected characteristic-function convergence from the finite product model
