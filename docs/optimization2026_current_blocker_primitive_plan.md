@@ -1612,6 +1612,18 @@ and
 `chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations_succ_le`,
 reducing the certificate field to adjacent nonincrease of the displayed row
 objective along the concrete Sinkhorn trajectory.
+The newest selected-rate packet adds `chewi118_exists_gap_le_of_recurrence`,
+`chewi118_exists_gap_le_of_oneStep`,
+`chewi118_finiteSinkhorn_exists_rowMarginalKL_le_of_entropyRecurrence_initialKL`,
+`chewi118_finiteSinkhorn_exists_rowMarginalKL_le_of_entropyRecurrence_pos_initialKL`,
+`chewi118_finiteSinkhorn_exists_sinkhornRowObjective_le_of_entropyRecurrence_pos_initialKL`,
+and
+`chewi118_finiteSinkhorn_exists_sinkhornRowObjective_le_of_concreteSinkhornNormalizations`.
+This proves a Chewi 11.8 selected-iterate `D_0 / N` rate for concrete finite
+row-then-column Sinkhorn cycles without any row-objective monotonicity
+assumption.  Exact last-iterate reporting still needs the adjacent
+row-objective nonincrease/source proof, but the selected-rate theorem can now
+be used immediately when the source statement permits an existential iterate.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -1849,9 +1861,12 @@ Active aggressive target ladder:
    ABP/Pinsker selectors, and the new `finiteKL`/`finiteCouplingKL`
    row/column normalization plus entropic-Bregman identities and the finite
    array entropy certificate endpoint, plus
-   `chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations`;
-   only formalize the remaining monotone gap/source trajectory field needed by
-   the source Sinkhorn model.
+   `chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations`
+   and the no-monotonicity selected wrapper
+   `chewi118_finiteSinkhorn_exists_sinkhornRowObjective_le_of_concreteSinkhornNormalizations`.
+   Use the selected wrapper when an existential iterate suffices; only
+   formalize the remaining monotone gap/source trajectory field when the
+   exact source statement requires the terminal Sinkhorn iterate.
 3. Finish exact Sinkhorn Theorem 11.7/11.8 source packaging from the compiled
    ABP and mirror-descent layers; do not expand full EOT duality unless exact
    Theorem 11.6 reporting is requested.

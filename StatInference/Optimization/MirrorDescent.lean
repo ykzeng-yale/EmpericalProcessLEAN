@@ -798,6 +798,49 @@ theorem chewi118_last_gap_le_of_recurrence
   exact hlast_le_avg.trans havg
 
 /--
+Chewi Theorem 11.8 selected-iterate fallback.  The same zero-error
+mirror-descent telescope gives a `D_0 / N` bound for some displayed gap among
+the first `N` selected iterates, without any monotonicity assumption.
+-/
+theorem chewi118_exists_gap_le_of_recurrence
+    {D gap : ℕ -> ℝ} {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ D N)
+    (hrec : ∀ n, n < N -> D (n + 1) ≤ D n - gap (n + 1)) :
+    ∃ n, n < N ∧ gap (n + 1) ≤ D 0 / (N : ℝ) := by
+  let shiftedGap : ℕ -> ℝ := fun n => gap (n + 1)
+  let S : ℝ := ∑ n ∈ Finset.range N, shiftedGap n
+  have hN_pos_nat : 0 < N := Nat.pos_of_ne_zero hN
+  have hN_pos : 0 < (N : ℝ) := by
+    exact_mod_cast hN_pos_nat
+  have havg :
+      (1 / (N : ℝ)) * S ≤ D 0 / (N : ℝ) := by
+    have hbase :=
+      chewi1011_average_gap_le_of_recurrence
+        (D := D) (gap := gap) (h := 1) (err := 0)
+        (by norm_num) hN hD_N_nonneg
+        (by
+          intro n hn
+          have hstep := hrec n hn
+          simpa using hstep)
+    have hrhs :
+        D 0 / ((N : ℝ) * 1) + 0 / 1 = D 0 / (N : ℝ) := by ring
+    simpa [S, shiftedGap, hrhs] using hbase
+  have hsum_bound : S ≤ (N : ℝ) * (D 0 / (N : ℝ)) := by
+    rw [one_div_mul_eq_div] at havg
+    have hmul := (le_div_iff₀ hN_pos).1 havg
+    have hS_le_D0 : S ≤ D 0 := by
+      have hleft : (N : ℝ) * (S / (N : ℝ)) = S := by
+        field_simp [hN_pos.ne']
+      nlinarith
+    have hright : (N : ℝ) * (D 0 / (N : ℝ)) = D 0 := by
+      field_simp [hN_pos.ne']
+    rwa [hright]
+  simpa [shiftedGap, S] using
+    exists_le_average_of_sum_le
+      (a := shiftedGap) (N := N) (B := D 0 / (N : ℝ))
+      hN hsum_bound
+
+/--
 Chewi Theorem 11.8 supplied one-step form for a concrete objective.  This is
 the theorem-facing layer for Sinkhorn-as-mirror-descent: once the Sinkhorn
 iteration supplies the zero-error Bregman descent recurrence and monotone KL
@@ -826,6 +869,30 @@ theorem chewi118_last_gap_le_of_oneStep
     (by
       intro n hn
       simpa using hmono n hn)
+
+/--
+Chewi Theorem 11.8 supplied selected-iterate form for a concrete objective.
+The entropy recurrence alone gives the displayed `D_0 / N` rate for at least
+one of the selected iterates `x_{n+1}`.
+-/
+theorem chewi118_exists_gap_le_of_oneStep
+    {F phi : E -> ℝ} {gradPhi : E -> E} {x : ℕ -> E} {xStar : E}
+    {N : ℕ} (hN : N ≠ 0)
+    (hD_N_nonneg : 0 ≤ bregmanDivergence phi gradPhi xStar (x N))
+    (hone_step : ∀ n, n < N ->
+      bregmanDivergence phi gradPhi xStar (x (n + 1)) ≤
+        bregmanDivergence phi gradPhi xStar (x n) -
+          (F (x (n + 1)) - F xStar)) :
+    ∃ n, n < N ∧
+      F (x (n + 1)) - F xStar ≤
+        bregmanDivergence phi gradPhi xStar (x 0) / (N : ℝ) :=
+  chewi118_exists_gap_le_of_recurrence
+    (D := fun n => bregmanDivergence phi gradPhi xStar (x n))
+    (gap := fun n => F (x n) - F xStar)
+    hN hD_N_nonneg
+    (by
+      intro n hn
+      simpa using hone_step n hn)
 
 /--
 Chewi Theorem 10.11 source-facing averaged-iterate bound.  The Jensen step is

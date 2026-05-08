@@ -1013,6 +1013,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   instantiate the concrete Theorem 11.8 rate.  The remaining Chapter 11 blocker
   is the source proof of that adjacent row-objective nonincrease, if exact
   Theorem 11.8 reporting is pursued now.
+  The newest selected-rate packet adds
+  `chewi118_exists_gap_le_of_recurrence`,
+  `chewi118_exists_gap_le_of_oneStep`,
+  `chewi118_finiteSinkhorn_exists_rowMarginalKL_le_of_entropyRecurrence_initialKL`,
+  `chewi118_finiteSinkhorn_exists_rowMarginalKL_le_of_entropyRecurrence_pos_initialKL`,
+  `chewi118_finiteSinkhorn_exists_sinkhornRowObjective_le_of_entropyRecurrence_pos_initialKL`,
+  and
+  `chewi118_finiteSinkhorn_exists_sinkhornRowObjective_le_of_concreteSinkhornNormalizations`.
+  This gives a concrete no-monotonicity selected-iterate 11.8 rate; the
+  monotonicity blocker remains only for exact terminal-iterate reporting.
   The
   current local focused Lean check also verifies
   `chewi118_last_gap_le_of_recurrence` and

@@ -1629,6 +1629,38 @@ theorem chewi118_finiteSinkhorn_last_rowMarginalKL_le_of_entropyRecurrence_initi
       (N := N) hterminal_nonneg hone_step hmono hstar_ne hgamma0_ne hmass0).last_rowMarginalKL_le hN
 
 /--
+Chewi Theorem 11.8 finite-array selected endpoint.  The entropy recurrence
+alone selects one iterate among `1, ..., N` with the displayed
+`KL(gammaStar || gamma^0) / N` row-marginal KL bound.
+-/
+theorem chewi118_finiteSinkhorn_exists_rowMarginalKL_le_of_entropyRecurrence_initialKL
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {rowMarginalKL : ℕ -> ℝ} {N : ℕ}
+    (hterminal_nonneg : 0 ≤ finiteCouplingEntropyBregman gammaStar (gamma N))
+    (hone_step : ∀ n, n < N ->
+      finiteCouplingEntropyBregman gammaStar (gamma (n + 1)) ≤
+        finiteCouplingEntropyBregman gammaStar (gamma n) -
+          rowMarginalKL (n + 1))
+    (hstar_ne : ∀ x y, gammaStar x y ≠ 0)
+    (hgamma0_ne : ∀ x y, gamma 0 x y ≠ 0)
+    (hmass0 : finiteCouplingMass gammaStar = finiteCouplingMass (gamma 0))
+    (hN : N ≠ 0) :
+    ∃ n, n < N ∧
+      rowMarginalKL (n + 1) ≤
+        finiteCouplingKL gammaStar (gamma 0) / (N : ℝ) := by
+  have hmain :=
+    chewi118_exists_gap_le_of_recurrence
+      (D := fun n => finiteCouplingEntropyBregman gammaStar (gamma n))
+      (gap := rowMarginalKL) hN hterminal_nonneg hone_step
+  have hinit :
+      finiteCouplingEntropyBregman gammaStar (gamma 0) =
+        finiteCouplingKL gammaStar (gamma 0) :=
+    finiteCouplingEntropyBregman_eq_finiteCouplingKL
+      gammaStar (gamma 0) hstar_ne hgamma0_ne hmass0
+  simpa [hinit] using hmain
+
+/--
 Build the finite Sinkhorn entropy certificate with the source initial
 coupling-KL value, deriving terminal nonnegativity from positivity and equal
 mass of the optimal and terminal couplings.
@@ -1682,6 +1714,35 @@ theorem chewi118_finiteSinkhorn_last_rowMarginalKL_le_of_entropyRecurrence_pos_i
     (IsChewi118FiniteSinkhornEntropyCertificate.of_initialCouplingKL_and_terminal_pos
       (gamma := gamma) (gammaStar := gammaStar) (rowMarginalKL := rowMarginalKL)
       (N := N) hone_step hmono hstar_pos hgammaN_pos hgamma0_ne hmassN hmass0).last_rowMarginalKL_le hN
+
+/--
+Chewi Theorem 11.8 finite-array selected endpoint with terminal Bregman
+nonnegativity deduced from positive equal-mass finite couplings.
+-/
+theorem chewi118_finiteSinkhorn_exists_rowMarginalKL_le_of_entropyRecurrence_pos_initialKL
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {rowMarginalKL : ℕ -> ℝ} {N : ℕ}
+    (hone_step : ∀ n, n < N ->
+      finiteCouplingEntropyBregman gammaStar (gamma (n + 1)) ≤
+        finiteCouplingEntropyBregman gammaStar (gamma n) -
+          rowMarginalKL (n + 1))
+    (hstar_pos : ∀ x y, 0 < gammaStar x y)
+    (hgammaN_pos : ∀ x y, 0 < gamma N x y)
+    (hgamma0_ne : ∀ x y, gamma 0 x y ≠ 0)
+    (hmassN : finiteCouplingMass gammaStar = finiteCouplingMass (gamma N))
+    (hmass0 : finiteCouplingMass gammaStar = finiteCouplingMass (gamma 0))
+    (hN : N ≠ 0) :
+    ∃ n, n < N ∧
+      rowMarginalKL (n + 1) ≤
+        finiteCouplingKL gammaStar (gamma 0) / (N : ℝ) := by
+  exact
+    chewi118_finiteSinkhorn_exists_rowMarginalKL_le_of_entropyRecurrence_initialKL
+      (gamma := gamma) (gammaStar := gammaStar) (rowMarginalKL := rowMarginalKL)
+      (N := N)
+      (finiteCouplingEntropyBregman_nonneg_of_pos_of_mass_eq
+        gammaStar (gamma N) hstar_pos hgammaN_pos hmassN)
+      hone_step (fun x y => (hstar_pos x y).ne') hgamma0_ne hmass0 hN
 
 /--
 Chewi Theorem 11.8 finite-array endpoint with the displayed objective
@@ -1747,6 +1808,33 @@ theorem chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_entropyRecurrenc
         intro n hn
         simpa [sinkhornRowObjective] using hmono n hn)
       hstar_pos hgammaN_pos hgamma0_ne hmassN hmass0 hN
+
+/--
+Chewi Theorem 11.8 finite-array selected endpoint stated with the source
+row-marginal objective `sinkhornRowObjective μ gamma`.
+-/
+theorem chewi118_finiteSinkhorn_exists_sinkhornRowObjective_le_of_entropyRecurrence_pos_initialKL
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (μ : X -> ℝ)
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {N : ℕ}
+    (hone_step : ∀ n, n < N ->
+      finiteCouplingEntropyBregman gammaStar (gamma (n + 1)) ≤
+        finiteCouplingEntropyBregman gammaStar (gamma n) -
+          sinkhornRowObjective μ (gamma (n + 1)))
+    (hstar_pos : ∀ x y, 0 < gammaStar x y)
+    (hgammaN_pos : ∀ x y, 0 < gamma N x y)
+    (hgamma0_ne : ∀ x y, gamma 0 x y ≠ 0)
+    (hmassN : finiteCouplingMass gammaStar = finiteCouplingMass (gamma N))
+    (hmass0 : finiteCouplingMass gammaStar = finiteCouplingMass (gamma 0))
+    (hN : N ≠ 0) :
+    ∃ n, n < N ∧
+      sinkhornRowObjective μ (gamma (n + 1)) ≤
+        finiteCouplingKL gammaStar (gamma 0) / (N : ℝ) :=
+  chewi118_finiteSinkhorn_exists_rowMarginalKL_le_of_entropyRecurrence_pos_initialKL
+    (gamma := gamma) (gammaStar := gammaStar)
+    (rowMarginalKL := fun n => sinkhornRowObjective μ (gamma n))
+    (N := N) hone_step hstar_pos hgammaN_pos hgamma0_ne hmassN hmass0 hN
 
 /--
 Concrete finite Sinkhorn Theorem 11.8 endpoint for a row-then-column
@@ -1829,6 +1917,86 @@ theorem chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhorn
     chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_entropyRecurrence_pos_initialKL
       (μ := μ) (gamma := gamma) (gammaStar := gammaStar) (N := N)
       hone_step hmono hstar_pos (hgamma_pos N le_rfl)
+      (fun x y => (hgamma_pos 0 (Nat.zero_le N) x y).ne') hmassN hmass0 hN
+
+/--
+Concrete finite Sinkhorn selected endpoint for a row-then-column
+normalization trajectory.  Unlike the last-iterate endpoint, this selected
+rate needs no monotonicity assumption on the row objective.
+-/
+theorem chewi118_finiteSinkhorn_exists_sinkhornRowObjective_le_of_concreteSinkhornNormalizations
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {N : ℕ}
+    (hstep : ∀ n, n < N ->
+      gamma (n + 1) = columnNormalizedCoupling ν
+        (rowNormalizedCoupling μ (gamma n)))
+    (hstar_row : gammaStar ∈ finiteRowMarginalConstraint μ)
+    (hstar_col : gammaStar ∈ finiteColumnMarginalConstraint ν)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hstar_pos : ∀ x y, 0 < gammaStar x y)
+    (hgamma_pos : ∀ n, n ≤ N -> ∀ x y, 0 < gamma n x y)
+    (hgamma_mass : ∀ n, n < N -> (∑ x, μ x) = finiteCouplingMass (gamma n))
+    (htarget_mass : (∑ y, ν y) = ∑ x, μ x)
+    (hN : N ≠ 0) :
+    ∃ n, n < N ∧
+      sinkhornRowObjective μ (gamma (n + 1)) ≤
+        finiteCouplingKL gammaStar (gamma 0) / (N : ℝ) := by
+  classical
+  have hN_pos : 0 < N := Nat.pos_of_ne_zero hN
+  have hone_step :
+      ∀ n, n < N ->
+        finiteCouplingEntropyBregman gammaStar (gamma (n + 1)) ≤
+          finiteCouplingEntropyBregman gammaStar (gamma n) -
+            sinkhornRowObjective μ (gamma (n + 1)) :=
+    chewi118_entropy_one_step_trajectory_of_concreteSinkhornNormalizations
+      μ ν gamma gammaStar hstep hstar_row hstar_col hμ_pos hν_pos
+      (fun n hn => hgamma_pos n (le_of_lt hn)) hgamma_mass htarget_mass
+  have hstar_col_eq : ∀ y, columnMarginal gammaStar y = ν y := by
+    simpa [finiteColumnMarginalConstraint] using hstar_col
+  have hstar_mass :
+      finiteCouplingMass gammaStar = ∑ y, ν y := by
+    rw [← sum_columnMarginal_eq_finiteCouplingMass gammaStar]
+    exact Finset.sum_congr rfl fun y _hy => hstar_col_eq y
+  let m : ℕ := N - 1
+  have hm_lt : m < N := by
+    dsimp [m]
+    exact Nat.sub_one_lt hN
+  have hm_le : m ≤ N := le_of_lt hm_lt
+  have hm_succ : m + 1 = N := by
+    dsimp [m]
+    omega
+  have hm_pos : ∀ x y, 0 < gamma m x y :=
+    hgamma_pos m hm_le
+  have hm_row_pos : ∀ x, 0 < rowMarginal (gamma m) x :=
+    rowMarginal_pos_of_pos hm_pos
+  have hhalf_pos :
+      ∀ x y, 0 < rowNormalizedCoupling μ (gamma m) x y :=
+    rowNormalizedCoupling_pos_of_pos μ (gamma m) hμ_pos hm_pos hm_row_pos
+  have hhalf_col_pos :
+      ∀ y, 0 < columnMarginal (rowNormalizedCoupling μ (gamma m)) y :=
+    columnMarginal_pos_of_pos hhalf_pos
+  have hgammaN_col : ∀ y, columnMarginal (gamma N) y = ν y := by
+    intro y
+    have hstep_m := hstep m hm_lt
+    rw [← hm_succ, hstep_m]
+    exact columnMarginal_columnNormalizedCoupling ν
+      (rowNormalizedCoupling μ (gamma m))
+      (fun y => (hhalf_col_pos y).ne') y
+  have hgammaN_mass :
+      finiteCouplingMass (gamma N) = ∑ y, ν y := by
+    rw [← sum_columnMarginal_eq_finiteCouplingMass (gamma N)]
+    exact Finset.sum_congr rfl fun y _hy => hgammaN_col y
+  have hmassN : finiteCouplingMass gammaStar = finiteCouplingMass (gamma N) := by
+    rw [hstar_mass, hgammaN_mass]
+  have hmass0 : finiteCouplingMass gammaStar = finiteCouplingMass (gamma 0) := by
+    rw [hstar_mass, htarget_mass, hgamma_mass 0 hN_pos]
+  exact
+    chewi118_finiteSinkhorn_exists_sinkhornRowObjective_le_of_entropyRecurrence_pos_initialKL
+      (μ := μ) (gamma := gamma) (gammaStar := gammaStar) (N := N)
+      hone_step hstar_pos (hgamma_pos N le_rfl)
       (fun x y => (hgamma_pos 0 (Nat.zero_le N) x y).ne') hmassN hmass0 hN
 
 /--
