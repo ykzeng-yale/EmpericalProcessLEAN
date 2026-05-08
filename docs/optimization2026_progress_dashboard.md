@@ -594,6 +594,23 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi118_finiteSinkhorn_last_rowMarginalKL_le_of_entropyCertificate`,
   giving a source-shaped Theorem 11.8 rate directly over curried finite
   coupling arrays using `finiteCouplingEntropyBregman`.  The
+  newest finite Sinkhorn 11.8 packet adds `finiteKL_self`,
+  row/column marginal mass and nonnegativity lemmas, `sinkhornRowObjective`,
+  `sinkhornRowObjective_eq_zero_of_rowMarginal_eq`,
+  `sinkhornRowObjective_nonneg_of_nonneg_of_pos_of_mass_eq`, finite
+  Gibbs/KL nonnegativity for arrays and couplings, terminal entropic-Bregman
+  nonnegativity from positive equal-mass couplings, initial-KL certificate
+  constructors, and theorem-facing wrappers ending in
+  `chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_entropyRecurrence_pos_initialKL`.
+  This now states Chewi Theorem 11.8 in the displayed
+  `KL(rowMarginal gamma^N || mu)` orientation with RHS
+  `KL(gammaStar || gamma^0) / N`.  Fresh search result: mathlib's
+  `InformationTheory.KullbackLeibler` files provide measure-level KL
+  machinery, and `Real.self_sub_one_le_mul_log` supplies scalar Gibbs, but no
+  plug-in finite Sinkhorn log-sum/data-processing theorem was found.  The next
+  blocker is the finite log-sum bridge from row-marginal KL to coupling KL,
+  followed by the concrete zero-error Sinkhorn mirror-descent recurrence and
+  row-objective monotonicity fields.  The
   current local focused Lean check also verifies
   `chewi118_last_gap_le_of_recurrence` and
   `chewi118_last_gap_le_of_oneStep` in `MirrorDescent.lean`, turning the

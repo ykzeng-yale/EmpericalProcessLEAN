@@ -1046,6 +1046,33 @@ The newest finite-array endpoint packet adds
 `chewi118_finiteSinkhorn_last_rowMarginalKL_le_of_entropyCertificate`,
 reusing `chewi118_last_gap_le_of_recurrence` to provide the Theorem 11.8
 last-iterate KL rate directly over curried finite Sinkhorn arrays.
+The newest finite Sinkhorn 11.8 packet adds `finiteKL_self`,
+`sum_rowMarginal_eq_finiteCouplingMass`,
+`sum_columnMarginal_eq_finiteCouplingMass`,
+`rowMarginal_nonneg_of_nonneg`, `columnMarginal_nonneg_of_nonneg`,
+`sinkhornRowObjective`, `sinkhornRowObjective_eq_zero_of_rowMarginal_eq`,
+`finiteKL_term_lower`, `finiteKL_nonneg_of_nonneg_of_pos_of_sum_eq`,
+`sinkhornRowObjective_nonneg_of_nonneg_of_pos_of_mass_eq`,
+`finiteCouplingKL_nonneg_of_nonneg_of_pos_of_mass_eq`,
+`finiteCouplingEntropyBregman_nonneg_of_pos_of_mass_eq`,
+`IsChewi118FiniteSinkhornEntropyCertificate.of_initialCouplingKL`,
+`chewi118_finiteSinkhorn_last_rowMarginalKL_le_of_entropyRecurrence_initialKL`,
+`IsChewi118FiniteSinkhornEntropyCertificate.of_initialCouplingKL_and_terminal_pos`,
+`chewi118_finiteSinkhorn_last_rowMarginalKL_le_of_entropyRecurrence_pos_initialKL`,
+`chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_entropyRecurrence_pos_initialKL`,
+and
+`chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_entropyRecurrence_pos_initialKL`.
+This discharges terminal Bregman nonnegativity from positive equal-mass
+couplings, identifies the initial Bregman term with the source
+`KL(gammaStar || gamma^0)`, and states Theorem 11.8 in the displayed
+`KL(rowMarginal gamma^N || mu)` orientation.  Fresh search-first result:
+mathlib has measure-level KL/data-processing material in
+`Mathlib.InformationTheory.KullbackLeibler.*` and convex Jensen APIs, but no
+ready finite curried-array Sinkhorn/log-sum theorem.  The next concrete 11.8
+blocker is the finite log-sum/data-processing bridge
+`finiteKL (rowMarginal gamma) (rowMarginal eta) <= finiteCouplingKL gamma eta`,
+then the exact Sinkhorn mirror-descent recurrence and objective monotonicity
+fields from the row/column normalization updates.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
