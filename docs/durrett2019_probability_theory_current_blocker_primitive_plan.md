@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V104
+## Live In-Thread Goal Prompt V105
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -364,12 +364,20 @@ feeds that into the singular branch, and
 `durrett2019_theorem_4_3_8_canonicalRatio_range_hasProd_density_trimmedPrefix_zero_or_pos`
 packages the canonical consequences: product zero gives mutual singularity,
 while strictly positive product gives absolute continuity.
+Also treat canonical ratio measurability as compiled support:
+`durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit_measurable`,
+`durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit_measurable`,
+the two corresponding limit-density measurability endpoints, and
+`durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_measurable` prove that
+the canonical `mu + nu` likelihood ratio is measurable.  The branch criterion
+wrapper
+`durrett2019_theorem_4_3_8_canonicalRatio_range_hasProd_density_trimmedPrefix_zero_or_pos_measurable`
+therefore no longer asks for a separate canonical-ratio measurability input.
 Move to the remaining Kakutani criterion assembly:
-add only source-shaped wrappers that discharge the remaining canonical ratio
-measurability/ENNReal full-prefix convergence inputs needed by the new
-zero/positive branch criterion, discharge the canonical-ratio
-nonzero-lower-integral input if it remains useful, or promote the branch
-criterion into the final textbook Kakutani statement.  Do
+add only source-shaped wrappers that discharge the remaining ENNReal full-prefix
+likelihood convergence input needed by the new zero/positive branch criterion,
+discharge the canonical-ratio nonzero-lower-integral input if it remains useful,
+or promote the branch criterion into the final textbook Kakutani statement.  Do
 not redo the already compiled RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
@@ -410,6 +418,7 @@ Do not redo the canonical product-tail wrapper or the `Multipliable`/`∏'`
 positive-product handoff, including the strict-positive product variants.
 Do not redo the `HasProd h 0` finite-prefix Hellinger convergence bridge or the
 first canonical zero/positive branch criterion wrapper.
+Do not redo canonical `mu + nu` limit-density or canonical-ratio measurability.
 Do not redo the every-tail-block measurability bridge into the `limsup` tail
 sigma-field.
 Do not redo the tail-coordinate sigma-field layer or finite tail cylinder
@@ -869,12 +878,12 @@ sequences over the common trimmed dominating measure.  The denominator-limit
 nonzero bridge, canonical prefix convergence from the trimmed-prefix ratio,
 positive Hellinger-product wrapper with that convergence supplied,
 positive-product finite-limit side-condition bridge, canonical
-product-tail/`tprod` positive-product wrappers, and the first canonical
-zero/positive product criterion wrapper now also compile, including
-strict-positive product variants and the zero-product `HasProd h 0` singular
-handoff.  Move forward to discharging the remaining canonical ratio
-measurability/ENNReal full-prefix convergence inputs for the branch criterion,
-the canonical-ratio nonzero-lower-integral input if still needed, or the final
+product-tail/`tprod` positive-product wrappers, the first canonical
+zero/positive product criterion wrapper, and canonical ratio measurability now
+also compile, including strict-positive product variants and the zero-product
+`HasProd h 0` singular handoff.  Move forward to discharging the remaining
+ENNReal full-prefix convergence input for the branch criterion, the
+canonical-ratio nonzero-lower-integral input if still needed, or the final
 textbook Kakutani statement.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
@@ -989,6 +998,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V104` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V105` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V104`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V105`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -559,9 +559,10 @@ Next packet:
   strict-positive product variants.  The first canonical zero/positive product
   criterion wrapper also now compiles: `HasProd h 0` feeds the singular branch,
   while strict product positivity feeds the positive branch.  The active target
-  is now the remaining canonical ratio measurability/ENNReal full-prefix
-  convergence input for that criterion, the canonical ratio nonzero-lower-
-  integral input if still useful, or the final textbook Kakutani statement.
+  is now the remaining ENNReal full-prefix convergence input for that criterion,
+  the canonical ratio nonzero-lower-integral input if still useful, or the final
+  textbook Kakutani statement.  Canonical `mu + nu` limit-density and likelihood-
+  ratio measurability are compiled support.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:

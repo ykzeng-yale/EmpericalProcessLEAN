@@ -4106,6 +4106,80 @@ noncomputable def durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
       durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω
 
 /--
+Durrett 2019, Theorem 4.3.5 measurability support: the canonical real limit
+candidate for the numerator trimmed RN derivatives is measurable.
+-/
+theorem durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit_measurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    (μ ν : Measure Ω) (ℱ : Filtration ℕ mΩ) :
+    Measurable (durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit μ ν ℱ) := by
+  change Measurable
+    (ℱ.limitProcess
+      (fun n ω => ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+      (μ + ν))
+  exact
+    (Filtration.stronglyMeasurable_limit_process'
+      (f := fun n ω =>
+        ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+      (ℱ := ℱ) (μ := μ + ν)).measurable
+
+/--
+Durrett 2019, Theorem 4.3.5 measurability support: the canonical real limit
+candidate for the denominator trimmed RN derivatives is measurable.
+-/
+theorem durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit_measurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    (μ ν : Measure Ω) (ℱ : Filtration ℕ mΩ) :
+    Measurable (durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit μ ν ℱ) := by
+  change Measurable
+    (ℱ.limitProcess
+      (fun n ω => ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+      (μ + ν))
+  exact
+    (Filtration.stronglyMeasurable_limit_process'
+      (f := fun n ω =>
+        ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+      (ℱ := ℱ) (μ := μ + ν)).measurable
+
+/--
+Durrett 2019, Theorem 4.3.5 measurability support: the canonical numerator
+finite `ENNReal` density is measurable.
+-/
+theorem durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity_measurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    (μ ν : Measure Ω) (ℱ : Filtration ℕ mΩ) :
+    Measurable (durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ) := by
+  simpa [durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity] using
+    (durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit_measurable
+      (μ := μ) (ν := ν) (ℱ := ℱ)).ennreal_ofReal
+
+/--
+Durrett 2019, Theorem 4.3.5 measurability support: the canonical denominator
+finite `ENNReal` density is measurable.
+-/
+theorem durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity_measurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    (μ ν : Measure Ω) (ℱ : Filtration ℕ mΩ) :
+    Measurable (durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ) := by
+  simpa [durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity] using
+    (durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit_measurable
+      (μ := μ) (ν := ν) (ℱ := ℱ)).ennreal_ofReal
+
+/--
+Durrett 2019, Theorem 4.3.5 measurability support: the canonical likelihood
+ratio built from the `mu + nu` limiting densities is measurable.
+-/
+theorem durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_measurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    (μ ν : Measure Ω) (ℱ : Filtration ℕ mΩ) :
+    Measurable (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ) := by
+  simpa [durrett2019_theorem_4_3_5_add_dominating_canonicalRatio] using
+    (durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity_measurable
+      (μ := μ) (ν := ν) (ℱ := ℱ)).div
+      (durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity_measurable
+        (μ := μ) (ν := ν) (ℱ := ℱ))
+
+/--
 Durrett 2019, Theorem 4.3.5 canonical ratio top-set separation on the
 denominator side: the top set of the canonical likelihood ratio is `nu`-null.
 -/
@@ -9445,6 +9519,53 @@ theorem
       durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix_pos_canonicalTail
         (μ := μ) (ν := ν) (q := q) (P := P)
         C hC_meas hgen hC hq hμ hbranch hPpos hprod hq_ne_top
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical Kakutani branch criterion with canonical
+ratio measurability discharged from the `mu + nu` limit-density construction.
+The remaining source convergence input is only the ENNReal full-prefix
+likelihood convergence to the canonical ratio.
+-/
+theorem
+    durrett2019_theorem_4_3_8_canonicalRatio_range_hasProd_density_trimmedPrefix_zero_or_pos_measurable
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {P : ℝ≥0∞}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas :
+      ∀ s ∈ C,
+        ∃ m, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S m] s)
+    (hgen :
+      (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hXlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x)
+          atTop
+          (𝓝
+            (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+              (Measure.infinitePi μ) (Measure.infinitePi ν)
+              (durrett2019_theorem_4_3_8_prefixFiltration S) x)))
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    (P = 0 -> Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν) ∧
+      (0 < P -> Measure.infinitePi μ ≪ Measure.infinitePi ν) := by
+  exact
+    durrett2019_theorem_4_3_8_canonicalRatio_range_hasProd_density_trimmedPrefix_zero_or_pos
+      (μ := μ) (ν := ν) (q := q) (P := P)
+      C hC_meas hgen hC hq hμ hbranch
+      (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_measurable
+        (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν)
+        (ℱ := durrett2019_theorem_4_3_8_prefixFiltration S))
+      hXlim hprod hq_ne_top
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-branch final handoff: once full-prefix
