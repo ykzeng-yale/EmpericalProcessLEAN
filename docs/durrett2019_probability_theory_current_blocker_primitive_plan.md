@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V89
+## Live In-Thread Goal Prompt V90
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -208,6 +208,13 @@ measurability bridge now also compiles: if an event, and in particular the
 limiting-likelihood zero set, is measurable from every tail block
 `⨆ i ≥ n, s i`, then it is measurable in the `limsup` tail sigma-field; this
 feeds the lower-integral zero-set-null and absolute-continuity consumers.
+The tail-coordinate support layer now also compiles: coordinate sigma-fields
+and tail-coordinate sigma-fields on sequence space are packaged, every
+tail-coordinate map is measurable from its tail sigma-field, finite cylinder
+likelihoods using only coordinates from `n` onward have tail-coordinate
+measurability, their zero sets are tail-coordinate measurable, and a
+zero-set equality with tail-coordinate measurable candidates gives
+every-tail-coordinate measurability for a limiting likelihood.
 
 Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
 layer, the Theorem 4.3.8 finite-product likelihood/`withDensity` layer, and the
@@ -255,11 +262,16 @@ compiled support.
 Also treat the every-tail-block measurability bridge into `limsup` tail
 measurability, plus its zero-set-null and absolute-continuity consumers, as
 compiled support.
+Also treat the tail-coordinate sigma-field layer, finite tail cylinder
+likelihood measurability, finite tail cylinder zero-set measurability, and the
+zero-set-equality handoff to every-tail-coordinate measurability as compiled
+support.
 Move to the remaining Kakutani criterion assembly:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`) and logarithm/tail-measurability support.  Add only
-source-shaped wrappers that directly feed the canonical Kakutani zero-set
-every-tail-block measurability endpoint or the infinite-product criterion hypotheses
+source-shaped wrappers that directly prove the canonical limiting likelihood
+zero set agrees with a tail-coordinate measurable tail-limit candidate, or
+directly feed the infinite-product criterion hypotheses
 consumed by the compiled branch assemblers and eliminator.  Do
 not redo the already compiled RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -293,6 +305,8 @@ Do not redo the HasProd/Multipliable prefix-tail bridge or the standard
 `Finset.range n` HasProd-to-pairwise-liminf handoff.
 Do not redo the every-tail-block measurability bridge into the `limsup` tail
 sigma-field.
+Do not redo the tail-coordinate sigma-field layer or finite tail cylinder
+likelihood measurability layer.
 Do not redo the finite tail-product lower bound from positive prefix/tail
 monotonicity or the standard positive-product range consumer.
 Do not redo the source-density one-coordinate Hellinger affinity `≤ 1` bound,
@@ -713,8 +727,12 @@ compile.  The lower-integral source bridge from tail zero set and `∫⁻ X ≠ 
 to zero-set-null and the positive-branch conclusion now also compiles.  The
 every-tail-block measurability bridge into the `limsup` tail sigma-field now
 also compiles, including zero-set-null and absolute-continuity consumers from
-every-tail-block measurability plus `∫⁻ X ≠ 0`.  Move forward to the canonical
-Kakutani zero-set every-tail-block measurability endpoint and remaining
+every-tail-block measurability plus `∫⁻ X ≠ 0`.  The tail-coordinate
+sigma-field and finite tail cylinder likelihood measurability layer now also
+compiles, including finite tail cylinder zero-set measurability and the
+zero-set-equality handoff to every-tail-coordinate measurability.  Move
+forward to the canonical limiting-likelihood zero-set equality with a
+tail-coordinate measurable tail-limit candidate and the remaining Kakutani
 criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
@@ -829,6 +847,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V89` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V90` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
