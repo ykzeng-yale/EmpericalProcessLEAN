@@ -4611,6 +4611,20 @@ noncomputable def durrett2019_theorem_4_3_8_cylinderLikelihood
   durrett2019_theorem_4_3_8_finiteProductLikelihood (fun i : I => q i) (I.restrict x)
 
 /--
+Durrett 2019, Theorem 4.3.8 cylinder support: the pulled-back
+finite-coordinate likelihood is the ordinary finite product over the chosen
+coordinates.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_eq_finset_prod
+    {ι S : Type*} (I : Finset ι) (q : ι -> S -> ℝ≥0∞) (x : ι -> S) :
+    durrett2019_theorem_4_3_8_cylinderLikelihood I q x =
+      ∏ i ∈ I, q i (x i) := by
+  classical
+  unfold durrett2019_theorem_4_3_8_cylinderLikelihood
+  unfold durrett2019_theorem_4_3_8_finiteProductLikelihood
+  simp
+
+/--
 Durrett 2019, Theorem 4.3.8 cylinder support: the finite-coordinate likelihood
 pulled back to the infinite product space is measurable.
 -/
@@ -4726,6 +4740,21 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_measurable
       (durrett2019_theorem_4_3_8_cylinderLikelihood_measurable I hq)
 
 /--
+Durrett 2019, Theorem 4.3.8 Hellinger support: pointwise square-root
+factorization for a pulled-back cylinder likelihood.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_finset_prod
+    {ι S : Type*} (I : Finset ι) (q : ι -> S -> ℝ≥0∞) (x : ι -> S) :
+    (durrett2019_theorem_4_3_8_cylinderLikelihood I q x) ^ ((1 : ℝ) / 2) =
+      ∏ i ∈ I, (q i (x i)) ^ ((1 : ℝ) / 2) := by
+  classical
+  rw [durrett2019_theorem_4_3_8_cylinderLikelihood_eq_finset_prod]
+  simpa using
+    (ENNReal.prod_rpow_of_nonneg
+      (s := I) (f := fun i => q i (x i))
+      (r := (1 : ℝ) / 2) (by norm_num : 0 ≤ (1 : ℝ) / 2)).symm
+
+/--
 Durrett 2019, Theorem 4.3.8 Hellinger support: integrating the square-root
 power of a pulled-back finite-coordinate likelihood against the infinite
 denominator product law factors into the one-coordinate Hellinger integrals.
@@ -4760,6 +4789,155 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_lintegral
           exact
             durrett2019_theorem_4_3_8_finiteProductLikelihood_rpow_half_lintegral
               (ν := fun i : I => ν i) (q := fun i : I => q i) fun i => hq i
+
+/--
+Durrett 2019, Theorem 4.3.8 finite-coordinate product support: integrating a
+finite product of coordinate functions over an infinite product probability
+space factors into the product of the one-coordinate integrals.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderCoordinateProduct_lintegral
+    {ι S : Type*} [MeasurableSpace S]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    (I : Finset ι) {f : ι -> S -> ℝ≥0∞}
+    (hf : ∀ i, Measurable (f i)) :
+    ∫⁻ x, (∏ i ∈ I, f i (x i)) ∂Measure.infinitePi ν =
+      ∏ i ∈ I, ∫⁻ y, f i y ∂ν i := by
+  classical
+  let X : ι -> (ι -> S) -> ℝ≥0∞ := fun i x => f i (x i)
+  have hX_meas : ∀ i, Measurable (X i) := by
+    intro i
+    exact (hf i).comp (measurable_pi_apply i)
+  have hX_indep :
+      _root_.ProbabilityTheory.iIndepFun X (Measure.infinitePi ν) := by
+    simpa [X] using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := ν) (X := f) hf)
+  calc
+    ∫⁻ x, (∏ i ∈ I, f i (x i)) ∂Measure.infinitePi ν
+        = ∫⁻ x, ∏ i ∈ I, X i x ∂Measure.infinitePi ν := by
+          rfl
+    _ = ∏ i ∈ I, ∫⁻ x, X i x ∂Measure.infinitePi ν := by
+          simpa using
+            (_root_.ProbabilityTheory.lintegral_prod_eq_prod_lintegral_of_indepFun
+              (μ := Measure.infinitePi ν) (s := I) (X := X) hX_indep hX_meas)
+    _ = ∏ i ∈ I, ∫⁻ y, f i y ∂ν i := by
+          refine Finset.prod_congr rfl ?_
+          intro i _hi
+          exact
+            (measurePreserving_eval_infinitePi (μ := ν) i).lintegral_comp (hf i)
+
+/--
+Durrett 2019, Theorem 4.3.8 Hellinger support: for nested finite coordinate
+sets, the overlap of two square-root cylinder likelihoods is exactly the
+finite Hellinger tail product over the new coordinates.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_sqrt_overlap_lintegral_of_subset
+    {ι S : Type*} [DecidableEq ι] [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {I J : Finset ι} (hIJ : I ⊆ J) {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) :
+    ∫⁻ x,
+        (durrett2019_theorem_4_3_8_cylinderLikelihood I q x) ^
+            ((1 : ℝ) / 2) *
+          (durrett2019_theorem_4_3_8_cylinderLikelihood J q x) ^
+            ((1 : ℝ) / 2)
+        ∂Measure.infinitePi ν =
+      (J \ I).prod (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) := by
+  classical
+  let h : ι -> ℝ≥0∞ := fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i
+  let f : ι -> S -> ℝ≥0∞ := fun i y =>
+    if i ∈ I then q i y else (q i y) ^ ((1 : ℝ) / 2)
+  have hf : ∀ i, Measurable (f i) := by
+    intro i
+    dsimp [f]
+    split_ifs
+    · exact hq i
+    · exact ENNReal.continuous_rpow_const.measurable.comp (hq i)
+  have hq_int : ∀ i, ∫⁻ y, q i y ∂ν i = 1 := by
+    intro i
+    calc
+      ∫⁻ y, q i y ∂ν i = (ν i).withDensity (q i) Set.univ := by
+        rw [withDensity_apply _ MeasurableSet.univ]
+        simp
+      _ = μ i Set.univ := by rw [← hμ i]
+      _ = 1 := measure_univ
+  have hpoint :
+      (fun x : ι -> S =>
+          (durrett2019_theorem_4_3_8_cylinderLikelihood I q x) ^
+              ((1 : ℝ) / 2) *
+            (durrett2019_theorem_4_3_8_cylinderLikelihood J q x) ^
+              ((1 : ℝ) / 2)) =
+        fun x => ∏ i ∈ J, f i (x i) := by
+    funext x
+    let r : ι -> ℝ≥0∞ := fun i => (q i (x i)) ^ ((1 : ℝ) / 2)
+    have hr_sq : ∀ i, r i * r i = q i (x i) := by
+      intro i
+      dsimp [r]
+      rw [← pow_two]
+      rw [← ENNReal.rpow_two]
+      simpa [one_div] using
+        (ENNReal.rpow_inv_rpow (by norm_num : (2 : ℝ) ≠ 0) (q i (x i)))
+    rw [durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_finset_prod,
+      durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_finset_prod]
+    change (∏ i ∈ I, r i) * (∏ i ∈ J, r i) = ∏ i ∈ J, f i (x i)
+    calc
+      (∏ i ∈ I, r i) * (∏ i ∈ J, r i)
+          = (J \ I).prod r * ((∏ i ∈ I, r i) * ∏ i ∈ I, r i) := by
+            rw [← Finset.prod_sdiff hIJ]
+            ac_rfl
+      _ = (J \ I).prod r * (∏ i ∈ I, r i * r i) := by
+            rw [Finset.prod_mul_distrib]
+      _ = (J \ I).prod r * (∏ i ∈ I, q i (x i)) := by
+            congr 1
+            exact Finset.prod_congr rfl fun i _hi => hr_sq i
+      _ = (J \ I).prod (fun i => f i (x i)) * (∏ i ∈ I, f i (x i)) := by
+            have htail_prod :
+                (J \ I).prod r = (J \ I).prod (fun i => f i (x i)) := by
+              refine Finset.prod_congr rfl ?_
+              intro i hi
+              have hi_not : i ∉ I := (Finset.mem_sdiff.mp hi).2
+              simp [f, r, hi_not]
+            have hprefix_prod :
+                (∏ i ∈ I, q i (x i)) = ∏ i ∈ I, f i (x i) := by
+              refine Finset.prod_congr rfl ?_
+              intro i hi
+              simp [f, hi]
+            rw [htail_prod, hprefix_prod]
+      _ = ∏ i ∈ J, f i (x i) := by
+            rw [Finset.prod_sdiff hIJ]
+  calc
+    ∫⁻ x,
+        (durrett2019_theorem_4_3_8_cylinderLikelihood I q x) ^
+            ((1 : ℝ) / 2) *
+          (durrett2019_theorem_4_3_8_cylinderLikelihood J q x) ^
+            ((1 : ℝ) / 2)
+        ∂Measure.infinitePi ν
+        = ∫⁻ x, ∏ i ∈ J, f i (x i) ∂Measure.infinitePi ν := by
+          rw [hpoint]
+    _ = ∏ i ∈ J, ∫⁻ y, f i y ∂ν i := by
+          exact
+            durrett2019_theorem_4_3_8_cylinderCoordinateProduct_lintegral
+              (ν := ν) J hf
+    _ = (J \ I).prod (fun i => ∫⁻ y, f i y ∂ν i) *
+          (∏ i ∈ I, ∫⁻ y, f i y ∂ν i) := by
+          rw [Finset.prod_sdiff hIJ]
+    _ = (J \ I).prod h * (∏ _i ∈ I, (1 : ℝ≥0∞)) := by
+          have htail_prod :
+              (J \ I).prod (fun i => ∫⁻ y, f i y ∂ν i) = (J \ I).prod h := by
+            refine Finset.prod_congr rfl ?_
+            intro i hi
+            have hi_not : i ∉ I := (Finset.mem_sdiff.mp hi).2
+            simp [f, h, hi_not]
+          have hprefix_prod :
+              (∏ i ∈ I, ∫⁻ y, f i y ∂ν i) = ∏ _i ∈ I, (1 : ℝ≥0∞) := by
+            refine Finset.prod_congr rfl ?_
+            intro i hi
+            simp [f, hi, hq_int i]
+          rw [htail_prod, hprefix_prod]
+    _ = (J \ I).prod (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) := by
+          simp [h]
 
 /--
 Durrett 2019, Theorem 4.3.8 zero-product support: if the finite likelihoods
@@ -6427,6 +6605,84 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_overlap_
       hq hμ htail_le htail hfinite hoverlap
       (durrett2019_theorem_4_3_8_cylinderLikelihood_sqrtDiff_sq_add_two_overlap_le_two
         (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) hq hμ hfinite)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder overlap support: for an
+eventually nested finite-coordinate exhaustion, a finite Hellinger tail-product
+lower bound supplies the concrete square-root overlap lower bound.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_overlap_lower_bound_of_tailProduct
+    {ι S : Type*} [DecidableEq ι] [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    {tail : ℕ -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hsubset : ∀ n, ∀ᶠ m in atTop, Iseq n ⊆ Iseq m)
+    (htail_prod :
+      ∀ n, ∀ᶠ m in atTop,
+        tail n ≤
+          (Iseq m \ Iseq n).prod
+            (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)) :
+    ∀ n, ∀ᶠ m in atTop,
+      tail n ≤
+        ∫⁻ x,
+          (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+              ((1 : ℝ) / 2) *
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+              ((1 : ℝ) / 2)
+          ∂Measure.infinitePi ν := by
+  intro n
+  filter_upwards [hsubset n, htail_prod n] with m hnm htail_nm
+  rw [durrett2019_theorem_4_3_8_cylinderLikelihood_sqrt_overlap_lintegral_of_subset
+    (μ := μ) (ν := ν) (I := Iseq n) (J := Iseq m) hnm hq hμ]
+  exact htail_nm
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy handoff from
+finite Hellinger tail products.  This removes the abstract overlap lower-bound
+assumption once the coordinate exhaustion is eventually nested and the finite
+tail products dominate the affinity tail.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_tailProduct_lower_bound
+    {ι S : Type*} [DecidableEq ι] [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    {tail : ℕ -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail : Tendsto tail atTop (𝓝 1))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x ≠ ∞)
+    (hsubset : ∀ n, ∀ᶠ m in atTop, Iseq n ⊆ Iseq m)
+    (htail_prod :
+      ∀ n, ∀ᶠ m in atTop,
+        tail n ≤
+          (Iseq m \ Iseq n).prod
+            (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)) :
+    Tendsto
+      (fun n =>
+        Filter.liminf
+          (fun m =>
+            ∫⁻ x,
+              ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+                (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+              ∂Measure.infinitePi ν)
+          atTop)
+      atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_overlap_lower_bound
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) (tail := tail)
+      hq hμ htail_le htail hfinite
+      (durrett2019_theorem_4_3_8_cylinderLikelihood_overlap_lower_bound_of_tailProduct
+        (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) (tail := tail)
+        hq hμ hsubset htail_prod)
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
