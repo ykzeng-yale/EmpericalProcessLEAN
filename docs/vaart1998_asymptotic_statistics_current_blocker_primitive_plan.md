@@ -10,19 +10,20 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativePath_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativeRegularity_envelope`.
 It already packages the finite-coordinate empirical score, derivative,
 Hessian action, estimating equation, envelope hypotheses, common normalizing
 scalar, the actual segment `theta0 + t • delta`, endpoint identification,
 Frechet differentiability of the estimating map along the segment,
 coordinate path derivatives by the chain rule, vector-valued path continuity,
 the empirical derivative specialized to `derivativeAt theta0`, and the vector
-derivative Taylor identity derived from derivative-path continuity plus a
-constant second-derivative path derivative.
+derivative Taylor identity derived from source continuity of `derivativeAt` on
+the segment image plus a Frechet derivative of `derivativeAt` along the open
+segment.
 
-Next packet only: instantiate derivative-path continuity and the
-second-derivative path `HasDerivAt` assumption from the chosen source
-second-derivative regularity.  Do not revisit the solved vector derivative
+Next packet only: instantiate these source second-derivative regularity fields
+from a standard smoothness package for the estimating map or derivative map.
+Do not revisit the solved derivative-path regularity bridge, vector derivative
 Taylor bridge, `derivativeAt theta0` specialization, vector-to-coordinate
 continuity reduction, coordinate scalar derivative-at-zero/display reduction,
 Frechet-to-one-dimensional chain rule, estimating-map segment instantiation,
@@ -839,18 +840,31 @@ compiling:
 300. Theorem 5.41 finite-coordinate empirical-average source handoff from a
    theta0 Frechet derivative and a constant second-derivative path:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativePath_envelope`.
+301. Theorem 5.41 derivative-path continuity from source continuity on the
+   segment image:
+   `vaart1998_theorem_5_41_derivativeAt_path_continuousOn_of_continuousOn_segment`.
+302. Theorem 5.41 derivative-path `HasDerivAt` from the Frechet derivative of
+   `theta ↦ derivativeAt theta`:
+   `vaart1998_theorem_5_41_derivativeAt_path_hasDerivAt_of_hasFDerivAt`.
+303. Theorem 5.41 a.e. sampled derivative-path regularity from source
+   second-derivative regularity:
+   `vaart1998_theorem_5_41_derivativeAt_path_regular_ae_of_hasFDerivAt`.
+304. Theorem 5.41 finite-coordinate empirical-average source handoff from
+   theta0 Frechet derivative and source second-derivative regularity:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativeRegularity_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 second derivative path handoff`).
+(`Add Vaart theorem 5.41 second derivative regularity handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by proving the vector derivative
-Taylor identity from derivative-path continuity and a constant path derivative
-equal to the selected second-derivative action.
+asymptotic-normality route for Z-estimators by deriving derivative-path
+continuity and the derivative-path `HasDerivAt` assumption from source
+continuity and Frechet differentiability of `theta ↦ derivativeAt theta` on
+the textbook segment.
 
-The next aggressive packet should instantiate derivative-path continuity and
-the second-derivative path `HasDerivAt` assumption from the chosen source
-second-derivative regularity.
+The next aggressive packet should instantiate these source second-derivative
+regularity fields from a standard smoothness package for the estimating map or
+derivative map.
 
 ## Execution Notes
 

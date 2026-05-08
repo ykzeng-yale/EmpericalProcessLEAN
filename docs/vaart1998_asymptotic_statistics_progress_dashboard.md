@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 second derivative path handoff`).
+(`Add Vaart theorem 5.41 second derivative regularity handoff`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -630,11 +630,11 @@ Live continuation prompt: use the compact prompt in
 ## Next Aggressive Target
 
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
-`MEstimators.lean`: instantiate derivative-path continuity and the
-second-derivative path `HasDerivAt` assumption from the chosen source
-second-derivative regularity.  The vector derivative Taylor bridge,
-`derivativeAt theta0` specialization, vector-to-coordinate continuity
-reduction, coordinate scalar derivative-at-zero/display reduction,
+`MEstimators.lean`: instantiate the remaining source second-derivative
+regularity fields from a standard smoothness package for the estimating map or
+derivative map.  The derivative-path regularity bridge, vector derivative
+Taylor bridge, `derivativeAt theta0` specialization, vector-to-coordinate
+continuity reduction, coordinate scalar derivative-at-zero/display reduction,
 Frechet-to-one-dimensional chain rule, estimating-map segment instantiation,
 second-derivative action matching, path-selected Taylor bridge, coordinate
 assembly, the scalar Taylor bridge, scaling bridge, auxiliary quadratic
