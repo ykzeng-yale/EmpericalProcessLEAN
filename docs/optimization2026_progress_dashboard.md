@@ -334,6 +334,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product`,
   `integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left`,
   `norm_integral_mul_condExp_residual_le_integral_norm_residual_mul_norm`,
+  `Chewi127BoundedMartingaleCLTSource.projectedRawCharFunStepFactor`,
+  `Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier`,
+  `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_succ_eq_futureMultiplier_mul_rawStep`,
+  `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_eq_futureMultiplier_mul_normalizedStep`,
+  `Chewi127BoundedMartingaleCLTSource.projectedMixedTowerStepDefect_norm_le_futureMultiplier_residual`,
+  `Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_norm_le_futureMultiplier_residual_sum`,
+  `Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -455,11 +463,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   orthogonality primitive for an adapted multiplier against
   `g - E[g | F]`, and the corresponding correlation bound reducing a weighted
   residual integral to the `L1` size of the weight's non-predictable part.
+  The newest future-multiplier residual packet names the raw one-step factor
+  and mixed future multiplier, rewrites neighboring mixed products at split
+  `r`, proves one-step and row-sum defect bounds from the conditional residual
+  correlation estimate, and wires residual row-sum convergence into projected
+  characteristic-function convergence.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
-  earlier `F_r` for `r < k`.  Next target: instantiate the new correlation
-  bound with the future inverse/error tail weight and prove the defect-sum
-  convergence, not another future-tail measurability wrapper.
+  earlier `F_r` for `r < k`.  Next target: discharge the integrability gates
+  and prove the future-multiplier residual row-sum convergence, not another
+  future-tail measurability wrapper.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
@@ -1090,10 +1103,11 @@ mixed-defect compensated algebra identity
 `projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product`,
 and the conditional residual/correlation primitives
 `integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left` and
-`norm_integral_mul_condExp_residual_le_integral_norm_residual_mul_norm`.
-Next theorem-sized packet: instantiate the weighted martingale correlation
-bound with the future inverse/error tail and prove the compensated defect sum
-vanishes for
+`norm_integral_mul_condExp_residual_le_integral_norm_residual_mul_norm`, plus
+the future-multiplier residual bridge
+`projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`.
+Next theorem-sized packet: discharge the residual-row integrability gates and
+prove the future-multiplier residual row-sum convergence consumed by
 `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`,
 then feed the existing Chewi Theorem 12.7/12.3 ASGD certificate constructors.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw

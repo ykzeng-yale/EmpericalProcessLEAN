@@ -150,6 +150,16 @@ scalar bounded-martingale characteristic-function proof behind
 conditional residual/correlation primitives
 `integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left` and
 `norm_integral_mul_condExp_residual_le_integral_norm_residual_mul_norm`, the
+future-multiplier defect layer
+`projectedRawCharFunStepFactor`,
+`projectedMixedTowerFutureMultiplier`,
+`projectedRawPrefixNormalizedTailProduct_succ_eq_futureMultiplier_mul_rawStep`,
+`projectedRawPrefixNormalizedTailProduct_eq_futureMultiplier_mul_normalizedStep`,
+`projectedMixedTowerStepDefect_norm_le_futureMultiplier_residual`,
+`projectedMixedTowerDefect_sum_norm_le_futureMultiplier_residual_sum`,
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum`,
+and
+`projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`, the
 conditional Taylor-remainder row convergence from `a94b579` and the
 compensated one-step/error interface:
 `projectedCompensationFactor`, `projectedCompensatedTaylorErrorFactor`,
@@ -283,12 +293,10 @@ plus the normalized compensated-product bridge:
 and
 `projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
 
-Next theorem packet: instantiate the conditional residual/correlation bound
-with the future inverse/error tail as the weight and the current raw
-characteristic factor minus its conditional expectation as the residual, then
-feed that estimate into the exact mixed-defect identity
-`projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product`
-to prove the standard compensated martingale defect bound
+Next theorem packet: discharge the row integrability gates and prove the
+future-multiplier residual row-sum convergence consumed by
+`projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`.  That will
+prove the standard compensated martingale defect bound
 `Tendsto (fun N => ∑ r in Finset.range N,
 S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`.  After that, feed
 `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`
@@ -391,6 +399,13 @@ full inverse product and the full inverse product weighted by all
 compensated-error factors.  This sharpens the blocker: the remaining theorem
 is a weighted martingale correlation/convergence estimate, not a missing
 finite-product algebra identity.
+The newest future-multiplier residual packet names the raw one-step factor and
+future multiplier, rewrites the two neighboring mixed products around split
+`r`, bounds each one-step mixed defect by the conditional residual correlation
+estimate, sums those bounds across the row, and adds the characteristic-
+function convergence adapter from normalized-product convergence plus
+future-multiplier residual row-sum convergence.  This is now the preferred
+frontier; do not return to exact defect algebra unless a regression breaks it.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform
@@ -404,8 +419,9 @@ ASGD future-tail endpoint wrapper, factorwise future-tail product wrapper,
 forward normalized-factor measurability wrapper, mixed terminal measurability or
 integrability wrapper, mixed-tower defect telescope/decomposition adapter,
 compensated-prefix adaptedness wrapper, compensated raw-prefix one-step
-identity, mixed-defect compensated algebra bridge, or generic weak-convergence
-wrapper.
+identity, mixed-defect compensated algebra bridge, one-step future-multiplier
+defect bound, row-sum residual bound, residual-sum convergence adapter, or
+generic weak-convergence wrapper.
 The variance
 side is now source-facing:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
@@ -475,6 +491,9 @@ conditional Taylor-remainder row convergence.  Reuse
 `projected_charFun_compensated_taylor_step_mul_scaled`,
 `projectedCompensatedRawPrefixProduct_integral_succ_eq`,
 `projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product`,
+`projectedMixedTowerStepDefect_norm_le_futureMultiplier_residual`,
+`projectedMixedTowerDefect_sum_norm_le_futureMultiplier_residual_sum`, and
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_residual_sum`,
 `projected_remainder_row_integral_tendsto_zero`, the named projected variance
 and remainder/compensation/error factors, the compensated error norm split,
 the product-to-one, row-error, and compensation-bound bridges,
