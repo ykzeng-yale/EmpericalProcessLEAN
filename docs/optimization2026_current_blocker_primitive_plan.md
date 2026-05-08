@@ -248,6 +248,10 @@ plus the normalized compensated-product bridge:
 `asgd_limit_package_of_mixed_tower_future_tail_measurability`,
 `projectedNormalizedTaylorFutureTail_aestronglyMeasurable_of_factorwise`,
 `asgd_limit_package_of_factorwise_future_tail_measurability`,
+`projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable`,
+`projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable_of_uniform_bound`,
+`projectedNormalizedTaylorProduct_aestronglyMeasurable_of_le`,
+`projectedNormalizedTaylorProduct_Ico_terminal_aestronglyMeasurable`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
 `projected_charFun_tendsto_exp_of_normalized_product_model`,
 and
@@ -315,6 +319,14 @@ finite-product induction over the sub-filtration measurability API and exposes
 `asgd_limit_package_of_factorwise_future_tail_measurability`, where callers
 may instead prove the stronger but often natural condition that each future
 normalized Taylor factor in `[r+1, N)` is already `F_r`-measurable.
+The newest forward-measurability packet proves the honest adapted-filtration
+facts: every normalized Taylor factor is `F_k`-measurable, the source uniform
+bound discharges its square/remainder integrability prerequisites, any finite
+product is measurable at a filtration level after all its factor indices, and
+the interval product over `[r, N)` is `F_N`-measurable.  This records exactly
+what adaptedness provides and supplies the building block for a backward or
+telescoping conditional-multiplier formulation that avoids false future-tail
+measurability.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform
@@ -356,8 +368,9 @@ local proof search agree that the current increasing martingale filtration
 does not imply that a future normalized-tail product is `F_r`-measurable,
 because each tail factor is naturally measurable at `F_k` with `r < k`.  The
 other route is to restructure the martingale tower with backward conditional
-multipliers so no false future-tail measurability is required.  Do not attempt
-to prove this gate from `StronglyAdapted` alone.
+multipliers using the compiled natural `F_k`/`F_N` measurability facts, so no
+false future-tail measurability is required.  Do not attempt to prove this
+gate from `StronglyAdapted` alone.
 
 Search cache for the finite tower packet: no ready-made martingale CLT or
 martingale product theorem was found in pinned mathlib or local

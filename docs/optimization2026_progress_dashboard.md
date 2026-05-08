@@ -309,6 +309,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_mixed_tower_future_tail_measurability`,
   `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFutureTail_aestronglyMeasurable_of_factorwise`,
   `Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_factorwise_future_tail_measurability`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable_of_uniform_bound`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorProduct_aestronglyMeasurable_of_le`,
+  `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorProduct_Ico_terminal_aestronglyMeasurable`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -399,12 +403,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   `F_r`-measurable from factorwise `F_r`-measurability by finite-product
   induction, and exposes a matching full ASGD endpoint theorem for predictable
   or frozen-tail source models.
+  The newest forward-measurability packet proves the honest adapted-filtration
+  facts: normalized Taylor factors are `F_k`-measurable, the uniform source
+  bound discharges the integrability prerequisites, finite products are
+  measurable at any later filtration level, and `[r, N)` interval products are
+  `F_N`-measurable.  This supports the alternate backward/telescoping
+  conditional-multiplier route without claiming future factors are
+  `F_r`-measurable.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
   earlier `F_r` for `r < k`.  Next target: either add a correct predictable or
-  frozen-tail source condition for the concrete ASGD application, or replace
-  the future-tail product route by a backward/telescoping conditional
-  multiplier formulation that does not require false future measurability.
+  frozen-tail source condition for the concrete ASGD application, or use the
+  new natural `F_k`/`F_N` measurability facts to replace the future-tail
+  product route by a backward/telescoping conditional multiplier formulation
+  that does not require false future measurability.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled

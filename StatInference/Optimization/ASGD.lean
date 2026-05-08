@@ -2989,6 +2989,145 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_aestr
   exact hcond.congr heq.symm
 
 /--
+Each normalized Taylor factor is measurable at its natural filtration level
+`F_k`.  This is the honest measurability fact available from the martingale
+tower: future factors are not automatically measurable at an earlier
+filtration level.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ)
+    (hsq : Integrable
+      (fun ω => (L (S.martingale.xi (k + 1) ω)) ^ 2) P)
+    (hremainder : Integrable
+      (chewi127ScalarCharFunTaylorRemainder
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        (fun ω => L (S.martingale.xi (k + 1) ω))) P) :
+    AEStronglyMeasurable[S.martingale.filtration k]
+      (fun ω => S.projectedNormalizedTaylorFactor L N t k ω) P := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  let cf : Ω -> ℂ := fun ω =>
+    chewi127ScalarCharFunFactor a
+      (fun ω => L (S.martingale.xi (k + 1) ω)) ω
+  have heq :
+      (fun ω => S.projectedNormalizedTaylorFactor L N t k ω)
+        =ᵐ[P] P[cf | S.martingale.filtration k] := by
+    simpa [cf, a] using
+      S.projectedNormalizedTaylorFactor_ae_eq_condExp_charFun
+        L N t k hsq hremainder
+  have hcond :
+      AEStronglyMeasurable[S.martingale.filtration k]
+        (P[cf | S.martingale.filtration k]) P :=
+    stronglyMeasurable_condExp.aestronglyMeasurable
+  exact hcond.congr heq.symm
+
+/--
+Chewi's uniform boundedness source hypothesis supplies the natural-filtration
+measurability of every normalized Taylor factor.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) :
+    AEStronglyMeasurable[S.martingale.filtration k]
+      (fun ω => S.projectedNormalizedTaylorFactor L N t k ω) P := by
+  rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+    ⟨B, hB_nonneg, hbound⟩
+  let x : Ω -> ℝ := fun ω => L (S.martingale.xi (k + 1) ω)
+  have hx : AEMeasurable x P := by
+    simpa [x] using (S.martingale.projected_integrable L (k + 1)).aemeasurable
+  have hbound_x : ∀ᵐ ω ∂P, |x ω| ≤ B := by
+    simpa [x] using hbound k
+  have hsq :
+      Integrable (fun ω => (L (S.martingale.xi (k + 1) ω)) ^ 2) P := by
+    simpa [x] using
+      chewi127Scalar_sq_integrable_of_uniform_bound
+        (P := P) (x := x) hx ⟨B, hB_nonneg, hbound_x⟩
+  have hremainder :
+      Integrable
+        (chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (k + 1) ω))) P := by
+    simpa [x] using
+      chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+        (P := P) (x := x) hx
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        ⟨B, hB_nonneg, hbound_x⟩
+  exact
+    S.projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable
+      L N t k hsq hremainder
+
+/--
+A finite product of normalized Taylor factors is measurable at any filtration
+level later than all included factor indices.  This is the forward-time
+measurability counterpart to the stronger future-tail `F_r` gate used by the
+mixed-tower endpoint.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorProduct_aestronglyMeasurable_of_le
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N tIndex : ℕ) (t : ℝ) (s : Finset ℕ)
+    (hs : ∀ k ∈ s, k ≤ tIndex) :
+    AEStronglyMeasurable[S.martingale.filtration tIndex]
+      (fun ω => ∏ k ∈ s, S.projectedNormalizedTaylorFactor L N t k ω) P := by
+  classical
+  have hprod :
+      ∀ s : Finset ℕ, (∀ k ∈ s, k ≤ tIndex) ->
+        AEStronglyMeasurable[S.martingale.filtration tIndex]
+          (fun ω => ∏ k ∈ s, S.projectedNormalizedTaylorFactor L N t k ω) P := by
+    intro s
+    refine Finset.induction_on s ?empty ?insert
+    · intro _hs
+      simpa using aestronglyMeasurable_const
+    · intro k s hks ih hs_insert
+      have hk_le : k ≤ tIndex := hs_insert k (Finset.mem_insert_self k s)
+      have hs_tail : ∀ j ∈ s, j ≤ tIndex := fun j hj =>
+        hs_insert j (Finset.mem_insert_of_mem hj)
+      have hfactor :
+          AEStronglyMeasurable[S.martingale.filtration tIndex]
+            (fun ω => S.projectedNormalizedTaylorFactor L N t k ω) P :=
+        (S.projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable_of_uniform_bound
+          L N t k).mono (S.martingale.filtration.mono hk_le)
+      have hrest := ih hs_tail
+      simpa [Finset.prod_insert hks] using hfactor.mul hrest
+  exact hprod s hs
+
+/--
+The normalized Taylor product over an interval `[r, N)` is measurable at the
+terminal filtration level `F_N`.  This theorem records the natural direction
+of measurability supplied by adapted martingale data.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorProduct_Ico_terminal_aestronglyMeasurable
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    AEStronglyMeasurable[S.martingale.filtration N]
+      (fun ω =>
+        ∏ k ∈ Finset.Ico r N,
+          S.projectedNormalizedTaylorFactor L N t k ω) P := by
+  exact
+    S.projectedNormalizedTaylorProduct_aestronglyMeasurable_of_le
+      L N N t (Finset.Ico r N)
+      (fun k hk => (Finset.mem_Ico.mp hk).2.le)
+
+/--
 Chewi's uniform boundedness hypothesis supplies the a.e. row bound on all
 normalized Taylor factors for a fixed row.
 -/
