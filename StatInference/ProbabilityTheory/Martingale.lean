@@ -4199,6 +4199,24 @@ theorem durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_ae_rnDeri
       hYeq hZeq
 
 /--
+Durrett 2019, Theorem 4.3.5 canonical-ratio integrability endpoint: the real
+part of the canonical `mu + nu` likelihood ratio is integrable under `nu`.
+-/
+theorem durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_integrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ}
+    (C : Set (Set Ω)) (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C) :
+    Integrable
+      (fun ω => (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ ω).toReal)
+      ν := by
+  exact
+    (Measure.integrable_toReal_rnDeriv (μ := μ) (ν := ν)).congr
+      (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_ae_rnDeriv
+        (μ := μ) (ν := ν) (ℱ := ℱ) C hC_meas hgen hC).symm
+
+/--
 Durrett 2019, Theorem 4.3.5 canonical ratio singular-support endpoint: the
 singular part of `mu` with respect to `nu` is supported on the top set of the
 canonical likelihood ratio.
@@ -8293,6 +8311,72 @@ theorem
         (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (ℱ := ℱ)
         C hC_meas hgen hC)
       hXfinite hXint hXlim hP0 hPtop hprod htail_eq hq_ne_top
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical-ratio positive-product handoff from
+real-valued full-prefix convergence: Chapter 4.3.5 supplies both the RN-density
+identity and the real integrability of the canonical likelihood ratio.
+-/
+theorem
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_toReal_tendsto
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace (ℕ -> S))}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hgen : (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n =>
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal)
+          atTop
+          (𝓝
+            ((durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+              (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ x).toReal)))
+    (hP0 : P ≠ 0) (hPtop : P ≠ ∞)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (htail_eq :
+      ∀ n,
+        tail n =
+          P / (∏ i ∈ Finset.range n,
+            ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  let X : (ℕ -> S) -> ℝ≥0∞ :=
+    durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+      (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ
+  have hνtop : Measure.infinitePi ν {x | X x = ∞} = 0 :=
+    durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_nu_top_zero
+      (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (ℱ := ℱ)
+      C hC_meas hgen hC
+  have hXfinite : ∀ᵐ x ∂Measure.infinitePi ν, X x ≠ ∞ := by
+    exact
+      (measure_eq_zero_iff_ae_notMem.mp hνtop).mono
+        (fun _ hx htop => hx htop)
+  exact
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_range_hasProd_density_ae_ne_top
+      (μ := μ) (ν := ν) (q := q) (tail := tail) (P := P) (X := X)
+      hq hμ hbranch
+      (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_ae_rnDeriv
+        (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (ℱ := ℱ)
+        C hC_meas hgen hC)
+      hXfinite
+      (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_integrable
+        (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (ℱ := ℱ)
+        C hC_meas hgen hC)
+      hlim hP0 hPtop hprod htail_eq
+      (durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_ne_top_of_forall_ne_top
+        (ν := ν) (q := q) hq_ne_top)
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-branch final handoff: once full-prefix

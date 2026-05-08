@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V96`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V97`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -545,10 +545,12 @@ Next packet:
   and `∫⁻ X ≠ 0` feed the tail-zero-set positive-branch eliminator.  The
   canonical-ratio handoff into these range-limit consumers now also compiles:
   the canonical `mu + nu` ratio supplies `toReal = dmu/dnu` and
-  `nu {canonicalRatio = infinity} = 0` automatically.  The active target is
-  now proving standard full-prefix likelihood convergence to this canonical
-  ratio and discharging its integrability or nonzero-lower-integral/product
-  inputs for the remaining Kakutani criterion assembly.
+  `nu {canonicalRatio = infinity} = 0` automatically.  Canonical-ratio real
+  integrability and the real-valued full-prefix convergence consumer also now
+  compile.  The active target is now proving standard real-valued full-prefix
+  likelihood convergence to `(canonicalRatio).toReal` and discharging the
+  canonical ratio nonzero-lower-integral/product inputs for the remaining
+  Kakutani criterion assembly.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
