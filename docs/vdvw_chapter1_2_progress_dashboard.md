@@ -3374,3 +3374,12 @@ fixed-radius tail/UI mean consumer and the selected entropy finite-net mean
 primitive bridge now have `_of_set_countable` forms.  This improves finite and
 countable-class reuse; the remaining generic blocker is still the selected-log
 mean theorem or the displayed-beta selected-cover event primitive.
+
+The first-sample UI/Vitali route now also reaches the localized selected
+entropy finite-net mean primitive through
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_unifIntegrable_of_set_countable`.
+Thus a countable theorem class can supply first-sample uniform integrability of
+the selected normalized-log empirical-cover process and immediately feed the
+generic Theorem 2.4.3 primitive route.  The active source task remains proving
+that UI/tail input from stochastic entropy, or proving the displayed-beta
+selected-cover event comparison.

@@ -8087,3 +8087,14 @@ handoff.  This is a dependency cleanup, not a closure of the generic stochastic
 entropy theorem.  The active blocker remains: prove the selected-log mean input
 from the textbook stochastic entropy argument, or prove the displayed-beta
 selected-cover event primitive.
+
+2026-05-08 first-sample UI to localized selected-entropy primitive:
+`Theorem243.lean` now proves
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_unifIntegrable_of_set_countable`.
+The existing common-space first-sample Vitali/UI route for selected normalized
+log-cardinality can therefore feed the registered selected finite-net mean
+primitive under `indexClass.Countable`, without requiring a global
+`[Countable Index]` instance.  This is the localized source handoff for
+countable theorem classes.  The remaining generic blocker is still the
+mathematical source proof of that first-sample UI/tail input from stochastic
+entropy, or the displayed-beta selected-cover event primitive.
