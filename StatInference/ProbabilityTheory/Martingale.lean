@@ -2475,5 +2475,93 @@ theorem durrett2019_theorem_4_3_4_conditional_borel_cantelli
         (μ[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k]) ω) atTop atTop :=
   MeasureTheory.ae_mem_limsup_atTop_iff μ hB
 
+/--
+Durrett 2019, Theorem 4.3.5 setup: for the restrictions of two measures to
+`ℱ n`, the real-valued Radon-Nikodym derivative integrates over `ℱ n`-events to
+the original measure of the event.
+-/
+theorem durrett2019_theorem_4_3_5_trimmed_rnDeriv_setIntegral_toReal
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} {ℱ : Filtration ℕ mΩ} (n : ℕ)
+    [SigmaFinite (μ.trim (ℱ.le n))] [SigmaFinite (ν.trim (ℱ.le n))]
+    (hμν : μ.trim (ℱ.le n) ≪ ν.trim (ℱ.le n))
+    {A : Set Ω} (hA : MeasurableSet[ℱ n] A) :
+    ∫ ω in A, ((μ.trim (ℱ.le n)).rnDeriv (ν.trim (ℱ.le n)) ω).toReal ∂ν =
+      μ.real A := by
+  rw [setIntegral_trim (ℱ.le n)]
+  · rw [Measure.setIntegral_toReal_rnDeriv hμν A]
+    simp [Measure.real, trim_measurableSet_eq (ℱ.le n) hA]
+  · exact
+      (Measurable.ennreal_toReal
+        (Measure.measurable_rnDeriv (μ.trim (ℱ.le n)) (ν.trim (ℱ.le n)))).stronglyMeasurable
+  · exact hA
+
+/--
+Durrett 2019, Lemma 4.3.6 proof pattern: a real adapted integrable process is a
+martingale when every `ℱ n`-event has the same integral against `X n` as against
+a fixed finite measure.
+-/
+theorem durrett2019_lemma_4_3_6_martingale_of_setIntegral_real_eq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure ν] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ}
+    (hX : StronglyAdapted ℱ X) (hXint : ∀ n, Integrable (X n) ν)
+    (hXμ : ∀ n, ∀ A : Set Ω, MeasurableSet[ℱ n] A ->
+      ∫ ω in A, X n ω ∂ν = μ.real A) :
+    Martingale X ℱ ν := by
+  refine martingale_of_setIntegral_eq_succ hX hXint ?_
+  intro n A hA
+  calc
+    ∫ ω in A, X n ω ∂ν = μ.real A := hXμ n A hA
+    _ = ∫ ω in A, X (n + 1) ω ∂ν :=
+      (hXμ (n + 1) A (ℱ.mono n.le_succ A hA)).symm
+
+/--
+Durrett 2019, Lemma 4.3.6: the likelihood-ratio process
+`X n = d μ_n / d ν_n`, where `μ_n` and `ν_n` are the restrictions to `ℱ n`,
+is a martingale with respect to `ν`.
+-/
+theorem durrett2019_lemma_4_3_6_trimmed_rnDeriv_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ}
+    (hμν : ∀ n, μ.trim (ℱ.le n) ≪ ν.trim (ℱ.le n)) :
+    Martingale
+      (fun n ω => ((μ.trim (ℱ.le n)).rnDeriv (ν.trim (ℱ.le n)) ω).toReal) ℱ ν := by
+  refine durrett2019_lemma_4_3_6_martingale_of_setIntegral_real_eq (μ := μ) (ν := ν) ?_ ?_ ?_
+  · intro n
+    exact
+      (Measurable.ennreal_toReal
+        (Measure.measurable_rnDeriv (μ.trim (ℱ.le n)) (ν.trim (ℱ.le n)))).stronglyMeasurable
+  · intro n
+    exact integrable_of_integrable_trim (ℱ.le n)
+      (Measure.integrable_toReal_rnDeriv (μ := μ.trim (ℱ.le n)) (ν := ν.trim (ℱ.le n)))
+  · intro n A hA
+    exact durrett2019_theorem_4_3_5_trimmed_rnDeriv_setIntegral_toReal n (hμν n) hA
+
+/--
+Durrett 2019, Theorem 4.3.5 proof step: the restricted Radon-Nikodym
+likelihood-ratio martingale is nonnegative, hence converges almost surely to a
+finite real limit under `ν`.
+-/
+theorem durrett2019_theorem_4_3_5_trimmed_rnDeriv_exists_ae_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ}
+    (hμν : ∀ n, μ.trim (ℱ.le n) ≪ ν.trim (ℱ.le n)) :
+    ∀ᵐ ω ∂ν, ∃ x : ℝ,
+      Tendsto (fun n => ((μ.trim (ℱ.le n)).rnDeriv (ν.trim (ℱ.le n)) ω).toReal)
+        atTop (𝓝 x) := by
+  have hM :=
+    durrett2019_lemma_4_3_6_trimmed_rnDeriv_martingale
+      (μ := μ) (ν := ν) (ℱ := ℱ) hμν
+  have h_nonneg : ∀ n, 0 ≤ᵐ[ν]
+      fun ω => ((μ.trim (ℱ.le n)).rnDeriv (ν.trim (ℱ.le n)) ω).toReal := by
+    intro n
+    exact Eventually.of_forall fun _ => ENNReal.toReal_nonneg
+  exact
+    durrett2019_theorem_4_2_12_nonnegative_supermartingale_exists_ae_tendsto
+      hM.supermartingale h_nonneg
+
 end ProbabilityTheory
 end StatInference

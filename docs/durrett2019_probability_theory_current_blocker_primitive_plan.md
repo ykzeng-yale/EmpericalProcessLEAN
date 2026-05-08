@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V45
+## Live In-Thread Goal Prompt V46
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -68,17 +68,23 @@ Borel-Cantelli API: the counting-process martingale part is a martingale, the
 martingale and predictable finite-sum formulas are packaged, the one-step
 counting-process difference bound is exposed, and the conditional
 Borel-Cantelli limsup/divergent-conditional-sum equivalence is source-facing.
+The first Theorem 4.3.5 / Lemma 4.3.6 Radon-Nikodym packet also now compiles:
+trimmed RN derivatives integrate over `ℱ n`-events to the original measure,
+equal restricted set integrals imply the martingale property, the
+likelihood-ratio process `d μ_n / d ν_n` is a martingale under the restricted
+absolute-continuity hypotheses, and its nonnegative convergence follows from
+Theorem 4.2.12.
 
-Next theorem-sized packet: start the next numbered Chapter 4.3 target,
-Theorem 4.3.5 on Radon-Nikodym derivatives.  First search/reuse mathlib
-`Measure.rnDeriv`, restriction/trim APIs, `AbsolutelyContinuous`,
-`MutuallySingular`, and martingale APIs for conditional-expectation/rn-deriv
-processes.  The first Lean packet should be narrow: either a Lemma 4.3.6-style
-likelihood-ratio martingale wrapper from supplied restriction/rn-deriv
-hypotheses, or a source-facing theorem statement that packages the exact
-measure identity assumed by that martingale wrapper.  Defer Polya urn as a
-model-specific construction unless a direct existing primitive is found.  Do
-not route back into Theorems 4.3.1-4.3.4.
+Next theorem-sized packet: continue Theorem 4.3.5 after the compiled
+likelihood-ratio martingale/convergence bridge.  Target the limit/decomposition
+layer: connect the real a.s. limit or `limsup` display to the singular/regular
+measure identity
+`μ(A) = ∫_A X dν + μ(A ∩ {X = ∞})`.  Search/reuse mathlib
+`withDensity_rnDeriv_eq`, `singularPart`, `rnDeriv_add`, `rnDeriv_eq_div`,
+`toReal_rnDeriv_trim`, and set-integral/lintegral convergence APIs.  Defer
+Polya urn as a model-specific construction unless a direct existing primitive is
+found.  Do not route back into Theorems 4.3.1-4.3.4 or the finished Lemma 4.3.6
+martingale bridge.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -441,11 +447,11 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should start Theorem 4.3.5 on Radon-Nikodym derivatives
-by searching mathlib's rn-deriv/restriction/absolute-continuity APIs and
-packaging the Lemma 4.3.6 likelihood-ratio martingale bridge if immediate.
-Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
-source-shaped API.
+The next likely packet should continue Theorem 4.3.5 after the compiled
+likelihood-ratio martingale/convergence bridge, aiming at the
+regular/singular measure identity using mathlib's rn-deriv, withDensity, and
+singular-part APIs.  Keep Theorem 4.1.16 deferred unless a targeted kernel
+search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -557,6 +563,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V45` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V46` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

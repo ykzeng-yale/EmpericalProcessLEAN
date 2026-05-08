@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V45`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V46`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -435,10 +435,11 @@ Next packet:
   source-facing uniqueness wrappers using mathlib's
   `predictablePart`/`martingalePart` centering API.  Example 4.3.3 and Theorem
   4.3.4 conditional Borel-Cantelli now compile via mathlib
-  `Probability.Martingale.BorelCantelli`.  The next active target is Theorem
-  4.3.5 Radon-Nikodym derivatives, beginning with a narrow Lemma 4.3.6
-  likelihood-ratio martingale bridge if the rn-deriv/restriction APIs line up.
-  Theorem 4.1.16 remains deferred unless a direct kernel API appears.
+  `Probability.Martingale.BorelCantelli`.  The first Theorem 4.3.5 / Lemma
+  4.3.6 RN-derivative packet now compiles: trimmed RN set-integral identity,
+  likelihood-ratio martingale, and nonnegative convergence.  The next active
+  target is the regular/singular measure identity in Theorem 4.3.5.  Theorem
+  4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
 
