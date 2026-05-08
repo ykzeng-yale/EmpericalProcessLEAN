@@ -186,6 +186,11 @@ future-multiplier defect layer
 `projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum`,
 `integral_norm_sub_condExp_le_two_mul_integral_norm_sub_of_aestronglyMeasurable`,
 `projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`,
+`projected_charFun_tendsto_exp_of_futureTail_predictable_l1_approx`,
+`projected_scalar_clt_of_futureTail_predictable_l1_approx`,
+`projected_clt_of_futureTail_predictable_l1_approx`,
+`toProjectedBridge_of_futureTail_predictable_l1_approx`,
+`toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx`,
 and
 `projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`, the
 conditional Taylor-remainder row convergence from `a94b579` and the
@@ -335,9 +340,16 @@ The next genuine estimate should control the normalized future tail
 by an `F_r`-measurable proxy `A_{N,r}` in row-summed L1.  That will prove the
 standard compensated martingale defect bound
 `Tendsto (fun N => ∑ r in Finset.range N,
-S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`.  After that, feed
-`projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`
-into the existing scalar/vector ASGD certificate constructors.  The one-step
+S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)` and now feeds directly
+into `projected_charFun_tendsto_exp_of_futureTail_predictable_l1_approx` and
+`projected_scalar_clt_of_futureTail_predictable_l1_approx`; the displayed
+projected-noise CLT and vector certificate constructors
+`projected_clt_of_futureTail_predictable_l1_approx`,
+`toProjectedBridge_of_futureTail_predictable_l1_approx`, and
+`toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx` are also
+compiled.  After the proxy estimate is closed, instantiate these constructors;
+do not spend another run on characteristic-function or certificate adapter
+wiring.  The one-step
 normalized peel, inverse-compensation algebra, and bounded-continuous
 expectation handoff are already compiled; the raw-product start and normalized
 successor peel are also compiled as

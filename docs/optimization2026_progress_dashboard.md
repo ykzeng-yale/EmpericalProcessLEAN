@@ -513,10 +513,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   future-tail L1 unpredictability.
   The newest predictable-proxy reduction proves
   `integral_norm_sub_condExp_le_two_mul_integral_norm_sub_of_aestronglyMeasurable`
-  and
-  `projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`.
+  `projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`,
+  `projected_charFun_tendsto_exp_of_futureTail_predictable_l1_approx`, and
+  `projected_scalar_clt_of_futureTail_predictable_l1_approx`, plus
+  `projected_clt_of_futureTail_predictable_l1_approx`,
+  `toProjectedBridge_of_futureTail_predictable_l1_approx`, and
+  `toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx`.
   This turns the remaining residual blocker into constructing an
-  `F_r`-measurable future-tail proxy with vanishing row-summed L1 error.
+  `F_r`-measurable future-tail proxy with vanishing row-summed L1 error, with
+  characteristic-function, scalar/projected CLT, and vector certificate adapter
+  wiring already closed.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
   earlier `F_r` for `r < k`.  Next target: build and bound a predictable proxy
@@ -1192,12 +1198,23 @@ and
 The predictable-proxy bridge also contains
 `integral_norm_sub_condExp_le_two_mul_integral_norm_sub_of_aestronglyMeasurable`
 and
-`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`.
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`,
+plus the downstream wrappers
+`projected_charFun_tendsto_exp_of_futureTail_predictable_l1_approx` and
+`projected_scalar_clt_of_futureTail_predictable_l1_approx`, the displayed
+projected-noise wrapper
+`projected_clt_of_futureTail_predictable_l1_approx`, and the vector
+certificate constructors
+`toProjectedBridge_of_futureTail_predictable_l1_approx` and
+`toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx`.
 Next theorem-sized packet: construct a concrete `F_r`-measurable proxy for the
 normalized future tail and prove the row-summed L1 approximation convergence
 consumed by
 `projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx`,
-then feed the existing Chewi Theorem 12.7/12.3 ASGD certificate constructors.
+then instantiate the already-compiled Chewi Theorem 12.7/12.3 ASGD certificate
+constructors.  Do not re-open characteristic-function, scalar CLT, projected
+CLT, or certificate adapter wiring unless the proxy theorem changes its
+interface.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw
 tower-peel tasks, or already-compiled ASGD integrability/measurability wrappers
 unless a regression makes them relevant.
