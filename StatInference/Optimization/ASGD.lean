@@ -4960,6 +4960,85 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProdu
   simp [Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct]
 
 /--
+The mixed raw-prefix/normalized-tail product is measurable at the terminal
+filtration level whenever the split point is not after the terminal index.
+This is the forward-time measurability fact available for a backward
+conditional-multiplier route.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_terminal_aestronglyMeasurable
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) (hr : r ≤ N) :
+    AEStronglyMeasurable[S.martingale.filtration N]
+      (fun ω => S.projectedRawPrefixNormalizedTailProduct L N t r ω) P := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  have hprefix :
+      AEStronglyMeasurable[S.martingale.filtration N]
+        (chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) r a) P :=
+    (S.martingale.projected_charFun_prefix_aestronglyMeasurable L r a).mono
+      (S.martingale.filtration.mono hr)
+  have htail :
+      AEStronglyMeasurable[S.martingale.filtration N]
+        (fun ω =>
+          ∏ k ∈ Finset.Ico r N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P :=
+    S.projectedNormalizedTaylorProduct_Ico_terminal_aestronglyMeasurable L N r t
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct,
+    a] using hprefix.mul htail
+
+/--
+The mixed raw-prefix/normalized-tail product is integrable under Chewi's
+bounded martingale source assumptions.  The raw characteristic prefix has unit
+norm, while the normalized tail product is a.e. bounded by one.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_integrable_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    Integrable
+      (fun ω => S.projectedRawPrefixNormalizedTailProduct L N t r ω) P := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  let rawPrefix : Ω -> ℂ := chewi127ScalarCharFunProduct
+    (fun k ω => L (S.martingale.xi k ω)) r a
+  let normalizedTail : Ω -> ℂ := fun ω =>
+    ∏ k ∈ Finset.Ico r N,
+      S.projectedNormalizedTaylorFactor L N t k ω
+  have hx :
+      ∀ k : ℕ, AEMeasurable (fun ω => L (S.martingale.xi k ω)) P := by
+    intro k
+    exact (S.martingale.projected_integrable L k).aemeasurable
+  have hprefix_int : Integrable rawPrefix P := by
+    simpa [rawPrefix] using
+      chewi127ScalarCharFunProduct_integrable
+        (P := P) (x := fun k ω => L (S.martingale.xi k ω)) hx r a
+  have htail_meas : AEStronglyMeasurable normalizedTail P :=
+    (S.projectedNormalizedTaylorProduct_Ico_terminal_aestronglyMeasurable
+      L N r t).mono (S.martingale.filtration.le N)
+  have htail_bound : ∀ᵐ ω ∂P, ‖normalizedTail ω‖ ≤ 1 := by
+    filter_upwards [S.projectedNormalizedTaylorFactor_row_norm_le_one_ae L N t]
+      with ω hω
+    exact (Finset.norm_prod_le (Finset.Ico r N)
+      (fun k => S.projectedNormalizedTaylorFactor L N t k ω)).trans
+      (Finset.prod_le_one
+        (fun k _hk =>
+          norm_nonneg (S.projectedNormalizedTaylorFactor L N t k ω))
+        (fun k hk =>
+          hω k (Finset.mem_range.mpr (Finset.mem_Ico.mp hk).2)))
+  have hprod_int : Integrable (fun ω => rawPrefix ω * normalizedTail ω) P :=
+    hprefix_int.mul_bdd (c := 1) htail_meas htail_bound
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct,
+    rawPrefix, normalizedTail, a] using hprod_int
+
+/--
 One guarded reverse step for the mixed raw-prefix/normalized-tail product.
 The explicit measurability and integrability assumptions are exactly the
 future-tail obligations needed before a finite induction can turn the raw

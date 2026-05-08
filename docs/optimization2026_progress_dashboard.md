@@ -313,6 +313,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable_of_uniform_bound`,
   `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorProduct_aestronglyMeasurable_of_le`,
   `Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorProduct_Ico_terminal_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_terminal_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_integrable_of_uniform_bound`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -410,6 +412,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `F_N`-measurable.  This supports the alternate backward/telescoping
   conditional-multiplier route without claiming future factors are
   `F_r`-measurable.
+  The newest mixed-terminal packet adds the matching terminal facts for the
+  raw-prefix/normalized-tail split product:
+  `projectedRawPrefixNormalizedTailProduct_terminal_aestronglyMeasurable`
+  gives `F_N`-measurability for `r <= N`, and
+  `projectedRawPrefixNormalizedTailProduct_integrable_of_uniform_bound` proves
+  source-level integrability from the unit bound on normalized factors.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
   earlier `F_r` for `r < k`.  Next target: either add a correct predictable or
@@ -1034,17 +1042,18 @@ treat Chapters 3-8, Chapter 9/10 mirror-descent substrate, Chapter 11.2/11.3
 ABP telescope, Chapter 11.4 AM, Chapter 11.5 RAM, the 11.7 selector layer,
 the 11.8 Sinkhorn/mirror-descent endpoint, and the Chapter 12 SMPGD rate
 wrappers as stable infrastructure.  The live manual `/goal` frontier is now
-`StatInference/Optimization/ASGD.lean`.  Next theorem-sized packet: finish the
-scalar bounded martingale characteristic-function convergence behind
-`projected_charFun_tendsto_exp`, then wire Chewi Theorem 12.7/12.3 through the
-existing ASGD certificate constructors.  The remaining proof obligations are
-the finite martingale tower representation into the normalized compensated
-product model and final scalar CLT wiring; the variance-side clamp, finite
-average measurability, average abs-bound, covariance-limit abs-bound, and
-inverse-compensation product convergence are now compiled.  Do not return to
-old Chapter 3, SMPGD source
-probability packaging, or raw tower-peel tasks unless a regression makes them
-relevant.
+`StatInference/Optimization/ASGD.lean`.  The stable ASGD stack already contains
+the variance-side clamp, finite-average measurability, average abs-bound,
+covariance-limit abs-bound, inverse-compensation product convergence, guarded
+finite mixed-product tower, source-facing future-tail CLT/certificate wrappers,
+honest `F_k`/`F_N` normalized-factor measurability, and terminal
+measurability/integrability of the raw-prefix/normalized-tail split product.
+Next theorem-sized packet: replace the false future-tail route by a
+backward/telescoping conditional-multiplier formulation using those natural
+measurability facts, then feed the existing Chewi Theorem 12.7/12.3 ASGD
+certificate constructors.  Do not return to old Chapter 3, SMPGD source
+probability packaging, raw tower-peel tasks, or already-compiled ASGD
+integrability/measurability wrappers unless a regression makes them relevant.
 Keep the concrete finite Sinkhorn KL identity layer as the next Chapter 11.8
 blocker, but do not let it stall Chapter 12 coverage.
 This paragraph supersedes older Chapter 6, Chapter 7, Chapter 8, Chapter 11.4,
