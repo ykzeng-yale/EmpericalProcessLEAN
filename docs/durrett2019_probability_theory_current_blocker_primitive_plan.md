@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V65
+## Live In-Thread Goal Prompt V66
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -146,18 +146,23 @@ factorization is pulled back to finite-coordinate cylinders under
 `Measure.infinitePi`.  The zero-product Fatou layer also now compiles: if the
 finite likelihoods converge a.e. and their Hellinger integrals tend to zero,
 then the limiting likelihood is zero a.e.; the source-facing cylinder
-likelihood handoff consumes finite Hellinger products directly.
+likelihood handoff consumes finite Hellinger products directly.  The
+zero-product singularity bridge also now compiles: a Theorem 4.3.5 source
+real-identity plus `X = 0` denominator-a.e. gives mutual singularity, with
+top-set and Hellinger/cylinder-product handoffs.
 
 Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
 layer, the Theorem 4.3.8 finite-product likelihood/`withDensity` layer, and the
 infinite-product cylinder/restriction and Hellinger factorization handoffs as
-closed support, and treat the zero-product Fatou endpoint as compiled support.
+closed support, and treat the zero-product Fatou endpoint and singularity
+bridge as compiled support.
 Move to the remaining Kakutani criterion assembly and tail-event support:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`), logarithm/tail-event support, and local Kolmogorov
 zero-one/tail sigma-field wrappers.  Add only source-shaped wrappers that
-directly feed zero-product singularity from `X = 0` a.e. or positive-product
-absolute-continuity.  Do not redo the already compiled RN martingale/convergence
+directly feed positive-product absolute-continuity, tail-event support, or the
+final zero-product Kakutani assembly from the compiled singularity bridge.  Do
+not redo the already compiled RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
 generator-extension bridge, bounded-convergence generator-production bridge,
@@ -166,9 +171,10 @@ real-to-`ENNReal` convergence-transfer bridge, bounded real-martingale
 limitProcess convergence bridge, canonical limit-density endpoint, canonical
 ratio endpoint, denominator-side top-set null endpoint, singular-support
 top-set endpoint, full canonical-ratio real identity, any Example 4.3.7
-finite-partition likelihood, finite-union, or generator endpoint, or the
-finite-product likelihood/rectangle/`withDensity` layer or infinite-product
-cylinder/restriction handoff for Theorem 4.3.8.  Defer Polya urn as a
+finite-partition likelihood, finite-union, or generator endpoint, the
+finite-product likelihood/rectangle/`withDensity` layer, infinite-product
+cylinder/restriction handoff, Hellinger factorization layer, zero-product Fatou
+endpoint, or zero-product singularity bridge for Theorem 4.3.8.  Defer Polya urn as a
 model-specific construction unless a direct existing primitive is found.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
@@ -545,10 +551,11 @@ finite-product likelihood measurability, rectangle set-integral, and
 finite-product `withDensity` endpoint, plus the infinite-product
 cylinder-likelihood measurability, finite-coordinate restriction `withDensity`,
 cylinder set-integral endpoint, and finite/cylinder Hellinger factorization
-endpoints, plus the zero-product Fatou endpoint and cylinder Hellinger-product
-handoff.  Move forward to infinite-product criterion support, zero-product
-singularity packaging, positive-product absolute-continuity packaging, and
-tail-event zero-one support for Kakutani's dichotomy.  Keep Theorem 4.1.16 deferred unless a
+endpoints, plus the zero-product Fatou endpoint, cylinder Hellinger-product
+handoff, and zero-product singularity bridge.  Move forward to infinite-product
+criterion support, positive-product absolute-continuity packaging, final
+zero-product Kakutani assembly, and tail-event zero-one support for Kakutani's
+dichotomy.  Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
@@ -661,6 +668,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V65` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V66` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

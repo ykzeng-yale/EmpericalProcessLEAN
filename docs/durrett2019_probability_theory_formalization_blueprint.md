@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V65`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V66`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -484,9 +484,11 @@ Next packet:
   integral endpoint.  The zero-product Fatou layer now also compiles: Hellinger
   integrals tending to zero force the limiting likelihood to vanish a.e., and
   the finite-cylinder source handoff consumes finite Hellinger products
-  directly.  The next active target is zero-product singularity packaging,
-  positive-product absolute-continuity packaging, and tail-event zero-one
-  support for Kakutani's dichotomy.  Theorem 4.1.16 remains deferred unless a
+  directly.  The zero-product singularity bridge now also compiles from source
+  real-identities plus `X = 0` denominator-a.e., including top-set,
+  Hellinger, and cylinder-product handoffs.  The next active target is
+  positive-product absolute-continuity packaging, final zero-product Kakutani
+  assembly, and tail-event zero-one support for Kakutani's dichotomy.  Theorem 4.1.16 remains deferred unless a
   direct kernel API appears.
 
 Support-only dependencies:

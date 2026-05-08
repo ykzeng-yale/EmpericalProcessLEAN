@@ -4836,5 +4836,134 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_ae_eq_zero_of_hellinger_pro
   rw [hfun]
   exact hhellinger
 
+/--
+Durrett 2019, Theorem 4.3.8 zero-product singularity support: if the
+Theorem 4.3.5 source identity is available for a limiting likelihood `X`,
+and `X` vanishes denominator-almost surely, then the numerator and denominator
+measures are mutually singular.
+-/
+theorem durrett2019_theorem_4_3_8_mutuallySingular_of_source_real_identity_zero
+    {Ω : Type*} [MeasurableSpace Ω] {μ ν : Measure Ω}
+    [IsFiniteMeasure μ] {X : Ω -> ℝ≥0∞} (hX : Measurable X)
+    (hXzero : X =ᵐ[ν] 0)
+    (hidentity :
+      ∀ {A : Set Ω}, MeasurableSet A ->
+        μ.real A =
+          ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}))
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ ⟂ₘ ν := by
+  let T : Set Ω := {ω | X ω = ∞}
+  let S : Set Ω := Tᶜ
+  have hT : MeasurableSet T := by
+    dsimp [T]
+    exact measurableSet_eq_fun hX measurable_const
+  have htoReal_zero :
+      (fun ω => (X ω).toReal) =ᵐ[ν] (fun _ : Ω => (0 : ℝ)) := by
+    filter_upwards [hXzero] with ω hω
+    simp [hω]
+  have hintegral_zero :
+      ∫ ω in S, (X ω).toReal ∂ν = 0 := by
+    have hcongr :
+        ∫ ω in S, (X ω).toReal ∂ν =
+          ∫ ω in S, (fun _ : Ω => (0 : ℝ)) ω ∂ν := by
+      exact setIntegral_congr_ae hT.compl
+        (htoReal_zero.mono fun ω hω _ => hω)
+    rw [hcongr]
+    simp
+  have hμS_real : μ.real S = 0 := by
+    have hid := hidentity hT.compl
+    rw [hintegral_zero] at hid
+    simpa [S, T] using hid
+  have hμS : μ S = 0 :=
+    (measureReal_eq_zero_iff (μ := μ) (s := S) (measure_ne_top μ S)).1 hμS_real
+  refine Measure.MutuallySingular.mk (s := S) (t := T) hμS hνtop ?_
+  intro ω _
+  by_cases hω : ω ∈ T
+  · exact Or.inr hω
+  · exact Or.inl hω
+
+/--
+Durrett 2019, Theorem 4.3.8 zero-product singularity handoff from the
+Radon-Nikodym/top-set identity packaged in Theorem 4.3.5.
+-/
+theorem durrett2019_theorem_4_3_8_mutuallySingular_of_top_set_identity_zero
+    {Ω : Type*} [MeasurableSpace Ω] {μ ν : Measure Ω}
+    [IsFiniteMeasure μ] [IsFiniteMeasure ν] [μ.HaveLebesgueDecomposition ν]
+    {X : Ω -> ℝ≥0∞} (hX : Measurable X) (hXzero : X =ᵐ[ν] 0)
+    (hXrn :
+      (fun ω => (X ω).toReal) =ᵐ[ν]
+        fun ω => (μ.rnDeriv ν ω).toReal)
+    (hμtop : μ.singularPart ν {ω | X ω = ∞}ᶜ = 0)
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ ⟂ₘ ν := by
+  refine
+    durrett2019_theorem_4_3_8_mutuallySingular_of_source_real_identity_zero
+      (μ := μ) (ν := ν) (X := X) hX hXzero ?_ hνtop
+  intro A hA
+  exact
+    durrett2019_theorem_4_3_5_source_real_identity_of_top_set
+      (μ := μ) (ν := ν) (X := X) hA hXrn hμtop hνtop
+
+/--
+Durrett 2019, Theorem 4.3.8 zero-product singularity handoff: the Fatou
+Hellinger endpoint plus a source real-identity yields mutual singularity.
+-/
+theorem durrett2019_theorem_4_3_8_mutuallySingular_of_hellinger_lintegral_tendsto_zero
+    {Ω : Type*} [MeasurableSpace Ω] {μ ν : Measure Ω}
+    [IsFiniteMeasure μ] {Xseq : ℕ -> Ω -> ℝ≥0∞} {X : Ω -> ℝ≥0∞}
+    (hXseq : ∀ n, Measurable (Xseq n)) (hX : Measurable X)
+    (hlim : ∀ᵐ ω ∂ν, Tendsto (fun n => Xseq n ω) atTop (𝓝 (X ω)))
+    (hhellinger :
+      Tendsto (fun n => ∫⁻ ω, (Xseq n ω) ^ ((1 : ℝ) / 2) ∂ν) atTop (𝓝 0))
+    (hidentity :
+      ∀ {A : Set Ω}, MeasurableSet A ->
+        μ.real A =
+          ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}))
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ ⟂ₘ ν := by
+  have hXzero :
+      X =ᵐ[ν] 0 :=
+    durrett2019_theorem_4_3_8_ae_eq_zero_of_hellinger_lintegral_tendsto_zero
+      (ν := ν) (Xseq := Xseq) (X := X) hXseq hX hlim hhellinger
+  exact
+    durrett2019_theorem_4_3_8_mutuallySingular_of_source_real_identity_zero
+      (μ := μ) (ν := ν) (X := X) hX hXzero hidentity hνtop
+
+/--
+Durrett 2019, Theorem 4.3.8 zero-product cylinder handoff: finite-coordinate
+Hellinger products tending to zero plus a source real-identity for the limiting
+likelihood yields mutual singularity.
+-/
+theorem durrett2019_theorem_4_3_8_mutuallySingular_of_cylinderLikelihood_hellinger_products_tendsto_zero
+    {ι S : Type*} [MeasurableSpace S]
+    {μ : Measure (ι -> S)} [IsFiniteMeasure μ]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i)) {X : (ι -> S) -> ℝ≥0∞}
+    (hX : Measurable X)
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x)
+          atTop (𝓝 (X x)))
+    (hhellinger :
+      Tendsto
+        (fun n => ∏ i : Iseq n, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)
+        atTop (𝓝 0))
+    (hidentity :
+      ∀ {A : Set (ι -> S)}, MeasurableSet A ->
+        μ.real A =
+          ∫ x in A, (X x).toReal ∂Measure.infinitePi ν +
+            μ.real (A ∩ {x | X x = ∞}))
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0) :
+    μ ⟂ₘ Measure.infinitePi ν := by
+  have hXzero :
+      X =ᵐ[Measure.infinitePi ν] 0 :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_ae_eq_zero_of_hellinger_products_tendsto_zero
+      (ν := ν) (Iseq := Iseq) (q := q) hq hX hlim hhellinger
+  exact
+    durrett2019_theorem_4_3_8_mutuallySingular_of_source_real_identity_zero
+      (μ := μ) (ν := Measure.infinitePi ν) (X := X) hX hXzero hidentity hνtop
+
 end ProbabilityTheory
 end StatInference
