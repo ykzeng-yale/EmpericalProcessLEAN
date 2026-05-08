@@ -103,6 +103,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   wrappers specialize the predictable proxy route to constant-in-`ω` proxies,
   removing the old normalized-product argument from deterministic proxy
   certificates.
+- Direct future-tail residual route: the new
+  `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers turn
+  row-summed `L1` predictability of the normalized future tail directly into
+  charFun convergence, projected CLT, bridge, and certificate statements.
 - New ASGD scalar Lindeberg declarations:
   `chewi127ScalarLindebergSummand`,
   `chewi127ScalarLindebergAverage`,

@@ -159,6 +159,11 @@ The deterministic future-tail proxy route now also has compact
 `deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`
 characteristic-function, scalar/projected CLT, bridge, and certificate
 wrappers; use them when the proxy is constant in `ω`.
+The direct future-tail residual route now has
+`futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers through
+the certificate layer.  This is the preferred route when the normalized future
+tail is proved asymptotically predictable in row-summed `L1`; no proxy object
+or normalized-product argument is needed.
 
 Mission: finish the main-text Chewi Optimization 2026 Lean formalization under
 `StatInference/Optimization` as fast as correctness allows.  Keep all
