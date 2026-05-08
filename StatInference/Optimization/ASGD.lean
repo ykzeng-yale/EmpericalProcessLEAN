@@ -7662,5 +7662,61 @@ theorem chewi123_asgd_limit_package_of_martingale_certificate
     chewi123_asgd_neg_linear_gaussian_limit (Ainv := Ainv) C.gaussian_limit,
     fun L K => C.neg_linear_covarianceBilinDual Ainv L K⟩
 
+/--
+Source-shaped Chewi Theorem 12.3 ASGD limit package from the precise
+future-tail predictability gate used to construct the Chewi 12.7 martingale
+CLT certificate.
+
+This is the current source-facing endpoint for the bounded martingale ASGD
+route: the future-tail measurability condition feeds Theorem 12.7, and the
+existing initial/remainder decomposition then yields the displayed ASGD limit
+and covariance pullback package.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_mixed_tower_future_tail_measurability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hfuture_tail_meas : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      ∀ N r : ℕ, r < N ->
+        AEStronglyMeasurable[S.martingale.filtration r]
+          (fun ω =>
+            ∏ k ∈ Finset.Ico (r + 1) N,
+              S.projectedNormalizedTaylorFactor L N t k ω) P)
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K := by
+  let C : Chewi127MartingaleCLTCertificate Ω Ω' E P Q :=
+    S.toMartingaleCLTCertificate_of_mixed_tower_future_tail_measurability
+      hmean hfuture_tail_meas
+  simpa [C,
+    Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate_of_mixed_tower_future_tail_measurability,
+    Chewi127BoundedMartingaleCLTSource.toProjectedBridge_of_mixed_tower_future_tail_measurability,
+    Chewi127ProjectedMartingaleCLTBridge.toMartingaleCLTCertificate] using
+    chewi123_asgd_limit_package_of_martingale_certificate
+      (C := C) Ainv hInitial hRemainder
+      hInitial_meas hRemainder_meas hDecomp
+
 end Optimization
 end StatInference

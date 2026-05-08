@@ -245,6 +245,7 @@ plus the normalized compensated-product bridge:
 `projected_clt_of_mixed_tower_future_tail_measurability`,
 `toProjectedBridge_of_mixed_tower_future_tail_measurability`,
 `toMartingaleCLTCertificate_of_mixed_tower_future_tail_measurability`,
+`asgd_limit_package_of_mixed_tower_future_tail_measurability`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
 `projected_charFun_tendsto_exp_of_normalized_product_model`,
 and
@@ -299,9 +300,10 @@ characteristic-function and projected scalar CLT bridges.  The newest
 certificate packet wires that same gate into the Chewi 12.7 vector CLT
 certificate through the compiled Cramér-Wold bridge.  The preferred
 source-facing frontier is now
-`toMartingaleCLTCertificate_of_mixed_tower_future_tail_measurability`: all
-analytic and integrability obligations are compiled, and the only remaining
-displayed input is
+`asgd_limit_package_of_mixed_tower_future_tail_measurability`: the future-tail
+gate constructs the Chewi 12.7 certificate and then feeds the compiled Chewi
+12.3 ASGD limit/covariance package.  All analytic and integrability
+obligations are compiled, and the only remaining displayed input is
 `∀ t N r, r < N -> AEStronglyMeasurable[S.martingale.filtration r]
   (fun ω => ∏ k ∈ Finset.Ico (r + 1) N,
     S.projectedNormalizedTaylorFactor L N t k ω) P`.
@@ -314,7 +316,7 @@ wrapper, normalized-minus-inverse row integrability wrapper, compensated-error
 row integrability wrapper, variance-error row integrability wrapper, mixed
 multiplier integrability wrapper, prefix-times-tail measurability wrapper,
 future-tail scalar CLT wrapper, certificate-level future-tail bridge, or
-generic weak-convergence wrapper.
+ASGD future-tail endpoint wrapper, or generic weak-convergence wrapper.
 The variance
 side is now source-facing:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
@@ -336,7 +338,7 @@ If the future random product route needs unavailable measurability, switch to
 a telescoping/error representation with explicit conditional multipliers
 instead of forcing a false exact product model.
 The next ASGD packet should start from
-`toMartingaleCLTCertificate_of_mixed_tower_future_tail_measurability`.  The remaining
+`asgd_limit_package_of_mixed_tower_future_tail_measurability`.  The remaining
 source gap is not integrability and not raw-prefix adaptedness: the scouts and
 local proof search agree that the current increasing martingale filtration
 does not imply that a future normalized-tail product is `F_r`-measurable,
