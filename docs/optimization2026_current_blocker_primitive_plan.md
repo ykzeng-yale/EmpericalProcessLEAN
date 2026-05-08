@@ -179,6 +179,14 @@ future-multiplier defect layer
 `projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_l1_residual_sum`,
 `projectedMixedTowerFutureTail`,
 `projectedMixedTowerFutureTail_integrable_of_uniform_bound`,
+`projectedMixedTowerInverseFutureTail`,
+`projectedMixedTowerInverseFutureTail_integrable`,
+`projectedMixedTowerFutureTail_sub_inverseFutureTail_norm_le`,
+`projectedMixedTowerFutureTail_inverseFutureTail_l1_le_suffix_error`,
+`projectedMixedTowerFutureTail_inverseFutureTail_l1_row_sum_le_suffix_error`,
+`projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_suffix_error`,
+`projectedMixedTowerFutureTail_condExp_inverseFutureTail_l1_sum_tendsto_zero_of_parts`,
+`projectedMixedTowerDefect_sum_tendsto_zero_of_inverseFutureTail_condExp`,
 `projectedMixedTowerFutureMultiplier_condExp_eq_rawPrefix_mul_tailCondExp`,
 `projectedMixedTowerFutureMultiplier_residual_norm_le_tail_residual_ae`,
 `projectedMixedTowerFutureMultiplier_l1_residual_le_tail_l1_residual`,
@@ -504,16 +512,22 @@ result for the next proof packet: the natural deterministic core is the
 inverse-compensation future tail
 `∏ k in Finset.Ico (r+1) N, S.projectedInverseCompensationFactor L N t k`,
 but this raw random tail is not itself `F_r`-measurable.  The honest
-predictable candidate is its conditional expectation onto `F_r`; proving this
-route still needs either a direct row-summed L1 estimate against that
-conditional inverse-tail proxy, or two smaller estimates: a suffix/weighted
-product perturbation bound from normalized factors to inverse factors, plus a
-separate inverse-tail conditional residual bound.  Reuse
-`chewi127_norm_prod_sub_prod_le_sum_norm_sub`,
-`chewi127_integral_product_sub_product_tendsto_zero_of_integral_sum_norm`,
-`projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`,
-and the inverse-factor norm/measurability lemmas before adding new product
-machinery.
+predictable candidate is its conditional expectation onto `F_r`.  The newest
+inverse-tail layer names this tail, proves integrability, proves the
+arbitrary-`Finset.Ico` suffix product perturbation bound via
+`StatInference.norm_prod_sub_prod_le_sum_norm_sub`, lifts it to a row-summed
+L1 suffix-error convergence wrapper, and proves
+`projectedMixedTowerDefect_sum_tendsto_zero_of_inverseFutureTail_condExp`.
+The remaining ASGD proof obligations for this route are now precisely:
+1. prove the suffix/weighted row-summed normalized-minus-inverse error
+   convergence consumed by
+   `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_suffix_error`;
+2. prove the row-summed conditional residual convergence of
+   `projectedMixedTowerInverseFutureTail -
+   E[projectedMixedTowerInverseFutureTail | F_r]`.
+Reuse `projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`,
+the one-step error bounds, inverse-factor norm/measurability, and finite-sum
+reindexing/counting APIs before adding new product machinery.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform

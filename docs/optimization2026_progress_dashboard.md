@@ -534,7 +534,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   future tail is the deterministic-core comparison object, but because it is a
   future random product it must be conditionally projected to `F_r` or replaced
   by a genuinely deterministic proxy; raw inverse-tail `F_r` measurability is
-  not available from adaptedness alone.
+  not available from adaptedness alone.  The newest inverse-tail layer proves
+  `projectedMixedTowerInverseFutureTail`,
+  `projectedMixedTowerInverseFutureTail_integrable`,
+  `projectedMixedTowerFutureTail_sub_inverseFutureTail_norm_le`,
+  `projectedMixedTowerFutureTail_inverseFutureTail_l1_le_suffix_error`,
+  `projectedMixedTowerFutureTail_inverseFutureTail_l1_row_sum_le_suffix_error`,
+  `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_suffix_error`,
+  `projectedMixedTowerFutureTail_condExp_inverseFutureTail_l1_sum_tendsto_zero_of_parts`,
+  and `projectedMixedTowerDefect_sum_tendsto_zero_of_inverseFutureTail_condExp`.
+  The active estimates are now the suffix/weighted normalized-minus-inverse
+  error convergence and the inverse-tail conditional residual convergence.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
   earlier `F_r` for `r < k`.  Next target: build and bound a predictable proxy
@@ -1232,10 +1242,10 @@ consumed by
 or prove a deterministic scalar proxy approximation and instantiate the
 deterministic constructors.  The best next candidate is the conditional
 expectation of the inverse-compensation future tail; the missing proof work is
-the suffix/weighted product perturbation estimate and/or the inverse-tail
-conditional residual estimate.  Do not re-open characteristic-function, scalar
-CLT, projected CLT, or certificate adapter wiring unless the proxy theorem
-changes its interface.
+now narrowed to the suffix/weighted normalized-minus-inverse error convergence
+and the inverse-tail conditional residual estimate.  Do not re-open
+characteristic-function, scalar CLT, projected CLT, or certificate adapter
+wiring unless the proxy theorem changes its interface.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw
 tower-peel tasks, or already-compiled ASGD integrability/measurability wrappers
 unless a regression makes them relevant.

@@ -8271,6 +8271,370 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_integra
     htail_bound
 
 /--
+The inverse-compensation future tail over the same suffix interval as
+`projectedMixedTowerFutureTail`.  This is the deterministic Taylor core before
+the compensated-error perturbation.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedMixedTowerInverseFutureTail
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (r : ℕ) (ω : Ω) : ℂ :=
+  ∏ k ∈ Finset.Ico (r + 1) N,
+    S.projectedInverseCompensationFactor L N t k ω
+
+/--
+The inverse-compensation future tail is integrable.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerInverseFutureTail_integrable
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    Integrable
+      (fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω) P := by
+  have htail_meas :
+      AEStronglyMeasurable
+        (fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω) P := by
+    refine Finset.aestronglyMeasurable_fun_prod
+      (s := Finset.Ico (r + 1) N) ?_
+    intro k _hk
+    exact S.projectedInverseCompensationFactor_aestronglyMeasurable L N t k
+  have htail_bound :
+      ∀ᵐ ω ∂P, ‖S.projectedMixedTowerInverseFutureTail L N t r ω‖ ≤ 1 := by
+    filter_upwards [S.projectedInverseCompensationFactor_row_norm_le_one_ae L N t]
+      with ω hrow
+    exact (Finset.norm_prod_le (Finset.Ico (r + 1) N)
+      (fun k => S.projectedInverseCompensationFactor L N t k ω)).trans
+      (Finset.prod_le_one
+        (fun k _hk =>
+          norm_nonneg (S.projectedInverseCompensationFactor L N t k ω))
+        (fun k hk =>
+          hrow k (Finset.mem_range.mpr (Finset.mem_Ico.mp hk).2)))
+  refine Integrable.of_bound (C := 1) htail_meas ?_
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedMixedTowerInverseFutureTail]
+    using htail_bound
+
+/--
+Pointwise suffix product perturbation: the normalized future tail differs from
+the inverse-compensation future tail by at most the suffix sum of one-step
+normalized-minus-inverse errors.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_sub_inverseFutureTail_norm_le
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    ∀ᵐ ω ∂P,
+      ‖S.projectedMixedTowerFutureTail L N t r ω -
+        S.projectedMixedTowerInverseFutureTail L N t r ω‖ ≤
+        ∑ k ∈ Finset.Ico (r + 1) N,
+          ‖S.projectedNormalizedTaylorFactor L N t k ω -
+            S.projectedInverseCompensationFactor L N t k ω‖ := by
+  filter_upwards
+    [S.projectedNormalizedTaylorFactor_row_norm_le_one_ae L N t,
+      S.projectedInverseCompensationFactor_row_norm_le_one_ae L N t] with
+    ω hnormalized hinverse
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail,
+    Chewi127BoundedMartingaleCLTSource.projectedMixedTowerInverseFutureTail] using
+    StatInference.norm_prod_sub_prod_le_sum_norm_sub
+      (Finset.Ico (r + 1) N)
+      (fun k => S.projectedNormalizedTaylorFactor L N t k ω)
+      (fun k => S.projectedInverseCompensationFactor L N t k ω)
+      (fun k hk => hnormalized k (Finset.mem_range.mpr (Finset.mem_Ico.mp hk).2))
+      (fun k hk => hinverse k (Finset.mem_range.mpr (Finset.mem_Ico.mp hk).2))
+
+/--
+Integrated suffix product perturbation for the normalized future tail.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_inverseFutureTail_l1_le_suffix_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) :
+    (∫ ω,
+      ‖S.projectedMixedTowerFutureTail L N t r ω -
+        S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P) ≤
+      ∫ ω,
+        ∑ k ∈ Finset.Ico (r + 1) N,
+          ‖S.projectedNormalizedTaylorFactor L N t k ω -
+            S.projectedInverseCompensationFactor L N t k ω‖ ∂P := by
+  have hleft_int :
+      Integrable
+        (fun ω =>
+          ‖S.projectedMixedTowerFutureTail L N t r ω -
+            S.projectedMixedTowerInverseFutureTail L N t r ω‖) P :=
+    ((S.projectedMixedTowerFutureTail_integrable_of_uniform_bound L N r t).sub
+      (S.projectedMixedTowerInverseFutureTail_integrable L N r t)).norm
+  have hright_int :
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.Ico (r + 1) N,
+            ‖S.projectedNormalizedTaylorFactor L N t k ω -
+              S.projectedInverseCompensationFactor L N t k ω‖) P := by
+    refine integrable_finsetSum (Finset.Ico (r + 1) N) ?_
+    intro k _hk
+    have hnormalized_int :
+        Integrable
+          (fun ω => S.projectedNormalizedTaylorFactor L N t k ω) P := by
+      refine Integrable.of_bound (C := 1)
+        ((S.projectedNormalizedTaylorFactor_filtration_aestronglyMeasurable_of_uniform_bound
+          L N t k).mono (S.martingale.filtration.le k)) ?_
+      exact S.projectedNormalizedTaylorFactor_norm_le_one_ae
+        L N t k
+        (by
+          rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+            ⟨B, hB_nonneg, hbound⟩
+          let x : Ω -> ℝ := fun ω => L (S.martingale.xi (k + 1) ω)
+          have hx : AEMeasurable x P := by
+            simpa [x] using
+              (S.martingale.projected_integrable L (k + 1)).aemeasurable
+          have hbound_x : ∀ᵐ ω ∂P, |x ω| ≤ B := by
+            simpa [x] using hbound k
+          simpa [x] using
+            chewi127Scalar_sq_integrable_of_uniform_bound
+              (P := P) (x := x) hx ⟨B, hB_nonneg, hbound_x⟩)
+        (by
+          rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+            ⟨B, hB_nonneg, hbound⟩
+          let x : Ω -> ℝ := fun ω => L (S.martingale.xi (k + 1) ω)
+          have hx : AEMeasurable x P := by
+            simpa [x] using
+              (S.martingale.projected_integrable L (k + 1)).aemeasurable
+          have hbound_x : ∀ᵐ ω ∂P, |x ω| ≤ B := by
+            simpa [x] using hbound k
+          simpa [x] using
+            chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+              (P := P) (x := x) hx
+              (t * (Real.sqrt (N : ℝ))⁻¹)
+              ⟨B, hB_nonneg, hbound_x⟩)
+    have hinverse_int :
+        Integrable
+          (fun ω => S.projectedInverseCompensationFactor L N t k ω) P := by
+      refine Integrable.of_bound (C := 1)
+        (S.projectedInverseCompensationFactor_aestronglyMeasurable L N t k) ?_
+      exact S.projectedInverseCompensationFactor_norm_le_one_ae L N t k
+    exact (hnormalized_int.sub hinverse_int).norm
+  exact integral_mono_ae hleft_int hright_int
+    (S.projectedMixedTowerFutureTail_sub_inverseFutureTail_norm_le L N r t)
+
+/--
+Row-summed integrated suffix product perturbation for the normalized future
+tail.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_inverseFutureTail_l1_row_sum_le_suffix_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) :
+    (∑ r ∈ Finset.range N,
+      ∫ ω,
+        ‖S.projectedMixedTowerFutureTail L N t r ω -
+          S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P) ≤
+      ∑ r ∈ Finset.range N,
+        ∫ ω,
+          ∑ k ∈ Finset.Ico (r + 1) N,
+            ‖S.projectedNormalizedTaylorFactor L N t k ω -
+              S.projectedInverseCompensationFactor L N t k ω‖ ∂P := by
+  refine Finset.sum_le_sum ?_
+  intro r _hr
+  exact
+    S.projectedMixedTowerFutureTail_inverseFutureTail_l1_le_suffix_error
+      L N r t
+
+/--
+If the suffix row-sum of normalized-minus-inverse one-step errors vanishes,
+then the normalized future tails are close in row-summed `L1` to the
+inverse-compensation future tails.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_suffix_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hsuffix_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ∑ k ∈ Finset.Ico (r + 1) N,
+                ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  S.projectedInverseCompensationFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P)
+      atTop (𝓝 0) := by
+  refine squeeze_zero'
+    (Eventually.of_forall fun N =>
+      Finset.sum_nonneg fun r _hr =>
+        integral_nonneg fun ω => norm_nonneg _)
+    ?_ hsuffix_error
+  exact Eventually.of_forall fun N =>
+    S.projectedMixedTowerFutureTail_inverseFutureTail_l1_row_sum_le_suffix_error
+      L N t
+
+/--
+The conditional expectation of the inverse-compensation future tail is a valid
+predictable proxy once the normalized future tail is close to the inverse tail
+and the inverse tail has vanishing conditional residual.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_condExp_inverseFutureTail_l1_sum_tendsto_zero_of_parts
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (htail_inverse_l1 :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P)
+        atTop (𝓝 0))
+    (hinverse_residual_l1 :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerInverseFutureTail L N t r ω -
+                P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                  S.martingale.filtration r] ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                S.martingale.filtration r] ω‖ ∂P)
+      atTop (𝓝 0) := by
+  let tailInverse : ℕ -> ℝ := fun N =>
+    ∑ r ∈ Finset.range N,
+      ∫ ω,
+        ‖S.projectedMixedTowerFutureTail L N t r ω -
+          S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P
+  let inverseResidual : ℕ -> ℝ := fun N =>
+    ∑ r ∈ Finset.range N,
+      ∫ ω,
+        ‖S.projectedMixedTowerInverseFutureTail L N t r ω -
+          P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+            S.martingale.filtration r] ω‖ ∂P
+  have hupper :
+      Tendsto (fun N : ℕ => tailInverse N + inverseResidual N)
+        atTop (𝓝 0) := by
+    have hsum := htail_inverse_l1.add hinverse_residual_l1
+    simpa [tailInverse, inverseResidual] using hsum
+  refine squeeze_zero'
+    (Eventually.of_forall fun N =>
+      Finset.sum_nonneg fun r _hr =>
+        integral_nonneg fun ω => norm_nonneg _)
+    ?_ hupper
+  exact Eventually.of_forall fun N => by
+    calc
+      (∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureTail L N t r ω -
+              P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                S.martingale.filtration r] ω‖ ∂P)
+          ≤ ∑ r ∈ Finset.range N,
+              ((∫ ω,
+                  ‖S.projectedMixedTowerFutureTail L N t r ω -
+                    S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P) +
+                ∫ ω,
+                  ‖S.projectedMixedTowerInverseFutureTail L N t r ω -
+                    P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                      S.martingale.filtration r] ω‖ ∂P) := by
+            refine Finset.sum_le_sum ?_
+            intro r _hr
+            let T : Ω -> ℂ := fun ω =>
+              S.projectedMixedTowerFutureTail L N t r ω
+            let I : Ω -> ℂ := fun ω =>
+              S.projectedMixedTowerInverseFutureTail L N t r ω
+            let C : Ω -> ℂ := fun ω =>
+              P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                S.martingale.filtration r] ω
+            have hT_int : Integrable T P := by
+              simpa [T] using
+                S.projectedMixedTowerFutureTail_integrable_of_uniform_bound
+                  L N r t
+            have hI_int : Integrable I P := by
+              simpa [I] using
+                S.projectedMixedTowerInverseFutureTail_integrable L N r t
+            have hC_int : Integrable C P := by
+              simpa [C, I] using
+                (integrable_condExp
+                  (μ := P) (m := S.martingale.filtration r) (f := I))
+            have hleft_int : Integrable (fun ω => ‖T ω - C ω‖) P :=
+              (hT_int.sub hC_int).norm
+            have hright_int :
+                Integrable (fun ω => ‖T ω - I ω‖ + ‖I ω - C ω‖) P :=
+              (hT_int.sub hI_int).norm.add (hI_int.sub hC_int).norm
+            calc
+              (∫ ω,
+                  ‖S.projectedMixedTowerFutureTail L N t r ω -
+                    P[fun ω =>
+                      S.projectedMixedTowerInverseFutureTail L N t r ω |
+                      S.martingale.filtration r] ω‖ ∂P)
+                  = ∫ ω, ‖T ω - C ω‖ ∂P := by rfl
+              _ ≤ ∫ ω, ‖T ω - I ω‖ + ‖I ω - C ω‖ ∂P :=
+                    integral_mono_ae hleft_int hright_int
+                      (ae_of_all P fun ω => by
+                        have hsplit : T ω - C ω = (T ω - I ω) + (I ω - C ω) := by
+                          ring
+                        calc
+                          ‖T ω - C ω‖
+                              = ‖(T ω - I ω) + (I ω - C ω)‖ := by rw [hsplit]
+                          _ ≤ ‖T ω - I ω‖ + ‖I ω - C ω‖ :=
+                                norm_add_le _ _)
+              _ =
+                  (∫ ω, ‖T ω - I ω‖ ∂P) +
+                    ∫ ω, ‖I ω - C ω‖ ∂P := by
+                    exact
+                      integral_add
+                        (μ := P)
+                        (f := fun ω => ‖T ω - I ω‖)
+                        (g := fun ω => ‖I ω - C ω‖)
+                        (hT_int.sub hI_int).norm
+                        (hI_int.sub hC_int).norm
+              _ =
+                  (∫ ω,
+                    ‖S.projectedMixedTowerFutureTail L N t r ω -
+                      S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P) +
+                    ∫ ω,
+                      ‖S.projectedMixedTowerInverseFutureTail L N t r ω -
+                        P[fun ω =>
+                          S.projectedMixedTowerInverseFutureTail L N t r ω |
+                          S.martingale.filtration r] ω‖ ∂P := by
+                    rfl
+      _ = tailInverse N + inverseResidual N := by
+            simp [tailInverse, inverseResidual, Finset.sum_add_distrib]
+
+/--
 The conditional expectation of the future multiplier pulls out the raw prefix.
 -/
 theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_condExp_eq_rawPrefix_mul_tailCondExp
@@ -8598,6 +8962,78 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_tendsto
   exact
     S.projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum
       L t hsq hremainder htail_residual_sum
+
+/--
+The mixed-tower defect vanishes if the normalized future tail is close to the
+inverse-compensation future tail and the inverse future tail is asymptotically
+predictable after conditional expectation onto `F_r`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_tendsto_zero_of_inverseFutureTail_condExp
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (htail_inverse_l1 :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P)
+        atTop (𝓝 0))
+    (hinverse_residual_l1 :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerInverseFutureTail L N t r ω -
+                P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                  S.martingale.filtration r] ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          S.projectedMixedTowerStepDefect L N r t)
+      atTop (𝓝 0) := by
+  rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+    ⟨B, hB_nonneg, hbound⟩
+  let x : ℕ -> Ω -> ℝ := fun n ω => L (S.martingale.xi n ω)
+  have hx : ∀ k : ℕ, AEMeasurable (x (k + 1)) P := by
+    intro k
+    exact (S.martingale.projected_integrable L (k + 1)).aemeasurable
+  have hbound_x : ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B := by
+    intro k
+    simpa [x] using hbound k
+  refine
+    S.projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx
+      L t
+      (fun N r ω =>
+        P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+          S.martingale.filtration r] ω)
+      ?_ ?_ ?_ ?_
+      (S.projectedMixedTowerFutureTail_condExp_inverseFutureTail_l1_sum_tendsto_zero_of_parts
+        L t htail_inverse_l1 hinverse_residual_l1)
+  · intro N r
+    exact stronglyMeasurable_condExp.aestronglyMeasurable
+  · intro N r
+    simpa using
+      (integrable_condExp
+        (μ := P) (m := S.martingale.filtration r)
+        (f := fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω))
+  · intro N r _hr
+    simpa [x] using
+      chewi127Scalar_sq_integrable_of_uniform_bound
+        (P := P) (x := x (r + 1)) (hx r)
+        ⟨B, hB_nonneg, hbound_x r⟩
+  · intro N r _hr
+    simpa [x] using
+      chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+        (P := P) (x := x (r + 1)) (hx r)
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        ⟨B, hB_nonneg, hbound_x r⟩
 
 /--
 Characteristic-function convergence from a normalized-product limit and an
