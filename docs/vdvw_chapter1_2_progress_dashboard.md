@@ -3383,3 +3383,12 @@ the selected normalized-log empirical-cover process and immediately feed the
 generic Theorem 2.4.3 primitive route.  The active source task remains proving
 that UI/tail input from stochastic entropy, or proving the displayed-beta
 selected-cover event comparison.
+
+The localized selected-entropy primitive now also has bounded-tail and
+natural-polynomial cardinality constructors:
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_nnnorm_bound_of_set_countable`
+and
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_nat_poly_bound_of_set_countable`.
+These are the countable-class primitive handoffs for finite-trace, grid, and
+VC/Sauer-style counting routes; the remaining source work is to prove the
+needed boundedness/counting input or close the displayed-beta event route.

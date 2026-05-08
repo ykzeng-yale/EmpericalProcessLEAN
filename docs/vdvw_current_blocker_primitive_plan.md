@@ -8098,3 +8098,16 @@ primitive under `indexClass.Countable`, without requiring a global
 countable theorem classes.  The remaining generic blocker is still the
 mathematical source proof of that first-sample UI/tail input from stochastic
 entropy, or the displayed-beta selected-cover event primitive.
+
+2026-05-08 localized bounded-tail constructors for the selected-entropy
+primitive:
+`Theorem243.lean` now proves
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_nnnorm_bound_of_set_countable`
+and
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_nat_poly_bound_of_set_countable`.
+Uniform first-sample boundedness, and the more concrete natural-polynomial
+cardinality growth used by finite-trace/grid/VC counting arguments, now feed the
+registered selected finite-net mean primitive under `indexClass.Countable`
+without a global countable index type.  The generic theorem still needs the
+source stochastic-entropy proof of one of these concrete inputs, or the
+displayed-beta selected-cover event comparison.
