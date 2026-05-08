@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V112`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V113`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -572,7 +572,9 @@ Next packet:
   target is the remaining 4.4.2 display, Example 4.4.3 Kolmogorov maximal
   inequality, or Theorem 4.4.4 Lp maximal inequality.  The remaining 4.4.2
   positive-part total-expectation display now also compiles, so the active
-  frontier is Example 4.4.3 or Theorem 4.4.4.
+  frontier is Example 4.4.3 or Theorem 4.4.4.  Example 4.4.3 now has the
+  squared-threshold Kolmogorov maximal wrapper, so the next frontier is the
+  exact absolute-max/variance display if cheap, otherwise Theorem 4.4.4.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:

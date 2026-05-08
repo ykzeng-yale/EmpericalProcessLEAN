@@ -10498,5 +10498,49 @@ theorem durrett2019_theorem_4_4_2_doob_maximal_inequality_positivePart_total
       ((hX.integrable n).pos_part)
       (Eventually.of_forall fun ω => le_max_right (X n ω) 0)
 
+/--
+Durrett 2019, Example 4.4.3, Kolmogorov maximal inequality in the
+squared-threshold martingale form.  Applying Doob's maximal inequality to the
+submartingale `S_n ^ 2` gives the textbook random-walk maximal estimate once
+the terminal second moment is identified with the variance.
+-/
+theorem durrett2019_example_4_4_3_kolmogorov_maximal_inequality_square
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {S : ℕ -> Ω -> ℝ} (hS : Martingale S ℱ P)
+    (hS_sq_int : ∀ n, Integrable (fun ω => S n ω ^ 2) P)
+    {x : ℝ≥0} (n : ℕ) :
+    x ^ 2 * P {ω |
+        ((x ^ 2 : ℝ≥0) : ℝ) ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => S k ω ^ 2} ≤
+      ENNReal.ofReal (∫ ω, S n ω ^ 2 ∂P) := by
+  have hsq_sub :
+      Submartingale (fun k ω => S k ω ^ 2) ℱ P := by
+    have hsq_cvx : ConvexOn ℝ Set.univ (fun y : ℝ => y ^ 2) := by
+      simpa using
+        ((show Even (2 : ℕ) by decide).convexOn_pow :
+          ConvexOn ℝ Set.univ fun y : ℝ => y ^ 2)
+    have hsq_int :
+        ∀ k, Integrable ((fun y : ℝ => y ^ 2) ∘ S k) P := by
+      simpa [Function.comp_def] using hS_sq_int
+    simpa [Function.comp_def] using
+      durrett2019_theorem_4_2_6_convex_comp_submartingale
+        (μ := P) (ℱ := ℱ) (X := S) (φ := fun y : ℝ => y ^ 2)
+        hS hsq_cvx hsq_int
+  refine
+    (durrett2019_theorem_4_4_2_doob_maximal_inequality_nonnegative
+      (P := P) (ℱ := ℱ) (X := fun k ω => S k ω ^ 2)
+      hsq_sub
+      (by
+        intro k ω
+        exact sq_nonneg (S k ω))
+      n).trans ?_
+  refine ENNReal.ofReal_le_ofReal ?_
+  exact
+    setIntegral_le_integral
+      (hS_sq_int n)
+      (Eventually.of_forall fun ω => sq_nonneg (S n ω))
+
 end ProbabilityTheory
 end StatInference
