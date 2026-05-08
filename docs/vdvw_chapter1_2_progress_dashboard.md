@@ -18,9 +18,11 @@ the whole VdV&W empirical-process textbook formalization, with Chapters 1-2
 and Theorem 2.4.3 as the current frontier.  The clean VdVW proof lane is
 `/private/tmp/ep-vdvw-selected-log-route` at `origin/main`; the Desktop
 worktree is intentionally avoided for VdVW commits because it contains
-unrelated Matching/WDSM work.  Current next target: prove the selected-cover
-ghost/Rademacher scaled outer-probability finite-net comparison, or record the
-exact Lemma 2.3.7 nonmeasurable primitive if that proof blocks after search.
+unrelated Matching/WDSM work.  Current next target: prove the registered
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive` from the stochastic
+selected-entropy argument, or prove the selected-cover ghost/Rademacher
+displayed-beta Lemma 2.3.7 event primitive (`Phi(x)=x` plus finite-center
+comparison).
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
 restatements, finite-index wrappers, or selected-cardinality transport unless
 it directly consumes that source proof.

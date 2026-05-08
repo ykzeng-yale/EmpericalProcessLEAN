@@ -8004,3 +8004,19 @@ as tail/UI.  The exact generic book blocker remains the same: prove that
 selected finite-net mean convergence from the stochastic entropy argument, or
 prove the selected-cover `Phi(x)=x`/finite-center event theorem for the
 displayed-beta probability route.
+
+2026-05-07 selected entropy-to-finite-net mean primitive registration:
+after searching local `StatInference`, pinned mathlib, and the active Theorem
+2.4.3 source route, no theorem was found that derives ordinary mean
+convergence of the selected finite-net Hoeffding upper from the textbook
+fixed-radius stochastic entropy hypothesis.  `Theorem243.lean` now registers
+that exact missing source theorem as
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive` and proves
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.toSelectedFixedRadiusTailSideConditions`.
+This is not a new endpoint alias: it is the precise nonmeasurable
+selected-entropy primitive required by the mean route, with fields for
+selected finite-net upper integrability and integral convergence for every
+positive truncation level and radius.  The next proof target is now explicit:
+prove this primitive from the ghost/sample-cover stochastic entropy argument,
+or instead prove the existing displayed-beta Lemma 2.3.7 event primitive
+(`Phi(x)=x` plus the finite-center comparison) and feed that event route.

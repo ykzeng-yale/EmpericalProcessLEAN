@@ -22347,6 +22347,88 @@ theorem
       M hM
 
 /--
+Named source primitive for the remaining selected-entropy-to-mean step in
+the generic VdV&W Theorem 2.4.3 route.
+
+The textbook fixed-radius random entropy hypothesis gives outer-probability
+control of selected normalized log covering numbers.  The current Lean mean
+route needs the stronger consequence below: ordinary mean convergence of the
+selected finite-net Hoeffding upper for every positive truncation and radius.
+This structure records exactly that missing nonmeasurable entropy/selection
+step without asserting it as a consequence of bare outer-probability entropy.
+-/
+structure VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ)
+    (cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ)
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality) : Prop where
+  finiteNetUpperIntegrable :
+    ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWTheorem243FiniteNetHoeffdingUpper
+            ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (cardinality := cardinality M) (X M)
+              (hentropy.coveringNumber_le M hM) heta) n sample n)
+            n M)
+        (vdVWProductMeasure P n)
+  finiteNetUpperIntegral_tendsto_zero :
+    ∀ M (hM : 0 < M) eta (heta : 0 < eta),
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              ((vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta)
+                (cardinality := cardinality M) (X M)
+                (hentropy.coveringNumber_le M hM) heta) n sample n)
+              n M ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0)
+
+/--
+The selected entropy-to-finite-net-mean primitive feeds the existing selected
+fixed-radius tail/UI side-condition package.
+
+This is the preferred registration point for a future proof of the remaining
+nonmeasurable stochastic-entropy step: once the primitive is proved, no further
+tail/UI repackaging is needed.
+-/
+theorem
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.toSelectedFixedRadiusTailSideConditions
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality}
+    (primitive :
+      VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P X indexClass
+        classFun envelope cardinality hentropy) :
+    ∀ M, 0 < M ->
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions P (X M)
+        indexClass classFun envelope M (cardinality M) := by
+  exact
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_finiteNetUpper_integral_tendsto_zero
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (cardinality := cardinality) hentropy
+      primitive.finiteNetUpperIntegrable
+      primitive.finiteNetUpperIntegral_tendsto_zero
+
+/--
 Build selected fixed-radius side conditions from variable-domain book entropy
 and normalized-log tail/UI for the selected cardinality process.
 
