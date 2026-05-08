@@ -184,6 +184,13 @@ and exposes the Chewi 12.3 endpoint
 `asgd_limit_package_of_limitVarianceProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
 The remaining proof obligation for this lane is precisely the weighted
 one-step factor-error convergence against this proxy.
+Newest split packet: `ASGD.lean` now also proves
+`projectedNormalizedTaylorFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_inverse_error_compensated_error`
+and the Chewi 12.3 endpoint
+`asgd_limit_package_of_limitVarianceProxy_inverse_error_compensated_error_of_uniform_bound_no_factor_bound`.
+The remaining weighted factor-error obligation is split into the
+inverse-compensation-to-limit-variance proxy weighted error and the compensated
+Taylor-error weighted row sum.
 The newest residual-estimate packet extracts the actual row-summed residual
 handoffs as reusable theorems:
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,

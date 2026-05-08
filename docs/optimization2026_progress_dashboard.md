@@ -126,6 +126,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `asgd_limit_package_of_limitVarianceProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
   The live ASGD blocker is now exactly the weighted one-step error between
   `projectedNormalizedTaylorFactor` and this limit-variance proxy factor.
+- Limit-variance proxy split: the newest ASGD packet adds
+  `projectedNormalizedTaylorFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_inverse_error_compensated_error`
+  and
+  `asgd_limit_package_of_limitVarianceProxy_inverse_error_compensated_error_of_uniform_bound_no_factor_bound`.
+  This decomposes the weighted normalized-factor proxy error into the
+  inverse-compensation-to-limit-variance proxy error plus the already-isolated
+  compensated Taylor-error row sum.
 - Residual-estimate extraction: the newest ASGD packet adds
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
@@ -1367,14 +1374,14 @@ deterministic-proxy specialization also contains
 `projected_clt_of_deterministic_futureTail_l1_approx`,
 `toProjectedBridge_of_deterministic_futureTail_l1_approx`, and
 `toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx`.
-Next theorem-sized packet: prove the weighted one-step factor-error convergence
-between `S.projectedNormalizedTaylorFactor L N t k` and
-`chewi127LimitVarianceProxyFactor (S.covariance_limit.S_infty L L) N t`.
-That exact theorem is consumed by
-`asgd_limit_package_of_limitVarianceProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
-The competing fallback is the inverse-tail conditional-residual route, but the
-generic suffix product, triangular weighted-counting algebra, canonical
-limit-variance proxy, and endpoint plumbing are now closed.  Do not re-open
+Next theorem-sized packet: prove the weighted inverse-compensation proxy error
+between `S.projectedInverseCompensationFactor L N t k` and
+`chewi127LimitVarianceProxyFactor (S.covariance_limit.S_infty L L) N t`;
+the compensated Taylor-error side is already isolated by existing
+variance/remainder APIs and now plugs into the split endpoint.  The competing
+fallback is the inverse-tail conditional-residual route, but the generic suffix
+product, triangular weighted-counting algebra, canonical limit-variance proxy,
+normalized-factor split, and endpoint plumbing are now closed.  Do not re-open
 characteristic-function, scalar CLT, projected CLT, or certificate adapter
 wiring unless the proxy theorem changes its interface.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw

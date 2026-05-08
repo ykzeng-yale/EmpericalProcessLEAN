@@ -10001,6 +10001,202 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureTail_limitVa
       hproxy_norm hweighted_factor_error
 
 /--
+Weighted normalized-factor approximation by the canonical limit-variance proxy
+follows from two one-step estimates: the inverse-compensation factor is close
+to the same deterministic proxy, and the compensated Taylor error has
+vanishing weighted `L1` row sum.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_inverse_error_compensated_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hinverse_weighted_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖) P)
+    (hcompensated_weighted_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hinverse_weighted_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖ ∂P)
+        atTop (𝓝 0))
+    (hcompensated_weighted_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                chewi127LimitVarianceProxyFactor
+                  (S.covariance_limit.S_infty L L) N t‖ ∂P)
+      atTop (𝓝 0) := by
+  have hupper_tendsto :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ((∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖) +
+              ∑ k ∈ Finset.range N,
+                (k : ℝ) *
+                  ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) ∂P)
+        atTop (𝓝 0) := by
+    have hsum := hinverse_weighted_error.add hcompensated_weighted_error
+    simpa only [zero_add] using
+      hsum.congr' (Eventually.of_forall fun N => by
+        rw [integral_add
+          (hinverse_weighted_error_int N)
+          (hcompensated_weighted_error_int N)])
+  refine squeeze_zero'
+    (Eventually.of_forall fun N =>
+      integral_nonneg fun ω =>
+        Finset.sum_nonneg fun k _hk =>
+          mul_nonneg (Nat.cast_nonneg k) (norm_nonneg _))
+    ?_ hupper_tendsto
+  exact Eventually.of_forall fun N => by
+    have hleft_int :
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖) P := by
+      refine integrable_finsetSum (Finset.range N) ?_
+      intro k _hk
+      have hproxy_int :
+          Integrable
+            (fun _ : Ω =>
+              chewi127LimitVarianceProxyFactor
+                (S.covariance_limit.S_infty L L) N t) P :=
+        integrable_const _
+      exact
+        (((S.projectedNormalizedTaylorFactor_integrable_of_uniform_bound
+          L N t k).sub hproxy_int).norm.const_mul (k : ℝ))
+    have hright_int :
+        Integrable
+          (fun ω =>
+            ((∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖) +
+              ∑ k ∈ Finset.range N,
+                (k : ℝ) *
+                  ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖)) P :=
+      (hinverse_weighted_error_int N).add
+        (hcompensated_weighted_error_int N)
+    refine integral_mono_ae hleft_int hright_int ?_
+    filter_upwards [S.projectedInverseCompensationFactor_row_norm_le_one_ae
+      L N t] with ω hinverse_norm
+    calc
+      (∑ k ∈ Finset.range N,
+          (k : ℝ) *
+            ‖S.projectedNormalizedTaylorFactor L N t k ω -
+              chewi127LimitVarianceProxyFactor
+                (S.covariance_limit.S_infty L L) N t‖)
+          ≤ ∑ k ∈ Finset.range N,
+              ((k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖ +
+                (k : ℝ) *
+                  ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) := by
+            refine Finset.sum_le_sum ?_
+            intro k hk
+            let invFactor : ℂ :=
+              S.projectedInverseCompensationFactor L N t k ω
+            let errorFactor : ℂ :=
+              S.projectedCompensatedTaylorErrorFactor L N t k ω
+            let proxyFactor : ℂ :=
+              chewi127LimitVarianceProxyFactor
+                (S.covariance_limit.S_infty L L) N t
+            have hsplit :
+                S.projectedNormalizedTaylorFactor L N t k ω -
+                    proxyFactor =
+                  (invFactor - proxyFactor) + invFactor * errorFactor := by
+              simp [invFactor, errorFactor, proxyFactor,
+                Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor]
+              ring
+            have hmul_le :
+                ‖invFactor * errorFactor‖ ≤ ‖errorFactor‖ := by
+              calc
+                ‖invFactor * errorFactor‖
+                    = ‖invFactor‖ * ‖errorFactor‖ := by rw [norm_mul]
+                _ ≤ 1 * ‖errorFactor‖ :=
+                    mul_le_mul_of_nonneg_right
+                      (hinverse_norm k hk) (norm_nonneg errorFactor)
+                _ = ‖errorFactor‖ := by simp
+            have hterm :
+                ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                    proxyFactor‖ ≤
+                  ‖invFactor - proxyFactor‖ + ‖errorFactor‖ := by
+              calc
+                ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                    proxyFactor‖
+                    = ‖(invFactor - proxyFactor) + invFactor * errorFactor‖ := by
+                        rw [hsplit]
+                _ ≤ ‖invFactor - proxyFactor‖ + ‖invFactor * errorFactor‖ :=
+                    norm_add_le _ _
+                _ ≤ ‖invFactor - proxyFactor‖ + ‖errorFactor‖ :=
+                    add_le_add le_rfl hmul_le
+            calc
+              (k : ℝ) *
+                  ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                    chewi127LimitVarianceProxyFactor
+                      (S.covariance_limit.S_infty L L) N t‖
+                  ≤ (k : ℝ) *
+                      (‖invFactor - proxyFactor‖ + ‖errorFactor‖) := by
+                    simpa [proxyFactor] using
+                      mul_le_mul_of_nonneg_left hterm (Nat.cast_nonneg k)
+              _ =
+                  (k : ℝ) *
+                    ‖S.projectedInverseCompensationFactor L N t k ω -
+                      chewi127LimitVarianceProxyFactor
+                        (S.covariance_limit.S_infty L L) N t‖ +
+                  (k : ℝ) *
+                    ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+                    simp [invFactor, errorFactor, proxyFactor, mul_add]
+      _ = (∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖) +
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ := by
+            rw [Finset.sum_add_distrib]
+
+/--
 The inverse-compensation future tail over the same suffix interval as
 `projectedMixedTowerFutureTail`.  This is the deterministic Taylor core before
 the compensated-error perturbation.
@@ -15991,6 +16187,87 @@ theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVariancePr
   exact
     S.projectedMixedTowerFutureTail_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error
       L t (hweighted_factor_error L t)
+
+/--
+Source-shaped Chewi Theorem 12.3 ASGD limit package from the two natural
+weighted one-step estimates behind the limit-variance proxy route: inverse
+compensation is close to the deterministic limit-variance proxy, and the
+compensated Taylor error is negligible.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVarianceProxy_inverse_error_compensated_error_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hinverse_weighted_error_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖) P)
+    (hcompensated_weighted_error_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hinverse_weighted_error : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖ ∂P)
+        atTop (𝓝 0))
+    (hcompensated_weighted_error : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0))
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K := by
+  refine
+    S.asgd_limit_package_of_limitVarianceProxy_weighted_factor_error_of_uniform_bound_no_factor_bound
+      Ainv hmean ?_ hInitial hRemainder hInitial_meas hRemainder_meas
+      hDecomp
+  intro L t
+  exact
+    S.projectedNormalizedTaylorFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_inverse_error_compensated_error
+      L t (hinverse_weighted_error_int L t)
+      (hcompensated_weighted_error_int L t)
+      (hinverse_weighted_error L t)
+      (hcompensated_weighted_error L t)
 
 /--
 Source-shaped Chewi Theorem 12.3 ASGD limit package from a factorwise

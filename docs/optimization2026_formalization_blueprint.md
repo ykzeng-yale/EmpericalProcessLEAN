@@ -54,6 +54,10 @@ For the canonical Gaussian factor choice, use
 `asgd_limit_package_of_limitVarianceProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`
 reduces the Chewi 12.3 ASGD package to the weighted one-step error against
 that limit-variance proxy.
+The split endpoint
+`asgd_limit_package_of_limitVarianceProxy_inverse_error_compensated_error_of_uniform_bound_no_factor_bound`
+further reduces that weighted one-step error to inverse-compensation proxy
+error plus compensated Taylor-error control.
 The residual layer now exposes
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
