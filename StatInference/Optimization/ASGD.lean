@@ -10316,6 +10316,180 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_futu
       L t proxy hproxy_meas hproxy_int hsq hremainder hproxy_approx)
 
 /--
+Source-variance version of the predictable future-tail proxy route.  This
+feeds the proxy defect estimate directly into the right compensated
+full-inverse product bridge, so callers no longer need to supply a separate
+normalized-product convergence hypothesis.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_futureTail_predictable_l1_approx_source_variance
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (proxy : ℕ -> ℕ -> Ω -> ℂ)
+    (hproxy_meas : ∀ N r : ℕ,
+      AEStronglyMeasurable[S.martingale.filtration r] (proxy N r) P)
+    (hproxy_int : ∀ N r : ℕ, Integrable (proxy N r) P)
+    (hproxy_approx :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                proxy N r ω‖ ∂P)
+        atTop (𝓝 0))
+    (herror_factor_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖1 + S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ≤ 1)
+    (hcombined_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω *
+                (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hrow_remainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedRemainderFactor L N t k ω‖) P) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+    ⟨B, hB_nonneg, hbound⟩
+  let x : ℕ -> Ω -> ℝ := fun n ω => L (S.martingale.xi n ω)
+  have hx : ∀ k : ℕ, AEMeasurable (x (k + 1)) P := by
+    intro k
+    exact (S.martingale.projected_integrable L (k + 1)).aemeasurable
+  have hbound_x : ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B := by
+    intro k
+    simpa [x] using hbound k
+  have hsq : ∀ N r : ℕ, r ∈ Finset.range N ->
+      Integrable (fun ω => (L (S.martingale.xi (r + 1) ω)) ^ 2) P := by
+    intro N r _hr
+    simpa [x] using
+      chewi127Scalar_sq_integrable_of_uniform_bound
+        (P := P) (x := x (r + 1)) (hx r)
+        ⟨B, hB_nonneg, hbound_x r⟩
+  have htower_remainder : ∀ N r : ℕ, r ∈ Finset.range N ->
+      Integrable
+        (chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (r + 1) ω))) P := by
+    intro N r _hr
+    simpa [x] using
+      chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+        (P := P) (x := x (r + 1)) (hx r)
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        ⟨B, hB_nonneg, hbound_x r⟩
+  exact
+    S.projected_charFun_tendsto_exp_of_compensated_full_inverse_right_source_variance_and_mixedTowerDefect
+      L t
+      (S.projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_predictable_l1_approx
+        L t proxy hproxy_meas hproxy_int hsq htower_remainder hproxy_approx)
+      herror_factor_bound hcombined_int herror_int hvariance_error_int
+      hrow_remainder_int
+
+/--
+Source-variance version of the inverse-future-tail residual route.  The
+right-product limit is discharged from source variance, leaving only the two
+row-summed future-tail residual hypotheses.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_inverseFutureTail_condExp_source_variance
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (htail_inverse_l1 :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P)
+        atTop (𝓝 0))
+    (hinverse_residual_l1 :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerInverseFutureTail L N t r ω -
+                P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                  S.martingale.filtration r] ω‖ ∂P)
+        atTop (𝓝 0))
+    (herror_factor_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖1 + S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ≤ 1)
+    (hcombined_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω *
+                (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hrow_remainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedRemainderFactor L N t k ω‖) P) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) :=
+  S.projected_charFun_tendsto_exp_of_compensated_full_inverse_right_source_variance_and_mixedTowerDefect
+    L t
+    (S.projectedMixedTowerDefect_sum_tendsto_zero_of_inverseFutureTail_condExp
+      L t htail_inverse_l1 hinverse_residual_l1)
+    herror_factor_bound hcombined_int herror_int hvariance_error_int
+    hrow_remainder_int
+
+/--
 Characteristic-function convergence from a deterministic future-tail proxy.
 The proxy side conditions are automatic because the proxy is constant in
 `ω`, and the bounded-source assumptions discharge the square and Taylor

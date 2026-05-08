@@ -572,6 +572,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `projected_charFun_tendsto_of_compensated_full_inverse_right_and_mixedTowerDefect`,
   and
   `projected_charFun_tendsto_exp_of_compensated_full_inverse_right_source_variance_and_mixedTowerDefect`.
+  The newest source-consumer packet adds
+  `projected_charFun_tendsto_exp_of_futureTail_predictable_l1_approx_source_variance`
+  and
+  `projected_charFun_tendsto_exp_of_inverseFutureTail_condExp_source_variance`,
+  wiring the compiled future-tail proxy and inverse-tail residual routes
+  directly into the right-product source-variance bridge.
   This shows the left compensated full-inverse product is exactly the target
   projected characteristic function, so it is not an independent same-limit
   input.  The preferred ASGD 12.7 route is now the compiled right-product

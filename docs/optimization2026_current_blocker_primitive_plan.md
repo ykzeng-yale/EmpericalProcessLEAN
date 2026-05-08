@@ -547,6 +547,13 @@ The newest route-correction packet proves
 `projected_charFun_tendsto_of_compensated_full_inverse_right_and_mixedTowerDefect`,
 and
 `projected_charFun_tendsto_exp_of_compensated_full_inverse_right_source_variance_and_mixedTowerDefect`.
+The newest source-consumer packet adds
+`projected_charFun_tendsto_exp_of_futureTail_predictable_l1_approx_source_variance`
+and
+`projected_charFun_tendsto_exp_of_inverseFutureTail_condExp_source_variance`,
+so a future-tail predictable-proxy estimate or inverse-tail conditional
+residual estimate now feeds directly into the projected characteristic-function
+limit through the compiled right-product source-variance bridge.
 This shows the left compensated full-inverse product is exactly the target
 projected characteristic function, so left convergence is not an independent
 blocker.  The preferred ASGD 12.7 route is now: use the compiled right-product
