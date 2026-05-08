@@ -3348,3 +3348,11 @@ primitive through
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_selectedFixedRadiusTailSideConditions`.
 This makes the primitive the common handoff for all existing L1/UI/deterministic
 selected finite-net routes while leaving the source theorem target unchanged.
+
+The full-subgraph side-condition package now also collapses to the registered
+primitive through
+`VdVWTheorem243FullSubgraphSideConditions.selectedEntropyFiniteNetMeanPrimitive`.
+This lets the canonical full-subgraph route reuse the selected-entropy primitive
+handoff directly, while keeping the active blocker focused on the missing
+stochastic selected-cover entropy-to-mean proof or the displayed-beta event
+primitive.

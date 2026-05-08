@@ -8054,3 +8054,14 @@ supplies finite-net upper integrability and its tail/UI field yields ordinary
 mean convergence through the compiled finite-net integral theorem.  This
 consolidates the existing L1/UI/deterministic routes around the primitive; it
 does not change the open source target.
+
+2026-05-08 full-subgraph side-condition package to primitive bridge:
+`Theorem243.lean` now proves
+`VdVWTheorem243FullSubgraphSideConditions.selectedEntropyFiniteNetMeanPrimitive`.
+The canonical full-subgraph side-condition record therefore feeds the registered
+selected entropy-to-finite-net mean primitive directly, using its compiled
+variable-domain entropy condition and selected fixed-radius tail/UI package.
+This is a source-facing adapter for final Theorem 2.4.3 assembly, not a new
+endpoint alias.  The generic textbook blocker is unchanged: prove the stochastic
+selected-cover entropy-to-mean theorem, or prove the displayed-beta selected-
+cover event primitive.

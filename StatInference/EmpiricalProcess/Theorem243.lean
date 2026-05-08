@@ -46112,6 +46112,40 @@ theorem
       hside.selectedFixedRadiusTailSideConditions⟩
 
 /--
+The full-subgraph side-condition record feeds the registered selected
+entropy-to-finite-net-mean primitive.
+
+This makes the selected-entropy primitive the common source-facing handoff for
+the canonical full-subgraph route, instead of requiring later assembly code to
+reopen the selected fixed-radius tail/UI package.
+-/
+theorem
+    VdVWTheorem243FullSubgraphSideConditions.selectedEntropyFiniteNetMeanPrimitive
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {vcDegree : ℝ -> ℕ}
+    {sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ}
+    (hside :
+      VdVWTheorem243FullSubgraphSideConditions μsign P indexClass classFun
+        envelope X vcDegree sign) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P X indexClass
+      classFun envelope
+      (fun M eta _n _sample m =>
+        (((vcDegree M + 2) * (m + 1) ^ vcDegree M) ^
+          (2 * vdVWIntegerGridRadius M eta + 1)))
+      hside.variableTruncatedEntropyCondition := by
+  exact
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_selectedFixedRadiusTailSideConditions
+      (hselected := hside.selectedFixedRadiusTailSideConditions)
+      hside.hX_samplePath hside.hclass hside.henv
+
+/--
 Compact Theorem 2.4.3 full-subgraph side-condition consumer.
 
 This is not yet the exact textbook theorem; it is the current proof-carrying
