@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V72`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V73`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -496,10 +496,11 @@ Next packet:
   null zero-set input yields absolute continuity.  The lintegral-nonzero and
   mass-one consumers now also compile for the positive branch.  The
   finite-cylinder mass-one/integral-convergence handoffs and the
-  positive-product L1-to-integral handoff now also compile.  The next active
-  target is the actual positive infinite-product L1/Cauchy estimate,
-  infinite-product criterion support, and tail-event zero-one support for
-  Kakutani's dichotomy.  Theorem 4.1.16 remains deferred unless a
+  positive-product L1-to-integral handoff now also compile.  The
+  pairwise-liminf Cauchy-to-L1 handoff now also compiles.  The next active
+  target is the actual Hellinger tail-product bound proving the
+  pairwise-liminf hypothesis, infinite-product criterion support, and
+  tail-event zero-one support for Kakutani's dichotomy.  Theorem 4.1.16 remains deferred unless a
   direct kernel API appears.
 
 Support-only dependencies:

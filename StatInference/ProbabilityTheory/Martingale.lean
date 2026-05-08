@@ -5355,6 +5355,61 @@ theorem durrett2019_theorem_4_3_8_lintegral_tendsto_of_toReal_L1
   simpa [hseq_eq, htarget_eq] using ENNReal.tendsto_ofReal hreal
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: if the finite
+likelihoods converge pointwise to the limiting likelihood and the pairwise
+L1 distances have vanishing tail `liminf`, then the finite likelihoods
+converge to the limit in L1.
+-/
+theorem durrett2019_theorem_4_3_8_toReal_L1_of_pairwise_liminf
+    {Ω : Type*} [MeasurableSpace Ω] {ν : Measure Ω}
+    {Xseq : ℕ -> Ω -> ℝ≥0∞} {X : Ω -> ℝ≥0∞}
+    (hpairMeas :
+      ∀ n m,
+        AEMeasurable
+          (fun ω => ‖(Xseq n ω).toReal - (Xseq m ω).toReal‖ₑ) ν)
+    (hlim :
+      ∀ᵐ ω ∂ν,
+        Tendsto (fun m => (Xseq m ω).toReal) atTop (𝓝 ((X ω).toReal)))
+    (hpair :
+      Tendsto
+        (fun n =>
+          Filter.liminf
+            (fun m => ∫⁻ ω, ‖(Xseq n ω).toReal - (Xseq m ω).toReal‖ₑ ∂ν)
+            atTop)
+        atTop (𝓝 0)) :
+    Tendsto (fun n => ∫⁻ ω, ‖(Xseq n ω).toReal - (X ω).toReal‖ₑ ∂ν)
+      atTop (𝓝 0) := by
+  have hle :
+      ∀ n,
+        ∫⁻ ω, ‖(Xseq n ω).toReal - (X ω).toReal‖ₑ ∂ν ≤
+          Filter.liminf
+            (fun m => ∫⁻ ω, ‖(Xseq n ω).toReal - (Xseq m ω).toReal‖ₑ ∂ν)
+            atTop := by
+    intro n
+    have hlim_norm :
+        ∀ᵐ ω ∂ν,
+          Tendsto
+            (fun m => ‖(Xseq n ω).toReal - (Xseq m ω).toReal‖ₑ) atTop
+            (𝓝 ‖(Xseq n ω).toReal - (X ω).toReal‖ₑ) := by
+      filter_upwards [hlim] with ω hω
+      exact (tendsto_const_nhds.sub hω).enorm
+    calc
+      ∫⁻ ω, ‖(Xseq n ω).toReal - (X ω).toReal‖ₑ ∂ν
+          = ∫⁻ ω,
+              Filter.liminf
+                (fun m => ‖(Xseq n ω).toReal - (Xseq m ω).toReal‖ₑ) atTop ∂ν := by
+              apply lintegral_congr_ae
+              filter_upwards [hlim_norm] with ω hω
+              exact hω.liminf_eq.symm
+      _ ≤ Filter.liminf
+            (fun m => ∫⁻ ω, ‖(Xseq n ω).toReal - (Xseq m ω).toReal‖ₑ ∂ν)
+            atTop := by
+          exact MeasureTheory.lintegral_liminf_le' fun m => hpairMeas n m
+  exact
+    tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hpair
+      (fun _ => zero_le) hle
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product cylinder handoff: L1 convergence
 of the finite cylinder likelihoods to the limiting likelihood supplies the
 finite-cylinder integral-convergence input used by the mass-one bridge.
@@ -5393,6 +5448,49 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_tendsto_of_toReal
   rw [durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_eq_one
     (μ := μ) (ν := ν) (Iseq n) hq hμ]
   simp
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy handoff:
+pairwise L1 tail control of finite cylinder likelihoods plus pointwise
+convergence to the limiting likelihood gives the L1 convergence input consumed
+by the positive branch.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_L1_of_pairwise_liminf
+    {ι S : Type*} [MeasurableSpace S]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i)) {X : (ι -> S) -> ℝ≥0∞}
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal)
+          atTop (𝓝 ((X x).toReal)))
+    (hpair :
+      Tendsto
+        (fun n =>
+          Filter.liminf
+            (fun m =>
+              ∫⁻ x,
+                ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+                  (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+                ∂Measure.infinitePi ν)
+            atTop)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun n =>
+        ∫⁻ x,
+          ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+            (X x).toReal‖ₑ ∂Measure.infinitePi ν)
+      atTop (𝓝 0) := by
+  refine
+    durrett2019_theorem_4_3_8_toReal_L1_of_pairwise_liminf
+      (ν := Measure.infinitePi ν)
+      (Xseq := fun n x => durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x)
+      (X := X) ?_ hlim hpair
+  intro n m
+  exact
+    (((durrett2019_theorem_4_3_8_cylinderLikelihood_measurable (Iseq n) hq).ennreal_toReal.sub
+        (durrett2019_theorem_4_3_8_cylinderLikelihood_measurable (Iseq m) hq).ennreal_toReal).enorm).aemeasurable
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
@@ -5467,6 +5565,52 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLike
     durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_tendsto_of_toReal_L1
       (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) hq hμ ?_ hXint hL1
   exact measure_eq_zero_iff_ae_notMem.mp hνtop
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product final handoff from the Cauchy
+estimate: pairwise L1 tail control and pointwise convergence give the L1 input
+that selects the absolute-continuity branch of Kakutani's dichotomy.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLikelihood_pairwise_liminf
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ι -> S) -> ℝ≥0∞}
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hXrn :
+      (fun x => (X x).toReal) =ᵐ[Measure.infinitePi ν]
+        fun x => ((Measure.infinitePi μ).rnDeriv (Measure.infinitePi ν) x).toReal)
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0)
+    (hXint : Integrable (fun x => (X x).toReal) (Measure.infinitePi ν))
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal)
+          atTop (𝓝 ((X x).toReal)))
+    (hpair :
+      Tendsto
+        (fun n =>
+          Filter.liminf
+            (fun m =>
+              ∫⁻ x,
+                ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+                  (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+                ∂Measure.infinitePi ν)
+            atTop)
+        atTop (𝓝 0)) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  refine
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLikelihood_toReal_L1
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q)
+      hq hμ hbranch hXrn hνtop hXint ?_
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_L1_of_pairwise_liminf
+      (ν := ν) (Iseq := Iseq) (q := q) hq hlim hpair
 
 end ProbabilityTheory
 end StatInference
