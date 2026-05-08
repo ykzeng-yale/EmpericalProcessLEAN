@@ -614,8 +614,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `finiteKL_rowMarginal_le_finiteCouplingKL_of_rowMarginal_eq_of_pos`, and
   `sinkhornRowObjective_le_finiteCouplingKL_of_rowMarginal_eq_of_pos`, with
   positive row/column marginal helpers for nonempty finite index sets.  The
-  next blocker is the concrete zero-error Sinkhorn mirror-descent recurrence
-  and row-objective monotonicity fields from the normalization updates.  The
+  new recurrence bridge packet adds row/column normalization positivity,
+  `sinkhornRowObjective_columnNormalized_le_entropyBregman`,
+  `chewi118_entropy_one_step_of_columnNormalized_projection_decrease`, and
+  `chewi118_entropy_one_step_trajectory_of_columnNormalized_projection_decrease`.
+  This converts a supplied column-normalization projection decrease into the
+  exact Theorem 11.8 one-step recurrence for the concrete row objective.  The
+  next blocker is the source projection-decrease field from the finite
+  row/column Bregman projection identities, plus row-objective monotonicity
+  from mirror-descent descent.  The
   current local focused Lean check also verifies
   `chewi118_last_gap_le_of_recurrence` and
   `chewi118_last_gap_le_of_oneStep` in `MirrorDescent.lean`, turning the

@@ -1075,10 +1075,17 @@ data-processing packet proves the missing finite real-array bridge directly:
 `finiteKL_rowMarginal_le_finiteCouplingKL_of_rowMarginal_eq_of_pos`, and
 `sinkhornRowObjective_le_finiteCouplingKL_of_rowMarginal_eq_of_pos`, plus
 positive row/column marginal lemmas for positive nonempty finite arrays.  The
-next concrete 11.8 blocker is now the exact Sinkhorn mirror-descent recurrence
-and row-objective monotonicity fields from the row/column normalization
-updates, using the compiled row/column normalization identities and this
-finite data-processing bridge.
+newest recurrence bridge packet adds
+`rowNormalizedCoupling_pos_of_pos`, `columnNormalizedCoupling_pos_of_pos`,
+`sinkhornRowObjective_columnNormalized_le_entropyBregman`,
+`chewi118_entropy_one_step_of_columnNormalized_projection_decrease`, and
+`chewi118_entropy_one_step_trajectory_of_columnNormalized_projection_decrease`.
+This turns a supplied column-normalization Pythagorean/projection decrease
+into the exact Theorem 11.8 one-step recurrence with the concrete
+`sinkhornRowObjective` gap.  The next concrete 11.8 blocker is now the source
+projection-decrease field itself, assembled from the row-normalization and
+column-normalization Bregman projection identities, plus row-objective
+monotonicity from the mirror-descent descent lemma.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,

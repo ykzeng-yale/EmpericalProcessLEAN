@@ -232,6 +232,18 @@ theorem rowNormalizedCoupling_ne_of_ne
   unfold rowNormalizedCoupling
   exact div_ne_zero (mul_ne_zero (hμ_ne x) (hγ_ne x y)) (hrow_ne x)
 
+/-- Row normalization preserves positivity under positive target rows and row sums. -/
+theorem rowNormalizedCoupling_pos_of_pos
+    {X Y : Type*} [Fintype Y]
+    (μ : X -> ℝ) (γ : X -> Y -> ℝ)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hγ_pos : ∀ x y, 0 < γ x y)
+    (hrow_pos : ∀ x, 0 < rowMarginal γ x) :
+    ∀ x y, 0 < rowNormalizedCoupling μ γ x y := by
+  intro x y
+  unfold rowNormalizedCoupling
+  exact div_pos (mul_pos (hμ_pos x) (hγ_pos x y)) (hrow_pos x)
+
 theorem columnNormalizedCoupling_ne_of_ne
     {X Y : Type*} [Fintype X]
     (ν : Y -> ℝ) (γ : X -> Y -> ℝ)
@@ -242,6 +254,18 @@ theorem columnNormalizedCoupling_ne_of_ne
   intro x y
   unfold columnNormalizedCoupling
   exact div_ne_zero (mul_ne_zero (hγ_ne x y) (hν_ne y)) (hcol_ne y)
+
+/-- Column normalization preserves positivity under positive target columns and column sums. -/
+theorem columnNormalizedCoupling_pos_of_pos
+    {X Y : Type*} [Fintype X]
+    (ν : Y -> ℝ) (γ : X -> Y -> ℝ)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hγ_pos : ∀ x y, 0 < γ x y)
+    (hcol_pos : ∀ y, 0 < columnMarginal γ y) :
+    ∀ x y, 0 < columnNormalizedCoupling ν γ x y := by
+  intro x y
+  unfold columnNormalizedCoupling
+  exact div_pos (mul_pos (hγ_pos x y) (hν_pos y)) (hcol_pos y)
 
 /--
 Finite Sinkhorn row-normalization KL identity, in the algebraic form needed by
@@ -498,6 +522,113 @@ theorem sinkhornRowObjective_le_finiteCouplingKL_of_rowMarginal_eq_of_pos
   simpa [sinkhornRowObjective] using
     finiteKL_rowMarginal_le_finiteCouplingKL_of_rowMarginal_eq_of_pos
       γ γStar μ hγ_pos hstar_pos hrowγ_pos hrowStar_pos hstar_row
+
+/--
+For a column-normalization step whose previous half-iterate has row marginal
+`μ`, the Sinkhorn row objective is bounded by the entropic Bregman movement of
+that column-normalization step.
+-/
+theorem sinkhornRowObjective_columnNormalized_le_entropyBregman
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ) (γHalf : X -> Y -> ℝ)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hhalf_pos : ∀ x y, 0 < γHalf x y)
+    (hhalf_row : ∀ x, rowMarginal γHalf x = μ x)
+    (hmass : (∑ y, ν y) = finiteCouplingMass γHalf) :
+    sinkhornRowObjective μ (columnNormalizedCoupling ν γHalf) ≤
+      finiteCouplingEntropyBregman
+        (columnNormalizedCoupling ν γHalf) γHalf := by
+  classical
+  have hcol_pos : ∀ y, 0 < columnMarginal γHalf y :=
+    columnMarginal_pos_of_pos hhalf_pos
+  have hnext_pos :
+      ∀ x y, 0 < columnNormalizedCoupling ν γHalf x y :=
+    columnNormalizedCoupling_pos_of_pos ν γHalf hν_pos hhalf_pos hcol_pos
+  have hrow_next_pos :
+      ∀ x, 0 < rowMarginal (columnNormalizedCoupling ν γHalf) x :=
+    rowMarginal_pos_of_pos hnext_pos
+  have hrow_half_pos : ∀ x, 0 < rowMarginal γHalf x :=
+    rowMarginal_pos_of_pos hhalf_pos
+  have hobj_le_kl :
+      sinkhornRowObjective μ (columnNormalizedCoupling ν γHalf) ≤
+        finiteCouplingKL (columnNormalizedCoupling ν γHalf) γHalf :=
+    sinkhornRowObjective_le_finiteCouplingKL_of_rowMarginal_eq_of_pos
+      μ (columnNormalizedCoupling ν γHalf) γHalf hnext_pos hhalf_pos
+      hrow_next_pos hrow_half_pos hhalf_row
+  have hmass_next :
+      finiteCouplingMass (columnNormalizedCoupling ν γHalf) =
+        finiteCouplingMass γHalf := by
+    rw [finiteCouplingMass_columnNormalizedCoupling ν γHalf
+      (fun y => (hcol_pos y).ne'), hmass]
+  have hbreg :
+      finiteCouplingEntropyBregman
+          (columnNormalizedCoupling ν γHalf) γHalf =
+        finiteCouplingKL (columnNormalizedCoupling ν γHalf) γHalf :=
+    finiteCouplingEntropyBregman_eq_finiteCouplingKL
+      (columnNormalizedCoupling ν γHalf) γHalf
+      (fun x y => (hnext_pos x y).ne') (fun x y => (hhalf_pos x y).ne')
+      hmass_next
+  simpa [hbreg] using hobj_le_kl
+
+/--
+Column-normalization recurrence bridge for Chewi Theorem 11.8.  Once the
+Pythagorean/projection part supplies a decrease by the column-normalization
+Bregman movement, the concrete movement dominates the row objective.
+-/
+theorem chewi118_entropy_one_step_of_columnNormalized_projection_decrease
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    (gammaStar gammaPrev gammaHalf : X -> Y -> ℝ)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hhalf_pos : ∀ x y, 0 < gammaHalf x y)
+    (hhalf_row : ∀ x, rowMarginal gammaHalf x = μ x)
+    (hmass : (∑ y, ν y) = finiteCouplingMass gammaHalf)
+    (hprojection_decrease :
+      finiteCouplingEntropyBregman gammaStar
+          (columnNormalizedCoupling ν gammaHalf) +
+        finiteCouplingEntropyBregman
+          (columnNormalizedCoupling ν gammaHalf) gammaHalf ≤
+          finiteCouplingEntropyBregman gammaStar gammaPrev) :
+    finiteCouplingEntropyBregman gammaStar
+        (columnNormalizedCoupling ν gammaHalf) ≤
+      finiteCouplingEntropyBregman gammaStar gammaPrev -
+        sinkhornRowObjective μ (columnNormalizedCoupling ν gammaHalf) := by
+  have hobj :=
+    sinkhornRowObjective_columnNormalized_le_entropyBregman
+      μ ν gammaHalf hν_pos hhalf_pos hhalf_row hmass
+  nlinarith
+
+/--
+Trajectory-indexed version of the column-normalization one-step recurrence for
+Chewi Theorem 11.8.
+-/
+theorem chewi118_entropy_one_step_trajectory_of_columnNormalized_projection_decrease
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    (gamma : ℕ -> X -> Y -> ℝ) (gammaHalf : ℕ -> X -> Y -> ℝ)
+    (gammaStar : X -> Y -> ℝ) {N : ℕ}
+    (hcolumn_step : ∀ n, n < N ->
+      gamma (n + 1) = columnNormalizedCoupling ν (gammaHalf n))
+    (hν_pos : ∀ y, 0 < ν y)
+    (hhalf_pos : ∀ n, n < N -> ∀ x y, 0 < gammaHalf n x y)
+    (hhalf_row : ∀ n, n < N -> ∀ x, rowMarginal (gammaHalf n) x = μ x)
+    (hmass : ∀ n, n < N -> (∑ y, ν y) = finiteCouplingMass (gammaHalf n))
+    (hprojection_decrease : ∀ n, n < N ->
+      finiteCouplingEntropyBregman gammaStar (gamma (n + 1)) +
+        finiteCouplingEntropyBregman (gamma (n + 1)) (gammaHalf n) ≤
+          finiteCouplingEntropyBregman gammaStar (gamma n)) :
+    ∀ n, n < N ->
+      finiteCouplingEntropyBregman gammaStar (gamma (n + 1)) ≤
+        finiteCouplingEntropyBregman gammaStar (gamma n) -
+          sinkhornRowObjective μ (gamma (n + 1)) := by
+  intro n hn
+  have hbase :=
+    chewi118_entropy_one_step_of_columnNormalized_projection_decrease
+      μ ν gammaStar (gamma n) (gammaHalf n) hν_pos
+      (hhalf_pos n hn) (hhalf_row n hn) (hmass n hn)
+  have hstep := hcolumn_step n hn
+  rw [hstep]
+  exact hbase (by simpa [← hstep] using hprojection_decrease n hn)
 
 /-- Finite Gibbs nonnegativity for the Sinkhorn row objective. -/
 theorem sinkhornRowObjective_nonneg_of_nonneg_of_pos_of_mass_eq
