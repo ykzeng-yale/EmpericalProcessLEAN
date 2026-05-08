@@ -284,11 +284,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   `exp (-(t^2/2) * average conditional variance)`, and the newest
   bounded-continuous handoff converts averaged-variance convergence in measure
   into both the exponential expectation limit and inverse-compensation product
-  convergence under a bounded continuous extension hypothesis.  The next ASGD
-  packet should prove the finite martingale tower representation into that
-  normalized product model, instantiate the bounded-extension/measurability
-  side conditions from the uniform variance and conditional second-moment
-  interfaces, then close the Gaussian characteristic-function limit.
+  convergence.  The newest clamp packet supplies the bounded continuous
+  extension, finite-average measurability from the conditional second-moment
+  field, and source-facing abs-bound wrappers
+  `projectedAverageVariance_exp_integral_tendsto_of_abs_bound` and
+  `projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_abs_bound`.
+  The latest finite-average packet also proves
+  `chewi127AverageConditionalVariance_abs_le_of_row_bound` and
+  `projected_average_conditional_variance_abs_le_of_uniform_bound`.  The next
+  ASGD packet should prove the finite martingale tower representation into that
+  normalized product model, prove the covariance-limit abs-bound needed to
+  instantiate the clamp wrapper, then close the Gaussian characteristic-function
+  limit.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
@@ -840,9 +847,9 @@ scalar bounded martingale characteristic-function convergence behind
 `projected_charFun_tendsto_exp`, then wire Chewi Theorem 12.7/12.3 through the
 existing ASGD certificate constructors.  The remaining proof obligations are
 the finite martingale tower representation into the normalized compensated
-product model, plus bounded-extension/clamp and finite-average measurability
-instantiation for the already-compiled bounded-continuous averaged-variance
-handoff.  Do not return to old Chapter 3, SMPGD source
+product model, plus the covariance-limit abs-bound instantiation for the
+already-compiled clamp/finite-average-measurability handoff.  Do not return to
+old Chapter 3, SMPGD source
 probability packaging, or raw tower-peel tasks unless a regression makes them
 relevant.
 Keep the concrete finite Sinkhorn KL identity layer as the next Chapter 11.8

@@ -4,6 +4,7 @@ import StatInference.Optimization.StochasticGradient
 import Mathlib.Analysis.Complex.Exponential
 import Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic
 import Mathlib.Probability.Process.Adapted
+import Mathlib.Topology.Order.ProjIcc
 
 /-!
 # Chewi Chapter 12 averaged SGD algebra
@@ -2435,6 +2436,134 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_t
         L N t).symm)
 
 /--
+The averaged-variance exponential restricted to a compact interval.  This is
+the compact core used to build the bounded continuous clamp on all of `ℝ`.
+-/
+noncomputable def chewi127VarianceExpOnIcc (t B : ℝ) :
+    BoundedContinuousFunction (Set.Icc (-B) B) ℂ :=
+  BoundedContinuousFunction.mkOfCompact
+    (⟨fun x : Set.Icc (-B) B =>
+        Complex.exp (((-(t ^ 2 * (x : ℝ) / 2) : ℝ) : ℂ)),
+      by fun_prop⟩ : C(Set.Icc (-B) B, ℂ))
+
+/--
+Bounded continuous extension of `x ↦ exp (-(t^2/2) x)` obtained by clamping
+`x` to `[-B, B]`.
+-/
+noncomputable def chewi127ClampedVarianceExp (t B : ℝ) (hB : 0 ≤ B) :
+    BoundedContinuousFunction ℝ ℂ :=
+  (chewi127VarianceExpOnIcc t B).compContinuous
+    (⟨fun x : ℝ => Set.projIcc (-B) B (by linarith) x,
+      by
+        simpa using
+          (continuous_projIcc (a := -B) (b := B) (h := by linarith))⟩ :
+      C(ℝ, Set.Icc (-B) B))
+
+/--
+On the interval where no clamping occurs, the bounded extension is the original
+variance exponential.
+-/
+theorem chewi127ClampedVarianceExp_apply_of_abs_le
+    (t B : ℝ) (hB : 0 ≤ B) {x : ℝ} (hx : |x| ≤ B) :
+    chewi127ClampedVarianceExp t B hB x =
+      Complex.exp (((-(t ^ 2 * x / 2) : ℝ) : ℂ)) := by
+  have hle : -B ≤ B := by linarith
+  have hxmem : x ∈ Set.Icc (-B) B := (abs_le.mp hx)
+  change
+    chewi127VarianceExpOnIcc t B (Set.projIcc (-B) B hle x) =
+      Complex.exp (((-(t ^ 2 * x / 2) : ℝ) : ℂ))
+  rw [Set.projIcc_of_mem (h := hle) hxmem]
+  rfl
+
+/--
+The conditional second-moment field makes every supplied covariance coordinate
+`Xi_{n+1}(L,K)` a.e.-measurable.
+-/
+theorem Chewi127ConditionalCovarianceProcess.Xi_succ_aemeasurable
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (C : Chewi127ConditionalCovarianceProcess Ω E P)
+    (n : ℕ) (L K : StrongDual ℝ E) :
+    AEMeasurable (fun ω => C.Xi (n + 1) ω L K) P := by
+  exact AEMeasurable.congr integrable_condExp.aemeasurable
+    (C.conditional_second_moment n L K)
+
+/--
+Finite averages of the supplied conditional covariance coordinates are
+a.e.-measurable.
+-/
+theorem Chewi127ConditionalCovarianceProcess.averageConditionalCovariance_aemeasurable
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (C : Chewi127ConditionalCovarianceProcess Ω E P)
+    (L K : StrongDual ℝ E) :
+    ∀ N : ℕ,
+      AEMeasurable
+        (fun ω => chewi127AverageConditionalCovariance C.Xi N ω L K) P := by
+  intro N
+  simp [chewi127AverageConditionalCovariance]
+  exact
+    ((Finset.range N).aemeasurable_fun_sum fun k _hk =>
+      C.Xi_succ_aemeasurable k L K).const_mul _
+
+/--
+Finite averages of the projected conditional variances are a.e.-measurable.
+-/
+theorem Chewi127ConditionalCovarianceProcess.averageConditionalVariance_aemeasurable
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (C : Chewi127ConditionalCovarianceProcess Ω E P)
+    (L : StrongDual ℝ E) :
+    ∀ N : ℕ,
+      AEMeasurable
+        (fun ω => chewi127AverageConditionalVariance C.Xi N ω L) P := by
+  intro N
+  simpa [chewi127AverageConditionalVariance] using
+    C.averageConditionalCovariance_aemeasurable L L N
+
+/--
+Deterministic finite-average bound for projected conditional variances from a
+rowwise absolute bound.
+-/
+theorem chewi127AverageConditionalVariance_abs_le_of_row_bound
+    {Ω E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (Xi : ℕ -> Ω -> StrongDual ℝ E -> StrongDual ℝ E -> ℝ)
+    (N : ℕ) (ω : Ω) (L : StrongDual ℝ E) {V : ℝ} (hV : 0 ≤ V)
+    (hrow : ∀ k ∈ Finset.range N, |Xi (k + 1) ω L L| ≤ V) :
+    |chewi127AverageConditionalVariance Xi N ω L| ≤ V := by
+  by_cases hNzero : N = 0
+  · simp [chewi127AverageConditionalVariance,
+      chewi127AverageConditionalCovariance, hNzero, hV]
+  have hNpos_nat : 0 < N := Nat.pos_of_ne_zero hNzero
+  have hNpos : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hNpos_nat
+  have hNnonneg : (0 : ℝ) ≤ (N : ℝ) := le_of_lt hNpos
+  have hinv_nonneg : 0 ≤ ((N : ℝ)⁻¹) := inv_nonneg.mpr hNnonneg
+  have hNne : (N : ℝ) ≠ 0 := by exact_mod_cast hNzero
+  calc
+    |chewi127AverageConditionalVariance Xi N ω L|
+        = |(N : ℝ)⁻¹ *
+            ∑ k ∈ Finset.range N, Xi (k + 1) ω L L| := by
+          rfl
+    _ = (N : ℝ)⁻¹ *
+          |∑ k ∈ Finset.range N, Xi (k + 1) ω L L| := by
+          rw [abs_mul, abs_of_nonneg hinv_nonneg]
+    _ ≤ (N : ℝ)⁻¹ *
+          ∑ k ∈ Finset.range N, |Xi (k + 1) ω L L| :=
+          mul_le_mul_of_nonneg_left
+            (Finset.abs_sum_le_sum_abs
+              (fun k => Xi (k + 1) ω L L) (Finset.range N))
+            hinv_nonneg
+    _ ≤ (N : ℝ)⁻¹ * ∑ _k ∈ Finset.range N, V :=
+          mul_le_mul_of_nonneg_left
+            (Finset.sum_le_sum fun k hk => hrow k hk)
+            hinv_nonneg
+    _ = V := by
+          simp [Finset.sum_const, hNne]
+
+/--
 Bounded-continuous handoff for the averaged conditional variance exponential.
 
 The exponential `x ↦ exp (-(t^2/2) x)` is not globally bounded on `ℝ`, so the
@@ -2569,6 +2698,73 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_t
   congr 1
   norm_num
   ring_nf
+
+/--
+Source-facing averaged-variance exponential limit from an eventual a.e. absolute
+bound.  The clamp supplies the bounded continuous test function, while the
+conditional-covariance interface supplies the finite-average measurability.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedAverageVariance_exp_integral_tendsto_of_abs_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t B : ℝ) (hB : 0 ≤ B)
+    (haverage_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P,
+        |chewi127AverageConditionalVariance S.covariance.Xi N ω L| ≤ B)
+    (hlimit_bound : |S.covariance_limit.S_infty L L| ≤ B) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          Complex.exp
+            (((-(t ^ 2 *
+              chewi127AverageConditionalVariance S.covariance.Xi N ω L / 2) : ℝ) : ℂ)) ∂P)
+      atTop
+      (𝓝 (Complex.exp
+        (((-(t ^ 2 * S.covariance_limit.S_infty L L / 2) : ℝ) : ℂ)))) := by
+  refine
+    S.projectedAverageVariance_exp_integral_tendsto_of_boundedContinuous
+      L t (chewi127ClampedVarianceExp t B hB)
+      (S.covariance.averageConditionalVariance_aemeasurable L) ?_ ?_
+  · filter_upwards [haverage_bound] with N hN
+    exact hN.mono fun _ω hω =>
+      chewi127ClampedVarianceExp_apply_of_abs_le t B hB hω
+  · exact chewi127ClampedVarianceExp_apply_of_abs_le t B hB hlimit_bound
+
+/--
+Source-facing inverse-compensation product convergence from an eventual a.e.
+absolute bound on the averaged conditional variances.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_abs_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t B : ℝ) (hB : 0 ≤ B)
+    (haverage_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P,
+        |chewi127AverageConditionalVariance S.covariance.Xi N ω L| ≤ B)
+    (hlimit_bound : |S.covariance_limit.S_infty L L| ≤ B) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω, ∏ k ∈ Finset.range N,
+          S.projectedInverseCompensationFactor L N t k ω ∂P)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  refine
+    S.projectedInverseCompensationProduct_tendsto_exp_of_boundedContinuous_averageVariance
+      L t (chewi127ClampedVarianceExp t B hB)
+      (S.covariance.averageConditionalVariance_aemeasurable L) ?_ ?_
+  · filter_upwards [haverage_bound] with N hN
+    exact hN.mono fun _ω hω =>
+      chewi127ClampedVarianceExp_apply_of_abs_le t B hB hω
+  · exact chewi127ClampedVarianceExp_apply_of_abs_le t B hB hlimit_bound
 
 /--
 The normalized model factor is algebraically the Taylor model itself.  Keeping
@@ -2821,6 +3017,34 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_conditional_variance_abs_le
         (μ := P) (m := S.martingale.filtration n) hbdd_sq)
   filter_upwards [hcond, S.projected_conditional_second_moment L n] with ω hω hXi
   simpa [x, hXi] using hω
+
+/--
+Uniform boundedness of projected increments also bounds every finite averaged
+projected conditional variance.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_average_conditional_variance_abs_le_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) :
+    ∃ V : ℝ, 0 ≤ V ∧
+      ∀ N : ℕ,
+        ∀ᵐ ω ∂P,
+          |chewi127AverageConditionalVariance S.covariance.Xi N ω L| ≤ V := by
+  rcases S.projected_conditional_variance_abs_le_of_uniform_bound L with
+    ⟨B, _hB_nonneg, hXi_bound⟩
+  refine ⟨B ^ 2, sq_nonneg B, ?_⟩
+  have hXi_all :
+      ∀ᵐ ω ∂P, ∀ k : ℕ,
+        |S.covariance.Xi (k + 1) ω L L| ≤ B ^ 2 :=
+    ae_all_iff.2 hXi_bound
+  intro N
+  filter_upwards [hXi_all] with ω hω
+  exact chewi127AverageConditionalVariance_abs_le_of_row_bound
+    S.covariance.Xi N ω L (sq_nonneg B) (fun k _hk => hω k)
 
 /--
 Pointwise row bound for the scalar compensation factors from a uniform bound
