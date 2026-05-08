@@ -128,9 +128,29 @@ primitive with
 `vdVWPermutationSymmetricMeasurableSpace_apply_permuteFirstN_eq`.  These are
 the Chapter 1 ingredients needed for the selected-cover symmetrization
 minimality step: a `Σ_n`-measurable competitor is constant along finite
-first-`n` orbits.  The next patchable structural primitive is still the
-selected-cover/orbit-supremum comparison carrying this invariance into the
+first-`n` orbits.  The next patchable structural primitive is the
+selected-cover/orbit-infimum comparison carrying this invariance into the
 Lemma 2.3.7 event-level probability bound.
+
+The finite orbit symmetrization primitive is now sharpened in the Lean-safe
+direction: use an infimum over the finite permutation orbit, not a supremum.
+`PMeasurable.lean` now proves
+`vdVWFinCoordinatePermMeasurableEquiv_comp`,
+`vdVWFinitePermutationOrbitInfReal`,
+`measurable_vdVWFinitePermutationOrbitInfReal`,
+`vdVWFinitePermutationOrbitInfReal_finCoordinatePerm`,
+`measurable_vdVWPermutationSymmetricMeasurableSpace_finitePermutationOrbitInfReal`,
+`le_vdVWFinitePermutationOrbitInfReal_of_majorizes_symmetric`,
+`vdVWFinitePermutationOrbitInfReal_le_cover`,
+`vdVWFinitePermutationOrbitInfReal_le_ae_of_cover_le_ae`,
+`vdVWFinitePermutationOrbitInfReal_minimal_ae`, and
+`VdVWMeasurableCover.finPermutationInf`.  This closes the basic
+permutation-orbit cover mechanics while respecting the existing
+`VdVWMeasurableCover` minimality contract.  The remaining source theorem is no
+longer orbit symmetrization bookkeeping; it is the selected-cover
+ghost/Rademacher event comparison and the finite-center maximal/`Phi(x)=x`
+probability inequality feeding
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison`.
 
 Newest source-side comparison support in `Theorem243.lean` is now:
 `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`,
