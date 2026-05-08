@@ -5419,6 +5419,97 @@ noncomputable def durrett2019_theorem_4_3_8_hellingerTailL1Bound
   (8 * (1 - tail n)) ^ ((1 : ℝ) / 2)
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: a source-shaped
+Cauchy-Schwarz bridge for the square-root likelihood argument.  A pointwise
+factorization of an L1 distance by two nonnegative factors, together with a
+product bound on their square integrals, gives the square-root L1 bound.
+-/
+theorem durrett2019_theorem_4_3_8_lintegral_le_sqrt_of_cauchySchwarz_product_bound
+    {Ω : Type*} [MeasurableSpace Ω] {ν : Measure Ω}
+    {D F G : Ω -> ℝ≥0∞} {C : ℝ≥0∞}
+    (hD : ∀ᵐ ω ∂ν, D ω ≤ F ω * G ω)
+    (hF : AEMeasurable F ν) (hG : AEMeasurable G ν)
+    (hprod :
+      (∫⁻ ω, F ω ^ (2 : ℝ) ∂ν) *
+          (∫⁻ ω, G ω ^ (2 : ℝ) ∂ν) ≤ C) :
+    ∫⁻ ω, D ω ∂ν ≤ C ^ ((1 : ℝ) / 2) := by
+  have hholder :
+      ∫⁻ ω, F ω * G ω ∂ν ≤
+        (∫⁻ ω, F ω ^ (2 : ℝ) ∂ν) ^ ((1 : ℝ) / 2) *
+          (∫⁻ ω, G ω ^ (2 : ℝ) ∂ν) ^ ((1 : ℝ) / 2) := by
+    simpa [Pi.mul_apply] using
+      (ENNReal.lintegral_mul_le_Lp_mul_Lq ν Real.HolderConjugate.two_two
+        hF hG)
+  have hsqrt :
+      (∫⁻ ω, F ω ^ (2 : ℝ) ∂ν) ^ ((1 : ℝ) / 2) *
+          (∫⁻ ω, G ω ^ (2 : ℝ) ∂ν) ^ ((1 : ℝ) / 2) ≤
+        C ^ ((1 : ℝ) / 2) := by
+    rw [← ENNReal.mul_rpow_of_nonneg
+      (∫⁻ ω, F ω ^ (2 : ℝ) ∂ν)
+      (∫⁻ ω, G ω ^ (2 : ℝ) ∂ν)
+      (by norm_num : 0 ≤ ((1 : ℝ) / 2))]
+    exact ENNReal.rpow_le_rpow hprod (by norm_num : 0 ≤ ((1 : ℝ) / 2))
+  exact (lintegral_mono_ae hD).trans (hholder.trans hsqrt)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: the textbook
+square-root estimate.  The factors corresponding to `Y_m + Y_n` and
+`Y_m - Y_n` have square integrals bounded by `4` and `2 * (1 - tail n)`,
+so Cauchy-Schwarz gives `sqrt (8 * (1 - tail n))`.
+-/
+theorem durrett2019_theorem_4_3_8_lintegral_le_hellingerTailL1Bound_of_square_bounds
+    {Ω : Type*} [MeasurableSpace Ω] {ν : Measure Ω}
+    {D F G : Ω -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞} (n : ℕ)
+    (hD : ∀ᵐ ω ∂ν, D ω ≤ F ω * G ω)
+    (hF : AEMeasurable F ν) (hG : AEMeasurable G ν)
+    (hF_sq : ∫⁻ ω, F ω ^ (2 : ℝ) ∂ν ≤ (4 : ℝ≥0∞))
+    (hG_sq : ∫⁻ ω, G ω ^ (2 : ℝ) ∂ν ≤ (2 : ℝ≥0∞) * (1 - tail n)) :
+    ∫⁻ ω, D ω ∂ν ≤
+      durrett2019_theorem_4_3_8_hellingerTailL1Bound tail n := by
+  refine
+    durrett2019_theorem_4_3_8_lintegral_le_sqrt_of_cauchySchwarz_product_bound
+      (ν := ν) (D := D) (F := F) (G := G)
+      (C := (8 : ℝ≥0∞) * (1 - tail n)) hD hF hG ?_
+  calc
+    (∫⁻ ω, F ω ^ (2 : ℝ) ∂ν) *
+        (∫⁻ ω, G ω ^ (2 : ℝ) ∂ν)
+        ≤ (4 : ℝ≥0∞) * ((2 : ℝ≥0∞) * (1 - tail n)) :=
+          mul_le_mul' hF_sq hG_sq
+    _ = (8 : ℝ≥0∞) * (1 - tail n) := by
+          rw [← mul_assoc]
+          norm_num
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: an eventual
+version of the square-root Cauchy-Schwarz estimate, shaped exactly as the
+compiled Hellinger-tail consumer expects.
+-/
+theorem durrett2019_theorem_4_3_8_eventual_hellingerTail_bound_of_squareRoot_cauchySchwarz
+    {Ω : Type*} [MeasurableSpace Ω] {ν : Measure Ω}
+    {D F G : ℕ -> ℕ -> Ω -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞}
+    (hD :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ ω ∂ν, D n m ω ≤ F n m ω * G n m ω)
+    (hF : ∀ n m, AEMeasurable (F n m) ν)
+    (hG : ∀ n m, AEMeasurable (G n m) ν)
+    (hF_sq :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ ω, F n m ω ^ (2 : ℝ) ∂ν ≤ (4 : ℝ≥0∞))
+    (hG_sq :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ ω, G n m ω ^ (2 : ℝ) ∂ν ≤
+          (2 : ℝ≥0∞) * (1 - tail n)) :
+    ∀ n, ∀ᶠ m in atTop,
+      ∫⁻ ω, D n m ω ∂ν ≤
+        durrett2019_theorem_4_3_8_hellingerTailL1Bound tail n := by
+  intro n
+  filter_upwards [hD n, hF_sq n, hG_sq n] with m hDnm hFnm hGnm
+  exact
+    durrett2019_theorem_4_3_8_lintegral_le_hellingerTailL1Bound_of_square_bounds
+      (ν := ν) (D := D n m) (F := F n m) (G := G n m)
+      (tail := tail) n hDnm (hF n m) (hG n m) hFnm hGnm
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: if the Hellinger
 tail affinities tend to one, then the textbook Hellinger-tail L1 bound tends
 to zero.
@@ -5614,6 +5705,86 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_hellinge
       (tail := tail) htail_le htail hbound
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: the abstract
+square-root Cauchy-Schwarz estimates imply the pairwise `liminf` condition
+consumed by the L1 convergence bridge.
+-/
+theorem durrett2019_theorem_4_3_8_pairwise_liminf_of_squareRoot_cauchySchwarz
+    {Ω : Type*} [MeasurableSpace Ω] {ν : Measure Ω}
+    {D F G : ℕ -> ℕ -> Ω -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞}
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail : Tendsto tail atTop (𝓝 1))
+    (hD :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ ω ∂ν, D n m ω ≤ F n m ω * G n m ω)
+    (hF : ∀ n m, AEMeasurable (F n m) ν)
+    (hG : ∀ n m, AEMeasurable (G n m) ν)
+    (hF_sq :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ ω, F n m ω ^ (2 : ℝ) ∂ν ≤ (4 : ℝ≥0∞))
+    (hG_sq :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ ω, G n m ω ^ (2 : ℝ) ∂ν ≤
+          (2 : ℝ≥0∞) * (1 - tail n)) :
+    Tendsto
+      (fun n =>
+        Filter.liminf (fun m => ∫⁻ ω, D n m ω ∂ν) atTop)
+      atTop (𝓝 0) := by
+  refine
+    durrett2019_theorem_4_3_8_pairwise_liminf_of_hellingerTail_bound
+      (D := fun n m => ∫⁻ ω, D n m ω ∂ν)
+      (tail := tail) htail_le htail ?_
+  exact
+    durrett2019_theorem_4_3_8_eventual_hellingerTail_bound_of_squareRoot_cauchySchwarz
+      (ν := ν) (D := D) (F := F) (G := G) hD hF hG hF_sq hG_sq
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy handoff:
+source square-root estimates for finite cylinder likelihoods imply the
+pairwise `liminf` hypothesis consumed by the L1 convergence bridge.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_squareRoot_cauchySchwarz
+    {ι S : Type*} [MeasurableSpace S]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    {F G : ℕ -> ℕ -> (ι -> S) -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞}
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail : Tendsto tail atTop (𝓝 1))
+    (hD :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ ≤
+              F n m x * G n m x)
+    (hF : ∀ n m, AEMeasurable (F n m) (Measure.infinitePi ν))
+    (hG : ∀ n m, AEMeasurable (G n m) (Measure.infinitePi ν))
+    (hF_sq :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ x, F n m x ^ (2 : ℝ) ∂Measure.infinitePi ν ≤ (4 : ℝ≥0∞))
+    (hG_sq :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ x, G n m x ^ (2 : ℝ) ∂Measure.infinitePi ν ≤
+          (2 : ℝ≥0∞) * (1 - tail n)) :
+    Tendsto
+      (fun n =>
+        Filter.liminf
+          (fun m =>
+            ∫⁻ x,
+              ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+                (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+              ∂Measure.infinitePi ν)
+          atTop)
+      atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_3_8_pairwise_liminf_of_squareRoot_cauchySchwarz
+      (ν := Measure.infinitePi ν)
+      (D := fun n m x =>
+        ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+          (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ)
+      (F := F) (G := G) (tail := tail)
+      htail_le htail hD hF hG hF_sq hG_sq
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
 finite cylinder-likelihood integrals to the limiting likelihood mass supplies
 the mass-one input consumed by the positive-branch eliminator.
@@ -5777,6 +5948,61 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLike
   exact
     durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_hellingerTail_bound
       (ν := ν) (Iseq := Iseq) (q := q) tail htail_le htail hbound
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product final handoff from the textbook
+square-root Cauchy-Schwarz estimate: once the source proof supplies the
+pointwise square-root factorization and the two square-integral bounds, the
+Kakutani dichotomy selects the absolute-continuity branch.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLikelihood_squareRoot_cauchySchwarz
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ι -> S) -> ℝ≥0∞}
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hXrn :
+      (fun x => (X x).toReal) =ᵐ[Measure.infinitePi ν]
+        fun x => ((Measure.infinitePi μ).rnDeriv (Measure.infinitePi ν) x).toReal)
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0)
+    (hXint : Integrable (fun x => (X x).toReal) (Measure.infinitePi ν))
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal)
+          atTop (𝓝 ((X x).toReal)))
+    {F G : ℕ -> ℕ -> (ι -> S) -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞}
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail : Tendsto tail atTop (𝓝 1))
+    (hD :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ ≤
+              F n m x * G n m x)
+    (hF : ∀ n m, AEMeasurable (F n m) (Measure.infinitePi ν))
+    (hG : ∀ n m, AEMeasurable (G n m) (Measure.infinitePi ν))
+    (hF_sq :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ x, F n m x ^ (2 : ℝ) ∂Measure.infinitePi ν ≤ (4 : ℝ≥0∞))
+    (hG_sq :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ x, G n m x ^ (2 : ℝ) ∂Measure.infinitePi ν ≤
+          (2 : ℝ≥0∞) * (1 - tail n)) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  refine
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLikelihood_pairwise_liminf
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q)
+      hq hμ hbranch hXrn hνtop hXint hlim ?_
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_squareRoot_cauchySchwarz
+      (ν := ν) (Iseq := Iseq) (q := q) (F := F) (G := G) (tail := tail)
+      htail_le htail hD hF hG hF_sq hG_sq
 
 end ProbabilityTheory
 end StatInference
