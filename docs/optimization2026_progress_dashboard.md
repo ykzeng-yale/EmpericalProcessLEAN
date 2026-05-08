@@ -1272,10 +1272,19 @@ in pinned mathlib.  The latest scalar analytic packet adds
 `chewi136HessianStabilityPrimitive_one`, and
 `chewi136HessianStabilityPrimitive_hasDerivAt`, giving the variable-coefficient
 Gronwall antiderivative calculus for Chewi's displayed `2 M r / (1 - M r t)`
-coefficient.  Next Chapter 13 work should prove
-`HessianSegmentExponentialBounds` by packaging the per-vector `ψ(t)`
-derivative bound and endpoint identities, then continue to Newton decrement
-estimates rather than reintroducing local-norm interfaces.
+coefficient.  The newest interval/psi bridge adds
+`scalar_le_exp_antideriv_of_abs_deriv_le_on_Icc`,
+`scalar_exp_neg_antideriv_le_of_abs_deriv_le_on_Icc`,
+`scalar_exp_sandwich_of_abs_deriv_le_antideriv_on_Icc`,
+`chewi136HessianStabilityPrimitive_continuousOn_Icc`,
+`chewi136HessianStabilityPrimitive_hasDerivWithinAt_Icc`,
+`HessianSegmentPsiCertificate`, and
+`HessianSegmentPsiCertificate.toHessianSegmentExponentialBounds`, so the
+per-vector `ψ(t)` certificate now compiles directly to
+`HessianSegmentExponentialBounds`.  Next Chapter 13 work should prove
+`psi_deriv_bound` from the self-concordance/third-derivative inequality and
+the segment local-norm estimate, then continue to Newton decrement estimates
+rather than reintroducing local-norm interfaces.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,

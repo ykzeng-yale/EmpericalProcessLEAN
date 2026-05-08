@@ -1904,10 +1904,19 @@ Active aggressive target ladder:
    `chewi136HessianStabilityPrimitive_one`, and
    `chewi136HessianStabilityPrimitive_hasDerivAt`, formalizing the
    variable-coefficient Gronwall antiderivative calculus for Chewi's displayed
-   `2 M r / (1 - M r t)` coefficient.  The next bounded packet is to package
-   the per-vector `ψ(t) = <v, Hess(z_t) v>` derivative bound and endpoint
-   identities so this scalar theorem proves `HessianSegmentExponentialBounds`;
-   reuse mathlib `Analysis/ODE/Gronwall`, `gronwallBound`,
+   `2 M r / (1 - M r t)` coefficient.  The newest interval/psi packet adds
+   `scalar_le_exp_antideriv_of_abs_deriv_le_on_Icc`,
+   `scalar_exp_neg_antideriv_le_of_abs_deriv_le_on_Icc`,
+   `scalar_exp_sandwich_of_abs_deriv_le_antideriv_on_Icc`,
+   `chewi136HessianStabilityPrimitive_continuousOn_Icc`,
+   `chewi136HessianStabilityPrimitive_hasDerivWithinAt_Icc`,
+   `HessianSegmentPsiCertificate`, and
+   `HessianSegmentPsiCertificate.toHessianSegmentExponentialBounds`, so the
+   endpoint/ODE algebra from a per-vector `ψ(t) = <v, Hess(z_t) v>` certificate
+   to `HessianSegmentExponentialBounds` is now compiled.  The next bounded
+   packet is to prove the `psi_deriv_bound` field from the
+   self-concordance/third-derivative inequality and the local-norm estimate
+   along the segment; reuse mathlib `Analysis/ODE/Gronwall`, `gronwallBound`,
    `norm_le_gronwallBound_of_norm_deriv_right_le`, `Real.exp_log`,
    `Real.exp_neg`, `Real.log_inv`, `HasDerivAt.log`, `sq_le_sq₀`,
    `Real.sq_sqrt`, `Real.sqrt_sq`,

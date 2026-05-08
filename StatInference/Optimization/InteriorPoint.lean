@@ -148,6 +148,127 @@ theorem scalar_exp_sandwich_of_abs_deriv_le_antideriv
   ⟨scalar_exp_neg_antideriv_le_of_abs_deriv_le hq hA hbound ht,
     scalar_le_exp_antideriv_of_abs_deriv_le hq hA hbound ht⟩
 
+/--
+Interval form of the variable-coefficient scalar Gronwall upper bound.  Unlike
+the global version, this only needs differentiability on the interior of
+`[0,t]`, which is the natural shape for Chewi's Dikin-segment argument.
+-/
+theorem scalar_le_exp_antideriv_of_abs_deriv_le_on_Icc
+    {q q' A A' : ℝ -> ℝ} {t : ℝ}
+    (ht : 0 ≤ t)
+    (hqcont : ContinuousOn q (Set.Icc (0 : ℝ) t))
+    (hAcont : ContinuousOn A (Set.Icc (0 : ℝ) t))
+    (hqderiv : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) t) ->
+      HasDerivWithinAt q (q' s) (interior (Set.Icc (0 : ℝ) t)) s)
+    (hAderiv : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) t) ->
+      HasDerivWithinAt A (A' s) (interior (Set.Icc (0 : ℝ) t)) s)
+    (hbound : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) t) ->
+      |q' s| ≤ A' s * q s) :
+    q t ≤ q 0 * Real.exp (A t - A 0) := by
+  let D := Set.Icc (0 : ℝ) t
+  let z : ℝ -> ℝ := fun s => Real.exp (-(A s)) * q s
+  have hzcont : ContinuousOn z D := by
+    exact ((Real.continuous_exp.comp_continuousOn hAcont.neg).mul hqcont)
+  have hzderiv : ∀ s, s ∈ interior D -> HasDerivWithinAt z
+      (Real.exp (-(A s)) * (q' s - A' s * q s)) (interior D) s := by
+    intro s hs
+    have hnegA : HasDerivWithinAt (fun r => -(A r)) (-(A' s))
+        (interior D) s := (hAderiv s hs).neg
+    have hexp : HasDerivWithinAt (fun r => Real.exp (-(A r)))
+        (Real.exp (-(A s)) * (-(A' s))) (interior D) s := hnegA.exp
+    have hmul := hexp.mul (hqderiv s hs)
+    convert hmul using 1
+    ring
+  have hderiv_nonpos : ∀ s, s ∈ interior D ->
+      Real.exp (-(A s)) * (q' s - A' s * q s) ≤ 0 := by
+    intro s hs
+    have hexp_nonneg : 0 ≤ Real.exp (-(A s)) := Real.exp_nonneg _
+    have hle : q' s - A' s * q s ≤ 0 := by
+      have hb := hbound s hs
+      have hqle : q' s ≤ A' s * q s := le_trans (le_abs_self _) hb
+      linarith
+    nlinarith
+  have hanti : AntitoneOn z D :=
+    antitoneOn_of_hasDerivWithinAt_nonpos (convex_Icc (0 : ℝ) t)
+      hzcont hzderiv hderiv_nonpos
+  have hzt := hanti (show (0 : ℝ) ∈ D from ⟨le_rfl, ht⟩)
+    (show t ∈ D from ⟨ht, le_rfl⟩) ht
+  have hm := mul_le_mul_of_nonneg_left hzt (Real.exp_nonneg (A t))
+  calc
+    q t = Real.exp (A t) * z t := by
+      simp [z, ← mul_assoc, ← Real.exp_add]
+    _ ≤ Real.exp (A t) * z 0 := hm
+    _ = q 0 * Real.exp (A t - A 0) := by
+      simp [z, ← mul_assoc, ← Real.exp_add]
+      ring_nf
+
+/-- Interval form of the variable-coefficient scalar Gronwall lower bound. -/
+theorem scalar_exp_neg_antideriv_le_of_abs_deriv_le_on_Icc
+    {q q' A A' : ℝ -> ℝ} {t : ℝ}
+    (ht : 0 ≤ t)
+    (hqcont : ContinuousOn q (Set.Icc (0 : ℝ) t))
+    (hAcont : ContinuousOn A (Set.Icc (0 : ℝ) t))
+    (hqderiv : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) t) ->
+      HasDerivWithinAt q (q' s) (interior (Set.Icc (0 : ℝ) t)) s)
+    (hAderiv : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) t) ->
+      HasDerivWithinAt A (A' s) (interior (Set.Icc (0 : ℝ) t)) s)
+    (hbound : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) t) ->
+      |q' s| ≤ A' s * q s) :
+    q 0 * Real.exp (-(A t - A 0)) ≤ q t := by
+  let D := Set.Icc (0 : ℝ) t
+  let w : ℝ -> ℝ := fun s => Real.exp (A s) * q s
+  have hwcont : ContinuousOn w D := by
+    exact ((Real.continuous_exp.comp_continuousOn hAcont).mul hqcont)
+  have hwderiv : ∀ s, s ∈ interior D -> HasDerivWithinAt w
+      (Real.exp (A s) * (A' s * q s + q' s)) (interior D) s := by
+    intro s hs
+    have hexp : HasDerivWithinAt (fun r => Real.exp (A r))
+        (Real.exp (A s) * A' s) (interior D) s := (hAderiv s hs).exp
+    have hmul := hexp.mul (hqderiv s hs)
+    convert hmul using 1
+    ring
+  have hderiv_nonneg : ∀ s, s ∈ interior D ->
+      0 ≤ Real.exp (A s) * (A' s * q s + q' s) := by
+    intro s hs
+    have hexp_nonneg : 0 ≤ Real.exp (A s) := Real.exp_nonneg _
+    have hge : 0 ≤ A' s * q s + q' s := by
+      have hb := hbound s hs
+      have hnqle : -q' s ≤ A' s * q s := by
+        exact le_trans (by simpa using (le_abs_self (-q' s))) hb
+      linarith
+    nlinarith
+  have hmono : MonotoneOn w D :=
+    monotoneOn_of_hasDerivWithinAt_nonneg (convex_Icc (0 : ℝ) t)
+      hwcont hwderiv hderiv_nonneg
+  have hwt := hmono (show (0 : ℝ) ∈ D from ⟨le_rfl, ht⟩)
+    (show t ∈ D from ⟨ht, le_rfl⟩) ht
+  have hm := mul_le_mul_of_nonneg_left hwt (Real.exp_nonneg (-(A t)))
+  calc
+    q 0 * Real.exp (-(A t - A 0)) = Real.exp (-(A t)) * w 0 := by
+      simp [w, ← mul_assoc, ← Real.exp_add]
+      ring_nf
+    _ ≤ Real.exp (-(A t)) * w t := hm
+    _ = q t := by
+      simp [w, ← mul_assoc, ← Real.exp_add]
+
+theorem scalar_exp_sandwich_of_abs_deriv_le_antideriv_on_Icc
+    {q q' A A' : ℝ -> ℝ} {t : ℝ}
+    (ht : 0 ≤ t)
+    (hqcont : ContinuousOn q (Set.Icc (0 : ℝ) t))
+    (hAcont : ContinuousOn A (Set.Icc (0 : ℝ) t))
+    (hqderiv : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) t) ->
+      HasDerivWithinAt q (q' s) (interior (Set.Icc (0 : ℝ) t)) s)
+    (hAderiv : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) t) ->
+      HasDerivWithinAt A (A' s) (interior (Set.Icc (0 : ℝ) t)) s)
+    (hbound : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) t) ->
+      |q' s| ≤ A' s * q s) :
+    q 0 * Real.exp (-(A t - A 0)) ≤ q t ∧
+      q t ≤ q 0 * Real.exp (A t - A 0) :=
+  ⟨scalar_exp_neg_antideriv_le_of_abs_deriv_le_on_Icc
+      ht hqcont hAcont hqderiv hAderiv hbound,
+    scalar_le_exp_antideriv_of_abs_deriv_le_on_Icc
+      ht hqcont hAcont hqderiv hAderiv hbound⟩
+
 end ScalarGronwall
 
 section VectorSelfConcordance
@@ -382,6 +503,46 @@ theorem chewi136HessianStabilityPrimitive_hasDerivAt
   funext s
   simp [chewi136HessianStabilityPrimitive, Real.log_inv]
 
+theorem chewi136HessianStabilityPrimitive_continuousOn_Icc
+    {M r : ℝ} (hMr_nonneg : 0 ≤ M * r) (hMr_lt : M * r < 1) :
+    ContinuousOn (fun s : ℝ => chewi136HessianStabilityPrimitive M r s)
+      (Set.Icc (0 : ℝ) 1) := by
+  have hden_cont : ContinuousOn (fun s : ℝ => 1 - M * r * s)
+      (Set.Icc (0 : ℝ) 1) := by
+    fun_prop
+  have hden_ne : ∀ x ∈ Set.Icc (0 : ℝ) 1, 1 - M * r * x ≠ 0 := by
+    intro x hx
+    have hmul_le : M * r * x ≤ M * r :=
+      mul_le_of_le_one_right hMr_nonneg hx.2
+    have hden_pos : 0 < 1 - M * r * x := by nlinarith
+    exact hden_pos.ne'
+  have hinv_cont : ContinuousOn (fun s : ℝ => (1 - M * r * s)⁻¹)
+      (Set.Icc (0 : ℝ) 1) :=
+    hden_cont.inv₀ hden_ne
+  have hlog_cont : ContinuousOn
+      (fun s : ℝ => Real.log ((1 - M * r * s)⁻¹))
+      (Set.Icc (0 : ℝ) 1) :=
+    hinv_cont.log (by
+      intro x hx
+      exact inv_ne_zero (hden_ne x hx))
+  simpa [chewi136HessianStabilityPrimitive] using hlog_cont.const_mul 2
+
+theorem chewi136HessianStabilityPrimitive_hasDerivWithinAt_Icc
+    {M r : ℝ} (hMr_nonneg : 0 ≤ M * r) (hMr_lt : M * r < 1) :
+    ∀ s, s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      HasDerivWithinAt
+        (fun u : ℝ => chewi136HessianStabilityPrimitive M r u)
+        (2 * M * r / (1 - M * r * s))
+        (interior (Set.Icc (0 : ℝ) 1)) s := by
+  intro s hs
+  have hsIoo : s ∈ Set.Ioo (0 : ℝ) 1 := by
+    simpa [interior_Icc] using hs
+  have hmul_le : M * r * s ≤ M * r :=
+    mul_le_of_le_one_right hMr_nonneg hsIoo.2.le
+  have hden_pos : 0 < 1 - M * r * s := by nlinarith
+  exact (chewi136HessianStabilityPrimitive_hasDerivAt
+    (M := M) (r := r) (t := s) hden_pos.ne').hasDerivWithinAt
+
 theorem chewi136_exp_stability_upper
     {M r : ℝ} (hden_pos : 0 < 1 - M * r) :
     Real.exp (chewi136HessianStabilityExponent M r) =
@@ -418,6 +579,69 @@ structure HessianSegmentExponentialBounds
     inner ℝ v (hess y v) ≤
       inner ℝ v (hess x v) *
         Real.exp (chewi136HessianStabilityExponent M r)
+
+/--
+Per-vector `ψ(t) = <v, Hess(z_t) v>` certificate for Chewi Lemma 13.6's
+Hessian-stability proof.  The remaining analytic self-concordance work is to
+provide `psi_deriv_bound` from the third-derivative inequality.
+-/
+structure HessianSegmentPsiCertificate
+    (hess : E -> E →L[ℝ] E) (x y : E) (M r : ℝ)
+    (psi psiDeriv : E -> ℝ -> ℝ) : Prop where
+  psi_zero : ∀ v : E, psi v 0 = inner ℝ v (hess x v)
+  psi_one : ∀ v : E, psi v 1 = inner ℝ v (hess y v)
+  psi_continuous : ∀ v : E, ContinuousOn (psi v) (Set.Icc (0 : ℝ) 1)
+  psi_hasDerivWithin : ∀ v : E, ∀ s,
+    s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      HasDerivWithinAt (psi v) (psiDeriv v s)
+        (interior (Set.Icc (0 : ℝ) 1)) s
+  psi_deriv_bound : ∀ v : E, ∀ s,
+    s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      |psiDeriv v s| ≤
+        (2 * M * r / (1 - M * r * s)) * psi v s
+
+theorem HessianSegmentPsiCertificate.toHessianSegmentExponentialBounds
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    {psi psiDeriv : E -> ℝ -> ℝ}
+    (hMr_nonneg : 0 ≤ M * r) (hMr_lt : M * r < 1)
+    (hpsi : HessianSegmentPsiCertificate hess x y M r psi psiDeriv) :
+    HessianSegmentExponentialBounds hess x y M r where
+  lower_exp := by
+    intro v
+    have hsand :=
+      scalar_exp_sandwich_of_abs_deriv_le_antideriv_on_Icc
+        (q := psi v) (q' := psiDeriv v)
+        (A := fun s : ℝ => chewi136HessianStabilityPrimitive M r s)
+        (A' := fun s : ℝ => 2 * M * r / (1 - M * r * s))
+        (t := 1) (by norm_num)
+        (hpsi.psi_continuous v)
+        (chewi136HessianStabilityPrimitive_continuousOn_Icc
+          hMr_nonneg hMr_lt)
+        (hpsi.psi_hasDerivWithin v)
+        (chewi136HessianStabilityPrimitive_hasDerivWithinAt_Icc
+          hMr_nonneg hMr_lt)
+        (hpsi.psi_deriv_bound v)
+    simpa [hpsi.psi_zero v, hpsi.psi_one v,
+      chewi136HessianStabilityPrimitive_zero,
+      chewi136HessianStabilityPrimitive_one] using hsand.1
+  upper_exp := by
+    intro v
+    have hsand :=
+      scalar_exp_sandwich_of_abs_deriv_le_antideriv_on_Icc
+        (q := psi v) (q' := psiDeriv v)
+        (A := fun s : ℝ => chewi136HessianStabilityPrimitive M r s)
+        (A' := fun s : ℝ => 2 * M * r / (1 - M * r * s))
+        (t := 1) (by norm_num)
+        (hpsi.psi_continuous v)
+        (chewi136HessianStabilityPrimitive_continuousOn_Icc
+          hMr_nonneg hMr_lt)
+        (hpsi.psi_hasDerivWithin v)
+        (chewi136HessianStabilityPrimitive_hasDerivWithinAt_Icc
+          hMr_nonneg hMr_lt)
+        (hpsi.psi_deriv_bound v)
+    simpa [hpsi.psi_zero v, hpsi.psi_one v,
+      chewi136HessianStabilityPrimitive_zero,
+      chewi136HessianStabilityPrimitive_one] using hsand.2
 
 theorem HessianSegmentExponentialBounds.toHessianQuadraticBounds
     {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}

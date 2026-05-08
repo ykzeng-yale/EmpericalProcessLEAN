@@ -346,9 +346,19 @@ wrappers `scalar_le_exp_antideriv_of_abs_deriv_le`,
 `chewi136HessianStabilityPrimitive_one`, and
 `chewi136HessianStabilityPrimitive_hasDerivAt`, proving the calculus for the
 displayed coefficient `2 M r / (1 - M r t)`.  The next Chapter 13 packet
-should package the per-vector `ψ(t)` derivative bound and endpoint identities
-so this scalar theorem proves `HessianSegmentExponentialBounds`, then assemble
-Lemma 13.6 and the Newton decrement convergence layer.
+adds the interval/psi bridge
+`scalar_le_exp_antideriv_of_abs_deriv_le_on_Icc`,
+`scalar_exp_neg_antideriv_le_of_abs_deriv_le_on_Icc`,
+`scalar_exp_sandwich_of_abs_deriv_le_antideriv_on_Icc`,
+`chewi136HessianStabilityPrimitive_continuousOn_Icc`,
+`chewi136HessianStabilityPrimitive_hasDerivWithinAt_Icc`,
+`HessianSegmentPsiCertificate`, and
+`HessianSegmentPsiCertificate.toHessianSegmentExponentialBounds`, proving that
+the per-vector `ψ(t)` continuity, derivative, endpoint, and derivative-bound
+certificate implies `HessianSegmentExponentialBounds`.  The next Chapter 13
+packet should prove the `psi_deriv_bound` field from the
+self-concordance/third-derivative inequality and the segment local-norm
+estimate, then assemble Lemma 13.6 and the Newton decrement convergence layer.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,
