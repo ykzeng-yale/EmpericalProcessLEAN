@@ -3190,5 +3190,109 @@ theorem
       hYseq hYbound hBY hYlim hZseq hZbound hBZ hZlim
       hμCevent hνCevent hμuniv_event hνuniv_event hX hμtop hνtop
 
+/--
+Durrett 2019, Theorem 4.3.5 trimmed-density boundedness primitive: if the
+trimmed numerator measure is bounded by the trimmed denominator measure, then
+the corresponding RN derivative is at most one with respect to the original
+denominator measure.
+-/
+theorem durrett2019_theorem_4_3_5_trimmed_rnDeriv_le_one_of_trim_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ρ : Measure Ω} {ℱ : Filtration ℕ mΩ} [IsFiniteMeasure ρ] (n : ℕ)
+    (hle : μ.trim (ℱ.le n) ≤ ρ.trim (ℱ.le n)) :
+    (fun ω => (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω) ≤ᵐ[ρ]
+      fun _ => (1 : ℝ≥0∞) :=
+  ae_le_of_ae_le_trim (hm := ℱ.le n) (μ := ρ)
+    (Measure.rnDeriv_le_one_of_le hle)
+
+/--
+Durrett 2019, Theorem 4.3.5: the trimmed RN derivative sequence is uniformly
+bounded by one whenever every trimmed numerator is bounded by the corresponding
+trimmed denominator.
+-/
+theorem durrett2019_theorem_4_3_5_trimmed_rnDeriv_sequence_le_one_of_trim_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ρ : Measure Ω} {ℱ : Filtration ℕ mΩ} [IsFiniteMeasure ρ]
+    (hle : ∀ n, μ.trim (ℱ.le n) ≤ ρ.trim (ℱ.le n)) :
+    ∀ n,
+      (fun ω => (μ.trim (ℱ.le n)).rnDeriv (ρ.trim (ℱ.le n)) ω) ≤ᵐ[ρ]
+        fun _ => (1 : ℝ≥0∞) := fun n =>
+  durrett2019_theorem_4_3_5_trimmed_rnDeriv_le_one_of_trim_le
+    (μ := μ) (ρ := ρ) (ℱ := ℱ) n (hle n)
+
+/--
+Durrett 2019, Theorem 4.3.5: using `mu + nu` as the finite dominating measure,
+both source RN derivative sequences are bounded by one.
+-/
+theorem durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_bounds
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ} :
+    (∀ n,
+      (fun ω => (μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+        ≤ᵐ[μ + ν] fun _ => (1 : ℝ≥0∞)) ∧
+      (∀ n,
+        (fun ω => (ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+          ≤ᵐ[μ + ν] fun _ => (1 : ℝ≥0∞)) := by
+  constructor
+  · refine
+      durrett2019_theorem_4_3_5_trimmed_rnDeriv_sequence_le_one_of_trim_le
+        (μ := μ) (ρ := μ + ν) (ℱ := ℱ) ?_
+    intro n
+    rw [trim_add]
+    exact Measure.le_add_right le_rfl
+  · refine
+      durrett2019_theorem_4_3_5_trimmed_rnDeriv_sequence_le_one_of_trim_le
+        (μ := ν) (ρ := μ + ν) (ℱ := ℱ) ?_
+    intro n
+    rw [trim_add]
+    exact Measure.le_add_left le_rfl
+
+/--
+Durrett 2019, Theorem 4.3.5 source endpoint specialized to the natural
+dominating measure `mu + nu`.  This discharges the uniform boundedness and
+restricted absolute-continuity obligations for the two trimmed RN derivative
+sequences; the remaining source obligations are convergence to `Y` and `Z`,
+the density ratio, and top-set singular separation.
+-/
+theorem
+    durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_trimmed_rnDeriv_limits
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ} [μ.HaveLebesgueDecomposition ν]
+    {X Y Z : Ω -> ℝ≥0∞} {A : Set Ω}
+    (hA : MeasurableSet A) (C : Set (Set Ω))
+    (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hY : AEMeasurable Y (μ + ν)) (hZ : AEMeasurable Z (μ + ν))
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hYlim : ∀ᵐ ω ∂(μ + ν),
+      Tendsto (fun n => (μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+        atTop (𝓝 (Y ω)))
+    (hZlim : ∀ᵐ ω ∂(μ + ν),
+      Tendsto (fun n => (ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω)
+        atTop (𝓝 (Z ω)))
+    (hX : X =ᵐ[ν] fun ω => Y ω / Z ω)
+    (hμtop : μ.singularPart ν {ω | X ω = ∞}ᶜ = 0)
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ.real A = ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}) := by
+  have hμρ : ∀ n, μ.trim (ℱ.le n) ≪ (μ + ν).trim (ℱ.le n) := by
+    intro n
+    refine Measure.absolutelyContinuous_of_le ?_
+    rw [trim_add]
+    exact Measure.le_add_right le_rfl
+  have hνρ : ∀ n, ν.trim (ℱ.le n) ≪ (μ + ν).trim (ℱ.le n) := by
+    intro n
+    refine Measure.absolutelyContinuous_of_le ?_
+    rw [trim_add]
+    exact Measure.le_add_left le_rfl
+  obtain ⟨hYbound, hZbound⟩ :=
+    durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_bounds
+      (μ := μ) (ν := ν) (ℱ := ℱ)
+  exact
+    durrett2019_theorem_4_3_5_source_real_identity_of_trimmed_rnDeriv_limits_ratio_top_set
+      (μ := μ) (ν := ν) (ρ := μ + ν) (ℱ := ℱ) (BY := 1) (BZ := 1)
+      hA C hC_meas hY hZ hgen hC hμρ hνρ hYbound (by simp)
+      hYlim hZbound (by simp) hZlim hX hμtop hνtop
+
 end ProbabilityTheory
 end StatInference

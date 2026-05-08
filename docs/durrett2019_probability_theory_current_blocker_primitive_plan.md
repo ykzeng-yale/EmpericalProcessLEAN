@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V52
+## Live In-Thread Goal Prompt V53
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -98,22 +98,25 @@ generator/univ identities, and the source endpoint consumes those identities
 directly for `Y` and `Z`.  The trimmed-RN source sequence layer also now
 compiles: if `s` is visible in some `ℱ m`, then all later trimmed RN
 derivatives integrate over `s` to the original measure, and the source endpoint
-is specialized to the actual trimmed RN derivative sequences.
+is specialized to the actual trimmed RN derivative sequences.  The natural
+dominating-measure boundedness layer also now compiles: for `rho = mu + nu`,
+both trimmed RN derivative sequences are bounded by `1`, and the final source
+endpoint is specialized to this bound automatically.
 
-Next theorem-sized packet: continue Theorem 4.3.5 by proving the remaining
-source obligations for the trimmed RN derivative sequence endpoint: boundedness
-of `Yseq` and `Zseq` under the finite dominating measure `rho` (especially the
-Durrett `rho = (mu + nu) / 2` route), convergence of those bounded martingales
-to `Y` and `Z`, the remaining `X = Y / Z` no-`0/0` a.e. bridge, or
-`{X = infinity}` singular separation.  Search/reuse RN derivative bounds from
-measure domination, measure addition/scaling APIs, nonnegative/bounded
-martingale convergence wrappers, ENNReal limsup/top, and a.e.-restriction
-APIs.  Do not redo the already compiled RN martingale/convergence bridge,
+Next theorem-sized packet: continue Theorem 4.3.5 by proving convergence of the
+`mu/(mu+nu)` and `nu/(mu+nu)` trimmed RN derivative sequences to `Y` and `Z`,
+the remaining `X = Y / Z` no-`0/0` a.e. bridge, or `{X = infinity}` singular
+separation.  Search/reuse nonnegative/bounded martingale convergence wrappers
+for ENNReal-valued or real-valued bounded martingales, conversion between
+ENNReal bounded limits and real martingale convergence, RN derivative
+addition/scaling APIs, ENNReal limsup/top, and a.e.-restriction APIs.  Do not
+redo the already compiled RN martingale/convergence bridge,
 regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
 generator-extension bridge, bounded-convergence generator-production bridge,
-or trimmed-RN eventual restricted-density bridge.  Defer Polya urn as a
-model-specific construction unless a direct existing primitive is found.
+trimmed-RN eventual restricted-density bridge, or `mu + nu` boundedness bridge.
+Defer Polya urn as a model-specific construction unless a direct existing
+primitive is found.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -480,12 +483,12 @@ The next likely packet should continue Theorem 4.3.5 after the compiled
 likelihood-ratio martingale/convergence bridge and the compiled
 regular/singular decomposition identity plus the compiled density-ratio/top-set
 assembly and the compiled integral-representation to RN-derivative bridge.
-The generator-extension, bounded-convergence generator-production, and
-trimmed-RN eventual restricted-density bridges also now compile.  Aim at the
-first remaining source-production obligation: prove boundedness/convergence of
-the trimmed RN derivative sequences, or prove `X = Y/Z` / top-set singular
-separation.  Keep Theorem 4.1.16 deferred unless a targeted kernel search finds
-a direct source-shaped API.
+The generator-extension, bounded-convergence generator-production,
+trimmed-RN eventual restricted-density, and `mu + nu` boundedness bridges also
+now compile.  Aim at the first remaining source-production obligation: prove
+convergence of the trimmed RN derivative sequences, or prove `X = Y/Z` /
+top-set singular separation.  Keep Theorem 4.1.16 deferred unless a targeted
+kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -597,6 +600,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V52` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V53` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
