@@ -5118,5 +5118,91 @@ theorem durrett2019_theorem_4_3_8_mutuallyAbsolutelyContinuous_of_top_set_identi
       durrett2019_theorem_4_3_5_source_real_identity_of_top_set
         (μ := ν) (ν := μ) (X := Y) hA hYrn hνsingTop hμYtop
 
+/--
+Durrett 2019, Theorem 4.3.8 positive-branch support: on the source likelihood
+identified with the Radon-Nikodym derivative, mutual singularity forces the
+limiting likelihood to vanish denominator-almost surely.
+-/
+theorem durrett2019_theorem_4_3_8_ae_eq_zero_of_mutuallySingular_likelihood
+    {Ω : Type*} [MeasurableSpace Ω] {μ ν : Measure Ω}
+    {X : Ω -> ℝ≥0∞} (hμν : μ ⟂ₘ ν)
+    (hXrn :
+      (fun ω => (X ω).toReal) =ᵐ[ν]
+        fun ω => (μ.rnDeriv ν ω).toReal)
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    X =ᵐ[ν] 0 := by
+  have hreal_zero :
+      (fun ω => (X ω).toReal) =ᵐ[ν] fun _ : Ω => (0 : ℝ) := by
+    filter_upwards [hXrn, hμν.rnDeriv_ae_eq_zero] with ω hx hrn
+    calc
+      (X ω).toReal = (μ.rnDeriv ν ω).toReal := hx
+      _ = ((0 : Ω -> ℝ≥0∞) ω).toReal := by rw [hrn]
+      _ = 0 := by simp
+  have hfinite : ∀ᵐ ω ∂ν, ω ∉ {ω | X ω = ∞} :=
+    measure_eq_zero_iff_ae_notMem.mp hνtop
+  filter_upwards [hreal_zero, hfinite] with ω hreal hneTop
+  rcases (ENNReal.toReal_eq_zero_iff (X ω)).1 hreal with hzero | htop
+  · exact hzero
+  · exact False.elim (hneTop htop)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-branch support: if the denominator measure
+is nonzero and the zero set of the limiting likelihood is null, then the
+likelihood is not almost surely zero.
+-/
+theorem durrett2019_theorem_4_3_8_not_ae_eq_zero_of_zero_set_null
+    {Ω : Type*} [MeasurableSpace Ω] {ν : Measure Ω} [NeZero ν]
+    {X : Ω -> ℝ≥0∞} (hzeroSet : ν {ω | X ω = 0} = 0) :
+    ¬ X =ᵐ[ν] 0 := by
+  intro hXzero
+  have hnonzero : ν {ω | X ω ≠ 0} = 0 := by
+    simpa [Set.compl_setOf] using (mem_ae_iff.mp hXzero)
+  have huniv : ν Set.univ = 0 := by
+    refine measure_mono_null ?_ (measure_union_null hzeroSet hnonzero)
+    intro ω _
+    by_cases hω : X ω = 0
+    · exact Or.inl hω
+    · exact Or.inr hω
+  exact (NeZero.ne (ν Set.univ)) huniv
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-branch eliminator: if an external
+tail-event or L1 argument has ruled out `X = 0` denominator-a.e., then a
+source dichotomy `mu << nu or mu singular nu` collapses to absolute continuity.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_not_ae_zero
+    {Ω : Type*} [MeasurableSpace Ω] {μ ν : Measure Ω}
+    {X : Ω -> ℝ≥0∞} (hbranch : μ ≪ ν ∨ μ ⟂ₘ ν)
+    (hXrn :
+      (fun ω => (X ω).toReal) =ᵐ[ν]
+        fun ω => (μ.rnDeriv ν ω).toReal)
+    (hνtop : ν {ω | X ω = ∞} = 0)
+    (hnotZero : ¬ X =ᵐ[ν] 0) :
+    μ ≪ ν := by
+  rcases hbranch with hμν | hsing
+  · exact hμν
+  · exact False.elim
+      (hnotZero
+        (durrett2019_theorem_4_3_8_ae_eq_zero_of_mutuallySingular_likelihood
+          (μ := μ) (ν := ν) (X := X) hsing hXrn hνtop))
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-branch eliminator specialized to a null
+zero set for the limiting likelihood.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_zero_set_null
+    {Ω : Type*} [MeasurableSpace Ω] {μ ν : Measure Ω} [NeZero ν]
+    {X : Ω -> ℝ≥0∞} (hbranch : μ ≪ ν ∨ μ ⟂ₘ ν)
+    (hXrn :
+      (fun ω => (X ω).toReal) =ᵐ[ν]
+        fun ω => (μ.rnDeriv ν ω).toReal)
+    (hνtop : ν {ω | X ω = ∞} = 0)
+    (hzeroSet : ν {ω | X ω = 0} = 0) :
+    μ ≪ ν :=
+  durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_not_ae_zero
+    (μ := μ) (ν := ν) (X := X) hbranch hXrn hνtop
+    (durrett2019_theorem_4_3_8_not_ae_eq_zero_of_zero_set_null
+      (ν := ν) (X := X) hzeroSet)
+
 end ProbabilityTheory
 end StatInference
