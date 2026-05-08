@@ -10264,9 +10264,9 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_l
       ((S.projectedMixedTowerFutureTail_integrable_of_uniform_bound L N r t).sub
         (integrable_const _)).norm
     exact integral_mono_ae hleft_int hright_int
-      (ae_of_all P fun ω =>
-        S.projectedMixedTowerFutureMultiplier_sub_limitVarianceProxy_norm_le_tail_error
-          L N t r ω)
+        (ae_of_all P fun ω =>
+          S.projectedMixedTowerFutureMultiplier_sub_limitVarianceProxy_norm_le_tail_error
+            L N t r ω)
 
 /--
 Weighted normalized-factor approximation by the canonical limit-variance proxy
@@ -10539,6 +10539,42 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_li
           chewi127_complex_exp_sub_exp_norm_le_abs_sub_mul_exp hy_nonpos
     _ = S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω := by
           rfl
+
+/--
+The inverse-compensation factor has an integrable weighted row error against the
+canonical limit-variance proxy.  This packages the routine boundedness argument
+used by the scalar proxy reductions.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_limitVarianceProxy_weighted_row_norm_integrable_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) :
+    Integrable
+      (fun ω =>
+        ∑ k ∈ Finset.range N,
+          (k : ℝ) *
+            ‖S.projectedInverseCompensationFactor L N t k ω -
+              chewi127LimitVarianceProxyFactor
+                (S.covariance_limit.S_infty L L) N t‖) P := by
+  refine integrable_finsetSum (Finset.range N) ?_
+  intro k _hk
+  have hinverse_int :
+      Integrable
+        (fun ω => S.projectedInverseCompensationFactor L N t k ω) P := by
+    refine Integrable.of_bound (C := 1)
+      (S.projectedInverseCompensationFactor_aestronglyMeasurable L N t k) ?_
+    exact S.projectedInverseCompensationFactor_norm_le_one_ae L N t k
+  have hproxy_int :
+      Integrable
+        (fun _ : Ω =>
+          chewi127LimitVarianceProxyFactor
+            (S.covariance_limit.S_infty L L) N t) P :=
+    integrable_const _
+  exact (((hinverse_int.sub hproxy_int).norm).const_mul (k : ℝ))
 
 /--
 If the row-weighted scalar variance-difference exponential bound vanishes in
@@ -11098,6 +11134,322 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_li
       S.projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integrable_of_uniform_bound
         L N t)
     hscaled_variance_diff_exp
+
+/--
+The concrete predictable future-multiplier proxy is close in row-summed `L1`
+once the inverse-compensation factors are close to the limit-variance proxy and
+the compensated Taylor errors vanish in the weighted row sense.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_inverse_error_compensated_error
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hinverse_weighted_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖) P)
+    (hcompensated_weighted_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hinverse_weighted_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖ ∂P)
+        atTop (𝓝 0))
+    (hcompensated_weighted_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              S.projectedLimitVarianceFutureMultiplierProxy L N t r ω‖ ∂P)
+      atTop (𝓝 0) :=
+  S.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error
+    L t
+    (S.projectedNormalizedTaylorFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_inverse_error_compensated_error
+      L t hinverse_weighted_error_int hcompensated_weighted_error_int
+      hinverse_weighted_error hcompensated_weighted_error)
+
+/--
+Scalar inverse-proxy control plus compensated Taylor-error control gives
+row-summed `L1` convergence to the concrete limit-variance future-multiplier
+proxy.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hscaled_variance_diff_exp_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω) P)
+    (hcompensated_weighted_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hscaled_variance_diff_exp :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω ∂P)
+        atTop (𝓝 0))
+    (hcompensated_weighted_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              S.projectedLimitVarianceFutureMultiplierProxy L N t r ω‖ ∂P)
+      atTop (𝓝 0) :=
+  S.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_inverse_error_compensated_error
+    L t
+    (fun N =>
+      S.projectedInverseCompensationFactor_limitVarianceProxy_weighted_row_norm_integrable_of_uniform_bound
+        L N t)
+    hcompensated_weighted_error_int
+    (S.projectedInverseCompensationFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_scaled_variance_diff_exp
+      L t hscaled_variance_diff_exp_int hscaled_variance_diff_exp)
+    hcompensated_weighted_error
+
+/--
+Uniform boundedness discharges the scalar proxy integrability side condition in
+the future-multiplier proxy route.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hcompensated_weighted_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hscaled_variance_diff_exp :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω ∂P)
+        atTop (𝓝 0))
+    (hcompensated_weighted_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              S.projectedLimitVarianceFutureMultiplierProxy L N t r ω‖ ∂P)
+      atTop (𝓝 0) :=
+  S.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp
+    L t
+    (fun N =>
+      S.projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integrable_of_uniform_bound
+        L N t)
+    hcompensated_weighted_error_int hscaled_variance_diff_exp
+    hcompensated_weighted_error
+
+/--
+The weighted variance-error and Taylor-remainder estimates discharge the
+compensated Taylor-error side of the future-multiplier proxy route.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp_weighted_variance_remainder
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hscaled_variance_diff_exp :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω ∂P)
+        atTop (𝓝 0))
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+        atTop (𝓝 0))
+    (hremainder_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              S.projectedLimitVarianceFutureMultiplierProxy L N t r ω‖ ∂P)
+      atTop (𝓝 0) :=
+  S.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp_of_uniform_bound
+    L t
+    (fun N =>
+      S.projectedCompensatedTaylorError_weighted_row_norm_integrable_of_variance_remainder
+        L N t (hvariance_error_int N) (hremainder_int N))
+    hscaled_variance_diff_exp
+    (S.projectedCompensatedTaylorError_weighted_row_integral_tendsto_zero_of_variance_remainder
+      L t hvariance_error_int hremainder_int hvariance_error
+      hremainder_error)
+
+/--
+An explicit weighted absolute conditional-variance-difference gate is enough to
+control the concrete future-multiplier proxy route, once the usual weighted
+variance-error and Taylor-remainder rows are available.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_abs_variance_diff_weighted_variance_remainder
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hweighted_abs_variance_diff_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ((N : ℝ)⁻¹ *
+                  |S.covariance.Xi (k + 1) ω L L -
+                    S.covariance_limit.S_infty L L|)) P)
+    (hweighted_abs_variance_diff :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ((N : ℝ)⁻¹ *
+                  |S.covariance.Xi (k + 1) ω L L -
+                    S.covariance_limit.S_infty L L|) ∂P)
+        atTop (𝓝 0))
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+        atTop (𝓝 0))
+    (hremainder_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              S.projectedLimitVarianceFutureMultiplierProxy L N t r ω‖ ∂P)
+      atTop (𝓝 0) :=
+  S.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp_weighted_variance_remainder
+    L t
+    (S.projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integral_tendsto_zero_of_weighted_abs_variance_diff
+      L t hweighted_abs_variance_diff_int hweighted_abs_variance_diff)
+    hvariance_error_int hremainder_int hvariance_error hremainder_error
 
 /--
 The inverse-compensation future tail over the same suffix interval as
@@ -17372,11 +17724,201 @@ theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVarianceFu
     (fun L t N r =>
       S.projectedLimitVarianceFutureMultiplierProxy_aestronglyMeasurable
         L N r t)
+      (fun L t N r =>
+        S.projectedLimitVarianceFutureMultiplierProxy_integrable L N r t)
+      (fun L t =>
+        S.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error
+          L t (hweighted_factor_error L t))
+      hInitial hRemainder hInitial_meas hRemainder_meas hDecomp
+
+/--
+Future-multiplier-proxy version of the inverse-error/compensated-error ASGD
+endpoint.  It routes through the concrete `F_r`-measurable multiplier proxy
+rather than the deterministic future-tail proxy.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVarianceFutureMultiplierProxy_inverse_error_compensated_error_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hinverse_weighted_error_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖) P)
+    (hcompensated_weighted_error_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hinverse_weighted_error : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖ ∂P)
+        atTop (𝓝 0))
+    (hcompensated_weighted_error : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0))
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K :=
+  S.asgd_limit_package_of_futureMultiplier_predictable_l1_approx_of_uniform_bound_no_factor_bound
+    Ainv hmean
+    (fun L t N r ω =>
+      S.projectedLimitVarianceFutureMultiplierProxy L N t r ω)
+    (fun L t N r =>
+      S.projectedLimitVarianceFutureMultiplierProxy_aestronglyMeasurable
+        L N r t)
     (fun L t N r =>
       S.projectedLimitVarianceFutureMultiplierProxy_integrable L N r t)
     (fun L t =>
-      S.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_factor_error
-        L t (hweighted_factor_error L t))
+      S.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_inverse_error_compensated_error
+        L t (hinverse_weighted_error_int L t)
+        (hcompensated_weighted_error_int L t)
+        (hinverse_weighted_error L t)
+        (hcompensated_weighted_error L t))
+    hInitial hRemainder hInitial_meas hRemainder_meas hDecomp
+
+/--
+Source-facing concrete future-multiplier-proxy ASGD endpoint from the explicit
+weighted absolute conditional-variance-difference gate and the usual weighted
+variance-error/Taylor-remainder rows.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hweighted_abs_variance_diff_int :
+      ∀ L : StrongDual ℝ E, ∀ _t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ((N : ℝ)⁻¹ *
+                  |S.covariance.Xi (k + 1) ω L L -
+                    S.covariance_limit.S_infty L L|)) P)
+    (hweighted_abs_variance_diff :
+      ∀ L : StrongDual ℝ E, ∀ _t : ℝ,
+        Tendsto
+          (fun N : ℕ =>
+            ∫ ω,
+              ∑ k ∈ Finset.range N,
+                (k : ℝ) *
+                  ((N : ℝ)⁻¹ *
+                    |S.covariance.Xi (k + 1) ω L L -
+                      S.covariance_limit.S_infty L L|) ∂P)
+          atTop (𝓝 0))
+    (hvariance_error_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+        Tendsto
+          (fun N : ℕ =>
+            ∫ ω,
+              ∑ k ∈ Finset.range N,
+                (k : ℝ) *
+                  ‖S.projectedCompensationFactor L N t k ω *
+                      S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+          atTop (𝓝 0))
+    (hremainder_error :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+        Tendsto
+          (fun N : ℕ =>
+            ∫ ω,
+              ∑ k ∈ Finset.range N,
+                (k : ℝ) *
+                  ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+          atTop (𝓝 0))
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K :=
+  S.asgd_limit_package_of_futureMultiplier_predictable_l1_approx_of_uniform_bound_no_factor_bound
+    Ainv hmean
+    (fun L t N r ω =>
+      S.projectedLimitVarianceFutureMultiplierProxy L N t r ω)
+    (fun L t N r =>
+      S.projectedLimitVarianceFutureMultiplierProxy_aestronglyMeasurable
+        L N r t)
+    (fun L t N r =>
+      S.projectedLimitVarianceFutureMultiplierProxy_integrable L N r t)
+    (fun L t =>
+      S.projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_abs_variance_diff_weighted_variance_remainder
+        L t (hweighted_abs_variance_diff_int L t)
+        (hweighted_abs_variance_diff L t)
+        (hvariance_error_int L t) (hremainder_int L t)
+        (hvariance_error L t) (hremainder_error L t))
     hInitial hRemainder hInitial_meas hRemainder_meas hDecomp
 
 /--

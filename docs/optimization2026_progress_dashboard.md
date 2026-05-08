@@ -212,6 +212,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
   This gives the preferred future-multiplier route a named predictable proxy
   built from the raw prefix and the deterministic limit-variance future tail.
+- Concrete proxy source bridges: the latest ASGD packet adds
+  `projectedInverseCompensationFactor_limitVarianceProxy_weighted_row_norm_integrable_of_uniform_bound`,
+  `projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_inverse_error_compensated_error`,
+  `projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp`,
+  `projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp_of_uniform_bound`,
+  `projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp_weighted_variance_remainder`,
+  `projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_abs_variance_diff_weighted_variance_remainder`,
+  `asgd_limit_package_of_limitVarianceFutureMultiplierProxy_inverse_error_compensated_error_of_uniform_bound_no_factor_bound`,
+  and
+  `asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
+  This closes the proxy plumbing; remaining progress should attack the true
+  source residual/approximation assumptions rather than adding endpoint-only
+  wrappers.
 - Weighted inverse-tail fallback: the new
   `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`
   wrappers compose the existing weighted variance-error/Taylor-remainder

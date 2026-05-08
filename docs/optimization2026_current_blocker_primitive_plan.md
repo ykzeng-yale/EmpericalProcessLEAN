@@ -277,6 +277,21 @@ It also exposes the ASGD endpoint
 `asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
 This routes the canonical limit-variance factor-error lane through the
 preferred future-multiplier proxy interface.
+Latest proxy-source bridge packet: the concrete future-multiplier proxy route
+now also has reusable row-summed `L1` approximation theorems from
+inverse-error/compensated-error, scalar variance-difference exponential, and
+weighted variance-error/Taylor-remainder inputs:
+`projectedInverseCompensationFactor_limitVarianceProxy_weighted_row_norm_integrable_of_uniform_bound`,
+`projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_inverse_error_compensated_error`,
+`projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp`,
+`projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp_of_uniform_bound`,
+`projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp_weighted_variance_remainder`,
+and
+`projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_weighted_abs_variance_diff_weighted_variance_remainder`.
+The matching ASGD endpoints are
+`asgd_limit_package_of_limitVarianceFutureMultiplierProxy_inverse_error_compensated_error_of_uniform_bound_no_factor_bound`
+and
+`asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
 The weighted inverse-tail fallback is now packaged through the certificate
 layer as
 `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`:
@@ -291,24 +306,18 @@ Exercises live only in `StatInference/Optimization/Exercises.lean` and must not
 consume the main theorem packet unless they unlock a main-text proof.
 
 Current frontier: the active module is `StatInference/Optimization/ASGD.lean`;
-the active source packet is Chapter 12 ASGD Theorem 12.7/12.3.  The scalar
-proxy lane is now packaged through the explicit weighted absolute
-variance-difference gate above.  The next aggressive Lean target should not
-invent another scalar proxy wrapper or endpoint wrapper; it should prove a
-real source-side row-summed `L1` approximation of the mixed-tower future
-multiplier by an `F_r`-measurable or deterministic proxy, then feed it through
-`asgd_limit_package_of_futureMultiplier_predictable_l1_approx_of_uniform_bound_no_factor_bound`
-or
-`asgd_limit_package_of_futureMultiplier_deterministic_l1_approx_of_uniform_bound_no_factor_bound`.
-If a stronger absolute row hypothesis is being formalized, feed it through
-`asgd_limit_package_of_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
-Under only Chewi's averaged covariance convergence, prefer the compensated
-full-inverse/product or direct future-multiplier residual route.  The canonical
-limit-variance future-multiplier proxy is now available for any source proof
-that can produce the weighted one-step factor error; the next genuinely new
-source target is still to derive such a one-step/future-multiplier
-approximation from Chewi's actual averaged covariance assumptions without
-assuming an unjustified absolute row estimate.
+the active source packet is Chapter 12 ASGD Theorem 12.7/12.3.  The concrete
+limit-variance future-multiplier proxy now consumes the inverse-error,
+scalar-variance-difference, weighted variance-remainder, and explicit weighted
+absolute variance-difference lanes.  Do not add more endpoint-only wrappers
+around this proxy unless they eliminate an assumption.  The next aggressive
+Lean target is the genuinely source-side part: prove a row-summed `L1`
+approximation/residual for the mixed-tower future multiplier from Chewi's
+actual averaged covariance assumptions, or prove the missing compensated
+full-inverse/product source estimate that bypasses the unjustified absolute row
+gate.  If a source argument really supplies the stronger absolute row
+hypothesis, use the compiled endpoint
+`asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
 The stable ASGD stack now includes the
 conditional residual/correlation primitives
 `integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left` and

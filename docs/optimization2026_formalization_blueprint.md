@@ -121,7 +121,16 @@ The canonical concrete proxy for this route is now also compiled:
 and
 `asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_factor_error_of_uniform_bound_no_factor_bound`.
 It is the raw prefix multiplied by the deterministic limit-variance future
-tail proxy.
+tail proxy.  The concrete proxy route now also consumes the inverse-error,
+scalar variance-difference exponential, weighted variance-remainder, and
+explicit weighted absolute variance-difference lanes through
+`projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_inverse_error_compensated_error`,
+`projectedMixedTowerFutureMultiplier_limitVarianceProxy_l1_sum_tendsto_zero_of_scaled_variance_diff_exp_weighted_variance_remainder`,
+and
+`asgd_limit_package_of_limitVarianceFutureMultiplierProxy_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
+The next blueprint target is therefore not more endpoint packaging; it is a
+source proof of the remaining row-summed future-multiplier residual/proxy
+condition under Chewi's actual averaged covariance assumptions.
 For the stronger weighted suffix route, use
 `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`;
 it packages weighted variance-error/Taylor-remainder convergence and the
