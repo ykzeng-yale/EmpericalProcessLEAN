@@ -66,6 +66,14 @@ compiled exponential comparison
 `projectedInverseCompensationFactor_limitVarianceProxy_norm_le_scaled_variance_diff_exp`.
 The next source-discharge step is therefore a scalar conditional-variance
 difference estimate, not more complex product algebra.
+The integrability side of that scalar proxy row is now discharged by
+`projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integrable_of_uniform_bound`,
+and the endpoint
+`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound_no_scaled_integrability`
+uses it directly.  The convergence side remains a genuine row-wise condition;
+when working from only Chewi's averaged covariance assumption, prefer the
+compensated full-inverse/product route rather than an unjustified absolute
+one-step proxy comparison.
 The residual layer now exposes
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,

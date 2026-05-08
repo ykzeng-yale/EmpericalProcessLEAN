@@ -145,6 +145,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   The live next ASGD target is to discharge that scalar variance-difference
   row convergence from the existing source conditional variance assumptions,
   then feed it into the compensated Taylor-error endpoint.
+- Scalar proxy integrability shrink: the newest ASGD packet adds
+  `projectedInverseLimitVarianceProxyScaledDiffExp_aestronglyMeasurable`,
+  `projectedInverseLimitVarianceProxyScaledDiffExp_nonneg`,
+  `projectedInverseLimitVarianceProxyScaledDiffExp_le_of_variance_abs_le`,
+  `projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integrable_of_variance_abs_le`,
+  `projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integrable_of_uniform_bound`,
+  `projectedInverseCompensationFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_scaled_variance_diff_exp_of_uniform_bound`,
+  and
+  `asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound_no_scaled_integrability`.
+  The integrability side of the scalar proxy row is now solved by uniform
+  boundedness.  The remaining convergence side is a real row-wise proxy gate;
+  do not conflate it with Chewi's plain averaged covariance convergence.
 - Residual-estimate extraction: the newest ASGD packet adds
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,

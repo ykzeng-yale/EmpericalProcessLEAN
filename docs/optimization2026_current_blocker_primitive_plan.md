@@ -204,6 +204,20 @@ and exposes the Chewi 12.3 endpoint
 The inverse-compensation-to-limit-variance proxy obligation is now reduced to a
 single row-weighted scalar conditional-variance difference exponential bound;
 do not reprove the complex exponential Lipschitz/product/suffix plumbing.
+Newest scalar proxy integrability shrink: `ASGD.lean` now also proves
+`projectedInverseLimitVarianceProxyScaledDiffExp_aestronglyMeasurable`,
+`projectedInverseLimitVarianceProxyScaledDiffExp_nonneg`,
+`projectedInverseLimitVarianceProxyScaledDiffExp_le_of_variance_abs_le`,
+`projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integrable_of_variance_abs_le`,
+`projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integrable_of_uniform_bound`,
+`projectedInverseCompensationFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_scaled_variance_diff_exp_of_uniform_bound`,
+and the endpoint
+`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound_no_scaled_integrability`.
+Uniform boundedness now discharges scalar-proxy row integrability.  The
+remaining scalar-proxy convergence is a genuine strong row condition, not a
+free consequence of the averaged covariance convergence alone; if the source
+route needs only averaged covariance, use the compensated full-inverse/product
+route rather than pretending an absolute weighted one-step proxy follows.
 The newest residual-estimate packet extracts the actual row-summed residual
 handoffs as reusable theorems:
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
@@ -246,7 +260,7 @@ convergence assumptions already present in the ASGD structure, the weighted
 row convergence of
 `projectedInverseLimitVarianceProxyScaledDiffExp`; after that, combine it with
 the compensated Taylor-error row theorem to use
-`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound`.
+`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound_no_scaled_integrability`.
 If that scalar variance-difference estimate balloons, fall back to the direct
 future-multiplier residual route rather than rebuilding old proxy algebra.
 The stable ASGD stack now includes the
