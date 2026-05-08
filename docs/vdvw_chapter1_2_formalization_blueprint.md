@@ -2191,6 +2191,12 @@ above, so they do not change the theorem-level dashboard counts.
    the deterministic selected-cover finite-net Hoeffding handoff now also
    transports across simultaneous sample/sign coordinate permutations through
    `vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector_finCoordinatePerm`.
+   The canonical finite-product Rademacher coordinate source is also compiled
+   as `ae_vdVWProductMeasure_vdVWRademacherSignVector`,
+   `iIndepFun_vdVWProductMeasure_vdVWRademacher`,
+   `hasSubgaussianMGF_vdVWProductMeasure_eval_vdVWRademacher`, and the
+   selected-cover expected-maximal bridge
+   `VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover_canonicalRademacher`.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
