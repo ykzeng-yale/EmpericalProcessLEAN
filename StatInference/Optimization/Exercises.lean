@@ -3069,13 +3069,54 @@ theorem exercise42InfiniteChainObjective_positiveLogRate_le_near_min_optValue_co
   simpa [C, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hneg
 
 /--
+Contrapositive source-rate obstruction for the public infinite Exercise 4.2
+wrapper.  If a zero-start gradient-span trajectory has run fewer than the
+positive-log lower-bound rate, then it cannot be `eps`-near the optimum value.
+-/
+theorem exercise42InfiniteChainObjective_not_near_min_of_positiveLogRate_lt_concreteGradient
+    {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
+    (heps_pos : 0 < eps) (halpha_lt_beta : alpha < beta)
+    (hkappa : kappa = beta / alpha) (hkappa_four : 4 ≤ kappa)
+    {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)}
+    (hx0 : x 0 = 0)
+    (hspan : IsGradientSpanTrajectory
+      (exercise42InfiniteChainGradientLp alpha beta) x) {N : ℕ}
+    (hN_lt :
+      (N : ℝ) <
+        ((Real.sqrt kappa / 2) *
+          Real.log
+            (exercise42InfiniteInitialScale
+                alpha beta kappa halpha_pos halpha_lt_beta hkappa / eps)) /
+          4 - 1)
+    (heps_le_initial :
+      eps ≤
+        exercise42InfiniteInitialScale
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa) :
+    ¬ exercise42InfiniteChainObjective alpha beta (x N) ≤
+        exercise42InfiniteChainObjectiveMinValue
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa + eps := by
+  intro hnear
+  have hrate :
+      ((Real.sqrt kappa / 2) *
+          Real.log
+            (exercise42InfiniteInitialScale
+                alpha beta kappa halpha_pos halpha_lt_beta hkappa / eps)) /
+          4 - 1 ≤
+        (N : ℝ) :=
+    exercise42InfiniteChainObjective_positiveLogRate_le_near_min_optValue_concreteGradient
+      halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
+      hx0 hspan N hnear heps_le_initial
+  linarith
+
+/--
 Theorem 4.5-facing hard-instance package obtained from the direct infinite
 Exercise 4.2 construction.  The concrete `ell^2` chain is certified
 simultaneously as an `alpha`-strongly-convex/`beta`-smooth supplied-gradient
 oracle, has the displayed geometric minimizer and canonical optimum value,
 keeps every zero-start gradient-span trajectory inside the prefix subspaces,
 and forces the source-shaped `sqrt(kappa) log` lower bound from
-`f(x_N) <= f_* + eps`.
+`f(x_N) <= f_* + eps`, equivalently ruling out near-optimality below that
+source rate.
 -/
 theorem exercise42InfiniteChainObjective_theorem45_hard_instance_package
     {alpha beta kappa eps : ℝ} (halpha_pos : 0 < alpha)
@@ -3120,13 +3161,29 @@ theorem exercise42InfiniteChainObjective_theorem45_hard_instance_package
             (exercise42InfiniteInitialScale
                 alpha beta kappa halpha_pos halpha_lt_beta hkappa / eps)) /
           4 - 1 ≤
-        (N : ℝ)) := by
+        (N : ℝ)) ∧
+    (∀ {x : ℕ -> lp (fun _ : ℕ => ℝ) (2 : ℝ≥0∞)} (N : ℕ),
+      x 0 = 0 ->
+      IsGradientSpanTrajectory
+        (exercise42InfiniteChainGradientLp alpha beta) x ->
+      (N : ℝ) <
+        ((Real.sqrt kappa / 2) *
+          Real.log
+            (exercise42InfiniteInitialScale
+                alpha beta kappa halpha_pos halpha_lt_beta hkappa / eps)) /
+          4 - 1 ->
+      eps ≤
+        exercise42InfiniteInitialScale
+          alpha beta kappa halpha_pos halpha_lt_beta hkappa ->
+      ¬ exercise42InfiniteChainObjective alpha beta (x N) ≤
+          exercise42InfiniteChainObjectiveMinValue
+            alpha beta kappa halpha_pos halpha_lt_beta hkappa + eps) := by
   have hgamma : 0 ≤ beta - alpha := by linarith
   rcases
     exercise42InfiniteChainObjective_oracle_interface_package
       (alpha := alpha) (beta := beta) halpha_pos.le hgamma with
     ⟨hfirst, hsmooth, hprefix⟩
-  refine ⟨hfirst, hsmooth, hprefix, ?_, ?_, ?_⟩
+  refine ⟨hfirst, hsmooth, hprefix, ?_, ?_, ?_, ?_⟩
   · exact
       exercise42InfiniteGeometricMinimizer_isMinOn_concreteGradient
         halpha_pos halpha_lt_beta hkappa
@@ -3139,6 +3196,11 @@ theorem exercise42InfiniteChainObjective_theorem45_hard_instance_package
       exercise42InfiniteChainObjective_positiveLogRate_le_near_min_optValue_concreteGradient
         halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
         hx0 hspan N hnear heps_le_initial
+  · intro x N hx0 hspan hN_lt heps_le_initial
+    exact
+      exercise42InfiniteChainObjective_not_near_min_of_positiveLogRate_lt_concreteGradient
+        halpha_pos heps_pos halpha_lt_beta hkappa hkappa_four
+        hx0 hspan hN_lt heps_le_initial
 
 end Optimization
 end StatInference

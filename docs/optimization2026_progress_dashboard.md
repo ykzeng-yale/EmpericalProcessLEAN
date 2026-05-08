@@ -225,6 +225,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   This closes the proxy plumbing; remaining progress should attack the true
   source residual/approximation assumptions rather than adding endpoint-only
   wrappers.
+- Chapter 4 Exercise 4.2/Theorem 4.5 direct hard-instance polish: the latest
+  exercises pass adds
+  `exercise42InfiniteChainObjective_not_near_min_of_positiveLogRate_lt_concreteGradient`
+  and folds the same contrapositive obstruction into
+  `exercise42InfiniteChainObjective_theorem45_hard_instance_package`.  The
+  infinite-chain package now states both the positive-log rate lower bound and
+  the source-shaped impossibility of `eps`-near optimality below that rate.
 - Weighted inverse-tail fallback: the new
   `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`
   wrappers compose the existing weighted variance-error/Taylor-remainder
@@ -1932,7 +1939,10 @@ hypothesis.  The newest Theorem 4.5-facing package pass adds
 `exercise42InfiniteChainObjective_theorem45_hard_instance_package`; the last
 one bundles first-order strong convexity, smoothness, gradient-span prefix
 support, the concrete geometric minimizer, the named optimum-value lower
-bound, and the opt-value `sqrt(kappa)` rate obstruction in one statement.
+bound, the opt-value `sqrt(kappa)` rate lower bound, and the contrapositive
+source obstruction ruling out `eps`-near optimality below that positive-log
+rate in one statement.  The named standalone obstruction is
+`exercise42InfiniteChainObjective_not_near_min_of_positiveLogRate_lt_concreteGradient`.
 Search-first result: reused local `IsMinOn`/opt-value/rate wrappers and
 mathlib `IsMinOn` support.  The positive-log source display is now also closed
 by `exercise42InfiniteGeometricMinimizer_proof_irrel` and

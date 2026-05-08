@@ -1706,7 +1706,10 @@ The Theorem 4.5-facing package now also compiles:
 `exercise42InfiniteChainObjective_theorem45_hard_instance_package`.  The
 package combines the concrete first-order/smooth oracle, zero-start
 gradient-span prefix support, the geometric minimizer, the named optimum value,
-and the opt-value `sqrt(kappa)` rate obstruction.  The positive-log source
+the opt-value `sqrt(kappa)` rate lower bound, and the source-shaped
+contrapositive obstruction
+`exercise42InfiniteChainObjective_not_near_min_of_positiveLogRate_lt_concreteGradient`.
+The positive-log source
 display now compiles too:
 `exercise42InfiniteGeometricMinimizer_proof_irrel` removes dependent
 proof-term noise in the geometric minimizer, and

@@ -781,6 +781,15 @@ The remaining ASGD proof obligations for the preferred route are now precisely:
 Reuse `projectedCompensatedTaylorError_row_integral_tendsto_zero_of_source_variance`,
 the one-step error bounds, inverse-factor norm/measurability, and finite-sum
 reindexing/counting APIs before adding new product machinery.
+Fresh search check during the Exercise 4.2 obstruction pass found that the
+generic suffix/counting product machinery is already present:
+`projectedMixedTowerFutureTail_deterministicTailProxy_l1_row_sum_le_suffix_error`,
+`projectedMixedTowerFutureTail_inverseFutureTail_l1_row_sum_le_suffix_error`,
+`projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_difference_error`,
+and the weighted variance/remainder consumers through
+`projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_variance_remainder`.
+Do not duplicate those suffix bounds; the live ASGD source task is to discharge
+one of the concrete row-summed residual or weighted source assumptions.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform
