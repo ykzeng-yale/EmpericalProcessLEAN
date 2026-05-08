@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V78
+## Live In-Thread Goal Prompt V79
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -196,12 +196,17 @@ the textbook factors `sqrt X_n + sqrt X_m` and `sqrt X_n - sqrt X_m`, as
 compiled support.  Also treat the square-integral estimate for
 `sqrt X_n + sqrt X_m`, and the resulting concrete Cauchy wrapper that only
 requires the `sqrt X_n - sqrt X_m` square estimate, as compiled support.
+Also treat the overlap-to-tail algebra bridge converting
+`diffSq + 2 * overlap <= 2` and `tail <= overlap` into
+`diffSq <= 2 * (1 - tail)`, together with the concrete cylinder overlap
+handoff, as compiled support.
 Move to the remaining Kakutani criterion assembly and tail-event support:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`), logarithm/tail-event support, and local Kolmogorov
 zero-one/tail sigma-field wrappers.  Add only source-shaped wrappers that
-directly feed tail-event support, the remaining `sqrt X_n - sqrt X_m`
-Hellinger-tail square estimate, the HasProd/prefix-product instantiation
+directly feed tail-event support, the concrete Pythagorean overlap inequality
+`diffSq + 2 * overlap <= 2`, the tail-overlap lower bound from finite
+Hellinger products and product tails, the HasProd/prefix-product instantiation
 hypotheses consumed by the compiled normalized product-tail convergence bridge,
 or the infinite-product criterion hypotheses consumed by the compiled branch
 assemblers and eliminator.  Do
@@ -228,6 +233,7 @@ Do not redo the normalized positive-prefix product-tail convergence bridge.
 Do not redo the concrete pointwise or cylinder square-root factorization layer,
 or the concrete cylinder Cauchy handoff.
 Do not redo the `sqrt X_n + sqrt X_m` square-integral estimate.
+Do not redo the overlap-to-tail `2 * (1 - tail)` algebra bridge.
 Defer Polya urn as a
 model-specific construction unless a direct existing primitive is found.
 
@@ -614,11 +620,13 @@ L1-to-integral handoff, pairwise-liminf Cauchy-to-L1 handoff,
 Hellinger-tail-bound positive consumer, square-root/Cauchy-Schwarz Hellinger
 L1 bridge, and normalized positive-prefix product-tail convergence bridge also
 now compile.  The concrete pointwise/cylinder square-root factorization,
-concrete cylinder Cauchy handoff with the textbook factors, and the
-`sqrt X_n + sqrt X_m` square-integral estimate also now compile.  Move forward
-to the remaining `sqrt X_n - sqrt X_m` Hellinger-tail square estimate, the
-HasProd/prefix instantiation of the product-tail convergence hypotheses, and
-tail-event zero-one support for Kakutani's dichotomy.
+concrete cylinder Cauchy handoff with the textbook factors, the
+`sqrt X_n + sqrt X_m` square-integral estimate, and the overlap-to-tail
+`2 * (1 - tail)` algebra bridge also now compile.  Move forward to the
+concrete Pythagorean overlap inequality, the tail-overlap lower bound from
+finite Hellinger products/product tails, the HasProd/prefix instantiation of
+the product-tail convergence hypotheses, and tail-event zero-one support for
+Kakutani's dichotomy.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -732,6 +740,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V78` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V79` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
