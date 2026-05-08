@@ -7990,3 +7990,17 @@ non-selected fixed-`M` inverse-radius consumer.  The mathematical blocker is
 unchanged and now cleaner: either prove the selected-cover `Phi(x)=x`/finite-
 center event theorem, or prove the stochastic entropy-to-mean/UI theorem that
 justifies the selected finite-net integral input.
+
+2026-05-07 selected finite-net mean direct untruncation bridge:
+`Theorem243.lean` now proves
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_finiteNetUpper_integral_tendsto_zero`.
+This consumes the variable-domain book entropy condition together with
+ordinary mean convergence of the selected finite-net Hoeffding upper and
+feeds the existing selected fixed-radius tail/UI route through
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.toSelectedFixedRadiusTailSideConditions_of_finiteNetUpper_integral_tendsto_zero`.
+It is the direct source-facing target for the mean route: a future proof only
+has to supply selected finite-net mean convergence, not manually repackage it
+as tail/UI.  The exact generic book blocker remains the same: prove that
+selected finite-net mean convergence from the stochastic entropy argument, or
+prove the selected-cover `Phi(x)=x`/finite-center event theorem for the
+displayed-beta probability route.

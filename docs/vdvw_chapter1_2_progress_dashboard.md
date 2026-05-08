@@ -3304,3 +3304,14 @@ and then uses
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_selectedInvRadiusEntropy`.
 This keeps the active mean route on the same selected-cover object introduced
 by the textbook random empirical-cover construction.
+
+The variable-entropy mean route now has a direct untruncated consumer from
+ordinary selected finite-net mean convergence:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_finiteNetUpper_integral_tendsto_zero`.
+This composes the book-shaped entropy package with the existing
+`toSelectedFixedRadiusTailSideConditions_of_finiteNetUpper_integral_tendsto_zero`
+source bridge and then reaches the selected fixed-radius Theorem 2.4.3 route.
+The next useful target is therefore sharply stated: prove the selected
+finite-net Hoeffding-upper integral tends to zero from the stochastic entropy
+argument, or prove the selected-cover `Phi(x)=x`/finite-center event theorem
+for the probability route.
