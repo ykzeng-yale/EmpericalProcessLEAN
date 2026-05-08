@@ -10588,6 +10588,264 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedInverseLimitVarianceProxySca
       L N t V hV hXi_bound hlim
 
 /--
+Sharper pointwise scalar proxy bound for `N ≥ 1`: after using
+`((sqrt N)⁻¹)^2 = N⁻¹`, the exponential term is uniformly bounded by
+`exp (t^2 V)` and the remaining size is the scaled absolute variance
+difference.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseLimitVarianceProxyScaledDiffExp_le_const_mul_inv_mul_abs_variance_diff
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) {N : ℕ} (hN : 1 ≤ N) (t V : ℝ)
+    (k : ℕ) (ω : Ω)
+    (hV : 0 ≤ V)
+    (hXi : |S.covariance.Xi (k + 1) ω L L| ≤ V)
+    (hlim : |S.covariance_limit.S_infty L L| ≤ V) :
+    S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω ≤
+      ((t ^ 2 / 2) * Real.exp (t ^ 2 * V)) *
+        ((N : ℝ)⁻¹ *
+          |S.covariance.Xi (k + 1) ω L L -
+            S.covariance_limit.S_infty L L|) := by
+  let q : ℝ := (t * (Real.sqrt (N : ℝ))⁻¹) ^ 2
+  let xi : ℝ := S.covariance.Xi (k + 1) ω L L
+  let s : ℝ := S.covariance_limit.S_infty L L
+  let arg : ℝ := |(-((q * xi) / 2)) - (-((q * s) / 2))|
+  have hN_real_one : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
+  have hN_real_pos : 0 < (N : ℝ) := lt_of_lt_of_le zero_lt_one hN_real_one
+  have hsqrt_sq : (Real.sqrt (N : ℝ)) ^ 2 = (N : ℝ) :=
+    Real.sq_sqrt hN_real_pos.le
+  have hsqrt_ne : Real.sqrt (N : ℝ) ≠ 0 :=
+    ne_of_gt (Real.sqrt_pos.2 hN_real_pos)
+  have hinv_sqrt_sq : ((Real.sqrt (N : ℝ))⁻¹) ^ 2 = (N : ℝ)⁻¹ := by
+    field_simp [hsqrt_ne]
+    nlinarith [hsqrt_sq]
+  have hq_eq : q = t ^ 2 * (N : ℝ)⁻¹ := by
+    dsimp [q]
+    rw [mul_pow, hinv_sqrt_sq]
+  have hq_nonneg : 0 ≤ q := by
+    dsimp [q]
+    positivity
+  have hinv_nonneg : 0 ≤ (N : ℝ)⁻¹ :=
+    inv_nonneg.mpr hN_real_pos.le
+  have hinv_le_one : (N : ℝ)⁻¹ ≤ 1 :=
+    inv_le_one_of_one_le₀ hN_real_one
+  have hq_le_tsq : q ≤ t ^ 2 := by
+    rw [hq_eq]
+    calc
+      t ^ 2 * (N : ℝ)⁻¹ ≤ t ^ 2 * 1 :=
+        mul_le_mul_of_nonneg_left hinv_le_one (sq_nonneg t)
+      _ = t ^ 2 := by ring
+  have hdiff_le : |xi - s| ≤ 2 * V := by
+    calc
+      |xi - s| ≤ |xi| + |s| := by
+        simpa [sub_eq_add_neg] using abs_add_le xi (-s)
+      _ ≤ V + V := add_le_add hXi hlim
+      _ = 2 * V := by ring
+  have harg_eq : arg = (q / 2) * |xi - s| := by
+    have hq2_nonneg : 0 ≤ q / 2 := by positivity
+    calc
+      arg = |(q / 2) * (s - xi)| := by
+        dsimp [arg]
+        congr 1
+        ring
+      _ = |q / 2| * |s - xi| := abs_mul _ _
+      _ = (q / 2) * |xi - s| := by
+        rw [abs_of_nonneg hq2_nonneg, abs_sub_comm]
+  have harg_eq_scaled :
+      arg =
+        (t ^ 2 / 2) *
+          ((N : ℝ)⁻¹ * |xi - s|) := by
+    rw [harg_eq, hq_eq]
+    ring
+  have harg_le : arg ≤ t ^ 2 * V := by
+    rw [harg_eq]
+    calc
+      (q / 2) * |xi - s| ≤ (q / 2) * (2 * V) :=
+        mul_le_mul_of_nonneg_left hdiff_le (by positivity)
+      _ = q * V := by ring
+      _ ≤ t ^ 2 * V :=
+        mul_le_mul_of_nonneg_right hq_le_tsq hV
+  have harg_nonneg : 0 ≤ arg := abs_nonneg _
+  have hexp_le : Real.exp arg ≤ Real.exp (t ^ 2 * V) :=
+    Real.exp_le_exp.mpr harg_le
+  calc
+    S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω
+        = arg * Real.exp arg := by
+            simp [Chewi127BoundedMartingaleCLTSource.projectedInverseLimitVarianceProxyScaledDiffExp,
+              arg, q, xi, s]
+    _ ≤ arg * Real.exp (t ^ 2 * V) :=
+        mul_le_mul_of_nonneg_left hexp_le harg_nonneg
+    _ = ((t ^ 2 / 2) * Real.exp (t ^ 2 * V)) *
+        ((N : ℝ)⁻¹ *
+          |S.covariance.Xi (k + 1) ω L L -
+            S.covariance_limit.S_infty L L|) := by
+        rw [harg_eq_scaled]
+        simp [xi, s]
+        ring
+
+/--
+The row-weighted scalar inverse-proxy convergence follows from a stronger
+explicit row gate: the weighted `L1` absolute conditional-variance difference
+converges to zero.  This is intentionally stronger than Chewi's averaged
+covariance convergence assumption, and is useful when a later source argument
+does supply absolute row control.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integral_tendsto_zero_of_weighted_abs_variance_diff
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hweighted_abs_variance_diff_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ((N : ℝ)⁻¹ *
+                  |S.covariance.Xi (k + 1) ω L L -
+                    S.covariance_limit.S_infty L L|)) P)
+    (hweighted_abs_variance_diff :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ((N : ℝ)⁻¹ *
+                  |S.covariance.Xi (k + 1) ω L L -
+                    S.covariance_limit.S_infty L L|) ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω ∂P)
+      atTop (𝓝 0) := by
+  rcases S.projected_conditional_variance_abs_le_of_uniform_bound L with
+    ⟨B, _hB_nonneg, hXi_bound⟩
+  let V : ℝ := B ^ 2
+  let C : ℝ := (t ^ 2 / 2) * Real.exp (t ^ 2 * V)
+  have hV : 0 ≤ V := by
+    dsimp [V]
+    positivity
+  have haverage_bound :
+      ∀ N : ℕ,
+        ∀ᵐ ω ∂P,
+          |chewi127AverageConditionalVariance S.covariance.Xi N ω L| ≤ V := by
+    have hXi_all :
+        ∀ᵐ ω ∂P, ∀ k : ℕ,
+          |S.covariance.Xi (k + 1) ω L L| ≤ V := by
+      simpa [V] using ae_all_iff.2 hXi_bound
+    intro N
+    filter_upwards [hXi_all] with ω hω
+    exact chewi127AverageConditionalVariance_abs_le_of_row_bound
+      S.covariance.Xi N ω L hV (fun k _hk => hω k)
+  have hlim : |S.covariance_limit.S_infty L L| ≤ V :=
+    S.projected_covariance_limit_abs_le_of_average_bound L haverage_bound
+  have hXi_all :
+      ∀ᵐ ω ∂P, ∀ k : ℕ,
+        |S.covariance.Xi (k + 1) ω L L| ≤ V := by
+    simpa [V] using ae_all_iff.2 hXi_bound
+  have hupper_tendsto :
+      Tendsto
+        (fun N : ℕ =>
+          C *
+            ∫ ω,
+              ∑ k ∈ Finset.range N,
+                (k : ℝ) *
+                  ((N : ℝ)⁻¹ *
+                    |S.covariance.Xi (k + 1) ω L L -
+                      S.covariance_limit.S_infty L L|) ∂P)
+        atTop (𝓝 0) := by
+    simpa [C] using hweighted_abs_variance_diff.const_mul C
+  refine squeeze_zero'
+    (Eventually.of_forall fun N =>
+      integral_nonneg fun ω =>
+        Finset.sum_nonneg fun k _hk =>
+          mul_nonneg (Nat.cast_nonneg k)
+            (S.projectedInverseLimitVarianceProxyScaledDiffExp_nonneg L N t k ω))
+    ?_ hupper_tendsto
+  filter_upwards [eventually_ge_atTop (1 : ℕ)] with N hN
+  have hleft_int :
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω) P :=
+    S.projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integrable_of_uniform_bound
+      L N t
+  calc
+    ∫ ω,
+      ∑ k ∈ Finset.range N,
+        (k : ℝ) *
+          S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω ∂P
+        ≤ ∫ ω,
+          C *
+            (∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ((N : ℝ)⁻¹ *
+                  |S.covariance.Xi (k + 1) ω L L -
+                    S.covariance_limit.S_infty L L|)) ∂P := by
+            refine integral_mono_ae hleft_int
+              ((hweighted_abs_variance_diff_int N).const_mul C) ?_
+            filter_upwards [hXi_all] with ω hXiω
+            have hsum_le :
+                (∑ k ∈ Finset.range N,
+                  (k : ℝ) *
+                    S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω)
+                  ≤
+                C *
+                  (∑ k ∈ Finset.range N,
+                    (k : ℝ) *
+                      ((N : ℝ)⁻¹ *
+                        |S.covariance.Xi (k + 1) ω L L -
+                          S.covariance_limit.S_infty L L|)) := by
+              calc
+                (∑ k ∈ Finset.range N,
+                  (k : ℝ) *
+                    S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω)
+                    ≤
+                  ∑ k ∈ Finset.range N,
+                    (k : ℝ) *
+                      (C *
+                        ((N : ℝ)⁻¹ *
+                          |S.covariance.Xi (k + 1) ω L L -
+                            S.covariance_limit.S_infty L L|)) := by
+                    refine Finset.sum_le_sum ?_
+                    intro k _hk
+                    exact mul_le_mul_of_nonneg_left
+                      (S.projectedInverseLimitVarianceProxyScaledDiffExp_le_const_mul_inv_mul_abs_variance_diff
+                        L hN t V k ω hV (hXiω k) hlim)
+                      (Nat.cast_nonneg k)
+                _ =
+                  C *
+                    (∑ k ∈ Finset.range N,
+                      (k : ℝ) *
+                        ((N : ℝ)⁻¹ *
+                          |S.covariance.Xi (k + 1) ω L L -
+                            S.covariance_limit.S_infty L L|)) := by
+                    rw [Finset.mul_sum]
+                    refine Finset.sum_congr rfl ?_
+                    intro k _hk
+                    ring
+            exact hsum_le
+    _ = C *
+        ∫ ω,
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ((N : ℝ)⁻¹ *
+                |S.covariance.Xi (k + 1) ω L L -
+                  S.covariance_limit.S_infty L L|) ∂P := by
+        rw [integral_const_mul]
+
+/--
 Source-bounded version of the inverse-factor weighted error reduction: only the
 scalar variance-difference exponential convergence remains as an input.
 -/
@@ -16943,6 +17201,104 @@ theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVariancePr
       S.projectedCompensatedTaylorError_weighted_row_integral_tendsto_zero_of_variance_remainder
         L t (hvariance_error_int L t) (hremainder_int L t)
         (hvariance_error L t) (hremainder_error L t))
+    hInitial hRemainder hInitial_meas hRemainder_meas hDecomp
+
+/--
+Source-facing Chewi Theorem 12.3 ASGD limit package from an explicit weighted
+absolute conditional-variance difference gate.  This theorem packages the
+sharper scalar proxy estimate with the existing weighted variance-error and
+Taylor-remainder endpoint.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hweighted_abs_variance_diff_int :
+      ∀ L : StrongDual ℝ E, ∀ _t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ((N : ℝ)⁻¹ *
+                  |S.covariance.Xi (k + 1) ω L L -
+                    S.covariance_limit.S_infty L L|)) P)
+    (hweighted_abs_variance_diff :
+      ∀ L : StrongDual ℝ E, ∀ _t : ℝ,
+        Tendsto
+          (fun N : ℕ =>
+            ∫ ω,
+              ∑ k ∈ Finset.range N,
+                (k : ℝ) *
+                  ((N : ℝ)⁻¹ *
+                    |S.covariance.Xi (k + 1) ω L L -
+                      S.covariance_limit.S_infty L L|) ∂P)
+          atTop (𝓝 0))
+    (hvariance_error_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+        Tendsto
+          (fun N : ℕ =>
+            ∫ ω,
+              ∑ k ∈ Finset.range N,
+                (k : ℝ) *
+                  ‖S.projectedCompensationFactor L N t k ω *
+                      S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+          atTop (𝓝 0))
+    (hremainder_error :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+        Tendsto
+          (fun N : ℕ =>
+            ∫ ω,
+              ∑ k ∈ Finset.range N,
+                (k : ℝ) *
+                  ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+          atTop (𝓝 0))
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K :=
+  S.asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+    Ainv hmean
+    (fun L t =>
+      S.projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integral_tendsto_zero_of_weighted_abs_variance_diff
+        L t (hweighted_abs_variance_diff_int L t)
+        (hweighted_abs_variance_diff L t))
+    hvariance_error_int hremainder_int hvariance_error hremainder_error
     hInitial hRemainder hInitial_meas hRemainder_meas hDecomp
 
 /--

@@ -225,6 +225,17 @@ weighted variance-error and weighted Taylor-remainder rows.  The scalar proxy
 route now exposes only the scalar inverse-proxy convergence plus those two
 weighted source-error convergence assumptions; do not ask callers separately
 for compensated Taylor weighted-error convergence.
+Newest weighted absolute variance-difference bridge: `ASGD.lean` now proves
+`projectedInverseLimitVarianceProxyScaledDiffExp_le_const_mul_inv_mul_abs_variance_diff`,
+`projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integral_tendsto_zero_of_weighted_abs_variance_diff`,
+and the source-facing endpoint
+`asgd_limit_package_of_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
+This closes the scalar-proxy lane whenever a caller can provide the explicit
+row-weighted `L1` absolute variance-difference gate.  It does not turn Chewi's
+plain averaged covariance convergence into an absolute row estimate; for the
+source Theorem 12.7 route under only averaged covariance convergence, keep
+using the compensated full-inverse/product or direct future-multiplier residual
+lanes.
 The newest residual-estimate packet extracts the actual row-summed residual
 handoffs as reusable theorems:
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
@@ -261,15 +272,16 @@ Exercises live only in `StatInference/Optimization/Exercises.lean` and must not
 consume the main theorem packet unless they unlock a main-text proof.
 
 Current frontier: the active module is `StatInference/Optimization/ASGD.lean`;
-the active source packet is Chapter 12 ASGD Theorem 12.7/12.3.  The next
-aggressive Lean target is to prove, from the source conditional variance
-convergence assumptions already present in the ASGD structure, the weighted
-row convergence of
-`projectedInverseLimitVarianceProxyScaledDiffExp`; after that, combine it with
-weighted variance-error/Taylor-remainder assumptions via
-`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
-If that scalar variance-difference estimate balloons, fall back to the direct
-future-multiplier residual route rather than rebuilding old proxy algebra.
+the active source packet is Chapter 12 ASGD Theorem 12.7/12.3.  The scalar
+proxy lane is now packaged through the explicit weighted absolute
+variance-difference gate above.  The next aggressive Lean target should not
+invent another scalar proxy wrapper; it should either prove a real source-side
+row-summed `L1` predictability/residual estimate for the direct
+future-multiplier route, or, if a stronger absolute row hypothesis is being
+formalized, feed it through
+`asgd_limit_package_of_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
+Under only Chewi's averaged covariance convergence, prefer the compensated
+full-inverse/product or direct future-multiplier residual route.
 The stable ASGD stack now includes the
 conditional residual/correlation primitives
 `integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left` and

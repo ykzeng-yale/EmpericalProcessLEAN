@@ -79,6 +79,14 @@ The scalar-proxy endpoint
 also reuses the weighted compensated-error theorem from the variance-error and
 Taylor-remainder rows, so that route no longer exposes a separate compensated
 Taylor weighted-error assumption.
+The stronger absolute-row closure of this lane is now compiled too:
+`projectedInverseLimitVarianceProxyScaledDiffExp_le_const_mul_inv_mul_abs_variance_diff`,
+`projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integral_tendsto_zero_of_weighted_abs_variance_diff`,
+and
+`asgd_limit_package_of_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
+Use it only when the source layer provides an explicit weighted `L1` absolute
+variance-difference estimate.  It is not a replacement for the compensated
+full-inverse/product route under Chewi's plain averaged covariance convergence.
 The residual layer now exposes
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,

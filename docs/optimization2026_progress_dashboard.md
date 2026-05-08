@@ -164,6 +164,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   theorems, so callers provide scalar inverse-proxy convergence plus weighted
   variance-error/Taylor-remainder convergence, not a separate compensated
   Taylor weighted-error assumption.
+- Weighted absolute variance-difference bridge: the newest ASGD packet adds
+  `projectedInverseLimitVarianceProxyScaledDiffExp_le_const_mul_inv_mul_abs_variance_diff`,
+  `projectedInverseLimitVarianceProxyScaledDiffExp_weighted_row_integral_tendsto_zero_of_weighted_abs_variance_diff`,
+  and
+  `asgd_limit_package_of_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
+  This gives a compiled closure of the scalar proxy lane from an explicit
+  row-weighted `L1` absolute variance-difference gate, while preserving the
+  warning that Chewi's averaged covariance convergence alone is not this gate.
 - Residual-estimate extraction: the newest ASGD packet adds
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
