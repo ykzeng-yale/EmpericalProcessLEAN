@@ -177,6 +177,13 @@ future-multiplier defect layer
 `projectedFutureMultiplierResidualProduct_integral_le_two_mul_futureResidual_integral`,
 `projectedFutureMultiplierResidualProduct_row_sum_le_two_mul_futureResidual_row_sum`,
 `projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_l1_residual_sum`,
+`projectedMixedTowerFutureTail`,
+`projectedMixedTowerFutureTail_integrable_of_uniform_bound`,
+`projectedMixedTowerFutureMultiplier_condExp_eq_rawPrefix_mul_tailCondExp`,
+`projectedMixedTowerFutureMultiplier_residual_norm_le_tail_residual_ae`,
+`projectedMixedTowerFutureMultiplier_l1_residual_le_tail_l1_residual`,
+`projectedMixedTowerFutureMultiplier_l1_residual_row_sum_le_tail_l1_residual_row_sum`,
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum`,
 and
 `projected_charFun_tendsto_exp_of_futureMultiplier_residual_sum`, the
 conditional Taylor-remainder row convergence from `a94b579` and the
@@ -312,16 +319,18 @@ plus the normalized compensated-product bridge:
 and
 `projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
 
-Next theorem packet: prove the future-multiplier L1 residual row-sum convergence
+Next theorem packet: prove the future-tail L1 residual row-sum convergence
 consumed by
-`projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_l1_residual_sum`.
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum`.
 All raw current-step, normalized current-step, raw residual, conditional future-
 multiplier residual, and source boundedness integrability gates are already
 discharged; the raw-step residual has also been uniformly bounded by two, so
 the product row-sum is reduced to twice the future-multiplier L1 residual
-row-sum.  Do not re-prove these reductions.  The next genuine estimate should
-control `M - E[M | F_r]` for the mixed future multiplier.  That will prove the
-standard compensated martingale defect bound
+row-sum, and the raw characteristic prefix has been pulled out of the
+future-multiplier conditional expectation.  Do not re-prove these reductions.
+The next genuine estimate should control the normalized future tail
+`T_{N,r} - E[T_{N,r} | F_r]`.  That will prove the standard compensated
+martingale defect bound
 `Tendsto (fun N => ∑ r in Finset.range N,
 S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`.  After that, feed
 `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`
@@ -450,6 +459,11 @@ a.e. bounded by two, and reduces the full residual product row-sum to twice the
 future-multiplier L1 residual row-sum.  The active blocker is now only the
 future-multiplier unpredictability estimate
 `∑_r ∫ ‖M_{N,r} - E[M_{N,r} | F_r]‖ -> 0`.
+The newest future-tail reduction names the normalized future tail, proves its
+integrability, pulls the raw prefix out of
+`E[rawPrefix * futureTail | F_r]`, and bounds the future-multiplier residual by
+the future-tail residual.  The active blocker is now only
+`∑_r ∫ ‖T_{N,r} - E[T_{N,r} | F_r]‖ -> 0` for the normalized future tails.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform

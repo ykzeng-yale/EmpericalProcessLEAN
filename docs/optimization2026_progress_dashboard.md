@@ -500,11 +500,22 @@ This dashboard tracks the Chewi optimization formalization lane for
   `projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_l1_residual_sum`.
   This reduces the future-multiplier residual product row-sum to twice the
   future-multiplier L1 residual row-sum.
+  The newest future-tail reduction proves
+  `projectedMixedTowerFutureTail`,
+  `projectedMixedTowerFutureTail_integrable_of_uniform_bound`,
+  `projectedMixedTowerFutureMultiplier_condExp_eq_rawPrefix_mul_tailCondExp`,
+  `projectedMixedTowerFutureMultiplier_residual_norm_le_tail_residual_ae`,
+  `projectedMixedTowerFutureMultiplier_l1_residual_le_tail_l1_residual`,
+  `projectedMixedTowerFutureMultiplier_l1_residual_row_sum_le_tail_l1_residual_row_sum`,
+  and
+  `projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum`.
+  This pulls out the predictable raw prefix and leaves only normalized
+  future-tail L1 unpredictability.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
-  earlier `F_r` for `r < k`.  Next target: prove the future-multiplier L1
+  earlier `F_r` for `r < k`.  Next target: prove the normalized future-tail L1
   residual row-sum convergence, not another future-tail measurability wrapper,
-  integrability adapter, or raw-residual product estimate.
+  prefix pull-out, integrability adapter, or raw-residual product estimate.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
@@ -1163,9 +1174,18 @@ The residual-reduction bridge also contains
 `projectedFutureMultiplierResidualProduct_row_sum_le_two_mul_futureResidual_row_sum`,
 and
 `projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_l1_residual_sum`.
-Next theorem-sized packet: prove the future-multiplier L1 residual row-sum
+The future-tail reduction also contains
+`projectedMixedTowerFutureTail`,
+`projectedMixedTowerFutureTail_integrable_of_uniform_bound`,
+`projectedMixedTowerFutureMultiplier_condExp_eq_rawPrefix_mul_tailCondExp`,
+`projectedMixedTowerFutureMultiplier_residual_norm_le_tail_residual_ae`,
+`projectedMixedTowerFutureMultiplier_l1_residual_le_tail_l1_residual`,
+`projectedMixedTowerFutureMultiplier_l1_residual_row_sum_le_tail_l1_residual_row_sum`,
+and
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum`.
+Next theorem-sized packet: prove the normalized future-tail L1 residual row-sum
 convergence consumed by
-`projectedMixedTowerDefect_sum_tendsto_zero_of_futureMultiplier_l1_residual_sum`,
+`projectedMixedTowerDefect_sum_tendsto_zero_of_futureTail_l1_residual_sum`,
 then feed the existing Chewi Theorem 12.7/12.3 ASGD certificate constructors.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw
 tower-peel tasks, or already-compiled ASGD integrability/measurability wrappers
