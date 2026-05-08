@@ -153,7 +153,17 @@ compensated one-step/error interface:
 `one_add_projectedCompensatedTaylorErrorFactor`,
 `projectedCompensatedTaylorErrorFactor_norm_le`,
 `projectedCompensatedTaylorErrorFactor_row_norm_le`, and
-`projected_charFun_compensated_taylor_step_mul_scaled`, plus the product-to-one
+`projected_charFun_compensated_taylor_step_mul_scaled`, plus the adapted
+compensated-prefix layer
+`Chewi127ConditionalCovarianceProcess.Xi_succ_filtration_aestronglyMeasurable`,
+`projectedCompensationPrefixProduct`,
+`projectedCompensatedRawPrefixProduct`,
+`projectedCompensationPrefixProduct_zero`,
+`projectedCompensatedRawPrefixProduct_zero`,
+`projectedCompensationFactor_filtration_aestronglyMeasurable`,
+`projectedCompensationPrefixProduct_aestronglyMeasurable_of_le`,
+`projectedCompensatedRawPrefixProduct_aestronglyMeasurable_of_le`, and
+`projectedCompensatedRawPrefixProduct_integral_succ_eq`; the product-to-one
 bridges `StatInference.norm_prod_one_add_sub_one_le_sum_norm`,
 `StatInference.product_one_add_tendsto_one_of_sum_norm`,
 `chewi127_integral_product_one_add_tendsto_one_of_integral_sum_norm`, and
@@ -263,9 +273,12 @@ plus the normalized compensated-product bridge:
 and
 `projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
 
-Next theorem packet: prove the standard compensated martingale defect bound
+Next theorem packet: use the new adapted compensated-prefix one-step identity
+`projectedCompensatedRawPrefixProduct_integral_succ_eq` to accumulate the
+finite compensated-prefix iteration, then convert that telescope into the
+standard compensated martingale defect bound
 `Tendsto (fun N => ∑ r in Finset.range N,
-S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`, then feed
+S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`.  After that, feed
 `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`
 into the existing scalar/vector ASGD certificate constructors.  The one-step
 normalized peel, inverse-compensation algebra, and bounded-continuous
@@ -350,6 +363,13 @@ and provides the convergence adapter
 `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`.
 This is now the preferred no-false-predictability route: prove the defect sum
 vanishes using the compensated martingale prefix argument.
+The newest adapted compensated-prefix packet adds `F_k` measurability for
+compensation factors, later-filtration measurability for compensation prefixes
+and compensated raw prefixes, and the forward one-step identity that replaces
+the next raw factor plus its current compensation by `1 +` the compensated
+Taylor error.  This is the substrate for the finite compensated-prefix
+iteration; the remaining work is accumulation and comparison to the mixed
+defect sum, not another local measurability wrapper.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform
@@ -361,8 +381,9 @@ multiplier integrability wrapper, prefix-times-tail measurability wrapper,
 future-tail scalar CLT wrapper, certificate-level future-tail bridge, or
 ASGD future-tail endpoint wrapper, factorwise future-tail product wrapper,
 forward normalized-factor measurability wrapper, mixed terminal measurability or
-integrability wrapper, mixed-tower defect telescope/decomposition adapter, or
-generic weak-convergence wrapper.
+integrability wrapper, mixed-tower defect telescope/decomposition adapter,
+compensated-prefix adaptedness wrapper, compensated raw-prefix one-step
+identity, or generic weak-convergence wrapper.
 The variance
 side is now source-facing:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
@@ -404,6 +425,11 @@ martingale product theorem was found in pinned mathlib or local
 `StronglyAdapted.stronglyMeasurable_le`, `Finset.aestronglyMeasurable_prod`,
 `integral_sub`, `integral_congr_ae`, `norm_integral_le_integral_norm`, and
 local product bounds in `StatInference/ProbabilityTheory/ProductBounds.lean`.
+For the adapted compensated-prefix route, reuse
+`Chewi127ConditionalCovarianceProcess.Xi_succ_filtration_aestronglyMeasurable`,
+`AEStronglyMeasurable.mono`, finite-product induction over `Finset.range`, and
+`projected_charFun_compensated_taylor_step_mul_scaled`; do not redo conditional
+covariance or compensation-factor measurability.
 For the normalized-control route, reuse mathlib `norm_condExp_le`,
 `condExp_const`, `condExp_congr_ae`, `stronglyMeasurable_condExp`, and
 `integrable_condExp`.  The inverse-product route now reuses mathlib
@@ -417,6 +443,7 @@ substitution, product measurability/integrability, finite product bounds, or
 conditional Taylor-remainder row convergence.  Reuse
 `projected_charFun_taylor_step_mul_scaled`,
 `projected_charFun_compensated_taylor_step_mul_scaled`,
+`projectedCompensatedRawPrefixProduct_integral_succ_eq`,
 `projected_remainder_row_integral_tendsto_zero`, the named projected variance
 and remainder/compensation/error factors, the compensated error norm split,
 the product-to-one, row-error, and compensation-bound bridges,

@@ -2311,6 +2311,65 @@ noncomputable def Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFa
     (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)
 
 /--
+Forward product of compensation factors through the first `m` projected
+martingale increments.  This is the adapted prefix used by the compensated
+martingale route for Chewi Theorem 12.7.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedCompensationPrefixProduct
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (m : ℕ) (ω : Ω) : ℂ :=
+  ∏ k ∈ Finset.range m, S.projectedCompensationFactor L N t k ω
+
+/--
+Forward compensated raw characteristic-function prefix: raw martingale
+characteristic factors multiplied by the matching compensation factors already
+revealed by time `m`.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedCompensatedRawPrefixProduct
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (m : ℕ) (ω : Ω) : ℂ :=
+  chewi127ScalarCharFunProduct
+      (fun k ω => L (S.martingale.xi k ω)) m
+      (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+    S.projectedCompensationPrefixProduct L N t m ω
+
+/-- The empty compensation prefix is one. -/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensationPrefixProduct_zero
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (ω : Ω) :
+    S.projectedCompensationPrefixProduct L N t 0 ω = 1 := by
+  simp [Chewi127BoundedMartingaleCLTSource.projectedCompensationPrefixProduct]
+
+/-- The empty compensated raw prefix is one. -/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedRawPrefixProduct_zero
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (ω : Ω) :
+    S.projectedCompensatedRawPrefixProduct L N t 0 ω = 1 := by
+  simp [Chewi127BoundedMartingaleCLTSource.projectedCompensatedRawPrefixProduct,
+    Chewi127BoundedMartingaleCLTSource.projectedCompensationPrefixProduct,
+    chewi127ScalarCharFunProduct]
+
+/--
 The compensated factor is exactly `1 +` the named one-step error.  This small
 algebraic identity is the normalization used in the finite compensated
 iteration.
@@ -2535,6 +2594,26 @@ theorem Chewi127ConditionalCovarianceProcess.Xi_succ_aemeasurable
     AEMeasurable (fun ω => C.Xi (n + 1) ω L K) P := by
   exact AEMeasurable.congr integrable_condExp.aemeasurable
     (C.conditional_second_moment n L K)
+
+/--
+The conditional covariance coordinate `Xi_{n+1}(L,K)` is measurable at the
+natural previous filtration level `F_n`, up to the a.e. representative supplied
+by conditional expectation.
+-/
+theorem Chewi127ConditionalCovarianceProcess.Xi_succ_filtration_aestronglyMeasurable
+    {Ω E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    (C : Chewi127ConditionalCovarianceProcess Ω E P)
+    (n : ℕ) (L K : StrongDual ℝ E) :
+    AEStronglyMeasurable[C.filtration n]
+      (fun ω => C.Xi (n + 1) ω L K) P := by
+  have hcond :
+      AEStronglyMeasurable[C.filtration n]
+        (P[fun ω => L (C.xi (n + 1) ω) * K (C.xi (n + 1) ω) |
+          C.filtration n]) P :=
+    stronglyMeasurable_condExp.aestronglyMeasurable
+  exact hcond.congr (C.conditional_second_moment n L K)
 
 /--
 Finite averages of the supplied conditional covariance coordinates are
@@ -3566,6 +3645,124 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_aestrongl
     harg_real.complex_ofReal.cexp
   simpa [Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor]
     using hexp.aestronglyMeasurable
+
+/--
+Each compensation factor is measurable at its natural filtration level `F_k`.
+This is the adapted counterpart of the global measurability lemma and is the
+basic building block for forward compensated-prefix products.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_filtration_aestronglyMeasurable
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) :
+    AEStronglyMeasurable[S.martingale.filtration k]
+      (fun ω => S.projectedCompensationFactor L N t k ω) P := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  have hxi_cov :
+      AEStronglyMeasurable[S.covariance.filtration k]
+        (fun ω => S.covariance.Xi (k + 1) ω L L) P :=
+    S.covariance.Xi_succ_filtration_aestronglyMeasurable k L L
+  have hxi :
+      AEStronglyMeasurable[S.martingale.filtration k]
+        (fun ω => S.covariance.Xi (k + 1) ω L L) P := by
+    rw [← S.same_filtration]
+    exact hxi_cov
+  have harg_real' :
+      AEStronglyMeasurable[S.martingale.filtration k]
+        (fun ω => (a ^ 2 / 2) * S.covariance.Xi (k + 1) ω L L) P :=
+    hxi.const_mul (a ^ 2 / 2)
+  have harg_real :
+      AEStronglyMeasurable[S.martingale.filtration k]
+        (fun ω => ((a ^ 2 * S.covariance.Xi (k + 1) ω L L) / 2 : ℝ)) P := by
+    convert harg_real' using 1
+    ext ω
+    ring
+  have hcomplex :
+      AEStronglyMeasurable[S.martingale.filtration k]
+        (fun ω => (((a ^ 2 * S.covariance.Xi (k + 1) ω L L) / 2 : ℝ) : ℂ)) P :=
+    Complex.continuous_ofReal.comp_aestronglyMeasurable harg_real
+  have hexp :
+      AEStronglyMeasurable[S.martingale.filtration k]
+        (fun ω =>
+          Complex.exp
+            (((a ^ 2 * S.covariance.Xi (k + 1) ω L L) / 2 : ℝ) : ℂ)) P :=
+    Complex.continuous_exp.comp_aestronglyMeasurable hcomplex
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor, a]
+    using hexp
+
+/--
+The forward compensation prefix through time `m` is measurable at every later
+filtration level.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensationPrefixProduct_aestronglyMeasurable_of_le
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (m tIndex : ℕ)
+    (hm : m ≤ tIndex) :
+    AEStronglyMeasurable[S.martingale.filtration tIndex]
+      (fun ω => S.projectedCompensationPrefixProduct L N t m ω) P := by
+  have hprod :
+      ∀ s : Finset ℕ, (∀ k ∈ s, k ≤ tIndex) ->
+        AEStronglyMeasurable[S.martingale.filtration tIndex]
+          (fun ω => ∏ k ∈ s,
+            S.projectedCompensationFactor L N t k ω) P := by
+    intro s
+    refine Finset.induction_on s ?empty ?insert
+    · intro _hs
+      simpa using aestronglyMeasurable_const
+    · intro k s hks ih hs_insert
+      have hk_le : k ≤ tIndex := hs_insert k (Finset.mem_insert_self k s)
+      have hs_tail : ∀ j ∈ s, j ≤ tIndex := fun j hj =>
+        hs_insert j (Finset.mem_insert_of_mem hj)
+      have hfactor :
+          AEStronglyMeasurable[S.martingale.filtration tIndex]
+            (fun ω => S.projectedCompensationFactor L N t k ω) P :=
+        (S.projectedCompensationFactor_filtration_aestronglyMeasurable L N t k).mono
+          (S.martingale.filtration.mono hk_le)
+      have hrest := ih hs_tail
+      simpa [Finset.prod_insert hks] using hfactor.mul hrest
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedCompensationPrefixProduct]
+    using hprod (Finset.range m) (fun k hk =>
+      (Nat.lt_of_lt_of_le (Finset.mem_range.mp hk) hm).le)
+
+/--
+The forward compensated raw prefix is adapted: once `m <= tIndex`, the product
+of raw characteristic factors and compensation factors through time `m` is
+measurable at `F_tIndex`.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedRawPrefixProduct_aestronglyMeasurable_of_le
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (m tIndex : ℕ)
+    (hm : m ≤ tIndex) :
+    AEStronglyMeasurable[S.martingale.filtration tIndex]
+      (fun ω => S.projectedCompensatedRawPrefixProduct L N t m ω) P := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  have hraw :
+      AEStronglyMeasurable[S.martingale.filtration tIndex]
+        (chewi127ScalarCharFunProduct
+          (fun k ω => L (S.martingale.xi k ω)) m a) P :=
+    (S.martingale.projected_charFun_prefix_aestronglyMeasurable L m a).mono
+      (S.martingale.filtration.mono hm)
+  have hcomp :
+      AEStronglyMeasurable[S.martingale.filtration tIndex]
+        (fun ω => S.projectedCompensationPrefixProduct L N t m ω) P :=
+    S.projectedCompensationPrefixProduct_aestronglyMeasurable_of_le
+      L N t m tIndex hm
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedCompensatedRawPrefixProduct,
+    a] using hraw.mul hcomp
 
 /--
 The variance-only Taylor factor is a.e.-strongly-measurable.
@@ -4695,6 +4892,74 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_compensated_taylor_
             A ω * (1 + S.projectedCompensatedTaylorErrorFactor L N t n ω)
           rw [S.one_add_projectedCompensatedTaylorErrorFactor L N t n ω]
           ring
+
+/--
+Forward compensated-prefix one-step identity.  This is the adapted compensated
+martingale transition: the next raw characteristic factor plus its current
+compensation factor is replaced by `1 +` the compensated Taylor error.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensatedRawPrefixProduct_integral_succ_eq
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N m : ℕ) (t : ℝ)
+    (hAcomp_int :
+      Integrable
+        (fun ω =>
+          S.projectedCompensatedRawPrefixProduct L N t m ω *
+            S.projectedCompensationFactor L N t m ω) P)
+    (hsq : Integrable
+      (fun ω => (L (S.martingale.xi (m + 1) ω)) ^ 2) P)
+    (hremainder : Integrable
+      (chewi127ScalarCharFunTaylorRemainder
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        (fun ω => L (S.martingale.xi (m + 1) ω))) P) :
+    (∫ ω,
+        S.projectedCompensatedRawPrefixProduct L N t (m + 1) ω ∂P) =
+      ∫ ω,
+        S.projectedCompensatedRawPrefixProduct L N t m ω *
+          (1 + S.projectedCompensatedTaylorErrorFactor L N t m ω) ∂P := by
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  let Z : Ω -> ℂ := fun ω => S.projectedCompensatedRawPrefixProduct L N t m ω
+  have hZ_meas :
+      AEStronglyMeasurable[S.martingale.filtration m] Z P := by
+    simpa [Z] using
+      S.projectedCompensatedRawPrefixProduct_aestronglyMeasurable_of_le
+        L N t m m le_rfl
+  have hcomp_meas :
+      AEStronglyMeasurable[S.martingale.filtration m]
+        (fun ω => S.projectedCompensationFactor L N t m ω) P :=
+    S.projectedCompensationFactor_filtration_aestronglyMeasurable L N t m
+  have hAcomp_meas :
+      AEStronglyMeasurable[S.martingale.filtration m]
+        (fun ω => Z ω * S.projectedCompensationFactor L N t m ω) P :=
+    hZ_meas.mul hcomp_meas
+  have hstep :=
+    S.projected_charFun_compensated_taylor_step_mul_scaled
+      L N m t Z hAcomp_meas
+      (by simpa [Z] using hAcomp_int) hsq hremainder
+  calc
+    (∫ ω,
+        S.projectedCompensatedRawPrefixProduct L N t (m + 1) ω ∂P)
+        = ∫ ω,
+            Z ω * S.projectedCompensationFactor L N t m ω *
+              chewi127ScalarCharFunFactor a
+                (fun ω => L (S.martingale.xi (m + 1) ω)) ω ∂P := by
+          refine integral_congr_ae <| ae_of_all P fun ω => ?_
+          simp [Z,
+            Chewi127BoundedMartingaleCLTSource.projectedCompensatedRawPrefixProduct,
+            Chewi127BoundedMartingaleCLTSource.projectedCompensationPrefixProduct,
+            chewi127ScalarCharFunProduct, Finset.prod_range_succ, a]
+          ring
+    _ = ∫ ω,
+        Z ω * (1 + S.projectedCompensatedTaylorErrorFactor L N t m ω) ∂P := hstep
+    _ = ∫ ω,
+        S.projectedCompensatedRawPrefixProduct L N t m ω *
+          (1 + S.projectedCompensatedTaylorErrorFactor L N t m ω) ∂P := by
+          rfl
 
 /--
 Normalized one-step tower peel.  This is the exact algebraic form needed for

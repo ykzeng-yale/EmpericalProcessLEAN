@@ -319,6 +319,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero_add_defect_sum`,
   `Chewi127BoundedMartingaleCLTSource.projected_scalarScaledSum_charFun_eq_integral_normalized_product_add_mixedTowerDefect_sum`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`,
+  `Chewi127ConditionalCovarianceProcess.Xi_succ_filtration_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationPrefixProduct`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedRawPrefixProduct`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationPrefixProduct_zero`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedRawPrefixProduct_zero`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_filtration_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationPrefixProduct_aestronglyMeasurable_of_le`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedRawPrefixProduct_aestronglyMeasurable_of_le`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedRawPrefixProduct_integral_succ_eq`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -427,9 +436,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   exact characteristic-function decomposition as normalized-product integral
   plus defect sum, and adds the convergence adapter
   `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`.
+  The newest adapted compensated-prefix packet adds the compensation prefix and
+  compensated raw prefix, proves their natural filtration measurability, and
+  proves the forward one-step identity replacing the next raw characteristic
+  factor plus current compensation by `1 +` the compensated Taylor error.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
-  earlier `F_r` for `r < k`.  Next target: prove the compensated martingale
+  earlier `F_r` for `r < k`.  Next target: accumulate the finite
+  compensated-prefix iteration and use it to prove the compensated martingale
   defect-sum bound, not another future-tail measurability wrapper.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
@@ -1054,8 +1068,11 @@ covariance-limit abs-bound, inverse-compensation product convergence, guarded
 finite mixed-product tower, source-facing future-tail CLT/certificate wrappers,
 honest `F_k`/`F_N` normalized-factor measurability, and terminal
 measurability/integrability of the raw-prefix/normalized-tail split product,
-and the explicit mixed-tower defect decomposition/adaptor.  Next theorem-sized
-packet: prove the compensated martingale defect-sum bound consumed by
+the explicit mixed-tower defect decomposition/adaptor, and the adapted
+compensated-prefix one-step identity
+`projectedCompensatedRawPrefixProduct_integral_succ_eq`.  Next theorem-sized
+packet: accumulate the finite compensated-prefix iteration and use it to prove
+the compensated martingale defect-sum bound consumed by
 `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`,
 then feed the existing Chewi Theorem 12.7/12.3 ASGD certificate constructors.
 Do not return to old Chapter 3, SMPGD source probability packaging, raw
