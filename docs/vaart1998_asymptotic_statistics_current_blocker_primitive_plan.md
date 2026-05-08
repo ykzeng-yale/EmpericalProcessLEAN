@@ -10,19 +10,18 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapFDerivVectorContinuityTaylor_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0FDerivVectorTaylor_envelope`.
 It already packages the finite-coordinate empirical score, derivative,
 Hessian action, estimating equation, envelope hypotheses, common normalizing
 scalar, the actual segment `theta0 + t • delta`, endpoint identification,
 Frechet differentiability of the estimating map along the segment,
 coordinate path derivatives by the chain rule, vector-valued path continuity,
-and vector derivative Taylor hypotheses into the compiled Theorem 5.41
-probability handoff.
+the empirical derivative specialized to `derivativeAt theta0`, and vector
+derivative Taylor hypotheses into the compiled Theorem 5.41 probability handoff.
 
-Next packet only: instantiate the remaining vector source obligations:
-`derivativeAt theta0 = derivative`, and the vector derivative Taylor identity
-from the chosen second-derivative action.  Do not revisit the solved
-vector-to-coordinate continuity reduction, coordinate scalar
+Next packet only: instantiate the vector derivative Taylor identity from the
+chosen second-derivative action.  Do not revisit the solved `derivativeAt theta0`
+specialization, vector-to-coordinate continuity reduction, coordinate scalar
 derivative-at-zero/display reduction, Frechet-to-one-dimensional chain rule,
 estimating-map segment instantiation, second-derivative action matching,
 path-selected Taylor bridge, coordinate assembly, scalar Taylor bridge,
@@ -825,18 +824,20 @@ compiling:
 296. Theorem 5.41 finite-coordinate empirical-average source handoff from
    vector continuity and vector Taylor hypotheses:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapFDerivVectorContinuityTaylor_envelope`.
+297. Theorem 5.41 finite-coordinate empirical-average source handoff with the
+   empirical derivative specialized to `derivativeAt theta0`:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0FDerivVectorTaylor_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 vector continuity Taylor handoff`).
+(`Add Vaart theorem 5.41 theta0 Frechet derivative handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by replacing coordinate path
-continuity with vector-valued path continuity and projecting coordinates by
-continuous evaluation.
+asymptotic-normality route for Z-estimators by specializing the empirical
+derivative to the Frechet derivative at `theta0`, making
+`derivativeAt theta0 = derivative` definitional.
 
-The next aggressive packet should instantiate the remaining vector source
-obligations: `derivativeAt theta0 = derivative` and the vector derivative
-Taylor identity from the selected second-derivative action.
+The next aggressive packet should instantiate the vector derivative Taylor
+identity from the selected second-derivative action.
 
 ## Execution Notes
 

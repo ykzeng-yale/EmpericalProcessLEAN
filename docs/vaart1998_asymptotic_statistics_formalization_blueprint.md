@@ -583,9 +583,10 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapFDerivVectorTaylor_envelope`,
   and the vector continuity Taylor packet adds
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapFDerivVectorContinuityTaylor_envelope`,
-  so the remaining critical path is instantiating
-  `derivativeAt theta0 = derivative` and the vector derivative Taylor identity
-  from the selected second-derivative action.
+  and the theta0 Frechet derivative packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0FDerivVectorTaylor_envelope`,
+  so the remaining critical path is instantiating the vector derivative Taylor
+  identity from the selected second-derivative action.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
