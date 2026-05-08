@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V88
+## Live In-Thread Goal Prompt V89
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -203,7 +203,11 @@ compiles, including zero-set-not-full to zero-set-null and the corresponding
 positive-branch dichotomy eliminator.
 The lower-integral source bridge now also compiles: a tail zero set plus
 `∫⁻ X ≠ 0` automatically gives zero-set-not-full, zero-set-null, not-a.e.-zero,
-and the positive-branch dichotomy conclusion.
+and the positive-branch dichotomy conclusion.  The every-tail-block
+measurability bridge now also compiles: if an event, and in particular the
+limiting-likelihood zero set, is measurable from every tail block
+`⨆ i ≥ n, s i`, then it is measurable in the `limsup` tail sigma-field; this
+feeds the lower-integral zero-set-null and absolute-continuity consumers.
 
 Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
 layer, the Theorem 4.3.8 finite-product likelihood/`withDensity` layer, and the
@@ -248,11 +252,14 @@ eliminator as compiled support.
 Also treat the lower-integral source bridge from tail zero set and `∫⁻ X ≠ 0`
 to zero-set-not-full, zero-set-null, not-a.e.-zero, and absolute continuity as
 compiled support.
+Also treat the every-tail-block measurability bridge into `limsup` tail
+measurability, plus its zero-set-null and absolute-continuity consumers, as
+compiled support.
 Move to the remaining Kakutani criterion assembly:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`) and logarithm/tail-measurability support.  Add only
-source-shaped wrappers that directly feed the remaining concrete zero-set
-tail-measurability endpoint or the infinite-product criterion hypotheses
+source-shaped wrappers that directly feed the canonical Kakutani zero-set
+every-tail-block measurability endpoint or the infinite-product criterion hypotheses
 consumed by the compiled branch assemblers and eliminator.  Do
 not redo the already compiled RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -284,6 +291,8 @@ Do not redo the finite-coordinate product integral, exact nested overlap
 factorization, or finite Hellinger tail-product overlap handoff.
 Do not redo the HasProd/Multipliable prefix-tail bridge or the standard
 `Finset.range n` HasProd-to-pairwise-liminf handoff.
+Do not redo the every-tail-block measurability bridge into the `limsup` tail
+sigma-field.
 Do not redo the finite tail-product lower bound from positive prefix/tail
 monotonicity or the standard positive-product range consumer.
 Do not redo the source-density one-coordinate Hellinger affinity `≤ 1` bound,
@@ -701,9 +710,12 @@ a.e.-finite no-top source bridge and the standard source-density `HasProd`
 absolute-continuity consumer using it now also compile.  Kolmogorov tail-event
 zero-one support and the zero-set-not-full positive-branch eliminator now also
 compile.  The lower-integral source bridge from tail zero set and `∫⁻ X ≠ 0`
-to zero-set-null and the positive-branch conclusion now also compiles.  Move
-forward to the concrete zero-set tail-measurability endpoint and remaining
-Kakutani criterion assembly.
+to zero-set-null and the positive-branch conclusion now also compiles.  The
+every-tail-block measurability bridge into the `limsup` tail sigma-field now
+also compiles, including zero-set-null and absolute-continuity consumers from
+every-tail-block measurability plus `∫⁻ X ≠ 0`.  Move forward to the canonical
+Kakutani zero-set every-tail-block measurability endpoint and remaining
+criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -817,6 +829,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V88` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V89` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

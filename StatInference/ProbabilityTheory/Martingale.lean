@@ -5447,6 +5447,29 @@ theorem durrett2019_theorem_4_3_8_tail_event_measure_zero_or_one
     (s := s) (m0 := mΩ) (μ := ν) hs_le hs_indep hA_tail
 
 /--
+Durrett 2019, Theorem 4.3.8 tail-event support: an event that is measurable
+from every tail block is measurable in the `limsup` tail sigma-field.
+-/
+theorem durrett2019_theorem_4_3_8_tail_event_measurable_of_forall_tailBlock_measurable
+    {Ω : Type*} {s : ℕ -> MeasurableSpace Ω} {A : Set Ω}
+    (hA_tailBlock : ∀ n, MeasurableSet[⨆ i : ℕ, ⨆ _ : i ≥ n, s i] A) :
+    MeasurableSet[limsup s atTop] A := by
+  rw [limsup_eq_iInf_iSup_of_nat]
+  exact (MeasurableSpace.measurableSet_iInf).2 hA_tailBlock
+
+/--
+Durrett 2019, Theorem 4.3.8 tail-event support specialized to the zero set of
+the limiting likelihood.
+-/
+theorem durrett2019_theorem_4_3_8_tail_zero_set_measurable_of_forall_tailBlock_measurable
+    {Ω : Type*} {s : ℕ -> MeasurableSpace Ω} {X : Ω -> ℝ≥0∞}
+    (hzero_tailBlock :
+      ∀ n, MeasurableSet[⨆ i : ℕ, ⨆ _ : i ≥ n, s i] {ω | X ω = 0}) :
+    MeasurableSet[limsup s atTop] {ω | X ω = 0} :=
+  durrett2019_theorem_4_3_8_tail_event_measurable_of_forall_tailBlock_measurable
+    (s := s) (A := {ω | X ω = 0}) hzero_tailBlock
+
+/--
 Durrett 2019, Theorem 4.3.8 tail-event support: if the zero set of the limiting
 likelihood is a tail event and is not full under the denominator measure, then
 it is null.
@@ -5504,6 +5527,25 @@ theorem durrett2019_theorem_4_3_8_tail_zero_set_null_of_lintegral_ne_zero
     (ν := ν) (s := s) (X := X) hs_le hs_indep hzero_tail
     (durrett2019_theorem_4_3_8_tail_zero_set_measure_ne_one_of_lintegral_ne_zero
       (ν := ν) (s := s) (X := X) hs_le hs_indep hzero_tail hInt)
+
+/--
+Durrett 2019, Theorem 4.3.8 tail-event support: every-tail-block
+measurability plus a nonzero lower integral gives a null zero set.
+-/
+theorem durrett2019_theorem_4_3_8_tail_zero_set_null_of_tailBlock_measurable_lintegral_ne_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ν : Measure Ω}
+    {s : ℕ -> MeasurableSpace Ω} {X : Ω -> ℝ≥0∞}
+    (hs_le : ∀ n, s n ≤ mΩ)
+    (hs_indep : _root_.ProbabilityTheory.iIndep s ν)
+    (hzero_tailBlock :
+      ∀ n, MeasurableSet[⨆ i : ℕ, ⨆ _ : i ≥ n, s i] {ω | X ω = 0})
+    (hInt : (∫⁻ ω, X ω ∂ν) ≠ 0) :
+    ν {ω | X ω = 0} = 0 :=
+  durrett2019_theorem_4_3_8_tail_zero_set_null_of_lintegral_ne_zero
+    (ν := ν) (s := s) (X := X) hs_le hs_indep
+    (durrett2019_theorem_4_3_8_tail_zero_set_measurable_of_forall_tailBlock_measurable
+      (s := s) (X := X) hzero_tailBlock)
+    hInt
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-branch support: a non-full tail zero set
@@ -5625,6 +5667,31 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_tail_zero_se
     (μ := μ) (ν := ν) (X := X) hbranch hXrn hνtop
     (durrett2019_theorem_4_3_8_not_ae_eq_zero_of_tail_zero_set_lintegral_ne_zero
       (ν := ν) (s := s) (X := X) hs_le hs_indep hzero_tail hInt)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-branch eliminator specialized to zero
+sets measurable from every tail block and nonzero lower integral.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_tailBlock_zero_set_lintegral_ne_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ ν : Measure Ω}
+    {s : ℕ -> MeasurableSpace Ω} {X : Ω -> ℝ≥0∞}
+    (hbranch : μ ≪ ν ∨ μ ⟂ₘ ν)
+    (hXrn :
+      (fun ω => (X ω).toReal) =ᵐ[ν]
+        fun ω => (μ.rnDeriv ν ω).toReal)
+    (hνtop : ν {ω | X ω = ∞} = 0)
+    (hs_le : ∀ n, s n ≤ mΩ)
+    (hs_indep : _root_.ProbabilityTheory.iIndep s ν)
+    (hzero_tailBlock :
+      ∀ n, MeasurableSet[⨆ i : ℕ, ⨆ _ : i ≥ n, s i] {ω | X ω = 0})
+    (hInt : (∫⁻ ω, X ω ∂ν) ≠ 0) :
+    μ ≪ ν :=
+  durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_tail_zero_set_lintegral_ne_zero
+    (μ := μ) (ν := ν) (s := s) (X := X)
+    hbranch hXrn hνtop hs_le hs_indep
+    (durrett2019_theorem_4_3_8_tail_zero_set_measurable_of_forall_tailBlock_measurable
+      (s := s) (X := X) hzero_tailBlock)
+    hInt
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-branch eliminator specialized to a
