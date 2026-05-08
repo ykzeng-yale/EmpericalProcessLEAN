@@ -26,6 +26,34 @@ noncomputable def finiteCouplingKL {X Y : Type*} [Fintype X] [Fintype Y]
     (γ η : X -> Y -> ℝ) : ℝ :=
   ∑ x, ∑ y, γ x y * Real.log (γ x y / η x y)
 
+/-- Total mass of a finite coupling array. -/
+noncomputable def finiteCouplingMass {X Y : Type*} [Fintype X] [Fintype Y]
+    (γ : X -> Y -> ℝ) : ℝ :=
+  ∑ x, ∑ y, γ x y
+
+/--
+Entropic mirror map on finite couplings, written in the Chewi/Sinkhorn
+normalization `sum gamma * log gamma - gamma`.
+-/
+noncomputable def finiteCouplingEntropy {X Y : Type*} [Fintype X] [Fintype Y]
+    (γ : X -> Y -> ℝ) : ℝ :=
+  ∑ x, ∑ y, (γ x y * Real.log (γ x y) - γ x y)
+
+/-- The formal gradient of `finiteCouplingEntropy` on the positive orthant. -/
+noncomputable def finiteCouplingLogGradient {X Y : Type*}
+    (γ : X -> Y -> ℝ) : X -> Y -> ℝ :=
+  fun x y => Real.log (γ x y)
+
+/--
+Scalar Bregman display for the finite entropic mirror map, written directly on
+curried arrays.  A later EuclideanSpace wrapper can transport this to the
+generic `bregmanDivergence` interface when needed.
+-/
+noncomputable def finiteCouplingEntropyBregman {X Y : Type*}
+    [Fintype X] [Fintype Y] (γ η : X -> Y -> ℝ) : ℝ :=
+  finiteCouplingEntropy γ - finiteCouplingEntropy η -
+    ∑ x, ∑ y, Real.log (η x y) * (γ x y - η x y)
+
 /-- Row marginal of a finite coupling array. -/
 noncomputable def rowMarginal {X Y : Type*} [Fintype Y]
     (γ : X -> Y -> ℝ) (x : X) : ℝ :=
@@ -87,6 +115,51 @@ theorem columnMarginal_columnNormalizedCoupling
           have hsum_ne : (∑ x, γ x y) ≠ 0 := by
             simpa [columnMarginal] using hcol_ne y
           field_simp [hsum_ne]
+
+theorem finiteCouplingMass_rowNormalizedCoupling
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (μ : X -> ℝ) (γ : X -> Y -> ℝ)
+    (hrow_ne : ∀ x, rowMarginal γ x ≠ 0) :
+    finiteCouplingMass (rowNormalizedCoupling μ γ) = ∑ x, μ x := by
+  classical
+  unfold finiteCouplingMass
+  refine Finset.sum_congr rfl ?_
+  intro x _hx
+  simpa [rowMarginal] using rowMarginal_rowNormalizedCoupling μ γ hrow_ne x
+
+theorem finiteCouplingMass_columnNormalizedCoupling
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (ν : Y -> ℝ) (γ : X -> Y -> ℝ)
+    (hcol_ne : ∀ y, columnMarginal γ y ≠ 0) :
+    finiteCouplingMass (columnNormalizedCoupling ν γ) = ∑ y, ν y := by
+  classical
+  unfold finiteCouplingMass
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl ?_
+  intro y _hy
+  simpa [columnMarginal] using columnMarginal_columnNormalizedCoupling ν γ hcol_ne y
+
+theorem rowNormalizedCoupling_ne_of_ne
+    {X Y : Type*} [Fintype Y]
+    (μ : X -> ℝ) (γ : X -> Y -> ℝ)
+    (hμ_ne : ∀ x, μ x ≠ 0)
+    (hγ_ne : ∀ x y, γ x y ≠ 0)
+    (hrow_ne : ∀ x, rowMarginal γ x ≠ 0) :
+    ∀ x y, rowNormalizedCoupling μ γ x y ≠ 0 := by
+  intro x y
+  unfold rowNormalizedCoupling
+  exact div_ne_zero (mul_ne_zero (hμ_ne x) (hγ_ne x y)) (hrow_ne x)
+
+theorem columnNormalizedCoupling_ne_of_ne
+    {X Y : Type*} [Fintype X]
+    (ν : Y -> ℝ) (γ : X -> Y -> ℝ)
+    (hν_ne : ∀ y, ν y ≠ 0)
+    (hγ_ne : ∀ x y, γ x y ≠ 0)
+    (hcol_ne : ∀ y, columnMarginal γ y ≠ 0) :
+    ∀ x y, columnNormalizedCoupling ν γ x y ≠ 0 := by
+  intro x y
+  unfold columnNormalizedCoupling
+  exact div_ne_zero (mul_ne_zero (hγ_ne x y) (hν_ne y)) (hcol_ne y)
 
 /--
 Finite Sinkhorn row-normalization KL identity, in the algebraic form needed by
@@ -155,6 +228,26 @@ theorem finiteCouplingKL_eq_finiteKL_of_column_ratio
           rw [hcol y]
 
 /--
+For finite couplings with equal total mass, the scalar Bregman display of the
+entropic mirror map is the finite coupling KL display.  This is the algebraic
+bridge used to identify Sinkhorn's row/column Bregman movements with marginal
+KL terms.
+-/
+theorem finiteCouplingEntropyBregman_eq_finiteCouplingKL
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (γ η : X -> Y -> ℝ)
+    (hγ_ne : ∀ x y, γ x y ≠ 0)
+    (hη_ne : ∀ x y, η x y ≠ 0)
+    (hmass : finiteCouplingMass γ = finiteCouplingMass η) :
+    finiteCouplingEntropyBregman γ η = finiteCouplingKL γ η := by
+  classical
+  have hmass' : (∑ x, ∑ y, γ x y) = ∑ x, ∑ y, η x y := by
+    simpa [finiteCouplingMass] using hmass
+  unfold finiteCouplingEntropyBregman finiteCouplingEntropy finiteCouplingKL
+  simp_rw [Real.log_div (hγ_ne _ _) (hη_ne _ _)]
+  simp [Finset.sum_sub_distrib, sub_mul, mul_sub, hmass', mul_comm]
+
+/--
 Concrete finite Sinkhorn row-normalization KL identity.  Under nonzero support
 and row denominators, normalizing rows toward `μ` makes the coupling KL against
 the previous array exactly the row-marginal KL.
@@ -197,6 +290,60 @@ theorem finiteCouplingKL_columnNormalizedCoupling_eq_finiteKL
   · intro x y
     unfold columnNormalizedCoupling
     field_simp [hcol_ne y, hγ_ne x y]
+
+/--
+Row-normalization version of the entropic Bregman/KL identity.  If the target
+row law has the same total mass as the current coupling, then the entropic
+Bregman movement from the previous coupling to its row normalization is exactly
+the row marginal KL.
+-/
+theorem finiteCouplingEntropyBregman_rowNormalizedCoupling_eq_finiteKL
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (μ : X -> ℝ) (γ : X -> Y -> ℝ)
+    (hμ_ne : ∀ x, μ x ≠ 0)
+    (hγ_ne : ∀ x y, γ x y ≠ 0)
+    (hrow_ne : ∀ x, rowMarginal γ x ≠ 0)
+    (hmass : (∑ x, μ x) = finiteCouplingMass γ) :
+    finiteCouplingEntropyBregman (rowNormalizedCoupling μ γ) γ =
+      finiteKL μ (rowMarginal γ) := by
+  calc
+    finiteCouplingEntropyBregman (rowNormalizedCoupling μ γ) γ =
+        finiteCouplingKL (rowNormalizedCoupling μ γ) γ := by
+          exact finiteCouplingEntropyBregman_eq_finiteCouplingKL
+            (rowNormalizedCoupling μ γ) γ
+            (rowNormalizedCoupling_ne_of_ne μ γ hμ_ne hγ_ne hrow_ne)
+            hγ_ne
+            (by
+              rw [finiteCouplingMass_rowNormalizedCoupling μ γ hrow_ne, hmass])
+    _ = finiteKL μ (rowMarginal γ) :=
+          finiteCouplingKL_rowNormalizedCoupling_eq_finiteKL μ γ hrow_ne hγ_ne
+
+/--
+Column-normalization version of the entropic Bregman/KL identity.  If the
+target column law has the same total mass as the current coupling, then the
+entropic Bregman movement from the previous coupling to its column
+normalization is exactly the column marginal KL.
+-/
+theorem finiteCouplingEntropyBregman_columnNormalizedCoupling_eq_finiteKL
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (ν : Y -> ℝ) (γ : X -> Y -> ℝ)
+    (hν_ne : ∀ y, ν y ≠ 0)
+    (hγ_ne : ∀ x y, γ x y ≠ 0)
+    (hcol_ne : ∀ y, columnMarginal γ y ≠ 0)
+    (hmass : (∑ y, ν y) = finiteCouplingMass γ) :
+    finiteCouplingEntropyBregman (columnNormalizedCoupling ν γ) γ =
+      finiteKL ν (columnMarginal γ) := by
+  calc
+    finiteCouplingEntropyBregman (columnNormalizedCoupling ν γ) γ =
+        finiteCouplingKL (columnNormalizedCoupling ν γ) γ := by
+          exact finiteCouplingEntropyBregman_eq_finiteCouplingKL
+            (columnNormalizedCoupling ν γ) γ
+            (columnNormalizedCoupling_ne_of_ne ν γ hν_ne hγ_ne hcol_ne)
+            hγ_ne
+            (by
+              rw [finiteCouplingMass_columnNormalizedCoupling ν γ hcol_ne, hmass])
+    _ = finiteKL ν (columnMarginal γ) :=
+          finiteCouplingKL_columnNormalizedCoupling_eq_finiteKL ν γ hcol_ne hγ_ne
 
 /--
 Source-shaped Bregman projection certificate.

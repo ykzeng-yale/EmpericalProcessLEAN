@@ -1027,6 +1027,19 @@ The newest finite Sinkhorn KL packet in `AlternatingBregman.lean` adds
 `finiteCouplingKL_columnNormalizedCoupling_eq_finiteKL`, proving the finite
 row/column normalization KL identities behind Theorem 11.7/11.8 under explicit
 nonzero support/denominator assumptions.
+The newest entropic-Bregman packet adds `finiteCouplingMass`,
+`finiteCouplingEntropy`, `finiteCouplingLogGradient`,
+`finiteCouplingEntropyBregman`,
+`finiteCouplingEntropyBregman_eq_finiteCouplingKL`,
+`finiteCouplingMass_rowNormalizedCoupling`,
+`finiteCouplingMass_columnNormalizedCoupling`,
+`rowNormalizedCoupling_ne_of_ne`, `columnNormalizedCoupling_ne_of_ne`,
+`finiteCouplingEntropyBregman_rowNormalizedCoupling_eq_finiteKL`, and
+`finiteCouplingEntropyBregman_columnNormalizedCoupling_eq_finiteKL`.  This
+turns the finite row/column normalization identities into the entropic Bregman
+movement terms used by the Sinkhorn-as-ABP/Mirror-Descent route; the remaining
+11.8 concrete work is the zero-error recurrence, monotone marginal-KL fields,
+and any source support/positivity package.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -1261,9 +1274,9 @@ Active aggressive target ladder:
    Reuse `IsChewi118SinkhornMirrorDescentCertificate`,
    `chewi118_sinkhorn_last_rowMarginalKL_le_of_mirrorDescent`, the 11.7
    ABP/Pinsker selectors, and the new `finiteKL`/`finiteCouplingKL`
-   row/column normalization identities; only formalize the remaining monotone
-   gap/zero-error recurrence fields and any concrete support assumptions needed
-   by the source Sinkhorn model.
+   row/column normalization plus entropic-Bregman identities; only formalize
+   the remaining monotone gap/zero-error recurrence fields and any concrete
+   support assumptions needed by the source Sinkhorn model.
 3. Finish exact Sinkhorn Theorem 11.7/11.8 source packaging from the compiled
    ABP and mirror-descent layers; do not expand full EOT duality unless exact
    Theorem 11.6 reporting is requested.

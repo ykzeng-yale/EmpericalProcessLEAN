@@ -581,7 +581,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   concrete row/column normalization KL identities.  This discharges the
   textbook algebra behind
   `KL(gamma^(n+1/2) || gamma^n) = KL(mu || mu^n)` and the column analogue
-  under explicit nonzero support/denominator assumptions.  The
+  under explicit nonzero support/denominator assumptions.  The newest
+  entropic-Bregman packet adds finite coupling mass/entropy/log-gradient
+  displays, the scalar entropic Bregman display, the equal-mass
+  entropic-Bregman-to-coupling-KL bridge, and direct row/column normalized
+  entropic-Bregman-to-marginal-KL identities.  This is the reusable algebraic
+  bridge for the Sinkhorn-as-Bregman-projection movement terms; the remaining
+  11.8 work is the concrete zero-error recurrence and monotone marginal-KL
+  certificate fields.  The
   current local focused Lean check also verifies
   `chewi118_last_gap_le_of_recurrence` and
   `chewi118_last_gap_le_of_oneStep` in `MirrorDescent.lean`, turning the
