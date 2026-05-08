@@ -5419,6 +5419,60 @@ noncomputable def durrett2019_theorem_4_3_8_hellingerTailL1Bound
   (8 * (1 - tail n)) ^ ((1 : ℝ) / 2)
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: pointwise
+square-root factorization of the finite likelihood L1 distance.  This is the
+algebraic identity `|u - v| = |sqrt u - sqrt v| * (sqrt u + sqrt v)`,
+written in the `ℝ≥0∞` shape consumed by the Hellinger Cauchy-Schwarz bridge.
+-/
+theorem durrett2019_theorem_4_3_8_toReal_likelihood_sqrt_factorization
+    (a b : ℝ≥0∞) (ha : a ≠ ∞) (hb : b ≠ ∞) :
+    ‖a.toReal - b.toReal‖ₑ ≤
+      (a ^ ((1 : ℝ) / 2) + b ^ ((1 : ℝ) / 2)) *
+        ‖(a ^ ((1 : ℝ) / 2)).toReal -
+          (b ^ ((1 : ℝ) / 2)).toReal‖ₑ := by
+  let A : ℝ := (a ^ ((1 : ℝ) / 2)).toReal
+  let B : ℝ := (b ^ ((1 : ℝ) / 2)).toReal
+  have ha_half_ne_top : a ^ ((1 : ℝ) / 2) ≠ ∞ :=
+    ENNReal.rpow_ne_top_of_nonneg (by norm_num : 0 ≤ ((1 : ℝ) / 2)) ha
+  have hb_half_ne_top : b ^ ((1 : ℝ) / 2) ≠ ∞ :=
+    ENNReal.rpow_ne_top_of_nonneg (by norm_num : 0 ≤ ((1 : ℝ) / 2)) hb
+  have hsum_ne_top :
+      a ^ ((1 : ℝ) / 2) + b ^ ((1 : ℝ) / 2) ≠ ∞ := by
+    rw [ENNReal.add_ne_top]
+    exact ⟨ha_half_ne_top, hb_half_ne_top⟩
+  have hA_sq : A ^ 2 = a.toReal := by
+    dsimp [A]
+    rw [← ENNReal.toReal_rpow]
+    rw [← Real.sqrt_eq_rpow]
+    exact Real.sq_sqrt ENNReal.toReal_nonneg
+  have hB_sq : B ^ 2 = b.toReal := by
+    dsimp [B]
+    rw [← ENNReal.toReal_rpow]
+    rw [← Real.sqrt_eq_rpow]
+    exact Real.sq_sqrt ENNReal.toReal_nonneg
+  have hsum_toReal :
+      (a ^ ((1 : ℝ) / 2) + b ^ ((1 : ℝ) / 2)).toReal = A + B := by
+    rw [ENNReal.toReal_add ha_half_ne_top hb_half_ne_top]
+  have hnonneg_sum : 0 ≤ A + B := by
+    positivity
+  apply le_of_eq
+  calc
+    ‖a.toReal - b.toReal‖ₑ
+        = ENNReal.ofReal |a.toReal - b.toReal| := by
+          rw [← ofReal_norm_eq_enorm (a.toReal - b.toReal), Real.norm_eq_abs]
+    _ = ENNReal.ofReal ((A + B) * |A - B|) := by
+          congr 1
+          rw [← hA_sq, ← hB_sq, sq_sub_sq, abs_mul]
+          rw [abs_of_nonneg hnonneg_sum]
+    _ = ENNReal.ofReal (A + B) * ENNReal.ofReal |A - B| := by
+          rw [ENNReal.ofReal_mul hnonneg_sum]
+    _ = (a ^ ((1 : ℝ) / 2) + b ^ ((1 : ℝ) / 2)) *
+          ‖(a ^ ((1 : ℝ) / 2)).toReal -
+            (b ^ ((1 : ℝ) / 2)).toReal‖ₑ := by
+          rw [← hsum_toReal, ENNReal.ofReal_toReal hsum_ne_top]
+          rw [← ofReal_norm_eq_enorm (A - B), Real.norm_eq_abs]
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: a source-shaped
 Cauchy-Schwarz bridge for the square-root likelihood argument.  A pointwise
 factorization of an L1 distance by two nonnegative factors, together with a
@@ -5807,6 +5861,114 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_squareRo
           (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ)
       (F := F) (G := G) (tail := tail)
       htail_le htail hD hF hG hF_sq hG_sq
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy support: the
+pointwise square-root factorization specialized to finite cylinder likelihoods.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_squareRoot_factorization_ae
+    {ι S : Type*} [MeasurableSpace S]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x ≠ ∞) :
+    ∀ n, ∀ᶠ m in atTop,
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+          (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ ≤
+            ((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+                ((1 : ℝ) / 2) +
+              (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+                ((1 : ℝ) / 2)) *
+              ‖((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+                    ((1 : ℝ) / 2)).toReal -
+                ((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+                    ((1 : ℝ) / 2)).toReal‖ₑ := by
+  intro n
+  filter_upwards [hfinite n] with m hm
+  exact hm.mono fun x hx =>
+    durrett2019_theorem_4_3_8_toReal_likelihood_sqrt_factorization
+      (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x)
+      (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x)
+      hx.1 hx.2
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy handoff with the
+textbook square-root factors fixed concretely as `sqrt X_n + sqrt X_m` and
+`sqrt X_n - sqrt X_m`.  The remaining hypotheses are exactly the two
+square-integral estimates that the product Hellinger computation supplies.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_concrete_squareRoot_cauchySchwarz
+    {ι S : Type*} [MeasurableSpace S]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    {tail : ℕ -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail : Tendsto tail atTop (𝓝 1))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x ≠ ∞)
+    (hF_sq :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ x,
+          (((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+                ((1 : ℝ) / 2) +
+              (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+                ((1 : ℝ) / 2)) ^ (2 : ℝ))
+          ∂Measure.infinitePi ν ≤ (4 : ℝ≥0∞))
+    (hG_sq :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ x,
+          (‖((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+                ((1 : ℝ) / 2)).toReal -
+              ((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+                ((1 : ℝ) / 2)).toReal‖ₑ ^ (2 : ℝ))
+          ∂Measure.infinitePi ν ≤ (2 : ℝ≥0∞) * (1 - tail n)) :
+    Tendsto
+      (fun n =>
+        Filter.liminf
+          (fun m =>
+            ∫⁻ x,
+              ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+                (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+              ∂Measure.infinitePi ν)
+          atTop)
+      atTop (𝓝 0) := by
+  refine
+    durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_squareRoot_cauchySchwarz
+      (ν := ν) (Iseq := Iseq) (q := q)
+      (F := fun n m x =>
+        (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+            ((1 : ℝ) / 2) +
+          (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+            ((1 : ℝ) / 2))
+      (G := fun n m x =>
+        ‖((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+              ((1 : ℝ) / 2)).toReal -
+          ((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+              ((1 : ℝ) / 2)).toReal‖ₑ)
+      (tail := tail) htail_le htail ?_ ?_ ?_ hF_sq hG_sq
+  · exact
+      durrett2019_theorem_4_3_8_cylinderLikelihood_squareRoot_factorization_ae
+        (ν := ν) (Iseq := Iseq) (q := q) hfinite
+  · intro n m
+    exact
+      ((durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_measurable
+            (Iseq n) hq).add
+        (durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_measurable
+            (Iseq m) hq)).aemeasurable
+  · intro n m
+    exact
+      (((durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_measurable
+            (Iseq n) hq).ennreal_toReal.sub
+          (durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_measurable
+            (Iseq m) hq).ennreal_toReal).enorm).aemeasurable
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
