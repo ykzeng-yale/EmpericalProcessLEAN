@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V77
+## Live In-Thread Goal Prompt V78
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -193,13 +193,15 @@ into that consumer, and the normalized positive-prefix product-tail convergence
 bridge.  Also treat the concrete pointwise and cylinder likelihood square-root
 factorization layer, together with the concrete cylinder Cauchy handoff using
 the textbook factors `sqrt X_n + sqrt X_m` and `sqrt X_n - sqrt X_m`, as
-compiled support.
+compiled support.  Also treat the square-integral estimate for
+`sqrt X_n + sqrt X_m`, and the resulting concrete Cauchy wrapper that only
+requires the `sqrt X_n - sqrt X_m` square estimate, as compiled support.
 Move to the remaining Kakutani criterion assembly and tail-event support:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`), logarithm/tail-event support, and local Kolmogorov
 zero-one/tail sigma-field wrappers.  Add only source-shaped wrappers that
-directly feed tail-event support, the concrete square-integral estimates for
-those fixed square-root factors, the HasProd/prefix-product instantiation
+directly feed tail-event support, the remaining `sqrt X_n - sqrt X_m`
+Hellinger-tail square estimate, the HasProd/prefix-product instantiation
 hypotheses consumed by the compiled normalized product-tail convergence bridge,
 or the infinite-product criterion hypotheses consumed by the compiled branch
 assemblers and eliminator.  Do
@@ -225,6 +227,7 @@ Do not redo the square-root/Cauchy-Schwarz Hellinger L1 bridge.
 Do not redo the normalized positive-prefix product-tail convergence bridge.
 Do not redo the concrete pointwise or cylinder square-root factorization layer,
 or the concrete cylinder Cauchy handoff.
+Do not redo the `sqrt X_n + sqrt X_m` square-integral estimate.
 Defer Polya urn as a
 model-specific construction unless a direct existing primitive is found.
 
@@ -610,9 +613,10 @@ The finite-cylinder mass-one/integral-convergence handoffs, positive-product
 L1-to-integral handoff, pairwise-liminf Cauchy-to-L1 handoff,
 Hellinger-tail-bound positive consumer, square-root/Cauchy-Schwarz Hellinger
 L1 bridge, and normalized positive-prefix product-tail convergence bridge also
-now compile.  The concrete pointwise/cylinder square-root factorization and
-concrete cylinder Cauchy handoff with the textbook factors also now compile.
-Move forward to the square-integral estimates for those fixed factors, the
+now compile.  The concrete pointwise/cylinder square-root factorization,
+concrete cylinder Cauchy handoff with the textbook factors, and the
+`sqrt X_n + sqrt X_m` square-integral estimate also now compile.  Move forward
+to the remaining `sqrt X_n - sqrt X_m` Hellinger-tail square estimate, the
 HasProd/prefix instantiation of the product-tail convergence hypotheses, and
 tail-event zero-one support for Kakutani's dichotomy.
 Keep Theorem 4.1.16 deferred unless a
@@ -728,6 +732,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V77` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V78` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

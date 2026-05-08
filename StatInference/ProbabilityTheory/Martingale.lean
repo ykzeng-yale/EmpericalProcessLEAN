@@ -5971,6 +5971,127 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_concrete
             (Iseq m) hq).ennreal_toReal).enorm).aemeasurable
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy support: the
+square integral of the textbook factor `sqrt X_n + sqrt X_m` is bounded by
+`4`.  This uses only the mass-one identities for the two finite cylinder
+likelihoods and the elementary inequality `(u + v)^2 <= 2 * (u^2 + v^2)`.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_sqrtSum_sq_lintegral_le_four
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) (n m : ℕ) :
+    ∫⁻ x,
+      (((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+            ((1 : ℝ) / 2) +
+          (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+            ((1 : ℝ) / 2)) ^ (2 : ℝ))
+      ∂Measure.infinitePi ν ≤ (4 : ℝ≥0∞) := by
+  let Xn : (ι -> S) -> ℝ≥0∞ := fun x =>
+    (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^ ((1 : ℝ) / 2)
+  let Xm : (ι -> S) -> ℝ≥0∞ := fun x =>
+    (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^ ((1 : ℝ) / 2)
+  have hXn_meas : Measurable Xn :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_measurable (Iseq n) hq
+  have hXm_meas : Measurable Xm :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_measurable (Iseq m) hq
+  have hXn_sq : (fun x => Xn x ^ (2 : ℝ)) =
+      fun x => durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x := by
+    funext x
+    dsimp [Xn]
+    simpa [one_div] using
+      (ENNReal.rpow_inv_rpow (by norm_num : (2 : ℝ) ≠ 0)
+        (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x))
+  have hXm_sq : (fun x => Xm x ^ (2 : ℝ)) =
+      fun x => durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x := by
+    funext x
+    dsimp [Xm]
+    simpa [one_div] using
+      (ENNReal.rpow_inv_rpow (by norm_num : (2 : ℝ) ≠ 0)
+        (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x))
+  have hXn_int : ∫⁻ x, Xn x ^ (2 : ℝ) ∂Measure.infinitePi ν = 1 := by
+    rw [hXn_sq]
+    exact durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_eq_one
+      (μ := μ) (ν := ν) (Iseq n) hq hμ
+  have hXm_int : ∫⁻ x, Xm x ^ (2 : ℝ) ∂Measure.infinitePi ν = 1 := by
+    rw [hXm_sq]
+    exact durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_eq_one
+      (μ := μ) (ν := ν) (Iseq m) hq hμ
+  calc
+    ∫⁻ x, (Xn x + Xm x) ^ (2 : ℝ) ∂Measure.infinitePi ν
+        ≤ ∫⁻ x, (2 : ℝ≥0∞) * (Xn x ^ (2 : ℝ) + Xm x ^ (2 : ℝ))
+            ∂Measure.infinitePi ν := by
+          exact lintegral_mono fun x => by
+            calc
+              (Xn x + Xm x) ^ (2 : ℝ) ≤
+                  (2 : ℝ≥0∞) ^ ((2 : ℝ) - 1) *
+                    (Xn x ^ (2 : ℝ) + Xm x ^ (2 : ℝ)) :=
+                ENNReal.rpow_add_le_mul_rpow_add_rpow (Xn x) (Xm x)
+                  (by norm_num : (1 : ℝ) ≤ (2 : ℝ))
+              _ = (2 : ℝ≥0∞) * (Xn x ^ (2 : ℝ) + Xm x ^ (2 : ℝ)) := by
+                norm_num
+    _ = (2 : ℝ≥0∞) *
+          ∫⁻ x, (Xn x ^ (2 : ℝ) + Xm x ^ (2 : ℝ)) ∂Measure.infinitePi ν := by
+          rw [lintegral_const_mul' _ _ (by norm_num : (2 : ℝ≥0∞) ≠ ∞)]
+    _ = (2 : ℝ≥0∞) *
+          ((∫⁻ x, Xn x ^ (2 : ℝ) ∂Measure.infinitePi ν) +
+            ∫⁻ x, Xm x ^ (2 : ℝ) ∂Measure.infinitePi ν) := by
+          rw [lintegral_add_left (hXn_meas.pow_const (2 : ℝ))]
+    _ = (4 : ℝ≥0∞) := by
+          rw [hXn_int, hXm_int]
+          norm_num
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy handoff after the
+`sqrt X_n + sqrt X_m` square-integral estimate has been discharged.  The only
+remaining analytic input is the Hellinger-tail square estimate for
+`sqrt X_n - sqrt X_m`.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_sqrtDiff_square_bound
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    {tail : ℕ -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail : Tendsto tail atTop (𝓝 1))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x ≠ ∞)
+    (hG_sq :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ x,
+          (‖((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x) ^
+                ((1 : ℝ) / 2)).toReal -
+              ((durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x) ^
+                ((1 : ℝ) / 2)).toReal‖ₑ ^ (2 : ℝ))
+          ∂Measure.infinitePi ν ≤ (2 : ℝ≥0∞) * (1 - tail n)) :
+    Tendsto
+      (fun n =>
+        Filter.liminf
+          (fun m =>
+            ∫⁻ x,
+              ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+                (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+              ∂Measure.infinitePi ν)
+          atTop)
+      atTop (𝓝 0) := by
+  refine
+    durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_concrete_squareRoot_cauchySchwarz
+      (ν := ν) (Iseq := Iseq) (q := q) (tail := tail)
+      hq htail_le htail hfinite ?_ hG_sq
+  intro n
+  exact Filter.Eventually.of_forall fun m =>
+    durrett2019_theorem_4_3_8_cylinderLikelihood_sqrtSum_sq_lintegral_le_four
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) hq hμ n m
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
 finite cylinder-likelihood integrals to the limiting likelihood mass supplies
 the mass-one input consumed by the positive-branch eliminator.
