@@ -8188,3 +8188,11 @@ new bridge exposes those facts through the registered selected finite-net mean
 primitive.  The remaining general-textbook blocker is still the source
 selected-cover entropy/event comparison outside this canonical countable
 full-subgraph route.
+
+2026-05-08 original full-subgraph selected-entropy mean handoff:
+`Theorem243.lean` now also proves
+`VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive`.
+This is the original-class counterpart of the canonical handoff above: the VC
+assumption stays on `classFun`, while the integer-grid fixed-mask transfer
+builds the truncated threshold-code entropy cardinality consumed by the
+selected finite-net mean primitive.

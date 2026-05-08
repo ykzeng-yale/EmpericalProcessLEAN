@@ -30,6 +30,9 @@ primitive through
 The canonical full-subgraph VC/Sauer route now exposes that source handoff
 directly through
 `VdVWTheorem243_fullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive`.
+The original-class full-subgraph VC route also feeds the same primitive via
+`VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive`,
+using the integer-grid fixed-mask transfer for truncated entropy.
 Current next target: prove that primitive from the stochastic
 selected-entropy argument, or prove the selected-cover ghost/Rademacher
 displayed-beta Lemma 2.3.7 event primitive (`Phi(x)=x` plus finite-center
@@ -3450,3 +3453,9 @@ This consumes the existing canonical book entropy condition and selected
 fixed-radius tail/UI side conditions, so canonical full-subgraph VC classes can
 use the new finite-net mean primitive without restating the side-condition
 record.
+
+The original-class canonical full-subgraph route also feeds the primitive
+through
+`VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive`.
+This keeps VC control on `classFun` and uses the integer-grid fixed-mask
+transfer to produce the truncated threshold-code entropy cardinality.

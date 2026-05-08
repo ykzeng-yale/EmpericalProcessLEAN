@@ -50650,6 +50650,84 @@ theorem
       hclass henv
 
 /--
+Canonical-sample original full-subgraph route to the selected
+entropy-to-finite-net-mean primitive.
+
+Unlike `VdVWTheorem243_fullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive`,
+this version keeps the VC assumption on the original class `classFun`; the
+integer-grid fixed-mask transfer supplies the truncated entropy cardinality.
+-/
+theorem
+    VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M)) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P
+      (fun _M n => vdVWCanonicalSampleProcess n)
+      indexClass classFun envelope
+      (fun M eta n sample m =>
+        (thresholdTraceCodeSet
+          (samplePath (vdVWCanonicalSampleProcess n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (integerMultipleThresholdGrid eta
+            (vdVWIntegerGridRadius M eta : ℤ))).card)
+      (VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc
+        (P := P) (X := fun _M n => vdVWCanonicalSampleProcess n)
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree) henvelope hvc) := by
+  have hselected :
+      ∀ M, 0 < M ->
+        VdVWTheorem243SelectedFixedRadiusTailSideConditions P
+          (vdVWCanonicalSampleProcess (Observation := Observation))
+          indexClass classFun envelope M
+          (fun eta n sample m =>
+            (thresholdTraceCodeSet
+              (samplePath (vdVWCanonicalSampleProcess n) sample m) indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (integerMultipleThresholdGrid eta
+                (vdVWIntegerGridRadius M eta : ℤ))).card) := by
+    intro M hM
+    exact
+      VdVWTheorem243SelectedFixedRadiusTailSideConditions.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc
+        (P := P)
+        (X := vdVWCanonicalSampleProcess (Observation := Observation))
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (vcDegree := vcDegree M)
+        (samplePath_vdVWCanonicalSampleProcess (Observation := Observation))
+        henvelope hclass henv hM (hvc M hM)
+  exact
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_selectedFixedRadiusTailSideConditions
+      (P := P)
+      (X := fun _M n => vdVWCanonicalSampleProcess n)
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      (cardinality := fun M eta n sample m =>
+        (thresholdTraceCodeSet
+          (samplePath (vdVWCanonicalSampleProcess n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (integerMultipleThresholdGrid eta
+            (vdVWIntegerGridRadius M eta : ℤ))).card)
+      (hentropy :=
+        VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc
+          (P := P) (X := fun _M n => vdVWCanonicalSampleProcess n)
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (vcDegree := vcDegree) henvelope hvc)
+      (hselected := hselected)
+      (by
+        intro _M n sample
+        exact samplePath_vdVWCanonicalSampleProcess n sample)
+      hclass henv
+
+/--
 Full-subgraph integrable Theorem 2.4.3 route with canonical iid Rademacher
 signs and the canonical terminal sample-path process.
 -/
