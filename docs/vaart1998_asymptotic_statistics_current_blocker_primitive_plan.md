@@ -10,22 +10,23 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapPathTaylor_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapFDerivPathTaylor_envelope`.
 It already packages the finite-coordinate empirical score, derivative,
 Hessian action, estimating equation, envelope hypotheses, common normalizing
 scalar, the actual segment `theta0 + t • delta`, endpoint identification,
-scalar path Taylor hypotheses, and endpoint second-derivative action
-identification into the compiled Theorem 5.41 probability handoff.
+Frechet differentiability of the estimating map along the segment,
+coordinate path derivatives by the chain rule, and the selected
+second-derivative action into the compiled Theorem 5.41 probability handoff.
 
-Next packet only: package the calculus obligations for the actual
-estimating-map coordinate paths along `theta0 + t • delta`: continuity,
-one-dimensional derivative, derivative-at-zero, derivative Taylor display,
-and second-action identification.  Do not revisit the solved estimating-map
-segment instantiation, second-derivative action matching, path-selected Taylor
-bridge, coordinate assembly, scalar Taylor bridge, scaling bridge, auxiliary
-residual, curvature envelope, empirical Taylor aggregation, endpoint assembly,
-Chapter 2-4 substrate, Gaussian endpoints, or generic empirical-process
-plumbing unless a direct dependency is missing.
+Next packet only: package the remaining source Taylor obligations along the
+actual segment: coordinate-path continuity, derivative-at-zero identification,
+and the scalar derivative Taylor display from the chosen second-derivative
+action.  Do not revisit the solved Frechet-to-one-dimensional chain rule,
+estimating-map segment instantiation, second-derivative action matching,
+path-selected Taylor bridge, coordinate assembly, scalar Taylor bridge,
+scaling bridge, auxiliary residual, curvature envelope, empirical Taylor
+aggregation, endpoint assembly, Chapter 2-4 substrate, Gaussian endpoints, or
+generic empirical-process plumbing unless a direct dependency is missing.
 
 Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
 run the focused file and target module checks plus hygiene scans, fetch/rebase
@@ -807,18 +808,29 @@ compiling:
 291. Theorem 5.41 finite-coordinate empirical-average source handoff from
    actual estimating-map coordinate paths:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapPathTaylor_envelope`.
+292. Theorem 5.41 coordinate derivative of an actual estimating-map path from
+   a Frechet derivative:
+   `vaart1998_theorem_5_41_estimatingMap_coordinate_path_hasDerivAt_of_hasFDerivAt`.
+293. Theorem 5.41 a.e. sampled coordinate path derivatives from Frechet
+   derivatives:
+   `vaart1998_theorem_5_41_estimatingMap_coordinate_path_hasDerivAt_ae_of_hasFDerivAt`.
+294. Theorem 5.41 finite-coordinate empirical-average source handoff from
+   Frechet derivatives along the actual estimating-map path:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapFDerivPathTaylor_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 estimating map path handoff`).
+(`Add Vaart theorem 5.41 Frechet path derivative handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by instantiating the abstract
-path value with the actual segment
-`t ↦ estimatingMap (theta0 + t • delta)` and discharging the endpoint value
-identities from `theta0 + delta = estimator`.
+asymptotic-normality route for Z-estimators by deriving the coordinate
+one-dimensional path derivative from a Frechet derivative of the estimating
+map along `theta0 + t • delta`, then feeding that into the compiled
+estimating-map path handoff.
 
-The next aggressive packet should package the remaining one-dimensional
-calculus obligations along this actual segment.
+The next aggressive packet should package the remaining source Taylor
+obligations: coordinate-path continuity, derivative-at-zero identification,
+and the scalar derivative Taylor display from the selected second-derivative
+action.
 
 ## Execution Notes
 

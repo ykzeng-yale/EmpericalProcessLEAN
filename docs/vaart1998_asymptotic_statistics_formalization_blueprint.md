@@ -574,8 +574,14 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinatePathTaylor_envelope`,
   and the estimating-map path packet adds
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapPathTaylor_envelope`,
-  so the remaining critical path is packaging the one-dimensional calculus
-  obligations along the actual segment `theta0 + t • delta`.
+  and the Frechet path derivative packet adds
+  `vaart1998_theorem_5_41_estimatingMap_coordinate_path_hasDerivAt_of_hasFDerivAt`,
+  `vaart1998_theorem_5_41_estimatingMap_coordinate_path_hasDerivAt_ae_of_hasFDerivAt`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapFDerivPathTaylor_envelope`,
+  so the remaining critical path is packaging coordinate-path continuity,
+  derivative-at-zero identification, and the scalar derivative Taylor display
+  from the selected second-derivative action.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
