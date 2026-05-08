@@ -2185,6 +2185,53 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_remainder_row_integral_tend
               (P := P) (x := x) hx hB_nonneg hbound_x N t
 
 /--
+The conditional Taylor-remainder row has an integrable norm sum under Chewi's
+uniform boundedness hypothesis.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_remainder_row_norm_integrable_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) :
+    Integrable
+      (fun ω =>
+        ∑ k ∈ Finset.range N,
+          ‖S.projectedRemainderFactor L N t k ω‖) P := by
+  rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+    ⟨B, hB_nonneg, hbound⟩
+  let x : ℕ -> Ω -> ℝ := fun n ω => L (S.martingale.xi n ω)
+  have hx : ∀ k : ℕ, AEMeasurable (x (k + 1)) P := by
+    intro k
+    exact (S.martingale.projected_integrable L (k + 1)).aemeasurable
+  have hbound_x : ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B := by
+    intro k
+    simpa [x] using hbound k
+  refine integrable_finsetSum (Finset.range N) ?_
+  intro k _hk
+  have hrem_int :
+      Integrable
+        (chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (k + 1) ω))) P := by
+    simpa [x] using
+      chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+        (P := P) (x := x (k + 1)) (hx k)
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        ⟨B, hB_nonneg, hbound_x k⟩
+  have hcond :
+      Integrable
+        (P[chewi127ScalarCharFunTaylorRemainder
+          (t * (Real.sqrt (N : ℝ))⁻¹)
+          (fun ω => L (S.martingale.xi (k + 1) ω)) |
+          S.martingale.filtration k]) P :=
+    integrable_condExp
+  simpa [Chewi127BoundedMartingaleCLTSource.projectedRemainderFactor] using
+    hcond.norm
+
+/--
 The full variance-plus-remainder factor produced by the projected tower peel.
 -/
 noncomputable def Chewi127BoundedMartingaleCLTSource.projectedTaylorModelFactor
@@ -4625,6 +4672,111 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixe
       L t hA_meas hA_int hsq htower_remainder_int)
     hnormalized_bound hinverse_bound hnormalized_int hinverse_int
     hdiff_int herror_int hvariance_error_int hrow_remainder_int
+
+/--
+Mixed-tower characteristic-function convergence with the square-integrability
+of projected increments, one-step Taylor-remainder integrability, and
+conditional-remainder row integrability discharged from Chewi's uniform
+boundedness hypothesis.  The remaining assumptions are the actual finite
+mixed-tower future-tail measurability/integrability and product-bound
+side conditions.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hA_meas : ∀ N r : ℕ, r < N ->
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hA_int : ∀ N r : ℕ, r < N ->
+      Integrable
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hnormalized_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖S.projectedNormalizedTaylorFactor L N t k ω‖ ≤ 1)
+    (hinverse_bound : ∀ᶠ N : ℕ in atTop,
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.range N,
+        ‖S.projectedInverseCompensationFactor L N t k ω‖ ≤ 1)
+    (hnormalized_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hinverse_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω) P)
+    (hdiff_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedNormalizedTaylorFactor L N t k ω -
+                  S.projectedInverseCompensationFactor L N t k ω‖) P)
+    (herror_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  rcases S.martingale.projected_uniform_bound L S.uniform_bound with
+    ⟨B, hB_nonneg, hbound⟩
+  let x : ℕ -> Ω -> ℝ := fun n ω => L (S.martingale.xi n ω)
+  have hx : ∀ k : ℕ, AEMeasurable (x (k + 1)) P := by
+    intro k
+    exact (S.martingale.projected_integrable L (k + 1)).aemeasurable
+  have hbound_x : ∀ k : ℕ, ∀ᵐ ω ∂P, |x (k + 1) ω| ≤ B := by
+    intro k
+    simpa [x] using hbound k
+  refine
+    S.projected_charFun_tendsto_exp_of_mixed_tower L t
+      hA_meas hA_int ?_ ?_ hnormalized_bound hinverse_bound
+      hnormalized_int hinverse_int hdiff_int herror_int hvariance_error_int
+      (S.projected_remainder_row_norm_integrable_of_uniform_bound L · t)
+  · intro N r _hr
+    simpa [x] using
+      chewi127Scalar_sq_integrable_of_uniform_bound
+        (P := P) (x := x (r + 1)) (hx r)
+        ⟨B, hB_nonneg, hbound_x r⟩
+  · intro N r _hr
+    simpa [x] using
+      chewi127ScalarCharFunTaylorRemainder_integrable_of_uniform_bound
+        (P := P) (x := x (r + 1)) (hx r)
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        ⟨B, hB_nonneg, hbound_x r⟩
 
 /--
 Projected characteristic-function convergence from the finite product model

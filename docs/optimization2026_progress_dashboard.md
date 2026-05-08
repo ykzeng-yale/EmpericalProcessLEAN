@@ -266,6 +266,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projected_scalarScaledSum_charFun_eq_integral_normalized_product_of_mixed_tower`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_normalized_product_model_of_mixed_tower`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower`,
+  `Chewi127BoundedMartingaleCLTSource.projected_remainder_row_norm_integrable_of_uniform_bound`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -324,9 +326,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   accumulates those successor equalities, proves the normalized-product model
   from the mixed tower, and packages the resulting source-facing
   characteristic-function convergence theorem.  The next ASGD packet should
-  discharge or reduce the remaining routine assumptions of
-  `projected_charFun_tendsto_exp_of_mixed_tower`, prioritizing local
-  boundedness/integrability and then the future-tail measurability side.
+  now starts from the newest uniform-integrability wrapper, which discharges
+  square integrability, one-step Taylor-remainder integrability, and
+  conditional-remainder row integrability from the source uniform bound.  The
+  remaining work is the finite mixed-tower future-tail
+  measurability/integrability plus normalized/inverse product and row-error
+  integrability/boundedness assumptions.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
