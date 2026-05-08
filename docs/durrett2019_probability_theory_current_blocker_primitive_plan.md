@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V108
+## Live In-Thread Goal Prompt V109
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -395,11 +395,17 @@ derive the finite-prefix no-top obligations from the likelihood integral-one
 identities.  The theorem
 `durrett2019_theorem_4_3_8_canonicalRatio_range_tprod_density_trimmedPrefix_zero_or_pos_no_top`
 therefore packages the textbook `tprod` zero/positive branch without a separate
-pointwise coordinate-finiteness hypothesis.
-Move to the remaining Kakutani criterion assembly:
-add only source-shaped wrappers that remove the remaining ambient dichotomy if
-there is a direct route; do not add another repackaging of the already closed
-`HasProd`, `tprod`, or no-top branch criterion.
+pointwise coordinate-finiteness hypothesis or ambient Kakutani dichotomy
+input.  The direct source-identity likelihood-mass bridge
+`durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_lintegral_eq_one`
+and its cylinder/L1/pairwise/range `HasProd` wrappers are compiled support.
+Move forward from Theorem 4.3.8.  Do not add another repackaging of the
+already closed `HasProd`, `tprod`, no-top, or no-dichotomy branch criterion.
+Next aggressive target: start the next textbook block.  Prefer Lemma 4.3.9 and
+the branching-process martingale `Z_n / μ^n` if the process can be encoded with
+local independence/conditional-expectation APIs in one theorem-sized packet;
+otherwise move directly to Section 4.4 Doob maximal and Lp inequalities using
+mathlib's `MeasureTheory.maximal_ineq` and martingale optional-stopping APIs.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -907,8 +913,10 @@ also compile, including strict-positive product variants and the zero-product
 `HasProd h 0` singular handoff.  The ENNReal full-prefix convergence upgrade and
 closed zero/positive branch wrapper now also compile.  The textbook `tprod`
 zero/positive branch wrapper and the no-coordinate-finiteness `tprod` branch
-wrapper now also compile.  Move forward only to source-shaped wrappers that
-remove the remaining ambient dichotomy when a direct route is visible.
+wrapper now also compile without the ambient dichotomy input.  Move forward
+from Theorem 4.3.8: first test the source-shaped Lemma 4.3.9 branching-process
+martingale packet, otherwise move to Section 4.4 Doob inequalities through the
+existing mathlib maximal-inequality and optional-stopping APIs.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1022,6 +1030,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V108` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V109` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

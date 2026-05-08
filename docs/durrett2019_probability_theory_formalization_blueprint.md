@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V108`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V109`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -564,9 +564,11 @@ Next packet:
   branch wrapper also now compile.  The textbook `tprod` zero/positive branch
   wrapper now also compiles.  Coordinate finiteness is now discharged from the
   finite-prefix likelihood integral-one identities, and the no-top `tprod`
-  branch wrapper now also compiles.  The active target is only source-shaped
-  wrappers that remove the remaining ambient dichotomy when a direct route is
-  visible.
+  branch wrapper now also compiles, and the direct source-identity
+  likelihood-mass bridge removes the ambient Kakutani dichotomy from that
+  endpoint.  The active target is to move forward from Theorem 4.3.8: first
+  test Lemma 4.3.9's branching-process martingale route, otherwise use
+  mathlib's Doob maximal inequality support for Section 4.4.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:

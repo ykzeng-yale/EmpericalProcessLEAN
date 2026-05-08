@@ -6825,6 +6825,51 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_n
   exact (measureReal_eq_zero_iff (μ := μ) (s := A) (measure_ne_top μ A)).1 hμA_real
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product absolute-continuity support: if
+the limiting likelihood has denominator mass one and is finite denominator-a.e.,
+then the Theorem 4.3.5 source real-identity itself rules out any numerator mass
+on the infinite-density top set, so the numerator measure is absolutely
+continuous with respect to the denominator measure.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_lintegral_eq_one
+    {Ω : Type*} [MeasurableSpace Ω] {μ ν : Measure Ω}
+    [IsProbabilityMeasure μ] {X : Ω -> ℝ≥0∞}
+    (hidentity :
+      ∀ {A : Set Ω}, MeasurableSet A ->
+        μ.real A =
+          ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}))
+    (hνtop : ν {ω | X ω = ∞} = 0)
+    (hXint : Integrable (fun ω => (X ω).toReal) ν)
+    (hInt : ∫⁻ ω, X ω ∂ν = 1) :
+    μ ≪ ν := by
+  have hfinite : ∀ᵐ ω ∂ν, X ω ≠ ∞ :=
+    (measure_eq_zero_iff_ae_notMem.mp hνtop).mono fun _ hnotMem htop => hnotMem htop
+  have htarget_eq :
+      ∫⁻ ω, X ω ∂ν = ENNReal.ofReal (∫ ω, (X ω).toReal ∂ν) := by
+    symm
+    rw [ofReal_integral_eq_lintegral_ofReal hXint
+      (Eventually.of_forall fun ω => ENNReal.toReal_nonneg)]
+    exact lintegral_congr_ae <|
+      hfinite.mono fun ω hω => ENNReal.ofReal_toReal hω
+  have hint_ofReal : ENNReal.ofReal (∫ ω, (X ω).toReal ∂ν) = 1 := by
+    simpa [hInt] using htarget_eq.symm
+  have hint_real : ∫ ω, (X ω).toReal ∂ν = 1 :=
+    ENNReal.ofReal_eq_one.mp hint_ofReal
+  have hμuniv_real : μ.real Set.univ = 1 := by
+    simp
+  have htop_real_zero : μ.real {ω | X ω = ∞} = 0 := by
+    have hid := hidentity (A := Set.univ) MeasurableSet.univ
+    have hsum : 1 = 1 + μ.real {ω | X ω = ∞} := by
+      simpa [hμuniv_real, hint_real] using hid
+    linarith
+  have hμtop : μ {ω | X ω = ∞} = 0 :=
+    (measureReal_eq_zero_iff
+      (μ := μ) (s := {ω | X ω = ∞}) (measure_ne_top μ _)).1 htop_real_zero
+  exact
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_no_top_mass
+      (μ := μ) (ν := ν) (X := X) hidentity hμtop
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product absolute-continuity handoff from
 the Radon-Nikodym/top-set identity packaged in Theorem 4.3.5.
 -/
@@ -8973,6 +9018,177 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_ne_top_of_de
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
+finite cylinder-likelihood integrals to likelihood mass one, together with the
+Theorem 4.3.5 source identity, directly gives absolute continuity.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_cylinderLikelihood_lintegral_tendsto
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ι -> S) -> ℝ≥0∞}
+    (hidentity :
+      ∀ {A : Set (ι -> S)}, MeasurableSet A ->
+        (Measure.infinitePi μ).real A =
+          ∫ x in A, (X x).toReal ∂Measure.infinitePi ν +
+            (Measure.infinitePi μ).real (A ∩ {x | X x = ∞}))
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0)
+    (hXint : Integrable (fun x => (X x).toReal) (Measure.infinitePi ν))
+    (hIntTendsto :
+      Tendsto
+        (fun n =>
+          ∫⁻ x,
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x
+              ∂Measure.infinitePi ν)
+        atTop (𝓝 (∫⁻ x, X x ∂Measure.infinitePi ν))) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  refine
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_lintegral_eq_one
+      (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (X := X)
+      hidentity hνtop hXint ?_
+  exact
+    durrett2019_theorem_4_3_8_lintegral_eq_one_of_cylinderLikelihood_lintegral_tendsto
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) hq hμ hIntTendsto
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product final handoff: L1 convergence of
+the finite cylinder likelihoods and the source real-identity directly give
+absolute continuity, with no ambient dichotomy input.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_cylinderLikelihood_toReal_L1
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ι -> S) -> ℝ≥0∞}
+    (hidentity :
+      ∀ {A : Set (ι -> S)}, MeasurableSet A ->
+        (Measure.infinitePi μ).real A =
+          ∫ x in A, (X x).toReal ∂Measure.infinitePi ν +
+            (Measure.infinitePi μ).real (A ∩ {x | X x = ∞}))
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0)
+    (hXint : Integrable (fun x => (X x).toReal) (Measure.infinitePi ν))
+    (hL1 :
+      Tendsto
+        (fun n =>
+          ∫⁻ x,
+            ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+              (X x).toReal‖ₑ ∂Measure.infinitePi ν)
+        atTop (𝓝 0)) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  refine
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_cylinderLikelihood_lintegral_tendsto
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q)
+      hq hμ hidentity hνtop hXint ?_
+  refine
+    durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_tendsto_of_toReal_L1
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) hq hμ ?_ hXint hL1
+  exact measure_eq_zero_iff_ae_notMem.mp hνtop
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product final handoff from the Cauchy
+estimate: pairwise L1 tail control, pointwise convergence, and the source
+real-identity directly give absolute continuity.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_cylinderLikelihood_pairwise_liminf
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ι -> S) -> ℝ≥0∞}
+    (hidentity :
+      ∀ {A : Set (ι -> S)}, MeasurableSet A ->
+        (Measure.infinitePi μ).real A =
+          ∫ x in A, (X x).toReal ∂Measure.infinitePi ν +
+            (Measure.infinitePi μ).real (A ∩ {x | X x = ∞}))
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0)
+    (hXint : Integrable (fun x => (X x).toReal) (Measure.infinitePi ν))
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal)
+          atTop (𝓝 ((X x).toReal)))
+    (hpair :
+      Tendsto
+        (fun n =>
+          Filter.liminf
+            (fun m =>
+              ∫⁻ x,
+                ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+                  (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+                ∂Measure.infinitePi ν)
+            atTop)
+        atTop (𝓝 0)) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  refine
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_cylinderLikelihood_toReal_L1
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q)
+      hq hμ hidentity hνtop hXint ?_
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_L1_of_pairwise_liminf
+      (ν := ν) (Iseq := Iseq) (q := q) hq hlim hpair
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product final handoff for the standard
+prefix exhaustion of `ℕ`: a positive finite Hellinger product and the source
+real-identity directly prove absolute continuity, with the coordinate no-top
+obligations discharged by the source-density hypotheses.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_range_hasProd_density_ae_ne_top
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ℕ -> S) -> ℝ≥0∞}
+    (hidentity :
+      ∀ {A : Set (ℕ -> S)}, MeasurableSet A ->
+        (Measure.infinitePi μ).real A =
+          ∫ x in A, (X x).toReal ∂Measure.infinitePi ν +
+            (Measure.infinitePi μ).real (A ∩ {x | X x = ∞}))
+    (hXfinite : ∀ᵐ x ∂Measure.infinitePi ν, X x ≠ ∞)
+    (hXint : Integrable (fun x => (X x).toReal) (Measure.infinitePi ν))
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n =>
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal)
+          atTop (𝓝 ((X x).toReal)))
+    (hP0 : P ≠ 0) (hPtop : P ≠ ∞)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (htail_eq :
+      ∀ n,
+        tail n =
+          P / (∏ i ∈ Finset.range n,
+            ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x ≠ ∞) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  refine
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_cylinderLikelihood_pairwise_liminf
+      (μ := μ) (ν := ν) (Iseq := fun n => Finset.range n) (q := q)
+      hq hμ hidentity
+      (durrett2019_theorem_4_3_8_top_set_null_of_ae_ne_top
+        (ν := Measure.infinitePi ν) (X := X) hXfinite)
+      hXint hlim ?_
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_hasProd_density
+      (μ := μ) (ν := ν) (q := q) (tail := tail) (P := P)
+      hq hμ hP0 hPtop hprod htail_eq hfinite
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
 finite cylinder-likelihood integrals to the limiting likelihood mass supplies
 the mass-one input consumed by the positive-branch eliminator.
 -/
@@ -9829,8 +10045,9 @@ theorem
 /--
 Durrett 2019, Theorem 4.3.8 canonical Kakutani branch criterion with the
 textbook infinite Hellinger product and with coordinate finiteness discharged
-from the finite-prefix likelihood mass identities.  The remaining structural
-input is the Kakutani ambient dichotomy.
+from the finite-prefix likelihood mass identities.  The positive branch now
+uses the Theorem 4.3.5 source real-identity and likelihood mass-one handoff
+directly, without an ambient Kakutani dichotomy input.
 -/
 theorem
     durrett2019_theorem_4_3_8_canonicalRatio_range_tprod_density_trimmedPrefix_zero_or_pos_no_top
@@ -9847,9 +10064,6 @@ theorem
     (hC : IsPiSystem C)
     (hq : ∀ i, Measurable (q i))
     (hμ : ∀ i, μ i = (ν i).withDensity (q i))
-    (hbranch :
-      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
-        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
     (hmult :
       Multipliable (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)) :
     ((∏' i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) = 0 ->
@@ -9938,14 +10152,21 @@ theorem
       simpa [M, N, X, ℱ] using
         durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_tendsto_canonicalRatio_of_trimmedPrefix_ratio
           (μ := μ) (ν := ν) (q := q) C hC_meas hgen hC hq hμ
+    have hidentity :
+        ∀ {A : Set (ℕ -> S)}, MeasurableSet A ->
+          M.real A =
+            ∫ x in A, (X x).toReal ∂N +
+              M.real (A ∩ {x | X x = ∞}) := by
+      intro A hA
+      simpa [M, N, X, ℱ] using
+        durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_canonicalRatio_full
+          (μ := M) (ν := N) (ℱ := ℱ) hA C hC_meas hgen hC
     simpa [M, N, X, ℱ, h] using
-      durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_range_hasProd_density_ae_ne_top
+      durrett2019_theorem_4_3_8_absolutelyContinuous_of_source_real_identity_range_hasProd_density_ae_ne_top
         (μ := μ) (ν := ν) (q := q)
         (tail := fun n => (∏' i, h i) / (∏ i ∈ Finset.range n, h i))
         (P := ∏' i, h i) (X := X)
-        hq hμ hbranch
-        (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_ae_rnDeriv
-          (μ := M) (ν := N) (ℱ := ℱ) C hC_meas hgen hC)
+        hq hμ hidentity
         hXfinite
         (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_integrable
           (μ := M) (ν := N) (ℱ := ℱ) C hC_meas hgen hC)
