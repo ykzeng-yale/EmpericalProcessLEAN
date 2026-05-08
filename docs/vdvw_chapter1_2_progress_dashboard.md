@@ -3399,3 +3399,11 @@ localized as
 This removes another global countability dependency from the source route; the
 remaining open analytic obligation is integrability/UI or a concrete
 boundedness/counting proof.
+
+The countable-class polynomial-cardinality route now discharges selected-log
+measurability and finite-product integrability internally through
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.selectedLogIntegrable_of_logCardinality_div_bound_of_set_countable`
+and
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_nat_poly_bound_auto_of_set_countable`.
+This leaves polynomial growth/counting itself, or the displayed-beta event
+comparison, as the next source-level mathematical task.

@@ -24700,6 +24700,126 @@ theorem
       (n := n) hmeas_selected).div_const (n : ℝ)
 
 /--
+The selected normalized log-cardinality process is integrable under localized
+class countability and a deterministic normalized-log bound for the external
+cardinality envelope.
+
+This removes the finite-product integrability boilerplate from bounded
+selected-entropy routes: measurability comes from the set-countable selected
+covering-number theorem, and boundedness transfers from the external
+cardinality to the selected least-cover cardinality.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.selectedLogIntegrable_of_logCardinality_div_bound_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {K : ℝ -> ℝ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hcount : indexClass.Countable)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hbound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) /
+              (n : ℝ) ≤ K M eta) :
+    ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality
+            (fun sample' : SampleAt Observation n => fun m : ℕ =>
+              (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta)
+                (cardinality := cardinality M) (X M)
+                (hentropy.coveringNumber_le M hM) heta) n sample' m)
+            sample n / (n : ℝ))
+        (vdVWProductMeasure P n) := by
+  intro M hM eta heta n
+  let selectedCardinality :
+      (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (cardinality := cardinality M) (X M)
+      (hentropy.coveringNumber_le M hM) heta
+  let hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X M n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta :=
+    hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (coverRadius := fun _ : ℕ => eta)
+      (cardinality := cardinality M) (X M)
+      (hentropy.coveringNumber_le M hM) (by intro _; exact heta)
+  have hcovering_le :
+      ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n)
+          indexClass (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality M eta n) :=
+    VdVWRandomEmpiricalL1CoveringNumberLeCardinality.coverRadius_of_forAllRadius_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (coverRadius := fun _ : ℕ => eta)
+      (cardinality := cardinality M) (X M)
+      (hentropy.coveringNumber_le M hM) (by intro _; exact heta)
+  have hselected_bound :
+      ∀ n (sample : SampleAt Observation n),
+        vdVWLogEmpiricalL1CoveringCardinality (selectedCardinality n)
+            sample n / (n : ℝ) ≤ K M eta := by
+    have hraw :
+        ∀ n (sample : SampleAt Observation n),
+          vdVWLogEmpiricalL1CoveringCardinality
+              (fun sample m =>
+                finiteEmpiricalL1CoveringNumberCard (hfinite n sample m))
+              sample n / (n : ℝ) ≤ K M eta :=
+      vdVWLogEmpiricalL1CoveringCardinality_selected_terminal_div_le_of_covering_le_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (coverRadius := fun _ : ℕ => eta)
+        (cardinality := fun n => cardinality M eta n)
+        (K := K M eta) (X M) hcovering_le hfinite
+        (hbound M hM eta heta)
+    intro n sample
+    simpa [selectedCardinality,
+      vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard]
+      using hraw n sample
+  refine
+    Integrable.of_bound
+      ((hentropy.selectedLogMeasurable_of_set_countable hcount
+        hX_samplePath hclass henvelope_meas M hM eta heta n).aestronglyMeasurable)
+      (K M eta) ?_
+  exact ae_of_all _ fun sample => by
+    let y : ℝ :=
+      vdVWLogEmpiricalL1CoveringCardinality
+        (fun sample' : SampleAt Observation n => fun m : ℕ =>
+          selectedCardinality n sample' m) sample n / (n : ℝ)
+    have hy_nonneg : 0 ≤ y := by
+      dsimp [y]
+      exact
+        div_nonneg
+          (vdVWLogEmpiricalL1CoveringCardinality_nonneg
+            (fun sample' : SampleAt Observation n => fun m : ℕ =>
+              selectedCardinality n sample' m) sample n)
+          (Nat.cast_nonneg n)
+    have hy_le : y ≤ K M eta := by
+      dsimp [y, selectedCardinality]
+      exact hselected_bound n sample
+    have hnorm_eq : ‖y‖ = y := by
+      rw [Real.norm_eq_abs, abs_of_nonneg hy_nonneg]
+    simpa [y, selectedCardinality, hnorm_eq] using hy_le
+
+/--
 Build selected fixed-radius side conditions from variable-domain book entropy
 and fixed-domain uniform integrability of the first-sample lifts of the raw
 selected normalized-log cardinality process.
@@ -30919,6 +31039,96 @@ theorem
           (cardinality := cardinality) hentropy hselectedLogMeasurable
           hselectedLogIntegrable hconstant_ge_one hpoly_bound)
       hX_samplePath hclass henvelope_meas
+
+/--
+Natural-polynomial cardinality growth proves the registered selected
+entropy-to-finite-net mean primitive under localized class countability, with
+the selected-log measurability and finite-product integrability obligations
+discharged automatically.
+
+This is the streamlined countable-class source handoff for finite-trace, grid,
+and VC/Sauer-style counting arguments.  Callers supply the book entropy package
+and the polynomial cardinality estimate; the selected log-cardinality
+measurability/integrability side conditions are derived internally.
+-/
+theorem
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_nat_poly_bound_auto_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {constant : ℝ -> ℝ -> ℝ} {degree : ℝ -> ℝ -> ℕ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hcount : indexClass.Countable)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hconstant_ge_one :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 1 ≤ constant M eta)
+    (hpoly_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          ((cardinality M eta n sample n : ℝ) + 1) ≤
+            constant M eta *
+              (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P X indexClass
+      classFun envelope cardinality hentropy := by
+  let K : ℝ -> ℝ -> ℝ :=
+    fun M eta => Real.log (constant M eta) + (degree M eta : ℝ)
+  have hlog_div_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) /
+              (n : ℝ) ≤ K M eta := by
+    intro M hM eta heta n sample
+    have hleft_pos : 0 < ((cardinality M eta n sample n : ℝ) + 1) := by
+      positivity
+    have hconstant_pos : 0 < constant M eta :=
+      lt_of_lt_of_le zero_lt_one (hconstant_ge_one M hM eta heta)
+    have hsucc_pos : 0 < (((n + 1 : ℕ) : ℝ)) := by
+      positivity
+    have hpow_pos : 0 < (((n + 1 : ℕ) : ℝ) ^ degree M eta) :=
+      pow_pos hsucc_pos _
+    have hlog_succ_linear :
+        Real.log ((cardinality M eta n sample n : ℝ) + 1) ≤
+          Real.log (constant M eta) + (degree M eta : ℝ) *
+            Real.log (((n + 1 : ℕ) : ℝ)) := by
+      calc
+        Real.log ((cardinality M eta n sample n : ℝ) + 1)
+            ≤ Real.log (constant M eta *
+                (((n + 1 : ℕ) : ℝ) ^ degree M eta)) :=
+          Real.log_le_log hleft_pos (hpoly_bound M hM eta heta n sample)
+        _ = Real.log (constant M eta) + (degree M eta : ℝ) *
+              Real.log (((n + 1 : ℕ) : ℝ)) := by
+          rw [Real.log_mul hconstant_pos.ne' hpow_pos.ne', Real.log_pow]
+    exact
+      (div_le_div_of_nonneg_right hlog_succ_linear
+        (Nat.cast_nonneg n)).trans
+        (const_add_mul_log_nat_succ_div_le_const_add
+          (Real.log_nonneg (hconstant_ge_one M hM eta heta))
+          (Nat.cast_nonneg (degree M eta)) n)
+  exact
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_nat_poly_bound_of_set_countable
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (constant := constant) (degree := degree)
+      (cardinality := cardinality)
+      hentropy hcount hX_samplePath hclass henvelope_meas
+      (hentropy.selectedLogMeasurable_of_set_countable hcount
+        hX_samplePath hclass henvelope_meas)
+      (hentropy.selectedLogIntegrable_of_logCardinality_div_bound_of_set_countable
+        (P := P) (X := X) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope)
+        (K := K) (cardinality := cardinality)
+        hcount hX_samplePath hclass henvelope_meas hlog_div_bound)
+      hconstant_ge_one hpoly_bound
 
 /--
 Ordinary mean convergence of the selected normalized log-cardinality process

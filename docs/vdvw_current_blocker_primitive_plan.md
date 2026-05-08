@@ -8120,3 +8120,14 @@ first-sample UI/tail routes is now discharged from `indexClass.Countable`, the
 sample-path identity, and the coordinate measurability of the class/envelope.
 The remaining analytic input is integrability/UI or a concrete boundedness
 argument, not measurability of the selected cardinality.
+
+2026-05-08 localized selected-log integrability and auto polynomial primitive:
+`Theorem243.lean` now proves
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.selectedLogIntegrable_of_logCardinality_div_bound_of_set_countable`
+and
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_nat_poly_bound_auto_of_set_countable`.
+For countable theorem classes, natural-polynomial external cardinality growth
+now feeds the registered selected finite-net mean primitive without separately
+supplying selected-log measurability or finite-product integrability.  The
+remaining source work is the actual stochastic/counting proof of such growth in
+the target class, or the displayed-beta selected-cover event comparison.
