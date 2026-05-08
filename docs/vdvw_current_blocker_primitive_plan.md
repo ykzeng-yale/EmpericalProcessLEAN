@@ -8131,3 +8131,15 @@ now feeds the registered selected finite-net mean primitive without separately
 supplying selected-log measurability or finite-product integrability.  The
 remaining source work is the actual stochastic/counting proof of such growth in
 the target class, or the displayed-beta selected-cover event comparison.
+
+2026-05-08 first-sample lifted integrability transport:
+`PMeasurable.lean` now proves
+`integrable_vdVWProductMeasure_of_firstNSample`, and `Theorem243.lean` uses it
+in
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.selectedLogIntegrable_of_firstSample_integrable_of_set_countable`
+and
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_unifIntegrable_liftIntegrable_of_set_countable`.
+The first-sample Vitali/UI route can now keep both integrability and UI on the
+canonical infinite iid product space, then transport finite-product
+integrability back through the first-`n` projection.  The open source input is
+now the actual lifted integrability/UI proof or the displayed-beta event route.

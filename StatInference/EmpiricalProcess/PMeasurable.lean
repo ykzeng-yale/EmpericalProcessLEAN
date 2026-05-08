@@ -442,6 +442,26 @@ theorem integral_vdVWInfiniteProductMeasure_firstNSample
     exact (integral_map (hmp.measurable.aemeasurable) hgmap).symm
 
 /--
+Finite-sample integrability can be checked after lifting the statistic to the
+canonical infinite iid product space through the first-`n` coordinate map.
+-/
+theorem integrable_vdVWProductMeasure_of_firstNSample
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] {n : ℕ}
+    {g : (Fin n -> Observation) -> ℝ}
+    (hg_meas : Measurable g)
+    (hg_lift_integrable :
+      Integrable
+        (fun sequence : ℕ -> Observation =>
+          g (vdVWFirstNSample (Observation := Observation) n sequence))
+        (vdVWInfiniteProductMeasure P)) :
+    Integrable g (vdVWProductMeasure P n) := by
+  exact
+    ((vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n).integrable_comp
+      hg_meas.aestronglyMeasurable).mp
+      (by simpa [Function.comp_def] using hg_lift_integrable)
+
+/--
 Finite-product ordinary means converge to zero when the corresponding
 first-sample lifts converge in outer probability on the canonical infinite iid
 space and are uniformly integrable there.

@@ -24820,6 +24820,78 @@ theorem
     simpa [y, selectedCardinality, hnorm_eq] using hy_le
 
 /--
+The selected normalized log-cardinality process is finite-product integrable
+whenever its canonical first-sample lift is integrable on the infinite iid
+product space.
+
+This is the integrability half of the common-space Vitali route.  It lets
+future stochastic-entropy arguments prove integrability on the same infinite
+sample space used for first-sample uniform integrability, then transport it
+back to the finite-product statistic required by the existing selected-log
+mean theorem.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.selectedLogIntegrable_of_firstSample_integrable_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hcount : indexClass.Countable)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hselectedLogLiftIntegrable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Integrable
+          (fun sequence : ℕ -> Observation =>
+            vdVWLogEmpiricalL1CoveringCardinality
+              (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                  (indexClass := indexClass) (classFun := classFun)
+                  (envelope := envelope) (M := M) (eta := eta)
+                  (cardinality := cardinality M) (X M)
+                  (hentropy.coveringNumber_le M hM) heta) n sample' m)
+              (vdVWFirstNSample (Observation := Observation) n sequence) n /
+                (n : ℝ))
+          (vdVWInfiniteProductMeasure P)) :
+    ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWLogEmpiricalL1CoveringCardinality
+            (fun sample' : SampleAt Observation n => fun m : ℕ =>
+              (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta)
+                (cardinality := cardinality M) (X M)
+                (hentropy.coveringNumber_le M hM) heta) n sample' m)
+            sample n / (n : ℝ))
+        (vdVWProductMeasure P n) := by
+  intro M hM eta heta n
+  exact
+    integrable_vdVWProductMeasure_of_firstNSample
+      (P := P)
+      (g := fun sample : SampleAt Observation n =>
+        vdVWLogEmpiricalL1CoveringCardinality
+          (fun sample' : SampleAt Observation n => fun m : ℕ =>
+            (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (cardinality := cardinality M) (X M)
+              (hentropy.coveringNumber_le M hM) heta) n sample' m)
+          sample n / (n : ℝ))
+      (hentropy.selectedLogMeasurable_of_set_countable hcount
+        hX_samplePath hclass henvelope_meas M hM eta heta n)
+      (hselectedLogLiftIntegrable M hM eta heta n)
+
+/--
 Build selected fixed-radius side conditions from variable-domain book entropy
 and fixed-domain uniform integrability of the first-sample lifts of the raw
 selected normalized-log cardinality process.
@@ -30883,6 +30955,80 @@ theorem
           (cardinality := cardinality) hentropy hselectedLogMeasurable
           hselectedLogIntegrable hselectedLogUI)
       hX_samplePath hclass henvelope_meas
+
+/--
+First-sample uniform integrability plus first-sample lifted integrability proves
+the registered selected entropy-to-finite-net mean primitive under localized
+class countability.
+
+This is the common-space version of
+`...of_logCardinality_div_firstSample_unifIntegrable_of_set_countable`: the
+finite-product integrability input is transported back from the canonical
+infinite iid product space, where the UI hypothesis is also stated.
+-/
+theorem
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_unifIntegrable_liftIntegrable_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hcount : indexClass.Countable)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hselectedLogLiftIntegrable :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta) n,
+        Integrable
+          (fun sequence : ℕ -> Observation =>
+            vdVWLogEmpiricalL1CoveringCardinality
+              (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                  (indexClass := indexClass) (classFun := classFun)
+                  (envelope := envelope) (M := M) (eta := eta)
+                  (cardinality := cardinality M) (X M)
+                  (hentropy.coveringNumber_le M hM) heta) n sample' m)
+              (vdVWFirstNSample (Observation := Observation) n sequence) n /
+                (n : ℝ))
+          (vdVWInfiniteProductMeasure P))
+    (hselectedLogUI :
+      ∀ M (hM : 0 < M) eta (heta : 0 < eta),
+        UnifIntegrable
+          (fun n sequence =>
+            vdVWLogEmpiricalL1CoveringCardinality
+              (fun sample' : SampleAt Observation n => fun m : ℕ =>
+                (vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard
+                  (indexClass := indexClass) (classFun := classFun)
+                  (envelope := envelope) (M := M) (eta := eta)
+                  (cardinality := cardinality M) (X M)
+                  (hentropy.coveringNumber_le M hM) heta) n sample' m)
+              (vdVWFirstNSample (Observation := Observation) n sequence) n /
+                (n : ℝ))
+          1 (vdVWInfiniteProductMeasure P)) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P X indexClass
+      classFun envelope cardinality hentropy := by
+  exact
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_unifIntegrable_of_set_countable
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (cardinality := cardinality)
+      hentropy hcount hX_samplePath hclass henvelope_meas
+      (hentropy.selectedLogMeasurable_of_set_countable hcount
+        hX_samplePath hclass henvelope_meas)
+      (hentropy.selectedLogIntegrable_of_firstSample_integrable_of_set_countable
+        (P := P) (X := X) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope)
+        (cardinality := cardinality)
+        hcount hX_samplePath hclass henvelope_meas
+        hselectedLogLiftIntegrable)
+      hselectedLogUI
 
 /--
 A uniform first-sample `nnnorm` bound for the selected normalized

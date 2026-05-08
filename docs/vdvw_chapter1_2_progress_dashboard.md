@@ -3407,3 +3407,11 @@ and
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_nat_poly_bound_auto_of_set_countable`.
 This leaves polynomial growth/counting itself, or the displayed-beta event
 comparison, as the next source-level mathematical task.
+
+The first-sample common-space route now has an integrability transport lemma:
+`integrable_vdVWProductMeasure_of_firstNSample`, plus selected-log consumers
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.selectedLogIntegrable_of_firstSample_integrable_of_set_countable`
+and
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_unifIntegrable_liftIntegrable_of_set_countable`.
+This lets future proofs state lifted integrability and UI on the same infinite
+iid product space before feeding the selected finite-net mean primitive.
