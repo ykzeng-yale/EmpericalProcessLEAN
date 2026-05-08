@@ -8178,3 +8178,13 @@ selected finite-net mean primitive under localized class countability.  The next
 source task is a concrete VC/Sauer or finite-trace counting theorem that proves
 the displayed log-succ-linear estimate, or the independent displayed-beta
 selected-cover event comparison.
+
+2026-05-08 canonical full-subgraph selected-entropy mean handoff:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive`.
+The canonical full-subgraph VC/Sauer route already supplied the variable-domain
+book entropy condition and selected fixed-radius tail/UI side conditions; this
+new bridge exposes those facts through the registered selected finite-net mean
+primitive.  The remaining general-textbook blocker is still the source
+selected-cover entropy/event comparison outside this canonical countable
+full-subgraph route.

@@ -50594,6 +50594,62 @@ theorem
         henvelope hclass henv hvc⟩
 
 /--
+Canonical-sample full-subgraph route to the selected
+entropy-to-finite-net-mean primitive.
+
+This exposes the strongest current canonical VC/Sauer entropy package through
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive`, so the finite-net mean
+route can consume the book entropy and selected fixed-radius side conditions
+directly.
+-/
+theorem
+    VdVWTheorem243_fullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M)) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P
+      (fun _M n => vdVWCanonicalSampleProcess n)
+      indexClass classFun envelope
+      (fun M eta _n _sample m =>
+        (((vcDegree M + 2) * (m + 1) ^ vcDegree M) ^
+          (2 * vdVWIntegerGridRadius M eta + 1)))
+      (VdVWTheorem243_fullSubgraph_canonical_variableTruncatedEntropyCondition
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree) henvelope hvc) := by
+  exact
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_selectedFixedRadiusTailSideConditions
+      (P := P)
+      (X := fun _M n => vdVWCanonicalSampleProcess n)
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      (cardinality := fun M eta _n _sample m =>
+        (((vcDegree M + 2) * (m + 1) ^ vcDegree M) ^
+          (2 * vdVWIntegerGridRadius M eta + 1)))
+      (hentropy :=
+        VdVWTheorem243_fullSubgraph_canonical_variableTruncatedEntropyCondition
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (vcDegree := vcDegree) henvelope hvc)
+      (hselected :=
+        VdVWTheorem243_fullSubgraph_canonical_selectedFixedRadiusTailSideConditions
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (vcDegree := vcDegree)
+          henvelope hclass henv hvc)
+      (by
+        intro _M n sample
+        exact samplePath_vdVWCanonicalSampleProcess n sample)
+      hclass henv
+
+/--
 Full-subgraph integrable Theorem 2.4.3 route with canonical iid Rademacher
 signs and the canonical terminal sample-path process.
 -/

@@ -5,7 +5,7 @@ van der Vaart and Wellner Chapters 1 and 2.  The authoritative detailed
 inventory is `docs/vdvw_chapter1_2_formalization_blueprint.md`; this file is a
 human-facing monitor for what is proved, what is in progress, and what remains.
 
-Status snapshot date: 2026-05-07.
+Status snapshot date: 2026-05-08.
 
 Active blocker/primitives register:
 
@@ -27,6 +27,9 @@ Concrete deterministic entropy bounds can also build the primitive through
 More generally, any compiled selected fixed-radius tail/UI package now feeds the
 primitive through
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_selectedFixedRadiusTailSideConditions`.
+The canonical full-subgraph VC/Sauer route now exposes that source handoff
+directly through
+`VdVWTheorem243_fullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive`.
 Current next target: prove that primitive from the stochastic
 selected-entropy argument, or prove the selected-cover ghost/Rademacher
 displayed-beta Lemma 2.3.7 event primitive (`Phi(x)=x` plus finite-center
@@ -3439,3 +3442,11 @@ and
 Finite empirical trace images plus a shifted log-linear trace-count estimate
 now supply the book entropy condition and primitive handoff without a separate
 fixed-radius tail/UI package.
+
+The canonical full-subgraph VC/Sauer route now feeds the registered selected
+entropy finite-net mean primitive directly through
+`VdVWTheorem243_fullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive`.
+This consumes the existing canonical book entropy condition and selected
+fixed-radius tail/UI side conditions, so canonical full-subgraph VC classes can
+use the new finite-net mean primitive without restating the side-condition
+record.
