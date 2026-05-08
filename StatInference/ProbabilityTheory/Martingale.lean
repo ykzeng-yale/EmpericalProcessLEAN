@@ -5410,6 +5410,89 @@ theorem durrett2019_theorem_4_3_8_toReal_L1_of_pairwise_liminf
       (fun _ => zero_le) hle
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: the textbook
+Hellinger-tail L1 bound.  If `tail n` is the Hellinger affinity product after
+time `n`, the proof bounds the L1 tail by `sqrt (8 * (1 - tail n))`.
+-/
+noncomputable def durrett2019_theorem_4_3_8_hellingerTailL1Bound
+    (tail : ℕ -> ℝ≥0∞) (n : ℕ) : ℝ≥0∞ :=
+  (8 * (1 - tail n)) ^ ((1 : ℝ) / 2)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: if the Hellinger
+tail affinities tend to one, then the textbook Hellinger-tail L1 bound tends
+to zero.
+-/
+theorem durrett2019_theorem_4_3_8_hellingerTailL1Bound_tendsto_zero
+    {tail : ℕ -> ℝ≥0∞}
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail : Tendsto tail atTop (𝓝 1)) :
+    Tendsto (durrett2019_theorem_4_3_8_hellingerTailL1Bound tail) atTop
+      (𝓝 0) := by
+  have hsub :
+      Tendsto (fun n => (1 : ℝ≥0∞) - tail n) atTop (𝓝 0) := by
+    exact
+      (ENNReal.tendsto_const_sub_nhds_zero_iff ENNReal.one_ne_top htail_le).2
+        htail
+  have hmul :
+      Tendsto (fun n => (8 : ℝ≥0∞) * (1 - tail n)) atTop (𝓝 0) := by
+    simpa using
+      (ENNReal.Tendsto.const_mul (a := (8 : ℝ≥0∞)) hsub
+        (Or.inr (by norm_num : (8 : ℝ≥0∞) ≠ ∞)))
+  have hrpow :
+      Tendsto
+        (fun n => ((8 : ℝ≥0∞) * (1 - tail n)) ^ ((1 : ℝ) / 2))
+        atTop (𝓝 (0 ^ ((1 : ℝ) / 2) : ℝ≥0∞)) :=
+    (ENNReal.continuous_rpow_const.tendsto _).comp hmul
+  change
+    Tendsto
+      (fun n => ((8 : ℝ≥0∞) * (1 - tail n)) ^ ((1 : ℝ) / 2))
+      atTop (𝓝 0)
+  simpa using hrpow
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: any eventual
+tail bound tending to zero implies the pairwise `liminf` L1 condition consumed
+by the positive branch.
+-/
+theorem durrett2019_theorem_4_3_8_pairwise_liminf_of_eventual_lintegral_le
+    {D : ℕ -> ℕ -> ℝ≥0∞} {B : ℕ -> ℝ≥0∞}
+    (hB : Tendsto B atTop (𝓝 0))
+    (hbound : ∀ n, ∀ᶠ m in atTop, D n m ≤ B n) :
+    Tendsto (fun n => Filter.liminf (D n) atTop) atTop (𝓝 0) := by
+  have hle :
+      ∀ n, Filter.liminf (D n) atTop ≤ B n := by
+    intro n
+    exact Filter.liminf_le_of_frequently_le' (hbound n).frequently
+  exact
+    tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hB
+      (fun _ => zero_le) hle
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: if pairwise L1
+tails are eventually bounded by the Hellinger-tail expression and the
+Hellinger tail affinities tend to one, then the pairwise `liminf` condition
+holds.
+-/
+theorem durrett2019_theorem_4_3_8_pairwise_liminf_of_hellingerTail_bound
+    {D : ℕ -> ℕ -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞}
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail : Tendsto tail atTop (𝓝 1))
+    (hbound :
+      ∀ n, ∀ᶠ m in atTop,
+        D n m ≤ durrett2019_theorem_4_3_8_hellingerTailL1Bound tail n) :
+    Tendsto (fun n => Filter.liminf (D n) atTop) atTop (𝓝 0) := by
+  refine
+    durrett2019_theorem_4_3_8_pairwise_liminf_of_eventual_lintegral_le
+      (D := D)
+      (B := durrett2019_theorem_4_3_8_hellingerTailL1Bound tail)
+      ?_ ?_
+  · exact
+      durrett2019_theorem_4_3_8_hellingerTailL1Bound_tendsto_zero
+        htail_le htail
+  · exact hbound
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product cylinder handoff: L1 convergence
 of the finite cylinder likelihoods to the limiting likelihood supplies the
 finite-cylinder integral-convergence input used by the mass-one bridge.
@@ -5491,6 +5574,44 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_L1_of_pairwise_limin
   exact
     (((durrett2019_theorem_4_3_8_cylinderLikelihood_measurable (Iseq n) hq).ennreal_toReal.sub
         (durrett2019_theorem_4_3_8_cylinderLikelihood_measurable (Iseq m) hq).ennreal_toReal).enorm).aemeasurable
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy handoff:
+Hellinger-tail L1 bounds for finite cylinder likelihoods imply the pairwise
+`liminf` hypothesis consumed by the L1 convergence bridge.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_hellingerTail_bound
+    {ι S : Type*} [MeasurableSpace S]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (tail : ℕ -> ℝ≥0∞)
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail : Tendsto tail atTop (𝓝 1))
+    (hbound :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ x,
+          ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+          ∂Measure.infinitePi ν ≤
+            durrett2019_theorem_4_3_8_hellingerTailL1Bound tail n) :
+    Tendsto
+      (fun n =>
+        Filter.liminf
+          (fun m =>
+            ∫⁻ x,
+              ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+                (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+              ∂Measure.infinitePi ν)
+          atTop)
+      atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_3_8_pairwise_liminf_of_hellingerTail_bound
+      (D := fun n m =>
+        ∫⁻ x,
+          ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+          ∂Measure.infinitePi ν)
+      (tail := tail) htail_le htail hbound
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
@@ -5611,6 +5732,51 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLike
   exact
     durrett2019_theorem_4_3_8_cylinderLikelihood_toReal_L1_of_pairwise_liminf
       (ν := ν) (Iseq := Iseq) (q := q) hq hlim hpair
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product final handoff from the Hellinger
+tail estimate: if the textbook Hellinger-tail L1 bound is available and the
+tail affinities tend to one, the source dichotomy selects absolute continuity.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLikelihood_hellingerTail_bound
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ι -> S) -> ℝ≥0∞}
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hXrn :
+      (fun x => (X x).toReal) =ᵐ[Measure.infinitePi ν]
+        fun x => ((Measure.infinitePi μ).rnDeriv (Measure.infinitePi ν) x).toReal)
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0)
+    (hXint : Integrable (fun x => (X x).toReal) (Measure.infinitePi ν))
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal)
+          atTop (𝓝 ((X x).toReal)))
+    (tail : ℕ -> ℝ≥0∞)
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail : Tendsto tail atTop (𝓝 1))
+    (hbound :
+      ∀ n, ∀ᶠ m in atTop,
+        ∫⁻ x,
+          ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x).toReal -
+            (durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq m) q x).toReal‖ₑ
+          ∂Measure.infinitePi ν ≤
+            durrett2019_theorem_4_3_8_hellingerTailL1Bound tail n) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  refine
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLikelihood_pairwise_liminf
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q)
+      hq hμ hbranch hXrn hνtop hXint hlim ?_
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_hellingerTail_bound
+      (ν := ν) (Iseq := Iseq) (q := q) tail htail_le htail hbound
 
 end ProbabilityTheory
 end StatInference

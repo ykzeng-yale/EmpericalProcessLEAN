@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V73
+## Live In-Thread Goal Prompt V74
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -171,7 +171,12 @@ convergence input, and hence collapses the source dichotomy to the
 absolute-continuity branch.  The positive-product Cauchy support now also
 compiles: pairwise L1 tail `liminf` control plus pointwise convergence of the
 cylinder likelihoods to the limiting likelihood gives the L1 convergence input
-and hence the same absolute-continuity conclusion.
+and hence the same absolute-continuity conclusion.  The Hellinger-tail bound
+consumer layer also now compiles: the textbook bound
+`sqrt (8 * (1 - tail n))` tends to zero when the tail Hellinger affinities tend
+to one, eventual L1 bounds by this expression imply the compiled
+pairwise-`liminf` hypothesis, and the final cylinder positive branch consumes
+this Hellinger-tail bound directly.
 
 Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
 layer, the Theorem 4.3.8 finite-product likelihood/`withDensity` layer, and the
@@ -182,13 +187,15 @@ compiled support, together with the positive-branch eliminator.
 Also treat the lintegral-nonzero and mass-one positive-branch consumers as
 compiled support, along with the finite-cylinder mass-one and
 integral-convergence handoffs and the positive-product L1-to-integral
-handoff, plus the pairwise-liminf Cauchy-to-L1 handoff.
+handoff, the pairwise-liminf Cauchy-to-L1 handoff, and the Hellinger-tail-bound
+consumer into the positive branch.
 Move to the remaining Kakutani criterion assembly and tail-event support:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`), logarithm/tail-event support, and local Kolmogorov
 zero-one/tail sigma-field wrappers.  Add only source-shaped wrappers that
-directly feed tail-event support, the positive infinite-product estimate that
-proves the compiled cylinder-likelihood pairwise-liminf hypothesis, or the
+directly feed tail-event support, the finite square-root/Cauchy-Schwarz
+Hellinger L1 estimate that supplies the compiled Hellinger-tail bound, product
+tail convergence from the positive infinite-product criterion, or the
 infinite-product criterion hypotheses consumed by the compiled branch
 assemblers and eliminator.  Do
 not redo the already compiled RN martingale/convergence
@@ -208,6 +215,7 @@ absolute-continuity bridge, final branch assembler, or positive-branch
 eliminator, lintegral-nonzero consumer, mass-one consumer, or finite-cylinder
 mass handoff, or positive-product L1-to-integral handoff for Theorem 4.3.8.
 Do not redo the pairwise-liminf Cauchy-to-L1 handoff.
+Do not redo the Hellinger-tail-bound consumer layer.
 Defer Polya urn as a
 model-specific construction unless a direct existing primitive is found.
 
@@ -590,10 +598,12 @@ handoff, zero-product singularity bridge, positive-product
 absolute-continuity bridge, final zero/positive branch assemblers, and
 positive-branch eliminator plus lintegral-nonzero/mass-one consumers.  Move
 The finite-cylinder mass-one/integral-convergence handoffs, positive-product
-L1-to-integral handoff, and pairwise-liminf Cauchy-to-L1 handoff also now
-compile.  Move forward to the actual Hellinger tail-product bound that proves
-the pairwise-liminf hypothesis, infinite-product criterion support, and
-tail-event zero-one support for Kakutani's dichotomy.
+L1-to-integral handoff, pairwise-liminf Cauchy-to-L1 handoff, and
+Hellinger-tail-bound positive consumer also now compile.  Move forward to the
+finite square-root/Cauchy-Schwarz Hellinger L1 estimate that supplies the
+compiled Hellinger-tail bound, product-tail convergence from the positive
+infinite-product criterion, and tail-event zero-one support for Kakutani's
+dichotomy.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -707,6 +717,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V73` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V74` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
