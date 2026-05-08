@@ -8257,3 +8257,16 @@ outer-probability `P`-GC, outer-a.s. `P`-GC, local `P`-GC, in-mean convergence,
 and the canonical Lemma 2.4.5 a.s. centered-supremum conclusion.  The exact
 general-textbook blocker remains the nonmeasurable selected entropy/event
 source comparison, not this canonical countable full-subgraph specialization.
+
+2026-05-08 fixed-degree original full-subgraph specialization:
+`Theorem243.lean` now proves
+`VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive_of_uniformSubgraphVC`
+and
+`VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_uniformSubgraphVC`.
+The clean original full-subgraph route now consumes a single
+`VdVWUniformSubgraphVCBound indexClass classFun vcDegree`, rather than exposing
+the truncation-indexed technical parameter `M ↦ vcDegree M`.  This closes the
+fixed-VC assumption mismatch in the canonical countable original-subgraph lane.
+The remaining general-book blocker is unchanged: prove the nonmeasurable
+selected entropy/event source comparison, or a Chapter 1 measurable-cover
+existence primitive strong enough to support that comparison.

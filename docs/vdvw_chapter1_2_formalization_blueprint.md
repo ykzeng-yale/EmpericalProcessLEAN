@@ -640,6 +640,14 @@ and the strong package
 The no-nonempty version
 `VdVWTheorem243_originalFullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`
 is compiled as well.
+The fixed-degree original VC-subgraph specialization is now compiled through
+`VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive_of_uniformSubgraphVC`
+and
+`VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_uniformSubgraphVC`.
+Thus the clean original full-subgraph route consumes a single
+`VdVWUniformSubgraphVCBound indexClass classFun vcDegree`; the older
+`M ↦ vcDegree M` parameter remains only the technical truncation-indexed
+interface.
 Do not add another endpoint alias for this same route unless final theorem
 assembly consumes a genuinely new proof input.  The next non-duplicative target
 is a new class-geometry/cardinality theorem or the book random-entropy

@@ -51146,6 +51146,47 @@ theorem
       hclass henv
 
 /--
+Canonical-sample original full-subgraph selected-entropy mean primitive from a
+single uniform VC-subgraph degree.
+
+The preceding theorem allows the VC degree to vary with the truncation level
+`M`.  The textbook full-subgraph hypothesis is naturally a fixed VC bound for
+the original class; this specialization records that stronger, cleaner input
+without reopening the integer-grid entropy proof.
+-/
+theorem
+    VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive_of_uniformSubgraphVC
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hvc : VdVWUniformSubgraphVCBound indexClass classFun vcDegree) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P
+      (fun _M n => vdVWCanonicalSampleProcess n)
+      indexClass classFun envelope
+      (fun M eta n sample m =>
+        (thresholdTraceCodeSet
+          (samplePath (vdVWCanonicalSampleProcess n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (integerMultipleThresholdGrid eta
+            (vdVWIntegerGridRadius M eta : ℤ))).card)
+      (VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_integerMultipleThresholdGrid_uniform_envelope_canonical_original_full_subgraph_vc
+        (P := P) (X := fun _M n => vdVWCanonicalSampleProcess n)
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := fun _M => vcDegree)
+        henvelope (fun _M _hM => hvc)) := by
+  exact
+    VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (vcDegree := fun _M => vcDegree)
+      henvelope hclass henv (fun _M _hM => hvc)
+
+/--
 Full-subgraph integrable Theorem 2.4.3 route with canonical iid Rademacher
 signs and the canonical terminal sample-path process.
 -/
@@ -53530,6 +53571,59 @@ theorem
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope) (vcDegree := vcDegree)
       hvc henvelope hclass henv henv_integrable
+
+/--
+Original full-subgraph Theorem 2.4.3/Lemma 2.4.5 textbook-aligned package
+from a single uniform VC-subgraph degree.
+
+This is the fixed-degree specialization of
+`VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable`.
+It matches the usual VC-subgraph hypothesis more directly than the technical
+`M ↦ vcDegree M` parameter used by the truncation-indexed entropy machinery.
+-/
+theorem
+    VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_uniformSubgraphVC
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℕ}
+    (hvc : VdVWUniformSubgraphVCBound indexClass classFun vcDegree)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWPMeasurableClass P indexClass classFun ∧
+      VdVWOuterExpectation P (fun observation => ENNReal.ofReal (envelope observation)) < ∞ ∧
+      VdVWOuterProbabilityPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWOuterAlmostSurePGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  exact
+    VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (vcDegree := fun _M => vcDegree)
+      (fun _M _hM => hvc) henvelope hclass henv henv_integrable
 
 /--
 Canonical full-subgraph almost-sure `P`-Glivenko-Cantelli record from the

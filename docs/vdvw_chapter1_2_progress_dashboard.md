@@ -35,6 +35,11 @@ directly through
 The original-class full-subgraph VC route also feeds the same primitive via
 `VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive`,
 using the integer-grid fixed-mask transfer for truncated entropy.
+The fixed-degree original VC-subgraph specialization is now exposed as
+`VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive_of_uniformSubgraphVC`,
+and the strongest textbook-aligned original full-subgraph package also has the
+fixed-degree entry point
+`VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_uniformSubgraphVC`.
 The selected-log mean route now has the localized countability constructor
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero_of_set_countable`,
 and the displayed-beta selected-cover route now has
@@ -3513,3 +3518,11 @@ It records `P`-measurability, finite outer-envelope expectation,
 outer-probability and outer-a.s. `P`-GC, local `P`-GC, in-mean convergence, and
 the canonical Lemma 2.4.5 a.s. centered-supremum conclusion from the original
 VC assumption on `classFun`.
+The same route now has fixed-degree specializations:
+`VdVWTheorem243_originalFullSubgraph_canonical_selectedEntropyFiniteNetMeanPrimitive_of_uniformSubgraphVC`
+feeds the selected finite-net mean primitive from a single
+`VdVWUniformSubgraphVCBound indexClass classFun vcDegree`, and
+`VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_uniformSubgraphVC`
+feeds the strongest textbook-aligned package from that same fixed VC-subgraph
+bound.  The artificial `M ↦ vcDegree M` parameter is no longer exposed in the
+clean original full-subgraph entry point.
