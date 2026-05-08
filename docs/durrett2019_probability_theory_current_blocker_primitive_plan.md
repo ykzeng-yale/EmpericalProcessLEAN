@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V62
+## Live In-Thread Goal Prompt V63
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -133,18 +133,25 @@ Kakutani finite-product packet also now compiles: the finite-coordinate
 likelihood is defined as the product of one-coordinate densities, proved
 measurable, proved to have the correct set integral on measurable rectangles
 under `Measure.pi`, and packaged as a finite product-law `withDensity`
-identity.
+identity.  The infinite-product cylinder/restriction handoff for Theorem 4.3.8
+also now compiles: the finite product likelihood pulled back to an infinite
+product space is measurable, finite-coordinate restrictions of
+`Measure.infinitePi` have the finite product likelihood as a `withDensity`
+ratio, and the pulled-back likelihood integrates over measurable cylinders to
+the numerator infinite-product measure of the cylinder.
 
 Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
-layer and the Theorem 4.3.8 finite-product likelihood/`withDensity` layer as
-closed support.  Move to the infinite-product cylinder handoff for Kakutani:
-search local/mathlib APIs for `Measure.infinitePi`, `infinitePi_map_restrict`,
-`lintegral_restrict_infinitePi`, cylinder events, `Filtration.piFinset`,
-finite-coordinate restrictions of `ℕ -> S`, coordinate-law product measures,
-tail-event zero-one support, and infinite products of Hellinger integrals.  Add
-only source-shaped wrappers that connect finite-coordinate product likelihoods
-to cylinder/restriction statements consumed by the Kakutani route.  Do not redo
-the already compiled RN martingale/convergence
+layer, the Theorem 4.3.8 finite-product likelihood/`withDensity` layer, and the
+infinite-product cylinder/restriction handoff as closed support.  Move to the
+Hellinger and tail-event support for Kakutani: search local/mathlib APIs for
+`ENNReal.sqrt`, `rpow`, `lintegral_prod_eq_prod_lintegral_of_indepFun`,
+finite products of `∫ sqrt q_i dν_i`, `Measure.infinitePi`,
+`lintegral_restrict_infinitePi`, Fatou/liminf tools, infinite products
+(`tprod`, `HasProd`, `Multipliable`), logarithm/tail-event support, and local
+Kolmogorov zero-one/tail sigma-field wrappers.  Add only source-shaped wrappers
+that directly feed Kakutani's `∫ sqrt X_n dν = ∏ ∫ sqrt q_i dν_i`, zero-product
+singularity, or positive-product absolute-continuity route.  Do not redo the
+already compiled RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
 generator-extension bridge, bounded-convergence generator-production bridge,
@@ -154,9 +161,9 @@ limitProcess convergence bridge, canonical limit-density endpoint, canonical
 ratio endpoint, denominator-side top-set null endpoint, singular-support
 top-set endpoint, full canonical-ratio real identity, any Example 4.3.7
 finite-partition likelihood, finite-union, or generator endpoint, or the
-finite-product likelihood/rectangle/`withDensity` layer for Theorem 4.3.8.
-Defer Polya urn as a model-specific construction unless a direct existing
-primitive is found.
+finite-product likelihood/rectangle/`withDensity` layer or infinite-product
+cylinder/restriction handoff for Theorem 4.3.8.  Defer Polya urn as a
+model-specific construction unless a direct existing primitive is found.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -529,9 +536,12 @@ denominator-side top-set null endpoint, singular-support top-set endpoint, and
 full canonical-ratio real identity, plus the Example 4.3.7 finite-partition
 likelihood, finite-union, and generator-facing endpoint, plus the Theorem 4.3.8
 finite-product likelihood measurability, rectangle set-integral, and
-finite-product `withDensity` endpoint.  Move forward to the infinite-product
-cylinder/restriction handoff for Kakutani's dichotomy.  Keep Theorem 4.1.16
-deferred unless a targeted kernel search finds a direct source-shaped API.
+finite-product `withDensity` endpoint, plus the infinite-product
+cylinder-likelihood measurability, finite-coordinate restriction `withDensity`,
+and cylinder set-integral endpoint.  Move forward to Hellinger integral
+factorization, infinite-product criterion support, and tail-event zero-one
+support for Kakutani's dichotomy.  Keep Theorem 4.1.16 deferred unless a
+targeted kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -643,6 +653,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V62` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V63` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

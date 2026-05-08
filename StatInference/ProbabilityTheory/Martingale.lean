@@ -4521,5 +4521,98 @@ theorem durrett2019_theorem_4_3_8_finiteProduct_withDensity_eq
   intro i _hi
   rw [hμ i, withDensity_apply _ (hA i)]
 
+/--
+Durrett 2019, Theorem 4.3.8: the finite-coordinate likelihood pulled back to
+an infinite product space.
+-/
+noncomputable def durrett2019_theorem_4_3_8_cylinderLikelihood
+    {ι S : Type*} (I : Finset ι) (q : ι -> S -> ℝ≥0∞) (x : ι -> S) : ℝ≥0∞ :=
+  durrett2019_theorem_4_3_8_finiteProductLikelihood (fun i : I => q i) (I.restrict x)
+
+/--
+Durrett 2019, Theorem 4.3.8 cylinder support: the finite-coordinate likelihood
+pulled back to the infinite product space is measurable.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_measurable
+    {ι S : Type*} [MeasurableSpace S] (I : Finset ι) {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i)) :
+    Measurable (durrett2019_theorem_4_3_8_cylinderLikelihood I q) := by
+  classical
+  unfold durrett2019_theorem_4_3_8_cylinderLikelihood
+  exact
+    (durrett2019_theorem_4_3_8_finiteProductLikelihood_measurable
+      (q := fun i : I => q i) fun i => hq i).comp (Finset.measurable_restrict I)
+
+/--
+Durrett 2019, Theorem 4.3.8 cylinder support: restricting an infinite product
+law to finitely many coordinates gives the finite product likelihood ratio.
+-/
+theorem durrett2019_theorem_4_3_8_infiniteProduct_map_restrict_withDensity_eq
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)] (I : Finset ι) {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) :
+    (Measure.infinitePi μ).map I.restrict =
+      ((Measure.infinitePi ν).map I.restrict).withDensity
+        (durrett2019_theorem_4_3_8_finiteProductLikelihood (fun i : I => q i)) := by
+  classical
+  rw [Measure.infinitePi_map_restrict (μ := μ) (I := I),
+    Measure.infinitePi_map_restrict (μ := ν) (I := I)]
+  exact
+    durrett2019_theorem_4_3_8_finiteProduct_withDensity_eq
+      (μ := fun i : I => μ i) (ν := fun i : I => ν i)
+      (q := fun i : I => q i) (fun i => hq i) (fun i => hμ i)
+
+/--
+Durrett 2019, Theorem 4.3.8 cylinder support: on a measurable cylinder, the
+pulled-back finite-coordinate likelihood integrates to the numerator product
+measure of that cylinder.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_setLIntegral_cylinder
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)] (I : Finset ι) {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {A : Set (I -> S)} (hA : MeasurableSet A) :
+    ∫⁻ x in cylinder I A,
+        durrett2019_theorem_4_3_8_cylinderLikelihood I q x ∂Measure.infinitePi ν =
+      Measure.infinitePi μ (cylinder I A) := by
+  classical
+  let fI : (I -> S) -> ℝ≥0∞ :=
+    durrett2019_theorem_4_3_8_finiteProductLikelihood (fun i : I => q i)
+  have hfI_meas : Measurable fI :=
+    durrett2019_theorem_4_3_8_finiteProductLikelihood_measurable
+      (q := fun i : I => q i) fun i => hq i
+  have hfinite :
+      ∫⁻ y in A, fI y ∂Measure.pi (fun i : I => ν i) =
+        Measure.pi (fun i : I => μ i) A := by
+    have hwith :
+        Measure.pi (fun i : I => μ i) =
+          (Measure.pi (fun i : I => ν i)).withDensity fI :=
+      durrett2019_theorem_4_3_8_finiteProduct_withDensity_eq
+        (μ := fun i : I => μ i) (ν := fun i : I => ν i)
+        (q := fun i : I => q i) (fun i => hq i) (fun i => hμ i)
+    rw [hwith, withDensity_apply _ hA]
+  calc
+    ∫⁻ x in cylinder I A,
+        durrett2019_theorem_4_3_8_cylinderLikelihood I q x ∂Measure.infinitePi ν
+        = ∫⁻ x,
+            (A.indicator fI) (I.restrict x) ∂Measure.infinitePi ν := by
+          rw [← lintegral_indicator (MeasurableSet.cylinder I hA)]
+          refine lintegral_congr fun x => ?_
+          by_cases hx : I.restrict x ∈ A
+          · simp [fI, durrett2019_theorem_4_3_8_cylinderLikelihood, cylinder, hx]
+          · simp [fI, cylinder, hx]
+    _ = ∫⁻ y, A.indicator fI y ∂Measure.pi (fun i : I => ν i) := by
+          exact lintegral_restrict_infinitePi
+            (μ := ν) (s := I) (hfI_meas.indicator hA)
+    _ = ∫⁻ y in A, fI y ∂Measure.pi (fun i : I => ν i) := by
+          rw [lintegral_indicator hA]
+    _ = Measure.pi (fun i : I => μ i) A := hfinite
+    _ = Measure.infinitePi μ (cylinder I A) := by
+          rw [Measure.infinitePi_cylinder (μ := μ) (s := I) hA]
+
 end ProbabilityTheory
 end StatInference
