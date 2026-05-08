@@ -2185,5 +2185,42 @@ theorem durrett2019_theorem_4_3_1_converges_or_unbounded_range
       ⟨fun hbelow => hbounded (Or.inl hbelow),
         fun habove => hbounded (Or.inr habove)⟩
 
+/--
+Durrett 2019, Theorem 4.3.1 threshold-form oscillation: a bounded-increment
+martingale with `X_0 = 0` either converges to a finite real limit, or it visits
+below and above every real threshold.
+
+This is the order-threshold form behind Durrett's
+`liminf X_n = -∞` and `limsup X_n = +∞` display.
+-/
+theorem durrett2019_theorem_4_3_1_converges_or_crosses_all_thresholds
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration μ ℱ]
+    {X : ℕ -> Ω -> ℝ} {M : ℝ}
+    (hX : Martingale X ℱ μ) (hM_nonneg : 0 ≤ M)
+    (hX0 : ∀ᵐ ω ∂μ, X 0 ω = 0)
+    (hinc : ∀ᵐ ω ∂μ, ∀ i, |X (i + 1) ω - X i ω| ≤ M) :
+    ∀ᵐ ω ∂μ,
+      (∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z)) ∨
+        ((∀ a : ℝ, ∃ n : ℕ, X n ω < a) ∧
+          ∀ a : ℝ, ∃ n : ℕ, a < X n ω) := by
+  have hrange :=
+    durrett2019_theorem_4_3_1_converges_or_unbounded_range
+      (X := X) (M := M) hX hM_nonneg hX0 hinc
+  filter_upwards [hrange] with ω hω
+  rcases hω with hconv | ⟨hnotBelow, hnotAbove⟩
+  · exact Or.inl hconv
+  · right
+    constructor
+    · intro a
+      rcases (not_bddBelow_iff.mp hnotBelow a) with ⟨y, hy_mem, hy_lt⟩
+      rcases hy_mem with ⟨n, rfl⟩
+      exact ⟨n, hy_lt⟩
+    · intro a
+      rcases (not_bddAbove_iff.mp hnotAbove a) with ⟨y, hy_mem, hy_lt⟩
+      rcases hy_mem with ⟨n, rfl⟩
+      exact ⟨n, hy_lt⟩
+
 end ProbabilityTheory
 end StatInference

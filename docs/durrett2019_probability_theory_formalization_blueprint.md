@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V40`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V41`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -429,8 +429,9 @@ Next packet:
   first-below survival convergence, and bounded-below path-event convergence
   support wrappers, plus symmetric bounded-above and one-sided-bounded union
   convergence wrappers, plus the range-form convergence-or-unbounded
-  dichotomy wrapper.  The next active target is the explicit textbook
-  liminf/limsup oscillation display.  Theorem 4.1.16 remains deferred unless a
+  dichotomy wrapper and the threshold-form oscillation wrapper.  The next
+  active target is the exact textbook liminf/limsup oscillation display from
+  that threshold-form wrapper.  Theorem 4.1.16 remains deferred unless a
   direct kernel API appears.
 
 Support-only dependencies:

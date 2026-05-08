@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V40
+## Live In-Thread Goal Prompt V41
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -47,15 +47,17 @@ many natural thresholds.  The symmetric bounded-above bridge also now compiles
 by applying the bounded-below bridge to the negated martingale, and the
 one-sided-bounded union bridge is packaged.  The range-form event
 classification now compiles: almost surely, either the martingale converges to
-a finite real limit or its range is unbounded both below and above.
+a finite real limit or its range is unbounded both below and above.  The
+threshold-form oscillation wrapper also now compiles: on the nonconvergent
+side, the path visits below and above every real threshold.
 
-Next theorem-sized packet: continue Durrett Theorem 4.3.1 by rewriting the
-range-form unbounded side into the textbook display
-`liminf X_n = -∞` and `limsup X_n = +∞`, or by packaging the strongest direct
-mathlib order-filter API that implies that display.  Search only `BddBelow`,
-`BddAbove`, range, `limsup`/`liminf`, `atTop`/`atBot`, and existing order
-theorems such as `not_bddAbove_of_tendsto_atTop`.  Do not redo the compiled
-range-form dichotomy.
+Next theorem-sized packet: continue Durrett Theorem 4.3.1 by deriving the
+exact textbook `liminf X_n = -∞` and `limsup X_n = +∞` display from the
+compiled threshold-form oscillation wrapper, or by packaging the strongest
+direct mathlib order-filter API that is definitionally close to that display.
+Search only `limsup`/`liminf`, `Filter`, `EReal`, `atTop`/`atBot`, and the
+existing order-filter consequences of crossing every real threshold.  Do not
+redo the compiled range-form dichotomy or threshold-form wrapper.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -418,9 +420,9 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should continue Theorem 4.3.1 by upgrading the compiled
-range-form dichotomy to the textbook liminf/limsup oscillation display.  Keep
-Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
+The next likely packet should continue Theorem 4.3.1 by deriving the textbook
+liminf/limsup oscillation display from the compiled threshold-form wrapper.
+Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
 source-shaped API.
 
 High-value Chapter 3 source anchors are in
@@ -533,6 +535,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V40` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V41` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
