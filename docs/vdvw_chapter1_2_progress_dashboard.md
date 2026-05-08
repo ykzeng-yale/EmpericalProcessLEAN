@@ -3282,3 +3282,15 @@ It lets a future source proof provide explicit selected covers directly and
 then uses the selected inverse-radius entropy package only for the mean side.
 The remaining blocker is still upstream: the selected-cover source theorem or
 the stochastic entropy-to-mean/UI theorem.
+
+The selected direct-cover path now also has a sample/radius transport lemma:
+`FiniteEmpiricalL1CoverAtCard.congr_sample_epsilon` (with its center simp
+lemma).  The compact selected inverse-radius theorem
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedInvRadiusEntropy`
+now uses the direct-cover expected-maximal route by transporting
+`vdVWRandomEmpiricalL1CoverAtCard (X n)` from `samplePath (X n) sample n` to
+the terminal `sample` and rewriting the half-radius expression.  This is not a
+new endpoint; it removes the remaining syntactic obstacle to feeding a future
+selected-cover source proof into the mean route.  The next target remains the
+selected-cover `Phi(x)=x`/finite-center event theorem or the stochastic
+entropy-to-mean/UI theorem.

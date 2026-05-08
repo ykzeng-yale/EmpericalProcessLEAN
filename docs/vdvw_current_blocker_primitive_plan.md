@@ -7962,3 +7962,18 @@ older random-cover endpoint when a source proof can provide the cover directly.
 The remaining source work is unchanged: construct those direct selected covers
 from the textbook selected-cover argument with the needed `Phi(x)=x`/pathwise
 finite-center event, or prove the stochastic entropy-to-mean/UI bridge.
+
+2026-05-07 selected direct-cover sample/radius transport:
+`Theorem243.lean` now adds
+`FiniteEmpiricalL1CoverAtCard.congr_sample_epsilon` and
+`FiniteEmpiricalL1CoverAtCard.congr_sample_epsilon_center`, and the compact
+selected inverse-radius theorem
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedInvRadiusEntropy`
+now factors through the direct-cover expected-maximal consumer.  This closes
+the syntactic mismatch between selected empirical-cover witnesses over
+`samplePath (X n) sample n` and theorem-facing covers over the terminal
+`sample`, including the radius equality
+`(2 / (n + 1)) / 2 = 1 / (n + 1)`.  The next useful proof step is still
+upstream: prove the selected-cover source theorem (`Phi(x)=x` plus the
+pathwise finite-center Hoeffding/maximal event), or prove the stochastic
+entropy-to-mean/UI theorem feeding the selected finite-net integral.

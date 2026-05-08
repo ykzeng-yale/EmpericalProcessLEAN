@@ -1011,6 +1011,47 @@ theorem empiricalL1Distance_vdVWTruncatedClassFun_le
 namespace FiniteEmpiricalL1CoverAtCard
 
 /--
+Transport a finite empirical cover across definitional/sample and radius
+equalities.
+
+This is used when entropy hypotheses produce covers over
+`samplePath X sample n`, while theorem-facing consumers have already rewritten
+that terminal sample path to `sample`, possibly with an algebraically equal
+radius expression.
+-/
+def congr_sample_epsilon
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample sample' : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    {epsilon epsilon' : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality)
+    (hsample : sample = sample') (hepsilon : epsilon = epsilon') :
+    FiniteEmpiricalL1CoverAtCard sample' indexClass classFun epsilon'
+      cardinality := by
+  subst hsample
+  subst hepsilon
+  exact cover
+
+@[simp]
+theorem congr_sample_epsilon_center
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample sample' : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ}
+    {epsilon epsilon' : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality)
+    (hsample : sample = sample') (hepsilon : epsilon = epsilon')
+    (centerIndex : Fin cardinality) :
+    (cover.congr_sample_epsilon hsample hepsilon).center centerIndex =
+      cover.center centerIndex := by
+  subst hsample
+  subst hepsilon
+  rfl
+
+/--
 An empirical `L1(P_n)` cover of the original class is also an empirical cover
 of the VdV&W truncated class at the same radius and cardinality.
 -/
@@ -52998,17 +53039,28 @@ theorem
               ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
           (fun _ : Fin n => (n : ℝ)⁻¹) sample)
       atTop (0 : ℝ) := by
+  let selectedCover :
+      ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          ((2 / ((n : ℝ) + 1)) / 2)
+          (cardinality n sample n) :=
+    fun n sample =>
+      (vdVWRandomEmpiricalL1CoverAtCard (X n)
+        (hselected.coveringNumber_le n) hindexClass sample n).congr_sample_epsilon
+        (hX_samplePath n sample) (by ring_nf)
   exact
-    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_logCardinality_div_convergesInOuterProbabilityConst_zero_eq_selected_truncated_invRadius
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_selectedInvRadiusEntropy_directCover_expectedMaximal
       (μsign := μsign) (P := P) (indexClass := indexClass)
       (classFun := classFun) (envelope := envelope) (M := M) (K := K)
       (cardinality := cardinality) (X := X)
-      (hX_samplePath := hX_samplePath)
-      (hcovering_le := hselected.coveringNumber_le)
+      (hX_samplePath := hX_samplePath) (hselected := hselected)
       (hindexClass := hindexClass) (henvelope := henvelope)
       (hM_pos := hM_pos) (hK_nonneg := hK_nonneg)
       (sign := sign) (hsign := hsign) (hindep := hindep)
-      (hsubG := hsubG) (htruncIntegrable := htruncIntegrable)
+      (hsubG := hsubG)
+      (cover := selectedCover)
+      (htruncIntegrable := htruncIntegrable)
       (hpairSupIntegrable := hpairSupIntegrable)
       (hcenteredSupIntegrable := hcenteredSupIntegrable)
       (hghostExpectationIntegrable := hghostExpectationIntegrable)
@@ -53017,12 +53069,17 @@ theorem
       (hrandomIntegralIntegrable := hrandomIntegralIntegrable)
       (Urandom := Urandom) (hproductSupIntegrable := hproductSupIntegrable)
       (hsignSupIntegrable := hsignSupIntegrable)
-      (hfiniteCenterSupIntegrable := hfiniteCenterSupIntegrable)
+      (hfiniteCenterSupIntegrable := by
+        intro n sample
+        have hcenter :
+            (selectedCover n sample).center =
+              (vdVWRandomEmpiricalL1CoverAtCard (X n)
+                (hselected.coveringNumber_le n) hindexClass sample n).center := by
+          funext centerIndex
+          simp [selectedCover]
+        simpa [hcenter] using hfiniteCenterSupIntegrable n sample)
       (Ucentered := Ucentered) (hclass := hclass)
       (henvelope_meas := henvelope_meas)
-      (hcardinality_eq := hselected.terminal_cardinality_eq)
-      (hlog := hselected.log_cardinality_div_converges)
-      (hlog_div_bound := hselected.log_cardinality_div_bound)
 
 /--
 Untruncated centered convergence from the selected-cardinality inverse-radius
