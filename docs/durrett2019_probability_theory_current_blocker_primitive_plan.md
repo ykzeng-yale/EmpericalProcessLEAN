@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V95
+## Live In-Thread Goal Prompt V96
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -302,12 +302,17 @@ the real-valued convergence input for the L1/Cauchy branch; pointwise finite
 coordinate densities discharge the pairwise no-top side condition; and
 pointwise full-prefix convergence plus finite/nonzero coordinate densities and
 `∫⁻ X ≠ 0` feed the tail-zero-set positive-branch eliminator.
+Also treat the canonical-ratio handoff into the range-limit positive branch as
+compiled support: the canonical `mu + nu` ratio now supplies
+`toReal = dmu/dnu` and the denominator top-set null input automatically for
+both the Hellinger-product/L1 consumer and the lower-integral/nonzero consumer.
 Move to the remaining Kakutani criterion assembly:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`) and logarithm/tail-measurability support.  Add only
-source-shaped wrappers that construct or identify the limiting likelihood `X`,
-prove the standard full-prefix likelihood convergence to `X`, prove the
-corresponding RN/top-set identity inputs, or directly feed the infinite-product
+source-shaped wrappers that prove the standard full-prefix likelihood
+convergence to the canonical `mu + nu` ratio, discharge the real-integrability
+or nonzero-lower-integral input for that canonical ratio, or directly feed the
+infinite-product
 criterion hypotheses consumed by the compiled branch assemblers and
 eliminator.  Do
 not redo the already compiled RN martingale/convergence
@@ -318,7 +323,8 @@ trimmed-RN eventual restricted-density bridge, `mu + nu` boundedness bridge,
 real-to-`ENNReal` convergence-transfer bridge, bounded real-martingale
 limitProcess convergence bridge, canonical limit-density endpoint, canonical
 ratio endpoint, denominator-side top-set null endpoint, singular-support
-top-set endpoint, full canonical-ratio real identity, any Example 4.3.7
+top-set endpoint, full canonical-ratio real identity, canonical
+`toReal = dmu/dnu` endpoint, canonical 4.3.8 positive-branch consumers, any Example 4.3.7
 finite-partition likelihood, finite-union, or generator endpoint, the
 finite-product likelihood/rectangle/`withDensity` layer, infinite-product
 cylinder/restriction handoff, Hellinger factorization layer, zero-product Fatou
@@ -787,10 +793,13 @@ infinite product law; ENNReal full-prefix convergence supplies the `toReal`
 convergence input for the L1/Cauchy branch; pointwise finite coordinate
 densities supply the pairwise no-top side condition; and pointwise full-prefix
 convergence plus finite/nonzero coordinate densities and `∫⁻ X ≠ 0` feed the
-tail-zero-set positive-branch eliminator.  Move forward to constructing or
-identifying the limiting likelihood `X`, proving the standard full-prefix
-likelihood convergence to `X`, and supplying the corresponding RN/top-set
-identity inputs needed to finish the remaining Kakutani criterion assembly.
+tail-zero-set positive-branch eliminator.  The canonical-ratio handoff into
+these range-limit consumers now also compiles, so `toReal = dmu/dnu` and
+`nu {canonicalRatio = infinity} = 0` no longer need to be supplied as open
+inputs.  Move forward to proving standard full-prefix likelihood convergence
+to the canonical `mu + nu` ratio and discharging the canonical ratio
+integrability or nonzero-lower-integral/product inputs needed to finish the
+remaining Kakutani criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -904,6 +913,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V95` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V96` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

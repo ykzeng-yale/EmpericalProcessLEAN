@@ -4043,6 +4043,162 @@ theorem durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_nu_top_zero
   simpa [durrett2019_theorem_4_3_5_add_dominating_canonicalRatio] using hνtop
 
 /--
+Durrett 2019, Theorem 4.3.5 canonical-ratio endpoint: the canonical
+`mu + nu` likelihood ratio is a `toReal` version of `dmu/dnu`.
+-/
+theorem durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_ae_rnDeriv
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {ℱ : Filtration ℕ mΩ}
+    (C : Set (Set Ω)) (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C) :
+    (fun ω => (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio μ ν ℱ ω).toReal)
+      =ᵐ[ν] fun ω => (μ.rnDeriv ν ω).toReal := by
+  obtain ⟨hYlim_lp, hZlim_lp⟩ :=
+    durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_toReal_limitProcess_convergence
+      (μ := μ) (ν := ν) (ℱ := ℱ)
+  have hYreal :
+      AEMeasurable
+        (durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit μ ν ℱ)
+        (μ + ν) := by
+    change AEMeasurable
+      (ℱ.limitProcess
+        (fun n ω => ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        (μ + ν)) (μ + ν)
+    exact
+      (Filtration.stronglyMeasurable_limit_process'
+        (f := fun n ω =>
+          ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        (ℱ := ℱ) (μ := μ + ν)).aemeasurable
+  have hZreal :
+      AEMeasurable
+        (durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit μ ν ℱ)
+        (μ + ν) := by
+    change AEMeasurable
+      (ℱ.limitProcess
+        (fun n ω => ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        (μ + ν)) (μ + ν)
+    exact
+      (Filtration.stronglyMeasurable_limit_process'
+        (f := fun n ω =>
+          ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        (ℱ := ℱ) (μ := μ + ν)).aemeasurable
+  have hY :
+      AEMeasurable
+        (durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ)
+        (μ + ν) := by
+    simpa [durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity] using
+      hYreal.ennreal_ofReal
+  have hZ :
+      AEMeasurable
+        (durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ)
+        (μ + ν) := by
+    simpa [durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity] using
+      hZreal.ennreal_ofReal
+  have hYfin : ∀ᵐ ω ∂(μ + ν),
+      durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ ω ≠ ∞ := by
+    filter_upwards with ω
+    simp [durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity]
+  have hZfin : ∀ᵐ ω ∂(μ + ν),
+      durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω ≠ ∞ := by
+    filter_upwards with ω
+    simp [durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity]
+  have hYnonneg : ∀ᵐ ω ∂(μ + ν),
+      0 ≤ durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit μ ν ℱ ω := by
+    filter_upwards [hYlim_lp] with ω hlimω
+    have hnonneg :=
+      le_of_tendsto_of_tendsto' tendsto_const_nhds hlimω
+        (fun n => ENNReal.toReal_nonneg)
+    simpa [durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit] using hnonneg
+  have hZnonneg : ∀ᵐ ω ∂(μ + ν),
+      0 ≤ durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit μ ν ℱ ω := by
+    filter_upwards [hZlim_lp] with ω hlimω
+    have hnonneg :=
+      le_of_tendsto_of_tendsto' tendsto_const_nhds hlimω
+        (fun n => ENNReal.toReal_nonneg)
+    simpa [durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit] using hnonneg
+  have hYlim_real : ∀ᵐ ω ∂(μ + ν),
+      Tendsto
+        (fun n =>
+          ((μ.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        atTop
+        (𝓝 ((durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ ω).toReal)) := by
+    filter_upwards [hYlim_lp, hYnonneg] with ω hlimω hnonnegω
+    have htarget :
+        (durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ ω).toReal =
+          durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit μ ν ℱ ω := by
+      rw [durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity]
+      exact ENNReal.toReal_ofReal hnonnegω
+    simpa [durrett2019_theorem_4_3_5_add_dominating_mu_toRealLimit, htarget] using hlimω
+  have hZlim_real : ∀ᵐ ω ∂(μ + ν),
+      Tendsto
+        (fun n =>
+          ((ν.trim (ℱ.le n)).rnDeriv ((μ + ν).trim (ℱ.le n)) ω).toReal)
+        atTop
+        (𝓝 ((durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω).toReal)) := by
+    filter_upwards [hZlim_lp, hZnonneg] with ω hlimω hnonnegω
+    have htarget :
+        (durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ ω).toReal =
+          durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit μ ν ℱ ω := by
+      rw [durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity]
+      exact ENNReal.toReal_ofReal hnonnegω
+    simpa [durrett2019_theorem_4_3_5_add_dominating_nu_toRealLimit, htarget] using hlimω
+  have hYeq :
+      durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ
+        =ᵐ[ν] fun ω => μ.rnDeriv (μ + ν) ω := by
+    have hwith :
+        μ =
+          (μ + ν).withDensity
+            (durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ) :=
+      durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_toReal_limit_mu_withDensity_eq
+        (μ := μ) (ν := ν) (ℱ := ℱ)
+        (Y := durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ)
+        C hC_meas hgen hC hYfin hYlim_real
+    have hρ :
+        durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ
+          =ᵐ[μ + ν] fun ω => μ.rnDeriv (μ + ν) ω := by
+      have hderiv :
+          μ.rnDeriv (μ + ν)
+            =ᵐ[μ + ν]
+              durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ := by
+        have hderiv' :=
+          Measure.rnDeriv_withDensity₀ (μ + ν) hY
+        rwa [← hwith] at hderiv'
+      exact hderiv.symm
+    exact (Measure.absolutelyContinuous_of_le (Measure.le_add_left le_rfl)) hρ
+  have hZeq :
+      durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ
+        =ᵐ[ν] fun ω => ν.rnDeriv (μ + ν) ω := by
+    have hwith :
+        ν =
+          (μ + ν).withDensity
+            (durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ) :=
+      durrett2019_theorem_4_3_5_add_dominating_trimmed_rnDeriv_toReal_limit_nu_withDensity_eq
+        (μ := μ) (ν := ν) (ℱ := ℱ)
+        (Z := durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ)
+        C hC_meas hgen hC hZfin hZlim_real
+    have hρ :
+        durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ
+          =ᵐ[μ + ν] fun ω => ν.rnDeriv (μ + ν) ω := by
+      have hderiv :
+          ν.rnDeriv (μ + ν)
+            =ᵐ[μ + ν]
+              durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ := by
+        have hderiv' :=
+          Measure.rnDeriv_withDensity₀ (μ + ν) hZ
+        rwa [← hwith] at hderiv'
+      exact hderiv.symm
+    exact (Measure.absolutelyContinuous_of_le (Measure.le_add_left le_rfl)) hρ
+  exact
+    durrett2019_theorem_4_3_5_density_ratio_toReal_ae_of_ae_eq
+      (μ := μ) (ν := ν) (ρ := μ + ν)
+      (Y := durrett2019_theorem_4_3_5_add_dominating_mu_limitDensity μ ν ℱ)
+      (Z := durrett2019_theorem_4_3_5_add_dominating_nu_limitDensity μ ν ℱ)
+      (Measure.absolutelyContinuous_of_le (Measure.le_add_right le_rfl))
+      (Measure.absolutelyContinuous_of_le (Measure.le_add_left le_rfl))
+      hYeq hZeq
+
+/--
 Durrett 2019, Theorem 4.3.5 canonical ratio singular-support endpoint: the
 singular part of `mu` with respect to `nu` is supported on the top set of the
 canonical likelihood ratio.
@@ -8073,6 +8229,72 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_range_hasPro
       (ν := ν) (q := q) hq_ne_top)
 
 /--
+Durrett 2019, Theorem 4.3.8 canonical-ratio positive-product handoff: the
+canonical `mu + nu` likelihood ratio supplies the RN-density and top-null
+inputs, so the remaining source obligations are the full-prefix likelihood
+convergence, real integrability, and positive Hellinger product data.
+-/
+theorem
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_range_tendsto
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace (ℕ -> S))}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hgen : (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hXint :
+      Integrable
+        (fun x =>
+          (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+            (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ x).toReal)
+        (Measure.infinitePi ν))
+    (hXlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x)
+          atTop
+          (𝓝
+            (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+              (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ x)))
+    (hP0 : P ≠ 0) (hPtop : P ≠ ∞)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (htail_eq :
+      ∀ n,
+        tail n =
+          P / (∏ i ∈ Finset.range n,
+            ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  let X : (ℕ -> S) -> ℝ≥0∞ :=
+    durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+      (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ
+  have hνtop : Measure.infinitePi ν {x | X x = ∞} = 0 :=
+    durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_nu_top_zero
+      (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (ℱ := ℱ)
+      C hC_meas hgen hC
+  have hXfinite : ∀ᵐ x ∂Measure.infinitePi ν, X x ≠ ∞ := by
+    exact
+      (measure_eq_zero_iff_ae_notMem.mp hνtop).mono
+        (fun _ hx htop => hx htop)
+  exact
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_range_hasProd_density_range_tendsto
+      (μ := μ) (ν := ν) (q := q) (tail := tail) (P := P) (X := X)
+      hq hμ hbranch
+      (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_ae_rnDeriv
+        (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (ℱ := ℱ)
+        C hC_meas hgen hC)
+      hXfinite hXint hXlim hP0 hPtop hprod htail_eq hq_ne_top
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-branch final handoff: once full-prefix
 likelihoods converge to `X`, pointwise finite/nonzero coordinate densities make
 the zero set of `X` a tail event; a nonzero lower integral then selects the
@@ -8113,6 +8335,56 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_rangeLimit_l
     simpa [durrett2019_theorem_4_3_8_tailCoordinateSigma] using
       durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_rangeLimit_finite_nonzero
         (S := S) (q := q) (X := X) hq hXlim hq_ne_top hq_ne_zero n
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical-ratio positive-branch handoff: with the
+canonical `mu + nu` likelihood ratio as the limiting likelihood, Chapter 4.3.5
+supplies the RN-density and top-null inputs automatically.
+-/
+theorem
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_rangeLimit_lintegral_ne_zero_finite_nonzero
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞}
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace (ℕ -> S))}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hgen : (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hXlim :
+      ∀ x : ℕ -> S,
+        Tendsto
+          (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x)
+          atTop
+          (𝓝
+            (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+              (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ x)))
+    (hq_ne_top : ∀ i s, q i s ≠ ∞)
+    (hq_ne_zero : ∀ i s, q i s ≠ 0)
+    (hInt :
+      (∫⁻ x,
+        durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+          (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ x ∂Measure.infinitePi ν) ≠ 0) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  let X : (ℕ -> S) -> ℝ≥0∞ :=
+    durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+      (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ
+  exact
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_rangeLimit_lintegral_ne_zero_finite_nonzero
+      (μ := μ) (ν := ν) (q := q) (X := X)
+      hq hbranch
+      (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_toReal_ae_rnDeriv
+        (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (ℱ := ℱ)
+        C hC_meas hgen hC)
+      (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_nu_top_zero
+        (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (ℱ := ℱ)
+        C hC_meas hgen hC)
+      hXlim hq_ne_top hq_ne_zero hInt
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product final handoff from the Hellinger
