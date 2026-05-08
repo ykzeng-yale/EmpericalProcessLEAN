@@ -2564,6 +2564,24 @@ theorem chewi127AverageConditionalVariance_abs_le_of_row_bound
           simp [Finset.sum_const, hNne]
 
 /--
+If real random variables converge in measure to a constant and are uniformly
+bounded almost surely, then the constant limit satisfies the same bound.
+-/
+theorem tendstoInMeasure_const_abs_le_of_ae_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] {f : ℕ -> Ω -> ℝ} {c V : ℝ}
+    (hconv : TendstoInMeasure P f atTop (fun _ => c))
+    (hbound : ∀ N : ℕ, ∀ᵐ ω ∂P, |f N ω| ≤ V) :
+    |c| ≤ V := by
+  obtain ⟨ns, _hns_mono, hns_tendsto⟩ := hconv.exists_seq_tendsto_ae
+  have hbound_all : ∀ᵐ ω ∂P, ∀ N : ℕ, |f N ω| ≤ V :=
+    ae_all_iff.2 hbound
+  rcases (hns_tendsto.and hbound_all).exists with ⟨ω, hω_tendsto, hω_bound⟩
+  apply le_of_tendsto' ((continuous_abs.tendsto c).comp hω_tendsto)
+  intro n
+  exact hω_bound (ns n)
+
+/--
 Bounded-continuous handoff for the averaged conditional variance exponential.
 
 The exponential `x ↦ exp (-(t^2/2) x)` is not globally bounded on `ℝ`, so the
@@ -3045,6 +3063,73 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_average_conditional_varianc
   filter_upwards [hXi_all] with ω hω
   exact chewi127AverageConditionalVariance_abs_le_of_row_bound
     S.covariance.Xi N ω L (sq_nonneg B) (fun k _hk => hω k)
+
+/--
+The covariance-limit diagonal inherits the same absolute bound as the averaged
+projected conditional variances.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_covariance_limit_abs_le_of_average_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) {V : ℝ}
+    (haverage_bound :
+      ∀ N : ℕ,
+        ∀ᵐ ω ∂P,
+          |chewi127AverageConditionalVariance S.covariance.Xi N ω L| ≤ V) :
+    |S.covariance_limit.S_infty L L| ≤ V :=
+  tendstoInMeasure_const_abs_le_of_ae_bound
+    (S.projected_variance_tendstoInMeasure L) haverage_bound
+
+/--
+Uniform boundedness of projected increments bounds both the averaged projected
+conditional variances and their covariance-limit diagonal.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_average_and_limit_variance_abs_le_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) :
+    ∃ V : ℝ, 0 ≤ V ∧
+      (∀ N : ℕ,
+        ∀ᵐ ω ∂P,
+          |chewi127AverageConditionalVariance S.covariance.Xi N ω L| ≤ V) ∧
+      |S.covariance_limit.S_infty L L| ≤ V := by
+  rcases S.projected_average_conditional_variance_abs_le_of_uniform_bound L with
+    ⟨V, hV_nonneg, haverage_bound⟩
+  exact ⟨V, hV_nonneg, haverage_bound,
+    S.projected_covariance_limit_abs_le_of_average_bound L haverage_bound⟩
+
+/--
+Source-facing inverse-compensation product convergence with all variance-side
+boundedness obligations discharged from the uniform martingale source bound.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω, ∏ k ∈ Finset.range N,
+          S.projectedInverseCompensationFactor L N t k ω ∂P)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  rcases S.projected_average_and_limit_variance_abs_le_of_uniform_bound L with
+    ⟨V, hV_nonneg, haverage_bound, hlimit_bound⟩
+  exact
+    S.projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_abs_bound
+      L t V hV_nonneg (Eventually.of_forall haverage_bound) hlimit_bound
 
 /--
 Pointwise row bound for the scalar compensation factors from a uniform bound

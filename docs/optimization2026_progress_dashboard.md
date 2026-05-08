@@ -291,11 +291,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_abs_bound`.
   The latest finite-average packet also proves
   `chewi127AverageConditionalVariance_abs_le_of_row_bound` and
-  `projected_average_conditional_variance_abs_le_of_uniform_bound`.  The next
-  ASGD packet should prove the finite martingale tower representation into that
-  normalized product model, prove the covariance-limit abs-bound needed to
-  instantiate the clamp wrapper, then close the Gaussian characteristic-function
-  limit.
+  `projected_average_conditional_variance_abs_le_of_uniform_bound`.  The newest
+  variance-limit packet proves
+  `tendstoInMeasure_const_abs_le_of_ae_bound`,
+  `projected_covariance_limit_abs_le_of_average_bound`,
+  `projected_average_and_limit_variance_abs_le_of_uniform_bound`, and
+  `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound`, so the
+  inverse-compensation product convergence now follows directly from the source
+  uniform bound.  The next ASGD packet should prove the finite martingale tower
+  representation into the normalized product model, then close the Gaussian
+  characteristic-function limit.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
@@ -847,8 +852,9 @@ scalar bounded martingale characteristic-function convergence behind
 `projected_charFun_tendsto_exp`, then wire Chewi Theorem 12.7/12.3 through the
 existing ASGD certificate constructors.  The remaining proof obligations are
 the finite martingale tower representation into the normalized compensated
-product model, plus the covariance-limit abs-bound instantiation for the
-already-compiled clamp/finite-average-measurability handoff.  Do not return to
+product model and final scalar CLT wiring; the variance-side clamp, finite
+average measurability, average abs-bound, covariance-limit abs-bound, and
+inverse-compensation product convergence are now compiled.  Do not return to
 old Chapter 3, SMPGD source
 probability packaging, or raw tower-peel tasks unless a regression makes them
 relevant.

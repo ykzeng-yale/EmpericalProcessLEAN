@@ -185,9 +185,13 @@ plus the normalized compensated-product bridge:
 `Chewi127ConditionalCovarianceProcess.averageConditionalCovariance_aemeasurable`,
 `Chewi127ConditionalCovarianceProcess.averageConditionalVariance_aemeasurable`,
 `chewi127AverageConditionalVariance_abs_le_of_row_bound`,
+`tendstoInMeasure_const_abs_le_of_ae_bound`,
 `projectedAverageVariance_exp_integral_tendsto_of_abs_bound`,
 `projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_abs_bound`,
 `projected_average_conditional_variance_abs_le_of_uniform_bound`,
+`projected_covariance_limit_abs_le_of_average_bound`,
+`projected_average_and_limit_variance_abs_le_of_uniform_bound`,
+`projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound`,
 `projectedNormalizedTaylorFactor_eq_taylorModel`,
 `projected_charFun_normalized_taylor_step_mul_scaled`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
@@ -198,13 +202,12 @@ normalized product model required by
 `projected_charFun_tendsto_exp_of_normalized_product_model`.  The one-step
 normalized peel, inverse-compensation algebra, and bounded-continuous
 expectation handoff are already compiled; do not prove another compensation
-or generic weak-convergence wrapper.  The eventual a.e. absolute bound on
-`chewi127AverageConditionalVariance S.covariance.Xi N · L` is now compiled
-from the uniform martingale source bound, so the remaining variance-side
-primitive is the matching bound on `S_infty L L`; then feed both to
-`projectedInverseCompensationProduct_tendsto_exp_of_averageVariance_abs_bound`.
-Then wire these pieces into the existing Theorem 12.7/12.3 certificate
-constructors.
+or generic weak-convergence wrapper.  The variance side is now source-facing:
+`projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
+uniform martingale source bound, averaged-variance convergence in measure, and
+the clamp bridge.  Next prove the finite martingale tower representation into
+the normalized product integral, then wire it into the existing Theorem 12.7/12.3
+certificate constructors.
 
 Reuse boundary: do not redo scaled-sum definitions, Cramér-Wold plumbing,
 bounded-tail/Lindeberg, Taylor expansion, conditional mean-zero/quadratic
@@ -218,9 +221,8 @@ the product-to-one, row-error, and compensation-bound bridges,
 `integral_norm_condExp_le_integral_norm`,
 `chewi127ScalarCharFunProduct` lemmas, and local product perturbation bridges.
 One bounded API search is allowed only for the exact finite compensated
-iteration measurability side condition, normalized-product induction shape, or
-covariance-limit abs-bound from averaged-variance convergence; after that,
-prove.
+iteration measurability side condition or normalized-product induction shape;
+after that, prove.
 
 Execution gate: use `/private/tmp/chewi-smpgd-probability`; before Lean edits
 state the exact theorem-sized target and fallback blocker.  Verify with
