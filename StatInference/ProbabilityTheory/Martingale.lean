@@ -10542,5 +10542,96 @@ theorem durrett2019_example_4_4_3_kolmogorov_maximal_inequality_square
       (hS_sq_int n)
       (Eventually.of_forall fun ω => sq_nonneg (S n ω))
 
+/--
+Durrett 2019, Example 4.4.3, probability-display form of Kolmogorov's maximal
+inequality for the squared martingale maximum.
+-/
+theorem durrett2019_example_4_4_3_kolmogorov_maximal_inequality_square_div
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {S : ℕ -> Ω -> ℝ} (hS : Martingale S ℱ P)
+    (hS_sq_int : ∀ n, Integrable (fun ω => S n ω ^ 2) P)
+    {x : ℝ≥0} (hx : x ≠ 0) (n : ℕ) :
+    P {ω |
+        ((x ^ 2 : ℝ≥0) : ℝ) ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => S k ω ^ 2} ≤
+      ENNReal.ofReal (∫ ω, S n ω ^ 2 ∂P) /
+        ((x ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  have hmain :=
+    durrett2019_example_4_4_3_kolmogorov_maximal_inequality_square
+      (P := P) (ℱ := ℱ) (S := S) hS hS_sq_int (x := x) n
+  have hx2_ne_zero : ((x ^ 2 : ℝ≥0) : ℝ≥0∞) ≠ 0 := by
+    simp [pow_eq_zero_iff, hx]
+  have hx2_ne_top : ((x ^ 2 : ℝ≥0) : ℝ≥0∞) ≠ ∞ := by
+    simp
+  exact
+    (ENNReal.le_div_iff_mul_le
+      (a := P {ω |
+        ((x ^ 2 : ℝ≥0) : ℝ) ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => S k ω ^ 2})
+      (b := ((x ^ 2 : ℝ≥0) : ℝ≥0∞))
+      (c := ENNReal.ofReal (∫ ω, S n ω ^ 2 ∂P))
+      (Or.inl hx2_ne_zero) (Or.inl hx2_ne_top)).2
+      (by simpa [mul_comm] using hmain)
+
+/--
+Durrett 2019, Example 4.4.3, source-facing Kolmogorov maximal inequality.
+The event is written with the textbook absolute maximum; the terminal
+second-moment or variance estimate is supplied as `∫ S_n^2 ≤ varianceBound`.
+-/
+theorem durrett2019_example_4_4_3_kolmogorov_maximal_inequality_abs_varianceBound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {S : ℕ -> Ω -> ℝ} (hS : Martingale S ℱ P)
+    (hS_sq_int : ∀ n, Integrable (fun ω => S n ω ^ 2) P)
+    {x : ℝ≥0} (hx : x ≠ 0) {varianceBound : ℝ} (n : ℕ)
+    (hvarianceBound : ∫ ω, S n ω ^ 2 ∂P ≤ varianceBound) :
+    P {ω |
+        (x : ℝ) ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => |S k ω|} ≤
+      ENNReal.ofReal varianceBound / ((x ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  have hsquare_abs_event :
+      {ω |
+        (x : ℝ) ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => |S k ω|} =
+      {ω |
+        ((x ^ 2 : ℝ≥0) : ℝ) ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => S k ω ^ 2} := by
+    ext ω
+    have hsquare_iff (y : ℝ) :
+        ((x ^ 2 : ℝ≥0) : ℝ) ≤ y ^ 2 ↔ (x : ℝ) ≤ |y| := by
+      have hx_nonneg : 0 ≤ (x : ℝ) := x.2
+      rw [show ((x ^ 2 : ℝ≥0) : ℝ) = (x : ℝ) ^ 2 by simp]
+      rw [← sq_abs y, sq_le_sq]
+      simp [abs_of_nonneg hx_nonneg]
+    simp only [Set.mem_setOf_eq]
+    rw [Finset.le_sup'_iff, Finset.le_sup'_iff]
+    constructor
+    · rintro ⟨k, hk, hkx⟩
+      exact ⟨k, hk, (hsquare_iff (S k ω)).2 hkx⟩
+    · rintro ⟨k, hk, hkx⟩
+      exact ⟨k, hk, (hsquare_iff (S k ω)).1 hkx⟩
+  calc
+    P {ω |
+        (x : ℝ) ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => |S k ω|}
+        = P {ω |
+            ((x ^ 2 : ℝ≥0) : ℝ) ≤
+              (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                fun k => S k ω ^ 2} := by rw [hsquare_abs_event]
+    _ ≤ ENNReal.ofReal (∫ ω, S n ω ^ 2 ∂P) /
+          ((x ^ 2 : ℝ≥0) : ℝ≥0∞) :=
+        durrett2019_example_4_4_3_kolmogorov_maximal_inequality_square_div
+          (P := P) (ℱ := ℱ) (S := S) hS hS_sq_int hx n
+    _ ≤ ENNReal.ofReal varianceBound / ((x ^ 2 : ℝ≥0) : ℝ≥0∞) :=
+        ENNReal.div_le_div_right (ENNReal.ofReal_le_ofReal hvarianceBound)
+          ((x ^ 2 : ℝ≥0) : ℝ≥0∞)
+
 end ProbabilityTheory
 end StatInference

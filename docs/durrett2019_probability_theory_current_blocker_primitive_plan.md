@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V113
+## Live In-Thread Goal Prompt V114
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -411,11 +411,13 @@ source wrappers:
 `durrett2019_theorem_4_4_2_doob_maximal_inequality_positivePart`, and
 `durrett2019_theorem_4_4_2_doob_maximal_inequality_positivePart_total`.
 Example 4.4.3 now has the squared-threshold Kolmogorov maximal wrapper
-`durrett2019_example_4_4_3_kolmogorov_maximal_inequality_square`.  Next target:
-finish the exact absolute-max/variance display for Example 4.4.3 if local
-finite-sup algebra is cheap; otherwise move to Theorem 4.4.4 Lp maximal
-inequality.  Do not detour back into full Galton-Watson random-sum
-infrastructure unless a local API makes it cheap.
+`durrett2019_example_4_4_3_kolmogorov_maximal_inequality_square`, its
+probability-display division form
+`durrett2019_example_4_4_3_kolmogorov_maximal_inequality_square_div`, and the
+absolute-maximum variance-bound display
+`durrett2019_example_4_4_3_kolmogorov_maximal_inequality_abs_varianceBound`.
+Next target: Theorem 4.4.4 Lp maximal inequality.  Do not detour back into full
+Galton-Watson random-sum infrastructure unless a local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -928,9 +930,10 @@ from Theorem 4.3.8.  The source-shaped Lemma 4.3.9 normalized-process
 martingale packet now compiles, and Section 4.4 Theorem 4.4.2 now has
 nonnegative-submartingale, positive-part, and total positive-part Doob maximal
 inequality wrappers.  Example 4.4.3 now has the squared-threshold Kolmogorov
-maximal wrapper.  Next move to the exact absolute-max/variance Kolmogorov
-display or Theorem 4.4.4 Lp maximal inequality, whichever gives the largest
-compiled step without building unrelated infrastructure.
+maximal wrapper, the probability-display division wrapper, and the
+absolute-maximum variance-bound display.  Next move to Theorem 4.4.4 Lp maximal
+inequality, whichever gives the largest compiled step without building
+unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1044,6 +1047,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V113` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V114` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
