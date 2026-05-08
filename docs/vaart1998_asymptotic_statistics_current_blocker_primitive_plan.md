@@ -10,19 +10,22 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinatePathTaylor_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapPathTaylor_envelope`.
 It already packages the finite-coordinate empirical score, derivative,
 Hessian action, estimating equation, envelope hypotheses, common normalizing
-scalar, scalar path Taylor hypotheses, and endpoint second-derivative action
+scalar, the actual segment `theta0 + t • delta`, endpoint identification,
+scalar path Taylor hypotheses, and endpoint second-derivative action
 identification into the compiled Theorem 5.41 probability handoff.
 
-Next packet only: instantiate the abstract scalar path hypotheses for actual
-estimating-map coordinate paths.  Do not revisit the solved
-second-derivative action matching, path-selected Taylor bridge, coordinate
-assembly, scalar Taylor bridge, scaling bridge, auxiliary residual, curvature
-envelope, empirical Taylor aggregation, endpoint assembly, Chapter 2-4
-substrate, Gaussian endpoints, or generic empirical-process plumbing unless a
-direct dependency is missing.
+Next packet only: package the calculus obligations for the actual
+estimating-map coordinate paths along `theta0 + t • delta`: continuity,
+one-dimensional derivative, derivative-at-zero, derivative Taylor display,
+and second-action identification.  Do not revisit the solved estimating-map
+segment instantiation, second-derivative action matching, path-selected Taylor
+bridge, coordinate assembly, scalar Taylor bridge, scaling bridge, auxiliary
+residual, curvature envelope, empirical Taylor aggregation, endpoint assembly,
+Chapter 2-4 substrate, Gaussian endpoints, or generic empirical-process
+plumbing unless a direct dependency is missing.
 
 Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
 run the focused file and target module checks plus hygiene scans, fetch/rebase
@@ -801,18 +804,21 @@ compiling:
 290. Theorem 5.41 finite-coordinate empirical-average source handoff from
    scalar path Taylor hypotheses:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinatePathTaylor_envelope`.
+291. Theorem 5.41 finite-coordinate empirical-average source handoff from
+   actual estimating-map coordinate paths:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapPathTaylor_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 coordinate path action handoff`).
+(`Add Vaart theorem 5.41 estimating map path handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by matching the scalar selected
-path second-derivative values to the endpoint coordinate `secondDerivative`
-action and feeding the resulting coordinate raw Taylor identities into the
-compiled empirical-average handoff.
+asymptotic-normality route for Z-estimators by instantiating the abstract
+path value with the actual segment
+`t ↦ estimatingMap (theta0 + t • delta)` and discharging the endpoint value
+identities from `theta0 + delta = estimator`.
 
-The next aggressive packet should instantiate the abstract scalar path
-hypotheses for actual estimating-map coordinate paths.
+The next aggressive packet should package the remaining one-dimensional
+calculus obligations along this actual segment.
 
 ## Execution Notes
 

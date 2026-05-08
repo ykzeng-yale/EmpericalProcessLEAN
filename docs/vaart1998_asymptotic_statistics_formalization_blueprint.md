@@ -572,8 +572,10 @@ Initial modules:
   `vaart1998_theorem_5_41_coordinate_rawTaylor_ae_of_scalarPathDerivativeTaylor_secondDerivativeAction`,
   and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinatePathTaylor_envelope`,
-  so the remaining critical path is instantiating the abstract scalar path
-  hypotheses for actual estimating-map coordinate paths.
+  and the estimating-map path packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapPathTaylor_envelope`,
+  so the remaining critical path is packaging the one-dimensional calculus
+  obligations along the actual segment `theta0 + t • delta`.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
