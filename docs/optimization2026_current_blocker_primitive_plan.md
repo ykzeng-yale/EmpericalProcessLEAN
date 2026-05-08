@@ -158,7 +158,9 @@ an external theorem really needs to expose the variance-error row.
 The deterministic future-tail proxy route now also has compact
 `deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`
 characteristic-function, scalar/projected CLT, bridge, and certificate
-wrappers; use them when the proxy is constant in `ω`.
+wrappers; use them when the proxy is constant in `ω`.  It now also has the
+Chewi 12.3 ASGD endpoint wrapper
+`asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
 The direct future-tail residual route now has
 `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers through
 the certificate layer.  This is the preferred route when the normalized future
@@ -411,9 +413,12 @@ constructors
 `toProjectedBridge_of_deterministic_futureTail_l1_approx`, and
 `toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx` discharge
 proxy measurability/integrability plus bounded-source square/remainder
-integrability automatically.  After the proxy estimate is closed, instantiate
-these constructors; do not spend another run on characteristic-function or
-certificate adapter wiring.  The one-step
+integrability automatically.  The compact no-factor deterministic-proxy route
+also reaches the Chewi 12.3 ASGD endpoint through
+`asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
+After the proxy estimate is closed, instantiate these constructors; do not
+spend another run on characteristic-function, certificate, or ASGD endpoint
+adapter wiring.  The one-step
 normalized peel, inverse-compensation algebra, and bounded-continuous
 expectation handoff are already compiled; the raw-product start and normalized
 successor peel are also compiled as

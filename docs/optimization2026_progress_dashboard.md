@@ -102,7 +102,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`
   wrappers specialize the predictable proxy route to constant-in-`ω` proxies,
   removing the old normalized-product argument from deterministic proxy
-  certificates.
+  certificates.  The newest ASGD endpoint packet adds
+  `asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
 - Direct future-tail residual route: the new
   `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers turn
   row-summed `L1` predictability of the normalized future tail directly into
@@ -566,7 +567,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   `toProjectedBridge_of_deterministic_futureTail_l1_approx`, and
   `toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx`, which
   discharge constant-proxy side conditions and bounded-source square/remainder
-  integrability automatically.
+  integrability automatically.  The compact no-factor deterministic route now
+  also reaches Chewi 12.3 via
+  `asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
   This turns the remaining residual blocker into constructing an
   `F_r`-measurable future-tail proxy with vanishing row-summed L1 error, with
   characteristic-function, scalar/projected CLT, and vector certificate adapter

@@ -39,7 +39,9 @@ so the live theorem route can focus on the actual future-tail proxy/residual
 conditions.
 For deterministic tail-core approximations, use the corresponding
 `deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound` wrappers
-so callers do not need to pass a normalized-product limit separately.
+so callers do not need to pass a normalized-product limit separately.  Its
+Chewi 12.3 endpoint wrapper is
+`asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound`.
 For direct asymptotic predictability estimates, use
 `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound`; it packages the
 future-tail residual into the ASGD certificate route without a proxy.  Its

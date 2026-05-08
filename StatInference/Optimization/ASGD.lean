@@ -15431,6 +15431,60 @@ theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_futureMultiplie
       hInitial_meas hRemainder_meas hDecomp
 
 /--
+Source-shaped Chewi Theorem 12.3 ASGD limit package from a deterministic
+future-tail proxy approximation.  This is the endpoint form of the compact
+uniform-source/no-factor route for deterministic or frozen Taylor tails.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (proxy : StrongDual ℝ E -> ℝ -> ℕ -> ℕ -> ℂ)
+    (hproxy_approx : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                proxy L t N r‖ ∂P)
+        atTop (𝓝 0))
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K := by
+  let C : Chewi127MartingaleCLTCertificate Ω Ω' E P Q :=
+    S.toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound
+      hmean proxy hproxy_approx
+  simpa [C,
+    Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound,
+    Chewi127BoundedMartingaleCLTSource.toProjectedBridge_of_deterministic_futureTail_l1_approx_of_uniform_bound_no_factor_bound,
+    Chewi127ProjectedMartingaleCLTBridge.toMartingaleCLTCertificate] using
+    chewi123_asgd_limit_package_of_martingale_certificate
+      (C := C) Ainv hInitial hRemainder
+      hInitial_meas hRemainder_meas hDecomp
+
+/--
 Source-shaped Chewi Theorem 12.3 ASGD limit package from a factorwise
 predictable/frozen-tail condition.  This is a stronger but often easier-to-use
 form of the future-tail gate: callers may prove each future normalized Taylor
