@@ -1089,9 +1089,23 @@ adds `IsFiniteCouplingEntropyProjectionStep`,
 and
 `chewi118_entropy_one_step_trajectory_of_finiteEntropyProjectionSteps_columnNormalized`.
 This closes the projection-decrease field at the supplied finite-certificate
-level.  The next concrete 11.8 blocker is proving the actual row/column
-normalization maps satisfy `IsFiniteCouplingEntropyProjectionStep`, plus
-row-objective monotonicity from the mirror-descent descent lemma.
+level.  The newest concrete Sinkhorn normalization packet adds
+`finiteRowMarginalConstraint`, `finiteColumnMarginalConstraint`,
+`finiteCouplingEntropyBregman_add_eq_of_row_log_diff`,
+`finiteCouplingEntropyBregman_add_eq_of_column_log_diff`,
+`rowNormalizedCoupling_log_sub_log_eq`,
+`columnNormalizedCoupling_log_sub_log_eq`,
+`isFiniteCouplingEntropyProjectionStep_rowNormalized`,
+`isFiniteCouplingEntropyProjectionStep_columnNormalized`,
+`chewi118_entropy_one_step_of_concreteSinkhornNormalizations`, and
+`chewi118_entropy_one_step_trajectory_of_concreteSinkhornNormalizations`.
+This discharges the previous actual-normalization projection-certificate
+blocker and gives the zero-error Theorem 11.8 one-step recurrence for concrete
+finite row-then-column Sinkhorn cycles.  The next concrete 11.8 blocker is
+source packaging: connect the compiled concrete recurrence to the existing
+last-iterate certificate/rate wrappers with the exact source trajectory
+assumptions, and prove any remaining row-objective monotonicity field if the
+chosen source wrapper needs it.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
@@ -1322,14 +1336,16 @@ Active aggressive target ladder:
    then move to ASGD CLT once the SMPGD source packaging is sufficiently
    complete.
 2. Instantiate the compiled Chewi Theorem 11.8 Sinkhorn/mirror-descent
-   certificate with concrete finite row/column-normalization KL identities.
+   certificate with concrete finite row/column-normalization KL identities and
+   the concrete row/column projection-step recurrence.
    Reuse `IsChewi118SinkhornMirrorDescentCertificate`,
    `chewi118_sinkhorn_last_rowMarginalKL_le_of_mirrorDescent`, the 11.7
    ABP/Pinsker selectors, and the new `finiteKL`/`finiteCouplingKL`
    row/column normalization plus entropic-Bregman identities and the finite
-   array entropy certificate endpoint; only formalize the remaining concrete
-   monotone gap/zero-error recurrence fields and any source support assumptions
-   needed by the source Sinkhorn model.
+   array entropy certificate endpoint, plus
+   `chewi118_entropy_one_step_trajectory_of_concreteSinkhornNormalizations`;
+   only formalize the remaining source trajectory/support assumptions and any
+   monotone gap field needed by the source Sinkhorn model.
 3. Finish exact Sinkhorn Theorem 11.7/11.8 source packaging from the compiled
    ABP and mirror-descent layers; do not expand full EOT duality unless exact
    Theorem 11.6 reporting is requested.

@@ -75,6 +75,16 @@ noncomputable def columnMarginal {X Y : Type*} [Fintype X]
     (γ : X -> Y -> ℝ) (y : Y) : ℝ :=
   ∑ x, γ x y
 
+/-- Finite row-marginal constraint set for Sinkhorn row projections. -/
+def finiteRowMarginalConstraint {X Y : Type*} [Fintype Y]
+    (μ : X -> ℝ) : Set (X -> Y -> ℝ) :=
+  {γ | ∀ x, rowMarginal γ x = μ x}
+
+/-- Finite column-marginal constraint set for Sinkhorn column projections. -/
+def finiteColumnMarginalConstraint {X Y : Type*} [Fintype X]
+    (ν : Y -> ℝ) : Set (X -> Y -> ℝ) :=
+  {γ | ∀ y, columnMarginal γ y = ν y}
+
 /-- Summing row marginals recovers the total finite coupling mass. -/
 theorem sum_rowMarginal_eq_finiteCouplingMass
     {X Y : Type*} [Fintype X] [Fintype Y] (γ : X -> Y -> ℝ) :
@@ -352,6 +362,142 @@ theorem finiteCouplingEntropyBregman_eq_finiteCouplingKL
   unfold finiteCouplingEntropyBregman finiteCouplingEntropy finiteCouplingKL
   simp_rw [Real.log_div (hγ_ne _ _) (hη_ne _ _)]
   simp [Finset.sum_sub_distrib, sub_mul, mul_sub, hmass', mul_comm]
+
+/--
+Finite entropic Bregman Pythagorean equality when the log-ratio
+`log proj - log base` depends only on rows and `z` has the same row marginal as
+`proj`.
+-/
+theorem finiteCouplingEntropyBregman_add_eq_of_row_log_diff
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (z proj base : X -> Y -> ℝ) (rowLog : X -> ℝ)
+    (hlog : ∀ x y, Real.log (proj x y) - Real.log (base x y) = rowLog x)
+    (hrow : ∀ x, rowMarginal z x = rowMarginal proj x) :
+    finiteCouplingEntropyBregman z proj +
+        finiteCouplingEntropyBregman proj base =
+      finiteCouplingEntropyBregman z base := by
+  classical
+  have hsum_zero :
+      (∑ x, ∑ y,
+        (Real.log (proj x y) - Real.log (base x y)) *
+          (z x y - proj x y)) = 0 := by
+    calc
+      (∑ x, ∑ y,
+        (Real.log (proj x y) - Real.log (base x y)) *
+          (z x y - proj x y))
+          = ∑ x, ∑ y, rowLog x * (z x y - proj x y) := by
+              refine Finset.sum_congr rfl ?_
+              intro x _hx
+              refine Finset.sum_congr rfl ?_
+              intro y _hy
+              rw [hlog x y]
+      _ = ∑ x, rowLog x * ∑ y, (z x y - proj x y) := by
+              refine Finset.sum_congr rfl ?_
+              intro x _hx
+              exact (Finset.mul_sum (s := Finset.univ)
+                (a := rowLog x) (f := fun y => z x y - proj x y)).symm
+      _ = 0 := by
+              refine Finset.sum_eq_zero ?_
+              intro x _hx
+              have hrow_diff : (∑ y, (z x y - proj x y)) = 0 := by
+                rw [Finset.sum_sub_distrib]
+                simpa [rowMarginal] using sub_eq_zero.mpr (hrow x)
+              rw [hrow_diff, mul_zero]
+  have halg :
+      finiteCouplingEntropyBregman z proj +
+          finiteCouplingEntropyBregman proj base =
+        finiteCouplingEntropyBregman z base -
+          ∑ x, ∑ y,
+            (Real.log (proj x y) - Real.log (base x y)) *
+              (z x y - proj x y) := by
+    unfold finiteCouplingEntropyBregman
+    simp [Finset.sum_sub_distrib, sub_mul, mul_sub]
+    ring
+  rw [halg, hsum_zero, sub_zero]
+
+/--
+Finite entropic Bregman Pythagorean equality when the log-ratio
+`log proj - log base` depends only on columns and `z` has the same column
+marginal as `proj`.
+-/
+theorem finiteCouplingEntropyBregman_add_eq_of_column_log_diff
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (z proj base : X -> Y -> ℝ) (columnLog : Y -> ℝ)
+    (hlog : ∀ x y, Real.log (proj x y) - Real.log (base x y) = columnLog y)
+    (hcol : ∀ y, columnMarginal z y = columnMarginal proj y) :
+    finiteCouplingEntropyBregman z proj +
+        finiteCouplingEntropyBregman proj base =
+      finiteCouplingEntropyBregman z base := by
+  classical
+  have hsum_zero :
+      (∑ x, ∑ y,
+        (Real.log (proj x y) - Real.log (base x y)) *
+          (z x y - proj x y)) = 0 := by
+    calc
+      (∑ x, ∑ y,
+        (Real.log (proj x y) - Real.log (base x y)) *
+          (z x y - proj x y))
+          = ∑ x, ∑ y, columnLog y * (z x y - proj x y) := by
+              refine Finset.sum_congr rfl ?_
+              intro x _hx
+              refine Finset.sum_congr rfl ?_
+              intro y _hy
+              rw [hlog x y]
+      _ = ∑ y, ∑ x, columnLog y * (z x y - proj x y) := by
+              rw [Finset.sum_comm]
+      _ = ∑ y, columnLog y * ∑ x, (z x y - proj x y) := by
+              refine Finset.sum_congr rfl ?_
+              intro y _hy
+              exact (Finset.mul_sum (s := Finset.univ)
+                (a := columnLog y) (f := fun x => z x y - proj x y)).symm
+      _ = 0 := by
+              refine Finset.sum_eq_zero ?_
+              intro y _hy
+              have hcol_diff : (∑ x, (z x y - proj x y)) = 0 := by
+                rw [Finset.sum_sub_distrib]
+                simpa [columnMarginal] using sub_eq_zero.mpr (hcol y)
+              rw [hcol_diff, mul_zero]
+  have halg :
+      finiteCouplingEntropyBregman z proj +
+          finiteCouplingEntropyBregman proj base =
+        finiteCouplingEntropyBregman z base -
+          ∑ x, ∑ y,
+            (Real.log (proj x y) - Real.log (base x y)) *
+              (z x y - proj x y) := by
+    unfold finiteCouplingEntropyBregman
+    simp [Finset.sum_sub_distrib, sub_mul, mul_sub]
+    ring
+  rw [halg, hsum_zero, sub_zero]
+
+/-- Log-ratio form of a positive row-normalization step. -/
+theorem rowNormalizedCoupling_log_sub_log_eq
+    {X Y : Type*} [Fintype Y]
+    (μ : X -> ℝ) (γ : X -> Y -> ℝ)
+    (hμ_ne : ∀ x, μ x ≠ 0)
+    (hγ_ne : ∀ x y, γ x y ≠ 0)
+    (hrow_ne : ∀ x, rowMarginal γ x ≠ 0) (x : X) (y : Y) :
+    Real.log (rowNormalizedCoupling μ γ x y) - Real.log (γ x y) =
+      Real.log (μ x / rowMarginal γ x) := by
+  unfold rowNormalizedCoupling
+  rw [Real.log_div (mul_ne_zero (hμ_ne x) (hγ_ne x y)) (hrow_ne x),
+    Real.log_mul (hμ_ne x) (hγ_ne x y),
+    Real.log_div (hμ_ne x) (hrow_ne x)]
+  ring
+
+/-- Log-ratio form of a positive column-normalization step. -/
+theorem columnNormalizedCoupling_log_sub_log_eq
+    {X Y : Type*} [Fintype X]
+    (ν : Y -> ℝ) (γ : X -> Y -> ℝ)
+    (hν_ne : ∀ y, ν y ≠ 0)
+    (hγ_ne : ∀ x y, γ x y ≠ 0)
+    (hcol_ne : ∀ y, columnMarginal γ y ≠ 0) (x : X) (y : Y) :
+    Real.log (columnNormalizedCoupling ν γ x y) - Real.log (γ x y) =
+      Real.log (ν y / columnMarginal γ y) := by
+  unfold columnNormalizedCoupling
+  rw [Real.log_div (mul_ne_zero (hγ_ne x y) (hν_ne y)) (hcol_ne y),
+    Real.log_mul (hγ_ne x y) (hν_ne y),
+    Real.log_div (hν_ne y) (hcol_ne y)]
+  ring
 
 /-- Pointwise Gibbs inequality in the form used by finite KL sums. -/
 theorem finiteKL_term_lower {p q : ℝ} (hp : 0 ≤ p) (hq : 0 < q) :
@@ -778,6 +924,184 @@ theorem finiteCouplingEntropyBregman_nonneg_of_pos_of_mass_eq
     γ η (fun x y => (hγ_pos x y).ne') (fun x y => (hη_pos x y).ne') hmass]
   exact finiteCouplingKL_nonneg_of_nonneg_of_pos_of_mass_eq
     γ η (fun x y => (hγ_pos x y).le) hη_pos hmass
+
+/--
+Concrete finite Sinkhorn row normalization is an entropic Bregman projection
+onto the row-marginal constraint.
+-/
+theorem isFiniteCouplingEntropyProjectionStep_rowNormalized
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (μ : X -> ℝ) (base : X -> Y -> ℝ)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hbase_pos : ∀ x y, 0 < base x y)
+    (hrow_pos : ∀ x, 0 < rowMarginal base x)
+    (hmass : (∑ x, μ x) = finiteCouplingMass base) :
+    IsFiniteCouplingEntropyProjectionStep
+      (finiteRowMarginalConstraint μ) base (rowNormalizedCoupling μ base) where
+  mem := by
+    intro x
+    exact rowMarginal_rowNormalizedCoupling μ base (fun x => (hrow_pos x).ne') x
+  divergence_nonneg := by
+    exact finiteCouplingEntropyBregman_nonneg_of_pos_of_mass_eq
+      (rowNormalizedCoupling μ base) base
+      (rowNormalizedCoupling_pos_of_pos μ base hμ_pos hbase_pos hrow_pos)
+      hbase_pos
+      (by
+        rw [finiteCouplingMass_rowNormalizedCoupling μ base
+          (fun x => (hrow_pos x).ne'), hmass])
+  pythagorean := by
+    intro z hz
+    have hrow :
+        ∀ x, rowMarginal z x =
+          rowMarginal (rowNormalizedCoupling μ base) x := by
+      intro x
+      have hz_row : rowMarginal z x = μ x := by
+        simpa [finiteRowMarginalConstraint] using hz x
+      rw [hz_row,
+        rowMarginal_rowNormalizedCoupling μ base (fun x => (hrow_pos x).ne') x]
+    exact le_of_eq
+      (finiteCouplingEntropyBregman_add_eq_of_row_log_diff
+        z (rowNormalizedCoupling μ base) base
+        (fun x => Real.log (μ x / rowMarginal base x))
+        (fun x y =>
+          rowNormalizedCoupling_log_sub_log_eq μ base
+            (fun x => (hμ_pos x).ne') (fun x y => (hbase_pos x y).ne')
+            (fun x => (hrow_pos x).ne') x y)
+        hrow)
+
+/--
+Concrete finite Sinkhorn column normalization is an entropic Bregman projection
+onto the column-marginal constraint.
+-/
+theorem isFiniteCouplingEntropyProjectionStep_columnNormalized
+    {X Y : Type*} [Fintype X] [Fintype Y]
+    (ν : Y -> ℝ) (base : X -> Y -> ℝ)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hbase_pos : ∀ x y, 0 < base x y)
+    (hcol_pos : ∀ y, 0 < columnMarginal base y)
+    (hmass : (∑ y, ν y) = finiteCouplingMass base) :
+    IsFiniteCouplingEntropyProjectionStep
+      (finiteColumnMarginalConstraint ν) base
+      (columnNormalizedCoupling ν base) where
+  mem := by
+    intro y
+    exact columnMarginal_columnNormalizedCoupling ν base
+      (fun y => (hcol_pos y).ne') y
+  divergence_nonneg := by
+    exact finiteCouplingEntropyBregman_nonneg_of_pos_of_mass_eq
+      (columnNormalizedCoupling ν base) base
+      (columnNormalizedCoupling_pos_of_pos ν base hν_pos hbase_pos hcol_pos)
+      hbase_pos
+      (by
+        rw [finiteCouplingMass_columnNormalizedCoupling ν base
+          (fun y => (hcol_pos y).ne'), hmass])
+  pythagorean := by
+    intro z hz
+    have hcol :
+        ∀ y, columnMarginal z y =
+          columnMarginal (columnNormalizedCoupling ν base) y := by
+      intro y
+      have hz_col : columnMarginal z y = ν y := by
+        simpa [finiteColumnMarginalConstraint] using hz y
+      rw [hz_col,
+        columnMarginal_columnNormalizedCoupling ν base
+          (fun y => (hcol_pos y).ne') y]
+    exact le_of_eq
+      (finiteCouplingEntropyBregman_add_eq_of_column_log_diff
+        z (columnNormalizedCoupling ν base) base
+        (fun y => Real.log (ν y / columnMarginal base y))
+        (fun x y =>
+          columnNormalizedCoupling_log_sub_log_eq ν base
+            (fun y => (hν_pos y).ne') (fun x y => (hbase_pos x y).ne')
+            (fun y => (hcol_pos y).ne') x y)
+        hcol)
+
+/--
+Concrete one-cycle finite Sinkhorn recurrence: row-normalize toward `μ`, then
+column-normalize toward `ν`.
+-/
+theorem chewi118_entropy_one_step_of_concreteSinkhornNormalizations
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    (gammaStar gammaPrev : X -> Y -> ℝ)
+    (hstar_row : gammaStar ∈ finiteRowMarginalConstraint μ)
+    (hstar_col : gammaStar ∈ finiteColumnMarginalConstraint ν)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hprev_pos : ∀ x y, 0 < gammaPrev x y)
+    (hprev_mass : (∑ x, μ x) = finiteCouplingMass gammaPrev)
+    (htarget_mass : (∑ y, ν y) = ∑ x, μ x) :
+    finiteCouplingEntropyBregman gammaStar
+        (columnNormalizedCoupling ν (rowNormalizedCoupling μ gammaPrev)) ≤
+      finiteCouplingEntropyBregman gammaStar gammaPrev -
+        sinkhornRowObjective μ
+          (columnNormalizedCoupling ν (rowNormalizedCoupling μ gammaPrev)) := by
+  classical
+  have hprev_row_pos : ∀ x, 0 < rowMarginal gammaPrev x :=
+    rowMarginal_pos_of_pos hprev_pos
+  have hhalf_pos :
+      ∀ x y, 0 < rowNormalizedCoupling μ gammaPrev x y :=
+    rowNormalizedCoupling_pos_of_pos μ gammaPrev hμ_pos hprev_pos hprev_row_pos
+  have hhalf_row :
+      ∀ x, rowMarginal (rowNormalizedCoupling μ gammaPrev) x = μ x :=
+    rowMarginal_rowNormalizedCoupling μ gammaPrev
+      (fun x => (hprev_row_pos x).ne')
+  have hrow_step :
+      IsFiniteCouplingEntropyProjectionStep
+        (finiteRowMarginalConstraint μ) gammaPrev
+        (rowNormalizedCoupling μ gammaPrev) :=
+    isFiniteCouplingEntropyProjectionStep_rowNormalized
+      μ gammaPrev hμ_pos hprev_pos hprev_row_pos hprev_mass
+  have hhalf_col_pos :
+      ∀ y, 0 < columnMarginal (rowNormalizedCoupling μ gammaPrev) y :=
+    columnMarginal_pos_of_pos hhalf_pos
+  have hhalf_mass :
+      (∑ y, ν y) =
+        finiteCouplingMass (rowNormalizedCoupling μ gammaPrev) := by
+    rw [finiteCouplingMass_rowNormalizedCoupling μ gammaPrev
+      (fun x => (hprev_row_pos x).ne')]
+    exact htarget_mass
+  have hcol_step :
+      IsFiniteCouplingEntropyProjectionStep
+        (finiteColumnMarginalConstraint ν) (rowNormalizedCoupling μ gammaPrev)
+        (columnNormalizedCoupling ν (rowNormalizedCoupling μ gammaPrev)) :=
+    isFiniteCouplingEntropyProjectionStep_columnNormalized
+      ν (rowNormalizedCoupling μ gammaPrev) hν_pos hhalf_pos hhalf_col_pos
+      hhalf_mass
+  exact
+    chewi118_entropy_one_step_of_finiteEntropyProjectionSteps_columnNormalized
+      μ ν gammaStar gammaPrev (rowNormalizedCoupling μ gammaPrev)
+      hrow_step hcol_step hstar_row hstar_col hν_pos hhalf_pos hhalf_row
+      hhalf_mass
+
+/--
+Trajectory form of the concrete finite Sinkhorn one-cycle recurrence.
+-/
+theorem chewi118_entropy_one_step_trajectory_of_concreteSinkhornNormalizations
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    (gamma : ℕ -> X -> Y -> ℝ) (gammaStar : X -> Y -> ℝ) {N : ℕ}
+    (hstep : ∀ n, n < N ->
+      gamma (n + 1) = columnNormalizedCoupling ν
+        (rowNormalizedCoupling μ (gamma n)))
+    (hstar_row : gammaStar ∈ finiteRowMarginalConstraint μ)
+    (hstar_col : gammaStar ∈ finiteColumnMarginalConstraint ν)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hgamma_pos : ∀ n, n < N -> ∀ x y, 0 < gamma n x y)
+    (hgamma_mass : ∀ n, n < N -> (∑ x, μ x) = finiteCouplingMass (gamma n))
+    (htarget_mass : (∑ y, ν y) = ∑ x, μ x) :
+    ∀ n, n < N ->
+      finiteCouplingEntropyBregman gammaStar (gamma (n + 1)) ≤
+        finiteCouplingEntropyBregman gammaStar (gamma n) -
+          sinkhornRowObjective μ (gamma (n + 1)) := by
+  intro n hn
+  have hbase :=
+    chewi118_entropy_one_step_of_concreteSinkhornNormalizations
+      μ ν gammaStar (gamma n) hstar_row hstar_col hμ_pos hν_pos
+      (hgamma_pos n hn) (hgamma_mass n hn) htarget_mass
+  rw [hstep n hn]
+  exact hbase
 
 /--
 Concrete finite Sinkhorn row-normalization KL identity.  Under nonzero support

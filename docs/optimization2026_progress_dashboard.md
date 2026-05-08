@@ -627,9 +627,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   and
   `chewi118_entropy_one_step_trajectory_of_finiteEntropyProjectionSteps_columnNormalized`,
   closing the projection-decrease field at the supplied finite-certificate
-  layer.  The next blocker is proving row/column normalizations instantiate
-  `IsFiniteCouplingEntropyProjectionStep`, plus row-objective monotonicity
-  from mirror-descent descent.  The
+  layer.  The newest concrete Sinkhorn normalization packet adds
+  `finiteRowMarginalConstraint`, `finiteColumnMarginalConstraint`,
+  the row/column log-difference Pythagorean identities,
+  `rowNormalizedCoupling_log_sub_log_eq`,
+  `columnNormalizedCoupling_log_sub_log_eq`,
+  `isFiniteCouplingEntropyProjectionStep_rowNormalized`,
+  `isFiniteCouplingEntropyProjectionStep_columnNormalized`,
+  `chewi118_entropy_one_step_of_concreteSinkhornNormalizations`, and
+  `chewi118_entropy_one_step_trajectory_of_concreteSinkhornNormalizations`.
+  This discharges the actual-normalization projection-certificate blocker and
+  proves the zero-error Theorem 11.8 one-step recurrence for concrete finite
+  row-then-column Sinkhorn cycles.  The next Chapter 11 blocker is exact
+  source packaging into the existing last-iterate certificate/rate wrappers,
+  plus any remaining monotone row-objective field required by that wrapper.
+  The
   current local focused Lean check also verifies
   `chewi118_last_gap_le_of_recurrence` and
   `chewi118_last_gap_le_of_oneStep` in `MirrorDescent.lean`, turning the
