@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V49
+## Live In-Thread Goal Prompt V50
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -87,20 +87,26 @@ separation.  The integral-representation identification layer also now
 compiles: if a candidate `Y` represents `mu` by set integrals against `rho`,
 then `Y = dmu/drho` a.e.; paired `Y`/`Z` integral representations transfer
 these identities to `nu`-a.e.; and those representations feed the existing
-ratio/top-set source assembly.
+ratio/top-set source assembly.  The generator-extension layer also now
+compiles: finite-measure equality on a generating pi-system plus `univ`
+extends to a `withDensity` identity, then to all measurable set-integral
+identities, RN-derivative identification, paired `Y`/`Z` handoff, and the
+ratio/top-set source endpoint.
 
 Next theorem-sized packet: continue Theorem 4.3.5 by producing the actual
-set-integral representations for the bounded martingale limits `Y` and `Z`
-from Durrett's bounded-convergence/generator argument, or by proving the
-remaining `X = Y / Z` no-`0/0` a.e. bridge / `{X = infinity}` singular
-separation.  Search/reuse bounded convergence, pi-lambda/generator extension,
-`Measure.ext_of_generateFrom_of_cover_subset`, `DynkinSystem`,
-`withDensity_apply`, `Measure.rnDeriv_eq_div`, ENNReal limsup/top, and
-a.e.-restriction APIs.  Do not redo the already compiled RN
-martingale/convergence bridge, regular/singular decomposition identity,
-density-ratio bridge, top-set endpoint assembly, or integral-representation to
-RN-derivative bridge.  Defer Polya urn as a model-specific construction unless
-a direct existing primitive is found.
+generator-level set-integral identities for the bounded martingale limits `Y`
+and `Z`: show `mu s = ∫_s Y d rho` and `nu s = ∫_s Z d rho` on the source
+generating class and on `univ`, from Durrett's bounded-convergence argument.
+Alternatively, prove the remaining `X = Y / Z` no-`0/0` a.e. bridge or
+`{X = infinity}` singular separation.  Search/reuse bounded convergence,
+`tendsto`/`lintegral` or real-integral convergence APIs for bounded
+nonnegative functions, filtration/generator restriction identities,
+`Measure.trim`, `withDensity_apply`, ENNReal limsup/top, and a.e.-restriction
+APIs.  Do not redo the already compiled RN martingale/convergence bridge,
+regular/singular decomposition identity, density-ratio bridge, top-set
+endpoint assembly, integral-representation to RN-derivative bridge, or
+generator-extension bridge.  Defer Polya urn as a model-specific construction
+unless a direct existing primitive is found.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -467,10 +473,11 @@ The next likely packet should continue Theorem 4.3.5 after the compiled
 likelihood-ratio martingale/convergence bridge and the compiled
 regular/singular decomposition identity plus the compiled density-ratio/top-set
 assembly and the compiled integral-representation to RN-derivative bridge.
-Aim at the first real source-production obligation: derive the set-integral
-representations for `Y` and `Z` from bounded convergence and the generating
-class, or prove `X = Y/Z` / top-set singular separation.  Keep Theorem 4.1.16
-deferred unless a targeted kernel search finds a direct source-shaped API.
+The generator-extension bridge also now compiles.  Aim at the first real
+source-production obligation: prove the generator-level bounded-convergence
+integral identities for `Y` and `Z`, or prove `X = Y/Z` / top-set singular
+separation.  Keep Theorem 4.1.16 deferred unless a targeted kernel search finds
+a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -582,6 +589,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V49` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V50` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

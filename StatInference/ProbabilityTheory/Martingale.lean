@@ -2820,5 +2820,115 @@ theorem durrett2019_theorem_4_3_5_source_real_identity_of_density_integrals_rati
     durrett2019_theorem_4_3_5_source_real_identity_of_density_ratio_top_set
       (μ := μ) (ν := ν) (ρ := ρ) hA hμρ hνρ hYν hZν hX hμtop hνtop
 
+/--
+Durrett 2019, Theorem 4.3.5 generator-extension bridge: if a candidate density
+has the correct set integrals on a generating pi-system and on `univ`, then it
+represents the whole finite measure as a `withDensity`.
+-/
+theorem durrett2019_theorem_4_3_5_withDensity_eq_of_generate_finite
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ρ : Measure Ω} [IsFiniteMeasure μ] [SigmaFinite ρ]
+    {Y : Ω -> ℝ≥0∞} (C : Set (Set Ω))
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hCeq : ∀ s ∈ C, μ s = ∫⁻ ω in s, Y ω ∂ρ)
+    (huniv : μ Set.univ = ∫⁻ ω, Y ω ∂ρ) :
+    μ = ρ.withDensity Y := by
+  refine ext_of_generate_finite C hgen hC ?_ ?_
+  · intro s hs
+    have hs_meas : MeasurableSet s :=
+      hgen ▸ MeasurableSpace.measurableSet_generateFrom hs
+    rw [hCeq s hs, withDensity_apply _ hs_meas]
+  · rw [huniv, withDensity_apply _ MeasurableSet.univ]
+    simp
+
+/--
+Durrett 2019, Theorem 4.3.5 generator-to-all-sets bridge: the pi-system
+identities from the bounded-convergence argument extend to every measurable
+set.
+-/
+theorem durrett2019_theorem_4_3_5_forall_setLIntegral_of_generate_finite
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ρ : Measure Ω} [IsFiniteMeasure μ] [SigmaFinite ρ]
+    {Y : Ω -> ℝ≥0∞} (C : Set (Set Ω))
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hCeq : ∀ s ∈ C, μ s = ∫⁻ ω in s, Y ω ∂ρ)
+    (huniv : μ Set.univ = ∫⁻ ω, Y ω ∂ρ) :
+    ∀ A : Set Ω, MeasurableSet A -> μ A = ∫⁻ ω in A, Y ω ∂ρ := by
+  have heq : μ = ρ.withDensity Y :=
+    durrett2019_theorem_4_3_5_withDensity_eq_of_generate_finite
+      (μ := μ) (ρ := ρ) C hgen hC hCeq huniv
+  intro A hA
+  rw [heq, withDensity_apply _ hA]
+
+/--
+Durrett 2019, Theorem 4.3.5 generator-level RN-identification bridge: after
+bounded convergence proves the set-integral identities on the generating class,
+the candidate limit is identified with `dmu/drho`.
+-/
+theorem durrett2019_theorem_4_3_5_rnDeriv_ae_eq_of_generate_finite
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ρ : Measure Ω} [IsFiniteMeasure μ] [SigmaFinite ρ]
+    {Y : Ω -> ℝ≥0∞} (C : Set (Set Ω))
+    (hY : AEMeasurable Y ρ)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hCeq : ∀ s ∈ C, μ s = ∫⁻ ω in s, Y ω ∂ρ)
+    (huniv : μ Set.univ = ∫⁻ ω, Y ω ∂ρ) :
+    Y =ᵐ[ρ] fun ω => μ.rnDeriv ρ ω :=
+  durrett2019_theorem_4_3_5_rnDeriv_ae_eq_of_forall_setLIntegral
+    (μ := μ) (ρ := ρ) hY
+    (durrett2019_theorem_4_3_5_forall_setLIntegral_of_generate_finite
+      (μ := μ) (ρ := ρ) C hgen hC hCeq huniv)
+
+/--
+Durrett 2019, Theorem 4.3.5 paired generator-level RN-identification bridge
+for the `Y` and `Z` limits.
+-/
+theorem durrett2019_theorem_4_3_5_density_pair_ae_eq_under_nu_of_generate_finite
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν ρ : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν] [SigmaFinite ρ]
+    {Y Z : Ω -> ℝ≥0∞} (C : Set (Set Ω))
+    (hY : AEMeasurable Y ρ) (hZ : AEMeasurable Z ρ)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hμC : ∀ s ∈ C, μ s = ∫⁻ ω in s, Y ω ∂ρ)
+    (hνC : ∀ s ∈ C, ν s = ∫⁻ ω in s, Z ω ∂ρ)
+    (hμuniv : μ Set.univ = ∫⁻ ω, Y ω ∂ρ)
+    (hνuniv : ν Set.univ = ∫⁻ ω, Z ω ∂ρ) :
+    (Y =ᵐ[ν] fun ω => μ.rnDeriv ρ ω) ∧
+      (Z =ᵐ[ν] fun ω => ν.rnDeriv ρ ω) :=
+  durrett2019_theorem_4_3_5_density_pair_ae_eq_under_nu_of_forall_setLIntegral
+    (μ := μ) (ν := ν) (ρ := ρ) hY hZ
+    (durrett2019_theorem_4_3_5_forall_setLIntegral_of_generate_finite
+      (μ := μ) (ρ := ρ) C hgen hC hμC hμuniv)
+    (durrett2019_theorem_4_3_5_forall_setLIntegral_of_generate_finite
+      (μ := ν) (ρ := ρ) C hgen hC hνC hνuniv)
+
+/--
+Durrett 2019, Theorem 4.3.5 source endpoint from generator-level integral
+identities: once the bounded-convergence proof supplies the identities on a
+generating pi-system, the ratio/top-set assumptions imply the textbook formula.
+-/
+theorem durrett2019_theorem_4_3_5_source_real_identity_of_generate_finite_ratio_top_set
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ ν ρ : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν] [SigmaFinite ρ]
+    [μ.HaveLebesgueDecomposition ν]
+    {X Y Z : Ω -> ℝ≥0∞} {A : Set Ω} (hA : MeasurableSet A)
+    (C : Set (Set Ω)) (hY : AEMeasurable Y ρ) (hZ : AEMeasurable Z ρ)
+    (hgen : mΩ = MeasurableSpace.generateFrom C) (hC : IsPiSystem C)
+    (hμC : ∀ s ∈ C, μ s = ∫⁻ ω in s, Y ω ∂ρ)
+    (hνC : ∀ s ∈ C, ν s = ∫⁻ ω in s, Z ω ∂ρ)
+    (hμuniv : μ Set.univ = ∫⁻ ω, Y ω ∂ρ)
+    (hνuniv : ν Set.univ = ∫⁻ ω, Z ω ∂ρ)
+    (hX : X =ᵐ[ν] fun ω => Y ω / Z ω)
+    (hμtop : μ.singularPart ν {ω | X ω = ∞}ᶜ = 0)
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ.real A = ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}) :=
+  durrett2019_theorem_4_3_5_source_real_identity_of_density_integrals_ratio_top_set
+    (μ := μ) (ν := ν) (ρ := ρ) hA hY hZ
+    (durrett2019_theorem_4_3_5_forall_setLIntegral_of_generate_finite
+      (μ := μ) (ρ := ρ) C hgen hC hμC hμuniv)
+    (durrett2019_theorem_4_3_5_forall_setLIntegral_of_generate_finite
+      (μ := ν) (ρ := ρ) C hgen hC hνC hνuniv)
+    hX hμtop hνtop
+
 end ProbabilityTheory
 end StatInference

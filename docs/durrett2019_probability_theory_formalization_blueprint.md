@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V49`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V50`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -447,11 +447,13 @@ Next packet:
   separation.  The integral-representation to RN-derivative bridge also now
   compiles: set-integral representations of `mu` and `nu` against `rho`
   produce the `Y = dmu/drho` and `Z = dnu/drho` hypotheses consumed by the
-  assembly.  The next active target is one real Durrett source-production
-  obligation: derive those set-integral representations from bounded
-  convergence and the generating class, or prove `X = Y/Z` / top-set singular
-  separation.  Theorem 4.1.16 remains deferred unless a direct kernel API
-  appears.
+  assembly.  The generator-extension bridge also now compiles, turning
+  generator pi-system plus `univ` set-integral identities into all-measurable
+  identities and the final source endpoint.  The next active target is one real
+  Durrett source-production obligation: prove the generator-level
+  bounded-convergence identities for `Y` and `Z`, or prove `X = Y/Z` /
+  top-set singular separation.  Theorem 4.1.16 remains deferred unless a
+  direct kernel API appears.
 
 Support-only dependencies:
 
