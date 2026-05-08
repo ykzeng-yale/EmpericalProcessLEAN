@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 coordinate path selected Taylor bridge`).
+(`Add Vaart theorem 5.41 coordinate path action handoff`).
 Current packet verification passed for:
 
 - manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
@@ -630,13 +630,12 @@ Live continuation prompt: use the compact prompt in
 ## Next Aggressive Target
 
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
-`MEstimators.lean`: identify the endpoint's coordinate `secondDerivative`
-action with the selected path second-derivative values produced by the scalar
-Cauchy-MVT bridge.  The path-selected Taylor bridge, coordinate assembly, the
-scalar Taylor bridge, scaling bridge, auxiliary quadratic residual object,
-empirical-Hessian dominated operator-norm bound, empirical aggregation of the
-Taylor display, and empirical-average endpoint assembly are no longer
-blockers.
+`MEstimators.lean`: instantiate the abstract scalar path hypotheses for actual
+estimating-map coordinate paths.  The second-derivative action matching,
+path-selected Taylor bridge, coordinate assembly, the scalar Taylor bridge,
+scaling bridge, auxiliary quadratic residual object, empirical-Hessian
+dominated operator-norm bound, empirical aggregation of the Taylor display,
+and empirical-average endpoint assembly are no longer blockers.
 
 ## Reuse Dependencies
 

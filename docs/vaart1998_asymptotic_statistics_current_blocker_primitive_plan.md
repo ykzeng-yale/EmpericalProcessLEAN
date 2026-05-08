@@ -10,18 +10,19 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinateRawTaylor_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinatePathTaylor_envelope`.
 It already packages the finite-coordinate empirical score, derivative,
 Hessian action, estimating equation, envelope hypotheses, common normalizing
-scalar, and coordinatewise raw Taylor identities into the compiled Theorem
-5.41 probability handoff.
+scalar, scalar path Taylor hypotheses, and endpoint second-derivative action
+identification into the compiled Theorem 5.41 probability handoff.
 
-Next packet only: match the selected path second-derivative values to the
-endpoint's coordinate `secondDerivative` action.  Do not revisit the solved
-path-selected Taylor bridge, coordinate assembly, scalar Taylor bridge,
-scaling bridge, auxiliary residual, curvature envelope, empirical Taylor
-aggregation, endpoint assembly, Chapter 2-4 substrate, Gaussian endpoints, or
-generic empirical-process plumbing unless a direct dependency is missing.
+Next packet only: instantiate the abstract scalar path hypotheses for actual
+estimating-map coordinate paths.  Do not revisit the solved
+second-derivative action matching, path-selected Taylor bridge, coordinate
+assembly, scalar Taylor bridge, scaling bridge, auxiliary residual, curvature
+envelope, empirical Taylor aggregation, endpoint assembly, Chapter 2-4
+substrate, Gaussian endpoints, or generic empirical-process plumbing unless a
+direct dependency is missing.
 
 Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
 run the focused file and target module checks plus hygiene scans, fetch/rebase
@@ -791,18 +792,27 @@ compiling:
    `vaart1998_theorem_5_41_coordinate_selectedSecondAction_exists_of_scalarPathDerivativeTaylor`.
 287. Theorem 5.41 a.e. sampled coordinate path selected Taylor bridge:
    `vaart1998_theorem_5_41_coordinate_selectedSecondAction_exists_ae_of_scalarPathDerivativeTaylor`.
+288. Theorem 5.41 coordinate raw Taylor bridge from scalar path Taylor and
+   endpoint second-derivative actions:
+   `vaart1998_theorem_5_41_coordinate_rawTaylor_of_scalarPathDerivativeTaylor_secondDerivativeAction`.
+289. Theorem 5.41 a.e. sampled coordinate raw Taylor bridge from scalar path
+   Taylor and endpoint second-derivative actions:
+   `vaart1998_theorem_5_41_coordinate_rawTaylor_ae_of_scalarPathDerivativeTaylor_secondDerivativeAction`.
+290. Theorem 5.41 finite-coordinate empirical-average source handoff from
+   scalar path Taylor hypotheses:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinatePathTaylor_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 coordinate path selected Taylor bridge`).
+(`Add Vaart theorem 5.41 coordinate path action handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by applying the scalar Cauchy-MVT
-selected Taylor bridge to every coordinate path, producing selected
-intermediate points and scalar second-derivative values for each sampled
-observation.
+asymptotic-normality route for Z-estimators by matching the scalar selected
+path second-derivative values to the endpoint coordinate `secondDerivative`
+action and feeding the resulting coordinate raw Taylor identities into the
+compiled empirical-average handoff.
 
-The next aggressive packet should identify the endpoint's coordinate
-`secondDerivative` action with these selected path second-derivative values.
+The next aggressive packet should instantiate the abstract scalar path
+hypotheses for actual estimating-map coordinate paths.
 
 ## Execution Notes
 

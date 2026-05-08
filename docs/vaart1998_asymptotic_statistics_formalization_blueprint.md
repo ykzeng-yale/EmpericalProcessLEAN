@@ -567,8 +567,13 @@ Initial modules:
   `vaart1998_theorem_5_41_coordinate_selectedSecondAction_exists_of_scalarPathDerivativeTaylor`
   plus
   `vaart1998_theorem_5_41_coordinate_selectedSecondAction_exists_ae_of_scalarPathDerivativeTaylor`,
-  so the remaining critical path is identifying the endpoint coordinate
-  `secondDerivative` action with the selected path second-derivative values.
+  and the coordinate path action handoff packet adds
+  `vaart1998_theorem_5_41_coordinate_rawTaylor_of_scalarPathDerivativeTaylor_secondDerivativeAction`,
+  `vaart1998_theorem_5_41_coordinate_rawTaylor_ae_of_scalarPathDerivativeTaylor_secondDerivativeAction`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinatePathTaylor_envelope`,
+  so the remaining critical path is instantiating the abstract scalar path
+  hypotheses for actual estimating-map coordinate paths.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
