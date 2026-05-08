@@ -16857,6 +16857,95 @@ theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVariancePr
     hRemainder_meas hDecomp
 
 /--
+Variant of the scalar inverse-proxy ASGD endpoint where both routine integrable
+row conditions are discharged: uniform boundedness supplies the scalar
+inverse-proxy row integrability, and the compensated Taylor-error row is
+assembled from the weighted variance-error and Taylor-remainder rows.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hscaled_variance_diff_exp : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω ∂P)
+        atTop (𝓝 0))
+    (hvariance_error_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+        Tendsto
+          (fun N : ℕ =>
+            ∫ ω,
+              ∑ k ∈ Finset.range N,
+                (k : ℝ) *
+                  ‖S.projectedCompensationFactor L N t k ω *
+                      S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+          atTop (𝓝 0))
+    (hremainder_error :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+        Tendsto
+          (fun N : ℕ =>
+            ∫ ω,
+              ∑ k ∈ Finset.range N,
+                (k : ℝ) *
+                  ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+          atTop (𝓝 0))
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K :=
+  S.asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound_no_scaled_integrability
+    Ainv hmean
+    (fun L t N =>
+      S.projectedCompensatedTaylorError_weighted_row_norm_integrable_of_variance_remainder
+        L N t (hvariance_error_int L t N) (hremainder_int L t N))
+    hscaled_variance_diff_exp
+    (fun L t =>
+      S.projectedCompensatedTaylorError_weighted_row_integral_tendsto_zero_of_variance_remainder
+        L t (hvariance_error_int L t) (hremainder_int L t)
+        (hvariance_error L t) (hremainder_error L t))
+    hInitial hRemainder hInitial_meas hRemainder_meas hDecomp
+
+/--
 Source-shaped Chewi Theorem 12.3 ASGD limit package from a factorwise
 predictable/frozen-tail condition.  This is a stronger but often easier-to-use
 form of the future-tail gate: callers may prove each future normalized Taylor

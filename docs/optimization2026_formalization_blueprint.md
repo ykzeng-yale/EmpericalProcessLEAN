@@ -74,6 +74,11 @@ uses it directly.  The convergence side remains a genuine row-wise condition;
 when working from only Chewi's averaged covariance assumption, prefer the
 compensated full-inverse/product route rather than an unjustified absolute
 one-step proxy comparison.
+The scalar-proxy endpoint
+`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_weighted_variance_remainder_of_uniform_bound_no_factor_bound`
+also reuses the weighted compensated-error theorem from the variance-error and
+Taylor-remainder rows, so that route no longer exposes a separate compensated
+Taylor weighted-error assumption.
 The residual layer now exposes
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,

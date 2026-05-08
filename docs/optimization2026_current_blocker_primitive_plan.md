@@ -218,6 +218,13 @@ remaining scalar-proxy convergence is a genuine strong row condition, not a
 free consequence of the averaged covariance convergence alone; if the source
 route needs only averaged covariance, use the compensated full-inverse/product
 route rather than pretending an absolute weighted one-step proxy follows.
+Newest scalar-proxy endpoint shrink: `ASGD.lean` now also proves
+`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_weighted_variance_remainder_of_uniform_bound_no_factor_bound`,
+which discharges the compensated Taylor weighted-error row from the existing
+weighted variance-error and weighted Taylor-remainder rows.  The scalar proxy
+route now exposes only the scalar inverse-proxy convergence plus those two
+weighted source-error convergence assumptions; do not ask callers separately
+for compensated Taylor weighted-error convergence.
 The newest residual-estimate packet extracts the actual row-summed residual
 handoffs as reusable theorems:
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
@@ -259,8 +266,8 @@ aggressive Lean target is to prove, from the source conditional variance
 convergence assumptions already present in the ASGD structure, the weighted
 row convergence of
 `projectedInverseLimitVarianceProxyScaledDiffExp`; after that, combine it with
-the compensated Taylor-error row theorem to use
-`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound_no_scaled_integrability`.
+weighted variance-error/Taylor-remainder assumptions via
+`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
 If that scalar variance-difference estimate balloons, fall back to the direct
 future-multiplier residual route rather than rebuilding old proxy algebra.
 The stable ASGD stack now includes the

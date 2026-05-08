@@ -157,6 +157,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   The integrability side of the scalar proxy row is now solved by uniform
   boundedness.  The remaining convergence side is a real row-wise proxy gate;
   do not conflate it with Chewi's plain averaged covariance convergence.
+- Scalar proxy endpoint shrink: the newest ASGD packet adds
+  `asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
+  This endpoint reuses the existing
+  `projectedCompensatedTaylorError_weighted_row_*_of_variance_remainder`
+  theorems, so callers provide scalar inverse-proxy convergence plus weighted
+  variance-error/Taylor-remainder convergence, not a separate compensated
+  Taylor weighted-error assumption.
 - Residual-estimate extraction: the newest ASGD packet adds
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
