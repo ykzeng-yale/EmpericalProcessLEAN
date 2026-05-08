@@ -39,10 +39,23 @@ The selected-log mean route now has the localized countability constructor
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero_of_set_countable`,
 and the displayed-beta selected-cover route now has
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id`.
+Under localized class countability, the displayed-beta route now also has
+the canonical fixed-sample sign-side cover
+`VdVWMeasurableCover.truncated_rademacher_sign_of_countable`, the direct
+selected-cover constructor
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_countable_hphi_id`,
+and the common-iid wrapper
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id_of_set_countable`,
+with
+`VdVWTheorem243_signSideRademacherMeasurableCover_of_set_countable`
+delegating to the canonical cover, so the sign-side measurable-cover input is
+no longer a blocker in that lane.
 Current next target: prove the event-level displayed-beta Lemma 2.3.7 source
 primitive, preferably through product/Fubini averaged `Phi(x)=x` plus
-selected-cover finite-center maximal control; use the selected-log mean route
-only under honest L1/UI/countability strengthening.
+selected-cover finite-center maximal control; in the countable common-iid lane
+the remaining source obligations are exactly the maximal event and `Phi(x)=x`
+comparison.  Use the selected-log mean route only under honest
+L1/UI/countability strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
 restatements, finite-index wrappers, or selected-cardinality transport unless
 it directly consumes that source proof.
@@ -3258,6 +3271,19 @@ It removes the need to carry an externally supplied sign space at this handoff,
 while preserving the real source obligations: selected-cover measurability,
 pathwise finite-center maximal control, and the fixed-sample `Phi(x)=x`
 comparison.
+
+The sign-side measurable-cover obligation in that displayed-beta route is now
+closed under localized countability by the canonical fixed-sample cover
+`VdVWMeasurableCover.truncated_rademacher_sign_of_countable`, the direct
+selected-cover constructor
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_countable_hphi_id`,
+and the common-iid wrapper
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id_of_set_countable`.
+The compatibility helper
+`VdVWTheorem243_signSideRademacherMeasurableCover_of_set_countable` now
+delegates to that canonical cover.  For the countable common-iid selected-cover
+lane, the remaining event-route inputs are therefore the finite-center
+Hoeffding/maximal event and the `Phi(x)=x` comparison.
 
 The selected half-radius expected-maximal route now also has its source bridge:
 `VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover`.

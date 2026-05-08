@@ -101,12 +101,19 @@ the localized countability constructor
 and the displayed-beta selected-cover route has the common iid Rademacher
 constructor
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id`.
+The sign-side measurable-cover input for that constructor is now discharged
+under localized class countability by
+`VdVWTheorem243_signSideRademacherMeasurableCover_of_set_countable` and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id_of_set_countable`.
 Next exact target: prove the event-level
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison`
 source comparison itself, preferably through the product/Fubini averaged
-`Phi(x)=x` comparison plus selected-cover finite-center maximal control; in
-parallel, use the selected-log mean route only under honest L1/UI/countability
-strengthening and do not claim it follows from bare stochastic entropy.
+`Phi(x)=x` comparison plus selected-cover finite-center maximal control.  In
+the countable-class common-iid route the remaining displayed-beta source
+obligations are now exactly the finite-center Hoeffding/maximal event and the
+`Phi(x)=x` comparison; in parallel, use the selected-log mean route only under
+honest L1/UI/countability strengthening and do not claim it follows from bare
+stochastic entropy.
 
 Newest source-side comparison support in `Theorem243.lean` is now:
 `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`,
@@ -7901,6 +7908,17 @@ This is not an endpoint alias: it instantiates the auxiliary sign probability
 space in `of_finiteEmpiricalCover_hphi_id` from the common iid Rademacher
 construction, leaving the same selected-cover measurable-cover, maximal-event,
 and `Phi(x)=x` inputs as theorem-facing source obligations.
+
+2026-05-08 countable sign-side measurable-cover bridge:
+`Theorem243.lean` now also proves
+`VdVWTheorem243_signSideRademacherMeasurableCover_of_set_countable` and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id_of_set_countable`.
+This closes the selected-cover random-sign measurable-cover input of the
+displayed-beta source route whenever `indexClass.Countable` and the envelope
+bound are available.  It is a source-obligation reduction, not an endpoint
+alias.  The remaining countable common-iid displayed-beta blockers are the
+selected-cover finite-center Hoeffding/maximal event and the product/Fubini
+`Phi(x)=x` comparison.
 
 2026-05-07 selected half-radius expected-maximal source bridge:
 `Theorem243.lean` now proves
