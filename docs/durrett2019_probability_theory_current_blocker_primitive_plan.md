@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V93
+## Live In-Thread Goal Prompt V94
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -290,11 +290,16 @@ limiting prefix/tail factorization, and tail-block-limit zero-set handoff as
 compiled support.
 Also treat the pointwise coordinate finite/nonzero side-condition bridge into
 the tail-block zero-set handoff as compiled support.
+Also treat the range-limit tail handoff as compiled support: pointwise
+convergence of the standard full-prefix likelihoods, together with pointwise
+finite and nonzero coordinate densities, supplies the canonical tail-block
+limit candidate `X / prefix_n` and hence the tail-coordinate zero-set
+measurability handoff.
 Move to the remaining Kakutani criterion assembly:
 search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
 `Multipliable`) and logarithm/tail-measurability support.  Add only
-source-shaped wrappers that supply the textbook convergence hypotheses for the
-full-prefix and tail-block likelihood limits, or
+source-shaped wrappers that prove or package the remaining convergence of the
+standard full-prefix likelihoods, or
 directly feed the infinite-product criterion hypotheses
 consumed by the compiled branch assemblers and eliminator.  Do
 not redo the already compiled RN martingale/convergence
@@ -763,9 +768,12 @@ zero-set-equality handoff to every-tail-coordinate measurability.  The
 finite-prefix zero-set algebra and prefix-cylinder zero-set handoff now also
 compile.  The prefix/tail finite-block and tail-block-limit handoff layer now
 also compiles.  The pointwise finite/nonzero coordinate side-condition bridge
-now also compiles.  Move forward to supplying the source convergence
-hypotheses for the full-prefix and tail-block likelihood limits, then finish
-the remaining Kakutani criterion assembly.
+now also compiles.  The range-limit tail handoff now also compiles: convergence
+of the full finite-prefix likelihoods supplies the canonical tail-block limit
+`X / prefix_n` and the tail-coordinate zero-set handoff under pointwise finite
+and nonzero coordinate densities.  Move forward to proving or packaging the
+source convergence of the standard full-prefix likelihoods, then finish the
+remaining Kakutani criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -879,6 +887,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V93` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V94` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
