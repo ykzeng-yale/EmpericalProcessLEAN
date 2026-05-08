@@ -3420,3 +3420,12 @@ The same common-space route now also has the compact mathlib interface
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_uniformIntegrable_of_set_countable`.
 It consumes one `UniformIntegrable` selected-log hypothesis and derives both
 lifted integrability and `UnifIntegrable` for the primitive route.
+
+The countable-class selected entropy primitive now also accepts shifted
+log-succ-linear cardinality growth through
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_log_succ_linear_bound_auto_of_set_countable`.
+This automates the selected-log measurability, finite-product integrability,
+and first-sample boundedness handoff for bounds shaped like
+`offset M eta + degree M eta * log (n + 1)`.  The next high-leverage source
+target is to prove a finite-trace/VC counting theorem that supplies this bound,
+or to close the displayed-beta selected-cover event comparison directly.

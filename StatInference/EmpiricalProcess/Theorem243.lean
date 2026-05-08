@@ -31246,6 +31246,82 @@ theorem
       hX_samplePath hclass henvelope_meas
 
 /--
+Shifted log-linear cardinality growth proves the registered selected
+entropy-to-finite-net mean primitive under localized class countability, with
+selected-log measurability and finite-product integrability discharged
+automatically.
+
+This is the countable-class source handoff for finite-trace and VC/Sauer-style
+arguments that naturally produce bounds of the form
+`offset M eta + degree M eta * log (n + 1)`.
+-/
+theorem
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_log_succ_linear_bound_auto_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {offset degree : ℝ -> ℝ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hentropy :
+      VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+        indexClass classFun envelope cardinality)
+    (hcount : indexClass.Countable)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hoffset_nonneg :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ offset M eta)
+    (hdegree_nonneg :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ degree M eta)
+    (hlog_succ_linear_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) ≤
+            offset M eta + degree M eta *
+              Real.log (((n + 1 : ℕ) : ℝ))) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P X indexClass
+      classFun envelope cardinality hentropy := by
+  let K : ℝ -> ℝ -> ℝ := fun M eta => offset M eta + degree M eta
+  have hK_nonneg :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ K M eta := by
+    intro M hM eta heta
+    exact add_nonneg (hoffset_nonneg M hM eta heta)
+      (hdegree_nonneg M hM eta heta)
+  have hlog_div_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) /
+              (n : ℝ) ≤ K M eta := by
+    intro M hM eta heta n sample
+    exact
+      (div_le_div_of_nonneg_right
+        (hlog_succ_linear_bound M hM eta heta n sample)
+        (Nat.cast_nonneg n)).trans
+        (const_add_mul_log_nat_succ_div_le_const_add
+          (hoffset_nonneg M hM eta heta)
+          (hdegree_nonneg M hM eta heta) n)
+  exact
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_firstSample_nnnorm_bound_of_set_countable
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (cardinality := cardinality)
+      hentropy hcount hX_samplePath hclass henvelope_meas
+      (hentropy.selectedLogMeasurable_of_set_countable hcount
+        hX_samplePath hclass henvelope_meas)
+      (hentropy.selectedLogIntegrable_of_logCardinality_div_bound_of_set_countable
+        (P := P) (X := X) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope)
+        (K := K) (cardinality := cardinality)
+        hcount hX_samplePath hclass henvelope_meas hlog_div_bound)
+      (hentropy.firstSample_nnnorm_bound_of_logCardinality_div_bound
+        (K := K) hK_nonneg hlog_div_bound)
+
+/--
 Natural-polynomial cardinality growth proves the registered selected
 entropy-to-finite-net mean primitive under localized class countability, with
 the selected-log measurability and finite-product integrability obligations

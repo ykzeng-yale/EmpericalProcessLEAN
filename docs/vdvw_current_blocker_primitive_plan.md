@@ -8153,3 +8153,15 @@ the registered selected finite-net mean primitive from one standard
 first-sample UI hypothesis.  The remaining source work is proving that
 `UniformIntegrable` selected-log hypothesis from stochastic entropy/counting,
 or proving the displayed-beta selected-cover event comparison.
+
+2026-05-08 shifted log-succ-linear auto primitive:
+`Theorem243.lean` now proves
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_log_succ_linear_bound_auto_of_set_countable`.
+For countable theorem classes, shifted log-linear cardinality growth of the
+form `offset M eta + degree M eta * log (n + 1)` now feeds the registered
+selected finite-net mean primitive without separately supplying selected-log
+measurability, finite-product integrability, or first-sample boundedness.  This
+is the source-facing handoff for finite-trace and VC/Sauer-style counting
+interfaces; the next mathematical task is still proving such counting growth
+for the target class or closing the displayed-beta selected-cover event
+comparison.
