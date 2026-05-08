@@ -1281,10 +1281,18 @@ coefficient.  The newest interval/psi bridge adds
 `HessianSegmentPsiCertificate`, and
 `HessianSegmentPsiCertificate.toHessianSegmentExponentialBounds`, so the
 per-vector `ψ(t)` certificate now compiles directly to
-`HessianSegmentExponentialBounds`.  Next Chapter 13 work should prove
-`psi_deriv_bound` from the self-concordance/third-derivative inequality and
-the segment local-norm estimate, then continue to Newton decrement estimates
-rather than reintroducing local-norm interfaces.
+`HessianSegmentExponentialBounds`.  The latest concrete segment packet adds
+`hessianSegmentPoint`, `hessianSegmentPoint_zero`,
+`hessianSegmentPoint_one`, `hessianSegmentPsi`, `hessianSegmentPsi_zero`,
+`hessianSegmentPsi_one`, `HessianSegmentConcretePsiCertificate`,
+`HessianSegmentConcretePsiCertificate.toHessianSegmentPsiCertificate`,
+`HessianSegmentConcretePsiCertificate.toHessianSegmentExponentialBounds`, and
+`localNorm_sandwich_of_hessianSegmentConcretePsiCertificate`, so concrete
+Chewi `z_t`/`ψ_v(t)` certificates now close directly to the local-norm
+sandwich.  Next Chapter 13 work should prove the concrete certificate fields,
+especially `psi_deriv_bound`, from the self-concordance/third-derivative
+inequality and the segment local-norm estimate, then continue to Newton
+decrement estimates rather than reintroducing local-norm interfaces.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,

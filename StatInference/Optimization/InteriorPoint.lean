@@ -580,6 +580,33 @@ structure HessianSegmentExponentialBounds
       inner ℝ v (hess x v) *
         Real.exp (chewi136HessianStabilityExponent M r)
 
+/-- Chewi Lemma 13.6 segment point `z_t = (1-t) x + t y`. -/
+def hessianSegmentPoint (x y : E) (t : ℝ) : E :=
+  (1 - t) • x + t • y
+
+theorem hessianSegmentPoint_zero (x y : E) :
+    hessianSegmentPoint x y 0 = x := by
+  simp [hessianSegmentPoint]
+
+theorem hessianSegmentPoint_one (x y : E) :
+    hessianSegmentPoint x y 1 = y := by
+  simp [hessianSegmentPoint]
+
+/-- Concrete per-vector `ψ(t) = <v, Hess(z_t) v>` used in Chewi Lemma 13.6. -/
+def hessianSegmentPsi
+    (hess : E -> E →L[ℝ] E) (x y v : E) (t : ℝ) : ℝ :=
+  inner ℝ v (hess (hessianSegmentPoint x y t) v)
+
+theorem hessianSegmentPsi_zero
+    (hess : E -> E →L[ℝ] E) (x y v : E) :
+    hessianSegmentPsi hess x y v 0 = inner ℝ v (hess x v) := by
+  simp [hessianSegmentPsi, hessianSegmentPoint_zero]
+
+theorem hessianSegmentPsi_one
+    (hess : E -> E →L[ℝ] E) (x y v : E) :
+    hessianSegmentPsi hess x y v 1 = inner ℝ v (hess y v) := by
+  simp [hessianSegmentPsi, hessianSegmentPoint_one]
+
 /--
 Per-vector `ψ(t) = <v, Hess(z_t) v>` certificate for Chewi Lemma 13.6's
 Hessian-stability proof.  The remaining analytic self-concordance work is to
@@ -599,6 +626,37 @@ structure HessianSegmentPsiCertificate
     s ∈ interior (Set.Icc (0 : ℝ) 1) ->
       |psiDeriv v s| ≤
         (2 * M * r / (1 - M * r * s)) * psi v s
+
+/--
+Concrete version of the `ψ` certificate specialized to
+`ψ_v(t) = <v, Hess((1-t)x + t y)v>`.
+-/
+structure HessianSegmentConcretePsiCertificate
+    (hess : E -> E →L[ℝ] E) (x y : E) (M r : ℝ)
+    (psiDeriv : E -> ℝ -> ℝ) : Prop where
+  psi_continuous : ∀ v : E,
+    ContinuousOn (hessianSegmentPsi hess x y v) (Set.Icc (0 : ℝ) 1)
+  psi_hasDerivWithin : ∀ v : E, ∀ s,
+    s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      HasDerivWithinAt (hessianSegmentPsi hess x y v) (psiDeriv v s)
+        (interior (Set.Icc (0 : ℝ) 1)) s
+  psi_deriv_bound : ∀ v : E, ∀ s,
+    s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      |psiDeriv v s| ≤
+        (2 * M * r / (1 - M * r * s)) *
+          hessianSegmentPsi hess x y v s
+
+theorem HessianSegmentConcretePsiCertificate.toHessianSegmentPsiCertificate
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    {psiDeriv : E -> ℝ -> ℝ}
+    (hpsi : HessianSegmentConcretePsiCertificate hess x y M r psiDeriv) :
+    HessianSegmentPsiCertificate hess x y M r
+      (hessianSegmentPsi hess x y) psiDeriv where
+  psi_zero := hessianSegmentPsi_zero hess x y
+  psi_one := hessianSegmentPsi_one hess x y
+  psi_continuous := hpsi.psi_continuous
+  psi_hasDerivWithin := hpsi.psi_hasDerivWithin
+  psi_deriv_bound := hpsi.psi_deriv_bound
 
 theorem HessianSegmentPsiCertificate.toHessianSegmentExponentialBounds
     {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
@@ -642,6 +700,15 @@ theorem HessianSegmentPsiCertificate.toHessianSegmentExponentialBounds
     simpa [hpsi.psi_zero v, hpsi.psi_one v,
       chewi136HessianStabilityPrimitive_zero,
       chewi136HessianStabilityPrimitive_one] using hsand.2
+
+theorem HessianSegmentConcretePsiCertificate.toHessianSegmentExponentialBounds
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    {psiDeriv : E -> ℝ -> ℝ}
+    (hMr_nonneg : 0 ≤ M * r) (hMr_lt : M * r < 1)
+    (hpsi : HessianSegmentConcretePsiCertificate hess x y M r psiDeriv) :
+    HessianSegmentExponentialBounds hess x y M r :=
+  hpsi.toHessianSegmentPsiCertificate.toHessianSegmentExponentialBounds
+    hMr_nonneg hMr_lt
 
 theorem HessianSegmentExponentialBounds.toHessianQuadraticBounds
     {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
@@ -704,6 +771,21 @@ theorem localNorm_sandwich_of_hessianSegmentExponentialBounds
       hMr_lt hx_nonneg hy_nonneg henv v,
     localNorm_le_div_one_sub_of_hessianSegmentExponentialBounds
       hMr_lt hx_nonneg hy_nonneg henv v⟩
+
+theorem localNorm_sandwich_of_hessianSegmentConcretePsiCertificate
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    {psiDeriv : E -> ℝ -> ℝ}
+    (hMr_nonneg : 0 ≤ M * r) (hMr_lt : M * r < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hpsi : HessianSegmentConcretePsiCertificate hess x y M r psiDeriv)
+    (v : E) :
+    (1 - M * r) * localNorm hess x v ≤ localNorm hess y v ∧
+      localNorm hess y v ≤ localNorm hess x v / (1 - M * r) := by
+  have henv :=
+    hpsi.toHessianSegmentExponentialBounds hMr_nonneg hMr_lt
+  exact localNorm_sandwich_of_hessianSegmentExponentialBounds
+    hMr_lt hx_nonneg hy_nonneg henv v
 
 /--
 Chewi Definition 13.3, source-shaped self-concordance interface using only the

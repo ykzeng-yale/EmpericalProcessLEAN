@@ -355,10 +355,18 @@ adds the interval/psi bridge
 `HessianSegmentPsiCertificate`, and
 `HessianSegmentPsiCertificate.toHessianSegmentExponentialBounds`, proving that
 the per-vector `ψ(t)` continuity, derivative, endpoint, and derivative-bound
-certificate implies `HessianSegmentExponentialBounds`.  The next Chapter 13
-packet should prove the `psi_deriv_bound` field from the
-self-concordance/third-derivative inequality and the segment local-norm
-estimate, then assemble Lemma 13.6 and the Newton decrement convergence layer.
+certificate implies `HessianSegmentExponentialBounds`.  The concrete segment
+packet adds `hessianSegmentPoint`, `hessianSegmentPoint_zero`,
+`hessianSegmentPoint_one`, `hessianSegmentPsi`, `hessianSegmentPsi_zero`,
+`hessianSegmentPsi_one`, `HessianSegmentConcretePsiCertificate`,
+`HessianSegmentConcretePsiCertificate.toHessianSegmentPsiCertificate`,
+`HessianSegmentConcretePsiCertificate.toHessianSegmentExponentialBounds`, and
+`localNorm_sandwich_of_hessianSegmentConcretePsiCertificate`, giving a direct
+route from Chewi's actual `z_t`/`ψ_v(t)` certificate to the local-norm
+sandwich.  The next Chapter 13 packet should prove the concrete certificate
+fields, especially `psi_deriv_bound`, from the self-concordance/third-derivative
+inequality and the segment local-norm estimate, then assemble Lemma 13.6 and
+the Newton decrement convergence layer.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

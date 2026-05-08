@@ -1913,8 +1913,17 @@ Active aggressive target ladder:
    `HessianSegmentPsiCertificate`, and
    `HessianSegmentPsiCertificate.toHessianSegmentExponentialBounds`, so the
    endpoint/ODE algebra from a per-vector `ψ(t) = <v, Hess(z_t) v>` certificate
-   to `HessianSegmentExponentialBounds` is now compiled.  The next bounded
-   packet is to prove the `psi_deriv_bound` field from the
+   to `HessianSegmentExponentialBounds` is now compiled.  The concrete segment
+   packet adds `hessianSegmentPoint`, `hessianSegmentPoint_zero`,
+   `hessianSegmentPoint_one`, `hessianSegmentPsi`,
+   `hessianSegmentPsi_zero`, `hessianSegmentPsi_one`,
+   `HessianSegmentConcretePsiCertificate`,
+   `HessianSegmentConcretePsiCertificate.toHessianSegmentPsiCertificate`,
+   `HessianSegmentConcretePsiCertificate.toHessianSegmentExponentialBounds`,
+   and `localNorm_sandwich_of_hessianSegmentConcretePsiCertificate`, so
+   concrete Chewi `z_t`/`ψ_v(t)` endpoint plumbing now closes directly to the
+   local-norm sandwich.  The next bounded packet is to prove the concrete
+   certificate fields, especially `psi_deriv_bound`, from the
    self-concordance/third-derivative inequality and the local-norm estimate
    along the segment; reuse mathlib `Analysis/ODE/Gronwall`, `gronwallBound`,
    `norm_le_gronwallBound_of_norm_deriv_right_le`, `Real.exp_log`,
