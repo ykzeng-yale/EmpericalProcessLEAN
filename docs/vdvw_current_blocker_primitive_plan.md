@@ -215,6 +215,19 @@ displayed-beta event comparison; the open event-route inputs remain the
 product/Fubini `Phi(x)=x` comparison and a genuine finite-center probability
 input rather than a pathwise maximal assertion.
 
+2026-05-08 canonical displayed-beta selected-cover constructor: the same
+canonical finite-product Rademacher source now reaches the event-level
+displayed-beta consumer through
+`VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover_canonicalRademacher`,
+`VdVWTheorem243_eventualAe_centered_le_two_finiteNetHoeffdingUpper_add_halfRadius_of_symmetrizationPrecursor_hphi_id_canonicalRademacher`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_canonicalRademacher_hphi_id`,
+and its countable-cover specialization
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`.
+This removes the arbitrary/common auxiliary sign space from the displayed-beta
+selected-cover constructor.  It still deliberately leaves the two real source
+inputs explicit: the canonical finite-center maximal event and the canonical
+`Phi(x)=x` comparison under `vdVWProductMeasure vdVWRademacherLaw n`.
+
 Newest source-side comparison support in `Theorem243.lean` is now:
 `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`,
 which transports an already proved comparison from a selected cardinality to a

@@ -2197,6 +2197,13 @@ above, so they do not change the theorem-level dashboard counts.
    `hasSubgaussianMGF_vdVWProductMeasure_eval_vdVWRademacher`, and the
    selected-cover expected-maximal bridge
    `VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover_canonicalRademacher`.
+   The displayed-beta selected-cover constructor now has the matching
+   canonical finite-product sign route through
+   `VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover_canonicalRademacher`,
+   `VdVWTheorem243_eventualAe_centered_le_two_finiteNetHoeffdingUpper_add_halfRadius_of_symmetrizationPrecursor_hphi_id_canonicalRademacher`,
+   `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_canonicalRademacher_hphi_id`,
+   and
+   `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
