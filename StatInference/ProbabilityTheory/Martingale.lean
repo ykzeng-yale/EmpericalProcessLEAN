@@ -5166,6 +5166,17 @@ theorem durrett2019_theorem_4_3_8_not_ae_eq_zero_of_zero_set_null
   exact (NeZero.ne (ν Set.univ)) huniv
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-branch support: a limiting likelihood
+with nonzero lower integral cannot vanish almost surely.
+-/
+theorem durrett2019_theorem_4_3_8_not_ae_eq_zero_of_lintegral_ne_zero
+    {Ω : Type*} [MeasurableSpace Ω] {ν : Measure Ω}
+    {X : Ω -> ℝ≥0∞} (hInt : (∫⁻ ω, X ω ∂ν) ≠ 0) :
+    ¬ X =ᵐ[ν] 0 := by
+  intro hXzero
+  exact hInt (lintegral_eq_zero_of_ae_eq_zero hXzero)
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-branch eliminator: if an external
 tail-event or L1 argument has ruled out `X = 0` denominator-a.e., then a
 source dichotomy `mu << nu or mu singular nu` collapses to absolute continuity.
@@ -5203,6 +5214,43 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_zero_set_nul
     (μ := μ) (ν := ν) (X := X) hbranch hXrn hνtop
     (durrett2019_theorem_4_3_8_not_ae_eq_zero_of_zero_set_null
       (ν := ν) (X := X) hzeroSet)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-branch eliminator specialized to a
+nonzero lower integral of the limiting likelihood.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_lintegral_ne_zero
+    {Ω : Type*} [MeasurableSpace Ω] {μ ν : Measure Ω}
+    {X : Ω -> ℝ≥0∞} (hbranch : μ ≪ ν ∨ μ ⟂ₘ ν)
+    (hXrn :
+      (fun ω => (X ω).toReal) =ᵐ[ν]
+        fun ω => (μ.rnDeriv ν ω).toReal)
+    (hνtop : ν {ω | X ω = ∞} = 0)
+    (hInt : (∫⁻ ω, X ω ∂ν) ≠ 0) :
+    μ ≪ ν :=
+  durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_not_ae_zero
+    (μ := μ) (ν := ν) (X := X) hbranch hXrn hνtop
+    (durrett2019_theorem_4_3_8_not_ae_eq_zero_of_lintegral_ne_zero
+      (ν := ν) (X := X) hInt)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-branch eliminator specialized to the
+likelihood-limit mass-one input produced by the L1 convergence part of the
+textbook proof.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_lintegral_eq_one
+    {Ω : Type*} [MeasurableSpace Ω] {μ ν : Measure Ω}
+    {X : Ω -> ℝ≥0∞} (hbranch : μ ≪ ν ∨ μ ⟂ₘ ν)
+    (hXrn :
+      (fun ω => (X ω).toReal) =ᵐ[ν]
+        fun ω => (μ.rnDeriv ν ω).toReal)
+    (hνtop : ν {ω | X ω = ∞} = 0)
+    (hInt : ∫⁻ ω, X ω ∂ν = 1) :
+    μ ≪ ν := by
+  refine
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_lintegral_ne_zero
+      (μ := μ) (ν := ν) (X := X) hbranch hXrn hνtop ?_
+  simp [hInt]
 
 end ProbabilityTheory
 end StatInference
