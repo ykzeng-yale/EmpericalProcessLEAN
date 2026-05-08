@@ -29,7 +29,7 @@ mathlib this completion-measurability condition is expressed as
 namespace StatInference
 
 open MeasureTheory Filter ProbabilityTheory
-open scoped BigOperators Topology NNReal
+open scoped BigOperators Topology NNReal ENNReal
 
 universe u v
 
@@ -118,6 +118,17 @@ theorem vdVWFinCoordinatePermMeasurableEquiv_apply_apply
     simpa [vdVWFinCoordinatePermMeasurableEquiv] using
       (MeasurableEquiv.piCongrLeft_apply_apply
         (β := fun _ : Fin n => Observation) perm sample i)
+
+/-- Finite coordinate permutations compose by multiplication of permutations. -/
+theorem vdVWFinCoordinatePermMeasurableEquiv_comp
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (perm₁ perm₂ : Equiv.Perm (Fin n)) (sample : Fin n -> Observation) :
+    vdVWFinCoordinatePermMeasurableEquiv perm₁
+        (vdVWFinCoordinatePermMeasurableEquiv perm₂ sample) =
+      vdVWFinCoordinatePermMeasurableEquiv (perm₁ * perm₂) sample := by
+  ext i
+  simp [vdVWFinCoordinatePermMeasurableEquiv, MeasurableEquiv.coe_piCongrLeft,
+    Equiv.piCongrLeft_apply, Equiv.Perm.mul_def]
 
 /--
 The finite permutation that identifies the sample with coordinate `omitted`
@@ -1038,6 +1049,187 @@ theorem vdVWFirstNSample_permuteFirstN
     vdVWFinCoordinatePermMeasurableEquiv_apply_apply
       (Observation := Observation) perm (vdVWFirstNSample n sequence) (perm.symm i)
   simpa [vdVWFirstNSample, vdVWPermuteFirstN] using hcoord.symm
+
+/--
+Finite orbit infimum of a real finite-sample cover over all first-`n`
+coordinate permutations.
+
+This is the deterministic symmetrization shape used for selected covers:
+infimum, rather than supremum, preserves minimality by comparison with the
+identity permutation.
+-/
+noncomputable def vdVWFinitePermutationOrbitInfReal
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (cover : (Fin n -> Observation) -> ℝ) :
+    (Fin n -> Observation) -> ℝ :=
+  fun sample =>
+    ⨅ perm : Equiv.Perm (Fin n),
+      cover (vdVWFinCoordinatePermMeasurableEquiv perm sample)
+
+/-- The finite orbit infimum of a measurable real cover is measurable. -/
+theorem measurable_vdVWFinitePermutationOrbitInfReal
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    {cover : (Fin n -> Observation) -> ℝ}
+    (hcover : Measurable cover) :
+    Measurable (vdVWFinitePermutationOrbitInfReal cover) := by
+  unfold vdVWFinitePermutationOrbitInfReal
+  exact Measurable.iInf fun perm =>
+    hcover.comp (vdVWFinCoordinatePermMeasurableEquiv perm).measurable
+
+/-- The finite orbit infimum is invariant under finite-coordinate permutations. -/
+theorem vdVWFinitePermutationOrbitInfReal_finCoordinatePerm
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (cover : (Fin n -> Observation) -> ℝ)
+    (perm : Equiv.Perm (Fin n)) (sample : Fin n -> Observation) :
+    vdVWFinitePermutationOrbitInfReal cover
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample) =
+      vdVWFinitePermutationOrbitInfReal cover sample := by
+  unfold vdVWFinitePermutationOrbitInfReal
+  calc
+    (⨅ perm' : Equiv.Perm (Fin n),
+        cover (vdVWFinCoordinatePermMeasurableEquiv perm'
+          (vdVWFinCoordinatePermMeasurableEquiv perm sample)))
+        =
+      ⨅ perm' : Equiv.Perm (Fin n),
+        cover (vdVWFinCoordinatePermMeasurableEquiv (perm' * perm) sample) := by
+          refine iInf_congr ?_
+          intro perm'
+          rw [vdVWFinCoordinatePermMeasurableEquiv_comp]
+    _ =
+      ⨅ perm' : Equiv.Perm (Fin n),
+        cover (vdVWFinCoordinatePermMeasurableEquiv perm' sample) := by
+          exact (Equiv.mulRight perm).iInf_congr fun _ => rfl
+
+/--
+The real finite orbit infimum is `Σ_n`-measurable after lifting a finite
+sample statistic to infinite sequences by first-`n` projection.
+-/
+theorem measurable_vdVWPermutationSymmetricMeasurableSpace_finitePermutationOrbitInfReal
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    {cover : (Fin n -> Observation) -> ℝ}
+    (hcover : Measurable cover) :
+    Measurable[vdVWPermutationSymmetricMeasurableSpace Observation n]
+      (fun sequence : ℕ -> Observation =>
+        vdVWFinitePermutationOrbitInfReal cover (vdVWFirstNSample n sequence)) := by
+  refine measurable_vdVWPermutationSymmetricMeasurableSpace_of_symmetric ?_ ?_
+  · exact
+      (measurable_vdVWFinitePermutationOrbitInfReal hcover).comp
+        (measurable_vdVWFirstNSample n)
+  · intro perm hfix sequence
+    change
+      vdVWFinitePermutationOrbitInfReal cover
+          (vdVWFirstNSample n (vdVWPermuteNatSequence perm sequence)) =
+        vdVWFinitePermutationOrbitInfReal cover (vdVWFirstNSample n sequence)
+    rw [vdVWFirstNSample_permuteNatSequence perm hfix]
+    exact
+      vdVWFinitePermutationOrbitInfReal_finCoordinatePerm cover
+        (vdVWNatPermRestrictFin perm hfix) (vdVWFirstNSample n sequence)
+
+/--
+A symmetric real target majorized by a cover is also majorized by the finite
+orbit infimum of that cover.
+-/
+theorem le_vdVWFinitePermutationOrbitInfReal_of_majorizes_symmetric
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    {target cover : (Fin n -> Observation) -> ℝ}
+    (hmajorizes : ∀ sample, target sample ≤ cover sample)
+    (htarget_symm : ∀ (perm : Equiv.Perm (Fin n)) sample,
+      target (vdVWFinCoordinatePermMeasurableEquiv perm sample) = target sample)
+    (sample : Fin n -> Observation) :
+    target sample ≤ vdVWFinitePermutationOrbitInfReal cover sample := by
+  unfold vdVWFinitePermutationOrbitInfReal
+  refine le_ciInf ?_
+  intro perm
+  simpa [htarget_symm perm sample] using
+    hmajorizes (vdVWFinCoordinatePermMeasurableEquiv perm sample)
+
+/-- The finite orbit infimum is pointwise bounded above by the original cover. -/
+theorem vdVWFinitePermutationOrbitInfReal_le_cover
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (cover : (Fin n -> Observation) -> ℝ) (sample : Fin n -> Observation) :
+    vdVWFinitePermutationOrbitInfReal cover sample ≤ cover sample := by
+  unfold vdVWFinitePermutationOrbitInfReal
+  have hle :=
+    ciInf_le
+      ((Set.finite_range fun perm : Equiv.Perm (Fin n) =>
+        cover (vdVWFinCoordinatePermMeasurableEquiv perm sample)).bddBelow)
+      (1 : Equiv.Perm (Fin n))
+  simpa [vdVWFinCoordinatePermMeasurableEquiv] using hle
+
+/--
+If an original real cover is a.e. below a measurable competitor, then its
+finite orbit infimum is also a.e. below that competitor.
+-/
+theorem vdVWFinitePermutationOrbitInfReal_le_ae_of_cover_le_ae
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    {μ : Measure (Fin n -> Observation)}
+    {cover competitor : (Fin n -> Observation) -> ℝ}
+    (hcover_le : ∀ᵐ sample ∂μ, cover sample ≤ competitor sample) :
+    ∀ᵐ sample ∂μ,
+      vdVWFinitePermutationOrbitInfReal cover sample ≤ competitor sample :=
+  hcover_le.mono fun sample hle =>
+    (vdVWFinitePermutationOrbitInfReal_le_cover cover sample).trans hle
+
+/--
+Minimality transfer for real finite orbit infima: any supplied minimality
+statement for the original cover immediately applies to the orbit-infimum
+symmetrization.
+-/
+theorem vdVWFinitePermutationOrbitInfReal_minimal_ae
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    {μ : Measure (Fin n -> Observation)}
+    {target cover competitor : (Fin n -> Observation) -> ℝ}
+    (hminimal :
+      ∀ V : (Fin n -> Observation) -> ℝ, Measurable V ->
+        (∀ᵐ sample ∂μ, target sample ≤ V sample) ->
+        ∀ᵐ sample ∂μ, cover sample ≤ V sample)
+    (hcompetitor : Measurable competitor)
+    (hmajorizes : ∀ᵐ sample ∂μ, target sample ≤ competitor sample) :
+    ∀ᵐ sample ∂μ,
+      vdVWFinitePermutationOrbitInfReal cover sample ≤ competitor sample :=
+  vdVWFinitePermutationOrbitInfReal_le_ae_of_cover_le_ae
+    (hminimal competitor hcompetitor hmajorizes)
+
+/--
+Finite-permutation infimum symmetrization of an ENNReal measurable cover.
+
+This preserves the existing `VdVWMeasurableCover` minimality contract while
+adding finite-permutation symmetrization of the chosen majorant.
+-/
+noncomputable def VdVWMeasurableCover.finPermutationInf
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    {μ : Measure (Fin n -> Observation)}
+    {target : (Fin n -> Observation) -> (ℝ≥0∞)}
+    (U : VdVWMeasurableCover μ target)
+    (htarget_symm : ∀ (perm : Equiv.Perm (Fin n)) sample,
+      target (vdVWFinCoordinatePermMeasurableEquiv perm sample) = target sample) :
+    VdVWMeasurableCover μ target where
+  toFun := fun sample =>
+    ⨅ perm : Equiv.Perm (Fin n),
+      U.toFun (vdVWFinCoordinatePermMeasurableEquiv perm sample)
+  measurable_toFun := by
+    exact Measurable.iInf fun perm =>
+      U.measurable_toFun.comp (vdVWFinCoordinatePermMeasurableEquiv perm).measurable
+  majorizes := by
+    intro sample
+    refine le_iInf ?_
+    intro perm
+    simpa [htarget_symm perm sample] using
+      U.majorizes (vdVWFinCoordinatePermMeasurableEquiv perm sample)
+  minimal_ae := by
+    intro competitor hcompetitor hmajorizes
+    exact (U.minimal_ae competitor hcompetitor hmajorizes).mono fun sample hle => by
+      have horbit_le :
+          (⨅ perm : Equiv.Perm (Fin n),
+            U.toFun (vdVWFinCoordinatePermMeasurableEquiv perm sample)) ≤
+            U.toFun sample := by
+        have hle_id :=
+          iInf_le
+            (fun perm : Equiv.Perm (Fin n) =>
+              U.toFun (vdVWFinCoordinatePermMeasurableEquiv perm sample))
+            (1 : Equiv.Perm (Fin n))
+        simpa [vdVWFinCoordinatePermMeasurableEquiv] using hle_id
+      exact horbit_le.trans hle
 
 /-- The weighted finite sample sum appearing in VdV&W display `(2.3.2)`. -/
 noncomputable def vdVWWeightedSampleSum {Observation : Type u} {Index : Type v}

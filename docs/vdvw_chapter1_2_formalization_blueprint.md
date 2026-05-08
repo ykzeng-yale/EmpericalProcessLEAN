@@ -2163,7 +2163,13 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWPermutationSymmetricMeasurableSpace_apply_permuteFirstN_eq`, with
    `vdVWPermuteFirstN_eq_permuteNatSequence_natPermOfFin` identifying the
    explicit first-`n` permutation with the natural-coordinate extension.  The
-   first adapted
+   finite-orbit selected-cover symmetrization substrate is now compiled in
+   the minimality-preserving infimum direction as
+   `vdVWFinitePermutationOrbitInfReal`,
+   `measurable_vdVWPermutationSymmetricMeasurableSpace_finitePermutationOrbitInfReal`,
+   `le_vdVWFinitePermutationOrbitInfReal_of_majorizes_symmetric`,
+   `vdVWFinitePermutationOrbitInfReal_minimal_ae`, and
+   `VdVWMeasurableCover.finPermutationInf`.  The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
    and its Chapter 1.2 cover-shaped counterpart is compiled as

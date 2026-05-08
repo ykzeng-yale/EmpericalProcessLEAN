@@ -65,6 +65,13 @@ finite/infinite permutation bridge
 `Σ_n`-measurable competitors constant on first-`n` permutation orbits, which
 is the missing minimality ingredient for a supplied selected-cover
 symmetrization theorem.
+The finite-orbit symmetrization layer itself is now compiled in the
+Lean-safe infimum direction through
+`vdVWFinitePermutationOrbitInfReal`,
+`measurable_vdVWPermutationSymmetricMeasurableSpace_finitePermutationOrbitInfReal`,
+`le_vdVWFinitePermutationOrbitInfReal_of_majorizes_symmetric`,
+`vdVWFinitePermutationOrbitInfReal_minimal_ae`, and
+`VdVWMeasurableCover.finPermutationInf`.
 Current next target: prove the event-level displayed-beta Lemma 2.3.7 source
 primitive, preferably through product/Fubini averaged `Phi(x)=x` plus
 selected-cover finite-center maximal control; in the countable common-iid lane
