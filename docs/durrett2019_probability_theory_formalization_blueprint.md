@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V47`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V48`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -440,9 +440,14 @@ Next packet:
   likelihood-ratio martingale, and nonnegative convergence.  The Theorem 4.3.5
   regular/singular decomposition identities also now compile, including the
   source-shaped endpoint from supplied a.e. density and singular-restriction
-  hypotheses.  The next active target is the textbook singular set
-  `{X = infinity}` plus the `Y/Z` rnDeriv-div bridge feeding that endpoint.
-  Theorem 4.1.16 remains deferred unless a direct kernel API appears.
+  hypotheses.  The density-ratio/top-set source assembly also now compiles:
+  dominating-measure and `mu + nu` RN ratio bridges, a source-facing `Y/Z`
+  bridge, singular-set and `{X = infinity}` endpoints, and the final source
+  assembly from `Y = dmu/drho`, `Z = dnu/drho`, `X = Y/Z`, and top-set
+  separation.  The next active target is one real Durrett proof obligation:
+  identify the bounded martingale limits with RN derivatives, prove `X = Y/Z`,
+  or prove the top-set singular separation consumed by the assembly.  Theorem
+  4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
 

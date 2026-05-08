@@ -2627,5 +2627,113 @@ theorem durrett2019_theorem_4_3_5_source_real_identity_of_singularPart_eq_restri
     rw [Measure.restrict_apply hA]
   rw [hbase, hint, hsing]
 
+/--
+Durrett 2019, Theorem 4.3.5 density-ratio bridge: if a measure `rho`
+dominates both `mu` and `nu`, the real-valued RN density `dmu/dnu` agrees
+`nu`-a.e. with the ratio `(dmu/drho) / (dnu/drho)`.
+-/
+theorem durrett2019_theorem_4_3_5_rnDeriv_density_ratio_toReal_ae
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ν ρ : Measure Ω} [SigmaFinite μ] [SigmaFinite ν] [SigmaFinite ρ]
+    (hμ : μ ≪ ρ) (hν : ν ≪ ρ) :
+    (fun ω => (μ.rnDeriv ρ ω / ν.rnDeriv ρ ω).toReal)
+      =ᵐ[ν] fun ω => (μ.rnDeriv ν ω).toReal := by
+  have h := Measure.rnDeriv_eq_div (μ := μ) (ν := ν) (ξ := ρ) hμ hν
+  filter_upwards [h] with ω hω
+  simp [hω]
+
+/--
+Durrett 2019, Theorem 4.3.5 density-ratio bridge specialized to the dominating
+measure `mu + nu`.
+-/
+theorem durrett2019_theorem_4_3_5_rnDeriv_add_density_ratio_toReal_ae
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ν : Measure Ω} [SigmaFinite μ] [SigmaFinite ν] :
+    (fun ω => (μ.rnDeriv (μ + ν) ω / ν.rnDeriv (μ + ν) ω).toReal)
+      =ᵐ[ν] fun ω => (μ.rnDeriv ν ω).toReal := by
+  have h := Measure.rnDeriv_eq_div_rnDeriv_add μ ν
+  filter_upwards [h] with ω hω
+  simp [hω]
+
+/--
+Durrett 2019, Theorem 4.3.5 source-shaped density-ratio bridge: once the
+textbook limits `Y` and `Z` have been identified with `dmu/drho` and
+`dnu/drho`, their ratio gives the real RN density `dmu/dnu`, `nu`-a.e.
+-/
+theorem durrett2019_theorem_4_3_5_density_ratio_toReal_ae_of_ae_eq
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ν ρ : Measure Ω} [SigmaFinite μ] [SigmaFinite ν] [SigmaFinite ρ]
+    {Y Z : Ω -> ℝ≥0∞} (hμ : μ ≪ ρ) (hν : ν ≪ ρ)
+    (hY : Y =ᵐ[ν] fun ω => μ.rnDeriv ρ ω)
+    (hZ : Z =ᵐ[ν] fun ω => ν.rnDeriv ρ ω) :
+    (fun ω => (Y ω / Z ω).toReal) =ᵐ[ν] fun ω => (μ.rnDeriv ν ω).toReal := by
+  have h := Measure.rnDeriv_eq_div (μ := μ) (ν := ν) (ξ := ρ) hμ hν
+  filter_upwards [hY, hZ, h] with ω hYω hZω hω
+  rw [hYω, hZω]
+  exact congrArg ENNReal.toReal hω.symm
+
+/--
+Durrett 2019, Theorem 4.3.5 endpoint with a supplied singular set: the
+separation conditions that identify `S` as the singular support imply the
+source-shaped real-integral identity.
+-/
+theorem durrett2019_theorem_4_3_5_source_real_identity_of_singular_set
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    [μ.HaveLebesgueDecomposition ν]
+    {X : Ω -> ℝ} {S A : Set Ω} (hA : MeasurableSet A)
+    (hX : X =ᵐ[ν] fun ω => (μ.rnDeriv ν ω).toReal)
+    (hμS : μ.singularPart ν Sᶜ = 0) (hνS : ν S = 0) :
+    μ.real A = ∫ ω in A, X ω ∂ν + μ.real (A ∩ S) :=
+  durrett2019_theorem_4_3_5_source_real_identity_of_singularPart_eq_restrict
+    (μ := μ) (ν := ν) hA hX (Measure.singularPart_eq_restrict hμS hνS)
+
+/--
+Durrett 2019, Theorem 4.3.5 endpoint with the textbook singular event
+`{X = infinity}` represented by an `ENNReal`-valued limit.
+-/
+theorem durrett2019_theorem_4_3_5_source_real_identity_of_top_set
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    [μ.HaveLebesgueDecomposition ν]
+    {X : Ω -> ℝ≥0∞} {A : Set Ω} (hA : MeasurableSet A)
+    (hX : (fun ω => (X ω).toReal) =ᵐ[ν] fun ω => (μ.rnDeriv ν ω).toReal)
+    (hμtop : μ.singularPart ν {ω | X ω = ∞}ᶜ = 0)
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ.real A = ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}) :=
+  durrett2019_theorem_4_3_5_source_real_identity_of_singularPart_eq_restrict
+    (μ := μ) (ν := ν) hA hX (Measure.singularPart_eq_restrict hμtop hνtop)
+
+/--
+Durrett 2019, Theorem 4.3.5 source assembly: after the proof has identified
+`Y = dmu/drho`, `Z = dnu/drho`, `X = Y/Z`, and the singular support
+`{X = infinity}`, the textbook real-integral identity follows.
+-/
+theorem durrett2019_theorem_4_3_5_source_real_identity_of_density_ratio_top_set
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ν ρ : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν] [SigmaFinite ρ]
+    [μ.HaveLebesgueDecomposition ν]
+    {X Y Z : Ω -> ℝ≥0∞} {A : Set Ω} (hA : MeasurableSet A)
+    (hμ : μ ≪ ρ) (hν : ν ≪ ρ)
+    (hY : Y =ᵐ[ν] fun ω => μ.rnDeriv ρ ω)
+    (hZ : Z =ᵐ[ν] fun ω => ν.rnDeriv ρ ω)
+    (hX : X =ᵐ[ν] fun ω => Y ω / Z ω)
+    (hμtop : μ.singularPart ν {ω | X ω = ∞}ᶜ = 0)
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ.real A = ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}) := by
+  have hratio :
+      (fun ω => (Y ω / Z ω).toReal) =ᵐ[ν]
+        fun ω => (μ.rnDeriv ν ω).toReal :=
+    durrett2019_theorem_4_3_5_density_ratio_toReal_ae_of_ae_eq
+      (μ := μ) (ν := ν) (ρ := ρ) hμ hν hY hZ
+  have hXrn :
+      (fun ω => (X ω).toReal) =ᵐ[ν] fun ω => (μ.rnDeriv ν ω).toReal := by
+    filter_upwards [hX, hratio] with ω hXω hratioω
+    rw [hXω]
+    exact hratioω
+  exact
+    durrett2019_theorem_4_3_5_source_real_identity_of_top_set
+      (μ := μ) (ν := ν) hA hXrn hμtop hνtop
+
 end ProbabilityTheory
 end StatInference

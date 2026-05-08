@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V47
+## Live In-Thread Goal Prompt V48
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -78,21 +78,26 @@ also now compiles: the measure identity
 `mu = nu.withDensity (mu.rnDeriv nu) + mu.singularPart nu`, the real-integral
 identity with `(mu.rnDeriv nu).toReal`, and the source-shaped endpoint from a
 supplied a.e. density identification plus a supplied singular-part restriction
-are packaged.
+are packaged.  The density-ratio/top-set source assembly also now compiles:
+RN derivatives through any dominating measure `rho`, the special `mu + nu`
+ratio, the source-shaped `Y/Z` ratio from a.e. identifications of `Y` and `Z`,
+the singular-set endpoint, the `{X = infinity}` endpoint, and the final
+source assembly from `Y = dmu/drho`, `Z = dnu/drho`, `X = Y/Z`, and top-set
+separation.
 
-Next theorem-sized packet: continue Theorem 4.3.5 by identifying the
-textbook singular set `{X = infinity}` and the density ratio `X = Y / Z`.
-Do not redo the already compiled RN martingale/convergence bridge or the
-regular/singular measure identity.  Search/reuse mathlib
-`rnDeriv_eq_div`, `rnDeriv_eq_div_rnDeriv_add`, `singularPart_eq_restrict`,
-`singularPart_eq_restrict'`, `rnDeriv_add_singularPart`,
-`withDensity_rnDeriv_le`, `Measure.restrict`, `ae_eq_of_ae_eq_of_ae_eq`, and
-ENNReal/toReal set-integral APIs.  The desired next bridge should turn the
-Durrett proof's `rho = (mu + nu) / 2`, `Y = dmu/drho`, `Z = dnu/drho`, and
-`X = Y / Z` analysis into the supplied `hX`/`hS` hypotheses consumed by the
-compiled source-shaped identity.  Defer Polya urn as a model-specific
-construction unless a direct existing primitive is found.  Do not route back
-into Theorems 4.3.1-4.3.4, Lemma 4.3.6, or the solved decomposition identity.
+Next theorem-sized packet: continue Theorem 4.3.5 by proving the actual
+Durrett limit-identification hypotheses consumed by the compiled source
+assembly.  Target one of these, in this order: identify the bounded martingale
+limits `Y` and `Z` with `dmu/drho` and `dnu/drho`; prove `X = Y / Z`
+`nu`-a.e. from the convergent likelihood-ratio process and the no-`0/0`
+condition; or prove the singular separation conditions for `{X = infinity}`,
+namely `mu.singularPart nu {X = infinity}^c = 0` and `nu {X = infinity} = 0`.
+Search/reuse bounded convergence, pi-lambda/generator extension,
+`Measure.rnDeriv_eq_div`, `Measure.singularPart_eq_restrict`, ENNReal
+limsup/top, and a.e.-restriction APIs.  Do not redo the already compiled RN
+martingale/convergence bridge, regular/singular decomposition identity,
+density-ratio bridge, or top-set endpoint assembly.  Defer Polya urn as a
+model-specific construction unless a direct existing primitive is found.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -457,10 +462,11 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
 
 The next likely packet should continue Theorem 4.3.5 after the compiled
 likelihood-ratio martingale/convergence bridge and the compiled
-regular/singular decomposition identity.  Aim at the singular-set
-identification `{X = infinity}` and the `Y/Z` rnDeriv-div bridge feeding the
-source-shaped identity.  Keep Theorem 4.1.16 deferred unless a targeted kernel
-search finds a direct source-shaped API.
+regular/singular decomposition identity plus the compiled density-ratio/top-set
+assembly.  Aim at the first real source-identification obligation: prove the
+limit identities `Y = dmu/drho`, `Z = dnu/drho`, `X = Y/Z`, or the top-set
+singular separation consumed by the assembly.  Keep Theorem 4.1.16 deferred
+unless a targeted kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -572,6 +578,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V47` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V48` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
