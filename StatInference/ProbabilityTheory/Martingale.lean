@@ -6382,6 +6382,22 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_ae_eq_zero_of_hellinger_pro
   exact hhellinger
 
 /--
+Durrett 2019, Theorem 4.3.8 zero-product support: a `HasProd` statement whose
+limit is zero supplies the finite-prefix Hellinger product convergence used by
+the singular branch.
+-/
+theorem durrett2019_theorem_4_3_8_range_hellinger_products_tendsto_zero_of_hasProd_zero
+    {h : ℕ -> ℝ≥0∞} (hprod : HasProd h 0) :
+    Tendsto (fun n => ∏ i : Finset.range n, h i) atTop (𝓝 0) := by
+  have hfun :
+      (fun n => ∏ i : Finset.range n, h i) =
+        fun n => ∏ i ∈ Finset.range n, h i := by
+    funext n
+    exact Finset.prod_coe_sort (Finset.range n) h
+  rw [hfun]
+  exact hprod.tendsto_prod_nat
+
+/--
 Durrett 2019, Theorem 4.3.8 zero-product singularity support: if the
 Theorem 4.3.5 source identity is available for a limiting likelihood `X`,
 and `X` vanishes denominator-almost surely, then the numerator and denominator
@@ -6509,6 +6525,40 @@ theorem durrett2019_theorem_4_3_8_mutuallySingular_of_cylinderLikelihood_helling
   exact
     durrett2019_theorem_4_3_8_mutuallySingular_of_source_real_identity_zero
       (μ := μ) (ν := Measure.infinitePi ν) (X := X) hX hXzero hidentity hνtop
+
+/--
+Durrett 2019, Theorem 4.3.8 zero-product singularity handoff for the standard
+prefix exhaustion of `ℕ`: `HasProd h 0` replaces the explicit finite Hellinger
+product convergence-to-zero input.
+-/
+theorem durrett2019_theorem_4_3_8_mutuallySingular_of_cylinderLikelihood_range_hasProd_zero
+    {S : Type*} [MeasurableSpace S]
+    {μ : Measure (ℕ -> S)} [IsFiniteMeasure μ]
+    {ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i)) {X : (ℕ -> S) -> ℝ≥0∞}
+    (hX : Measurable X)
+    (hlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x)
+          atTop (𝓝 (X x)))
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) 0)
+    (hidentity :
+      ∀ {A : Set (ℕ -> S)}, MeasurableSet A ->
+        μ.real A =
+          ∫ x in A, (X x).toReal ∂Measure.infinitePi ν +
+            μ.real (A ∩ {x | X x = ∞}))
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0) :
+    μ ⟂ₘ Measure.infinitePi ν := by
+  exact
+    durrett2019_theorem_4_3_8_mutuallySingular_of_cylinderLikelihood_hellinger_products_tendsto_zero
+      (μ := μ) (ν := ν) (Iseq := fun n => Finset.range n) (q := q)
+      hq hX hlim
+      (durrett2019_theorem_4_3_8_range_hellinger_products_tendsto_zero_of_hasProd_zero
+        (h := fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) hprod)
+      hidentity hνtop
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product absolute-continuity support: if
@@ -9286,6 +9336,115 @@ theorem
     durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_tprod_density_trimmedPrefix_positive_canonicalTail
       (μ := μ) (ν := ν) (q := q) C hC_meas hgen hC hq hμ hbranch hmult
       (ne_of_gt hprod_pos) hq_ne_top
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical-ratio zero-product handoff for the
+standard prefix exhaustion of `ℕ`: a zero `HasProd` Hellinger product feeds the
+compiled singular branch, while Chapter 4.3.5 supplies the canonical top-set
+identity.
+-/
+theorem
+    durrett2019_theorem_4_3_8_mutuallySingular_of_canonicalRatio_range_hasProd_zero
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞}
+    {ℱ : Filtration ℕ (inferInstance : MeasurableSpace (ℕ -> S))}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas : ∀ s ∈ C, ∃ m, MeasurableSet[ℱ m] s)
+    (hgen : (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hX_meas :
+      Measurable
+        (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+          (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ))
+    (hXlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x)
+          atTop
+          (𝓝
+            (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+              (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ x)))
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) 0) :
+    Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν := by
+  let X : (ℕ -> S) -> ℝ≥0∞ :=
+    durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+      (Measure.infinitePi μ) (Measure.infinitePi ν) ℱ
+  exact
+    durrett2019_theorem_4_3_8_mutuallySingular_of_cylinderLikelihood_range_hasProd_zero
+      (μ := Measure.infinitePi μ) (ν := ν) (q := q) (X := X)
+      hq hX_meas hXlim hprod
+      (by
+        intro A hA
+        exact
+          durrett2019_theorem_4_3_5_source_real_identity_of_add_dominating_canonicalRatio_full
+            (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (ℱ := ℱ)
+            hA C hC_meas hgen hC)
+      (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio_nu_top_zero
+        (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (ℱ := ℱ)
+        C hC_meas hgen hC)
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical Kakutani branch criterion for the
+standard prefix filtration.  The zero infinite Hellinger product gives mutual
+singularity; a strictly positive product gives absolute continuity through the
+compiled positive branch.
+-/
+theorem
+    durrett2019_theorem_4_3_8_canonicalRatio_range_hasProd_density_trimmedPrefix_zero_or_pos
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {P : ℝ≥0∞}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas :
+      ∀ s ∈ C,
+        ∃ m, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S m] s)
+    (hgen :
+      (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hX_meas :
+      Measurable
+        (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+          (Measure.infinitePi μ) (Measure.infinitePi ν)
+          (durrett2019_theorem_4_3_8_prefixFiltration S)))
+    (hXlim :
+      ∀ᵐ x ∂Measure.infinitePi ν,
+        Tendsto
+          (fun n => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x)
+          atTop
+          (𝓝
+            (durrett2019_theorem_4_3_5_add_dominating_canonicalRatio
+              (Measure.infinitePi μ) (Measure.infinitePi ν)
+              (durrett2019_theorem_4_3_8_prefixFiltration S) x)))
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    (P = 0 -> Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν) ∧
+      (0 < P -> Measure.infinitePi μ ≪ Measure.infinitePi ν) := by
+  constructor
+  · intro hPzero
+    have hprod_zero :
+        HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) 0 := by
+      simpa [hPzero] using hprod
+    exact
+      durrett2019_theorem_4_3_8_mutuallySingular_of_canonicalRatio_range_hasProd_zero
+        (μ := μ) (ν := ν) (q := q)
+        (ℱ := durrett2019_theorem_4_3_8_prefixFiltration S)
+        C hC_meas hgen hC hq hX_meas hXlim hprod_zero
+  · intro hPpos
+    exact
+      durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix_pos_canonicalTail
+        (μ := μ) (ν := ν) (q := q) (P := P)
+        C hC_meas hgen hC hq hμ hbranch hPpos hprod hq_ne_top
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-branch final handoff: once full-prefix

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V103`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V104`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -556,10 +556,12 @@ Next packet:
   canonical product-tail and `tprod` positive-product wrappers also now compile,
   so the positive branch no longer needs an auxiliary tail equality and can use
   `Multipliable` plus the actual infinite Hellinger product, including
-  strict-positive product variants.  The active target is now the canonical
-  ratio nonzero-lower-integral input, the positive/zero infinite Hellinger
-  product source criterion, or the final zero/positive product case split for
-  the remaining Kakutani criterion assembly.
+  strict-positive product variants.  The first canonical zero/positive product
+  criterion wrapper also now compiles: `HasProd h 0` feeds the singular branch,
+  while strict product positivity feeds the positive branch.  The active target
+  is now the remaining canonical ratio measurability/ENNReal full-prefix
+  convergence input for that criterion, the canonical ratio nonzero-lower-
+  integral input if still useful, or the final textbook Kakutani statement.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
