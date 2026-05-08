@@ -95,6 +95,14 @@ finite-product Rademacher coordinates directly through
 `iIndepFun_vdVWProductMeasure_vdVWRademacher`,
 `hasSubgaussianMGF_vdVWProductMeasure_eval_vdVWRademacher`, and
 `VdVWTheorem243_eventualAe_expectedMaximal_selectedHalfRadius_of_finiteEmpiricalCover_canonicalRademacher`.
+The canonical finite-product sign space now also feeds the displayed-beta
+event constructor through
+`VdVWTheorem243SymmetrizationPrecursor.of_finiteEmpiricalCover_canonicalRademacher`,
+`VdVWTheorem243_eventualAe_centered_le_two_finiteNetHoeffdingUpper_add_halfRadius_of_symmetrizationPrecursor_hphi_id_canonicalRademacher`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`;
+the remaining obligations are the canonical maximal event and canonical
+`Phi(x)=x` comparison, not auxiliary sign-space bookkeeping.
 Current next target: prove the event-level displayed-beta Lemma 2.3.7 source
 primitive, preferably through product/Fubini averaged `Phi(x)=x` plus
 selected-cover finite-center maximal control; in the countable common-iid lane
