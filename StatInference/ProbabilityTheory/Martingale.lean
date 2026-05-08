@@ -4696,6 +4696,23 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_setLIntegral_cylinder
           rw [Measure.infinitePi_cylinder (μ := μ) (s := I) hA]
 
 /--
+Durrett 2019, Theorem 4.3.8 cylinder support: each finite-coordinate
+likelihood pulled back to sequence space has denominator integral one.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_eq_one
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)] (I : Finset ι) {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i)) :
+    ∫⁻ x,
+        durrett2019_theorem_4_3_8_cylinderLikelihood I q x ∂Measure.infinitePi ν = 1 := by
+  have h :=
+    durrett2019_theorem_4_3_8_cylinderLikelihood_setLIntegral_cylinder
+      (μ := μ) (ν := ν) I hq hμ (A := Set.univ) MeasurableSet.univ
+  simpa [cylinder_univ] using h
+
+/--
 Durrett 2019, Theorem 4.3.8 Hellinger support: the square-root power of the
 pulled-back cylinder likelihood is measurable.
 -/
@@ -5251,6 +5268,79 @@ theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_lintegral_eq
     durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_lintegral_ne_zero
       (μ := μ) (ν := ν) (X := X) hbranch hXrn hνtop ?_
   simp [hInt]
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product mass handoff: if the denominator
+integrals of the finite cylinder likelihoods converge to the lower integral of
+the limiting likelihood, then that limiting likelihood has mass one.
+-/
+theorem durrett2019_theorem_4_3_8_lintegral_eq_one_of_cylinderLikelihood_lintegral_tendsto
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ι -> S) -> ℝ≥0∞}
+    (hIntTendsto :
+      Tendsto
+        (fun n =>
+          ∫⁻ x,
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x
+              ∂Measure.infinitePi ν)
+        atTop (𝓝 (∫⁻ x, X x ∂Measure.infinitePi ν))) :
+    ∫⁻ x, X x ∂Measure.infinitePi ν = 1 := by
+  have hconst :
+      (fun n =>
+          ∫⁻ x,
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x
+              ∂Measure.infinitePi ν) =
+        fun _ : ℕ => (1 : ℝ≥0∞) := by
+    funext n
+    exact
+      durrett2019_theorem_4_3_8_cylinderLikelihood_lintegral_eq_one
+        (μ := μ) (ν := ν) (Iseq n) hq hμ
+  have hlim :
+      Tendsto (fun _ : ℕ => (1 : ℝ≥0∞)) atTop
+        (𝓝 (∫⁻ x, X x ∂Measure.infinitePi ν)) := by
+    simpa [hconst] using hIntTendsto
+  exact tendsto_nhds_unique hlim tendsto_const_nhds
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
+finite cylinder-likelihood integrals to the limiting likelihood mass supplies
+the mass-one input consumed by the positive-branch eliminator.
+-/
+theorem durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_cylinderLikelihood_lintegral_tendsto
+    {ι S : Type*} [MeasurableSpace S]
+    {μ ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {Iseq : ℕ -> Finset ι} {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    {X : (ι -> S) -> ℝ≥0∞}
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hXrn :
+      (fun x => (X x).toReal) =ᵐ[Measure.infinitePi ν]
+        fun x => ((Measure.infinitePi μ).rnDeriv (Measure.infinitePi ν) x).toReal)
+    (hνtop : Measure.infinitePi ν {x | X x = ∞} = 0)
+    (hIntTendsto :
+      Tendsto
+        (fun n =>
+          ∫⁻ x,
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Iseq n) q x
+              ∂Measure.infinitePi ν)
+        atTop (𝓝 (∫⁻ x, X x ∂Measure.infinitePi ν))) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  refine
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_lintegral_eq_one
+      (μ := Measure.infinitePi μ) (ν := Measure.infinitePi ν) (X := X)
+      hbranch hXrn hνtop ?_
+  exact
+    durrett2019_theorem_4_3_8_lintegral_eq_one_of_cylinderLikelihood_lintegral_tendsto
+      (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) hq hμ hIntTendsto
 
 end ProbabilityTheory
 end StatInference
