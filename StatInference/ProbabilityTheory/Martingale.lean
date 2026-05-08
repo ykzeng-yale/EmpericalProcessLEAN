@@ -4813,6 +4813,32 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_ne_zero
   exact Finset.prod_ne_zero_iff.2 hq_ne_zero
 
 /--
+Durrett 2019, Theorem 4.3.8 tail-coordinate support: a finite cylinder
+likelihood is finite whenever each coordinate density used in it is finite.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_ne_top
+    {ι S : Type*} {I : Finset ι} {q : ι -> S -> ℝ≥0∞} {x : ι -> S}
+    (hq_ne_top : ∀ i ∈ I, q i (x i) ≠ ∞) :
+    durrett2019_theorem_4_3_8_cylinderLikelihood I q x ≠ ∞ := by
+  rw [durrett2019_theorem_4_3_8_cylinderLikelihood_eq_finset_prod]
+  exact ENNReal.prod_ne_top hq_ne_top
+
+/--
+Durrett 2019, Theorem 4.3.8 tail-coordinate support: the standard finite
+prefix likelihood is finite under pointwise coordinate finiteness.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_ne_top_of_forall_ne_top
+    {S : Type*} {q : ℕ -> S -> ℝ≥0∞}
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    ∀ (n : ℕ) (x : ℕ -> S),
+      durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞ := by
+  intro n x
+  exact
+    durrett2019_theorem_4_3_8_cylinderLikelihood_ne_top
+      (I := Finset.range n) (q := q) (x := x) fun i _hi =>
+        hq_ne_top i (x i)
+
+/--
 Durrett 2019, Theorem 4.3.8 tail-coordinate support: if a limiting likelihood
 factors into a pointwise nonzero finite-prefix term and a tail-coordinate
 measurable candidate, then its zero set is measurable from every tail
@@ -4991,6 +5017,36 @@ theorem durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_tailBloc
     (durrett2019_theorem_4_3_8_likelihoodLimit_eq_prefixCylinder_mul_tailBlockLimit
       (q := q) (X := X) (Y := Y) hXlim hYlim hprefix_ne_top)
     hq_ne_zero
+
+/--
+Durrett 2019, Theorem 4.3.8 source-facing tail-block support: pointwise
+finite and nonzero coordinate densities discharge the finite-prefix no-top and
+nonzero side conditions in the tail-block zero-set handoff.
+-/
+theorem durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_tailBlockLimits_finite_nonzero
+    {S : Type*} [MeasurableSpace S] {q : ℕ -> S -> ℝ≥0∞}
+    {X : (ℕ -> S) -> ℝ≥0∞} {Y : ℕ -> (ℕ -> S) -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hXlim :
+      ∀ x : ℕ -> S,
+        Tendsto
+          (fun m => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x)
+          atTop (𝓝 (X x)))
+    (hYlim :
+      ∀ (n : ℕ) (x : ℕ -> S),
+        Tendsto
+          (fun m => durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.Ico n m) q x)
+          atTop (𝓝 (Y n x)))
+    (hq_ne_top : ∀ i s, q i s ≠ ∞)
+    (hq_ne_zero : ∀ i s, q i s ≠ 0) :
+    ∀ n,
+      MeasurableSet[durrett2019_theorem_4_3_8_tailCoordinateSigma S n]
+        {x : ℕ -> S | X x = 0} :=
+  durrett2019_theorem_4_3_8_tailCoordinate_zero_set_measurable_of_tailBlockLimits
+    (S := S) (q := q) (X := X) (Y := Y) hq hXlim hYlim
+    (durrett2019_theorem_4_3_8_cylinderLikelihood_range_ne_top_of_forall_ne_top
+      (q := q) hq_ne_top)
+    fun _n x i _hi => hq_ne_zero i (x i)
 
 /--
 Durrett 2019, Theorem 4.3.8 cylinder support: restricting an infinite product

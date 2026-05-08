@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V92`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V93`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -532,8 +532,9 @@ Next packet:
   finite-block and tail-block-limit handoff layer now also compiles, including
   finite tail-block measurability, pointwise tail-block-limit measurability,
   limiting prefix/tail factorization, and the zero-set handoff from tail-block
-  limits.  The active target is now supplying the source convergence,
-  finite-prefix no-top, and coordinate-density nonzero hypotheses needed for
+  limits.  The pointwise finite/nonzero coordinate side-condition bridge now
+  also compiles.  The active target is now supplying the source convergence
+  hypotheses for the full-prefix and tail-block likelihood limits needed for
   the remaining Kakutani criterion assembly.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
