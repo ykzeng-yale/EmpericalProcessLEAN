@@ -226,6 +226,15 @@ plus the normalized compensated-product bridge:
 `projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_normalized_bound`,
 `projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_normalized_controls`,
 `projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_product_controls`,
+`projectedCompensationFactor_aestronglyMeasurable`,
+`projectedVarianceFactor_aestronglyMeasurable`,
+`projectedRemainderFactor_aestronglyMeasurable`,
+`projectedCompensatedTaylorErrorFactor_aestronglyMeasurable`,
+`projectedCompensationFactor_row_norm_le_of_uniform_bound`,
+`projectedCompensatedTaylorError_row_norm_integrable_of_variance_error`,
+`projectedCompensationVarianceError_row_norm_integrable_of_uniform_bound`,
+`projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_error_integrability`,
+`projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_row_integrability`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
 `projected_charFun_tendsto_exp_of_normalized_product_model`,
 and
@@ -267,13 +276,20 @@ from `condExp_nonneg`, bounds every inverse-compensation factor by one a.e.,
 proves inverse-product measurability/integrability, discharges the
 normalized-minus-inverse row integrability side condition, and provides
 `projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_product_controls`.
+The newest row-integrability packet proves a.e.-measurability for the
+compensation, variance, remainder, and compensated-Taylor error factors,
+derives the compensated-error row-sum integrability from the variance-error
+row-sum integrability plus source boundedness, discharges the variance-only
+row-sum integrability directly from source boundedness, and provides
+`projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_row_integrability`.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform
 square/remainder integrability wrapper, normalized factor norm bound,
 normalized product integrability wrapper, inverse factor/product control
-wrapper, normalized-minus-inverse row integrability wrapper, or generic
-weak-convergence wrapper.
+wrapper, normalized-minus-inverse row integrability wrapper, compensated-error
+row integrability wrapper, variance-error row integrability wrapper, or
+generic weak-convergence wrapper.
 The variance
 side is now source-facing:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
@@ -293,20 +309,18 @@ requires only the honest measurability/integrability of the current multiplier.
 If the future random product route needs unavailable measurability, switch to
 a telescoping/error representation with explicit conditional multipliers
 instead of forcing a false exact product model.
-The next ASGD packet should discharge or minimize the remaining assumptions of
-`projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_product_controls`:
-future-tail measurability/integrability for the mixed tower, compensated-error
-row-sum integrability, and variance-error row-sum integrability.  Start with
-integrability of the compensated-error row sum.  The route should reuse
-`projectedCompensatedTaylorErrorFactor_norm_le`,
-`projectedCompensationFactor_eventually_row_norm_le`,
-`projected_remainder_row_norm_integrable_of_uniform_bound`, and the
-variance-error row integrability assumption to prove a source wrapper for
-`herror_int`; after that, either discharge the variance-error integrability or
-return to the finite mixed-tower future-tail measurability gate.  If the
-future-tail measurability still blocks exact discharge after these wrappers,
-record the exact condition and use the theorem as the supplied interface for
-the source ASGD certificate.
+The next ASGD packet should start from
+`projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_row_integrability`.
+The only remaining hypotheses in this source-facing bridge are the finite
+mixed-tower future-tail a.e.-measurability and integrability assumptions for
+the displayed prefix-characteristic-function times normalized-tail product.
+First try to discharge them by reusing the compiled normalized-tail product
+measurability/integrability, `StronglyAdapted.stronglyMeasurable_le`,
+finite-product `AEStronglyMeasurable`/`Integrable` APIs, and the existing
+uniform one-step norm bounds.  If the future-tail measurability is genuinely
+not implied by the current source fields, record the exact missing adaptedness
+condition and keep the new theorem as the supplied interface for the source
+ASGD certificate.
 
 Search cache for the finite tower packet: no ready-made martingale CLT or
 martingale product theorem was found in pinned mathlib or local

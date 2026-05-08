@@ -287,6 +287,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_normalized_bound`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_normalized_controls`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_product_controls`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedVarianceFactor_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedRemainderFactor_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorFactor_aestronglyMeasurable`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_row_norm_le_of_uniform_bound`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorError_row_norm_integrable_of_variance_error`,
+  `Chewi127BoundedMartingaleCLTSource.projectedCompensationVarianceError_row_norm_integrable_of_uniform_bound`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_error_integrability`,
+  `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_mixed_tower_of_uniform_integrability_and_row_integrability`,
   `Chewi127BoundedMartingaleCLTSource.projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model`,
   `Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`,
@@ -356,13 +365,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   `condExp_nonneg`, bounds every inverse-compensation factor by one a.e. via
   `Complex.norm_exp_ofReal` and `Real.exp_le_one_iff`, proves inverse-product
   measurability/integrability, and discharges the normalized-minus-inverse row
-  integrability side condition.  The remaining work is the finite mixed-tower
-  future-tail measurability/integrability plus compensated-error row-sum
-  integrability and variance-error row-sum integrability assumptions.  Next
-  target: derive compensated-error row-sum integrability from the existing
-  norm split, compensation-factor row bound, conditional-remainder
-  integrability, and variance-error integrability; then revisit the mixed-tower
-  future-tail measurability gate.
+  integrability side condition.  The latest row-integrability packet proves
+  a.e.-measurability for the compensation, variance, remainder, and
+  compensated-Taylor error factors, derives compensated-error row-sum
+  integrability from variance-error row-sum integrability plus source
+  boundedness, discharges the variance-error row-sum integrability directly
+  from source boundedness, and adds the source-facing mixed-tower wrapper whose
+  only remaining inputs are the finite future-tail measurability and
+  integrability assumptions.  Next target: discharge those future-tail
+  assumptions from normalized-tail product measurability/integrability,
+  adapted prefix characteristic products, and uniform norm bounds; if that is
+  not derivable from current fields, record the exact adaptedness condition and
+  use the wrapper as the supplied ASGD interface.
 - Archived manual frontier after the Chapter 12 finite sampled rate packet,
   smooth integral-L2 sampled-model endpoint packet, smooth
   Bochner-unbiased growth/star-upper packet, non-smooth source-L2 sampled
