@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V63
+## Live In-Thread Goal Prompt V64
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -138,20 +138,22 @@ also now compiles: the finite product likelihood pulled back to an infinite
 product space is measurable, finite-coordinate restrictions of
 `Measure.infinitePi` have the finite product likelihood as a `withDensity`
 ratio, and the pulled-back likelihood integrates over measurable cylinders to
-the numerator infinite-product measure of the cylinder.
+the numerator infinite-product measure of the cylinder.  The Hellinger
+factorization layer also now compiles: the square-root power of the finite
+product likelihood is the product of the one-coordinate square-root powers, the
+finite-coordinate Hellinger integral factors under `Measure.pi`, and the same
+factorization is pulled back to finite-coordinate cylinders under
+`Measure.infinitePi`.
 
 Next theorem-sized packet: treat the Example 4.3.7 finite partition generator
 layer, the Theorem 4.3.8 finite-product likelihood/`withDensity` layer, and the
-infinite-product cylinder/restriction handoff as closed support.  Move to the
-Hellinger and tail-event support for Kakutani: search local/mathlib APIs for
-`ENNReal.sqrt`, `rpow`, `lintegral_prod_eq_prod_lintegral_of_indepFun`,
-finite products of `∫ sqrt q_i dν_i`, `Measure.infinitePi`,
-`lintegral_restrict_infinitePi`, Fatou/liminf tools, infinite products
-(`tprod`, `HasProd`, `Multipliable`), logarithm/tail-event support, and local
-Kolmogorov zero-one/tail sigma-field wrappers.  Add only source-shaped wrappers
-that directly feed Kakutani's `∫ sqrt X_n dν = ∏ ∫ sqrt q_i dν_i`, zero-product
-singularity, or positive-product absolute-continuity route.  Do not redo the
-already compiled RN martingale/convergence
+infinite-product cylinder/restriction and Hellinger factorization handoffs as
+closed support.  Move to Kakutani criterion assembly and tail-event support:
+search local/mathlib APIs for Fatou/liminf tools, infinite products (`tprod`,
+`HasProd`, `Multipliable`), logarithm/tail-event support, and local Kolmogorov
+zero-one/tail sigma-field wrappers.  Add only source-shaped wrappers that
+directly feed zero-product singularity or positive-product
+absolute-continuity.  Do not redo the already compiled RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
 endpoint assembly, integral-representation to RN-derivative bridge,
 generator-extension bridge, bounded-convergence generator-production bridge,
@@ -538,9 +540,9 @@ likelihood, finite-union, and generator-facing endpoint, plus the Theorem 4.3.8
 finite-product likelihood measurability, rectangle set-integral, and
 finite-product `withDensity` endpoint, plus the infinite-product
 cylinder-likelihood measurability, finite-coordinate restriction `withDensity`,
-and cylinder set-integral endpoint.  Move forward to Hellinger integral
-factorization, infinite-product criterion support, and tail-event zero-one
-support for Kakutani's dichotomy.  Keep Theorem 4.1.16 deferred unless a
+cylinder set-integral endpoint, and finite/cylinder Hellinger factorization
+endpoints.  Move forward to infinite-product criterion support and tail-event
+zero-one support for Kakutani's dichotomy.  Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
@@ -653,6 +655,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V63` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V64` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

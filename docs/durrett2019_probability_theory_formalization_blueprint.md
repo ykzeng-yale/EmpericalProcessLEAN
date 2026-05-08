@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V63`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V64`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -478,9 +478,12 @@ Next packet:
   finite product-law `withDensity` identity.  The infinite-product
   cylinder/restriction handoff also now compiles: pulled-back likelihood
   measurability, finite-coordinate restriction `withDensity`, and cylinder
-  set-integral endpoints.  The next active target is Hellinger integral
-  factorization, infinite-product criterion support, and tail-event zero-one
-  support for Kakutani's dichotomy.  Theorem 4.1.16 remains deferred unless a
+  set-integral endpoints.  The Hellinger factorization layer now also compiles:
+  finite product square-root-power factorization, finite product Hellinger
+  integral factorization, and the infinite-cylinder pulled-back Hellinger
+  integral endpoint.  The next active target is infinite-product criterion
+  assembly and tail-event zero-one support for Kakutani's dichotomy.  Theorem
+  4.1.16 remains deferred unless a
   direct kernel API appears.
 
 Support-only dependencies:

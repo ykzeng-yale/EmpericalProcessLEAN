@@ -4522,6 +4522,87 @@ theorem durrett2019_theorem_4_3_8_finiteProduct_withDensity_eq
   rw [hμ i, withDensity_apply _ (hA i)]
 
 /--
+Durrett 2019, Theorem 4.3.8 Hellinger support: the square-root power of the
+finite-coordinate likelihood is the product of the square-root powers of the
+one-coordinate likelihoods.
+-/
+theorem durrett2019_theorem_4_3_8_finiteProductLikelihood_rpow_half
+    {ι S : Type*} [Fintype ι] {q : ι -> S -> ℝ≥0∞} (x : ι -> S) :
+    (durrett2019_theorem_4_3_8_finiteProductLikelihood q x) ^ ((1 : ℝ) / 2) =
+      ∏ i, (q i (x i)) ^ ((1 : ℝ) / 2) := by
+  classical
+  unfold durrett2019_theorem_4_3_8_finiteProductLikelihood
+  simpa using
+    (ENNReal.prod_rpow_of_nonneg
+      (s := Finset.univ) (f := fun i => q i (x i))
+      (r := (1 : ℝ) / 2) (by norm_num : 0 ≤ (1 : ℝ) / 2)).symm
+
+/--
+Durrett 2019, Theorem 4.3.8 Hellinger support: the square-root power of the
+finite-coordinate likelihood is measurable.
+-/
+theorem durrett2019_theorem_4_3_8_finiteProductLikelihood_rpow_half_measurable
+    {ι S : Type*} [Fintype ι] [MeasurableSpace S] {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i)) :
+    Measurable fun x =>
+      (durrett2019_theorem_4_3_8_finiteProductLikelihood q x) ^ ((1 : ℝ) / 2) := by
+  exact
+    ENNReal.continuous_rpow_const.measurable.comp
+      (durrett2019_theorem_4_3_8_finiteProductLikelihood_measurable hq)
+
+/--
+Durrett 2019, Theorem 4.3.8 Hellinger support: the finite-coordinate Hellinger
+integral factors into the one-coordinate Hellinger integrals.
+-/
+theorem durrett2019_theorem_4_3_8_finiteProductLikelihood_rpow_half_lintegral
+    {ι S : Type*} [Fintype ι] [MeasurableSpace S]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ι -> S -> ℝ≥0∞} (hq : ∀ i, Measurable (q i)) :
+    ∫⁻ x,
+        (durrett2019_theorem_4_3_8_finiteProductLikelihood q x) ^ ((1 : ℝ) / 2)
+          ∂Measure.pi ν =
+      ∏ i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i := by
+  classical
+  let X : ι -> (ι -> S) -> ℝ≥0∞ :=
+    fun i x => (q i (x i)) ^ ((1 : ℝ) / 2)
+  have hX_meas : ∀ i, Measurable (X i) := by
+    intro i
+    exact
+      (ENNReal.continuous_rpow_const.measurable.comp (hq i)).comp
+        (measurable_pi_apply i)
+  have hX_indep :
+      _root_.ProbabilityTheory.iIndepFun X (Measure.pi ν) := by
+    have h :=
+      _root_.ProbabilityTheory.iIndepFun_pi
+        (μ := ν) (X := fun i y => (q i y) ^ ((1 : ℝ) / 2))
+        (fun i =>
+          (ENNReal.continuous_rpow_const.measurable.comp (hq i)).aemeasurable)
+    simpa [X, Function.comp_def] using h
+  have hpoint :
+      (fun x : ι -> S =>
+          (durrett2019_theorem_4_3_8_finiteProductLikelihood q x) ^ ((1 : ℝ) / 2)) =
+        fun x => ∏ i, X i x := by
+    funext x
+    rw [durrett2019_theorem_4_3_8_finiteProductLikelihood_rpow_half (q := q) x]
+  calc
+    ∫⁻ x,
+        (durrett2019_theorem_4_3_8_finiteProductLikelihood q x) ^ ((1 : ℝ) / 2)
+          ∂Measure.pi ν
+        = ∫⁻ x, ∏ i, X i x ∂Measure.pi ν := by
+          rw [hpoint]
+    _ = ∏ i, ∫⁻ x, X i x ∂Measure.pi ν := by
+          simpa using
+            (_root_.ProbabilityTheory.lintegral_prod_eq_prod_lintegral_of_indepFun
+              (μ := Measure.pi ν) (s := Finset.univ) (X := X) hX_indep hX_meas)
+    _ = ∏ i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i := by
+          refine Finset.prod_congr rfl ?_
+          intro i _hi
+          rw [show (∫⁻ x, X i x ∂Measure.pi ν) =
+              ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i from
+            (measurePreserving_eval (ν) i).lintegral_comp
+              (ENNReal.continuous_rpow_const.measurable.comp (hq i))]
+
+/--
 Durrett 2019, Theorem 4.3.8: the finite-coordinate likelihood pulled back to
 an infinite product space.
 -/
@@ -4613,6 +4694,55 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_setLIntegral_cylinder
     _ = Measure.pi (fun i : I => μ i) A := hfinite
     _ = Measure.infinitePi μ (cylinder I A) := by
           rw [Measure.infinitePi_cylinder (μ := μ) (s := I) hA]
+
+/--
+Durrett 2019, Theorem 4.3.8 Hellinger support: the square-root power of the
+pulled-back cylinder likelihood is measurable.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_measurable
+    {ι S : Type*} [MeasurableSpace S] (I : Finset ι) {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i)) :
+    Measurable fun x =>
+      (durrett2019_theorem_4_3_8_cylinderLikelihood I q x) ^ ((1 : ℝ) / 2) := by
+  exact
+    ENNReal.continuous_rpow_const.measurable.comp
+      (durrett2019_theorem_4_3_8_cylinderLikelihood_measurable I hq)
+
+/--
+Durrett 2019, Theorem 4.3.8 Hellinger support: integrating the square-root
+power of a pulled-back finite-coordinate likelihood against the infinite
+denominator product law factors into the one-coordinate Hellinger integrals.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_rpow_half_lintegral
+    {ι S : Type*} [MeasurableSpace S]
+    {ν : ι -> Measure S} [∀ i, IsProbabilityMeasure (ν i)]
+    (I : Finset ι) {q : ι -> S -> ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i)) :
+    ∫⁻ x,
+        (durrett2019_theorem_4_3_8_cylinderLikelihood I q x) ^ ((1 : ℝ) / 2)
+          ∂Measure.infinitePi ν =
+      ∏ i : I, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i := by
+  classical
+  let fI : (I -> S) -> ℝ≥0∞ :=
+    fun y =>
+      (durrett2019_theorem_4_3_8_finiteProductLikelihood (fun i : I => q i) y) ^
+        ((1 : ℝ) / 2)
+  have hfI_meas : Measurable fI :=
+    durrett2019_theorem_4_3_8_finiteProductLikelihood_rpow_half_measurable
+      (q := fun i : I => q i) fun i => hq i
+  calc
+    ∫⁻ x,
+        (durrett2019_theorem_4_3_8_cylinderLikelihood I q x) ^ ((1 : ℝ) / 2)
+          ∂Measure.infinitePi ν
+        = ∫⁻ x, fI (I.restrict x) ∂Measure.infinitePi ν := by
+          rfl
+    _ = ∫⁻ y, fI y ∂Measure.pi (fun i : I => ν i) := by
+          exact lintegral_restrict_infinitePi
+            (μ := ν) (s := I) hfI_meas
+    _ = ∏ i : I, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i := by
+          exact
+            durrett2019_theorem_4_3_8_finiteProductLikelihood_rpow_half_lintegral
+              (ν := fun i : I => ν i) (q := fun i : I => q i) fun i => hq i
 
 end ProbabilityTheory
 end StatInference
