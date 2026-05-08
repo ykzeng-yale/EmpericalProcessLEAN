@@ -197,6 +197,10 @@ plus the normalized compensated-product bridge:
 `projected_charFun_normalized_taylor_step_mul_scaled_of_measurable`,
 `projected_scalarScaledSum_charFun_eq_integral_product`,
 `projected_charFun_product_tower_succ_normalized_scaled'`,
+`projectedRawPrefixNormalizedTailProduct`,
+`projectedRawPrefixNormalizedTailProduct_zero`,
+`projectedRawPrefixNormalizedTailProduct_self`,
+`projectedRawPrefixNormalizedTailProduct_integral_succ_eq`,
 `projectedCompensatedTaylorErrorProduct_integral_tendsto_one_of_source_variance`,
 `projected_charFun_tendsto_exp_of_normalized_product_model`,
 and
@@ -210,9 +214,15 @@ normalized peel, inverse-compensation algebra, and bounded-continuous
 expectation handoff are already compiled; the raw-product start and normalized
 successor peel are also compiled as
 `projected_scalarScaledSum_charFun_eq_integral_product` and
-`projected_charFun_product_tower_succ_normalized_scaled'`.  Do not prove
+`projected_charFun_product_tower_succ_normalized_scaled'`; the guarded mixed
+raw-prefix/normalized-tail product and its endpoint/successor lemmas are now
+compiled as `projectedRawPrefixNormalizedTailProduct`,
+`projectedRawPrefixNormalizedTailProduct_zero`,
+`projectedRawPrefixNormalizedTailProduct_self`, and
+`projectedRawPrefixNormalizedTailProduct_integral_succ_eq`.  Do not prove
 another compensation, row-error, inverse-product, raw charFun-product start,
-or generic weak-convergence wrapper.  The variance
+successor peel, mixed-product endpoint, or generic weak-convergence wrapper.
+The variance
 side is now source-facing:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
 uniform martingale source bound, averaged-variance convergence in measure, and
@@ -231,6 +241,11 @@ requires only the honest measurability/integrability of the current multiplier.
 If the future random product route needs unavailable measurability, switch to
 a telescoping/error representation with explicit conditional multipliers
 instead of forcing a false exact product model.
+The next finite-induction theorem should accumulate
+`projectedRawPrefixNormalizedTailProduct_integral_succ_eq` across
+`r = 0, ..., N - 1`, using the endpoint lemmas to connect the raw product to
+the full normalized product under explicit future-tail measurability and
+integrability assumptions.
 
 Search cache for the finite tower packet: no ready-made martingale CLT or
 martingale product theorem was found in pinned mathlib or local

@@ -3895,6 +3895,139 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_product_tower_succ_
           S.projectedNormalizedTaylorFactor L N t n ω ∂P := hstep
 
 /--
+Mixed finite product used for the guarded finite tower accumulation: a raw
+characteristic-function prefix through time `r`, followed by normalized
+Taylor factors on the tail interval `[r, N)`.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (r : ℕ) (ω : Ω) : ℂ :=
+  chewi127ScalarCharFunProduct
+    (fun k ω => L (S.martingale.xi k ω)) r
+    (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+    ∏ k ∈ Finset.Ico r N, S.projectedNormalizedTaylorFactor L N t k ω
+
+/--
+At split point `0`, the mixed raw-prefix/normalized-tail product is exactly
+the full normalized product.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_zero
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (ω : Ω) :
+    S.projectedRawPrefixNormalizedTailProduct L N t 0 ω =
+      ∏ k ∈ Finset.range N, S.projectedNormalizedTaylorFactor L N t k ω := by
+  rw [← Nat.Ico_zero_eq_range N]
+  simp [Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct,
+    chewi127ScalarCharFunProduct]
+
+/--
+At split point `N`, the mixed raw-prefix/normalized-tail product is exactly
+the raw characteristic-function product.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_self
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (ω : Ω) :
+    S.projectedRawPrefixNormalizedTailProduct L N t N ω =
+      chewi127ScalarCharFunProduct
+        (fun k ω => L (S.martingale.xi k ω)) N
+        (t * (Real.sqrt (N : ℝ))⁻¹) ω := by
+  simp [Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct]
+
+/--
+One guarded reverse step for the mixed raw-prefix/normalized-tail product.
+The explicit measurability and integrability assumptions are exactly the
+future-tail obligations needed before a finite induction can turn the raw
+product into the full normalized product.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_integral_succ_eq
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) (hr : r < N)
+    (hA_meas :
+      AEStronglyMeasurable[S.martingale.filtration r]
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hA_int :
+      Integrable
+        (fun ω =>
+          chewi127ScalarCharFunProduct
+            (fun k ω => L (S.martingale.xi k ω)) r
+            (t * (Real.sqrt (N : ℝ))⁻¹) ω *
+          ∏ k ∈ Finset.Ico (r + 1) N,
+            S.projectedNormalizedTaylorFactor L N t k ω) P)
+    (hsq : Integrable
+      (fun ω => (L (S.martingale.xi (r + 1) ω)) ^ 2) P)
+    (hremainder : Integrable
+      (chewi127ScalarCharFunTaylorRemainder
+        (t * (Real.sqrt (N : ℝ))⁻¹)
+        (fun ω => L (S.martingale.xi (r + 1) ω))) P) :
+    (∫ ω,
+        S.projectedRawPrefixNormalizedTailProduct L N t (r + 1) ω ∂P) =
+      ∫ ω,
+        S.projectedRawPrefixNormalizedTailProduct L N t r ω ∂P := by
+  let x : ℕ -> Ω -> ℝ := fun k ω => L (S.martingale.xi k ω)
+  let a : ℝ := t * (Real.sqrt (N : ℝ))⁻¹
+  let tail : Ω -> ℂ := fun ω =>
+    ∏ k ∈ Finset.Ico (r + 1) N, S.projectedNormalizedTaylorFactor L N t k ω
+  let A : Ω -> ℂ := fun ω => chewi127ScalarCharFunProduct x r a ω * tail ω
+  have hstep :=
+    S.projected_charFun_normalized_taylor_step_mul_scaled_of_measurable
+      L N r t A
+      (by simpa [A, tail, x, a] using hA_meas)
+      (by simpa [A, tail, x, a] using hA_int)
+      hsq hremainder
+  calc
+    (∫ ω,
+        S.projectedRawPrefixNormalizedTailProduct L N t (r + 1) ω ∂P)
+        = ∫ ω,
+            A ω *
+              chewi127ScalarCharFunFactor a (fun ω => x (r + 1) ω) ω ∂P := by
+          refine integral_congr_ae <| ae_of_all P fun ω => ?_
+          simp [Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct,
+            A, tail, x, a, chewi127ScalarCharFunProduct,
+            Finset.prod_range_succ]
+          ring
+    _ = ∫ ω,
+          A ω * S.projectedNormalizedTaylorFactor L N t r ω ∂P := hstep
+    _ = ∫ ω,
+        S.projectedRawPrefixNormalizedTailProduct L N t r ω ∂P := by
+          refine integral_congr_ae <| ae_of_all P fun ω => ?_
+          have htail_split :
+              (∏ k ∈ Finset.Ico r N,
+                  S.projectedNormalizedTaylorFactor L N t k ω) =
+                S.projectedNormalizedTaylorFactor L N t r ω *
+                  ∏ k ∈ Finset.Ico (r + 1) N,
+                    S.projectedNormalizedTaylorFactor L N t k ω :=
+            Finset.prod_eq_prod_Ico_succ_bot hr
+              (fun k => S.projectedNormalizedTaylorFactor L N t k ω)
+          simp [Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct,
+            A, tail, x, a, htail_split]
+          ring
+
+/--
 Expected products of the projected compensated one-step errors converge to one
 once their factors are bounded by one and their expected row-sum vanishes.
 This is the product-to-one half of Chewi's compensated martingale iteration.
