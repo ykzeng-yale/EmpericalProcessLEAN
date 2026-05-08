@@ -1002,6 +1002,56 @@ theorem chewi127_complex_exp_mul_one_sub_sub_one_norm_le (c : ℝ) :
           ring
 
 /--
+Difference bound for two real exponential factors, viewed as complex numbers,
+when the base factor is nonpositive.  This is the scalar analytic bridge used
+to compare inverse-compensation factors with deterministic proxy factors.
+-/
+theorem chewi127_complex_exp_sub_exp_norm_le_abs_sub_mul_exp
+    {x y : ℝ} (hy : y ≤ 0) :
+    ‖Complex.exp (x : ℂ) - Complex.exp (y : ℂ)‖ ≤
+      |x - y| * Real.exp |x - y| := by
+  let z : ℂ := ((x - y : ℝ) : ℂ)
+  have htail :
+      ‖Complex.exp z - 1‖ ≤ ‖z‖ * Real.exp ‖z‖ := by
+    simpa [Finset.sum_range_succ, Nat.factorial, div_eq_mul_inv] using
+      (Complex.norm_exp_sub_sum_le_norm_mul_exp z 1)
+  have hdecomp :
+      Complex.exp (x : ℂ) - Complex.exp (y : ℂ) =
+        Complex.exp (y : ℂ) * (Complex.exp z - 1) := by
+    have hxsplit : (x : ℂ) = (y : ℂ) + z := by
+      simp [z]
+    calc
+      Complex.exp (x : ℂ) - Complex.exp (y : ℂ)
+          = Complex.exp ((y : ℂ) + z) - Complex.exp (y : ℂ) := by
+              rw [hxsplit]
+      _ = Complex.exp (y : ℂ) * Complex.exp z -
+            Complex.exp (y : ℂ) := by
+              rw [Complex.exp_add]
+      _ = Complex.exp (y : ℂ) * (Complex.exp z - 1) := by
+              ring
+  have hexp_y_le : ‖Complex.exp (y : ℂ)‖ ≤ 1 := by
+    rw [Complex.norm_exp_ofReal]
+    exact Real.exp_le_one_iff.mpr hy
+  calc
+    ‖Complex.exp (x : ℂ) - Complex.exp (y : ℂ)‖
+        = ‖Complex.exp (y : ℂ) * (Complex.exp z - 1)‖ := by
+            rw [hdecomp]
+    _ = ‖Complex.exp (y : ℂ)‖ * ‖Complex.exp z - 1‖ := by
+            rw [norm_mul]
+    _ ≤ ‖Complex.exp (y : ℂ)‖ * (‖z‖ * Real.exp ‖z‖) :=
+            mul_le_mul_of_nonneg_left htail (norm_nonneg _)
+    _ ≤ 1 * (‖z‖ * Real.exp ‖z‖) :=
+            mul_le_mul_of_nonneg_right hexp_y_le
+              (mul_nonneg (norm_nonneg z) (Real.exp_nonneg _))
+    _ = |x - y| * Real.exp |x - y| := by
+            have hznorm : ‖z‖ = |x - y| := by
+              dsimp [z]
+              change ‖((x - y : ℝ) : ℂ)‖ = |x - y|
+              rw [Complex.norm_real, Real.norm_eq_abs]
+            rw [hznorm]
+            simp
+
+/--
 The pointwise Taylor remainder in the scalar characteristic-function expansion
 for a real increment `x`.
 -/
@@ -10197,6 +10247,159 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor_limit
             rw [Finset.sum_add_distrib]
 
 /--
+The scalar upper bound comparing the inverse-compensation factor with the
+canonical limit-variance deterministic proxy.  It is the absolute difference
+between the two real exponential exponents, multiplied by the local exponential
+Lipschitz factor.
+-/
+noncomputable def Chewi127BoundedMartingaleCLTSource.projectedInverseLimitVarianceProxyScaledDiffExp
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) (ω : Ω) : ℝ :=
+  |(-(((t * (Real.sqrt (N : ℝ))⁻¹) ^ 2 *
+        S.covariance.Xi (k + 1) ω L L) / 2)) -
+    (-(((t * (Real.sqrt (N : ℝ))⁻¹) ^ 2 *
+        S.covariance_limit.S_infty L L) / 2))| *
+    Real.exp
+      |(-(((t * (Real.sqrt (N : ℝ))⁻¹) ^ 2 *
+          S.covariance.Xi (k + 1) ω L L) / 2)) -
+        (-(((t * (Real.sqrt (N : ℝ))⁻¹) ^ 2 *
+          S.covariance_limit.S_infty L L) / 2))|
+
+/--
+Pointwise comparison of the random inverse-compensation factor with the
+canonical deterministic limit-variance proxy.  The analytic content is only
+the elementary real-exponential difference bound; the remaining term is the
+scaled conditional-variance difference.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_limitVarianceProxy_norm_le_scaled_variance_diff_exp
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) (ω : Ω) :
+    ‖S.projectedInverseCompensationFactor L N t k ω -
+        chewi127LimitVarianceProxyFactor
+          (S.covariance_limit.S_infty L L) N t‖ ≤
+      S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω := by
+  let x : ℝ :=
+    -(((t * (Real.sqrt (N : ℝ))⁻¹) ^ 2 *
+      S.covariance.Xi (k + 1) ω L L) / 2)
+  let y : ℝ :=
+    -(((t * (Real.sqrt (N : ℝ))⁻¹) ^ 2 *
+      S.covariance_limit.S_infty L L) / 2)
+  have hy_nonpos : y ≤ 0 := by
+    dsimp [y]
+    have hprod_nonneg :
+        0 ≤ (t * (Real.sqrt (N : ℝ))⁻¹) ^ 2 *
+          S.covariance_limit.S_infty L L := by
+      exact mul_nonneg (sq_nonneg _)
+        (S.covariance_limit_self_nonneg L)
+    nlinarith
+  have hfactor :
+      S.projectedInverseCompensationFactor L N t k ω =
+        Complex.exp (x : ℂ) := by
+    simp [x, Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor]
+  have hproxy :
+      chewi127LimitVarianceProxyFactor
+          (S.covariance_limit.S_infty L L) N t =
+        Complex.exp (y : ℂ) := by
+    simp [y, chewi127LimitVarianceProxyFactor]
+  calc
+    ‖S.projectedInverseCompensationFactor L N t k ω -
+        chewi127LimitVarianceProxyFactor
+          (S.covariance_limit.S_infty L L) N t‖
+        = ‖Complex.exp (x : ℂ) - Complex.exp (y : ℂ)‖ := by
+            rw [hfactor, hproxy]
+    _ ≤ |x - y| * Real.exp |x - y| :=
+          chewi127_complex_exp_sub_exp_norm_le_abs_sub_mul_exp hy_nonpos
+    _ = S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω := by
+          rfl
+
+/--
+If the row-weighted scalar variance-difference exponential bound vanishes in
+`L1`, then the random inverse-compensation factors converge to the
+limit-variance proxy in the weighted row sense needed by the Chapter 12 ASGD
+tail route.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_scaled_variance_diff_exp
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hscaled_variance_diff_exp_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω) P)
+    (hscaled_variance_diff_exp :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∫ ω,
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ‖S.projectedInverseCompensationFactor L N t k ω -
+                chewi127LimitVarianceProxyFactor
+                  (S.covariance_limit.S_infty L L) N t‖ ∂P)
+      atTop (𝓝 0) := by
+  refine squeeze_zero'
+    (Eventually.of_forall fun N =>
+      integral_nonneg fun ω =>
+        Finset.sum_nonneg fun k _hk =>
+          mul_nonneg (Nat.cast_nonneg k) (norm_nonneg _))
+    ?_ hscaled_variance_diff_exp
+  exact Eventually.of_forall fun N => by
+    have hleft_int :
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedInverseCompensationFactor L N t k ω -
+                  chewi127LimitVarianceProxyFactor
+                    (S.covariance_limit.S_infty L L) N t‖) P := by
+      refine integrable_finsetSum (Finset.range N) ?_
+      intro k _hk
+      have hinverse_int :
+          Integrable
+            (fun ω => S.projectedInverseCompensationFactor L N t k ω) P := by
+        refine Integrable.of_bound (C := 1)
+          (S.projectedInverseCompensationFactor_aestronglyMeasurable L N t k) ?_
+        exact S.projectedInverseCompensationFactor_norm_le_one_ae L N t k
+      have hproxy_int :
+          Integrable
+            (fun _ : Ω =>
+              chewi127LimitVarianceProxyFactor
+                (S.covariance_limit.S_infty L L) N t) P :=
+        integrable_const _
+      exact (((hinverse_int.sub hproxy_int).norm).const_mul (k : ℝ))
+    refine integral_mono_ae hleft_int (hscaled_variance_diff_exp_int N) ?_
+    filter_upwards with ω
+    refine Finset.sum_le_sum ?_
+    intro k _hk
+    exact mul_le_mul_of_nonneg_left
+      (S.projectedInverseCompensationFactor_limitVarianceProxy_norm_le_scaled_variance_diff_exp
+        L N t k ω)
+      (Nat.cast_nonneg k)
+
+/--
 The inverse-compensation future tail over the same suffix interval as
 `projectedMixedTowerFutureTail`.  This is the deterministic Taylor core before
 the compensated-error perturbation.
@@ -16268,6 +16471,99 @@ theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVariancePr
       (hcompensated_weighted_error_int L t)
       (hinverse_weighted_error L t)
       (hcompensated_weighted_error L t)
+
+/--
+Source-shaped Chewi Theorem 12.3 ASGD limit package from the scalar
+variance-difference exponential proxy bound and the compensated Taylor-error
+bound.  This exposes the current canonical Chapter 12 route: the remaining
+inverse-compensation proxy work is reduced to a row-weighted scalar variance
+difference estimate.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hscaled_variance_diff_exp_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω) P)
+    (hcompensated_weighted_error_int :
+      ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖) P)
+    (hscaled_variance_diff_exp : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                S.projectedInverseLimitVarianceProxyScaledDiffExp L N t k ω ∂P)
+        atTop (𝓝 0))
+    (hcompensated_weighted_error : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensatedTaylorErrorFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0))
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K := by
+  refine
+    S.asgd_limit_package_of_limitVarianceProxy_inverse_error_compensated_error_of_uniform_bound_no_factor_bound
+      Ainv hmean ?_ hcompensated_weighted_error_int ?_
+      hcompensated_weighted_error hInitial hRemainder hInitial_meas
+      hRemainder_meas hDecomp
+  · intro L t N
+    refine integrable_finsetSum (Finset.range N) ?_
+    intro k _hk
+    have hinverse_int :
+        Integrable
+          (fun ω => S.projectedInverseCompensationFactor L N t k ω) P := by
+      refine Integrable.of_bound (C := 1)
+        (S.projectedInverseCompensationFactor_aestronglyMeasurable L N t k) ?_
+      exact S.projectedInverseCompensationFactor_norm_le_one_ae L N t k
+    have hproxy_int :
+        Integrable
+          (fun _ : Ω =>
+            chewi127LimitVarianceProxyFactor
+              (S.covariance_limit.S_infty L L) N t) P :=
+      integrable_const _
+    exact (((hinverse_int.sub hproxy_int).norm).const_mul (k : ℝ))
+  · intro L t
+    exact
+      S.projectedInverseCompensationFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_scaled_variance_diff_exp
+        L t (hscaled_variance_diff_exp_int L t)
+        (hscaled_variance_diff_exp L t)
 
 /--
 Source-shaped Chewi Theorem 12.3 ASGD limit package from a factorwise

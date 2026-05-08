@@ -191,6 +191,19 @@ and the Chewi 12.3 endpoint
 The remaining weighted factor-error obligation is split into the
 inverse-compensation-to-limit-variance proxy weighted error and the compensated
 Taylor-error weighted row sum.
+Newest scalar variance-difference proxy packet: `ASGD.lean` now also proves
+the scalar exponential comparison
+`chewi127_complex_exp_sub_exp_norm_le_abs_sub_mul_exp`, defines
+`projectedInverseLimitVarianceProxyScaledDiffExp`, proves the pointwise
+inverse-factor proxy bound
+`projectedInverseCompensationFactor_limitVarianceProxy_norm_le_scaled_variance_diff_exp`,
+promotes it to the weighted row convergence theorem
+`projectedInverseCompensationFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_scaled_variance_diff_exp`,
+and exposes the Chewi 12.3 endpoint
+`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound`.
+The inverse-compensation-to-limit-variance proxy obligation is now reduced to a
+single row-weighted scalar conditional-variance difference exponential bound;
+do not reprove the complex exponential Lipschitz/product/suffix plumbing.
 The newest residual-estimate packet extracts the actual row-summed residual
 handoffs as reusable theorems:
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
@@ -227,9 +240,16 @@ Exercises live only in `StatInference/Optimization/Exercises.lean` and must not
 consume the main theorem packet unless they unlock a main-text proof.
 
 Current frontier: the active module is `StatInference/Optimization/ASGD.lean`;
-the active source packet is Chapter 12 ASGD Theorem 12.7/12.3, specifically the
-scalar bounded-martingale characteristic-function proof behind
-`projected_charFun_tendsto_exp`.  The stable ASGD stack now includes the
+the active source packet is Chapter 12 ASGD Theorem 12.7/12.3.  The next
+aggressive Lean target is to prove, from the source conditional variance
+convergence assumptions already present in the ASGD structure, the weighted
+row convergence of
+`projectedInverseLimitVarianceProxyScaledDiffExp`; after that, combine it with
+the compensated Taylor-error row theorem to use
+`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound`.
+If that scalar variance-difference estimate balloons, fall back to the direct
+future-multiplier residual route rather than rebuilding old proxy algebra.
+The stable ASGD stack now includes the
 conditional residual/correlation primitives
 `integral_mul_condExp_residual_eq_zero_of_aestronglyMeasurable_left` and
 `norm_integral_mul_condExp_residual_le_integral_norm_residual_mul_norm`, the

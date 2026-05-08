@@ -133,6 +133,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   This decomposes the weighted normalized-factor proxy error into the
   inverse-compensation-to-limit-variance proxy error plus the already-isolated
   compensated Taylor-error row sum.
+- Scalar variance-difference proxy reduction: the newest ASGD packet adds
+  `chewi127_complex_exp_sub_exp_norm_le_abs_sub_mul_exp`,
+  `projectedInverseLimitVarianceProxyScaledDiffExp`,
+  `projectedInverseCompensationFactor_limitVarianceProxy_norm_le_scaled_variance_diff_exp`,
+  `projectedInverseCompensationFactor_limitVarianceProxy_weighted_error_tendsto_zero_of_scaled_variance_diff_exp`,
+  and
+  `asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound`.
+  This reduces the inverse-compensation-to-limit-variance proxy row error to a
+  concrete weighted scalar conditional-variance difference exponential bound.
+  The live next ASGD target is to discharge that scalar variance-difference
+  row convergence from the existing source conditional variance assumptions,
+  then feed it into the compensated Taylor-error endpoint.
 - Residual-estimate extraction: the newest ASGD packet adds
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
   `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,

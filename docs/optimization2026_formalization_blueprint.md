@@ -58,6 +58,14 @@ The split endpoint
 `asgd_limit_package_of_limitVarianceProxy_inverse_error_compensated_error_of_uniform_bound_no_factor_bound`
 further reduces that weighted one-step error to inverse-compensation proxy
 error plus compensated Taylor-error control.
+The scalar proxy reduction endpoint
+`asgd_limit_package_of_limitVarianceProxy_scaled_variance_diff_exp_compensated_error_of_uniform_bound_no_factor_bound`
+further reduces inverse-compensation proxy error to the weighted row
+convergence of `projectedInverseLimitVarianceProxyScaledDiffExp`, using the
+compiled exponential comparison
+`projectedInverseCompensationFactor_limitVarianceProxy_norm_le_scaled_variance_diff_exp`.
+The next source-discharge step is therefore a scalar conditional-variance
+difference estimate, not more complex product algebra.
 The residual layer now exposes
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
 `projectedMixedTowerFutureTail_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
