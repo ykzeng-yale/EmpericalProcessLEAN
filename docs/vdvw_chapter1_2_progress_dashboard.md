@@ -3429,3 +3429,13 @@ and first-sample boundedness handoff for bounds shaped like
 `offset M eta + degree M eta * log (n + 1)`.  The next high-leverage source
 target is to prove a finite-trace/VC counting theorem that supplies this bound,
 or to close the displayed-beta selected-cover event comparison directly.
+
+The finite-trace source route now reaches that same selected entropy primitive
+directly.  `Theorem243.lean` adds
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_log_succ_linear_bound`,
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_image_cardinality_bound_log_succ_linear`,
+and
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_finite_trace_image_cardinality_bound_log_succ_linear_auto_of_set_countable`.
+Finite empirical trace images plus a shifted log-linear trace-count estimate
+now supply the book entropy condition and primitive handoff without a separate
+fixed-radius tail/UI package.

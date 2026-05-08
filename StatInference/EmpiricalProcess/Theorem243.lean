@@ -21389,6 +21389,57 @@ theorem
         div_le_div_of_nonneg_right hlog_succ_linear (Nat.cast_nonneg n)
 
 /--
+Shifted log-linear cardinality growth builds the variable-domain book entropy
+condition.
+
+This is the direct stochastic-entropy constructor for structural counting
+arguments that naturally prove
+`log (cardinality M eta n sample n + 1) <= offset M eta +
+degree M eta * log (n + 1)`.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_log_succ_linear_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {offset degree : ℝ -> ℝ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality M eta n))
+    (hlog_succ_linear_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) ≤
+            offset M eta + degree M eta *
+              Real.log (((n + 1 : ℕ) : ℝ))) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope cardinality := by
+  refine
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_div_tendsto_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (cardinality := cardinality)
+      (rate := fun M eta n =>
+        (offset M eta + degree M eta *
+          Real.log (((n + 1 : ℕ) : ℝ))) / (n : ℝ))
+      hcovering_all ?_ ?_
+  · intro M hM eta heta
+    exact
+      tendsto_const_add_mul_log_nat_succ_div_atTop_nhds_zero
+        (offset M eta) (degree M eta)
+  · intro M hM eta heta
+    exact Eventually.of_forall fun n sample =>
+      div_le_div_of_nonneg_right
+        (hlog_succ_linear_bound M hM eta heta n sample)
+        (Nat.cast_nonneg n)
+
+/--
 Nearest-integer rounding grids supply the variable-domain book entropy
 condition when their selected cardinalities have natural-polynomial growth.
 
@@ -21554,6 +21605,61 @@ theorem
       (constant := constant) (degree := degree)
       (cardinality := cardinality)
       hcovering_all hconstant_ge_one hpoly_bound
+
+/--
+Finite empirical trace images plus shifted log-linear cardinality growth build
+the variable-domain book entropy condition.
+
+This is the finite-trace/VC-facing version of
+`...of_logCardinality_log_succ_linear_bound`: finite trace images provide the
+random covering-number domination, while the shifted log-linear estimate gives
+the normalized entropy convergence.
+-/
+theorem
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_image_cardinality_bound_log_succ_linear
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {offset degree : ℝ -> ℝ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (htrace_finite :
+      ∀ M, 0 < M -> ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X M n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite)
+    (hcardinality_dom :
+      ∀ M (hM : 0 < M), ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          (htrace_finite M hM n sample m).toFinset.card ≤
+            cardinality M eta n sample m)
+    (hlog_succ_linear_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) ≤
+            offset M eta + degree M eta *
+              Real.log (((n + 1 : ℕ) : ℝ))) :
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM P X
+      indexClass classFun envelope cardinality := by
+  have hcovering_all :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta
+          (cardinality M eta n) := by
+    intro M hM eta heta
+    exact
+      VdVWRandomEmpiricalL1CoveringNumberLeCardinality.of_forall_pos_radius_finite_trace_image_cardinality_bound_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (cardinality := cardinality M) (X M)
+        (htrace_finite M hM) (hcardinality_dom M hM) eta heta
+  exact
+    VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_log_succ_linear_bound
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (offset := offset) (degree := degree) (cardinality := cardinality)
+      hcovering_all hlog_succ_linear_bound
 
 /--
 Finite trace-code sets plus natural-polynomial code-set cardinality growth
@@ -31320,6 +31426,72 @@ theorem
         hcount hX_samplePath hclass henvelope_meas hlog_div_bound)
       (hentropy.firstSample_nnnorm_bound_of_logCardinality_div_bound
         (K := K) hK_nonneg hlog_div_bound)
+
+/--
+Finite empirical trace images with shifted log-linear cardinality growth prove
+the registered selected entropy-to-finite-net mean primitive.
+
+This composes the finite-trace variable entropy constructor with the
+countable-class shifted log-linear selected-entropy primitive, so future
+VC/Sauer trace-count arguments can target the trace and log-cardinality
+estimates directly.
+-/
+theorem
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_finite_trace_image_cardinality_bound_log_succ_linear_auto_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {offset degree : ℝ -> ℝ -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hcount : indexClass.Countable)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (htrace_finite :
+      ∀ M, 0 < M -> ∀ n (sample : SampleAt Observation n) m,
+        (empiricalTrace (samplePath (X M n) sample m)
+          (vdVWTruncatedClassFun classFun envelope M) '' indexClass).Finite)
+    (hcardinality_dom :
+      ∀ M (hM : 0 < M), ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n) m,
+          (htrace_finite M hM n sample m).toFinset.card ≤
+            cardinality M eta n sample m)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hoffset_nonneg :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ offset M eta)
+    (hdegree_nonneg :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta -> 0 ≤ degree M eta)
+    (hlog_succ_linear_bound :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          Real.log ((cardinality M eta n sample n : ℝ) + 1) ≤
+            offset M eta + degree M eta *
+              Real.log (((n + 1 : ℕ) : ℝ))) :
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive P X indexClass
+      classFun envelope cardinality
+      (VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_image_cardinality_bound_log_succ_linear
+        (P := P) (X := X) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope)
+        (offset := offset) (degree := degree) (cardinality := cardinality)
+        htrace_finite hcardinality_dom hlog_succ_linear_bound) := by
+  exact
+    VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_log_succ_linear_bound_auto_of_set_countable
+      (P := P) (X := X) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope)
+      (offset := offset) (degree := degree) (cardinality := cardinality)
+      (hentropy :=
+        VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_image_cardinality_bound_log_succ_linear
+          (P := P) (X := X) (indexClass := indexClass)
+          (classFun := classFun) (envelope := envelope)
+          (offset := offset) (degree := degree)
+          (cardinality := cardinality)
+          htrace_finite hcardinality_dom hlog_succ_linear_bound)
+      hcount hX_samplePath hclass henvelope_meas
+      hoffset_nonneg hdegree_nonneg hlog_succ_linear_bound
 
 /--
 Natural-polynomial cardinality growth proves the registered selected

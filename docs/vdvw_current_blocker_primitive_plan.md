@@ -8165,3 +8165,16 @@ is the source-facing handoff for finite-trace and VC/Sauer-style counting
 interfaces; the next mathematical task is still proving such counting growth
 for the target class or closing the displayed-beta selected-cover event
 comparison.
+
+2026-05-08 finite-trace shifted log-succ-linear source route:
+`Theorem243.lean` now proves
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_log_succ_linear_bound`,
+`VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_finite_trace_image_cardinality_bound_log_succ_linear`,
+and
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_finite_trace_image_cardinality_bound_log_succ_linear_auto_of_set_countable`.
+Finite empirical trace images plus a shifted log-linear trace-count estimate now
+produce both the variable-domain book entropy condition and the registered
+selected finite-net mean primitive under localized class countability.  The next
+source task is a concrete VC/Sauer or finite-trace counting theorem that proves
+the displayed log-succ-linear estimate, or the independent displayed-beta
+selected-cover event comparison.
