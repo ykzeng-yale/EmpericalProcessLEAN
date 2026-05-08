@@ -3357,3 +3357,10 @@ This lets the canonical full-subgraph route reuse the selected-entropy primitive
 handoff directly, while keeping the active blocker focused on the missing
 stochastic selected-cover entropy-to-mean proof or the displayed-beta event
 primitive.
+
+The selected normalized-log ordinary-mean route now also collapses to the
+registered primitive through
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero`.
+This is the source-facing L1 strengthened entropy handoff: once the selected-log
+mean convergence is proved, generic Theorem 2.4.3 can consume the primitive
+without another selected tail/UI wrapper.

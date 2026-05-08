@@ -8065,3 +8065,12 @@ This is a source-facing adapter for final Theorem 2.4.3 assembly, not a new
 endpoint alias.  The generic textbook blocker is unchanged: prove the stochastic
 selected-cover entropy-to-mean theorem, or prove the displayed-beta selected-
 cover event primitive.
+
+2026-05-08 selected-log mean to primitive bridge:
+`Theorem243.lean` now proves
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero`.
+Ordinary mean convergence of the selected normalized log-cardinality process can
+therefore feed the registered primitive directly, via the already compiled
+selected fixed-radius tail/UI package.  This keeps the active source target
+focused on proving that selected-log mean input from the stochastic entropy
+argument, rather than adding another endpoint wrapper.
