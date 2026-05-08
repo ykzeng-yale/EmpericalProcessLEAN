@@ -2735,5 +2735,90 @@ theorem durrett2019_theorem_4_3_5_source_real_identity_of_density_ratio_top_set
     durrett2019_theorem_4_3_5_source_real_identity_of_top_set
       (μ := μ) (ν := ν) hA hXrn hμtop hνtop
 
+/--
+Durrett 2019, Theorem 4.3.5 RN-identification bridge: if a candidate density
+represents `mu` by set integrals against `rho`, then it is the
+Radon-Nikodym derivative `dmu/drho`, `rho`-a.e.
+-/
+theorem durrett2019_theorem_4_3_5_rnDeriv_ae_eq_of_forall_setLIntegral
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ρ : Measure Ω} [SigmaFinite ρ] {Y : Ω -> ℝ≥0∞}
+    (hY : AEMeasurable Y ρ)
+    (hrepr : ∀ A : Set Ω, MeasurableSet A -> μ A = ∫⁻ ω in A, Y ω ∂ρ) :
+    Y =ᵐ[ρ] fun ω => μ.rnDeriv ρ ω := by
+  have hμ : μ = ρ.withDensity Y := by
+    ext A hA
+    rw [hrepr A hA, withDensity_apply _ hA]
+  have hderiv : μ.rnDeriv ρ =ᵐ[ρ] Y := by
+    rw [hμ]
+    exact Measure.rnDeriv_withDensity₀ ρ hY
+  exact hderiv.symm
+
+/--
+Durrett 2019, Theorem 4.3.5 paired RN-identification bridge: integral
+representations of `mu` and `nu` against the same dominating measure `rho`
+produce the `nu`-a.e. `Y` and `Z` derivative identifications consumed by the
+density-ratio source assembly.
+-/
+theorem durrett2019_theorem_4_3_5_density_pair_ae_eq_under_nu_of_forall_setLIntegral
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ν ρ : Measure Ω} [SigmaFinite ρ]
+    {Y Z : Ω -> ℝ≥0∞}
+    (hY : AEMeasurable Y ρ) (hZ : AEMeasurable Z ρ)
+    (hμrepr : ∀ A : Set Ω, MeasurableSet A -> μ A = ∫⁻ ω in A, Y ω ∂ρ)
+    (hνrepr : ∀ A : Set Ω, MeasurableSet A -> ν A = ∫⁻ ω in A, Z ω ∂ρ) :
+    (Y =ᵐ[ν] fun ω => μ.rnDeriv ρ ω) ∧
+      (Z =ᵐ[ν] fun ω => ν.rnDeriv ρ ω) := by
+  have hνeq : ν = ρ.withDensity Z := by
+    ext A hA
+    rw [hνrepr A hA, withDensity_apply _ hA]
+  have hνρ : ν ≪ ρ := by
+    rw [hνeq]
+    exact withDensity_absolutelyContinuous ρ Z
+  have hYρ : Y =ᵐ[ρ] fun ω => μ.rnDeriv ρ ω :=
+    durrett2019_theorem_4_3_5_rnDeriv_ae_eq_of_forall_setLIntegral
+      (μ := μ) (ρ := ρ) hY hμrepr
+  have hZρ : Z =ᵐ[ρ] fun ω => ν.rnDeriv ρ ω :=
+    durrett2019_theorem_4_3_5_rnDeriv_ae_eq_of_forall_setLIntegral
+      (μ := ν) (ρ := ρ) hZ hνrepr
+  exact ⟨hνρ hYρ, hνρ hZρ⟩
+
+/--
+Durrett 2019, Theorem 4.3.5 source assembly from integral density
+identifications: once bounded-convergence/generator work has produced the
+set-integral identities for `Y` and `Z`, the ratio and singular-top hypotheses
+imply the textbook identity.
+-/
+theorem durrett2019_theorem_4_3_5_source_real_identity_of_density_integrals_ratio_top_set
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ν ρ : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν] [SigmaFinite ρ]
+    [μ.HaveLebesgueDecomposition ν]
+    {X Y Z : Ω -> ℝ≥0∞} {A : Set Ω} (hA : MeasurableSet A)
+    (hY : AEMeasurable Y ρ) (hZ : AEMeasurable Z ρ)
+    (hμrepr : ∀ B : Set Ω, MeasurableSet B -> μ B = ∫⁻ ω in B, Y ω ∂ρ)
+    (hνrepr : ∀ B : Set Ω, MeasurableSet B -> ν B = ∫⁻ ω in B, Z ω ∂ρ)
+    (hX : X =ᵐ[ν] fun ω => Y ω / Z ω)
+    (hμtop : μ.singularPart ν {ω | X ω = ∞}ᶜ = 0)
+    (hνtop : ν {ω | X ω = ∞} = 0) :
+    μ.real A = ∫ ω in A, (X ω).toReal ∂ν + μ.real (A ∩ {ω | X ω = ∞}) := by
+  have hμeq : μ = ρ.withDensity Y := by
+    ext B hB
+    rw [hμrepr B hB, withDensity_apply _ hB]
+  have hνeq : ν = ρ.withDensity Z := by
+    ext B hB
+    rw [hνrepr B hB, withDensity_apply _ hB]
+  have hμρ : μ ≪ ρ := by
+    rw [hμeq]
+    exact withDensity_absolutelyContinuous ρ Y
+  have hνρ : ν ≪ ρ := by
+    rw [hνeq]
+    exact withDensity_absolutelyContinuous ρ Z
+  obtain ⟨hYν, hZν⟩ :=
+    durrett2019_theorem_4_3_5_density_pair_ae_eq_under_nu_of_forall_setLIntegral
+      (μ := μ) (ν := ν) (ρ := ρ) hY hZ hμrepr hνrepr
+  exact
+    durrett2019_theorem_4_3_5_source_real_identity_of_density_ratio_top_set
+      (μ := μ) (ν := ν) (ρ := ρ) hA hμρ hνρ hYν hZν hX hμtop hνtop
+
 end ProbabilityTheory
 end StatInference

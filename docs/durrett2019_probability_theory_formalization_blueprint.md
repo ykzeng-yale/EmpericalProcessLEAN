@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V48`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V49`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -444,10 +444,14 @@ Next packet:
   dominating-measure and `mu + nu` RN ratio bridges, a source-facing `Y/Z`
   bridge, singular-set and `{X = infinity}` endpoints, and the final source
   assembly from `Y = dmu/drho`, `Z = dnu/drho`, `X = Y/Z`, and top-set
-  separation.  The next active target is one real Durrett proof obligation:
-  identify the bounded martingale limits with RN derivatives, prove `X = Y/Z`,
-  or prove the top-set singular separation consumed by the assembly.  Theorem
-  4.1.16 remains deferred unless a direct kernel API appears.
+  separation.  The integral-representation to RN-derivative bridge also now
+  compiles: set-integral representations of `mu` and `nu` against `rho`
+  produce the `Y = dmu/drho` and `Z = dnu/drho` hypotheses consumed by the
+  assembly.  The next active target is one real Durrett source-production
+  obligation: derive those set-integral representations from bounded
+  convergence and the generating class, or prove `X = Y/Z` / top-set singular
+  separation.  Theorem 4.1.16 remains deferred unless a direct kernel API
+  appears.
 
 Support-only dependencies:
 
