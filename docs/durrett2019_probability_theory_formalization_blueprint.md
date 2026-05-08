@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V14`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V45`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -391,19 +391,59 @@ Compiled Section 3.2 packets:
 
 Next packet:
 
-- Chapter 4.1: continue the conditional-expectation layer.  The Section 3.10
+- Chapter 4.2: continue the martingale layer.  The Section 3.10
   multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise
   3.10.8 linear-combination characterization wrappers, Durrett conditional
-  expectation version predicate, mathlib-condExp version wrapper, and Example
-  4.1.3 self/constant wrappers now compile and should be treated as closed
-  support.  Next search mathlib `condExp_indep_eq`, `condExp_congr_ae`,
-  set-integral uniqueness, and local conditional-expectation wrappers before
-  packaging Example 4.1.4.
+  expectation version predicate, mathlib-condExp version wrapper, Example 4.1.3
+  self/constant wrappers, Example 4.1.4 independence wrapper, Theorem 4.1.9
+  linearity/monotonicity wrappers, Theorem 4.1.10 conditional Jensen, Theorem
+  4.1.11 `L¹`/`L²` contraction wrappers, Theorem 4.1.12
+  measurability-collapse wrapper, Theorem 4.1.13 tower wrappers, and Theorem
+  4.1.14 pull-out wrapper, and Theorem 4.1.15 `condExpL2` projection wrappers
+  now compile and should be treated as closed support.  Chapter 4.2
+  definition-level martingale wrappers and Example 4.2.1 linear random-walk
+  martingale/supermartingale/submartingale and centered-display wrappers now
+  compile.  The Example 4.2.2 quadratic martingale source bridge and its
+  natural-random-walk instantiation now compile.  Example 4.2.3 product
+  martingales now compile for independent integrable mean-one factors, and its
+  normalized exponential display/wrapper now compiles from a nonzero common
+  exponential moment.  Theorems 4.2.4 and 4.2.5 now compile as all-times and
+  strict-index conditional-expectation wrappers, and the generic Theorem 4.2.6
+  convex-image submartingale wrapper and `|X_n|^p` consequence now compile
+  from conditional Jensen and the `x ↦ |x|^p` convexity wrapper.  Theorem
+  4.2.7 increasing-convex transform, positive-part, and minimum-truncation
+  wrappers now compile.  Theorem 4.2.8 predictable-transform wrappers now
+  compile for submartingales, supermartingales, predictable-process
+  entrypoints, and nonnegative martingale transforms.  Theorem 4.2.9
+  stopped-process wrappers now compile for submartingales, supermartingales,
+  and martingales.  Theorem 4.2.10 upcrossing inequality now compiles in both
+  mathlib positive-part form and Durrett's textbook initial-positive-part
+  subtraction display.  Theorem 4.2.11 now has direct mathlib L1/eLpNorm
+  convergence wrappers: almost-sure existence, convergence to `ℱ.limitProcess`,
+  L1 membership, integrability of the limit, martingale specializations, and
+  the exact positive-part-boundedness bridge for Durrett's source hypothesis.
+  Theorem 4.2.12 now has nonnegative-supermartingale convergence,
+  integrable-limit, Fatou expectation, and final expectation-bounded limit
+  wrappers.  Theorem 4.3.1 now has stopped-shifted convergence,
+  survival-transfer, first-below stopping-time, bounded-increment lower-bound,
+  first-below survival convergence, and bounded-below path-event convergence
+  support wrappers, plus symmetric bounded-above and one-sided-bounded union
+  convergence wrappers, plus the range-form convergence-or-unbounded
+  dichotomy wrapper, the threshold-form oscillation wrapper, and the exact
+  extended-real liminf/limsup display.  Durrett Theorem 4.3.2 now compiles
+  through the Doob-decomposition existence/formula wrapper and canonical plus
+  source-facing uniqueness wrappers using mathlib's
+  `predictablePart`/`martingalePart` centering API.  Example 4.3.3 and Theorem
+  4.3.4 conditional Borel-Cantelli now compile via mathlib
+  `Probability.Martingale.BorelCantelli`.  The next active target is Theorem
+  4.3.5 Radon-Nikodym derivatives, beginning with a narrow Lemma 4.3.6
+  likelihood-ratio martingale bridge if the rn-deriv/restriction APIs line up.
+  Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
 
 - Use Section 3.3 inversion or uniqueness support only when it directly blocks
-  the Section 3.10 convergence route.
+  the active Chapter 4.1 theorem or a later theorem with a real dependency.
 - Treat Section 3.4 Lindeberg-Feller analytic estimates, including the direct
   square-integrable source wrapper and variance-tail split machinery, as closed
   support to consume rather than re-prove.
@@ -418,7 +458,8 @@ Chapter 3 source inventory:
 - Theorem 3.1.2, de Moivre-Laplace local limit.
 - Section 3.3 characteristic functions and inversion formula.
 - Section 3.4 central limit theorems.
-- Active frontier: Section 3.10 limit theorems in `R^d`.
+- Section 3.10 limit theorems in `R^d`.
+- Active frontier: Chapter 4.2 martingales.
 
 Source anchors:
 
@@ -428,6 +469,14 @@ Source anchors:
   411, Theorem 3.3.17 near line 748, Theorem 3.3.20 near line 898, Section
   3.4 near line 1228, Theorem 3.4.1 near line 1234, and Section 3.10 near line
   3643.
+- The same Markdown chunk contains Chapter 4.1 conditional expectation:
+  Lemma 4.1.1 near line 3894, Theorem 4.1.2 near line 3920, Example 4.1.4
+  near line 3969, Example 4.1.5 near line 3982, Theorem 4.1.9 near line 4081,
+  Theorem 4.1.13 near line 4183, and Theorem 4.1.14 near line 4196.
+- The same Markdown chunk contains Chapter 4.2 martingales near line 4348,
+  Example 4.2.1 linear martingales near line 4358, and Example 4.2.2 quadratic
+  martingales near line 4378, followed by Example 4.2.3 exponential
+  martingales.
 
 Initial Lean reuse anchors:
 
@@ -444,8 +493,8 @@ Initial Lean reuse anchors:
 ### Lane E: martingales, Markov chains, Brownian motion
 
 These later chapters should be prepared by read-only search first.  They are
-valuable, but should not block the active Section 3.10 lane unless a remote
-agent has already landed directly reusable support.
+valuable, but should not block the active Chapter 4.1 conditional-expectation
+lane unless a remote agent has already landed directly reusable support.
 
 Likely anchors:
 

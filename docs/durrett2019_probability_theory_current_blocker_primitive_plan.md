@@ -4,34 +4,91 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V14
+## Live In-Thread Goal Prompt V45
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Treat the compiled Chapter 2 / Chapter 3 support, including the
-Section 3.10 multivariate CLT, Gaussian-coordinate independence criterion, and
-Exercise 3.10.8 linear-combination characterization, as closed dependencies.
+synced `main`.  Active lane only: Durrett Chapter 4.3 martingale applications in
+`StatInference/ProbabilityTheory/Martingale.lean`.  Treat compiled Chapter 2,
+Chapter 3, Chapter 4.1 through Theorem 4.1.15, Examples 4.2.1-4.2.3, and
+Theorems 4.2.4-4.2.12 as closed dependencies, including the exact
+positive-part-boundedness source bridge for Theorem 4.2.11 and the Fatou
+expectation inequality `E X ≤ E X_0` for Theorem 4.2.12.  Theorem 4.1.16
+remains deferred unless a future targeted kernel search finds a direct
+source-shaped API.
 
-Next theorem-sized packet: continue Chapter 4.1 conditional expectation after
-the compiled Durrett version predicate, mathlib-condExp version wrapper, and
-Example 4.1.3 self/constant wrappers in
-`StatInference/ProbabilityTheory/ConditionalExpectation.lean`.  Search and
-reuse mathlib `condExp_indep_eq`, `condExp_congr_ae`, set-integral uniqueness,
-and local conditional-expectation wrappers first.  The preferred next source
-target is Example 4.1.4, conditional expectation of a random variable
-independent of the conditioning sigma-field equals its expectation.
+Current compiled Chapter 4.2 support: Durrett-facing martingale,
+submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
+quadratic, product, and normalized exponential martingales; Theorems
+4.2.4/4.2.5 conditional-expectation wrappers; Theorem 4.2.6 convex-image and
+`|X_n|^p` consequences; and Theorem 4.2.7 increasing-convex, positive-part,
+and minimum-truncation consequences; and Theorem 4.2.8 predictable-transform
+wrappers for submartingales, supermartingales, and nonnegative martingale
+transforms; and Theorem 4.2.9 stopped-process wrappers for submartingales,
+supermartingales, and martingales; and Theorem 4.2.10 upcrossing inequality
+wrappers, including the textbook initial-positive-part subtraction display;
+and Theorem 4.2.11 direct L1/eLpNorm convergence wrappers:
+almost-sure existence, convergence to `ℱ.limitProcess`, L1 membership,
+integrability of the limit, martingale specializations, and source-facing
+positive-part-boundedness wrappers matching Durrett's `sup_n E X_n^+ < ∞`
+hypothesis through a compiled `eLpNorm` bridge; and Theorem 4.2.12
+nonnegative-supermartingale convergence, integrable-limit, Fatou expectation
+bridge, and final existential source wrapper.  The first Theorem 4.3.1 support
+packet now compiles: a shifted nonnegative stopped martingale converges almost
+surely, and that stopped convergence transfers back to the original martingale
+on the survival event `{N = ⊤}`.  The first-below instantiation also now
+compiles: `N = inf {n : X_n ≤ -K}` is packaged as a stopping time, bounded
+increments prove `0 ≤ X_{n ∧ N} + K + M`, and this feeds the stopped-shifted
+bridge to get convergence on `{N = ⊤}`.  The bounded-below path bridge now
+compiles by intersecting the first-below survival statements over countably
+many natural thresholds.  The symmetric bounded-above bridge also now compiles
+by applying the bounded-below bridge to the negated martingale, and the
+one-sided-bounded union bridge is packaged.  The range-form event
+classification now compiles: almost surely, either the martingale converges to
+a finite real limit or its range is unbounded both below and above.  The
+threshold-form oscillation wrapper also now compiles: on the nonconvergent
+side, the path visits below and above every real threshold.  The exact
+extended-real display for Theorem 4.3.1 also now compiles: almost surely, the
+martingale either converges to a finite real limit or has `EReal` `liminf = ⊥`
+and `EReal` `limsup = ⊤`, matching Durrett's `-∞/+∞` statement.  The
+existence and formula part of Theorem 4.3.2 also now compiles by reusing
+mathlib's `Mathlib.Probability.Martingale.Centering` API:
+`X = martingalePart X + predictablePart X`, the martingale part is a
+martingale, and the predictable part is predictable, increasing, starts at
+zero, and has Durrett's finite-sum formula.
+The uniqueness side of Theorem 4.3.2 also now compiles: any martingale plus
+predictable zero-start decomposition of a process agrees with the canonical
+`martingalePart`/`predictablePart` pair almost surely at each fixed time, and
+two such decompositions of the same process agree almost surely at each fixed
+time.
+Example 4.3.3 and Theorem 4.3.4 also now compile via mathlib's generalized
+Borel-Cantelli API: the counting-process martingale part is a martingale, the
+martingale and predictable finite-sum formulas are packaged, the one-step
+counting-process difference bound is exposed, and the conditional
+Borel-Cantelli limsup/divergent-conditional-sum equivalence is source-facing.
+
+Next theorem-sized packet: start the next numbered Chapter 4.3 target,
+Theorem 4.3.5 on Radon-Nikodym derivatives.  First search/reuse mathlib
+`Measure.rnDeriv`, restriction/trim APIs, `AbsolutelyContinuous`,
+`MutuallySingular`, and martingale APIs for conditional-expectation/rn-deriv
+processes.  The first Lean packet should be narrow: either a Lemma 4.3.6-style
+likelihood-ratio martingale wrapper from supplied restriction/rn-deriv
+hypotheses, or a source-facing theorem statement that packages the exact
+measure identity assumed by that martingale wrapper.  Defer Polya urn as a
+model-specific construction unless a direct existing primitive is found.  Do
+not route back into Theorems 4.3.1-4.3.4.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
 check, proof-hole scan, secret scan, and root build only when imports changed;
 update route docs only if the frontier changes; commit and push.  Do not
-revisit completed Chapter 2 or earlier Chapter 3 support unless this Section
-3.10 packet requires a dependency.  No automations or subagents unless the user
-asks in the current turn.  Use a worktree only for dirty, long, or disjoint
-local work.  Chat with the user bilingually; keep all files, code, comments,
-docs, and commit messages in English.
+route back to Chapter 2, Chapter 3, or solved Chapter 4.1 starter wrappers
+unless the current theorem exposes a real dependency.  No automations or
+subagents unless the user asks in the current turn.  Use a worktree only for
+dirty, long, or disjoint local work.  Chat with the user bilingually; keep all
+files, code, comments, docs, and commit messages in English.
 
 ## Minimal Operating Contract
 
@@ -272,6 +329,25 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedSummandCLT`
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianSource`
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianSource`
+- `durrett2019_section_4_1_IsConditionalExpectationVersion`
+- `durrett2019_section_4_1_condExp_isConditionalExpectationVersion`
+- `durrett2019_example_4_1_3_self_isConditionalExpectationVersion`
+- `durrett2019_example_4_1_3_condExp_eq_of_stronglyMeasurable`
+- `durrett2019_example_4_1_3_condExp_const`
+- `durrett2019_example_4_1_4_condExp_eq_integral_of_independent`
+- `durrett2019_theorem_4_1_9_condExp_linear`
+- `durrett2019_theorem_4_1_9_condExp_mono_real`
+- `durrett2019_theorem_4_1_12_condExp_eq_of_larger_condExp_stronglyMeasurable`
+- `durrett2019_theorem_4_1_13_condExp_tower_larger_of_smaller`
+- `durrett2019_theorem_4_1_13_condExp_tower_smaller_of_larger`
+- `durrett2019_theorem_4_1_14_condExp_mul_of_stronglyMeasurable_left`
+- `durrett2019_theorem_4_1_10_conditional_jensen_real`
+- `durrett2019_theorem_4_1_11_condExp_L1_contraction_real`
+- `durrett2019_theorem_4_1_11_condExp_L2_contraction`
+- `durrett2019_theorem_4_1_11_condExp_memLp_two`
+- `durrett2019_theorem_4_1_15_condExpL2_residual_inner_eq_zero`
+- `durrett2019_theorem_4_1_15_condExpL2_minimal_norm_le`
+- `durrett2019_theorem_4_1_15_condExpL2_ae_eq_condExp`
 
 Existing reusable probability-measure modules cover much of the early-book
 substrate:
@@ -284,9 +360,8 @@ substrate:
 - weak convergence and finite-dimensional law wrappers;
 - empirical-process fixed-endpoint empirical-CDF support.
 
-The immediate blocker has shifted from Chapter 2 completion to the Chapter 3
-weak-convergence and CLT spine.  The prior large targets are closed as source
-wrappers:
+The immediate blocker is now Chapter 4.2 martingales.  The prior large Chapter
+2, Chapter 3, and Chapter 4.1 targets are closed as source wrappers:
 
 - Durrett Theorem 2.4.9 now has the arbitrary-law half-line GC handoff and the
   source-facing empirical distribution-function wrapper
@@ -295,13 +370,17 @@ wrappers:
   finite product-law, iid common-law product, iid criterion, and canonical iid
   product-coordinate wrappers.
 
-Do not spend the next cycle on center insertion, EDF notation, or Chapter 2.1
-polish unless a later Chapter 3 statement exposes an exact missing dependency.
+Do not spend the next cycle on center insertion, EDF notation, Chapter 2.1
+polish, Lindeberg-Feller estimates, Section 3.10 vector-limit polish, or
+Chapter 4.1 conditional-expectation repackaging unless the active Chapter 4.2
+theorem exposes an exact missing dependency.
 
-Current aggressive target: move from the Chapter 3.2 weak-convergence
-foundations and Chapter 3.3 characteristic-function spine into Chapter 3.4
-central-limit support.  The first Section 3.2, 3.3, and 3.4 packets now
-compile:
+Current aggressive target: continue the Chapter 4.2 martingale spine beyond the
+compiled Example 4.2.1 linear random-walk martingale/supermartingale/
+submartingale and centered-display wrappers and the compiled Example 4.2.2
+quadratic source/natural-random-walk bridges and Example 4.2.3 product
+martingale and normalized-exponential bridges.  The following Chapter 3,
+Chapter 4.1, and Chapter 4.2 packets now compile:
 
 - Durrett Theorem 3.2.9 bounded-continuous test characterization, including
   the `integral_map` bridge from map-law integrals to textbook expectations
@@ -347,59 +426,26 @@ compile:
   rewriting to the scalar Taylor bound, one-factor bound, finite-row bound,
   row-sum error convergence, analytic certificate, and final
   convergence-in-distribution constructor.
+- Durrett Section 3.10 now has compiled Cramér-Wold, multivariate CLT,
+  Gaussian-coordinate independence, and Exercise 3.10.8 linear-combination
+  Gaussian-characterization wrappers in
+  `StatInference/ProbabilityTheory/Multivariate.lean`.
+- Durrett Chapter 4.1 now has the conditional-expectation starter module in
+  `StatInference/ProbabilityTheory/ConditionalExpectation.lean`, including
+  the source version predicate, the mathlib `condExp` version wrapper, Example
+  4.1.3 self/constant wrappers, and Example 4.1.4 independence wrapper
+  `durrett2019_example_4_1_4_condExp_eq_integral_of_independent`, plus
+  Theorem 4.1.9 linearity/monotonicity, Theorem 4.1.12 measurability collapse,
+  Theorem 4.1.13 tower, Theorem 4.1.14 pull-out, Theorem 4.1.10 conditional
+  Jensen, and Theorem 4.1.11 `L¹`/`L²` contraction wrappers.
+  Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
+  minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should attack the analytic Lindeberg-Feller estimate
-layer before moving to multivariate CLT reuse:
-
-- Definition/Section 3.2 weak convergence of random variables: reuse
-  `MeasureTheory.TendstoInDistribution` and
-  `StatInference/ProbabilityMeasure/WeakConvergence.lean`.
-- Section 3.3 characteristic functions: the basic, continuity-theorem, and
-  centered second-order Taylor wrappers now compile; only add inversion or
-  uniqueness support when a later source theorem needs it directly.
-- Section 3.4 central limit theorems: prove the remaining analytic obligations.
-  The scalar expansion-bound predicate
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorExpansionBound`
-  now feeds the scalar Taylor-bound predicate
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorTaylorBound`,
-  the variance-based one-factor bound
-  `durrett2019_lindebergFellerCharacteristicQuadraticOneFactorBound`, then the
-  finite-row bound
-  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumBound`, which
-  then feeds
-  `durrett2019_lindebergFellerCharacteristicQuadraticErrorRowSumTendstoZero`
-  through compiled bridges.  The pointwise truncation split of the minimum term
-  also compiles.  Durrett Lemma 3.3.19 `n = 2` now proves the pure scalar
-  minimum-form Taylor estimate, the source-facing pointwise predicate, the
-  pointwise-to-expectation bridge, and the final square-integrable
-  Lindeberg-Feller source wrapper.  Do not route new work back to the
-  (3.3.3) Taylor chain unless a dependency breaks.
-  The
-  quadratic-product obligation
-  `durrett2019_lindebergFellerQuadraticVarianceProductConvergenceExp` now has
-  a compiled bridge from variance-sum convergence and max-row-variance
-  smallness using the proved Exercise 3.1.1 real triangular-array product
-  theorem; with the variance-tail split, it also has a compiled bridge
-  directly from Lindeberg.  A final source-facing constructor now assembles the
-  analytic certificate and the convergence-in-distribution theorem from
-  square-integrable rows plus the finite-row Taylor/Lindeberg bound predicate.
-  Exercise 3.1.1 itself now compiles: max-smallness gives
-  eventual positivity and the relative logarithmic remainder estimate, uniform
-  absolute row-sum boundedness turns that into row-sum log-remainder
-  convergence, and the logarithmic product bridge proves the source theorem.
-  The variance-tail split bridge now proves Durrett's source inequality
-  `variance <= cutoff ^ 2 + tail row sum` from row `AEMeasurable` plus
-  square-integrability assumptions, then packages it into the existing
-  `durrett2019_lindebergFellerVarianceSplitByTailRowSum` predicate.  The next
-  max-row-variance work should therefore not re-prove this split, but consume
-  `durrett2019_lindebergFellerVarianceSplitByTailRowSum_of_integrableSq`.
-- Section 3.10 characteristic-function convergence, Cramér-Wold, and
-  multivariate CLT: the finite-coordinate law-level Cramér-Wold wrapper and the
-  Durrett Theorem 3.10.7 projected scalar/summand and covariance/Gaussian
-  source wrappers now compile in
-  `StatInference/ProbabilityTheory/Multivariate.lean`.  Next, package the
-  textbook covariance-table and Gaussian characteristic-function display for
-  Durrett's statement before adding any new vector probability primitives.
+The next likely packet should start Theorem 4.3.5 on Radon-Nikodym derivatives
+by searching mathlib's rn-deriv/restriction/absolute-continuity APIs and
+packaging the Lemma 4.3.6 likelihood-ratio martingale bridge if immediate.
+Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
+source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -420,6 +466,10 @@ High-value Chapter 3 source anchors are in
 - Section 3.10 multivariate weak convergence starts near line 3643.
 - Theorems 3.10.1, 3.10.5, 3.10.6, and 3.10.7 appear near lines
   3647, 3778, 3784, and 3789.
+- Section 4.1 conditional expectation starts near line 3894 in the same
+  Markdown chunk.  Example 4.1.4 appears near line 3969, Example 4.1.5 near
+  line 3982, Theorem 4.1.9 near line 4081, Theorem 4.1.13 near line 4183, and
+  Theorem 4.1.14 near line 4196.
 
 Do not start with raw Chapter 1 extension theorem formalization, Stieltjes
 measure construction, or appendix foundations unless an exact Durrett theorem
@@ -507,6 +557,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V14` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V45` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
