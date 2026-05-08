@@ -524,9 +524,17 @@ The newest weighted-suffix bridge adds the finite triangular counting identity
 `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_difference_error`
 and
 `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_compensated_error`.
+The newest weighted compensated-error packet proves
+`projectedCompensatedTaylorErrorFactor_weighted_row_norm_le`,
+`projectedCompensatedTaylorError_weighted_row_integral_tendsto_zero`,
+`projectedCompensatedTaylorError_weighted_row_norm_integrable_of_variance_remainder`,
+`projectedCompensatedTaylorError_weighted_row_integral_tendsto_zero_of_variance_remainder`,
+and the future-tail consumer
+`projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_variance_remainder`.
 The remaining ASGD proof obligations for this route are now precisely:
-1. prove the weighted compensated Taylor-error convergence consumed by
-   `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_compensated_error`.
+1. prove or replace the weighted variance-only and weighted Taylor-remainder
+   convergence assumptions consumed by
+   `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_variance_remainder`.
    The unweighted row convergence is not enough for suffix sums, because the
    triangular regrouping counts the one-step error at index `k` exactly `k`
    times;

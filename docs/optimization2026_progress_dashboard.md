@@ -549,10 +549,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   and
   `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_compensated_error`,
   reusing mathlib `Finset.sum_Ico_Ico_comm'` for the triangular finite-sum
-  regrouping.  The active estimates are now the weighted compensated
-  Taylor-error convergence and the inverse-tail conditional residual
-  convergence; ordinary unweighted row-error convergence is not sufficient for
-  the suffix sum because index `k` is counted `k` times.
+  regrouping.  The newest weighted compensated-error packet adds
+  `projectedCompensatedTaylorErrorFactor_weighted_row_norm_le`,
+  `projectedCompensatedTaylorError_weighted_row_integral_tendsto_zero`,
+  `projectedCompensatedTaylorError_weighted_row_norm_integrable_of_variance_remainder`,
+  `projectedCompensatedTaylorError_weighted_row_integral_tendsto_zero_of_variance_remainder`,
+  and
+  `projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_variance_remainder`.
+  The active estimates are now the weighted variance-only error convergence,
+  weighted Taylor-remainder convergence, and the inverse-tail conditional
+  residual convergence; ordinary unweighted row-error convergence is not
+  sufficient for the suffix sum because index `k` is counted `k` times.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
   earlier `F_r` for `r < k`.  Next target: build and bound a predictable proxy
