@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V46
+## Live In-Thread Goal Prompt V47
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -73,18 +73,26 @@ trimmed RN derivatives integrate over `ℱ n`-events to the original measure,
 equal restricted set integrals imply the martingale property, the
 likelihood-ratio process `d μ_n / d ν_n` is a martingale under the restricted
 absolute-continuity hypotheses, and its nonnegative convergence follows from
-Theorem 4.2.12.
+Theorem 4.2.12.  The regular/singular decomposition layer of Theorem 4.3.5
+also now compiles: the measure identity
+`mu = nu.withDensity (mu.rnDeriv nu) + mu.singularPart nu`, the real-integral
+identity with `(mu.rnDeriv nu).toReal`, and the source-shaped endpoint from a
+supplied a.e. density identification plus a supplied singular-part restriction
+are packaged.
 
-Next theorem-sized packet: continue Theorem 4.3.5 after the compiled
-likelihood-ratio martingale/convergence bridge.  Target the limit/decomposition
-layer: connect the real a.s. limit or `limsup` display to the singular/regular
-measure identity
-`μ(A) = ∫_A X dν + μ(A ∩ {X = ∞})`.  Search/reuse mathlib
-`withDensity_rnDeriv_eq`, `singularPart`, `rnDeriv_add`, `rnDeriv_eq_div`,
-`toReal_rnDeriv_trim`, and set-integral/lintegral convergence APIs.  Defer
-Polya urn as a model-specific construction unless a direct existing primitive is
-found.  Do not route back into Theorems 4.3.1-4.3.4 or the finished Lemma 4.3.6
-martingale bridge.
+Next theorem-sized packet: continue Theorem 4.3.5 by identifying the
+textbook singular set `{X = infinity}` and the density ratio `X = Y / Z`.
+Do not redo the already compiled RN martingale/convergence bridge or the
+regular/singular measure identity.  Search/reuse mathlib
+`rnDeriv_eq_div`, `rnDeriv_eq_div_rnDeriv_add`, `singularPart_eq_restrict`,
+`singularPart_eq_restrict'`, `rnDeriv_add_singularPart`,
+`withDensity_rnDeriv_le`, `Measure.restrict`, `ae_eq_of_ae_eq_of_ae_eq`, and
+ENNReal/toReal set-integral APIs.  The desired next bridge should turn the
+Durrett proof's `rho = (mu + nu) / 2`, `Y = dmu/drho`, `Z = dnu/drho`, and
+`X = Y / Z` analysis into the supplied `hX`/`hS` hypotheses consumed by the
+compiled source-shaped identity.  Defer Polya urn as a model-specific
+construction unless a direct existing primitive is found.  Do not route back
+into Theorems 4.3.1-4.3.4, Lemma 4.3.6, or the solved decomposition identity.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -448,9 +456,10 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   minimization, and ordinary-`condExp` agreement wrappers.
 
 The next likely packet should continue Theorem 4.3.5 after the compiled
-likelihood-ratio martingale/convergence bridge, aiming at the
-regular/singular measure identity using mathlib's rn-deriv, withDensity, and
-singular-part APIs.  Keep Theorem 4.1.16 deferred unless a targeted kernel
+likelihood-ratio martingale/convergence bridge and the compiled
+regular/singular decomposition identity.  Aim at the singular-set
+identification `{X = infinity}` and the `Y/Z` rnDeriv-div bridge feeding the
+source-shaped identity.  Keep Theorem 4.1.16 deferred unless a targeted kernel
 search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
@@ -563,6 +572,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V46` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V47` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

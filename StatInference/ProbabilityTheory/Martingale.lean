@@ -2563,5 +2563,69 @@ theorem durrett2019_theorem_4_3_5_trimmed_rnDeriv_exists_ae_tendsto
     durrett2019_theorem_4_2_12_nonnegative_supermartingale_exists_ae_tendsto
       hM.supermartingale h_nonneg
 
+/--
+Durrett 2019, Theorem 4.3.5 regular/singular measure identity, in mathlib's
+Lebesgue-decomposition form.
+-/
+theorem durrett2019_theorem_4_3_5_rnDeriv_singularPart_measure_identity
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ν : Measure Ω} [μ.HaveLebesgueDecomposition ν] (A : Set Ω) :
+    μ A = (ν.withDensity (μ.rnDeriv ν)) A + (μ.singularPart ν) A := by
+  have h := congrArg (fun η : Measure Ω => η A) (Measure.rnDeriv_add_singularPart μ ν)
+  simpa [Pi.add_apply] using h.symm
+
+/--
+Durrett 2019, Theorem 4.3.5 regular/singular identity in real-integral form:
+the regular part is the integral of the real-valued Radon-Nikodym derivative,
+and the remaining term is mathlib's singular part.
+-/
+theorem durrett2019_theorem_4_3_5_rnDeriv_singularPart_real_identity
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    [μ.HaveLebesgueDecomposition ν] (A : Set Ω) :
+    μ.real A =
+      ∫ ω in A, (μ.rnDeriv ν ω).toReal ∂ν + (μ.singularPart ν).real A := by
+  have hdec :
+      μ A = (ν.withDensity (μ.rnDeriv ν)) A + (μ.singularPart ν) A :=
+    durrett2019_theorem_4_3_5_rnDeriv_singularPart_measure_identity A
+  have hreg_ne_top : (ν.withDensity (μ.rnDeriv ν)) A ≠ ∞ :=
+    ne_top_of_le_ne_top (measure_ne_top μ A) (Measure.withDensity_rnDeriv_le μ ν A)
+  have hsing_ne_top : (μ.singularPart ν) A ≠ ∞ :=
+    ne_top_of_le_ne_top (measure_ne_top μ A) (Measure.singularPart_le μ ν A)
+  calc
+    μ.real A =
+        ((ν.withDensity (μ.rnDeriv ν)) A + (μ.singularPart ν) A).toReal := by
+      rw [Measure.real, hdec]
+    _ = (ν.withDensity (μ.rnDeriv ν)).real A + (μ.singularPart ν).real A := by
+      rw [ENNReal.toReal_add hreg_ne_top hsing_ne_top, Measure.real, Measure.real]
+    _ = ∫ ω in A, (μ.rnDeriv ν ω).toReal ∂ν + (μ.singularPart ν).real A := by
+      rw [Measure.setIntegral_toReal_rnDeriv_eq_withDensity]
+
+/--
+Durrett 2019, Theorem 4.3.5 source-shaped endpoint: once the regular density
+has been identified a.e. with `X` and the singular part has been identified as
+restriction to a set `S`, the textbook identity follows for every measurable
+event `A`.
+-/
+theorem durrett2019_theorem_4_3_5_source_real_identity_of_singularPart_eq_restrict
+    {Ω : Type*} [MeasurableSpace Ω]
+    {μ ν : Measure Ω} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    [μ.HaveLebesgueDecomposition ν]
+    {X : Ω -> ℝ} {S A : Set Ω} (hA : MeasurableSet A)
+    (hX : X =ᵐ[ν] fun ω => (μ.rnDeriv ν ω).toReal)
+    (hS : μ.singularPart ν = μ.restrict S) :
+    μ.real A = ∫ ω in A, X ω ∂ν + μ.real (A ∩ S) := by
+  have hbase :=
+    durrett2019_theorem_4_3_5_rnDeriv_singularPart_real_identity
+      (μ := μ) (ν := ν) A
+  have hint :
+      ∫ ω in A, (μ.rnDeriv ν ω).toReal ∂ν = ∫ ω in A, X ω ∂ν :=
+    setIntegral_congr_ae hA (hX.symm.mono fun _ hx _ => hx)
+  have hsing : (μ.singularPart ν).real A = μ.real (A ∩ S) := by
+    rw [hS]
+    change ((μ.restrict S) A).toReal = (μ (A ∩ S)).toReal
+    rw [Measure.restrict_apply hA]
+  rw [hbase, hint, hsing]
+
 end ProbabilityTheory
 end StatInference
