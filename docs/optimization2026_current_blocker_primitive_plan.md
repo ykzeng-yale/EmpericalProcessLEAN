@@ -554,6 +554,17 @@ and
 so a future-tail predictable-proxy estimate or inverse-tail conditional
 residual estimate now feeds directly into the projected characteristic-function
 limit through the compiled right-product source-variance bridge.
+The newest certificate-consumer packet adds source-variance scalar/vector CLT
+and certificate wrappers for those two routes:
+`projected_scalar_clt_of_futureTail_predictable_l1_approx_source_variance`,
+`projected_scalar_clt_of_inverseFutureTail_condExp_source_variance`,
+`projected_clt_of_futureTail_predictable_l1_approx_source_variance`,
+`projected_clt_of_inverseFutureTail_condExp_source_variance`,
+`toProjectedBridge_of_futureTail_predictable_l1_approx_source_variance`,
+`toProjectedBridge_of_inverseFutureTail_condExp_source_variance`,
+`toMartingaleCLTCertificate_of_futureTail_predictable_l1_approx_source_variance`,
+and
+`toMartingaleCLTCertificate_of_inverseFutureTail_condExp_source_variance`.
 This shows the left compensated full-inverse product is exactly the target
 projected characteristic function, so left convergence is not an independent
 blocker.  The preferred ASGD 12.7 route is now: use the compiled right-product
