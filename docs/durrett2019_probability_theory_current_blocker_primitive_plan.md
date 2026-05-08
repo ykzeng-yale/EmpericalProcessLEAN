@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V102
+## Live In-Thread Goal Prompt V103
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -346,11 +346,19 @@ and
 `durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix_positive`
 uses it to remove the external `hPtop` input from the canonical positive-product
 handoff.
+Also treat the canonical product-tail and `tprod` positive-product handoff as
+compiled support:
+`durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix_positive_canonicalTail`
+removes the auxiliary `tail` parameter and tail-quotient equality, and
+`durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_tprod_density_trimmedPrefix_positive_canonicalTail`
+phrases the source handoff with `Multipliable` and the actual infinite product
+`∏' i, ∫⁻ y, (q i y)^((1 : ℝ) / 2) ∂ν i`; the matching `_pos_`
+wrappers accept the textbook-style hypothesis that this infinite Hellinger
+product is strictly positive.
 Move to the remaining Kakutani criterion assembly:
-search local/mathlib APIs for infinite products (`tprod`, `HasProd`,
-`Multipliable`) and logarithm/tail-measurability support.  Add only
-source-shaped wrappers that discharge the canonical-ratio nonzero-lower-integral
-input or directly feed the infinite-product criterion hypotheses consumed by the
+add only source-shaped wrappers that prove the actual positive/zero infinite
+Hellinger product criterion, discharge the canonical-ratio nonzero-lower-integral
+input, or perform the final zero/positive product case split consumed by the
 compiled branch assemblers and eliminator.  Do
 not redo the already compiled RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -388,6 +396,8 @@ Do not redo the finite-coordinate product integral, exact nested overlap
 factorization, or finite Hellinger tail-product overlap handoff.
 Do not redo the HasProd/Multipliable prefix-tail bridge or the standard
 `Finset.range n` HasProd-to-pairwise-liminf handoff.
+Do not redo the canonical product-tail wrapper or the `Multipliable`/`∏'`
+positive-product handoff, including the strict-positive product variants.
 Do not redo the every-tail-block measurability bridge into the `limsup` tail
 sigma-field.
 Do not redo the tail-coordinate sigma-field layer or finite tail cylinder
@@ -845,10 +855,13 @@ trimmed-prefix RN-ratio identity now also compiles, identifying every finite
 prefix likelihood with the quotient of the two prefix-trimmed RN derivative
 sequences over the common trimmed dominating measure.  The denominator-limit
 nonzero bridge, canonical prefix convergence from the trimmed-prefix ratio,
-positive Hellinger-product wrapper with that convergence supplied, and
-positive-product finite-limit side-condition bridge now also compile.  Move
-forward to discharging the canonical-ratio nonzero-lower-integral/product inputs
-needed to finish the remaining Kakutani criterion assembly.
+positive Hellinger-product wrapper with that convergence supplied,
+positive-product finite-limit side-condition bridge, and canonical
+product-tail/`tprod` positive-product wrappers now also compile, including
+strict-positive product variants.  Move forward to discharging the
+canonical-ratio nonzero-lower-integral input, proving the positive/zero infinite
+Hellinger product source criterion, or performing the final zero/positive product
+case split needed to finish the remaining Kakutani criterion assembly.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -962,6 +975,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V102` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V103` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

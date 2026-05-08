@@ -9150,6 +9150,144 @@ theorem
       C hC_meas hgen hC hq hμ hbranch hP0 hPtop hprod htail_eq hq_ne_top
 
 /--
+Durrett 2019, Theorem 4.3.8 canonical-ratio positive-product handoff with the
+normalized Hellinger tail fixed to its canonical product quotient.  This removes
+the auxiliary `tail` parameter from the source-shaped positive branch.
+-/
+theorem
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix_positive_canonicalTail
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {P : ℝ≥0∞}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas :
+      ∀ s ∈ C,
+        ∃ m, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S m] s)
+    (hgen :
+      (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hP0 : P ≠ 0)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  exact
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix_positive
+      (μ := μ) (ν := ν) (q := q)
+      (tail := fun n =>
+        P / (∏ i ∈ Finset.range n,
+          ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+      (P := P) C hC_meas hgen hC hq hμ hbranch hP0 hprod (by intro n; rfl)
+      hq_ne_top
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical-ratio positive-product handoff with the
+canonical product quotient and the product hypothesis stated as positivity.
+-/
+theorem
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix_pos_canonicalTail
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {P : ℝ≥0∞}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas :
+      ∀ s ∈ C,
+        ∃ m, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S m] s)
+    (hgen :
+      (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hP_pos : 0 < P)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  exact
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix_positive_canonicalTail
+      (μ := μ) (ν := ν) (q := q) (P := P)
+      C hC_meas hgen hC hq hμ hbranch (ne_of_gt hP_pos) hprod hq_ne_top
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical-ratio positive-product handoff phrased
+with the actual infinite product `∏' i, h_i`.  This is the form closest to the
+textbook's positive Hellinger-product criterion once `Multipliable` and
+nonzero-product hypotheses are available.
+-/
+theorem
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_tprod_density_trimmedPrefix_positive_canonicalTail
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas :
+      ∀ s ∈ C,
+        ∃ m, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S m] s)
+    (hgen :
+      (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hmult :
+      Multipliable (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hprod_ne_zero :
+      (∏' i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) ≠ 0)
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  exact
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_hasProd_density_trimmedPrefix_positive_canonicalTail
+      (μ := μ) (ν := ν) (q := q)
+      (P := ∏' i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)
+      C hC_meas hgen hC hq hμ hbranch hprod_ne_zero hmult.hasProd hq_ne_top
+
+/--
+Durrett 2019, Theorem 4.3.8 canonical-ratio positive-product handoff phrased
+with the textbook-style positive infinite Hellinger product.
+-/
+theorem
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_tprod_density_trimmedPrefix_pos_canonicalTail
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas :
+      ∀ s ∈ C,
+        ∃ m, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S m] s)
+    (hgen :
+      (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hmult :
+      Multipliable (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hprod_pos :
+      0 < (∏' i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    Measure.infinitePi μ ≪ Measure.infinitePi ν := by
+  exact
+    durrett2019_theorem_4_3_8_absolutelyContinuous_of_dichotomy_canonicalRatio_range_tprod_density_trimmedPrefix_positive_canonicalTail
+      (μ := μ) (ν := ν) (q := q) C hC_meas hgen hC hq hμ hbranch hmult
+      (ne_of_gt hprod_pos) hq_ne_top
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-branch final handoff: once full-prefix
 likelihoods converge to `X`, pointwise finite/nonzero coordinate densities make
 the zero set of `X` a tail event; a nonzero lower integral then selects the
