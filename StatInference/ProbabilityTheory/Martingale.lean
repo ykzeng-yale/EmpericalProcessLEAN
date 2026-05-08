@@ -5766,6 +5766,39 @@ theorem durrett2019_theorem_4_3_8_hellingerTail_tendsto_one_of_prefix_tendsto
   exact hratio_one.congr' (htail_eq.mono fun n hn => hn.symm)
 
 /--
+Durrett 2019, Theorem 4.3.8 positive-product support: a `HasProd`
+statement for the one-coordinate Hellinger affinities supplies the prefix
+convergence required by the normalized tail bridge.
+-/
+theorem durrett2019_theorem_4_3_8_hellingerTail_tendsto_one_of_hasProd
+    {h tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hP0 : P ≠ 0) (hPtop : P ≠ ∞)
+    (hprod : HasProd h P)
+    (htail_eq :
+      ∀ᶠ n in atTop, tail n = P / (∏ i ∈ Finset.range n, h i)) :
+    Tendsto tail atTop (𝓝 1) := by
+  exact
+    durrett2019_theorem_4_3_8_hellingerTail_tendsto_one_of_prefix_tendsto
+      (pref := fun n => ∏ i ∈ Finset.range n, h i)
+      (tail := tail) (P := P) hP0 hPtop hprod.tendsto_prod_nat htail_eq
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product support: the same tail
+convergence bridge phrased with the actual infinite product value `∏' i, h i`.
+-/
+theorem durrett2019_theorem_4_3_8_hellingerTail_tendsto_one_of_multipliable
+    {h tail : ℕ -> ℝ≥0∞}
+    (hmult : Multipliable h)
+    (hP0 : (∏' i, h i) ≠ 0) (hPtop : (∏' i, h i) ≠ ∞)
+    (htail_eq :
+      ∀ᶠ n in atTop, tail n = (∏' i, h i) / (∏ i ∈ Finset.range n, h i)) :
+    Tendsto tail atTop (𝓝 1) := by
+  exact
+    durrett2019_theorem_4_3_8_hellingerTail_tendsto_one_of_hasProd
+      (h := h) (tail := tail) (P := ∏' i, h i) hP0 hPtop hmult.hasProd
+      htail_eq
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-product Cauchy support: if the Hellinger
 tail affinities tend to one, then the textbook Hellinger-tail L1 bound tends
 to zero.
@@ -6683,6 +6716,60 @@ theorem durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_tailProd
       (durrett2019_theorem_4_3_8_cylinderLikelihood_overlap_lower_bound_of_tailProduct
         (μ := μ) (ν := ν) (Iseq := Iseq) (q := q) (tail := tail)
         hq hμ hsubset htail_prod)
+
+/--
+Durrett 2019, Theorem 4.3.8 positive-product cylinder Cauchy handoff for the
+standard prefix exhaustion of `ℕ`: a `HasProd` statement for the
+one-coordinate Hellinger affinities supplies `tail -> 1`, while finite
+tail-product lower bounds supply the concrete overlap estimates.
+-/
+theorem durrett2019_theorem_4_3_8_cylinderLikelihood_range_pairwise_liminf_of_hasProd_tailProduct
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞} {tail : ℕ -> ℝ≥0∞} {P : ℝ≥0∞}
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hP0 : P ≠ 0) (hPtop : P ≠ ∞)
+    (hprod :
+      HasProd (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) P)
+    (htail_le : ∀ n, tail n ≤ 1)
+    (htail_eq :
+      ∀ᶠ n in atTop,
+        tail n =
+          P / (∏ i ∈ Finset.range n,
+            ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hfinite :
+      ∀ n, ∀ᶠ m in atTop,
+        ∀ᵐ x ∂Measure.infinitePi ν,
+          durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x ≠ ∞ ∧
+            durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x ≠ ∞)
+    (htail_prod :
+      ∀ n, ∀ᶠ m in atTop,
+        tail n ≤
+          (Finset.range m \ Finset.range n).prod
+            (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)) :
+    Tendsto
+      (fun n =>
+        Filter.liminf
+          (fun m =>
+            ∫⁻ x,
+              ‖(durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range n) q x).toReal -
+                (durrett2019_theorem_4_3_8_cylinderLikelihood (Finset.range m) q x).toReal‖ₑ
+              ∂Measure.infinitePi ν)
+          atTop)
+      atTop (𝓝 0) := by
+  refine
+    durrett2019_theorem_4_3_8_cylinderLikelihood_pairwise_liminf_of_tailProduct_lower_bound
+      (μ := μ) (ν := ν) (Iseq := fun n => Finset.range n) (q := q) (tail := tail)
+      hq hμ htail_le ?_ hfinite ?_ htail_prod
+  · exact
+      durrett2019_theorem_4_3_8_hellingerTail_tendsto_one_of_hasProd
+        (h := fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)
+        (tail := tail) (P := P) hP0 hPtop hprod htail_eq
+  · intro n
+    filter_upwards [eventually_ge_atTop n] with m hnm
+    exact Finset.range_subset_range.2 hnm
 
 /--
 Durrett 2019, Theorem 4.3.8 positive-product handoff: convergence of the
