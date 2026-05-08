@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V58
+## Live In-Thread Goal Prompt V59
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -115,27 +115,31 @@ candidates, shown a.e. measurable and finite, and fed to the existing
 `mu + nu` `toReal` source endpoint.  The canonical-ratio endpoint also now
 compiles: choosing `X` as the ratio of the two canonical limit densities
 discharges the `X = Y / Z` source obligation automatically.  The denominator
-top-set layer also now compiles: if `nu = rho.withDensity Z` and the numerator
-is finite, then `nu {Y/Z = infinity} = 0`; the generator-level ratio endpoint
-and the canonical `mu + nu` ratio endpoint now discharge
-`nu {canonicalRatio = infinity} = 0` automatically.
+and singular-support top-set layers also now compile: common-density
+representations prove `nu {Y/Z = infinity} = 0`, absolute continuity of
+`mu.restrict {Y/Z = infinity}^c` with respect to `nu`, and hence
+`mu.singularPart nu {Y/Z = infinity}^c = 0`; the generator-level and canonical
+`mu + nu` endpoints now discharge both top-set obligations automatically.  The
+full canonical-ratio real identity for Theorem 4.3.5 now compiles.
 
-Next theorem-sized packet: continue Theorem 4.3.5 by proving the remaining
-top-set singular support statement for the canonical ratio:
-`mu.singularPart nu {canonicalRatio = infinity}^c = 0`.  Search/reuse
-singular-part support APIs, mutual singularity/separating-set APIs,
-`withDensity` support lemmas, `ENNReal` division/top/zero lemmas, RN derivative
-ratio identities, and a.e.-restriction APIs.  Do not redo the
-already compiled RN martingale/convergence bridge,
-regular/singular decomposition identity, density-ratio bridge, top-set
-endpoint assembly, integral-representation to RN-derivative bridge,
-generator-extension bridge, bounded-convergence generator-production bridge,
-trimmed-RN eventual restricted-density bridge, `mu + nu` boundedness bridge, or
-real-to-`ENNReal` convergence-transfer bridge, or the bounded real-martingale
-limitProcess convergence bridge, or the canonical limit-density endpoint,
-canonical ratio endpoint, or denominator-side top-set null endpoint.
-Defer Polya urn as a model-specific construction unless a direct existing
-primitive is found.
+Next theorem-sized packet: treat Theorem 4.3.5 / Lemma 4.3.6 as closed support
+and move forward to Example 4.3.7 finite partition likelihood-ratio
+approximations, then Theorem 4.3.8 Kakutani dichotomy for infinite product
+measures.  First search local/mathlib APIs for finite partitions,
+`Measure.pi`, product-coordinate laws, independence, RN derivatives of product
+measures, finite product likelihood ratios, infinite products, and tail-event
+zero-one/singularity support.  Add only source-shaped partition or product
+likelihood-ratio wrappers that directly feed the Kakutani route.  Do not redo
+the already compiled RN martingale/convergence bridge, regular/singular
+decomposition identity, density-ratio bridge, top-set endpoint assembly,
+integral-representation to RN-derivative bridge, generator-extension bridge,
+bounded-convergence generator-production bridge, trimmed-RN eventual
+restricted-density bridge, `mu + nu` boundedness bridge,
+real-to-`ENNReal` convergence-transfer bridge, bounded real-martingale
+limitProcess convergence bridge, canonical limit-density endpoint, canonical
+ratio endpoint, denominator-side top-set null endpoint, singular-support
+top-set endpoint, or full canonical-ratio real identity.  Defer Polya urn as a
+model-specific construction unless a direct existing primitive is found.
 
 Loop: fetch/rebase, read only the needed Durrett/source/API anchors, implement
 one theorem-sized wrapper or bridge, run focused Lean, targeted build, diff
@@ -498,17 +502,17 @@ Chapter 4.1, and Chapter 4.2 packets now compile:
   Durrett Theorem 4.1.15 now has `condExpL2` residual orthogonality,
   minimization, and ordinary-`condExp` agreement wrappers.
 
-The next likely packet should continue Theorem 4.3.5 after the compiled
-likelihood-ratio martingale/convergence bridge and the compiled
-regular/singular decomposition identity plus the compiled density-ratio/top-set
-assembly and the compiled integral-representation to RN-derivative bridge.
-The generator-extension, bounded-convergence generator-production,
-trimmed-RN eventual restricted-density, and `mu + nu` boundedness bridges also
-now compile, and the canonical ratio plus denominator-side top-set null
-endpoint now compile.  Aim at the remaining source-production obligation:
-prove `mu.singularPart nu {canonicalRatio = infinity}^c = 0`.  Keep Theorem
-4.1.16 deferred unless a targeted kernel search finds a direct source-shaped
-API.
+The next likely packet should treat Theorem 4.3.5 / Lemma 4.3.6 as closed
+support after the compiled likelihood-ratio martingale/convergence bridge,
+regular/singular decomposition identity, density-ratio/top-set assembly,
+integral-representation to RN-derivative bridge, generator-extension bridge,
+bounded-convergence generator-production bridge, trimmed-RN eventual
+restricted-density bridge, `mu + nu` boundedness bridge, canonical ratio,
+denominator-side top-set null endpoint, singular-support top-set endpoint, and
+full canonical-ratio real identity.  Move forward to Example 4.3.7 finite
+partition likelihood-ratio approximations, then Theorem 4.3.8 Kakutani
+dichotomy for infinite product measures.  Keep Theorem 4.1.16 deferred unless
+a targeted kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -620,6 +624,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V58` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V59` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
