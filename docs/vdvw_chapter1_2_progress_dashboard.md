@@ -55,6 +55,16 @@ with
 `VdVWTheorem243_signSideRademacherMeasurableCover_of_set_countable`
 delegating to the canonical cover, so the sign-side measurable-cover input is
 no longer a blocker in that lane.
+The permutation-symmetric Chapter 1 substrate now also has the function-level
+invariance lemmas
+`vdVWPermutationSymmetricMeasurableSpace_comp_permuteNatSequence_eq`,
+`vdVWPermutationSymmetricMeasurableSpace_apply_permuteNatSequence_eq`, and
+`vdVWPermutationSymmetricMeasurableSpace_apply_permuteFirstN_eq`, plus the
+finite/infinite permutation bridge
+`vdVWPermuteFirstN_eq_permuteNatSequence_natPermOfFin`.  These make
+`Σ_n`-measurable competitors constant on first-`n` permutation orbits, which
+is the missing minimality ingredient for a supplied selected-cover
+symmetrization theorem.
 Current next target: prove the event-level displayed-beta Lemma 2.3.7 source
 primitive, preferably through product/Fubini averaged `Phi(x)=x` plus
 selected-cover finite-center maximal control; in the countable common-iid lane
