@@ -194,6 +194,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   for the non-false-predictability ASGD tower route.  The newest ASGD endpoint
   packet adds
   `asgd_limit_package_of_futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound`.
+- Future-multiplier proxy route: the newest ASGD packet adds
+  `projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
+  `projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
+  `asgd_limit_package_of_futureMultiplier_predictable_l1_approx_of_uniform_bound_no_factor_bound`,
+  and
+  `asgd_limit_package_of_futureMultiplier_deterministic_l1_approx_of_uniform_bound_no_factor_bound`.
+  The preferred route now accepts an explicit predictable or deterministic
+  proxy approximation of the future multiplier, then packages it all the way
+  to the ASGD limit theorem.
 - Weighted inverse-tail fallback: the new
   `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`
   wrappers compose the existing weighted variance-error/Taylor-remainder

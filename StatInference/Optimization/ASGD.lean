@@ -11743,6 +11743,132 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_l
       L N t
 
 /--
+An `F_r`-measurable proxy approximation controls the row-summed `L1` residual
+of the mixed-tower future multiplier.  This is the direct analogue of the
+future-tail proxy lemma, but targets the preferred future-multiplier residual
+gate.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_predictable_l1_approx
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (proxy : ℕ -> ℕ -> Ω -> ℂ)
+    (hproxy_meas : ∀ N r : ℕ,
+      AEStronglyMeasurable[S.martingale.filtration r] (proxy N r) P)
+    (hproxy_int : ∀ N r : ℕ, Integrable (proxy N r) P)
+    (hproxy_approx :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+                proxy N r ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              P[fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω |
+                S.martingale.filtration r] ω‖ ∂P)
+      atTop (𝓝 0) := by
+  refine squeeze_zero'
+    (f := fun N : ℕ =>
+      ∑ r ∈ Finset.range N,
+        ∫ ω,
+          ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+            P[fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω |
+              S.martingale.filtration r] ω‖ ∂P)
+    (g := fun N : ℕ =>
+      2 * ∑ r ∈ Finset.range N,
+        ∫ ω,
+          ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+            proxy N r ω‖ ∂P)
+    (Eventually.of_forall fun N =>
+      Finset.sum_nonneg fun r _hr =>
+        integral_nonneg fun ω => norm_nonneg _)
+    ?_ ?_
+  · exact Eventually.of_forall fun N => by
+      calc
+        (∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              P[fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω |
+                S.martingale.filtration r] ω‖ ∂P)
+            ≤ ∑ r ∈ Finset.range N,
+                2 * ∫ ω,
+                  ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+                    proxy N r ω‖ ∂P := by
+              refine Finset.sum_le_sum ?_
+              intro r _hr
+              exact
+                integral_norm_sub_condExp_le_two_mul_integral_norm_sub_of_aestronglyMeasurable
+                  (P := P) (m := S.martingale.filtration r)
+                  (S.martingale.filtration.le r)
+                  (S.projectedMixedTowerFutureMultiplier_integrable_of_uniform_bound
+                    L N r t)
+                  (hproxy_int N r)
+                  (hproxy_meas N r)
+        _ = 2 * ∑ r ∈ Finset.range N,
+              ∫ ω,
+                ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+                  proxy N r ω‖ ∂P := by
+              rw [Finset.mul_sum]
+  · have hscaled :
+        Tendsto
+          (fun N : ℕ =>
+            2 * ∑ r ∈ Finset.range N,
+              ∫ ω,
+                ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+                  proxy N r ω‖ ∂P)
+          atTop (𝓝 (2 * 0)) :=
+      tendsto_const_nhds.mul hproxy_approx
+    simpa using hscaled
+
+/--
+A deterministic proxy approximation controls the row-summed `L1` residual of
+the mixed-tower future multiplier.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (proxy : ℕ -> ℕ -> ℂ)
+    (hproxy_approx :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+                proxy N r‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        ∑ r ∈ Finset.range N,
+          ∫ ω,
+            ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+              P[fun ω => S.projectedMixedTowerFutureMultiplier L N t r ω |
+                S.martingale.filtration r] ω‖ ∂P)
+      atTop (𝓝 0) :=
+  S.projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_predictable_l1_approx
+    L t (fun N r _ω => proxy N r)
+    (fun N r => by
+      simpa using
+        (aestronglyMeasurable_const :
+          AEStronglyMeasurable[S.martingale.filtration r]
+            (fun _ω : Ω => proxy N r) P))
+    (fun N r => by simp)
+    (by simpa using hproxy_approx)
+
+/--
 It is enough to prove the L1 unpredictability row-sum for the future normalized
 Taylor tail; the raw characteristic prefix is already predictable and
 unit-bounded.
@@ -16763,6 +16889,110 @@ theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_futureMultiplie
     chewi123_asgd_limit_package_of_martingale_certificate
       (C := C) Ainv hInitial hRemainder
       hInitial_meas hRemainder_meas hDecomp
+
+/--
+Source-shaped Chewi Theorem 12.3 ASGD limit package from an `F_r`-measurable
+proxy approximation of the mixed-tower future multiplier.  This is a direct
+source interface for the preferred future-multiplier residual route.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_futureMultiplier_predictable_l1_approx_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (proxy : StrongDual ℝ E -> ℝ -> ℕ -> ℕ -> Ω -> ℂ)
+    (hproxy_meas : ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N r : ℕ,
+      AEStronglyMeasurable[S.martingale.filtration r] (proxy L t N r) P)
+    (hproxy_int : ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N r : ℕ,
+      Integrable (proxy L t N r) P)
+    (hproxy_approx : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+                proxy L t N r ω‖ ∂P)
+        atTop (𝓝 0))
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K :=
+  S.asgd_limit_package_of_futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound
+    Ainv hmean
+    (fun L t =>
+      S.projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_predictable_l1_approx
+        L t (proxy L t) (hproxy_meas L t) (hproxy_int L t)
+        (hproxy_approx L t))
+    hInitial hRemainder hInitial_meas hRemainder_meas hDecomp
+
+/--
+Source-shaped Chewi Theorem 12.3 ASGD limit package from a deterministic proxy
+approximation of the mixed-tower future multiplier.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.asgd_limit_package_of_futureMultiplier_deterministic_l1_approx_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [CompleteSpace E] [SecondCountableTopology E] [BorelSpace E]
+    [OpensMeasurableSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (Ainv : E →L[ℝ] E)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (proxy : StrongDual ℝ E -> ℝ -> ℕ -> ℕ -> ℂ)
+    (hproxy_approx : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureMultiplier L N t r ω -
+                proxy L t N r‖ ∂P)
+        atTop (𝓝 0))
+    {scaledAverage initial remainder : ℕ -> Ω -> E}
+    (hInitial : TendstoInMeasure P initial atTop (fun _ => 0))
+    (hRemainder : TendstoInMeasure P remainder atTop (fun _ => 0))
+    (hInitial_meas : ∀ n, AEMeasurable (initial n) P)
+    (hRemainder_meas : ∀ n, AEMeasurable (remainder n) P)
+    (hDecomp : ∀ n,
+      (fun ω =>
+        (-Ainv (chewi127ScaledNoiseSum S.martingale.xi n ω) +
+            initial n ω) + remainder n ω)
+        =ᵐ[P] scaledAverage n) :
+    TendstoInDistribution scaledAverage atTop
+        (fun ω => -Ainv (S.Z ω)) (fun _ => P) Q ∧
+      HasGaussianLaw (fun ω => -Ainv (S.Z ω)) Q ∧
+      ∀ L K : StrongDual ℝ E,
+        ProbabilityTheory.covarianceBilinDual
+            (Q.map fun ω => -Ainv (S.Z ω)) L K =
+          vaart1998_inverseDerivativeCovarianceFunctional (-Ainv)
+            (fun L0 K0 =>
+              ProbabilityTheory.covarianceBilinDual (Q.map S.Z) L0 K0) L K :=
+  S.asgd_limit_package_of_futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound
+    Ainv hmean
+    (fun L t =>
+      S.projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx
+        L t (proxy L t) (hproxy_approx L t))
+    hInitial hRemainder hInitial_meas hRemainder_meas hDecomp
 
 /--
 Source-shaped Chewi Theorem 12.3 ASGD limit package from a deterministic

@@ -258,6 +258,15 @@ mixed-tower future multiplier is asymptotically predictable in row-summed
 `L1`, Theorem 12.7 certificate plumbing is complete.  It now also has the
 Chewi 12.3 ASGD endpoint wrapper
 `asgd_limit_package_of_futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound`.
+Newest future-multiplier proxy packet: `ASGD.lean` now also proves
+`projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
+`projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
+`asgd_limit_package_of_futureMultiplier_predictable_l1_approx_of_uniform_bound_no_factor_bound`,
+and
+`asgd_limit_package_of_futureMultiplier_deterministic_l1_approx_of_uniform_bound_no_factor_bound`.
+The preferred ASGD route can now start from an explicit predictable or
+deterministic proxy approximation of the mixed-tower future multiplier, rather
+than a raw conditional-expectation residual statement.
 The weighted inverse-tail fallback is now packaged through the certificate
 layer as
 `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`:
@@ -275,10 +284,13 @@ Current frontier: the active module is `StatInference/Optimization/ASGD.lean`;
 the active source packet is Chapter 12 ASGD Theorem 12.7/12.3.  The scalar
 proxy lane is now packaged through the explicit weighted absolute
 variance-difference gate above.  The next aggressive Lean target should not
-invent another scalar proxy wrapper; it should either prove a real source-side
-row-summed `L1` predictability/residual estimate for the direct
-future-multiplier route, or, if a stronger absolute row hypothesis is being
-formalized, feed it through
+invent another scalar proxy wrapper or endpoint wrapper; it should prove a
+real source-side row-summed `L1` approximation of the mixed-tower future
+multiplier by an `F_r`-measurable or deterministic proxy, then feed it through
+`asgd_limit_package_of_futureMultiplier_predictable_l1_approx_of_uniform_bound_no_factor_bound`
+or
+`asgd_limit_package_of_futureMultiplier_deterministic_l1_approx_of_uniform_bound_no_factor_bound`.
+If a stronger absolute row hypothesis is being formalized, feed it through
 `asgd_limit_package_of_weighted_abs_variance_diff_weighted_variance_remainder_of_uniform_bound_no_factor_bound`.
 Under only Chewi's averaged covariance convergence, prefer the compensated
 full-inverse/product or direct future-multiplier residual route.

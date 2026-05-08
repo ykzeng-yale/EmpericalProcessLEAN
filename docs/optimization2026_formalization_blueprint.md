@@ -105,6 +105,14 @@ packages row-summed `L1` predictability of the mixed-tower future multiplier
 directly into the charFun/CLT/bridge/certificate stack.  Its Chewi 12.3
 endpoint wrapper is
 `asgd_limit_package_of_futureMultiplier_l1_residual_sum_of_uniform_bound_no_factor_bound`.
+The preferred route now also has direct proxy interfaces:
+`projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_predictable_l1_approx`,
+`projectedMixedTowerFutureMultiplier_l1_residual_sum_tendsto_zero_of_deterministic_l1_approx`,
+`asgd_limit_package_of_futureMultiplier_predictable_l1_approx_of_uniform_bound_no_factor_bound`,
+and
+`asgd_limit_package_of_futureMultiplier_deterministic_l1_approx_of_uniform_bound_no_factor_bound`.
+Use these when a source argument naturally freezes or predicts the mixed-tower
+future multiplier before estimating the raw conditional residual.
 For the stronger weighted suffix route, use
 `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`;
 it packages weighted variance-error/Taylor-remainder convergence and the
