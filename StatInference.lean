@@ -48,6 +48,7 @@ import StatInference.Optimization.Fenchel
 import StatInference.Optimization.FrankWolfe
 import StatInference.Optimization.GradientDescent
 import StatInference.Optimization.GradientFlow
+import StatInference.Optimization.InteriorPoint
 import StatInference.Optimization.LowerBounds
 import StatInference.Optimization.Minimizer
 import StatInference.Optimization.MirrorDescent

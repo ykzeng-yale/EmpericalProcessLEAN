@@ -1870,8 +1870,15 @@ Active aggressive target ladder:
 3. Finish exact Sinkhorn Theorem 11.7/11.8 source packaging from the compiled
    ABP and mirror-descent layers; do not expand full EOT duality unless exact
    Theorem 11.6 reporting is requested.
-4. Open Chapter 13 with `Newton.lean`/`SelfConcordance.lean` in parallel scout
-   mode, reusing mathlib matrix/spectral/operator-norm APIs and the existing
+4. Continue Chapter 13 from the new root-imported
+   `StatInference/Optimization/InteriorPoint.lean` layer.  Reuse the compiled
+   one-dimensional Example 13.4 declarations `negLogBarrier_deriv`,
+   `negLogBarrier_second_deriv`, `negLogBarrier_third_deriv`,
+   `negLogBarrier_localNorm_eq_abs_div`,
+   `negLogBarrier_selfConcordance_ineq`, and
+   `negLogBarrier_oneDimSelfConcordantOn_Ioi`; the next bounded packet is the
+   vector/matrix local-norm interface for Definitions 13.2/13.3 and Lemma
+   13.6, reusing mathlib matrix/spectral/operator-norm APIs and the existing
    ellipsoid matrix infrastructure.
 5. If exact Theorem 10.13 source-report packaging is requested, add an `sInf`
    wrapper for the fixed-comparator regret theorem and/or a proof-carrying

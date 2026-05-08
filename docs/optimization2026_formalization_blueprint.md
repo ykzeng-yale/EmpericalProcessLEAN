@@ -307,9 +307,12 @@ move immediately to Sinkhorn Theorems 11.7/11.8 from ABP/mirror-descent supplied
 interfaces and Chapter 12 SMPGD before the ASGD CLT.  Generalize 10.11/10.13
 to a custom arbitrary norm/dual-norm interface or add an exact `sInf` wrapper
 only when source-report packaging or a later theorem demands it.  In parallel,
-map Chapter 13 Newton/self-concordance theorem packets with source-shaped
-supplied interfaces first when exact analytic dependencies would otherwise
-stall progress.
+continue Chapter 13 from the new `InteriorPoint.lean` one-dimensional
+self-concordance substrate: it already formalizes Chewi Example 13.4 for
+`x ↦ -log x` on `ℝ_{>0}` via the displayed first/second/third derivatives,
+local norm identity, and parameter-`1` self-concordance inequality.  The next
+Chapter 13 packets should lift this source-shaped interface to vector/matrix
+local norms before tackling Lemma 13.6 and Newton-decrement convergence.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,
