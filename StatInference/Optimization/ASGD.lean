@@ -2405,6 +2405,23 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedInverseCompensationFactor_mu
     ← Complex.exp_add]
 
 /--
+The compensation factor also cancels the inverse compensation factor on the
+left.  This commuted form is convenient for prefix-product algebra.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedCompensationFactor_mul_inverseCompensationFactor
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) (k : ℕ) (ω : Ω) :
+    S.projectedCompensationFactor L N t k ω *
+        S.projectedInverseCompensationFactor L N t k ω = 1 := by
+  rw [mul_comm]
+  exact S.projectedInverseCompensationFactor_mul_compensationFactor L N t k ω
+
+/--
 The row product of inverse compensation factors is the exponential of the
 negative scaled averaged conditional variance.  This is the deterministic
 algebra behind the remaining variance-convergence comparison in Chewi's
@@ -5225,6 +5242,116 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProdu
   simp [Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct]
 
 /--
+Pointwise compensated-prefix form of the mixed raw-prefix/normalized-tail
+product.  The raw prefix can be replaced by the compensated raw prefix together
+with the inverse compensation prefix, leaving the normalized tail unchanged.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_eq_compensated_prefix_inverse_tail
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) (ω : Ω) :
+    S.projectedRawPrefixNormalizedTailProduct L N t r ω =
+      S.projectedCompensatedRawPrefixProduct L N t r ω *
+        (∏ k ∈ Finset.range r,
+          S.projectedInverseCompensationFactor L N t k ω) *
+        ∏ k ∈ Finset.Ico r N,
+          S.projectedNormalizedTaylorFactor L N t k ω := by
+  let rawPrefix : ℂ := chewi127ScalarCharFunProduct
+    (fun k ω => L (S.martingale.xi k ω)) r
+    (t * (Real.sqrt (N : ℝ))⁻¹) ω
+  let compensationPrefix : ℂ :=
+    S.projectedCompensationPrefixProduct L N t r ω
+  let inversePrefix : ℂ :=
+    ∏ k ∈ Finset.range r, S.projectedInverseCompensationFactor L N t k ω
+  let normalizedTail : ℂ :=
+    ∏ k ∈ Finset.Ico r N, S.projectedNormalizedTaylorFactor L N t k ω
+  have hcancel : compensationPrefix * inversePrefix = 1 := by
+    change
+      (∏ k ∈ Finset.range r, S.projectedCompensationFactor L N t k ω) *
+          (∏ k ∈ Finset.range r,
+            S.projectedInverseCompensationFactor L N t k ω) = 1
+    rw [← Finset.prod_mul_distrib]
+    refine Finset.prod_eq_one ?_
+    intro k hk
+    exact S.projectedCompensationFactor_mul_inverseCompensationFactor L N t k ω
+  change rawPrefix * normalizedTail =
+    (rawPrefix * compensationPrefix) * inversePrefix * normalizedTail
+  calc
+    rawPrefix * normalizedTail =
+        rawPrefix * (compensationPrefix * inversePrefix) * normalizedTail := by
+          rw [hcancel]
+          ring
+    _ = (rawPrefix * compensationPrefix) * inversePrefix * normalizedTail := by
+          ring
+
+/--
+Full-row compensated-prefix form of the mixed product.  For `r <= N`, the
+inverse compensation prefix and the inverse compensation tail combine to the
+full inverse product, while the normalized tail contributes exactly the
+remaining compensated-error factors.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProduct_eq_compensated_prefix_full_inverse_error_tail
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N r : ℕ) (t : ℝ) (ω : Ω) (hr : r ≤ N) :
+    S.projectedRawPrefixNormalizedTailProduct L N t r ω =
+      S.projectedCompensatedRawPrefixProduct L N t r ω *
+        (∏ k ∈ Finset.range N,
+          S.projectedInverseCompensationFactor L N t k ω) *
+        ∏ k ∈ Finset.Ico r N,
+          (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) := by
+  let compensatedPrefix : ℂ :=
+    S.projectedCompensatedRawPrefixProduct L N t r ω
+  let inversePrefix : ℂ :=
+    ∏ k ∈ Finset.range r, S.projectedInverseCompensationFactor L N t k ω
+  let inverseTail : ℂ :=
+    ∏ k ∈ Finset.Ico r N, S.projectedInverseCompensationFactor L N t k ω
+  let inverseFull : ℂ :=
+    ∏ k ∈ Finset.range N, S.projectedInverseCompensationFactor L N t k ω
+  let errorTail : ℂ :=
+    ∏ k ∈ Finset.Ico r N,
+      (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω)
+  have hbase :
+      S.projectedRawPrefixNormalizedTailProduct L N t r ω =
+        compensatedPrefix * inversePrefix *
+          ∏ k ∈ Finset.Ico r N,
+            S.projectedNormalizedTaylorFactor L N t k ω := by
+    simpa [compensatedPrefix, inversePrefix] using
+      S.projectedRawPrefixNormalizedTailProduct_eq_compensated_prefix_inverse_tail
+        L N r t ω
+  have htail :
+      (∏ k ∈ Finset.Ico r N,
+          S.projectedNormalizedTaylorFactor L N t k ω) =
+        inverseTail * errorTail := by
+    simp [inverseTail, errorTail,
+      Chewi127BoundedMartingaleCLTSource.projectedNormalizedTaylorFactor,
+      Finset.prod_mul_distrib]
+  have hinverse :
+      inversePrefix * inverseTail = inverseFull := by
+    simpa [inversePrefix, inverseTail, inverseFull] using
+      (Finset.prod_range_mul_prod_Ico
+        (fun k => S.projectedInverseCompensationFactor L N t k ω) hr)
+  calc
+    S.projectedRawPrefixNormalizedTailProduct L N t r ω =
+        compensatedPrefix * inversePrefix *
+          ∏ k ∈ Finset.Ico r N,
+            S.projectedNormalizedTaylorFactor L N t k ω := hbase
+    _ = compensatedPrefix * inversePrefix * (inverseTail * errorTail) := by
+          rw [htail]
+    _ = compensatedPrefix * (inversePrefix * inverseTail) * errorTail := by
+          ring
+    _ = compensatedPrefix * inverseFull * errorTail := by
+          rw [hinverse]
+
+/--
 The mixed raw-prefix/normalized-tail product is measurable at the terminal
 filtration level whenever the split point is not after the terminal index.
 This is the forward-time measurability fact available for a backward
@@ -5436,6 +5563,76 @@ theorem Chewi127BoundedMartingaleCLTSource.projectedRawPrefixNormalizedTailProdu
         S.projectedRawPrefixNormalizedTailProduct L N t 0 ω ∂P) +
         ∑ r ∈ Finset.range N,
           S.projectedMixedTowerStepDefect L N r t := rfl
+
+/--
+Exact compensated-prefix expression for the mixed-tower defect sum.  The
+defect sum is the difference between the full compensated raw prefix, weighted
+by the full inverse-compensation product, and the corresponding inverse product
+times all compensated one-step errors.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (N : ℕ) (t : ℝ) :
+    (∑ r ∈ Finset.range N,
+        S.projectedMixedTowerStepDefect L N r t) =
+      (∫ ω,
+        S.projectedCompensatedRawPrefixProduct L N t N ω *
+          (∏ k ∈ Finset.range N,
+            S.projectedInverseCompensationFactor L N t k ω) ∂P) -
+        ∫ ω,
+          (∏ k ∈ Finset.range N,
+            S.projectedInverseCompensationFactor L N t k ω) *
+          ∏ k ∈ Finset.range N,
+            (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P := by
+  let R : ℕ -> Ω -> ℂ := fun r ω =>
+    S.projectedRawPrefixNormalizedTailProduct L N t r ω
+  have htelescope :=
+    S.projectedRawPrefixNormalizedTailProduct_integral_self_eq_zero_add_defect_sum
+      L N t
+  have hsum :
+      (∑ r ∈ Finset.range N,
+          S.projectedMixedTowerStepDefect L N r t) =
+        (∫ ω, R N ω ∂P) - ∫ ω, R 0 ω ∂P := by
+    calc
+      (∑ r ∈ Finset.range N,
+          S.projectedMixedTowerStepDefect L N r t) =
+          ((∫ ω, R 0 ω ∂P) +
+            ∑ r ∈ Finset.range N,
+              S.projectedMixedTowerStepDefect L N r t) -
+            ∫ ω, R 0 ω ∂P := by
+            ring
+      _ = (∫ ω, R N ω ∂P) - ∫ ω, R 0 ω ∂P := by
+            rw [← htelescope]
+  have hRN :
+      (∫ ω, R N ω ∂P) =
+        ∫ ω,
+          S.projectedCompensatedRawPrefixProduct L N t N ω *
+            (∏ k ∈ Finset.range N,
+              S.projectedInverseCompensationFactor L N t k ω) ∂P := by
+    refine integral_congr_ae <| ae_of_all P fun ω => ?_
+    have hpoint :=
+      S.projectedRawPrefixNormalizedTailProduct_eq_compensated_prefix_full_inverse_error_tail
+        L N N t ω le_rfl
+    simpa [R] using hpoint
+  have hR0 :
+      (∫ ω, R 0 ω ∂P) =
+        ∫ ω,
+          (∏ k ∈ Finset.range N,
+            S.projectedInverseCompensationFactor L N t k ω) *
+          ∏ k ∈ Finset.range N,
+            (1 + S.projectedCompensatedTaylorErrorFactor L N t k ω) ∂P := by
+    refine integral_congr_ae <| ae_of_all P fun ω => ?_
+    have hpoint :=
+      S.projectedRawPrefixNormalizedTailProduct_eq_compensated_prefix_full_inverse_error_tail
+        L N 0 t ω (Nat.zero_le N)
+    simpa [R, Nat.Ico_zero_eq_range,
+      S.projectedCompensatedRawPrefixProduct_zero L N t ω] using hpoint
+  rw [hsum, hRN, hR0]
 
 /--
 Finite accumulation of the guarded mixed-product successor step.  Under the

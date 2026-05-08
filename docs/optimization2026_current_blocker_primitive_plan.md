@@ -163,7 +163,14 @@ compensated-prefix layer
 `projectedCompensationFactor_filtration_aestronglyMeasurable`,
 `projectedCompensationPrefixProduct_aestronglyMeasurable_of_le`,
 `projectedCompensatedRawPrefixProduct_aestronglyMeasurable_of_le`, and
-`projectedCompensatedRawPrefixProduct_integral_succ_eq`; the product-to-one
+`projectedCompensatedRawPrefixProduct_integral_succ_eq`, plus the mixed-defect
+compensated algebra bridge
+`projectedCompensationFactor_mul_inverseCompensationFactor`,
+`projectedRawPrefixNormalizedTailProduct_eq_compensated_prefix_inverse_tail`,
+`projectedRawPrefixNormalizedTailProduct_eq_compensated_prefix_full_inverse_error_tail`,
+and
+`projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product`;
+the product-to-one
 bridges `StatInference.norm_prod_one_add_sub_one_le_sum_norm`,
 `StatInference.product_one_add_tendsto_one_of_sum_norm`,
 `chewi127_integral_product_one_add_tendsto_one_of_integral_sum_norm`, and
@@ -273,10 +280,10 @@ plus the normalized compensated-product bridge:
 and
 `projected_charFun_tendsto_exp_of_normalized_product_model_of_source_variance`.
 
-Next theorem packet: use the new adapted compensated-prefix one-step identity
-`projectedCompensatedRawPrefixProduct_integral_succ_eq` to accumulate the
-finite compensated-prefix iteration, then convert that telescope into the
-standard compensated martingale defect bound
+Next theorem packet: use the exact mixed-defect identity
+`projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product`
+to prove the weighted compensated-prefix/future-error correlation bound behind
+the standard compensated martingale defect bound
 `Tendsto (fun N => ∑ r in Finset.range N,
 S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`.  After that, feed
 `projected_charFun_tendsto_exp_of_normalized_product_model_with_mixedTowerDefect`
@@ -370,6 +377,15 @@ the next raw factor plus its current compensation by `1 +` the compensated
 Taylor error.  This is the substrate for the finite compensated-prefix
 iteration; the remaining work is accumulation and comparison to the mixed
 defect sum, not another local measurability wrapper.
+The newest mixed-defect algebra packet proves the inverse/compensation
+commuted cancellation, rewrites each mixed raw-prefix/normalized-tail product
+as a compensated raw prefix times the full inverse-compensation product and
+the remaining compensated-error tail, and rewrites the finite mixed-defect sum
+as the exact difference between the full compensated raw prefix weighted by the
+full inverse product and the full inverse product weighted by all
+compensated-error factors.  This sharpens the blocker: the remaining theorem
+is a weighted martingale correlation/convergence estimate, not a missing
+finite-product algebra identity.
 Do not prove another compensation, row-error, inverse-product, raw
 charFun-product start, successor peel, mixed-product endpoint, finite
 mixed-product accumulation, abstract product-model handoff, uniform
@@ -383,7 +399,8 @@ ASGD future-tail endpoint wrapper, factorwise future-tail product wrapper,
 forward normalized-factor measurability wrapper, mixed terminal measurability or
 integrability wrapper, mixed-tower defect telescope/decomposition adapter,
 compensated-prefix adaptedness wrapper, compensated raw-prefix one-step
-identity, or generic weak-convergence wrapper.
+identity, mixed-defect compensated algebra bridge, or generic weak-convergence
+wrapper.
 The variance
 side is now source-facing:
 `projectedInverseCompensationProduct_tendsto_exp_of_uniform_bound` consumes the
@@ -444,6 +461,7 @@ conditional Taylor-remainder row convergence.  Reuse
 `projected_charFun_taylor_step_mul_scaled`,
 `projected_charFun_compensated_taylor_step_mul_scaled`,
 `projectedCompensatedRawPrefixProduct_integral_succ_eq`,
+`projectedMixedTowerDefect_sum_eq_compensated_full_inverse_sub_error_product`,
 `projected_remainder_row_integral_tendsto_zero`, the named projected variance
 and remainder/compensation/error factors, the compensated error norm split,
 the product-to-one, row-error, and compensation-bound bridges,
