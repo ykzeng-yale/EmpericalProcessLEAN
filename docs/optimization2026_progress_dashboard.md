@@ -107,6 +107,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `futureTail_l1_residual_sum_of_uniform_bound_no_factor_bound` wrappers turn
   row-summed `L1` predictability of the normalized future tail directly into
   charFun convergence, projected CLT, bridge, and certificate statements.
+- Weighted inverse-tail fallback: the new
+  `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`
+  wrappers compose the existing weighted variance-error/Taylor-remainder
+  suffix comparison with inverse-tail residual predictability, producing
+  charFun convergence, scalar CLT, projected CLT, bridge, and certificate
+  statements without reopening the normalized-product proof.
 - New ASGD scalar Lindeberg declarations:
   `chewi127ScalarLindebergSummand`,
   `chewi127ScalarLindebergAverage`,
@@ -618,10 +624,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   input.  The preferred ASGD 12.7 route is now the compiled right-product
   source-variance limit plus a genuine mixed-tower defect convergence proof,
   not the weighted suffix fallback.  Weighted variance/remainder convergence and
-  inverse-tail conditional residual convergence remain available only for the
-  stronger future-tail fallback route.  Ordinary unweighted row-error
-  convergence is not sufficient for the suffix sum because index `k` is
-  counted `k` times.
+  inverse-tail conditional residual convergence are now packaged through the
+  stronger future-tail fallback certificate route; what remains, if using that
+  path, is to prove those weighted source estimates rather than restating the
+  certificate plumbing.  Ordinary unweighted row-error convergence is not
+  sufficient for the suffix sum because index `k` is counted `k` times.
   Scouts and local proof search agree that the remaining source gap is genuine:
   current adaptedness gives the tail factor at filtration `F_k`, not at the
   earlier `F_r` for `r < k`.  Next target: build and bound a predictable proxy

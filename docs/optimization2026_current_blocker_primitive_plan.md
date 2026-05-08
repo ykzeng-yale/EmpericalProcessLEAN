@@ -164,6 +164,12 @@ The direct future-tail residual route now has
 the certificate layer.  This is the preferred route when the normalized future
 tail is proved asymptotically predictable in row-summed `L1`; no proxy object
 or normalized-product argument is needed.
+The weighted inverse-tail fallback is now packaged through the certificate
+layer as
+`inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`:
+weighted variance-error and Taylor-remainder convergence supply the
+future-tail versus inverse-tail comparison, and the only remaining probabilistic
+input is row-summed `L1` predictability of the inverse future tail.
 
 Mission: finish the main-text Chewi Optimization 2026 Lean formalization under
 `StatInference/Optimization` as fast as correctness allows.  Keep all
@@ -612,9 +618,11 @@ The remaining ASGD proof obligations for the preferred route are now precisely:
 1. prove
    `Tendsto (fun N => ∑ r in Finset.range N,
    S.projectedMixedTowerStepDefect L N r t) atTop (𝓝 0)`;
-2. prove or replace the weighted variance-only and weighted Taylor-remainder
+2. prove/discharge the weighted variance-only and weighted Taylor-remainder
    assumptions only if deliberately using the stronger weighted-suffix
-   fallback;
+   fallback; the fallback now already has charFun/scalar/projected/bridge/
+   certificate wrappers through
+   `inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound`;
 3. prove the row-summed conditional residual convergence of
    `projectedMixedTowerInverseFutureTail -
    E[projectedMixedTowerInverseFutureTail | F_r]` only if deliberately using

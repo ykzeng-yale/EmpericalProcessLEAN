@@ -11209,6 +11209,84 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_inve
         L N t)
 
 /--
+Characteristic-function convergence from weighted variance-error and
+Taylor-remainder convergence, plus the inverse-future-tail residual estimate.
+The weighted estimates supply the inverse-tail comparison; boundedness of the
+martingale source discharges the remaining variance row integrability.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_charFun_tendsto_exp_of_inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E) (t : ℝ)
+    (hvariance_error_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int :
+      ∀ N : ℕ,
+        Integrable
+          (fun ω =>
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+        atTop (𝓝 0))
+    (hremainder_error :
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0))
+    (hinverse_residual_l1 :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerInverseFutureTail L N t r ω -
+                P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                  S.martingale.filtration r] ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun N : ℕ =>
+        MeasureTheory.charFun
+          (P.map
+            (chewi127ScalarScaledSum
+              (fun n ω => L (S.martingale.xi n ω)) N)) t)
+      atTop
+      (𝓝 (Complex.exp
+        (-(S.covariance_limit.S_infty L L * t ^ 2 / 2 : ℝ)))) := by
+  have htail_inverse_l1 :
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerFutureTail L N t r ω -
+                S.projectedMixedTowerInverseFutureTail L N t r ω‖ ∂P)
+        atTop (𝓝 0) :=
+    S.projectedMixedTowerFutureTail_inverseFutureTail_l1_sum_tendsto_zero_of_weighted_variance_remainder
+      L t hvariance_error_int hremainder_int hvariance_error hremainder_error
+  exact
+    S.projected_charFun_tendsto_exp_of_inverseFutureTail_condExp_source_variance_of_uniform_bound_no_factor_bound
+      L t htail_inverse_l1 hinverse_residual_l1
+
+/--
 Characteristic-function convergence from a deterministic future-tail proxy.
 The proxy side conditions are automatic because the proxy is constant in
 `ω`, and the bounded-source assumptions discharge the square and Taylor
@@ -12661,6 +12739,66 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_inverseFuture
       L t (htail_inverse_l1 t) (hinverse_residual_l1 t)
 
 /--
+Projected scalar CLT from weighted variance-error/Taylor-remainder convergence
+and row-summed predictability of the inverse future tail.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_scalar_clt_of_inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0)
+    (hvariance_error_int : ∀ t : ℝ, ∀ N : ℕ,
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int : ∀ t : ℝ, ∀ N : ℕ,
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+        atTop (𝓝 0))
+    (hremainder_error : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0))
+    (hinverse_residual_l1 : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerInverseFutureTail L N t r ω -
+                P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                  S.martingale.filtration r] ω‖ ∂P)
+        atTop (𝓝 0)) :
+    TendstoInDistribution
+      (chewi127ScalarScaledSum (fun n ω => L (S.martingale.xi n ω)))
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q :=
+  S.projected_scalar_clt_of_charFun_exp L hmean fun t =>
+    S.projected_charFun_tendsto_exp_of_inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+      L t (hvariance_error_int t) (hremainder_int t)
+      (hvariance_error t) (hremainder_error t) (hinverse_residual_l1 t)
+
+/--
 Projected martingale CLT in Chewi's displayed projected-noise notation from
 the source-variance predictable future-tail proxy route.
 -/
@@ -12999,6 +13137,71 @@ theorem Chewi127BoundedMartingaleCLTSource.projected_clt_of_inverseFutureTail_co
       S.martingale.xi L n ω).symm
 
 /--
+Projected martingale CLT in Chewi's displayed projected-noise notation from
+weighted variance-error/Taylor-remainder convergence and inverse-tail
+predictability.
+-/
+theorem Chewi127BoundedMartingaleCLTSource.projected_clt_of_inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (L : StrongDual ℝ E)
+    (hmean : Q[fun ω => L (S.Z ω)] = 0)
+    (hvariance_error_int : ∀ t : ℝ, ∀ N : ℕ,
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int : ∀ t : ℝ, ∀ N : ℕ,
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+        atTop (𝓝 0))
+    (hremainder_error : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0))
+    (hinverse_residual_l1 : ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerInverseFutureTail L N t r ω -
+                P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                  S.martingale.filtration r] ω‖ ∂P)
+        atTop (𝓝 0)) :
+    TendstoInDistribution
+      (chewi127ScaledProjectedNoiseSum S.martingale.xi L)
+      atTop (fun ω => L (S.Z ω)) (fun _ => P) Q := by
+  refine
+    (S.projected_scalar_clt_of_inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+      L hmean hvariance_error_int hremainder_int hvariance_error hremainder_error
+      hinverse_residual_l1).congr
+      (fun n => ?_) Filter.EventuallyEq.rfl
+  exact Filter.Eventually.of_forall fun ω =>
+    (chewi127ScaledProjectedNoiseSum_eq_scalarScaledSum
+      S.martingale.xi L n ω).symm
+
+/--
 Projected Cramér-Wold bridge from the source-variance predictable future-tail
 proxy route.
 -/
@@ -13331,6 +13534,68 @@ def Chewi127BoundedMartingaleCLTSource.toProjectedBridge_of_inverseFutureTail_co
   limit_memLp := S.limit_memLp
 
 /--
+Projected Cramér-Wold bridge from weighted variance-error/Taylor-remainder
+convergence and inverse-tail predictability.
+-/
+def Chewi127BoundedMartingaleCLTSource.toProjectedBridge_of_inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hvariance_error_int : ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int : ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+        atTop (𝓝 0))
+    (hremainder_error : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0))
+    (hinverse_residual_l1 : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerInverseFutureTail L N t r ω -
+                P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                  S.martingale.filtration r] ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Chewi127ProjectedMartingaleCLTBridge Ω Ω' E P Q where
+  xi := S.martingale.xi
+  Z := S.Z
+  projected_clt := fun L =>
+    S.projected_clt_of_inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+      L (hmean L) (hvariance_error_int L) (hremainder_int L)
+      (hvariance_error L) (hremainder_error L) (hinverse_residual_l1 L)
+  cramerWold_vector_clt := S.cramerWold_vector_clt
+  gaussian_limit := S.gaussian_limit
+  limit_memLp := S.limit_memLp
+
+/--
 Chewi Theorem 12.7 certificate from the source-variance predictable future-tail
 proxy route.
 -/
@@ -13618,6 +13883,62 @@ def Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate_of_inverseFutu
     Chewi127MartingaleCLTCertificate Ω Ω' E P Q :=
   (S.toProjectedBridge_of_inverseFutureTail_condExp_source_variance_of_uniform_bound_no_factor_bound
     hmean htail_inverse_l1 hinverse_residual_l1).toMartingaleCLTCertificate
+
+/--
+Chewi Theorem 12.7 certificate from weighted variance-error/Taylor-remainder
+convergence and row-summed predictability of the inverse future tail.
+-/
+def Chewi127BoundedMartingaleCLTSource.toMartingaleCLTCertificate_of_inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+    {Ω Ω' E : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    [IsProbabilityMeasure P] [MeasurableSpace Ω'] {Q : Measure Ω'}
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    [MeasurableSpace E] [OpensMeasurableSpace E] [BorelSpace E]
+    (S : Chewi127BoundedMartingaleCLTSource Ω Ω' E P Q)
+    (hmean : ∀ L : StrongDual ℝ E, Q[fun ω => L (S.Z ω)] = 0)
+    (hvariance_error_int : ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ‖S.projectedCompensationFactor L N t k ω *
+                  S.projectedVarianceFactor L N t k ω - 1‖) P)
+    (hremainder_int : ∀ L : StrongDual ℝ E, ∀ t : ℝ, ∀ N : ℕ,
+      Integrable
+        (fun ω =>
+          ∑ k ∈ Finset.range N,
+            (k : ℝ) *
+              ‖S.projectedRemainderFactor L N t k ω‖) P)
+    (hvariance_error : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedCompensationFactor L N t k ω *
+                    S.projectedVarianceFactor L N t k ω - 1‖ ∂P)
+        atTop (𝓝 0))
+    (hremainder_error : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∫ ω,
+            ∑ k ∈ Finset.range N,
+              (k : ℝ) *
+                ‖S.projectedRemainderFactor L N t k ω‖ ∂P)
+        atTop (𝓝 0))
+    (hinverse_residual_l1 : ∀ L : StrongDual ℝ E, ∀ t : ℝ,
+      Tendsto
+        (fun N : ℕ =>
+          ∑ r ∈ Finset.range N,
+            ∫ ω,
+              ‖S.projectedMixedTowerInverseFutureTail L N t r ω -
+                P[fun ω => S.projectedMixedTowerInverseFutureTail L N t r ω |
+                  S.martingale.filtration r] ω‖ ∂P)
+        atTop (𝓝 0)) :
+    Chewi127MartingaleCLTCertificate Ω Ω' E P Q :=
+  (S.toProjectedBridge_of_inverseFutureTail_weighted_variance_remainder_of_uniform_bound_no_factor_bound
+    hmean hvariance_error_int hremainder_int hvariance_error hremainder_error
+    hinverse_residual_l1).toMartingaleCLTCertificate
 
 /--
 Projected scalar CLT from the mixed-tower future-tail measurability condition.
