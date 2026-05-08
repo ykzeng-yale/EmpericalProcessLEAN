@@ -14938,6 +14938,47 @@ theorem
         simpa [VdVWTheorem243RademacherFiniteCenterHoeffdingBound] using hmaximal)
 
 /--
+The deterministic Rademacher finite-net Hoeffding handoff is stable under
+simultaneous finite-coordinate permutations of the sample and signs.
+
+This is the selected-cover transport form needed before averaging over
+ghost/sample permutations in the Lemma 2.3.7 source route.
+-/
+theorem
+    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector_finCoordinatePerm
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n : ℕ} (perm : Equiv.Perm (Fin n))
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {epsilon M : ℝ} {cardinality : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon cardinality)
+    (sign : Fin n -> ℝ)
+    (hsign : VdVWRademacherSignVector sign)
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hM_nonneg : 0 ≤ M)
+    (hmaximal :
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun
+        cover.center sign M) :
+    vdVWWeightedClassSupremum indexClass classFun
+        (vdVWRademacherWeights (fun i : Fin n => sign (perm.symm i)))
+        (vdVWFinCoordinatePermMeasurableEquiv perm sample) ≤
+      vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M + epsilon := by
+  exact
+    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
+      (sample := vdVWFinCoordinatePermMeasurableEquiv perm sample)
+      (indexClass := indexClass) (classFun := classFun)
+      (epsilon := epsilon) (M := M)
+      (cover := cover.finCoordinatePerm perm)
+      (sign := fun i : Fin n => sign (perm.symm i))
+      (VdVWRademacherSignVector_finCoordinatePerm perm hsign)
+      hepsilon_nonneg hM_nonneg
+      (by
+        simpa [FiniteEmpiricalL1CoverAtCard.finCoordinatePerm] using
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm
+            (Observation := Observation) (Index := Index) perm hmaximal)
+
+/--
 Random Rademacher signs give the finite-net Hoeffding handoff almost surely
 whenever the sign-vector support and finite-center Hoeffding predicate hold
 almost surely.

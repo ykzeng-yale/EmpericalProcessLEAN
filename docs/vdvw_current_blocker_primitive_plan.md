@@ -191,6 +191,17 @@ blocked on this transport bookkeeping; it must prove the actual
 product/Fubini `Phi(x)=x` comparison and the genuine finite-center probability
 input, or switch to the selected-log mean/UI route.
 
+2026-05-08 finite-net handoff permutation closure: `Theorem243.lean` now also
+proves
+`vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector_finCoordinatePerm`,
+which transports the deterministic selected-cover finite-net Hoeffding
+handoff itself across simultaneous sample/sign coordinate permutations.  This
+consumes the empirical-cover, sign-vector, Rademacher-weight, and
+finite-center maximal transport lemmas above.  The remaining source theorem is
+therefore still the product/Fubini `Phi(x)=x` comparison plus the genuine
+finite-center probability input, or the selected-log mean/UI route under
+honest strengthened hypotheses.
+
 Newest source-side comparison support in `Theorem243.lean` is now:
 `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`,
 which transports an already proved comparison from a selected cardinality to a

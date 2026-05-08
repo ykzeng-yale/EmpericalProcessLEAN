@@ -85,7 +85,10 @@ and finite-center side of the selected-cover source argument through
 `vdVWRademacherWeights_finCoordinatePerm`,
 `vdVWWeightedClassSupremum_rademacherWeights_finCoordinatePerm`,
 `vdVWFiniteCenterWeightedSupremum_finCoordinatePerm`, and
-`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm`.
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm`;
+the deterministic selected-cover finite-net Hoeffding handoff itself now
+commutes with the same simultaneous sample/sign permutation through
+`vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector_finCoordinatePerm`.
 Current next target: prove the event-level displayed-beta Lemma 2.3.7 source
 primitive, preferably through product/Fubini averaged `Phi(x)=x` plus
 selected-cover finite-center maximal control; in the countable common-iid lane

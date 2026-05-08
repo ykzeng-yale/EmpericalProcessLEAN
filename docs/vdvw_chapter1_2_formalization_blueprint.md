@@ -2187,7 +2187,10 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWFiniteCenterWeightedSupremum_finCoordinatePerm`,
    `vdVWFiniteCenterWeightedSupremum_rademacherWeights_finCoordinatePerm`,
    `VdVWTheorem243FiniteCenterMaximalBound_finCoordinatePerm`, and
-   `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm`.
+   `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm`;
+   the deterministic selected-cover finite-net Hoeffding handoff now also
+   transports across simultaneous sample/sign coordinate permutations through
+   `vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector_finCoordinatePerm`.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
