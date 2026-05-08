@@ -9722,6 +9722,43 @@ theorem
       hprod hq_ne_top
 
 /--
+Durrett 2019, Theorem 4.3.8 canonical Kakutani branch criterion phrased with
+the textbook infinite Hellinger product.  This is the closed `tprod` form of
+the zero/positive criterion: product zero gives mutual singularity, while
+strictly positive product gives absolute continuity.
+-/
+theorem
+    durrett2019_theorem_4_3_8_canonicalRatio_range_tprod_density_trimmedPrefix_zero_or_pos_closed
+    {S : Type*} [MeasurableSpace S]
+    {μ ν : ℕ -> Measure S} [∀ i, IsProbabilityMeasure (μ i)]
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {q : ℕ -> S -> ℝ≥0∞}
+    (C : Set (Set (ℕ -> S)))
+    (hC_meas :
+      ∀ s ∈ C,
+        ∃ m, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S m] s)
+    (hgen :
+      (inferInstance : MeasurableSpace (ℕ -> S)) = MeasurableSpace.generateFrom C)
+    (hC : IsPiSystem C)
+    (hq : ∀ i, Measurable (q i))
+    (hμ : ∀ i, μ i = (ν i).withDensity (q i))
+    (hbranch :
+      Measure.infinitePi μ ≪ Measure.infinitePi ν ∨
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν)
+    (hmult :
+      Multipliable (fun i => ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i))
+    (hq_ne_top : ∀ i s, q i s ≠ ∞) :
+    ((∏' i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) = 0 ->
+        Measure.infinitePi μ ⟂ₘ Measure.infinitePi ν) ∧
+      (0 < (∏' i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i) ->
+        Measure.infinitePi μ ≪ Measure.infinitePi ν) := by
+  exact
+    durrett2019_theorem_4_3_8_canonicalRatio_range_hasProd_density_trimmedPrefix_zero_or_pos_closed
+      (μ := μ) (ν := ν) (q := q)
+      (P := ∏' i, ∫⁻ y, (q i y) ^ ((1 : ℝ) / 2) ∂ν i)
+      C hC_meas hgen hC hq hμ hbranch hmult.hasProd hq_ne_top
+
+/--
 Durrett 2019, Theorem 4.3.8 positive-branch final handoff: once full-prefix
 likelihoods converge to `X`, pointwise finite/nonzero coordinate densities make
 the zero set of `X` a tail event; a nonzero lower integral then selects the

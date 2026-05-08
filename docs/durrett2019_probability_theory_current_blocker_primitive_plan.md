@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V106
+## Live In-Thread Goal Prompt V107
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -383,10 +383,15 @@ construction.  The closed branch wrapper
 `durrett2019_theorem_4_3_8_canonicalRatio_range_hasProd_density_trimmedPrefix_zero_or_pos_closed`
 now packages the zero/positive Kakutani consequences without separate
 canonical-ratio measurability or full-prefix convergence inputs.
+Also treat the textbook `tprod` branch packaging as compiled support:
+`durrett2019_theorem_4_3_8_canonicalRatio_range_tprod_density_trimmedPrefix_zero_or_pos_closed`
+phrases the closed zero/positive criterion using `Multipliable` and the actual
+infinite Hellinger product `∏' i, ∫⁻ y, (q i y)^((1 : ℝ) / 2) ∂ν i`.
 Move to the remaining Kakutani criterion assembly:
 add only source-shaped wrappers that remove the remaining ambient dichotomy or
-one-coordinate density finiteness assumptions if there is a direct route, or
-promote the closed branch criterion into the final textbook Kakutani statement.
+one-coordinate density finiteness assumptions if there is a direct route; do
+not add another repackaging of the already closed `HasProd` or `tprod` branch
+criterion.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -892,10 +897,10 @@ product-tail/`tprod` positive-product wrappers, the first canonical
 zero/positive product criterion wrapper, and canonical ratio measurability now
 also compile, including strict-positive product variants and the zero-product
 `HasProd h 0` singular handoff.  The ENNReal full-prefix convergence upgrade and
-closed zero/positive branch wrapper now also compile.  Move forward to final
-textbook Kakutani packaging, or only source-shaped wrappers that remove the
-remaining ambient dichotomy or coordinate-finiteness assumptions when a direct
-route is visible.
+closed zero/positive branch wrapper now also compile.  The textbook `tprod`
+zero/positive branch wrapper now also compiles.  Move forward only to
+source-shaped wrappers that remove the remaining ambient dichotomy or
+coordinate-finiteness assumptions when a direct route is visible.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1009,6 +1014,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V106` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V107` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

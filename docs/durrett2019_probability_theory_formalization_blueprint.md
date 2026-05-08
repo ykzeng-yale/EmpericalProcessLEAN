@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V106`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V107`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -561,10 +561,10 @@ Next packet:
   while strict product positivity feeds the positive branch.  Canonical
   `mu + nu` limit-density and likelihood-ratio measurability are compiled
   support.  The ENNReal full-prefix convergence upgrade and closed zero/positive
-  branch wrapper also now compile.  The active target is final textbook
-  Kakutani packaging, or only source-shaped wrappers that remove the remaining
-  ambient dichotomy or coordinate-finiteness assumptions when a direct route is
-  visible.
+  branch wrapper also now compile.  The textbook `tprod` zero/positive branch
+  wrapper now also compiles.  The active target is only source-shaped wrappers
+  that remove the remaining ambient dichotomy or coordinate-finiteness
+  assumptions when a direct route is visible.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
