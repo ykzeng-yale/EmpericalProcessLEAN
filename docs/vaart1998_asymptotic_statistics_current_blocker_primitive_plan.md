@@ -10,17 +10,17 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current frontier endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatorSub_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`,
-using `delta = estimator - theta0`, estimator consistency, and the direct
-scaled-estimator increment identity to produce the old delta consistency,
-segment, and scaled-estimator fields.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatorSubMeas_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`,
+using estimator/theta0/scale a.e.-measurability plus the source-shaped
+increment identities to produce `delta` and `scaledEstimator` a.e.
+measurability.
 
 Next packet: prove the actual iid/operator empirical derivative strong law if
 an immediate local route exists; otherwise instantiate the raw scaled score CLT
-or remaining stochastic boundedness/scaling fields.  Do not revisit
-estimator-substitution, raw-root transfer, score-scaling CLT transfer,
-derivative probability packaging, scalar derivative-norm packaging, smooth
-Taylor production, sampled-summand measurability, or envelope
+or remaining stochastic boundedness/scaling fields.  Do not revisit estimator
+measurability, estimator-substitution, raw-root transfer, score-scaling CLT
+transfer, derivative probability packaging, scalar derivative-norm packaging,
+smooth Taylor production, sampled-summand measurability, or envelope
 stochastic-boundedness plumbing.
 
 Workflow: reconcile any local Vaart edits first, search local/mathlib APIs, add
@@ -897,14 +897,18 @@ compiling:
    `delta = estimator - theta0`, estimator consistency, and the direct scaled
    estimator increment identity:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatorSub_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`.
+321. Theorem 5.41 estimator-increment measurability handoff from
+   estimator/theta0/scale a.e.-measurability and the source-shaped increment
+   identities:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatorSubMeas_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 estimator increment handoff`).
+(`Add Vaart theorem 5.41 estimator measurability handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by replacing independent delta
-consistency, segment, and scaled-estimator equality fields with the
-source-shaped estimator increment identities.
+asymptotic-normality route for Z-estimators by deriving `delta` and
+`scaledEstimator` a.e.-measurability from estimator/theta0/scale
+a.e.-measurability plus the source-shaped increment identities.
 
 The next aggressive packet should prove the actual iid/operator empirical
 derivative strong law if a local route is immediately available; otherwise
