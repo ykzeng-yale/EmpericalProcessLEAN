@@ -50,10 +50,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   adjoint-conjugate square-root coordinate identity, and the pointwise
   Newton-segment local-norm sandwich at `z_t` is compiled from the Lemma 13.6
   source-radius theorem.  Next discharge the concrete square-root/inverse-
-  Hessian coordinate identities and prove the source dual-local-norm transport
-  comparison; the raw inverse-Hessian quadratic upper comparison is now a
-  compiled consequence of that dual norm bound.  Then remove mixed-third-source
-  interfaces when bounded.
+  Hessian coordinate identities and prove the concrete Cauchy bridge plus
+  inverse-local identity for the Hessian/inverse-Hessian model; the source
+  dual-local-norm transport and raw inverse-Hessian quadratic upper comparison
+  are now compiled consequences of Lemma 13.6 primal lower transport plus those
+  identities.  Then remove mixed-third-source interfaces when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
@@ -1455,10 +1456,16 @@ segment membership/Hessian nonnegativity from convexity and
 `inverseHessianQuadraticUpper_of_dualLocalNorm_le_div_one_sub`, and
 `chewi138_newtonDecrement_step_le_of_dualLocalNormUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
 so a Chewi Lemma 13.6-style dual-local-norm upper comparison now supplies the
-raw inverse-Hessian quadratic upper comparison automatically.  The live 13.8
-blockers are now the concrete coordinate identities and the proof of that
-source dual-local-norm transport comparison from the Hessian/inverse-Hessian
-model.
+raw inverse-Hessian quadratic upper comparison automatically.  The newest
+duality packet adds
+`dualLocalNorm_le_div_of_localNorm_lower_and_inverseIdentity`,
+`dualLocalNorm_le_div_one_sub_of_localNorm_lower_and_inverseIdentity`, and
+`chewi138_newtonDecrement_step_le_of_primalLowerDualIdentity_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
+deriving that dual transport from the compiled Lemma 13.6 primal lower
+sandwich, a supplied Cauchy bridge at `x`, and a supplied inverse-local
+identity at `x+`.  The live 13.8 blockers are now the concrete coordinate/
+square-root identities plus those Cauchy and inverse-local identities for the
+Hessian/inverse-Hessian model.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the

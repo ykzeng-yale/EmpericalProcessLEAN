@@ -356,6 +356,13 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	This shifts the remaining inverse-Hessian transport obligation from a raw
 	quadratic-form upper bound to the Chewi Lemma 13.6 source shape
 	`||v||^*_{x+} <= ||v||^*_x / (1 - M * lambda)`.
+	The newest duality packet adds
+	`dualLocalNorm_le_div_of_localNorm_lower_and_inverseIdentity`,
+	`dualLocalNorm_le_div_one_sub_of_localNorm_lower_and_inverseIdentity`, and
+	`chewi138_newtonDecrement_step_le_of_primalLowerDualIdentity_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`.
+	This derives the dual-local-norm transport from the compiled Lemma 13.6
+	primal lower sandwich plus supplied Cauchy and inverse-local identities, so
+	callers no longer need to provide the dual transport comparison directly.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
@@ -364,17 +371,20 @@ are now compiled, so next derive the square-root coordinate
 identities
 `normalized = coord† Delta coord`, `coord sqrtH = id`, `sqrtH coord = id`,
 `<v, invHess(x)v> = ||coord†v||^2`, and `hess x = sqrtH†sqrtH` from the
-concrete Hessian/inverse-Hessian model.  In parallel, prove the dual-local-norm
-transport comparison from the Lemma 13.6 inverse-Hessian/matrix-order model;
-the raw inverse-Hessian quadratic upper comparison should be obtained only via
-the compiled reverse-algebra bridge, not reproved at each theorem wrapper.
+concrete Hessian/inverse-Hessian model.  In parallel, prove the Cauchy bridge
+`<v,w> <= ||v||^*_x ||w||_x` and inverse-local identity
+`||invHess(x+) v||_{x+} = ||v||^*_{x+}` from the concrete
+Hessian/inverse-Hessian model.  The dual-local-norm transport and raw
+inverse-Hessian quadratic upper comparison should be obtained only via the
+compiled duality and reverse-algebra bridges, not reproved at each theorem
+wrapper.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
-  derive the needed dual-local-norm upper comparison from Lemma 13.6/matrix
-  inverse order when moving beyond the supplied interface, and
+  derive the needed Cauchy bridge and inverse-local identity from the concrete
+  Hessian/inverse-Hessian or matrix model, and
   derive the square-root coordinate identities required by
-  `chewi138_newtonDecrement_step_le_of_dualLocalNormUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`.
+  `chewi138_newtonDecrement_step_le_of_primalLowerDualIdentity_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`.
   The conversion from those inputs to the normalized Rayleigh bound, op norm,
   Delta quadratic bound, residual bound, and final decrement estimate is
   compiled; do not reprove it.

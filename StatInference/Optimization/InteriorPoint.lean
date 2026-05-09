@@ -1070,6 +1070,87 @@ theorem inverseHessianQuadraticUpper_of_dualLocalNorm_le_div_one_sub
     hden_pos hx_nonneg hy_nonneg hnorm v
 
 /--
+Dual-local-norm transport from a primal local-norm lower comparison.  This is
+the Hilbert-space duality step behind the dual half of Chewi Lemma 13.6, stated
+with the exact Cauchy bridge and inverse-local identity as supplied interfaces.
+-/
+theorem dualLocalNorm_le_div_of_localNorm_lower_and_inverseIdentity
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {x y : E} {den : ℝ}
+    (hden_pos : 0 < den)
+    (hy_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess y v))
+    (hlower : ∀ w : E, den * localNorm hess x w ≤ localNorm hess y w)
+    (hy_inv_local : ∀ v : E,
+      localNorm hess y (invHess y v) = dualLocalNorm invHess y v)
+    (hx_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (v : E) :
+    dualLocalNorm invHess y v ≤ dualLocalNorm invHess x v / den := by
+  let Dy := dualLocalNorm invHess y v
+  let Dx := dualLocalNorm invHess x v
+  let w := invHess y v
+  change Dy ≤ Dx / den
+  have hDy_nonneg : 0 ≤ Dy := by
+    dsimp [Dy]
+    exact dualLocalNorm_nonneg invHess y v
+  have hDx_nonneg : 0 ≤ Dx := by
+    dsimp [Dx]
+    exact dualLocalNorm_nonneg invHess x v
+  by_cases hDy_zero : Dy = 0
+  · rw [hDy_zero]
+    exact div_nonneg hDx_nonneg hden_pos.le
+  have hDy_pos : 0 < Dy := lt_of_le_of_ne hDy_nonneg (Ne.symm hDy_zero)
+  have hsq : Dy ^ (2 : ℕ) = inner ℝ v w := by
+    dsimp [Dy, w]
+    exact dualLocalNorm_sq_eq_inner (hy_inv_nonneg v)
+  have hlx : localNorm hess x w ≤ localNorm hess y w / den := by
+    exact (le_div_iff₀ hden_pos).2 (by simpa [mul_comm] using hlower w)
+  have hinner_bound : inner ℝ v w ≤ Dx * (Dy / den) := by
+    calc
+      inner ℝ v w ≤ Dx * localNorm hess x w := by
+        simpa [Dx, w] using hx_cauchy v w
+      _ ≤ Dx * (localNorm hess y w / den) := by
+        exact mul_le_mul_of_nonneg_left hlx hDx_nonneg
+      _ = Dx * (Dy / den) := by
+        simp [Dy, w, hy_inv_local v]
+  have hsqbound : Dy ^ (2 : ℕ) ≤ Dx * (Dy / den) := by
+    calc
+      Dy ^ (2 : ℕ) = inner ℝ v w := hsq
+      _ ≤ Dx * (Dy / den) := hinner_bound
+  have hden_ne : den ≠ 0 := hden_pos.ne'
+  have hsqbound' : Dy * Dy ≤ (Dx / den) * Dy := by
+    calc
+      Dy * Dy = Dy ^ (2 : ℕ) := by ring
+      _ ≤ Dx * (Dy / den) := hsqbound
+      _ = (Dx / den) * Dy := by
+        field_simp [hden_ne]
+  exact le_of_mul_le_mul_right hsqbound' hDy_pos
+
+/--
+Denominator-shaped version of
+`dualLocalNorm_le_div_of_localNorm_lower_and_inverseIdentity`.
+-/
+theorem dualLocalNorm_le_div_one_sub_of_localNorm_lower_and_inverseIdentity
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {x y : E} {M r : ℝ}
+    (hMr_lt : M * r < 1)
+    (hy_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess y v))
+    (hlower : ∀ w : E,
+      (1 - M * r) * localNorm hess x w ≤ localNorm hess y w)
+    (hy_inv_local : ∀ v : E,
+      localNorm hess y (invHess y v) = dualLocalNorm invHess y v)
+    (hx_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (v : E) :
+    dualLocalNorm invHess y v ≤
+      dualLocalNorm invHess x v / (1 - M * r) := by
+  have hden_pos : 0 < 1 - M * r := by nlinarith
+  exact dualLocalNorm_le_div_of_localNorm_lower_and_inverseIdentity
+    (hess := hess) (invHess := invHess) (x := x) (y := y)
+    (den := 1 - M * r) hden_pos hy_inv_nonneg hlower hy_inv_local
+    hx_cauchy v
+
+/--
 Mixed primal/dual quadratic-form estimate: if a supplied residual has dual
 quadratic form bounded by `coeff^2` times a supplied step's primal quadratic
 form, then its dual local norm is bounded by `coeff` times the step local norm.
@@ -4754,6 +4835,88 @@ theorem chewi138_newtonDecrement_step_le_of_dualLocalNormUpper_and_factorizedNor
             (y := newtonStep grad invHess x) (M := M)
             (r := newtonDecrement grad invHess x)
             hMlambda_lt hx_inv_nonneg hstep_inv_nonneg hdual_upper v)
+
+/--
+Chewi Theorem 13.8 source-Newton-segment assembly where the dual-local-norm
+transport is derived from the compiled Lemma 13.6 primal lower sandwich plus
+supplied Cauchy and inverse-local identities.
+-/
+theorem chewi138_newtonDecrement_step_le_of_primalLowerDualIdentity_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    {normalized coord sqrtH : E →L[ℝ] E} {s : Set E} {x : E} {M : ℝ}
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hs : Convex ℝ s) (hx : x ∈ s)
+    (hstep_mem : newtonStep grad invHess x ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hstep_ne : newtonStep grad invHess x - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hnormalized_eq :
+      normalized =
+        (ContinuousLinearMap.adjoint coord).comp
+          ((hessianSegmentDelta hess x (newtonStep grad invHess x)).comp coord))
+    (hcoord_sqrtH : ∀ step : E, coord (sqrtH step) = step)
+    (hsqrtH_coord : ∀ z : E, sqrtH (coord z) = z)
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hx_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hstep_inv_nonneg : ∀ v : E,
+      0 ≤ inner ℝ v (invHess (newtonStep grad invHess x) v))
+    (hstep_inv_local : ∀ v : E,
+      localNorm hess (newtonStep grad invHess x)
+          (invHess (newtonStep grad invHess x) v) =
+        dualLocalNorm invHess (newtonStep grad invHess x) v)
+    (hx_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  exact
+    chewi138_newtonDecrement_step_le_of_dualLocalNormUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment
+      (hess := hess) (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (grad := grad) (invHess := invHess)
+      (normalized := normalized) (coord := coord) (sqrtH := sqrtH)
+      (s := s) (x := x) (M := M)
+      hMlambda_lt hstep_norm hs hx hstep_mem hsc hess_pos hstep_ne
+      hhess_cont hhess hmixed hsymm hgrad hnewton_linear
+      hnormalized_eq hcoord_sqrtH hsqrtH_coord hinv_factor hhess_eq
+      hx_inv_nonneg hstep_inv_nonneg
+      (by
+        intro v
+        refine
+          dualLocalNorm_le_div_one_sub_of_localNorm_lower_and_inverseIdentity
+            (hess := hess) (invHess := invHess) (x := x)
+            (y := newtonStep grad invHess x) (M := M)
+            (r := newtonDecrement grad invHess x)
+            hMlambda_lt hstep_inv_nonneg ?hlower hstep_inv_local hx_cauchy v
+        intro w
+        have hsand :=
+          chewi138_newtonSegment_localNorm_sandwich_sourceRadius
+            (s := s) (hess := hess) (hessDeriv := hessDeriv)
+            (thirdMixed := thirdMixed) (grad := grad) (invHess := invHess)
+            (x := x) (M := M) (t := 1)
+            hMlambda_lt hstep_norm hs hx hstep_mem hsc hess_pos hstep_ne
+            hhess_cont hhess hmixed (by simp) w
+        simpa [hessianSegmentPoint_one, mul_assoc] using hsand.1)
 
 /--
 Chewi Theorem 13.8 assembly from a unit bilinear estimate on the normalized

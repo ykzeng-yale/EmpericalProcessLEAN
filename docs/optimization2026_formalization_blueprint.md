@@ -559,10 +559,16 @@ local-norm sandwich hypotheses.  The newest dual-transport packet adds
 `inverseHessianQuadraticUpper_of_dualLocalNorm_le_div_one_sub`, and
 `chewi138_newtonDecrement_step_le_of_dualLocalNormUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
 so the route now asks for the Chewi source-shaped dual-local-norm comparison
-instead of a raw inverse-Hessian quadratic upper comparison.  After that,
-derive the dual comparison and coordinate identities from concrete
-matrix/order hypotheses and remove the remaining mixed-third supplied source
-interface through the real third-derivative representation bridge to
+instead of a raw inverse-Hessian quadratic upper comparison.  The newest
+duality packet adds
+`dualLocalNorm_le_div_of_localNorm_lower_and_inverseIdentity`,
+`dualLocalNorm_le_div_one_sub_of_localNorm_lower_and_inverseIdentity`, and
+`chewi138_newtonDecrement_step_le_of_primalLowerDualIdentity_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
+so the dual comparison is now derived from Lemma 13.6 primal lower transport
+once the concrete model supplies the Cauchy bridge and inverse-local identity.
+After that, derive those identities and the coordinate identities from
+concrete matrix/order hypotheses and remove the remaining mixed-third supplied
+source interface through the real third-derivative representation bridge to
 `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
