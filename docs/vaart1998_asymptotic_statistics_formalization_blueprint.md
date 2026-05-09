@@ -595,9 +595,14 @@ Initial modules:
   `vaart1998_theorem_5_41_derivativeAt_path_hasDerivAt_of_hasFDerivAt`,
   `vaart1998_theorem_5_41_derivativeAt_path_regular_ae_of_hasFDerivAt`, and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativeRegularity_envelope`,
-  so the remaining critical path is instantiating source second-derivative
-  regularity from a standard smoothness package for the estimating map or
-  derivative map.
+  and the derivative-map smoothness packet adds
+  `vaart1998_theorem_5_41_derivativeAt_source_regular_of_contDiffOn_open`,
+  `vaart1998_theorem_5_41_derivativeAt_source_regular_ae_of_contDiffOn_open`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativeContDiff_envelope`,
+  so the remaining critical path is instantiating the estimating-map
+  path-continuity and Frechet-derivative fields from a standard smoothness
+  package for the estimating map.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

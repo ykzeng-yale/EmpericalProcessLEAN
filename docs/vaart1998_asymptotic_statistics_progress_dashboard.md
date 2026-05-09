@@ -613,16 +613,13 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 second derivative regularity handoff`).
+(`Add Vaart theorem 5.41 ContDiff regularity handoff`).
 Current packet verification passed for:
 
-- manual `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean -o .../MEstimators.olean -i .../MEstimators.ilean`
+- `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MEstimators`
 - `git diff --check`
 - proof-hole and credential-pattern scans on changed Vaart files
-
-Root build note: this worktree uses a symlinked `.lake` directory; focused
-checks must compile the Vaart-worktree artifacts directly.
 
 Live continuation prompt: use the compact prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
@@ -630,11 +627,12 @@ Live continuation prompt: use the compact prompt in
 ## Next Aggressive Target
 
 Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
-`MEstimators.lean`: instantiate the remaining source second-derivative
-regularity fields from a standard smoothness package for the estimating map or
-derivative map.  The derivative-path regularity bridge, vector derivative
-Taylor bridge, `derivativeAt theta0` specialization, vector-to-coordinate
-continuity reduction, coordinate scalar derivative-at-zero/display reduction,
+`MEstimators.lean`: instantiate the remaining estimating-map path-continuity
+and Frechet-derivative fields from a standard open-set smoothness package for
+the estimating map.  The derivative-map `ContDiffOn` source regularity bridge,
+derivative-path regularity bridge, vector derivative Taylor bridge,
+`derivativeAt theta0` specialization, vector-to-coordinate continuity
+reduction, coordinate scalar derivative-at-zero/display reduction,
 Frechet-to-one-dimensional chain rule, estimating-map segment instantiation,
 second-derivative action matching, path-selected Taylor bridge, coordinate
 assembly, the scalar Taylor bridge, scaling bridge, auxiliary quadratic
