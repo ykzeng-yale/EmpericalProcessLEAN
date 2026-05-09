@@ -43,11 +43,15 @@ self-concordance interface.  The latest positivity/source-radius packet
 derives local-norm positivity from a positive-definite Hessian hypothesis and
 proves the named Lemma 13.6(4) source-radius local-norm sandwich
 `chewi136_localNorm_sandwich_sourceRadius` with `r = ||y-x||_x`.  The next
-proof target is therefore the real third-derivative-to-`MixedThirdSelfConcordantOn`
-bridge and Newton decrement/Dikin-ellipsoid consequences.  Segment membership,
-`ψ` continuity, local-norm continuity/positivity, Riccati comparison,
-derivative inequality, coefficient scaling, and final sandwich assembly are
-now compiled; do not return to ASGD or generic process-prompt edits unless the user
+Newton/Dikin packet proves the supplied-oracle Definition 13.7 norm identity,
+the `x+ in Dikin(x,1/M)` gate from `M*lambda < 1`, and the Newton-step
+specialization of the Lemma 13.6 local-norm sandwich.  The next proof target is
+therefore dual-local-norm transport plus the real
+third-derivative-to-`MixedThirdSelfConcordantOn` bridge and Theorem 13.8
+gradient-residual/Delta bound.  Segment membership, `ψ` continuity,
+local-norm continuity/positivity, Riccati comparison, derivative inequality,
+coefficient scaling, final sandwich assembly, and first Newton/Dikin
+membership wrappers are now compiled; do not return to ASGD or generic process-prompt edits unless the user
 explicitly switches lanes.
 
 As of the current ASGD source-variance packet, route new characteristic-
@@ -422,9 +426,17 @@ the mixed-third exponential-bound bridges, and the mixed-third local-norm
 sandwich consumers, including the convex/source wrapper
 `localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius`
 and the named source theorem `chewi136_localNorm_sandwich_sourceRadius`.
-The next Chapter 13 packet should connect the real third-derivative
-representation to `MixedThirdSelfConcordantOn` and continue to Newton
-decrement estimates.
+The newest Newton packet adds
+`localNorm_newtonStep_sub_eq_newtonDecrement_of_inner`,
+`newtonStep_mem_dikinEllipsoid_of_newtonDecrement_lt`,
+`newtonStep_mem_dikinEllipsoid_of_inner_of_newtonDecrement_lt`,
+`newtonStep_mem_dikinEllipsoid_inv_of_mul_newtonDecrement_lt`,
+`newtonStep_mem_dikinEllipsoid_inv_of_inner_of_mul_newtonDecrement_lt`, and
+`chewi136_newtonStep_localNorm_sandwich_sourceRadius`.
+The next Chapter 13 packet should build dual-local-norm transport and the
+Theorem 13.8 residual bound, while the heavier real third-derivative
+representation bridge to `MixedThirdSelfConcordantOn` stays the analytic
+source-interface target.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

@@ -443,6 +443,94 @@ theorem sub_newtonStep
   simp [newtonStep]
 
 /--
+Chewi Definition 13.7, supplied-oracle form of the identity
+`λ_f(x) = ||x⁺ - x||_x`.  The only algebraic requirement is the expected
+quadratic-form identity for applying the Hessian to its supplied inverse on
+the gradient direction.
+-/
+theorem localNorm_newtonStep_sub_eq_newtonDecrement_of_inner
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {x : E}
+    (hinner :
+      inner ℝ (invHess x (grad x)) (hess x (invHess x (grad x))) =
+        inner ℝ (grad x) (invHess x (grad x))) :
+    localNorm hess x (newtonStep grad invHess x - x) =
+      newtonDecrement grad invHess x := by
+  rw [newtonStep_sub]
+  simp [localNorm, dualLocalNorm, newtonDecrement, hinner]
+
+/--
+The Dikin-ellipsoid membership consequence of the Newton decrement bound,
+using a supplied proof of the Definition 13.7 norm identity.
+-/
+theorem newtonStep_mem_dikinEllipsoid_of_newtonDecrement_lt
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {x : E} {r : ℝ}
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hlambda : newtonDecrement grad invHess x < r) :
+    newtonStep grad invHess x ∈ dikinEllipsoid hess x r := by
+  simpa [dikinEllipsoid, hstep_norm] using hlambda
+
+/--
+The same Dikin membership consequence, discharging the Definition 13.7 norm
+identity from the supplied Hessian/inverse-Hessian quadratic identity.
+-/
+theorem newtonStep_mem_dikinEllipsoid_of_inner_of_newtonDecrement_lt
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {x : E} {r : ℝ}
+    (hinner :
+      inner ℝ (invHess x (grad x)) (hess x (invHess x (grad x))) =
+        inner ℝ (grad x) (invHess x (grad x)))
+    (hlambda : newtonDecrement grad invHess x < r) :
+    newtonStep grad invHess x ∈ dikinEllipsoid hess x r :=
+  newtonStep_mem_dikinEllipsoid_of_newtonDecrement_lt
+    (hess := hess) (grad := grad) (invHess := invHess) (x := x) (r := r)
+    (localNorm_newtonStep_sub_eq_newtonDecrement_of_inner
+      (hess := hess) (grad := grad) (invHess := invHess) (x := x) hinner)
+    hlambda
+
+/--
+Newton decrement form of the source condition `x⁺ ∈ Dikin(x, 1/M)` used
+before applying Lemma 13.6 to the Newton segment.
+-/
+theorem newtonStep_mem_dikinEllipsoid_inv_of_mul_newtonDecrement_lt
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {x : E} {M : ℝ}
+    (hM_pos : 0 < M)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1) :
+    newtonStep grad invHess x ∈ dikinEllipsoid hess x M⁻¹ := by
+  apply newtonStep_mem_dikinEllipsoid_of_newtonDecrement_lt
+    (hess := hess) (grad := grad) (invHess := invHess) (x := x)
+    (r := M⁻¹) hstep_norm
+  rw [← one_mul M⁻¹, lt_mul_inv_iff₀ hM_pos]
+  simpa [mul_comm] using hMlambda_lt
+
+/--
+The same `x⁺ ∈ Dikin(x, 1/M)` gate, with the Definition 13.7 norm identity
+discharged from a supplied inverse-Hessian quadratic identity.
+-/
+theorem newtonStep_mem_dikinEllipsoid_inv_of_inner_of_mul_newtonDecrement_lt
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {x : E} {M : ℝ}
+    (hM_pos : 0 < M)
+    (hinner :
+      inner ℝ (invHess x (grad x)) (hess x (invHess x (grad x))) =
+        inner ℝ (grad x) (invHess x (grad x)))
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1) :
+    newtonStep grad invHess x ∈ dikinEllipsoid hess x M⁻¹ :=
+  newtonStep_mem_dikinEllipsoid_inv_of_mul_newtonDecrement_lt
+    (hess := hess) (grad := grad) (invHess := invHess) (x := x) (M := M)
+    hM_pos
+    (localNorm_newtonStep_sub_eq_newtonDecrement_of_inner
+      (hess := hess) (grad := grad) (invHess := invHess) (x := x) hinner)
+    hMlambda_lt
+
+/--
 Supplied quadratic-form comparison between two Hessian oracles.
 
 This is the algebraic output needed from the analytic self-concordance
@@ -1918,6 +2006,55 @@ theorem chewi136_localNorm_sandwich_sourceRadius
     (s := s) (hess := hess) (hessDeriv := hessDeriv)
     (thirdMixed := thirdMixed) (x := x) (y := y) (M := M)
     hMr_lt hs hx hy hsc hess_pos hdiff_ne hhess_cont hhess hmixed v
+
+/--
+Newton-step specialization of Chewi Lemma 13.6(4).  Once the Newton decrement
+is identified with `||x⁺ - x||_x`, the Lemma 13.6 source-radius hypothesis is
+exactly `M * λ_f(x) < 1`.
+-/
+theorem chewi136_newtonStep_localNorm_sandwich_sourceRadius
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ}
+    {grad : E -> E} {invHess : E -> E →L[ℝ] E} {x : E} {M : ℝ}
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hs : Convex ℝ s) (hx : x ∈ s)
+    (hstep_mem : newtonStep grad invHess x ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hdiff_ne : newtonStep grad invHess x - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint x (newtonStep grad invHess x) t))
+          (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hmixed : ∀ v : E, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v
+          ((hessDeriv (hessianSegmentPoint x (newtonStep grad invHess x) t)
+            (newtonStep grad invHess x - x)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x
+            (newtonStep grad invHess x) v t)
+    (v : E) :
+    (1 - M * newtonDecrement grad invHess x) * localNorm hess x v ≤
+      localNorm hess (newtonStep grad invHess x) v ∧
+        localNorm hess (newtonStep grad invHess x) v ≤
+          localNorm hess x v / (1 - M * newtonDecrement grad invHess x) := by
+  have hMr_lt :
+      M * localNorm hess x (newtonStep grad invHess x - x) < 1 := by
+    simpa [hstep_norm] using hMlambda_lt
+  have hsand :=
+    chewi136_localNorm_sandwich_sourceRadius
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (thirdMixed := thirdMixed) (x := x)
+      (y := newtonStep grad invHess x) (M := M)
+      hMr_lt hs hx hstep_mem hsc hess_pos hdiff_ne hhess_cont hhess hmixed v
+  simpa [hstep_norm] using hsand
 
 /--
 Chewi Definition 13.3, source-shaped self-concordance interface using only the

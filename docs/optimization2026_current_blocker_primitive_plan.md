@@ -184,11 +184,17 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 `localNorm_sandwich_of_hessianSegmentMixedThirdCertificate` /
 `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate` /
 `localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound` /
-`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound` /
-`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm` /
-`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_hessianPositive` /
-`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius` /
-`chewi136_localNorm_sandwich_sourceRadius`.
+	`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound` /
+	`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm` /
+	`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_hessianPositive` /
+	`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius` /
+	`chewi136_localNorm_sandwich_sourceRadius`, plus the first Newton/Dikin
+	consequence layer `localNorm_newtonStep_sub_eq_newtonDecrement_of_inner`,
+	`newtonStep_mem_dikinEllipsoid_of_newtonDecrement_lt`,
+	`newtonStep_mem_dikinEllipsoid_of_inner_of_newtonDecrement_lt`,
+	`newtonStep_mem_dikinEllipsoid_inv_of_mul_newtonDecrement_lt`,
+	`newtonStep_mem_dikinEllipsoid_inv_of_inner_of_mul_newtonDecrement_lt`, and
+	`chewi136_newtonStep_localNorm_sandwich_sourceRadius`.
 
 Next theorem-sized target: construct the source hypotheses for
 `HessianSegmentMixedThirdLocalNormCertificate` from the remaining analytic
@@ -201,8 +207,10 @@ blockers are:
   Hessian hypothesis and `y - x ≠ 0`; the derivative formula, Riccati
   derivative estimate, scalar comparison, coefficient scaling, and named
   source-radius Lemma 13.6(4) theorem are compiled;
-- then move to Newton decrement/Dikin-ellipsoid consequences of
-  `chewi136_localNorm_sandwich_sourceRadius`.
+- build the remaining Theorem 13.8 Newton convergence path: dual-local-norm
+  transport from Lemma 13.6 Hessian bounds/inverse-Hessian assumptions, the
+  gradient residual integral/Delta bound, and the final
+  `M * lambda^2 / (1 - M * lambda)^2` decrement inequality.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi
 Hessian-stability theorem and no direct derivative theorem for
@@ -215,7 +223,16 @@ Riccati comparison theorem matching `q' <= M*q^2`.  Reuse
 `Continuous.clm_apply`/`ContinuousOn.clm_apply`,
 `ContinuousMultilinearMap` and `iteratedFDeriv` APIs, plus
 `ContinuousLinearMap.IsPositive`/matrix `PosSemidef` APIs only when the
-supplied-Hessian interface is insufficient.  Do not return to ASGD, old
+supplied-Hessian interface is insufficient.  Faraday's API scout found no
+one-shot pinned theorem saying that the derivative of the Hessian operator
+equals the third Frechet derivative in the local `E -> E →L[ℝ] E` shape.
+Reusable exact names for that bridge include
+`ContDiffAt.differentiableAt_iteratedFDeriv`,
+`fderiv_iteratedFDeriv`, `iteratedFDeriv_succ_apply_left`,
+`iteratedFDeriv_succ_apply_right`, `iteratedFDeriv_two_apply`,
+`ContDiffAt.iteratedFDeriv_comp_perm`,
+`HasFDerivAt.continuousMultilinear_apply_const`, and
+`fderiv_continuousMultilinear_apply_const`.  Do not return to ASGD, old
 Chapter 3, or generic process-prompt edits unless the user explicitly switches
 lanes.
 

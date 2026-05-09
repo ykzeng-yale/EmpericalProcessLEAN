@@ -1331,20 +1331,31 @@ the mixed-third certificate-to-exponential bridges,
 `localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm` /
 `localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_hessianPositive` /
 `localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius` /
-`chewi136_localNorm_sandwich_sourceRadius`.
+`chewi136_localNorm_sandwich_sourceRadius`, and the first Newton/Dikin
+consequence layer
+`localNorm_newtonStep_sub_eq_newtonDecrement_of_inner`,
+`newtonStep_mem_dikinEllipsoid_of_newtonDecrement_lt`,
+`newtonStep_mem_dikinEllipsoid_of_inner_of_newtonDecrement_lt`,
+`newtonStep_mem_dikinEllipsoid_inv_of_mul_newtonDecrement_lt`,
+`newtonStep_mem_dikinEllipsoid_inv_of_inner_of_mul_newtonDecrement_lt`, and
+`chewi136_newtonStep_localNorm_sandwich_sourceRadius`.
 The newest positivity/source-radius packet derives segment local-norm
 positivity from a source-shaped positive-definite Hessian hypothesis and
 `y - x ≠ 0`, then proves the named source-radius Lemma 13.6(4) local-norm
-sandwich with `r = ||y - x||_x`.
+sandwich with `r = ||y - x||_x`.  The Newton packet proves the supplied-oracle
+Definition 13.7 identity `lambda = ||x+ - x||_x`, converts `M * lambda < 1`
+into `x+ in Dikin(x, 1/M)`, and specializes Lemma 13.6 to the Newton segment.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
 compiled route uses `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
 `HasDerivAt.inner`, `HasDerivWithinAt.sqrt`, `HasDerivWithinAt.inv`, and
-`monotoneOn_of_hasDerivWithinAt_nonneg`.  Next Chapter 13 work should connect
-the real third-derivative representation to `MixedThirdSelfConcordantOn`, then
-use `chewi136_localNorm_sandwich_sourceRadius` for Newton decrement and
-Dikin-ellipsoid consequences.
+`monotoneOn_of_hasDerivWithinAt_nonneg`.  Faraday's follow-up scout found no
+one-shot Hessian-derivative/third-Frechet bridge, but identified
+`fderiv_iteratedFDeriv`, `iteratedFDeriv_succ_apply_left/right`,
+`iteratedFDeriv_two_apply`, and `ContDiffAt.iteratedFDeriv_comp_perm` as the
+right API stack.  Next Chapter 13 work should finish dual-local-norm transport
+and the Theorem 13.8 gradient-residual/Delta bound.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,
