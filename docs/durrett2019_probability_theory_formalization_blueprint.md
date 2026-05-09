@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V120`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V121`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -583,10 +583,11 @@ Next packet:
   integrand bound, Hölder integral bound, set-integral to restricted-`lintegral`
   bridge, pure `lintegral` Doob integrand bound, and integrated Doob layer-cake
   bound now also compile.  The weighted/Fubini identification now also compiles
-  through withDensity and base-measure forms.  The coefficient extraction and
-  assembled Doob/Fubini/Hölder endpoint now also compile, so the active
-  frontier is scalar cancellation/division algebra for the actual
-  positive-part p-th-power estimate.
+  through withDensity and base-measure forms.  The coefficient extraction,
+  assembled Doob/Fubini/Hölder endpoint, scalar cancellation lemma, finite
+  `lintegral` estimate, and finite `eLpNorm` wrapper now also compile, so the
+  active frontier is removing the finite running-maximum side condition and
+  packaging the final positive-part p-th-power estimate.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:

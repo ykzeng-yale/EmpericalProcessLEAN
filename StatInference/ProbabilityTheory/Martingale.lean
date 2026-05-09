@@ -11329,10 +11329,55 @@ theorem durrett2019_theorem_4_4_4_positivePart_holder_integral_bound
       (μ := P) hpq hterminal hmax)
 
 /--
+Durrett 2019, Theorem 4.4.4, scalar cancellation step.  If the Hölder/Fubini
+calculation gives `M ≤ K T^(1/p) M^(1/q)` and `M` is finite, then the
+running-maximum factor cancels to `M ≤ (K T^(1/p))^p`.
+-/
+theorem durrett2019_theorem_4_4_4_scalar_cancel_holder_bound
+    {M T K : ℝ≥0∞} {p q : ℝ} (hpq : p.HolderConjugate q)
+    (hM_ne_top : M ≠ ∞)
+    (hbound : M ≤ K * (T ^ (1 / p) * M ^ (1 / q))) :
+    M ≤ (K * T ^ (1 / p)) ^ p := by
+  by_cases hM0_eq : M = 0
+  · simp [hM0_eq]
+  have hM0 : M ≠ 0 := hM0_eq
+  let B : ℝ≥0∞ := M ^ (1 / q)
+  let A : ℝ≥0∞ := K * T ^ (1 / p)
+  have hp_pos : 0 < p := hpq.pos
+  have hq_pos : 0 < q := hpq.symm.pos
+  have hq_inv_nonneg : 0 ≤ 1 / q := (one_div_pos.2 hq_pos).le
+  have hB0 : B ≠ 0 := by
+    change M ^ (1 / q) ≠ 0
+    intro hzero
+    rw [ENNReal.rpow_eq_zero_iff] at hzero
+    rcases hzero with hzero | htop
+    · exact hM0 hzero.1
+    · exact (not_lt_of_ge hq_inv_nonneg) htop.2
+  have hBtop : B ≠ ∞ := by
+    change M ^ (1 / q) ≠ ∞
+    exact ENNReal.rpow_ne_top_of_nonneg hq_inv_nonneg hM_ne_top
+  have hdiv_le : M / B ≤ A := by
+    rw [ENNReal.div_le_iff hB0 hBtop]
+    simpa [A, B, mul_assoc, mul_comm, mul_left_comm] using hbound
+  have hdiv_eq : M / B = M ^ (1 / p) := by
+    have h_exp : 1 - 1 / q = 1 / p := by
+      simpa [one_div] using hpq.symm.one_sub_inv
+    calc
+      M / B = M ^ (1 - 1 / q) := by
+        change M / M ^ (1 / q) = M ^ (1 - 1 / q)
+        nth_rw 1 [← ENNReal.rpow_one M]
+        exact (ENNReal.rpow_sub (x := M) 1 (1 / q) hM0 hM_ne_top).symm
+      _ = M ^ (1 / p) := by rw [h_exp]
+  have hroot_le : M ^ (1 / p) ≤ A := by
+    rwa [hdiv_eq] at hdiv_le
+  have hroot_le' : M ^ p⁻¹ ≤ A := by
+    simpa [one_div] using hroot_le
+  exact (ENNReal.rpow_inv_le_iff hp_pos).1 hroot_le'
+
+/--
 Durrett 2019, Theorem 4.4.4, assembled integration/Hölder bound for the
-positive-part running maximum.  The only remaining step toward the textbook
-`p/(p-1)` maximal constant is the scalar division algebra that cancels the
-running-maximum power on both sides.
+positive-part running maximum.  This is the direct input to the scalar
+cancellation and truncation layer for the textbook `p/(p-1)` maximal constant.
 -/
 theorem durrett2019_theorem_4_4_4_positivePart_layercake_doob_holder_bound
     {Ω : Type*} [mΩ : MeasurableSpace Ω]
@@ -11383,6 +11428,119 @@ theorem durrett2019_theorem_4_4_4_positivePart_layercake_doob_holder_bound
               ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
                   (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) ^ (1 / q))) := by
           gcongr
+
+/--
+Durrett 2019, Theorem 4.4.4, finite running-maximum cancellation layer.  Under
+the finite `lintegral` side condition, the assembled Doob/Fubini/Hölder bound
+already gives the positive-part p-th-power estimate with the textbook
+constant `p/(p-1)`.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_lintegral_rpow_bound_of_finite
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) (n : ℕ)
+    (hMaxFinite :
+      (∫⁻ ω,
+        ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) ≠ ∞) :
+    (∫⁻ ω,
+        ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) ≤
+      (ENNReal.ofReal (p / (p - 1)) *
+        (∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p)) ^ p := by
+  let M : ℝ≥0∞ :=
+    ∫⁻ ω,
+      ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+          (fun k => max (X k ω) 0)‖ₑ ^ p ∂P
+  let T : ℝ≥0∞ := ∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P
+  have hAssembled :=
+    durrett2019_theorem_4_4_4_positivePart_layercake_doob_holder_bound
+      (P := P) (ℱ := ℱ) (X := X) hX hpq n
+  have hBound :
+      M ≤
+        (ENNReal.ofReal p * (ENNReal.ofReal (p - 1))⁻¹) *
+          (T ^ (1 / p) * M ^ (1 / q)) := by
+    change
+      M ≤
+        ENNReal.ofReal p *
+          ((ENNReal.ofReal (p - 1))⁻¹ *
+            (T ^ (1 / p) * M ^ (1 / q))) at hAssembled
+    calc
+      M ≤
+          ENNReal.ofReal p *
+            ((ENNReal.ofReal (p - 1))⁻¹ *
+              (T ^ (1 / p) * M ^ (1 / q))) := hAssembled
+      _ =
+          (ENNReal.ofReal p * (ENNReal.ofReal (p - 1))⁻¹) *
+            (T ^ (1 / p) * M ^ (1 / q)) := by
+            ac_rfl
+  have hScalar :
+      M ≤
+        ((ENNReal.ofReal p * (ENNReal.ofReal (p - 1))⁻¹) *
+          T ^ (1 / p)) ^ p :=
+    durrett2019_theorem_4_4_4_scalar_cancel_holder_bound
+      (M := M) (T := T)
+      (K := ENNReal.ofReal p * (ENNReal.ofReal (p - 1))⁻¹)
+      hpq (by simpa [M] using hMaxFinite) hBound
+  have hCoeff :
+      ENNReal.ofReal p * (ENNReal.ofReal (p - 1))⁻¹ =
+        ENNReal.ofReal (p / (p - 1)) := by
+    have hp_sub_pos : 0 < p - 1 := hpq.sub_one_pos
+    rw [ENNReal.ofReal_div_of_pos hp_sub_pos]
+    rfl
+  change M ≤ (ENNReal.ofReal (p / (p - 1)) * T ^ (1 / p)) ^ p
+  rw [← hCoeff]
+  exact hScalar
+
+/--
+Durrett 2019, Theorem 4.4.4, finite running-maximum eLpNorm source wrapper.
+This packages the cancellation layer in the exact form consumed by the earlier
+positive-part maximal inequality bridge.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound_of_finite
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) (n : ℕ)
+    (hMaxFinite :
+      (∫⁻ ω,
+        ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) ≠ ∞) :
+    eLpNorm
+        (fun ω =>
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => max (X k ω) 0)
+        (ENNReal.ofReal p) P ≤
+      ENNReal.ofReal (p / (p - 1)) *
+        eLpNorm (fun ω => max (X n ω) 0) (ENNReal.ofReal p) P := by
+  have hp_pos : 0 < p := hpq.pos
+  have hp_nonneg : 0 ≤ p := hp_pos.le
+  have hp_ne_zero : (ENNReal.ofReal p) ≠ 0 := by
+    rw [ne_eq, ENNReal.ofReal_eq_zero]
+    exact not_le_of_gt hp_pos
+  have hp_ne_top : (ENNReal.ofReal p) ≠ ∞ := ENNReal.ofReal_ne_top
+  have hp_toReal : (ENNReal.ofReal p).toReal = p :=
+    ENNReal.toReal_ofReal hp_nonneg
+  have hTerminal :
+      eLpNorm (fun ω => max (X n ω) 0) (ENNReal.ofReal p) P =
+        (∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p) := by
+    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_ne_top]
+    rw [hp_toReal]
+  have hPowerReal :=
+    durrett2019_theorem_4_4_4_positivePart_lintegral_rpow_bound_of_finite
+      (P := P) (ℱ := ℱ) (X := X) hX hpq n hMaxFinite
+  have hPower :
+      (∫⁻ ω,
+          ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              (fun k => max (X k ω) 0)‖ₑ ^ (ENNReal.ofReal p).toReal ∂P) ≤
+        (ENNReal.ofReal (p / (p - 1)) *
+          eLpNorm (fun ω => max (X n ω) 0) (ENNReal.ofReal p) P) ^
+            (ENNReal.ofReal p).toReal := by
+    simpa [hp_toReal, hTerminal] using hPowerReal
+  exact
+    durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound_of_lintegral_rpow_enorm_le
+      (P := P) (X := X) hp_ne_zero hp_ne_top n hPower
 
 end ProbabilityTheory
 end StatInference

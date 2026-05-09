@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V120
+## Live In-Thread Goal Prompt V121
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -18,6 +18,15 @@ positive-part-boundedness source bridge for Theorem 4.2.11 and the Fatou
 expectation inequality `E X ≤ E X_0` for Theorem 4.2.12.  Theorem 4.1.16
 remains deferred unless a future targeted kernel search finds a direct
 source-shaped API.
+
+Current target: finish Durrett Theorem 4.4.4 positive-part maximal inequality.
+The layer-cake, Doob integrand, weighted/Fubini, coefficient extraction,
+assembled Doob/Fubini/Hölder bound, scalar cancellation lemma, finite
+`lintegral` estimate, and finite `eLpNorm` wrapper now compile.  Next aggressive
+step: remove the finite running-maximum `lintegral` side condition using the
+smallest truncation/monotone-convergence bridge, then package the final
+source-facing positive-part and martingale `p/(p-1)` wrappers.  Do not revisit
+the completed Fubini/Hölder/coefficient plumbing.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -440,17 +449,19 @@ layer-cake route:
 `durrett2019_theorem_4_4_4_weighted_layercake_lintegral_rpow`,
 `durrett2019_theorem_4_4_4_positivePart_weighted_threshold_lintegral_eq`, and
 `durrett2019_theorem_4_4_4_positivePart_weighted_threshold_lintegral_base_eq`.
-The coefficient extraction and assembled Doob/Fubini/Hölder endpoint now also
-compile:
+The coefficient extraction, assembled Doob/Fubini/Hölder endpoint, and finite
+scalar-cancellation layer now also compile:
 `durrett2019_theorem_4_4_4_weighted_layercake_kernel_eq_inv_mul`,
 `durrett2019_theorem_4_4_4_weighted_layercake_lintegral_coeff`,
 `durrett2019_theorem_4_4_4_positivePart_weighted_threshold_lintegral_coeff_eq`,
-and `durrett2019_theorem_4_4_4_positivePart_layercake_doob_holder_bound`.
-Next target: package the scalar cancellation/division algebra that turns the
-assembled bound into the compiled `lintegral_rpow` source hypothesis with the
-textbook constant `p/(p-1)`.  Use finite truncation/monotone convergence only
-if top/zero cases block that cancellation.  Do not detour back into full
-Galton-Watson random-sum
+`durrett2019_theorem_4_4_4_positivePart_layercake_doob_holder_bound`,
+`durrett2019_theorem_4_4_4_scalar_cancel_holder_bound`,
+`durrett2019_theorem_4_4_4_positivePart_lintegral_rpow_bound_of_finite`, and
+`durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound_of_finite`.
+Next target: remove the finite running-maximum `lintegral` side condition with
+the smallest truncation/monotone-convergence bridge, then feed the existing
+positive-part and martingale source wrappers with the textbook constant
+`p/(p-1)`.  Do not detour back into full Galton-Watson random-sum
 infrastructure unless a local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
@@ -972,11 +983,13 @@ source wrapper from a supplied positive-part p-th-power estimate.  The
 positive-part layer-cake equality, pointwise Doob layer-cake integrand bound,
 Hölder integral bound, set-integral to restricted-`lintegral` bridge, pure
 `lintegral` Doob integrand bound, and integrated Doob layer-cake bound now also
-compile.  The weighted/Fubini identification, coefficient extraction, and
-assembled Doob/Fubini/Hölder endpoint now also compile.  Next move to scalar
-cancellation/division algebra for the actual Durrett p-th-power estimate,
-whichever gives the largest compiled step without building unrelated
-infrastructure.
+compile.  The weighted/Fubini identification, coefficient extraction,
+assembled Doob/Fubini/Hölder endpoint, scalar cancellation lemma, finite
+`lintegral` estimate, and finite `eLpNorm` wrapper now also compile.  Next
+remove the finite running-maximum side condition via truncation/monotone
+convergence, then package the final Durrett p-th-power estimate and maximal
+inequality wrappers, whichever gives the largest compiled step without
+building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1090,6 +1103,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V120` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V121` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
