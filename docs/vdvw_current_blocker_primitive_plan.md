@@ -8396,3 +8396,15 @@ fixed-VC assumption mismatch in the canonical countable original-subgraph lane.
 The remaining general-book blocker is unchanged: prove the nonmeasurable
 selected entropy/event source comparison, or a Chapter 1 measurable-cover
 existence primitive strong enough to support that comparison.
+
+2026-05-08 canonical Rademacher product-event bridge for the displayed-beta
+route:
+`Theorem243.lean` now proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedFiniteNet_product_event`.
+It composes the product-fiber beta constructor with the deterministic
+selected-cover finite-net Hoeffding handoff on the canonical finite-product
+Rademacher sign space.  The next exact theorem-facing edit in this probability
+route is no longer product/Fubini plumbing: construct the actual measurable
+ghost/Rademacher joint event whose fibers over the centered bad set have the
+displayed Chebyshev beta lower bound and whose points provide the sign-vector,
+finite-center maximal, and scaled Rademacher-bad ingredients.

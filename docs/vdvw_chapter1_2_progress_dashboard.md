@@ -109,13 +109,16 @@ The displayed-beta comparison now also has a product-fiber source constructor:
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_product_fiber_lower_bound`
 turn a measurable joint ghost/Rademacher event with beta-large fibers and
 projection into the selected finite-net bad event into the exact displayed
-outer-probability comparison.
-Current next target: prove the event-level displayed-beta Lemma 2.3.7 source
-primitive, preferably through product/Fubini averaged `Phi(x)=x` plus
-selected-cover finite-center maximal control; in the countable common-iid lane
-the remaining source obligations are exactly the maximal event and `Phi(x)=x`
-comparison.  Use the selected-log mean route only under honest
-L1/UI/countability strengthening.
+outer-probability comparison.  The canonical finite-product Rademacher version
+is now packaged as
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedFiniteNet_product_event`,
+which reduces the remaining event route to constructing a measurable joint
+original-sample/sign event whose fibers have the displayed Chebyshev beta lower
+bound and whose points supply the Rademacher sign, selected finite-center
+maximal bound, and scaled Rademacher bad event.
+Current next target: prove that actual ghost/Rademacher joint event and fiber
+lower bound from the textbook Lemma 2.3.7 argument.  Use the selected-log mean
+route only under honest L1/UI/countability strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
 restatements, finite-index wrappers, or selected-cardinality transport unless
 it directly consumes that source proof.
