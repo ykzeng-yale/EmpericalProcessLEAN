@@ -192,6 +192,9 @@ This opens Proposition 13.11(4) without hiding the hard part.  The remaining
 formalization task is to prove the Schur-complement/envelope certificate that
 turns a product-domain barrier and minimizer first-order conditions into the
 projected Hessian, inverse-Hessian, gradient, and mixed-third oracles.
+The supporting Schur layer now includes WithLp product coordinate CLMs,
+Hessian block extractors, and `barrierInfProjectionSchurHess` for the standard
+`Hxx - Hxy Hyy⁻¹ Hyx` projected Hessian formula.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers

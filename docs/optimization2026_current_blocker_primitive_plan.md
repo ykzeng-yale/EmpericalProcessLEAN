@@ -228,6 +228,12 @@ The next item-4 packet should attack the Schur-complement/envelope certificate
 that produces the projected Hessian, inverse-Hessian, gradient, and mixed
 third derivative oracles from an original product-domain barrier and a
 minimizer/first-order optimality map.
+The Schur-complement block packet adds `withLpProdFstCLM`,
+`withLpProdSndCLM`, `withLpProdInlCLM`, `withLpProdInrCLM`,
+`barrierInfProjectionBlockXX`, `barrierInfProjectionBlockXY`,
+`barrierInfProjectionBlockYX`, `barrierInfProjectionBlockYY`, and
+`barrierInfProjectionSchurHess`.  Reuse these for the envelope theorem; do not
+redo WithLp product projection/injection plumbing.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,

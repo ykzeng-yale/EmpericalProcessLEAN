@@ -124,6 +124,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   that constructs projected Hessian, inverse-Hessian, gradient, and third
   derivative oracles from the original product barrier plus minimizer
   first-order conditions.
+- Inf-projection Schur layer: the newest packet adds `withLpProdFstCLM`,
+  `withLpProdSndCLM`, `withLpProdInlCLM`, `withLpProdInrCLM`, the four Hessian
+  block extractors `barrierInfProjectionBlockXX`,
+  `barrierInfProjectionBlockXY`, `barrierInfProjectionBlockYX`,
+  `barrierInfProjectionBlockYY`, and the Schur-complement projected Hessian
+  `barrierInfProjectionSchurHess`.  The next item-4 proof step should connect
+  these block definitions to the projected self-concordance certificate rather
+  than rebuilding product-coordinate CLM plumbing.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

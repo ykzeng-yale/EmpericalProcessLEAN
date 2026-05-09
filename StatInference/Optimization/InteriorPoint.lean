@@ -2766,6 +2766,134 @@ def barrierInfProjectionPoint (selector : E₁ -> E₂) (x : E₁) :
     WithLp 2 (E₁ × E₂) :=
   WithLp.toLp 2 (x, selector x)
 
+/-- First coordinate projection from the L2 product model as a CLM. -/
+noncomputable def withLpProdFstCLM : WithLp 2 (E₁ × E₂) →L[ℝ] E₁ :=
+  (ContinuousLinearMap.fst ℝ E₁ E₂).comp
+    (WithLp.prodContinuousLinearEquiv 2 ℝ E₁ E₂).toContinuousLinearMap
+
+/-- Second coordinate projection from the L2 product model as a CLM. -/
+noncomputable def withLpProdSndCLM : WithLp 2 (E₁ × E₂) →L[ℝ] E₂ :=
+  (ContinuousLinearMap.snd ℝ E₁ E₂).comp
+    (WithLp.prodContinuousLinearEquiv 2 ℝ E₁ E₂).toContinuousLinearMap
+
+/-- First coordinate injection into the L2 product model as a CLM. -/
+noncomputable def withLpProdInlCLM : E₁ →L[ℝ] WithLp 2 (E₁ × E₂) :=
+  (WithLp.prodContinuousLinearEquiv 2 ℝ E₁ E₂).symm.toContinuousLinearMap.comp
+    (ContinuousLinearMap.inl ℝ E₁ E₂)
+
+/-- Second coordinate injection into the L2 product model as a CLM. -/
+noncomputable def withLpProdInrCLM : E₂ →L[ℝ] WithLp 2 (E₁ × E₂) :=
+  (WithLp.prodContinuousLinearEquiv 2 ℝ E₁ E₂).symm.toContinuousLinearMap.comp
+    (ContinuousLinearMap.inr ℝ E₁ E₂)
+
+@[simp] theorem withLpProdFstCLM_apply (p : WithLp 2 (E₁ × E₂)) :
+    withLpProdFstCLM (E₁ := E₁) (E₂ := E₂) p = p.fst := by
+  rfl
+
+@[simp] theorem withLpProdSndCLM_apply (p : WithLp 2 (E₁ × E₂)) :
+    withLpProdSndCLM (E₁ := E₁) (E₂ := E₂) p = p.snd := by
+  rfl
+
+@[simp] theorem withLpProdInlCLM_apply (v : E₁) :
+    withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v =
+      WithLp.toLp 2 (v, 0) := by
+  rfl
+
+@[simp] theorem withLpProdInrCLM_apply (v : E₂) :
+    withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) v =
+      WithLp.toLp 2 (0, v) := by
+  rfl
+
+noncomputable def barrierInfProjectionBlockXX
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)) :
+    E₁ -> E₁ →L[ℝ] E₁ :=
+  fun x => withLpProdFstCLM.comp
+    ((hess (barrierInfProjectionPoint selector x)).comp withLpProdInlCLM)
+
+noncomputable def barrierInfProjectionBlockXY
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)) :
+    E₁ -> E₂ →L[ℝ] E₁ :=
+  fun x => withLpProdFstCLM.comp
+    ((hess (barrierInfProjectionPoint selector x)).comp withLpProdInrCLM)
+
+noncomputable def barrierInfProjectionBlockYX
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)) :
+    E₁ -> E₁ →L[ℝ] E₂ :=
+  fun x => withLpProdSndCLM.comp
+    ((hess (barrierInfProjectionPoint selector x)).comp withLpProdInlCLM)
+
+noncomputable def barrierInfProjectionBlockYY
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)) :
+    E₁ -> E₂ →L[ℝ] E₂ :=
+  fun x => withLpProdSndCLM.comp
+    ((hess (barrierInfProjectionPoint selector x)).comp withLpProdInrCLM)
+
+@[simp] theorem barrierInfProjectionBlockXX_apply
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (x v : E₁) :
+    barrierInfProjectionBlockXX selector hess x v =
+      (hess (barrierInfProjectionPoint selector x)
+        (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).fst := by
+  rfl
+
+@[simp] theorem barrierInfProjectionBlockXY_apply
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (x : E₁) (v : E₂) :
+    barrierInfProjectionBlockXY selector hess x v =
+      (hess (barrierInfProjectionPoint selector x)
+        (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) v)).fst := by
+  rfl
+
+@[simp] theorem barrierInfProjectionBlockYX_apply
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (x v : E₁) :
+    barrierInfProjectionBlockYX selector hess x v =
+      (hess (barrierInfProjectionPoint selector x)
+        (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).snd := by
+  rfl
+
+@[simp] theorem barrierInfProjectionBlockYY_apply
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (x : E₁) (v : E₂) :
+    barrierInfProjectionBlockYY selector hess x v =
+      (hess (barrierInfProjectionPoint selector x)
+        (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) v)).snd := by
+  rfl
+
+/--
+Schur-complement Hessian oracle for a partial minimization/envelope proof:
+`Hxx - Hxy Hyy⁻¹ Hyx`.
+-/
+noncomputable def barrierInfProjectionSchurHess
+    (Hxx : E₁ -> E₁ →L[ℝ] E₁) (Hxy : E₁ -> E₂ →L[ℝ] E₁)
+    (Hyx : E₁ -> E₁ →L[ℝ] E₂) (invHyy : E₁ -> E₂ →L[ℝ] E₂) :
+    E₁ -> E₁ →L[ℝ] E₁ :=
+  fun x => Hxx x - (Hxy x).comp ((invHyy x).comp (Hyx x))
+
+@[simp] theorem barrierInfProjectionSchurHess_apply
+    (Hxx : E₁ -> E₁ →L[ℝ] E₁) (Hxy : E₁ -> E₂ →L[ℝ] E₁)
+    (Hyx : E₁ -> E₁ →L[ℝ] E₂) (invHyy : E₁ -> E₂ →L[ℝ] E₂)
+    (x v : E₁) :
+    barrierInfProjectionSchurHess Hxx Hxy Hyx invHyy x v =
+      Hxx x v - Hxy x (invHyy x (Hyx x v)) := by
+  rfl
+
 omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
   [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
 theorem barrierInfProjectionPoint_mem_set
