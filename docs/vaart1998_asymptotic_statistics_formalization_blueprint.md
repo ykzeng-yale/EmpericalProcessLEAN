@@ -676,9 +676,12 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorOP_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope`,
   and the canonical `O_P(1)` handoff packet adds
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductRawScoreCLT_derivativeNormAE_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
+  and the projected-summand `O_P(1)` handoff packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_projectedSummandCLT_derivativeNormAE_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
   so the remaining critical path should prove a concrete scaled-estimator
-  `StochasticBounded` source or move to a genuinely model-specific derivative
-  representation.
+  `StochasticBounded` source, push the common-vector-law/score-summand wrappers
+  through the projected `O_P(1)` handoff, or move to a genuinely model-specific
+  derivative representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
