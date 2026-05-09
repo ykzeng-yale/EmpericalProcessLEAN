@@ -153,8 +153,16 @@ Compiled declarations to reuse include
 `HessianSegmentMixedThirdCertificate`,
 `HessianSegmentMixedThirdLocalNormCertificate`,
 `MixedThirdSelfConcordantOn`,
+`hessianSegmentPoint_eq_lineMap`,
+`hessianSegmentPoint_mem_of_convex`,
+`hessianSegmentPoint_mem_of_convex_interior`,
+`hessianSegmentPoint_continuous`,
+`hessianSegmentPsi_continuousOn_of_continuousOn`,
+`hessianSegmentPsi_continuousOn_of_continuous`,
+`hessianSegmentPsi_continuousOn_of_convex_continuousOn`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
 the corresponding `.toHessianSegmentConcretePsiCertificate` and
 `.toHessianSegmentExponentialBounds` bridges, and
 `localNorm_sandwich_of_hessianSegmentMixedThirdCertificate` /
@@ -169,8 +177,9 @@ Gronwall/`ψ` plumbing.  The exact blockers are:
   local-norm differential inequality;
 - connect a real third Frechet derivative or `iteratedFDeriv` representation
   to `MixedThirdSelfConcordantOn.mixed_third_bound`;
-- prove/transport `ContinuousOn (hessianSegmentPsi hess x y v) [0,1]` from
-  Hessian continuity on the segment;
+- reuse the compiled convex/continuity source constructor to discharge
+  segment membership and `ContinuousOn (hessianSegmentPsi hess x y v) [0,1]`
+  from `Convex ℝ s`, `x ∈ s`, `y ∈ s`, and `ContinuousOn hess s`;
 - then consume
   `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate` to state
   and prove the source-shaped Lemma 13.6(4), before moving to Newton decrement
@@ -1103,7 +1112,9 @@ Current priority packet sequence:
    `HessianSegmentMixedThirdLocalNormCertificate` from source hypotheses by
    proving the segment coefficient/local-norm estimate, Hessian continuity on
    the segment, and the mixed-third self-concordance bound from a real
-   third-derivative or `iteratedFDeriv` representation.
+  third-derivative or `iteratedFDeriv` representation.  Segment membership and
+  `ψ` continuity are now compiled from convexity plus `ContinuousOn hess s`;
+  do not spend another packet on those fields.
 2. `Chapter13-Lemma13.6-statement`: consume
    `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate` to
    state/prove the source-shaped Lemma 13.6(4) local-norm sandwich.
@@ -1117,6 +1128,7 @@ Execution rule for the next proof run: do not add more generic Gronwall or
 `hessianSegmentPsi_hasDerivWithinAt_of_hasFDerivAt`,
 `MixedThirdSelfConcordantOn`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
 and the mixed-third local-norm sandwich consumers.  The next proof should
 attack the segment coefficient estimate and the true third-derivative
 interpretation; if blocked, record the exact missing mathlib API or algebraic

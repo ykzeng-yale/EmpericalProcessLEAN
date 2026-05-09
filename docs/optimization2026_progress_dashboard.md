@@ -1291,6 +1291,13 @@ per-vector `ψ(t)` certificate now compiles directly to
 Chewi `z_t`/`ψ_v(t)` certificates now close directly to the local-norm
 sandwich.  The newest mixed-third derivative packet adds
 `hessianSegmentPoint_hasDerivAt`,
+`hessianSegmentPoint_eq_lineMap`,
+`hessianSegmentPoint_mem_of_convex`,
+`hessianSegmentPoint_mem_of_convex_interior`,
+`hessianSegmentPoint_continuous`,
+`hessianSegmentPsi_continuousOn_of_continuousOn`,
+`hessianSegmentPsi_continuousOn_of_continuous`,
+`hessianSegmentPsi_continuousOn_of_convex_continuousOn`,
 `hessianSegmentPsi_hasDerivAt_of_hasFDerivAt`,
 `hessianSegmentPsi_hasDerivWithinAt_of_hasFDerivAt`,
 `hessianSegmentMixedThirdPsiDeriv`,
@@ -1299,6 +1306,7 @@ sandwich.  The newest mixed-third derivative packet adds
 `MixedThirdSelfConcordantOn`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
 the mixed-third certificate-to-exponential bridges, and
 `localNorm_sandwich_of_hessianSegmentMixedThirdCertificate` /
 `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate`.  Search
@@ -1307,8 +1315,9 @@ found no direct mathlib/local theorem for the derivative of
 `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`, and
 `HasDerivAt.inner`.  Next Chapter 13 work should construct
 `HessianSegmentMixedThirdLocalNormCertificate` from the source
-third-derivative representation, Hessian continuity on the segment, and the
-segment local-norm coefficient estimate, then state/prove Lemma 13.6(4) and
+third-derivative representation and the segment local-norm coefficient
+estimate; segment membership and `ψ` continuity are now discharged by the
+convex/`ContinuousOn hess s` constructor.  Then state/prove Lemma 13.6(4) and
 continue to Newton decrement estimates.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also

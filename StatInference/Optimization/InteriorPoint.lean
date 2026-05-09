@@ -593,6 +593,33 @@ theorem hessianSegmentPoint_one (x y : E) :
     hessianSegmentPoint x y 1 = y := by
   simp [hessianSegmentPoint]
 
+theorem hessianSegmentPoint_eq_lineMap (x y : E) (t : ℝ) :
+    hessianSegmentPoint x y t = AffineMap.lineMap x y t := by
+  simp [hessianSegmentPoint, AffineMap.lineMap_apply_module]
+
+theorem hessianSegmentPoint_mem_of_convex
+    {s : Set E} (hs : Convex ℝ s) {x y : E}
+    (hx : x ∈ s) (hy : y ∈ s) {t : ℝ}
+    (ht : t ∈ Set.Icc (0 : ℝ) 1) :
+    hessianSegmentPoint x y t ∈ s := by
+  rw [hessianSegmentPoint_eq_lineMap]
+  exact hs.lineMap_mem hx hy ht
+
+theorem hessianSegmentPoint_mem_of_convex_interior
+    {s : Set E} (hs : Convex ℝ s) {x y : E}
+    (hx : x ∈ s) (hy : y ∈ s) {t : ℝ}
+    (ht : t ∈ interior (Set.Icc (0 : ℝ) 1)) :
+    hessianSegmentPoint x y t ∈ s :=
+  hessianSegmentPoint_mem_of_convex hs hx hy (interior_subset ht)
+
+theorem hessianSegmentPoint_continuous (x y : E) :
+    Continuous (hessianSegmentPoint x y) := by
+  have hleft : Continuous fun t : ℝ => (1 - t) • x := by
+    exact (continuous_const.sub continuous_id).smul continuous_const
+  have hright : Continuous fun t : ℝ => t • y := by
+    exact continuous_id.smul continuous_const
+  simpa [hessianSegmentPoint] using hleft.add hright
+
 theorem hessianSegmentPoint_hasDerivAt (x y : E) (t : ℝ) :
     HasDerivAt (hessianSegmentPoint x y) (y - x) t := by
   have hone_sub : HasDerivAt (fun s : ℝ => 1 - s) (-1) t := by
@@ -619,6 +646,46 @@ theorem hessianSegmentPsi_one
     (hess : E -> E →L[ℝ] E) (x y v : E) :
     hessianSegmentPsi hess x y v 1 = inner ℝ v (hess y v) := by
   simp [hessianSegmentPsi, hessianSegmentPoint_one]
+
+theorem hessianSegmentPsi_continuousOn_of_continuousOn
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y : E}
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s) :
+    ∀ v : E, ContinuousOn (hessianSegmentPsi hess x y v)
+      (Set.Icc (0 : ℝ) 1) := by
+  intro v
+  have hz : ContinuousOn
+      (fun t : ℝ => hess (hessianSegmentPoint x y t))
+      (Set.Icc (0 : ℝ) 1) :=
+    hhess.comp (hessianSegmentPoint_continuous x y).continuousOn hseg
+  have happly : ContinuousOn
+      (fun t : ℝ => hess (hessianSegmentPoint x y t) v)
+      (Set.Icc (0 : ℝ) 1) :=
+    hz.clm_apply continuousOn_const
+  exact continuousOn_const.inner happly
+
+theorem hessianSegmentPsi_continuousOn_of_continuous
+    {hess : E -> E →L[ℝ] E} (hhess : Continuous hess)
+    (x y : E) :
+    ∀ v : E, ContinuousOn (hessianSegmentPsi hess x y v)
+      (Set.Icc (0 : ℝ) 1) :=
+  hessianSegmentPsi_continuousOn_of_continuousOn
+    (hess := hess) (s := Set.univ) (x := x) (y := y)
+    hhess.continuousOn (by intro t ht; exact Set.mem_univ _)
+
+theorem hessianSegmentPsi_continuousOn_of_convex_continuousOn
+    {hess : E -> E →L[ℝ] E} {s : Set E}
+    (hs : Convex ℝ s) {x y : E}
+    (hx : x ∈ s) (hy : y ∈ s)
+    (hhess : ContinuousOn hess s) :
+    ∀ v : E, ContinuousOn (hessianSegmentPsi hess x y v)
+      (Set.Icc (0 : ℝ) 1) :=
+  hessianSegmentPsi_continuousOn_of_continuousOn
+    (hess := hess) (s := s) (x := x) (y := y)
+    hhess (by
+      intro t ht
+      exact hessianSegmentPoint_mem_of_convex hs hx hy ht)
 
 theorem hessianSegmentPsi_hasDerivAt_of_hasFDerivAt
     {hess : E -> E →L[ℝ] E}
@@ -852,6 +919,37 @@ theorem HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordant
           (u := interior (Set.Icc (0 : ℝ) 1)) (hhess t ht)
       simpa only [hmixed v t ht] using hderiv)
     hsegment_coeff
+
+theorem HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {x y : E} {M r : ℝ}
+    (hs : Convex ℝ s) (hx : x ∈ s) (hy : y ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint x y t))
+          (hessianSegmentPoint x y t))
+    (hmixed : ∀ v : E, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v ((hessDeriv (hessianSegmentPoint x y t) (y - x)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x y v t)
+    (hsegment_coeff : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        2 * M * localNorm hess (hessianSegmentPoint x y t) (y - x) ≤
+          2 * M * r / (1 - M * r * t)) :
+    HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed x y M r :=
+  HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt
+    (s := s) (hess := hess) (hessDeriv := hessDeriv)
+    (thirdMixed := thirdMixed) (x := x) (y := y) (M := M) (r := r)
+    hsc
+    (by
+      intro t ht
+      exact hessianSegmentPoint_mem_of_convex_interior hs hx hy ht)
+    (hessianSegmentPsi_continuousOn_of_convex_continuousOn hs hx hy hhess_cont)
+    hhess hmixed hsegment_coeff
 
 theorem HessianSegmentConcretePsiCertificate.toHessianSegmentPsiCertificate
     {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
