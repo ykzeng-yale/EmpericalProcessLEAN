@@ -10911,6 +10911,123 @@ theorem durrett2019_theorem_4_4_4_positivePart_doob_layercake_integrand_bound
           mul_le_mul_right hDoob' _
 
 /--
+Durrett 2019, Theorem 4.4.4, set-integral to restricted `lintegral` bridge.
+The terminal positive part is nonnegative, so the event-restricted real
+set integral in Doob's inequality is exactly the corresponding Lebesgue
+integral of the `enorm`.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_event_setIntegral_eq_lintegral
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {t : ℝ} (n : ℕ) :
+    ENNReal.ofReal
+        (∫ ω in {ω |
+            t ≤
+              (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                fun k => max (X k ω) 0},
+          max (X n ω) 0 ∂P) =
+      ∫⁻ ω in {ω |
+          t ≤
+            (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              fun k => max (X k ω) 0},
+        ‖max (X n ω) 0‖ₑ ∂P := by
+  have hterminal_int :
+      Integrable (fun ω => max (X n ω) 0)
+        (P.restrict {ω |
+          t ≤
+            (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              fun k => max (X k ω) 0}) :=
+    ((hX.integrable n).pos_part).mono_measure Measure.restrict_le_self
+  have hterminal_nonneg :
+      0 ≤ᵐ[P.restrict {ω |
+          t ≤
+            (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              fun k => max (X k ω) 0}]
+        fun ω => max (X n ω) 0 :=
+    Eventually.of_forall fun ω => le_max_right (X n ω) 0
+  rw [ofReal_integral_eq_lintegral_ofReal hterminal_int hterminal_nonneg]
+  refine lintegral_congr fun ω => ?_
+  rw [← ofReal_norm_eq_enorm (max (X n ω) 0), Real.norm_eq_abs,
+    abs_of_nonneg (le_max_right (X n ω) 0)]
+
+/--
+Durrett 2019, Theorem 4.4.4, Doob layer-cake integrand in pure `lintegral`
+form.  This is the pointwise threshold estimate ready for the Fubini step.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_doob_layercake_lintegral_integrand_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p t : ℝ} (ht : 0 < t) (n : ℕ) :
+    P {ω |
+        t ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => max (X k ω) 0} *
+        ENNReal.ofReal (t ^ (p - 1)) ≤
+      ENNReal.ofReal (t ^ (p - 2)) *
+        ∫⁻ ω in {ω |
+            t ≤
+              (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                fun k => max (X k ω) 0},
+          ‖max (X n ω) 0‖ₑ ∂P := by
+  calc
+    P {ω |
+        t ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => max (X k ω) 0} *
+        ENNReal.ofReal (t ^ (p - 1))
+        ≤ ENNReal.ofReal (t ^ (p - 2)) *
+            ENNReal.ofReal
+              (∫ ω in {ω |
+                  t ≤
+                    (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                      fun k => max (X k ω) 0},
+                max (X n ω) 0 ∂P) :=
+          durrett2019_theorem_4_4_4_positivePart_doob_layercake_integrand_bound
+            (P := P) (ℱ := ℱ) (X := X) hX ht n
+    _ = ENNReal.ofReal (t ^ (p - 2)) *
+        ∫⁻ ω in {ω |
+            t ≤
+              (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                fun k => max (X k ω) 0},
+          ‖max (X n ω) 0‖ₑ ∂P := by
+          rw [durrett2019_theorem_4_4_4_positivePart_event_setIntegral_eq_lintegral
+            (P := P) (ℱ := ℱ) (X := X) hX n]
+
+/--
+Durrett 2019, Theorem 4.4.4, integrated Doob layer-cake bound.  Combining the
+compiled layer-cake equality with the pointwise Doob estimate gives the
+threshold integral that the remaining Fubini step must identify with
+`∫ X_n^+ (bar X_n)^(p-1)`.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_layercake_doob_lintegral_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p : ℝ} (hp : 0 < p) (n : ℕ) :
+    (∫⁻ ω,
+        ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) ≤
+      ENNReal.ofReal p *
+        ∫⁻ t in Set.Ioi (0 : ℝ),
+          ENNReal.ofReal (t ^ (p - 2)) *
+            ∫⁻ ω in {ω |
+                t ≤
+                  (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                    fun k => max (X k ω) 0},
+              ‖max (X n ω) 0‖ₑ ∂P := by
+  rw [durrett2019_theorem_4_4_4_positivePart_layercake_lintegral_rpow_enorm
+    (P := P) (ℱ := ℱ) (X := X) hX hp n]
+  refine mul_le_mul_right ?_ _
+  refine lintegral_mono_ae ?_
+  filter_upwards [self_mem_ae_restrict (measurableSet_Ioi : MeasurableSet (Set.Ioi (0 : ℝ)))]
+    with t ht
+  exact
+    durrett2019_theorem_4_4_4_positivePart_doob_layercake_lintegral_integrand_bound
+      (P := P) (ℱ := ℱ) (X := X) hX ht n
+
+/--
 Durrett 2019, Theorem 4.4.4, Hölder support for the positive-part running
 maximum.  This is the textbook Hölder step after the Fubini calculation:
 `∫ X_n^+ (bar X_n)^{p-1}` is bounded by the product of the `L^p` terminal
