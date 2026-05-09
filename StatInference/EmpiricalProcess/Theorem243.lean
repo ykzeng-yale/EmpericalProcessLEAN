@@ -11901,6 +11901,26 @@ in the proof of Theorem 2.4.3.
 noncomputable def vdVWRademacherWeights {n : ℕ} (sign : Fin n -> ℝ) : Fin n -> ℝ :=
   fun i => (n : ℝ)⁻¹ * sign i
 
+/-- Rademacher sign-vector support is stable under sign negation. -/
+theorem VdVWRademacherSignVector.neg
+    {n : ℕ} {sign : Fin n -> ℝ}
+    (hsign : VdVWRademacherSignVector sign) :
+    VdVWRademacherSignVector fun i : Fin n => -sign i := by
+  intro i
+  rcases hsign i with hneg | hpos
+  · right
+    simp [hneg]
+  · left
+    simp [hpos]
+
+/-- Rademacher weights commute with deterministic sign negation. -/
+theorem vdVWRademacherWeights_neg_sign
+    {n : ℕ} (sign : Fin n -> ℝ) :
+    vdVWRademacherWeights (fun i : Fin n => -sign i) =
+      fun i : Fin n => -vdVWRademacherWeights sign i := by
+  funext i
+  simp [vdVWRademacherWeights]
+
 /--
 Rademacher sign-vector support is stable under finite-coordinate
 permutations.
@@ -12436,12 +12456,7 @@ theorem vdVWWeightedClassSupremum_rademacherWeights_neg_sign
         (vdVWRademacherWeights (fun i : Fin n => -sign i)) sample =
       vdVWWeightedClassSupremum indexClass classFun
         (vdVWRademacherWeights sign) sample := by
-  have hweights :
-      vdVWRademacherWeights (fun i : Fin n => -sign i) =
-        fun i : Fin n => -vdVWRademacherWeights sign i := by
-    funext i
-    simp [vdVWRademacherWeights]
-  rw [hweights]
+  rw [vdVWRademacherWeights_neg_sign sign]
   exact
     vdVWWeightedClassSupremum_neg_weights indexClass classFun
       (vdVWRademacherWeights sign) sample
@@ -37435,6 +37450,94 @@ theorem VdVWTheorem243_selectedFiniteNetHoeffding_bad_of_rademacher_bad
     nlinarith
   rw [Real.dist_eq, sub_zero, abs_of_nonneg htarget_nonneg]
   exact htarget_real
+
+/--
+Two-sided deterministic selected finite-net projection from a Rademacher
+pair-difference bad event.
+
+The preceding sign-swap layer produces a Rademacher-weighted pair-difference
+bad event on an original/ghost pair.  This lemma packages the pointwise
+consequence needed before the probability-loss argument: if both the original
+and ghost selected covers satisfy the finite-center Hoeffding side condition,
+then either the original selected Hoeffding bad event holds, or the ghost one
+holds with the negated sign vector.
+-/
+theorem
+    VdVWTheorem243_selectedFiniteNetHoeffding_original_or_ghost_bad_of_pairDifference_rademacher_bad
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {cardinalityOriginal cardinalityGhost : ℕ}
+    {sample ghostSample : SampleAt Observation n} {sign : Fin n -> ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M) (heta : 0 < eta)
+    (coverOriginal :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+        cardinalityOriginal)
+    (coverGhost :
+      FiniteEmpiricalL1CoverAtCard ghostSample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+        cardinalityGhost)
+    (hsign : VdVWRademacherSignVector sign)
+    (hmaximalOriginal :
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+        (vdVWTruncatedClassFun classFun envelope M) coverOriginal.center
+        sign M)
+    (hmaximalGhost :
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound ghostSample
+        (vdVWTruncatedClassFun classFun envelope M) coverGhost.center
+        (fun i : Fin n => -sign i) M)
+    (hbad :
+      epsilon <
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1 -
+              vdVWTruncatedClassFun classFun envelope M index z.2)
+          (vdVWRademacherWeights sign)
+          (fun i : Fin n => (sample i, ghostSample i))) :
+    epsilon <
+        dist
+          (2 * vdVWTheorem243FiniteNetHoeffdingUpper cardinalityOriginal n M +
+            eta)
+          (0 : ℝ) ∨
+      epsilon <
+        dist
+          (2 * vdVWTheorem243FiniteNetHoeffdingUpper cardinalityGhost n M +
+            eta)
+          (0 : ℝ) := by
+  rcases
+    vdVWWeightedClassSupremum_truncated_pairDifference_rademacher_bad_imp_original_or_ghost_bad
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := epsilon)
+      (sign := sign) (sample := sample) (ghostSample := ghostSample)
+      henvelope hM_nonneg hbad with
+    hbadOriginal | hbadGhost
+  · exact Or.inl
+      (VdVWTheorem243_selectedFiniteNetHoeffding_bad_of_rademacher_bad
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (n := n) (cardinality := cardinalityOriginal)
+        (sample := sample) (sign := sign)
+        hM_nonneg heta coverOriginal hsign hmaximalOriginal hbadOriginal)
+  · have hbadGhost' :
+        epsilon <
+          dist
+            (2 *
+              vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (fun i : Fin n => -sign i))
+                ghostSample)
+            (0 : ℝ) := by
+      simpa [vdVWRademacherWeights_neg_sign] using hbadGhost
+    exact Or.inr
+      (VdVWTheorem243_selectedFiniteNetHoeffding_bad_of_rademacher_bad
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (n := n) (cardinality := cardinalityGhost)
+        (sample := ghostSample) (sign := fun i : Fin n => -sign i)
+        hM_nonneg heta coverGhost (VdVWRademacherSignVector.neg hsign)
+        hmaximalGhost hbadGhost')
 
 /--
 Canonical Rademacher selected-finite-net product-event source constructor.

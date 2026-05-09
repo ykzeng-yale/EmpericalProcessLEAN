@@ -151,10 +151,15 @@ sign-swap equality is compiled as
 `measure_vdVWProductMeasure_pairDifference_constWeights_bad_eq_rademacherWeights_bad`,
 and the deterministic one-sided Rademacher pair-difference split is compiled as
 `vdVWWeightedClassSupremum_truncated_pairDifference_rademacher_bad_imp_original_or_ghost_bad`.
-The remaining work is to combine these in the ghost/sign product fiber, use
-sign-negation/ghost symmetry to keep the original-side canonical event, add the
-selected finite-net Hoeffding side condition, and prove named-event
-measurability plus the displayed fiber lower bound for
+The selected finite-net side condition is now packaged in the deterministic
+two-sided projection
+`VdVWTheorem243_selectedFiniteNetHoeffding_original_or_ghost_bad_of_pairDifference_rademacher_bad`,
+with sign-negation support from `VdVWRademacherSignVector.neg` and
+`vdVWRademacherWeights_neg_sign`.  The remaining work is to combine these in
+the ghost/sign product fiber, use sign-negation/ghost symmetry to turn the
+original-or-ghost disjunction into the correct constant-loss original-side
+bound, and prove named-event measurability plus the displayed fiber lower
+bound for
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
