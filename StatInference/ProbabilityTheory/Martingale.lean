@@ -13019,6 +13019,52 @@ theorem durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_inte
       (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hX_sq_le
 
 /--
+Durrett 2019, Theorem 4.5.1 source handoff: a supplied increasing-process
+terminal variance bound gives the textbook `4 * E A∞` display, in `lintegral`
+form.
+-/
+theorem durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {Ainf : Ω -> ℝ}
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hX_sq_le_Ainf : ∀ n, (∫ ω, X n ω ^ 2 ∂P) ≤ ∫ ω, Ainf ω ∂P)
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω ^ 2) ∂P) ≤
+      ENNReal.ofReal (4 * ∫ ω, Ainf ω ∂P) :=
+  durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_integral_sq_le
+    (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hX_sq_le_Ainf hBdd
+
+/--
+Durrett 2019, Theorem 4.5.1 source handoff: if the square martingale has
+`E X_n^2 = E A_n` and the increasing-process expectations are bounded by the
+terminal expectation, then the running supremum is bounded by `4 * E A∞`.
+-/
+theorem durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_identity
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hX_sq_eq_A : ∀ n, (∫ ω, X n ω ^ 2 ∂P) = ∫ ω, A n ω ∂P)
+    (hA_le_Ainf : ∀ n, (∫ ω, A n ω ∂P) ≤ ∫ ω, Ainf ω ∂P)
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω ^ 2) ∂P) ≤
+      ENNReal.ofReal (4 * ∫ ω, Ainf ω ∂P) := by
+  refine
+    durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_bound
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two ?_ hBdd
+  intro n
+  calc
+    (∫ ω, X n ω ^ 2 ∂P) = ∫ ω, A n ω ∂P := hX_sq_eq_A n
+    _ ≤ ∫ ω, Ainf ω ∂P := hA_le_Ainf n
+
+/--
 Durrett 2019, `L^2` support: convergence in `eLpNorm · 2` on a probability
 space implies convergence of expectations.
 -/

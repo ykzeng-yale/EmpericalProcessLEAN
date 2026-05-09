@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V162
+## Live In-Thread Goal Prompt V163
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -18,20 +18,24 @@ support unless the next theorem directly needs one API.
 
 Last compiled packet: Section 4.5.1 now has the finite Doob `L^2` bridge,
 ordinary finite second-moment display, monotone `lintegral` iSup handoff, and
-canonical running-supremum identification:
+canonical running-supremum identification, plus the supplied `A∞`
+increasing-process source bridge:
 `durrett2019_iSup_ofReal_runningAbsMax_sq_eq_ofReal_runningAbsSup_sq_of_bddAbove`,
 `durrett2019_lintegral_iSup_runningAbsMax_sq_eq_lintegral_runningAbsSup_sq_of_ae_bddAbove`,
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_integral_sq_le`,
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_bound`,
 and
-`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_integral_sq_le`.
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_identity`.
 
-Next aggressive step: attach the textbook `A∞` source.  Best target: package a
-source-facing increasing-process second-moment identity/limit assumption for
-`A_n` that converts the compiled terminal uniform bound into
-`E (sup_m |X_m|^2) ≤ 4 * E A∞`, reusing the new `runningAbsSup` `lintegral`
-endpoint.  Do not route back into Chapter 4.4 plumbing or the already compiled
-finite-maximum, ordinary second-moment, monotone-iSup, or running-supremum
-identification layers.  Theorem 4.1.16 remains deferred unless a targeted
-kernel search finds a direct source-shaped API.
+Next aggressive step: derive or package the actual Section 4.5 increasing
+process facts consumed by the new source bridge.  Best target: prove a
+source-facing `E X_n^2 = E A_n` identity and an `E A_n ≤ E A∞`/monotone-limit
+handoff from the Doob-decomposition and conditional-variance APIs already
+compiled around Theorems 4.3.2 and 4.4.8.  Do not route back into Chapter 4.4
+plumbing or the already compiled finite-maximum, ordinary second-moment,
+monotone-iSup, running-supremum identification, or supplied-`A∞` wrapper
+layers.  Theorem 4.1.16 remains deferred unless a targeted kernel search finds
+a direct source-shaped API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -506,6 +510,10 @@ The Section 4.5.1 running-supremum square handoff now also compiles:
 `durrett2019_lintegral_iSup_runningAbsMax_sq_eq_lintegral_runningAbsSup_sq_of_ae_bddAbove`,
 and
 `durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_integral_sq_le`.
+The Section 4.5.1 supplied increasing-process source handoff now also compiles:
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_bound`
+and
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_identity`.
 The canonical running-maximum layer now also compiles:
 `durrett2019_runningAbsSup`,
 `durrett2019_runningAbsMax_mono`,
