@@ -202,7 +202,11 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`dualLocalNorm_le_sqrt_mul_dualLocalNorm_of_inverseHessianQuadraticBounds`,
 	`sqrt_mul_dualLocalNorm_le_dualLocalNorm_of_inverseHessianQuadraticBounds`,
 	`dualLocalNorm_le_div_one_sub_of_inverseHessianQuadraticUpper`, and
-	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper`.
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper`.  The
+	newest Theorem 13.8 assembly packet adds
+	`dualLocalNorm_le_mul_localNorm_of_quadratic_bound`,
+	`chewi138_gradientResidual_dualLocalNorm_le_of_quadratic_bound`, and
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_residualQuadraticBound`.
 
 Next theorem-sized target: construct the source hypotheses for
 `HessianSegmentMixedThirdLocalNormCertificate` from the remaining analytic
@@ -215,11 +219,12 @@ blockers are:
   Hessian hypothesis and `y - x ≠ 0`; the derivative formula, Riccati
   derivative estimate, scalar comparison, coefficient scaling, and named
   source-radius Lemma 13.6(4) theorem are compiled;
-- build the remaining Theorem 13.8 Newton convergence path: derive the needed
-  inverse-Hessian quadratic upper comparison from Lemma 13.6/matrix inverse
-  order when moving beyond the supplied interface, prove the gradient residual
-  integral/Delta bound, and assemble the final
-  `M * lambda^2 / (1 - M * lambda)^2` decrement inequality.
+- build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
+  derive the needed inverse-Hessian quadratic upper comparison from Lemma
+  13.6/matrix inverse order when moving beyond the supplied interface, and
+  prove the gradient residual integral/Delta quadratic bound.  The final
+  `M * lambda^2 / (1 - M * lambda)^2` decrement algebra is now compiled from
+  these two supplied blockers.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi
 Hessian-stability theorem and no direct derivative theorem for

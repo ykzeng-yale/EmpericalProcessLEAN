@@ -747,6 +747,27 @@ theorem dualLocalNorm_le_div_one_sub_of_inverseHessianQuadraticUpper
   rw [hsqrt] at hbase
   simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hbase
 
+/--
+Mixed primal/dual quadratic-form estimate: if a supplied residual has dual
+quadratic form bounded by `coeff^2` times a supplied step's primal quadratic
+form, then its dual local norm is bounded by `coeff` times the step local norm.
+-/
+theorem dualLocalNorm_le_mul_localNorm_of_quadratic_bound
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {x : E} {residual step : E} {coeff : ℝ}
+    (hcoeff_nonneg : 0 ≤ coeff)
+    (hinv_nonneg : 0 ≤ inner ℝ residual (invHess x residual))
+    (hhess_nonneg : 0 ≤ inner ℝ step (hess x step))
+    (hquad :
+      inner ℝ residual (invHess x residual) ≤
+        coeff ^ (2 : ℕ) * inner ℝ step (hess x step)) :
+    dualLocalNorm invHess x residual ≤ coeff * localNorm hess x step := by
+  refine (sq_le_sq₀ (dualLocalNorm_nonneg invHess x residual) ?hrhs_nonneg).mp ?hsq
+  · exact mul_nonneg hcoeff_nonneg (localNorm_nonneg hess x step)
+  rw [dualLocalNorm_sq_eq_inner hinv_nonneg]
+  rw [mul_pow, localNorm_sq_eq_inner hhess_nonneg]
+  exact hquad
+
 /-- Chewi Lemma 13.6's displayed exponential constant for the `ψ(t)` step. -/
 noncomputable def chewi136HessianStabilityExponent (M r : ℝ) : ℝ :=
   2 * Real.log ((1 - M * r)⁻¹)
@@ -2175,6 +2196,127 @@ theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper
       (M := M) (r := newtonDecrement grad invHess x)
       hMlambda_lt hx_nonneg hstep_nonneg hupper
       (grad (newtonStep grad invHess x))
+
+/--
+Residual estimate in the source shape of Chewi Theorem 13.8.  The remaining
+analytic/matrix work in the textbook proof is to supply the quadratic-form
+bound for the gradient residual; this theorem converts it into the displayed
+dual-local-norm residual bound.
+-/
+theorem chewi138_gradientResidual_dualLocalNorm_le_of_quadratic_bound
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {x : E} {M : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hinv_nonneg : 0 ≤ inner ℝ (grad (newtonStep grad invHess x))
+      (invHess x (grad (newtonStep grad invHess x))))
+    (hstep_hess_nonneg :
+      0 ≤ inner ℝ (newtonStep grad invHess x - x)
+        (hess x (newtonStep grad invHess x - x)))
+    (hquad :
+      inner ℝ (grad (newtonStep grad invHess x))
+        (invHess x (grad (newtonStep grad invHess x))) ≤
+        (M * newtonDecrement grad invHess x /
+            (1 - M * newtonDecrement grad invHess x)) ^ (2 : ℕ) *
+          inner ℝ (newtonStep grad invHess x - x)
+            (hess x (newtonStep grad invHess x - x))) :
+    dualLocalNorm invHess x (grad (newtonStep grad invHess x)) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) := by
+  let lam := newtonDecrement grad invHess x
+  have hden_pos : 0 < 1 - M * lam := by
+    dsimp [lam]
+    nlinarith
+  have hlam_nonneg : 0 ≤ lam := by
+    dsimp [lam, newtonDecrement]
+    exact dualLocalNorm_nonneg invHess x (grad x)
+  have hcoeff_nonneg : 0 ≤ M * lam / (1 - M * lam) := by
+    exact div_nonneg (mul_nonneg hM_nonneg hlam_nonneg) hden_pos.le
+  have hbase :
+      dualLocalNorm invHess x (grad (newtonStep grad invHess x)) ≤
+        (M * lam / (1 - M * lam)) *
+          localNorm hess x (newtonStep grad invHess x - x) := by
+    exact dualLocalNorm_le_mul_localNorm_of_quadratic_bound
+      (hess := hess) (invHess := invHess) (x := x)
+      (residual := grad (newtonStep grad invHess x))
+      (step := newtonStep grad invHess x - x)
+      (coeff := M * lam / (1 - M * lam))
+      hcoeff_nonneg hinv_nonneg hstep_hess_nonneg (by simpa [lam] using hquad)
+  have hbase' :
+      dualLocalNorm invHess x (grad (newtonStep grad invHess x)) ≤
+        (M * lam / (1 - M * lam)) * lam := by
+    simpa [lam, hstep_norm] using hbase
+  have heq :
+      (M * lam / (1 - M * lam)) * lam =
+        M * lam ^ (2 : ℕ) / (1 - M * lam) := by
+    ring
+  simpa [lam, heq] using hbase'
+
+/--
+Supplied-interface assembly of Chewi Theorem 13.8.  The dual-transport piece
+and the gradient-residual quadratic estimate together give the textbook local
+quadratic decrement bound.
+-/
+theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_residualQuadraticBound
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {x : E} {M : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hx_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hstep_inv_nonneg : ∀ v : E,
+      0 ≤ inner ℝ v (invHess (newtonStep grad invHess x) v))
+    (hupper : ∀ v : E,
+      inner ℝ v (invHess (newtonStep grad invHess x) v) ≤
+        ((1 - M * newtonDecrement grad invHess x)⁻¹) ^ (2 : ℕ) *
+          inner ℝ v (invHess x v))
+    (hstep_hess_nonneg :
+      0 ≤ inner ℝ (newtonStep grad invHess x - x)
+        (hess x (newtonStep grad invHess x - x)))
+    (hquad :
+      inner ℝ (grad (newtonStep grad invHess x))
+        (invHess x (grad (newtonStep grad invHess x))) ≤
+        (M * newtonDecrement grad invHess x /
+            (1 - M * newtonDecrement grad invHess x)) ^ (2 : ℕ) *
+          inner ℝ (newtonStep grad invHess x - x)
+            (hess x (newtonStep grad invHess x - x))) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  let lam := newtonDecrement grad invHess x
+  have hden_pos : 0 < 1 - M * lam := by
+    dsimp [lam]
+    nlinarith
+  have htransport :
+      newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+        dualLocalNorm invHess x (grad (newtonStep grad invHess x)) /
+          (1 - M * lam) := by
+    simpa [lam] using
+      chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper
+        (grad := grad) (invHess := invHess) (x := x) (M := M)
+        hMlambda_lt hx_inv_nonneg hstep_inv_nonneg hupper
+  have hresidual :
+      dualLocalNorm invHess x (grad (newtonStep grad invHess x)) ≤
+        M * lam ^ (2 : ℕ) / (1 - M * lam) := by
+    simpa [lam] using
+      chewi138_gradientResidual_dualLocalNorm_le_of_quadratic_bound
+        (hess := hess) (grad := grad) (invHess := invHess) (x := x) (M := M)
+        hM_nonneg hMlambda_lt hstep_norm (hx_inv_nonneg _)
+        hstep_hess_nonneg hquad
+  have hdiv := div_le_div_of_nonneg_right hresidual hden_pos.le
+  have hden_ne : 1 - M * lam ≠ 0 := ne_of_gt hden_pos
+  calc
+    newtonDecrement grad invHess (newtonStep grad invHess x)
+        ≤ dualLocalNorm invHess x (grad (newtonStep grad invHess x)) /
+            (1 - M * lam) := htransport
+    _ ≤ (M * lam ^ (2 : ℕ) / (1 - M * lam)) / (1 - M * lam) := hdiv
+    _ = M * lam ^ (2 : ℕ) / (1 - M * lam) ^ (2 : ℕ) := by
+      field_simp [hden_ne]
 
 /--
 Chewi Definition 13.3, source-shaped self-concordance interface using only the

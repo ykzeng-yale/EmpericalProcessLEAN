@@ -50,7 +50,9 @@ therefore dual-local-norm transport plus the real
 third-derivative-to-`MixedThirdSelfConcordantOn` bridge and Theorem 13.8
 gradient-residual/Delta bound.  The latest dual-transport packet proves the
 supplied-inverse-Hessian comparison layer and the first displayed inequality in
-Theorem 13.8.  Segment membership, `ψ` continuity,
+Theorem 13.8.  The latest assembly packet proves the final Theorem 13.8
+decrement algebra from a supplied inverse-Hessian comparison plus a supplied
+Delta/gradient-residual quadratic bound.  Segment membership, `ψ` continuity,
 local-norm continuity/positivity, Riccati comparison, derivative inequality,
 coefficient scaling, final sandwich assembly, and first Newton/Dikin
 membership wrappers are now compiled; do not return to ASGD or generic process-prompt edits unless the user
@@ -442,8 +444,13 @@ The newest dual packet adds `InverseHessianQuadraticBounds`,
 `sqrt_mul_dualLocalNorm_le_dualLocalNorm_of_inverseHessianQuadraticBounds`,
 `dualLocalNorm_le_div_one_sub_of_inverseHessianQuadraticUpper`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper`.
-The next Chapter 13 packet should build the Theorem 13.8 residual bound, while
-the heavier real third-derivative
+The newest assembly packet adds
+`dualLocalNorm_le_mul_localNorm_of_quadratic_bound`,
+`chewi138_gradientResidual_dualLocalNorm_le_of_quadratic_bound`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_residualQuadraticBound`.
+The next Chapter 13 packet should build the Theorem 13.8 residual/Delta
+quadratic bound and, when useful, derive the inverse-Hessian comparison from
+concrete matrix/order hypotheses, while the heavier real third-derivative
 representation bridge to `MixedThirdSelfConcordantOn` stays the analytic
 source-interface target.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
