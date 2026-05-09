@@ -8694,3 +8694,13 @@ aggressive source step is to combine this averaged product-pair lower bound
 with the existing product-pair Rademacher sign-swap equality and then project
 through the original-or-ghost selected finite-net event, while separately
 supplying the selected finite-center Hoeffding side conditions.
+
+2026-05-09 deterministic sign-swapped averaged source:
+`Theorem243.lean` now proves
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_lower_bound_of_chebyshev_succ`.
+For every deterministic Rademacher sign vector, it combines the averaged
+product-pair Chebyshev lower bound with
+`measure_vdVWProductMeasure_pairDifference_constWeights_bad_eq_rademacherWeights_bad`.
+The remaining source route is now canonical sign integration plus projection
+to the original-or-ghost selected finite-net bad event, together with the
+selected finite-center Hoeffding side-condition support.
