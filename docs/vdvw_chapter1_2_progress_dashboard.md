@@ -145,9 +145,14 @@ and
 `VdVWChebyshev_betaLower_centeredPairSubBadEvent_of_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad`;
 the latter discharges the needed pair-difference value-set boundedness from
 the usual centered-truncated envelope hypotheses.  Current next target: prove
-the event/fiber-level Rademacher sign-swap from this centered pair-difference
-bad event into `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`,
-including named-event measurability and the displayed fiber lower bound for
+the product-pair sign-swap probability projection from this centered
+pair-difference bad event into
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.  The first
+event-level sign-swap equality is now compiled as
+`measure_vdVWProductMeasure_pairDifference_constWeights_bad_eq_rademacherWeights_bad`;
+the remaining work is to use it inside the ghost/sign product fiber, handle the
+one-sided original-sample projection and finite-net event, and prove
+named-event measurability plus the displayed fiber lower bound for
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.

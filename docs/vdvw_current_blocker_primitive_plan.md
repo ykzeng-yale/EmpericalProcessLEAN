@@ -8480,3 +8480,15 @@ pair-difference bad event into the canonical sign/sample event, then prove
 measurability and the displayed fiber lower bound for
 `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent` and feed
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
+
+2026-05-08 event-level product-pair sign-swap:
+`Theorem243.lean` now proves
+`measure_vdVWProductMeasure_pairDifference_constWeights_bad_eq_rademacherWeights_bad`.
+For a deterministic Rademacher sign vector, the coordinatewise product-pair
+sign-swap preserves `(P.prod P)^n` and identifies the constant-weight
+pair-difference bad-event measure with the Rademacher-weighted pair-difference
+bad-event measure, under measurability of the constant-weight event.  The next
+exact edit is to lift this equality into the ghost/sign product fiber over a
+fixed original sample, then split/project the Rademacher pair-difference bad
+event into the one-sided original-sample canonical event with the selected
+finite-net Hoeffding side condition.
