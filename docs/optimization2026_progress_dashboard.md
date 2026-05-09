@@ -46,8 +46,9 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current priority sequence: Chapter 13 Theorem 13.8 source completion in
   `StatInference/Optimization/InteriorPoint.lean`: first prove the concrete
   square-root/normalized-operator factorization and op-norm bound for Delta,
-  or preferably the pointwise squared normalized bound for Delta, then feed it
-  into the compiled normalized-squared-concrete-Delta decrement wrapper;
+  preferably through either the pointwise squared normalized bound or the
+  unit-bilinear normalized bound for Delta, then feed it into the compiled
+  normalized-squared or normalized-unit-inner concrete-Delta decrement wrapper;
   the concrete Delta action formula and scalar Delta/order-to-
   `HessianDeltaQuadraticBound` bridges are already compiled.  Then remove
   supplied inverse-Hessian comparison and
@@ -1398,7 +1399,14 @@ newest normalized squared-bound packet adds
 `hessianDeltaQuadraticBound_of_normalizedSquaredBound`,
 `hessianSegmentDelta_quadraticBound_of_normalizedSquaredBound`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`,
-so callers can provide the squared pointwise normalized estimate directly.
+so callers can provide the squared pointwise normalized estimate directly.  The
+newest normalized unit-bilinear packet adds
+`continuousLinearMap_opNorm_le_of_unit_inner_le`,
+`hessianDeltaQuadraticBound_of_normalizedUnitInnerBound`,
+`hessianSegmentDelta_quadraticBound_of_normalizedUnitInnerBound`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedUnitInnerConcreteDelta`,
+reusing mathlib's `ContinuousLinearMap.opNorm_le_of_re_inner_le` for the
+unit-bilinear-to-op-norm conversion.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
@@ -1407,15 +1415,18 @@ compiled route uses `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
 `monotoneOn_of_hasDerivWithinAt_nonneg`.  For the concrete Delta action, reuse
 `ContinuousOn.intervalIntegrable_of_Icc` and
 `ContinuousLinearMap.intervalIntegral_comp_comm`, `innerSL_apply_apply`,
-`intervalIntegral.integral_sub`, and `ContinuousLinearMap.le_opNorm`; do not
-reprove Bochner interval-integral or inner-product/application commutation.
+`intervalIntegral.integral_sub`, `ContinuousLinearMap.le_opNorm`, and
+`ContinuousLinearMap.opNorm_le_of_re_inner_le`; do not reprove Bochner
+interval-integral, inner-product/application commutation, or
+operator-norm-from-unit-bilinear estimates.
 Faraday's follow-up scout found no
 one-shot Hessian-derivative/third-Frechet bridge, but identified
 `fderiv_iteratedFDeriv`, `iteratedFDeriv_succ_apply_left/right`,
 `iteratedFDeriv_two_apply`, and `ContDiffAt.iteratedFDeriv_comp_perm` as the
 right API stack.  Next Chapter 13 work should prove the concrete normalized
-Delta factorization plus pointwise squared bound, and derive inverse-Hessian
-comparison from concrete Hessian/matrix inverse hypotheses when needed.
+Delta factorization plus either the pointwise squared or unit-bilinear bound,
+and derive inverse-Hessian comparison from concrete Hessian/matrix inverse
+hypotheses when needed.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,

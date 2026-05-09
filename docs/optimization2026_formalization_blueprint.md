@@ -504,9 +504,17 @@ squared-bound packet adds `continuousLinearMap_opNorm_le_of_norm_sq_le`,
 `hessianSegmentDelta_quadraticBound_of_normalizedSquaredBound`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`,
 so the next Chapter 13 packet can prove the concrete square-root factorization
-and pointwise squared normalized Delta estimate directly.  After that, derive
-the inverse-Hessian comparison from concrete matrix/order hypotheses and remove
-the remaining mixed-third supplied source interface through the real
+and pointwise squared normalized Delta estimate directly.  The newest
+normalized unit-bilinear packet adds
+`continuousLinearMap_opNorm_le_of_unit_inner_le`,
+`hessianDeltaQuadraticBound_of_normalizedUnitInnerBound`,
+`hessianSegmentDelta_quadraticBound_of_normalizedUnitInnerBound`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedUnitInnerConcreteDelta`,
+reusing mathlib's `ContinuousLinearMap.opNorm_le_of_re_inner_le` as an
+alternate bridge from a unit bilinear Hessian-difference estimate to the same
+Theorem 13.8 decrement wrapper.  After that, derive the inverse-Hessian
+comparison from concrete matrix/order hypotheses and remove the remaining
+mixed-third supplied source interface through the real
 third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem

@@ -146,8 +146,8 @@ on `[0,1]`, concrete segment point and `ψ_v(t) = <v, Hess(z_t)v>`,
 concrete/mixed-third certificates, Frechet-Hessian derivative to `ψ`
 derivative bridge, mixed-third self-concordance source interface, local-norm
 sandwich consumers, scalar Delta integration, concrete Delta action, and the
-concrete Delta scalar/order and normalized-operator bridges into the decrement
-wrapper.
+concrete Delta scalar/order, normalized-operator, normalized squared-bound, and
+normalized unit-bilinear bridges into the decrement wrapper.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
@@ -271,13 +271,22 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`hessianSegmentDelta_quadraticBound_of_normalizedSquaredBound`, and
 	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`.
 	This lets the next proof use the pointwise squared normalized estimate
-	directly before packaging it as an op-norm bound.
+	directly before packaging it as an op-norm bound.  The newest normalized
+	unit-bilinear packet adds
+	`continuousLinearMap_opNorm_le_of_unit_inner_le`,
+	`hessianDeltaQuadraticBound_of_normalizedUnitInnerBound`,
+	`hessianSegmentDelta_quadraticBound_of_normalizedUnitInnerBound`, and
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedUnitInnerConcreteDelta`.
+	This reuses mathlib's `ContinuousLinearMap.opNorm_le_of_re_inner_le` so a
+	unit bilinear normalized Hessian-difference estimate can feed the same
+	Theorem 13.8 decrement wrapper without redoing operator-norm foundations.
 
 Next theorem-sized target: prove the square-root/normalized-operator
-factorization and pointwise squared normalized bound for the concrete Delta
-operator, then
-feed it through
-`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`.
+factorization and either the pointwise squared or unit-bilinear normalized
+bound for the concrete Delta operator, then feed it through
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`
+or
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedUnitInnerConcreteDelta`.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
@@ -287,8 +296,10 @@ The exact blockers are:
   identify `inner (Delta step) (invHess x (Delta step))` with
   `||A (sqrtH step)||^2`, identify `inner step (hess x step)` with
   `||sqrtH step||^2`, and prove the pointwise squared estimate
-  `||A z||^2 <= (M * lambda / (1 - M * lambda))^2 * ||z||^2`.  The conversion
-  from this squared estimate to op norm, the final
+  `||A z||^2 <= (M * lambda / (1 - M * lambda))^2 * ||z||^2` or the unit
+  bilinear estimate
+  `<A u, v> <= M * lambda / (1 - M * lambda)` for unit `u` and `v`.  The
+  conversion from either estimate to op norm, the final
   `M * lambda^2 / (1 - M * lambda)^2` decrement algebra, and concrete residual
   identity are now compiled around this normalized route and the supplied
   inverse-Hessian transport blocker;
