@@ -390,6 +390,13 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	This derives the inverse coordinate equations from a single
 	`sqrtCoord : E ≃L[ℝ] E`, with `sqrtH = sqrtCoord.toContinuousLinearMap`
 	and `coord = sqrtCoord.symm.toContinuousLinearMap`.
+	The newest adjoint/square-root packet adds
+	`inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse`
+	and
+	`chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_adjointSqrtCoord_of_sourceNewtonSegment`.
+	This derives `<v, invHess(x)v> = ||coord†v||^2` from
+	`hess x = sqrtH†sqrtH`, `hess(x)(invHess(x)v)=v`, and the coordinate
+	equivalence.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
@@ -414,10 +421,10 @@ The exact blockers are:
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
   derive the needed right-inverse identities from the concrete Hessian/
   inverse-Hessian or matrix model, derive the `sqrtCoord : E ≃L[ℝ] E`
-  coordinate model and its factorization identities
-  `<v, invHess(x)v> = ||coord†v||^2`, `hess x = sqrtH†sqrtH`, and
-  `normalized = coord† Delta coord` required by
-  `chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_continuousLinearEquivCoord_of_sourceNewtonSegment`.
+  coordinate model, derive the square-root Hessian factorization
+  `hess x = sqrtH†sqrtH`, and derive `normalized = coord† Delta coord`
+  required by
+  `chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_adjointSqrtCoord_of_sourceNewtonSegment`.
   The conversion from those inputs to the normalized Rayleigh bound, op norm,
   Delta quadratic bound, residual bound, and final decrement estimate is
   compiled; do not reprove it.

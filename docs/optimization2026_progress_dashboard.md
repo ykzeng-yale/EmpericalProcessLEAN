@@ -1495,9 +1495,14 @@ deriving `coord sqrtH = id` and `sqrtH coord = id` from one
 `sqrtCoord : E ≃L[ℝ] E` with `coord = sqrtCoord.symm.toContinuousLinearMap`
 and `sqrtH = sqrtCoord.toContinuousLinearMap`.  The remaining concrete
 13.8 model blockers are now the right-inverse identities at `x` and `x+`,
-the factorization identities
-`<v, invHess(x)v> = ||coord†v||^2` and `hess x = sqrtH†sqrtH`, and the
-Delta normalization identity in that coordinate model.
+the square-root Hessian factorization `hess x = sqrtH†sqrtH`, and the Delta
+normalization identity in that coordinate model.  The newest adjoint/square-
+root packet adds
+`inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse`
+and
+`chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_adjointSqrtCoord_of_sourceNewtonSegment`,
+deriving `<v, invHess(x)v> = ||coord†v||^2` from `hess x = sqrtH†sqrtH`,
+`hess(x)(invHess(x)v)=v`, and the coordinate equivalence.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
