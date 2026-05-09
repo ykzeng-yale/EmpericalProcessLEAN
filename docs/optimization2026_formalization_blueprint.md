@@ -52,7 +52,9 @@ gradient-residual/Delta bound.  The latest dual-transport packet proves the
 supplied-inverse-Hessian comparison layer and the first displayed inequality in
 Theorem 13.8.  The latest assembly packet proves the final Theorem 13.8
 decrement algebra from a supplied inverse-Hessian comparison plus a supplied
-Delta/gradient-residual quadratic bound.  Segment membership, `ψ` continuity,
+Delta/gradient-residual quadratic bound.  The newest scalar packet formalizes
+the Delta coefficient integral
+`int_0^1 ((1 - M*lambda*t)^(-2) - 1) dt = M*lambda/(1-M*lambda)`.  Segment membership, `ψ` continuity,
 local-norm continuity/positivity, Riccati comparison, derivative inequality,
 coefficient scaling, final sandwich assembly, and first Newton/Dikin
 membership wrappers are now compiled; do not return to ASGD or generic process-prompt edits unless the user
@@ -448,6 +450,11 @@ The newest assembly packet adds
 `dualLocalNorm_le_mul_localNorm_of_quadratic_bound`,
 `chewi138_gradientResidual_dualLocalNorm_le_of_quadratic_bound`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_residualQuadraticBound`.
+The newest scalar Delta-coefficient packet adds
+`chewi138DeltaCoefficientPrimitive`,
+`chewi138DeltaCoefficientPrimitive_hasDerivAt`,
+`chewi138_deltaCoefficient_integral_eq`, and
+`chewi138_deltaCoefficient_integral_eq_mul`.
 The next Chapter 13 packet should build the Theorem 13.8 residual/Delta
 quadratic bound and, when useful, derive the inverse-Hessian comparison from
 concrete matrix/order hypotheses, while the heavier real third-derivative

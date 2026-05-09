@@ -207,6 +207,14 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`dualLocalNorm_le_mul_localNorm_of_quadratic_bound`,
 	`chewi138_gradientResidual_dualLocalNorm_le_of_quadratic_bound`, and
 	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_residualQuadraticBound`.
+	The newest scalar Delta-coefficient packet adds
+	`chewi138DeltaCoefficientPrimitive`,
+	`chewi138DeltaCoefficientPrimitive_hasDerivAt`,
+	`chewi138_deltaCoefficient_integral_eq`, and
+	`chewi138_deltaCoefficient_integral_eq_mul`, formalizing the source
+	calculation
+	`int_0^1 ((1 - M * lambda * t)^(-2) - 1) dt =
+	  M * lambda / (1 - M * lambda)`.
 
 Next theorem-sized target: construct the source hypotheses for
 `HessianSegmentMixedThirdLocalNormCertificate` from the remaining analytic
@@ -222,7 +230,8 @@ blockers are:
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
   derive the needed inverse-Hessian quadratic upper comparison from Lemma
   13.6/matrix inverse order when moving beyond the supplied interface, and
-  prove the gradient residual integral/Delta quadratic bound.  The final
+  prove the gradient residual integral/Delta quadratic bound using the compiled
+  scalar Delta coefficient integral.  The final
   `M * lambda^2 / (1 - M * lambda)^2` decrement algebra is now compiled from
   these two supplied blockers.
 

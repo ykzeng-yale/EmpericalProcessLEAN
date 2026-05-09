@@ -6,6 +6,7 @@ import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 
 /-!
 # Chewi Chapter 13 interior-point methods
@@ -17,6 +18,8 @@ local-norm/Newton substrate, and the Lemma 13.6 Hessian-stability spine.
 
 namespace StatInference
 namespace Optimization
+
+open scoped intervalIntegral
 
 section ScalarGronwall
 
@@ -362,6 +365,96 @@ theorem scalar_riccati_upper_bound_on_unit_interval
       _ = r := by ring
   exact (le_div_iff₀ hden_pos).2
     (by simpa [mul_comm, mul_left_comm, mul_assoc] using htarget_mul)
+
+/--
+Antiderivative for the scalar coefficient in Chewi Theorem 13.8:
+`d/dt (t / (1 - a t) - t) = (1 - a t)^{-2} - 1`.
+-/
+noncomputable def chewi138DeltaCoefficientPrimitive (a t : ℝ) : ℝ :=
+  t / (1 - a * t) - t
+
+theorem chewi138DeltaCoefficientPrimitive_hasDerivAt
+    {a t : ℝ} (hden_ne : 1 - a * t ≠ 0) :
+    HasDerivAt (fun s : ℝ => chewi138DeltaCoefficientPrimitive a s)
+      (((1 - a * t)⁻¹) ^ (2 : ℕ) - 1) t := by
+  unfold chewi138DeltaCoefficientPrimitive
+  have hnum : HasDerivAt (fun s : ℝ => s) 1 t := hasDerivAt_id t
+  have hden : HasDerivAt (fun s : ℝ => 1 - a * s) (-a) t := by
+    simpa using (hasDerivAt_const (c := (1 : ℝ)) t).sub ((hasDerivAt_id t).const_mul a)
+  have hdiv := hnum.div hden hden_ne
+  have hsub := hdiv.sub (hasDerivAt_id t)
+  convert hsub using 1
+  field_simp [hden_ne]
+  ring
+
+/--
+Chewi Theorem 13.8 scalar Delta coefficient calculation:
+`∫_0^1 ((1 - a t)^{-2} - 1) dt = a / (1 - a)`.
+In the theorem proof, `a = M * λ_f(x)`.
+-/
+theorem chewi138_deltaCoefficient_integral_eq {a : ℝ} (ha_lt : a < 1) :
+    (∫ t in (0 : ℝ)..1, (((1 - a * t)⁻¹) ^ (2 : ℕ) - 1)) =
+      a / (1 - a) := by
+  have hden_pos_on : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 -> 0 < 1 - a * t := by
+    intro t ht
+    have htIcc : t ∈ Set.Icc (0 : ℝ) 1 := by
+      simpa [Set.uIcc_of_le zero_le_one] using ht
+    have ht_nonneg : 0 ≤ t := htIcc.1
+    have ht_le_one : t ≤ 1 := htIcc.2
+    have hat_lt : a * t < 1 := by
+      by_cases ha_nonneg : 0 ≤ a
+      · have hat_le_a : a * t ≤ a * 1 := mul_le_mul_of_nonneg_left ht_le_one ha_nonneg
+        nlinarith
+      · have ha_neg : a < 0 := lt_of_not_ge ha_nonneg
+        have hat_le_zero : a * t ≤ 0 := mul_nonpos_of_nonpos_of_nonneg ha_neg.le ht_nonneg
+        nlinarith
+    nlinarith
+  have hden_ne_on : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 -> 1 - a * t ≠ 0 := by
+    intro t ht
+    exact (hden_pos_on t ht).ne'
+  have hderiv :
+      ∀ t ∈ Set.uIcc (0 : ℝ) 1,
+        HasDerivAt (fun s : ℝ => chewi138DeltaCoefficientPrimitive a s)
+          (((1 - a * t)⁻¹) ^ (2 : ℕ) - 1) t := by
+    intro t ht
+    exact chewi138DeltaCoefficientPrimitive_hasDerivAt (hden_ne_on t ht)
+  have hcont_den :
+      ContinuousOn (fun t : ℝ => 1 - a * t) (Set.uIcc (0 : ℝ) 1) :=
+    (continuous_const.sub (continuous_const.mul continuous_id)).continuousOn
+  have hcont_inv :
+      ContinuousOn (fun t : ℝ => (1 - a * t)⁻¹) (Set.uIcc (0 : ℝ) 1) :=
+    hcont_den.inv₀ hden_ne_on
+  have hcont_integrand :
+      ContinuousOn (fun t : ℝ => (((1 - a * t)⁻¹) ^ (2 : ℕ) - 1))
+        (Set.uIcc (0 : ℝ) 1) :=
+    (hcont_inv.pow 2).sub continuous_const.continuousOn
+  have hint :
+      IntervalIntegrable
+        (fun t : ℝ => (((1 - a * t)⁻¹) ^ (2 : ℕ) - 1))
+        MeasureTheory.volume (0 : ℝ) 1 :=
+    hcont_integrand.intervalIntegrable
+  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
+  have hden_one_ne : 1 - a ≠ 0 := by nlinarith
+  have hprimitive_eval :
+      chewi138DeltaCoefficientPrimitive a 1 -
+          chewi138DeltaCoefficientPrimitive a 0 =
+        a / (1 - a) := by
+    simp [chewi138DeltaCoefficientPrimitive]
+    field_simp [hden_one_ne]
+    ring
+  simpa [hprimitive_eval] using hFTC
+
+/--
+Chewi Theorem 13.8 scalar Delta coefficient in the source notation
+`a = M * lambda`.
+-/
+theorem chewi138_deltaCoefficient_integral_eq_mul
+    {M lambda : ℝ} (hMlambda_lt : M * lambda < 1) :
+    (∫ t in (0 : ℝ)..1,
+        (((1 - M * lambda * t)⁻¹) ^ (2 : ℕ) - 1)) =
+      M * lambda / (1 - M * lambda) := by
+  simpa [mul_assoc] using
+    chewi138_deltaCoefficient_integral_eq (a := M * lambda) hMlambda_lt
 
 end ScalarGronwall
 

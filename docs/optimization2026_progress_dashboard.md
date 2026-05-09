@@ -1350,6 +1350,11 @@ newest Theorem 13.8 assembly packet adds
 `dualLocalNorm_le_mul_localNorm_of_quadratic_bound`,
 `chewi138_gradientResidual_dualLocalNorm_le_of_quadratic_bound`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_residualQuadraticBound`.
+The newest scalar Delta-coefficient packet adds
+`chewi138DeltaCoefficientPrimitive`,
+`chewi138DeltaCoefficientPrimitive_hasDerivAt`,
+`chewi138_deltaCoefficient_integral_eq`, and
+`chewi138_deltaCoefficient_integral_eq_mul`.
 The newest positivity/source-radius packet derives segment local-norm
 positivity from a source-shaped positive-definite Hessian hypothesis and
 `y - x ≠ 0`, then proves the named source-radius Lemma 13.6(4) local-norm
@@ -1361,7 +1366,9 @@ for the first displayed inequality in Theorem 13.8.  The assembly packet turns
 a supplied Delta/gradient-residual quadratic bound into
 `||grad(x+)||_x^* <= M*lambda^2/(1-M*lambda)` and then combines it with dual
 transport to prove the final `lambda(x+) <= M*lambda^2/(1-M*lambda)^2`
-inequality.
+inequality.  The scalar coefficient packet formalizes the source computation
+`int_0^1 ((1 - M*lambda*t)^(-2) - 1) dt = M*lambda/(1-M*lambda)` used in the
+Delta/operator-norm estimate.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
@@ -1374,7 +1381,8 @@ one-shot Hessian-derivative/third-Frechet bridge, but identified
 right API stack.  Next Chapter 13 work should derive inverse-Hessian comparison
 from concrete Hessian/matrix inverse hypotheses when needed and prove the
 Theorem 13.8 gradient-residual/Delta quadratic bound supplying the compiled
-assembly theorem.
+assembly theorem, reusing `chewi138_deltaCoefficient_integral_eq_mul` for the
+scalar integral.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,
