@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 derivative absorbing tightness bridge`).
+(`Add Vaart theorem 5.41 absorbing source endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -621,9 +621,13 @@ Current packet verification passed for:
 - `git diff --check`
 - proof-hole and credential-pattern scans on changed Vaart files
 
-New verified source bridge:
+New verified absorbing source endpoint stack:
 
 - `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_derivativeLLN_secondDerivativeHalfBound_absorbing`
+- `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeHalfBound_absorbing`
+- `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeHalfBound_absorbing`
+- `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeQuadraticBound_absorbing`
+- `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN_absorbing`
 
 Live continuation prompt: use the efficient prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
@@ -638,14 +642,15 @@ law-tail and explicit `O_P(1)` derivative-norm Theorem 5.41 handoffs, including
 the canonical, projected, common-vector-law, score-representation, and
 derivative-bound, finite-derivative strong-law, and action-bound
 specializations of the `O_P(1)` route.
-Move next to a wrapper that feeds the new non-circular derivative-LLN/curvature
-tightness source into the empirical-average/root Taylor endpoint, or prove the
-next genuinely model-specific Taylor display, derivative, or score
-representation that removes a live endpoint hypothesis.  Do not replay solved
+Move next to a wrapper that removes `hScaledEstimator` from the
+empirical-average/root Taylor endpoint by calling the absorbing quadratic
+Taylor endpoint, or prove the next genuinely model-specific Taylor display,
+derivative, or score representation that removes a live endpoint hypothesis.
+Do not replay solved
 Chapter 2-4
 infrastructure,
 canonical/projected/common-vector/score-representation/derivative-bound/finite
-strong-law/action-bound/law-tail/display-congruence/display-convergence/display-weak-convergence/score-equation-OP/Taylor-zero-OP/absorbing-tightness/derivative-absorbing-tightness
+strong-law/action-bound/law-tail/display-congruence/display-convergence/display-weak-convergence/score-equation-OP/Taylor-zero-OP/absorbing-tightness/derivative-absorbing-tightness/absorbing-source-endpoint
 wrappers, earlier Theorem 5.41 wrappers, or historical ledger items.
 
 ## Reuse Dependencies

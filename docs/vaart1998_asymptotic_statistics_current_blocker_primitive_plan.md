@@ -19,8 +19,8 @@ normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
-Current verified source bridge:
-`vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_derivativeLLN_secondDerivativeHalfBound_absorbing`.
+Current verified absorbing source endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN_absorbing`.
 
 Continuation recipe:
 
@@ -33,9 +33,10 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Tightness source: plug the new derivative-LLN/curvature half-bound
-   self-localization bridge into the empirical-average/root Taylor endpoint,
-   or prove the next model-specific Taylor display feeding it.
+1. Tightness source: remove the external `hScaledEstimator` field from the
+   empirical-average/root Taylor endpoint by feeding it through the absorbing
+   quadratic/root Taylor endpoint, or prove the next model-specific Taylor
+   display feeding that endpoint.
 2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
    finite-entry norm/action wrapper stack.
@@ -1106,28 +1107,39 @@ compiling:
    proves scaled-estimator `O_P(1)` from score tightness, derivative LLN,
    `delta_n = o_P(1)`, bounded curvature, the Taylor half-bound, and the
    Taylor zero display, without assuming scaled-estimator tightness.
+362. Theorem 5.41 absorbing asymptotic-normality source endpoints:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeHalfBound_absorbing`,
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeHalfBound_absorbing`,
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeQuadraticBound_absorbing`,
+   and
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN_absorbing`
+   feed the non-circular tightness source into the Taylor-zero, root/Taylor,
+   quadratic-residual, and literal quadratic Taylor asymptotic-normality
+   handoffs.  These wrappers remove the external `scaledEstimator = O_P(1)`
+   hypothesis from the source-facing Taylor endpoint stack.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 derivative absorbing tightness bridge`).
+(`Add Vaart theorem 5.41 absorbing source endpoint`).
 
 The latest theorem-sized packet turns the model-shaped derivative LLN,
-unscaled consistency, bounded curvature, second-derivative half-bound, and
-Taylor zero display into the `StochasticBounded` field consumed by the current
-Theorem 5.41 endpoint, without assuming scaled-estimator tightness first.
+unscaled consistency, bounded curvature, second-derivative half-bound or
+quadratic Taylor residual, and root/Taylor display into the final
+scaled-estimator asymptotic-normality conclusion, without assuming
+scaled-estimator tightness first.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to a wrapper that feeds this non-circular tightness
-source into the empirical-average/root Taylor endpoint, or to a genuinely
-model-specific Taylor display, derivative, or score
-representation that removes a live hypothesis.  Do not repeat solved Chapter
+source handoff.  Move next to a wrapper that removes `hScaledEstimator` from
+the empirical-average/root Taylor endpoint by calling the absorbing quadratic
+Taylor endpoint, or to a genuinely model-specific Taylor display, derivative,
+or score representation that removes a live hypothesis.  Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
 derivative-bound, finite-derivative strong-law, action-bound, law-tail,
 display-congruence, display-convergence, display-weak-convergence,
 score-equation `O_P(1)`, Taylor-zero `O_P(1)`, absorbing-tightness, or
-derivative absorbing-tightness wrappers unless a current proof directly
+derivative absorbing-tightness or absorbing-source-endpoint wrappers unless a current proof directly
 depends on a small local API there.
 
 ## Execution Notes

@@ -709,9 +709,16 @@ Initial modules:
   `vaart1998_theorem_5_41_absorbingResidualImage_bound_of_derivative_secondDerivativeHalfBound`,
   and
   `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_derivativeLLN_secondDerivativeHalfBound_absorbing`,
-  so the remaining critical path should feed this non-circular tightness source
-  into the empirical-average/root Taylor endpoint, or move to a genuinely
-  model-specific Taylor display, derivative, or score representation.
+  and the absorbing-source-endpoint packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero_derivativeLLN_secondDerivativeHalfBound_absorbing`,
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeHalfBound_absorbing`,
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeQuadraticBound_absorbing`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN_absorbing`,
+  so the remaining critical path should remove `hScaledEstimator` from the
+  empirical-average/root Taylor endpoint by calling this absorbing endpoint
+  stack, or move to a genuinely model-specific Taylor display, derivative, or
+  score representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
