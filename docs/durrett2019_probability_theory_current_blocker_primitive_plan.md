@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V163
+## Live In-Thread Goal Prompt V164
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -18,24 +18,29 @@ support unless the next theorem directly needs one API.
 
 Last compiled packet: Section 4.5.1 now has the finite Doob `L^2` bridge,
 ordinary finite second-moment display, monotone `lintegral` iSup handoff, and
-canonical running-supremum identification, plus the supplied `A∞`
-increasing-process source bridge:
+canonical running-supremum identification, the supplied `A∞`
+increasing-process source bridge, and the canonical square-process predictable
+part source bridge:
 `durrett2019_iSup_ofReal_runningAbsMax_sq_eq_ofReal_runningAbsSup_sq_of_bddAbove`,
 `durrett2019_lintegral_iSup_runningAbsMax_sq_eq_lintegral_runningAbsSup_sq_of_ae_bddAbove`,
 `durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_integral_sq_le`,
 `durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_bound`,
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_identity`,
+`durrett2019_martingale_integral_eq_initial`,
+`durrett2019_theorem_4_5_1_square_integral_eq_predictablePart_square_of_initial_zero`,
 and
-`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_identity`.
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_integral_bound`.
 
-Next aggressive step: derive or package the actual Section 4.5 increasing
-process facts consumed by the new source bridge.  Best target: prove a
-source-facing `E X_n^2 = E A_n` identity and an `E A_n ≤ E A∞`/monotone-limit
-handoff from the Doob-decomposition and conditional-variance APIs already
-compiled around Theorems 4.3.2 and 4.4.8.  Do not route back into Chapter 4.4
-plumbing or the already compiled finite-maximum, ordinary second-moment,
-monotone-iSup, running-supremum identification, or supplied-`A∞` wrapper
-layers.  Theorem 4.1.16 remains deferred unless a targeted kernel search finds
-a direct source-shaped API.
+Next aggressive step: derive or package the remaining terminal increasing
+process bound consumed by the canonical source bridge.  Best target: prove an
+`E predictablePart(X^2)_n ≤ E A∞`/monotone-limit handoff for the canonical
+Doob increasing process, then feed
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_integral_bound`.
+Do not route back into Chapter 4.4 plumbing or the already compiled
+finite-maximum, ordinary second-moment, monotone-iSup, running-supremum
+identification, supplied-`A∞`, or canonical `E X_n^2 = E A_n` wrapper layers.
+Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
+source-shaped API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -514,6 +519,12 @@ The Section 4.5.1 supplied increasing-process source handoff now also compiles:
 `durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_bound`
 and
 `durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_identity`.
+The Section 4.5.1 canonical square-process predictable-part handoff now also
+compiles:
+`durrett2019_martingale_integral_eq_initial`,
+`durrett2019_theorem_4_5_1_square_integral_eq_predictablePart_square_of_initial_zero`,
+and
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_integral_bound`.
 The canonical running-maximum layer now also compiles:
 `durrett2019_runningAbsSup`,
 `durrett2019_runningAbsMax_mono`,

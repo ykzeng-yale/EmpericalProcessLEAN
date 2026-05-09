@@ -13065,6 +13065,115 @@ theorem durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_pr
     _ ≤ ∫ ω, Ainf ω ∂P := hA_le_Ainf n
 
 /--
+Durrett 2019, martingale expectation support: every integrable martingale has
+constant ordinary expectation.
+-/
+theorem durrett2019_martingale_integral_eq_initial
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {M : ℕ -> Ω -> ℝ} (hM : Martingale M ℱ P) (n : ℕ) :
+    (∫ ω, M n ω ∂P) = ∫ ω, M 0 ω ∂P := by
+  have hcond : P[M n | ℱ 0] =ᵐ[P] M 0 :=
+    hM.condExp_ae_eq (Nat.zero_le n)
+  calc
+    (∫ ω, M n ω ∂P) = ∫ ω, P[M n | ℱ 0] ω ∂P :=
+      (integral_condExp (ℱ.le 0)).symm
+    _ = ∫ ω, M 0 ω ∂P := integral_congr_ae hcond
+
+/--
+Durrett 2019, Theorem 4.5.1 increasing-process source support: for the
+canonical Doob increasing process of the square submartingale, `X_0 = 0`
+implies `E X_n^2 = E A_n`.
+-/
+theorem durrett2019_theorem_4_5_1_square_integral_eq_predictablePart_square_of_initial_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hX0 : X 0 =ᵐ[P] 0) :
+    ∀ n,
+      (∫ ω, X n ω ^ 2 ∂P) =
+        ∫ ω, predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω ∂P := by
+  let Y : ℕ -> Ω -> ℝ := fun k ω => X k ω ^ 2
+  have hY_int : ∀ n, Integrable (Y n) P := by
+    intro n
+    exact durrett2019_integrable_sq_of_memLp_two
+      (P := P) (Y := X n) (hX_memLp_two n)
+  have hY_adapted : StronglyAdapted ℱ Y := by
+    intro n
+    exact (hX.stronglyMeasurable n).pow 2
+  have hM :
+      Martingale (martingalePart Y ℱ P) ℱ P :=
+    martingale_martingalePart hY_adapted hY_int
+  intro n
+  have hM_int : Integrable (martingalePart Y ℱ P n) P :=
+    integrable_martingalePart hY_int n
+  have hA_int : Integrable (predictablePart Y ℱ P n) P := by
+    rw [predictablePart]
+    fun_prop
+  have hM0 : martingalePart Y ℱ P 0 =ᵐ[P] 0 := by
+    filter_upwards [hX0] with ω hω
+    simp [Y, hω]
+  have hM_integral_zero :
+      (∫ ω, martingalePart Y ℱ P n ω ∂P) = 0 := by
+    calc
+      (∫ ω, martingalePart Y ℱ P n ω ∂P)
+          = ∫ ω, martingalePart Y ℱ P 0 ω ∂P :=
+            durrett2019_martingale_integral_eq_initial
+              (P := P) (ℱ := ℱ) (M := martingalePart Y ℱ P) hM n
+      _ = 0 := integral_eq_zero_of_ae hM0
+  have hdecomp :
+      (fun ω => martingalePart Y ℱ P n ω + predictablePart Y ℱ P n ω)
+        =ᵐ[P] Y n := by
+    exact ae_of_all P fun ω => by
+      have h :=
+        congrFun (congrFun (martingalePart_add_predictablePart ℱ P Y) n) ω
+      simpa [Pi.add_apply] using h
+  calc
+    (∫ ω, X n ω ^ 2 ∂P) = ∫ ω, Y n ω ∂P := by rfl
+    _ = ∫ ω, martingalePart Y ℱ P n ω + predictablePart Y ℱ P n ω ∂P :=
+        (integral_congr_ae hdecomp.symm)
+    _ = (∫ ω, martingalePart Y ℱ P n ω ∂P) +
+        ∫ ω, predictablePart Y ℱ P n ω ∂P :=
+        integral_add hM_int hA_int
+    _ = ∫ ω, predictablePart Y ℱ P n ω ∂P := by
+        rw [hM_integral_zero, zero_add]
+    _ = ∫ ω, predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω ∂P := by rfl
+
+/--
+Durrett 2019, Theorem 4.5.1 source bridge for the canonical square-process
+Doob increasing process: after `E X_n^2 = E A_n` is discharged by the
+canonical predictable part, it remains only to bound `E A_n` by the supplied
+terminal expectation.
+-/
+theorem durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_integral_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {Ainf : Ω -> ℝ}
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA_le_Ainf :
+      ∀ n,
+        (∫ ω, predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω ∂P) ≤
+          ∫ ω, Ainf ω ∂P)
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω ^ 2) ∂P) ≤
+      ENNReal.ofReal (4 * ∫ ω, Ainf ω ∂P) := by
+  refine
+    durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_identity
+      (P := P) (ℱ := ℱ) (X := X) hX
+      (A := fun n => predictablePart (fun k ω => X k ω ^ 2) ℱ P n)
+      (Ainf := Ainf) hX_memLp_two ?_ hA_le_Ainf hBdd
+  exact
+    durrett2019_theorem_4_5_1_square_integral_eq_predictablePart_square_of_initial_zero
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hX0
+
+/--
 Durrett 2019, `L^2` support: convergence in `eLpNorm · 2` on a probability
 space implies convergence of expectations.
 -/
