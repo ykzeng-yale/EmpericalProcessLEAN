@@ -1303,8 +1303,10 @@ sandwich.  The newest mixed-third derivative packet adds
 `hessianSegmentLocalNorm_hasDerivWithinAt_of_hasFDerivAt`,
 `hessianSegmentMixedThirdPsiDeriv`,
 `hessianSegmentLocalNorm_hasDerivWithinAt_of_mixedThird`,
+`localNorm_pos_of_inner_pos`,
 `hessianSegmentLocalNorm_continuousOn_of_continuousOn`,
 `hessianSegmentLocalNorm_continuousOn_of_convex_continuousOn`,
+`hessianSegmentLocalNorm_pos_of_hessian_pos`,
 `HessianSegmentMixedThirdCertificate`,
 `HessianSegmentMixedThirdLocalNormCertificate`,
 `MixedThirdSelfConcordantOn`,
@@ -1319,26 +1321,30 @@ sandwich.  The newest mixed-third derivative packet adds
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_hessianPositive`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius`,
 the mixed-third certificate-to-exponential bridges,
 `localNorm_sandwich_of_hessianSegmentMixedThirdCertificate` /
 `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate`, and
 `localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound` /
 `localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound` /
-`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm`.
-The newest derivative packet proves the `sqrt(ψ)` local-norm derivative
-formula, specializes it to the mixed-third oracle, derives
-`q' <= M*q^2` from `MixedThirdSelfConcordantOn`, and feeds this into the
-Riccati/final-sandwich wrapper under the remaining positive-local-norm
-assumption.
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm` /
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_hessianPositive` /
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius` /
+`chewi136_localNorm_sandwich_sourceRadius`.
+The newest positivity/source-radius packet derives segment local-norm
+positivity from a source-shaped positive-definite Hessian hypothesis and
+`y - x ≠ 0`, then proves the named source-radius Lemma 13.6(4) local-norm
+sandwich with `r = ||y - x||_x`.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
 compiled route uses `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
 `HasDerivAt.inner`, `HasDerivWithinAt.sqrt`, `HasDerivWithinAt.inv`, and
-`monotoneOn_of_hasDerivWithinAt_nonneg`.  Next Chapter 13 work should prove
-or package local-norm positivity on the nondegenerate segment, connect the
-real third-derivative representation to `MixedThirdSelfConcordantOn`, then
-state/prove Lemma 13.6(4) and continue to Newton decrement estimates.
+`monotoneOn_of_hasDerivWithinAt_nonneg`.  Next Chapter 13 work should connect
+the real third-derivative representation to `MixedThirdSelfConcordantOn`, then
+use `chewi136_localNorm_sandwich_sourceRadius` for Newton decrement and
+Dikin-ellipsoid consequences.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,

@@ -160,11 +160,13 @@ Compiled declarations to reuse include
 `hessianSegmentPoint_mem_of_convex`,
 `hessianSegmentPoint_mem_of_convex_interior`,
 `hessianSegmentPoint_continuous`,
+`localNorm_pos_of_inner_pos`,
 `hessianSegmentPsi_continuousOn_of_continuousOn`,
 `hessianSegmentPsi_continuousOn_of_continuous`,
 `hessianSegmentPsi_continuousOn_of_convex_continuousOn`,
 `hessianSegmentLocalNorm_continuousOn_of_continuousOn`,
 `hessianSegmentLocalNorm_continuousOn_of_convex_continuousOn`,
+`hessianSegmentLocalNorm_pos_of_hessian_pos`,
 `scalar_riccati_upper_bound_on_unit_interval`,
 `hessianSegmentLocalNorm_le_of_riccati_bound`,
 `hessianSegmentLocalNorm_le_of_riccati_bound_of_mul_lt`,
@@ -175,29 +177,32 @@ Compiled declarations to reuse include
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_hessianPositive`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius`,
 the corresponding `.toHessianSegmentConcretePsiCertificate` and
 `.toHessianSegmentExponentialBounds` bridges, and
 `localNorm_sandwich_of_hessianSegmentMixedThirdCertificate` /
 `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate` /
 `localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound` /
 `localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound` /
-`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm`.
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm` /
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_hessianPositive` /
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius` /
+`chewi136_localNorm_sandwich_sourceRadius`.
 
 Next theorem-sized target: construct the source hypotheses for
 `HessianSegmentMixedThirdLocalNormCertificate` from the remaining analytic
 source facts rather than adding more generic Gronwall/`ψ` plumbing.  The exact
 blockers are:
 
-- prove or package positivity of `||y - x||_{z_s}` on the nondegenerate
-  segment.  The derivative formula for the local norm, the
-  self-concordance-to-Riccati derivative estimate
-  `d/ds ||y - x||_{z_s} <= M * ||y - x||_{z_s}^2`, the scalar comparison to
-  `||y - x||_{z_s} <= r / (1 - M*r*s)`, coefficient scaling, and final
-  sandwich assembly are now compiled;
-- connect a real third Frechet derivative or `iteratedFDeriv` representation
-  to `MixedThirdSelfConcordantOn.mixed_third_bound`;
-- then consume the convex/mixed-third/Riccati wrapper to state and prove the
-  source-shaped Lemma 13.6(4), before moving to Newton decrement estimates.
+- connect the real third Frechet derivative or `iteratedFDeriv` representation
+  to `MixedThirdSelfConcordantOn.mixed_third_bound`.  Positivity of
+  `||y - x||_{z_s}` is now packaged from a source-shaped positive-definite
+  Hessian hypothesis and `y - x ≠ 0`; the derivative formula, Riccati
+  derivative estimate, scalar comparison, coefficient scaling, and named
+  source-radius Lemma 13.6(4) theorem are compiled;
+- then move to Newton decrement/Dikin-ellipsoid consequences of
+  `chewi136_localNorm_sandwich_sourceRadius`.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi
 Hessian-stability theorem and no direct derivative theorem for

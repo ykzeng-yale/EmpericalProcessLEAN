@@ -39,12 +39,15 @@ Riccati comparison from `q' <= M*q^2` to
 `q(t)=||y-x||_{z_t}`.  The latest derivative packet proves the `sqrt(ψ)`
 local-norm derivative formula and derives
 `d/dt ||y-x||_{z_t} <= M ||y-x||_{z_t}^2` from the mixed-third
-self-concordance interface.  The next proof target is therefore local-norm
-positivity on the nondegenerate segment plus the real
-third-derivative-to-`MixedThirdSelfConcordantOn` bridge.  Segment membership,
-`ψ` continuity, local-norm continuity, Riccati comparison, derivative
-inequality, coefficient scaling, and final sandwich assembly are now compiled;
-do not return to ASGD or generic process-prompt edits unless the user
+self-concordance interface.  The latest positivity/source-radius packet
+derives local-norm positivity from a positive-definite Hessian hypothesis and
+proves the named Lemma 13.6(4) source-radius local-norm sandwich
+`chewi136_localNorm_sandwich_sourceRadius` with `r = ||y-x||_x`.  The next
+proof target is therefore the real third-derivative-to-`MixedThirdSelfConcordantOn`
+bridge and Newton decrement/Dikin-ellipsoid consequences.  Segment membership,
+`ψ` continuity, local-norm continuity/positivity, Riccati comparison,
+derivative inequality, coefficient scaling, and final sandwich assembly are
+now compiled; do not return to ASGD or generic process-prompt edits unless the user
 explicitly switches lanes.
 
 As of the current ASGD source-variance packet, route new characteristic-
@@ -395,8 +398,10 @@ sandwich.  The newest mixed-third packet adds
 `hessianSegmentLocalNorm_hasDerivWithinAt_of_hasFDerivAt`,
 `hessianSegmentMixedThirdPsiDeriv`,
 `hessianSegmentLocalNorm_hasDerivWithinAt_of_mixedThird`,
+`localNorm_pos_of_inner_pos`,
 `hessianSegmentLocalNorm_continuousOn_of_continuousOn`,
 `hessianSegmentLocalNorm_continuousOn_of_convex_continuousOn`,
+`hessianSegmentLocalNorm_pos_of_hessian_pos`,
 `HessianSegmentMixedThirdCertificate`,
 `HessianSegmentMixedThirdLocalNormCertificate`,
 `MixedThirdSelfConcordantOn`,
@@ -411,13 +416,15 @@ sandwich.  The newest mixed-third packet adds
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_hessianPositive`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius`,
 the mixed-third exponential-bound bridges, and the mixed-third local-norm
 sandwich consumers, including the convex/source wrapper
-`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm`.
-The next Chapter 13 packet should prove or package source local-norm
-positivity on the nondegenerate segment, connect the real third-derivative
-representation to `MixedThirdSelfConcordantOn`, then assemble Lemma 13.6(4)
-and continue to Newton decrement estimates.
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius`
+and the named source theorem `chewi136_localNorm_sandwich_sourceRadius`.
+The next Chapter 13 packet should connect the real third-derivative
+representation to `MixedThirdSelfConcordantOn` and continue to Newton
+decrement estimates.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,
