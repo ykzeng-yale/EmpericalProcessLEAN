@@ -54,9 +54,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   identities and component domination lemmas, `barrierProductGradient_bound`,
   `MixedThirdSelfConcordantOn.product`, `SelfConcordantBarrierOn.product`, and
   the source-facing `chewi1311_product_selfConcordantBarrierOn`.
-- Next Chapter 13 target: continue Proposition 13.11 with the conic-sum or
-  affine-preimage barrier-calculus rule, reusing the product rule and the
-  strengthened `SelfConcordantBarrierOn.invHess_nonneg` interface.
+- Next Chapter 13 target: continue Proposition 13.11 from the compiled
+  product, shared-domain sum, and affine-preimage layers.  Do not redo the
+  product split, sum local-norm algebra, or invertible-affine adjoint
+  transport.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
@@ -74,30 +75,29 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1311_sum_selfConcordantBarrierOn_of_component_cauchy`.  The sum-rule
   gradient bound can now be discharged from component Cauchy bridges and the
   summed inverse-local identity rather than being assumed wholesale.
-- Current priority sequence: Chapter 13 Theorem 13.8 source completion in
-  `StatInference/Optimization/InteriorPoint.lean`: the normalized Rayleigh
-  line now has a compiled route from the two-sided Lemma 13.6 local-norm
-  sandwich through concrete Delta absolute quadratic forms and the
-  adjoint-conjugate square-root coordinate identity, and the pointwise
-  Newton-segment local-norm sandwich at `z_t` is compiled from the Lemma 13.6
-  source-radius theorem.  The concrete square-root/inverse-Hessian coordinate
-  identities, right-inverse identities, Definition 13.7 decrement norm
-  identity, inverse-local identity, Cauchy bridge, source dual-local-norm
-  transport, raw inverse-Hessian quadratic upper comparison, zero-step split,
-  positive-orthant mixed-third certificate, mixed-third/Hessian-derivative
-  identity, concrete Hessian differentiability/continuity, concrete gradient
-  differentiability, positive-orthant Newton-step feasibility, and Newton
-  linearization are now compiled.  The source-facing
-  `chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier` wrapper has
-  only feasibility and `lambda < 1` hypotheses.  Definition 13.9 now has a
-  supplied-oracle Lean interface `SelfConcordantBarrierOn`, and
-  `positiveOrthantNegLog_selfConcordantBarrierOn` packages the finite
-  positive-orthant logarithmic barrier as a `d`-self-concordant barrier.  Next
-  prove the first Proposition 13.11 calculus rule over this interface,
-  preferably the product-separable rule before the conic-sum, affine-preimage,
-  and inf-projection rules.  The remaining general-interface cleanup is to
-  connect the real third Frechet/iterated derivative to the existing
-  `positiveOrthantNegLogThirdMixed` certificate when bounded.
+- Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
+  supplied-oracle form and for invertible affine maps.  Reusable declarations
+  include `barrierAffinePreimageSet`, `barrierAffinePreimageHess`,
+  `barrierAffinePreimageGrad`, `barrierAffinePreimageThirdMixed`,
+  `barrierAffinePreimageLocalNorm_eq`,
+  `MixedThirdSelfConcordantOn.affinePreimage`,
+  `SelfConcordantBarrierOn.affinePreimage_of_gradient_bound`,
+  `chewi1311_affinePreimage_selfConcordantBarrierOn_of_gradient_bound`,
+  `barrierAffinePreimageInvHessEquiv`, and
+  `chewi1311_affinePreimage_selfConcordantBarrierOn_equiv`.  Search-first
+  result: use mathlib adjoint APIs
+  `ContinuousLinearMap.adjoint_inner_left/right`,
+  `ContinuousLinearMap.adjoint_comp`, and
+  `ContinuousLinearEquiv.coe_comp_coe_symm`; no direct Chewi affine barrier
+  rule existed locally.
+- Current priority sequence: continue Chewi Proposition 13.11 from the
+  compiled product, shared-domain sum, and affine-preimage layers in
+  `StatInference/Optimization/InteriorPoint.lean`.  The next bounded choices
+  are: close the exact shared-domain sum inverse-Hessian gate, extend
+  affine-preimage beyond equivalences through a principled
+  surjective/range/pseudoinverse interface, or open the inf-projection rule.
+  The older Theorem 13.8/Definition 13.9 substrate remains reusable, but it is
+  no longer the active blocker for this lane.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was

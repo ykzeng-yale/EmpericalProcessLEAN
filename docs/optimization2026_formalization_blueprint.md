@@ -127,8 +127,7 @@ general method `SelfConcordantBarrierOn.product` and the supporting
 product carrier `WithLp 2 (E₁ × E₂)` from
 `Mathlib.Analysis.InnerProductSpace.ProdL2`; this is the cached search result
 for future product work.  The next barrier-calculus targets should build on
-this packet instead of reconstructing product local-norm algebra: conic sums,
-affine preimages, and inf-projection/partial-minimization rules.
+this packet instead of reconstructing product local-norm algebra.
 
 The shared-domain sum case has also advanced through its reusable algebraic
 core.  Use `MixedThirdSelfConcordantOn.sum` for the exact summed Hessian
@@ -147,6 +146,24 @@ the sum-rule gradient-bound gate: it combines the component barrier gradient
 bounds, component Cauchy bridges, a two-term real Cauchy-Schwarz helper, and
 the summed inverse-local identity to produce the Definition 13.9 bound for
 `barrierSumGrad`.
+
+The affine-preimage case has a compiled supplied-oracle spine and an
+invertible-affine corollary.  Use `barrierAffinePreimageSet`,
+`barrierAffinePreimageHess`, `barrierAffinePreimageGrad`,
+`barrierAffinePreimageThirdMixed`, `barrierAffinePreimageLocalNorm_eq`,
+`MixedThirdSelfConcordantOn.affinePreimage`,
+`SelfConcordantBarrierOn.affinePreimage_of_gradient_bound`, and
+`chewi1311_affinePreimage_selfConcordantBarrierOn_of_gradient_bound` for the
+general supplied gate; use `barrierAffinePreimageInvHessEquiv` and
+`chewi1311_affinePreimage_selfConcordantBarrierOn_equiv` when the affine
+linear part is a continuous linear equivalence.  Search-first result: mathlib
+adjoint transport is enough here via `ContinuousLinearMap.adjoint_inner_left`,
+`ContinuousLinearMap.adjoint_inner_right`,
+`ContinuousLinearMap.adjoint_comp`, and
+`ContinuousLinearEquiv.coe_comp_coe_symm`.  The fully source-shaped
+non-invertible statement still needs a careful range/surjective or
+pseudoinverse interface; do not silently replace Chewi's `dom f ⊆ range 𝒜`
+assumption with injectivity.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers

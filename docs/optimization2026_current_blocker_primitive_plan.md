@@ -148,9 +148,8 @@ norm square identities and component domination lemmas,
 `chewi1311_product_selfConcordantBarrierOn`.  Search-first result: raw
 `E₁ × E₂` does not carry the needed L2 inner-product instance in this mathlib;
 the reusable product rule should use `Mathlib.Analysis.InnerProductSpace.ProdL2`
-and `WithLp 2 (E₁ × E₂)`.  Next aggressive target: continue Proposition 13.11
-with the conic-sum or affine-preimage barrier calculus rule, reusing this
-product rule and avoiding another product-local-norm rebuild.
+and `WithLp 2 (E₁ × E₂)`.  Product local-norm algebra is no longer a live
+blocker.
 
 Next frontier update: the shared-domain sum case now has compiled
 local-norm/self-concordance algebra through `barrierInterSet`,
@@ -171,19 +170,37 @@ The newest sum-gradient packet also adds `real_two_term_cauchy_sqrt`,
 gate to standard component Cauchy bridges plus the summed inverse-local
 identity.
 
-Current active lane: Chewi Chapter 13 interior-point/self-concordance in
-`StatInference/Optimization/InteriorPoint.lean`, supporting Lemma 13.6 and
-Theorem 13.8.  The latest verified local frontier is the Theorem 13.8 concrete
-integrated Hessian-difference/gradient-residual assembly layer on top of the
-concrete Hessian segment `ψ_v(t)` spine: scalar variable-coefficient Gronwall
-on `[0,1]`, concrete segment point and `ψ_v(t) = <v, Hess(z_t)v>`,
-concrete/mixed-third certificates, Frechet-Hessian derivative to `ψ`
-derivative bridge, mixed-third self-concordance source interface, local-norm
-sandwich consumers, scalar Delta integration, concrete Delta action, and the
-concrete Delta scalar/order, normalized-operator, normalized squared-bound, and
-normalized unit-bilinear bridges into the decrement wrapper.  The newest
-positive-orthant packet discharges the concrete Hessian differentiability and
-continuity side of that wrapper from finite-coordinate diagonal calculus.
+Latest affine-preimage update: Proposition 13.11(3) now has a compiled
+supplied-oracle affine-preimage spine and an invertible-affine corollary.
+Reusable declarations include `barrierAffinePreimageSet`,
+`barrierAffinePreimageHess`, `barrierAffinePreimageGrad`,
+`barrierAffinePreimageThirdMixed`,
+`barrierAffinePreimageHess_quadratic_eq`,
+`barrierAffinePreimageLocalNorm_eq`,
+`MixedThirdSelfConcordantOn.affinePreimage`,
+`SelfConcordantBarrierOn.affinePreimage_of_gradient_bound`,
+`chewi1311_affinePreimage_selfConcordantBarrierOn_of_gradient_bound`,
+`barrierAffinePreimageInvHessEquiv`,
+`barrierAffinePreimageGradientDualLocalNorm_equiv_eq`, and
+`chewi1311_affinePreimage_selfConcordantBarrierOn_equiv`.  Search-first
+result: mathlib supplies `ContinuousLinearMap.adjoint`,
+`ContinuousLinearMap.adjoint_inner_left/right`,
+`ContinuousLinearMap.adjoint_comp`, and
+`ContinuousLinearEquiv.coe_comp_coe_symm`; there is no local Chewi affine
+barrier wrapper.  Because the source statement assumes
+`dom f ⊆ range 𝒜` rather than injectivity, the general non-invertible case
+still needs a supplied inverse-Hessian/dual-gradient gate or a future
+surjective/pseudoinverse development.  Do not redo the adjoint transport
+or invertible-affine proof in the next packet.
+
+Current active lane: Chewi Proposition 13.11 barrier calculus in
+`StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,
+Definition 13.9, and the positive-orthant barrier packet are now substrate for
+the calculus rules, not the live blocker.  Continue from the compiled product,
+sum, sum component-Cauchy, and affine-preimage/equivalence wrappers; the next
+aggressive choices are the exact shared-domain sum inverse-Hessian gate, a
+principled non-invertible affine-preimage/range interface, or the
+inf-projection rule.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
@@ -567,14 +584,12 @@ The exact blockers are:
   mixed-third source interface.  Positivity of `||y - x||_{z_s}` is already
   packaged from a source-shaped positive-definite Hessian hypothesis and
   `y - x ≠ 0`; do not add more generic Gronwall/`ψ` plumbing.
-- prove the first theorem-sized Proposition 13.11 calculus rule over the
-  supplied `SelfConcordantBarrierOn` interface.  Prefer the product-separable
-  rule first because the product Hessian/inverse-Hessian and dual norm split
-  coordinatewise; use mathlib `ContinuousLinearMap.prodMap`, `fst`, `snd`,
-  product inner-product/norm APIs, and the existing local
-  `dualLocalNorm`/`localNorm` lemmas.  The conic-sum and affine-preimage rules
-  are next; do not attempt the inf-projection rule until the simpler rules are
-  compiled.
+- continue Proposition 13.11 from the already-compiled product, shared-domain
+  sum, and affine-preimage supplied-oracle layers.  The next aggressive
+  targets are either closing the exact shared-domain sum inverse-Hessian gate,
+  extending affine-preimage from equivalences to a well-scoped surjective
+  linear-map/pseudoinverse interface, or opening the inf-projection rule.
+  Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi
 Hessian-stability theorem and no direct derivative theorem for

@@ -2502,6 +2502,251 @@ theorem chewi1311_sum_selfConcordantBarrierOn_of_component_cauchy
 
 end SumBarrier
 
+section AffinePreimageBarrier
+
+variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+  [CompleteSpace E]
+
+/--
+Preimage domain for Chewi Proposition 13.11's affine-composition rule,
+represented by `x ↦ A x + b`.
+-/
+def barrierAffinePreimageSet
+    (A : F →L[ℝ] E) (b : E) (s : Set E) : Set F :=
+  {x | A x + b ∈ s}
+
+/--
+Pulled-back Hessian oracle for the affine composition `x ↦ f(A x + b)`.
+This is the coordinate-free operator `A† (∇²f(Ax+b)) A`.
+-/
+noncomputable def barrierAffinePreimageHess
+    (A : F →L[ℝ] E) (b : E) (hess : E -> E →L[ℝ] E) :
+    F -> F →L[ℝ] F :=
+  fun x => (ContinuousLinearMap.adjoint A).comp ((hess (A x + b)).comp A)
+
+/-- Pulled-back gradient oracle for the affine composition `x ↦ f(A x + b)`. -/
+noncomputable def barrierAffinePreimageGrad
+    (A : F →L[ℝ] E) (b : E) (grad : E -> E) : F -> F :=
+  fun x => ContinuousLinearMap.adjoint A (grad (A x + b))
+
+/--
+Pulled-back mixed-third oracle for the affine composition `x ↦ f(A x + b)`.
+-/
+def barrierAffinePreimageThirdMixed
+    (A : F →L[ℝ] E) (b : E) (third : E -> E -> E -> ℝ) :
+    F -> F -> F -> ℝ :=
+  fun x u v => third (A x + b) (A u) (A v)
+
+theorem barrierAffinePreimageHess_quadratic_eq
+    (A : F →L[ℝ] E) (b : E) (hess : E -> E →L[ℝ] E)
+    (x v : F) :
+    inner ℝ v (barrierAffinePreimageHess A b hess x v) =
+      inner ℝ (A v) (hess (A x + b) (A v)) := by
+  simpa [barrierAffinePreimageHess] using
+    (ContinuousLinearMap.adjoint_inner_right A v (hess (A x + b) (A v)))
+
+theorem barrierAffinePreimageHess_quadratic_nonneg
+    (A : F →L[ℝ] E) (b : E) (hess : E -> E →L[ℝ] E)
+    (x v : F)
+    (hhess : ∀ w : E, 0 ≤ inner ℝ w (hess (A x + b) w)) :
+    0 ≤ inner ℝ v (barrierAffinePreimageHess A b hess x v) := by
+  rw [barrierAffinePreimageHess_quadratic_eq]
+  exact hhess (A v)
+
+theorem barrierAffinePreimageLocalNorm_eq
+    (A : F →L[ℝ] E) (b : E) (hess : E -> E →L[ℝ] E)
+    (x v : F) :
+    localNorm (barrierAffinePreimageHess A b hess) x v =
+      localNorm hess (A x + b) (A v) := by
+  unfold localNorm
+  rw [barrierAffinePreimageHess_quadratic_eq]
+
+theorem MixedThirdSelfConcordantOn.affinePreimage
+    {A : F →L[ℝ] E} {b : E} {s : Set E}
+    {hess : E -> E →L[ℝ] E} {third : E -> E -> E -> ℝ} {M : ℝ}
+    (hsc : MixedThirdSelfConcordantOn s hess third M) :
+    MixedThirdSelfConcordantOn (barrierAffinePreimageSet A b s)
+      (barrierAffinePreimageHess A b hess)
+      (barrierAffinePreimageThirdMixed A b third) M where
+  parameter_pos := hsc.parameter_pos
+  hess_nonneg := by
+    intro x hx v
+    exact barrierAffinePreimageHess_quadratic_nonneg A b hess x v
+      (hsc.hess_nonneg hx)
+  mixed_third_bound := by
+    intro x hx u v
+    have hbound := hsc.mixed_third_bound hx (A u) (A v)
+    simpa [barrierAffinePreimageThirdMixed,
+      barrierAffinePreimageLocalNorm_eq A b hess x u,
+      barrierAffinePreimageLocalNorm_eq A b hess x v] using hbound
+
+theorem SelfConcordantBarrierOn.affinePreimage_of_gradient_bound
+    {A : F →L[ℝ] E} {b : E} {s : Set E}
+    {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {invHessPull : F -> F →L[ℝ] F}
+    {third : E -> E -> E -> ℝ} {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hinv_nonneg : ∀ ⦃x : F⦄, x ∈ barrierAffinePreimageSet A b s ->
+      ∀ v : F, 0 ≤ inner ℝ v (invHessPull x v))
+    (hgradient_bound : ∀ ⦃x : F⦄, x ∈ barrierAffinePreimageSet A b s ->
+      dualLocalNorm invHessPull x (barrierAffinePreimageGrad A b grad x) ≤
+        Real.sqrt nu) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A b s)
+      (barrierAffinePreimageHess A b hess)
+      (barrierAffinePreimageGrad A b grad) invHessPull
+      (barrierAffinePreimageThirdMixed A b third) M nu where
+  parameter_nonneg := hbar.parameter_nonneg
+  self_concordant := hbar.self_concordant.affinePreimage
+  invHess_nonneg := hinv_nonneg
+  gradient_bound := hgradient_bound
+
+/--
+Chewi Proposition 13.11, affine-preimage case, in supplied-oracle form.
+The Hessian and mixed-third transport are proved here; the pulled-back
+inverse-Hessian positivity and dual-gradient bound are exposed as the oracle
+gate, which is the honest finite-dimensional obligation when the linear part
+is not definitionally invertible.
+-/
+theorem chewi1311_affinePreimage_selfConcordantBarrierOn_of_gradient_bound
+    {A : F →L[ℝ] E} {b : E} {s : Set E}
+    {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {invHessPull : F -> F →L[ℝ] F}
+    {third : E -> E -> E -> ℝ} {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hinv_nonneg : ∀ ⦃x : F⦄, x ∈ barrierAffinePreimageSet A b s ->
+      ∀ v : F, 0 ≤ inner ℝ v (invHessPull x v))
+    (hgradient_bound : ∀ ⦃x : F⦄, x ∈ barrierAffinePreimageSet A b s ->
+      dualLocalNorm invHessPull x (barrierAffinePreimageGrad A b grad x) ≤
+        Real.sqrt nu) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A b s)
+      (barrierAffinePreimageHess A b hess)
+      (barrierAffinePreimageGrad A b grad) invHessPull
+      (barrierAffinePreimageThirdMixed A b third) M nu :=
+  hbar.affinePreimage_of_gradient_bound hinv_nonneg hgradient_bound
+
+/--
+Concrete inverse-Hessian transport for an invertible affine change of
+coordinates.  If `L` is the linear part, this is
+`L⁻¹ (∇² f(Lx+b))⁻¹ (L⁻¹)†`.
+-/
+noncomputable def barrierAffinePreimageInvHessEquiv
+    (A : F ≃L[ℝ] E) (b : E) (invHess : E -> E →L[ℝ] E) :
+    F -> F →L[ℝ] F :=
+  fun x => A.symm.toContinuousLinearMap.comp
+    ((invHess (A.toContinuousLinearMap x + b)).comp
+      (ContinuousLinearMap.adjoint A.symm.toContinuousLinearMap))
+
+theorem barrierAffinePreimageInvHessEquiv_quadratic_eq
+    (A : F ≃L[ℝ] E) (b : E) (invHess : E -> E →L[ℝ] E)
+    (x v : F) :
+    inner ℝ v (barrierAffinePreimageInvHessEquiv A b invHess x v) =
+      inner ℝ (ContinuousLinearMap.adjoint A.symm.toContinuousLinearMap v)
+        (invHess (A.toContinuousLinearMap x + b)
+          (ContinuousLinearMap.adjoint A.symm.toContinuousLinearMap v)) := by
+  let S := A.symm.toContinuousLinearMap
+  simpa [barrierAffinePreimageInvHessEquiv, S] using
+    (ContinuousLinearMap.adjoint_inner_left S
+      (invHess (A.toContinuousLinearMap x + b)
+        (ContinuousLinearMap.adjoint S v)) v).symm
+
+theorem barrierAffinePreimageInvHessEquiv_quadratic_nonneg
+    (A : F ≃L[ℝ] E) (b : E) (invHess : E -> E →L[ℝ] E)
+    (x v : F)
+    (hinv : ∀ w : E, 0 ≤ inner ℝ w (invHess (A.toContinuousLinearMap x + b) w)) :
+    0 ≤ inner ℝ v (barrierAffinePreimageInvHessEquiv A b invHess x v) := by
+  rw [barrierAffinePreimageInvHessEquiv_quadratic_eq]
+  exact hinv (ContinuousLinearMap.adjoint A.symm.toContinuousLinearMap v)
+
+theorem barrierAffinePreimageDualLocalNorm_equiv_eq
+    (A : F ≃L[ℝ] E) (b : E) (invHess : E -> E →L[ℝ] E)
+    (x v : F) :
+    dualLocalNorm (barrierAffinePreimageInvHessEquiv A b invHess) x v =
+      dualLocalNorm invHess (A.toContinuousLinearMap x + b)
+        (ContinuousLinearMap.adjoint A.symm.toContinuousLinearMap v) := by
+  unfold dualLocalNorm
+  rw [barrierAffinePreimageInvHessEquiv_quadratic_eq]
+
+theorem barrierAffinePreimageGrad_equiv_adjoint_symm
+    (A : F ≃L[ℝ] E) (b : E) (grad : E -> E) (x : F) :
+    ContinuousLinearMap.adjoint A.symm.toContinuousLinearMap
+        (barrierAffinePreimageGrad A.toContinuousLinearMap b grad x) =
+      grad (A.toContinuousLinearMap x + b) := by
+  let L := A.toContinuousLinearMap
+  let S := A.symm.toContinuousLinearMap
+  have hcomp :
+      (ContinuousLinearMap.adjoint S).comp (ContinuousLinearMap.adjoint L) =
+        ContinuousLinearMap.id ℝ E := by
+    calc
+      (ContinuousLinearMap.adjoint S).comp (ContinuousLinearMap.adjoint L)
+          = ContinuousLinearMap.adjoint (L.comp S) := by
+            exact (ContinuousLinearMap.adjoint_comp L S).symm
+      _ = ContinuousLinearMap.adjoint (ContinuousLinearMap.id ℝ E) := by
+            simp [L, S]
+      _ = ContinuousLinearMap.id ℝ E := by
+            simp
+  calc
+    ContinuousLinearMap.adjoint A.symm.toContinuousLinearMap
+        (barrierAffinePreimageGrad A.toContinuousLinearMap b grad x)
+        = ((ContinuousLinearMap.adjoint S).comp (ContinuousLinearMap.adjoint L))
+            (grad (A.toContinuousLinearMap x + b)) := by
+          simp [barrierAffinePreimageGrad, L, S]
+    _ = grad (A.toContinuousLinearMap x + b) := by
+          rw [hcomp]
+          rfl
+
+theorem barrierAffinePreimageGradientDualLocalNorm_equiv_eq
+    (A : F ≃L[ℝ] E) (b : E)
+    (invHess : E -> E →L[ℝ] E) (grad : E -> E) (x : F) :
+    dualLocalNorm (barrierAffinePreimageInvHessEquiv A b invHess) x
+        (barrierAffinePreimageGrad A.toContinuousLinearMap b grad x) =
+      dualLocalNorm invHess (A.toContinuousLinearMap x + b)
+        (grad (A.toContinuousLinearMap x + b)) := by
+  rw [barrierAffinePreimageDualLocalNorm_equiv_eq]
+  rw [barrierAffinePreimageGrad_equiv_adjoint_symm]
+
+theorem SelfConcordantBarrierOn.affinePreimage_equiv
+    (A : F ≃L[ℝ] E) (b : E)
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {third : E -> E -> E -> ℝ}
+    {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A.toContinuousLinearMap b s)
+      (barrierAffinePreimageHess A.toContinuousLinearMap b hess)
+      (barrierAffinePreimageGrad A.toContinuousLinearMap b grad)
+      (barrierAffinePreimageInvHessEquiv A b invHess)
+      (barrierAffinePreimageThirdMixed A.toContinuousLinearMap b third) M nu :=
+  hbar.affinePreimage_of_gradient_bound
+    (A := A.toContinuousLinearMap) (b := b)
+    (invHessPull := barrierAffinePreimageInvHessEquiv A b invHess)
+    (by
+      intro x hx v
+      exact barrierAffinePreimageInvHessEquiv_quadratic_nonneg A b invHess x v
+        (hbar.invHess_nonneg hx))
+    (by
+      intro x hx
+      rw [barrierAffinePreimageGradientDualLocalNorm_equiv_eq]
+      exact hbar.gradient_bound hx)
+
+/--
+Chewi Proposition 13.11, affine-preimage case for an invertible affine map.
+This corollary discharges the inverse-Hessian and gradient-bound gates by the
+canonical adjoint transport.
+-/
+theorem chewi1311_affinePreimage_selfConcordantBarrierOn_equiv
+    (A : F ≃L[ℝ] E) (b : E)
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {third : E -> E -> E -> ℝ}
+    {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A.toContinuousLinearMap b s)
+      (barrierAffinePreimageHess A.toContinuousLinearMap b hess)
+      (barrierAffinePreimageGrad A.toContinuousLinearMap b grad)
+      (barrierAffinePreimageInvHessEquiv A b invHess)
+      (barrierAffinePreimageThirdMixed A.toContinuousLinearMap b third) M nu :=
+  hbar.affinePreimage_equiv A b
+
+end AffinePreimageBarrier
+
 theorem hessianSegmentLocalNorm_riccatiDerivBound_of_mixedThirdSelfConcordantOn
     {s : Set E} {hess : E -> E →L[ℝ] E}
     {thirdMixed : E -> E -> E -> ℝ} {x y : E} {M : ℝ} {t : ℝ}
