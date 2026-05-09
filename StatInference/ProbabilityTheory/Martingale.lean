@@ -14879,6 +14879,87 @@ theorem durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_lin
       (P := P) (ℱ := ℱ) (X := X) (N := N) (R := R) hX hN hBdd hSup
 
 /--
+Durrett 2019, Theorem 4.5.2 stopped maximal-estimate assembly.
+
+If the stopped martingale has terminal second moments bounded by `C`, then
+Theorem 4.5.1 supplies the stopped running-supremum square `lintegral` bound,
+and the V171 handoff gives a.e. finite convergence of the stopped process.
+-/
+theorem durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_terminal_integral_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {C : ℝ}
+    (hX : Martingale X ℱ P) (hN : IsStoppingTime ℱ N)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hC_nonneg : 0 ≤ C)
+    (hStopped_sq_le :
+      ∀ n, (∫ ω, stoppedProcess X N n ω ^ 2 ∂P) ≤ C)
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove
+          (Set.range fun m => durrett2019_runningAbsMax (stoppedProcess X N) m ω)) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto (fun n => stoppedProcess X N n ω) atTop (𝓝 z) := by
+  have hStopped : Martingale (stoppedProcess X N) ℱ P :=
+    durrett2019_theorem_4_2_9_martingale_stoppedProcess hX hN
+  have hStopped_memLp_two :
+      ∀ n, MemLp (stoppedProcess X N n) (2 : ℝ≥0∞) P := by
+    intro n
+    exact memLp_stoppedProcess (ι := ℕ) hN hX_memLp_two n
+  have hlintegral :
+      (∫⁻ ω,
+          ENNReal.ofReal
+            (durrett2019_runningAbsSup (stoppedProcess X N) ω ^ 2) ∂P) ≤
+        ENNReal.ofReal (4 * C) :=
+    durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_integral_sq_le
+      (P := P) (ℱ := ℱ) (X := stoppedProcess X N) hStopped
+      hStopped_memLp_two hStopped_sq_le hBdd
+  exact
+    durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_lintegral_sq_le
+      (P := P) (ℱ := ℱ) (X := X) (N := N) (C := 4 * C)
+      hX hN (mul_nonneg (by norm_num) hC_nonneg) hBdd hlintegral
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold-stopped maximal-estimate assembly.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_terminal_integral_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {a C : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hC_nonneg : 0 ≤ C)
+    (hStopped_sq_le :
+      ∀ n,
+        (∫ ω,
+          stoppedProcess X
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+          C)
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove
+          (Set.range fun m =>
+            durrett2019_runningAbsMax
+              (stoppedProcess X
+                (durrett2019_theorem_4_5_2_firstPredictableAbove A a)) m ω)) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto
+        (fun n =>
+          stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+            n ω)
+        atTop (𝓝 z) :=
+  durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_terminal_integral_sq_le
+    (P := P) (ℱ := ℱ) (X := X)
+    (N := durrett2019_theorem_4_5_2_firstPredictableAbove A a) (C := C)
+    hX
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
+      (ℱ := ℱ) (A := A) a hA_predictable)
+    hX_memLp_two hC_nonneg hStopped_sq_le hBdd
+
+/--
 Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two
 square-integrable martingales.
 
