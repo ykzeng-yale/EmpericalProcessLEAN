@@ -2940,6 +2940,45 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero
       hLeftInverse hScoreCLT hResidual hResidual_meas hScoreEquation
 
 /--
+van der Vaart 1998, Theorem 5.41, scaled-estimator `O_P(1)` source from the
+Taylor zero display.
+
+The textbook Taylor expansion often gives
+`score_n + V x_n + residual_n = 0` directly.  The existing Taylor-zero handoff
+turns this into weak convergence of `x_n`; Chapter 2 then gives stochastic
+boundedness.
+-/
+theorem vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ] [CompleteSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {score residual : ℕ -> Ω -> Score}
+    {scaledEstimator : ℕ -> Ω -> Θ} {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hResidual : TendstoInMeasure P residual atTop 0)
+    (hResidual_meas : ∀ n, AEMeasurable (residual n) P)
+    (hTaylorZero : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + V (scaledEstimator n ω) + residual n ω = 0) :
+    StochasticBounded P scaledEstimator := by
+  have hdist :
+      TendstoInDistribution scaledEstimator atTop
+        (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q :=
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv) (score := score)
+      (residual := residual) (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hScoreCLT hResidual hResidual_meas hTaylorZero
+  exact vaart1998_stochasticBounded_of_tendstoInDistribution hdist
+
+/--
 van der Vaart 1998, Theorem 5.41, Taylor-zero handoff with separated
 residuals.
 
