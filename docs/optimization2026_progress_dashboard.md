@@ -209,6 +209,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Hyy` right-invertibility.  The remaining item-4 gates for this wrapper are
   the lifted third-derivative identity, the `Hyy` right-inverse, and the full
   Hessian right-inverse.
+- Inf-projection square-root inverse shrink: the newest packet adds
+  `continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv` and
+  `chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_adjointSqrtCoord_finiteDimHyy`.
+  This reuses the same adjoint-square coordinate model pattern as the sum and
+  Newton packets: `H = S†S` and `H⁻¹ = S⁻¹(S⁻¹)†` now derive both the
+  `Hyy` right-inverse and the full Hessian right-inverse for the
+  finite-dimensional inf-projection wrapper.  The active item-4 gates in this
+  route are now the lifted third-derivative identity plus concrete
+  square-root model equalities for the vertical block and full Hessian.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

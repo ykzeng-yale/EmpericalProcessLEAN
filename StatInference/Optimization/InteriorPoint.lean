@@ -2966,6 +2966,46 @@ theorem continuousLinearMap_left_inverse_of_right_inverse_finiteDim
   apply hinj
   simp [hright]
 
+/--
+If `H = S†S` and `H⁻¹ = S⁻¹(S⁻¹)†` for a continuous linear equivalence `S`,
+then the supplied inverse is a right inverse for `H`.
+-/
+theorem continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    [CompleteSpace F]
+    {H invH : F →L[ℝ] F} (sqrtCoord : F ≃L[ℝ] F)
+    (hH_eq :
+      H =
+        (ContinuousLinearMap.adjoint sqrtCoord.toContinuousLinearMap).comp
+          sqrtCoord.toContinuousLinearMap)
+    (hinv_eq :
+      invH =
+        sqrtCoord.symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint sqrtCoord.symm.toContinuousLinearMap)) :
+    ∀ v : F, H (invH v) = v := by
+  intro v
+  let S : F →L[ℝ] F := sqrtCoord.toContinuousLinearMap
+  let C : F →L[ℝ] F := sqrtCoord.symm.toContinuousLinearMap
+  rw [hH_eq, hinv_eq]
+  apply ext_inner_right ℝ
+  intro w
+  calc
+    inner ℝ
+        (((ContinuousLinearMap.adjoint S).comp S)
+          ((C.comp (ContinuousLinearMap.adjoint C)) v)) w =
+        inner ℝ
+          (S ((C.comp (ContinuousLinearMap.adjoint C)) v)) (S w) := by
+          simpa [ContinuousLinearMap.comp_apply] using
+            (ContinuousLinearMap.adjoint_inner_left S w
+              (S ((C.comp (ContinuousLinearMap.adjoint C)) v)))
+    _ = inner ℝ ((ContinuousLinearMap.adjoint C) v) (S w) := by
+          simp [S, C, ContinuousLinearMap.comp_apply]
+    _ = inner ℝ v (C (S w)) := by
+          simpa using
+            (ContinuousLinearMap.adjoint_inner_left C (S w) v)
+    _ = inner ℝ v w := by
+          simp [S, C]
+
 theorem barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim
     [FiniteDimensional ℝ E₂]
     (selector : E₁ -> E₂)
@@ -3972,6 +4012,75 @@ theorem chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_fi
   chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_energy_finiteDimHyy
     hsel hbar hyy_right hfull_right hthird_eq
     (hsel.projectedFullInv_gradient_quadratic_le hbar)
+
+/--
+Finite-dimensional vertical-block Schur-envelope rule with the `Hyy`
+right-inverse and the full Hessian right-inverse both derived from
+adjoint-square coordinate models.  This matches the reusable source pattern
+`H = S†S` and `H⁻¹ = S⁻¹(S⁻¹)†`.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_adjointSqrtCoord_finiteDimHyy
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_hess_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      barrierInfProjectionBlockYY selector hess x =
+        (ContinuousLinearMap.adjoint (sqrtHyy x).toContinuousLinearMap).comp
+          (sqrtHyy x).toContinuousLinearMap)
+    (hyy_inv_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      invHyy x =
+        (sqrtHyy x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtHyy x).symm.toContinuousLinearMap))
+    (hfull_hess_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      hess (barrierInfProjectionPoint selector x) =
+        (ContinuousLinearMap.adjoint
+            (sqrtFull (barrierInfProjectionPoint selector x)).toContinuousLinearMap).comp
+          (sqrtFull (barrierInfProjectionPoint selector x)).toContinuousLinearMap)
+    (hfull_inv_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      invHess (barrierInfProjectionPoint selector x) =
+        (sqrtFull (barrierInfProjectionPoint selector x)).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtFull (barrierInfProjectionPoint selector x)).symm.toContinuousLinearMap))
+    (hthird_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        projThird x u v =
+          third (barrierInfProjectionPoint selector x)
+            (barrierInfProjectionSchurLift selector hess invHyy x u)
+            (barrierInfProjectionSchurLift selector hess invHyy x v)) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionProjInvHessFromFullInv selector invHess)
+      projThird M nu := by
+  refine
+    chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_finiteDimHyy
+      hsel hbar ?_ ?_ hthird_eq
+  · intro x hx v
+    exact continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv
+      (H := barrierInfProjectionBlockYY selector hess x)
+      (invH := invHyy x) (sqrtCoord := sqrtHyy x)
+      (hyy_hess_eq hx) (hyy_inv_eq hx) v
+  · intro x hx v
+    exact continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv
+      (H := hess (barrierInfProjectionPoint selector x))
+      (invH := invHess (barrierInfProjectionPoint selector x))
+      (sqrtCoord := sqrtFull (barrierInfProjectionPoint selector x))
+      (hfull_hess_eq hx) (hfull_inv_eq hx) v
 
 end InfProjectionBarrier
 

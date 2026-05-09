@@ -310,6 +310,16 @@ the finite-dimensional vertical-block setting, the final item-4 wrapper now
 needs only the lifted third-derivative identity, `Hyy` right-invertibility, and
 the full Hessian right-inverse; do not ask future runs to supply a separate
 `Hyy` left-inverse in this finite-dimensional route.
+The square-root inverse packet adds
+`continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv` and
+`chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_adjointSqrtCoord_finiteDimHyy`.
+This reuses the existing adjoint-square model route from the sum/Newton
+packets: source equalities `H = S†S` and `H⁻¹ = S⁻¹(S⁻¹)†` now derive both the
+`Hyy` right-inverse and the full Hessian right-inverse for the
+finite-dimensional inf-projection wrapper.  The active item-4 gates in this
+route are now the lifted third-derivative identity plus concrete square-root
+model equalities for the vertical block and full Hessian; do not route future
+runs through raw inverse equations when the square-root model is available.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,
