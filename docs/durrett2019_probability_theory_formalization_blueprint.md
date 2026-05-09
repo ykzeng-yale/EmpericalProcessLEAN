@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V167`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V168`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -58,10 +58,12 @@ identity `E X_n^2 = E A_n`, the terminal monotone-limit handoff
 `E A_n ≤ E A∞`, and the exact conditional-variance finite-sum display for
 Durrett's increasing process.  Theorem 4.5.2 now has the countable threshold
 event-cover bridge, the stopped-process survival transfer, and the combined
-stopped-threshold cover wrapper.  Continue by instantiating
-`N_a = inf {n : A_{n+1} > a^2}`, proving the stopped `A` process bound by
-`a^2`, applying the compiled Theorem 4.5.1 maximal endpoint to `X_{N_a ∧ n}`,
-and feeding Theorem 4.4.6 to obtain the stopped convergence hypotheses.
+stopped-threshold cover wrapper.  It also has the threshold stopping time
+`N_a = inf {n : A_{n+1} > a^2}`, the stopping-time proof from predictability
+of `A_{n+1}`, and the survival bridge from pathwise threshold boundedness.
+Continue by proving the stopped `A` process bound by `a^2`, applying the
+compiled Theorem 4.5.1 maximal endpoint to `X_{N_a ∧ n}`, and feeding
+Theorem 4.4.6 to obtain the stopped convergence hypotheses.
 
 For each cycle, route from:
 

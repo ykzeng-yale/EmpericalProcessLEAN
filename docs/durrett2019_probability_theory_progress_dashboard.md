@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V167` in
+Route from `Live In-Thread Goal Prompt V168` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 4.5.2, with Chapter 4.4 martingale maximal
 inequalities as compiled support.  The current frontier has moved past
@@ -65,10 +65,15 @@ stopped-threshold cover bridge:
 `durrett2019_theorem_4_5_2_exists_ae_tendsto_on_event_cover`,
 `durrett2019_theorem_4_5_2_stopped_convergence_on_event`, and
 `durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover`.  The
-next target is the threshold stopping-time instantiation
-`N_a = inf {n : A_{n+1} > a^2}` and the stopped-process convergence inputs
-consumed by that bridge.
-The V143-V167 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
+threshold stopping-time layer also now has
+`durrett2019_theorem_4_5_2_firstPredictableAbove`,
+`durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime`,
+`durrett2019_theorem_4_5_2_firstPredictableAbove_eq_top_of_forall_le`, and
+`durrett2019_theorem_4_5_2_firstPredictableAbove_survival_of_forall_le_ae`.
+The next target is the stopped-process convergence input for that threshold
+time: the `A_{N_a ∧ n} ≤ a^2` bound, Theorem 4.5.1 maximal endpoint, and
+Theorem 4.4.6 a.e. finite convergence handoff.
+The V143-V168 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,
 `durrett2019_exercise_4_4_6_smallBall_bound_of_source`,

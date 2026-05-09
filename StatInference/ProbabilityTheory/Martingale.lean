@@ -14592,6 +14592,58 @@ theorem durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover
       hcover hconv_events
 
 /--
+Durrett 2019, Theorem 4.5.2 threshold stopping time:
+`N_a = inf {n : A_{n+1} > a^2}`.
+-/
+noncomputable def durrett2019_theorem_4_5_2_firstPredictableAbove
+    {Ω : Type*} (A : ℕ -> Ω -> ℝ) (a : ℝ) : Ω -> ℕ∞ :=
+  hittingAfter (fun n ω => A (n + 1) ω) (Set.Ioi (a ^ 2)) 0
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold stopping-time bridge.
+
+The textbook uses that `A_{n+1}` is `ℱ_n`-measurable.  In Lean this is the
+adaptedness of the shifted process `n ↦ A_{n+1}`.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ℱ : Filtration ℕ mΩ}
+    {A : ℕ -> Ω -> ℝ} (a : ℝ)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω)) :
+    IsStoppingTime ℱ (durrett2019_theorem_4_5_2_firstPredictableAbove A a) :=
+  hA_predictable.adapted.isStoppingTime_hittingAfter measurableSet_Ioi
+
+/--
+Durrett 2019, Theorem 4.5.2 pathwise survival bridge.
+
+If a path never crosses the threshold `a^2` through the predictable display
+`A_{n+1}`, then the threshold stopping time is infinite on that path.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_eq_top_of_forall_le
+    {Ω : Type*} {A : ℕ -> Ω -> ℝ} {a : ℝ} {ω : Ω}
+    (h_le : ∀ n, A (n + 1) ω ≤ a ^ 2) :
+    durrett2019_theorem_4_5_2_firstPredictableAbove A a ω = ⊤ := by
+  rw [durrett2019_theorem_4_5_2_firstPredictableAbove]
+  exact hittingAfter_eq_top_iff.mpr fun j _hj => by
+    simpa [Set.mem_Ioi, not_lt] using h_le j
+
+/--
+Durrett 2019, Theorem 4.5.2 almost-sure survival bridge for a threshold event.
+
+This is the `hSurvive` input required by
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover`.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_survival_of_forall_le_ae
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {A : ℕ -> Ω -> ℝ} {a : ℝ} {E : Set Ω}
+    (h_le : ∀ᵐ ω ∂P, ω ∈ E -> ∀ n, A (n + 1) ω ≤ a ^ 2) :
+    ∀ᵐ ω ∂P, ω ∈ E ->
+      durrett2019_theorem_4_5_2_firstPredictableAbove A a ω = ⊤ := by
+  filter_upwards [h_le] with ω h_leω hE
+  exact
+    durrett2019_theorem_4_5_2_firstPredictableAbove_eq_top_of_forall_le
+      (A := A) (a := a) (ω := ω) (h_leω hE)
+
+/--
 Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two
 square-integrable martingales.
 
