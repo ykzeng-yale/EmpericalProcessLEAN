@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V134
+## Live In-Thread Goal Prompt V135
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -19,7 +19,7 @@ APIs.  Theorem 4.1.16 remains deferred unless a future targeted kernel search
 finds a direct source-shaped API.
 
 Current compiled packet: Durrett Example 4.4.9 now has the theorem-sized
-`L^2` convergence endpoint:
+expectation and nonzero-limit endpoint:
 `durrett2019_example_4_4_9_conditional_second_moment_from_variance`,
 `durrett2019_example_4_4_9_branchingProcess_conditional_second_moment`, and
 `durrett2019_example_4_4_9_branchingProcess_second_moment_integral_recurrence`,
@@ -29,17 +29,21 @@ and now `durrett2019_example_4_4_9_shifted_geometric_sum_le` and
 `durrett2019_example_4_4_9_branchingProcess_second_moment_integral_uniform_bound`,
 plus the `eLpNorm` handoff `durrett2019_eLpNorm_two_le_of_integral_sq_le`,
 `durrett2019_example_4_4_9_branchingProcess_eLpNorm_two_uniform_bound`, and
-`durrett2019_example_4_4_9_branchingProcess_tendsto_eLpNorm_two`.
+`durrett2019_example_4_4_9_branchingProcess_tendsto_eLpNorm_two`, and now
+`durrett2019_tendsto_integral_of_tendsto_eLpNorm_two`,
+`durrett2019_example_4_4_9_branchingProcess_integral_tendsto_limitProcess`,
+`durrett2019_example_4_4_9_branchingProcess_limitProcess_integral_eq_one`, and
+`durrett2019_example_4_4_9_branchingProcess_limitProcess_not_ae_eq_zero`.
 This reuses Theorem 4.4.8 and the existing normalized branching-process
 martingale bridge; it deliberately leaves the full Galton-Watson random-sum
 construction as supplied source hypotheses.
 
-Next aggressive step: finish the source-facing end of Example 4.4.9.  Search
-first for existing local/mathlib APIs that turn `L^2` convergence into
-convergence of expectations, then package the textbook conclusion `E X = 1` and
-the nonzero-limit witness for `ℱ.limitProcess X P`.  Only formalize the
-Exercise 4.3.11 survival-event equality or full Galton-Watson random-sum
-construction if a direct local API makes it cheap.
+Next aggressive step: close the remaining source-facing tail of Example 4.4.9
+only if it is cheap.  Search first for a direct local abstraction of Exercise
+4.3.11's survival-event equality; if none exists, do not build full
+Galton-Watson extinction infrastructure here.  Move instead to Exercise 4.4.5's
+conditional-variance variant or the next Chapter 4.4 exercise/theorem packet
+with the largest compileable reuse of the current martingale API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -531,9 +535,15 @@ The `eLpNorm 2` handoff and `L^2` convergence endpoint now also compile:
 `durrett2019_eLpNorm_two_le_of_integral_sq_le`,
 `durrett2019_example_4_4_9_branchingProcess_eLpNorm_two_uniform_bound`, and
 `durrett2019_example_4_4_9_branchingProcess_tendsto_eLpNorm_two`.
-Next target: Example 4.4.9 expectation-convergence handoff, `E X = 1`, and the
-nonzero-limit wrapper; only formalize Example 4.4.5's counterexample if it
-becomes a cheap reusable support lemma.
+The expectation-convergence handoff, `E X = 1`, and nonzero-limit endpoint now
+also compile:
+`durrett2019_tendsto_integral_of_tendsto_eLpNorm_two`,
+`durrett2019_example_4_4_9_branchingProcess_integral_tendsto_limitProcess`,
+`durrett2019_example_4_4_9_branchingProcess_limitProcess_integral_eq_one`, and
+`durrett2019_example_4_4_9_branchingProcess_limitProcess_not_ae_eq_zero`.
+Next target: direct Exercise 4.3.11 survival-event equality only if a reusable
+local abstraction is already present; otherwise move to Exercise 4.4.5's
+conditional-variance variant or the next Chapter 4.4 exercise/theorem packet.
 Do not detour back into full Galton-Watson random-sum infrastructure unless a
 local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
@@ -1076,10 +1086,11 @@ now compile.  The Theorem 4.4.7 orthogonality and increment-increment wrappers
 now compile.  The Theorem 4.4.8 conditional variance formula now also compiles.
 The Example 4.4.9 conditional, integrated second-moment recurrence, finite-sum
 display, shifted geometric-sum, uniform second-moment bound, `eLpNorm 2`
-handoff, and `L^2` convergence endpoint now also compile.  Next move to
-Example 4.4.9 expectation-convergence handoff, `E X = 1`, and the nonzero-limit
-wrapper, whichever route gives the largest compiled step without building
-unrelated infrastructure.
+handoff, `L^2` convergence endpoint, expectation handoff, `E X = 1`, and
+nonzero-limit endpoint now also compile.  Next move to the direct Exercise
+4.3.11 survival-event equality only if it is already supported locally;
+otherwise move to Exercise 4.4.5's conditional-variance variant or the next
+Chapter 4.4 exercise/theorem packet without building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1193,6 +1204,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V134` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V135` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

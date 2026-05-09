@@ -12618,6 +12618,30 @@ theorem durrett2019_eLpNorm_two_le_of_integral_sq_le
   exact Real.rpow_le_rpow hnorm_nonneg hnorm_bound (by norm_num)
 
 /--
+Durrett 2019, `L^2` support: convergence in `eLpNorm · 2` on a probability
+space implies convergence of expectations.
+-/
+theorem durrett2019_tendsto_integral_of_tendsto_eLpNorm_two
+    {Ω : Type*} [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {F : ℕ -> Ω -> ℝ} {f : Ω -> ℝ}
+    (hf : Integrable f P) (hF : ∀ n, Integrable (F n) P)
+    (hLp2 :
+      Tendsto (fun n => eLpNorm (F n - f) (ENNReal.ofReal (2 : ℝ)) P)
+        atTop (𝓝 0)) :
+    Tendsto (fun n => ∫ ω, F n ω ∂P) atTop (𝓝 (∫ ω, f ω ∂P)) := by
+  have hLp1 : Tendsto (fun n => eLpNorm (F n - f) 1 P) atTop (𝓝 0) := by
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hLp2 ?_ ?_
+    · exact Eventually.of_forall fun _ => bot_le
+    · refine Eventually.of_forall fun n => ?_
+      have hone_two : (1 : ℝ≥0∞) ≤ ENNReal.ofReal (2 : ℝ) := by
+        norm_num
+      exact
+        eLpNorm_le_eLpNorm_of_exponent_le (μ := P) (f := F n - f) hone_two
+          ((hF n).aestronglyMeasurable.sub hf.aestronglyMeasurable)
+  exact tendsto_integral_of_L1' (μ := P) f hf (Eventually.of_forall hF) hLp1
+
+/--
 Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If
 `Y` is `ℱ_m`-measurable and square-integrable, then the increment
 `X_n - X_m` is orthogonal to `Y`.
@@ -13115,6 +13139,122 @@ theorem durrett2019_example_4_4_9_branchingProcess_tendsto_eLpNorm_two
         ((1 + variance / (offspringMean ^ 2 * (1 - offspringMean⁻¹))) ^
           ((2 : ℝ)⁻¹)))
       hX Real.HolderConjugate.two_two hR
+
+/--
+Durrett 2019, Example 4.4.9: `L^2` convergence of the normalized
+branching-process martingale implies convergence of its expectations to the
+expectation of the canonical martingale limit.
+-/
+theorem durrett2019_example_4_4_9_branchingProcess_integral_tendsto_limitProcess
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X Z : ℕ -> Ω -> ℝ} {offspringMean variance : ℝ}
+    (hmean_gt_one : 1 < offspringMean) (hvariance_nonneg : 0 ≤ variance)
+    (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hX_zero_sq : (∫ ω, X 0 ω ^ 2 ∂P) = 1)
+    (hX_prev :
+      ∀ n, 0 < n ->
+        X (n - 1) =ᵐ[P] fun ω => Z (n - 1) ω / offspringMean ^ (n - 1))
+    (hVariance :
+      ∀ n, 0 < n ->
+        P[(fun ω => (X n ω - X (n - 1) ω) ^ 2) | ℱ (n - 1)] =ᵐ[P]
+          fun ω => variance * Z (n - 1) ω / offspringMean ^ (2 * n))
+    (hMeanPrev : ∀ n, 0 < n -> (∫ ω, X (n - 1) ω ∂P) = 1) :
+    Tendsto (fun n => ∫ ω, X n ω ∂P) atTop
+      (𝓝 (∫ ω, ℱ.limitProcess X P ω ∂P)) := by
+  have hR :=
+    durrett2019_example_4_4_9_branchingProcess_eLpNorm_two_uniform_bound
+      (P := P) (ℱ := ℱ) (X := X) (Z := Z)
+      (offspringMean := offspringMean) (variance := variance)
+      hmean_gt_one hvariance_nonneg hX hX_memLp_two hX_zero_sq
+      hX_prev hVariance hMeanPrev
+  have hlimit_mem : MemLp (ℱ.limitProcess X P) (ENNReal.ofReal (2 : ℝ)) P :=
+    durrett2019_theorem_4_4_6_martingale_limitProcess_memLp_of_eLpNorm_p_bdd
+      (P := P) (ℱ := ℱ) (X := X) (p := (2 : ℝ))
+      (R := Real.toNNReal
+        ((1 + variance / (offspringMean ^ 2 * (1 - offspringMean⁻¹))) ^
+          ((2 : ℝ)⁻¹)))
+      hX hR
+  have hlimit_int : Integrable (ℱ.limitProcess X P) P :=
+    hlimit_mem.integrable (by norm_num : (1 : ℝ≥0∞) ≤ ENNReal.ofReal (2 : ℝ))
+  have hLp2 :=
+    durrett2019_example_4_4_9_branchingProcess_tendsto_eLpNorm_two
+      (P := P) (ℱ := ℱ) (X := X) (Z := Z)
+      (offspringMean := offspringMean) (variance := variance)
+      hmean_gt_one hvariance_nonneg hX hX_memLp_two hX_zero_sq
+      hX_prev hVariance hMeanPrev
+  exact
+    durrett2019_tendsto_integral_of_tendsto_eLpNorm_two
+      (P := P) (F := X) (f := ℱ.limitProcess X P)
+      hlimit_int (fun n => hX.integrable n) hLp2
+
+/--
+Durrett 2019, Example 4.4.9: the canonical `L^2` martingale limit has
+expectation one.
+-/
+theorem durrett2019_example_4_4_9_branchingProcess_limitProcess_integral_eq_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X Z : ℕ -> Ω -> ℝ} {offspringMean variance : ℝ}
+    (hmean_gt_one : 1 < offspringMean) (hvariance_nonneg : 0 ≤ variance)
+    (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hX_zero_sq : (∫ ω, X 0 ω ^ 2 ∂P) = 1)
+    (hX_prev :
+      ∀ n, 0 < n ->
+        X (n - 1) =ᵐ[P] fun ω => Z (n - 1) ω / offspringMean ^ (n - 1))
+    (hVariance :
+      ∀ n, 0 < n ->
+        P[(fun ω => (X n ω - X (n - 1) ω) ^ 2) | ℱ (n - 1)] =ᵐ[P]
+          fun ω => variance * Z (n - 1) ω / offspringMean ^ (2 * n))
+    (hMeanPrev : ∀ n, 0 < n -> (∫ ω, X (n - 1) ω ∂P) = 1) :
+    (∫ ω, ℱ.limitProcess X P ω ∂P) = 1 := by
+  have htend :=
+    durrett2019_example_4_4_9_branchingProcess_integral_tendsto_limitProcess
+      (P := P) (ℱ := ℱ) (X := X) (Z := Z)
+      (offspringMean := offspringMean) (variance := variance)
+      hmean_gt_one hvariance_nonneg hX hX_memLp_two hX_zero_sq
+      hX_prev hVariance hMeanPrev
+  have hmean_all : ∀ n, (∫ ω, X n ω ∂P) = 1 := by
+    intro n
+    simpa only [Nat.add_sub_cancel] using hMeanPrev (n + 1) (Nat.succ_pos n)
+  have hconst : Tendsto (fun n => ∫ ω, X n ω ∂P) atTop (𝓝 1) := by
+    simp [hmean_all]
+  exact tendsto_nhds_unique htend hconst
+
+/--
+Durrett 2019, Example 4.4.9: since the canonical `L^2` limit has expectation
+one, it is not almost everywhere zero.
+-/
+theorem durrett2019_example_4_4_9_branchingProcess_limitProcess_not_ae_eq_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X Z : ℕ -> Ω -> ℝ} {offspringMean variance : ℝ}
+    (hmean_gt_one : 1 < offspringMean) (hvariance_nonneg : 0 ≤ variance)
+    (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hX_zero_sq : (∫ ω, X 0 ω ^ 2 ∂P) = 1)
+    (hX_prev :
+      ∀ n, 0 < n ->
+        X (n - 1) =ᵐ[P] fun ω => Z (n - 1) ω / offspringMean ^ (n - 1))
+    (hVariance :
+      ∀ n, 0 < n ->
+        P[(fun ω => (X n ω - X (n - 1) ω) ^ 2) | ℱ (n - 1)] =ᵐ[P]
+          fun ω => variance * Z (n - 1) ω / offspringMean ^ (2 * n))
+    (hMeanPrev : ∀ n, 0 < n -> (∫ ω, X (n - 1) ω ∂P) = 1) :
+    ¬ (ℱ.limitProcess X P =ᵐ[P] 0) := by
+  have hint :=
+    durrett2019_example_4_4_9_branchingProcess_limitProcess_integral_eq_one
+      (P := P) (ℱ := ℱ) (X := X) (Z := Z)
+      (offspringMean := offspringMean) (variance := variance)
+      hmean_gt_one hvariance_nonneg hX hX_memLp_two hX_zero_sq
+      hX_prev hVariance hMeanPrev
+  intro hzero
+  have hzero_int : (∫ ω, ℱ.limitProcess X P ω ∂P) = 0 :=
+    integral_eq_zero_of_ae hzero
+  rw [hzero_int] at hint
+  norm_num at hint
 
 end ProbabilityTheory
 end StatInference
