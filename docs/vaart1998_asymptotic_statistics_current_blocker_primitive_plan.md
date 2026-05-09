@@ -10,25 +10,23 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current frontier endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatorSubMeas_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`,
-using estimator/theta0/scale a.e.-measurability plus the source-shaped
-increment identities to produce `delta` and `scaledEstimator` a.e.
-measurability.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`.
+It consumes the Chapter 2 law-tail criterion for
+`P.map (scaledEstimator n)` and no longer needs an opaque scaled-estimator
+`O_P(1)` input.
 
-Next packet: prove the actual iid/operator empirical derivative strong law if
-an immediate local route exists; otherwise instantiate the raw scaled score CLT
-or remaining stochastic boundedness/scaling fields.  Do not revisit estimator
-measurability, estimator-substitution, raw-root transfer, score-scaling CLT
-transfer, derivative probability packaging, scalar derivative-norm packaging,
-smooth Taylor production, sampled-summand measurability, or envelope
-stochastic-boundedness plumbing.
+Next packet: discharge one real statistical source field for this endpoint.
+Prefer, in order, the iid/operator empirical derivative strong law, the raw
+scaled score CLT, or the law-tail/tightness source proof for the scaled
+estimator.  If none closes directly, add exactly one minimal theorem-shaped
+bridge that removes one remaining source hypothesis.
 
-Workflow: reconcile any local Vaart edits first, search local/mathlib APIs, add
-one theorem-sized Lean layer, run focused Lean plus the target module build and
-hygiene scans, fetch/rebase over `origin/main`, rerun affected checks, update
-route docs, commit, and push.  Use a disjoint worktree or agent only when it
-shortens this exact path while preserving other agents' changes.  Treat the
-long ledger below as evidence only, not as a prompt to replay solved layers.
+Workflow: reconcile local Vaart edits, search local/mathlib APIs, implement one
+verified Lean layer, run focused Lean plus the target module build and hygiene
+scans, fetch/rebase over `origin/main`, update route docs, commit, and push.
+Use a disjoint worktree or agent only for independent search/proof work that
+shortens this exact path.  The long ledger below is historical evidence, not a
+queue to replay solved layers.
 
 ## Current Blocker
 
@@ -901,19 +899,22 @@ compiling:
    estimator/theta0/scale a.e.-measurability and the source-shaped increment
    identities:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatorSubMeas_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`.
+322. Theorem 5.41 scaled-estimator stochastic-boundedness handoff from the
+   Chapter 2 law-tail criterion for `P.map (scaledEstimator n)`:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 estimator measurability handoff`).
+(`Add Vaart theorem 5.41 scaled estimator law-tail handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving `delta` and
-`scaledEstimator` a.e.-measurability from estimator/theta0/scale
-a.e.-measurability plus the source-shaped increment identities.
+asymptotic-normality route for Z-estimators by deriving the
+scaled-estimator `O_P(1)` field from law tails of its pushed-forward laws,
+after the measurability and source-shaped increment identities have already
+been discharged.
 
-The next aggressive packet should prove the actual iid/operator empirical
-derivative strong law if a local route is immediately available; otherwise
-instantiate the raw scaled score CLT or remaining stochastic
-boundedness/scaling source fields.
+The next aggressive packet should prove one real source field for the current
+endpoint: iid/operator empirical derivative strong law, raw scaled score CLT,
+or scaled-estimator law-tail/tightness.
 
 ## Execution Notes
 

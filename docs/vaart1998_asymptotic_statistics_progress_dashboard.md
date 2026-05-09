@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 estimator measurability handoff`).
+(`Add Vaart theorem 5.41 scaled estimator law-tail handoff`).
 Current packet verification passed for:
 
 - `lake build StatInference.AsymptoticStatistics.Basic`
@@ -627,24 +627,11 @@ Live continuation prompt: use the compact prompt in
 
 ## Next Aggressive Target
 
-For Vaart Theorem 5.41 in `MEstimators.lean`, prove the actual iid/operator
-empirical derivative strong law if a local route is immediately available;
-otherwise instantiate the raw scaled score CLT or remaining stochastic
-boundedness/scaling fields.  The estimator measurability handoff,
-estimator-substitution, raw-root transfer, score-scaling CLT transfer,
-derivative probability packaging,
-scalar derivative-norm packaging, envelope stochastic-boundedness bridge,
-sampled-summand measurability bridge,
-estimating-map and derivative-map `ContDiffOn` source regularity bridges,
-derivative-path regularity bridge, vector derivative Taylor bridge,
-`derivativeAt theta0` specialization, vector-to-coordinate continuity
-reduction, coordinate scalar derivative-at-zero/display reduction,
-Frechet-to-one-dimensional chain rule, estimating-map segment instantiation,
-second-derivative action matching, path-selected Taylor bridge, coordinate
-assembly, the scalar Taylor bridge, scaling bridge, auxiliary quadratic
-residual object, empirical-Hessian dominated operator-norm bound, empirical
-aggregation of the Taylor display, and empirical-average endpoint assembly are
-no longer blockers.
+For Vaart Theorem 5.41 in `MEstimators.lean`, discharge one real source field
+for the current endpoint: the iid/operator empirical derivative strong law, the
+raw scaled score CLT, or the scaled-estimator law-tail/tightness proof.  The
+prompt-level solved-layer list has intentionally been removed; the detailed
+history remains in the ledger above and should not be replayed as work.
 
 ## Reuse Dependencies
 
