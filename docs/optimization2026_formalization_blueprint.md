@@ -195,6 +195,11 @@ projected Hessian, inverse-Hessian, gradient, and mixed-third oracles.
 The supporting Schur layer now includes WithLp product coordinate CLMs,
 Hessian block extractors, and `barrierInfProjectionSchurHess` for the standard
 `Hxx - Hxy Hyy⁻¹ Hyx` projected Hessian formula.
+The projected-envelope interface also fixes the standard envelope gradient and
+selector first-order condition through `barrierInfProjectionGrad`,
+`barrierInfProjectionVerticalGrad`, `BarrierInfProjectionSelectorStationary`,
+`barrierInfProjectionSchurHessFrom`, and
+`chewi1311_infProjection_selfConcordantBarrierOn_of_schur_oracles`.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers

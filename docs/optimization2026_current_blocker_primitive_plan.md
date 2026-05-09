@@ -234,6 +234,12 @@ The Schur-complement block packet adds `withLpProdFstCLM`,
 `barrierInfProjectionBlockYX`, `barrierInfProjectionBlockYY`, and
 `barrierInfProjectionSchurHess`.  Reuse these for the envelope theorem; do not
 redo WithLp product projection/injection plumbing.
+The projected-envelope interface packet adds `barrierInfProjectionGrad`,
+`barrierInfProjectionVerticalGrad`, `BarrierInfProjectionSelectorStationary`,
+`barrierInfProjectionSchurHessFrom`, and
+`chewi1311_infProjection_selfConcordantBarrierOn_of_schur_oracles`.  The next
+proof should use the selector stationarity field and Schur Hessian from blocks
+to prove or package the projected self-concordance/dual-gradient certificate.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,

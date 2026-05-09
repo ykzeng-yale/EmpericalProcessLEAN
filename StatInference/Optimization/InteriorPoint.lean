@@ -2766,6 +2766,71 @@ def barrierInfProjectionPoint (selector : E₁ -> E₂) (x : E₁) :
     WithLp 2 (E₁ × E₂) :=
   WithLp.toLp 2 (x, selector x)
 
+/--
+Projected gradient oracle for the partial minimization/envelope rule.  At a
+selected minimizer `(x, y(x))`, the envelope gradient is the first component
+of the original gradient.
+-/
+def barrierInfProjectionGrad
+    (selector : E₁ -> E₂)
+    (grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)) : E₁ -> E₁ :=
+  fun x => (grad (barrierInfProjectionPoint selector x)).fst
+
+/-- Vertical component of the original gradient along a supplied selector. -/
+def barrierInfProjectionVerticalGrad
+    (selector : E₁ -> E₂)
+    (grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)) : E₁ -> E₂ :=
+  fun x => (grad (barrierInfProjectionPoint selector x)).snd
+
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
+@[simp] theorem barrierInfProjectionGrad_apply
+    (selector : E₁ -> E₂)
+    (grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)) (x : E₁) :
+    barrierInfProjectionGrad selector grad x =
+      (grad (barrierInfProjectionPoint selector x)).fst := by
+  rfl
+
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
+@[simp] theorem barrierInfProjectionVerticalGrad_apply
+    (selector : E₁ -> E₂)
+    (grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)) (x : E₁) :
+    barrierInfProjectionVerticalGrad selector grad x =
+      (grad (barrierInfProjectionPoint selector x)).snd := by
+  rfl
+
+/--
+Selector certificate for the envelope theorem: the chosen vertical point is
+feasible and satisfies the vertical first-order condition.
+-/
+def BarrierInfProjectionSelectorStationary
+    (s : Set (WithLp 2 (E₁ × E₂))) (selector : E₁ -> E₂)
+    (grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)) : Prop :=
+  ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+    barrierInfProjectionPoint selector x ∈ s ∧
+      barrierInfProjectionVerticalGrad selector grad x = 0
+
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [InnerProductSpace ℝ E₂] in
+theorem BarrierInfProjectionSelectorStationary.point_mem
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    {x : E₁} (hx : x ∈ barrierInfProjectionSet s) :
+    barrierInfProjectionPoint selector x ∈ s :=
+  (hsel hx).1
+
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [InnerProductSpace ℝ E₂] in
+theorem BarrierInfProjectionSelectorStationary.vertical_grad_eq_zero
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    {x : E₁} (hx : x ∈ barrierInfProjectionSet s) :
+    barrierInfProjectionVerticalGrad selector grad x = 0 :=
+  (hsel hx).2
+
 /-- First coordinate projection from the L2 product model as a CLM. -/
 noncomputable def withLpProdFstCLM : WithLp 2 (E₁ × E₂) →L[ℝ] E₁ :=
   (ContinuousLinearMap.fst ℝ E₁ E₂).comp
@@ -2886,12 +2951,35 @@ noncomputable def barrierInfProjectionSchurHess
     E₁ -> E₁ →L[ℝ] E₁ :=
   fun x => Hxx x - (Hxy x).comp ((invHyy x).comp (Hyx x))
 
+/-- Schur-complement projected Hessian assembled directly from the original Hessian. -/
+noncomputable def barrierInfProjectionSchurHessFrom
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) :
+    E₁ -> E₁ →L[ℝ] E₁ :=
+  barrierInfProjectionSchurHess
+    (barrierInfProjectionBlockXX selector hess)
+    (barrierInfProjectionBlockXY selector hess)
+    (barrierInfProjectionBlockYX selector hess) invHyy
+
 @[simp] theorem barrierInfProjectionSchurHess_apply
     (Hxx : E₁ -> E₁ →L[ℝ] E₁) (Hxy : E₁ -> E₂ →L[ℝ] E₁)
     (Hyx : E₁ -> E₁ →L[ℝ] E₂) (invHyy : E₁ -> E₂ →L[ℝ] E₂)
     (x v : E₁) :
     barrierInfProjectionSchurHess Hxx Hxy Hyx invHyy x v =
       Hxx x v - Hxy x (invHyy x (Hyx x v)) := by
+  rfl
+
+@[simp] theorem barrierInfProjectionSchurHessFrom_apply
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x v : E₁) :
+    barrierInfProjectionSchurHessFrom selector hess invHyy x v =
+      barrierInfProjectionBlockXX selector hess x v -
+        barrierInfProjectionBlockXY selector hess x
+          (invHyy x (barrierInfProjectionBlockYX selector hess x v)) := by
   rfl
 
 omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
@@ -2967,6 +3055,38 @@ theorem chewi1311_infProjection_selfConcordantBarrierOn_of_projected_oracles
       dualLocalNorm projInvHess x (projGrad x) ≤ Real.sqrt nu) :
     SelfConcordantBarrierOn (barrierInfProjectionSet s)
       projHess projGrad projInvHess projThird M nu :=
+  hbar.infProjection_of_projected_oracles hproj_sc hinv_nonneg hgradient_bound
+
+/--
+Chewi Proposition 13.11(4), envelope rule with the projected gradient and
+Schur-complement Hessian fixed to their standard supplied-oracle forms.  The
+remaining certificate fields are the projected self-concordance, inverse
+positivity, and dual-gradient bound for the envelope oracles.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_schur_oracles
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {projInvHess : E₁ -> E₁ →L[ℝ] E₁}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hproj_sc :
+      MixedThirdSelfConcordantOn (barrierInfProjectionSet s)
+        (barrierInfProjectionSchurHessFrom selector hess invHyy) projThird M)
+    (hinv_nonneg : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁, 0 ≤ inner ℝ v (projInvHess x v))
+    (hgradient_bound : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      dualLocalNorm projInvHess x
+        (barrierInfProjectionGrad selector grad x) ≤ Real.sqrt nu) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad) projInvHess projThird M nu :=
   hbar.infProjection_of_projected_oracles hproj_sc hinv_nonneg hgradient_bound
 
 end InfProjectionBarrier

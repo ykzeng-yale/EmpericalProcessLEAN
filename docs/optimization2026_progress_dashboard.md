@@ -132,6 +132,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `barrierInfProjectionSchurHess`.  The next item-4 proof step should connect
   these block definitions to the projected self-concordance certificate rather
   than rebuilding product-coordinate CLM plumbing.
+- Inf-projection envelope interface: the latest packet adds
+  `barrierInfProjectionGrad`, `barrierInfProjectionVerticalGrad`,
+  `BarrierInfProjectionSelectorStationary`, `barrierInfProjectionSchurHessFrom`,
+  and `chewi1311_infProjection_selfConcordantBarrierOn_of_schur_oracles`.
+  The item-4 target is now source-shaped around a selector with vertical
+  first-order optimality, the Schur-complement Hessian assembled from the
+  original product Hessian, and supplied projected inverse/third-derivative
+  certificates.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in
