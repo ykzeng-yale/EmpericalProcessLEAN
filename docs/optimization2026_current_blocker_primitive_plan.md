@@ -240,6 +240,15 @@ The projected-envelope interface packet adds `barrierInfProjectionGrad`,
 `chewi1311_infProjection_selfConcordantBarrierOn_of_schur_oracles`.  The next
 proof should use the selector stationarity field and Schur Hessian from blocks
 to prove or package the projected self-concordance/dual-gradient certificate.
+The Schur-lift bridge packet adds `barrierInfProjectionSchurCorrection`,
+`barrierInfProjectionSchurLift`, its first/second-coordinate simp lemmas,
+`barrierInfProjectionSchurHessFrom_quadratic_nonneg_of_lift_eq`, and
+`BarrierInfProjectionSelectorStationary.schurHessFrom_quadratic_nonneg_of_lift_eq`.
+The next item-4 proof should now prove the completed-square identity equating
+the Schur quadratic form to the original Hessian quadratic form on
+`barrierInfProjectionSchurLift`, using block symmetry and the `Hyy`
+right-inverse.  Do not redo the selector, projected-gradient, Schur block, or
+WithLp product-coordinate interfaces.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,

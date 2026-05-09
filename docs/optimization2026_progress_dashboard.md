@@ -140,6 +140,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   first-order optimality, the Schur-complement Hessian assembled from the
   original product Hessian, and supplied projected inverse/third-derivative
   certificates.
+- Inf-projection Schur lift bridge: the newest packet adds
+  `barrierInfProjectionSchurCorrection`,
+  `barrierInfProjectionSchurLift`, its first/second-coordinate simp lemmas,
+  `barrierInfProjectionSchurHessFrom_quadratic_nonneg_of_lift_eq`, and
+  `BarrierInfProjectionSelectorStationary.schurHessFrom_quadratic_nonneg_of_lift_eq`.
+  The next item-4 proof step is now the concrete completed-square identity
+  identifying the Schur quadratic form with the original Hessian quadratic
+  form on the lifted direction; this should be proved from block symmetry and
+  the `Hyy` right-inverse hypothesis rather than redoing selector or WithLp
+  product plumbing.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

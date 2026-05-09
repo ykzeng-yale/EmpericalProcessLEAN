@@ -2982,6 +2982,95 @@ noncomputable def barrierInfProjectionSchurHessFrom
           (invHyy x (barrierInfProjectionBlockYX selector hess x v)) := by
   rfl
 
+/-- Vertical correction used in the Schur-complement lift. -/
+noncomputable def barrierInfProjectionSchurCorrection
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x v : E₁) : E₂ :=
+  invHyy x (barrierInfProjectionBlockYX selector hess x v)
+
+/--
+Full-space direction whose Hessian quadratic form should equal the projected
+Schur-complement quadratic form.
+-/
+noncomputable def barrierInfProjectionSchurLift
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x v : E₁) :
+    WithLp 2 (E₁ × E₂) :=
+  withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v -
+    withLpProdInrCLM
+      (barrierInfProjectionSchurCorrection selector hess invHyy x v)
+
+@[simp] theorem barrierInfProjectionSchurLift_fst
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x v : E₁) :
+    (barrierInfProjectionSchurLift selector hess invHyy x v).fst = v := by
+  simp [barrierInfProjectionSchurLift]
+
+@[simp] theorem barrierInfProjectionSchurLift_snd
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x v : E₁) :
+    (barrierInfProjectionSchurLift selector hess invHyy x v).snd =
+      -barrierInfProjectionSchurCorrection selector hess invHyy x v := by
+  simp [barrierInfProjectionSchurLift]
+
+/--
+If the Schur-complement quadratic form is identified with the full Hessian
+quadratic form of the lifted direction, nonnegativity follows from the original
+barrier Hessian.
+-/
+theorem barrierInfProjectionSchurHessFrom_quadratic_nonneg_of_lift_eq
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x : E₁)
+    (hfull_nonneg : ∀ w : WithLp 2 (E₁ × E₂),
+      0 ≤ inner ℝ w (hess (barrierInfProjectionPoint selector x) w))
+    (hquad_eq : ∀ v : E₁,
+      inner ℝ v (barrierInfProjectionSchurHessFrom selector hess invHyy x v) =
+        inner ℝ (barrierInfProjectionSchurLift selector hess invHyy x v)
+          (hess (barrierInfProjectionPoint selector x)
+            (barrierInfProjectionSchurLift selector hess invHyy x v))) :
+    ∀ v : E₁,
+      0 ≤ inner ℝ v (barrierInfProjectionSchurHessFrom selector hess invHyy x v) := by
+  intro v
+  rw [hquad_eq v]
+  exact hfull_nonneg _
+
+theorem BarrierInfProjectionSelectorStationary.schurHessFrom_quadratic_nonneg_of_lift_eq
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hquad_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁,
+        inner ℝ v (barrierInfProjectionSchurHessFrom selector hess invHyy x v) =
+          inner ℝ (barrierInfProjectionSchurLift selector hess invHyy x v)
+            (hess (barrierInfProjectionPoint selector x)
+              (barrierInfProjectionSchurLift selector hess invHyy x v))) :
+    ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁,
+        0 ≤ inner ℝ v
+          (barrierInfProjectionSchurHessFrom selector hess invHyy x v) := by
+  intro x hx
+  exact barrierInfProjectionSchurHessFrom_quadratic_nonneg_of_lift_eq
+    selector hess invHyy x
+    (hbar.self_concordant.hess_nonneg (hsel.point_mem hx)) (hquad_eq hx)
+
 omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
   [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
 theorem barrierInfProjectionPoint_mem_set
