@@ -276,18 +276,23 @@ and
 closing the scale/penalty packaging into the fixed-`M` stochastic-entropy
 consumer with `C = 4` and `A = 2`.
 The explicit original/ghost finite-center failure probabilities are now split
-through the fixed-sample Rademacher finite-center Hoeffding tail and a
-product-fiber upper-bound lift.  The fixed-sample tail is
+through the fixed-sample Rademacher finite-center Hoeffding tail, a
+product-fiber upper-bound lift, and additive-error product-pair comparison
+wrappers.  The fixed-sample tail is
 `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le`; the generic
 upper disintegration lemma is `prod_measure_le_lintegral_fiber_bound`; and the
 random selected-cover failure lifts are
 `VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`
 and
 `VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`.
-The next blocker is to close the remaining measurability/integrability and
-tail-convergence handoff for those integrated random selected-cover tails, or
-to discharge the sign-first selected-center measurability assumptions that
-feed the same failure terms.
+The new additive wrappers are
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failure_tails`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound_add_error`, and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`.
+The next blocker is the half-scale fixed-`M` convergence handoff with those
+additive errors, plus tail convergence and sign-first selected-center
+measurability.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

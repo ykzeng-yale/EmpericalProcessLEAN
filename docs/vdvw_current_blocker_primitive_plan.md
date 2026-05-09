@@ -96,22 +96,25 @@ paragraph, not older rebase paragraphs below, as the operative continuation
 prompt.
 
 Current newest source-side progress: the product-pair selected-cover route now
-has both the finite-center failure tail and its product-fiber upper lift.  The
-fixed-sample tail is
+has both the finite-center failure tail, its product-fiber upper lift, and the
+additive-error product-pair comparison that consumes them.  The fixed-sample tail is
 `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le`; the reusable
 Fubini upper lemma is `prod_measure_le_lintegral_fiber_bound`; and the
 original/ghost selected-cover failure terms are bounded by
 `VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`
 and
 `VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`.
-This builds on the compiled product-pair half-scale comparison
-`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale`
-and on the lossy finite-center-failure split
-`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failures`.
-The next exact target is now to convert those integrated random
-selected-cover tails into a vanishing error under the active stochastic
-entropy/cardinality hypotheses, while separately closing the exposed
-sign-first selected-center measurability obligations.  The selected-center
+The new chaining lemmas are
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failure_tails`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound_add_error`,
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`.
+The next exact target is to adapt this additive-tail comparison through the
+half-scale fixed-`M` convergence route and then prove the integrated random
+selected-cover tails vanish under honest stochastic entropy/cardinality
+hypotheses, while separately closing the exposed sign-first selected-center
+measurability obligations.  The selected-center
 measurability interface remains
 `VdVWFiniteEmpiricalL1CoverSelectedCenterAt`,
 `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`,
