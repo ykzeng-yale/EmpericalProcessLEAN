@@ -508,6 +508,11 @@ infrastructure.  The newest concrete-gradient/Newton packet adds
 positive-orthant log-barrier Theorem 13.8 wrapper now has only the source
 feasibility hypothesis `x ∈ positiveOrthant` and the radius condition
 `newtonDecrement positiveOrthantNegLogGrad positiveOrthantNegLogInvHessCLM x < 1`.
+The newest Definition 13.9 packet adds `SelfConcordantBarrierOn`,
+`SelfConcordantBarrierOn.of_le_parameter`, and
+`positiveOrthantNegLog_selfConcordantBarrierOn`, packaging the finite
+positive-orthant logarithmic barrier as a `d`-self-concordant barrier from the
+compiled mixed-third certificate and exact dual-local-norm identity.
 Do not redo the
 square-root/right-inverse/Hessian-nonnegativity/self-concordance/model-Hessian
 plumbing; use
@@ -528,11 +533,14 @@ The exact blockers are:
   mixed-third source interface.  Positivity of `||y - x||_{z_s}` is already
   packaged from a source-shaped positive-definite Hessian hypothesis and
   `y - x ≠ 0`; do not add more generic Gronwall/`ψ` plumbing.
-- decide the next theorem-sized Chapter 13 packet after this positive-orthant
-  Theorem 13.8 closure: either lift the coordinate proof into the broader
-  Proposition 13.11 barrier-calculus interface, or package the exact
-  source-anchored Theorem 13.8/Example 13.10 positive-orthant report only
-  after source screenshots and local report PDF compilation.
+- prove the first theorem-sized Proposition 13.11 calculus rule over the
+  supplied `SelfConcordantBarrierOn` interface.  Prefer the product-separable
+  rule first because the product Hessian/inverse-Hessian and dual norm split
+  coordinatewise; use mathlib `ContinuousLinearMap.prodMap`, `fst`, `snd`,
+  product inner-product/norm APIs, and the existing local
+  `dualLocalNorm`/`localNorm` lemmas.  The conic-sum and affine-preimage rules
+  are next; do not attempt the inf-projection rule until the simpler rules are
+  compiled.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi
 Hessian-stability theorem and no direct derivative theorem for

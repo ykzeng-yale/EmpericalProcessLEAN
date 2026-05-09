@@ -105,14 +105,20 @@ and the Hessian-derivative wrapper
 packages `positiveOrthantNegLogHessDerivCLM_mixed_inner`.  The wrapper
 `chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_hasFDeriv_sourceNewtonSegment`
 also derives Hessian continuity from the supplied Hessian differentiability
-proof, so next lift that model through a reusable Proposition 13.11
-barrier-calculus interface or instantiate the actual finite-dimensional/
-matrix barrier Hessian model; all segment membership, `ψ` continuity,
-local-norm continuity/positivity, Riccati comparison, derivative inequality,
-coefficient scaling, final sandwich assembly, first Newton/Dikin membership,
-and inverse-Hessian transport wrappers are now compiled.  Do not return to
-ASGD or generic process-prompt edits unless the user
-explicitly switches lanes.
+proof.  The concrete wrapper
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier` now discharges
+the positive-orthant Hessian differentiability, gradient differentiability,
+Newton-step feasibility, and Newton linearization hypotheses.  Definition 13.9
+is represented by the supplied-oracle interface `SelfConcordantBarrierOn`, and
+`positiveOrthantNegLog_selfConcordantBarrierOn` packages the finite
+positive-orthant logarithmic barrier as a `d`-self-concordant barrier.  Next
+lift this model through reusable Proposition 13.11 barrier-calculus rules,
+starting with the product-separable rule; all segment membership, `ψ`
+continuity, local-norm continuity/positivity, Riccati comparison, derivative
+inequality, coefficient scaling, final sandwich assembly, first Newton/Dikin
+membership, and inverse-Hessian transport wrappers are now compiled.  Do not
+return to ASGD or generic process-prompt edits unless the user explicitly
+switches lanes.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers

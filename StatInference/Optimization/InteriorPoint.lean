@@ -1754,6 +1754,33 @@ structure MixedThirdSelfConcordantOn
     |thirdMixed x u v| ≤
       2 * M * localNorm hess x u * (localNorm hess x v) ^ (2 : ℕ)
 
+/--
+Chewi Definition 13.9, supplied-oracle form: a self-concordant barrier is a
+self-concordant function whose gradient has uniformly bounded dual local norm.
+The parameter `nu` is the barrier parameter from the source text.
+-/
+structure SelfConcordantBarrierOn
+    (s : Set E) (hess : E -> E →L[ℝ] E) (grad : E -> E)
+    (invHess : E -> E →L[ℝ] E)
+    (thirdMixed : E -> E -> E -> ℝ) (M nu : ℝ) : Prop where
+  parameter_nonneg : 0 ≤ nu
+  self_concordant : MixedThirdSelfConcordantOn s hess thirdMixed M
+  gradient_bound : ∀ ⦃x : E⦄, x ∈ s ->
+    dualLocalNorm invHess x (grad x) ≤ Real.sqrt nu
+
+theorem SelfConcordantBarrierOn.of_le_parameter
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {thirdMixed : E -> E -> E -> ℝ}
+    {M nu nu' : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess thirdMixed M nu)
+    (hnu : nu ≤ nu') :
+    SelfConcordantBarrierOn s hess grad invHess thirdMixed M nu' where
+  parameter_nonneg := hbar.parameter_nonneg.trans hnu
+  self_concordant := hbar.self_concordant
+  gradient_bound := by
+    intro x hx
+    exact (hbar.gradient_bound hx).trans (Real.sqrt_le_sqrt hnu)
+
 theorem hessianSegmentLocalNorm_riccatiDerivBound_of_mixedThirdSelfConcordantOn
     {s : Set E} {hess : E -> E →L[ℝ] E}
     {thirdMixed : E -> E -> E -> ℝ} {x y : E} {M : ℝ} {t : ℝ}
@@ -7015,6 +7042,22 @@ theorem positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card {d : ℕ}
     · simp
   dsimp [dualLocalNorm]
   rw [hquad]
+
+/--
+Finite-product version of Chewi Example 13.10 and Definition 13.9: the
+coordinatewise logarithmic barrier on the positive orthant is a
+`d`-self-concordant barrier.
+-/
+theorem positiveOrthantNegLog_selfConcordantBarrierOn {d : ℕ} :
+    SelfConcordantBarrierOn (positiveOrthant (d := d))
+      positiveOrthantNegLogHessCLM positiveOrthantNegLogGrad
+      positiveOrthantNegLogInvHessCLM positiveOrthantNegLogThirdMixed
+      1 (d : ℝ) where
+  parameter_nonneg := by exact_mod_cast Nat.zero_le d
+  self_concordant := positiveOrthantNegLog_mixedThirdSelfConcordantOn
+  gradient_bound := by
+    intro x hx
+    rw [positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card hx]
 
 theorem negLogBarrier_second_deriv (x : ℝ) :
     deriv^[2] negLogBarrier x = negLogBarrierSecond x := by

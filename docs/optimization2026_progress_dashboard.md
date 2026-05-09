@@ -58,12 +58,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   differentiability, positive-orthant Newton-step feasibility, and Newton
   linearization are now compiled.  The source-facing
   `chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier` wrapper has
-  only feasibility and `lambda < 1` hypotheses.  Next choose the theorem-sized
-  Chapter 13 continuation: lift this closure into the broader Proposition
-  13.11 barrier-calculus interface, or prepare an exact source-anchored
-  Theorem 13.8/Example 13.10 report only after screenshots and local report
-  PDF compilation.  The remaining general-interface cleanup is to connect the
-  real third Frechet/iterated derivative to the existing
+  only feasibility and `lambda < 1` hypotheses.  Definition 13.9 now has a
+  supplied-oracle Lean interface `SelfConcordantBarrierOn`, and
+  `positiveOrthantNegLog_selfConcordantBarrierOn` packages the finite
+  positive-orthant logarithmic barrier as a `d`-self-concordant barrier.  Next
+  prove the first Proposition 13.11 calculus rule over this interface,
+  preferably the product-separable rule before the conic-sum, affine-preimage,
+  and inf-projection rules.  The remaining general-interface cleanup is to
+  connect the real third Frechet/iterated derivative to the existing
   `positiveOrthantNegLogThirdMixed` certificate when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
