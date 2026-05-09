@@ -10701,5 +10701,84 @@ theorem durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_of_positivePart_boun
         hPositivePartBound hAbs
     _ = C * eLpNorm (Y n) p P := by rw [hterminal_eq]
 
+/--
+Durrett 2019, Theorem 4.4.4 support: a p-th power `lintegral` estimate
+implies the corresponding `eLpNorm` estimate.  This is the final algebraic
+step after the textbook integration/Hölder calculation.
+-/
+theorem durrett2019_theorem_4_4_4_eLpNorm_le_of_lintegral_rpow_enorm_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {A B : Ω -> ℝ}
+    {p C : ℝ≥0∞} (hp_ne_zero : p ≠ 0) (hp_ne_top : p ≠ ∞)
+    (hPower :
+      (∫⁻ ω, ‖A ω‖ₑ ^ p.toReal ∂P) ≤
+        (C * eLpNorm B p P) ^ p.toReal) :
+    eLpNorm A p P ≤ C * eLpNorm B p P := by
+  have hp_pos : 0 < p.toReal := ENNReal.toReal_pos hp_ne_zero hp_ne_top
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_ne_top]
+  calc
+    (∫⁻ ω, ‖A ω‖ₑ ^ p.toReal ∂P) ^ (1 / p.toReal)
+        ≤ ((C * eLpNorm B p P) ^ p.toReal) ^ (1 / p.toReal) :=
+          ENNReal.rpow_le_rpow hPower (div_nonneg zero_le_one hp_pos.le)
+    _ = C * eLpNorm B p P := by
+          rw [← ENNReal.rpow_mul, one_div, mul_inv_cancel₀ hp_pos.ne',
+            ENNReal.rpow_one]
+
+/--
+Durrett 2019, Theorem 4.4.4, positive-part maximal inequality reduced to the
+textbook p-th power estimate.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound_of_lintegral_rpow_enorm_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    {p C : ℝ≥0∞} (hp_ne_zero : p ≠ 0) (hp_ne_top : p ≠ ∞) (n : ℕ)
+    (hPower :
+      (∫⁻ ω,
+          ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              (fun k => max (X k ω) 0)‖ₑ ^ p.toReal ∂P) ≤
+        (C * eLpNorm (fun ω => max (X n ω) 0) p P) ^ p.toReal) :
+    eLpNorm
+        (fun ω =>
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => max (X k ω) 0)
+        p P ≤
+      C * eLpNorm (fun ω => max (X n ω) 0) p P :=
+  durrett2019_theorem_4_4_4_eLpNorm_le_of_lintegral_rpow_enorm_le
+    (P := P)
+    (A := fun ω =>
+      (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+        fun k => max (X k ω) 0)
+    (B := fun ω => max (X n ω) 0)
+    hp_ne_zero hp_ne_top hPower
+
+/--
+Durrett 2019, Theorem 4.4.4, martingale consequence from the p-th power
+positive-part estimate.  This is the theorem's second display, with the first
+display supplied in the form produced by the integration/Hölder calculation.
+-/
+theorem durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_of_positivePart_lintegral_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} (hY : Martingale Y ℱ P)
+    {p C : ℝ≥0∞} (hp_ne_zero : p ≠ 0) (hp_ne_top : p ≠ ∞) (n : ℕ)
+    (hPositivePartPowerBound :
+      ∀ {X : ℕ -> Ω -> ℝ}, Submartingale X ℱ P ->
+        (∫⁻ ω,
+            ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                (fun k => max (X k ω) 0)‖ₑ ^ p.toReal ∂P) ≤
+          (C * eLpNorm (fun ω => max (X n ω) 0) p P) ^ p.toReal) :
+    eLpNorm
+        (fun ω =>
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => |Y k ω|)
+        p P ≤
+      C * eLpNorm (Y n) p P :=
+  durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_of_positivePart_bound
+    (P := P) (ℱ := ℱ) (Y := Y) hY n
+    (fun {X} hX =>
+      durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound_of_lintegral_rpow_enorm_le
+        (P := P) (X := X) hp_ne_zero hp_ne_top n
+        (hPositivePartPowerBound hX))
+
 end ProbabilityTheory
 end StatInference

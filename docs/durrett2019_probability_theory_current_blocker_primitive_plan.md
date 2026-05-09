@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V115
+## Live In-Thread Goal Prompt V116
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -417,12 +417,17 @@ probability-display division form
 absolute-maximum variance-bound display
 `durrett2019_example_4_4_3_kolmogorov_maximal_inequality_abs_varianceBound`.
 Theorem 4.4.4 now has the martingale absolute-maximum consequence bridge
-`durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_of_positivePart_bound`.
-Next target: prove/package the first positive-part Lp maximal inequality for
-submartingales from Theorem 4.4.2 plus the integration/Hölder layer, or add the
-smallest compiled bridge that removes one source-side hypothesis.  Do not detour
-back into full Galton-Watson random-sum infrastructure unless a local API makes
-it cheap.
+`durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_of_positivePart_bound`,
+and its p-th-power source layer now compiles via
+`durrett2019_theorem_4_4_4_eLpNorm_le_of_lintegral_rpow_enorm_le`,
+`durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound_of_lintegral_rpow_enorm_le`,
+and
+`durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_of_positivePart_lintegral_bound`.
+Next target: prove/package the actual Durrett positive-part p-th-power estimate
+for submartingales from Theorem 4.4.2 plus the integration/Hölder layer, likely
+through the smallest finite-truncation or monotone-convergence bridge that feeds
+the compiled `lintegral_rpow` source hypothesis.  Do not detour back into full
+Galton-Watson random-sum infrastructure unless a local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -938,9 +943,11 @@ inequality wrappers.  Example 4.4.3 now has the squared-threshold Kolmogorov
 maximal wrapper, the probability-display division wrapper, and the
 absolute-maximum variance-bound display.  Theorem 4.4.4 now has the martingale
 absolute-maximum consequence bridge from a supplied positive-part Lp maximal
-bound.  Next move to the first positive-part Lp maximal inequality or its
-integration/Hölder source bridge, whichever gives the largest compiled step
-without building unrelated infrastructure.
+bound, plus the p-th-power `lintegral` to `eLpNorm` bridge and martingale
+source wrapper from a supplied positive-part p-th-power estimate.  Next move to
+the actual Durrett positive-part p-th-power estimate from Doob 4.4.2 and
+integration/Hölder, whichever gives the largest compiled step without building
+unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1054,6 +1061,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V115` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V116` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
