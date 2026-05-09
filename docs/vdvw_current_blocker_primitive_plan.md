@@ -95,19 +95,21 @@ Matching/WDSM edits, so do not use it for VdVW proof commits.  Use this
 paragraph, not older rebase paragraphs below, as the operative continuation
 prompt.
 
-Current newest source-side progress: the selected-witness Chebyshev ghost-good
-fiber is transported to the centered pair-difference bad event, the
-product-pair Rademacher sign-swap measure equality is compiled as
-`measure_vdVWProductMeasure_pairDifference_constWeights_bad_eq_rademacherWeights_bad`,
-and the deterministic one-sided Rademacher pair-difference split is compiled as
-`vdVWWeightedClassSupremum_truncated_pairDifference_rademacher_bad_imp_original_or_ghost_bad`.
-Next exact target: prove the product-fiber lower bound for the named canonical
-ghost/Rademacher selected-net event by combining the centered pair-difference
-fiber lower bound, the product-pair sign-swap equality, the one-sided split,
-sign-negation/ghost symmetry, and the selected finite-net Hoeffding side
-condition.  The theorem should discharge named-event measurability and the
-displayed fiber lower-bound hypotheses consumed by
-`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
+Current newest source-side progress: the named concrete
+ghost/Rademacher pair-difference event has a compiled measurability skeleton.
+`measurableSet_vdVWRademacherSignVector` closes the finite-product
+Rademacher-support component, and
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_components`
+reduces the event measurability assumption in
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent`
+to three exact component sets: original finite-center Hoeffding side
+condition, ghost finite-center side condition with negated signs, and signed
+pair-difference badness.
+Next exact target: prove those component measurability facts and the
+product-fiber displayed Chebyshev lower bound for the named concrete event by
+combining the centered pair-difference fiber lower bound, the product-pair
+sign-swap equality, sign-negation/ghost symmetry, and the selected finite-net
+Hoeffding side condition.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening and do not claim it follows from bare stochastic entropy.
 
@@ -8550,3 +8552,15 @@ pair-difference ghost/Rademacher event and produces the displayed Chebyshev
 beta comparison with `C = 2` and `A = 2` from only two remaining source
 inputs: event measurability and the displayed beta fiber lower bound over the
 centered bad event.
+
+2026-05-09 concrete-event measurability skeleton:
+`Theorem243.lean` now proves `measurableSet_vdVWRademacherSignVector` and
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_components`.
+The first closes measurability of the finite-product Rademacher support
+predicate.  The second packages measurability of the named concrete
+ghost/Rademacher event once three component sets are supplied: the original
+finite-center side condition, the ghost finite-center side condition with
+negated signs, and the signed pair-difference bad event.  The next exact proof
+target is no longer the sign-support component; it is those three component
+measurability facts together with the displayed Chebyshev product-fiber lower
+bound.

@@ -166,8 +166,15 @@ pointwise original-or-ghost selected-net inclusion is compiled as
 `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad`.
 The concrete-event source constructor is now compiled as
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent`.
-The remaining work is to prove measurability and the displayed Chebyshev fiber
-lower bound for this concrete event, then optionally specialize back to
+The sign-vector support part of this concrete event is now measurable via
+`measurableSet_vdVWRademacherSignVector`, and the component-level constructor
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_components`
+reduces event measurability to exactly three remaining component sets: the
+original finite-center side condition, the ghost finite-center side condition
+with negated signs, and the signed pair-difference bad event.  The remaining
+source work is those three component measurability facts plus the displayed
+Chebyshev fiber lower bound for this concrete event, then optional
+specialization back to
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
