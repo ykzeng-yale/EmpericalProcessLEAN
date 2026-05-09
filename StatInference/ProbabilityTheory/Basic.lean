@@ -523,6 +523,66 @@ theorem durrett2019_theorem_2_1_12_product_integral
   exact StatInference.ProbabilityMeasure.integral_prod f hf
 
 /--
+Durrett 2019, Theorem 2.1.12, nonnegative independent-pair expectation form.
+
+The joint law of `(X, Y)` is `μ.prod ν`, so Tonelli gives the iterated
+integral display in Durrett's statement.
+-/
+theorem durrett2019_theorem_2_1_12_indepFun_lintegral_pair
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {T : Type w} [MeasurableSpace T]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {μ : Measure S} {ν : Measure T} [SFinite ν]
+    {X : Ω -> S} {Y : Ω -> T}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X μ P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P)
+    {h : S × T -> ℝ≥0∞} (hh : AEMeasurable h (μ.prod ν)) :
+    ∫⁻ ω, h (X ω, Y ω) ∂P =
+      ∫⁻ x, ∫⁻ y, h (x, y) ∂ν ∂μ := by
+  have hpair :
+      _root_.ProbabilityTheory.HasLaw (fun ω => (X ω, Y ω)) (μ.prod ν) P :=
+    hXY.hasLaw_prod hX hY
+  calc
+    ∫⁻ ω, h (X ω, Y ω) ∂P =
+        ∫⁻ z, h z ∂μ.prod ν := by
+      simpa [Function.comp_def] using hpair.lintegral_comp hh
+    _ = ∫⁻ x, ∫⁻ y, h (x, y) ∂ν ∂μ :=
+      StatInference.ProbabilityMeasure.lintegral_prod hh
+
+/--
+Durrett 2019, Theorem 2.1.12, integrable independent-pair expectation form.
+
+This is the Bochner-integral version of the displayed formula
+`E h(X,Y) = ∫∫ h(x,y) μ(dx) ν(dy)`.
+-/
+theorem durrett2019_theorem_2_1_12_indepFun_integral_pair
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {T : Type w} [MeasurableSpace T]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {μ : Measure S} {ν : Measure T} [SFinite μ] [SFinite ν]
+    {X : Ω -> S} {Y : Ω -> T}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X μ P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P)
+    {h : S × T -> E} (hh : Integrable h (μ.prod ν)) :
+    ∫ ω, h (X ω, Y ω) ∂P =
+      ∫ x, ∫ y, h (x, y) ∂ν ∂μ := by
+  have hpair :
+      _root_.ProbabilityTheory.HasLaw (fun ω => (X ω, Y ω)) (μ.prod ν) P :=
+    hXY.hasLaw_prod hX hY
+  calc
+    ∫ ω, h (X ω, Y ω) ∂P =
+        ∫ z, h z ∂μ.prod ν := by
+      simpa [Function.comp_def] using
+        hpair.integral_comp hh.aestronglyMeasurable
+    _ = ∫ x, ∫ y, h (x, y) ∂ν ∂μ :=
+      durrett2019_theorem_2_1_12_product_integral h hh
+
+/--
 Durrett 2019, Theorem 2.1.12, separated product-expectation form.
 -/
 theorem durrett2019_theorem_2_1_12_product_integral_mul

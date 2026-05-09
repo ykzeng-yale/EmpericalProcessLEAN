@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V179
+## Live In-Thread Goal Prompt V180
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -16,11 +16,14 @@ bracketing infrastructure in `StatInference/EmpiricalProcess/RealHalfLine*.lean`
 and `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.
 
 Treat the following as compiled support and do not redo it: Chapter 2.1
-independence/product-law wrappers through Theorem 2.1.15's CDF convolution
-handoff, Theorem 2.1.16 convolution-law, density-existence, exact
+independence/product-law wrappers through Theorem 2.1.12's nonnegative and
+integrable independent-pair expectation formulas, Theorem 2.1.15's CDF
+convolution handoff, Theorem 2.1.16 convolution-law, density-existence, exact
 Fubini/withDensity formula, and two-density handoffs, Theorem 2.3.1/2.3.7
 Borel-Cantelli wrappers, Theorem 2.4.1 strong-law wrappers, and the full
 Durrett Theorem 2.4.9 empirical-CDF route:
+`durrett2019_theorem_2_1_12_indepFun_lintegral_pair`,
+`durrett2019_theorem_2_1_12_indepFun_integral_pair`,
 `durrett2019_theorem_2_1_15_product_cdf_convolution`,
 `durrett2019_theorem_2_1_15_indepFun_cdf_convolution`,
 `durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv`,
@@ -41,18 +44,18 @@ Durrett Theorem 2.4.9 empirical-CDF route:
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
 
-Next aggressive step: move forward from the now-compiled Theorem 2.1.16
-measure-density layer to downstream Chapter 2.1 product-law examples and
-finite-sum/factorization wrappers that unlock later Chapter 2.  Good immediate
-targets are Theorem 2.1.18 gamma-sum source scaffolding only if the required
-calculus is local and cheap, otherwise the exact finite independent product-law
-or expectation-factorization shapes for sums/products of independent variables.
-Search mathlib and local wrappers first, especially `HasLaw`, `IndepFun`,
-`iIndepFun`, `Measure.conv`, `Measure.prod`, `Measure.pi`, finite sums,
-Laplace/characteristic transforms, product integrals, and
+Next aggressive step: move forward from the now-compiled Theorem 2.1.12 and
+2.1.16 layers to downstream Chapter 2.1 product-law examples and finite-sum
+wrappers that unlock later Chapter 2.  Good immediate targets are the exact
+partial-sum/block-independence wrappers used after Theorem 2.1.10, finite
+independent product-law or expectation-factorization shapes for sums/products,
+or Theorem 2.1.18 gamma-sum source scaffolding only if the required calculus is
+local and cheap.  Search mathlib and local wrappers first, especially `HasLaw`,
+`IndepFun`, `iIndepFun`, `Measure.conv`, `Measure.prod`, `Measure.pi`, finite
+sums, Laplace/characteristic transforms, product integrals, and
 `StatInference.ProbabilityMeasure.ProductMeasure`.  Do not route back to
-Chapter 4.5.2 or any solved 2.4.9/2.1.15/2.1.16 plumbing unless the user
-explicitly pivots the active goal.
+Chapter 4.5.2 or any solved 2.4.9/2.1.12/2.1.15/2.1.16 plumbing unless the
+user explicitly pivots the active goal.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
