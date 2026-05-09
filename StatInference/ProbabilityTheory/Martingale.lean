@@ -12669,6 +12669,41 @@ theorem durrett2019_eLpNorm_two_le_of_integral_sq_le
   exact Real.rpow_le_rpow hnorm_nonneg hnorm_bound (by norm_num)
 
 /--
+Durrett 2019, Theorem 4.5.1 finite-horizon support: Doob's `L^2` maximal
+inequality plus a supplied second-moment bound controls the finite running
+absolute maximum in `eLpNorm` form.
+-/
+theorem durrett2019_theorem_4_5_1_runningAbsMax_eLpNorm_two_le_of_integral_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {n : ℕ} {C : ℝ}
+    (hXn_memLp_two : MemLp (X n) (2 : ℝ≥0∞) P)
+    (hXn_sq_le : (∫ ω, X n ω ^ 2 ∂P) ≤ C) :
+    eLpNorm (durrett2019_runningAbsMax X n) (2 : ℝ≥0∞) P ≤
+      ENNReal.ofReal (2 : ℝ) * ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) := by
+  have hDoob :=
+    durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_bound
+      (P := P) (ℱ := ℱ) (Y := X) hX Real.HolderConjugate.two_two n
+  have hTerminal :
+      eLpNorm (X n) (2 : ℝ≥0∞) P ≤
+        ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) :=
+    durrett2019_eLpNorm_two_le_of_integral_sq_le
+      (P := P) (Y := X n) hXn_memLp_two hXn_sq_le
+  calc
+    eLpNorm (durrett2019_runningAbsMax X n) (2 : ℝ≥0∞) P
+        ≤ ENNReal.ofReal ((2 : ℝ) / (2 - 1)) *
+            eLpNorm (X n) (2 : ℝ≥0∞) P := by
+          simpa [durrett2019_runningAbsMax] using hDoob
+    _ ≤ ENNReal.ofReal ((2 : ℝ) / (2 - 1)) *
+          ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) :=
+          by
+            simpa [mul_comm] using
+              mul_le_mul_right hTerminal (ENNReal.ofReal ((2 : ℝ) / (2 - 1)))
+    _ = ENNReal.ofReal (2 : ℝ) * ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) := by
+          norm_num
+
+/--
 Durrett 2019, `L^2` support: convergence in `eLpNorm · 2` on a probability
 space implies convergence of expectations.
 -/
