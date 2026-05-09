@@ -535,10 +535,22 @@ newest coordinate-factorization packet adds
 `hessianPrimalFactor_of_adjointSqrt`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta`,
 deriving the dual/primal square-root factors from coordinate identities and
-mathlib's `ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right`.  After
-that, derive the inverse-Hessian comparison from concrete matrix/order
-hypotheses and remove the remaining mixed-third supplied source interface
-through the real
+mathlib's `ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right`.  The
+newest local-norm-to-Rayleigh packet adds
+`hessianQuadraticLower_of_mul_le_localNorm`,
+`hessianQuadraticLower_of_mul_one_sub_localNorm_le`,
+`chewi138_hessianSegmentDelta_integral_neg_le_of_hessianLower`,
+`chewi138_hessianSegmentDelta_integral_neg_le_of_localNormLower`,
+`hessianSegmentDelta_inner_neg_le_of_localNormLower`,
+`hessianSegmentDelta_abs_inner_le_of_localNormSandwich`,
+`adjointConj_inner_eq_delta_inner`,
+`normalizedAdjointConj_absQuadBound_of_deltaAbsQuadBound`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_localNormSandwich`,
+so the source two-sided local-norm sandwich now supplies the normalized
+absolute Rayleigh bound.  After that, derive the pointwise Newton-segment
+sandwich, inverse-Hessian comparison, and coordinate identities from concrete
+matrix/order hypotheses and remove the remaining mixed-third supplied source
+interface through the real
 third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem

@@ -867,6 +867,46 @@ theorem hessianQuadraticUpper_of_localNorm_le_div_one_sub
     hden_pos hx_nonneg hy_nonneg hnorm v
 
 /--
+Reverse algebra for Chewi Lemma 13.6: a supplied local-norm lower comparison
+implies the corresponding Hessian quadratic-form lower comparison.
+-/
+theorem hessianQuadraticLower_of_mul_le_localNorm
+    {hess : E -> E →L[ℝ] E} {x y : E} {den : ℝ}
+    (hden_nonneg : 0 ≤ den)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hnorm : ∀ v : E, den * localNorm hess x v ≤ localNorm hess y v)
+    (v : E) :
+    den ^ (2 : ℕ) * inner ℝ v (hess x v) ≤ inner ℝ v (hess y v) := by
+  have hlhs_nonneg : 0 ≤ den * localNorm hess x v :=
+    mul_nonneg hden_nonneg (localNorm_nonneg hess x v)
+  have hsq :
+      (den * localNorm hess x v) ^ (2 : ℕ) ≤
+        (localNorm hess y v) ^ (2 : ℕ) :=
+    (sq_le_sq₀ hlhs_nonneg (localNorm_nonneg hess y v)).2 (hnorm v)
+  rw [mul_pow, localNorm_sq_eq_inner (hx_nonneg v),
+    localNorm_sq_eq_inner (hy_nonneg v)] at hsq
+  simpa [mul_comm, mul_left_comm, mul_assoc] using hsq
+
+/--
+Denominator-shaped version of `hessianQuadraticLower_of_mul_le_localNorm`.
+-/
+theorem hessianQuadraticLower_of_mul_one_sub_localNorm_le
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    (hMr_lt : M * r < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hnorm : ∀ v : E,
+      (1 - M * r) * localNorm hess x v ≤ localNorm hess y v)
+    (v : E) :
+    (1 - M * r) ^ (2 : ℕ) * inner ℝ v (hess x v) ≤
+      inner ℝ v (hess y v) := by
+  have hden_nonneg : 0 ≤ 1 - M * r := by nlinarith
+  exact hessianQuadraticLower_of_mul_le_localNorm
+    (hess := hess) (x := x) (y := y) (den := 1 - M * r)
+    hden_nonneg hx_nonneg hy_nonneg hnorm v
+
+/--
 Supplied quadratic-form comparison between two inverse-Hessian oracles.  This
 is the dual-local-norm analogue of `HessianQuadraticBounds`.
 -/
@@ -2505,6 +2545,130 @@ theorem chewi138_hessianSegmentDelta_integral_le_of_localNormUpper
     (hnorm t ht) v
 
 /--
+Chewi Theorem 13.8 lower Delta step, scalar quadratic-form version.  If the
+Hessian along the segment has the pointwise Lemma 13.6 lower coefficient, then
+the negative integrated Hessian difference is controlled by the same closed
+Delta coefficient used for the upper side.
+-/
+theorem chewi138_hessianSegmentDelta_integral_neg_le_of_hessianLower
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y v : E} {M lambda : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hlambda_nonneg : 0 ≤ lambda)
+    (hMlambda_lt : M * lambda < 1)
+    (hhess_cont : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s)
+    (hx_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hlower : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      (1 - M * lambda * t) ^ (2 : ℕ) * inner ℝ v (hess x v) ≤
+        inner ℝ v (hess (hessianSegmentPoint x y t) v)) :
+    - (∫ t in (0 : ℝ)..1,
+        inner ℝ v (hess (hessianSegmentPoint x y t) v) -
+          inner ℝ v (hess x v)) ≤
+      (M * lambda / (1 - M * lambda)) * inner ℝ v (hess x v) := by
+  let base : ℝ := inner ℝ v (hess x v)
+  let g : ℝ -> ℝ := fun t =>
+    - (inner ℝ v (hess (hessianSegmentPoint x y t) v) - base)
+  have hpsi_cont :
+      ContinuousOn (hessianSegmentPsi hess x y v) (Set.Icc (0 : ℝ) 1) :=
+    hessianSegmentPsi_continuousOn_of_continuousOn
+      (hess := hess) (s := s) (x := x) (y := y) hhess_cont hseg v
+  have hg_cont : ContinuousOn g (Set.Icc (0 : ℝ) 1) := by
+    simpa [g, hessianSegmentPsi, base] using
+      (hpsi_cont.sub continuousOn_const).neg
+  have hg_int : IntervalIntegrable g MeasureTheory.volume (0 : ℝ) 1 :=
+    hg_cont.intervalIntegrable_of_Icc zero_le_one
+  have hpoint : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      g t ≤ ((((1 - M * lambda * t)⁻¹) ^ (2 : ℕ) - 1) * base) := by
+    intro t ht
+    have ht_nonneg : 0 ≤ t := ht.1
+    have ht_le_one : t ≤ 1 := ht.2
+    have hMlambda_nonneg : 0 ≤ M * lambda :=
+      mul_nonneg hM_nonneg hlambda_nonneg
+    have hMt_lt : M * lambda * t < 1 := by
+      have hle : M * lambda * t ≤ M * lambda * 1 :=
+        mul_le_mul_of_nonneg_left ht_le_one hMlambda_nonneg
+      nlinarith
+    have hden_pos : 0 < 1 - M * lambda * t := by nlinarith
+    have hcoeff_ge :
+        1 - (1 - M * lambda * t) ^ (2 : ℕ) ≤
+          ((1 - M * lambda * t)⁻¹) ^ (2 : ℕ) - 1 := by
+      let den : ℝ := 1 - M * lambda * t
+      have hden_pos' : 0 < den := by simpa [den] using hden_pos
+      have hsq : 0 ≤ (den - den⁻¹) ^ (2 : ℕ) := sq_nonneg (den - den⁻¹)
+      have hden_ne : den ≠ 0 := ne_of_gt hden_pos'
+      have hcmp : 1 - den ^ (2 : ℕ) ≤ den⁻¹ ^ (2 : ℕ) - 1 := by
+        field_simp [hden_ne] at hsq ⊢
+        nlinarith
+      simpa [den] using hcmp
+    have hbase_nonneg : 0 ≤ base := by
+      simpa [base] using hx_nonneg v
+    calc
+      g t =
+          base - inner ℝ v (hess (hessianSegmentPoint x y t) v) := by
+            simp [g, base]
+      _ ≤ base - (1 - M * lambda * t) ^ (2 : ℕ) * base := by
+            exact sub_le_sub_left (hlower t ht) base
+      _ = (1 - (1 - M * lambda * t) ^ (2 : ℕ)) * base := by
+            ring
+      _ ≤ ((((1 - M * lambda * t)⁻¹) ^ (2 : ℕ) - 1) * base) :=
+            mul_le_mul_of_nonneg_right hcoeff_ge hbase_nonneg
+  have hmain :
+      (∫ t in (0 : ℝ)..1, g t) ≤
+        (M * lambda / (1 - M * lambda)) * base :=
+    chewi138_integral_le_deltaCoefficient_mul
+      (g := g) (M := M) (lambda := lambda) (B := base)
+      hMlambda_lt hg_int hpoint
+  have hneg :
+      (∫ t in (0 : ℝ)..1, g t) =
+        - (∫ t in (0 : ℝ)..1,
+              inner ℝ v (hess (hessianSegmentPoint x y t) v) -
+              inner ℝ v (hess x v)) := by
+    rw [← intervalIntegral.integral_neg]
+  simpa [hneg, base] using hmain
+
+/--
+Chewi Theorem 13.8 lower Delta step from local-norm control.  This packages
+the lower side of Lemma 13.6 into the negative scalar Delta estimate.
+-/
+theorem chewi138_hessianSegmentDelta_integral_neg_le_of_localNormLower
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y v : E} {M lambda : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hlambda_nonneg : 0 ≤ lambda)
+    (hMlambda_lt : M * lambda < 1)
+    (hhess_cont : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s)
+    (hx_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hz_nonneg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      0 ≤ inner ℝ w (hess (hessianSegmentPoint x y t) w))
+    (hnorm : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      (1 - M * lambda * t) * localNorm hess x w ≤
+        localNorm hess (hessianSegmentPoint x y t) w) :
+    - (∫ t in (0 : ℝ)..1,
+        inner ℝ v (hess (hessianSegmentPoint x y t) v) -
+          inner ℝ v (hess x v)) ≤
+      (M * lambda / (1 - M * lambda)) * inner ℝ v (hess x v) := by
+  refine chewi138_hessianSegmentDelta_integral_neg_le_of_hessianLower
+    (hess := hess) (s := s) (x := x) (y := y) (v := v)
+    (M := M) (lambda := lambda) hM_nonneg hlambda_nonneg hMlambda_lt
+    hhess_cont hseg hx_nonneg ?_
+  intro t ht
+  have ht_nonneg : 0 ≤ t := ht.1
+  have ht_le_one : t ≤ 1 := ht.2
+  have hMlambda_nonneg : 0 ≤ M * lambda :=
+    mul_nonneg hM_nonneg hlambda_nonneg
+  have hMt_lt : M * lambda * t < 1 := by
+    have hle : M * lambda * t ≤ M * lambda * 1 :=
+      mul_le_mul_of_nonneg_left ht_le_one hMlambda_nonneg
+    nlinarith
+  have hden_nonneg : 0 ≤ 1 - M * lambda * t := by nlinarith
+  exact hessianQuadraticLower_of_mul_le_localNorm
+    (hess := hess) (x := x) (y := hessianSegmentPoint x y t)
+    (den := 1 - M * lambda * t)
+    hden_nonneg hx_nonneg (hz_nonneg t ht) (hnorm t ht) v
+
+/--
 Derivative of the gradient along the Chewi segment.  This is the chain-rule
 piece behind the identity
 `d/dt ∇f(z_t) = ∇² f(z_t) (y - x)`.
@@ -2805,6 +2969,76 @@ theorem hessianSegmentDelta_inner_le_of_localNormUpper
     hx_nonneg hz_nonneg hnorm
 
 /--
+Concrete scalar lower Delta bound from Lemma 13.6-style local-norm lower
+control along the segment.
+-/
+theorem hessianSegmentDelta_inner_neg_le_of_localNormLower
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y v : E} {M lambda : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hlambda_nonneg : 0 ≤ lambda)
+    (hMlambda_lt : M * lambda < 1)
+    (hhess_cont : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s)
+    (hx_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hz_nonneg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      0 ≤ inner ℝ w (hess (hessianSegmentPoint x y t) w))
+    (hnorm : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      (1 - M * lambda * t) * localNorm hess x w ≤
+        localNorm hess (hessianSegmentPoint x y t) w) :
+    - inner ℝ v (hessianSegmentDelta hess x y v) ≤
+      (M * lambda / (1 - M * lambda)) * inner ℝ v (hess x v) := by
+  rw [hessianSegmentDelta_inner_eq_integral_sub_of_continuousOn
+    (hess := hess) (s := s) (x := x) (y := y) (v := v) hhess_cont hseg]
+  exact chewi138_hessianSegmentDelta_integral_neg_le_of_localNormLower
+    (hess := hess) (s := s) (x := x) (y := y) (v := v)
+    (M := M) (lambda := lambda) hM_nonneg hlambda_nonneg hMlambda_lt
+    hhess_cont hseg hx_nonneg hz_nonneg hnorm
+
+/--
+Concrete scalar absolute Delta quadratic-form bound from the two-sided
+Lemma 13.6 local-norm sandwich along the segment.
+-/
+theorem hessianSegmentDelta_abs_inner_le_of_localNormSandwich
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y v : E} {M lambda : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hlambda_nonneg : 0 ≤ lambda)
+    (hMlambda_lt : M * lambda < 1)
+    (hhess_cont : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s)
+    (hx_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hz_nonneg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      0 ≤ inner ℝ w (hess (hessianSegmentPoint x y t) w))
+    (hnorm_lower : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      (1 - M * lambda * t) * localNorm hess x w ≤
+        localNorm hess (hessianSegmentPoint x y t) w)
+    (hnorm_upper : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      localNorm hess (hessianSegmentPoint x y t) w ≤
+        localNorm hess x w / (1 - M * lambda * t)) :
+    |inner ℝ (hessianSegmentDelta hess x y v) v| ≤
+      (M * lambda / (1 - M * lambda)) * inner ℝ v (hess x v) := by
+  have hupper :
+      inner ℝ (hessianSegmentDelta hess x y v) v ≤
+        (M * lambda / (1 - M * lambda)) * inner ℝ v (hess x v) := by
+    simpa [real_inner_comm] using
+      hessianSegmentDelta_inner_le_of_localNormUpper
+        (hess := hess) (s := s) (x := x) (y := y) (v := v)
+        (M := M) (lambda := lambda) hMlambda_lt hhess_cont hseg
+        hx_nonneg hz_nonneg hnorm_upper
+  have hlower :
+      - inner ℝ (hessianSegmentDelta hess x y v) v ≤
+        (M * lambda / (1 - M * lambda)) * inner ℝ v (hess x v) := by
+    simpa [real_inner_comm] using
+      hessianSegmentDelta_inner_neg_le_of_localNormLower
+        (hess := hess) (s := s) (x := x) (y := y) (v := v)
+        (M := M) (lambda := lambda) hM_nonneg hlambda_nonneg
+        hMlambda_lt hhess_cont hseg hx_nonneg hz_nonneg hnorm_lower
+  exact abs_le.2 ⟨by linarith, hupper⟩
+
+/--
 Concrete Delta quadratic-bound bridge.  The scalar Delta/order estimates
 control `inner step (Delta step)`; a remaining dual-energy/order hypothesis
 turns that scalar control into the full dual quadratic form needed by Chewi
@@ -2936,6 +3170,61 @@ theorem continuousLinearMap_adjointConj_isSymmetric_of_isSymmetric
       ((ContinuousLinearMap.adjoint coord).comp (delta.comp coord)) :=
     IsSelfAdjoint.adjoint_conj (T := delta) (S := coord) hself
   exact hconj.isSymmetric
+
+/--
+Quadratic form of an adjoint-conjugated operator.  This is the exact
+coordinate identity behind the normalized Delta Rayleigh quotient in Chewi
+Theorem 13.8.
+-/
+theorem adjointConj_inner_eq_delta_inner
+    [CompleteSpace E]
+    {delta normalized coord : E →L[ℝ] E}
+    (hnormalized_eq :
+      normalized = (ContinuousLinearMap.adjoint coord).comp (delta.comp coord))
+    (z : E) :
+    inner ℝ (normalized z) z = inner ℝ (delta (coord z)) (coord z) := by
+  rw [hnormalized_eq]
+  simpa using
+    (ContinuousLinearMap.adjoint_inner_left coord z (delta (coord z)))
+
+/--
+Normalize a concrete Delta absolute quadratic-form bound through the
+square-root coordinate map.
+-/
+theorem normalizedAdjointConj_absQuadBound_of_deltaAbsQuadBound
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {x : E}
+    {delta normalized coord sqrtH : E →L[ℝ] E} {coeff : ℝ}
+    (hnormalized_eq :
+      normalized = (ContinuousLinearMap.adjoint coord).comp (delta.comp coord))
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hsqrtH_coord : ∀ z : E, sqrtH (coord z) = z)
+    (hdelta_abs_quad : ∀ w : E,
+      |inner ℝ (delta w) w| ≤ coeff * inner ℝ w (hess x w)) :
+    ∀ z : E, |inner ℝ (normalized z) z| ≤ coeff * ‖z‖ ^ (2 : ℕ) := by
+  intro z
+  have hinner_eq :
+      inner ℝ (normalized z) z = inner ℝ (delta (coord z)) (coord z) :=
+    adjointConj_inner_eq_delta_inner
+      (delta := delta) (normalized := normalized) (coord := coord)
+      hnormalized_eq z
+  have hcoord_quad :
+      inner ℝ (coord z) (hess x (coord z)) = ‖z‖ ^ (2 : ℕ) := by
+    rw [hhess_eq]
+    calc
+      inner ℝ (coord z)
+          (((ContinuousLinearMap.adjoint sqrtH).comp sqrtH) (coord z))
+          = ‖sqrtH (coord z)‖ ^ (2 : ℕ) := by
+            simpa using
+              (ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right
+                sqrtH (coord z)).symm
+      _ = ‖z‖ ^ (2 : ℕ) := by rw [hsqrtH_coord z]
+  calc
+    |inner ℝ (normalized z) z|
+        = |inner ℝ (delta (coord z)) (coord z)| := by rw [hinner_eq]
+    _ ≤ coeff * inner ℝ (coord z) (hess x (coord z)) :=
+        hdelta_abs_quad (coord z)
+    _ = coeff * ‖z‖ ^ (2 : ℕ) := by rw [hcoord_quad]
 
 /--
 Dual quadratic-form factorization through an adjoint coordinate map.  If
@@ -4030,6 +4319,105 @@ theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_fac
       hnewton_linear hdual_factor hhess_factor hnormalized_eq
       hnormalized_abs_quad hx_inv_nonneg hstep_inv_nonneg hupper
       hstep_hess_nonneg
+
+/--
+Chewi Theorem 13.8 assembly where the normalized Rayleigh bound is discharged
+from the concrete two-sided local-norm sandwich along the Newton segment.  The
+remaining supplied data are the source square-root coordinate identities and
+the inverse-Hessian transport comparison.
+-/
+theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_localNormSandwich
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {normalized coord sqrtH : E →L[ℝ] E} {s : Set E} {x : E} {M : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x (newtonStep grad invHess x) t ∈ s)
+    (hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hnormalized_eq :
+      normalized =
+        (ContinuousLinearMap.adjoint coord).comp
+          ((hessianSegmentDelta hess x (newtonStep grad invHess x)).comp coord))
+    (hcoord_sqrtH : ∀ step : E, coord (sqrtH step) = step)
+    (hsqrtH_coord : ∀ z : E, sqrtH (coord z) = z)
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hx_hess_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hz_hess_nonneg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      0 ≤ inner ℝ w (hess (hessianSegmentPoint x
+        (newtonStep grad invHess x) t) w))
+    (hnorm_lower : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      (1 - M * newtonDecrement grad invHess x * t) *
+          localNorm hess x w ≤
+        localNorm hess (hessianSegmentPoint x
+          (newtonStep grad invHess x) t) w)
+    (hnorm_upper : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      localNorm hess (hessianSegmentPoint x
+          (newtonStep grad invHess x) t) w ≤
+        localNorm hess x w /
+          (1 - M * newtonDecrement grad invHess x * t))
+    (hx_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hstep_inv_nonneg : ∀ v : E,
+      0 ≤ inner ℝ v (invHess (newtonStep grad invHess x) v))
+    (hupper : ∀ v : E,
+      inner ℝ v (invHess (newtonStep grad invHess x) v) ≤
+        ((1 - M * newtonDecrement grad invHess x)⁻¹) ^ (2 : ℕ) *
+          inner ℝ v (invHess x v))
+    (hstep_hess_nonneg :
+      0 ≤ inner ℝ (newtonStep grad invHess x - x)
+        (hess x (newtonStep grad invHess x - x))) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  let lam := newtonDecrement grad invHess x
+  have hlam_nonneg : 0 ≤ lam := by
+    dsimp [lam, newtonDecrement]
+    exact dualLocalNorm_nonneg invHess x (grad x)
+  have hdelta_abs_quad : ∀ w : E,
+      |inner ℝ
+          (hessianSegmentDelta hess x (newtonStep grad invHess x) w) w| ≤
+        (M * lam / (1 - M * lam)) * inner ℝ w (hess x w) := by
+    intro w
+    simpa [lam] using
+      hessianSegmentDelta_abs_inner_le_of_localNormSandwich
+        (hess := hess) (s := s) (x := x)
+        (y := newtonStep grad invHess x) (v := w)
+        (M := M) (lambda := lam)
+        hM_nonneg hlam_nonneg (by simpa [lam] using hMlambda_lt)
+        hhess hseg hx_hess_nonneg hz_hess_nonneg
+        (by simpa [lam] using hnorm_lower)
+        (by simpa [lam] using hnorm_upper)
+  have hnormalized_abs_quad : ∀ z : E,
+      |inner ℝ (normalized z) z| ≤
+        (M * lam / (1 - M * lam)) * ‖z‖ ^ (2 : ℕ) :=
+    normalizedAdjointConj_absQuadBound_of_deltaAbsQuadBound
+      (hess := hess) (x := x)
+      (delta := hessianSegmentDelta hess x (newtonStep grad invHess x))
+      (normalized := normalized) (coord := coord) (sqrtH := sqrtH)
+      (coeff := M * lam / (1 - M * lam))
+      hnormalized_eq hhess_eq hsqrtH_coord hdelta_abs_quad
+  exact
+    chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta
+      (hess := hess) (grad := grad) (invHess := invHess)
+      (normalized := normalized) (coord := coord) (sqrtH := sqrtH)
+      (s := s) (x := x) (M := M)
+      hM_nonneg hMlambda_lt hstep_norm hhess hseg hsymm hgrad
+      hnewton_linear hnormalized_eq hcoord_sqrtH hinv_factor hhess_eq
+      (by simpa [lam] using hnormalized_abs_quad)
+      hx_inv_nonneg hstep_inv_nonneg hupper hstep_hess_nonneg
 
 /--
 Chewi Theorem 13.8 assembly from a unit bilinear estimate on the normalized

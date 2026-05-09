@@ -44,14 +44,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
 - Current priority sequence: Chapter 13 Theorem 13.8 source completion in
-  `StatInference/Optimization/InteriorPoint.lean`: first prove the concrete
-  square-root/normalized-operator factorization and op-norm bound for Delta,
-  preferably through either the pointwise squared normalized bound or the
-  unit-bilinear normalized bound for Delta, then feed it into the compiled
-  normalized-squared or normalized-unit-inner concrete-Delta decrement wrapper;
-  the concrete Delta action formula and scalar Delta/order-to-
-  `HessianDeltaQuadraticBound` bridges are already compiled.  Then remove
-  supplied inverse-Hessian comparison and
+  `StatInference/Optimization/InteriorPoint.lean`: the normalized Rayleigh
+  line now has a compiled route from the two-sided Lemma 13.6 local-norm
+  sandwich through concrete Delta absolute quadratic forms and the
+  adjoint-conjugate square-root coordinate identity.  Next discharge the
+  remaining source inputs for that wrapper: pointwise Newton-segment local-norm
+  sandwich at `z_t`, concrete square-root/inverse-Hessian coordinate
+  identities, and the inverse-Hessian quadratic upper comparison.  Then remove
   mixed-third-source interfaces when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
@@ -1429,7 +1428,21 @@ coordinate-factorization packet adds
 `hessianPrimalFactor_of_adjointSqrt`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta`,
 deriving the Theorem 13.8 dual/primal square-root factors from coordinate
-identities.
+identities.  The newest local-norm-to-Rayleigh packet adds
+`hessianQuadraticLower_of_mul_le_localNorm`,
+`hessianQuadraticLower_of_mul_one_sub_localNorm_le`,
+`chewi138_hessianSegmentDelta_integral_neg_le_of_hessianLower`,
+`chewi138_hessianSegmentDelta_integral_neg_le_of_localNormLower`,
+`hessianSegmentDelta_inner_neg_le_of_localNormLower`,
+`hessianSegmentDelta_abs_inner_le_of_localNormSandwich`,
+`adjointConj_inner_eq_delta_inner`,
+`normalizedAdjointConj_absQuadBound_of_deltaAbsQuadBound`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_localNormSandwich`.
+This closes the normalized absolute quadratic-form obligation from a
+source-shaped two-sided local-norm sandwich plus square-root coordinate
+identities.  The live 13.8 blockers are now the source proof of the pointwise
+Newton-segment sandwich, the concrete coordinate identities, and the
+inverse-Hessian quadratic upper comparison.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the

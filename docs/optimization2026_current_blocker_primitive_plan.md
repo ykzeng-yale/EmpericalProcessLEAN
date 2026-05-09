@@ -319,35 +319,46 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`<v, invHess(x)v> = ||coord† v||^2`, and derives `hhess_factor` from
 	`hess x = sqrtH† sqrtH` using
 	`ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right`.
+	The newest local-norm-to-Rayleigh packet adds
+	`hessianQuadraticLower_of_mul_le_localNorm`,
+	`hessianQuadraticLower_of_mul_one_sub_localNorm_le`,
+	`chewi138_hessianSegmentDelta_integral_neg_le_of_hessianLower`,
+	`chewi138_hessianSegmentDelta_integral_neg_le_of_localNormLower`,
+	`hessianSegmentDelta_inner_neg_le_of_localNormLower`,
+	`hessianSegmentDelta_abs_inner_le_of_localNormSandwich`,
+	`adjointConj_inner_eq_delta_inner`,
+	`normalizedAdjointConj_absQuadBound_of_deltaAbsQuadBound`, and
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_localNormSandwich`.
+	This proves the source Rayleigh route from the two-sided Lemma 13.6
+	local-norm sandwich: local lower control gives the negative Delta scalar
+	bound, local upper control gives the positive Delta scalar bound, the two
+	sides give `|<Delta w,w>|`, and `normalized = coord† Delta coord` plus
+	`sqrtH coord = id` transports it to
+	`|<normalized z,z>| <= coeff * ||z||^2`.
 
-Next theorem-sized target: prove the square-root/normalized-operator
-factorization and either the pointwise squared, unit-bilinear, or
-self-adjoint absolute-quadratic normalized bound for the concrete Delta
-operator.  On the Rayleigh path, prefer the compiled adjoint-conjugation
-factorized wrapper by proving `normalized = coord† Delta coord`,
-`coord sqrtH = id`, the dual/primal square-root factorization identities, and
-the normalized absolute quadratic-form bound; then feed the result through
-`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`
-or
-`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedUnitInnerConcreteDelta`
-or
-`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta`.
+Next theorem-sized target: discharge the remaining source hypotheses for the
+new local-norm-to-Rayleigh 13.8 wrapper.  Prefer first deriving the pointwise
+Newton-segment sandwich assumptions
+`(1 - M * lambda * t) * ||w||_x <= ||w||_{z_t}` and
+`||w||_{z_t} <= ||w||_x / (1 - M * lambda * t)` from the compiled Lemma 13.6
+source-radius theorem, using `z_t = (1-t)x+t x+`,
+`||z_t-x||_x = t * lambda`, and the Newton-step norm identity.  In parallel
+or immediately after, derive the square-root coordinate identities
+`normalized = coord† Delta coord`, `coord sqrtH = id`, `sqrtH coord = id`,
+`<v, invHess(x)v> = ||coord†v||^2`, and `hess x = sqrtH†sqrtH` from the
+concrete Hessian/inverse-Hessian model.  The inverse-Hessian quadratic upper
+comparison remains the other major supplied 13.8 input.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
   derive the needed inverse-Hessian quadratic upper comparison from Lemma
   13.6/matrix inverse order when moving beyond the supplied interface, and
-  prove the normalized source line for `Delta = hessianSegmentDelta hess x x+`:
-  identify `inner (Delta step) (invHess x (Delta step))` with
-  `||A (sqrtH step)||^2`, identify `inner step (hess x step)` with
-  `||sqrtH step||^2`, carry symmetry through the normalized square-root
-  coordinate operator when needed, and prove the pointwise squared estimate
-  `||A z||^2 <= (M * lambda / (1 - M * lambda))^2 * ||z||^2` or the unit
-  bilinear estimate
-  `<A u, v> <= M * lambda / (1 - M * lambda)` for unit `u` and `v`, or the
-  symmetric quadratic route: `(A : E ->L[ℝ] E)` is self-adjoint and
-  `|<A z,z>| <= (M * lambda / (1 - M * lambda)) * ||z||^2`.  The
-  conversion from any of these estimates to op norm, the final
+  derive the pointwise Newton-segment local-norm sandwich and square-root
+  coordinate identities required by
+  `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_localNormSandwich`.
+  The conversion from those inputs to the normalized Rayleigh bound, op norm,
+  Delta quadratic bound, residual bound, and final decrement estimate is
+  compiled; do not reprove it.
   `M * lambda^2 / (1 - M * lambda)^2` decrement algebra, and concrete residual
   identity are now compiled around this normalized route and the supplied
   inverse-Hessian transport blocker;
