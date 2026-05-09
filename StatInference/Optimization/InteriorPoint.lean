@@ -6334,6 +6334,109 @@ theorem positiveOrthantNegLog_localNorm_sq_eq_sum {d : ℕ}
   rw [localNorm_sq_eq_inner (positiveOrthantNegLogHessCLM_quadratic_nonneg hx v)]
   exact positiveOrthantNegLogHessCLM_quadratic_eq_sum x v
 
+/-- Coordinatewise square vector on finite Euclidean coordinates. -/
+noncomputable def positiveOrthantSquareVec {d : ℕ}
+    (z : EuclideanSpace ℝ (Fin d)) : EuclideanSpace ℝ (Fin d) :=
+  WithLp.toLp 2 fun i : Fin d => (z i) ^ (2 : ℕ)
+
+@[simp] theorem positiveOrthantSquareVec_apply {d : ℕ}
+    (z : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    positiveOrthantSquareVec z i = (z i) ^ (2 : ℕ) := by
+  simp [positiveOrthantSquareVec, PiLp.toLp_apply]
+
+theorem positiveOrthantSquareVec_norm_le_norm_sq {d : ℕ}
+    (z : EuclideanSpace ℝ (Fin d)) :
+    ‖positiveOrthantSquareVec z‖ ≤ ‖z‖ ^ (2 : ℕ) := by
+  refine (sq_le_sq₀ (norm_nonneg _) (sq_nonneg _)).mp ?_
+  rw [EuclideanSpace.real_norm_sq_eq, EuclideanSpace.real_norm_sq_eq]
+  have hsum :
+      ∑ i ∈ (Finset.univ : Finset (Fin d)),
+          ((z i) ^ (2 : ℕ)) ^ (2 : ℕ) ≤
+        (∑ i ∈ (Finset.univ : Finset (Fin d)), (z i) ^ (2 : ℕ)) ^ (2 : ℕ) :=
+    Finset.sum_sq_le_sq_sum_of_nonneg
+      (s := (Finset.univ : Finset (Fin d)))
+      (f := fun i : Fin d => (z i) ^ (2 : ℕ))
+      (by
+        intro i _hi
+        exact sq_nonneg (z i))
+  simpa using hsum
+
+set_option maxHeartbeats 1000000 in
+theorem positiveOrthantNegLog_localNorm_eq_sqrtCoord_norm {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
+    (v : EuclideanSpace ℝ (Fin d)) :
+    localNorm positiveOrthantNegLogHessCLM x v =
+      ‖(positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap v‖ := by
+  let S : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+    (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap
+  have hmodel :
+      positiveOrthantNegLogHessCLM x = (ContinuousLinearMap.adjoint S).comp S := by
+    simpa [S] using positiveOrthantNegLogHessCLM_sqrtCoord_model hx
+  have hquad :
+      inner ℝ v (positiveOrthantNegLogHessCLM x v) = ‖S v‖ ^ (2 : ℕ) := by
+    rw [hmodel]
+    simpa using (ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right S v).symm
+  change Real.sqrt (inner ℝ v (positiveOrthantNegLogHessCLM x v)) = ‖S v‖
+  rw [hquad]
+  exact Real.sqrt_sq (norm_nonneg (S v))
+
+theorem positiveOrthantNegLogThirdMixed_eq_neg_two_inner_sqrt_squareVec {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
+    (u v : EuclideanSpace ℝ (Fin d)) :
+    positiveOrthantNegLogThirdMixed x u v =
+      -2 * inner ℝ
+        ((positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap u)
+        (positiveOrthantSquareVec
+          ((positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap v)) := by
+  rw [PiLp.inner_apply, Finset.mul_sum]
+  unfold positiveOrthantNegLogThirdMixed negLogBarrierThird
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  have hxi : x i ≠ 0 := (hx i).ne'
+  simp [RCLike.inner_apply, hx]
+  field_simp [hxi]
+
+theorem positiveOrthantNegLog_mixedThird_bound {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
+    (u v : EuclideanSpace ℝ (Fin d)) :
+    |positiveOrthantNegLogThirdMixed x u v| ≤
+      2 * (1 : ℝ) * localNorm positiveOrthantNegLogHessCLM x u *
+        (localNorm positiveOrthantNegLogHessCLM x v) ^ (2 : ℕ) := by
+  let S : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+    (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap
+  have hthird :
+      positiveOrthantNegLogThirdMixed x u v =
+        -2 * inner ℝ (S u) (positiveOrthantSquareVec (S v)) := by
+    simpa [S] using
+      positiveOrthantNegLogThirdMixed_eq_neg_two_inner_sqrt_squareVec hx u v
+  have hinner :
+      |inner ℝ (S u) (positiveOrthantSquareVec (S v))| ≤
+        ‖S u‖ * ‖positiveOrthantSquareVec (S v)‖ :=
+    abs_real_inner_le_norm (S u) (positiveOrthantSquareVec (S v))
+  have hsquare :
+      ‖positiveOrthantSquareVec (S v)‖ ≤ ‖S v‖ ^ (2 : ℕ) :=
+    positiveOrthantSquareVec_norm_le_norm_sq (S v)
+  have hlocal_u :
+      localNorm positiveOrthantNegLogHessCLM x u = ‖S u‖ := by
+    simpa [S] using positiveOrthantNegLog_localNorm_eq_sqrtCoord_norm hx u
+  have hlocal_v :
+      localNorm positiveOrthantNegLogHessCLM x v = ‖S v‖ := by
+    simpa [S] using positiveOrthantNegLog_localNorm_eq_sqrtCoord_norm hx v
+  calc
+    |positiveOrthantNegLogThirdMixed x u v| =
+        2 * |inner ℝ (S u) (positiveOrthantSquareVec (S v))| := by
+      rw [hthird]
+      simp [abs_mul]
+    _ ≤ 2 * (‖S u‖ * ‖positiveOrthantSquareVec (S v)‖) := by
+      exact mul_le_mul_of_nonneg_left hinner (by norm_num)
+    _ ≤ 2 * (‖S u‖ * ‖S v‖ ^ (2 : ℕ)) := by
+      exact mul_le_mul_of_nonneg_left
+        (mul_le_mul_of_nonneg_left hsquare (norm_nonneg _)) (by norm_num)
+    _ = 2 * (1 : ℝ) * localNorm positiveOrthantNegLogHessCLM x u *
+        (localNorm positiveOrthantNegLogHessCLM x v) ^ (2 : ℕ) := by
+      rw [hlocal_u, hlocal_v]
+      ring
+
 /--
 Constructor for the finite positive-orthant product self-concordance
 certificate.  The remaining source work is exactly the finite weighted Cauchy
@@ -6355,6 +6458,12 @@ theorem positiveOrthantNegLog_mixedThirdSelfConcordantOn_of_bound {d : ℕ}
   mixed_third_bound := by
     intro x hx u v
     exact hbound hx u v
+
+theorem positiveOrthantNegLog_mixedThirdSelfConcordantOn {d : ℕ} :
+    MixedThirdSelfConcordantOn (positiveOrthant (d := d))
+  positiveOrthantNegLogHessCLM positiveOrthantNegLogThirdMixed 1 :=
+  positiveOrthantNegLog_mixedThirdSelfConcordantOn_of_bound
+    (fun _ hx u v => positiveOrthantNegLog_mixedThird_bound hx u v)
 
 theorem convex_positiveOrthant {d : ℕ} : Convex ℝ (positiveOrthant (d := d)) := by
   rw [positiveOrthant]

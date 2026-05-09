@@ -1552,10 +1552,16 @@ gradient oracle generic for central-path objectives.  The newest mixed-third
 preparation packet adds `positiveOrthantNegLogThirdMixed`,
 `positiveOrthantNegLogHessCLM_quadratic_eq_sum`,
 `positiveOrthantNegLogHessCLM_quadratic_nonneg`,
-`positiveOrthantNegLog_localNorm_sq_eq_sum`, and
-`positiveOrthantNegLog_mixedThirdSelfConcordantOn_of_bound`; the remaining
-self-concordance blocker is the finite weighted Cauchy bound for this concrete
-mixed-third oracle.
+`positiveOrthantNegLog_localNorm_sq_eq_sum`,
+`positiveOrthantSquareVec`, `positiveOrthantSquareVec_norm_le_norm_sq`,
+`positiveOrthantNegLog_localNorm_eq_sqrtCoord_norm`,
+`positiveOrthantNegLogThirdMixed_eq_neg_two_inner_sqrt_squareVec`,
+`positiveOrthantNegLog_mixedThird_bound`, and
+`positiveOrthantNegLog_mixedThirdSelfConcordantOn`.  The finite weighted
+Cauchy blocker is now closed for the concrete positive-orthant product
+barrier; next use this compiled certificate in the positive-orthant Theorem
+13.8 wrapper and focus on differentiability/Newton-linearization or the
+Proposition 13.11 barrier-calculus lift.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the

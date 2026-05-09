@@ -91,9 +91,12 @@ self-concordance/differentiability/Newton-linearization inputs to that wrapper.
 The easy self-concordance infrastructure now compiles through
 `positiveOrthantNegLogThirdMixed`,
 `positiveOrthantNegLogHessCLM_quadratic_nonneg`,
-`positiveOrthantNegLog_localNorm_sq_eq_sum`, and
-`positiveOrthantNegLog_mixedThirdSelfConcordantOn_of_bound`; next prove the
-finite weighted Cauchy mixed-third inequality for the concrete oracle.
+`positiveOrthantNegLog_localNorm_sq_eq_sum`,
+`positiveOrthantSquareVec_norm_le_norm_sq`,
+`positiveOrthantNegLogThirdMixed_eq_neg_two_inner_sqrt_squareVec`,
+`positiveOrthantNegLog_mixedThird_bound`, and
+`positiveOrthantNegLog_mixedThirdSelfConcordantOn`; the finite weighted
+Cauchy mixed-third inequality for the concrete oracle is closed.
 Next lift that model through a reusable Proposition 13.11 barrier-calculus
 interface or instantiate the actual finite-dimensional/
 matrix barrier Hessian model; all segment membership, `ψ` continuity,

@@ -455,11 +455,15 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`positiveOrthantNegLogThirdMixed`,
 	`positiveOrthantNegLogHessCLM_quadratic_eq_sum`,
 	`positiveOrthantNegLogHessCLM_quadratic_nonneg`,
-	`positiveOrthantNegLog_localNorm_sq_eq_sum`, and
-	`positiveOrthantNegLog_mixedThirdSelfConcordantOn_of_bound`.  This removes
-	the easy parts of the `MixedThirdSelfConcordantOn` assumption for the
-	positive-orthant product barrier; only the genuine finite weighted Cauchy
-	mixed-third inequality remains.
+	`positiveOrthantNegLog_localNorm_sq_eq_sum`,
+	`positiveOrthantSquareVec`, `positiveOrthantSquareVec_norm_le_norm_sq`,
+	`positiveOrthantNegLog_localNorm_eq_sqrtCoord_norm`,
+	`positiveOrthantNegLogThirdMixed_eq_neg_two_inner_sqrt_squareVec`,
+	`positiveOrthantNegLog_mixedThird_bound`, and
+	`positiveOrthantNegLog_mixedThirdSelfConcordantOn`.  The concrete
+	positive-orthant product barrier now has the full
+	`MixedThirdSelfConcordantOn ... 1` certificate; do not keep asking future
+	runs to prove the finite weighted Cauchy mixed-third inequality.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
@@ -473,11 +477,11 @@ normalized Delta bookkeeping from the model equalities.  The one-dimensional
 finite positive-orthant product now has the exact barrier parameter `d` plus
 compiled diagonal Hessian/inverse-Hessian square-root model equalities and a
 source-facing Theorem 13.8 positive-orthant wrapper.  Next discharge or package
-the finite weighted Cauchy bound for `positiveOrthantNegLogThirdMixed` to close
-`positiveOrthantNegLog_mixedThirdSelfConcordantOn_of_bound`, then discharge the
-remaining differentiability/Newton-linearization hypotheses for the
-positive-orthant barrier, or lift these product equalities into the full
-Proposition 13.11 barrier-calculus interface.  Do not redo the
+the compiled certificate `positiveOrthantNegLog_mixedThirdSelfConcordantOn`
+inside `chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment`,
+then discharge the remaining differentiability/Newton-linearization hypotheses
+for the positive-orthant barrier, or lift these product equalities into the
+full Proposition 13.11 barrier-calculus interface.  Do not redo the
 square-root/right-inverse/Hessian-nonnegativity model plumbing; use
 `chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment`.
 The Definition 13.7 norm identity,
