@@ -554,10 +554,16 @@ absolute Rayleigh bound.  The newest Newton-segment sandwich packet adds
 13.6 source-radius.  The newest source-Newton-segment assembly packet adds
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
 so the Rayleigh decrement route no longer asks callers to provide pointwise
-local-norm sandwich hypotheses.  After that, derive the inverse-Hessian
-comparison and coordinate identities from concrete matrix/order hypotheses and
-remove the remaining mixed-third supplied source interface through the real
-third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
+local-norm sandwich hypotheses.  The newest dual-transport packet adds
+`inverseHessianQuadraticUpper_of_dualLocalNorm_le_div`,
+`inverseHessianQuadraticUpper_of_dualLocalNorm_le_div_one_sub`, and
+`chewi138_newtonDecrement_step_le_of_dualLocalNormUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
+so the route now asks for the Chewi source-shaped dual-local-norm comparison
+instead of a raw inverse-Hessian quadratic upper comparison.  After that,
+derive the dual comparison and coordinate identities from concrete
+matrix/order hypotheses and remove the remaining mixed-third supplied source
+interface through the real third-derivative representation bridge to
+`MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

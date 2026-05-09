@@ -50,8 +50,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   adjoint-conjugate square-root coordinate identity, and the pointwise
   Newton-segment local-norm sandwich at `z_t` is compiled from the Lemma 13.6
   source-radius theorem.  Next discharge the concrete square-root/inverse-
-  Hessian coordinate identities and the inverse-Hessian quadratic upper
-  comparison.  Then remove mixed-third-source interfaces when bounded.
+  Hessian coordinate identities and prove the source dual-local-norm transport
+  comparison; the raw inverse-Hessian quadratic upper comparison is now a
+  compiled consequence of that dual norm bound.  Then remove mixed-third-source
+  interfaces when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
@@ -1448,8 +1450,15 @@ source-Newton-segment assembly packet adds
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
 feeding that sandwich into the 13.8 Rayleigh decrement wrapper and deriving
 segment membership/Hessian nonnegativity from convexity and
-`MixedThirdSelfConcordantOn`.  The live 13.8 blockers are now the concrete
-coordinate identities and the inverse-Hessian quadratic upper comparison.
+`MixedThirdSelfConcordantOn`.  The newest dual-transport packet adds
+`inverseHessianQuadraticUpper_of_dualLocalNorm_le_div`,
+`inverseHessianQuadraticUpper_of_dualLocalNorm_le_div_one_sub`, and
+`chewi138_newtonDecrement_step_le_of_dualLocalNormUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
+so a Chewi Lemma 13.6-style dual-local-norm upper comparison now supplies the
+raw inverse-Hessian quadratic upper comparison automatically.  The live 13.8
+blockers are now the concrete coordinate identities and the proof of that
+source dual-local-norm transport comparison from the Hessian/inverse-Hessian
+model.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
