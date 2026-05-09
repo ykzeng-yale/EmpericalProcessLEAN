@@ -44,12 +44,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
 - Current priority sequence: Chapter 13 Theorem 13.8 source completion in
-  `StatInference/Optimization/InteriorPoint.lean`: first lift the compiled
-  scalar Hessian-difference Delta integral bound to the vector residual
-  quadratic/operator estimate, then feed it through the existing decrement
-  assembly wrapper, then remove supplied inverse-Hessian comparison and
-  mixed-third-source interfaces when bounded.  Do not return to ASGD unless
-  Chapter 13 stalls or the user explicitly switches lanes.
+  `StatInference/Optimization/InteriorPoint.lean`: first prove the concrete
+  `HessianDeltaQuadraticBound` for the integrated Hessian-difference operator
+  and discharge `grad x+ = Delta (x+ - x)`, then feed those into the existing
+  Delta-operator decrement assembly wrapper, then remove supplied
+  inverse-Hessian comparison and mixed-third-source interfaces when bounded.
+  Do not return to ASGD unless Chapter 13 stalls or the user explicitly
+  switches lanes.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
   stale route replay, repeated broad searches, micro-packet commit overhead,
   and shared-worktree/build-artifact contention.  The active protocol is now:
@@ -76,8 +77,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
   route-planning loop and not an already-solved ASGD tower peel; it is the
-  Theorem 13.8 scalar-to-vector residual/Delta quadratic bound and its
-  connection to the compiled integrated Delta coefficient layer.  Broad
+  Theorem 13.8 concrete Delta operator quadratic bound and gradient residual
+  identity, using the compiled integrated Delta coefficient layer.  Broad
   searches, old Chapter 3 routing, ASGD routing, and repeated Git sync loops
   are explicitly out of budget unless they answer that blocker.
 - Latest ASGD source-variance route improvement: the active right compensated

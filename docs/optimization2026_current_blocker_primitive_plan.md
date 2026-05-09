@@ -226,20 +226,26 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`chewi138_hessianSegmentDelta_integral_le_of_localNormUpper`, turning
 	Lemma 13.6-style pointwise local-norm control along the segment into the
 	integrated scalar Hessian-difference bound used in the proof of Theorem
-	13.8.
+	13.8.  The newest Delta-operator residual packet adds
+	`HessianDeltaQuadraticBound`,
+	`dualLocalNorm_delta_le_of_hessianDeltaQuadraticBound`,
+	`chewi138_gradientResidual_dualLocalNorm_le_of_deltaQuadraticBound`, and
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_deltaQuadraticBound`,
+	so the final decrement wrapper now takes the source decomposition
+	`grad x+ = Delta (x+ - x)` plus a Delta operator quadratic bound instead
+	of a raw residual quadratic-form hypothesis.
 
-Next theorem-sized target: upgrade the scalar Hessian-difference Delta bound
-to the vector residual quadratic bound needed by the compiled Theorem 13.8
-assembly, then feed it through
-`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_residualQuadraticBound`.
+Next theorem-sized target: prove the concrete Delta operator quadratic bound
+from the scalar Hessian-difference integral/order facts, then discharge the
+residual identity `grad x+ = Delta (x+ - x)` from the fundamental theorem of
+calculus for the gradient along the Newton segment.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
   derive the needed inverse-Hessian quadratic upper comparison from Lemma
   13.6/matrix inverse order when moving beyond the supplied interface, and
-  prove the gradient residual quadratic bound by lifting the compiled scalar
-  Hessian-difference Delta integral bound to the source operator/quadratic-form
-  residual estimate.  The final
+  prove `HessianDeltaQuadraticBound` for the concrete integrated Hessian
+  difference operator from the scalar Delta/order estimates.  The final
   `M * lambda^2 / (1 - M * lambda)^2` decrement algebra is now compiled from
   these two supplied blockers;
 - connect the real third Frechet derivative or `iteratedFDeriv` representation

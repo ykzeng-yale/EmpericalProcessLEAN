@@ -465,13 +465,19 @@ coefficient-times-`B` residual bound on `[0,1]` into the closed coefficient
 `chewi138_hessianSegmentDelta_integral_le_of_hessianUpper`, and
 `chewi138_hessianSegmentDelta_integral_le_of_localNormUpper`, converting
 Lemma 13.6-style pointwise local-norm control along the segment into the
-integrated scalar Hessian-difference bound in Theorem 13.8.  The next Chapter
-13 packet should lift this scalar Delta estimate to the source vector residual
-quadratic/operator bound and feed it into the compiled Theorem 13.8 assembly;
-after that, derive the inverse-Hessian comparison from concrete matrix/order
-hypotheses and remove the remaining mixed-third supplied source interface
-through the real third-derivative representation bridge to
-`MixedThirdSelfConcordantOn`.
+integrated scalar Hessian-difference bound in Theorem 13.8.  The newest
+Delta-operator residual packet adds `HessianDeltaQuadraticBound`,
+`dualLocalNorm_delta_le_of_hessianDeltaQuadraticBound`,
+`chewi138_gradientResidual_dualLocalNorm_le_of_deltaQuadraticBound`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_deltaQuadraticBound`,
+replacing the raw residual quadratic-form hypothesis by the source
+decomposition `grad x+ = Delta (x+ - x)` plus a Delta operator quadratic
+bound.  The next Chapter 13 packet should prove that concrete Delta operator
+quadratic bound from the scalar Delta/order estimates and discharge the
+gradient residual identity by the fundamental theorem of calculus; after that,
+derive the inverse-Hessian comparison from concrete matrix/order hypotheses
+and remove the remaining mixed-third supplied source interface through the
+real third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,
