@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V168
+## Live In-Thread Goal Prompt V169
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -44,16 +44,19 @@ The threshold stopping-time layer also now compiles:
 `durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime`,
 `durrett2019_theorem_4_5_2_firstPredictableAbove_eq_top_of_forall_le`, and
 `durrett2019_theorem_4_5_2_firstPredictableAbove_survival_of_forall_le_ae`.
+The Theorem 4.4.6 stopped-convergence handoff also now compiles:
+`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_eLpNorm_two_bdd` and
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_eLpNorm_two_bdd`.
 
-Next aggressive step: prove the stopped-process convergence inputs consumed by
-`durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover` for the
-compiled threshold time
-`durrett2019_theorem_4_5_2_firstPredictableAbove A a`: show `X_{N_a ∧ n}` is
-the stopped martingale, prove the stopped increasing process is bounded by
-`a^2`, apply the compiled Theorem 4.5.1 maximal endpoint, and feed
-Theorem 4.4.6 to get a.e. finite convergence.  Then package the countable
-threshold cover of `{A∞ < ∞}`.  Do not route back into Chapter 4.4 plumbing or
-the already
+Next aggressive step: prove the uniform stopped `L^2` bound consumed by
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_eLpNorm_two_bdd`
+for the compiled threshold time
+`durrett2019_theorem_4_5_2_firstPredictableAbove A a`: show the stopped
+increasing process is bounded by `a^2`, apply the compiled Theorem 4.5.1
+maximal endpoint to the stopped martingale, and convert the resulting maximal
+estimate into the required terminal `eLpNorm` bound.  Then package the
+countable threshold cover of `{A∞ < ∞}`.  Do not route back into Chapter 4.4
+plumbing or the already
 compiled finite-maximum, ordinary second-moment, monotone-iSup,
 running-supremum identification, supplied-`A∞`, canonical `E X_n^2 = E A_n`,
 terminal monotone-limit, or conditional-variance finite-sum wrapper layers.

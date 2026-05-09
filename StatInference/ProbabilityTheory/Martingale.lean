@@ -14644,6 +14644,65 @@ theorem durrett2019_theorem_4_5_2_firstPredictableAbove_survival_of_forall_le_ae
       (A := A) (a := a) (ω := ω) (h_leω hE)
 
 /--
+Durrett 2019, Theorem 4.5.2 stopped-convergence handoff.
+
+Once the stopped martingale has the uniform `L^2` bound supplied by the
+Theorem 4.5.1 maximal estimate, Theorem 4.4.6 gives the stopped a.e. finite
+limit needed by the 4.5.2 event-cover bridge.
+-/
+theorem durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_eLpNorm_two_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {R : ℝ≥0}
+    (hX : Martingale X ℱ P) (hN : IsStoppingTime ℱ N)
+    (hR : ∀ n, eLpNorm (stoppedProcess X N n) (ENNReal.ofReal (2 : ℝ)) P ≤ R) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto (fun n => stoppedProcess X N n ω) atTop (𝓝 z) := by
+  have hStopped : Martingale (stoppedProcess X N) ℱ P :=
+    durrett2019_theorem_4_2_9_martingale_stoppedProcess hX hN
+  have hconv :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n => stoppedProcess X N n ω) atTop
+          (𝓝 (ℱ.limitProcess (stoppedProcess X N) P ω)) :=
+    durrett2019_theorem_4_4_6_martingale_ae_tendsto_limitProcess_of_eLpNorm_p_bdd
+      (P := P) (ℱ := ℱ) (X := stoppedProcess X N) hStopped
+      (p := 2) (R := R) (by norm_num) hR
+  filter_upwards [hconv] with ω hω
+  exact ⟨ℱ.limitProcess (stoppedProcess X N) P ω, hω⟩
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold-stopped convergence handoff.
+
+This specializes the preceding convergence wrapper to the threshold time
+`N_a = inf {n : A_{n+1} > a^2}`.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_eLpNorm_two_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {a : ℝ} {R : ℝ≥0}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hR : ∀ n,
+      eLpNorm
+        (stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n)
+        (ENNReal.ofReal (2 : ℝ)) P ≤ R) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto
+        (fun n =>
+          stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+            n ω)
+        atTop (𝓝 z) :=
+  durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_eLpNorm_two_bdd
+    (P := P) (ℱ := ℱ) (X := X)
+    (N := durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+    hX
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
+      (ℱ := ℱ) (A := A) a hA_predictable)
+    hR
+
+/--
 Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two
 square-integrable martingales.
 
