@@ -4864,6 +4864,125 @@ theorem inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inv
       rw [hadj_eq]
 
 /--
+Chewi Proposition 13.11, shared-domain sum case, with the summed inverse-local
+identity and the component Cauchy bridges both discharged from right-inverse
+and square-root coordinate data.
+-/
+theorem SelfConcordantBarrierOn.sum_of_adjointCoord_right_inverse
+    [CompleteSpace E]
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E} {invHess : E -> E →L[ℝ] E}
+    {invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M nu₁ nu₂ : ℝ}
+    {coord₁ sqrtH₁ coord₂ sqrtH₂ : E -> E →L[ℝ] E}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂)
+    (hsum_right : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      barrierSumHess hess₁ hess₂ x (invHess x v) = v)
+    (hcoord₁_sqrtH₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ step : E,
+      coord₁ x (sqrtH₁ x step) = step)
+    (hsqrtH₁_coord₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ z : E,
+      sqrtH₁ x (coord₁ x z) = z)
+    (hright₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ v : E,
+      hess₁ x (invHess₁ x v) = v)
+    (hhess₁_eq : ∀ ⦃x : E⦄, x ∈ s₁ ->
+      hess₁ x = (ContinuousLinearMap.adjoint (sqrtH₁ x)).comp (sqrtH₁ x))
+    (hcoord₂_sqrtH₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ step : E,
+      coord₂ x (sqrtH₂ x step) = step)
+    (hsqrtH₂_coord₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ z : E,
+      sqrtH₂ x (coord₂ x z) = z)
+    (hright₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ v : E,
+      hess₂ x (invHess₂ x v) = v)
+    (hhess₂_eq : ∀ ⦃x : E⦄, x ∈ s₂ ->
+      hess₂ x = (ContinuousLinearMap.adjoint (sqrtH₂ x)).comp (sqrtH₂ x)) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) := by
+  have hinv_nonneg : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      0 ≤ inner ℝ v (invHess x v) := by
+    intro x hx v
+    exact inverseHessianQuadratic_nonneg_of_hessian_right_inverse
+      (hess := barrierSumHess hess₁ hess₂) (invHess := invHess) (x := x)
+      (by
+        intro w
+        exact barrierSumHess_quadratic_nonneg hess₁ hess₂ x w
+          (hbar₁.self_concordant.hess_nonneg hx.1)
+          (hbar₂.self_concordant.hess_nonneg hx.2))
+      (hsum_right hx) v
+  have hsum_inv_local : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      localNorm (barrierSumHess hess₁ hess₂) x (invHess x v) =
+        dualLocalNorm invHess x v := by
+    intro x hx v
+    exact localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse
+      (hess := barrierSumHess hess₁ hess₂) (invHess := invHess) (x := x)
+      (by
+        intro w
+        exact barrierSumHess_quadratic_nonneg hess₁ hess₂ x w
+          (hbar₁.self_concordant.hess_nonneg hx.1)
+          (hbar₂.self_concordant.hess_nonneg hx.2))
+      (hsum_right hx) v
+  have hinv₁_factor : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ v : E,
+      inner ℝ v (invHess₁ x v) =
+        ‖(ContinuousLinearMap.adjoint (coord₁ x)) v‖ ^ (2 : ℕ) := by
+    intro x hx v
+    exact inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse
+      (hess := hess₁) (invHess := invHess₁) (x := x)
+      (coord := coord₁ x) (sqrtH := sqrtH₁ x)
+      (hsqrtH₁_coord₁ hx) (hhess₁_eq hx) (hright₁ hx) v
+  have hinv₂_factor : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ v : E,
+      inner ℝ v (invHess₂ x v) =
+        ‖(ContinuousLinearMap.adjoint (coord₂ x)) v‖ ^ (2 : ℕ) := by
+    intro x hx v
+    exact inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse
+      (hess := hess₂) (invHess := invHess₂) (x := x)
+      (coord := coord₂ x) (sqrtH := sqrtH₂ x)
+      (hsqrtH₂_coord₂ hx) (hhess₂_eq hx) (hright₂ hx) v
+  exact hbar₁.sum_of_adjointCoord_cauchy hbar₂ hinv_nonneg hsum_inv_local
+    hcoord₁_sqrtH₁ hinv₁_factor hhess₁_eq
+    hcoord₂_sqrtH₂ hinv₂_factor hhess₂_eq
+
+/--
+Source-facing version of the previous theorem for Chewi Proposition 13.11(1).
+The remaining model-specific obligation is to instantiate the summed
+inverse-Hessian oracle as a right inverse of the summed Hessian.
+-/
+theorem chewi1311_sum_selfConcordantBarrierOn_of_adjointCoord_right_inverse
+    [CompleteSpace E]
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E} {invHess : E -> E →L[ℝ] E}
+    {invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M nu₁ nu₂ : ℝ}
+    {coord₁ sqrtH₁ coord₂ sqrtH₂ : E -> E →L[ℝ] E}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂)
+    (hsum_right : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      barrierSumHess hess₁ hess₂ x (invHess x v) = v)
+    (hcoord₁_sqrtH₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ step : E,
+      coord₁ x (sqrtH₁ x step) = step)
+    (hsqrtH₁_coord₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ z : E,
+      sqrtH₁ x (coord₁ x z) = z)
+    (hright₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ v : E,
+      hess₁ x (invHess₁ x v) = v)
+    (hhess₁_eq : ∀ ⦃x : E⦄, x ∈ s₁ ->
+      hess₁ x = (ContinuousLinearMap.adjoint (sqrtH₁ x)).comp (sqrtH₁ x))
+    (hcoord₂_sqrtH₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ step : E,
+      coord₂ x (sqrtH₂ x step) = step)
+    (hsqrtH₂_coord₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ z : E,
+      sqrtH₂ x (coord₂ x z) = z)
+    (hright₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ v : E,
+      hess₂ x (invHess₂ x v) = v)
+    (hhess₂_eq : ∀ ⦃x : E⦄, x ∈ s₂ ->
+      hess₂ x = (ContinuousLinearMap.adjoint (sqrtH₂ x)).comp (sqrtH₂ x)) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) :=
+  hbar₁.sum_of_adjointCoord_right_inverse hbar₂ hsum_right
+    hcoord₁_sqrtH₁ hsqrtH₁_coord₁ hright₁ hhess₁_eq
+    hcoord₂_sqrtH₂ hsqrtH₂_coord₂ hright₂ hhess₂_eq
+
+/--
 Generic normalized-operator route for Chewi Theorem 13.8.  If a Delta operator
 factors through a square-root coordinate system so that the dual quadratic form
 is `||A sqrtH(step)||^2`, and the Hessian quadratic form is

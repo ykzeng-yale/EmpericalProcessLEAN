@@ -178,6 +178,14 @@ Theorem 13.8.  Search-first result: mathlib has raw Cauchy/positive-operator
 APIs, but the local supplied-oracle theorem is the right abstraction here.
 The exact unsupplied sum rule is now concentrated on the canonical summed
 inverse-Hessian/inverse-local identity, not on component Cauchy.
+The follow-up right-inverse packet adds
+`SelfConcordantBarrierOn.sum_of_adjointCoord_right_inverse` and
+`chewi1311_sum_selfConcordantBarrierOn_of_adjointCoord_right_inverse`.  It
+derives the summed inverse-local identity from a right-inverse identity for
+`barrierSumHess`, and derives the component inverse quadratic factors from
+component Hessian right-inverses plus square-root coordinate models.  The
+remaining exact Proposition 13.11(1) blocker is to instantiate the canonical
+summed inverse-Hessian oracle and prove that right-inverse identity.
 
 Latest affine-preimage update: Proposition 13.11(3) now has a compiled
 supplied-oracle affine-preimage spine and an invertible-affine corollary.

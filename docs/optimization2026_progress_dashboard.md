@@ -82,6 +82,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   component Cauchy bridges from adjoint square-root coordinate models.  The
   exact unsupplied sum rule is now concentrated on the canonical summed
   inverse-Hessian/inverse-local identity.
+- Sum right-inverse gate shrink: the latest packet adds
+  `SelfConcordantBarrierOn.sum_of_adjointCoord_right_inverse` and
+  `chewi1311_sum_selfConcordantBarrierOn_of_adjointCoord_right_inverse`.
+  These wrappers derive the summed inverse-local identity from a right-inverse
+  identity for `barrierSumHess`, and derive the component inverse quadratic
+  factors from component Hessian right-inverses plus square-root coordinate
+  models.  The exact Proposition 13.11(1) blocker is now the model-specific
+  construction/proof that the canonical summed inverse-Hessian oracle is a
+  right inverse of the summed Hessian.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
   supplied-oracle form and for invertible affine maps.  Reusable declarations
   include `barrierAffinePreimageSet`, `barrierAffinePreimageHess`,

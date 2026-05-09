@@ -152,6 +152,13 @@ the component Cauchy bridges from explicit adjoint square-root coordinate
 models, reusing `dualPrimalCauchy_of_adjointCoordSqrt`.  Thus the remaining
 exact sum-rule proof debt is the canonical summed inverse-Hessian /
 inverse-local identity for `barrierSumHess`, not another Cauchy proof.
+The next wrapper
+`chewi1311_sum_selfConcordantBarrierOn_of_adjointCoord_right_inverse` derives
+that inverse-local identity from a right-inverse identity for `barrierSumHess`
+and derives the component inverse quadratic factors from component Hessian
+right-inverses plus the same square-root coordinate models.  The unsupplied
+sum rule is now reduced to proving the model-specific canonical summed
+inverse-Hessian oracle is a right inverse of the summed Hessian.
 
 The affine-preimage case has a compiled supplied-oracle spine and an
 invertible-affine corollary.  Use `barrierAffinePreimageSet`,
