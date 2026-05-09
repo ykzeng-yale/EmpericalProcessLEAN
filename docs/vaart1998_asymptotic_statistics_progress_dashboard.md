@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 Taylor-zero OP bridge`).
+(`Add Vaart theorem 5.41 absorbing tightness bridge`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -623,7 +623,7 @@ Current packet verification passed for:
 
 New verified source bridge:
 
-- `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero`
+- `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_absorbingResidual`
 
 Live continuation prompt: use the efficient prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
@@ -638,12 +638,14 @@ law-tail and explicit `O_P(1)` derivative-norm Theorem 5.41 handoffs, including
 the canonical, projected, common-vector-law, score-representation, and
 derivative-bound, finite-derivative strong-law, and action-bound
 specializations of the `O_P(1)` route.
-Move next to a model-specific proof of the Taylor zero display and negligible
-residual, or use a genuinely model-specific derivative or score representation
-that removes a live endpoint hypothesis.  Do not replay solved Chapter 2-4
+Move next to a model-specific proof that the derivative and second-derivative
+Taylor residuals produce the absorbable `o_P(1)` coefficient consumed by the
+new self-localization bridge, or use a genuinely model-specific derivative or
+score representation that removes a live endpoint hypothesis.  Do not replay
+solved Chapter 2-4
 infrastructure,
 canonical/projected/common-vector/score-representation/derivative-bound/finite
-strong-law/action-bound/law-tail/display-congruence/display-convergence/display-weak-convergence/score-equation-OP/Taylor-zero-OP
+strong-law/action-bound/law-tail/display-congruence/display-convergence/display-weak-convergence/score-equation-OP/Taylor-zero-OP/absorbing-tightness
 wrappers, earlier Theorem 5.41 wrappers, or historical ledger items.
 
 ## Reuse Dependencies

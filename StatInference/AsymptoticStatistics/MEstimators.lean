@@ -2278,6 +2278,183 @@ theorem vaart1998_stochasticBounded_of_norm_le_mul_stochasticBounded
   exact lt_of_le_of_lt hle hsum_lt
 
 /--
+van der Vaart 1998, Theorem 5.41, absorbing random-coefficient tightness
+criterion.
+
+This is the non-circular probability bookkeeping behind the tightness step in
+the Z-estimator proof.  If `X_n` satisfies
+`||X_n|| <= C ||score_n|| + a_n ||X_n||`, the score is `O_P(1)`, and
+`a_n = o_P(1)`, then `X_n = O_P(1)`: on the high-probability event
+`a_n < 1 / 2`, the last term is absorbed into the left-hand side.
+-/
+theorem vaart1998_stochasticBounded_of_absorbing_norm_bound
+    {Ω Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P]
+    [SeminormedAddCommGroup Score] [SeminormedAddCommGroup Θ]
+    {score : ℕ -> Ω -> Score} {coefficient : ℕ -> Ω -> ℝ}
+    {X : ℕ -> Ω -> Θ} {C : ℝ}
+    (hC : 0 < C)
+    (hScore : StochasticBounded P score)
+    (hCoefficient : TendstoInMeasure P coefficient atTop 0)
+    (hBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖X n ω‖ ≤ C * ‖score n ω‖ + coefficient n ω * ‖X n ω‖) :
+    StochasticBounded P X := by
+  intro ε hε
+  have hhalf_pos : 0 < ε / 2 := by linarith
+  rcases hScore (ε / 2) hhalf_pos with ⟨K, hKpos, hScore_tail⟩
+  let M : ℝ := max 1 (2 * C * K)
+  have hMpos : 0 < M := lt_of_lt_of_le zero_lt_one (le_max_left _ _)
+  refine ⟨M, hMpos, ?_⟩
+  have hCoefficient_tail :
+      Tendsto
+        (fun n : ℕ => P.real {ω : Ω | (1 / 2 : ℝ) ≤ ‖coefficient n ω - 0‖})
+        atTop (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm.mp hCoefficient)
+      (1 / 2) (by norm_num : (0 : ℝ) < 1 / 2)
+  have hCoefficient_small :
+      ∀ᶠ n in atTop,
+        P.real {ω : Ω | (1 / 2 : ℝ) ≤ ‖coefficient n ω - 0‖} < ε / 2 :=
+    hCoefficient_tail.eventually_lt_const hhalf_pos
+  filter_upwards [hBound, hScore_tail, hCoefficient_small] with
+    n hbound hscore_tail hcoef_tail
+  have hsubset :
+      {ω : Ω | M ≤ ‖X n ω‖} ⊆
+        {ω : Ω | (1 / 2 : ℝ) ≤ ‖coefficient n ω - 0‖} ∪
+          {ω : Ω | K ≤ ‖score n ω‖} := by
+    intro ω hω
+    by_cases hcoef : (1 / 2 : ℝ) ≤ ‖coefficient n ω - 0‖
+    · exact Or.inl hcoef
+    · right
+      by_contra hscore
+      have hcoef_lt_abs : ‖coefficient n ω‖ < (1 / 2 : ℝ) := by
+        simpa [sub_zero] using not_le.mp hcoef
+      have hcoef_lt : coefficient n ω < (1 / 2 : ℝ) :=
+        lt_of_le_of_lt
+          (by
+            simpa [Real.norm_eq_abs] using
+              (le_abs_self (coefficient n ω)))
+          hcoef_lt_abs
+      have hscore_lt : ‖score n ω‖ < K := not_le.mp hscore
+      have hhalf_mul_le :
+          (1 / 2 : ℝ) * ‖X n ω‖ ≤ C * ‖score n ω‖ := by
+        have hmain := hbound ω
+        have hX_nonneg : 0 ≤ ‖X n ω‖ := norm_nonneg _
+        nlinarith [hmain, hcoef_lt, hX_nonneg]
+      have hX_le : ‖X n ω‖ ≤ 2 * C * ‖score n ω‖ := by
+        nlinarith [hhalf_mul_le]
+      have hX_lt : ‖X n ω‖ < 2 * C * K := by
+        have hmul_lt : 2 * C * ‖score n ω‖ < 2 * C * K := by
+          exact mul_lt_mul_of_pos_left hscore_lt (by positivity : 0 < 2 * C)
+        exact lt_of_le_of_lt hX_le hmul_lt
+      have hX_lt_M : ‖X n ω‖ < M :=
+        lt_of_lt_of_le hX_lt (le_max_right _ _)
+      exact not_lt_of_ge hω hX_lt_M
+  have hle :
+      P.real {ω : Ω | M ≤ ‖X n ω‖} ≤
+        P.real {ω : Ω | (1 / 2 : ℝ) ≤ ‖coefficient n ω - 0‖} +
+          P.real {ω : Ω | K ≤ ‖score n ω‖} :=
+    (measureReal_mono hsubset).trans
+      (measureReal_union_le
+        {ω : Ω | (1 / 2 : ℝ) ≤ ‖coefficient n ω - 0‖}
+        {ω : Ω | K ≤ ‖score n ω‖})
+  have hsum_lt :
+      P.real {ω : Ω | (1 / 2 : ℝ) ≤ ‖coefficient n ω - 0‖} +
+          P.real {ω : Ω | K ≤ ‖score n ω‖} < ε := by
+    linarith
+  exact lt_of_le_of_lt hle hsum_lt
+
+/--
+van der Vaart 1998, Theorem 5.41, a.e. absorbing random-coefficient tightness
+criterion.
+
+This is the same absorption argument as
+`vaart1998_stochasticBounded_of_absorbing_norm_bound`, but with the source
+inequality holding only almost surely for all sufficiently large `n`.  This is
+the form consumed by Taylor equations assembled from a.e. root and expansion
+identities.
+-/
+theorem vaart1998_stochasticBounded_of_absorbing_norm_bound_ae
+    {Ω Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P]
+    [SeminormedAddCommGroup Score] [SeminormedAddCommGroup Θ]
+    {score : ℕ -> Ω -> Score} {coefficient : ℕ -> Ω -> ℝ}
+    {X : ℕ -> Ω -> Θ} {C : ℝ}
+    (hC : 0 < C)
+    (hScore : StochasticBounded P score)
+    (hCoefficient : TendstoInMeasure P coefficient atTop 0)
+    (hBound : ∀ᶠ n in atTop, ∀ᵐ ω ∂P,
+      ‖X n ω‖ ≤ C * ‖score n ω‖ + coefficient n ω * ‖X n ω‖) :
+    StochasticBounded P X := by
+  intro ε hε
+  have hhalf_pos : 0 < ε / 2 := by linarith
+  rcases hScore (ε / 2) hhalf_pos with ⟨K, hKpos, hScore_tail⟩
+  let M : ℝ := max 1 (2 * C * K)
+  have hMpos : 0 < M := lt_of_lt_of_le zero_lt_one (le_max_left _ _)
+  refine ⟨M, hMpos, ?_⟩
+  have hCoefficient_tail :
+      Tendsto
+        (fun n : ℕ => P.real {ω : Ω | (1 / 2 : ℝ) ≤ ‖coefficient n ω - 0‖})
+        atTop (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm.mp hCoefficient)
+      (1 / 2) (by norm_num : (0 : ℝ) < 1 / 2)
+  have hCoefficient_small :
+      ∀ᶠ n in atTop,
+        P.real {ω : Ω | (1 / 2 : ℝ) ≤ ‖coefficient n ω - 0‖} < ε / 2 :=
+    hCoefficient_tail.eventually_lt_const hhalf_pos
+  filter_upwards [hBound, hScore_tail, hCoefficient_small] with
+    n hbound_ae hscore_tail hcoef_tail
+  let tailSet : Set Ω := {ω : Ω | M ≤ ‖X n ω‖}
+  let coefficientBad : Set Ω :=
+    {ω : Ω | (1 / 2 : ℝ) ≤ ‖coefficient n ω - 0‖}
+  let scoreTail : Set Ω := {ω : Ω | K ≤ ‖score n ω‖}
+  have hsubset_ae : ∀ᵐ ω ∂P, ω ∈ tailSet -> ω ∈ coefficientBad ∪ scoreTail := by
+    filter_upwards [hbound_ae] with ω hbound
+    intro hω
+    by_cases hcoef : (1 / 2 : ℝ) ≤ ‖coefficient n ω - 0‖
+    · exact Or.inl hcoef
+    · right
+      by_contra hscore
+      have hcoef_lt_abs : ‖coefficient n ω‖ < (1 / 2 : ℝ) := by
+        simpa [coefficientBad, sub_zero] using not_le.mp hcoef
+      have hcoef_lt : coefficient n ω < (1 / 2 : ℝ) :=
+        lt_of_le_of_lt
+          (by
+            simpa [Real.norm_eq_abs] using
+              (le_abs_self (coefficient n ω)))
+          hcoef_lt_abs
+      have hscore_lt : ‖score n ω‖ < K := by
+        simpa [scoreTail] using not_le.mp hscore
+      have hhalf_mul_le :
+          (1 / 2 : ℝ) * ‖X n ω‖ ≤ C * ‖score n ω‖ := by
+        have hX_nonneg : 0 ≤ ‖X n ω‖ := norm_nonneg _
+        nlinarith [hbound, hcoef_lt, hX_nonneg]
+      have hX_le : ‖X n ω‖ ≤ 2 * C * ‖score n ω‖ := by
+        nlinarith [hhalf_mul_le]
+      have hX_lt : ‖X n ω‖ < 2 * C * K := by
+        have hmul_lt : 2 * C * ‖score n ω‖ < 2 * C * K := by
+          exact mul_lt_mul_of_pos_left hscore_lt (by positivity : 0 < 2 * C)
+        exact lt_of_le_of_lt hX_le hmul_lt
+      have hX_lt_M : ‖X n ω‖ < M :=
+        lt_of_lt_of_le hX_lt (le_max_right _ _)
+      exact not_lt_of_ge hω hX_lt_M
+  have hmeasure_le :
+      P tailSet ≤ P (coefficientBad ∪ scoreTail) :=
+    measure_mono_ae hsubset_ae
+  have hle_union : P.real tailSet ≤ P.real (coefficientBad ∪ scoreTail) := by
+    rw [measureReal_def, measureReal_def]
+    exact ENNReal.toReal_mono (measure_ne_top P _) hmeasure_le
+  have hle :
+      P.real tailSet ≤ P.real coefficientBad + P.real scoreTail :=
+    hle_union.trans (measureReal_union_le coefficientBad scoreTail)
+  have hsum_lt : P.real coefficientBad + P.real scoreTail < ε := by
+    have hcoef_tail' : P.real coefficientBad < ε / 2 := by
+      simpa [coefficientBad, Real.norm_eq_abs] using hcoef_tail
+    have hscore_tail' : P.real scoreTail < ε / 2 := by
+      simpa [scoreTail] using hscore_tail
+    linarith
+  exact lt_of_le_of_lt hle hsum_lt
+
+/--
 van der Vaart 1998, Theorem 5.41, derivative LLN residual.
 
 The derivative average satisfies an LLN in operator norm.  Multiplying its
@@ -2977,6 +3154,77 @@ theorem vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero
       (residual := residual) (scaledEstimator := scaledEstimator) (Z := Z)
       hLeftInverse hScoreCLT hResidual hResidual_meas hTaylorZero
   exact vaart1998_stochasticBounded_of_tendstoInDistribution hdist
+
+/--
+van der Vaart 1998, Theorem 5.41, non-circular scaled-estimator tightness from
+an absorbable Taylor-zero residual.
+
+The Taylor equation often yields
+`score_n + V x_n + residual_n = 0`, but the standard residual-negligibility
+lemmas need `x_n = O_P(1)` as an input.  This bridge proves that tightness
+first: after applying the inverse derivative, if the residual image is bounded
+by `a_n ||x_n||` with `a_n = o_P(1)`, the small random coefficient can be
+absorbed and the score tightness transfers to `x_n`.
+-/
+theorem vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_absorbingResidual
+    {Ω Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {score residual : ℕ -> Ω -> Score}
+    {coefficient : ℕ -> Ω -> ℝ}
+    {scaledEstimator : ℕ -> Ω -> Θ}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScore : StochasticBounded P score)
+    (hCoefficient : TendstoInMeasure P coefficient atTop 0)
+    (hResidualImageBound : ∀ᶠ n in atTop, ∀ᵐ ω ∂P,
+      ‖(-Vinv : Score →L[ℝ] Θ) (residual n ω)‖ ≤
+        coefficient n ω * ‖scaledEstimator n ω‖)
+    (hTaylorZero : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + V (scaledEstimator n ω) + residual n ω = 0) :
+    StochasticBounded P scaledEstimator := by
+  let L : Score →L[ℝ] Θ := (-Vinv : Score →L[ℝ] Θ)
+  let C : ℝ := ‖L‖ + 1
+  have hC : 0 < C := by
+    have hL_nonneg : 0 ≤ ‖L‖ := norm_nonneg L
+    linarith [hL_nonneg]
+  refine
+    vaart1998_stochasticBounded_of_absorbing_norm_bound_ae
+      (P := P) (score := score) (coefficient := coefficient)
+      (X := scaledEstimator) (C := C) hC hScore hCoefficient ?_
+  filter_upwards [hResidualImageBound] with n hResidualImageBound_n
+  filter_upwards [hTaylorZero n, hResidualImageBound_n] with
+    ω hTaylorZeroω hResidualImageBoundω
+  have hScoreEquation :
+      V (scaledEstimator n ω) = -(score n ω + residual n ω) := by
+    have hsum :
+        V (scaledEstimator n ω) + (score n ω + residual n ω) = 0 := by
+      simpa [add_assoc, add_comm, add_left_comm] using hTaylorZeroω
+    exact add_eq_zero_iff_eq_neg.mp hsum
+  have hScaled_eq :
+      scaledEstimator n ω = L (score n ω) + L (residual n ω) := by
+    calc
+      scaledEstimator n ω = Vinv (V (scaledEstimator n ω)) := by
+        rw [hLeftInverse]
+      _ = Vinv (-(score n ω + residual n ω)) := by
+        rw [hScoreEquation]
+      _ = L (score n ω + residual n ω) := by
+        simp [L]
+      _ = L (score n ω) + L (residual n ω) := by
+        simp [map_add]
+  have hsplit :
+      ‖scaledEstimator n ω‖ ≤ ‖L (score n ω)‖ + ‖L (residual n ω)‖ := by
+    simpa [hScaled_eq] using norm_add_le (L (score n ω)) (L (residual n ω))
+  have hScoreImage :
+      ‖L (score n ω)‖ ≤ C * ‖score n ω‖ := by
+    have hbase : ‖L (score n ω)‖ ≤ ‖L‖ * ‖score n ω‖ :=
+      L.le_opNorm (score n ω)
+    have hC_le : ‖L‖ * ‖score n ω‖ ≤ C * ‖score n ω‖ :=
+      mul_le_mul_of_nonneg_right (by simp [C]) (norm_nonneg _)
+    exact hbase.trans hC_le
+  exact hsplit.trans (add_le_add hScoreImage hResidualImageBoundω)
 
 /--
 van der Vaart 1998, Theorem 5.41, Taylor-zero handoff with separated

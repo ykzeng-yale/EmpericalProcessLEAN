@@ -701,9 +701,13 @@ Initial modules:
   `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_scoreEquation`,
   and the Taylor-zero `O_P(1)` packet adds
   `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero`,
-  so the remaining critical path should prove a model-specific Taylor zero
-  display and negligible residual, or move to a genuinely model-specific
-  derivative or score representation.
+  and the absorbing-tightness packet adds
+  `vaart1998_stochasticBounded_of_absorbing_norm_bound_ae` and
+  `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_absorbingResidual`,
+  so the remaining critical path should prove that the model-specific
+  derivative and second-derivative Taylor residuals produce the absorbable
+  `o_P(1)` coefficient, or move to a genuinely model-specific derivative or
+  score representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
