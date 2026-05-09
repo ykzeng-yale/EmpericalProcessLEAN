@@ -104,6 +104,37 @@ theorem vaart1998_stochasticBounded_of_law_real_norm_tail
   exact hmap ▸ hn
 
 /--
+Stochastic boundedness gives the corresponding law-tail criterion.
+
+This is the converse bookkeeping bridge to
+`vaart1998_stochasticBounded_of_law_real_norm_tail`: once `X_n` is
+a.e.-measurable, the `O_P(1)` tail bound can be stated equivalently as a tail
+bound for the laws `P.map X_n`.
+-/
+theorem vaart1998_law_real_norm_tail_of_stochasticBounded
+    {Ω E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [SeminormedAddCommGroup E] [MeasurableSpace E] [BorelSpace E]
+    {X : ℕ -> Ω -> E}
+    (hX : ∀ n, AEMeasurable (X n) P)
+    (hOP : StochasticBounded P X) :
+    ∀ ε : ℝ, 0 < ε ->
+      ∃ M : ℝ, 0 < M ∧
+        ∀ᶠ n in atTop, (P.map (X n)).real {x : E | M ≤ ‖x‖} < ε := by
+  intro ε hε
+  rcases hOP ε hε with ⟨M, hMpos, htail⟩
+  refine ⟨M, hMpos, ?_⟩
+  filter_upwards [htail] with n hn
+  have hset : MeasurableSet {x : E | M ≤ ‖x‖} :=
+    (isClosed_le continuous_const continuous_norm).measurableSet
+  have hmap :
+      (P.map (X n)).real {x : E | M ≤ ‖x‖} =
+        P.real {ω : Ω | M ≤ ‖X n ω‖} := by
+    rw [measureReal_def, measureReal_def]
+    rw [Measure.map_apply_of_aemeasurable (hX n) hset]
+    rfl
+  exact hmap ▸ hn
+
+/--
 Convergence in probability to a fixed finite value implies stochastic
 boundedness.
 

@@ -1002,15 +1002,19 @@ compiling:
    and envelope hypotheses directly into the compiled scaled-estimator
    conclusion:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductRawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+341. Chapter 2 stochastic boundedness law-tail converse: a.e.-measurable
+   `O_P(1)` sequences now provide the law-tail field used by the Theorem 5.41
+   law-tail wrappers:
+   `vaart1998_law_real_norm_tail_of_stochasticBounded`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 canonical score handoff`).
+(`Add Vaart stochastic bounded law-tail bridge`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by feeding the canonical raw-score
-CLT into the compiled derivative-norm Theorem 5.41 endpoint.  The score CLT
-source is now discharged for canonical iid product scores at this handoff
-level.
+asymptotic-normality route for Z-estimators by adding the converse bookkeeping
+bridge from `O_P(1)` to law tails.  Any a.e.-measurable scaled estimator with a
+compiled `StochasticBounded` proof can now feed the law-tail source expected by
+the current Theorem 5.41 wrappers.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.

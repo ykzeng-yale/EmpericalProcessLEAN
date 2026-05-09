@@ -613,10 +613,10 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 canonical score handoff`).
+(`Add Vaart stochastic bounded law-tail bridge`).
 Current packet verification passed for:
 
-- `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
+- `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
 - `lake build StatInference.AsymptoticStatistics.MEstimators`
 - `git diff --check`
 - proof-hole and credential-pattern scans on changed Vaart files
@@ -631,7 +631,9 @@ Lean packet first, then discharge exactly one live source field for the current
 endpoint.  The canonical product score-source packet now gives the
 projected-summand CLT, finite-vector score CLT, raw score CLT, and a
 derivative-norm Theorem 5.41 handoff.  Move next to the scaled-estimator
-law-tail/tightness field or a genuinely model-specific derivative
+law-tail/tightness field by feeding the new
+`vaart1998_law_real_norm_tail_of_stochasticBounded` bridge from a concrete
+`O_P(1)` source, or move to a genuinely model-specific derivative
 representation.  Do not replay solved Chapter 2-4 infrastructure, earlier
 Theorem 5.41 wrappers, or historical ledger items.
 
