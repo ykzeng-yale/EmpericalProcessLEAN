@@ -267,10 +267,20 @@ The finite-center support frontier is now sharpened by
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_succ`,
 and
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failures`.
+The half-scale product-pair adapter is now compiled as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_succ`:
+it turns the successor comparison at `epsilon / 2` into an `epsilon`-bad
+centered event with selected-net scale `4 * finiteNetHoeffdingUpper + eta`.
+The positive-sample and convergence handoffs are now compiled as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_pos`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale`,
+closing the scale/penalty packaging into the fixed-`M` stochastic-entropy
+consumer with `C = 4` and `A = 2`.
 The next blocker is to bound the explicit original/ghost finite-center failure
-probabilities and build the scale/epsilon adapter into the convergence
-consumer; an a.e. Hoeffding-support assumption is no longer the preferred
-frontier shape.
+probabilities through a fixed-sample Rademacher finite-center Hoeffding tail
+and a product-fiber upper-bound lift for the random selected cover; an a.e.
+Hoeffding-support assumption is no longer the preferred frontier shape.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

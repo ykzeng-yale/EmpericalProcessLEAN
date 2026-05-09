@@ -8771,3 +8771,21 @@ aggressive source step should control those two failure probabilities by
 finite-center Hoeffding/union bounds and separately build the scale/epsilon
 adapter into the convergence consumer; do not replace this with an a.e.
 Hoeffding-support assumption unless it is separately proved.
+
+2026-05-09 half-scale product-pair adapter:
+`Theorem243.lean` now proves
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_succ`.
+This instantiates the product-pair comparison at `epsilon / 2` and cover radius
+parameter `eta / 2`, converting the centered event to the desired
+`epsilon`-bad event and the selected-net target to the constant-scale
+`epsilon < dist (4 * finiteNetHoeffdingUpper + eta) 0`.
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_pos`
+removes the successor-index presentation, and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale`
+feeds the resulting comparison into the fixed-`M` stochastic-entropy consumer
+with scale `C = 4`, probability loss `A = 2`, and Chebyshev penalty
+`16 * M^2 / (n * (epsilon / 2)^2)`.  The scale/penalty packaging blocker is
+therefore closed.  The remaining aggressive source task is to bound the
+original/ghost finite-center failure probabilities by a fixed-sample
+Rademacher finite-center Hoeffding tail, then lift that tail through a
+product-fiber upper-bound lemma for the random selected cover.

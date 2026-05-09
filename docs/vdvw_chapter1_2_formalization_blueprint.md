@@ -2362,9 +2362,19 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_succ`,
    and
    `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failures`.
+   The half-scale product-pair adapter is now compiled as
+   `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_succ`;
+   it converts the successor comparison at `epsilon / 2` into an `epsilon`-bad
+   centered event with selected-net scale `4 * finiteNetHoeffdingUpper + eta`.
+   The positive-sample and convergence handoffs are compiled as
+   `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_pos`
+   and
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale`,
+   closing the scale/penalty route into the fixed-`M` entropy consumer.
    The remaining source route is to control the explicit original/ghost
-   finite-center failure probabilities by Hoeffding/finite-union bounds and to
-   build the scale/epsilon adapter into the convergence consumer.
+   finite-center failure probabilities by a fixed-sample Rademacher
+   finite-center Hoeffding tail and a product-fiber upper-bound lift for the
+   random selected cover.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
