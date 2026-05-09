@@ -8729,3 +8729,16 @@ to the original-or-ghost selected finite-net bad conclusion.  The remaining
 source route is measure-level transport from the sign-first/product-pair event
 into the original/ghost/sign product space, plus the selected finite-center
 Hoeffding side-condition support.
+
+2026-05-09 product-pair selected-event measure lower bound:
+`Theorem243.lean` now proves
+`ae_vdVWProductMeasure_rademacher_prod_productPair_vdVWRademacherSignVector`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_components`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_finiteCenter`,
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_ae_finiteCenter_succ`.
+Thus the countable sign-averaged Chebyshev source can feed the global
+product-pair selected finite-net event under the two a.e. selected
+finite-center side-condition inputs.  The remaining source route is the
+measure-level map/union-bound handoff from the sign-first/product-pair selected
+event to the original-or-ghost selected-net outer-probability comparison.

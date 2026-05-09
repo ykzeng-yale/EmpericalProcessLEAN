@@ -249,9 +249,15 @@ The product-pair bad-event measurability inputs are discharged by
 The product-pair selected-event pointwise projection is now compiled as
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent` and
 `VdVWTheorem243_productPairRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad`.
-The next blocker is measure-level transport from that sign-first/product-pair
-event into the original/ghost/sign selected-net comparison, together with the
-original and ghost selected finite-center Hoeffding side conditions.
+The product-pair selected-event measure lower bound is now compiled through
+`ae_vdVWProductMeasure_rademacher_prod_productPair_vdVWRademacherSignVector`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_components`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_finiteCenter`,
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_ae_finiteCenter_succ`.
+The next blocker is the measure-level map/union-bound handoff from the
+sign-first/product-pair selected event to the original-or-ghost selected-net
+outer-probability comparison.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
