@@ -13819,6 +13819,168 @@ theorem durrett2019_theorem_4_4_8_martingale_conditional_variance_formula
   ring
 
 /--
+Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two
+square-integrable martingales.
+
+The two cross terms vanish by Theorem 4.4.7, leaving only the product of the
+one-step increments.
+-/
+theorem durrett2019_exercise_4_4_9_two_martingales_product_integral_succ
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X Y : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P) (hY : Martingale Y ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hY_memLp_two : ∀ k, MemLp (Y k) (2 : ℝ≥0∞) P)
+    (k : ℕ) :
+    (∫ ω, X (k + 1) ω * Y (k + 1) ω ∂P) =
+      (∫ ω, X k ω * Y k ω ∂P) +
+        ∫ ω, (X (k + 1) ω - X k ω) * (Y (k + 1) ω - Y k ω) ∂P := by
+  have hXY_int : Integrable (fun ω => X k ω * Y k ω) P := by
+    simpa [Pi.mul_apply] using (hX_memLp_two k).integrable_mul (hY_memLp_two k)
+  have hdX_memLp :
+      MemLp (fun ω => X (k + 1) ω - X k ω) (2 : ℝ≥0∞) P := by
+    simpa [Pi.sub_apply] using (hX_memLp_two (k + 1)).sub (hX_memLp_two k)
+  have hdY_memLp :
+      MemLp (fun ω => Y (k + 1) ω - Y k ω) (2 : ℝ≥0∞) P := by
+    simpa [Pi.sub_apply] using (hY_memLp_two (k + 1)).sub (hY_memLp_two k)
+  have hX_dY_int :
+      Integrable (fun ω => X k ω * (Y (k + 1) ω - Y k ω)) P := by
+    simpa [Pi.mul_apply, Pi.sub_apply] using
+      (hX_memLp_two k).integrable_mul hdY_memLp
+  have hdX_Y_int :
+      Integrable (fun ω => (X (k + 1) ω - X k ω) * Y k ω) P := by
+    simpa [Pi.mul_apply, Pi.sub_apply] using
+      hdX_memLp.integrable_mul (hY_memLp_two k)
+  have hdX_dY_int :
+      Integrable
+        (fun ω => (X (k + 1) ω - X k ω) * (Y (k + 1) ω - Y k ω)) P := by
+    simpa [Pi.mul_apply, Pi.sub_apply] using hdX_memLp.integrable_mul hdY_memLp
+  have hCrossY_rev :
+      (∫ ω, (Y (k + 1) ω - Y k ω) * X k ω ∂P) = 0 :=
+    durrett2019_theorem_4_4_7_martingale_increment_mul_integral_eq_zero
+      (P := P) (ℱ := ℱ) (X := Y) hY hY_memLp_two k.le_succ
+      (hX.stronglyMeasurable k) (hX_memLp_two k)
+  have hCrossY :
+      (∫ ω, X k ω * (Y (k + 1) ω - Y k ω) ∂P) = 0 := by
+    calc
+      (∫ ω, X k ω * (Y (k + 1) ω - Y k ω) ∂P)
+          = ∫ ω, (Y (k + 1) ω - Y k ω) * X k ω ∂P := by
+              refine integral_congr_ae (ae_of_all P fun ω => ?_)
+              ring
+      _ = 0 := hCrossY_rev
+  have hCrossX :
+      (∫ ω, (X (k + 1) ω - X k ω) * Y k ω ∂P) = 0 :=
+    durrett2019_theorem_4_4_7_martingale_increment_mul_integral_eq_zero
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two k.le_succ
+      (hY.stronglyMeasurable k) (hY_memLp_two k)
+  have hExpand :
+      (fun ω => X (k + 1) ω * Y (k + 1) ω) =ᵐ[P]
+        fun ω =>
+          ((X k ω * Y k ω +
+              X k ω * (Y (k + 1) ω - Y k ω)) +
+            (X (k + 1) ω - X k ω) * Y k ω) +
+            (X (k + 1) ω - X k ω) * (Y (k + 1) ω - Y k ω) := by
+    exact ae_of_all P fun ω => by ring
+  calc
+    (∫ ω, X (k + 1) ω * Y (k + 1) ω ∂P)
+        = ∫ ω,
+            ((X k ω * Y k ω +
+                X k ω * (Y (k + 1) ω - Y k ω)) +
+              (X (k + 1) ω - X k ω) * Y k ω) +
+              (X (k + 1) ω - X k ω) * (Y (k + 1) ω - Y k ω) ∂P :=
+            integral_congr_ae hExpand
+    _ = ((∫ ω, X k ω * Y k ω ∂P) +
+            ∫ ω, X k ω * (Y (k + 1) ω - Y k ω) ∂P) +
+          (∫ ω, (X (k + 1) ω - X k ω) * Y k ω ∂P) +
+            ∫ ω, (X (k + 1) ω - X k ω) *
+              (Y (k + 1) ω - Y k ω) ∂P := by
+            change
+              (∫ ω,
+                ((((fun ω => X k ω * Y k ω) +
+                      fun ω => X k ω * (Y (k + 1) ω - Y k ω)) +
+                    fun ω => (X (k + 1) ω - X k ω) * Y k ω) +
+                  fun ω => (X (k + 1) ω - X k ω) *
+                    (Y (k + 1) ω - Y k ω)) ω ∂P) =
+                (((∫ ω, X k ω * Y k ω ∂P) +
+                    ∫ ω, X k ω * (Y (k + 1) ω - Y k ω) ∂P) +
+                  ∫ ω, (X (k + 1) ω - X k ω) * Y k ω ∂P) +
+                  ∫ ω, (X (k + 1) ω - X k ω) *
+                    (Y (k + 1) ω - Y k ω) ∂P
+            have hAdd1 :
+                (∫ ω,
+                  ((((fun ω => X k ω * Y k ω) +
+                        fun ω => X k ω * (Y (k + 1) ω - Y k ω)) +
+                      fun ω => (X (k + 1) ω - X k ω) * Y k ω) +
+                    fun ω => (X (k + 1) ω - X k ω) *
+                      (Y (k + 1) ω - Y k ω)) ω ∂P) =
+                  (∫ ω,
+                    (((fun ω => X k ω * Y k ω) +
+                        fun ω => X k ω * (Y (k + 1) ω - Y k ω)) +
+                      fun ω => (X (k + 1) ω - X k ω) * Y k ω) ω ∂P) +
+                    ∫ ω, (X (k + 1) ω - X k ω) *
+                      (Y (k + 1) ω - Y k ω) ∂P := by
+              simpa only [Pi.add_apply] using
+                (integral_add ((hXY_int.add hX_dY_int).add hdX_Y_int)
+                  hdX_dY_int)
+            have hAdd2 :
+                (∫ ω,
+                  (((fun ω => X k ω * Y k ω) +
+                      fun ω => X k ω * (Y (k + 1) ω - Y k ω)) +
+                    fun ω => (X (k + 1) ω - X k ω) * Y k ω) ω ∂P) =
+                  (∫ ω,
+                    ((fun ω => X k ω * Y k ω) +
+                      fun ω => X k ω * (Y (k + 1) ω - Y k ω)) ω ∂P) +
+                    ∫ ω, (X (k + 1) ω - X k ω) * Y k ω ∂P := by
+              simpa only [Pi.add_apply] using
+                (integral_add (hXY_int.add hX_dY_int) hdX_Y_int)
+            have hAdd3 :
+                (∫ ω,
+                  ((fun ω => X k ω * Y k ω) +
+                    fun ω => X k ω * (Y (k + 1) ω - Y k ω)) ω ∂P) =
+                  (∫ ω, X k ω * Y k ω ∂P) +
+                    ∫ ω, X k ω * (Y (k + 1) ω - Y k ω) ∂P := by
+              simpa only [Pi.add_apply] using
+                (integral_add hXY_int hX_dY_int)
+            rw [hAdd1, hAdd2, hAdd3]
+    _ = (∫ ω, X k ω * Y k ω ∂P) +
+        ∫ ω, (X (k + 1) ω - X k ω) *
+          (Y (k + 1) ω - Y k ω) ∂P := by
+          rw [hCrossY, hCrossX]
+          ring
+
+/--
+Durrett 2019, Exercise 4.4.9, finite product-covariance identity for two
+square-integrable martingales.
+
+This is the source display
+`E X_n Y_n - E X_0 Y_0 =
+sum_{m=1}^n E[(X_m-X_{m-1})(Y_m-Y_{m-1})]`, written over `range n` with the
+index `m = k + 1`.
+-/
+theorem durrett2019_exercise_4_4_9_two_martingales_product_integral_sub_initial_eq_sum_increment_products
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X Y : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P) (hY : Martingale Y ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hY_memLp_two : ∀ k, MemLp (Y k) (2 : ℝ≥0∞) P) :
+    ∀ n,
+      (∫ ω, X n ω * Y n ω ∂P) - (∫ ω, X 0 ω * Y 0 ω ∂P) =
+        ∑ k ∈ Finset.range n,
+          ∫ ω, (X (k + 1) ω - X k ω) * (Y (k + 1) ω - Y k ω) ∂P := by
+  intro n
+  induction n with
+  | zero =>
+      simp
+  | succ n ih =>
+      have hstep :=
+        durrett2019_exercise_4_4_9_two_martingales_product_integral_succ
+          (P := P) (ℱ := ℱ) (X := X) (Y := Y)
+          hX hY hX_memLp_two hY_memLp_two n
+      rw [Finset.sum_range_succ, hstep]
+      rw [← ih]
+      ring
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

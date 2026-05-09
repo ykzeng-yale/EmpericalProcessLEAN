@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V144
+## Live In-Thread Goal Prompt V145
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -14,15 +14,16 @@ synced `main`.  Active lane: Durrett Chapter 4.4 martingale maximal
 inequalities in `StatInference/ProbabilityTheory/Martingale.lean` plus the
 three Durrett route docs.  Treat compiled Chapter 2, Chapter 3, Chapter 4.1
 through Theorem 4.1.15, Chapter 4.2, Chapter 4.3, and Chapter 4.4 through
-Exercise 4.4.6's stopped-variance handoff and Example 4.4.9 as closed support
-unless the next theorem directly needs one API.
+Exercise 4.4.9 as closed support unless the next theorem directly needs one
+API.
 
 Current compiled packet: Exercise 4.4.6 now has finite absolute-exit objects,
 first-exit small-ball assembly, bounded-increment overshoot packaging,
 automatic stopped-value integrability from the square martingale, and the
 deterministic variance-clock / exact-denominator wrappers, plus the
 variable-variance square-martingale source bridge and the natural-filtration
-independent-increment endpoint:
+independent-increment endpoint.  Exercise 4.4.9 now has the two-martingale
+product-covariance recurrence and finite-sum source display:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -43,21 +44,27 @@ and the source-facing
 `durrett2019_exercise_4_4_6_linearRandomWalk_squareMinusVarianceClock_martingale_of_iIndepFun_zeroMean_secondMoments`,
 and
 `durrett2019_exercise_4_4_6_linearRandomWalk_smallBall_bound_of_iIndepFun_zeroMean_secondMoments`,
+plus
+`durrett2019_exercise_4_4_9_two_martingales_product_integral_succ` and
+`durrett2019_exercise_4_4_9_two_martingales_product_integral_sub_initial_eq_sum_increment_products`,
 as well as the earlier first-exit/stopped-variance handoff declarations.  Do
 not route back into optional-stopping, overshoot, stopped-integrability,
 deterministic-clock, exact-denominator, square-martingale-source, or
-natural-filtration independent-increment 4.4.6 plumbing.
+natural-filtration independent-increment 4.4.6 plumbing, or Exercise 4.4.9
+product-covariance plumbing.
 
-Next aggressive step: move forward to a theorem-sized Exercise 4.4.7 or
-4.4.9-4.4.11 packet with the largest compileable reuse.  Prefer packaging the
-remaining local Chapter 4.4 orthogonality/variance identities around the
-already compiled Theorem 4.4.7 and Theorem 4.4.8 support, then use them where
-they unlock the branching-process or random-walk applications.  Do not loop
-back to already compiled Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9,
-Exercise 4.4.5, Exercise 4.4.6, Theorem 4.4.1 plumbing, or the first-exit
-overshoot/stopped-integrability/deterministic-clock/exact-denominator/
-square-martingale-source/natural-filtration layer.  Theorem 4.1.16 remains
-deferred unless a targeted kernel search finds a direct source-shaped API.
+Next aggressive step: move forward to Exercise 4.4.10 or 4.4.11 with the
+largest compileable reuse.  For Exercise 4.4.10, use the new Exercise 4.4.9
+finite product identity with `Y = X` to prove finite second-moment Cauchy /
+increment-square tail identities, then feed the existing Theorem 4.4.6 `L^2`
+convergence wrappers where possible.  For Exercise 4.4.11, combine the
+predictable-transform theorem 4.2.8 support with the square-summability
+hypothesis for scaled increments.  Do not loop back to already compiled Chapter
+4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises 4.4.5-4.4.9, Theorem 4.4.1
+plumbing, or the first-exit overshoot/stopped-integrability/deterministic-clock/
+exact-denominator/square-martingale-source/natural-filtration layer.  Theorem
+4.1.16 remains deferred unless a targeted kernel search finds a direct
+source-shaped API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
