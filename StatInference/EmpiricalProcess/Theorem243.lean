@@ -15387,6 +15387,218 @@ theorem measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_fixed_c
       hsample hweights hcenter_meas
 
 /--
+Nat-indexed view of sample-selected empirical-cover centers.
+
+For in-range natural indices this is the selected cover center; the out-of-range
+default is never used by the finite-center predicates below, but it gives a
+nondependent value that can appear in measurable-selector assumptions.
+-/
+noncomputable def VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    [Inhabited Index]
+    (indexClass : Set Index)
+    (classFun : Index -> Observation -> ℝ) (envelope : Observation -> ℝ)
+    (M eta : ℝ)
+    (cardinality : SampleAt Observation n -> ℕ)
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sample : SampleAt Observation n) (k : ℕ) : Index :=
+  if hk : k < cardinality sample then
+    (cover sample).center ⟨k, hk⟩
+  else
+    default
+
+@[simp]
+theorem VdVWFiniteEmpiricalL1CoverSelectedCenterAt_eq_of_lt
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    [Inhabited Index]
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M eta : ℝ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    {cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample)}
+    {sample : SampleAt Observation n} {k : ℕ}
+    (hk : k < cardinality sample) :
+    VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+        (Observation := Observation) (Index := Index) (n := n)
+        indexClass classFun envelope M eta cardinality cover sample k =
+      (cover sample).center ⟨k, hk⟩ := by
+  simp [VdVWFiniteEmpiricalL1CoverSelectedCenterAt, hk]
+
+/--
+Finite-center Hoeffding side conditions for selected cover centers can be
+checked through the Nat-indexed selected-center adapter.
+
+This is the proof-facing form of the selected-center measurability gap: a
+measurable-selector assumption only has to cover each natural coordinate on the
+event where that coordinate is in range.
+-/
+theorem VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    [Inhabited Index]
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M eta : ℝ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sign : Fin n -> ℝ) :
+    VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover sample).center sign M ↔
+      ∀ k : ℕ, k < cardinality sample ->
+        |vdVWWeightedSampleSum
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights sign)
+            (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+              (Observation := Observation) (Index := Index) (n := n)
+              indexClass classFun envelope M eta cardinality cover sample k)
+            sample| ≤
+          vdVWTheorem243FiniteNetMaximalUpper (cardinality sample)
+            (vdVWTheorem243HoeffdingCenterScale n M) := by
+  constructor
+  · intro hmax k hk
+    have hfin := hmax ⟨k, hk⟩
+    simpa
+      [VdVWTheorem243RademacherFiniteCenterHoeffdingBound,
+        VdVWTheorem243FiniteCenterMaximalBound,
+        VdVWFiniteEmpiricalL1CoverSelectedCenterAt, hk] using hfin
+  · intro hmax centerIndex
+    have hnat := hmax centerIndex.1 centerIndex.2
+    simpa
+      [VdVWTheorem243RademacherFiniteCenterHoeffdingBound,
+        VdVWTheorem243FiniteCenterMaximalBound,
+        VdVWFiniteEmpiricalL1CoverSelectedCenterAt, centerIndex.2] using hnat
+
+/--
+Selected-center measurability bridge for the finite-center Rademacher
+Hoeffding side condition.
+
+The remaining selector burden is deliberately explicit: for each natural
+coordinate, the in-range selected center must make the corresponding weighted
+sum inequality a measurable set.
+-/
+theorem measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt
+    {Ω : Type x} [MeasurableSpace Ω]
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {n : ℕ} (sample : Ω -> SampleAt Observation n)
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M eta : ℝ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sign : Ω -> SampleAt ℝ n)
+    (hSelector : ∀ k : ℕ,
+      MeasurableSet
+        {ω : Ω |
+          k < cardinality (sample ω) ->
+            |vdVWWeightedSampleSum
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (sign ω))
+                (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+                  (Observation := Observation) (Index := Index) (n := n)
+                  indexClass classFun envelope M eta cardinality cover
+                  (sample ω) k)
+                (sample ω)| ≤
+              vdVWTheorem243FiniteNetMaximalUpper
+                (cardinality (sample ω))
+                (vdVWTheorem243HoeffdingCenterScale n M)}) :
+    MeasurableSet
+      {ω : Ω |
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound (sample ω)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (sample ω)).center (sign ω) M} := by
+  have hNat :
+      MeasurableSet
+        {ω : Ω |
+          ∀ k : ℕ, k < cardinality (sample ω) ->
+            |vdVWWeightedSampleSum
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (sign ω))
+                (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+                  (Observation := Observation) (Index := Index) (n := n)
+                  indexClass classFun envelope M eta cardinality cover
+                  (sample ω) k)
+                (sample ω)| ≤
+              vdVWTheorem243FiniteNetMaximalUpper
+                (cardinality (sample ω))
+                (vdVWTheorem243HoeffdingCenterScale n M)} := by
+    rw [show
+        {ω : Ω |
+          ∀ k : ℕ, k < cardinality (sample ω) ->
+            |vdVWWeightedSampleSum
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (sign ω))
+                (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+                  (Observation := Observation) (Index := Index) (n := n)
+                  indexClass classFun envelope M eta cardinality cover
+                  (sample ω) k)
+                (sample ω)| ≤
+              vdVWTheorem243FiniteNetMaximalUpper
+                (cardinality (sample ω))
+                (vdVWTheorem243HoeffdingCenterScale n M)} =
+        ⋂ k : ℕ,
+          {ω : Ω |
+            k < cardinality (sample ω) ->
+              |vdVWWeightedSampleSum
+                  (vdVWTruncatedClassFun classFun envelope M)
+                  (vdVWRademacherWeights (sign ω))
+                  (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+                    (Observation := Observation) (Index := Index) (n := n)
+                    indexClass classFun envelope M eta cardinality cover
+                    (sample ω) k)
+                  (sample ω)| ≤
+                vdVWTheorem243FiniteNetMaximalUpper
+                  (cardinality (sample ω))
+                  (vdVWTheorem243HoeffdingCenterScale n M)} by
+          ext ω
+          simp]
+    exact MeasurableSet.iInter hSelector
+  have hEq :
+      {ω : Ω |
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound (sample ω)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (sample ω)).center (sign ω) M} =
+        {ω : Ω |
+          ∀ k : ℕ, k < cardinality (sample ω) ->
+            |vdVWWeightedSampleSum
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (sign ω))
+                (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+                  (Observation := Observation) (Index := Index) (n := n)
+                  indexClass classFun envelope M eta cardinality cover
+                  (sample ω) k)
+                (sample ω)| ≤
+              vdVWTheorem243FiniteNetMaximalUpper
+                (cardinality (sample ω))
+                (vdVWTheorem243HoeffdingCenterScale n M)} := by
+    ext ω
+    exact
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff
+        (Observation := Observation) (Index := Index) (n := n)
+        (sample := sample ω) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M) (eta := eta)
+        (cardinality := cardinality) cover (sign ω)
+  rw [hEq]
+  exact hNat
+
+/--
 Rademacher-sign specialization of the finite empirical-net Hoeffding handoff.
 
 This closes the deterministic passage from fixed signs to the current
@@ -37874,6 +38086,110 @@ noncomputable def VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
           (fun i : Fin n => (z.1 i, z.2.1 i))}
 
 /--
+Fiber membership for the concrete ghost/Rademacher pair-difference event.
+
+This is the proof-facing form of the remaining product-fiber lower bound: over
+a fixed original sample, a ghost/sign pair is in the fiber exactly when the
+sign support, the two selected finite-center side conditions, and the signed
+pair-difference bad event all hold.
+-/
+theorem
+    mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sample ghostSample : SampleAt Observation n) (sign : SampleAt ℝ n) :
+    (ghostSample, sign) ∈
+        (Prod.mk sample ⁻¹'
+          VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality)
+            (cover := cover)) ↔
+      VdVWRademacherSignVector sign ∧
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover sample).center sign M ∧
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound ghostSample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover ghostSample).center (fun i : Fin n => -sign i) M ∧
+        epsilon <
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            (vdVWRademacherWeights sign)
+            (fun i : Fin n => (sample i, ghostSample i)) := by
+  rfl
+
+/--
+Lower-bound transfer for fibers of the concrete ghost/Rademacher event.
+
+To prove the displayed Chebyshev `hfiber` obligation it is enough to exhibit an
+auxiliary ghost/sign event with the displayed beta lower bound, then prove that
+every point of that auxiliary event satisfies the four concrete components.
+-/
+theorem
+    VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_auxiliary_event
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sample : SampleAt Observation n)
+    {beta : ℝ≥0∞}
+    {auxiliaryEvent : Set (SampleAt Observation n × SampleAt ℝ n)}
+    (hbeta :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n)) auxiliaryEvent)
+    (hsubset :
+      ∀ z : SampleAt Observation n × SampleAt ℝ n, z ∈ auxiliaryEvent ->
+        VdVWRademacherSignVector z.2 ∧
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover sample).center z.2 M ∧
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover z.1).center (fun i : Fin n => -z.2 i) M ∧
+          epsilon <
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (vdVWRademacherWeights z.2)
+              (fun i : Fin n => (sample i, z.1 i))) :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n))
+          (Prod.mk sample ⁻¹'
+            VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon) (cardinality := cardinality)
+              (cover := cover)) := by
+  exact hbeta.trans
+    (measure_mono (by
+      intro z hz
+      exact
+        (mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          cover sample z.1 z.2).2 (hsubset z hz)))
+
+/--
 Measurability constructor for the concrete ghost/Rademacher pair-difference
 event.
 
@@ -38125,6 +38441,98 @@ theorem
       hsample hsign hcenter_meas
 
 /--
+Original-sample selected-center finite-center side condition is measurable once
+each Nat-indexed selected-center inequality is measurable on its in-range set.
+-/
+theorem
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_selectedCenterAt
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta : ℝ} {n : ℕ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hSelector : ∀ k : ℕ,
+      MeasurableSet
+        {z : SampleAt Observation n ×
+            (SampleAt Observation n × SampleAt ℝ n) |
+          k < cardinality z.1 ->
+            |vdVWWeightedSampleSum
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights z.2.2)
+                (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+                  (Observation := Observation) (Index := Index) (n := n)
+                  indexClass classFun envelope M eta cardinality cover z.1 k)
+                z.1| ≤
+              vdVWTheorem243FiniteNetMaximalUpper (cardinality z.1)
+                (vdVWTheorem243HoeffdingCenterScale n M)}) :
+    MeasurableSet
+      {z : SampleAt Observation n ×
+          (SampleAt Observation n × SampleAt ℝ n) |
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover z.1).center z.2.2 M} := by
+  let Ωevent : Type _ :=
+    SampleAt Observation n × (SampleAt Observation n × SampleAt ℝ n)
+  let sample : Ωevent -> SampleAt Observation n := fun z => z.1
+  let sign : Ωevent -> SampleAt ℝ n := fun z => z.2.2
+  simpa [Ωevent, sample, sign] using
+    measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt
+      (sample := sample) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M) (eta := eta)
+      (cardinality := cardinality) cover sign hSelector
+
+/--
+Ghost-sample selected-center finite-center side condition with negated signs is
+measurable from the corresponding Nat-indexed selected-center assumptions.
+-/
+theorem
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_selectedCenterAt
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta : ℝ} {n : ℕ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hSelector : ∀ k : ℕ,
+      MeasurableSet
+        {z : SampleAt Observation n ×
+            (SampleAt Observation n × SampleAt ℝ n) |
+          k < cardinality z.2.1 ->
+            |vdVWWeightedSampleSum
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (fun i : Fin n => -z.2.2 i))
+                (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+                  (Observation := Observation) (Index := Index) (n := n)
+                  indexClass classFun envelope M eta cardinality cover z.2.1 k)
+                z.2.1| ≤
+              vdVWTheorem243FiniteNetMaximalUpper (cardinality z.2.1)
+                (vdVWTheorem243HoeffdingCenterScale n M)}) :
+    MeasurableSet
+      {z : SampleAt Observation n ×
+          (SampleAt Observation n × SampleAt ℝ n) |
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.2.1
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover z.2.1).center (fun i : Fin n => -z.2.2 i) M} := by
+  let Ωevent : Type _ :=
+    SampleAt Observation n × (SampleAt Observation n × SampleAt ℝ n)
+  let sample : Ωevent -> SampleAt Observation n := fun z => z.2.1
+  let sign : Ωevent -> SampleAt ℝ n := fun z i => -z.2.2 i
+  simpa [Ωevent, sample, sign] using
+    measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt
+      (sample := sample) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M) (eta := eta)
+      (cardinality := cardinality) cover sign hSelector
+
+/--
 Countability-based event measurability constructor for the concrete
 ghost/Rademacher pair-difference event.
 
@@ -38176,6 +38584,74 @@ theorem
         (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) (M := M) (epsilon := epsilon)
         (n := n) hcount hclass henvelope_meas)
+
+/--
+Countability-based event measurability constructor with the selected-center
+measurable-selector assumptions exposed directly.
+-/
+theorem
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hmaxOriginalSelector : ∀ k : ℕ,
+      MeasurableSet
+        {z : SampleAt Observation n ×
+            (SampleAt Observation n × SampleAt ℝ n) |
+          k < cardinality z.1 ->
+            |vdVWWeightedSampleSum
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights z.2.2)
+                (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+                  (Observation := Observation) (Index := Index) (n := n)
+                  indexClass classFun envelope M eta cardinality cover z.1 k)
+                z.1| ≤
+              vdVWTheorem243FiniteNetMaximalUpper (cardinality z.1)
+                (vdVWTheorem243HoeffdingCenterScale n M)})
+    (hmaxGhostSelector : ∀ k : ℕ,
+      MeasurableSet
+        {z : SampleAt Observation n ×
+            (SampleAt Observation n × SampleAt ℝ n) |
+          k < cardinality z.2.1 ->
+            |vdVWWeightedSampleSum
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (fun i : Fin n => -z.2.2 i))
+                (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+                  (Observation := Observation) (Index := Index) (n := n)
+                  indexClass classFun envelope M eta cardinality cover z.2.1 k)
+                z.2.1| ≤
+              vdVWTheorem243FiniteNetMaximalUpper (cardinality z.2.1)
+                (vdVWTheorem243HoeffdingCenterScale n M)}) :
+    MeasurableSet
+      (VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (cover := cover)) := by
+  exact
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_maximal_components_countable
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinality := cardinality)
+      (cover := cover) hcount hclass henvelope_meas
+      (measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_selectedCenterAt
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (cardinality := cardinality) cover hmaxOriginalSelector)
+      (measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_selectedCenterAt
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (cardinality := cardinality) cover hmaxGhostSelector)
 
 /--
 The concrete ghost/Rademacher pair-difference event lands in the
@@ -38233,6 +38709,165 @@ theorem
       (sample := z.1) (ghostSample := z.2.1) (sign := z.2.2)
       henvelope hM_nonneg heta (cover z.1) (cover z.2.1)
       hsign hmaximalOriginal hmaximalGhost hbad
+
+/--
+Centering constants cancel in pair-sub sample suprema.
+
+This is the algebraic adapter needed when the Chebyshev fiber source is written
+with centered truncated functions, while the concrete pair-difference event is
+written with the uncentered truncated pair difference.
+-/
+theorem vdVWWeightedClassSupremum_centered_pairSub_eq_truncated_pairSub
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ} {n : ℕ}
+    (weights : Fin n -> ℝ)
+    (sample : SampleAt (Observation × Observation) n) :
+    vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun z : Observation × Observation =>
+          (vdVWTruncatedClassFun classFun envelope M index z.1 -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+            (vdVWTruncatedClassFun classFun envelope M index z.2 -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+        weights sample =
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun z : Observation × Observation =>
+          vdVWTruncatedClassFun classFun envelope M index z.1 -
+            vdVWTruncatedClassFun classFun envelope M index z.2)
+        weights sample := by
+  unfold vdVWWeightedClassSupremum
+  congr with index
+  congr with hindex
+  congr 1
+  unfold vdVWWeightedSampleSum
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  ring
+
+/--
+Source fiber event before the concrete pair-difference event.
+
+For a fixed original sample, this event keeps exactly the ingredients produced
+by the Chebyshev/sign-swap route: canonical signs, the two finite-center side
+conditions, and centered pair-sub badness after the deterministic sign swap.
+-/
+noncomputable def VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ) (M eta epsilon : ℝ)
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sample : SampleAt Observation n) :
+    Set (SampleAt Observation n × SampleAt ℝ n) :=
+  {z |
+    VdVWRademacherSignVector z.2 ∧
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover sample).center z.2 M ∧
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover z.1).center (fun i : Fin n => -z.2 i) M ∧
+      epsilon <
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun pair : Observation × Observation =>
+            (vdVWTruncatedClassFun classFun envelope M index pair.1 -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+              (vdVWTruncatedClassFun classFun envelope M index pair.2 -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+          (fun _ : Fin n => (n : ℝ)⁻¹)
+          (vdVWRademacherProductSampleSignSwap z.2
+            (fun i : Fin n => (sample i, z.1 i)))}
+
+/--
+The centered sign-swapped pair-sub fiber source is contained in the concrete
+ghost/Rademacher pair-difference event.
+
+This is the pointwise inclusion that the remaining product-fiber lower bound
+needs before applying `measure_mono`.
+-/
+theorem
+    VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_of_centeredPairSubSignSwapFiberSourceEvent
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {sample : SampleAt Observation n}
+    {z : SampleAt Observation n × SampleAt ℝ n}
+    (hz :
+      z ∈
+        VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent
+          P indexClass classFun envelope M eta epsilon cover sample) :
+    (sample, z) ∈
+      VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (cover := cover) := by
+  rcases (by
+    simpa [VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent] using hz)
+    with ⟨hsign, hmaxOriginal, hmaxGhost, hbad⟩
+  rw [vdVWWeightedClassSupremum_pairDifference_constWeights_signSwap
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      z.2 hsign (fun i : Fin n => (sample i, z.1 i))] at hbad
+  exact ⟨hsign, hmaxOriginal, hmaxGhost, hbad⟩
+
+/--
+Fiber lower-bound adapter from the centered sign-swapped source event to the
+concrete pair-difference event.
+
+A probability lower bound for the Chebyshev/sign-swap source event immediately
+becomes the `hfiber`-shaped lower bound required by
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent`.
+-/
+theorem
+    VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {sample : SampleAt Observation n} {beta : ℝ≥0∞}
+    (hsource :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent
+            P indexClass classFun envelope M eta epsilon cover sample)) :
+    beta ≤
+      ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n))
+        (Prod.mk sample ⁻¹'
+          VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality)
+            (cover := cover)) := by
+  exact hsource.trans (measure_mono (by
+    intro z hz
+    exact
+      VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_of_centeredPairSubSignSwapFiberSourceEvent
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (cover := cover) (sample := sample) (z := z) hz))
 
 /--
 Concrete-event constructor for the factor-two Lemma 2.3.7 source comparison.
@@ -39204,6 +39839,102 @@ theorem
           (weights := fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
           (sample := sample) (ghostSample := ghostSample)
           (epsilon := epsilon) hbdd hghost))
+
+/--
+Threshold-doubled Chebyshev lower bound for the centered pair-difference bad
+event.
+
+The previous lemma turns a centered bad event at threshold `x` into a
+pair-difference bad event at threshold `x / 2`.  This wrapper instantiates that
+lemma with `x = 2 * epsilon`, then weakens the displayed beta factor back to the
+standard `epsilon` denominator.  It is the scale adapter needed before the
+Rademacher sign-swap can target the concrete pair-difference event at threshold
+`epsilon`.
+-/
+theorem
+    VdVWChebyshev_betaLower_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    {sample : SampleAt Observation (n + 1)}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon)
+    (hbad :
+      2 * epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹) sample)
+          (0 : ℝ)) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / ((((n + 1 : ℕ) : ℝ)) * epsilon ^ 2)) ≤
+      (vdVWProductMeasure P (n + 1))
+        {ghostSample : SampleAt Observation (n + 1) |
+          epsilon <
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                (vdVWTruncatedClassFun classFun envelope M index z.1 -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                  (vdVWTruncatedClassFun classFun envelope M index z.2 -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+              (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+              (fun i : Fin (n + 1) => (sample i, ghostSample i))} := by
+  have hpair :
+      ENNReal.ofReal
+          (1 - (16 * M ^ 2) /
+              ((((n + 1 : ℕ) : ℝ)) * (2 * epsilon) ^ 2)) ≤
+        (vdVWProductMeasure P (n + 1))
+          {ghostSample : SampleAt Observation (n + 1) |
+            epsilon <
+              vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  (vdVWTruncatedClassFun classFun envelope M index z.1 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                    (vdVWTruncatedClassFun classFun envelope M index z.2 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+                (fun i : Fin (n + 1) => (sample i, ghostSample i))} := by
+    have hpair_raw :=
+      VdVWChebyshev_betaLower_centeredPairSubBadEvent_of_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (epsilon := 2 * epsilon) (n := n)
+        (sample := sample) henvelope hM htruncIntegrable (by linarith) hbad
+    simpa [mul_comm, mul_left_comm, mul_assoc] using hpair_raw
+  have hbeta :
+      ENNReal.ofReal
+          (1 - (16 * M ^ 2) /
+              ((((n + 1 : ℕ) : ℝ)) * epsilon ^ 2)) ≤
+        ENNReal.ofReal
+          (1 - (16 * M ^ 2) /
+              ((((n + 1 : ℕ) : ℝ)) * (2 * epsilon) ^ 2)) := by
+    refine ENNReal.ofReal_le_ofReal ?_
+    have hn_pos : 0 < (((n + 1 : ℕ) : ℝ)) := by
+      exact_mod_cast Nat.succ_pos n
+    have heps_sq_pos : 0 < epsilon ^ 2 := sq_pos_of_pos hepsilon
+    have hden_pos :
+        0 < (((n + 1 : ℕ) : ℝ)) * epsilon ^ 2 :=
+      mul_pos hn_pos heps_sq_pos
+    have hsq_le : epsilon ^ 2 ≤ (2 * epsilon) ^ 2 := by
+      nlinarith [sq_nonneg epsilon]
+    have hden_le :
+        (((n + 1 : ℕ) : ℝ)) * epsilon ^ 2 ≤
+          (((n + 1 : ℕ) : ℝ)) * (2 * epsilon) ^ 2 :=
+      mul_le_mul_of_nonneg_left hsq_le hn_pos.le
+    have hfrac_le :
+        (16 * M ^ 2) /
+            ((((n + 1 : ℕ) : ℝ)) * (2 * epsilon) ^ 2) ≤
+          (16 * M ^ 2) / ((((n + 1 : ℕ) : ℝ)) * epsilon ^ 2) :=
+      div_le_div_of_nonneg_left
+        (mul_nonneg (by norm_num) (sq_nonneg M)) hden_pos hden_le
+    linarith
+  exact hbeta.trans hpair
 
 /--
 A scaled selected outer-probability comparison without the displayed beta factor

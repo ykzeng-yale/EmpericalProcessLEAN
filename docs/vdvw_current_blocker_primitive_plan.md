@@ -112,13 +112,29 @@ the event-level constructor
 now leaves only two event-measurability inputs: the original finite-center
 Hoeffding side condition and the ghost finite-center side condition with
 negated signs for the sample-dependent selected cover centers.
-Next exact target: prove measurability of those sample-dependent selected
-finite-center component events, or honestly expose the minimal selected-center
-measurable-selector assumption, then prove the product-fiber displayed
-Chebyshev lower bound for the named concrete event by combining the centered
-pair-difference fiber lower bound, the product-pair sign-swap equality,
-sign-negation/ghost symmetry, and the selected finite-net Hoeffding side
-condition.
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAt` and
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`
+now expose the minimal Nat-indexed selected-center measurable-selector
+interface, and
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`
+turns those selector assumptions into concrete-event measurability under the
+same countability hypotheses as the signed pair-difference component.
+Next exact target: prove the product-fiber displayed Chebyshev lower bound for
+the named concrete event.  The threshold-doubling Chebyshev adapter
+`VdVWChebyshev_betaLower_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad`
+now matches a `2 * epsilon` centered-bad sample to an `epsilon` centered
+pair-difference bad fiber with the displayed beta weakened back to the standard
+epsilon denominator, and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_auxiliary_event`
+reduces the concrete-event fiber lower bound to an auxiliary ghost/sign event
+with four pointwise components.  The centered sign-swap source event is now
+named as `VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent`, and
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent`
+turns a probability lower bound for that source event directly into the named
+concrete-event fiber bound.  The next missing bridge is therefore the
+probability lower bound for this source event; alternatively, discharge the
+Nat-indexed selector assumptions from a stronger selected-center measurable
+selection primitive.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening and do not claim it follows from bare stochastic entropy.
 
@@ -8596,3 +8612,44 @@ and
 Thus fixed center lists no longer block concrete-event measurability; the
 remaining event-measurability issue is exactly the sample-dependent selected
 cover centers `(cover sample).center`.
+
+2026-05-09 selected-center measurable-selector interface:
+`Theorem243.lean` now exposes the sample-dependent selected centers through
+the Nat-indexed adapter `VdVWFiniteEmpiricalL1CoverSelectedCenterAt`, proves
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`,
+and derives
+`measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt`.
+The concrete original/ghost product-space wrappers
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_selectedCenterAt`
+and
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_selectedCenterAt`
+feed the countable concrete-event constructor
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`.
+Thus the selected-cover measurability blocker is now an explicit family of
+Nat-indexed in-range selector measurability assumptions rather than opaque
+finite-center event inputs.
+
+2026-05-09 concrete product-fiber adapters:
+`Theorem243.lean` now proves
+`mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff`
+and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_auxiliary_event`,
+which unwrap the named concrete event's product fiber and let the remaining
+displayed Chebyshev lower bound be proved from any auxiliary ghost/sign event
+satisfying sign support, the original selected finite-center condition, the
+ghost selected finite-center condition with negated signs, and signed
+pair-difference badness.  It also proves the threshold-doubling scale adapter
+`VdVWChebyshev_betaLower_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad`,
+turning a `2 * epsilon` centered-bad sample into an `epsilon` centered
+pair-difference bad fiber lower bound while weakening the beta factor back to
+the standard displayed epsilon denominator.
+The source event is now named as
+`VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent`, with centering
+cancellation
+`vdVWWeightedClassSupremum_centered_pairSub_eq_truncated_pairSub`, pointwise
+inclusion
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_of_centeredPairSubSignSwapFiberSourceEvent`,
+and direct fiber lower-bound adapter
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent`.
+The remaining `hfiber` blocker is the probability lower bound for this named
+source event, not the final concrete-event projection.

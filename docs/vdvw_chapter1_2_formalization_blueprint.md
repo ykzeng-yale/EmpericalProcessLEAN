@@ -2283,8 +2283,32 @@ above, so they do not change the theorem-level dashboard counts.
    `measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_fixed_center`,
    and
    `measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_fixed_center`
-   are compiled.  The remaining event-measurability issue is the
-   sample-dependent selected cover center list.
+   are compiled.  The sample-dependent selected cover center list is now
+   exposed through the Nat-indexed selector interface
+   `VdVWFiniteEmpiricalL1CoverSelectedCenterAt`,
+   `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`,
+   and
+   `measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt`.
+   The concrete original/ghost wrappers feed
+   `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`,
+   so the remaining event-measurability burden is an explicit family of
+   Nat-indexed in-range selected-center measurability assumptions.
+   On the product-fiber side, the concrete event now has the fiber interface
+   `mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff`
+   and the lower-bound transfer
+   `VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_auxiliary_event`.
+   The Chebyshev scale mismatch is also isolated by
+   `VdVWChebyshev_betaLower_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad`,
+   which turns a `2 * epsilon` centered-bad input into an `epsilon`
+   pair-difference fiber lower bound with the displayed beta weakened to the
+   standard epsilon denominator.  The centered sign-swap source event is now
+   named as `VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent`; centering
+   cancellation is compiled as
+   `vdVWWeightedClassSupremum_centered_pairSub_eq_truncated_pairSub`, and
+   `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent`
+   transports a probability lower bound for that source event to the concrete
+   product fiber.  The remaining product-fiber source task is therefore the
+   probability lower bound for this named source event.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,

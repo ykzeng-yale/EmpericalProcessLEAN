@@ -189,8 +189,33 @@ The fixed-center version of those side conditions is now closed by
 `measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_fixed_center`,
 and
 `measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_fixed_center`.
-The remaining measurability blocker is therefore specifically the
-sample-dependent selected cover centers.
+The sample-dependent selected cover centers now have an explicit
+measurable-selector interface through
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAt`,
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`,
+`measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt`,
+and the concrete original/ghost wrappers
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_selectedCenterAt`,
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_selectedCenterAt`.
+The countable concrete-event constructor
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`
+therefore reduces selected-cover event measurability to Nat-indexed in-range
+selector measurability assumptions.
+The concrete product-fiber side now has the fiber-unpacking and lower-bound
+transfer pair
+`mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff`
+and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_auxiliary_event`,
+plus the threshold-doubling Chebyshev adapter
+`VdVWChebyshev_betaLower_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad`.
+The centered sign-swap source event is now named by
+`VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent`, with pointwise
+inclusion and fiber transfer through
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_of_centeredPairSubSignSwapFiberSourceEvent`
+and
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent`.
+Thus the product-fiber blocker is narrowed to proving the probability lower
+bound for this named source event.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
