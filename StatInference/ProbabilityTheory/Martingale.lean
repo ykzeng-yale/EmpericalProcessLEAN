@@ -11114,6 +11114,47 @@ theorem durrett2019_theorem_4_4_4_weighted_layercake_lintegral_rpow
     (lintegral_withDensity_eq_lintegral_mul₀ hF_meas hkernel_meas)
 
 /--
+Durrett 2019, Theorem 4.4.4, pointwise coefficient extraction for the
+weighted layer-cake kernel.
+-/
+theorem durrett2019_theorem_4_4_4_weighted_layercake_kernel_eq_inv_mul
+    {a p : ℝ} (ha : 0 ≤ a) (hp : 1 < p) :
+    ENNReal.ofReal (a ^ (p - 1) / (p - 1)) =
+      (ENNReal.ofReal (p - 1))⁻¹ * ‖a‖ₑ ^ (p - 1) := by
+  have hp_sub_pos : 0 < p - 1 := by linarith
+  rw [ENNReal.ofReal_div_of_pos hp_sub_pos, div_eq_mul_inv]
+  rw [← ofReal_norm_eq_enorm a, Real.norm_eq_abs, abs_of_nonneg ha,
+    ENNReal.ofReal_rpow_of_nonneg ha hp_sub_pos.le]
+  ac_rfl
+
+/--
+Durrett 2019, Theorem 4.4.4, weighted layer-cake with the coefficient
+`(p - 1)⁻¹` pulled outside the final integral.
+-/
+theorem durrett2019_theorem_4_4_4_weighted_layercake_lintegral_coeff
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {A : Ω -> ℝ} {F : Ω -> ℝ≥0∞}
+    (hA_nonneg : ∀ ω, 0 ≤ A ω) (hA_meas : Measurable A)
+    (hF_meas : AEMeasurable F P) {p : ℝ} (hp : 1 < p) :
+    (∫⁻ t in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (t ^ (p - 2)) *
+          ∫⁻ ω in {ω | t ≤ A ω}, F ω ∂P) =
+      (ENNReal.ofReal (p - 1))⁻¹ *
+        ∫⁻ ω, F ω * ‖A ω‖ₑ ^ (p - 1) ∂P := by
+  rw [durrett2019_theorem_4_4_4_weighted_layercake_lintegral_rpow
+    (P := P) (A := A) (F := F) hA_nonneg hA_meas hF_meas hp]
+  have hc_ne_top : (ENNReal.ofReal (p - 1))⁻¹ ≠ ∞ := by
+    rw [ENNReal.inv_ne_top]
+    rw [ne_eq, ENNReal.ofReal_eq_zero]
+    exact not_le_of_gt (by linarith : 0 < p - 1)
+  rw [← lintegral_const_mul' (ENNReal.ofReal (p - 1))⁻¹
+    (fun ω => F ω * ‖A ω‖ₑ ^ (p - 1)) hc_ne_top]
+  refine lintegral_congr fun ω => ?_
+  rw [durrett2019_theorem_4_4_4_weighted_layercake_kernel_eq_inv_mul
+    (a := A ω) (p := p) (hA_nonneg ω) hp]
+  ac_rfl
+
+/--
 Durrett 2019, Theorem 4.4.4, weighted/Fubini identification for the positive
 part running maximum.  The remaining threshold integral is the integral of
 `X_n^+` against the evaluated one-dimensional power kernel.
@@ -11200,6 +11241,52 @@ theorem durrett2019_theorem_4_4_4_positivePart_weighted_threshold_lintegral_base
       hA_nonneg hA_meas hF_meas hp
 
 /--
+Durrett 2019, Theorem 4.4.4, positive-part weighted threshold integral with
+the coefficient `(p - 1)⁻¹` pulled outside.  This is the exact handoff to the
+compiled Hölder integral bound.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_weighted_threshold_lintegral_coeff_eq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p : ℝ} (hp : 1 < p) (n : ℕ) :
+    (∫⁻ t in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (t ^ (p - 2)) *
+          ∫⁻ ω in {ω |
+              t ≤
+                (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  fun k => max (X k ω) 0},
+            ‖max (X n ω) 0‖ₑ ∂P) =
+      (ENNReal.ofReal (p - 1))⁻¹ *
+        ∫⁻ ω,
+          ‖max (X n ω) 0‖ₑ *
+            ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                (fun k => max (X k ω) 0)‖ₑ ^ (p - 1) ∂P := by
+  let A : Ω -> ℝ := fun ω =>
+    (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+      fun k => max (X k ω) 0
+  have hA_nonneg : ∀ ω, 0 ≤ A ω := by
+    intro ω
+    rw [Finset.le_sup'_iff]
+    exact ⟨0, by simp, le_max_right (X 0 ω) 0⟩
+  have hA_meas : Measurable A := by
+    dsimp [A]
+    refine Finset.measurable_range_sup'' ?_
+    intro k _hk
+    exact
+      (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).max
+        measurable_const)
+  have hF_meas : AEMeasurable (fun ω => ‖max (X n ω) 0‖ₑ) P := by
+    have hterminal_meas : Measurable fun ω => max (X n ω) 0 :=
+      (((hX.stronglyMeasurable n).measurable.mono (ℱ.le n) le_rfl).max
+        measurable_const)
+    exact hterminal_meas.aemeasurable.enorm
+  simpa [A] using
+    durrett2019_theorem_4_4_4_weighted_layercake_lintegral_coeff
+      (P := P) (A := A) (F := fun ω => ‖max (X n ω) 0‖ₑ)
+      hA_nonneg hA_meas hF_meas hp
+
+/--
 Durrett 2019, Theorem 4.4.4, Hölder support for the positive-part running
 maximum.  This is the textbook Hölder step after the Fubini calculation:
 `∫ X_n^+ (bar X_n)^{p-1}` is bounded by the product of the `L^p` terminal
@@ -11240,6 +11327,62 @@ theorem durrett2019_theorem_4_4_4_positivePart_holder_integral_bound
   simpa [A, Pi.mul_apply] using
     (ENNReal.lintegral_mul_rpow_le_lintegral_rpow_mul_lintegral_rpow
       (μ := P) hpq hterminal hmax)
+
+/--
+Durrett 2019, Theorem 4.4.4, assembled integration/Hölder bound for the
+positive-part running maximum.  The only remaining step toward the textbook
+`p/(p-1)` maximal constant is the scalar division algebra that cancels the
+running-maximum power on both sides.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_layercake_doob_holder_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) (n : ℕ) :
+    (∫⁻ ω,
+        ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) ≤
+      ENNReal.ofReal p *
+        ((ENNReal.ofReal (p - 1))⁻¹ *
+          ((∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p) *
+            (∫⁻ ω,
+              ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) ^ (1 / q))) := by
+  have hDoob :=
+    durrett2019_theorem_4_4_4_positivePart_layercake_doob_lintegral_bound
+      (P := P) (ℱ := ℱ) (X := X) hX hpq.pos n
+  have hCoeff :=
+    durrett2019_theorem_4_4_4_positivePart_weighted_threshold_lintegral_coeff_eq
+      (P := P) (ℱ := ℱ) (X := X) hX hpq.lt n
+  have hHolder :=
+    durrett2019_theorem_4_4_4_positivePart_holder_integral_bound
+      (P := P) (ℱ := ℱ) (X := X) hX hpq n
+  calc
+    (∫⁻ ω,
+        ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0)‖ₑ ^ p ∂P)
+        ≤ ENNReal.ofReal p *
+            ∫⁻ t in Set.Ioi (0 : ℝ),
+              ENNReal.ofReal (t ^ (p - 2)) *
+                ∫⁻ ω in {ω |
+                    t ≤
+                      (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                        fun k => max (X k ω) 0},
+                  ‖max (X n ω) 0‖ₑ ∂P := hDoob
+    _ = ENNReal.ofReal p *
+        ((ENNReal.ofReal (p - 1))⁻¹ *
+          ∫⁻ ω,
+            ‖max (X n ω) 0‖ₑ *
+              ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  (fun k => max (X k ω) 0)‖ₑ ^ (p - 1) ∂P) := by
+          rw [hCoeff]
+    _ ≤ ENNReal.ofReal p *
+        ((ENNReal.ofReal (p - 1))⁻¹ *
+          ((∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p) *
+            (∫⁻ ω,
+              ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) ^ (1 / q))) := by
+          gcongr
 
 end ProbabilityTheory
 end StatInference
