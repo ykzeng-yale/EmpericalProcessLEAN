@@ -13,7 +13,7 @@ Active lane: van der Vaart 1998, Theorem 5.41, in
 `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeStrongLawBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Start every continuation by checking `git status` and the current Vaart diff.
 If an unfinished local Vaart Lean packet exists, finish and verify that packet
@@ -23,8 +23,9 @@ Make exactly one theorem-sized Lean advance per packet: remove one live source
 hypothesis from the current endpoint, or prove the next source theorem that
 feeds it directly.  Current priority order:
 
-1. Derivative source: finite-entry or operator strong law, then the
-   operator-norm domination bound that feeds the endpoint.
+1. Derivative source: operator-norm domination by the finite-entry strong-law
+   error bound, or a sharper operator strong-law theorem that feeds the
+   endpoint directly.
 2. Score source: common-vector-law or Gaussian finite-coordinate score CLT.
 3. Tightness source: scaled-estimator law-tail or `O_P(1)` proof.
 
@@ -946,20 +947,30 @@ compiling:
    measurability discharged from sampled derivative summand measurability and
    the derivative-norm residual discharged from the a.s. error-bound source:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+330. Theorem 5.41 finite-entry derivative error bound from coordinatewise
+   real strong laws:
+   `vaart1998_theorem_5_41_derivativeErrorBound_tendsto_ae_of_finiteCenteredStrongLaw`.
+331. Theorem 5.41 current endpoint with the derivative error bound discharged
+   by the finite-entry strong-law source; the remaining derivative source field
+   is the operator-norm domination by that finite-entry bound:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeStrongLawBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 derivative bound handoff`).
+(`Add Vaart theorem 5.41 finite derivative strong-law bound`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by replacing the opaque derivative
-average measurability and operator-norm residual assumptions with sampled
-derivative summand measurability plus an a.s. derivative error bound that tends
-to zero and eventually dominates the operator-norm residual.
+asymptotic-normality route for Z-estimators by instantiating the derivative
+error bound from a finite family of iid real derivative-entry strong laws.  The
+remaining derivative source obligation is now the operator-norm domination of
+the empirical derivative residual by that finite-entry error bound.
 
 The next aggressive packet should prove exactly one live source field for the
-current endpoint, following the priority order in the live `/goal` prompt.  Do
-not repeat solved Chapter 2-4 infrastructure or earlier Theorem 5.41 wrapper
-layers unless a current proof directly depends on a small local API there.
+current endpoint, following the priority order in the live `/goal` prompt.
+Prefer the finite-entry operator-norm domination inequality for the empirical
+derivative residual; otherwise move to one score-CLT law/source field or the
+scaled-estimator tightness field.  Do not repeat solved Chapter 2-4
+infrastructure or earlier Theorem 5.41 wrapper layers unless a current proof
+directly depends on a small local API there.
 
 ## Execution Notes
 
