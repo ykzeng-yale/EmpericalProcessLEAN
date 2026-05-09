@@ -30,12 +30,12 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Score source: compose the canonical raw score CLT into a Theorem 5.41
-   handoff, but avoid the oversized finite-parameter endpoint wrapper.
-2. Tightness source: discharge scaled-estimator law-tail or `O_P(1)`.
-3. Derivative source: only add an exact model-specific coordinate/matrix
+1. Tightness source: discharge scaled-estimator law-tail or `O_P(1)`.
+2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
    finite-entry norm/action wrapper stack.
+3. Score source: only add another wrapper if it removes a live hypothesis not
+   already handled by the canonical raw-score handoff.
 
 Operating rules:
 
@@ -997,24 +997,29 @@ compiling:
    scaled centered empirical moment now transfers the canonical finite-vector
    score CLT into the raw score CLT required by the Z-estimator handoff:
    `vaart1998_theorem_5_41_rawScoreCLT_of_canonicalProductScore_finiteCoordinate_eq`.
+340. Theorem 5.41 canonical score-source Z-estimator handoff: the canonical
+   raw-score CLT now feeds the derivative-norm, law-tail, root, measurability,
+   and envelope hypotheses directly into the compiled scaled-estimator
+   conclusion:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductRawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 canonical raw score CLT source`).
+(`Add Vaart theorem 5.41 canonical score handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by composing the canonical
-finite-vector score CLT with raw-score a.e. equality.  The resulting raw score
-CLT is now available directly for the Z-estimator handoff.
+asymptotic-normality route for Z-estimators by feeding the canonical raw-score
+CLT into the compiled derivative-norm Theorem 5.41 endpoint.  The score CLT
+source is now discharged for canonical iid product scores at this handoff
+level.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to a non-oversized 5.41 raw-score handoff
-composition or the scaled-estimator tightness field.  Do not repeat solved
-Chapter 2-4
-infrastructure or earlier Theorem 5.41 wrapper layers unless a current proof
-directly depends on a small local API there.
+source handoff.  Move next to the scaled-estimator tightness field or a
+genuinely model-specific derivative representation.  Do not repeat solved
+Chapter 2-4 infrastructure or earlier Theorem 5.41 wrapper layers unless a
+current proof directly depends on a small local API there.
 
 ## Execution Notes
 
