@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V130
+## Live In-Thread Goal Prompt V131
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -18,21 +18,23 @@ and 4.4.8 as closed support unless the next theorem directly needs one of their
 APIs.  Theorem 4.1.16 remains deferred unless a future targeted kernel search
 finds a direct source-shaped API.
 
-Current compiled packet: Durrett Theorem 4.4.8 conditional variance formula now
-compiles through `durrett2019_integrable_sq_of_memLp_two` and
-`durrett2019_theorem_4_4_8_martingale_conditional_variance_formula`, after the
-4.4.7 orthogonality and increment-increment wrappers.
+Current compiled packet: Durrett Example 4.4.9 now has the theorem-sized
+conditional and integrated second-moment recurrence layer:
+`durrett2019_example_4_4_9_conditional_second_moment_from_variance`,
+`durrett2019_example_4_4_9_branchingProcess_conditional_second_moment`, and
+`durrett2019_example_4_4_9_branchingProcess_second_moment_integral_recurrence`.
+This reuses Theorem 4.4.8 and the existing normalized branching-process
+martingale bridge; it deliberately leaves the full Galton-Watson random-sum
+construction as supplied source hypotheses.
 
-Next aggressive step: Durrett Example 4.4.9, the branching-process
-second-moment and `L^2` convergence calculation after Theorem 4.4.8.  Search
-first for the existing normalized branching-process martingale bridge
-`durrett2019_lemma_4_3_9_normalized_branchingProcess_martingale_of_condExp_succ`
-and local conditional-variance/square-integrability APIs.  Prefer a
-source-shaped wrapper that reuses Theorem 4.4.8 to turn the supplied offspring
-variance identity into the recurrence
-`E X_n^2 = E X_{n-1}^2 + σ^2 / μ^(n+1)`; only push the full geometric-sum and
-`L^2` convergence endpoint if it compiles without building full Galton-Watson
-random-sum infrastructure.
+Next aggressive step: finish Durrett Example 4.4.9's second-moment endpoint.
+Search first for finite geometric-sum, summability, `eLpNorm`/`MemLp` for
+`p = 2`, and martingale `L^p` convergence APIs.  Prefer a wrapper that turns
+the compiled recurrence plus `μ > 1`, `E X_0^2 = 1`, and `E X_k = 1` into
+`E X_n^2 = 1 + σ^2 * ∑ k in range n, μ^(-(k+2))` or a source-equivalent
+finite-sum display, then the uniform square-integrability bound consumed by
+Theorem 4.4.6.  Push the final `L^2` convergence/nonzero-limit endpoint only
+if it compiles without reopening full Galton-Watson infrastructure.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -509,9 +511,14 @@ Theorem 4.4.7 now also compiles:
 Theorem 4.4.8 now also compiles:
 `durrett2019_integrable_sq_of_memLp_two` and
 `durrett2019_theorem_4_4_8_martingale_conditional_variance_formula`.
-Next target: Example 4.4.9 branching-process second-moment and `L^2`
-convergence support; only formalize Example 4.4.5's counterexample if it becomes
-a cheap reusable support lemma.
+Example 4.4.9 now also compiles through its conditional and integrated
+second-moment recurrence layer:
+`durrett2019_example_4_4_9_conditional_second_moment_from_variance`,
+`durrett2019_example_4_4_9_branchingProcess_conditional_second_moment`, and
+`durrett2019_example_4_4_9_branchingProcess_second_moment_integral_recurrence`.
+Next target: Example 4.4.9 finite geometric-sum bound and `L^2` convergence
+support; only formalize Example 4.4.5's counterexample if it becomes a cheap
+reusable support lemma.
 Do not detour back into full Galton-Watson random-sum infrastructure unless a
 local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
@@ -1052,7 +1059,8 @@ assembly now also compile.  The a.s. boundedness hypothesis from compiled finite
 maximal `eLpNorm` bounds and the final Theorem 4.4.6 `L^p` convergence endpoint
 now compile.  The Theorem 4.4.7 orthogonality and increment-increment wrappers
 now compile.  The Theorem 4.4.8 conditional variance formula now also compiles.
-Next move to Example 4.4.9 branching-process second-moment and `L^2`
+The Example 4.4.9 conditional and integrated second-moment recurrence layer now
+also compiles.  Next move to Example 4.4.9 finite geometric-sum bound and `L^2`
 convergence support, whichever route gives the largest compiled step without
 building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
@@ -1168,6 +1176,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V130` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V131` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

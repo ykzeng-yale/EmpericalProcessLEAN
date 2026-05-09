@@ -12723,5 +12723,146 @@ theorem durrett2019_theorem_4_4_8_martingale_conditional_variance_formula
   rw [hTwo, hPull, hCond, hPast]
   ring
 
+/--
+Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
+This is the direct use of Theorem 4.4.8: once the conditional variance term is
+identified, the conditional second moment is the previous square plus that
+term.
+-/
+theorem durrett2019_example_4_4_9_conditional_second_moment_from_variance
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    {n : ℕ} {V : Ω -> ℝ}
+    (hVariance :
+      P[(fun ω => (X n ω - X (n - 1) ω) ^ 2) | ℱ (n - 1)] =ᵐ[P] V) :
+    P[(fun ω => X n ω ^ 2) | ℱ (n - 1)] =ᵐ[P]
+      fun ω => X (n - 1) ω ^ 2 + V ω := by
+  have hFormula :=
+    durrett2019_theorem_4_4_8_martingale_conditional_variance_formula
+      (P := P) (ℱ := ℱ) (X := X) (m := n - 1) (n := n)
+      hX hX_memLp_two (Nat.sub_le n 1)
+  filter_upwards [hFormula, hVariance] with ω hFormulaω hVarianceω
+  have hRearrange :
+      P[(fun ω => X n ω ^ 2) | ℱ (n - 1)] ω =
+        P[(fun ω => (X n ω - X (n - 1) ω) ^ 2) | ℱ (n - 1)] ω +
+          X (n - 1) ω ^ 2 := by
+    linarith
+  rw [hRearrange, hVarianceω]
+  ring
+
+/--
+Durrett 2019, Example 4.4.9, normalized branching-process conditional
+second-moment recurrence.  The remaining Galton-Watson calculation is isolated
+in the supplied offspring-variance conditional identity; this wrapper performs
+the martingale/conditional-variance algebra and the normalization arithmetic.
+-/
+theorem durrett2019_example_4_4_9_branchingProcess_conditional_second_moment
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X Z : ℕ -> Ω -> ℝ} {offspringMean variance : ℝ}
+    (hmean_pos : 0 < offspringMean)
+    (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    {n : ℕ} (hn : 0 < n)
+    (hX_prev :
+      X (n - 1) =ᵐ[P] fun ω => Z (n - 1) ω / offspringMean ^ (n - 1))
+    (hVariance :
+      P[(fun ω => (X n ω - X (n - 1) ω) ^ 2) | ℱ (n - 1)] =ᵐ[P]
+        fun ω => variance * Z (n - 1) ω / offspringMean ^ (2 * n)) :
+    P[(fun ω => X n ω ^ 2) | ℱ (n - 1)] =ᵐ[P]
+      fun ω => X (n - 1) ω ^ 2 +
+        variance * X (n - 1) ω / offspringMean ^ (n + 1) := by
+  have hBase :=
+    durrett2019_example_4_4_9_conditional_second_moment_from_variance
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hVariance
+  have hpow_add :
+      offspringMean ^ (2 * n) =
+        offspringMean ^ (n - 1) * offspringMean ^ (n + 1) := by
+    rw [← pow_add]
+    congr 1
+    omega
+  have hpow_pred_ne : offspringMean ^ (n - 1) ≠ 0 :=
+    pow_ne_zero (n - 1) hmean_pos.ne'
+  have hpow_succ_ne : offspringMean ^ (n + 1) ≠ 0 :=
+    pow_ne_zero (n + 1) hmean_pos.ne'
+  filter_upwards [hBase, hX_prev] with ω hBaseω hXω
+  rw [hBaseω]
+  congr 1
+  rw [hXω, hpow_add]
+  field_simp [hpow_pred_ne, hpow_succ_ne]
+
+/--
+Durrett 2019, Example 4.4.9, integrated second-moment recurrence for the
+normalized branching-process martingale.  This packages the displayed step
+`E X_n^2 = E X_{n-1}^2 + σ² / μ^(n+1)` from the supplied conditional
+offspring-variance identity and the mean-one normalization.
+-/
+theorem durrett2019_example_4_4_9_branchingProcess_second_moment_integral_recurrence
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X Z : ℕ -> Ω -> ℝ} {offspringMean variance : ℝ}
+    (hmean_pos : 0 < offspringMean)
+    (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    {n : ℕ} (hn : 0 < n)
+    (hX_prev :
+      X (n - 1) =ᵐ[P] fun ω => Z (n - 1) ω / offspringMean ^ (n - 1))
+    (hVariance :
+      P[(fun ω => (X n ω - X (n - 1) ω) ^ 2) | ℱ (n - 1)] =ᵐ[P]
+        fun ω => variance * Z (n - 1) ω / offspringMean ^ (2 * n))
+    (hMeanPrev : (∫ ω, X (n - 1) ω ∂P) = 1) :
+    (∫ ω, X n ω ^ 2 ∂P) =
+      (∫ ω, X (n - 1) ω ^ 2 ∂P) + variance / offspringMean ^ (n + 1) := by
+  have hCondSecond :
+      P[(fun ω => X n ω ^ 2) | ℱ (n - 1)] =ᵐ[P]
+        fun ω => X (n - 1) ω ^ 2 +
+          variance * X (n - 1) ω / offspringMean ^ (n + 1) :=
+    durrett2019_example_4_4_9_branchingProcess_conditional_second_moment
+      (P := P) (ℱ := ℱ) (X := X) (Z := Z)
+      (offspringMean := offspringMean) (variance := variance)
+      hmean_pos hX hX_memLp_two hn hX_prev hVariance
+  have hXn_sq_int : Integrable (fun ω => X n ω ^ 2) P :=
+    durrett2019_integrable_sq_of_memLp_two (P := P) (Y := X n) (hX_memLp_two n)
+  have hXprev_sq_int : Integrable (fun ω => X (n - 1) ω ^ 2) P :=
+    durrett2019_integrable_sq_of_memLp_two
+      (P := P) (Y := X (n - 1)) (hX_memLp_two (n - 1))
+  have hterm_int :
+      Integrable
+        (fun ω => variance * X (n - 1) ω / offspringMean ^ (n + 1)) P := by
+    have hscale :
+        Integrable
+          (fun ω => (variance / offspringMean ^ (n + 1)) * X (n - 1) ω) P :=
+      (hX.integrable (n - 1)).const_mul (variance / offspringMean ^ (n + 1))
+    exact hscale.congr (ae_of_all P fun ω => by ring)
+  have hterm_integral :
+      (∫ ω, variance * X (n - 1) ω / offspringMean ^ (n + 1) ∂P) =
+        variance / offspringMean ^ (n + 1) := by
+    calc
+      (∫ ω, variance * X (n - 1) ω / offspringMean ^ (n + 1) ∂P)
+          = ∫ ω, (variance / offspringMean ^ (n + 1)) * X (n - 1) ω ∂P := by
+              refine integral_congr_ae (ae_of_all P fun ω => ?_)
+              ring
+      _ = (variance / offspringMean ^ (n + 1)) *
+            ∫ ω, X (n - 1) ω ∂P := by
+              rw [integral_const_mul]
+      _ = variance / offspringMean ^ (n + 1) := by
+              rw [hMeanPrev]
+              ring
+  calc
+    (∫ ω, X n ω ^ 2 ∂P)
+        = ∫ ω, P[(fun ω => X n ω ^ 2) | ℱ (n - 1)] ω ∂P :=
+            (integral_condExp (ℱ.le (n - 1))).symm
+    _ = ∫ ω, X (n - 1) ω ^ 2 +
+          variance * X (n - 1) ω / offspringMean ^ (n + 1) ∂P :=
+            integral_congr_ae hCondSecond
+    _ = (∫ ω, X (n - 1) ω ^ 2 ∂P) +
+          ∫ ω, variance * X (n - 1) ω / offspringMean ^ (n + 1) ∂P := by
+            rw [integral_add hXprev_sq_int hterm_int]
+    _ = (∫ ω, X (n - 1) ω ^ 2 ∂P) +
+          variance / offspringMean ^ (n + 1) := by
+            rw [hterm_integral]
+
 end ProbabilityTheory
 end StatInference

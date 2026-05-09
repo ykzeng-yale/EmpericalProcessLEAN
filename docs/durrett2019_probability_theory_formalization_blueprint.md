@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V130`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V131`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -392,12 +392,12 @@ Compiled Section 3.2 packets:
 Next packet:
 
 - Chapter 4.4: continue the martingale maximal-inequality layer.  The current
-  frontier is Example 4.4.9 branching-process second-moment and `L^2`
-  convergence support.  The first useful packet should search for the existing
-  normalized branching-process martingale bridge, conditional-variance APIs,
-  and square-integrability recurrence support, then prove the largest
-  source-shaped wrapper that compiles without reopening full Galton-Watson
-  random-sum infrastructure.  The Section 3.10
+  frontier is Example 4.4.9 finite geometric-sum boundedness and `L^2`
+  convergence support.  The conditional and integrated second-moment recurrence
+  layer now compiles, so the first useful packet should search for geometric
+  sum/summability, `eLpNorm`/`MemLp` with `p = 2`, and martingale `L^p`
+  convergence APIs, then prove the largest source-shaped wrapper that compiles
+  without reopening full Galton-Watson random-sum infrastructure.  The Section 3.10
   multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise
   3.10.8 linear-combination characterization wrappers, Durrett conditional
   expectation version predicate, mathlib-condExp version wrapper, Example 4.1.3
@@ -607,7 +607,8 @@ Next packet:
   finite-maximal `eLpNorm` bounds and the final Theorem 4.4.6 `L^p` convergence
   endpoint now compile.  The Theorem 4.4.7 orthogonality and
   increment-increment wrappers now compile.  The Theorem 4.4.8 conditional
-  variance formula now also compiles.
+  variance formula now also compiles.  The Example 4.4.9 conditional and
+  integrated second-moment recurrence layer now also compiles.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
