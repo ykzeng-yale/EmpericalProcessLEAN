@@ -291,6 +291,16 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	normalized Hessian-difference operator plus the source-style absolute
 	quadratic-form estimate `|<A z,z>| <= coeff * ||z||^2` feeds the same
 	Theorem 13.8 decrement wrapper.
+	The newest concrete Delta symmetry packet adds
+	`hessianSegmentHessian_intervalIntegral_isSymmetric_of_continuousOn` and
+	`hessianSegmentDelta_isSymmetric_of_continuousOn`, using
+	`ContinuousLinearMap.intervalIntegral_apply`,
+	`ContinuousLinearMap.intervalIntegral_comp_comm`,
+	`innerSL_apply_apply`, `real_inner_comm`, and `LinearMap.IsSymmetric.sub`.
+	Thus the unnormalized integrated Hessian-difference operator is now proved
+	self-adjoint from pointwise Hessian symmetry along the segment; the remaining
+	Rayleigh-route work is the square-root coordinate factorization and
+	normalized absolute quadratic-form estimate.
 
 Next theorem-sized target: prove the square-root/normalized-operator
 factorization and either the pointwise squared, unit-bilinear, or
@@ -309,7 +319,8 @@ The exact blockers are:
   prove the normalized source line for `Delta = hessianSegmentDelta hess x x+`:
   identify `inner (Delta step) (invHess x (Delta step))` with
   `||A (sqrtH step)||^2`, identify `inner step (hess x step)` with
-  `||sqrtH step||^2`, and prove the pointwise squared estimate
+  `||sqrtH step||^2`, carry symmetry through the normalized square-root
+  coordinate operator when needed, and prove the pointwise squared estimate
   `||A z||^2 <= (M * lambda / (1 - M * lambda))^2 * ||z||^2` or the unit
   bilinear estimate
   `<A u, v> <= M * lambda / (1 - M * lambda)` for unit `u` and `v`, or the

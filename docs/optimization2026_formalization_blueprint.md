@@ -519,9 +519,14 @@ packet adds `continuousLinearMap_opNorm_le_of_isSymmetric_abs_inner_le`,
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSymmetricQuadraticConcreteDelta`,
 reusing mathlib's `ContinuousLinearMap.norm_eq_iSup_rayleighQuotient` as the
 self-adjoint Rayleigh bridge from source-style absolute quadratic-form
-estimates to the same Theorem 13.8 decrement wrapper.  After that, derive the
-inverse-Hessian comparison from concrete matrix/order hypotheses and remove the
-remaining mixed-third supplied source interface through the real
+estimates to the same Theorem 13.8 decrement wrapper.  The newest concrete
+Delta symmetry packet adds
+`hessianSegmentHessian_intervalIntegral_isSymmetric_of_continuousOn` and
+`hessianSegmentDelta_isSymmetric_of_continuousOn`, proving the unnormalized
+integrated Hessian-difference operator is self-adjoint from pointwise Hessian
+symmetry along the segment.  After that, derive the inverse-Hessian comparison
+from concrete matrix/order hypotheses and remove the remaining mixed-third
+supplied source interface through the real
 third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem

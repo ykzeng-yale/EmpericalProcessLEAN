@@ -2615,6 +2615,83 @@ theorem hessianSegmentDelta_apply
   simp [hessianSegmentDelta, ← happly]
 
 /--
+The interval average of symmetric Hessians along a Chewi segment is symmetric.
+This is a concrete bridge toward the Rayleigh route for Theorem 13.8.
+-/
+theorem hessianSegmentHessian_intervalIntegral_isSymmetric_of_continuousOn
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y : E}
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s)
+    (hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric) :
+    (((∫ t in (0 : ℝ)..1, hess (hessianSegmentPoint x y t)) :
+        E →L[ℝ] E) : E →ₗ[ℝ] E).IsSymmetric := by
+  let z : ℝ -> E := fun t => hessianSegmentPoint x y t
+  have hint_op : IntervalIntegrable
+      (fun t : ℝ => hess (z t)) MeasureTheory.volume (0 : ℝ) 1 :=
+    hessianSegmentHessian_intervalIntegrable_of_continuousOn
+      (hess := hess) (s := s) (x := x) (y := y) hhess hseg
+  intro u v
+  change inner ℝ ((∫ t in (0 : ℝ)..1, hess (z t)) u) v =
+    inner ℝ u ((∫ t in (0 : ℝ)..1, hess (z t)) v)
+  have hint_u : IntervalIntegrable
+      (fun t : ℝ => hess (z t) u) MeasureTheory.volume (0 : ℝ) 1 :=
+    hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn
+      (hess := hess) (s := s) (x := x) (y := y) (v := u) hhess hseg
+  have hint_v : IntervalIntegrable
+      (fun t : ℝ => hess (z t) v) MeasureTheory.volume (0 : ℝ) 1 :=
+    hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn
+      (hess := hess) (s := s) (x := x) (y := y) (v := v) hhess hseg
+  have hleft :
+      inner ℝ ((∫ t in (0 : ℝ)..1, hess (z t)) u) v =
+        ∫ t in (0 : ℝ)..1, inner ℝ (hess (z t) u) v := by
+    rw [ContinuousLinearMap.intervalIntegral_apply hint_op u]
+    rw [real_inner_comm]
+    have h := ((innerSL ℝ v).intervalIntegral_comp_comm
+      (f := fun t : ℝ => hess (z t) u) hint_u)
+    simpa [innerSL_apply_apply, real_inner_comm] using h.symm
+  have hright :
+      inner ℝ u ((∫ t in (0 : ℝ)..1, hess (z t)) v) =
+        ∫ t in (0 : ℝ)..1, inner ℝ u (hess (z t) v) := by
+    rw [ContinuousLinearMap.intervalIntegral_apply hint_op v]
+    have h := ((innerSL ℝ u).intervalIntegral_comp_comm
+      (f := fun t : ℝ => hess (z t) v) hint_v)
+    simpa [innerSL_apply_apply] using h.symm
+  rw [hleft, hright]
+  refine intervalIntegral.integral_congr ?_
+  intro t ht
+  have htIcc : t ∈ Set.Icc (0 : ℝ) 1 := by
+    simpa [Set.uIcc_of_le zero_le_one] using ht
+  exact hsymm (z t) (hseg t htIcc) u v
+
+/--
+The concrete integrated Hessian-difference operator is symmetric whenever the
+Hessian oracle is symmetric along the segment.  This discharges the
+self-adjointness side of the normalized Rayleigh route before the square-root
+coordinate factorization is introduced.
+-/
+theorem hessianSegmentDelta_isSymmetric_of_continuousOn
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y : E}
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s)
+    (hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric) :
+    (hessianSegmentDelta hess x y : E →ₗ[ℝ] E).IsSymmetric := by
+  let z : ℝ -> E := fun t => hessianSegmentPoint x y t
+  have hint_symm :
+      (((∫ t in (0 : ℝ)..1, hess (z t)) : E →L[ℝ] E) :
+        E →ₗ[ℝ] E).IsSymmetric := by
+    simpa [z] using
+      hessianSegmentHessian_intervalIntegral_isSymmetric_of_continuousOn
+        (hess := hess) (s := s) (x := x) (y := y) hhess hseg hsymm
+  have hx_mem : x ∈ s := by
+    simpa [hessianSegmentPoint_zero] using hseg (0 : ℝ) (by simp)
+  have hx_symm : (hess x : E →ₗ[ℝ] E).IsSymmetric := hsymm x hx_mem
+  simpa [hessianSegmentDelta, z] using hint_symm.sub hx_symm
+
+/--
 The quadratic form of the concrete Delta operator is the scalar integrated
 Hessian difference from Chewi's proof.
 -/
