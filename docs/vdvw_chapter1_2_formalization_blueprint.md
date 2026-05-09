@@ -2330,10 +2330,18 @@ above, so they do not change the theorem-level dashboard counts.
    selected finite-net badness.  The deterministic sign-swapped averaged
    source is now compiled as
    `VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_lower_bound_of_chebyshev_succ`,
-   covering every deterministic Rademacher sign vector.  The remaining source
-   route is canonical sign integration plus projection to the original-or-ghost
-   selected finite-net event, with the selected finite-center Hoeffding
-   components as side conditions.
+   covering every deterministic Rademacher sign vector.  The canonical
+   sign-averaged product-pair source is now compiled as
+   `VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_succ`,
+   with the countable-class wrapper
+   `VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_succ_of_countable`.
+   The supporting product-pair bad-event measurability lemmas are
+   `measurableSet_vdVWProductPair_centeredPairSubBadEvent_of_countable`
+   and
+   `measurableSet_vdVWProductPair_centeredPairSubRademacherBadEvent_of_countable`.
+   The remaining source route is projection from the global signed product-pair
+   bad event to the original-or-ghost selected finite-net event, with the
+   selected finite-center Hoeffding components as side conditions.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,

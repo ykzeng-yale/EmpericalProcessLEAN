@@ -239,9 +239,16 @@ existing product-pair sign symmetry applies.  The deterministic sign-swapped
 averaged source is now compiled as
 `VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_lower_bound_of_chebyshev_succ`,
 which applies that product-pair symmetry for every deterministic Rademacher
-sign vector.  The next blocker is canonical sign integration plus projection
-to the original-or-ghost selected finite-net event, together with the original
-and ghost selected finite-center Hoeffding side conditions.
+sign vector.  The sign-averaged source is now also compiled as
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_succ`,
+with the countable-class measurability wrapper
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_succ_of_countable`.
+The product-pair bad-event measurability inputs are discharged by
+`measurableSet_vdVWProductPair_centeredPairSubBadEvent_of_countable` and
+`measurableSet_vdVWProductPair_centeredPairSubRademacherBadEvent_of_countable`.
+The next blocker is projection to the original-or-ghost selected finite-net
+event, together with the original and ghost selected finite-center Hoeffding
+side conditions.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
