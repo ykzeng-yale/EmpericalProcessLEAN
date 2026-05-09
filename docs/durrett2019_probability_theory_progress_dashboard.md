@@ -32,90 +32,24 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V176` in
+Route from `Live In-Thread Goal Prompt V177` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
-The active theorem lane is Chapter 4.5.2, with Chapter 4.4 martingale maximal
-inequalities as compiled support.  The current frontier has moved past
-Exercise 4.4.6's natural-filtration
-independent-increment specialization and Exercise 4.4.9's two-martingale
-product-covariance identity.  Exercise 4.4.10 now has the finite
-square-increment second-moment identities, finite tail identity, `L^2`
-Cauchy-bound consumer, square-summability shifted-tail bound, shifted-tail
-tendsto-zero wrapper, explicit eventual `L^2` Cauchy estimate, `Lp` Cauchy
-sequence endpoint, and an existential `Lp` limit.  Exercise 4.4.11 now has the
-predictable-transform increment identity, scaled square-summability conversion,
-transformed-martingale `Lp` and almost-sure convergence bridges, deterministic
-Abel/Kronecker ratio certificates, the Toeplitz constant/centered split, the
-nonnegative-increment Toeplitz/Kronecker route, the normalized increment-sum
-a.e. endpoint, the zero-initial/shifted `X_n / b_n` display, and the
-bounded-variance Exercise 4.4.11 corollary route, plus a deterministic
-reciprocal-normalizer source wrapper that discharges direct `H n = (b n)⁻¹`,
-positivity/nonzero, boundedness, predictability, and transform `MemLp` side
-conditions from `b_n ≥ 1` and square-integrability of the martingale process.
-Section 4.5.1 now has the finite Doob `L^2` `eLpNorm` bridge, automatic
-finite running-maximum `L^2` membership, the source-facing ordinary finite
-second-moment display, the monotone `lintegral` iSup handoff, the
-`runningAbsSup` square identification, the supplied `A∞`
-increasing-process source bridge, the canonical square-process
-predictable-part identity `E X_n^2 = E A_n`, the terminal monotone-limit handoff
-to `E A_n ≤ E A∞`, and the exact conditional-variance finite-sum display for
-Durrett's increasing process.  The first Theorem 4.5.2 proof-skeleton layer
-now has the event-cover wrapper, stopped-process survival transfer, and
-stopped-threshold cover bridge:
-`durrett2019_theorem_4_5_2_exists_ae_tendsto_on_event_cover`,
-`durrett2019_theorem_4_5_2_stopped_convergence_on_event`, and
-`durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover`.  The
-threshold stopping-time layer also now has
-`durrett2019_theorem_4_5_2_firstPredictableAbove`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_eq_top_of_forall_le`, and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_survival_of_forall_le_ae`.
-The Theorem 4.4.6 stopped-convergence handoff also now has
-`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_eLpNorm_two_bdd` and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_eLpNorm_two_bdd`.
-The running-supremum-to-terminal `L^2` layer also now has
-`durrett2019_theorem_4_5_2_eLpNorm_terminal_le_runningAbsSup_of_ae_bddAbove`,
-`durrett2019_theorem_4_5_2_eLpNorm_two_bdd_of_runningAbsSup_eLpNorm_two_bdd`,
+The active theorem lane is Durrett Chapter 2 in
+`StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
+`StatInference/EmpiricalProcess/RealHalfLine*.lean` and
+`StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.  Chapter 2.1 now has
+independence/product-law wrappers through Theorem 2.1.13.  Theorem 2.4.9 now
+has the arbitrary-law cutpoint-chain route and both the book-style and exact
+outer-a.s. empirical-CDF endpoints:
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`,
 and
-`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_eLpNorm_two_bdd`.
-The `lintegral` maximal-estimate consumer also now has
-`durrett2019_eLpNorm_two_le_of_lintegral_ofReal_sq_le`,
-`durrett2019_theorem_4_5_2_runningAbsSup_eLpNorm_two_le_of_lintegral_sq_le`,
-and
-`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_lintegral_sq_le`.
-The stopped maximal-estimate assembly also now has
-`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_terminal_integral_sq_le`
-and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_terminal_integral_sq_le`.
-The stopped increasing-process integral bridge also now has
-`durrett2019_theorem_4_5_2_stopped_square_integral_le_of_stopped_increasing_le`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_le_of_stopped_increasing_le`,
-and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_stopped_increasing_le`.
-The threshold stopped increasing-process bound and initial-bound source wrappers
-also now have
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_increasing_le`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_increasing_ae_le`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_le_of_initial_le_and_square_identity`,
-and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_square_identity`.
-The stopped square/increasing-process integral identity is now packaged from a
-stopped predictable-part identification:
-`durrett2019_theorem_4_5_2_stopped_square_integral_eq_of_predictablePart_ae_eq`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_zero_le`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_eq_of_predictablePart_ae_eq`,
-and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_predictablePart_identity`.
-The stopped predictable-part identification is now packaged from a stopped
-Doob-decomposition certificate:
-`durrett2019_theorem_4_5_2_stopped_predictablePart_eq_of_square_minus_increasing_martingale`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_predictablePart_eq_of_square_minus_increasing_martingale`,
-and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_square_minus_increasing_martingale`.
-The next target is proving the stopped square-minus-increasing-process
-martingale certificate and the stopped increasing-process predictability
-certificate, then feeding the compiled wrapper into the event-cover skeleton
-and countable threshold cover.
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
+The next target is missing Chapter 2.1 product-law / independence source
+wrappers that unlock later Chapter 2 results, especially Theorem 2.1.15
+convolution/CDF handoffs.  Do not route future cycles back to Chapter 4.5.2
+unless the user explicitly pivots.
 The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,

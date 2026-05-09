@@ -1318,6 +1318,31 @@ theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine
       durrett2019_theorem_2_4_9_cutpointChain hepsilon hab)
 
 /--
+Durrett 2019, Theorem 2.4.9, outer-almost-sure half-line
+Glivenko-Cantelli theorem.
+
+This strengthens the book-style `or` endpoint to the exact a.s. branch stated
+by Durrett: the arbitrary-law cutpoint-chain construction feeds the
+outer-a.s. empirical-CDF handoff directly.
+-/
+theorem durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass μ P Set.univ
+      realHalfLineIndicator X := by
+  exact
+    StatInference.vdVW_realHalfLine_outerAlmostSureGlivenkoCantelli_of_suppliedERealHalfLineEndpointGrids
+      X hLaw hindep
+      (SuppliedERealHalfLineEndpointGrid.exists_forall_of_forall_realMiddleCDFPartition
+        P
+        (fun hepsilon hab =>
+          exists_realMiddleCDFPartition_of_cutpoint_chain
+            (durrett2019_theorem_2_4_9_cutpointChain hepsilon hab)))
+
+/--
 Durrett 2019, Theorem 2.4.9, source-facing empirical distribution-function
 form.
 
@@ -1335,6 +1360,32 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli
     _root_.StatInference.RealEmpiricalCDFGlivenkoCantelliClass μ P X :=
   _root_.StatInference.realEmpiricalCDFGlivenkoCantelliClass_of_realHalfLine
     (durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine X hLaw hindep)
+
+/--
+Durrett 2019, Theorem 2.4.9, source-facing empirical distribution-function
+form in the exact outer-a.s. branch.
+
+This is the direct Lean counterpart of `sup_x |F_n(x) - F(x)| -> 0 a.s.` in
+Durrett's empirical-distribution notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) := by
+  have hhalf :
+      VdVWOuterAlmostSurePGlivenkoCantelliClass μ P Set.univ
+        realHalfLineIndicator X :=
+    durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine
+      X hLaw hindep
+  simpa [VdVWOuterAlmostSurePGlivenkoCantelliClass,
+    empiricalDistributionFunction, populationRiskOfFunction,
+    realHalfLineIndicator_integral_eq_cdf] using hhalf
 
 /--
 Durrett 2019, Theorem 2.4.9, non-atomic half-line

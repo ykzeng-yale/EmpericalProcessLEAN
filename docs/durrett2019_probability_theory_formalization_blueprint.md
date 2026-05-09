@@ -27,60 +27,23 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V176`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V177`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current active frontier: Exercise 4.4.6 now has the deterministic
-variance-clock recurrence, the variable-variance square-martingale source
-bridge, the exact-denominator source-facing small-ball wrapper, and the
-natural-filtration independent-increment small-ball endpoint; Exercise 4.4.9
-now has the two-martingale product-covariance recurrence and finite-sum source
-display; Exercise 4.4.10 now has the finite square-increment second-moment
-identities, finite tail identity, `L^2` Cauchy-bound consumer, and
-square-summability shifted-tail bound, shifted-tail tendsto-zero wrapper,
-explicit eventual `L^2` Cauchy estimate, `Lp` Cauchy sequence endpoint,
-existential `Lp` limit, and almost-sure convergence handoff.  Exercise 4.4.11
-now has the predictable-transform increment identity, scaled square-summability
-conversion, transformed martingale `Lp` and almost-sure convergence bridges,
-deterministic Abel/Kronecker ratio certificates, the Toeplitz constant/centered
-split, the centered Toeplitz remainder, the nonnegative-increment
-weighted-average/Kronecker route, the normalized increment-sum a.e.
-endpoint, the zero-initial/shifted `X_n / b_n` display, and the
-bounded-variance Exercise 4.4.11 corollary route, and the deterministic
-reciprocal-normalizer source wrapper.  Section 4.5.1 now has the finite Doob
-`L^2` `eLpNorm` bridge, automatic finite running-maximum `L^2` membership, the
-source-facing ordinary finite second-moment display, the monotone `lintegral`
-iSup handoff, the `runningAbsSup` square identification, the supplied `A∞`
-increasing-process source bridge, the canonical square-process predictable-part
-identity `E X_n^2 = E A_n`, the terminal monotone-limit handoff
-`E A_n ≤ E A∞`, and the exact conditional-variance finite-sum display for
-Durrett's increasing process.  Theorem 4.5.2 now has the countable threshold
-event-cover bridge, the stopped-process survival transfer, and the combined
-stopped-threshold cover wrapper.  It also has the threshold stopping time
-`N_a = inf {n : A_{n+1} > a^2}`, the stopping-time proof from predictability
-of `A_{n+1}`, the survival bridge from pathwise threshold boundedness, and the
-Theorem 4.4.6 handoff from a uniform stopped `L^2` bound to stopped a.e. finite
-convergence.  It also has the running-supremum-to-terminal `L^2` bridge that
-turns a stopped running-supremum `eLpNorm` bound into the terminal bounds
-needed by that handoff, plus the `lintegral` maximal-estimate consumer that
-turns Theorem 4.5.1's square `lintegral` bound into stopped a.e. convergence.
-It also has the stopped maximal-estimate assembly that applies Theorem 4.5.1
-once a stopped terminal second-moment bound is available, and the bridge that
-turns a stopped increasing-process bound plus the stopped square identity into
-that second-moment bound.  The threshold stopped increasing-process bound
-`stoppedProcess A N_a n ≤ a^2`, its a.e. form, and the initial-bound source
-wrappers into stopped second-moment and stopped convergence now compile.
-The ordinary stopped square/increasing-process identity is now packaged from
-the stopped predictable-part identification, and that predictable-part
-identification is now packaged from a stopped Doob-decomposition certificate.
-Continue by proving the martingale certificate
-`Martingale (fun n ω => stoppedProcess X N_a n ω ^ 2 - stoppedProcess A N_a n ω) ℱ P`
-and the predictable certificate
-`IsStronglyPredictable ℱ (stoppedProcess A N_a)`, then feed the compiled
-source wrapper directly into the event-cover skeleton and the countable
-threshold cover of `{A∞ < ∞}`.
+Current active frontier: Durrett Chapter 2 in
+`StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled
+independence/product-law wrappers through Theorem 2.1.13, and Theorem 2.4.9 has
+the full empirical-CDF Glivenko-Cantelli route through the arbitrary-law
+cutpoint-chain construction.  Treat
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure` as
+closed support.  Continue by adding only missing Chapter 2.1 product-law /
+independence source wrappers that unlock later Chapter 2 statements, with
+Theorem 2.1.15 convolution/CDF handoffs as the first likely target.
 
 For each cycle, route from:
 

@@ -4,104 +4,36 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V176
+## Live In-Thread Goal Prompt V177
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane: Durrett Chapter 4.5.2 in
-`StatInference/ProbabilityTheory/Martingale.lean` plus the three Durrett route
-docs.  Treat compiled Chapter 2, Chapter 3, Chapter 4.1 through Theorem 4.1.15,
-Chapter 4.2, Chapter 4.3, and Chapter 4.4 through Exercise 4.4.11 as closed
-support unless the next theorem directly needs one API.
+synced `main`.  Active lane: Durrett Chapter 2 in
+`StatInference/ProbabilityTheory/Basic.lean`, with reusable empirical-CDF and
+bracketing infrastructure in `StatInference/EmpiricalProcess/RealHalfLine*.lean`
+and `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.
 
-Last compiled packet: Section 4.5.1 now has the finite Doob `L^2` bridge,
-ordinary finite second-moment display, monotone `lintegral` iSup handoff, and
-canonical running-supremum identification, the supplied `A∞`
-increasing-process source bridge, and the canonical square-process predictable
-part, terminal-limit, and conditional-variance finite-sum source bridges:
-`durrett2019_iSup_ofReal_runningAbsMax_sq_eq_ofReal_runningAbsSup_sq_of_bddAbove`,
-`durrett2019_lintegral_iSup_runningAbsMax_sq_eq_lintegral_runningAbsSup_sq_of_ae_bddAbove`,
-`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_integral_sq_le`,
-`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_bound`,
-`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_increasing_process_integral_identity`,
-`durrett2019_martingale_integral_eq_initial`,
-`durrett2019_theorem_4_5_1_square_integral_eq_predictablePart_square_of_initial_zero`,
-`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_integral_bound`,
-`durrett2019_ae_le_of_ae_monotone_tendsto_atTop`,
-`durrett2019_theorem_4_5_1_predictablePart_square_integral_le_of_ae_le`, and
-`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_tendsto`,
-`durrett2019_theorem_4_5_1_predictablePart_square_ae_eq_sum_conditional_variance`,
+Treat the following as compiled support and do not redo it: Chapter 2.1
+independence/product-law wrappers through Theorem 2.1.13, Theorem 2.3.1/2.3.7
+Borel-Cantelli wrappers, Theorem 2.4.1 strong-law wrappers, and the full
+Durrett Theorem 2.4.9 empirical-CDF route:
+`durrett2019_theorem_2_4_9_cutpointChain`,
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`,
 and
-`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_conditionalVariance_tendsto`.
-The first Theorem 4.5.2 proof-skeleton layer now also compiles:
-`durrett2019_theorem_4_5_2_exists_ae_tendsto_on_event_cover`,
-`durrett2019_theorem_4_5_2_stopped_convergence_on_event`, and
-`durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover`.
-The threshold stopping-time layer also now compiles:
-`durrett2019_theorem_4_5_2_firstPredictableAbove`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_eq_top_of_forall_le`, and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_survival_of_forall_le_ae`.
-The Theorem 4.4.6 stopped-convergence handoff also now compiles:
-`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_eLpNorm_two_bdd` and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_eLpNorm_two_bdd`.
-The running-supremum-to-terminal `L^2` layer also now compiles:
-`durrett2019_theorem_4_5_2_eLpNorm_terminal_le_runningAbsSup_of_ae_bddAbove`,
-`durrett2019_theorem_4_5_2_eLpNorm_two_bdd_of_runningAbsSup_eLpNorm_two_bdd`,
-and
-`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_eLpNorm_two_bdd`.
-The `lintegral` maximal-estimate consumer also now compiles:
-`durrett2019_eLpNorm_two_le_of_lintegral_ofReal_sq_le`,
-`durrett2019_theorem_4_5_2_runningAbsSup_eLpNorm_two_le_of_lintegral_sq_le`,
-and
-`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_lintegral_sq_le`.
-The stopped maximal-estimate assembly also now compiles:
-`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_terminal_integral_sq_le`
-and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_terminal_integral_sq_le`.
-The stopped increasing-process integral bridge also now compiles:
-`durrett2019_theorem_4_5_2_stopped_square_integral_le_of_stopped_increasing_le`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_le_of_stopped_increasing_le`,
-and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_stopped_increasing_le`.
-The threshold stopped increasing-process bound and initial-bound source
-wrappers also now compile:
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_increasing_le`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_increasing_ae_le`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_le_of_initial_le_and_square_identity`,
-and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_square_identity`.
-The stopped square/increasing-process integral identity is now packaged from a
-stopped predictable-part identification:
-`durrett2019_theorem_4_5_2_stopped_square_integral_eq_of_predictablePart_ae_eq`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_zero_le`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_eq_of_predictablePart_ae_eq`,
-and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_predictablePart_identity`.
-The stopped predictable-part identification is now packaged from a stopped
-Doob-decomposition certificate:
-`durrett2019_theorem_4_5_2_stopped_predictablePart_eq_of_square_minus_increasing_martingale`,
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_predictablePart_eq_of_square_minus_increasing_martingale`,
-and
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_square_minus_increasing_martingale`.
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
 
-Next aggressive step: prove the stopped Doob-decomposition certificate for
-`(X^{N_a})^2`: the martingale certificate
-`Martingale (fun n ω => stoppedProcess X N_a n ω ^ 2 - stoppedProcess A N_a n ω) ℱ P`
-and the predictable certificate
-`IsStronglyPredictable ℱ (stoppedProcess A N_a)`.  Feed those into
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_square_minus_increasing_martingale`,
-then package the event-cover skeleton and countable threshold cover of
-`{A∞ < ∞}`.  Do not reprove the stopped `A_{n∧N_a} ≤ a^2` bound, the ordinary
-integral identity from predictable-part equality, or the predictable-part
-uniqueness bridge, and do not route back into Chapter 4.4 plumbing or the already
-compiled finite-maximum, ordinary second-moment, monotone-iSup,
-running-supremum identification, supplied-`A∞`, canonical `E X_n^2 = E A_n`,
-terminal monotone-limit, or conditional-variance finite-sum wrapper layers.
-Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
-source-shaped API.
+Next aggressive step: extend only the missing Chapter 2.1 product-law /
+independence source wrappers that unlock later Durrett Chapter 2 results.  Search
+mathlib and local wrappers first, especially `HasLaw`, `IndepFun`,
+`iIndepFun`, `Measure.prod`, `Measure.pi`, product integrals, and the existing
+`StatInference.ProbabilityMeasure.ProductMeasure` layer.  Good targets are
+Theorem 2.1.15 convolution/CDF handoffs and any exact finite-product law or
+expectation-factorization shape needed downstream.  Do not route back to
+Chapter 4.5.2 unless the user explicitly pivots the active goal.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
