@@ -11028,6 +11028,178 @@ theorem durrett2019_theorem_4_4_4_positivePart_layercake_doob_lintegral_bound
       (P := P) (ℱ := ℱ) (X := X) hX ht n
 
 /--
+Durrett 2019, Theorem 4.4.4, weighted layer-cake/Fubini bridge.  Applying
+the layer-cake formula to the weighted measure `P.withDensity F` identifies the
+threshold integral with a one-dimensional interval integral along each sample.
+-/
+theorem durrett2019_theorem_4_4_4_weighted_layercake_withDensity
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {A : Ω -> ℝ} {F : Ω -> ℝ≥0∞}
+    (hA_nonneg : ∀ ω, 0 ≤ A ω) (hA_meas : Measurable A)
+    {p : ℝ} (hp : 1 < p) :
+    (∫⁻ t in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (t ^ (p - 2)) *
+          ∫⁻ ω in {ω | t ≤ A ω}, F ω ∂P) =
+      ∫⁻ ω,
+        ENNReal.ofReal (∫ t in (0 : ℝ)..A ω, t ^ (p - 2))
+          ∂P.withDensity F := by
+  have hA_nonneg_ae : 0 ≤ᵐ[P.withDensity F] A :=
+    Eventually.of_forall hA_nonneg
+  have hexp : -1 < p - 2 := by linarith
+  have hg_intble (t : ℝ) (_ht : 0 < t) :
+      IntervalIntegrable (fun s : ℝ => s ^ (p - 2)) volume 0 t :=
+    intervalIntegral.intervalIntegrable_rpow' hexp
+  have hg_nonneg :
+      ∀ᵐ t ∂volume.restrict (Set.Ioi (0 : ℝ)), 0 ≤ t ^ (p - 2) := by
+    filter_upwards
+      [self_mem_ae_restrict (measurableSet_Ioi : MeasurableSet (Set.Ioi (0 : ℝ)))]
+      with t ht
+    exact Real.rpow_nonneg (le_of_lt ht) (p - 2)
+  have hLayer :=
+    MeasureTheory.lintegral_comp_eq_lintegral_meas_le_mul
+      (μ := P.withDensity F) hA_nonneg_ae hA_meas.aemeasurable
+      hg_intble hg_nonneg
+  rw [hLayer]
+  refine lintegral_congr fun t => ?_
+  have hEvent : MeasurableSet {ω | t ≤ A ω} :=
+    measurableSet_le measurable_const hA_meas
+  rw [withDensity_apply _ hEvent]
+  ac_rfl
+
+/--
+Durrett 2019, Theorem 4.4.4, weighted layer-cake with the one-dimensional
+power integral evaluated:
+`∫_0^A t^(p-2) dt = A^(p-1)/(p-1)` for `p > 1`.
+-/
+theorem durrett2019_theorem_4_4_4_weighted_layercake_withDensity_rpow
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {A : Ω -> ℝ} {F : Ω -> ℝ≥0∞}
+    (hA_nonneg : ∀ ω, 0 ≤ A ω) (hA_meas : Measurable A)
+    {p : ℝ} (hp : 1 < p) :
+    (∫⁻ t in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (t ^ (p - 2)) *
+          ∫⁻ ω in {ω | t ≤ A ω}, F ω ∂P) =
+      ∫⁻ ω, ENNReal.ofReal (A ω ^ (p - 1) / (p - 1))
+        ∂P.withDensity F := by
+  rw [durrett2019_theorem_4_4_4_weighted_layercake_withDensity
+    (P := P) (A := A) (F := F) hA_nonneg hA_meas hp]
+  refine lintegral_congr fun ω => ?_
+  have hexp : -1 < p - 2 := by linarith
+  have hp_sub_ne : p - 2 + 1 ≠ 0 := by linarith
+  rw [integral_rpow (Or.inl hexp)]
+  rw [Real.zero_rpow hp_sub_ne, sub_zero]
+  ring_nf
+
+/--
+Durrett 2019, Theorem 4.4.4, weighted layer-cake with the `withDensity`
+measure expanded back to the original measure.
+-/
+theorem durrett2019_theorem_4_4_4_weighted_layercake_lintegral_rpow
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {A : Ω -> ℝ} {F : Ω -> ℝ≥0∞}
+    (hA_nonneg : ∀ ω, 0 ≤ A ω) (hA_meas : Measurable A)
+    (hF_meas : AEMeasurable F P) {p : ℝ} (hp : 1 < p) :
+    (∫⁻ t in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (t ^ (p - 2)) *
+          ∫⁻ ω in {ω | t ≤ A ω}, F ω ∂P) =
+      ∫⁻ ω, F ω * ENNReal.ofReal (A ω ^ (p - 1) / (p - 1)) ∂P := by
+  rw [durrett2019_theorem_4_4_4_weighted_layercake_withDensity_rpow
+    (P := P) (A := A) (F := F) hA_nonneg hA_meas hp]
+  have hkernel_meas :
+      AEMeasurable (fun ω => ENNReal.ofReal (A ω ^ (p - 1) / (p - 1))) P := by
+    have hpow_meas : Measurable fun ω => A ω ^ (p - 1) :=
+      (Real.continuous_rpow_const (by linarith : 0 ≤ p - 1)).measurable.comp hA_meas
+    exact (ENNReal.measurable_ofReal.comp (hpow_meas.div_const (p - 1))).aemeasurable
+  simpa [Pi.mul_apply] using
+    (lintegral_withDensity_eq_lintegral_mul₀ hF_meas hkernel_meas)
+
+/--
+Durrett 2019, Theorem 4.4.4, weighted/Fubini identification for the positive
+part running maximum.  The remaining threshold integral is the integral of
+`X_n^+` against the evaluated one-dimensional power kernel.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_weighted_threshold_lintegral_eq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p : ℝ} (hp : 1 < p) (n : ℕ) :
+    (∫⁻ t in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (t ^ (p - 2)) *
+          ∫⁻ ω in {ω |
+              t ≤
+                (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  fun k => max (X k ω) 0},
+            ‖max (X n ω) 0‖ₑ ∂P) =
+      ∫⁻ ω,
+        ENNReal.ofReal
+          (((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              (fun k => max (X k ω) 0)) ^ (p - 1) / (p - 1))
+          ∂P.withDensity (fun ω => ‖max (X n ω) 0‖ₑ) := by
+  let A : Ω -> ℝ := fun ω =>
+    (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+      fun k => max (X k ω) 0
+  have hA_nonneg : ∀ ω, 0 ≤ A ω := by
+    intro ω
+    rw [Finset.le_sup'_iff]
+    exact ⟨0, by simp, le_max_right (X 0 ω) 0⟩
+  have hA_meas : Measurable A := by
+    dsimp [A]
+    refine Finset.measurable_range_sup'' ?_
+    intro k _hk
+    exact
+      (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).max
+        measurable_const)
+  simpa [A] using
+    durrett2019_theorem_4_4_4_weighted_layercake_withDensity_rpow
+      (P := P) (A := A) (F := fun ω => ‖max (X n ω) 0‖ₑ)
+      hA_nonneg hA_meas hp
+
+/--
+Durrett 2019, Theorem 4.4.4, base-measure form of the weighted/Fubini
+identification for the positive-part running maximum.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_weighted_threshold_lintegral_base_eq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p : ℝ} (hp : 1 < p) (n : ℕ) :
+    (∫⁻ t in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (t ^ (p - 2)) *
+          ∫⁻ ω in {ω |
+              t ≤
+                (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  fun k => max (X k ω) 0},
+            ‖max (X n ω) 0‖ₑ ∂P) =
+      ∫⁻ ω,
+        ‖max (X n ω) 0‖ₑ *
+          ENNReal.ofReal
+            (((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                (fun k => max (X k ω) 0)) ^ (p - 1) / (p - 1)) ∂P := by
+  let A : Ω -> ℝ := fun ω =>
+    (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+      fun k => max (X k ω) 0
+  have hA_nonneg : ∀ ω, 0 ≤ A ω := by
+    intro ω
+    rw [Finset.le_sup'_iff]
+    exact ⟨0, by simp, le_max_right (X 0 ω) 0⟩
+  have hA_meas : Measurable A := by
+    dsimp [A]
+    refine Finset.measurable_range_sup'' ?_
+    intro k _hk
+    exact
+      (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).max
+        measurable_const)
+  have hF_meas : AEMeasurable (fun ω => ‖max (X n ω) 0‖ₑ) P := by
+    have hterminal_meas : Measurable fun ω => max (X n ω) 0 :=
+      (((hX.stronglyMeasurable n).measurable.mono (ℱ.le n) le_rfl).max
+        measurable_const)
+    exact hterminal_meas.aemeasurable.enorm
+  simpa [A] using
+    durrett2019_theorem_4_4_4_weighted_layercake_lintegral_rpow
+      (P := P) (A := A) (F := fun ω => ‖max (X n ω) 0‖ₑ)
+      hA_nonneg hA_meas hF_meas hp
+
+/--
 Durrett 2019, Theorem 4.4.4, Hölder support for the positive-part running
 maximum.  This is the textbook Hölder step after the Fubini calculation:
 `∫ X_n^+ (bar X_n)^{p-1}` is bounded by the product of the `L^p` terminal

@@ -4,13 +4,13 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V118
+## Live In-Thread Goal Prompt V119
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane only: Durrett Chapter 4.3 martingale applications in
+synced `main`.  Active lane only: Durrett Chapter 4.4 martingale maximal inequalities in
 `StatInference/ProbabilityTheory/Martingale.lean`.  Treat compiled Chapter 2,
 Chapter 3, Chapter 4.1 through Theorem 4.1.15, Examples 4.2.1-4.2.3, and
 Theorems 4.2.4-4.2.12 as closed dependencies, including the exact
@@ -433,11 +433,19 @@ bridge now also compile:
 `durrett2019_theorem_4_4_4_positivePart_doob_layercake_lintegral_integrand_bound`,
 and
 `durrett2019_theorem_4_4_4_positivePart_layercake_doob_lintegral_bound`.
-Next target: identify the weighted threshold integral with
-`(p - 1)⁻¹ * ∫ X_n^+ (bar X_n)^(p-1)` using a withDensity/Fubini or weighted
-layer-cake route, then package the finite-truncation, monotone convergence, and
-conjugate-exponent division algebra that feeds the compiled `lintegral_rpow`
-source hypothesis.  Do not detour back into full Galton-Watson random-sum
+The weighted/Fubini identification now also compiles through the withDensity
+layer-cake route:
+`durrett2019_theorem_4_4_4_weighted_layercake_withDensity`,
+`durrett2019_theorem_4_4_4_weighted_layercake_withDensity_rpow`,
+`durrett2019_theorem_4_4_4_weighted_layercake_lintegral_rpow`,
+`durrett2019_theorem_4_4_4_positivePart_weighted_threshold_lintegral_eq`, and
+`durrett2019_theorem_4_4_4_positivePart_weighted_threshold_lintegral_base_eq`.
+Next target: extract the `(p - 1)⁻¹` coefficient from the base-measure
+weighted/Fubini endpoint, convert the kernel to the exact Hölder integrand
+`X_n^+ (bar X_n)^(p-1)`, then package the conjugate-exponent division algebra
+that feeds the compiled `lintegral_rpow` source hypothesis.  Use finite
+truncation/monotone convergence only if the coefficient extraction or top-case
+handling forces it.  Do not detour back into full Galton-Watson random-sum
 infrastructure unless a local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
@@ -959,10 +967,11 @@ source wrapper from a supplied positive-part p-th-power estimate.  The
 positive-part layer-cake equality, pointwise Doob layer-cake integrand bound,
 Hölder integral bound, set-integral to restricted-`lintegral` bridge, pure
 `lintegral` Doob integrand bound, and integrated Doob layer-cake bound now also
-compile.  Next move to the weighted/Fubini identification and
-finite-truncation/monotone-convergence/division algebra for the actual Durrett
-p-th-power estimate, whichever gives the largest compiled step without building
-unrelated infrastructure.
+compile.  The weighted/Fubini identification now also compiles through
+withDensity and base-measure forms.  Next move to coefficient extraction, exact
+Hölder-kernel conversion, and division algebra for the actual Durrett
+p-th-power estimate, whichever gives the largest compiled step without
+building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1076,6 +1085,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V118` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V119` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
