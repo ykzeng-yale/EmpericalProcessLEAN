@@ -79,8 +79,13 @@ positive-orthant product now also compiles through `positiveOrthant`,
 `positiveOrthantNegLogBarrier`, `positiveOrthantNegLogGrad`,
 `positiveOrthantNegLogInvHessCLM`, and
 `positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card`, giving the
-expected product barrier parameter `d`.  Next lift that model through a reusable
-Proposition 13.11 barrier-calculus interface or instantiate the actual finite-dimensional/
+expected product barrier parameter `d`.  The same positive-orthant product now
+has compiled diagonal Hessian/inverse-Hessian square-root model equalities via
+`positiveOrthantNegLogHessCLM`,
+`positiveOrthantNegLogHessCLM_sqrtCoord_model_positiveOrthant`, and
+`positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant`.  Next lift
+that model through a reusable Proposition 13.11 barrier-calculus interface or
+instantiate the actual finite-dimensional/
 matrix barrier Hessian model; all segment membership, `ψ` continuity,
 local-norm continuity/positivity, Riccati comparison, derivative inequality,
 coefficient scaling, final sandwich assembly, first Newton/Dikin membership,

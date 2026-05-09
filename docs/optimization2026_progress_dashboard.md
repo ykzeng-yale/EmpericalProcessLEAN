@@ -1535,7 +1535,15 @@ barrier packet adds `positiveOrthant`, `positiveOrthantNegLogBarrier`,
 `positiveOrthantNegLogGrad`, `positiveOrthantNegLogInvHessCLM`, and
 `positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card`, proving the exact
 positive-orthant identity `||grad f(x)||_x^* = sqrt d` for the coordinatewise
-sum of `-log` barriers and giving the expected barrier parameter `d`.
+sum of `-log` barriers and giving the expected barrier parameter `d`.  The
+newest positive-orthant square-root model packet adds
+`positiveOrthantNegLogHessCLM`, `positiveOrthantNegLogSqrtCoordOfMem`,
+`positiveOrthantNegLogSqrtCoord`, the self-adjointness lemmas for the
+coordinate and inverse-coordinate maps, and
+`positiveOrthantNegLogHessCLM_sqrtCoord_model_positiveOrthant` /
+`positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant`, giving the
+diagonal finite-product model equalities required by the generic Theorem 13.8
+square-root-family wrapper.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the

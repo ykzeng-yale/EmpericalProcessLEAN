@@ -6120,6 +6120,182 @@ noncomputable def positiveOrthantNegLogInvHessCLM {d : ℕ}
   simp [positiveOrthantNegLogInvHessCLM]
 
 /--
+The coordinatewise Hessian model for the finite product logarithmic barrier.
+On coordinate `i` this applies the scalar Hessian `x_i^{-2}`.
+-/
+noncomputable def positiveOrthantNegLogHessCLM {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) :
+    EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+  LinearMap.toContinuousLinearMap
+    { toFun := fun v => WithLp.toLp 2 fun i : Fin d => (x i) ^ (-2 : ℤ) * v i
+      map_add' := by
+        intro v w
+        ext i
+        simp [mul_add]
+      map_smul' := by
+        intro c v
+        ext i
+        simp
+        ring }
+
+@[simp] theorem positiveOrthantNegLogHessCLM_apply {d : ℕ}
+    (x v : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    positiveOrthantNegLogHessCLM x v i = (x i) ^ (-2 : ℤ) * v i := by
+  simp [positiveOrthantNegLogHessCLM]
+
+/--
+The positive-orthant square-root Hessian coordinate map at a point known to lie
+in the positive orthant.
+-/
+noncomputable def positiveOrthantNegLogSqrtCoordOfMem {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) (hx : x ∈ positiveOrthant (d := d)) :
+    EuclideanSpace ℝ (Fin d) ≃L[ℝ] EuclideanSpace ℝ (Fin d) :=
+  LinearEquiv.toContinuousLinearEquiv
+    { toFun := fun v => WithLp.toLp 2 fun i : Fin d => (x i)⁻¹ * v i
+      invFun := fun v => WithLp.toLp 2 fun i : Fin d => x i * v i
+      left_inv := by
+        intro v
+        ext i
+        have hxi : x i ≠ 0 := (hx i).ne'
+        simp [hxi]
+      right_inv := by
+        intro v
+        ext i
+        have hxi : x i ≠ 0 := (hx i).ne'
+        simp [hxi]
+      map_add' := by
+        intro v w
+        ext i
+        simp [mul_add]
+      map_smul' := by
+        intro c v
+        ext i
+        simp
+        ring }
+
+/--
+A total square-root coordinate oracle for the positive-orthant logarithmic
+barrier, using the identity map off the positive orthant.  The model theorems
+below only use it on `positiveOrthant`.
+-/
+noncomputable def positiveOrthantNegLogSqrtCoord {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) :
+    EuclideanSpace ℝ (Fin d) ≃L[ℝ] EuclideanSpace ℝ (Fin d) := by
+  classical
+  exact
+    if hx : x ∈ positiveOrthant (d := d) then
+      positiveOrthantNegLogSqrtCoordOfMem x hx
+    else
+      ContinuousLinearEquiv.refl ℝ (EuclideanSpace ℝ (Fin d))
+
+@[simp] theorem positiveOrthantNegLogSqrtCoord_apply_of_mem {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
+    (v : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    positiveOrthantNegLogSqrtCoord x v i = (x i)⁻¹ * v i := by
+  simp [positiveOrthantNegLogSqrtCoord, hx, positiveOrthantNegLogSqrtCoordOfMem]
+
+@[simp] theorem positiveOrthantNegLogSqrtCoord_symm_apply_of_mem {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
+    (v : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    (positiveOrthantNegLogSqrtCoord x).symm v i = x i * v i := by
+  simp [positiveOrthantNegLogSqrtCoord, hx, positiveOrthantNegLogSqrtCoordOfMem]
+
+theorem positiveOrthantNegLogSqrtCoord_adjoint_eq_self_of_mem {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    ContinuousLinearMap.adjoint
+        (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap =
+      (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap := by
+  let S : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+    (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap
+  change ContinuousLinearMap.adjoint S = S
+  have hself : ∀ v w : EuclideanSpace ℝ (Fin d), inner ℝ (S v) w = inner ℝ v (S w) := by
+    intro v w
+    rw [PiLp.inner_apply, PiLp.inner_apply]
+    simp [RCLike.inner_apply, S, hx]
+    refine Finset.sum_congr rfl ?_
+    intro i _hi
+    ring_nf
+  apply ContinuousLinearMap.ext
+  intro v
+  apply ext_inner_right ℝ
+  intro w
+  calc
+    inner ℝ ((ContinuousLinearMap.adjoint S) v) w = inner ℝ v (S w) := by
+      simpa using ContinuousLinearMap.adjoint_inner_left S w v
+    _ = inner ℝ (S v) w := (hself v w).symm
+
+theorem positiveOrthantNegLogSqrtCoord_symm_adjoint_eq_self_of_mem {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    ContinuousLinearMap.adjoint
+        (positiveOrthantNegLogSqrtCoord x).symm.toContinuousLinearMap =
+      (positiveOrthantNegLogSqrtCoord x).symm.toContinuousLinearMap := by
+  let C : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+    (positiveOrthantNegLogSqrtCoord x).symm.toContinuousLinearMap
+  change ContinuousLinearMap.adjoint C = C
+  have hself : ∀ v w : EuclideanSpace ℝ (Fin d), inner ℝ (C v) w = inner ℝ v (C w) := by
+    intro v w
+    rw [PiLp.inner_apply, PiLp.inner_apply]
+    simp [RCLike.inner_apply, C, hx]
+    refine Finset.sum_congr rfl ?_
+    intro i _hi
+    ring_nf
+  apply ContinuousLinearMap.ext
+  intro v
+  apply ext_inner_right ℝ
+  intro w
+  calc
+    inner ℝ ((ContinuousLinearMap.adjoint C) v) w = inner ℝ v (C w) := by
+      simpa using ContinuousLinearMap.adjoint_inner_left C w v
+    _ = inner ℝ (C v) w := (hself v w).symm
+
+theorem positiveOrthantNegLogHessCLM_sqrtCoord_model {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    positiveOrthantNegLogHessCLM x =
+      (ContinuousLinearMap.adjoint
+          (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap).comp
+        (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap := by
+  have hadj := positiveOrthantNegLogSqrtCoord_adjoint_eq_self_of_mem hx
+  rw [hadj]
+  apply ContinuousLinearMap.ext
+  intro v
+  ext i
+  simp [hx]
+  have hxi : x i ≠ 0 := (hx i).ne'
+  field_simp [hxi]
+
+theorem positiveOrthantNegLogInvHessCLM_sqrtCoord_model {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    positiveOrthantNegLogInvHessCLM x =
+      (positiveOrthantNegLogSqrtCoord x).symm.toContinuousLinearMap.comp
+        (ContinuousLinearMap.adjoint
+          (positiveOrthantNegLogSqrtCoord x).symm.toContinuousLinearMap) := by
+  have hadj := positiveOrthantNegLogSqrtCoord_symm_adjoint_eq_self_of_mem hx
+  rw [hadj]
+  apply ContinuousLinearMap.ext
+  intro v
+  ext i
+  simp [hx]
+  ring
+
+theorem positiveOrthantNegLogHessCLM_sqrtCoord_model_positiveOrthant {d : ℕ} :
+    ∀ ⦃x : EuclideanSpace ℝ (Fin d)⦄, x ∈ positiveOrthant (d := d) ->
+      positiveOrthantNegLogHessCLM x =
+        (ContinuousLinearMap.adjoint
+            (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap).comp
+          (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap := by
+  intro x hx
+  exact positiveOrthantNegLogHessCLM_sqrtCoord_model hx
+
+theorem positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant {d : ℕ} :
+    ∀ ⦃x : EuclideanSpace ℝ (Fin d)⦄, x ∈ positiveOrthant (d := d) ->
+      positiveOrthantNegLogInvHessCLM x =
+        (positiveOrthantNegLogSqrtCoord x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (positiveOrthantNegLogSqrtCoord x).symm.toContinuousLinearMap) := by
+  intro x hx
+  exact positiveOrthantNegLogInvHessCLM_sqrtCoord_model hx
+
+/--
 Finite-product version of Chewi Example 13.10: the coordinatewise logarithmic
 barrier on the positive orthant has exact dual local norm `sqrt d`, i.e. barrier
 parameter `d`.
