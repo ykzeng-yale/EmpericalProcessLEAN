@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V175` in
+Route from `Live In-Thread Goal Prompt V176` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 4.5.2, with Chapter 4.4 martingale maximal
 inequalities as compiled support.  The current frontier has moved past
@@ -106,12 +106,17 @@ stopped predictable-part identification:
 `durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_eq_of_predictablePart_ae_eq`,
 and
 `durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_predictablePart_identity`.
-The next target is the stopped predictable-part identification
-`predictablePart (fun k ω => stoppedProcess X N_a k ω ^ 2) ℱ P n
-  =ᵐ[P] stoppedProcess A N_a n`, then feed the compiled initial-bound stopped
-convergence wrapper into the event-cover skeleton and countable threshold
-cover.
-The V143-V175 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
+The stopped predictable-part identification is now packaged from a stopped
+Doob-decomposition certificate:
+`durrett2019_theorem_4_5_2_stopped_predictablePart_eq_of_square_minus_increasing_martingale`,
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_predictablePart_eq_of_square_minus_increasing_martingale`,
+and
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_square_minus_increasing_martingale`.
+The next target is proving the stopped square-minus-increasing-process
+martingale certificate and the stopped increasing-process predictability
+certificate, then feeding the compiled wrapper into the event-cover skeleton
+and countable threshold cover.
+The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,
 `durrett2019_exercise_4_4_6_smallBall_bound_of_source`,

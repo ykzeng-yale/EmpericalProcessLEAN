@@ -15346,6 +15346,153 @@ theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendst
     hBdd
 
 /--
+Durrett 2019, Theorem 4.5.2 stopped predictable-part identification from a
+Doob-decomposition certificate.
+
+This is the uniqueness step: if `(X^N)^2 - A^N` is a martingale and `A^N` is
+the predictable zero-start finite-variation part, then the canonical
+predictable part of `(X^N)^2` is `A^N` at every fixed time.
+-/
+theorem durrett2019_theorem_4_5_2_stopped_predictablePart_eq_of_square_minus_increasing_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞}
+    (hN_zero_le : ∀ ω, (0 : ℕ∞) ≤ N ω)
+    (hSquareMinus :
+      Martingale
+        (fun n ω => stoppedProcess X N n ω ^ 2 - stoppedProcess A N n ω)
+        ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ (stoppedProcess A N))
+    (hA0 : A 0 = 0)
+    (hA_stopped_int : ∀ n, Integrable (stoppedProcess A N n) P) :
+    ∀ n,
+      predictablePart (fun k ω => stoppedProcess X N k ω ^ 2) ℱ P n
+        =ᵐ[P] stoppedProcess A N n := by
+  let Y : ℕ -> Ω -> ℝ := fun n ω => stoppedProcess X N n ω ^ 2
+  let M : ℕ -> Ω -> ℝ := fun n ω => Y n ω - stoppedProcess A N n ω
+  let B : ℕ -> Ω -> ℝ := stoppedProcess A N
+  have hM : Martingale M ℱ P := by
+    simpa [M, Y] using hSquareMinus
+  have hB_predictable : IsStronglyPredictable ℱ B := by
+    simpa [B] using hA_predictable
+  have hB0 : B 0 = 0 := by
+    ext ω
+    have hstop : stoppedProcess A N 0 ω = A 0 ω :=
+      stoppedProcess_eq_of_le (u := A) (τ := N) (i := 0) (ω := ω) (hN_zero_le ω)
+    simp [B, hstop, congrFun hA0 ω]
+  have hB_int : ∀ n, Integrable (B n) P := by
+    intro n
+    simpa [B] using hA_stopped_int n
+  have hdecomp : M + B = Y := by
+    ext n ω
+    simp [M, B, Y]
+  intro n
+  have huniq :=
+    durrett2019_theorem_4_3_2_doob_decomposition_canonical_unique
+      (μ := P) (ℱ := ℱ) (X := Y) (M := M) (A := B)
+      hM hB_predictable hB0 hB_int hdecomp n
+  simpa [Y, B] using huniq.2
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold predictable-part identification from a
+stopped square-minus-increasing-process martingale certificate.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_predictablePart_eq_of_square_minus_increasing_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {a : ℝ}
+    (hA_shift_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hSquareMinus :
+      Martingale
+        (fun n ω =>
+          stoppedProcess X
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 -
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω)
+        ℱ P)
+    (hStoppedA_predictable :
+      IsStronglyPredictable ℱ
+        (stoppedProcess A (durrett2019_theorem_4_5_2_firstPredictableAbove A a)))
+    (hA0 : A 0 = 0) :
+    ∀ n,
+      predictablePart
+          (fun k ω =>
+            stoppedProcess X
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) k ω ^ 2)
+          ℱ P n
+        =ᵐ[P]
+          stoppedProcess A
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n := by
+  have hN :
+      IsStoppingTime ℱ (durrett2019_theorem_4_5_2_firstPredictableAbove A a) :=
+    durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
+      (ℱ := ℱ) (A := A) a hA_shift_predictable
+  have hA_stopped_int :
+      ∀ n,
+        Integrable
+          (stoppedProcess A
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n) P := by
+    intro n
+    exact integrable_stoppedProcess (ι := ℕ) hN hA_int n
+  exact
+    durrett2019_theorem_4_5_2_stopped_predictablePart_eq_of_square_minus_increasing_martingale
+      (P := P) (ℱ := ℱ) (X := X) (A := A)
+      (N := durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+      (durrett2019_theorem_4_5_2_firstPredictableAbove_zero_le (A := A) (a := a))
+      hSquareMinus hStoppedA_predictable hA0 hA_stopped_int
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold stopped-convergence bridge from a
+stopped Doob-decomposition certificate for `(X^N)^2`.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_square_minus_increasing_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_shift_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA0_le : ∀ᵐ ω ∂P, A 0 ω ≤ a ^ 2)
+    (hSquareMinus :
+      Martingale
+        (fun n ω =>
+          stoppedProcess X
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 -
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω)
+        ℱ P)
+    (hStoppedA_predictable :
+      IsStronglyPredictable ℱ
+        (stoppedProcess A (durrett2019_theorem_4_5_2_firstPredictableAbove A a)))
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove
+          (Set.range fun m =>
+            durrett2019_runningAbsMax
+              (stoppedProcess X
+                (durrett2019_theorem_4_5_2_firstPredictableAbove A a)) m ω)) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto
+        (fun n =>
+          stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+            n ω)
+        atTop (𝓝 z) :=
+  durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_predictablePart_identity
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+    hX hA_shift_predictable hX_memLp_two hA_int hX0 hA0_le
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_predictablePart_eq_of_square_minus_increasing_martingale
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+      hA_shift_predictable hA_int hSquareMinus hStoppedA_predictable hA0)
+    hBdd
+
+/--
 Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two
 square-integrable martingales.
 
