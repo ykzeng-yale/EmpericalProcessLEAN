@@ -2210,8 +2210,12 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_product_fiber_lower_bound`.
    Its canonical finite-product Rademacher selected-net wrapper is compiled as
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedFiniteNet_product_event`,
-   so the remaining event-route source proof only has to build the measurable
-   joint event with beta-large fibers and the three deterministic pointwise
+   and the textbook-shaped ghost/sign product wrapper is compiled as
+   `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedFiniteNet_product_event`.
+   Both use the deterministic core
+   `VdVWTheorem243_selectedFiniteNetHoeffding_bad_of_rademacher_bad`, so the
+   remaining event-route source proof only has to build the measurable joint
+   ghost/Rademacher event with beta-large fibers and the three pointwise
    ingredients: sign vector, finite-center maximal bound, and scaled
    Rademacher bad event.
    The first adapted

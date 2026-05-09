@@ -8408,3 +8408,15 @@ route is no longer product/Fubini plumbing: construct the actual measurable
 ghost/Rademacher joint event whose fibers over the centered bad set have the
 displayed Chebyshev beta lower bound and whose points provide the sign-vector,
 finite-center maximal, and scaled Rademacher-bad ingredients.
+
+2026-05-08 canonical ghost/Rademacher product-event bridge:
+`Theorem243.lean` now proves the deterministic pointwise core
+`VdVWTheorem243_selectedFiniteNetHoeffding_bad_of_rademacher_bad` and the
+textbook-shaped product-event constructor
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedFiniteNet_product_event`.
+The auxiliary fiber is now `SampleAt Observation n × SampleAt ℝ n`, so a later
+Lemma 2.3.7 source proof can state the Chebyshev good ghost-sample event and
+canonical Rademacher sign event on the same product fiber.  The exact remaining
+probability source task is to prove measurability and the displayed beta fiber
+lower bound for that concrete event, then verify its pointwise sign/maximal/bad
+ingredients.
