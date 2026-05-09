@@ -13174,6 +13174,97 @@ theorem durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePa
       (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hX0
 
 /--
+Durrett 2019, monotone-limit support: if a real sequence is monotone and
+converges to its terminal value, then every finite stage is bounded by that
+terminal value.
+-/
+theorem durrett2019_ae_le_of_ae_monotone_tendsto_atTop
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hmono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (htend : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    ∀ n, A n ≤ᵐ[P] Ainf := by
+  intro n
+  filter_upwards [hmono, htend] with ω hmonoω htendω
+  exact ge_of_tendsto htendω
+    ((eventually_ge_atTop n).mono fun m hnm => hmonoω hnm)
+
+/--
+Durrett 2019, Theorem 4.5.1 terminal-bound support: a pointwise a.e.
+domination of the canonical square-process predictable part by `A∞` gives the
+ordinary integral domination consumed by the source bridge.
+-/
+theorem durrett2019_theorem_4_5_1_predictablePart_square_integral_le_of_ae_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hAinf_int : Integrable Ainf P)
+    (hA_le_Ainf :
+      ∀ n, predictablePart (fun k ω => X k ω ^ 2) ℱ P n ≤ᵐ[P] Ainf) :
+    ∀ n,
+      (∫ ω, predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω ∂P) ≤
+        ∫ ω, Ainf ω ∂P := by
+  intro n
+  have hA_int : Integrable (predictablePart (fun k ω => X k ω ^ 2) ℱ P n) P := by
+    rw [predictablePart]
+    fun_prop
+  exact integral_mono_ae hA_int hAinf_int (hA_le_Ainf n)
+
+/--
+Durrett 2019, Theorem 4.5.1 source bridge: if the canonical Doob increasing
+process of `X^2` converges a.e. to an integrable terminal variable `A∞`, then
+that terminal variable supplies the remaining `E A_n ≤ E A∞` handoff.
+-/
+theorem durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {Ainf : Ω -> ℝ}
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hAinf_int : Integrable Ainf P)
+    (hA_tendsto :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n => predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω)
+          atTop (𝓝 (Ainf ω)))
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω ^ 2) ∂P) ≤
+      ENNReal.ofReal (4 * ∫ ω, Ainf ω ∂P) := by
+  have hsq_sub :
+      Submartingale (fun k ω => X k ω ^ 2) ℱ P := by
+    have hsq_cvx : ConvexOn ℝ Set.univ (fun y : ℝ => y ^ 2) := by
+      simpa using
+        ((show Even (2 : ℕ) by decide).convexOn_pow :
+          ConvexOn ℝ Set.univ fun y : ℝ => y ^ 2)
+    have hsq_int :
+        ∀ k, Integrable ((fun y : ℝ => y ^ 2) ∘ X k) P := by
+      intro k
+      simpa [Function.comp_def] using
+        durrett2019_integrable_sq_of_memLp_two
+          (P := P) (Y := X k) (hX_memLp_two k)
+    simpa [Function.comp_def] using
+      durrett2019_theorem_4_2_6_convex_comp_submartingale
+        (μ := P) (ℱ := ℱ) (X := X) (φ := fun y : ℝ => y ^ 2)
+        hX hsq_cvx hsq_int
+  have hA_le_Ainf :
+      ∀ n, predictablePart (fun k ω => X k ω ^ 2) ℱ P n ≤ᵐ[P] Ainf :=
+    durrett2019_ae_le_of_ae_monotone_tendsto_atTop
+      (P := P)
+      (A := fun n => predictablePart (fun k ω => X k ω ^ 2) ℱ P n)
+      (Ainf := Ainf) hsq_sub.monotone_predictablePart hA_tendsto
+  refine
+    durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_integral_bound
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hX0 ?_ hBdd
+  exact
+    durrett2019_theorem_4_5_1_predictablePart_square_integral_le_of_ae_le
+      (P := P) (ℱ := ℱ) (X := X) (Ainf := Ainf)
+      hAinf_int hA_le_Ainf
+
+/--
 Durrett 2019, `L^2` support: convergence in `eLpNorm · 2` on a probability
 space implies convergence of expectations.
 -/
