@@ -8430,3 +8430,16 @@ remaining event-route blocker is now exactly the measurability and displayed
 Chebyshev beta fiber lower bound for this named event; its pointwise projection
 into the selected finite-net bad event is already handled by the compiled
 deterministic core.
+
+2026-05-08 ghost-good to pair-difference bad-event core:
+`Theorem243.lean` now proves
+`abs_sub_gt_half_of_lt_abs_of_abs_lt_half`,
+`vdVWWeightedSampleSum_pairSub_eq_sub`,
+`vdVWWeightedSampleSum_pairSub_abs_gt_half_of_original_bad_of_ghost_good`, and
+`vdVWWeightedClassSupremum_pairSub_gt_half_of_original_bad_of_ghost_good`.
+These formalize the deterministic line in Lemma 2.3.7: a fixed class member
+that witnesses the original bad event, together with a ghost copy good for that
+same member, forces the pair-difference supremum into the `epsilon / 2` bad
+event.  The next exact edit is to extract or register the centered-bad
+supremum witness and combine it with the Chebyshev ghost-good fiber lower
+bound.
