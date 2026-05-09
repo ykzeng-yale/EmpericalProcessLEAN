@@ -30,8 +30,8 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Score source: compose the canonical product finite-vector score CLT with
-   the raw-score equality into a raw score CLT or Theorem 5.41 handoff.
+1. Score source: compose the canonical raw score CLT into a Theorem 5.41
+   handoff, but avoid the oversized finite-parameter endpoint wrapper.
 2. Tightness source: discharge scaled-estimator law-tail or `O_P(1)`.
 3. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
@@ -992,23 +992,27 @@ compiling:
    vector-law covariance source:
    `vaart1998_theorem_5_41_canonicalProductScore_projectedSummandCLT_of_vectorLawGaussianSource`;
    `vaart1998_theorem_5_41_canonicalProductScore_finiteVectorCLT_of_vectorLawGaussianSource`.
+339. Theorem 5.41 canonical raw-score CLT source: a.e. equality between the
+   raw scaled estimating-map average and the canonical finite-coordinate
+   scaled centered empirical moment now transfers the canonical finite-vector
+   score CLT into the raw score CLT required by the Z-estimator handoff:
+   `vaart1998_theorem_5_41_rawScoreCLT_of_canonicalProductScore_finiteCoordinate_eq`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 canonical product score CLT source`).
+(`Add Vaart theorem 5.41 canonical raw score CLT source`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by specializing the score CLT
-source to canonical iid product samples.  Product-measure common vector laws,
-coordinate `L^2` fields, and Gaussian vector-law covariance now produce the
-projected-summand CLT and finite-vector score CLT consumed by the raw-score
-handoff.
+asymptotic-normality route for Z-estimators by composing the canonical
+finite-vector score CLT with raw-score a.e. equality.  The resulting raw score
+CLT is now available directly for the Z-estimator handoff.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to the canonical raw-score CLT/5.41 composition or
-the scaled-estimator tightness field.  Do not repeat solved Chapter 2-4
+source handoff.  Move next to a non-oversized 5.41 raw-score handoff
+composition or the scaled-estimator tightness field.  Do not repeat solved
+Chapter 2-4
 infrastructure or earlier Theorem 5.41 wrapper layers unless a current proof
 directly depends on a small local API there.
 

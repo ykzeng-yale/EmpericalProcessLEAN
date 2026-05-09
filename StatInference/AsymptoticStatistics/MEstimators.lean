@@ -7485,6 +7485,68 @@ theorem vaart1998_theorem_5_41_canonicalProductScore_finiteVectorCLT_of_vectorLa
     B.cramerWold_vector_clt B.projected_clt
 
 /--
+van der Vaart 1998, Theorem 5.41, raw score CLT from canonical product scores.
+
+If the raw scaled estimating-map average agrees a.e. with the canonical
+finite-coordinate scaled centered empirical moment, then the canonical product
+score CLT gives the raw score CLT required by the Z-estimator handoff.
+-/
+theorem vaart1998_theorem_5_41_rawScoreCLT_of_canonicalProductScore_finiteCoordinate_eq
+    {Ω' Observation Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)] [CompleteSpace (Coord -> ℝ)]
+    {scoreLaw : Measure (Coord -> ℝ)} [IsProbabilityMeasure scoreLaw]
+    (samples :
+      ∀ n : ℕ, (ℕ -> Coord -> ℝ) -> SampleAt Observation n)
+    (scale : ℕ -> (ℕ -> Coord -> ℝ) -> ℝ)
+    (estimatingMap :
+      ℕ -> (ℕ -> Coord -> ℝ) -> Observation -> Θ -> Coord -> ℝ)
+    (theta0 : ℕ -> (ℕ -> Coord -> ℝ) -> Θ)
+    {Z : Ω' -> Coord -> ℝ}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coord -> ℝ => sampleVector coordinate))
+    (hscoreLaw_coordinate_memLp : ∀ coordinate,
+      MemLp (fun sampleVector : Coord -> ℝ => sampleVector coordinate) 2
+        scoreLaw)
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coord -> ℝ),
+      (∫ ω, L (Z ω) ∂Q) = 0)
+    (hZ_covariance_scoreLaw : ∀ L : StrongDual ℝ (Coord -> ℝ),
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        _root_.ProbabilityTheory.variance L scoreLaw)
+    (hRawScore_eq_finiteCoordinate : ∀ n : ℕ,
+      (fun sample =>
+        empiricalAverageVector (samples n sample)
+          (fun x => scale n sample • estimatingMap n sample x (theta0 n sample))) =ᵐ[
+            Measure.infinitePi (fun _ : ℕ => scoreLaw)]
+        fun sample => vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment
+          (Measure.infinitePi (fun _ : ℕ => scoreLaw))
+          (fun coordinate i sample => sample i coordinate) n sample) :
+    TendstoInDistribution
+      (fun n sample =>
+        empiricalAverageVector (samples n sample)
+          (fun x => scale n sample • estimatingMap n sample x (theta0 n sample)))
+      atTop Z (fun _ => Measure.infinitePi (fun _ : ℕ => scoreLaw)) Q := by
+  have hFiniteScoreCLT :
+      TendstoInDistribution
+        (fun n sample =>
+          vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment
+            (Measure.infinitePi (fun _ : ℕ => scoreLaw))
+            (fun coordinate i sample => sample i coordinate) n sample)
+        atTop Z (fun _ => Measure.infinitePi (fun _ : ℕ => scoreLaw)) Q :=
+    vaart1998_theorem_5_41_canonicalProductScore_finiteVectorCLT_of_vectorLawGaussianSource
+      (Q := Q) (scoreLaw := scoreLaw) (Z := Z)
+      hcoordinate_meas hscoreLaw_coordinate_memLp hZ_aemeas hZ_gaussian
+      hZ_memLp hZ_mean hZ_covariance_scoreLaw
+  refine TendstoInDistribution.congr ?_ Filter.EventuallyEq.rfl hFiniteScoreCLT
+  intro n
+  exact (hRawScore_eq_finiteCoordinate n).symm
+
+/--
 van der Vaart 1998, Theorem 5.41, raw score CLT handoff from the
 finite-coordinate projected-summand CLT.
 

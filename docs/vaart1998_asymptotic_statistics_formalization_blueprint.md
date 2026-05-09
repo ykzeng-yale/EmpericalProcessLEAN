@@ -664,8 +664,10 @@ Initial modules:
   `vaart1998_theorem_5_41_canonicalProductScore_projectedSummandCLT_of_vectorLawGaussianSource`
   plus
   `vaart1998_theorem_5_41_canonicalProductScore_finiteVectorCLT_of_vectorLawGaussianSource`,
-  so the remaining critical path should compose that canonical score CLT with
-  the raw-score equality, then move to scaled-estimator law-tail/tightness
+  and the canonical raw-score CLT packet adds
+  `vaart1998_theorem_5_41_rawScoreCLT_of_canonicalProductScore_finiteCoordinate_eq`,
+  so the remaining critical path should compose that raw score CLT into a
+  non-oversized 5.41 handoff, then move to scaled-estimator law-tail/tightness
   source proof.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
