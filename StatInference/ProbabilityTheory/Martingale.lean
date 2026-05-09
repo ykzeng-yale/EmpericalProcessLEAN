@@ -12686,6 +12686,55 @@ theorem durrett2019_eLpNorm_two_le_of_integral_sq_le
   exact Real.rpow_le_rpow hnorm_nonneg hnorm_bound (by norm_num)
 
 /--
+Durrett 2019, `L^2` support: a `lintegral` bound on the pointwise square gives
+the corresponding mathlib `eLpNorm · 2` bound.
+-/
+theorem durrett2019_eLpNorm_two_le_of_lintegral_ofReal_sq_le
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : Ω -> ℝ} {C : ℝ}
+    (hC_nonneg : 0 ≤ C)
+    (hbound : (∫⁻ ω, ENNReal.ofReal (Y ω ^ 2) ∂P) ≤ ENNReal.ofReal C) :
+    eLpNorm Y (ENNReal.ofReal (2 : ℝ)) P ≤
+      ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) := by
+  have hp_ne_zero : ENNReal.ofReal (2 : ℝ) ≠ 0 := by
+    rw [ne_eq, ENNReal.ofReal_eq_zero]
+    norm_num
+  have hp_ne_top : ENNReal.ofReal (2 : ℝ) ≠ ∞ := ENNReal.ofReal_ne_top
+  have htoReal : (ENNReal.ofReal (2 : ℝ)).toReal = 2 := by
+    simp
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_ne_top]
+  have hsq :
+      (∫⁻ ω, ‖Y ω‖ₑ ^ (ENNReal.ofReal (2 : ℝ)).toReal ∂P) =
+        ∫⁻ ω, ENNReal.ofReal (Y ω ^ 2) ∂P := by
+    refine lintegral_congr_ae (ae_of_all P fun ω => ?_)
+    have hpoint : ‖Y ω‖ₑ ^ (2 : ℝ) = ENNReal.ofReal (Y ω ^ 2) := by
+      rw [ENNReal.rpow_two]
+      calc
+        ‖Y ω‖ₑ ^ (2 : ℕ) = (ENNReal.ofReal ‖Y ω‖) ^ (2 : ℕ) := by
+          rw [ofReal_norm_eq_enorm]
+        _ = ENNReal.ofReal (‖Y ω‖ ^ 2) := by
+          rw [← ENNReal.ofReal_pow (norm_nonneg (Y ω)) 2]
+        _ = ENNReal.ofReal (Y ω ^ 2) := by
+          simp [Real.norm_eq_abs, sq_abs]
+    simpa [htoReal] using hpoint
+  have hlintegral :
+      (∫⁻ ω, ‖Y ω‖ₑ ^ (ENNReal.ofReal (2 : ℝ)).toReal ∂P) ≤
+        ENNReal.ofReal C := by
+    rw [hsq]
+    exact hbound
+  have hroot :
+      ((∫⁻ ω, ‖Y ω‖ₑ ^ (ENNReal.ofReal (2 : ℝ)).toReal ∂P) ^
+          (1 / (ENNReal.ofReal (2 : ℝ)).toReal)) ≤
+        (ENNReal.ofReal C) ^ ((2 : ℝ)⁻¹) := by
+    simpa [htoReal] using
+      ENNReal.rpow_le_rpow hlintegral (by norm_num : 0 ≤ ((2 : ℝ)⁻¹))
+  have hright :
+      (ENNReal.ofReal C) ^ ((2 : ℝ)⁻¹) =
+        ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) := by
+    rw [ENNReal.ofReal_rpow_of_nonneg hC_nonneg (by norm_num : 0 ≤ ((2 : ℝ)⁻¹))]
+  exact hroot.trans_eq hright
+
+/--
 Durrett 2019, `L^2` support: an `eLpNorm · 2` bound by a real radius gives the
 ordinary real second-moment bound.
 -/
@@ -14773,6 +14822,61 @@ theorem durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_eLp
     (P := P) (ℱ := ℱ) (X := X) (N := N) (R := R) hX hN
     (durrett2019_theorem_4_5_2_eLpNorm_two_bdd_of_runningAbsSup_eLpNorm_two_bdd
       (P := P) (Y := stoppedProcess X N) hBdd hSup)
+
+/--
+Durrett 2019, Theorem 4.5.2 running-supremum `lintegral` to `L^2` bridge.
+-/
+theorem durrett2019_theorem_4_5_2_runningAbsSup_eLpNorm_two_le_of_lintegral_sq_le
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : ℕ -> Ω -> ℝ} {C : ℝ}
+    (hC_nonneg : 0 ≤ C)
+    (hbound :
+      (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup Y ω ^ 2) ∂P) ≤
+        ENNReal.ofReal C) :
+    eLpNorm (durrett2019_runningAbsSup Y) (ENNReal.ofReal (2 : ℝ)) P ≤
+      ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) :=
+  durrett2019_eLpNorm_two_le_of_lintegral_ofReal_sq_le
+    (P := P) (Y := durrett2019_runningAbsSup Y) hC_nonneg hbound
+
+/--
+Durrett 2019, Theorem 4.5.2 stopped-convergence handoff from a stopped
+running-supremum square `lintegral` bound.
+
+This is the direct consumer for the maximal estimate produced by Theorem 4.5.1.
+-/
+theorem durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_lintegral_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {C : ℝ}
+    (hX : Martingale X ℱ P) (hN : IsStoppingTime ℱ N)
+    (hC_nonneg : 0 ≤ C)
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove
+          (Set.range fun m => durrett2019_runningAbsMax (stoppedProcess X N) m ω))
+    (hbound :
+      (∫⁻ ω,
+          ENNReal.ofReal
+            (durrett2019_runningAbsSup (stoppedProcess X N) ω ^ 2) ∂P) ≤
+        ENNReal.ofReal C) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto (fun n => stoppedProcess X N n ω) atTop (𝓝 z) := by
+  let R : ℝ≥0 := ⟨C ^ ((2 : ℝ)⁻¹), Real.rpow_nonneg hC_nonneg _⟩
+  have hSup :
+      eLpNorm (durrett2019_runningAbsSup (stoppedProcess X N))
+        (ENNReal.ofReal (2 : ℝ)) P ≤ R := by
+    have hraw :=
+      durrett2019_theorem_4_5_2_runningAbsSup_eLpNorm_two_le_of_lintegral_sq_le
+        (P := P) (Y := stoppedProcess X N) hC_nonneg hbound
+    have hR_eq : (R : ℝ≥0∞) = ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) := by
+      calc
+        (R : ℝ≥0∞) = ENNReal.ofReal (R : ℝ) := ENNReal.coe_nnreal_eq R
+        _ = ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) := by rfl
+    exact hraw.trans_eq hR_eq.symm
+  exact
+    durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_eLpNorm_two_bdd
+      (P := P) (ℱ := ℱ) (X := X) (N := N) (R := R) hX hN hBdd hSup
 
 /--
 Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two

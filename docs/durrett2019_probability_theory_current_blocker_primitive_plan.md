@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V170
+## Live In-Thread Goal Prompt V171
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -52,14 +52,19 @@ The running-supremum-to-terminal `L^2` layer also now compiles:
 `durrett2019_theorem_4_5_2_eLpNorm_two_bdd_of_runningAbsSup_eLpNorm_two_bdd`,
 and
 `durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_eLpNorm_two_bdd`.
+The `lintegral` maximal-estimate consumer also now compiles:
+`durrett2019_eLpNorm_two_le_of_lintegral_ofReal_sq_le`,
+`durrett2019_theorem_4_5_2_runningAbsSup_eLpNorm_two_le_of_lintegral_sq_le`,
+and
+`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_lintegral_sq_le`.
 
-Next aggressive step: prove the running-supremum `eLpNorm` bound consumed by
-`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_eLpNorm_two_bdd`
+Next aggressive step: instantiate the `lintegral` maximal-estimate consumer
+`durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_lintegral_sq_le`
 for the compiled threshold time
-`durrett2019_theorem_4_5_2_firstPredictableAbove A a`: show the stopped
-increasing process is bounded by `a^2`, apply the compiled Theorem 4.5.1
-maximal endpoint to the stopped martingale, and convert its `lintegral`
-maximal estimate into the stopped running-supremum `eLpNorm` input.  Then
+`durrett2019_theorem_4_5_2_firstPredictableAbove A a`: prove the stopped
+increasing-process bound by `a^2`, apply the compiled Theorem 4.5.1 maximal
+endpoint to the stopped martingale to get the square `lintegral` bound, and
+feed the result into the stopped convergence/event-cover skeleton.  Then
 package the countable threshold cover of `{A∞ < ∞}`.  Do not route back into
 Chapter 4.4 plumbing or the already
 compiled finite-maximum, ordinary second-moment, monotone-iSup,
