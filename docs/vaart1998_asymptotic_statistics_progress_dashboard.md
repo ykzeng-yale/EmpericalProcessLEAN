@@ -1,6 +1,6 @@
 # van der Vaart 1998 Progress Dashboard
 
-Status date: 2026-05-08.
+Status date: 2026-05-09.
 
 ## Current Lane
 
@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 matrix derivative action bound`).
+(`Add Vaart theorem 5.41 canonical product score CLT source`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -628,8 +628,9 @@ Live continuation prompt: use the efficient prompt in
 
 For Vaart Theorem 5.41 in `MEstimators.lean`, finish any existing local Vaart
 Lean packet first, then discharge exactly one live source field for the current
-endpoint.  The finite-parameter matrix-entry representation now gives the
-full vector action bound, so move next to one score CLT law/source field or
+endpoint.  The canonical product score-source packet now gives the
+projected-summand CLT and finite-vector score CLT, so move next to composing
+that source with the raw-score equality into a raw score CLT/5.41 handoff, or
 the scaled-estimator law-tail/tightness field.  Do not replay solved Chapter
 2-4 infrastructure, earlier Theorem 5.41 wrappers, or historical ledger items.
 

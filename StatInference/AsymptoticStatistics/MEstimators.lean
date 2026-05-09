@@ -7373,6 +7373,118 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hContDiffDerivativeAt hSecondDerivative_eq_fderiv
 
 /--
+van der Vaart 1998, Theorem 5.41, canonical product score CLT source.
+
+For canonical iid score samples on `ℕ -> Coord -> ℝ`, the product-measure
+source lemmas supply the common vector law and infinite-product sequence law.
+Thus a Gaussian limit whose covariance agrees with the common score law gives
+the projected-summand CLT consumed by the raw-score handoff.
+-/
+theorem vaart1998_theorem_5_41_canonicalProductScore_projectedSummandCLT_of_vectorLawGaussianSource
+    {Ω' Coord : Type*} [Fintype Coord] [MeasurableSpace Ω']
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)] [CompleteSpace (Coord -> ℝ)]
+    {scoreLaw : Measure (Coord -> ℝ)} [IsProbabilityMeasure scoreLaw]
+    {Z : Ω' -> Coord -> ℝ}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coord -> ℝ => sampleVector coordinate))
+    (hscoreLaw_coordinate_memLp : ∀ coordinate,
+      MemLp (fun sampleVector : Coord -> ℝ => sampleVector coordinate) 2
+        scoreLaw)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coord -> ℝ),
+      (∫ ω, L (Z ω) ∂Q) = 0)
+    (hZ_covariance_scoreLaw : ∀ L : StrongDual ℝ (Coord -> ℝ),
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        _root_.ProbabilityTheory.variance L scoreLaw) :
+    vaart1998_finiteCoordinateProjectedSummandCLT
+      (P := Measure.infinitePi (fun _ : ℕ => scoreLaw)) (Q := Q)
+      (fun coordinate i sample => sample i coordinate) Z := by
+  have hcanonicalCoordinateSource :=
+    vaart1998_finiteCoordinateCanonicalSample_coordinateSource
+      (ν := scoreLaw) hcoordinate_meas hscoreLaw_coordinate_memLp
+  have hcanonicalVectorSource :=
+    vaart1998_finiteCoordinateCanonicalSampleVector_commonVectorLawSource
+      (ν := scoreLaw)
+  exact
+    vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_commonVectorLawGaussianSource
+      (P := Measure.infinitePi (fun _ : ℕ => scoreLaw)) (Q := Q)
+      (X := fun coordinate i sample => sample i coordinate) (Z := Z)
+      (ν := scoreLaw)
+      (hX_coordinate_memLp := hcanonicalCoordinateSource.1)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (hZ_mean := hZ_mean)
+      (hZ_covariance :=
+        vaart1998_finiteCoordinateCanonicalSample_covariance_eq_projectedVariance
+          (Q := Q) (ν := scoreLaw) (Z := Z) hZ_covariance_scoreLaw)
+      (hX_vector_law := hcanonicalVectorSource.1)
+      (hX_sequence_law := hcanonicalVectorSource.2)
+
+/--
+van der Vaart 1998, Theorem 5.41, canonical product finite-vector score CLT.
+
+This is the Cramér-Wold endpoint corresponding to the preceding canonical
+product score source.  It produces the finite-coordinate scaled centered
+empirical moment CLT used to transfer a raw score display into the
+Z-estimator handoff.
+-/
+theorem vaart1998_theorem_5_41_canonicalProductScore_finiteVectorCLT_of_vectorLawGaussianSource
+    {Ω' Coord : Type*} [Fintype Coord] [MeasurableSpace Ω']
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)] [CompleteSpace (Coord -> ℝ)]
+    {scoreLaw : Measure (Coord -> ℝ)} [IsProbabilityMeasure scoreLaw]
+    {Z : Ω' -> Coord -> ℝ}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coord -> ℝ => sampleVector coordinate))
+    (hscoreLaw_coordinate_memLp : ∀ coordinate,
+      MemLp (fun sampleVector : Coord -> ℝ => sampleVector coordinate) 2
+        scoreLaw)
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coord -> ℝ),
+      (∫ ω, L (Z ω) ∂Q) = 0)
+    (hZ_covariance_scoreLaw : ∀ L : StrongDual ℝ (Coord -> ℝ),
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        _root_.ProbabilityTheory.variance L scoreLaw) :
+    TendstoInDistribution
+      (fun n sample =>
+        vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment
+          (Measure.infinitePi (fun _ : ℕ => scoreLaw))
+          (fun coordinate i sample => sample i coordinate) n sample)
+      atTop Z (fun _ => Measure.infinitePi (fun _ : ℕ => scoreLaw)) Q := by
+  have hcanonicalCoordinateSource :=
+    vaart1998_finiteCoordinateCanonicalSample_coordinateSource
+      (ν := scoreLaw) hcoordinate_meas hscoreLaw_coordinate_memLp
+  have hProjectedSummandCLT :
+      vaart1998_finiteCoordinateProjectedSummandCLT
+        (P := Measure.infinitePi (fun _ : ℕ => scoreLaw)) (Q := Q)
+        (fun coordinate i sample => sample i coordinate) Z :=
+    vaart1998_theorem_5_41_canonicalProductScore_projectedSummandCLT_of_vectorLawGaussianSource
+      (Q := Q) (scoreLaw := scoreLaw) (Z := Z)
+      hcoordinate_meas hscoreLaw_coordinate_memLp hZ_gaussian hZ_memLp
+      hZ_mean hZ_covariance_scoreLaw
+  have hProjectedScalarCLT :
+      vaart1998_finiteCoordinateProjectedScalarCLT
+        (P := Measure.infinitePi (fun _ : ℕ => scoreLaw)) (Q := Q)
+        (fun coordinate i sample => sample i coordinate) Z :=
+    vaart1998_finiteCoordinateProjectedScalarCLT_of_projectedSummandCLT
+      (P := Measure.infinitePi (fun _ : ℕ => scoreLaw)) (Q := Q)
+      hProjectedSummandCLT
+  let B :=
+    vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_finiteDimensional
+      (P := Measure.infinitePi (fun _ : ℕ => scoreLaw)) (Q := Q)
+      (fun coordinate i sample => sample i coordinate) Z
+      hcanonicalCoordinateSource.2 hZ_aemeas hProjectedScalarCLT
+  simpa [B, vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment] using
+    B.cramerWold_vector_clt B.projected_clt
+
+/--
 van der Vaart 1998, Theorem 5.41, raw score CLT handoff from the
 finite-coordinate projected-summand CLT.
 

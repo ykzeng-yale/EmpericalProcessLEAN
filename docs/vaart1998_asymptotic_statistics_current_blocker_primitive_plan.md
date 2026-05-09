@@ -30,12 +30,12 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Derivative source: prove the actual coordinate or weighted derivative-entry
-   representation, or the scalar algebra directly feeding
-   `finiteDerivativeActionBound`.
-2. Score source: discharge the common-vector-law or finite-coordinate score
-   CLT input.
-3. Tightness source: discharge scaled-estimator law-tail or `O_P(1)`.
+1. Score source: compose the canonical product finite-vector score CLT with
+   the raw-score equality into a raw score CLT or Theorem 5.41 handoff.
+2. Tightness source: discharge scaled-estimator law-tail or `O_P(1)`.
+3. Derivative source: only add an exact model-specific coordinate/matrix
+   representation if it is immediately available; do not rebuild the completed
+   finite-entry norm/action wrapper stack.
 
 Operating rules:
 
@@ -986,22 +986,29 @@ compiling:
    row-wise matrix-entry representation now gives the full vector action bound
    consumed by the finite-derivative endpoint:
    `vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_matrix_entry_representation`.
+338. Theorem 5.41 canonical product score CLT source: canonical iid score
+   samples on `ℕ -> Coord -> ℝ` now provide both the projected-summand CLT and
+   the finite-vector scaled centered empirical-moment CLT from a Gaussian
+   vector-law covariance source:
+   `vaart1998_theorem_5_41_canonicalProductScore_projectedSummandCLT_of_vectorLawGaussianSource`;
+   `vaart1998_theorem_5_41_canonicalProductScore_finiteVectorCLT_of_vectorLawGaussianSource`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 matrix derivative action bound`).
+(`Add Vaart theorem 5.41 canonical product score CLT source`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by composing the finite-parameter
-matrix-entry source with the existing coordinate-to-action norm bridge.  A
-row-wise Jacobian representation now gives the full vector action bound
-required by the finite-derivative endpoint.
+asymptotic-normality route for Z-estimators by specializing the score CLT
+source to canonical iid product samples.  Product-measure common vector laws,
+coordinate `L^2` fields, and Gaussian vector-law covariance now produce the
+projected-summand CLT and finite-vector score CLT consumed by the raw-score
+handoff.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to one score-CLT law/source field or the
-scaled-estimator tightness field.  Do not repeat solved Chapter 2-4
+source handoff.  Move next to the canonical raw-score CLT/5.41 composition or
+the scaled-estimator tightness field.  Do not repeat solved Chapter 2-4
 infrastructure or earlier Theorem 5.41 wrapper layers unless a current proof
 directly depends on a small local API there.
 
