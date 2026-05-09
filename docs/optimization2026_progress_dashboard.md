@@ -25,10 +25,10 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V5` near the top of
+  `Live Goal Prompt V6` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
-  history and must not override the current ASGD frontier.
+  history and must not override the current Chapter 13 frontier.
 - Collaboration policy: for broad future packets, use isolated `git worktree`
   checkouts per book/lane when several local agents are active, then merge only
   scoped verified work back to shared `main`.
@@ -43,14 +43,13 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/private/tmp/chewi-smpgd-probability` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
-- Current priority sequence: `ASGD-scalar-martingale-CLT` projected scalar
-  bounded martingale CLT discharge, `ASGD-endpoint` source ASGD limit wrapper,
-  then the concrete Sinkhorn row/column KL identity layer if ASGD stalls.  The
-  boundedness-to-Lindeberg scalar tail layer now compiles, so the remaining
-  scalar CLT work should focus on the characteristic-function convergence
-  theorem for martingale arrays, conditional variance convergence, and the
-  martingale product/Taylor argument rather than tail control or Lévy
-  conversion.
+- Current priority sequence: Chapter 13 Theorem 13.8 source completion in
+  `StatInference/Optimization/InteriorPoint.lean`: first prove the pointwise
+  Hessian-difference residual/Delta quadratic bound, then feed it through the
+  compiled integrated Delta coefficient theorem and the existing decrement
+  assembly wrapper, then remove supplied inverse-Hessian comparison and
+  mixed-third-source interfaces when bounded.  Do not return to ASGD unless
+  Chapter 13 stalls or the user explicitly switches lanes.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
   stale route replay, repeated broad searches, micro-packet commit overhead,
   and shared-worktree/build-artifact contention.  The active protocol is now:
@@ -72,17 +71,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Accuracy upgrade: if a manual run starts with a dirty Lean diff, verify or
   precisely block that diff before doing strategy/doc-only work.  No uncompiled
   theorem should be carried across a process update.
-- Process correction from the May 7 audit: future manual runs should enter
-  through `Live Goal Prompt V5` in
+- Process correction from the May 8 Chapter 13 pivot: future manual runs should
+  enter through `Live Goal Prompt V6` in
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
-  route-planning loop and not an already-solved ASGD tower peel; it is Chewi's
-  compensated martingale characteristic-function iteration plus the concrete
-  conditional-remainder row-sum convergence needed for the scalar martingale
-  characteristic-function limit.  Broad searches, old Chapter 3 routing, exact
-  random full-product replacement without the needed measurability hypothesis,
-  and repeated Git sync loops are explicitly out of budget unless they answer
-  that blocker.
+  route-planning loop and not an already-solved ASGD tower peel; it is the
+  Theorem 13.8 pointwise residual/Delta quadratic bound and its connection to
+  the compiled integrated Delta coefficient layer.  Broad searches, old
+  Chapter 3 routing, ASGD routing, and repeated Git sync loops are explicitly
+  out of budget unless they answer that blocker.
 - Latest ASGD source-variance route improvement: the active right compensated
   full-inverse product no longer needs the suspicious auxiliary
   `‖1 + projectedCompensatedTaylorErrorFactor‖ ≤ 1` gate.  The new route

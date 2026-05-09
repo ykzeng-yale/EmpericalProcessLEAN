@@ -138,8 +138,9 @@ Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
 Current active lane: Chewi Chapter 13 interior-point/self-concordance in
-`StatInference/Optimization/InteriorPoint.lean`, supporting Lemma 13.6.  The
-latest verified local frontier is the concrete Hessian segment `ψ_v(t)` spine:
+`StatInference/Optimization/InteriorPoint.lean`, supporting Lemma 13.6 and
+Theorem 13.8.  The latest verified local frontier is the Theorem 13.8 scalar
+Delta integration layer on top of the concrete Hessian segment `ψ_v(t)` spine:
 scalar variable-coefficient Gronwall on `[0,1]`, concrete segment point and
 `ψ_v(t) = <v, Hess(z_t)v>`, concrete/mixed-third certificates, Frechet-Hessian
 derivative to `ψ` derivative bridge, mixed-third self-concordance source
@@ -214,26 +215,31 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`chewi138_deltaCoefficient_integral_eq_mul`, formalizing the source
 	calculation
 	`int_0^1 ((1 - M * lambda * t)^(-2) - 1) dt =
-	  M * lambda / (1 - M * lambda)`.
+	  M * lambda / (1 - M * lambda)`.  The newest integrated Delta-bound
+	packet adds `chewi138_deltaCoefficient_intervalIntegrable` and
+	`chewi138_integral_le_deltaCoefficient_mul`, which turn a pointwise
+	coefficient-times-`B` residual bound on `[0,1]` into the closed coefficient
+	`(M * lambda / (1 - M * lambda)) * B`.
 
-Next theorem-sized target: construct the source hypotheses for
-`HessianSegmentMixedThirdLocalNormCertificate` from the remaining analytic
-source facts rather than adding more generic Gronwall/`ψ` plumbing.  The exact
-blockers are:
+Next theorem-sized target: prove the source pointwise residual/Delta quadratic
+bound needed by the compiled Theorem 13.8 assembly, then feed it through
+`chewi138_integral_le_deltaCoefficient_mul` and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_residualQuadraticBound`.
+The exact blockers are:
 
-- connect the real third Frechet derivative or `iteratedFDeriv` representation
-  to `MixedThirdSelfConcordantOn.mixed_third_bound`.  Positivity of
-  `||y - x||_{z_s}` is now packaged from a source-shaped positive-definite
-  Hessian hypothesis and `y - x ≠ 0`; the derivative formula, Riccati
-  derivative estimate, scalar comparison, coefficient scaling, and named
-  source-radius Lemma 13.6(4) theorem are compiled;
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
   derive the needed inverse-Hessian quadratic upper comparison from Lemma
   13.6/matrix inverse order when moving beyond the supplied interface, and
-  prove the gradient residual integral/Delta quadratic bound using the compiled
-  scalar Delta coefficient integral.  The final
+  prove the gradient residual integral/Delta quadratic bound by first proving
+  the pointwise Hessian-difference scalar bound and then using the compiled
+  integrated Delta coefficient theorem.  The final
   `M * lambda^2 / (1 - M * lambda)^2` decrement algebra is now compiled from
-  these two supplied blockers.
+  these two supplied blockers;
+- connect the real third Frechet derivative or `iteratedFDeriv` representation
+  to `MixedThirdSelfConcordantOn.mixed_third_bound` when removing the supplied
+  mixed-third source interface.  Positivity of `||y - x||_{z_s}` is already
+  packaged from a source-shaped positive-definite Hessian hypothesis and
+  `y - x ≠ 0`; do not add more generic Gronwall/`ψ` plumbing.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi
 Hessian-stability theorem and no direct derivative theorem for
@@ -255,7 +261,12 @@ Reusable exact names for that bridge include
 `iteratedFDeriv_succ_apply_right`, `iteratedFDeriv_two_apply`,
 `ContDiffAt.iteratedFDeriv_comp_perm`,
 `HasFDerivAt.continuousMultilinear_apply_const`, and
-`fderiv_continuousMultilinear_apply_const`.  Do not return to ASGD, old
+`fderiv_continuousMultilinear_apply_const`.  For the scalar Delta integral
+layer, reuse `IntervalIntegrable.mul_const`,
+`intervalIntegral.integral_mono_on`,
+`intervalIntegral.integral_mul_const`, and
+`intervalIntegral.integral_eq_sub_of_hasDerivAt`; do not reprove interval
+integral algebra.  Do not return to ASGD, old
 Chapter 3, or generic process-prompt edits unless the user explicitly switches
 lanes.
 

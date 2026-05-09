@@ -388,6 +388,43 @@ theorem chewi138DeltaCoefficientPrimitive_hasDerivAt
   ring
 
 /--
+The scalar coefficient in Chewi Theorem 13.8 is interval-integrable on `[0,1]`
+whenever the denominator stays away from zero at the endpoint.
+-/
+theorem chewi138_deltaCoefficient_intervalIntegrable {a : ℝ} (ha_lt : a < 1) :
+    IntervalIntegrable
+      (fun t : ℝ => (((1 - a * t)⁻¹) ^ (2 : ℕ) - 1))
+      MeasureTheory.volume (0 : ℝ) 1 := by
+  have hden_pos_on : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 -> 0 < 1 - a * t := by
+    intro t ht
+    have htIcc : t ∈ Set.Icc (0 : ℝ) 1 := by
+      simpa [Set.uIcc_of_le zero_le_one] using ht
+    have ht_nonneg : 0 ≤ t := htIcc.1
+    have ht_le_one : t ≤ 1 := htIcc.2
+    have hat_lt : a * t < 1 := by
+      by_cases ha_nonneg : 0 ≤ a
+      · have hat_le_a : a * t ≤ a * 1 := mul_le_mul_of_nonneg_left ht_le_one ha_nonneg
+        nlinarith
+      · have ha_neg : a < 0 := lt_of_not_ge ha_nonneg
+        have hat_le_zero : a * t ≤ 0 := mul_nonpos_of_nonpos_of_nonneg ha_neg.le ht_nonneg
+        nlinarith
+    nlinarith
+  have hden_ne_on : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 -> 1 - a * t ≠ 0 := by
+    intro t ht
+    exact (hden_pos_on t ht).ne'
+  have hcont_den :
+      ContinuousOn (fun t : ℝ => 1 - a * t) (Set.uIcc (0 : ℝ) 1) :=
+    (continuous_const.sub (continuous_const.mul continuous_id)).continuousOn
+  have hcont_inv :
+      ContinuousOn (fun t : ℝ => (1 - a * t)⁻¹) (Set.uIcc (0 : ℝ) 1) :=
+    hcont_den.inv₀ hden_ne_on
+  have hcont_integrand :
+      ContinuousOn (fun t : ℝ => (((1 - a * t)⁻¹) ^ (2 : ℕ) - 1))
+        (Set.uIcc (0 : ℝ) 1) :=
+    (hcont_inv.pow 2).sub continuous_const.continuousOn
+  exact hcont_integrand.intervalIntegrable
+
+/--
 Chewi Theorem 13.8 scalar Delta coefficient calculation:
 `∫_0^1 ((1 - a t)^{-2} - 1) dt = a / (1 - a)`.
 In the theorem proof, `a = M * λ_f(x)`.
@@ -455,6 +492,44 @@ theorem chewi138_deltaCoefficient_integral_eq_mul
       M * lambda / (1 - M * lambda) := by
   simpa [mul_assoc] using
     chewi138_deltaCoefficient_integral_eq (a := M * lambda) hMlambda_lt
+
+/--
+Chewi Theorem 13.8 integrated scalar Delta bound.  A pointwise bound by the
+source coefficient integrates to the closed coefficient
+`M * lambda / (1 - M * lambda)`.
+-/
+theorem chewi138_integral_le_deltaCoefficient_mul
+    {g : ℝ -> ℝ} {M lambda B : ℝ}
+    (hMlambda_lt : M * lambda < 1)
+    (hg_int : IntervalIntegrable g MeasureTheory.volume (0 : ℝ) 1)
+    (hpoint : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      g t ≤ ((((1 - M * lambda * t)⁻¹) ^ (2 : ℕ) - 1) * B)) :
+    (∫ t in (0 : ℝ)..1, g t) ≤
+      (M * lambda / (1 - M * lambda)) * B := by
+  let coeff : ℝ -> ℝ := fun t => (((1 - M * lambda * t)⁻¹) ^ (2 : ℕ) - 1)
+  have hcoeff_int : IntervalIntegrable coeff MeasureTheory.volume (0 : ℝ) 1 := by
+    simpa [coeff, mul_assoc] using
+      chewi138_deltaCoefficient_intervalIntegrable (a := M * lambda) hMlambda_lt
+  have hcoeffB_int :
+      IntervalIntegrable (fun t : ℝ => coeff t * B) MeasureTheory.volume (0 : ℝ) 1 :=
+    hcoeff_int.mul_const B
+  have hmono :
+      (∫ t in (0 : ℝ)..1, g t) ≤
+        ∫ t in (0 : ℝ)..1, coeff t * B := by
+    refine intervalIntegral.integral_mono_on zero_le_one hg_int hcoeffB_int ?_
+    intro t ht
+    simpa [coeff, mul_assoc] using hpoint t ht
+  have hcoeff_eval :
+      (∫ t in (0 : ℝ)..1, coeff t) = M * lambda / (1 - M * lambda) := by
+    simpa [coeff, mul_assoc] using
+      chewi138_deltaCoefficient_integral_eq_mul (M := M) (lambda := lambda) hMlambda_lt
+  calc
+    (∫ t in (0 : ℝ)..1, g t) ≤
+        ∫ t in (0 : ℝ)..1, coeff t * B := hmono
+    _ = (∫ t in (0 : ℝ)..1, coeff t) * B := by
+      rw [intervalIntegral.integral_mul_const]
+    _ = (M * lambda / (1 - M * lambda)) * B := by
+      rw [hcoeff_eval]
 
 end ScalarGronwall
 

@@ -455,11 +455,16 @@ The newest scalar Delta-coefficient packet adds
 `chewi138DeltaCoefficientPrimitive_hasDerivAt`,
 `chewi138_deltaCoefficient_integral_eq`, and
 `chewi138_deltaCoefficient_integral_eq_mul`.
-The next Chapter 13 packet should build the Theorem 13.8 residual/Delta
-quadratic bound and, when useful, derive the inverse-Hessian comparison from
-concrete matrix/order hypotheses, while the heavier real third-derivative
-representation bridge to `MixedThirdSelfConcordantOn` stays the analytic
-source-interface target.
+The newest integrated Delta-bound packet adds
+`chewi138_deltaCoefficient_intervalIntegrable` and
+`chewi138_integral_le_deltaCoefficient_mul`, turning a pointwise
+coefficient-times-`B` residual bound on `[0,1]` into the closed coefficient
+`(M * lambda / (1 - M * lambda)) * B`.  The next Chapter 13 packet should
+prove the source pointwise residual/Delta quadratic bound and feed it into the
+compiled Theorem 13.8 assembly; after that, derive the inverse-Hessian
+comparison from concrete matrix/order hypotheses and remove the remaining
+mixed-third supplied source interface through the real third-derivative
+representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,
