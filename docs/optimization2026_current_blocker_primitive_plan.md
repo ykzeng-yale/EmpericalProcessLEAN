@@ -294,9 +294,22 @@ projected-gradient energy gates from the final item-4 wrapper: the projected
 inverse is the horizontal part of the full inverse-Hessian, the Schur
 right-inverse follows from the full Hessian right-inverse plus an `Hyy`
 left-inverse, and the projected energy bound follows from the original barrier
-gradient bound plus selector stationarity.  The remaining item-4 gates are now
-the lifted third-derivative identity and the two-sided `Hyy`/full-Hessian
-inverse identities needed by that final wrapper.
+gradient bound plus selector stationarity.  Outside the finite-dimensional
+`Hyy` route below, that wrapper still exposes the lifted third-derivative
+identity and two-sided `Hyy`/full-Hessian inverse identities.
+The finite-dimensional `Hyy` inverse packet adds
+`continuousLinearMap_left_inverse_of_right_inverse_finiteDim`,
+`barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim`,
+`chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_energy_finiteDimHyy`,
+and
+`chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_finiteDimHyy`.
+Search-first result: mathlib's
+`LinearMap.injective_iff_surjective` discharges the left-inverse side from a
+right-inverse identity for an endomorphism of a finite-dimensional space.  In
+the finite-dimensional vertical-block setting, the final item-4 wrapper now
+needs only the lifted third-derivative identity, `Hyy` right-invertibility, and
+the full Hessian right-inverse; do not ask future runs to supply a separate
+`Hyy` left-inverse in this finite-dimensional route.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,

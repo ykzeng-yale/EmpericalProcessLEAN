@@ -2947,6 +2947,37 @@ noncomputable def barrierInfProjectionBlockYY
         (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) v)).snd := by
   rfl
 
+/--
+On a finite-dimensional space, a right inverse for an endomorphism is also a
+left inverse.  This is the finite-dimensional linear-algebra gate used to turn
+the vertical block inverse in the inf-projection rule into a two-sided inverse.
+-/
+theorem continuousLinearMap_left_inverse_of_right_inverse_finiteDim
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ F]
+    (A B : F →L[ℝ] F)
+    (hright : ∀ w : F, A (B w) = w) :
+    ∀ w : F, B (A w) = w := by
+  have hsurj : Function.Surjective (A : F -> F) := fun w => ⟨B w, hright w⟩
+  have hinj : Function.Injective (A : F -> F) := by
+    exact (LinearMap.injective_iff_surjective (K := ℝ) (V := F)
+      (f := A.toLinearMap)).2 hsurj
+  intro w
+  apply hinj
+  simp [hright]
+
+theorem barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim
+    [FiniteDimensional ℝ E₂]
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x : E₁)
+    (hyy_right : ∀ w : E₂,
+      barrierInfProjectionBlockYY selector hess x (invHyy x w) = w) :
+    ∀ w : E₂, invHyy x (barrierInfProjectionBlockYY selector hess x w) = w :=
+  continuousLinearMap_left_inverse_of_right_inverse_finiteDim
+    (barrierInfProjectionBlockYY selector hess x) (invHyy x) hyy_right
+
 theorem barrierInfProjectionBlockXX_add_XY_eq_hess_fst
     (selector : E₁ -> E₂)
     (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
@@ -3850,6 +3881,96 @@ theorem chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third
       projThird M nu :=
   chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_energy
     hsel hbar hyy_right hyy_left hfull_right hthird_eq
+    (hsel.projectedFullInv_gradient_quadratic_le hbar)
+
+/--
+Finite-dimensional vertical-block version of the full-inverse Schur-envelope
+rule.  The `Hyy` left-inverse hypothesis is derived from the right-inverse
+hypothesis, so the remaining gates are the lifted third-derivative identity,
+the full Hessian right-inverse, and the scalar projected-gradient energy bound.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_energy_finiteDimHyy
+    [FiniteDimensional ℝ E₂]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hfull_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : WithLp 2 (E₁ × E₂),
+        hess (barrierInfProjectionPoint selector x)
+          (invHess (barrierInfProjectionPoint selector x) w) = w)
+    (hthird_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        projThird x u v =
+          third (barrierInfProjectionPoint selector x)
+            (barrierInfProjectionSchurLift selector hess invHyy x u)
+            (barrierInfProjectionSchurLift selector hess invHyy x v))
+    (hgradient_quadratic : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      inner ℝ (barrierInfProjectionGrad selector grad x)
+          (barrierInfProjectionProjInvHessFromFullInv selector invHess x
+            (barrierInfProjectionGrad selector grad x)) ≤ nu) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionProjInvHessFromFullInv selector invHess)
+      projThird M nu :=
+  chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_energy
+    hsel hbar hyy_right
+    (by
+      intro x hx
+      exact barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim
+        selector hess invHyy x (hyy_right hx))
+    hfull_right hthird_eq hgradient_quadratic
+
+/--
+Finite-dimensional vertical-block version of Chewi Proposition 13.11(4)'s
+full-inverse Schur-envelope rule.  The scalar projected-gradient energy bound
+is inherited from the original barrier and selector stationarity, while the
+`Hyy` left inverse is derived from the right inverse.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_finiteDimHyy
+    [FiniteDimensional ℝ E₂]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hfull_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : WithLp 2 (E₁ × E₂),
+        hess (barrierInfProjectionPoint selector x)
+          (invHess (barrierInfProjectionPoint selector x) w) = w)
+    (hthird_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        projThird x u v =
+          third (barrierInfProjectionPoint selector x)
+            (barrierInfProjectionSchurLift selector hess invHyy x u)
+            (barrierInfProjectionSchurLift selector hess invHyy x v)) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionProjInvHessFromFullInv selector invHess)
+      projThird M nu :=
+  chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_energy_finiteDimHyy
+    hsel hbar hyy_right hfull_right hthird_eq
     (hsel.projectedFullInv_gradient_quadratic_le hbar)
 
 end InfProjectionBarrier

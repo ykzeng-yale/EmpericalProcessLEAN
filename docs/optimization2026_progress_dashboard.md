@@ -193,8 +193,22 @@ This dashboard tracks the Chewi optimization formalization lane for
   inverse-Hessian; its Schur right-inverse follows from the full Hessian
   right-inverse and an `Hyy` left-inverse, and the scalar projected-gradient
   energy bound follows from the original barrier gradient bound plus selector
-  stationarity.  The remaining item-4 gates are the lifted third-derivative
-  identity and the two-sided `Hyy`/full-Hessian inverse identities.
+  stationarity.  Outside the finite-dimensional `Hyy` route below, this wrapper
+  still exposes the lifted third-derivative identity and two-sided
+  `Hyy`/full-Hessian inverse identities.
+- Inf-projection finite-dimensional `Hyy` inverse shrink: the newest packet
+  adds `continuousLinearMap_left_inverse_of_right_inverse_finiteDim`,
+  `barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim`,
+  `chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_energy_finiteDimHyy`,
+  and
+  `chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_finiteDimHyy`.
+  Search-first result: mathlib's finite-dimensional
+  `LinearMap.injective_iff_surjective` proves that a right inverse for an
+  endomorphism is also a left inverse.  In the finite-dimensional vertical
+  block setting, the `Hyy` left-inverse gate is therefore derived from
+  `Hyy` right-invertibility.  The remaining item-4 gates for this wrapper are
+  the lifted third-derivative identity, the `Hyy` right-inverse, and the full
+  Hessian right-inverse.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in
