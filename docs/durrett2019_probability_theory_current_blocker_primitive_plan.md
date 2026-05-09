@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V123
+## Live In-Thread Goal Prompt V124
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -19,17 +19,17 @@ expectation inequality `E X ≤ E X_0` for Theorem 4.2.12.  Theorem 4.1.16
 remains deferred unless a future targeted kernel search finds a direct
 source-shaped API.
 
-Current target: move to Durrett Theorem 4.4.6, the `L^p` convergence theorem
+Current target: finish Durrett Theorem 4.4.6, the `L^p` convergence theorem
 for martingales with `sup_n E |X_n|^p < ∞` and `1 < p`.  Durrett Theorem 4.4.4
-now has the full positive-part and martingale maximal inequality route:
-layer-cake, Doob integrand, weighted/Fubini, coefficient extraction, assembled
-Doob/Fubini/Hölder bound, scalar cancellation, bounded truncations,
-monotone-convergence/iSup handoff, final positive-part `eLpNorm`, and final
-martingale absolute-maximum `eLpNorm` wrappers all compile.  Next aggressive
-step: use Theorem 4.2.11 plus the compiled Theorem 4.4.4 maximal estimate to
-package Theorem 4.4.6's a.s. convergence, `sup |X_n| ∈ L^p`, and `L^p`
-convergence dominated-convergence handoff.  Do not revisit the completed
-Theorem 4.4.4 Fubini/Hölder/coefficient/truncation plumbing.
+now has the full positive-part and martingale maximal inequality route, and the
+first Theorem 4.4.6 bridge now compiles: an `eLpNorm`-bounded martingale on a
+probability space has the 4.2.11 almost-sure limit and that canonical limit
+lies in `L^p`.  Next aggressive step: prove the remaining `L^p` convergence
+endpoint `eLpNorm (X n - ℱ.limitProcess X P) (ofReal p) P -> 0`, using either
+the completed 4.4.4 maximal estimate to produce a dominating `sup |X_n|` bound
+or mathlib's uniform-integrability route if it gives a shorter compiled proof.
+Do not revisit the completed Theorem 4.4.4
+Fubini/Hölder/coefficient/truncation plumbing.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -474,10 +474,17 @@ The monotone handoff and final source-facing Theorem 4.4.4 wrappers now compile:
 `durrett2019_theorem_4_4_4_positivePart_lintegral_rpow_bound`,
 `durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound`, and
 `durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_bound`.
-Next target: package Durrett Theorem 4.4.6 from Theorem 4.2.11 plus this final
-maximal inequality; only formalize Example 4.4.5's counterexample if it becomes
-a cheap reusable support lemma.  Do not detour back into full Galton-Watson
-random-sum infrastructure unless a local API makes it cheap.
+The first Theorem 4.4.6 bridge now also compiles:
+`durrett2019_theorem_4_4_6_martingale_eLpNorm_one_bdd_of_eLpNorm_p_bdd`,
+`durrett2019_theorem_4_4_6_martingale_ae_tendsto_limitProcess_of_eLpNorm_p_bdd`,
+`durrett2019_theorem_4_4_6_martingale_limitProcess_memLp_of_eLpNorm_p_bdd`,
+and
+`durrett2019_theorem_4_4_6_martingale_ae_tendsto_and_limitProcess_memLp_of_eLpNorm_p_bdd`.
+Next target: prove/package the `L^p` convergence endpoint
+`eLpNorm (X n - ℱ.limitProcess X P) (ofReal p) P -> 0`; only formalize
+Example 4.4.5's counterexample if it becomes a cheap reusable support lemma.
+Do not detour back into full Galton-Watson random-sum infrastructure unless a
+local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -1005,9 +1012,10 @@ measurable-comparison Hölder helper, bounded-truncation Doob/Fubini/Hölder
 assembly, finite truncation `lintegral` proof, and per-cutoff truncated
 `lintegral` estimate, monotone-convergence/iSup handoff, final positive-part
 `eLpNorm` wrapper, and final martingale absolute-maximum `eLpNorm` wrapper now
-also compile.  Next package Theorem 4.4.6's `L^p` convergence theorem,
-whichever gives the largest compiled step without building unrelated
-infrastructure.
+also compile.  The first Theorem 4.4.6 bridge from a uniform `L^p` martingale
+bound to the 4.2.11 almost-sure limit and limit-process `MemLp` now also
+compiles.  Next prove the final `L^p` convergence endpoint, whichever gives the
+largest compiled step without building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1121,6 +1129,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V123` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V124` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

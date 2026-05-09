@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V123`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V124`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -590,8 +590,10 @@ Next packet:
   Doob/Fubini/Hölder assembly, finite truncation `lintegral` proof, and
   per-cutoff truncated `lintegral` estimate, monotone-convergence/iSup handoff,
   final positive-part `eLpNorm` wrapper, and final martingale absolute-maximum
-  `eLpNorm` wrapper now also compile, so the active frontier is Durrett
-  Theorem 4.4.6, the `L^p` convergence theorem for martingales.
+  `eLpNorm` wrapper now also compile.  The first Theorem 4.4.6 bridge from a
+  uniform `L^p` martingale bound to the 4.2.11 almost-sure limit and
+  limit-process `MemLp` now also compiles, so the active frontier is the final
+  Theorem 4.4.6 `L^p` convergence endpoint.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:

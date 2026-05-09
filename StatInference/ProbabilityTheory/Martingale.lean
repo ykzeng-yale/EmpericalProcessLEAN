@@ -12113,5 +12113,76 @@ theorem durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_bound
       (P := P) (ℱ := ℱ) (X := X) hX hpq n
   simpa [hp_toReal, hTerminal] using hPowerReal
 
+/--
+Durrett 2019, Theorem 4.4.6 support: on a probability space, a uniform
+`L^p` bound with `1 ≤ p` implies the `L^1` bound consumed by the compiled
+martingale convergence theorem 4.2.11.
+-/
+theorem durrett2019_theorem_4_4_6_martingale_eLpNorm_one_bdd_of_eLpNorm_p_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p : ℝ} (hp : 1 ≤ p) {R : ℝ≥0}
+    (hR : ∀ n, eLpNorm (X n) (ENNReal.ofReal p) P ≤ R) :
+    ∀ n, eLpNorm (X n) 1 P ≤ R := by
+  have hp_en : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p := by
+    rw [← ENNReal.ofReal_one]
+    exact ENNReal.ofReal_le_ofReal hp
+  intro n
+  have hmeas : AEStronglyMeasurable (X n) P :=
+    ((hX.stronglyMeasurable n).mono (ℱ.le n)).aestronglyMeasurable
+  exact
+    (eLpNorm_le_eLpNorm_of_exponent_le (μ := P) (f := X n) hp_en hmeas).trans
+      (hR n)
+
+/--
+Durrett 2019, Theorem 4.4.6 support: the `L^p`-bounded martingale converges
+almost surely to the canonical filtration limit process.
+-/
+theorem durrett2019_theorem_4_4_6_martingale_ae_tendsto_limitProcess_of_eLpNorm_p_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p : ℝ} (hp : 1 ≤ p) {R : ℝ≥0}
+    (hR : ∀ n, eLpNorm (X n) (ENNReal.ofReal p) P ≤ R) :
+    ∀ᵐ ω ∂P, Tendsto (fun n => X n ω) atTop (𝓝 (ℱ.limitProcess X P ω)) :=
+  durrett2019_theorem_4_2_11_martingale_ae_tendsto_limitProcess_of_eLpNorm_bdd
+    (μ := P) (ℱ := ℱ) (X := X) hX
+    (durrett2019_theorem_4_4_6_martingale_eLpNorm_one_bdd_of_eLpNorm_p_bdd
+      (P := P) (ℱ := ℱ) (X := X) hX hp hR)
+
+/--
+Durrett 2019, Theorem 4.4.6 support: the canonical martingale limit process is
+itself in `L^p` under the same uniform `L^p` bound.
+-/
+theorem durrett2019_theorem_4_4_6_martingale_limitProcess_memLp_of_eLpNorm_p_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p : ℝ} {R : ℝ≥0}
+    (hR : ∀ n, eLpNorm (X n) (ENNReal.ofReal p) P ≤ R) :
+    MemLp (ℱ.limitProcess X P) (ENNReal.ofReal p) P :=
+  hX.submartingale.memLp_limitProcess hR
+
+/--
+Durrett 2019, Theorem 4.4.6 first package: a uniformly `L^p`-bounded
+martingale on a probability space has the almost-sure limit from 4.2.11, and
+that canonical limit lies in `L^p`.
+-/
+theorem durrett2019_theorem_4_4_6_martingale_ae_tendsto_and_limitProcess_memLp_of_eLpNorm_p_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p : ℝ} (hp : 1 ≤ p) {R : ℝ≥0}
+    (hR : ∀ n, eLpNorm (X n) (ENNReal.ofReal p) P ≤ R) :
+    (∀ᵐ ω ∂P, Tendsto (fun n => X n ω) atTop (𝓝 (ℱ.limitProcess X P ω))) ∧
+      MemLp (ℱ.limitProcess X P) (ENNReal.ofReal p) P :=
+  ⟨durrett2019_theorem_4_4_6_martingale_ae_tendsto_limitProcess_of_eLpNorm_p_bdd
+      (P := P) (ℱ := ℱ) (X := X) hX hp hR,
+    durrett2019_theorem_4_4_6_martingale_limitProcess_memLp_of_eLpNorm_p_bdd
+      (P := P) (ℱ := ℱ) (X := X) hX hR⟩
+
 end ProbabilityTheory
 end StatInference
