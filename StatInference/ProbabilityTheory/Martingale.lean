@@ -5,6 +5,7 @@ import Mathlib.Probability.Martingale.Centering
 import Mathlib.Probability.Martingale.Convergence
 import Mathlib.Probability.Martingale.OptionalStopping
 import Mathlib.Probability.Martingale.Upcrossing
+import Mathlib.Algebra.Order.Field.GeomSum
 import Mathlib.Analysis.SpecialFunctions.Pow.Integral
 import Mathlib.MeasureTheory.Integral.Lebesgue.DominatedConvergence
 import StatInference.ProbabilityTheory.ConditionalExpectation
@@ -12921,6 +12922,94 @@ theorem durrett2019_example_4_4_9_branchingProcess_second_moment_integral_finite
       (hVariance (n + 1) (Nat.succ_pos n))
       (hMeanPrev (n + 1) (Nat.succ_pos n))
   simpa [Nat.add_assoc] using hstep
+
+/--
+Durrett 2019, Example 4.4.9 scalar shifted geometric-prefix bound.  This is
+the finite bound behind the statement `sup_n E X_n^2 < ∞`.
+-/
+theorem durrett2019_example_4_4_9_shifted_geometric_sum_le
+    {offspringMean variance : ℝ}
+    (hmean_gt_one : 1 < offspringMean) (hvariance_nonneg : 0 ≤ variance) :
+    ∀ n, (∑ k ∈ Finset.range n, variance / offspringMean ^ (k + 2)) ≤
+      variance / (offspringMean ^ 2 * (1 - offspringMean⁻¹)) := by
+  intro n
+  have hmean_pos : 0 < offspringMean := zero_lt_one.trans hmean_gt_one
+  have hmean_ne : offspringMean ≠ 0 := hmean_pos.ne'
+  have hinv_nonneg : 0 ≤ offspringMean⁻¹ := inv_nonneg.2 hmean_pos.le
+  have hinv_lt_one : offspringMean⁻¹ < 1 :=
+    inv_lt_one_of_one_lt₀ hmean_gt_one
+  have hden_ne : 1 - offspringMean⁻¹ ≠ 0 :=
+    (sub_pos.2 hinv_lt_one).ne'
+  have hgeom :
+      (∑ k ∈ Finset.range n, offspringMean⁻¹ ^ k) ≤
+        (1 - offspringMean⁻¹)⁻¹ := by
+    have h :=
+      geom_sum_Ico_le_of_lt_one (x := offspringMean⁻¹) (m := 0) (n := n)
+        hinv_nonneg hinv_lt_one
+    simpa [Nat.Ico_zero_eq_range] using h
+  have hfactor :
+      (∑ k ∈ Finset.range n, variance / offspringMean ^ (k + 2)) =
+        (variance / offspringMean ^ 2) *
+          ∑ k ∈ Finset.range n, offspringMean⁻¹ ^ k := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl ?_
+    intro k hk
+    have hpow_k_ne : offspringMean ^ k ≠ 0 := pow_ne_zero k hmean_ne
+    have hpow_two_ne : offspringMean ^ 2 ≠ 0 := pow_ne_zero 2 hmean_ne
+    rw [show k + 2 = 2 + k by omega, pow_add]
+    field_simp [hpow_k_ne, hpow_two_ne]
+    have hcancel : offspringMean ^ k * (1 / offspringMean) ^ k = 1 := by
+      rw [← mul_pow, mul_one_div_cancel hmean_ne, one_pow]
+    calc
+      variance = variance * 1 := by ring
+      _ = variance * (offspringMean ^ k * (1 / offspringMean) ^ k) := by
+        rw [hcancel]
+      _ = variance * offspringMean ^ k * (1 / offspringMean) ^ k := by
+        ring
+  have hcoeff_nonneg : 0 ≤ variance / offspringMean ^ 2 :=
+    div_nonneg hvariance_nonneg (sq_nonneg offspringMean)
+  calc
+    (∑ k ∈ Finset.range n, variance / offspringMean ^ (k + 2))
+        = (variance / offspringMean ^ 2) *
+            ∑ k ∈ Finset.range n, offspringMean⁻¹ ^ k := hfactor
+    _ ≤ (variance / offspringMean ^ 2) * (1 - offspringMean⁻¹)⁻¹ :=
+        mul_le_mul_of_nonneg_left hgeom hcoeff_nonneg
+    _ = variance / (offspringMean ^ 2 * (1 - offspringMean⁻¹)) := by
+        field_simp [pow_ne_zero 2 hmean_ne, hden_ne]
+
+/--
+Durrett 2019, Example 4.4.9, the uniform second-moment bound obtained from the
+finite-sum display and the shifted geometric-series estimate.
+-/
+theorem durrett2019_example_4_4_9_branchingProcess_second_moment_integral_uniform_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X Z : ℕ -> Ω -> ℝ} {offspringMean variance : ℝ}
+    (hmean_gt_one : 1 < offspringMean) (hvariance_nonneg : 0 ≤ variance)
+    (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hX_zero_sq : (∫ ω, X 0 ω ^ 2 ∂P) = 1)
+    (hX_prev :
+      ∀ n, 0 < n ->
+        X (n - 1) =ᵐ[P] fun ω => Z (n - 1) ω / offspringMean ^ (n - 1))
+    (hVariance :
+      ∀ n, 0 < n ->
+        P[(fun ω => (X n ω - X (n - 1) ω) ^ 2) | ℱ (n - 1)] =ᵐ[P]
+          fun ω => variance * Z (n - 1) ω / offspringMean ^ (2 * n))
+    (hMeanPrev : ∀ n, 0 < n -> (∫ ω, X (n - 1) ω ∂P) = 1) :
+    ∀ n, (∫ ω, X n ω ^ 2 ∂P) ≤
+      1 + variance / (offspringMean ^ 2 * (1 - offspringMean⁻¹)) := by
+  intro n
+  rw [
+    durrett2019_example_4_4_9_branchingProcess_second_moment_integral_finite_sum
+      (P := P) (ℱ := ℱ) (X := X) (Z := Z)
+      (offspringMean := offspringMean) (variance := variance)
+      (zero_lt_one.trans hmean_gt_one) hX hX_memLp_two hX_zero_sq
+      hX_prev hVariance hMeanPrev n]
+  simpa [add_comm] using
+    add_le_add_left
+      (durrett2019_example_4_4_9_shifted_geometric_sum_le
+        hmean_gt_one hvariance_nonneg n) 1
 
 end ProbabilityTheory
 end StatInference
