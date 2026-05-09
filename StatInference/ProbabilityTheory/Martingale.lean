@@ -13236,6 +13236,154 @@ theorem durrett2019_exercise_4_4_6_varianceClock_nonneg
   intro n
   exact Finset.sum_nonneg fun m _hm => hsigmaSq_nonneg m
 
+theorem durrett2019_exercise_4_4_6_varianceClock_succ
+    (sigmaSq : ℕ -> ℝ) (n : ℕ) :
+    durrett2019_exercise_4_4_6_varianceClock sigmaSq (n + 1) =
+      durrett2019_exercise_4_4_6_varianceClock sigmaSq n + sigmaSq (n + 1) := by
+  simpa [durrett2019_exercise_4_4_6_varianceClock] using
+    (Finset.sum_Icc_succ_top (a := 1) (b := n)
+      (by omega : 1 ≤ n + 1) sigmaSq)
+
+/--
+Durrett 2019, Exercise 4.4.6, variable-variance square martingale
+conditional-expectation calculation.
+
+This is the Exercise 4.2.2 computation with the deterministic clock
+`s_n^2 = sum_{1 <= m <= n} sigma_m^2`: the adapted square term pulls out, the
+centered cross term vanishes, and the conditional increment square contributes
+`sigmaSq (n + 1)`.
+-/
+theorem durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {S eta : ℕ -> Ω -> ℝ} {sigmaSq : ℕ -> ℝ}
+    (hS_adapted : StronglyAdapted ℱ S)
+    (hS_sq_int : ∀ n, Integrable (fun ω => S n ω ^ 2) μ)
+    (heta_int : ∀ n, Integrable (eta n) μ)
+    (heta_sq_int : ∀ n, Integrable (fun ω => eta n ω ^ 2) μ)
+    (hcross_int : ∀ n, Integrable (fun ω => S n ω * eta (n + 1) ω) μ)
+    (hStepSq : ∀ n,
+      (fun ω => S (n + 1) ω ^ 2) =ᵐ[μ]
+        fun ω =>
+          S n ω ^ 2 + 2 * (S n ω * eta (n + 1) ω) +
+            eta (n + 1) ω ^ 2)
+    (heta_cond_zero : ∀ n, μ[eta (n + 1) | ℱ n] =ᵐ[μ] 0)
+    (heta_sq_cond_sigma : ∀ n,
+      μ[(fun ω => eta (n + 1) ω ^ 2) | ℱ n] =ᵐ[μ]
+        fun _ => sigmaSq (n + 1))
+    (n : ℕ) :
+    μ[(fun ω =>
+          S (n + 1) ω ^ 2 -
+            durrett2019_exercise_4_4_6_varianceClock sigmaSq (n + 1)) |
+        ℱ n] =ᵐ[μ]
+      fun ω =>
+        S n ω ^ 2 - durrett2019_exercise_4_4_6_varianceClock sigmaSq n := by
+  have htwo_cross_int :
+      Integrable (fun ω => 2 * (S n ω * eta (n + 1) ω)) μ :=
+    (hcross_int n).const_mul 2
+  have hPastSq :
+      μ[(fun ω => S n ω ^ 2) | ℱ n] = fun ω => S n ω ^ 2 :=
+    condExp_of_stronglyMeasurable (ℱ.le n) ((hS_adapted n).pow 2)
+      (hS_sq_int n)
+  have hTwoCross :
+      μ[(fun ω => 2 * (S n ω * eta (n + 1) ω)) | ℱ n] =ᵐ[μ]
+        fun ω => 2 * μ[(fun ω => S n ω * eta (n + 1) ω) | ℱ n] ω := by
+    filter_upwards
+      [condExp_ofNat (μ := μ) (m := ℱ n) 2
+        (fun ω => S n ω * eta (n + 1) ω)] with ω hω
+    simpa using hω
+  have hPullCross :
+      μ[(fun ω => S n ω * eta (n + 1) ω) | ℱ n] =ᵐ[μ]
+        fun ω => S n ω * μ[eta (n + 1) | ℱ n] ω := by
+    filter_upwards
+      [condExp_mul_of_stronglyMeasurable_left (hS_adapted n)
+        (hcross_int n) (heta_int (n + 1))] with ω hω
+    simpa [Pi.mul_apply] using hω
+  have hSquareCond :
+      μ[(fun ω => S (n + 1) ω ^ 2) | ℱ n] =ᵐ[μ]
+        fun ω => S n ω ^ 2 + sigmaSq (n + 1) := by
+    refine (condExp_congr_ae (hStepSq n)).trans ?_
+    filter_upwards
+      [condExp_add ((hS_sq_int n).add htwo_cross_int)
+        (heta_sq_int (n + 1)) (ℱ n),
+       condExp_add (hS_sq_int n) htwo_cross_int (ℱ n),
+       hTwoCross,
+       hPullCross,
+       heta_cond_zero n,
+       heta_sq_cond_sigma n,
+       EventuallyEq.of_eq hPastSq] with
+      ω hAddAll hAddPast hTwo hPull hZero hSq hPast
+    change
+      μ[((fun ω => S n ω ^ 2) +
+          fun ω => 2 * (S n ω * eta (n + 1) ω)) +
+          fun ω => eta (n + 1) ω ^ 2 | ℱ n] ω =
+        S n ω ^ 2 + sigmaSq (n + 1)
+    rw [hAddAll]
+    simp only [Pi.add_apply]
+    rw [hAddPast]
+    simp only [Pi.add_apply]
+    rw [hTwo, hPull, hZero, hSq, hPast]
+    simp only [Pi.zero_apply]
+    ring_nf
+  have hConst :
+      μ[(fun _ : Ω =>
+          durrett2019_exercise_4_4_6_varianceClock sigmaSq (n + 1)) |
+        ℱ n] =
+        fun _ => durrett2019_exercise_4_4_6_varianceClock sigmaSq (n + 1) :=
+    condExp_const (μ := μ) (ℱ.le n)
+      (durrett2019_exercise_4_4_6_varianceClock sigmaSq (n + 1))
+  refine
+    (condExp_sub (hS_sq_int (n + 1))
+      (integrable_const
+        (durrett2019_exercise_4_4_6_varianceClock sigmaSq (n + 1)))
+      (ℱ n)).trans ?_
+  filter_upwards [hSquareCond, EventuallyEq.of_eq hConst] with ω hSq hConstEq
+  simp only [Pi.sub_apply]
+  rw [hSq, hConstEq]
+  rw [durrett2019_exercise_4_4_6_varianceClock_succ]
+  ring
+
+/--
+Durrett 2019, Exercise 4.4.6, source theorem-sized square martingale bridge.
+
+If the textbook one-step square expansion, centered increment condition, and
+conditional variance identity hold, then `S_n^2 - s_n^2` is a martingale for
+the deterministic variance clock `s_n^2`.
+-/
+theorem durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {μ : Measure Ω} [IsFiniteMeasure μ] {ℱ : Filtration ℕ mΩ}
+    {S eta : ℕ -> Ω -> ℝ} {sigmaSq : ℕ -> ℝ}
+    (hS_adapted : StronglyAdapted ℱ S)
+    (hS_sq_int : ∀ n, Integrable (fun ω => S n ω ^ 2) μ)
+    (heta_int : ∀ n, Integrable (eta n) μ)
+    (heta_sq_int : ∀ n, Integrable (fun ω => eta n ω ^ 2) μ)
+    (hcross_int : ∀ n, Integrable (fun ω => S n ω * eta (n + 1) ω) μ)
+    (hStepSq : ∀ n,
+      (fun ω => S (n + 1) ω ^ 2) =ᵐ[μ]
+        fun ω =>
+          S n ω ^ 2 + 2 * (S n ω * eta (n + 1) ω) +
+            eta (n + 1) ω ^ 2)
+    (heta_cond_zero : ∀ n, μ[eta (n + 1) | ℱ n] =ᵐ[μ] 0)
+    (heta_sq_cond_sigma : ∀ n,
+      μ[(fun ω => eta (n + 1) ω ^ 2) | ℱ n] =ᵐ[μ]
+        fun _ => sigmaSq (n + 1)) :
+    Martingale
+      (fun k ω =>
+        S k ω ^ 2 - durrett2019_exercise_4_4_6_varianceClock sigmaSq k)
+      ℱ μ := by
+  refine durrett2019_section_4_2_real_martingale_nat_of_condExp_succ ?_ ?_ ?_
+  · intro n
+    exact ((hS_adapted n).pow 2).sub stronglyMeasurable_const
+  · intro n
+    exact (hS_sq_int n).sub
+      (integrable_const (durrett2019_exercise_4_4_6_varianceClock sigmaSq n))
+  · intro n
+    exact
+      durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq
+        (μ := μ) (ℱ := ℱ) hS_adapted hS_sq_int heta_int heta_sq_int
+        hcross_int hStepSq heta_cond_zero heta_sq_cond_sigma n
+
 /--
 Durrett 2019, Exercise 4.4.6 source wrapper with the deterministic variance
 clock.  This packages the clock initialization, clock nonnegativity, and
@@ -13320,6 +13468,55 @@ theorem durrett2019_exercise_4_4_6_smallBall_bound_of_variance_endpoint
       (x := x) (K := K) (n := n)
       hx_nonneg hK_nonneg hclock_pos hS_adapted hM hsigmaSq_nonneg hS0_eq hinc
   simpa [hclock_eq_variance] using hbound
+
+/--
+Durrett 2019, Exercise 4.4.6, source-facing exact-denominator wrapper.
+
+This combines the variable-variance Exercise 4.2.2 square martingale bridge
+with the already formalized optional-stopping/overshoot layer.  The remaining
+source-side work is to instantiate the conditional mean and conditional
+variance hypotheses from concrete increment assumptions.
+-/
+theorem durrett2019_exercise_4_4_6_smallBall_bound_of_source
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {S eta : ℕ -> Ω -> ℝ} {sigmaSq : ℕ -> ℝ}
+    {x K variance : ℝ} {n : ℕ}
+    (hx_nonneg : 0 ≤ x) (hK_nonneg : 0 ≤ K)
+    (hvariance_pos : 0 < variance)
+    (hclock_eq_variance :
+      durrett2019_exercise_4_4_6_varianceClock sigmaSq n = variance)
+    (hS_adapted : StronglyAdapted ℱ S)
+    (hS_sq_int : ∀ n, Integrable (fun ω => S n ω ^ 2) P)
+    (heta_int : ∀ n, Integrable (eta n) P)
+    (heta_sq_int : ∀ n, Integrable (fun ω => eta n ω ^ 2) P)
+    (hcross_int : ∀ n, Integrable (fun ω => S n ω * eta (n + 1) ω) P)
+    (hStepSq : ∀ n,
+      (fun ω => S (n + 1) ω ^ 2) =ᵐ[P]
+        fun ω =>
+          S n ω ^ 2 + 2 * (S n ω * eta (n + 1) ω) +
+            eta (n + 1) ω ^ 2)
+    (heta_cond_zero : ∀ n, P[eta (n + 1) | ℱ n] =ᵐ[P] 0)
+    (heta_sq_cond_sigma : ∀ n,
+      P[(fun ω => eta (n + 1) ω ^ 2) | ℱ n] =ᵐ[P]
+        fun _ => sigmaSq (n + 1))
+    (hsigmaSq_nonneg : ∀ m, 0 ≤ sigmaSq m)
+    (hS0_eq : ∀ᵐ ω ∂P, S 0 ω = 0)
+    (hinc :
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.Icc 1 n, |S k ω - S (k - 1) ω| ≤ K) :
+    P (durrett2019_exercise_4_4_6_smallBallEvent S x n) ≤
+      ENNReal.ofReal (((x + K) ^ 2) / variance) := by
+  refine
+    durrett2019_exercise_4_4_6_smallBall_bound_of_variance_endpoint
+      (P := P) (ℱ := ℱ) (S := S) (sigmaSq := sigmaSq)
+      (x := x) (K := K) (variance := variance) (n := n)
+      hx_nonneg hK_nonneg hvariance_pos hclock_eq_variance hS_adapted ?_
+      hsigmaSq_nonneg hS0_eq hinc
+  exact
+    durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source
+      (μ := P) (ℱ := ℱ) hS_adapted hS_sq_int heta_int heta_sq_int
+      hcross_int hStepSq heta_cond_zero heta_sq_cond_sigma
 
 /--
 Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If

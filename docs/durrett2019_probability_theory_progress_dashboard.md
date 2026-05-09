@@ -32,12 +32,17 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V142` in
+Route from `Live In-Thread Goal Prompt V143` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 4.4 martingale maximal inequalities.  The
-current frontier is the remaining exact Exercise 4.4.6 source instantiation:
-the square-martingale source from increments feeding the compiled
-exact-denominator deterministic variance-clock wrapper.
+current frontier is the concrete-increment Exercise 4.4.6 specialization:
+instantiate the compiled source-facing small-ball wrapper from natural
+filtration / independent-increment hypotheses by proving the variable
+conditional second-moment identity for `sigmaSq (n + 1)`.
+The V143 packet added `durrett2019_exercise_4_4_6_varianceClock_succ`,
+`durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
+`durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,
+and `durrett2019_exercise_4_4_6_smallBall_bound_of_source`.
 Treat compiled Chapter 2, Chapter 3, Chapter 4.1
 through Theorem 4.1.15, Chapter 4.2, Chapter 4.3, Theorem 4.4.2, Example 4.4.3,
 Theorems 4.4.4, 4.4.6, 4.4.7, and 4.4.8, Theorem 4.4.1 optional-stopping
