@@ -281,6 +281,10 @@ The next blocker is to bound the explicit original/ghost finite-center failure
 probabilities through a fixed-sample Rademacher finite-center Hoeffding tail
 and a product-fiber upper-bound lift for the random selected cover; an a.e.
 Hoeffding-support assumption is no longer the preferred frontier shape.
+The fixed-sample tail is now compiled as
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le`, so the
+remaining blocker is specifically the product-fiber upper lift for the
+original/ghost random selected-cover failure probabilities.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

@@ -15474,6 +15474,102 @@ def VdVWTheorem243RademacherFiniteCenterHoeffdingBound
     (vdVWRademacherWeights sign) (vdVWTheorem243HoeffdingCenterScale n M)
 
 /--
+Fixed-sample finite-center failure tail for the Rademacher Hoeffding predicate.
+
+The complement of `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` is
+contained in the finite-center supremum tail at the Hoeffding upper.  Existing
+one-center sub-Gaussian and finite-union bounds then give the displayed
+probability estimate for any independent sub-Gaussian sign family.
+-/
+theorem vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} {Index : Type w} {n cardinality : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M coverRadius : ℝ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) coverRadius cardinality)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (sign : Fin n -> Ω -> ℝ)
+    (hindep : iIndepFun sign μ)
+    (hsubG : ∀ i : Fin n, HasSubgaussianMGF (sign i) 1 μ) :
+    μ.real {ω |
+      ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+        (vdVWTruncatedClassFun classFun envelope M) cover.center
+        (fun i : Fin n => sign i ω) M} ≤
+      (cardinality : ℝ) *
+        (2 * Real.exp
+          (-((vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) ^ 2) /
+            (2 * ((NNReal.mk (M ^ 2 / (n : ℝ))
+              (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)) : ℝ≥0) : ℝ)))) := by
+  let X : Fin cardinality -> Ω -> ℝ :=
+    fun centerIndex ω =>
+      vdVWWeightedSampleSum
+        (vdVWTruncatedClassFun classFun envelope M)
+        (vdVWRademacherWeights (fun i : Fin n => sign i ω))
+        (cover.center centerIndex) sample
+  let c : ℝ≥0 :=
+    NNReal.mk (M ^ 2 / (n : ℝ))
+      (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n))
+  let upper : ℝ := vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M
+  have hcardinality_pos : 0 < cardinality :=
+    cover.cardinality_pos_of_nonempty hindexClass_nonempty
+  haveI : Nonempty (Fin cardinality) := ⟨⟨0, hcardinality_pos⟩⟩
+  have hX : ∀ centerIndex : Fin cardinality, HasSubgaussianMGF (X centerIndex) c μ := by
+    intro centerIndex
+    exact
+      vdVWTheorem243_hasSubgaussianMGF_mono
+        (vdVWTheorem243_oneCenter_rademacher_subGaussian_bridge
+          μ sample (vdVWTruncatedClassFun classFun envelope M)
+          (cover.center centerIndex) sign hindep hsubG)
+        (vdVWTheorem243_truncated_varianceProxy_le
+          (sample := sample) henvelope hM_pos.le
+          (cover.center_mem centerIndex))
+  have htail :
+      μ.real {ω | upper ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)} ≤
+        (cardinality : ℝ) *
+          (2 * Real.exp (-(upper ^ 2) / (2 * (c : ℝ)))) :=
+    vdVWTheorem243_finiteCenter_iSup_abs_tail_le_of_hasSubgaussianMGF_of_pos
+      hcardinality_pos X hX
+      (vdVWTheorem243FiniteNetHoeffdingUpper_nonneg cardinality n hM_pos.le)
+  have hfailure_subset :
+      {ω |
+        ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M) cover.center
+          (fun i : Fin n => sign i ω) M} ⊆
+        {ω | upper ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)} := by
+    intro ω hω
+    by_contra hnot
+    have hsup_lt : (⨆ centerIndex : Fin cardinality, |X centerIndex ω|) < upper :=
+      lt_of_not_ge hnot
+    exact hω (by
+      intro centerIndex
+      have hcenter_le_sup :
+          |X centerIndex ω| ≤
+            (⨆ centerIndex : Fin cardinality, |X centerIndex ω|) :=
+        Finite.le_ciSup (fun centerIndex : Fin cardinality => |X centerIndex ω|)
+          centerIndex
+      exact hcenter_le_sup.trans hsup_lt.le)
+  calc
+    μ.real {ω |
+      ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+        (vdVWTruncatedClassFun classFun envelope M) cover.center
+        (fun i : Fin n => sign i ω) M}
+        ≤ μ.real {ω | upper ≤ (⨆ centerIndex : Fin cardinality, |X centerIndex ω|)} :=
+          measureReal_mono hfailure_subset
+    _ ≤ (cardinality : ℝ) *
+        (2 * Real.exp (-(upper ^ 2) / (2 * (c : ℝ)))) := htail
+    _ = (cardinality : ℝ) *
+        (2 * Real.exp
+          (-((vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) ^ 2) /
+            (2 * ((NNReal.mk (M ^ 2 / (n : ℝ))
+              (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)) : ℝ≥0) : ℝ)))) := by
+          rfl
+
+/--
 The finite-center Hoeffding/maximal predicate is stable under simultaneous
 permutation of sample coordinates and Rademacher signs.
 -/

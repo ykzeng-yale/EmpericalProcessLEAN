@@ -8789,3 +8789,16 @@ therefore closed.  The remaining aggressive source task is to bound the
 original/ghost finite-center failure probabilities by a fixed-sample
 Rademacher finite-center Hoeffding tail, then lift that tail through a
 product-fiber upper-bound lemma for the random selected cover.
+
+2026-05-09 finite-center failure tail:
+`Theorem243.lean` now proves
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le`.  For a fixed
+empirical cover and independent sub-Gaussian sign family, it bounds the real
+measure of the complement of
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound` by the finite-center
+sub-Gaussian union tail at
+`vdVWTheorem243FiniteNetHoeffdingUpper`.  This closes the fixed-sample tail
+piece needed for both original and ghost sign fibers.  The next source
+primitive should lift this fixed-sample bound through product fibers for the
+random selected cover, using the existing selected-center measurability facts
+and a product-measure upper integration/disintegration lemma.
