@@ -14499,6 +14499,121 @@ theorem durrett2019_exercise_4_4_11_kronecker_ratio_eq
   field_simp [hb]
 
 /--
+Durrett 2019, Exercise 4.4.11 deterministic support: the Toeplitz weights
+coming from first differences of the normalizer telescope.
+-/
+theorem durrett2019_exercise_4_4_11_weight_increment_sum_eq
+    {b : ℕ -> ℝ} (n : ℕ) :
+    (∑ k ∈ Finset.range n, (b (k + 2) - b (k + 1))) =
+      b (n + 1) - b 1 := by
+  simpa [Function.comp_def, Nat.add_assoc] using
+    (Finset.sum_range_sub (fun k : ℕ => b (k + 1)) n)
+
+/--
+Durrett 2019, Exercise 4.4.11 deterministic support: the constant part of
+the Toeplitz weighted average has the expected limit when the normalizer
+diverges.
+-/
+theorem durrett2019_exercise_4_4_11_constant_weighted_tendsto
+    {b : ℕ -> ℝ} {L : ℝ}
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n, L * (b (k + 2) - b (k + 1))) /
+          b (n + 1))
+      atTop (nhds L) := by
+  have hb_nonzero_eventually : ∀ᶠ n in atTop, b (n + 1) ≠ 0 := by
+    filter_upwards [hb_atTop.eventually_ge_atTop (1 : ℝ)] with n hn
+    exact ne_of_gt (zero_lt_one.trans_le hn)
+  have hratio :
+      Tendsto (fun n : ℕ => (1 : ℝ) - b 1 / b (n + 1)) atTop
+        (nhds ((1 : ℝ) - 0)) :=
+    tendsto_const_nhds.sub (tendsto_const_nhds.div_atTop hb_atTop)
+  have htarget :
+      Tendsto (fun n : ℕ => L * ((1 : ℝ) - b 1 / b (n + 1))) atTop
+        (nhds (L * 1)) :=
+    tendsto_const_nhds.mul (by simpa using hratio)
+  have htargetL :
+      Tendsto (fun n : ℕ => L * ((1 : ℝ) - b 1 / b (n + 1))) atTop
+        (nhds L) := by
+    simpa using htarget
+  refine htargetL.congr' ?_
+  filter_upwards [hb_nonzero_eventually] with n hb_ne
+  rw [← Finset.mul_sum]
+  rw [durrett2019_exercise_4_4_11_weight_increment_sum_eq (b := b) n]
+  field_simp [hb_ne]
+
+/--
+Durrett 2019, Exercise 4.4.11 deterministic support: split the Toeplitz
+weighted average into the constant limit part and the centered remainder.
+-/
+theorem durrett2019_exercise_4_4_11_weighted_average_eq_constant_add_centered
+    {A b : ℕ -> ℝ} {L : ℝ} (n : ℕ) :
+    (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+        b (n + 1) =
+      (∑ k ∈ Finset.range n, L * (b (k + 2) - b (k + 1))) /
+          b (n + 1) +
+        (∑ k ∈ Finset.range n,
+          (A (k + 1) - L) * (b (k + 2) - b (k + 1))) /
+          b (n + 1) := by
+  rw [← add_div]
+  rw [← Finset.sum_add_distrib]
+  congr 2 with k
+  ring
+
+/--
+Durrett 2019, Exercise 4.4.11 deterministic support: once the centered
+Toeplitz remainder tends to zero, the full weighted average of the scaled
+partial sums tends to the same limit.
+-/
+theorem durrett2019_exercise_4_4_11_weighted_average_tendsto_of_centered_tendsto_zero
+    {A b : ℕ -> ℝ} {L : ℝ}
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop)
+    (hcentered_tendsto :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            (A (k + 1) - L) * (b (k + 2) - b (k + 1))) /
+            b (n + 1))
+        atTop (nhds 0)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+          b (n + 1))
+      atTop (nhds L) := by
+  have hconstant :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, L * (b (k + 2) - b (k + 1))) /
+            b (n + 1))
+        atTop (nhds L) :=
+    durrett2019_exercise_4_4_11_constant_weighted_tendsto
+      (b := b) (L := L) hb_atTop
+  have hsum :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, L * (b (k + 2) - b (k + 1))) /
+              b (n + 1) +
+            (∑ k ∈ Finset.range n,
+              (A (k + 1) - L) * (b (k + 2) - b (k + 1))) /
+              b (n + 1))
+        atTop (nhds (L + 0)) :=
+    hconstant.add hcentered_tendsto
+  have hsumL :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, L * (b (k + 2) - b (k + 1))) /
+              b (n + 1) +
+            (∑ k ∈ Finset.range n,
+              (A (k + 1) - L) * (b (k + 2) - b (k + 1))) /
+              b (n + 1))
+        atTop (nhds L) := by
+    simpa using hsum
+  exact hsumL.congr fun n =>
+    (durrett2019_exercise_4_4_11_weighted_average_eq_constant_add_centered
+      (A := A) (b := b) (L := L) n).symm
+
+/--
 Durrett 2019, Exercise 4.4.11 deterministic support: once the Toeplitz
 weighted average of the scaled partial sums converges to the same limit as
 the scaled partial sums themselves, Kronecker's normalized sums converge to

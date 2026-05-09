@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V153` in
+Route from `Live In-Thread Goal Prompt V154` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 4.4 martingale maximal inequalities.  The
 current frontier has moved past Exercise 4.4.6's natural-filtration
@@ -44,9 +44,12 @@ tendsto-zero wrapper, explicit eventual `L^2` Cauchy estimate, `Lp` Cauchy
 sequence endpoint, and an existential `Lp` limit.  Exercise 4.4.11 now has the
 predictable-transform increment identity, scaled square-summability conversion,
 transformed-martingale `Lp` convergence bridge, and deterministic Abel/
-Kronecker ratio certificates.  The next target is proving the Toeplitz
-weighted-average hypothesis and then the bounded-variance corollary.
-The V143-V153 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
+Kronecker ratio certificates, plus the Toeplitz constant/centered split.  The
+next target is proving the centered Toeplitz remainder from convergence of the
+scaled partial sums, nonnegative normalizer increments, and divergence of the
+normalizer, then feeding the weighted-average and Kronecker consumers before
+the bounded-variance corollary.
+The V143-V154 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,
 `durrett2019_exercise_4_4_6_smallBall_bound_of_source`,
@@ -79,7 +82,11 @@ and
 `durrett2019_exercise_4_4_11_stochasticTransform_exists_toLp_tendsto_of_scaled_summable`,
 plus `durrett2019_exercise_4_4_11_kronecker_summation_by_parts`,
 `durrett2019_exercise_4_4_11_kronecker_ratio_eq`, and
-`durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_weighted_tendsto`.
+`durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_weighted_tendsto`,
+plus `durrett2019_exercise_4_4_11_weight_increment_sum_eq`,
+`durrett2019_exercise_4_4_11_constant_weighted_tendsto`,
+`durrett2019_exercise_4_4_11_weighted_average_eq_constant_add_centered`, and
+`durrett2019_exercise_4_4_11_weighted_average_tendsto_of_centered_tendsto_zero`.
 Treat compiled Chapter 2, Chapter 3, Chapter 4.1
 through Theorem 4.1.15, Chapter 4.2, Chapter 4.3, Theorem 4.4.2, Example 4.4.3,
 Theorems 4.4.4, 4.4.6, 4.4.7, and 4.4.8, Theorem 4.4.1 optional-stopping
