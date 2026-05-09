@@ -2257,8 +2257,10 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent`, and its
    pointwise original-or-ghost selected-net inclusion is compiled as
    `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad`.
+   The concrete-event source constructor is compiled as
+   `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent`.
    The missing bridge is now measurability and the displayed Chebyshev fiber
-   lower bound for this event, then specialization back to
+   lower bound for this event, then optional specialization back to
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
    The first adapted
    countable empirical-supremum bridge is compiled as
