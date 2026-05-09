@@ -344,10 +344,16 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`z_t = (1-t)x + t x+` from the compiled Lemma 13.6 source-radius theorem,
 	the segment identity `z_t - x = t • (x+ - x)`, and
 	`||t • v||_x = t * ||v||_x` for `0 <= t`.
+	The newest source-Newton-segment assembly packet adds
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`.
+	This feeds the compiled pointwise `z_t` sandwich into the local-norm-to-
+	Rayleigh 13.8 wrapper, deriving the segment membership and Hessian
+	nonnegativity hypotheses from convexity plus `MixedThirdSelfConcordantOn`.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
-new local-norm-to-Rayleigh 13.8 wrapper.  The pointwise Newton-segment
-local-norm sandwich is now compiled, so next derive the square-root coordinate
+new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
+local-norm sandwich and its integration into the Rayleigh decrement wrapper
+are now compiled, so next derive the square-root coordinate
 identities
 `normalized = coord† Delta coord`, `coord sqrtH = id`, `sqrtH coord = id`,
 `<v, invHess(x)v> = ||coord†v||^2`, and `hess x = sqrtH†sqrtH` from the
@@ -359,7 +365,7 @@ The exact blockers are:
   derive the needed inverse-Hessian quadratic upper comparison from Lemma
   13.6/matrix inverse order when moving beyond the supplied interface, and
   derive the square-root coordinate identities required by
-  `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_localNormSandwich`.
+  `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`.
   The conversion from those inputs to the normalized Rayleigh bound, op norm,
   Delta quadratic bound, residual bound, and final decrement estimate is
   compiled; do not reprove it.

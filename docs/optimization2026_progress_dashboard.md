@@ -1443,9 +1443,13 @@ source-shaped two-sided local-norm sandwich plus square-root coordinate
 identities.  The newest Newton-segment sandwich packet adds
 `localNorm_smul_of_nonneg`, `hessianSegmentPoint_sub_left`, and
 `chewi138_newtonSegment_localNorm_sandwich_sourceRadius`, proving the
-pointwise `z_t` local-norm sandwich from Lemma 13.6 source-radius.  The live
-13.8 blockers are now the concrete coordinate identities and the
-inverse-Hessian quadratic upper comparison.
+pointwise `z_t` local-norm sandwich from Lemma 13.6 source-radius.  The newest
+source-Newton-segment assembly packet adds
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
+feeding that sandwich into the 13.8 Rayleigh decrement wrapper and deriving
+segment membership/Hessian nonnegativity from convexity and
+`MixedThirdSelfConcordantOn`.  The live 13.8 blockers are now the concrete
+coordinate identities and the inverse-Hessian quadratic upper comparison.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
