@@ -547,10 +547,13 @@ newest local-norm-to-Rayleigh packet adds
 `normalizedAdjointConj_absQuadBound_of_deltaAbsQuadBound`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_localNormSandwich`,
 so the source two-sided local-norm sandwich now supplies the normalized
-absolute Rayleigh bound.  After that, derive the pointwise Newton-segment
-sandwich, inverse-Hessian comparison, and coordinate identities from concrete
-matrix/order hypotheses and remove the remaining mixed-third supplied source
-interface through the real
+absolute Rayleigh bound.  The newest Newton-segment sandwich packet adds
+`localNorm_smul_of_nonneg`, `hessianSegmentPoint_sub_left`, and
+`chewi138_newtonSegment_localNorm_sandwich_sourceRadius`, so the pointwise
+`z_t` sandwich assumptions required by that wrapper are compiled from Lemma
+13.6 source-radius.  After that, derive the inverse-Hessian comparison and
+coordinate identities from concrete matrix/order hypotheses and remove the
+remaining mixed-third supplied source interface through the real
 third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem

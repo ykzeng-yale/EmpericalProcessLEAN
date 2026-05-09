@@ -335,15 +335,20 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	sides give `|<Delta w,w>|`, and `normalized = coord† Delta coord` plus
 	`sqrtH coord = id` transports it to
 	`|<normalized z,z>| <= coeff * ||z||^2`.
+	The newest Newton-segment sandwich packet adds
+	`localNorm_smul_of_nonneg`, `hessianSegmentPoint_sub_left`, and
+	`chewi138_newtonSegment_localNorm_sandwich_sourceRadius`.  It proves the
+	pointwise source assumptions
+	`(1 - M * lambda * t) * ||w||_x <= ||w||_{z_t}` and
+	`||w||_{z_t} <= ||w||_x / (1 - M * lambda * t)` for
+	`z_t = (1-t)x + t x+` from the compiled Lemma 13.6 source-radius theorem,
+	the segment identity `z_t - x = t • (x+ - x)`, and
+	`||t • v||_x = t * ||v||_x` for `0 <= t`.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
-new local-norm-to-Rayleigh 13.8 wrapper.  Prefer first deriving the pointwise
-Newton-segment sandwich assumptions
-`(1 - M * lambda * t) * ||w||_x <= ||w||_{z_t}` and
-`||w||_{z_t} <= ||w||_x / (1 - M * lambda * t)` from the compiled Lemma 13.6
-source-radius theorem, using `z_t = (1-t)x+t x+`,
-`||z_t-x||_x = t * lambda`, and the Newton-step norm identity.  In parallel
-or immediately after, derive the square-root coordinate identities
+new local-norm-to-Rayleigh 13.8 wrapper.  The pointwise Newton-segment
+local-norm sandwich is now compiled, so next derive the square-root coordinate
+identities
 `normalized = coord† Delta coord`, `coord sqrtH = id`, `sqrtH coord = id`,
 `<v, invHess(x)v> = ||coord†v||^2`, and `hess x = sqrtH†sqrtH` from the
 concrete Hessian/inverse-Hessian model.  The inverse-Hessian quadratic upper
@@ -353,8 +358,7 @@ The exact blockers are:
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
   derive the needed inverse-Hessian quadratic upper comparison from Lemma
   13.6/matrix inverse order when moving beyond the supplied interface, and
-  derive the pointwise Newton-segment local-norm sandwich and square-root
-  coordinate identities required by
+  derive the square-root coordinate identities required by
   `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_localNormSandwich`.
   The conversion from those inputs to the normalized Rayleigh bound, op norm,
   Delta quadratic bound, residual bound, and final decrement estimate is

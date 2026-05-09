@@ -597,6 +597,25 @@ theorem localNorm_zero (hess : E -> E →L[ℝ] E) (x : E) :
     localNorm hess x 0 = 0 := by
   simp [localNorm]
 
+/-- Scaling law for the supplied-Hessian local norm by a nonnegative scalar. -/
+theorem localNorm_smul_of_nonneg
+    {hess : E -> E →L[ℝ] E} {x v : E} {t : ℝ}
+    (ht : 0 ≤ t)
+    (hx_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w)) :
+    localNorm hess x (t • v) = t * localNorm hess x v := by
+  have hleft_nonneg : 0 ≤ localNorm hess x (t • v) :=
+    localNorm_nonneg hess x (t • v)
+  have hright_nonneg : 0 ≤ t * localNorm hess x v :=
+    mul_nonneg ht (localNorm_nonneg hess x v)
+  have hsq :
+      (localNorm hess x (t • v)) ^ (2 : ℕ) =
+        (t * localNorm hess x v) ^ (2 : ℕ) := by
+    rw [localNorm_sq_eq_inner (hx_nonneg (t • v))]
+    rw [mul_pow, localNorm_sq_eq_inner (hx_nonneg v)]
+    simp [map_smul, real_inner_smul_left, real_inner_smul_right]
+    ring
+  exact (sq_eq_sq₀ hleft_nonneg hright_nonneg).mp hsq
+
 theorem dualLocalNorm_zero (invHess : E -> E →L[ℝ] E) (x : E) :
     dualLocalNorm invHess x 0 = 0 := by
   simp [dualLocalNorm]
@@ -1179,6 +1198,11 @@ theorem hessianSegmentPoint_zero (x y : E) :
 theorem hessianSegmentPoint_one (x y : E) :
     hessianSegmentPoint x y 1 = y := by
   simp [hessianSegmentPoint]
+
+theorem hessianSegmentPoint_sub_left (x y : E) (t : ℝ) :
+    hessianSegmentPoint x y t - x = t • (y - x) := by
+  rw [hessianSegmentPoint]
+  module
 
 theorem hessianSegmentPoint_eq_lineMap (x y : E) (t : ℝ) :
     hessianSegmentPoint x y t = AffineMap.lineMap x y t := by
@@ -2455,6 +2479,101 @@ theorem chewi136_newtonStep_localNorm_sandwich_sourceRadius
       (y := newtonStep grad invHess x) (M := M)
       hMr_lt hs hx hstep_mem hsc hess_pos hdiff_ne hhess_cont hhess hmixed v
   simpa [hstep_norm] using hsand
+
+/--
+Pointwise Newton-segment specialization of Chewi Lemma 13.6(4).  This is the
+source-shaped sandwich needed in Theorem 13.8 for
+`z_t = (1-t)x + t x⁺`, with radius `t * lambda_f(x)`.
+-/
+theorem chewi138_newtonSegment_localNorm_sandwich_sourceRadius
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ}
+    {grad : E -> E} {invHess : E -> E →L[ℝ] E} {x : E} {M t : ℝ}
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hs : Convex ℝ s) (hx : x ∈ s)
+    (hstep_mem : newtonStep grad invHess x ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hstep_ne : newtonStep grad invHess x - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (ht : t ∈ Set.Icc (0 : ℝ) 1)
+    (w : E) :
+    (1 - M * newtonDecrement grad invHess x * t) * localNorm hess x w ≤
+      localNorm hess (hessianSegmentPoint x (newtonStep grad invHess x) t) w ∧
+        localNorm hess (hessianSegmentPoint x (newtonStep grad invHess x) t) w ≤
+          localNorm hess x w /
+            (1 - M * newtonDecrement grad invHess x * t) := by
+  let y := newtonStep grad invHess x
+  let lam := newtonDecrement grad invHess x
+  by_cases ht_zero : t = 0
+  · subst t
+    simp [hessianSegmentPoint_zero]
+  · have ht_pos : 0 < t := by
+      have hne : (0 : ℝ) ≠ t := by
+        intro h
+        exact ht_zero h.symm
+      exact lt_of_le_of_ne ht.1 hne
+    have ht_nonneg : 0 ≤ t := ht.1
+    have ht_le_one : t ≤ 1 := ht.2
+    have hlam_nonneg : 0 ≤ lam := by
+      dsimp [lam, newtonDecrement]
+      exact dualLocalNorm_nonneg invHess x (grad x)
+    have hM_nonneg : 0 ≤ M := hsc.parameter_pos.le
+    have hy_mem : y ∈ s := by
+      simpa [y] using hstep_mem
+    have hzt_mem : hessianSegmentPoint x y t ∈ s :=
+      hessianSegmentPoint_mem_of_convex hs hx hy_mem ht
+    have hzt_norm :
+        localNorm hess x (hessianSegmentPoint x y t - x) = t * lam := by
+      rw [hessianSegmentPoint_sub_left]
+      rw [localNorm_smul_of_nonneg ht_nonneg (fun v => hsc.hess_nonneg hx v)]
+      simp [y, lam, hstep_norm]
+    have hMt_lt : M * localNorm hess x (hessianSegmentPoint x y t - x) < 1 := by
+      rw [hzt_norm]
+      have htlam_le : t * lam ≤ lam := by
+        simpa using mul_le_mul_of_nonneg_right ht_le_one hlam_nonneg
+      have hM_le : M * (t * lam) ≤ M * lam :=
+        mul_le_mul_of_nonneg_left htlam_le hM_nonneg
+      nlinarith [hMlambda_lt, hM_le]
+    have hdiff_ne : hessianSegmentPoint x y t - x ≠ 0 := by
+      rw [hessianSegmentPoint_sub_left]
+      exact smul_ne_zero ht_zero hstep_ne
+    have hsand :=
+      chewi136_localNorm_sandwich_sourceRadius
+        (s := s) (hess := hess) (hessDeriv := hessDeriv)
+        (thirdMixed := thirdMixed) (x := x)
+        (y := hessianSegmentPoint x y t) (M := M)
+        hMt_lt hs hx hzt_mem hsc hess_pos hdiff_ne hhess_cont
+        (by
+          intro u hu
+          exact hhess (hessianSegmentPoint x (hessianSegmentPoint x y t) u)
+            (hessianSegmentPoint_mem_of_convex hs hx hzt_mem
+              (interior_subset hu)))
+        (by
+          intro v u hu
+          have hzu : hessianSegmentPoint x (hessianSegmentPoint x y t) u ∈ s :=
+            hessianSegmentPoint_mem_of_convex hs hx hzt_mem
+              (interior_subset hu)
+          simpa [hessianSegmentMixedThirdPsiDeriv] using
+            hmixed (hessianSegmentPoint x (hessianSegmentPoint x y t) u)
+              hzu (hessianSegmentPoint x y t - x) v)
+        w
+    have hfactor :
+        1 - M * localNorm hess x (hessianSegmentPoint x y t - x) =
+          1 - M * lam * t := by
+      rw [hzt_norm]
+      ring
+    constructor
+    · simpa [y, lam, hfactor] using hsand.1
+    · simpa [y, lam, hfactor] using hsand.2
 
 /--
 Chewi Theorem 13.8 Delta step, scalar quadratic-form version.  If the Hessian

@@ -47,11 +47,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `StatInference/Optimization/InteriorPoint.lean`: the normalized Rayleigh
   line now has a compiled route from the two-sided Lemma 13.6 local-norm
   sandwich through concrete Delta absolute quadratic forms and the
-  adjoint-conjugate square-root coordinate identity.  Next discharge the
-  remaining source inputs for that wrapper: pointwise Newton-segment local-norm
-  sandwich at `z_t`, concrete square-root/inverse-Hessian coordinate
-  identities, and the inverse-Hessian quadratic upper comparison.  Then remove
-  mixed-third-source interfaces when bounded.
+  adjoint-conjugate square-root coordinate identity, and the pointwise
+  Newton-segment local-norm sandwich at `z_t` is compiled from the Lemma 13.6
+  source-radius theorem.  Next discharge the concrete square-root/inverse-
+  Hessian coordinate identities and the inverse-Hessian quadratic upper
+  comparison.  Then remove mixed-third-source interfaces when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
@@ -1440,8 +1440,11 @@ identities.  The newest local-norm-to-Rayleigh packet adds
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_localNormSandwich`.
 This closes the normalized absolute quadratic-form obligation from a
 source-shaped two-sided local-norm sandwich plus square-root coordinate
-identities.  The live 13.8 blockers are now the source proof of the pointwise
-Newton-segment sandwich, the concrete coordinate identities, and the
+identities.  The newest Newton-segment sandwich packet adds
+`localNorm_smul_of_nonneg`, `hessianSegmentPoint_sub_left`, and
+`chewi138_newtonSegment_localNorm_sandwich_sourceRadius`, proving the
+pointwise `z_t` local-norm sandwich from Lemma 13.6 source-radius.  The live
+13.8 blockers are now the concrete coordinate identities and the
 inverse-Hessian quadratic upper comparison.
 Search
 found no direct mathlib/local theorem for the derivative of
