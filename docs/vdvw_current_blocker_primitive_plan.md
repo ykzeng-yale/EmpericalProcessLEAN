@@ -8742,3 +8742,16 @@ product-pair selected finite-net event under the two a.e. selected
 finite-center side-condition inputs.  The remaining source route is the
 measure-level map/union-bound handoff from the sign-first/product-pair selected
 event to the original-or-ghost selected-net outer-probability comparison.
+
+2026-05-09 product-pair selected-event outer-probability handoff:
+`Theorem243.lean` now proves
+`VdVWOuterProbability_productPair_event_le_two_mul_of_original_or_ghost`,
+`VdVWOuterProbability_mul_left_le_two_mul_of_productPair_event_lower_bound_or_ghost`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound`,
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_ae_finiteCenter_succ`.
+This gives the factor-two map/union-bound handoff from the sign-first
+product-pair selected event to original-or-ghost selected-net outer
+probability.  The remaining source route is the scale/epsilon alignment into
+the named displayed-beta comparison and the construction of the selected
+finite-center a.e. support inputs.

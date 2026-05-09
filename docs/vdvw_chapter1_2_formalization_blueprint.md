@@ -2348,9 +2348,17 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_finiteCenter`,
    and
    `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_ae_finiteCenter_succ`.
-   The remaining source route is the measure-level map/union-bound handoff from
-   the sign-first/product-pair selected event to the original-or-ghost
-   selected-net outer-probability comparison.
+   The measure-level map/union-bound handoff from the sign-first product-pair
+   selected event to original-or-ghost selected-net outer probability is now
+   compiled as
+   `VdVWOuterProbability_productPair_event_le_two_mul_of_original_or_ghost`,
+   `VdVWOuterProbability_mul_left_le_two_mul_of_productPair_event_lower_bound_or_ghost`,
+   `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound`,
+   and
+   `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_ae_finiteCenter_succ`.
+   The remaining source route is scale/epsilon alignment into the named
+   displayed-beta comparison, plus construction of the selected finite-center
+   a.e. support inputs.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,

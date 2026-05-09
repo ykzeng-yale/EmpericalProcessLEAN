@@ -41476,6 +41476,293 @@ theorem
       hmaxOriginal hmaxGhost
 
 /--
+Product-pair/sign events projecting to either the original or ghost coordinate
+cost at most a factor two in outer probability.
+
+This is the map/union-bound handoff for the sign-first product-pair source:
+the pair coordinate has original and ghost marginals both equal to `P^n`.
+-/
+theorem
+    VdVWOuterProbability_productPair_event_le_two_mul_of_original_or_ghost
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    {right : Set (SampleAt Observation n)}
+    {event : Set (SampleAt ℝ n × SampleAt (Observation × Observation) n)}
+    (hsubset :
+      ∀ z : SampleAt ℝ n × SampleAt (Observation × Observation) n,
+        z ∈ event ->
+          (fun i : Fin n => (z.2 i).1) ∈ right ∨
+          (fun i : Fin n => (z.2 i).2) ∈ right) :
+    ((vdVWProductMeasure vdVWRademacherLaw n).prod
+        (vdVWProductMeasure (P.prod P) n)) event ≤
+      (2 : ℝ≥0∞) *
+        VdVWOuterProbability (vdVWProductMeasure P n) right := by
+  let μ : Measure (SampleAt Observation n) := vdVWProductMeasure P n
+  let signMeasure : Measure (SampleAt ℝ n) :=
+    vdVWProductMeasure vdVWRademacherLaw n
+  let pairMeasure : Measure (SampleAt (Observation × Observation) n) :=
+    vdVWProductMeasure (P.prod P) n
+  let pairOriginal : Set (SampleAt (Observation × Observation) n) :=
+    {pairSample | (fun i : Fin n => (pairSample i).1) ∈ right}
+  let pairGhost : Set (SampleAt (Observation × Observation) n) :=
+    {pairSample | (fun i : Fin n => (pairSample i).2) ∈ right}
+  let rightOriginal :
+      Set (SampleAt ℝ n × SampleAt (Observation × Observation) n) :=
+    (Set.univ : Set (SampleAt ℝ n)) ×ˢ pairOriginal
+  let rightGhost :
+      Set (SampleAt ℝ n × SampleAt (Observation × Observation) n) :=
+    (Set.univ : Set (SampleAt ℝ n)) ×ˢ pairGhost
+  have hevent_union :
+      (signMeasure.prod pairMeasure) event ≤
+        (signMeasure.prod pairMeasure) (rightOriginal ∪ rightGhost) := by
+    refine measure_mono ?_
+    intro z hz
+    rcases hsubset z hz with hright | hghost
+    · exact Or.inl ⟨trivial, hright⟩
+    · exact Or.inr ⟨trivial, hghost⟩
+  have hunion_le :
+      (signMeasure.prod pairMeasure) (rightOriginal ∪ rightGhost) ≤
+        (signMeasure.prod pairMeasure) rightOriginal +
+          (signMeasure.prod pairMeasure) rightGhost :=
+    measure_union_le rightOriginal rightGhost
+  have hpairOriginal_le : pairMeasure pairOriginal ≤ μ right := by
+    let fstMap : SampleAt (Observation × Observation) n ->
+        SampleAt Observation n :=
+      fun pairSample i => (pairSample i).1
+    have hmp :
+        MeasurePreserving fstMap pairMeasure μ := by
+      have hsplit :
+          MeasurePreserving
+            (fun sample : SampleAt (Observation × Observation) n =>
+              (fun i : Fin n => (sample i).1,
+                fun i : Fin n => (sample i).2))
+            pairMeasure (μ.prod μ) := by
+        simpa [μ, pairMeasure] using
+          (measurePreserving_vdVWProductMeasure_prod_to_original_ghost
+            (P := P) (n := n))
+      have hfst :
+          MeasurePreserving Prod.fst (μ.prod μ) μ :=
+        MeasureTheory.measurePreserving_fst (μ := μ) (ν := μ)
+      simpa [fstMap] using hfst.comp hsplit
+    have hle := Measure.le_map_apply hmp.aemeasurable right
+    simpa [pairOriginal, fstMap, hmp.map_eq] using hle
+  have hpairGhost_le : pairMeasure pairGhost ≤ μ right := by
+    let sndMap : SampleAt (Observation × Observation) n ->
+        SampleAt Observation n :=
+      fun pairSample i => (pairSample i).2
+    have hmp :
+        MeasurePreserving sndMap pairMeasure μ := by
+      have hsplit :
+          MeasurePreserving
+            (fun sample : SampleAt (Observation × Observation) n =>
+              (fun i : Fin n => (sample i).1,
+                fun i : Fin n => (sample i).2))
+            pairMeasure (μ.prod μ) := by
+        simpa [μ, pairMeasure] using
+          (measurePreserving_vdVWProductMeasure_prod_to_original_ghost
+            (P := P) (n := n))
+      have hsnd :
+          MeasurePreserving Prod.snd (μ.prod μ) μ :=
+        MeasureTheory.measurePreserving_snd (μ := μ) (ν := μ)
+      simpa [sndMap] using hsnd.comp hsplit
+    have hle := Measure.le_map_apply hmp.aemeasurable right
+    simpa [pairGhost, sndMap, hmp.map_eq] using hle
+  have hrightOriginal_le :
+      (signMeasure.prod pairMeasure) rightOriginal ≤ μ right := by
+    calc
+      (signMeasure.prod pairMeasure) rightOriginal
+          = signMeasure Set.univ * pairMeasure pairOriginal := by
+            simp [rightOriginal, Measure.prod_prod]
+      _ = pairMeasure pairOriginal := by simp [signMeasure]
+      _ ≤ μ right := hpairOriginal_le
+  have hrightGhost_le :
+      (signMeasure.prod pairMeasure) rightGhost ≤ μ right := by
+    calc
+      (signMeasure.prod pairMeasure) rightGhost
+          = signMeasure Set.univ * pairMeasure pairGhost := by
+            simp [rightGhost, Measure.prod_prod]
+      _ = pairMeasure pairGhost := by simp [signMeasure]
+      _ ≤ μ right := hpairGhost_le
+  calc
+    (signMeasure.prod pairMeasure) event
+        ≤ (signMeasure.prod pairMeasure) (rightOriginal ∪ rightGhost) :=
+          hevent_union
+    _ ≤ (signMeasure.prod pairMeasure) rightOriginal +
+          (signMeasure.prod pairMeasure) rightGhost := hunion_le
+    _ ≤ μ right + μ right := add_le_add hrightOriginal_le hrightGhost_le
+    _ = (2 : ℝ≥0∞) * VdVWOuterProbability μ right := by
+          simp [VdVWOuterProbability, two_mul]
+
+/--
+Lower-bound handoff from a sign-first product-pair event to a factor-two
+selected-net outer-probability comparison.
+-/
+theorem
+    VdVWOuterProbability_mul_left_le_two_mul_of_productPair_event_lower_bound_or_ghost
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ}
+    {left right : Set (SampleAt Observation n)}
+    {event : Set (SampleAt ℝ n × SampleAt (Observation × Observation) n)}
+    {beta : ℝ≥0∞}
+    (hlower :
+      beta * (vdVWProductMeasure P n) left ≤
+        ((vdVWProductMeasure vdVWRademacherLaw n).prod
+            (vdVWProductMeasure (P.prod P) n)) event)
+    (hsubset :
+      ∀ z : SampleAt ℝ n × SampleAt (Observation × Observation) n,
+        z ∈ event ->
+          (fun i : Fin n => (z.2 i).1) ∈ right ∨
+          (fun i : Fin n => (z.2 i).2) ∈ right) :
+    beta * VdVWOuterProbability (vdVWProductMeasure P n) left ≤
+      (2 : ℝ≥0∞) *
+        VdVWOuterProbability (vdVWProductMeasure P n) right := by
+  exact
+    hlower.trans
+      (VdVWOuterProbability_productPair_event_le_two_mul_of_original_or_ghost
+        (P := P) (n := n) (right := right) (event := event)
+        (by
+          intro z hz
+          simpa using hsubset z hz))
+
+/--
+Product-pair selected-event lower bounds imply the factor-two selected-net
+outer-probability comparison.
+-/
+theorem
+    VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ} {n : ℕ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M) (heta : 0 < eta)
+    {left : Set (SampleAt Observation n)} {beta : ℝ≥0∞}
+    (hlower :
+      beta * (vdVWProductMeasure P n) left ≤
+        ((vdVWProductMeasure vdVWRademacherLaw n).prod
+            (vdVWProductMeasure (P.prod P) n))
+          (VdVWTheorem243ProductPairRademacherSelectedNetEvent P
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality)
+            (cover := cover))) :
+    beta * VdVWOuterProbability (vdVWProductMeasure P n) left ≤
+      (2 : ℝ≥0∞) *
+        VdVWOuterProbability (vdVWProductMeasure P n)
+          {sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (2 * vdVWTheorem243FiniteNetHoeffdingUpper
+                    (cardinality sample) n M + eta)
+                (0 : ℝ)} := by
+  refine
+    VdVWOuterProbability_mul_left_le_two_mul_of_productPair_event_lower_bound_or_ghost
+      (P := P) (n := n) (left := left)
+      (right :=
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (2 * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality sample) n M + eta)
+              (0 : ℝ)})
+      (event :=
+        VdVWTheorem243ProductPairRademacherSelectedNetEvent P
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover)) hlower ?_
+  intro z hz
+  simpa using
+    VdVWTheorem243_productPairRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinality := cardinality)
+      (cover := cover) henvelope hM_nonneg heta hz
+
+/--
+Countable Chebyshev/product-pair selected-event source as a factor-two
+outer-probability comparison.
+-/
+theorem
+    VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_ae_finiteCenter_succ
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ} {n : ℕ}
+    {cardinality : SampleAt Observation (n + 1) -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation (n + 1),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (heta : 0 < eta) (hepsilon : 0 < epsilon)
+    (hmaxOriginal :
+      ∀ᵐ z : SampleAt ℝ (n + 1) ×
+            SampleAt (Observation × Observation) (n + 1)
+          ∂((vdVWProductMeasure vdVWRademacherLaw (n + 1)).prod
+              (vdVWProductMeasure (P.prod P) (n + 1))),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin (n + 1) => (z.2 i).1)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin (n + 1) => (z.2 i).1)).center z.1 M)
+    (hmaxGhost :
+      ∀ᵐ z : SampleAt ℝ (n + 1) ×
+            SampleAt (Observation × Observation) (n + 1)
+          ∂((vdVWProductMeasure vdVWRademacherLaw (n + 1)).prod
+              (vdVWProductMeasure (P.prod P) (n + 1))),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin (n + 1) => (z.2 i).2)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin (n + 1) => (z.2 i).2)).center
+          (fun i : Fin (n + 1) => -z.1 i) M) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / ((((n + 1 : ℕ) : ℝ)) * epsilon ^ 2)) *
+        VdVWOuterProbability (vdVWProductMeasure P (n + 1))
+          {sample : SampleAt Observation (n + 1) |
+            2 * epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹) sample)
+                (0 : ℝ)} ≤
+      (2 : ℝ≥0∞) *
+        VdVWOuterProbability (vdVWProductMeasure P (n + 1))
+          {sample : SampleAt Observation (n + 1) |
+            epsilon <
+              dist
+                (2 * vdVWTheorem243FiniteNetHoeffdingUpper
+                    (cardinality sample) (n + 1) M + eta)
+                (0 : ℝ)} := by
+  exact
+    VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (n := n + 1) (cardinality := cardinality)
+      (cover := cover) henvelope hM heta
+      (VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_ae_finiteCenter_succ
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (n := n) (cardinality := cardinality)
+        (cover := cover) hcount hclass henvelope_meas henvelope hM
+        htruncIntegrable hepsilon hmaxOriginal hmaxGhost)
+
+/--
 Successor-sample concrete-fiber lower bound from Chebyshev mass plus the
 remaining fixed-original sign-swap transport.
 
