@@ -10,7 +10,7 @@ Active Lean folder: `StatInference/AsymptoticStatistics/`
 
 Source folder: `Textbooks/VaartAsymStat1998/`
 
-Live `/goal` continuation: use the compact prompt at the top of
+Live `/goal` continuation: use the efficient prompt at the top of
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
@@ -622,18 +622,17 @@ Current packet verification passed for:
 - `git diff --check`
 - proof-hole and credential-pattern scans on changed Vaart files
 
-Live continuation prompt: use the compact prompt in
+Live continuation prompt: use the efficient prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
 
 ## Next Aggressive Target
 
-For Vaart Theorem 5.41 in `MEstimators.lean`, discharge exactly one live source
-field for the current endpoint.  Priority order: instantiate the derivative
-error bound from an actual iid/operator or finite-dimensional operator strong
-law; one common-vector-law or Gaussian score-CLT source field; scaled-estimator
-law-tail/tightness; only then further source-side packaging for score-summand
-or derivative-bound identities.  Do not replay solved Chapter 2-4
-infrastructure or earlier Theorem 5.41 wrappers.
+For Vaart Theorem 5.41 in `MEstimators.lean`, finish any existing local Vaart
+Lean packet first, then discharge exactly one live source field for the current
+endpoint.  Priority order: derivative strong-law source and operator-norm
+domination; score CLT law/source fields; scaled-estimator law-tail or
+tightness.  Do not replay solved Chapter 2-4 infrastructure, earlier Theorem
+5.41 wrappers, or historical ledger items.
 
 ## Reuse Dependencies
 

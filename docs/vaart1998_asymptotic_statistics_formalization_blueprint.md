@@ -15,7 +15,7 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    fully proved in Lean and source evidence from Markdown/PDF is captured.
 5. Coordinate with the VdV&W empirical-process lane; do not duplicate GC,
    Donsker, bracketing, covering, or outer-probability foundations.
-6. Use only the compact live `/goal` prompt in the current blocker plan for
+6. Use only the efficient live `/goal` prompt in the current blocker plan for
    the next proof packet; the solved-progress ledgers are evidence, not
    instructions to replay.
 

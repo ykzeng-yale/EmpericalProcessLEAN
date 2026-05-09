@@ -6,47 +6,46 @@ manual `/goal` continuation before selecting a proof target.
 
 ## Live `/goal` Prompt
 
-Continue manually; do not create or modify automations.  Treat this section as
-the authoritative live `/goal` continuation until the full Vaart textbook goal
-is actually complete.
+Continue manually in this chat; do not create or modify automations.  This
+section is the authoritative replacement for any stale app-level `/goal` text.
 
-Lane: van der Vaart 1998, Theorem 5.41, in
+Active lane: van der Vaart 1998, Theorem 5.41, in
 `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
-Goal for each continuation: remove exactly one remaining source hypothesis from
-that endpoint, prove the resulting theorem-sized Lean layer, update only the
-Vaart route docs, commit, and push.
+Start every continuation by checking `git status` and the current Vaart diff.
+If an unfinished local Vaart Lean packet exists, finish and verify that packet
+first.  Preserve unrelated local or agent edits.
 
-Priority order:
-1. Actual iid/operator strong law or finite-dimensional operator source theorem
-   producing the derivative error bound used by the current endpoint.
-2. One missing common-vector-law or Gaussian score-CLT source field.
-3. Scaled-estimator law-tail or tightness source proof.
-4. Further source-side packaging for the zero-mean or a.e. score-summand
-   equality, or derivative-bound domination, only if it directly feeds the
-   current endpoint.
+Make exactly one theorem-sized Lean advance per packet: remove one live source
+hypothesis from the current endpoint, or prove the next source theorem that
+feeds it directly.  Current priority order:
 
-Execution loop:
-1. Inspect `git status`; preserve unrelated local-agent edits.
-2. If a local Vaart edit already targets one priority item, finish and verify
-   it before starting a new proof branch.
-3. Search local `StatInference` and pinned mathlib APIs first; avoid rebuilding
-   solved Chapter 2-4 or earlier Theorem 5.41 wrappers.
-4. Implement one minimal bridge or consumer theorem that strictly reduces the
-   current endpoint assumptions.
-5. Run focused Lean, the target module build, `git diff --check`, proof-hole
-   scan, credential scan, and English-only typo scan on changed Vaart files.
+1. Derivative source: finite-entry or operator strong law, then the
+   operator-norm domination bound that feeds the endpoint.
+2. Score source: common-vector-law or Gaussian finite-coordinate score CLT.
+3. Tightness source: scaled-estimator law-tail or `O_P(1)` proof.
+
+Efficiency rules:
+
+1. Search local `StatInference` and pinned mathlib APIs before adding new
+   infrastructure.
+2. Use helper agents or worktrees only for independent API search,
+   verification, or disjoint Lean write scopes.
+3. Do not replay solved Chapter 2-4 infrastructure, older Theorem 5.41
+   wrappers, or historical ledger items.
+4. Update only the Vaart route docs to the new frontier.
+5. Verify with focused Lean, the target module build, `git diff --check`,
+   proof-hole scan, credential scan, and English-only typo scan on changed
+   Vaart files.
 6. Fetch/rebase over `origin/main`; rerun checks if Lean files changed under
    the rebase.
 7. Stage only Vaart files, commit a theorem-specific message, push, and leave
-   the worktree with only unrelated edits if any remain.
+   only unrelated edits if any remain.
 
-Use helper agents or extra worktrees only for independent API search,
-verification, or disjoint Lean write scopes that shorten this exact path.  The
-ledger below is historical evidence, not a queue to replay.
+The ledger below is historical evidence, not a queue to replay.
 
 ## Current Blocker
 
@@ -1093,7 +1092,7 @@ the Chapter 4 local-range probability constructors.
 7. Keep Chapters 18-20 and 23-25 as dependency-aware later routes tied to the
    active VdV&W empirical-process lane.
 
-## Compact Manual Goal Prompt
+## Manual Goal Prompt
 
 Use the Live Continuation Prompt above as the active manual `/goal` prompt.
 Do not maintain a second expanded prompt in this file.
