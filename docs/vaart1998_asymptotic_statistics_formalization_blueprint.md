@@ -620,11 +620,14 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTendsto_envelopeTendsto_summandMeasurable_envelope`,
   while the derivative a.e. packet adds
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeAE_envelopeTendsto_summandMeasurable_envelope`,
+  and the raw-score CLT packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`,
   so the remaining critical path has moved from smooth Taylor production,
   empirical-average measurability, envelope stochastic-boundedness plumbing,
   scalar derivative-norm packaging, and derivative convergence-in-probability
-  packaging to the statistical source fields: the actual iid/operator empirical
-  derivative strong law, score CLT, and estimator/root/scaling hypotheses.
+  packaging, and score-scaling CLT transfer to the statistical source fields:
+  the actual iid/operator empirical derivative strong law, raw scaled score CLT,
+  and estimator/root/scaling hypotheses.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

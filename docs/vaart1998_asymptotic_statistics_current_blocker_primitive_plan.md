@@ -10,17 +10,16 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current frontier endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeAE_envelopeTendsto_summandMeasurable_envelope`,
-using `vaart1998_tendstoInMeasure_of_tendsto_ae` and
-`vaart1998_tendstoInMeasure_norm_sub_const_zero_of_tendstoInMeasure_const` to
-replace derivative probability packaging by an a.e. empirical derivative law
-plus strong measurability.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`,
+using sampled score-scaling equality to replace the abstract score CLT by a CLT
+for the raw scaled estimating-map empirical average.
 
 Next packet: prove the actual iid/operator empirical derivative strong law if
-an immediate local route exists; otherwise move to the score CLT or root/scaling
-consistency fields.  Do not revisit derivative probability packaging, scalar
-derivative-norm packaging, smooth Taylor production, sampled-summand
-measurability, or envelope stochastic-boundedness plumbing.
+an immediate local route exists; otherwise instantiate the raw scaled score CLT
+or root/scaling consistency fields.  Do not revisit score-scaling CLT transfer,
+derivative probability packaging, scalar derivative-norm packaging, smooth
+Taylor production, sampled-summand measurability, or envelope
+stochastic-boundedness plumbing.
 
 Workflow: reconcile any local Vaart edits first, search local/mathlib APIs, add
 one theorem-sized Lean layer, run focused Lean plus the target module build and
@@ -886,18 +885,21 @@ compiling:
 317. Theorem 5.41 derivative source handoff from an almost-sure empirical
    derivative law plus strong measurability:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeAE_envelopeTendsto_summandMeasurable_envelope`.
+318. Theorem 5.41 score CLT handoff from a CLT for the raw scaled estimating-map
+   empirical average plus the sampled score-scaling identity:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 derivative a.e. handoff`).
+(`Add Vaart theorem 5.41 raw score CLT handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by replacing derivative convergence
-in probability packaging with an almost-sure empirical derivative law plus
-strong measurability.
+asymptotic-normality route for Z-estimators by replacing the abstract score CLT
+with a CLT for the raw scaled estimating-map empirical average plus the sampled
+score-scaling identity.
 
 The next aggressive packet should prove the actual iid/operator empirical
-derivative strong law if a local route is immediately available; otherwise move
-to the score CLT or estimator/root/scaling source fields.
+derivative strong law if a local route is immediately available; otherwise
+instantiate the raw scaled score CLT or estimator/root/scaling source fields.
 
 ## Execution Notes
 

@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 derivative a.e. handoff`).
+(`Add Vaart theorem 5.41 raw score CLT handoff`).
 Current packet verification passed for:
 
 - `lake build StatInference.AsymptoticStatistics.Basic`
@@ -629,9 +629,10 @@ Live continuation prompt: use the compact prompt in
 
 For Vaart Theorem 5.41 in `MEstimators.lean`, prove the actual iid/operator
 empirical derivative strong law if a local route is immediately available;
-otherwise move to the score CLT or root/scaling consistency fields.  The
-derivative probability packaging, scalar derivative-norm packaging, envelope
-stochastic-boundedness bridge, sampled-summand measurability bridge,
+otherwise instantiate the raw scaled score CLT or root/scaling consistency
+fields.  The score-scaling CLT transfer, derivative probability packaging,
+scalar derivative-norm packaging, envelope stochastic-boundedness bridge,
+sampled-summand measurability bridge,
 estimating-map and derivative-map `ContDiffOn` source regularity bridges,
 derivative-path regularity bridge, vector derivative Taylor bridge,
 `derivativeAt theta0` specialization, vector-to-coordinate continuity
