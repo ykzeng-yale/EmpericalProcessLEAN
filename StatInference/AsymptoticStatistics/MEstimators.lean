@@ -8063,6 +8063,90 @@ theorem vaart1998_theorem_5_41_derivativeAverage_coordinate_action_le_finiteEntr
           rw [← Finset.mul_sum, mul_comm]
 
 /--
+van der Vaart 1998, Theorem 5.41, finite-coordinate derivative action bound
+from a matrix-entry representation.
+
+For a finite-dimensional parameter space `Param -> ℝ`, a coordinate residual
+represented as the row-wise finite sum
+`∑ param, x param * entryError (coordinate, param)` is bounded by the full
+finite derivative-entry table times `‖x‖`.  The only weight estimate needed is
+the product-norm coordinate bound `|x param| ≤ ‖x‖`.
+-/
+theorem vaart1998_theorem_5_41_derivativeAverage_coordinate_action_le_finiteEntryBound_of_matrix_entry_representation
+    {Param Ω Observation Coord : Type*} [Fintype Param] [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω}
+    (V : (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> (Param -> ℝ) ->
+        (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (theta0 : ℕ -> Ω -> Param -> ℝ)
+    (derivativeEntry : Coord -> Param -> ℕ -> Ω -> ℝ)
+    (hCoordinate_action_eq :
+      ∀ᵐ ω ∂P,
+        ∀ᶠ n in atTop,
+          ∀ x : Param -> ℝ, ∀ coordinate : Coord,
+            ((empiricalAverageVector (samples n ω)
+                (fun y => derivativeAt n ω y (theta0 n ω)) - V) x)
+                  coordinate =
+              ∑ param : Param,
+                x param *
+                  ((∑ i ∈ Finset.range n,
+                        derivativeEntry coordinate param i ω) / (n : ℝ) -
+                    ∫ sample, derivativeEntry coordinate param 0 sample ∂P)) :
+    ∀ᵐ ω ∂P,
+      ∀ᶠ n in atTop,
+        ∀ x : Param -> ℝ, ‖x‖ ≠ 0 -> ∀ coordinate : Coord,
+          |((empiricalAverageVector (samples n ω)
+              (fun y => derivativeAt n ω y (theta0 n ω)) - V) x)
+                coordinate| ≤
+            (∑ entry : Coord × Param,
+              |(∑ i ∈ Finset.range n,
+                    derivativeEntry entry.1 entry.2 i ω) / (n : ℝ) -
+                ∫ sample, derivativeEntry entry.1 entry.2 0 sample ∂P|) *
+              ‖x‖ := by
+  filter_upwards [hCoordinate_action_eq] with ω hω
+  filter_upwards [hω] with n hn
+  intro x _hx coordinate
+  let entryError : Coord × Param -> ℝ := fun entry =>
+    (∑ i ∈ Finset.range n, derivativeEntry entry.1 entry.2 i ω) / (n : ℝ) -
+      ∫ sample, derivativeEntry entry.1 entry.2 0 sample ∂P
+  let rowError : Param -> ℝ := fun param => entryError (coordinate, param)
+  have hrow_le_table :
+      (∑ param : Param, |rowError param|) ≤
+        ∑ entry : Coord × Param, |entryError entry| := by
+    have hrow_le_table' :
+        (∑ param : Param, |entryError (coordinate, param)|) ≤
+          ∑ coordinate' : Coord,
+            ∑ param : Param, |entryError (coordinate', param)| := by
+      exact Finset.single_le_sum
+        (fun coordinate' _hcoordinate' =>
+          Finset.sum_nonneg fun param _hparam =>
+            abs_nonneg (entryError (coordinate', param)))
+        (Finset.mem_univ coordinate)
+    simpa [rowError, Fintype.sum_prod_type] using hrow_le_table'
+  calc
+    |((empiricalAverageVector (samples n ω)
+        (fun y => derivativeAt n ω y (theta0 n ω)) - V) x) coordinate|
+        = |∑ param : Param, x param * rowError param| := by
+          rw [hn x coordinate]
+    _ ≤ ∑ param : Param, |x param * rowError param| :=
+          Finset.abs_sum_le_sum_abs
+            (fun param : Param => x param * rowError param) Finset.univ
+    _ ≤ ∑ param : Param, ‖x‖ * |rowError param| := by
+          exact Finset.sum_le_sum fun param _hparam => by
+            rw [abs_mul]
+            exact mul_le_mul_of_nonneg_right
+              (by simpa [Real.norm_eq_abs] using norm_le_pi_norm x param)
+              (abs_nonneg _)
+    _ = ‖x‖ * ∑ param : Param, |rowError param| := by
+          rw [Finset.mul_sum]
+    _ ≤ ‖x‖ * (∑ entry : Coord × Param, |entryError entry|) := by
+          exact mul_le_mul_of_nonneg_left hrow_le_table (norm_nonneg x)
+    _ = (∑ entry : Coord × Param, |entryError entry|) * ‖x‖ := by
+          rw [mul_comm]
+
+/--
 van der Vaart 1998, Theorem 5.41, score CLT handoff with the raw-score
 finite-coordinate representation discharged.
 

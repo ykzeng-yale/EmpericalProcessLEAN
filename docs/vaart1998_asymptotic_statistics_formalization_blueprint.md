@@ -656,11 +656,12 @@ Initial modules:
   `vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_coordinate_bound`,
   while the weighted derivative-entry packet adds
   `vaart1998_theorem_5_41_derivativeAverage_coordinate_action_le_finiteEntryBound_of_weighted_entry_representation`,
-  so the remaining critical path is now the actual source representation and
-  weight estimate for the derivative entries.  Continue in this order:
-  instantiate the weighted coordinate derivative-entry representation; one
-  common-vector-law or Gaussian score-CLT source field; scaled-estimator
-  law-tail/tightness source proof.
+  and the matrix derivative-entry packet adds
+  `vaart1998_theorem_5_41_derivativeAverage_coordinate_action_le_finiteEntryBound_of_matrix_entry_representation`,
+  so the remaining critical path is now endpoint packaging for finite-parameter
+  derivative entries if immediate, then one common-vector-law or Gaussian
+  score-CLT source field, then scaled-estimator law-tail/tightness source
+  proof.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

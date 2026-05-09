@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 weighted derivative entry bound`).
+(`Add Vaart theorem 5.41 matrix derivative entry bound`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -628,9 +628,8 @@ Live continuation prompt: use the efficient prompt in
 
 For Vaart Theorem 5.41 in `MEstimators.lean`, finish any existing local Vaart
 Lean packet first, then discharge exactly one live source field for the current
-endpoint.  Current priority order: instantiate the actual coordinate or
-weighted derivative-entry representation for the empirical derivative residual,
-including the scalar `|weight| ≤ ‖x‖` source estimate; then one score CLT
+endpoint.  Current priority order: if immediate, package the finite-parameter
+matrix-entry representation into the current endpoint; then one score CLT
 law/source field; then scaled-estimator law-tail or tightness.  Do not replay
 solved Chapter 2-4 infrastructure, earlier Theorem 5.41 wrappers, or
 historical ledger items.
