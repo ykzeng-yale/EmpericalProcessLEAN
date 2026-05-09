@@ -14054,6 +14054,105 @@ theorem durrett2019_exercise_4_4_10_martingale_square_integral_sub_initial_eq_su
             ring
 
 /--
+Durrett 2019, Exercise 4.4.10 support: the second moment of a martingale
+increment is the difference of the endpoint second moments.
+
+The cross term vanishes by Theorem 4.4.7 with `Y = X_m`.
+-/
+theorem durrett2019_exercise_4_4_10_martingale_increment_sq_integral_eq_square_integral_sub
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    {m n : ℕ} (hmn : m ≤ n) :
+    (∫ ω, (X n ω - X m ω) ^ 2 ∂P) =
+      (∫ ω, X n ω ^ 2 ∂P) - (∫ ω, X m ω ^ 2 ∂P) := by
+  have hXn_sq_int : Integrable (fun ω => X n ω ^ 2) P :=
+    durrett2019_integrable_sq_of_memLp_two (P := P) (Y := X n) (hX_memLp_two n)
+  have hXm_sq_int : Integrable (fun ω => X m ω ^ 2) P :=
+    durrett2019_integrable_sq_of_memLp_two (P := P) (Y := X m) (hX_memLp_two m)
+  have hdiff_memLp :
+      MemLp (fun ω => X n ω - X m ω) (2 : ℝ≥0∞) P := by
+    simpa [Pi.sub_apply] using (hX_memLp_two n).sub (hX_memLp_two m)
+  have hcross_int :
+      Integrable (fun ω => (X n ω - X m ω) * X m ω) P := by
+    simpa [Pi.mul_apply, Pi.sub_apply] using
+      hdiff_memLp.integrable_mul (hX_memLp_two m)
+  have htwo_cross_int :
+      Integrable (fun ω => 2 * ((X n ω - X m ω) * X m ω)) P :=
+    hcross_int.const_mul 2
+  have hcross :
+      (∫ ω, (X n ω - X m ω) * X m ω ∂P) = 0 :=
+    durrett2019_theorem_4_4_7_martingale_increment_mul_integral_eq_zero
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hmn
+      (hX.stronglyMeasurable m) (hX_memLp_two m)
+  have hExpand :
+      (fun ω => (X n ω - X m ω) ^ 2) =ᵐ[P]
+        fun ω => (X n ω ^ 2 - X m ω ^ 2) -
+          2 * ((X n ω - X m ω) * X m ω) := by
+    exact ae_of_all P fun ω => by ring
+  calc
+    (∫ ω, (X n ω - X m ω) ^ 2 ∂P)
+        = ∫ ω, (X n ω ^ 2 - X m ω ^ 2) -
+            2 * ((X n ω - X m ω) * X m ω) ∂P :=
+            integral_congr_ae hExpand
+    _ = (∫ ω, X n ω ^ 2 - X m ω ^ 2 ∂P) -
+          ∫ ω, 2 * ((X n ω - X m ω) * X m ω) ∂P := by
+            change
+              (∫ ω,
+                ((fun ω => X n ω ^ 2 - X m ω ^ 2) -
+                  fun ω => 2 * ((X n ω - X m ω) * X m ω)) ω ∂P) =
+                (∫ ω, X n ω ^ 2 - X m ω ^ 2 ∂P) -
+                  ∫ ω, 2 * ((X n ω - X m ω) * X m ω) ∂P
+            simpa [Pi.sub_apply] using
+              (integral_sub (hXn_sq_int.sub hXm_sq_int) htwo_cross_int)
+    _ = ((∫ ω, X n ω ^ 2 ∂P) - (∫ ω, X m ω ^ 2 ∂P)) -
+          2 * ∫ ω, (X n ω - X m ω) * X m ω ∂P := by
+            rw [integral_sub hXn_sq_int hXm_sq_int]
+            rw [integral_const_mul]
+    _ = (∫ ω, X n ω ^ 2 ∂P) - (∫ ω, X m ω ^ 2 ∂P) := by
+            rw [hcross]
+            ring
+
+/--
+Durrett 2019, Exercise 4.4.10 support: finite tail identity for martingale
+increments.
+
+For `m <= n`, the `L^2` distance between `X_n` and `X_m` is the sum of the
+second moments of the one-step increments from `m` to `n - 1`.
+-/
+theorem durrett2019_exercise_4_4_10_martingale_increment_sq_integral_eq_sum_Ico_increment_sq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    {m n : ℕ} (hmn : m ≤ n) :
+    (∫ ω, (X n ω - X m ω) ^ 2 ∂P) =
+      ∑ k ∈ Finset.Ico m n,
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P := by
+  let q : ℕ -> ℝ :=
+    fun k => ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P
+  have hsum :=
+    durrett2019_exercise_4_4_10_martingale_square_integral_sub_initial_eq_sum_increment_sq
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two
+  have htail :
+      (∫ ω, X n ω ^ 2 ∂P) - (∫ ω, X m ω ^ 2 ∂P) =
+        ∑ k ∈ Finset.Ico m n, q k := by
+    have hn := hsum n
+    have hm := hsum m
+    have hIco :
+        ∑ k ∈ Finset.Ico m n, q k =
+          ∑ k ∈ Finset.range n, q k - ∑ k ∈ Finset.range m, q k :=
+      Finset.sum_Ico_eq_sub q hmn
+    rw [hIco]
+    dsimp [q] at hn hm ⊢
+    linarith
+  rw [
+    durrett2019_exercise_4_4_10_martingale_increment_sq_integral_eq_square_integral_sub
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hmn]
+  exact htail
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
