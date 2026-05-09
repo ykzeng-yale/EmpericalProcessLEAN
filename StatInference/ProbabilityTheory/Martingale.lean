@@ -12642,6 +12642,93 @@ theorem durrett2019_tendsto_integral_of_tendsto_eLpNorm_two
   exact tendsto_integral_of_L1' (μ := P) f hf (Eventually.of_forall hF) hLp1
 
 /--
+Durrett 2019, Exercise 4.4.5: if `F ⊆ G`, the difference between the two
+conditional expectations has second moment equal to the difference of their
+second moments.
+-/
+theorem durrett2019_exercise_4_4_5_condExp_square_difference_integral
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure[mΩ] Ω} [IsFiniteMeasure P]
+    {mF mG : MeasurableSpace Ω} {Y : Ω -> ℝ}
+    (hmFG : mF ≤ mG) (hmG : mG ≤ mΩ)
+    [SigmaFinite (P.trim (hmFG.trans hmG))] [SigmaFinite (P.trim hmG)]
+    (hY : MemLp Y (2 : ℝ≥0∞) P) :
+    (∫ ω, (P[Y | mG] ω - P[Y | mF] ω) ^ 2 ∂P) =
+      (∫ ω, P[Y | mG] ω ^ 2 ∂P) -
+        (∫ ω, P[Y | mF] ω ^ 2 ∂P) := by
+  let A : Ω -> ℝ := P[Y | mG]
+  let B : Ω -> ℝ := P[Y | mF]
+  have hA_mem : MemLp A (2 : ℝ≥0∞) P := by
+    simpa [A] using hY.condExp (m := mG)
+  have hB_mem : MemLp B (2 : ℝ≥0∞) P := by
+    simpa [B] using hY.condExp (m := mF)
+  have hA_int : Integrable A P :=
+    hA_mem.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+  have hA_sq_int : Integrable (fun ω => A ω ^ 2) P := by
+    simpa [Pi.pow_apply] using hA_mem.integrable_sq
+  have hB_sq_int : Integrable (fun ω => B ω ^ 2) P := by
+    simpa [Pi.pow_apply] using hB_mem.integrable_sq
+  have hBA_int : Integrable (fun ω => B ω * A ω) P := by
+    simpa [Pi.mul_apply] using hB_mem.integrable_mul hA_mem
+  have htwo_BA_int : Integrable (fun ω => 2 * (B ω * A ω)) P :=
+    hBA_int.const_mul 2
+  have hA_cond_F : P[A | mF] =ᵐ[P] B := by
+    simpa [A, B] using (condExp_condExp_of_le (μ := P) (f := Y) hmFG hmG)
+  have hcross : (∫ ω, B ω * A ω ∂P) = ∫ ω, B ω ^ 2 ∂P := by
+    have hpull :
+        P[(fun ω => B ω * A ω) | mF] =ᵐ[P]
+          fun ω => B ω * P[A | mF] ω := by
+      exact
+        condExp_mul_of_stronglyMeasurable_left (μ := P) (m := mF)
+          (f := B) (g := A)
+          (by
+            simpa [B] using
+              (stronglyMeasurable_condExp (μ := P) (m := mF) (f := Y)))
+          hBA_int hA_int
+    calc
+      (∫ ω, B ω * A ω ∂P)
+          = ∫ ω, P[(fun ω => B ω * A ω) | mF] ω ∂P := by
+            exact
+              (integral_condExp (μ := P) (f := fun ω => B ω * A ω)
+                (m := mF) (hmFG.trans hmG)).symm
+      _ = ∫ ω, B ω * P[A | mF] ω ∂P := integral_congr_ae hpull
+      _ = ∫ ω, B ω * B ω ∂P := by
+            refine integral_congr_ae ?_
+            filter_upwards [hA_cond_F] with ω hω
+            rw [hω]
+      _ = ∫ ω, B ω ^ 2 ∂P := by
+            refine integral_congr_ae (ae_of_all P fun ω => ?_)
+            ring
+  have hleft_expand :
+      (∫ ω, (A ω - B ω) ^ 2 ∂P) =
+        (∫ ω, A ω ^ 2 ∂P) - 2 * (∫ ω, B ω * A ω ∂P) +
+          (∫ ω, B ω ^ 2 ∂P) := by
+    calc
+      (∫ ω, (A ω - B ω) ^ 2 ∂P)
+          = ∫ ω, A ω ^ 2 - 2 * (B ω * A ω) + B ω ^ 2 ∂P := by
+            refine integral_congr_ae (ae_of_all P fun ω => ?_)
+            ring
+      _ = (∫ ω, A ω ^ 2 - 2 * (B ω * A ω) ∂P) +
+            ∫ ω, B ω ^ 2 ∂P := by
+            exact integral_add (hA_sq_int.sub htwo_BA_int) hB_sq_int
+      _ = ((∫ ω, A ω ^ 2 ∂P) - ∫ ω, 2 * (B ω * A ω) ∂P) +
+            ∫ ω, B ω ^ 2 ∂P := by
+            rw [integral_sub hA_sq_int htwo_BA_int]
+      _ = (∫ ω, A ω ^ 2 ∂P) - 2 * (∫ ω, B ω * A ω ∂P) +
+            ∫ ω, B ω ^ 2 ∂P := by
+            rw [integral_const_mul]
+  calc
+    (∫ ω, (P[Y | mG] ω - P[Y | mF] ω) ^ 2 ∂P)
+        = (∫ ω, (A ω - B ω) ^ 2 ∂P) := rfl
+    _ = (∫ ω, A ω ^ 2 ∂P) - 2 * (∫ ω, B ω * A ω ∂P) +
+          (∫ ω, B ω ^ 2 ∂P) := hleft_expand
+    _ = (∫ ω, A ω ^ 2 ∂P) - 2 * (∫ ω, B ω ^ 2 ∂P) +
+          (∫ ω, B ω ^ 2 ∂P) := by rw [hcross]
+    _ = (∫ ω, A ω ^ 2 ∂P) - (∫ ω, B ω ^ 2 ∂P) := by ring
+    _ = (∫ ω, P[Y | mG] ω ^ 2 ∂P) -
+          (∫ ω, P[Y | mF] ω ^ 2 ∂P) := rfl
+
+/--
 Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If
 `Y` is `ℱ_m`-measurable and square-integrable, then the increment
 `X_n - X_m` is orthogonal to `Y`.

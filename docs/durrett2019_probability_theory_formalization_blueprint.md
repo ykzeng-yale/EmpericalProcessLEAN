@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V135`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V136`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -392,12 +392,12 @@ Compiled Section 3.2 packets:
 Next packet:
 
 - Chapter 4.4: continue the martingale maximal-inequality layer.  The current
-  frontier is direct Exercise 4.3.11 survival-event equality only if it is
-  already locally supported; otherwise Exercise 4.4.5's conditional-variance
-  variant or the next Chapter 4.4 exercise/theorem packet.  The finite-sum
-  display, shifted geometric-sum, uniform second-moment bound, `eLpNorm 2`
-  handoff, `L^2` convergence endpoint, expectation handoff, `E X = 1`, and
-  nonzero-limit endpoint now compile.  The Section 3.10
+  frontier is Exercise 4.4.6's bounded-increment small-ball variance bound, or a
+  nearby Chapter 4.4 theorem-sized packet if that route is blocked.  Exercise
+  4.4.5's conditional-variance variant now compiles, and the finite-sum display,
+  shifted geometric-sum, uniform second-moment bound, `eLpNorm 2` handoff,
+  `L^2` convergence endpoint, expectation handoff, `E X = 1`, and nonzero-limit
+  endpoint now compile for Example 4.4.9.  The Section 3.10
   multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise
   3.10.8 linear-combination characterization wrappers, Durrett conditional
   expectation version predicate, mathlib-condExp version wrapper, Example 4.1.3
@@ -611,7 +611,8 @@ Next packet:
   integrated second-moment recurrence, finite-sum display, shifted
   geometric-sum, uniform second-moment bound, `eLpNorm 2` handoff, `L^2`
   convergence endpoint, expectation handoff, `E X = 1`, and nonzero-limit
-  endpoint now also compile.
+  endpoint now also compile.  Exercise 4.4.5's conditional-variance variant now
+  also compiles.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
