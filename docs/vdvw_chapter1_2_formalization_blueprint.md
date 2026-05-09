@@ -2356,9 +2356,15 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound`,
    and
    `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_ae_finiteCenter_succ`.
-   The remaining source route is scale/epsilon alignment into the named
-   displayed-beta comparison, plus construction of the selected finite-center
-   a.e. support inputs.
+   The product-pair finite-center support frontier is now sharpened by
+   `ae_vdVWProductMeasure_rademacher_prod_productPair_originalFiniteCenter_of_ae_sign_sample`,
+   `ae_vdVWProductMeasure_rademacher_prod_productPair_ghostFiniteCenter_neg_of_ae_sign_sample`,
+   `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_succ`,
+   and
+   `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failures`.
+   The remaining source route is to control the explicit original/ghost
+   finite-center failure probabilities by Hoeffding/finite-union bounds and to
+   build the scale/epsilon adapter into the convergence consumer.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
