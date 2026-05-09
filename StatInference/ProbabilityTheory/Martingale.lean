@@ -14614,6 +14614,107 @@ theorem durrett2019_exercise_4_4_11_weighted_average_tendsto_of_centered_tendsto
       (A := A) (b := b) (L := L) n).symm
 
 /--
+Durrett 2019, Exercise 4.4.11 deterministic support: the centered Toeplitz
+remainder vanishes when the scaled partial sums converge, the normalizer has
+nonnegative increments, and the normalizer diverges.
+-/
+theorem durrett2019_exercise_4_4_11_centered_toeplitz_remainder_tendsto_zero
+    {A b : ℕ -> ℝ} {L : ℝ}
+    (hA_tendsto : Tendsto (fun n : ℕ => A (n + 1)) atTop (nhds L))
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          (A (k + 1) - L) * (b (k + 2) - b (k + 1))) /
+          b (n + 1))
+      atTop (nhds 0) := by
+  let w : ℕ -> ℝ := fun k => b (k + 2) - b (k + 1)
+  let centered : ℕ -> ℝ := fun k => A (k + 1) - L
+  have hcentered_tendsto : Tendsto centered atTop (nhds 0) := by
+    simpa [centered] using
+      hA_tendsto.sub (tendsto_const_nhds : Tendsto (fun _ : ℕ => L) atTop (nhds L))
+  have hw_nonneg : 0 ≤ w := fun k => hb_increment_nonneg k
+  have hsumw_atTop : Tendsto (fun n : ℕ => ∑ k ∈ Finset.range n, w k) atTop atTop := by
+    have hb_sub :
+        Tendsto (fun n : ℕ => b (n + 1) - b 1) atTop atTop := by
+      simpa [sub_eq_add_neg] using
+        tendsto_atTop_add_const_right atTop (-(b 1)) hb_atTop
+    refine hb_sub.congr' ?_
+    exact Eventually.of_forall fun n => by
+      simp [w, durrett2019_exercise_4_4_11_weight_increment_sum_eq (b := b) n]
+  have hterm_little :
+      (fun k : ℕ => centered k * w k) =o[atTop] w := by
+    rw [Asymptotics.isLittleO_iff]
+    intro c hc
+    rcases Metric.tendsto_atTop.1 hcentered_tendsto c hc with ⟨N, hN⟩
+    filter_upwards [eventually_ge_atTop N] with k hk
+    have hcentered_norm_le : ‖centered k‖ ≤ c := by
+      exact le_of_lt (by simpa [dist_eq_norm] using hN k hk)
+    calc
+      ‖centered k * w k‖ = ‖centered k‖ * ‖w k‖ := norm_mul _ _
+      _ ≤ c * ‖w k‖ :=
+        mul_le_mul_of_nonneg_right hcentered_norm_le (norm_nonneg _)
+  have hsum_little :
+      (fun n : ℕ => ∑ k ∈ Finset.range n, centered k * w k) =o[atTop]
+        fun n : ℕ => ∑ k ∈ Finset.range n, w k :=
+    Asymptotics.IsLittleO.sum_range hterm_little hw_nonneg hsumw_atTop
+  have hdiv_zero :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, centered k * w k) /
+            (∑ k ∈ Finset.range n, w k))
+        atTop (nhds 0) :=
+    hsum_little.tendsto_div_nhds_zero
+  have hweight_ratio :
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, w k) / b (n + 1))
+        atTop (nhds 1) := by
+    simpa [w] using
+      durrett2019_exercise_4_4_11_constant_weighted_tendsto
+        (b := b) (L := (1 : ℝ)) hb_atTop
+  have hproduct :
+      Tendsto
+        (fun n : ℕ =>
+          ((∑ k ∈ Finset.range n, centered k * w k) /
+              (∑ k ∈ Finset.range n, w k)) *
+            ((∑ k ∈ Finset.range n, w k) / b (n + 1)))
+        atTop (nhds (0 * 1)) :=
+    hdiv_zero.mul hweight_ratio
+  have hproduct_zero :
+      Tendsto
+        (fun n : ℕ =>
+          ((∑ k ∈ Finset.range n, centered k * w k) /
+              (∑ k ∈ Finset.range n, w k)) *
+            ((∑ k ∈ Finset.range n, w k) / b (n + 1)))
+        atTop (nhds 0) := by
+    simpa using hproduct
+  refine hproduct_zero.congr' ?_
+  filter_upwards [hsumw_atTop.eventually_ne_atTop (0 : ℝ)] with n hsumw_ne
+  field_simp [hsumw_ne]
+  ring
+
+/--
+Durrett 2019, Exercise 4.4.11 deterministic support: the Toeplitz weighted
+average of the scaled partial sums converges to the same limit under the
+textbook monotone-divergent normalizer assumptions.
+-/
+theorem durrett2019_exercise_4_4_11_weighted_average_tendsto_of_nonnegative_increments
+    {A b : ℕ -> ℝ} {L : ℝ}
+    (hA_tendsto : Tendsto (fun n : ℕ => A (n + 1)) atTop (nhds L))
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+          b (n + 1))
+      atTop (nhds L) :=
+  durrett2019_exercise_4_4_11_weighted_average_tendsto_of_centered_tendsto_zero
+    (b := b) (L := L) hb_atTop
+    (durrett2019_exercise_4_4_11_centered_toeplitz_remainder_tendsto_zero
+      (A := A) (b := b) (L := L) hA_tendsto hb_increment_nonneg hb_atTop)
+
+/--
 Durrett 2019, Exercise 4.4.11 deterministic support: once the Toeplitz
 weighted average of the scaled partial sums converges to the same limit as
 the scaled partial sums themselves, Kronecker's normalized sums converge to
@@ -14656,6 +14757,31 @@ theorem durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_weighted_ten
   refine hdiff0.congr' ?_
   filter_upwards [hb_eventually] with n hb
   exact (durrett2019_exercise_4_4_11_kronecker_ratio_eq hA0 hb).symm
+
+/--
+Durrett 2019, Exercise 4.4.11 deterministic support: Kronecker's normalized
+sums converge to zero under the nonnegative-increment divergent normalizer
+assumptions.
+-/
+theorem durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_nonnegative_increments
+    {A b : ℕ -> ℝ} (hA0 : A 0 = 0) {L : ℝ}
+    (hA_tendsto : Tendsto (fun n : ℕ => A (n + 1)) atTop (nhds L))
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1), b (k + 1) * (A (k + 1) - A k)) /
+          b (n + 1))
+      atTop (nhds 0) := by
+  have hb_eventually : ∀ᶠ n in atTop, b (n + 1) ≠ 0 := by
+    filter_upwards [hb_atTop.eventually_ge_atTop (1 : ℝ)] with n hn
+    exact ne_of_gt (zero_lt_one.trans_le hn)
+  exact
+    durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_weighted_tendsto
+      (A := A) (b := b) hA0 hb_eventually hA_tendsto
+      (durrett2019_exercise_4_4_11_weighted_average_tendsto_of_nonnegative_increments
+        (A := A) (b := b) (L := L)
+        hA_tendsto hb_increment_nonneg hb_atTop)
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

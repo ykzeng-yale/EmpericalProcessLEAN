@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V154
+## Live In-Thread Goal Prompt V155
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -28,8 +28,9 @@ now has the finite square-increment second-moment identities and finite
 tail identity plus the `L^2` Cauchy-bound consumer and square-summability
 shifted-tail/Cauchy handoff.  Exercise 4.4.11 now has the predictable
 transform increment identity, `L^2` transform convergence bridge, and
-deterministic Abel/Kronecker summation certificates plus the Toeplitz
-constant/centered split:
+deterministic Abel/Kronecker summation certificates, the Toeplitz
+constant/centered split, and the nonnegative-increment Toeplitz/Kronecker
+route:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -85,8 +86,11 @@ plus
 `durrett2019_exercise_4_4_11_weight_increment_sum_eq`,
 `durrett2019_exercise_4_4_11_constant_weighted_tendsto`,
 `durrett2019_exercise_4_4_11_weighted_average_eq_constant_add_centered`,
-and
 `durrett2019_exercise_4_4_11_weighted_average_tendsto_of_centered_tendsto_zero`,
+`durrett2019_exercise_4_4_11_centered_toeplitz_remainder_tendsto_zero`,
+`durrett2019_exercise_4_4_11_weighted_average_tendsto_of_nonnegative_increments`,
+and
+`durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_nonnegative_increments`,
 as well as the earlier first-exit/stopped-variance handoff declarations.  Do
 not route back into optional-stopping, overshoot, stopped-integrability,
 deterministic-clock, exact-denominator, square-martingale-source, or
@@ -95,25 +99,22 @@ product-covariance / finite square-increment / finite tail-identity /
 tail-bound-to-`L^2` / summability-to-shifted-tail / shifted-tail-to-Cauchy
 plumbing or the `Lp` Cauchy/existence endpoint, or the Exercise 4.4.11
 predictable-transform `L^2` convergence bridge / Abel identity / Toeplitz
-constant-split layer.
+constant-split / centered-remainder / nonnegative-increment Kronecker layer.
 
-Next aggressive step: continue Exercise 4.4.11 from the compiled transform
-bridge and Toeplitz split to the normalization step.  Best target: prove the
-centered Toeplitz remainder tends to zero from `A n -> L`, nonnegative
-increments `b (k+2) - b (k+1)`, and divergence of `b (n+1)`.  Feed that into
-`durrett2019_exercise_4_4_11_weighted_average_tendsto_of_centered_tendsto_zero`,
-then into
-`durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_weighted_tendsto`,
-and only then connect the result to
-`durrett2019_exercise_4_4_11_stochasticTransform_exists_toLp_tendsto_of_scaled_summable`
-and package the bounded-variance corollary.  Do not loop back to already
-compiled Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises
-4.4.5-4.4.10, Theorem 4.4.1 plumbing, or the first-exit
-overshoot/stopped-integrability/deterministic-clock/exact-denominator/
-square-martingale-source/natural-filtration/product-covariance/tail-identity/
-tail-bound-to-`L^2`/summability-to-shifted-tail/shifted-tail-to-Cauchy/`Lp`
-Cauchy endpoint/predictable-transform convergence/Abel identity/Toeplitz
-constant-split layer.
+Next aggressive step: connect the compiled deterministic Exercise 4.4.11
+normalizer route to the martingale statement.  Best target: package the
+bounded-variance source corollary by feeding the scaled stochastic-transform
+`Lp` convergence endpoint into the nonnegative-increment Kronecker wrapper and
+turning the normalized martingale sums into the textbook conclusion.  Only add
+new martingale-transform, variance-bound, or normalization bridge lemmas that
+directly discharge this endpoint.  Do not loop back to already compiled
+Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises 4.4.5-4.4.10, Theorem
+4.4.1 plumbing, or the first-exit overshoot/stopped-integrability/
+deterministic-clock/exact-denominator/square-martingale-source/
+natural-filtration/product-covariance/tail-identity/tail-bound-to-`L^2`/
+summability-to-shifted-tail/shifted-tail-to-Cauchy/`Lp` Cauchy endpoint/
+predictable-transform convergence/Abel identity/Toeplitz constant-split/
+centered-remainder/nonnegative-increment Kronecker layer.
 Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
 source-shaped API.
 
@@ -619,9 +620,9 @@ Theorem 4.4.1 optional-stopping wrappers, Exercise 4.4.6's stopped-variance
 small-ball handoff, the finite first-exit/small-ball assembly, the
 bounded-increment overshoot/source wrapper, and the square-martingale wrapper
 with automatic stopped integrability, and the deterministic variance-clock
-wrapper plus exact-denominator wrapper now also compile.  Next target:
-instantiate the square-martingale source from increments using Exercise 4.2.2 /
-local quadratic-martingale support.  Do not detour back into full
+wrapper plus exact-denominator wrapper now also compile.  Historical target
+closed; current target is Exercise 4.4.11's martingale-transform
+bounded-variance corollary.  Do not detour back into full
 Galton-Watson random-sum/extinction infrastructure unless a local API makes it
 cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
@@ -1171,8 +1172,9 @@ optional-stopping wrappers, Exercise 4.4.6's stopped-variance small-ball
 handoff, the finite first-exit/small-ball assembly, the bounded-increment
 overshoot/source wrapper, and the square-martingale wrapper with automatic
 stopped integrability, and the deterministic variance-clock wrapper now also
-compile, along with the exact-denominator wrapper.  Next move to the remaining
-exact Exercise 4.4.6 source input: square-martingale source from increments.
+compile, along with the exact-denominator wrapper.  Historical target closed;
+current target is Exercise 4.4.11's martingale-transform bounded-variance
+corollary.
 Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
 source-shaped API.
 

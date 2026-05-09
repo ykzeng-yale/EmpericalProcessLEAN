@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V154`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V155`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -42,12 +42,12 @@ identities, finite tail identity, `L^2` Cauchy-bound consumer, and
 square-summability shifted-tail bound, shifted-tail tendsto-zero wrapper, and
 explicit eventual `L^2` Cauchy estimate, `Lp` Cauchy sequence endpoint, and
 existential `Lp` limit.  Exercise 4.4.11 now has the predictable-transform
-increment identity, scaled square-summability conversion, and transformed
-martingale `Lp` convergence bridge, plus deterministic Abel/Kronecker ratio
-certificates and the Toeplitz constant/centered split.  Continue by proving
-the centered Toeplitz remainder from convergence of the scaled partial sums,
-nonnegative normalizer increments, and divergence of `b (n+1)`, then feed the
-weighted-average and Kronecker consumers before packaging the bounded-variance
+increment identity, scaled square-summability conversion, transformed
+martingale `Lp` convergence bridge, deterministic Abel/Kronecker ratio
+certificates, the Toeplitz constant/centered split, the centered Toeplitz
+remainder, and the nonnegative-increment weighted-average/Kronecker route.
+Continue by connecting this deterministic normalizer route to the martingale
+transform statement and packaging the bounded-variance Exercise 4.4.11
 corollary.
 
 For each cycle, route from:
@@ -409,19 +409,14 @@ Compiled Section 3.2 packets:
 
 Next packet:
 
-- Chapter 4.4: continue the martingale maximal-inequality layer.  The current
-  frontier is the remaining exact Exercise 4.4.6 source instantiation:
-  square-martingale source from increments feeding the compiled
-  exact-denominator deterministic variance-clock wrapper.
-  Theorem 4.4.1 optional-stopping wrappers, Exercise 4.4.5's
-  conditional-variance variant, Exercise 4.4.6's stopped-variance small-ball
-  handoff, the finite first-exit/small-ball assembly, the bounded-increment
-  overshoot/source wrapper, the square-martingale wrapper with automatic
-  stopped integrability, the deterministic variance-clock wrapper, and the
-  exact-denominator wrapper now compile.  The
-  finite-sum display, shifted geometric-sum, uniform second-moment bound,
-  `eLpNorm 2` handoff, `L^2` convergence endpoint, expectation handoff,
-  `E X = 1`, and nonzero-limit endpoint now compile for Example 4.4.9.  The
+- Chapter 4.4: continue Exercise 4.4.11.  The current frontier is no longer
+  Exercise 4.4.6, Exercise 4.4.10, the predictable-transform convergence
+  bridge, Abel/Kronecker summation, the Toeplitz split, or the centered
+  Toeplitz remainder.  The compiled deterministic route now includes
+  nonnegative-increment weighted-average convergence and the final
+  nonnegative-increment Kronecker ratio wrapper.  Next, connect this
+  normalizer route to the martingale transform endpoint and package the
+  bounded-variance Exercise 4.4.11 corollary.  The
   Section 3.10
   multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise
   3.10.8 linear-combination characterization wrappers, Durrett conditional
