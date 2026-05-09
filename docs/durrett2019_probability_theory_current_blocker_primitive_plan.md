@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V152
+## Live In-Thread Goal Prompt V153
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -27,7 +27,8 @@ product-covariance recurrence and finite-sum source display.  Exercise 4.4.10
 now has the finite square-increment second-moment identities and finite
 tail identity plus the `L^2` Cauchy-bound consumer and square-summability
 shifted-tail/Cauchy handoff.  Exercise 4.4.11 now has the predictable
-transform increment identity and `L^2` transform convergence bridge:
+transform increment identity, `L^2` transform convergence bridge, and
+deterministic Abel/Kronecker summation certificates:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -74,6 +75,11 @@ plus
 `durrett2019_exercise_4_4_11_stochasticTransform_increment_sq_summable`,
 and
 `durrett2019_exercise_4_4_11_stochasticTransform_exists_toLp_tendsto_of_scaled_summable`,
+plus
+`durrett2019_exercise_4_4_11_kronecker_summation_by_parts`,
+`durrett2019_exercise_4_4_11_kronecker_ratio_eq`,
+and
+`durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_weighted_tendsto`,
 as well as the earlier first-exit/stopped-variance handoff declarations.  Do
 not route back into optional-stopping, overshoot, stopped-integrability,
 deterministic-clock, exact-denominator, square-martingale-source, or
@@ -81,22 +87,23 @@ natural-filtration independent-increment 4.4.6 plumbing, or Exercise 4.4.9
 product-covariance / finite square-increment / finite tail-identity /
 tail-bound-to-`L^2` / summability-to-shifted-tail / shifted-tail-to-Cauchy
 plumbing or the `Lp` Cauchy/existence endpoint, or the Exercise 4.4.11
-predictable-transform `L^2` convergence bridge.
+predictable-transform `L^2` convergence bridge / Abel identity layer.
 
 Next aggressive step: continue Exercise 4.4.11 from the compiled transform
-bridge to the normalization step.  Best target: formalize the deterministic
-Kronecker/Toeplitz lemma for increasing `b_n -> infinity`, showing convergence
-of `∑ ξ_m / b_m` implies `X_n / b_n -> 0`, then connect it to
+bridge to the normalization step.  Best target: prove the Toeplitz weighted
+average hypothesis consumed by
+`durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_weighted_tendsto`
+from monotonicity and divergence of `b_n`, then connect it to
 `durrett2019_exercise_4_4_11_stochasticTransform_exists_toLp_tendsto_of_scaled_summable`
-and finally package the bounded-variance corollary.  Do not loop back to
-already compiled Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises
+and package the bounded-variance corollary.  Do not loop back to already
+compiled Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises
 4.4.5-4.4.10, Theorem 4.4.1 plumbing, or the first-exit
 overshoot/stopped-integrability/deterministic-clock/exact-denominator/
 square-martingale-source/natural-filtration/product-covariance/tail-identity/
 tail-bound-to-`L^2`/summability-to-shifted-tail/shifted-tail-to-Cauchy/`Lp`
-Cauchy endpoint/predictable-transform convergence layer.  Theorem 4.1.16
-remains deferred unless a targeted kernel search finds a direct source-shaped
-API.
+Cauchy endpoint/predictable-transform convergence/Abel identity layer.
+Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
+source-shaped API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including

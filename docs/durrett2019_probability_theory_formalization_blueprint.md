@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V152`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V153`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -43,8 +43,10 @@ square-summability shifted-tail bound, shifted-tail tendsto-zero wrapper, and
 explicit eventual `L^2` Cauchy estimate, `Lp` Cauchy sequence endpoint, and
 existential `Lp` limit.  Exercise 4.4.11 now has the predictable-transform
 increment identity, scaled square-summability conversion, and transformed
-martingale `Lp` convergence bridge.  Continue with the deterministic
-Kronecker/Toeplitz normalization step and the bounded-variance corollary.
+martingale `Lp` convergence bridge, plus deterministic Abel/Kronecker ratio
+certificates.  Continue by proving the Toeplitz weighted-average hypothesis
+from monotonicity and divergence of `b_n`, then package the bounded-variance
+corollary.
 
 For each cycle, route from:
 

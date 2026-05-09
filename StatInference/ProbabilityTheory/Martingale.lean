@@ -14463,6 +14463,86 @@ theorem durrett2019_exercise_4_4_11_stochasticTransform_exists_toLp_tendsto_of_s
         (P := P) (H := H) (X := X) hscaled_summable)
 
 /--
+Durrett 2019, Exercise 4.4.11 deterministic support: Abel summation for the
+Kronecker normalization step.
+
+Here `A` is the partial-sum process of the scaled increments and `b` is the
+normalizing sequence.  The identity is stated without division, so it has no
+positivity side conditions.
+-/
+theorem durrett2019_exercise_4_4_11_kronecker_summation_by_parts
+    {A b : ℕ -> ℝ} (hA0 : A 0 = 0) (n : ℕ) :
+    (∑ k ∈ Finset.range (n + 1), b (k + 1) * (A (k + 1) - A k)) =
+      b (n + 1) * A (n + 1) -
+        ∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1)) := by
+  induction n with
+  | zero =>
+      simp [hA0]
+  | succ n ih =>
+      rw [Finset.sum_range_succ]
+      rw [ih]
+      rw [Finset.sum_range_succ]
+      ring
+
+/--
+Durrett 2019, Exercise 4.4.11 deterministic support: normalized Abel
+summation identity for Kronecker's lemma.
+-/
+theorem durrett2019_exercise_4_4_11_kronecker_ratio_eq
+    {A b : ℕ -> ℝ} (hA0 : A 0 = 0) {n : ℕ}
+    (hb : b (n + 1) ≠ 0) :
+    (∑ k ∈ Finset.range (n + 1), b (k + 1) * (A (k + 1) - A k)) / b (n + 1) =
+      A (n + 1) -
+        (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+          b (n + 1) := by
+  rw [durrett2019_exercise_4_4_11_kronecker_summation_by_parts hA0 n]
+  field_simp [hb]
+
+/--
+Durrett 2019, Exercise 4.4.11 deterministic support: once the Toeplitz
+weighted average of the scaled partial sums converges to the same limit as
+the scaled partial sums themselves, Kronecker's normalized sums converge to
+zero.
+
+The remaining textbook work is to discharge the `hweighted_tendsto` hypothesis
+from monotonicity and divergence of `b`.
+-/
+theorem durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_weighted_tendsto
+    {A b : ℕ -> ℝ} (hA0 : A 0 = 0) {L : ℝ}
+    (hb_eventually : ∀ᶠ n in atTop, b (n + 1) ≠ 0)
+    (hA_tendsto : Tendsto (fun n : ℕ => A (n + 1)) atTop (nhds L))
+    (hweighted_tendsto :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+            b (n + 1))
+        atTop (nhds L)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1), b (k + 1) * (A (k + 1) - A k)) /
+          b (n + 1))
+      atTop (nhds 0) := by
+  have hdiff :
+      Tendsto
+        (fun n : ℕ =>
+          A (n + 1) -
+            (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+              b (n + 1))
+        atTop (nhds (L - L)) :=
+    hA_tendsto.sub hweighted_tendsto
+  have hdiff0 :
+      Tendsto
+        (fun n : ℕ =>
+          A (n + 1) -
+            (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+              b (n + 1))
+        atTop (nhds 0) := by
+    simpa using hdiff
+  refine hdiff0.congr' ?_
+  filter_upwards [hb_eventually] with n hb
+  exact (durrett2019_exercise_4_4_11_kronecker_ratio_eq hA0 hb).symm
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
