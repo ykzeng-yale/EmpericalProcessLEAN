@@ -257,6 +257,16 @@ vertical Hessian component.  The next item-4 proof should attack the projected
 mixed-third bound, projected inverse positivity, or projected dual-gradient
 bound.  Do not redo the selector, projected-gradient, Schur block,
 Schur-lift, or WithLp product-coordinate interfaces.
+The projected-inverse gate packet adds
+`BarrierInfProjectionSelectorStationary.projectedInvHess_quadratic_nonneg_of_Hyy_right_inverse`,
+`barrierInfProjectionGrad_bound_of_quadratic_le`, and
+`chewi1311_infProjection_selfConcordantBarrierOn_of_Hyy_projInv_right_inverse`.
+The projected inverse positivity gate is now discharged from a right-inverse
+identity for the Schur Hessian, and the projected dual-gradient gate is reduced
+to the scalar energy estimate `<grad, projInvHess grad> <= nu`.  The next
+item-4 proof should attack the projected mixed-third bound or construct the
+Schur inverse right-inverse/scalar energy certificates; do not ask future runs
+to directly supply projected inverse positivity or a raw dual-gradient bound.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,

@@ -157,6 +157,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   needed for Hessian nonnegativity, only the `Hyy` right-inverse.  The remaining
   item-4 gates are the projected mixed-third bound, projected inverse
   positivity, and projected dual-gradient bound.
+- Inf-projection projected-inverse gate shrink: the newest packet adds
+  `BarrierInfProjectionSelectorStationary.projectedInvHess_quadratic_nonneg_of_Hyy_right_inverse`,
+  `barrierInfProjectionGrad_bound_of_quadratic_le`, and
+  `chewi1311_infProjection_selfConcordantBarrierOn_of_Hyy_projInv_right_inverse`.
+  The projected inverse positivity gate is now discharged by a right-inverse
+  identity for the Schur Hessian, and the projected dual-gradient bound is
+  reduced to the scalar energy estimate
+  `<grad, projInvHess grad> <= nu`.  The remaining item-4 gates are now the
+  projected mixed-third bound plus construction of the Schur inverse
+  right-inverse/scalar energy certificates.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in
