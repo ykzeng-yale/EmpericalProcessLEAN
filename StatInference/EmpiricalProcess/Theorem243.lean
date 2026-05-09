@@ -15552,6 +15552,28 @@ theorem tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ
   exact tendsto_const_nhds
 
 /--
+The one-center displayed failure tail cannot converge to zero along positive
+sample sizes.
+
+This is the formal obstruction to closing the additive finite-center
+failure-tail route from sample-size growth alone.
+-/
+theorem not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ_zero
+    {M : ℝ} (hM_ne : M ≠ 0) :
+    ¬ Tendsto
+      (fun n : ℕ => vdVWTheorem243FiniteCenterHoeffdingFailureTail 1 (n + 1) M)
+      atTop (𝓝 (0 : ℝ)) := by
+  intro hzero
+  have hconst :=
+    tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ hM_ne
+  have hlimit :
+      2 * Real.exp (-(3 * (1 + Real.log 2))) = (0 : ℝ) :=
+    tendsto_nhds_unique hconst hzero
+  have hpos : 0 < 2 * Real.exp (-(3 * (1 + Real.log 2))) :=
+    mul_pos (by norm_num) (Real.exp_pos _)
+  exact (ne_of_gt hpos) hlimit
+
+/--
 Fixed-sample finite-center failure tail for the Rademacher Hoeffding predicate.
 
 The complement of `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` is
