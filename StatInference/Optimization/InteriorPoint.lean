@@ -8,6 +8,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import Mathlib.Topology.Algebra.Module.FiniteDimension
 
 /-!
 # Chewi Chapter 13 interior-point methods
@@ -6071,6 +6072,79 @@ theorem negLogBarrier_dualLocalNorm_deriv_eq_one
       (negLogInvHessCLM x (deriv negLogBarrier x))) = 1
   rw [hquad]
   norm_num
+
+/-- The positive orthant in finite Euclidean coordinates. -/
+def positiveOrthant {d : ℕ} : Set (EuclideanSpace ℝ (Fin d)) :=
+  {x | ∀ i : Fin d, 0 < x i}
+
+/-- The finite positive-orthant logarithmic barrier `x ↦ ∑ i, -log (x_i)`. -/
+noncomputable def positiveOrthantNegLogBarrier {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) : ℝ :=
+  ∑ i : Fin d, negLogBarrier (x i)
+
+/--
+The coordinatewise gradient model for the finite product logarithmic barrier
+`x ↦ ∑ i, -log (x_i)`.
+-/
+noncomputable def positiveOrthantNegLogGrad {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) : EuclideanSpace ℝ (Fin d) :=
+  WithLp.toLp 2 fun i : Fin d => deriv negLogBarrier (x i)
+
+@[simp] theorem positiveOrthantNegLogGrad_apply {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    positiveOrthantNegLogGrad x i = deriv negLogBarrier (x i) := by
+  simp [positiveOrthantNegLogGrad, PiLp.toLp_apply]
+
+/--
+The coordinatewise inverse-Hessian model for the finite product logarithmic
+barrier.  On coordinate `i` this applies the scalar inverse Hessian `x_i^2`.
+-/
+noncomputable def positiveOrthantNegLogInvHessCLM {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) :
+    EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+  LinearMap.toContinuousLinearMap
+    { toFun := fun v => WithLp.toLp 2 fun i : Fin d => (x i) ^ (2 : ℕ) * v i
+      map_add' := by
+        intro v w
+        ext i
+        simp [mul_add]
+      map_smul' := by
+        intro c v
+        ext i
+        simp
+        ring }
+
+@[simp] theorem positiveOrthantNegLogInvHessCLM_apply {d : ℕ}
+    (x v : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    positiveOrthantNegLogInvHessCLM x v i = (x i) ^ (2 : ℕ) * v i := by
+  simp [positiveOrthantNegLogInvHessCLM]
+
+/--
+Finite-product version of Chewi Example 13.10: the coordinatewise logarithmic
+barrier on the positive orthant has exact dual local norm `sqrt d`, i.e. barrier
+parameter `d`.
+-/
+theorem positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    dualLocalNorm positiveOrthantNegLogInvHessCLM x (positiveOrthantNegLogGrad x) =
+      Real.sqrt (d : ℝ) := by
+  have hquad :
+      inner ℝ (positiveOrthantNegLogGrad x)
+          (positiveOrthantNegLogInvHessCLM x (positiveOrthantNegLogGrad x)) =
+        (d : ℝ) := by
+    rw [PiLp.inner_apply]
+    simp only [RCLike.inner_apply, positiveOrthantNegLogGrad_apply,
+      positiveOrthantNegLogInvHessCLM_apply]
+    trans ∑ i : Fin d, (1 : ℝ)
+    · refine Finset.sum_congr rfl ?_
+      intro i _hi
+      rw [negLogBarrier_deriv]
+      have hxi : x i ≠ 0 := (hx i).ne'
+      simp
+      field_simp [hxi]
+    · simp
+  dsimp [dualLocalNorm]
+  rw [hquad]
 
 theorem negLogBarrier_second_deriv (x : ℝ) :
     deriv^[2] negLogBarrier x = negLogBarrierSecond x := by

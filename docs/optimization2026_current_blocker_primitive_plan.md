@@ -426,6 +426,12 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`negLogBarrier_dualLocalNorm_deriv_eq_one`, formalizing the source
 	Example 13.10 calculation `f'(x)^2 / f''(x) = 1` and its Definition 13.7
 	dual-local-norm form for `f(x) = -log x` on `x > 0`.
+	The newest finite-product barrier packet adds `positiveOrthant`,
+	`positiveOrthantNegLogBarrier`, `positiveOrthantNegLogGrad`,
+	`positiveOrthantNegLogInvHessCLM`, and
+	`positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card`, proving the
+	exact positive-orthant product barrier identity `||grad f(x)||_x^* =
+	sqrt d` for the coordinatewise sum of `-log`, i.e. barrier parameter `d`.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
@@ -435,9 +441,11 @@ Hessian positive definiteness, symmetry, the inverse-Hessian right-inverse
 identity, the Definition 13.7 norm identity, inverse-local identity, and the
 normalized Delta bookkeeping from the model equalities.  The one-dimensional
 `-log` barrier model is now instantiated on `Set.Ioi 0`, including the exact
-1-self-concordant-barrier parameter identity in dual-local-norm form.  Next
-lift this source model through products/affine barrier calculus or instantiate
-the finite-dimensional matrix/barrier Hessian model, then derive the source/model equalities
+1-self-concordant-barrier parameter identity in dual-local-norm form, and the
+finite positive-orthant product now has the exact barrier parameter `d`.  Next
+lift the product model into the full Proposition 13.11 barrier-calculus
+interface or instantiate the finite-dimensional matrix/barrier Hessian model,
+then derive the source/model equalities
 `hess z = S_z† S_z` and `invHess z = S_z^{-1}(S_z^{-1})†` for the actual
 finite-dimensional/barrier Hessian model, then use
 `chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`.

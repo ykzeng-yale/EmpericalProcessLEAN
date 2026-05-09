@@ -74,8 +74,13 @@ source-model work now starts from the compiled `-log` positive-domain model:
 Hessian equalities for Chewi Examples 13.4/13.10, and
 `negLogBarrier_deriv_sq_div_second_eq_one` /
 `negLogBarrier_dualLocalNorm_deriv_eq_one` compile the exact Example 13.10
-barrier-parameter identity `||f'(x)||_x^* = 1` for `x > 0`.  Next lift that
-model through product/affine barrier calculus or instantiate the actual finite-dimensional/
+barrier-parameter identity `||f'(x)||_x^* = 1` for `x > 0`.  The finite
+positive-orthant product now also compiles through `positiveOrthant`,
+`positiveOrthantNegLogBarrier`, `positiveOrthantNegLogGrad`,
+`positiveOrthantNegLogInvHessCLM`, and
+`positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card`, giving the
+expected product barrier parameter `d`.  Next lift that model through a reusable
+Proposition 13.11 barrier-calculus interface or instantiate the actual finite-dimensional/
 matrix barrier Hessian model; all segment membership, `ψ` continuity,
 local-norm continuity/positivity, Riccati comparison, derivative inequality,
 coefficient scaling, final sandwich assembly, first Newton/Dikin membership,

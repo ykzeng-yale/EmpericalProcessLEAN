@@ -1530,7 +1530,12 @@ Theorem 13.8 source wrapper.  The newest barrier-parameter packet adds
 `negLogBarrier_deriv_sq_div_second_eq_one` and
 `negLogBarrier_dualLocalNorm_deriv_eq_one`, closing the Chewi Example 13.10
 calculation `f'(x)^2 / f''(x) = 1` and the exact Definition 13.7 dual-local
-norm identity `||f'(x)||_x^* = 1` for `x > 0`.
+norm identity `||f'(x)||_x^* = 1` for `x > 0`.  The newest finite-product
+barrier packet adds `positiveOrthant`, `positiveOrthantNegLogBarrier`,
+`positiveOrthantNegLogGrad`, `positiveOrthantNegLogInvHessCLM`, and
+`positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card`, proving the exact
+positive-orthant identity `||grad f(x)||_x^* = sqrt d` for the coordinatewise
+sum of `-log` barriers and giving the expected barrier parameter `d`.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
