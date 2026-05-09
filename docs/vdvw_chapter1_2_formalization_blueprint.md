@@ -2245,11 +2245,15 @@ above, so they do not change the theorem-level dashboard counts.
    `measure_vdVWProductMeasure_pairDifference_constWeights_bad_eq_rademacherWeights_bad`.
    The deterministic one-sided Rademacher pair-difference split is compiled as
    `vdVWWeightedClassSupremum_truncated_pairDifference_rademacher_bad_imp_original_or_ghost_bad`.
-   The missing bridge is now the product-fiber use of these two facts, plus
-   sign-negation/ghost symmetry to project into the original-side
-   `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`, including the
-   selected finite-net Hoeffding side condition and named event measurability
-   and fiber lower-bound hypotheses consumed by
+   The two-sided deterministic selected finite-net projection is compiled as
+   `VdVWTheorem243_selectedFiniteNetHoeffding_original_or_ghost_bad_of_pairDifference_rademacher_bad`,
+   with sign-negation support from `VdVWRademacherSignVector.neg` and
+   `vdVWRademacherWeights_neg_sign`.  The missing bridge is now the
+   product-fiber use of these facts, plus sign-negation/ghost symmetry to
+   convert the original-or-ghost disjunction into the constant-loss
+   original-side `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`,
+   including named event measurability and fiber lower-bound hypotheses
+   consumed by
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
    The first adapted
    countable empirical-supremum bridge is compiled as

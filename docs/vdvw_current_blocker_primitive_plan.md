@@ -8501,3 +8501,16 @@ product fiber, use sign-negation and ghost symmetry to keep the original-side
 canonical event, add the selected finite-net Hoeffding side condition, and
 prove measurability plus the displayed fiber lower bound for
 `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.
+
+2026-05-09 two-sided selected finite-net projection:
+`Theorem243.lean` now proves the reusable sign-negation support
+`VdVWRademacherSignVector.neg` and `vdVWRademacherWeights_neg_sign`, plus
+`VdVWTheorem243_selectedFiniteNetHoeffding_original_or_ghost_bad_of_pairDifference_rademacher_bad`.
+This composes the Rademacher pair-difference split with the deterministic
+selected finite-net Hoeffding handoff on both the original sample and the ghost
+sample with negated signs.  The remaining probability source step is now
+sharper: combine the centered pair-difference beta fiber, product-pair
+sign-swap, and this original-or-ghost selected-net disjunction in the
+ghost/sign product fiber, then use sign-negation/ghost symmetry to obtain the
+constant-loss original-side lower bound and the named-event measurability
+needed for `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.
