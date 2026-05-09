@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V128`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V129`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -599,8 +599,9 @@ Next packet:
   measurability, convergence from a.s. boundedness, and final running-`S`
   assembly now also compile.  The a.s. boundedness bridge from uniform
   finite-maximal `eLpNorm` bounds and the final Theorem 4.4.6 `L^p` convergence
-  endpoint now compile.  The active frontier is Theorem 4.4.7 orthogonality of
-  square-integrable martingale increments.
+  endpoint now compile.  The Theorem 4.4.7 orthogonality and
+  increment-increment wrappers now compile.  The active frontier is Theorem
+  4.4.8 conditional variance formula.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:

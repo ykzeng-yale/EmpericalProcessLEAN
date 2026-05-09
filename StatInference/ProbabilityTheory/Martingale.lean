@@ -12574,5 +12574,79 @@ theorem durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_eLpNorm_bdd
       (durrett2019_theorem_4_4_6_runningAbsMax_ae_bddAbove_of_eLpNorm_bdd
         (P := P) (ℱ := ℱ) (X := X) hX hpq hR)
 
+/--
+Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If
+`Y` is `ℱ_m`-measurable and square-integrable, then the increment
+`X_n - X_m` is orthogonal to `Y`.
+-/
+theorem durrett2019_theorem_4_4_7_martingale_increment_mul_integral_eq_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    {m n : ℕ} (hmn : m ≤ n) {Y : Ω -> ℝ}
+    (hY_meas : StronglyMeasurable[ℱ m] Y)
+    (hY_memLp_two : MemLp Y (2 : ℝ≥0∞) P) :
+    (∫ ω, (X n ω - X m ω) * Y ω ∂P) = 0 := by
+  have hdiff_int : Integrable (fun ω => X n ω - X m ω) P :=
+    (hX.integrable n).sub (hX.integrable m)
+  have hdiff_memLp :
+      MemLp (fun ω => X n ω - X m ω) (2 : ℝ≥0∞) P :=
+    (hX_memLp_two n).sub (hX_memLp_two m)
+  have hYdiff_int :
+      Integrable (fun ω => Y ω * (X n ω - X m ω)) P := by
+    simpa [Pi.mul_apply] using hY_memLp_two.integrable_mul hdiff_memLp
+  have hcond_diff :
+      P[(fun ω => X n ω - X m ω) | ℱ m] =ᵐ[P] 0 := by
+    refine (condExp_sub (hX.integrable n) (hX.integrable m) (ℱ m)).trans ?_
+    filter_upwards
+      [hX.condExp_ae_eq hmn,
+       hX.condExp_ae_eq (i := m) (j := m) le_rfl] with
+      ω hn hm
+    simp [Pi.sub_apply, hn, hm]
+  have hpull :
+      P[(fun ω => Y ω * (X n ω - X m ω)) | ℱ m] =ᵐ[P]
+        fun ω => Y ω * P[(fun ω => X n ω - X m ω) | ℱ m] ω := by
+    filter_upwards
+      [condExp_mul_of_stronglyMeasurable_left hY_meas hYdiff_int hdiff_int]
+      with ω hω
+    simpa [Pi.mul_apply] using hω
+  have hcond_product_zero :
+      P[(fun ω => Y ω * (X n ω - X m ω)) | ℱ m] =ᵐ[P] 0 := by
+    filter_upwards [hpull, hcond_diff] with ω hpullω hdiffω
+    rw [hpullω, hdiffω]
+    simp
+  have hYdiff_integral_zero :
+      (∫ ω, Y ω * (X n ω - X m ω) ∂P) = 0 := by
+    calc
+      (∫ ω, Y ω * (X n ω - X m ω) ∂P)
+          = ∫ ω, P[(fun ω => Y ω * (X n ω - X m ω)) | ℱ m] ω ∂P :=
+            (integral_condExp (ℱ.le m)).symm
+      _ = 0 := integral_eq_zero_of_ae hcond_product_zero
+  calc
+    (∫ ω, (X n ω - X m ω) * Y ω ∂P)
+        = ∫ ω, Y ω * (X n ω - X m ω) ∂P := by
+          refine integral_congr_ae (ae_of_all P fun ω => ?_)
+          ring
+    _ = 0 := hYdiff_integral_zero
+
+/--
+Durrett 2019, Theorem 4.4.7 increment-increment corollary: disjoint
+square-integrable martingale increments have zero covariance.
+-/
+theorem durrett2019_theorem_4_4_7_martingale_increment_increment_integral_eq_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    {ℓ m n : ℕ} (hℓm : ℓ ≤ m) (hmn : m ≤ n) :
+    (∫ ω, (X n ω - X m ω) * (X m ω - X ℓ ω) ∂P) = 0 := by
+  exact
+    durrett2019_theorem_4_4_7_martingale_increment_mul_integral_eq_zero
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hmn
+      ((hX.stronglyMeasurable m).sub
+        ((hX.stronglyMeasurable ℓ).mono (ℱ.mono hℓm)))
+      ((hX_memLp_two m).sub (hX_memLp_two ℓ))
+
 end ProbabilityTheory
 end StatInference

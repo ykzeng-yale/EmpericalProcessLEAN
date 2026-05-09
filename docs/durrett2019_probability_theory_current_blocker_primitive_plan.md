@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V128
+## Live In-Thread Goal Prompt V129
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -19,20 +19,17 @@ expectation inequality `E X ≤ E X_0` for Theorem 4.2.12.  Theorem 4.1.16
 remains deferred unless a future targeted kernel search finds a direct
 source-shaped API.
 
-Current target: move past Durrett Theorem 4.4.6.  The `L^p` convergence theorem
-for martingales with `sup_n E |X_n|^p < ∞` and `1 < p` now has compiled
-a.s.-limit, limit `MemLp`, supplied-domination, canonical running-supremum,
-a.s. boundedness-from-finite-maximal-bounds, and final `eLpNorm` convergence
-wrappers.  Do not revisit the completed Theorem 4.4.4
-Fubini/Hölder/coefficient/truncation plumbing or the completed Theorem 4.4.6
-running-maximum route.
+Current target: move past Durrett Theorem 4.4.7.  The `L^p` convergence theorem
+4.4.6 and the Theorem 4.4.7 orthogonality wrappers now compile.  Do not revisit
+the completed Theorem 4.4.4 Fubini/Hölder/coefficient/truncation plumbing, the
+completed Theorem 4.4.6 running-maximum route, or the completed 4.4.7
+conditional-expectation pull-out proof.
 
-Next aggressive step: Durrett Theorem 4.4.7, orthogonality of square-integrable
-martingale increments.  Search first for conditional-expectation multiplication,
-integrability, and inner-product/integral APIs; prove a source-shaped wrapper
-for `E ((X_n - X_m) * Y) = 0` when `m ≤ n`, `Y` is `ℱ m`-measurable, and the
-needed square-integrability/integrability hypotheses are supplied.  Then add the
-increment-increment corollary for `ℓ < m < n` by taking `Y = X_m - X_ℓ`.
+Next aggressive step: Durrett Theorem 4.4.8, conditional variance formula.
+Search first for conditional-expectation multiplication/pull-out and square
+integrability APIs; prove a source-shaped wrapper for
+`E((X_n - X_m)^2 | ℱ_m) = E(X_n^2 | ℱ_m) - X_m^2` under the martingale and
+square-integrability hypotheses consumed by the existing 4.4.7 layer.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -503,9 +500,11 @@ The final Theorem 4.4.6 endpoint now also compiles:
 `durrett2019_runningAbsMax_ae_bddAbove_of_eLpNorm_bound`,
 `durrett2019_theorem_4_4_6_runningAbsMax_ae_bddAbove_of_eLpNorm_bdd`, and
 `durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_eLpNorm_bdd`.
-Next target: Theorem 4.4.7 orthogonality of martingale increments; only
-formalize Example 4.4.5's counterexample if it becomes a cheap reusable support
-lemma.
+Theorem 4.4.7 now also compiles:
+`durrett2019_theorem_4_4_7_martingale_increment_mul_integral_eq_zero` and
+`durrett2019_theorem_4_4_7_martingale_increment_increment_integral_eq_zero`.
+Next target: Theorem 4.4.8 conditional variance formula; only formalize Example
+4.4.5's counterexample if it becomes a cheap reusable support lemma.
 Do not detour back into full Galton-Watson random-sum infrastructure unless a
 local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
@@ -1044,7 +1043,8 @@ also compile.  The canonical infinite running maximum `S`, its measurability,
 its convergence from a.s. bounded finite maxima, and the final running-`S`
 assembly now also compile.  The a.s. boundedness hypothesis from compiled finite
 maximal `eLpNorm` bounds and the final Theorem 4.4.6 `L^p` convergence endpoint
-now compile.  Next move to Theorem 4.4.7 orthogonality of martingale increments,
+now compile.  The Theorem 4.4.7 orthogonality and increment-increment wrappers
+now compile.  Next move to Theorem 4.4.8 conditional variance formula,
 whichever route gives the largest compiled step without building unrelated
 infrastructure.
 Keep Theorem 4.1.16 deferred unless a
@@ -1160,6 +1160,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V128` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V129` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
