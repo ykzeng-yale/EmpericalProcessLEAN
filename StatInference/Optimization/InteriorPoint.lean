@@ -620,6 +620,61 @@ theorem dualLocalNorm_zero (invHess : E -> E →L[ℝ] E) (x : E) :
     dualLocalNorm invHess x 0 = 0 := by
   simp [dualLocalNorm]
 
+/--
+Nonnegativity of the supplied inverse-Hessian quadratic form from a right
+inverse identity and nonnegativity of the Hessian quadratic form.
+-/
+theorem inverseHessianQuadratic_nonneg_of_hessian_right_inverse
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E} {x : E}
+    (hhess_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hright : ∀ v : E, hess x (invHess x v) = v)
+    (v : E) :
+    0 ≤ inner ℝ v (invHess x v) := by
+  have hbase := hhess_nonneg (invHess x v)
+  simpa [hright v, real_inner_comm] using hbase
+
+/--
+Concrete inverse-local identity: if the supplied inverse-Hessian oracle is a
+right inverse for the Hessian at `x`, then the primal local norm of
+`invHess x v` equals the dual local norm of `v`.
+-/
+theorem localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E} {x : E}
+    (hhess_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hright : ∀ v : E, hess x (invHess x v) = v)
+    (v : E) :
+    localNorm hess x (invHess x v) = dualLocalNorm invHess x v := by
+  have hinv_nonneg : 0 ≤ inner ℝ v (invHess x v) :=
+    inverseHessianQuadratic_nonneg_of_hessian_right_inverse
+      (hess := hess) (invHess := invHess) (x := x)
+      hhess_nonneg hright v
+  refine (sq_eq_sq₀
+    (localNorm_nonneg hess x (invHess x v))
+    (dualLocalNorm_nonneg invHess x v)).mp ?_
+  calc
+    (localNorm hess x (invHess x v)) ^ (2 : ℕ) =
+        inner ℝ (invHess x v) (hess x (invHess x v)) :=
+      localNorm_sq_eq_inner (hhess_nonneg (invHess x v))
+    _ = inner ℝ v (invHess x v) := by
+      simp [hright v, real_inner_comm]
+    _ = (dualLocalNorm invHess x v) ^ (2 : ℕ) :=
+      (dualLocalNorm_sq_eq_inner hinv_nonneg).symm
+
+/--
+Nonnegativity of the supplied inverse-Hessian quadratic form from the
+adjoint-coordinate factorization used in the Theorem 13.8 Rayleigh route.
+-/
+theorem inverseHessianQuadratic_nonneg_of_adjointCoordFactor
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {x : E} {coord : E →L[ℝ] E}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (v : E) :
+    0 ≤ inner ℝ v (invHess x v) := by
+  rw [hinv_factor v]
+  exact sq_nonneg _
+
 theorem newtonStep_sub
     (grad : E -> E) (invHess : E -> E →L[ℝ] E) (x : E) :
     newtonStep grad invHess x - x = -invHess x (grad x) := by
@@ -5047,6 +5102,85 @@ theorem chewi138_newtonDecrement_step_le_of_inverseLocal_and_factorizedNormalize
             (coord := coord) (sqrtH := sqrtH)
             hcoord_sqrtH hinv_factor hhess_eq hx_inv_nonneg
             (fun u => hsc.hess_nonneg hx u) v w)
+
+/--
+Chewi Theorem 13.8 source-Newton-segment assembly where the inverse-local
+identity at `x+` and inverse-Hessian nonnegativity are derived from the
+concrete right-inverse identity `hess(x+) (invHess(x+) v) = v`.
+-/
+theorem chewi138_newtonDecrement_step_le_of_hessianRightInverse_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    {normalized coord sqrtH : E →L[ℝ] E} {s : Set E} {x : E} {M : ℝ}
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hs : Convex ℝ s) (hx : x ∈ s)
+    (hstep_mem : newtonStep grad invHess x ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hstep_ne : newtonStep grad invHess x - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hnormalized_eq :
+      normalized =
+        (ContinuousLinearMap.adjoint coord).comp
+          ((hessianSegmentDelta hess x (newtonStep grad invHess x)).comp coord))
+    (hcoord_sqrtH : ∀ step : E, coord (sqrtH step) = step)
+    (hsqrtH_coord : ∀ z : E, sqrtH (coord z) = z)
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hstep_right_inverse : ∀ v : E,
+      hess (newtonStep grad invHess x)
+          (invHess (newtonStep grad invHess x) v) = v) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  have hx_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v) := by
+    intro v
+    exact inverseHessianQuadratic_nonneg_of_adjointCoordFactor
+      (invHess := invHess) (x := x) (coord := coord) hinv_factor v
+  have hstep_inv_nonneg : ∀ v : E,
+      0 ≤ inner ℝ v (invHess (newtonStep grad invHess x) v) := by
+    intro v
+    exact inverseHessianQuadratic_nonneg_of_hessian_right_inverse
+      (hess := hess) (invHess := invHess)
+      (x := newtonStep grad invHess x)
+      (fun w => hsc.hess_nonneg hstep_mem w) hstep_right_inverse v
+  have hstep_inv_local : ∀ v : E,
+      localNorm hess (newtonStep grad invHess x)
+          (invHess (newtonStep grad invHess x) v) =
+        dualLocalNorm invHess (newtonStep grad invHess x) v := by
+    intro v
+    exact localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse
+      (hess := hess) (invHess := invHess)
+      (x := newtonStep grad invHess x)
+      (fun w => hsc.hess_nonneg hstep_mem w) hstep_right_inverse v
+  exact
+    chewi138_newtonDecrement_step_le_of_inverseLocal_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment
+      (hess := hess) (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (grad := grad) (invHess := invHess)
+      (normalized := normalized) (coord := coord) (sqrtH := sqrtH)
+      (s := s) (x := x) (M := M)
+      hMlambda_lt hstep_norm hs hx hstep_mem hsc hess_pos hstep_ne
+      hhess_cont hhess hmixed hsymm hgrad hnewton_linear
+      hnormalized_eq hcoord_sqrtH hsqrtH_coord hinv_factor hhess_eq
+      hx_inv_nonneg hstep_inv_nonneg hstep_inv_local
 
 /--
 Chewi Theorem 13.8 assembly from a unit bilinear estimate on the normalized

@@ -50,8 +50,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   adjoint-conjugate square-root coordinate identity, and the pointwise
   Newton-segment local-norm sandwich at `z_t` is compiled from the Lemma 13.6
   source-radius theorem.  Next discharge the concrete square-root/inverse-
-  Hessian coordinate identities and prove the concrete inverse-local identity
-  for the Hessian/inverse-Hessian model; the Cauchy bridge, source
+  Hessian coordinate identities and prove the concrete right-inverse identity
+  `hess(x+) (invHess(x+) v) = v`; the inverse-local identity, Cauchy bridge,
+  source
   dual-local-norm transport, and raw inverse-Hessian quadratic upper comparison
   are now compiled consequences of the square-root coordinate factorization and
   Lemma 13.6 primal lower transport.  Then remove mixed-third-source
@@ -1468,10 +1469,15 @@ identity at `x+`.  The newest Cauchy packet adds
 `dualPrimalCauchy_of_adjointCoordSqrt` and
 `chewi138_newtonDecrement_step_le_of_inverseLocal_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
 deriving the Cauchy bridge from the same `coord`/`sqrtH` factorization already
-used by the normalized Rayleigh line.  The live 13.8 blockers are now the
-concrete coordinate/square-root identities and the inverse-local identity
-`||invHess(x+) v||_{x+} = ||v||^*_{x+}` for the concrete Hessian inverse
-model.
+used by the normalized Rayleigh line.  The newest right-inverse packet adds
+`inverseHessianQuadratic_nonneg_of_hessian_right_inverse`,
+`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
+`inverseHessianQuadratic_nonneg_of_adjointCoordFactor`, and
+`chewi138_newtonDecrement_step_le_of_hessianRightInverse_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
+deriving inverse-Hessian nonnegativity and the inverse-local identity from the
+concrete right-inverse equation.  The live 13.8 blockers are now the concrete
+coordinate/square-root identities and the right-inverse identity
+`hess(x+) (invHess(x+) v) = v` for the concrete Hessian inverse model.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the

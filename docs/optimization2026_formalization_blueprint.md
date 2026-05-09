@@ -569,10 +569,15 @@ once the concrete model supplies the Cauchy bridge and inverse-local identity.
 The newest Cauchy packet adds `dualPrimalCauchy_of_adjointCoordSqrt` and
 `chewi138_newtonDecrement_step_le_of_inverseLocal_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
 so the Cauchy bridge is derived from the same square-root coordinate
-factorization as the normalized Rayleigh line.  After that, derive the
-inverse-local identity and coordinate identities from concrete matrix/order
-hypotheses and remove the remaining mixed-third supplied source interface
-through the real third-derivative representation bridge to
+factorization as the normalized Rayleigh line.  The newest right-inverse packet
+adds `inverseHessianQuadratic_nonneg_of_hessian_right_inverse`,
+`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
+`inverseHessianQuadratic_nonneg_of_adjointCoordFactor`, and
+`chewi138_newtonDecrement_step_le_of_hessianRightInverse_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
+so the inverse-local identity is now derived from the concrete right-inverse
+equation.  After that, derive the right-inverse and coordinate identities from
+concrete matrix/order hypotheses and remove the remaining mixed-third supplied
+source interface through the real third-derivative representation bridge to
 `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem

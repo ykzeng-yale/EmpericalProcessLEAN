@@ -368,6 +368,13 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`chewi138_newtonDecrement_step_le_of_inverseLocal_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`.
 	This derives the Cauchy bridge `<v,w> <= ||v||^*_x ||w||_x` from the same
 	`coord`/`sqrtH` factorization already used by the normalized Rayleigh line.
+	The newest right-inverse packet adds
+	`inverseHessianQuadratic_nonneg_of_hessian_right_inverse`,
+	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
+	`inverseHessianQuadratic_nonneg_of_adjointCoordFactor`, and
+	`chewi138_newtonDecrement_step_le_of_hessianRightInverse_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`.
+	This derives inverse-Hessian nonnegativity and the inverse-local identity
+	from the concrete equation `hess(x+) (invHess(x+) v) = v`.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
@@ -376,19 +383,19 @@ are now compiled, so next derive the square-root coordinate
 identities
 `normalized = coord† Delta coord`, `coord sqrtH = id`, `sqrtH coord = id`,
 `<v, invHess(x)v> = ||coord†v||^2`, and `hess x = sqrtH†sqrtH` from the
-concrete Hessian/inverse-Hessian model.  In parallel, prove the inverse-local
-identity `||invHess(x+) v||_{x+} = ||v||^*_{x+}` from the concrete
-Hessian/inverse-Hessian model.  The Cauchy bridge, dual-local-norm transport,
-and raw inverse-Hessian quadratic upper comparison should be obtained only via
-the compiled square-root/Cauchy, duality, and reverse-algebra bridges, not
+concrete Hessian/inverse-Hessian model.  In parallel, prove the concrete
+right-inverse identity `hess(x+) (invHess(x+) v) = v`.  The inverse-local
+identity, Cauchy bridge, dual-local-norm transport, and raw inverse-Hessian
+quadratic upper comparison should be obtained only via the compiled
+right-inverse, square-root/Cauchy, duality, and reverse-algebra bridges, not
 reproved at each theorem wrapper.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
-  derive the needed inverse-local identity from the concrete Hessian/
+  derive the needed right-inverse identity from the concrete Hessian/
   inverse-Hessian or matrix model, and
   derive the square-root coordinate identities required by
-  `chewi138_newtonDecrement_step_le_of_inverseLocal_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`.
+  `chewi138_newtonDecrement_step_le_of_hessianRightInverse_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`.
   The conversion from those inputs to the normalized Rayleigh bound, op norm,
   Delta quadratic bound, residual bound, and final decrement estimate is
   compiled; do not reprove it.
