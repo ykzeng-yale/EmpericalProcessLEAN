@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 projected summand score CLT handoff`).
+(`Add Vaart theorem 5.41 common vector law score CLT handoff`).
 Current packet verification passed for:
 
 - `lake build StatInference.AsymptoticStatistics.Basic`
@@ -629,11 +629,11 @@ Live continuation prompt: use the compact prompt in
 
 For Vaart Theorem 5.41 in `MEstimators.lean`, discharge one real source field
 for the current endpoint: an iid/operator strong law for the a.s.
-derivative-norm residual, the projected-summand CLT source hypotheses, the
-raw-score representation identity, or the scaled-estimator law-tail/tightness
-proof.  The prompt-level solved-layer list has intentionally been removed; the
-detailed history remains in the ledger above and should not be replayed as
-work.
+derivative-norm residual, the raw-score representation identity, one
+common-vector-law/Gaussian score CLT source field, or the scaled-estimator
+law-tail/tightness proof.  The prompt-level solved-layer list has intentionally
+been removed; the detailed history remains in the ledger above and should not
+be replayed as work.
 
 ## Reuse Dependencies
 

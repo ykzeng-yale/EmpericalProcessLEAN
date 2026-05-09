@@ -10,17 +10,18 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current frontier endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_projectedSummandCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 It consumes the Chapter 2 law-tail criterion for
 `P.map (scaledEstimator n)` and the source-shaped a.s. operator-norm residual
 `‖dotPsi_n(theta0) - V‖ -> 0`.  Its raw score CLT field is now supplied by
-the finite-coordinate projected-summand CLT plus an a.e. representation of the
-raw scaled estimating-map average as a scaled centered empirical moment.
+finite-coordinate score-summand source fields: coordinate `L^2`, Gaussian
+limit/covariance, common-vector-law sample source, and an a.e. representation
+of the raw scaled estimating-map average as a scaled centered empirical moment.
 
 Next packet: discharge one real statistical source field for this endpoint.
 Prefer, in order, an iid/operator strong law proving the derivative-norm
-residual, the projected-summand CLT source hypotheses, the raw-score
-representation identity, or the law-tail/tightness source proof for the scaled
+residual, the raw-score representation identity, one common-vector-law/Gaussian
+score CLT source field, or the law-tail/tightness source proof for the scaled
 estimator.  If none closes directly, add exactly one minimal theorem-shaped
 bridge that removes one remaining source hypothesis.
 
@@ -912,19 +913,24 @@ compiling:
    projected-summand CLT plus an a.e. representation of the raw score as a
    scaled centered empirical moment:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_projectedSummandCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+325. Theorem 5.41 score CLT source handoff from coordinate `L^2` score
+   summands, Gaussian limit/covariance fields, and a common-vector-law
+   infinite-product sample source:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 projected summand score CLT handoff`).
+(`Add Vaart theorem 5.41 common vector law score CLT handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving the raw score CLT from
-the reusable finite-coordinate Cramer-Wold/projected-summand CLT lane and an
-a.e. representation identity, after the derivative-norm, scaled-estimator
-law-tail, and measurability handoffs have already been discharged.
+asymptotic-normality route for Z-estimators by deriving the score projected
+summand CLT from concrete common-vector-law/Gaussian source fields before
+feeding the reusable finite-coordinate Cramer-Wold lane and raw-score
+representation identity.
 
 The next aggressive packet should prove one real source field for the current
-endpoint: the derivative-norm strong law, projected-summand CLT source fields,
-raw-score representation identity, or scaled-estimator law-tail/tightness.
+endpoint: the derivative-norm strong law, raw-score representation identity,
+one common-vector-law/Gaussian score CLT source field, or scaled-estimator
+law-tail/tightness.
 
 ## Execution Notes
 

@@ -634,10 +634,12 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope`,
   and the projected-summand score-CLT packet adds
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_projectedSummandCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
+  while the common-vector-law score-CLT packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
   so the remaining critical path is now the real source-field layer: the
-  actual iid/operator strong law for the derivative-norm residual,
-  projected-summand CLT source fields, raw-score representation identity, and
-  scaled-estimator law-tail/tightness source proof.
+  actual iid/operator strong law for the derivative-norm residual, raw-score
+  representation identity, common-vector-law/Gaussian score CLT source fields,
+  and scaled-estimator law-tail/tightness source proof.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
