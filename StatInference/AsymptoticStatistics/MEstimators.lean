@@ -2455,6 +2455,41 @@ theorem vaart1998_stochasticBounded_of_absorbing_norm_bound_ae
   exact lt_of_le_of_lt hle hsum_lt
 
 /--
+van der Vaart 1998, Chapter 2 bookkeeping: a deterministic constant sequence
+is stochastically bounded.
+-/
+theorem vaart1998_stochasticBounded_const
+    {Ω E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [SeminormedAddCommGroup E] (x : E) :
+    StochasticBounded P (fun _n : ℕ => fun _ω : Ω => x) := by
+  intro ε hε
+  refine ⟨‖x‖ + 1, by positivity, ?_⟩
+  refine Eventually.of_forall fun n => ?_
+  have hempty : {ω : Ω | ‖x‖ + 1 ≤ ‖(fun _ω : Ω => x) ω‖} = ∅ := by
+    ext ω
+    simp
+  rw [hempty]
+  simpa using hε
+
+/--
+van der Vaart 1998, Chapter 2 bookkeeping: multiplying a real-valued
+`o_P(1)` sequence by a deterministic scalar preserves `o_P(1)`.
+-/
+theorem vaart1998_tendstoInMeasure_const_mul_zero_real
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {a : ℕ -> Ω -> ℝ} (c : ℝ)
+    (ha : TendstoInMeasure P a atTop 0) :
+    TendstoInMeasure P (fun n ω => c * a n ω) atTop 0 := by
+  refine
+    vaart1998_tendstoInMeasure_zero_of_norm_le_mul_stochasticBounded
+      (P := P) (a := a)
+      (X := fun _n : ℕ => fun _ω : Ω => c)
+      (Y := fun n ω => c * a n ω) ha
+      (vaart1998_stochasticBounded_const (P := P) c) ?_
+  exact Eventually.of_forall fun n ω => by
+    rw [norm_mul, mul_comm]
+
+/--
 van der Vaart 1998, Theorem 5.41, derivative LLN residual.
 
 The derivative average satisfies an LLN in operator norm.  Multiplying its
@@ -2807,6 +2842,179 @@ theorem vaart1998_theorem_5_41_scoreResidual_add_tendstoInMeasure
         (measureReal_union_le
           {ω : Ω | ε / 2 ≤ ‖residual₁ n ω - 0‖}
           {ω : Ω | ε / 2 ≤ ‖residual₂ n ω - 0‖})
+
+/--
+van der Vaart 1998, Theorem 5.41, absorbable Taylor coefficient from the
+derivative LLN and curvature bound.
+
+The coefficient
+`||dotPsi_n(theta0) - V|| + ||delta_n|| * ||curvature_n||` is `o_P(1)` when
+the derivative satisfies its operator-norm LLN, the unscaled estimator
+difference is `o_P(1)`, and the curvature envelope is `O_P(1)`.  Multiplying
+by a deterministic constant preserves the result.
+-/
+theorem vaart1998_theorem_5_41_absorbingCoefficient_tendstoInMeasure
+    {Ω Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    (V : Θ →L[ℝ] Score)
+    {delta : ℕ -> Ω -> Θ} {curvatureBound : ℕ -> Ω -> ℝ}
+    (C : ℝ)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hCurvatureBounded : StochasticBounded P curvatureBound) :
+    TendstoInMeasure P
+      (fun n ω =>
+        C *
+          (‖empiricalDerivative n ω - V‖ +
+            ‖delta n ω‖ * ‖curvatureBound n ω‖))
+      atTop 0 := by
+  have hCurvatureProduct :
+      TendstoInMeasure P
+        (fun n ω => ‖delta n ω‖ * ‖curvatureBound n ω‖) atTop 0 := by
+    refine
+      vaart1998_tendstoInMeasure_zero_of_norm_le_mul_stochasticBounded
+        (P := P) (a := fun n ω => ‖delta n ω‖)
+        (X := curvatureBound)
+        (Y := fun n ω => ‖delta n ω‖ * ‖curvatureBound n ω‖)
+        hDelta hCurvatureBounded ?_
+    exact Eventually.of_forall fun n ω => by
+      rw [Real.norm_eq_abs, abs_of_nonneg
+        (mul_nonneg (norm_nonneg _) (norm_nonneg _))]
+      simp
+  have hSum :
+      TendstoInMeasure P
+        (fun n ω =>
+          ‖empiricalDerivative n ω - V‖ +
+            ‖delta n ω‖ * ‖curvatureBound n ω‖)
+        atTop 0 :=
+    vaart1998_theorem_5_41_scoreResidual_add_tendstoInMeasure
+      (P := P) hDerivativeLLN hCurvatureProduct
+  exact vaart1998_tendstoInMeasure_const_mul_zero_real (P := P) C hSum
+
+/--
+van der Vaart 1998, Theorem 5.41, inverse-residual bound by the absorbable
+Taylor coefficient.
+
+The derivative residual contributes
+`||dotPsi_n(theta0) - V|| ||x_n||`; the second-derivative Taylor term
+contributes `||delta_n|| ||curvature_n|| ||x_n||`.  After applying the
+inverse derivative, both are dominated by a deterministic multiple of their
+sum times `||x_n||`.
+-/
+theorem vaart1998_theorem_5_41_absorbingResidualImage_bound_of_derivative_secondDerivativeHalfBound
+    {Ω Score Θ : Type*} [MeasurableSpace Ω]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    {secondResidual : ℕ -> Ω -> Score}
+    (hSecondHalfBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        (1 / 2 : ℝ) *
+          (‖delta n ω‖ *
+            (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖))) :
+    ∀ᶠ n in atTop, ∀ ω,
+      ‖(-Vinv : Score →L[ℝ] Θ)
+          ((empiricalDerivative n ω - V) (scaledEstimator n ω) +
+            secondResidual n ω)‖ ≤
+        ((‖(-Vinv : Score →L[ℝ] Θ)‖ + 1) *
+            (‖empiricalDerivative n ω - V‖ +
+              ‖delta n ω‖ * ‖curvatureBound n ω‖)) *
+          ‖scaledEstimator n ω‖ := by
+  let L : Score →L[ℝ] Θ := (-Vinv : Score →L[ℝ] Θ)
+  let C : ℝ := ‖L‖ + 1
+  have hC_nonneg : 0 ≤ C := by
+    have hL_nonneg : 0 ≤ ‖L‖ := norm_nonneg L
+    linarith
+  filter_upwards [hSecondHalfBound] with n hsecond
+  intro ω
+  let d : ℝ := ‖empiricalDerivative n ω - V‖
+  let r : ℝ := ‖delta n ω‖ * ‖curvatureBound n ω‖
+  let xnorm : ℝ := ‖scaledEstimator n ω‖
+  have hd_nonneg : 0 ≤ d := norm_nonneg _
+  have hr_nonneg : 0 ≤ r := by
+    exact mul_nonneg (norm_nonneg _) (norm_nonneg _)
+  have hx_nonneg : 0 ≤ xnorm := norm_nonneg _
+  have hDerivativeBound :
+      ‖(empiricalDerivative n ω - V) (scaledEstimator n ω)‖ ≤ d * xnorm := by
+    simpa [d, xnorm, Real.norm_of_nonneg (norm_nonneg (empiricalDerivative n ω - V))]
+      using (empiricalDerivative n ω - V).le_opNorm (scaledEstimator n ω)
+  have hSecondBound : ‖secondResidual n ω‖ ≤ r * xnorm := by
+    have hhalf_le :
+        (1 / 2 : ℝ) *
+            (‖delta n ω‖ *
+              (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖)) ≤
+          r * xnorm := by
+      have hproduct_nonneg :
+          0 ≤
+            ‖delta n ω‖ *
+              (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖) := by
+        exact mul_nonneg (norm_nonneg _)
+          (mul_nonneg (norm_nonneg _) (norm_nonneg _))
+      calc
+        (1 / 2 : ℝ) *
+            (‖delta n ω‖ *
+              (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖))
+            ≤ 1 *
+                (‖delta n ω‖ *
+                  (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖)) := by
+              exact mul_le_mul_of_nonneg_right
+                (by norm_num : (1 / 2 : ℝ) ≤ 1) hproduct_nonneg
+        _ = r * xnorm := by ring
+    exact (hsecond ω).trans hhalf_le
+  have hResidualBound :
+      ‖(empiricalDerivative n ω - V) (scaledEstimator n ω) +
+          secondResidual n ω‖ ≤
+        (d + r) * xnorm := by
+    calc
+      ‖(empiricalDerivative n ω - V) (scaledEstimator n ω) +
+          secondResidual n ω‖
+          ≤ ‖(empiricalDerivative n ω - V) (scaledEstimator n ω)‖ +
+              ‖secondResidual n ω‖ := norm_add_le _ _
+      _ ≤ d * xnorm + r * xnorm :=
+          add_le_add hDerivativeBound hSecondBound
+      _ = (d + r) * xnorm := by ring
+  have hLinearBound :
+      ‖L ((empiricalDerivative n ω - V) (scaledEstimator n ω) +
+          secondResidual n ω)‖ ≤
+        C *
+          ‖(empiricalDerivative n ω - V) (scaledEstimator n ω) +
+            secondResidual n ω‖ := by
+    have hbase :
+        ‖L ((empiricalDerivative n ω - V) (scaledEstimator n ω) +
+            secondResidual n ω)‖ ≤
+          ‖L‖ *
+            ‖(empiricalDerivative n ω - V) (scaledEstimator n ω) +
+              secondResidual n ω‖ :=
+      L.le_opNorm _
+    have hC_le :
+        ‖L‖ *
+            ‖(empiricalDerivative n ω - V) (scaledEstimator n ω) +
+              secondResidual n ω‖ ≤
+          C *
+            ‖(empiricalDerivative n ω - V) (scaledEstimator n ω) +
+              secondResidual n ω‖ :=
+      mul_le_mul_of_nonneg_right (by simp [C]) (norm_nonneg _)
+    exact hbase.trans hC_le
+  calc
+    ‖(-Vinv : Score →L[ℝ] Θ)
+        ((empiricalDerivative n ω - V) (scaledEstimator n ω) +
+          secondResidual n ω)‖
+        = ‖L ((empiricalDerivative n ω - V) (scaledEstimator n ω) +
+            secondResidual n ω)‖ := rfl
+    _ ≤ C *
+          ‖(empiricalDerivative n ω - V) (scaledEstimator n ω) +
+            secondResidual n ω‖ := hLinearBound
+    _ ≤ C * ((d + r) * xnorm) :=
+        mul_le_mul_of_nonneg_left hResidualBound hC_nonneg
+    _ = (C * (d + r)) * xnorm := by ring
 
 /--
 van der Vaart 1998, Theorem 5.41, inverse-derivative preservation of
@@ -3225,6 +3433,90 @@ theorem vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_a
       mul_le_mul_of_nonneg_right (by simp [C]) (norm_nonneg _)
     exact hbase.trans hC_le
   exact hsplit.trans (add_le_add hScoreImage hResidualImageBoundω)
+
+/--
+van der Vaart 1998, Theorem 5.41, non-circular scaled-estimator tightness from
+the Taylor equation with derivative LLN and second-derivative half-bound.
+
+This is the source-facing bootstrap step for the usual proof.  It does not
+assume `x_n = O_P(1)`: derivative LLN, consistency of `delta_n`, bounded
+curvature, and the quadratic Taylor half-bound produce an absorbable
+`o_P(1)` coefficient, and the previous absorption bridge yields tightness of
+the scaled estimator.
+-/
+theorem vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_derivativeLLN_secondDerivativeHalfBound_absorbing
+    {Ω Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    {score secondResidual : ℕ -> Ω -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScore : StochasticBounded P score)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hCurvatureBounded : StochasticBounded P curvatureBound)
+    (hSecondHalfBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        (1 / 2 : ℝ) *
+          (‖delta n ω‖ *
+            (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖)))
+    (hTaylorZero : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + V (scaledEstimator n ω) +
+          (empiricalDerivative n ω - V) (scaledEstimator n ω) +
+          secondResidual n ω = 0) :
+    StochasticBounded P scaledEstimator := by
+  let residual : ℕ -> Ω -> Score :=
+    fun n ω => (empiricalDerivative n ω - V) (scaledEstimator n ω) +
+      secondResidual n ω
+  let coefficient : ℕ -> Ω -> ℝ :=
+    fun n ω =>
+      (‖(-Vinv : Score →L[ℝ] Θ)‖ + 1) *
+        (‖empiricalDerivative n ω - V‖ +
+          ‖delta n ω‖ * ‖curvatureBound n ω‖)
+  have hCoefficient : TendstoInMeasure P coefficient atTop 0 :=
+    vaart1998_theorem_5_41_absorbingCoefficient_tendstoInMeasure
+      (P := P) (V := V) (empiricalDerivative := empiricalDerivative)
+      (delta := delta) (curvatureBound := curvatureBound)
+      (‖(-Vinv : Score →L[ℝ] Θ)‖ + 1)
+      hDerivativeLLN hDelta hCurvatureBounded
+  have hResidualImageBound : ∀ᶠ n in atTop, ∀ᵐ ω ∂P,
+      ‖(-Vinv : Score →L[ℝ] Θ) (residual n ω)‖ ≤
+        coefficient n ω * ‖scaledEstimator n ω‖ := by
+    have hpoint : ∀ᶠ n in atTop, ∀ ω,
+        ‖(-Vinv : Score →L[ℝ] Θ)
+            ((empiricalDerivative n ω - V) (scaledEstimator n ω) +
+              secondResidual n ω)‖ ≤
+          ((‖(-Vinv : Score →L[ℝ] Θ)‖ + 1) *
+              (‖empiricalDerivative n ω - V‖ +
+                ‖delta n ω‖ * ‖curvatureBound n ω‖)) *
+            ‖scaledEstimator n ω‖ :=
+      vaart1998_theorem_5_41_absorbingResidualImage_bound_of_derivative_secondDerivativeHalfBound
+        (V := V) (Vinv := Vinv) (empiricalDerivative := empiricalDerivative)
+        (delta := delta) (scaledEstimator := scaledEstimator)
+        (curvatureBound := curvatureBound)
+        (secondResidual := secondResidual) hSecondHalfBound
+    filter_upwards [hpoint] with n hn
+    exact ae_of_all _ fun ω => by
+      simpa [residual, coefficient] using hn ω
+  have hTaylorZero_residual : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + V (scaledEstimator n ω) + residual n ω = 0 := by
+    intro n
+    exact (hTaylorZero n).mono fun ω hω => by
+      simpa [residual, add_assoc, add_comm, add_left_comm] using hω
+  exact
+    vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_absorbingResidual
+      (P := P) (V := V) (Vinv := Vinv) (score := score)
+      (residual := residual) (coefficient := coefficient)
+      (scaledEstimator := scaledEstimator) hLeftInverse hScore hCoefficient
+      hResidualImageBound hTaylorZero_residual
 
 /--
 van der Vaart 1998, Theorem 5.41, Taylor-zero handoff with separated

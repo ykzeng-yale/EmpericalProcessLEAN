@@ -20,7 +20,7 @@ Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Current verified source bridge:
-`vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_absorbingResidual`.
+`vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_derivativeLLN_secondDerivativeHalfBound_absorbing`.
 
 Continuation recipe:
 
@@ -33,9 +33,9 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Tightness source: prove the model-specific absorbable residual coefficient
-   for the Taylor zero display, then feed the self-localization source bridge
-   above.
+1. Tightness source: plug the new derivative-LLN/curvature half-bound
+   self-localization bridge into the empirical-average/root Taylor endpoint,
+   or prove the next model-specific Taylor display feeding it.
 2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
    finite-entry norm/action wrapper stack.
@@ -1093,28 +1093,42 @@ compiling:
    applies the inverse derivative to the Taylor zero display and absorbs an
    `o_P(1)` residual coefficient, avoiding the previous circular use of
    scaled-estimator tightness.
+360. Theorem 5.41 absorbable coefficient from derivative LLN and curvature:
+   `vaart1998_stochasticBounded_const`,
+   `vaart1998_tendstoInMeasure_const_mul_zero_real`,
+   `vaart1998_theorem_5_41_absorbingCoefficient_tendstoInMeasure`, and
+   `vaart1998_theorem_5_41_absorbingResidualImage_bound_of_derivative_secondDerivativeHalfBound`
+   package the derivative and second-derivative Taylor terms into the
+   absorbable coefficient consumed by the self-localization bridge.
+361. Theorem 5.41 non-circular Taylor-zero tightness source with derivative
+   LLN and second-derivative half-bound:
+   `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_taylorZero_derivativeLLN_secondDerivativeHalfBound_absorbing`
+   proves scaled-estimator `O_P(1)` from score tightness, derivative LLN,
+   `delta_n = o_P(1)`, bounded curvature, the Taylor half-bound, and the
+   Taylor zero display, without assuming scaled-estimator tightness.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 absorbing tightness bridge`).
+(`Add Vaart theorem 5.41 derivative absorbing tightness bridge`).
 
-The latest theorem-sized packet removes the circular tightness blocker in the
-Taylor route: score tightness plus an absorbable `o_P(1)` residual coefficient
-now gives the `StochasticBounded` field consumed by the current Theorem 5.41
-endpoint, without assuming scaled-estimator tightness first.
+The latest theorem-sized packet turns the model-shaped derivative LLN,
+unscaled consistency, bounded curvature, second-derivative half-bound, and
+Taylor zero display into the `StochasticBounded` field consumed by the current
+Theorem 5.41 endpoint, without assuming scaled-estimator tightness first.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to a model-specific proof that the derivative and
-second-derivative Taylor residuals produce the absorbable `o_P(1)` coefficient,
-or to a genuinely model-specific derivative or score
+source handoff.  Move next to a wrapper that feeds this non-circular tightness
+source into the empirical-average/root Taylor endpoint, or to a genuinely
+model-specific Taylor display, derivative, or score
 representation that removes a live hypothesis.  Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
 derivative-bound, finite-derivative strong-law, action-bound, law-tail,
 display-congruence, display-convergence, display-weak-convergence,
-score-equation `O_P(1)`, Taylor-zero `O_P(1)`, or absorbing-tightness wrappers
-unless a current proof directly depends on a small local API there.
+score-equation `O_P(1)`, Taylor-zero `O_P(1)`, absorbing-tightness, or
+derivative absorbing-tightness wrappers unless a current proof directly
+depends on a small local API there.
 
 ## Execution Notes
 
