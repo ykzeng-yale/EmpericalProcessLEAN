@@ -1026,28 +1026,32 @@ compiling:
    derivative-norm endpoint while keeping scaled-estimator tightness as
    `StochasticBounded`:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_projectedSummandCLT_derivativeNormAE_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+346. Theorem 5.41 common-vector-law score CLT handoff with explicit `O_P(1)`:
+   the Chapter 4 finite-coordinate CLT source fields now produce the projected
+   score CLT and feed the direct `StochasticBounded` Z-estimator endpoint:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 projected OP handoff`).
+(`Add Vaart theorem 5.41 common-vector OP handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by plugging a finite-coordinate
-projected-summand CLT into the derivative-norm handoff that consumes
+asymptotic-normality route for Z-estimators by plugging the common-vector-law
+Chapter 4 CLT source fields into the derivative-norm handoff that consumes
 `StochasticBounded` for the scaled estimator directly.  This bypasses the
 intermediate law-tail field when an `O_P(1)` proof is already available and
-prepares the common-vector-law and score-summand representation wrappers for
-the same direct-OP route.
+prepares the score-summand representation wrappers for the same direct-OP
+route.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
 source handoff.  Move next to a concrete source of `StochasticBounded` for the
-scaled estimator, the common-vector-law/score-summand `O_P(1)` wrappers that
-feed the projected handoff, or a genuinely model-specific derivative
-representation.  Do not repeat solved Chapter 2-4 infrastructure, canonical or
-projected score wrappers, or earlier Theorem 5.41 wrapper layers unless a
-current proof directly depends on a small local API there.
+scaled estimator, the score-summand representation `O_P(1)` wrapper that feeds
+the common-vector handoff, or a genuinely model-specific derivative
+representation.  Do not repeat solved Chapter 2-4 infrastructure, canonical,
+projected, or common-vector score wrappers, or earlier Theorem 5.41 wrapper
+layers unless a current proof directly depends on a small local API there.
 
 ## Execution Notes
 
