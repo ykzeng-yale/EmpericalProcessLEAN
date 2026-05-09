@@ -7994,6 +7994,75 @@ theorem vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_c
   simpa [Real.norm_eq_abs] using hn x hx coordinate
 
 /--
+van der Vaart 1998, Theorem 5.41, coordinate derivative action bound from a
+weighted finite-entry representation.
+
+If every coordinate of the empirical derivative residual action is a finite
+weighted sum of centered derivative-entry errors, and each scalar weight is
+bounded by the direction norm, then that coordinate is bounded by the total
+finite-entry error times the direction norm.  This is the scalar algebra layer
+feeding the coordinate-bound derivative handoff.
+-/
+theorem vaart1998_theorem_5_41_derivativeAverage_coordinate_action_le_finiteEntryBound_of_weighted_entry_representation
+    {Entry Ω Observation Coord Θ : Type*} [Fintype Entry] [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (V : Θ →L[ℝ] (Coord -> ℝ))
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> Θ -> Θ →L[ℝ] (Coord -> ℝ))
+    (theta0 : ℕ -> Ω -> Θ)
+    (derivativeEntry : Entry -> ℕ -> Ω -> ℝ)
+    (entryWeight : Coord -> Entry -> Θ -> ℝ)
+    (hEntryWeight_abs_le :
+      ∀ coordinate entry x, |entryWeight coordinate entry x| ≤ ‖x‖)
+    (hCoordinate_action_eq :
+      ∀ᵐ ω ∂P,
+        ∀ᶠ n in atTop,
+          ∀ x : Θ, ∀ coordinate : Coord,
+            ((empiricalAverageVector (samples n ω)
+                (fun y => derivativeAt n ω y (theta0 n ω)) - V) x)
+                  coordinate =
+              ∑ entry : Entry,
+                entryWeight coordinate entry x *
+                  ((∑ i ∈ Finset.range n, derivativeEntry entry i ω) /
+                      (n : ℝ) -
+                    ∫ sample, derivativeEntry entry 0 sample ∂P)) :
+    ∀ᵐ ω ∂P,
+      ∀ᶠ n in atTop,
+        ∀ x : Θ, ‖x‖ ≠ 0 -> ∀ coordinate : Coord,
+          |((empiricalAverageVector (samples n ω)
+              (fun y => derivativeAt n ω y (theta0 n ω)) - V) x)
+                coordinate| ≤
+            (∑ entry : Entry,
+              |(∑ i ∈ Finset.range n, derivativeEntry entry i ω) / (n : ℝ) -
+                ∫ sample, derivativeEntry entry 0 sample ∂P|) * ‖x‖ := by
+  filter_upwards [hCoordinate_action_eq] with ω hω
+  filter_upwards [hω] with n hn
+  intro x _hx coordinate
+  let entryError : Entry -> ℝ := fun entry =>
+    (∑ i ∈ Finset.range n, derivativeEntry entry i ω) / (n : ℝ) -
+      ∫ sample, derivativeEntry entry 0 sample ∂P
+  calc
+    |((empiricalAverageVector (samples n ω)
+        (fun y => derivativeAt n ω y (theta0 n ω)) - V) x) coordinate|
+        = |∑ entry : Entry,
+            entryWeight coordinate entry x * entryError entry| := by
+          rw [hn x coordinate]
+    _ ≤ ∑ entry : Entry,
+          |entryWeight coordinate entry x * entryError entry| :=
+          Finset.abs_sum_le_sum_abs
+            (fun entry : Entry =>
+              entryWeight coordinate entry x * entryError entry) Finset.univ
+    _ ≤ ∑ entry : Entry, ‖x‖ * |entryError entry| := by
+          exact Finset.sum_le_sum fun entry _hentry => by
+            rw [abs_mul]
+            exact mul_le_mul_of_nonneg_right
+              (hEntryWeight_abs_le coordinate entry x) (abs_nonneg _)
+    _ = (∑ entry : Entry, |entryError entry|) * ‖x‖ := by
+          rw [← Finset.mul_sum, mul_comm]
+
+/--
 van der Vaart 1998, Theorem 5.41, score CLT handoff with the raw-score
 finite-coordinate representation discharged.
 

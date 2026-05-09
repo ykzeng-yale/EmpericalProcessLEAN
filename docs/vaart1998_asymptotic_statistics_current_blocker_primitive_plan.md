@@ -974,20 +974,25 @@ compiling:
 334. Theorem 5.41 derivative action bound from coordinate scalar bounds, using
    the finite-product sup norm on `Coord -> ℝ`:
    `vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_coordinate_bound`.
+335. Theorem 5.41 coordinate scalar action bound from a weighted finite-entry
+   representation and the scalar weight estimate `|weight| ≤ ‖x‖`:
+   `vaart1998_theorem_5_41_derivativeAverage_coordinate_action_le_finiteEntryBound_of_weighted_entry_representation`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 coordinate derivative action bound`).
+(`Add Vaart theorem 5.41 weighted derivative entry bound`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving the vector action bound
-from coordinate scalar action bounds via the finite-product sup norm.  The
-current endpoint remains the finite-derivative action-bound handoff, and the
-remaining derivative source obligation is now coordinate derivative-entry
-algebra for the empirical derivative residual.
+asymptotic-normality route for Z-estimators by deriving the coordinate scalar
+action bound from a weighted finite-entry representation of the empirical
+derivative residual.  The current endpoint remains the finite-derivative
+action-bound handoff, and the remaining derivative source obligation is now the
+actual representation and scalar weight construction for the chosen derivative
+entries.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
-Prefer coordinate scalar derivative-entry algebra for the empirical derivative
+Prefer the actual coordinate or weighted derivative-entry representation for the
+empirical derivative residual, including the `|weight| ≤ ‖x‖` source estimate.
 residual; otherwise move to one score-CLT law/source field or the
 scaled-estimator tightness field.  Do not repeat solved Chapter 2-4
 infrastructure or earlier Theorem 5.41 wrapper layers unless a current proof
