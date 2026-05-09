@@ -32,9 +32,9 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V166` in
+Route from `Live In-Thread Goal Prompt V167` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
-The active theorem lane is Chapter 4.5.1, with Chapter 4.4 martingale maximal
+The active theorem lane is Chapter 4.5.2, with Chapter 4.4 martingale maximal
 inequalities as compiled support.  The current frontier has moved past
 Exercise 4.4.6's natural-filtration
 independent-increment specialization and Exercise 4.4.9's two-martingale
@@ -59,8 +59,16 @@ second-moment display, the monotone `lintegral` iSup handoff, the
 increasing-process source bridge, the canonical square-process
 predictable-part identity `E X_n^2 = E A_n`, the terminal monotone-limit handoff
 to `E A_n ≤ E A∞`, and the exact conditional-variance finite-sum display for
-Durrett's increasing process.  The next target is Theorem 4.5.2.
-The V143-V166 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
+Durrett's increasing process.  The first Theorem 4.5.2 proof-skeleton layer
+now has the event-cover wrapper, stopped-process survival transfer, and
+stopped-threshold cover bridge:
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_on_event_cover`,
+`durrett2019_theorem_4_5_2_stopped_convergence_on_event`, and
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover`.  The
+next target is the threshold stopping-time instantiation
+`N_a = inf {n : A_{n+1} > a^2}` and the stopped-process convergence inputs
+consumed by that bridge.
+The V143-V167 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,
 `durrett2019_exercise_4_4_6_smallBall_bound_of_source`,

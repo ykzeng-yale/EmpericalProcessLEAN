@@ -14517,6 +14517,81 @@ theorem durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_conditionalVa
       hAinf_int hpred_tendsto hBdd
 
 /--
+Durrett 2019, Theorem 4.5.2 countable-threshold cover bridge.
+
+If a target event is almost surely covered by countably many threshold events,
+and each threshold event carries almost-sure convergence of the martingale
+path, then the target event carries almost-sure convergence.
+-/
+theorem durrett2019_theorem_4_5_2_exists_ae_tendsto_on_event_cover
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {FiniteVar : Set Ω} {E : ℕ -> Set Ω}
+    (hcover : ∀ᵐ ω ∂P, ω ∈ FiniteVar -> ∃ k, ω ∈ E k)
+    (hconv : ∀ k, ∀ᵐ ω ∂P, ω ∈ E k ->
+      ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z)) :
+    ∀ᵐ ω ∂P, ω ∈ FiniteVar ->
+      ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+  have hconv_all :
+      ∀ᵐ ω ∂P, ∀ k, ω ∈ E k ->
+        ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) :=
+    ae_all_iff.2 hconv
+  filter_upwards [hcover, hconv_all] with ω hcoverω hconvω hFinite
+  rcases hcoverω hFinite with ⟨k, hk⟩
+  exact hconvω k hk
+
+/--
+Durrett 2019, Theorem 4.5.2 stopped-process event bridge.
+
+Convergence of a stopped process transfers back to the original process on any
+event where the stopping time is almost surely infinite.
+-/
+theorem durrett2019_theorem_4_5_2_stopped_convergence_on_event
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {E : Set Ω}
+    (hStopped : ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto (fun n => stoppedProcess X N n ω) atTop (𝓝 z))
+    (hSurvive : ∀ᵐ ω ∂P, ω ∈ E -> N ω = ⊤) :
+    ∀ᵐ ω ∂P, ω ∈ E ->
+      ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+  have hTransfer :
+      ∀ᵐ ω ∂P, N ω = ⊤ ->
+        ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) :=
+    durrett2019_theorem_4_3_1_stopped_tendsto_on_survival
+      (X := X) (N := N) (μ := P) hStopped
+  filter_upwards [hTransfer, hSurvive] with ω hconvω hsurvω hE
+  exact hconvω (hsurvω hE)
+
+/--
+Durrett 2019, Theorem 4.5.2 stopped-threshold cover bridge.
+
+This packages the final proof skeleton in the textbook: prove convergence for
+each stopped process, prove that each threshold event is contained in the
+survival event of its stopping time, and cover `{A∞ < ∞}` by those thresholds.
+-/
+theorem durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {N : ℕ -> Ω -> ℕ∞}
+    {FiniteVar : Set Ω} {E : ℕ -> Set Ω}
+    (hcover : ∀ᵐ ω ∂P, ω ∈ FiniteVar -> ∃ k, ω ∈ E k)
+    (hStopped : ∀ k, ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto (fun n => stoppedProcess X (N k) n ω) atTop (𝓝 z))
+    (hSurvive : ∀ k, ∀ᵐ ω ∂P, ω ∈ E k -> N k ω = ⊤) :
+    ∀ᵐ ω ∂P, ω ∈ FiniteVar ->
+      ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+  have hconv_events :
+      ∀ k, ∀ᵐ ω ∂P, ω ∈ E k ->
+        ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+    intro k
+    exact
+      durrett2019_theorem_4_5_2_stopped_convergence_on_event
+        (P := P) (X := X) (N := N k) (E := E k)
+        (hStopped k) (hSurvive k)
+  exact
+    durrett2019_theorem_4_5_2_exists_ae_tendsto_on_event_cover
+      (P := P) (X := X) (FiniteVar := FiniteVar) (E := E)
+      hcover hconv_events
+
+/--
 Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two
 square-integrable martingales.
 

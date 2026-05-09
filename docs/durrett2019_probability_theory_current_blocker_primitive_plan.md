@@ -4,13 +4,13 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V166
+## Live In-Thread Goal Prompt V167
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane: Durrett Chapter 4.5.1 in
+synced `main`.  Active lane: Durrett Chapter 4.5.2 in
 `StatInference/ProbabilityTheory/Martingale.lean` plus the three Durrett route
 docs.  Treat compiled Chapter 2, Chapter 3, Chapter 4.1 through Theorem 4.1.15,
 Chapter 4.2, Chapter 4.3, and Chapter 4.4 through Exercise 4.4.11 as closed
@@ -35,11 +35,20 @@ part, terminal-limit, and conditional-variance finite-sum source bridges:
 `durrett2019_theorem_4_5_1_predictablePart_square_ae_eq_sum_conditional_variance`,
 and
 `durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_conditionalVariance_tendsto`.
+The first Theorem 4.5.2 proof-skeleton layer now also compiles:
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_on_event_cover`,
+`durrett2019_theorem_4_5_2_stopped_convergence_on_event`, and
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover`.
 
-Next aggressive step: move to Theorem 4.5.2.  Best target: package the stopped
-process at `N = inf {n : A_{n+1} > a^2}`, apply the compiled Theorem 4.5.1
-maximal endpoint to `X_{N ∧ n}`, and derive convergence/finite-limit on
-`{A∞ < ∞}`.  Do not route back into Chapter 4.4 plumbing or the already
+Next aggressive step: instantiate Theorem 4.5.2's threshold stopping time
+`N_a = inf {n : A_{n+1} > a^2}` and prove the stopped process convergence
+inputs consumed by
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover`: first
+show `X_{N_a ∧ n}` is the stopped martingale, prove the stopped increasing
+process is bounded by `a^2`, apply the compiled Theorem 4.5.1 maximal endpoint,
+then feed Theorem 4.4.6 to get a.e. finite convergence.  Also prove the
+survival event for thresholds below `A∞`, then cover `{A∞ < ∞}` by countably
+many thresholds.  Do not route back into Chapter 4.4 plumbing or the already
 compiled finite-maximum, ordinary second-moment, monotone-iSup,
 running-supremum identification, supplied-`A∞`, canonical `E X_n^2 = E A_n`,
 terminal monotone-limit, or conditional-variance finite-sum wrapper layers.
