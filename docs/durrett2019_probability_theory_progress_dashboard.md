@@ -32,11 +32,11 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V133` in
+Route from `Live In-Thread Goal Prompt V134` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 4.4 martingale maximal inequalities.  The
-current frontier is Example 4.4.9 `eLpNorm 2` handoff and `L^2` convergence
-support after the compiled uniform second-moment bound layer.
+current frontier is Example 4.4.9 expectation convergence, `E X = 1`, and the
+nonzero-limit wrapper after the compiled `L^2` convergence endpoint.
 Treat compiled Chapter 2, Chapter 3, Chapter 4.1
 through Theorem 4.1.15, Chapter 4.2, Chapter 4.3, Theorem 4.4.2, Example 4.4.3,
 and Theorems 4.4.4, 4.4.6, 4.4.7, and 4.4.8 as closed support.  The
@@ -355,8 +355,12 @@ Its finite-sum display wrappers also now compile:
 The shifted geometric-sum and uniform second-moment bound wrappers now compile:
 `durrett2019_example_4_4_9_shifted_geometric_sum_le` and
 `durrett2019_example_4_4_9_branchingProcess_second_moment_integral_uniform_bound`.
-The next target is Example 4.4.9 `eLpNorm 2` handoff and `L^2` convergence
-support.
+The `eLpNorm 2` handoff and `L^2` convergence endpoint now compile:
+`durrett2019_eLpNorm_two_le_of_integral_sq_le`,
+`durrett2019_example_4_4_9_branchingProcess_eLpNorm_two_uniform_bound`, and
+`durrett2019_example_4_4_9_branchingProcess_tendsto_eLpNorm_two`.
+The next target is Example 4.4.9 expectation convergence, `E X = 1`, and the
+nonzero-limit wrapper.
 The compiled declaration inventory below is dependency context only; it is not
 a prompt to revisit solved work.
 
@@ -804,9 +808,10 @@ finite-maximal `eLpNorm` bounds and the final Theorem 4.4.6 `L^p` convergence
 endpoint now compile.  Theorem 4.4.7 orthogonality of square-integrable
 martingale increments now compiles.  Theorem 4.4.8 conditional variance formula
 now compiles.  Example 4.4.9's conditional, integrated second-moment
-recurrence, finite-sum display, shifted geometric-sum, and uniform
-second-moment bound layers now compile.  Aim at one forward textbook packet:
-Example 4.4.9 `eLpNorm 2` handoff and `L^2` convergence support.
+recurrence, finite-sum display, shifted geometric-sum, uniform second-moment
+bound, `eLpNorm 2` handoff, and `L^2` convergence endpoint now compile.  Aim at
+one forward textbook packet: Example 4.4.9 expectation convergence, `E X = 1`,
+and the nonzero-limit wrapper.
 Do not re-prove the compiled Chapter 4.3.5 or 4.3.8 assembly layers.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement

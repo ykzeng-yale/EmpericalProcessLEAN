@@ -12589,6 +12589,35 @@ theorem durrett2019_integrable_sq_of_memLp_two
     simp [Real.norm_eq_abs, sq_abs])
 
 /--
+Durrett 2019, `L^2` support: an ordinary real second-moment bound gives the
+corresponding mathlib `eLpNorm · 2` bound.
+-/
+theorem durrett2019_eLpNorm_two_le_of_integral_sq_le
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Y : Ω -> ℝ} {C : ℝ}
+    (hY : MemLp Y (2 : ℝ≥0∞) P)
+    (hbound : (∫ ω, Y ω ^ 2 ∂P) ≤ C) :
+    eLpNorm Y (2 : ℝ≥0∞) P ≤ ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) := by
+  have h_eq :
+      eLpNorm Y (2 : ℝ≥0∞) P =
+        ENNReal.ofReal
+          ((∫ ω, ‖Y ω‖ ^ (2 : ℝ≥0∞).toReal ∂P) ^
+            (2 : ℝ≥0∞).toReal⁻¹) := by
+    exact
+      MemLp.eLpNorm_eq_integral_rpow_norm
+        (f := Y) (p := (2 : ℝ≥0∞)) (by norm_num) (by norm_num) hY
+  rw [h_eq]
+  apply ENNReal.ofReal_le_ofReal
+  have hnorm_bound :
+      (∫ ω, ‖Y ω‖ ^ (2 : ℝ≥0∞).toReal ∂P) ≤ C := by
+    simpa [Real.norm_eq_abs, Real.rpow_two, sq_abs] using hbound
+  have hnorm_nonneg :
+      0 ≤ (∫ ω, ‖Y ω‖ ^ (2 : ℝ≥0∞).toReal ∂P) := by
+    refine integral_nonneg (fun ω => ?_)
+    positivity
+  exact Real.rpow_le_rpow hnorm_nonneg hnorm_bound (by norm_num)
+
+/--
 Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If
 `Y` is `ℱ_m`-measurable and square-integrable, then the increment
 `X_n - X_m` is orthogonal to `Y`.
@@ -13010,6 +13039,82 @@ theorem durrett2019_example_4_4_9_branchingProcess_second_moment_integral_unifor
     add_le_add_left
       (durrett2019_example_4_4_9_shifted_geometric_sum_le
         hmean_gt_one hvariance_nonneg n) 1
+
+/--
+Durrett 2019, Example 4.4.9: the uniform second-moment bound in mathlib's
+`eLpNorm · 2` form.
+-/
+theorem durrett2019_example_4_4_9_branchingProcess_eLpNorm_two_uniform_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X Z : ℕ -> Ω -> ℝ} {offspringMean variance : ℝ}
+    (hmean_gt_one : 1 < offspringMean) (hvariance_nonneg : 0 ≤ variance)
+    (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hX_zero_sq : (∫ ω, X 0 ω ^ 2 ∂P) = 1)
+    (hX_prev :
+      ∀ n, 0 < n ->
+        X (n - 1) =ᵐ[P] fun ω => Z (n - 1) ω / offspringMean ^ (n - 1))
+    (hVariance :
+      ∀ n, 0 < n ->
+        P[(fun ω => (X n ω - X (n - 1) ω) ^ 2) | ℱ (n - 1)] =ᵐ[P]
+          fun ω => variance * Z (n - 1) ω / offspringMean ^ (2 * n))
+    (hMeanPrev : ∀ n, 0 < n -> (∫ ω, X (n - 1) ω ∂P) = 1) :
+    ∀ n, eLpNorm (X n) (ENNReal.ofReal (2 : ℝ)) P ≤
+      (Real.toNNReal
+        ((1 + variance / (offspringMean ^ 2 * (1 - offspringMean⁻¹))) ^
+          ((2 : ℝ)⁻¹)) : ℝ≥0∞) := by
+  intro n
+  have hsq :=
+    durrett2019_example_4_4_9_branchingProcess_second_moment_integral_uniform_bound
+      (P := P) (ℱ := ℱ) (X := X) (Z := Z)
+      (offspringMean := offspringMean) (variance := variance)
+      hmean_gt_one hvariance_nonneg hX hX_memLp_two hX_zero_sq
+      hX_prev hVariance hMeanPrev n
+  have hbound :=
+    durrett2019_eLpNorm_two_le_of_integral_sq_le
+      (P := P) (Y := X n)
+      (C := 1 + variance / (offspringMean ^ 2 * (1 - offspringMean⁻¹)))
+      (hX_memLp_two n) hsq
+  simpa [ENNReal.ofNNReal_toNNReal] using hbound
+
+/--
+Durrett 2019, Example 4.4.9: the normalized branching-process martingale
+converges in `L^2`, obtained by feeding the uniform second-moment estimate into
+the compiled Theorem 4.4.6 endpoint.
+-/
+theorem durrett2019_example_4_4_9_branchingProcess_tendsto_eLpNorm_two
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X Z : ℕ -> Ω -> ℝ} {offspringMean variance : ℝ}
+    (hmean_gt_one : 1 < offspringMean) (hvariance_nonneg : 0 ≤ variance)
+    (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hX_zero_sq : (∫ ω, X 0 ω ^ 2 ∂P) = 1)
+    (hX_prev :
+      ∀ n, 0 < n ->
+        X (n - 1) =ᵐ[P] fun ω => Z (n - 1) ω / offspringMean ^ (n - 1))
+    (hVariance :
+      ∀ n, 0 < n ->
+        P[(fun ω => (X n ω - X (n - 1) ω) ^ 2) | ℱ (n - 1)] =ᵐ[P]
+          fun ω => variance * Z (n - 1) ω / offspringMean ^ (2 * n))
+    (hMeanPrev : ∀ n, 0 < n -> (∫ ω, X (n - 1) ω ∂P) = 1) :
+    Tendsto
+      (fun n => eLpNorm (X n - ℱ.limitProcess X P) (ENNReal.ofReal (2 : ℝ)) P)
+      atTop (𝓝 0) := by
+  have hR :=
+    durrett2019_example_4_4_9_branchingProcess_eLpNorm_two_uniform_bound
+      (P := P) (ℱ := ℱ) (X := X) (Z := Z)
+      (offspringMean := offspringMean) (variance := variance)
+      hmean_gt_one hvariance_nonneg hX hX_memLp_two hX_zero_sq
+      hX_prev hVariance hMeanPrev
+  simpa using
+    durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_eLpNorm_bdd
+      (P := P) (ℱ := ℱ) (X := X) (p := (2 : ℝ)) (q := (2 : ℝ))
+      (R := Real.toNNReal
+        ((1 + variance / (offspringMean ^ 2 * (1 - offspringMean⁻¹))) ^
+          ((2 : ℝ)⁻¹)))
+      hX Real.HolderConjugate.two_two hR
 
 end ProbabilityTheory
 end StatInference

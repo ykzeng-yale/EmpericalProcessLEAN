@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V133
+## Live In-Thread Goal Prompt V134
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -19,25 +19,27 @@ APIs.  Theorem 4.1.16 remains deferred unless a future targeted kernel search
 finds a direct source-shaped API.
 
 Current compiled packet: Durrett Example 4.4.9 now has the theorem-sized
-uniform second-moment bound:
+`L^2` convergence endpoint:
 `durrett2019_example_4_4_9_conditional_second_moment_from_variance`,
 `durrett2019_example_4_4_9_branchingProcess_conditional_second_moment`, and
 `durrett2019_example_4_4_9_branchingProcess_second_moment_integral_recurrence`,
 plus `durrett2019_example_4_4_9_second_moment_finite_sum_of_recurrence` and
 `durrett2019_example_4_4_9_branchingProcess_second_moment_integral_finite_sum`,
 and now `durrett2019_example_4_4_9_shifted_geometric_sum_le` and
-`durrett2019_example_4_4_9_branchingProcess_second_moment_integral_uniform_bound`.
+`durrett2019_example_4_4_9_branchingProcess_second_moment_integral_uniform_bound`,
+plus the `eLpNorm` handoff `durrett2019_eLpNorm_two_le_of_integral_sq_le`,
+`durrett2019_example_4_4_9_branchingProcess_eLpNorm_two_uniform_bound`, and
+`durrett2019_example_4_4_9_branchingProcess_tendsto_eLpNorm_two`.
 This reuses Theorem 4.4.8 and the existing normalized branching-process
 martingale bridge; it deliberately leaves the full Galton-Watson random-sum
 construction as supplied source hypotheses.
 
-Next aggressive step: finish Durrett Example 4.4.9's `L^2` convergence
-endpoint.  Search first for a local/mathlib bridge from a uniform real
-square-integral bound to an `eLpNorm · 2` bound, using
-`MemLp.eLpNorm_eq_integral_rpow_norm` or a smaller existing wrapper if present.
-Then feed Theorem 4.4.6's `L^p` convergence endpoint at `p = 2`.  Push the
-nonzero-limit endpoint only if it compiles without reopening full Galton-Watson
-infrastructure.
+Next aggressive step: finish the source-facing end of Example 4.4.9.  Search
+first for existing local/mathlib APIs that turn `L^2` convergence into
+convergence of expectations, then package the textbook conclusion `E X = 1` and
+the nonzero-limit witness for `ℱ.limitProcess X P`.  Only formalize the
+Exercise 4.3.11 survival-event equality or full Galton-Watson random-sum
+construction if a direct local API makes it cheap.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -525,9 +527,13 @@ and now its finite-sum display layer:
 The shifted geometric-sum and uniform second-moment bound now also compile:
 `durrett2019_example_4_4_9_shifted_geometric_sum_le` and
 `durrett2019_example_4_4_9_branchingProcess_second_moment_integral_uniform_bound`.
-Next target: Example 4.4.9 `eLpNorm 2` handoff and `L^2` convergence support;
-only formalize Example 4.4.5's counterexample if it becomes a cheap reusable
-support lemma.
+The `eLpNorm 2` handoff and `L^2` convergence endpoint now also compile:
+`durrett2019_eLpNorm_two_le_of_integral_sq_le`,
+`durrett2019_example_4_4_9_branchingProcess_eLpNorm_two_uniform_bound`, and
+`durrett2019_example_4_4_9_branchingProcess_tendsto_eLpNorm_two`.
+Next target: Example 4.4.9 expectation-convergence handoff, `E X = 1`, and the
+nonzero-limit wrapper; only formalize Example 4.4.5's counterexample if it
+becomes a cheap reusable support lemma.
 Do not detour back into full Galton-Watson random-sum infrastructure unless a
 local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
@@ -1069,9 +1075,10 @@ maximal `eLpNorm` bounds and the final Theorem 4.4.6 `L^p` convergence endpoint
 now compile.  The Theorem 4.4.7 orthogonality and increment-increment wrappers
 now compile.  The Theorem 4.4.8 conditional variance formula now also compiles.
 The Example 4.4.9 conditional, integrated second-moment recurrence, finite-sum
-display, shifted geometric-sum, and uniform second-moment bound layers now also
-compile.  Next move to Example 4.4.9 `eLpNorm 2` handoff and `L^2` convergence
-support, whichever route gives the largest compiled step without building
+display, shifted geometric-sum, uniform second-moment bound, `eLpNorm 2`
+handoff, and `L^2` convergence endpoint now also compile.  Next move to
+Example 4.4.9 expectation-convergence handoff, `E X = 1`, and the nonzero-limit
+wrapper, whichever route gives the largest compiled step without building
 unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
@@ -1186,6 +1193,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V133` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V134` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
