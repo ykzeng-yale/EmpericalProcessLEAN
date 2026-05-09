@@ -8514,3 +8514,19 @@ sign-swap, and this original-or-ghost selected-net disjunction in the
 ghost/sign product fiber, then use sign-negation/ghost symmetry to obtain the
 constant-loss original-side lower bound and the named-event measurability
 needed for `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.
+
+2026-05-09 factor-two product-fiber constructor:
+`Theorem243.lean` now proves
+`VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ghost_product_fiber_lower_bound_or_selectedNet`.
+These package the VdV&W Lemma 2.3.7 probability loss: a beta-large product
+fiber whose points land in either the original or ghost selected-net bad event
+gives the displayed-beta comparison with finite loss `A = 2`, because the
+ghost sample has the same marginal law as the original sample.  The next exact
+edit is no longer generic product/Fubini plumbing; it is the concrete
+ghost/Rademacher joint event.  Prove its measurability, its displayed
+Chebyshev fiber lower bound from the selected centered-pair-difference fiber
+and product-pair sign-swap, and its original-or-ghost selected-net inclusion
+from
+`VdVWTheorem243_selectedFiniteNetHoeffding_original_or_ghost_bad_of_pairDifference_rademacher_bad`.

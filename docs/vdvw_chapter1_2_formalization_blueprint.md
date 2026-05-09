@@ -2248,12 +2248,16 @@ above, so they do not change the theorem-level dashboard counts.
    The two-sided deterministic selected finite-net projection is compiled as
    `VdVWTheorem243_selectedFiniteNetHoeffding_original_or_ghost_bad_of_pairDifference_rademacher_bad`,
    with sign-negation support from `VdVWRademacherSignVector.neg` and
-   `vdVWRademacherWeights_neg_sign`.  The missing bridge is now the
-   product-fiber use of these facts, plus sign-negation/ghost symmetry to
-   convert the original-or-ghost disjunction into the constant-loss
-   original-side `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`,
-   including named event measurability and fiber lower-bound hypotheses
-   consumed by
+   `vdVWRademacherWeights_neg_sign`.  The factor-two product-fiber loss is
+   compiled as
+   `VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost`
+   and
+   `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ghost_product_fiber_lower_bound_or_selectedNet`.
+   The missing bridge is now the concrete ghost/Rademacher joint event:
+   prove its measurability, displayed Chebyshev fiber lower bound, and
+   original-or-ghost selected-net inclusion from the centered pair-difference
+   beta fiber, sign-swap, and deterministic two-sided projection, then
+   specialize back to
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
    The first adapted
    countable empirical-supremum bridge is compiled as
