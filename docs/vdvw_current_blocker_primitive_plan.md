@@ -115,11 +115,16 @@ The additive half-scale finite-center failure-tail handoff is compiled as
 and
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_of_pos`.
 It preserves explicit integrated original/ghost failure-tail errors while
-converting to the fixed-`M` half-scale target.  The next exact target is to
-prove the integrated random selected-cover finite-center Hoeffding tails vanish
-under honest stochastic entropy/cardinality hypotheses, feed that into the
-fixed-`M` convergence consumer, and separately close the sign-first
-selected-center event measurability obligations.  The selected-center
+converting to the fixed-`M` half-scale target.  The additive-error convergence
+consumer is now compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_eventualBeta_scaledSelectedFiniteNetHoeffdingUpper_add_error`,
+with the stochastic-entropy/Chebyshev specialization
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_of_chebyshevPenalty_invNat_bound_scaledSelectedFiniteNetHoeffdingUpper_add_error`
+and the concrete product-pair finite-center failure-tail consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale`.
+The next exact target is now sharper: prove the integrated random
+selected-cover finite-center Hoeffding tails vanish, and separately close the
+sign-first selected-center event measurability obligations.  The selected-center
 measurability interface remains
 `VdVWFiniteEmpiricalL1CoverSelectedCenterAt`,
 `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`,
@@ -8813,7 +8818,17 @@ These preserve the explicit integrated original/ghost finite-center failure
 tail errors while converting the Chebyshev comparison to the fixed-`M`
 half-scale target
 `epsilon < dist (4 * vdVWTheorem243FiniteNetHoeffdingUpper ... + eta) 0`.
-The next aggressive source step is to convert the integrated random
-selected-cover tails into a vanishing error term under the active stochastic
-entropy/cardinality hypotheses, and separately close the exposed sign-first
-event measurability obligations from selected-center selector measurability.
+
+2026-05-09 additive-error convergence consumer for finite-center failure tails:
+`Theorem243.lean` now proves the reusable beta/additive-error consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_eventualBeta_scaledSelectedFiniteNetHoeffdingUpper_add_error`,
+the stochastic-entropy/Chebyshev specialization
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_of_chebyshevPenalty_invNat_bound_scaledSelectedFiniteNetHoeffdingUpper_add_error`,
+and the concrete product-pair finite-center failure-tail route
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale`.
+The fixed-`M` convergence consumer now accepts the explicit integrated
+original/ghost finite-center failure-tail error directly.  The remaining
+aggressive source step is no longer another convergence wrapper: prove that
+integrated random selected-cover failure-tail error tends to zero, and close
+the exposed sign-first event measurability obligations from selected-center
+selector measurability.

@@ -297,9 +297,13 @@ and
 They keep the explicit integrated original/ghost finite-center failure tails
 while converting the selected-net target to
 `epsilon < dist (4 * finiteNetHoeffdingUpper + eta) 0`.
-The next blocker is to feed these additive errors through the fixed-`M`
-convergence consumer by proving their vanishing under the active
-stochastic-entropy/cardinality hypotheses, and to close the sign-first
+The additive-error fixed-`M` convergence consumer is now compiled through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_outerProbability_eventualBeta_scaledSelectedFiniteNetHoeffdingUpper_add_error`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_of_chebyshevPenalty_invNat_bound_scaledSelectedFiniteNetHoeffdingUpper_add_error`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale`.
+The next blocker is now exactly to prove the integrated random selected-cover
+finite-center failure-tail error vanishes, and to close the sign-first
 selected-center event measurability obligations.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
