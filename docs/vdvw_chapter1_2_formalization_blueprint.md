@@ -2212,12 +2212,13 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedFiniteNet_product_event`,
    and the textbook-shaped ghost/sign product wrapper is compiled as
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedFiniteNet_product_event`.
+   The arbitrary joint-event input is now specialized to
+   `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent` by
+   `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
    Both use the deterministic core
    `VdVWTheorem243_selectedFiniteNetHoeffding_bad_of_rademacher_bad`, so the
-   remaining event-route source proof only has to build the measurable joint
-   ghost/Rademacher event with beta-large fibers and the three pointwise
-   ingredients: sign vector, finite-center maximal bound, and scaled
-   Rademacher bad event.
+   remaining event-route source proof is measurability and the displayed beta
+   fiber lower bound for that named event.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
