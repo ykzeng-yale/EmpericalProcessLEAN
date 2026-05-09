@@ -14249,6 +14249,83 @@ theorem durrett2019_exercise_4_4_10_martingale_eLpNorm_increment_le_tsum_tail_of
       (P := P) (X := X) hinc_sq_summable
 
 /--
+Durrett 2019, Exercise 4.4.10 support: the shifted infinite tail of a
+summable real series tends to zero.
+-/
+theorem durrett2019_exercise_4_4_10_tsum_tail_tendsto_zero_of_summable
+    {q : ℕ -> ℝ} (_hq_summable : Summable q) :
+    Tendsto (fun m : ℕ => ∑' j : ℕ, q (m + j)) atTop (nhds 0) := by
+  simpa [Nat.add_comm] using (tendsto_sum_nat_add (f := q))
+
+/--
+Durrett 2019, Exercise 4.4.10 support: under square-increment summability,
+the shifted infinite square-increment tail tends to zero.
+-/
+theorem durrett2019_exercise_4_4_10_increment_sq_tsum_tail_tendsto_zero_of_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hinc_sq_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P) :
+    Tendsto
+      (fun m : ℕ =>
+        ∑' j : ℕ,
+          ∫ ω, (X (m + j + 1) ω - X (m + j) ω) ^ 2 ∂P)
+      atTop (nhds 0) := by
+  exact
+    durrett2019_exercise_4_4_10_tsum_tail_tendsto_zero_of_summable
+      (q := fun k : ℕ => ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P)
+      hinc_sq_summable
+
+/--
+Durrett 2019, Exercise 4.4.10 support: square-increment summability gives the
+eventual `L^2` Cauchy estimate for the martingale endpoints.
+
+The estimate is uniform in the later endpoint `n` once `m` is large.
+-/
+theorem durrett2019_exercise_4_4_10_eventually_eLpNorm_increment_le_of_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hinc_sq_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P)
+    {eps : ℝ} (heps : 0 < eps) :
+    ∀ᶠ m in atTop, ∀ n, m ≤ n ->
+      eLpNorm (X n - X m) (2 : ℝ≥0∞) P ≤ ENNReal.ofReal eps := by
+  let tail : ℕ -> ℝ :=
+    fun m =>
+      ∑' j : ℕ,
+        ∫ ω, (X (m + j + 1) ω - X (m + j) ω) ^ 2 ∂P
+  have htail_tendsto : Tendsto tail atTop (nhds 0) :=
+    durrett2019_exercise_4_4_10_increment_sq_tsum_tail_tendsto_zero_of_summable
+      (P := P) (X := X) hinc_sq_summable
+  have heps_sq_pos : 0 < eps ^ 2 := sq_pos_of_pos heps
+  have htail_eventually : ∀ᶠ m in atTop, tail m < eps ^ 2 :=
+    (tendsto_order.1 htail_tendsto).2 (eps ^ 2) heps_sq_pos
+  filter_upwards [htail_eventually] with m htail_lt n hmn
+  have hbase :
+      eLpNorm (X n - X m) (2 : ℝ≥0∞) P ≤
+        ENNReal.ofReal (tail m ^ ((2 : ℝ)⁻¹)) := by
+    simpa [tail] using
+      durrett2019_exercise_4_4_10_martingale_eLpNorm_increment_le_tsum_tail_of_summable
+        (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hinc_sq_summable hmn
+  refine hbase.trans ?_
+  refine ENNReal.ofReal_le_ofReal ?_
+  have htail_le_eps_sq : tail m ≤ eps ^ 2 := le_of_lt htail_lt
+  have hsqrt_le : Real.sqrt (tail m) ≤ eps := by
+    calc
+      Real.sqrt (tail m) ≤ Real.sqrt (eps ^ 2) :=
+        Real.sqrt_le_sqrt htail_le_eps_sq
+      _ = eps := by rw [Real.sqrt_sq_eq_abs, abs_of_pos heps]
+  have hroot_eq : tail m ^ ((2 : ℝ)⁻¹) = Real.sqrt (tail m) := by
+    rw [Real.sqrt_eq_rpow]
+    congr 1
+    norm_num [one_div]
+  simpa [hroot_eq] using hsqrt_le
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
