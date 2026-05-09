@@ -1035,29 +1035,34 @@ compiling:
    discharge the raw-score finite-coordinate field before feeding the direct
    `StochasticBounded` common-vector endpoint:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreSummandRepresentation_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+348. Theorem 5.41 derivative-bound handoff with explicit `O_P(1)`: sampled
+   derivative summand measurability plus an a.s. derivative-error bound now
+   produce the derivative strong-measurability and norm-residual fields before
+   feeding the direct `StochasticBounded` score-representation endpoint:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 score representation OP handoff`).
+(`Add Vaart theorem 5.41 derivative-bound OP handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by discharging the raw-score
-finite-coordinate field from zero-mean score summands plus the a.e. `sqrt n`
-representation, then feeding the common-vector-law derivative-norm handoff
-that consumes `StochasticBounded` for the scaled estimator directly.  This
-bypasses the intermediate law-tail field when an `O_P(1)` proof is already
-available.
+asymptotic-normality route for Z-estimators by turning sampled derivative
+summand measurability plus an a.s. derivative-error bound into the derivative
+strong-measurability and norm-residual fields, then feeding the direct
+score-representation endpoint that consumes `StochasticBounded` for the scaled
+estimator.  This bypasses the intermediate law-tail field when an `O_P(1)`
+proof is already available.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
 source handoff.  Move next to a concrete source of `StochasticBounded` for the
-scaled estimator, the derivative-bound `O_P(1)` wrapper above the
-score-representation handoff, or a genuinely model-specific derivative
+scaled estimator, the finite-derivative strong-law `O_P(1)` wrapper above the
+derivative-bound handoff, or a genuinely model-specific derivative
 representation.  Do not repeat solved Chapter 2-4 infrastructure, canonical,
-projected, common-vector, or score-representation wrappers, or earlier Theorem
-5.41 wrapper layers unless a current proof directly depends on a small local
-API there.
+projected, common-vector, score-representation, or derivative-bound wrappers,
+or earlier Theorem 5.41 wrapper layers unless a current proof directly depends
+on a small local API there.
 
 ## Execution Notes
 
