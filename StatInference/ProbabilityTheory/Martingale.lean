@@ -11542,5 +11542,385 @@ theorem durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound_of_finite
     durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound_of_lintegral_rpow_enorm_le
       (P := P) (X := X) hp_ne_zero hp_ne_top n hPower
 
+/--
+Durrett 2019, Theorem 4.4.4 support: layer-cake formula for any nonnegative
+measurable real random variable, expressed in the same `enorm` form as the
+running-maximum estimates.
+-/
+theorem durrett2019_theorem_4_4_4_nonnegative_layercake_lintegral_rpow_enorm
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {A : Ω -> ℝ}
+    (hA_nonneg : ∀ ω, 0 ≤ A ω) (hA_meas : Measurable A)
+    {p : ℝ} (hp : 0 < p) :
+    (∫⁻ ω, ‖A ω‖ₑ ^ p ∂P) =
+      ENNReal.ofReal p *
+        ∫⁻ t in Set.Ioi (0 : ℝ),
+          P {ω | t ≤ A ω} * ENNReal.ofReal (t ^ (p - 1)) := by
+  have hA_nonneg_ae : 0 ≤ᵐ[P] A :=
+    Eventually.of_forall hA_nonneg
+  have hleft :
+      (∫⁻ ω, ‖A ω‖ₑ ^ p ∂P) =
+        ∫⁻ ω, ENNReal.ofReal (A ω ^ p) ∂P := by
+    refine lintegral_congr fun ω => ?_
+    rw [← ofReal_norm_eq_enorm (A ω), Real.norm_eq_abs,
+      abs_of_nonneg (hA_nonneg ω),
+      ENNReal.ofReal_rpow_of_nonneg (hA_nonneg ω) hp.le]
+  rw [hleft]
+  simpa using
+    (MeasureTheory.lintegral_rpow_eq_lintegral_meas_le_mul
+      (μ := P) hA_nonneg_ae hA_meas.aemeasurable hp)
+
+/--
+Durrett 2019, Theorem 4.4.4 support: Hölder's inequality with an arbitrary
+nonnegative measurable comparison random variable.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_holder_integral_bound_of_measurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {A : Ω -> ℝ} (hA_meas : Measurable A)
+    {p q : ℝ} (hpq : p.HolderConjugate q) (n : ℕ) :
+    (∫⁻ ω,
+        ‖max (X n ω) 0‖ₑ * ‖A ω‖ₑ ^ (p - 1) ∂P) ≤
+      (∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p) *
+        (∫⁻ ω, ‖A ω‖ₑ ^ p ∂P) ^ (1 / q) := by
+  have hterminal :
+      AEMeasurable (fun ω => ‖max (X n ω) 0‖ₑ) P := by
+    have hmeas : Measurable fun ω => max (X n ω) 0 :=
+      (((hX.stronglyMeasurable n).measurable.mono (ℱ.le n) le_rfl).max
+        measurable_const)
+    exact hmeas.aemeasurable.enorm
+  have hA : AEMeasurable (fun ω => ‖A ω‖ₑ) P :=
+    hA_meas.aemeasurable.enorm
+  simpa [Pi.mul_apply] using
+    (ENNReal.lintegral_mul_rpow_le_lintegral_rpow_mul_lintegral_rpow
+      (μ := P) hpq hterminal hA)
+
+/--
+Durrett 2019, Theorem 4.4.4 truncation support: the pointwise Doob layer-cake
+integrand bound remains valid for the bounded running maximum
+`min (bar X_n) R`.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_truncated_doob_layercake_lintegral_integrand_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p t R : ℝ} (ht : 0 < t) (n : ℕ) :
+    P {ω |
+        t ≤
+          min
+            ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              fun k => max (X k ω) 0)
+            R} *
+        ENNReal.ofReal (t ^ (p - 1)) ≤
+      ENNReal.ofReal (t ^ (p - 2)) *
+        ∫⁻ ω in {ω |
+            t ≤
+              min
+                ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  fun k => max (X k ω) 0)
+                R},
+          ‖max (X n ω) 0‖ₑ ∂P := by
+  let A : Ω -> ℝ := fun ω =>
+    (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+      fun k => max (X k ω) 0
+  by_cases htR : t ≤ R
+  · have hset : {ω | t ≤ min (A ω) R} = {ω | t ≤ A ω} := by
+      ext ω
+      simp [htR]
+    change
+      P {ω | t ≤ min (A ω) R} * ENNReal.ofReal (t ^ (p - 1)) ≤
+        ENNReal.ofReal (t ^ (p - 2)) *
+          ∫⁻ ω in {ω | t ≤ min (A ω) R}, ‖max (X n ω) 0‖ₑ ∂P
+    rw [hset]
+    simpa [A] using
+      durrett2019_theorem_4_4_4_positivePart_doob_layercake_lintegral_integrand_bound
+        (P := P) (ℱ := ℱ) (X := X) hX ht n
+  · have hset_empty : {ω | t ≤ min (A ω) R} = (∅ : Set Ω) := by
+      ext ω
+      simp [htR]
+    change
+      P {ω | t ≤ min (A ω) R} * ENNReal.ofReal (t ^ (p - 1)) ≤
+        ENNReal.ofReal (t ^ (p - 2)) *
+          ∫⁻ ω in {ω | t ≤ min (A ω) R}, ‖max (X n ω) 0‖ₑ ∂P
+    rw [hset_empty]
+    simp
+
+/--
+Durrett 2019, Theorem 4.4.4 truncation support: integrated Doob layer-cake
+bound for the bounded running maximum `min (bar X_n) R`.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_truncated_layercake_doob_lintegral_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p R : ℝ} (hp : 0 < p) (hR : 0 ≤ R) (n : ℕ) :
+    (∫⁻ ω,
+        ‖min
+          ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0))
+          R‖ₑ ^ p ∂P) ≤
+      ENNReal.ofReal p *
+        ∫⁻ t in Set.Ioi (0 : ℝ),
+          ENNReal.ofReal (t ^ (p - 2)) *
+            ∫⁻ ω in {ω |
+                t ≤
+                  min
+                    ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                      fun k => max (X k ω) 0)
+                    R},
+              ‖max (X n ω) 0‖ₑ ∂P := by
+  let A : Ω -> ℝ := fun ω =>
+    (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+      fun k => max (X k ω) 0
+  let AR : Ω -> ℝ := fun ω => min (A ω) R
+  have hA_nonneg : ∀ ω, 0 ≤ A ω := by
+    intro ω
+    rw [Finset.le_sup'_iff]
+    exact ⟨0, by simp, le_max_right (X 0 ω) 0⟩
+  have hAR_nonneg : ∀ ω, 0 ≤ AR ω := fun ω => le_min (hA_nonneg ω) hR
+  have hAR_meas : Measurable AR := by
+    dsimp [AR, A]
+    refine (Finset.measurable_range_sup'' ?_).min measurable_const
+    intro k _hk
+    exact
+      (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).max
+        measurable_const)
+  rw [show
+      (∫⁻ ω,
+          ‖min
+            ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              (fun k => max (X k ω) 0))
+            R‖ₑ ^ p ∂P) =
+        (∫⁻ ω, ‖AR ω‖ₑ ^ p ∂P) by rfl]
+  rw [durrett2019_theorem_4_4_4_nonnegative_layercake_lintegral_rpow_enorm
+    (P := P) (A := AR) hAR_nonneg hAR_meas hp]
+  refine mul_le_mul_right ?_ _
+  refine lintegral_mono_ae ?_
+  filter_upwards [self_mem_ae_restrict (measurableSet_Ioi : MeasurableSet (Set.Ioi (0 : ℝ)))]
+    with t ht
+  simpa [A, AR] using
+    durrett2019_theorem_4_4_4_positivePart_truncated_doob_layercake_lintegral_integrand_bound
+      (P := P) (ℱ := ℱ) (X := X) hX ht n
+
+/--
+Durrett 2019, Theorem 4.4.4 truncation support: assembled Doob/Fubini/Hölder
+bound for the bounded running maximum `min (bar X_n) R`.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_truncated_layercake_doob_holder_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p q R : ℝ} (hpq : p.HolderConjugate q) (hR : 0 ≤ R) (n : ℕ) :
+    (∫⁻ ω,
+        ‖min
+          ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0))
+          R‖ₑ ^ p ∂P) ≤
+      ENNReal.ofReal p *
+        ((ENNReal.ofReal (p - 1))⁻¹ *
+          ((∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p) *
+            (∫⁻ ω,
+              ‖min
+                ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  (fun k => max (X k ω) 0))
+                R‖ₑ ^ p ∂P) ^ (1 / q))) := by
+  let A : Ω -> ℝ := fun ω =>
+    (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+      fun k => max (X k ω) 0
+  let AR : Ω -> ℝ := fun ω => min (A ω) R
+  have hA_nonneg : ∀ ω, 0 ≤ A ω := by
+    intro ω
+    rw [Finset.le_sup'_iff]
+    exact ⟨0, by simp, le_max_right (X 0 ω) 0⟩
+  have hAR_nonneg : ∀ ω, 0 ≤ AR ω := fun ω => le_min (hA_nonneg ω) hR
+  have hAR_meas : Measurable AR := by
+    dsimp [AR, A]
+    refine (Finset.measurable_range_sup'' ?_).min measurable_const
+    intro k _hk
+    exact
+      (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).max
+        measurable_const)
+  have hF_meas : AEMeasurable (fun ω => ‖max (X n ω) 0‖ₑ) P := by
+    have hterminal_meas : Measurable fun ω => max (X n ω) 0 :=
+      (((hX.stronglyMeasurable n).measurable.mono (ℱ.le n) le_rfl).max
+        measurable_const)
+    exact hterminal_meas.aemeasurable.enorm
+  have hDoob :=
+    durrett2019_theorem_4_4_4_positivePart_truncated_layercake_doob_lintegral_bound
+      (P := P) (ℱ := ℱ) (X := X) hX hpq.pos hR n
+  have hCoeff :
+      (∫⁻ t in Set.Ioi (0 : ℝ),
+          ENNReal.ofReal (t ^ (p - 2)) *
+            ∫⁻ ω in {ω | t ≤ AR ω}, ‖max (X n ω) 0‖ₑ ∂P) =
+        (ENNReal.ofReal (p - 1))⁻¹ *
+          ∫⁻ ω, ‖max (X n ω) 0‖ₑ * ‖AR ω‖ₑ ^ (p - 1) ∂P :=
+    durrett2019_theorem_4_4_4_weighted_layercake_lintegral_coeff
+      (P := P) (A := AR) (F := fun ω => ‖max (X n ω) 0‖ₑ)
+      hAR_nonneg hAR_meas hF_meas hpq.lt
+  have hHolder :=
+    durrett2019_theorem_4_4_4_positivePart_holder_integral_bound_of_measurable
+      (P := P) (ℱ := ℱ) (X := X) hX hAR_meas hpq n
+  calc
+    (∫⁻ ω,
+        ‖min
+          ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0))
+          R‖ₑ ^ p ∂P)
+        ≤ ENNReal.ofReal p *
+            ∫⁻ t in Set.Ioi (0 : ℝ),
+              ENNReal.ofReal (t ^ (p - 2)) *
+                ∫⁻ ω in {ω |
+                    t ≤
+                      min
+                        ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                          fun k => max (X k ω) 0)
+                        R},
+                  ‖max (X n ω) 0‖ₑ ∂P := hDoob
+    _ = ENNReal.ofReal p *
+        ((ENNReal.ofReal (p - 1))⁻¹ *
+          ∫⁻ ω, ‖max (X n ω) 0‖ₑ * ‖AR ω‖ₑ ^ (p - 1) ∂P) := by
+          rw [show
+              (∫⁻ t in Set.Ioi (0 : ℝ),
+                  ENNReal.ofReal (t ^ (p - 2)) *
+                    ∫⁻ ω in {ω |
+                        t ≤
+                          min
+                            ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                              fun k => max (X k ω) 0)
+                            R},
+                      ‖max (X n ω) 0‖ₑ ∂P) =
+                (∫⁻ t in Set.Ioi (0 : ℝ),
+                  ENNReal.ofReal (t ^ (p - 2)) *
+                    ∫⁻ ω in {ω | t ≤ AR ω}, ‖max (X n ω) 0‖ₑ ∂P) by rfl,
+            hCoeff]
+    _ ≤ ENNReal.ofReal p *
+        ((ENNReal.ofReal (p - 1))⁻¹ *
+          ((∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p) *
+            (∫⁻ ω, ‖AR ω‖ₑ ^ p ∂P) ^ (1 / q))) := by
+          gcongr
+    _ = ENNReal.ofReal p *
+        ((ENNReal.ofReal (p - 1))⁻¹ *
+          ((∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p) *
+            (∫⁻ ω,
+              ‖min
+                ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  (fun k => max (X k ω) 0))
+        R‖ₑ ^ p ∂P) ^ (1 / q))) := by
+          rfl
+
+/--
+Durrett 2019, Theorem 4.4.4 truncation support: every bounded running-maximum
+truncation has finite p-th `lintegral`.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_truncated_lintegral_rpow_ne_top
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {X : ℕ -> Ω -> ℝ}
+    {p R : ℝ} (hp : 0 < p) (hR : 0 ≤ R) (n : ℕ) :
+    (∫⁻ ω,
+        ‖min
+          ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0))
+          R‖ₑ ^ p ∂P) ≠ ∞ := by
+  let A : Ω -> ℝ := fun ω =>
+    (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+      fun k => max (X k ω) 0
+  let AR : Ω -> ℝ := fun ω => min (A ω) R
+  have hA_nonneg : ∀ ω, 0 ≤ A ω := by
+    intro ω
+    rw [Finset.le_sup'_iff]
+    exact ⟨0, by simp, le_max_right (X 0 ω) 0⟩
+  have hAR_nonneg : ∀ ω, 0 ≤ AR ω := fun ω => le_min (hA_nonneg ω) hR
+  have hpoint :
+      (fun ω => ‖AR ω‖ₑ ^ p) ≤ fun _ : Ω => (ENNReal.ofReal R) ^ p := by
+    intro ω
+    have hAR_le : AR ω ≤ R := min_le_right (A ω) R
+    have hnorm : ‖AR ω‖ₑ = ENNReal.ofReal (AR ω) := by
+      rw [← ofReal_norm_eq_enorm (AR ω), Real.norm_eq_abs,
+        abs_of_nonneg (hAR_nonneg ω)]
+    change ‖AR ω‖ₑ ^ p ≤ (ENNReal.ofReal R) ^ p
+    rw [hnorm]
+    exact ENNReal.rpow_le_rpow (ENNReal.ofReal_le_ofReal hAR_le) hp.le
+  have hle :
+      (∫⁻ ω, ‖AR ω‖ₑ ^ p ∂P) ≤
+        ∫⁻ _ : Ω, (ENNReal.ofReal R) ^ p ∂P :=
+    lintegral_mono hpoint
+  have hconst_ne_top :
+      (∫⁻ _ : Ω, (ENNReal.ofReal R) ^ p ∂P) ≠ ∞ := by
+    rw [lintegral_const]
+    exact ENNReal.mul_ne_top
+      (ENNReal.rpow_ne_top_of_nonneg hp.le ENNReal.ofReal_ne_top)
+      (measure_ne_top P Set.univ)
+  have hfinite : (∫⁻ ω, ‖AR ω‖ₑ ^ p ∂P) ≠ ∞ :=
+    ne_top_of_le_ne_top hconst_ne_top hle
+  simpa [A, AR] using hfinite
+
+/--
+Durrett 2019, Theorem 4.4.4 truncation support: each bounded running-maximum
+truncation satisfies the textbook p-th-power estimate with constant
+`p/(p-1)`.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_truncated_lintegral_rpow_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p q R : ℝ} (hpq : p.HolderConjugate q) (hR : 0 ≤ R) (n : ℕ) :
+    (∫⁻ ω,
+        ‖min
+          ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0))
+          R‖ₑ ^ p ∂P) ≤
+      (ENNReal.ofReal (p / (p - 1)) *
+        (∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p)) ^ p := by
+  let M : ℝ≥0∞ :=
+    ∫⁻ ω,
+      ‖min
+        ((Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+          (fun k => max (X k ω) 0))
+        R‖ₑ ^ p ∂P
+  let T : ℝ≥0∞ := ∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P
+  have hAssembled :=
+    durrett2019_theorem_4_4_4_positivePart_truncated_layercake_doob_holder_bound
+      (P := P) (ℱ := ℱ) (X := X) hX hpq hR n
+  have hBound :
+      M ≤
+        (ENNReal.ofReal p * (ENNReal.ofReal (p - 1))⁻¹) *
+          (T ^ (1 / p) * M ^ (1 / q)) := by
+    change
+      M ≤
+        ENNReal.ofReal p *
+          ((ENNReal.ofReal (p - 1))⁻¹ *
+            (T ^ (1 / p) * M ^ (1 / q))) at hAssembled
+    calc
+      M ≤
+          ENNReal.ofReal p *
+            ((ENNReal.ofReal (p - 1))⁻¹ *
+              (T ^ (1 / p) * M ^ (1 / q))) := hAssembled
+      _ =
+          (ENNReal.ofReal p * (ENNReal.ofReal (p - 1))⁻¹) *
+            (T ^ (1 / p) * M ^ (1 / q)) := by
+            ac_rfl
+  have hM_ne_top : M ≠ ∞ := by
+    simpa [M] using
+      durrett2019_theorem_4_4_4_positivePart_truncated_lintegral_rpow_ne_top
+        (P := P) (X := X) hpq.pos hR n
+  have hScalar :
+      M ≤
+        ((ENNReal.ofReal p * (ENNReal.ofReal (p - 1))⁻¹) *
+          T ^ (1 / p)) ^ p :=
+    durrett2019_theorem_4_4_4_scalar_cancel_holder_bound
+      (M := M) (T := T)
+      (K := ENNReal.ofReal p * (ENNReal.ofReal (p - 1))⁻¹)
+      hpq hM_ne_top hBound
+  have hCoeff :
+      ENNReal.ofReal p * (ENNReal.ofReal (p - 1))⁻¹ =
+        ENNReal.ofReal (p / (p - 1)) := by
+    have hp_sub_pos : 0 < p - 1 := hpq.sub_one_pos
+    rw [ENNReal.ofReal_div_of_pos hp_sub_pos]
+    rfl
+  change M ≤ (ENNReal.ofReal (p / (p - 1)) * T ^ (1 / p)) ^ p
+  rw [← hCoeff]
+  exact hScalar
+
 end ProbabilityTheory
 end StatInference
