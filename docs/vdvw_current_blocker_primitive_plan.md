@@ -8463,8 +8463,20 @@ Chebyshev lower bound
 plus the distance-form wrapper
 `VdVWChebyshev_betaLower_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad`.
 This closes the one-index ghost-good fiber lower bound after a centered-bad
-sample selects its witness.  The next exact edit is the sign/Rademacher lift:
-intersect this selected ghost-good fiber with the canonical sign and finite-net
-Rademacher event, prove measurability and the displayed fiber lower bound for
-`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`, then feed
+sample selects its witness.
+
+2026-05-08 selected ghost-good to centered pair-difference fiber:
+`Theorem243.lean` now proves
+`vdVWWeightedClassSupremum_pairSub_gt_half_of_selectedWitnessGhostGoodEvent`
+and
+`VdVWChebyshev_betaLower_centeredPairSubBadEvent_of_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad`.
+This transports the displayed Chebyshev beta lower bound from the selected
+ghost-good event to the centered pair-difference bad event and internally
+discharges the pair-difference value-set boundedness from the centered
+truncated envelope hypotheses.  The next exact edit is the event/fiber-level
+Rademacher sign-swap: use `vdVWRademacherProductSampleSignSwap` and
+`vdVWWeightedClassSupremum_pairDifference_constWeights_signSwap` to push this
+pair-difference bad event into the canonical sign/sample event, then prove
+measurability and the displayed fiber lower bound for
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent` and feed
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.

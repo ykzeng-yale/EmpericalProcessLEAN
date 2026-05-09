@@ -138,10 +138,16 @@ compiled in
 `VdVWChebyshev_betaLower_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ`
 and its distance-form wrapper
 `VdVWChebyshev_betaLower_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad`.
-Current next target: intersect this selected ghost-good fiber with the
-canonical Rademacher/sign finite-net event, prove the resulting measurable
-fiber lower bound for `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`,
-and feed it to
+The selected-witness fiber is now transported to the centered pair-difference
+bad event by
+`vdVWWeightedClassSupremum_pairSub_gt_half_of_selectedWitnessGhostGoodEvent`
+and
+`VdVWChebyshev_betaLower_centeredPairSubBadEvent_of_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad`;
+the latter discharges the needed pair-difference value-set boundedness from
+the usual centered-truncated envelope hypotheses.  Current next target: prove
+the event/fiber-level Rademacher sign-swap from this centered pair-difference
+bad event into `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`,
+including named-event measurability and the displayed fiber lower bound for
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
