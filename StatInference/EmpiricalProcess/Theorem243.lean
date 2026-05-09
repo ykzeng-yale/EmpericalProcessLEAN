@@ -37495,6 +37495,122 @@ theorem
       hM_nonneg heta (cover eta heta n z.1) hsign hmaximal hrad_bad
 
 /--
+Canonical ghost/Rademacher selected-net event for the displayed-beta source
+route.
+
+The event lives over an original sample, an independent ghost sample, and a
+canonical finite-product Rademacher sign vector.  The ghost coordinate is not
+used by the deterministic selected-net handoff itself; it is present so the
+remaining Lemma 2.3.7 proof can intersect the Chebyshev good ghost event with
+the Rademacher finite-net bad event on one product fiber.
+-/
+noncomputable def VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample)) :
+    Set (SampleAt Observation n ×
+      (SampleAt Observation n × SampleAt ℝ n)) :=
+  {z |
+    VdVWRademacherSignVector z.2.2 ∧
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover z.1).center z.2.2 M ∧
+      epsilon <
+        dist
+          (2 *
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights z.2.2) z.1)
+          (0 : ℝ)}
+
+/--
+Concrete-event version of the canonical ghost/Rademacher product-event
+constructor.
+
+This fixes the arbitrary `jointEvent` in
+`of_eventual_canonicalGhostRademacher_selectedFiniteNet_product_event` to the
+canonical selected-net event above.  The remaining source obligations are now
+exactly the measurability of that concrete event and the displayed Chebyshev
+beta lower bound for its fibers over the centered bad set.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_nonneg : 0 ≤ M)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (hevent_meas :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (_hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          MeasurableSet
+            (VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon)
+              (cardinality := fun sample : SampleAt Observation n =>
+                selectedCardinality eta n sample n)
+              (cover := cover eta heta n)))
+    (hfiber :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (_hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          ∀ sample : SampleAt Observation n,
+            sample ∈
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)} ->
+              ENNReal.ofReal
+                  (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                ((vdVWProductMeasure P n).prod
+                    (vdVWProductMeasure vdVWRademacherLaw n))
+                  (Prod.mk sample ⁻¹'
+                    VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+                      (indexClass := indexClass) (classFun := classFun)
+                      (envelope := envelope) (M := M) (eta := eta)
+                      (epsilon := epsilon)
+                      (cardinality := fun sample' : SampleAt Observation n =>
+                        selectedCardinality eta n sample' n)
+                      (cover := cover eta heta n))) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 2 1 selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedFiniteNet_product_event
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M)
+      (selectedCardinality := selectedCardinality) hM_nonneg cover
+      (jointEvent := fun eta heta epsilon _hepsilon n =>
+        VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon)
+          (cardinality := fun sample : SampleAt Observation n =>
+            selectedCardinality eta n sample n)
+          (cover := cover eta heta n))
+      hevent_meas hfiber ?_
+  intro eta heta epsilon hepsilon
+  exact Eventually.of_forall fun n z hz => by
+    simpa [VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent] using hz
+
+/--
 A scaled selected outer-probability comparison without the displayed beta factor
 implies the displayed-beta source primitive.
 

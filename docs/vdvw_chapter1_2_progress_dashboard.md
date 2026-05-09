@@ -114,13 +114,14 @@ is now packaged as
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedFiniteNet_product_event`,
 and the textbook-shaped ghost/sign fiber version is now packaged as
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedFiniteNet_product_event`.
+The arbitrary-event interface is now fixed to the named concrete event
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent` by
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
 The shared deterministic pointwise core is
 `VdVWTheorem243_selectedFiniteNetHoeffding_bad_of_rademacher_bad`.
-Current next target: construct the actual measurable ghost/Rademacher joint
-event whose fibers over the centered bad set have the displayed Chebyshev beta
-lower bound and whose points supply the sign vector, selected finite-center
-maximal bound, and scaled Rademacher bad event.  Use the selected-log mean
-route only under honest L1/UI/countability strengthening.
+Current next target: prove measurability and the displayed Chebyshev beta
+fiber lower bound for that named event.  Use the selected-log mean route only
+under honest L1/UI/countability strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
 restatements, finite-index wrappers, or selected-cardinality transport unless
 it directly consumes that source proof.

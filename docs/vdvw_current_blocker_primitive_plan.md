@@ -8420,3 +8420,13 @@ canonical Rademacher sign event on the same product fiber.  The exact remaining
 probability source task is to prove measurability and the displayed beta fiber
 lower bound for that concrete event, then verify its pointwise sign/maximal/bad
 ingredients.
+
+2026-05-08 canonical named ghost/Rademacher selected-net event:
+`Theorem243.lean` now defines
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent` and proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
+This removes the arbitrary `jointEvent` parameter from the source handoff.  The
+remaining event-route blocker is now exactly the measurability and displayed
+Chebyshev beta fiber lower bound for this named event; its pointwise projection
+into the selected finite-net bad event is already handled by the compiled
+deterministic core.
