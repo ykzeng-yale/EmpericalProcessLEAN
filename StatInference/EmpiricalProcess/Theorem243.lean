@@ -37697,6 +37697,102 @@ theorem
         hmaximalGhost hbadGhost')
 
 /--
+Concrete ghost/Rademacher pair-difference event for the Lemma 2.3.7 source
+route.
+
+This is the joint event that should feed the factor-two product-fiber
+constructor.  It requires a canonical Rademacher sign vector, the selected
+finite-center Hoeffding side condition for both the original sample and the
+ghost sample with negated signs, and signed pair-difference badness.  The next
+probability step is to prove this event is measurable and has beta-large
+fibers over the centered bad event.
+-/
+noncomputable def VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample)) :
+    Set (SampleAt Observation n ×
+      (SampleAt Observation n × SampleAt ℝ n)) :=
+  {z |
+    VdVWRademacherSignVector z.2.2 ∧
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover z.1).center z.2.2 M ∧
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.2.1
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover z.2.1).center (fun i : Fin n => -z.2.2 i) M ∧
+      epsilon <
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1 -
+              vdVWTruncatedClassFun classFun envelope M index z.2)
+          (vdVWRademacherWeights z.2.2)
+          (fun i : Fin n => (z.1 i, z.2.1 i))}
+
+/--
+The concrete ghost/Rademacher pair-difference event lands in the
+original-or-ghost selected finite-net bad event.
+
+This is the pointwise inclusion required by
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ghost_product_fiber_lower_bound_or_selectedNet`;
+the remaining work is purely measure/fiber: measurability and the displayed
+Chebyshev lower bound for this concrete event.
+-/
+theorem
+    VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad
+    {Observation : Type v} {Index : Type w} {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M) (heta : 0 < eta)
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {z : SampleAt Observation n ×
+        (SampleAt Observation n × SampleAt ℝ n)}
+    (hz :
+      z ∈
+        VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover)) :
+    z.1 ∈
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (2 * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality sample) n M + eta)
+              (0 : ℝ)} ∨
+      z.2.1 ∈
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (2 * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality sample) n M + eta)
+              (0 : ℝ)} := by
+  rcases hz with ⟨hsign, hmaximalOriginal, hmaximalGhost, hbad⟩
+  exact
+    VdVWTheorem243_selectedFiniteNetHoeffding_original_or_ghost_bad_of_pairDifference_rademacher_bad
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (n := n)
+      (cardinalityOriginal := cardinality z.1)
+      (cardinalityGhost := cardinality z.2.1)
+      (sample := z.1) (ghostSample := z.2.1) (sign := z.2.2)
+      henvelope hM_nonneg heta (cover z.1) (cover z.2.1)
+      hsign hmaximalOriginal hmaximalGhost hbad
+
+/--
 Canonical Rademacher selected-finite-net product-event source constructor.
 
 This is the next event-level layer above

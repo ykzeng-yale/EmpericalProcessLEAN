@@ -8530,3 +8530,14 @@ Chebyshev fiber lower bound from the selected centered-pair-difference fiber
 and product-pair sign-swap, and its original-or-ghost selected-net inclusion
 from
 `VdVWTheorem243_selectedFiniteNetHoeffding_original_or_ghost_bad_of_pairDifference_rademacher_bad`.
+
+2026-05-09 concrete ghost/Rademacher pair-difference event:
+`Theorem243.lean` now defines
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent` and proves
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad`.
+The event packages a ghost sample, canonical Rademacher signs, the finite-center
+Hoeffding side condition for the original sample and for the ghost sample with
+negated signs, and signed pair-difference badness.  Its pointwise projection
+now feeds the factor-two product-fiber constructor.  The exact remaining
+source obligations are measurability of this event and the displayed
+Chebyshev beta lower bound for its fibers over the centered bad event.

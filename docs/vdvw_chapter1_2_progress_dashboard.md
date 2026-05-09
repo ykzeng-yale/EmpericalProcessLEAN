@@ -160,10 +160,12 @@ packaged by
 `VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost`
 and
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ghost_product_fiber_lower_bound_or_selectedNet`.
-The remaining work is to build the concrete ghost/Rademacher joint event,
-prove its measurability and displayed Chebyshev fiber lower bound, and show
-that its points satisfy the original-or-ghost selected-net inclusion consumed
-by that factor-two constructor, then specialize back to
+The concrete ghost/Rademacher pair-difference event is now named
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent`, and its
+pointwise original-or-ghost selected-net inclusion is compiled as
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad`.
+The remaining work is to prove measurability and the displayed Chebyshev fiber
+lower bound for this concrete event, then specialize back to
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
