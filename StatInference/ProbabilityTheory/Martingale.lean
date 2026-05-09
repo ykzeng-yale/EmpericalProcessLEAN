@@ -10422,6 +10422,57 @@ theorem durrett2019_lemma_4_3_9_normalized_branchingProcess_martingale_of_condEx
 /-! ## Durrett, Section 4.4 -/
 
 /--
+Durrett 2019, Theorem 4.4.1: optional stopping for a bounded pair of stopping
+times in mathlib's `stoppedValue` form.
+-/
+theorem durrett2019_theorem_4_4_1_submartingale_expected_stoppedValue_mono
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} {M N : Ω -> WithTop ℕ}
+    (hX : Submartingale X ℱ P) (hM : IsStoppingTime ℱ M)
+    (hN : IsStoppingTime ℱ N) (hMN : M ≤ N) {n : ℕ}
+    (hbdd : ∀ ω, N ω ≤ n) :
+    (∫ ω, stoppedValue X M ω ∂P) ≤ ∫ ω, stoppedValue X N ω ∂P :=
+  hX.expected_stoppedValue_mono hM hN hMN hbdd
+
+/--
+Durrett 2019, Theorem 4.4.1 martingale equality form: a bounded stopped
+martingale has the same expectation as its initial value.
+-/
+theorem durrett2019_theorem_4_4_1_martingale_integral_stoppedValue_eq_initial
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> WithTop ℕ}
+    (hX : Martingale X ℱ P) (hN : IsStoppingTime ℱ N) {n : ℕ}
+    (hbdd : ∀ ω, N ω ≤ n) :
+    (∫ ω, stoppedValue X N ω ∂P) = ∫ ω, X 0 ω ∂P := by
+  have hzero : IsStoppingTime ℱ (fun _ : Ω => (0 : WithTop ℕ)) := by
+    simpa using isStoppingTime_const ℱ 0
+  have hle_zero_N : (fun _ : Ω => (0 : WithTop ℕ)) ≤ N := by
+    intro ω
+    simp
+  have hle_sub : (∫ ω, X 0 ω ∂P) ≤ ∫ ω, stoppedValue X N ω ∂P := by
+    have h :=
+      hX.submartingale.expected_stoppedValue_mono hzero hN hle_zero_N hbdd
+    simpa [stoppedValue_const] using h
+  have hneg_sub : Submartingale (fun k ω => -X k ω) ℱ P := by
+    simpa only [Pi.neg_apply] using hX.neg.submartingale
+  have hle_neg :
+      (∫ ω, -X 0 ω ∂P) ≤
+        ∫ ω, stoppedValue (fun k ω => -X k ω) N ω ∂P := by
+    have h := hneg_sub.expected_stoppedValue_mono hzero hN hle_zero_N hbdd
+    simpa [stoppedValue_const] using h
+  have hle_rev : (∫ ω, stoppedValue X N ω ∂P) ≤ ∫ ω, X 0 ω ∂P := by
+    have hneg_eq :
+        stoppedValue (fun k ω => -X k ω) N =
+          fun ω => -stoppedValue X N ω := by
+      funext ω
+      simp [stoppedValue]
+    rw [hneg_eq, integral_neg, integral_neg] at hle_neg
+    simpa using (neg_le_neg_iff.mp hle_neg)
+  exact le_antisymm hle_rev hle_sub
+
+/--
 Durrett 2019, Theorem 4.4.2, Doob's maximal inequality in mathlib's
 nonnegative-submartingale form.
 -/
@@ -12727,6 +12778,54 @@ theorem durrett2019_exercise_4_4_5_condExp_square_difference_integral
     _ = (∫ ω, A ω ^ 2 ∂P) - (∫ ω, B ω ^ 2 ∂P) := by ring
     _ = (∫ ω, P[Y | mG] ω ^ 2 ∂P) -
           (∫ ω, P[Y | mF] ω ^ 2 ∂P) := rfl
+
+/--
+Durrett 2019, Exercise 4.4.6 stopped-variance handoff.  If a bounded stopping
+argument supplies the optional-stopping identity for the square-minus-variance
+martingale, the variance clock dominates `variance` on the small-ball event,
+and the stopped square is bounded by the overshoot scale `(x + K)^2`, then the
+textbook small-ball probability bound follows.
+-/
+theorem durrett2019_exercise_4_4_6_smallBall_bound_of_stopped_variance_identity
+    {Ω : Type*} [MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {A : Set Ω} {stoppedSq stoppedVar : Ω -> ℝ} {x K variance : ℝ}
+    (hA : MeasurableSet A) (hvariance_pos : 0 < variance)
+    (hstoppedSq_int : Integrable stoppedSq P)
+    (hstoppedVar_int : Integrable stoppedVar P)
+    (hoptional : (∫ ω, stoppedVar ω ∂P) = ∫ ω, stoppedSq ω ∂P)
+    (hvar_nonneg : 0 ≤ᵐ[P] stoppedVar)
+    (hvar_on_A : ∀ᵐ ω ∂P, ω ∈ A -> variance ≤ stoppedVar ω)
+    (hsq_bound : stoppedSq ≤ᵐ[P] fun _ => (x + K) ^ 2) :
+    P A ≤ ENNReal.ofReal (((x + K) ^ 2) / variance) := by
+  have hind_int : Integrable (A.indicator fun _ : Ω => variance) P := by
+    exact (integrable_const (c := variance)).indicator hA
+  have hindicator_le : (A.indicator fun _ : Ω => variance) ≤ᵐ[P] stoppedVar := by
+    filter_upwards [hvar_nonneg, hvar_on_A] with ω hnonneg hAω
+    by_cases hω : ω ∈ A
+    · simp [Set.indicator_of_mem hω, hAω hω]
+    · rw [Set.indicator_of_notMem hω]
+      simpa using hnonneg
+  have hvar_lower : variance * P.real A ≤ ∫ ω, stoppedVar ω ∂P := by
+    have hmono := integral_mono_ae hind_int hstoppedVar_int hindicator_le
+    have hind_eq :
+        (∫ ω, A.indicator (fun _ : Ω => variance) ω ∂P) =
+          P.real A * variance := by
+      simpa using (integral_indicator_const (μ := P) (e := variance) hA)
+    rw [hind_eq] at hmono
+    simpa [mul_comm] using hmono
+  have hsq_upper : (∫ ω, stoppedSq ω ∂P) ≤ (x + K) ^ 2 := by
+    have hconst_int : Integrable (fun _ : Ω => (x + K) ^ 2) P :=
+      integrable_const _
+    have hmono := integral_mono_ae hstoppedSq_int hconst_int hsq_bound
+    simpa [integral_const, probReal_univ, smul_eq_mul] using hmono
+  have hreal : P.real A ≤ ((x + K) ^ 2) / variance := by
+    have hchain : variance * P.real A ≤ (x + K) ^ 2 := by
+      exact hvar_lower.trans (by simpa [hoptional] using hsq_upper)
+    exact (le_div_iff₀ hvariance_pos).2 (by simpa [mul_comm] using hchain)
+  have hA_ne_top : P A ≠ ∞ := measure_ne_top P A
+  rw [← ENNReal.ofReal_toReal hA_ne_top]
+  exact ENNReal.ofReal_le_ofReal hreal
 
 /--
 Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If

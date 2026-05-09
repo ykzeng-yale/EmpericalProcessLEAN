@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V136
+## Live In-Thread Goal Prompt V137
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -14,26 +14,25 @@ synced `main`.  Active lane: Durrett Chapter 4.4 martingale maximal
 inequalities in `StatInference/ProbabilityTheory/Martingale.lean` plus the
 three Durrett route docs.  Treat compiled Chapter 2, Chapter 3, Chapter 4.1
 through Theorem 4.1.15, Chapter 4.2, Chapter 4.3, and Chapter 4.4 through
-Exercise 4.4.5 and Example 4.4.9 as closed support unless the next theorem
-directly needs one API.
+Exercise 4.4.6's stopped-variance handoff and Example 4.4.9 as closed support
+unless the next theorem directly needs one API.
 
-Current compiled packet: Exercise 4.4.5's conditional-variance variant now
-compiles as
-`durrett2019_exercise_4_4_5_condExp_square_difference_integral`.  Example 4.4.9
-also compiles through the conditional/integrated second-moment recurrence,
-finite-sum display, shifted geometric-sum, uniform second-moment bound,
-`eLpNorm 2` handoff, `L^2` convergence endpoint, expectation handoff,
-`E X = 1`, and nonzero-limit endpoint.  Keep the full Galton-Watson random-sum
-and extinction/survival infrastructure deferred unless a direct local
-abstraction already exists.
+Current compiled packet: Theorem 4.4.1 now has bounded optional-stopping
+wrappers
+`durrett2019_theorem_4_4_1_submartingale_expected_stoppedValue_mono` and
+`durrett2019_theorem_4_4_1_martingale_integral_stoppedValue_eq_initial`.
+Exercise 4.4.6 now has the stopped-variance small-ball handoff
+`durrett2019_exercise_4_4_6_smallBall_bound_of_stopped_variance_identity`.
+Exercise 4.4.5 and Example 4.4.9 remain closed compiled support.
 
-Next aggressive step: target Exercise 4.4.6's bounded-increment small-ball
-variance bound using the existing martingale/submartingale/optional-stopping
-and maximal-inequality APIs.  If that is blocked, move to a theorem-sized
-Exercise 4.4.7 or 4.4.9-4.4.11 packet with the largest compileable reuse.  Do
-not loop back to already compiled Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9,
-or Exercise 4.4.5 plumbing.  Theorem 4.1.16 remains deferred unless a targeted
-kernel search finds a direct source-shaped API.
+Next aggressive step: instantiate Exercise 4.4.6's exit/hitting stopping time
+and deterministic variance clock so the bounded-increment overshoot and
+small-ball event feed the stopped-variance handoff.  If that route is blocked,
+move to a theorem-sized Exercise 4.4.7 or 4.4.9-4.4.11 packet with the largest
+compileable reuse.  Do not loop back to already compiled Chapter 4.3.5, Chapter
+4.3.8, Example 4.4.9, Exercise 4.4.5, or Theorem 4.4.1 plumbing.  Theorem
+4.1.16 remains deferred unless a targeted kernel search finds a direct
+source-shaped API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -533,10 +532,11 @@ also compile:
 `durrett2019_example_4_4_9_branchingProcess_limitProcess_not_ae_eq_zero`.
 Exercise 4.4.5's conditional-variance variant now also compiles:
 `durrett2019_exercise_4_4_5_condExp_square_difference_integral`.
-Next target: Exercise 4.4.6's bounded-increment small-ball variance bound, or a
-nearby Chapter 4.4 theorem-sized packet if that route is blocked.  Do not detour
-back into full Galton-Watson random-sum/extinction infrastructure unless a local
-API makes it cheap.
+Theorem 4.4.1 optional-stopping wrappers and Exercise 4.4.6's stopped-variance
+small-ball handoff now also compile.  Next target: instantiate the actual
+exit/hitting stopping time and variance clock for Exercise 4.4.6.  Do not
+detour back into full Galton-Watson random-sum/extinction infrastructure unless
+a local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -1079,10 +1079,11 @@ The Example 4.4.9 conditional, integrated second-moment recurrence, finite-sum
 display, shifted geometric-sum, uniform second-moment bound, `eLpNorm 2`
 handoff, `L^2` convergence endpoint, expectation handoff, `E X = 1`, and
 nonzero-limit endpoint now also compile.  Exercise 4.4.5's
-conditional-variance variant now also compiles.  Next move to Exercise 4.4.6's
-bounded-increment small-ball variance bound, or a nearby Chapter 4.4
-theorem-sized packet if that route is blocked.  Keep Theorem 4.1.16 deferred
-unless a targeted kernel search finds a direct source-shaped API.
+conditional-variance variant now also compiles.  Theorem 4.4.1
+optional-stopping wrappers and Exercise 4.4.6's stopped-variance small-ball
+handoff now also compile.  Next move to the actual Exercise 4.4.6 hitting-time
+and variance-clock instantiation.  Keep Theorem 4.1.16 deferred unless a
+targeted kernel search finds a direct source-shaped API.
 
 High-value Chapter 3 source anchors are in
 `Textbooks/Durrett2019ProbabilityTheory/Markdown/Durrett2019 - Probability Theory and Examples_123-244.md`:
@@ -1194,6 +1195,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V136` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V137` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
