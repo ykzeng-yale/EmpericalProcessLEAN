@@ -14698,9 +14698,81 @@ theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendst
     (P := P) (ℱ := ℱ) (X := X)
     (N := durrett2019_theorem_4_5_2_firstPredictableAbove A a)
     hX
-    (durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
+      (durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
       (ℱ := ℱ) (A := A) a hA_predictable)
     hR
+
+/--
+Durrett 2019, Theorem 4.5.2 terminal/supremum `L^p` bridge.
+
+On paths where the running absolute maxima are bounded above, each terminal
+value is dominated by the running absolute supremum.  This is the monotone
+`eLpNorm` step that converts a maximal estimate into uniform terminal bounds.
+-/
+theorem durrett2019_theorem_4_5_2_eLpNorm_terminal_le_runningAbsSup_of_ae_bddAbove
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : ℕ -> Ω -> ℝ} {p : ℝ≥0∞}
+    (hBdd :
+      ∀ᵐ ω ∂P, BddAbove (Set.range fun m => durrett2019_runningAbsMax Y m ω))
+    (n : ℕ) :
+    eLpNorm (Y n) p P ≤ eLpNorm (durrett2019_runningAbsSup Y) p P := by
+  refine eLpNorm_mono_ae_real ?_
+  filter_upwards [hBdd] with ω hBddω
+  have hterminal_le_max : ‖Y n ω‖ ≤ durrett2019_runningAbsMax Y n ω := by
+    rw [Real.norm_eq_abs]
+    dsimp [durrett2019_runningAbsMax]
+    exact Finset.le_sup' (fun k => |Y k ω|) (by simp)
+  have hmax_le_sup :
+      durrett2019_runningAbsMax Y n ω ≤ durrett2019_runningAbsSup Y ω := by
+    simpa [durrett2019_runningAbsSup] using
+      (le_ciSup hBddω n : durrett2019_runningAbsMax Y n ω ≤
+        ⨆ m : ℕ, durrett2019_runningAbsMax Y m ω)
+  exact hterminal_le_max.trans hmax_le_sup
+
+/--
+Durrett 2019, Theorem 4.5.2 uniform terminal `L^2` bridge from a running
+supremum `L^2` bound.
+-/
+theorem durrett2019_theorem_4_5_2_eLpNorm_two_bdd_of_runningAbsSup_eLpNorm_two_bdd
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : ℕ -> Ω -> ℝ} {R : ℝ≥0}
+    (hBdd :
+      ∀ᵐ ω ∂P, BddAbove (Set.range fun m => durrett2019_runningAbsMax Y m ω))
+    (hSup :
+      eLpNorm (durrett2019_runningAbsSup Y) (ENNReal.ofReal (2 : ℝ)) P ≤ R) :
+    ∀ n, eLpNorm (Y n) (ENNReal.ofReal (2 : ℝ)) P ≤ R := by
+  intro n
+  exact
+    (durrett2019_theorem_4_5_2_eLpNorm_terminal_le_runningAbsSup_of_ae_bddAbove
+      (P := P) (Y := Y) (p := ENNReal.ofReal (2 : ℝ)) hBdd n).trans hSup
+
+/--
+Durrett 2019, Theorem 4.5.2 stopped-convergence handoff from a running
+supremum `L^2` bound.
+
+After the maximal estimate is converted into an `eLpNorm` bound for the stopped
+running supremum, this theorem feeds the resulting uniform terminal `L^2`
+bound into Theorem 4.4.6.
+-/
+theorem durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_runningAbsSup_eLpNorm_two_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {R : ℝ≥0}
+    (hX : Martingale X ℱ P) (hN : IsStoppingTime ℱ N)
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove
+          (Set.range fun m => durrett2019_runningAbsMax (stoppedProcess X N) m ω))
+    (hSup :
+      eLpNorm (durrett2019_runningAbsSup (stoppedProcess X N))
+        (ENNReal.ofReal (2 : ℝ)) P ≤ R) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto (fun n => stoppedProcess X N n ω) atTop (𝓝 z) :=
+  durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_eLpNorm_two_bdd
+    (P := P) (ℱ := ℱ) (X := X) (N := N) (R := R) hX hN
+    (durrett2019_theorem_4_5_2_eLpNorm_two_bdd_of_runningAbsSup_eLpNorm_two_bdd
+      (P := P) (Y := stoppedProcess X N) hBdd hSup)
 
 /--
 Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two
