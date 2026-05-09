@@ -1,6 +1,6 @@
 # VdV&W Current Blocker Primitive Plan
 
-Status date: 2026-05-08.
+Status date: 2026-05-09.
 
 This file pins down the active blocker and the primitive Lean declarations
 needed to close it.  It is not a theorem report.  A formal report is created
@@ -95,25 +95,21 @@ Matching/WDSM edits, so do not use it for VdVW proof commits.  Use this
 paragraph, not older rebase paragraphs below, as the operative continuation
 prompt.
 
-Current newest source-side progress: the selected-log ordinary-mean route has
-the localized countability constructor
-`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero_of_set_countable`,
-and the displayed-beta selected-cover route has the common iid Rademacher
-constructor
-`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id`.
-The sign-side measurable-cover input for that constructor is now discharged
-under localized class countability by
-`VdVWTheorem243_signSideRademacherMeasurableCover_of_set_countable` and
-`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id_of_set_countable`.
-Next exact target: prove the event-level
-`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison`
-source comparison itself, preferably through the product/Fubini averaged
-`Phi(x)=x` comparison plus selected-cover finite-center maximal control.  In
-the countable-class common-iid route the remaining displayed-beta source
-obligations are now exactly the finite-center Hoeffding/maximal event and the
-`Phi(x)=x` comparison; in parallel, use the selected-log mean route only under
-honest L1/UI/countability strengthening and do not claim it follows from bare
-stochastic entropy.
+Current newest source-side progress: the selected-witness Chebyshev ghost-good
+fiber is transported to the centered pair-difference bad event, the
+product-pair Rademacher sign-swap measure equality is compiled as
+`measure_vdVWProductMeasure_pairDifference_constWeights_bad_eq_rademacherWeights_bad`,
+and the deterministic one-sided Rademacher pair-difference split is compiled as
+`vdVWWeightedClassSupremum_truncated_pairDifference_rademacher_bad_imp_original_or_ghost_bad`.
+Next exact target: prove the product-fiber lower bound for the named canonical
+ghost/Rademacher selected-net event by combining the centered pair-difference
+fiber lower bound, the product-pair sign-swap equality, the one-sided split,
+sign-negation/ghost symmetry, and the selected finite-net Hoeffding side
+condition.  The theorem should discharge named-event measurability and the
+displayed fiber lower-bound hypotheses consumed by
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
+Use the selected-log mean route only under honest L1/UI/countability
+strengthening and do not claim it follows from bare stochastic entropy.
 
 Newest permutation-symmetric support: search found the existing set-level
 `Σ_n` invariant theorem
@@ -8492,3 +8488,16 @@ exact edit is to lift this equality into the ghost/sign product fiber over a
 fixed original sample, then split/project the Rademacher pair-difference bad
 event into the one-sided original-sample canonical event with the selected
 finite-net Hoeffding side condition.
+
+2026-05-09 one-sided Rademacher pair-difference split:
+`Theorem243.lean` now proves
+`vdVWWeightedClassSupremum_truncated_pairDifference_rademacher_bad_imp_original_or_ghost_bad`.
+After the product-pair sign-swap converts the centered pair-difference event
+to a Rademacher-weighted pair-difference event, this deterministic projection
+shows that pair-difference badness forces either the original sample or the
+ghost sample to be bad after the factor-two scaling.  The next exact edit is
+to combine this split with the sign-swap equality inside the ghost/sign
+product fiber, use sign-negation and ghost symmetry to keep the original-side
+canonical event, add the selected finite-net Hoeffding side condition, and
+prove measurability plus the displayed fiber lower bound for
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.

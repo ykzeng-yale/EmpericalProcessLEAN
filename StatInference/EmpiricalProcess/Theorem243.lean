@@ -12652,6 +12652,119 @@ theorem
             rfl
 
 /--
+One-sided deterministic split of a Rademacher pair-difference bad event.
+
+After the product-pair sign-swap has converted the centered pair-difference
+event to a Rademacher-weighted pair-difference event, this lemma is the
+pointwise projection step: if the pair-difference supremum is bad, then either
+the original sample or the ghost sample is bad after the usual factor-two
+scaling.
+-/
+theorem
+    vdVWWeightedClassSupremum_truncated_pairDifference_rademacher_bad_imp_original_or_ghost_bad
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    {sign : Fin n -> ℝ}
+    {sample ghostSample : SampleAt Observation n}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (hbad :
+      epsilon <
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1 -
+              vdVWTruncatedClassFun classFun envelope M index z.2)
+          (vdVWRademacherWeights sign)
+          (fun i : Fin n => (sample i, ghostSample i))) :
+    epsilon <
+        dist
+          (2 *
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights sign) sample)
+          (0 : ℝ) ∨
+      epsilon <
+        dist
+          (2 *
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (fun i : Fin n => -vdVWRademacherWeights sign i) ghostSample)
+          (0 : ℝ) := by
+  by_cases hepsilon_neg : epsilon < 0
+  · have hdist_nonneg :
+        0 ≤
+          dist
+            (2 *
+              vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights sign) sample)
+            (0 : ℝ) := dist_nonneg
+    exact Or.inl (hepsilon_neg.trans_le hdist_nonneg)
+  let originalSup : ℝ :=
+    vdVWWeightedClassSupremum indexClass
+      (vdVWTruncatedClassFun classFun envelope M)
+      (vdVWRademacherWeights sign) sample
+  let ghostSup : ℝ :=
+    vdVWWeightedClassSupremum indexClass
+      (vdVWTruncatedClassFun classFun envelope M)
+      (fun i : Fin n => -vdVWRademacherWeights sign i) ghostSample
+  let pairSup : ℝ :=
+    vdVWWeightedClassSupremum indexClass
+      (fun index : Index => fun z : Observation × Observation =>
+        vdVWTruncatedClassFun classFun envelope M index z.1 -
+          vdVWTruncatedClassFun classFun envelope M index z.2)
+      (vdVWRademacherWeights sign)
+      (fun i : Fin n => (sample i, ghostSample i))
+  have hpair_le : pairSup ≤ originalSup + ghostSup := by
+    simpa [pairSup, originalSup, ghostSup] using
+      vdVWWeightedClassSupremum_truncated_pairDifference_le_add
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M)
+        (weights := vdVWRademacherWeights sign)
+        (sample := fun i : Fin n => (sample i, ghostSample i))
+        henvelope hM_nonneg
+  by_cases horiginal_bad :
+      epsilon <
+        dist (2 * originalSup) (0 : ℝ)
+  · exact Or.inl (by simpa [originalSup] using horiginal_bad)
+  · right
+    by_contra hghost_not_bad
+    have horiginal_dist_le :
+        dist (2 * originalSup) (0 : ℝ) ≤ epsilon := le_of_not_gt horiginal_bad
+    have hghost_dist_le :
+        dist (2 * ghostSup) (0 : ℝ) ≤ epsilon := le_of_not_gt hghost_not_bad
+    have horiginal_nonneg : 0 ≤ originalSup := by
+      exact
+        vdVWWeightedClassSupremum_nonneg indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights sign) sample
+    have hghost_nonneg : 0 ≤ ghostSup := by
+      exact
+        vdVWWeightedClassSupremum_nonneg indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (fun i : Fin n => -vdVWRademacherWeights sign i) ghostSample
+    have horiginal_le_half : originalSup ≤ epsilon / 2 := by
+      have htwo_nonneg : 0 ≤ 2 * originalSup := by nlinarith
+      have hdist_eq : dist (2 * originalSup) (0 : ℝ) = 2 * originalSup := by
+        rw [Real.dist_eq, sub_zero, abs_of_nonneg htwo_nonneg]
+      have htwo_le : 2 * originalSup ≤ epsilon := by
+        rwa [hdist_eq] at horiginal_dist_le
+      nlinarith
+    have hghost_le_half : ghostSup ≤ epsilon / 2 := by
+      have htwo_nonneg : 0 ≤ 2 * ghostSup := by nlinarith
+      have hdist_eq : dist (2 * ghostSup) (0 : ℝ) = 2 * ghostSup := by
+        rw [Real.dist_eq, sub_zero, abs_of_nonneg htwo_nonneg]
+      have htwo_le : 2 * ghostSup ≤ epsilon := by
+        rwa [hdist_eq] at hghost_dist_le
+      nlinarith
+    have hpair_le_epsilon : pairSup ≤ epsilon := by
+      linarith
+    have hbad_pair : epsilon < pairSup := by
+      simpa [pairSup] using hbad
+    exact (not_lt_of_ge hpair_le_epsilon) hbad_pair
+
+/--
 Product-pair sign symmetry for the pair-difference supremum expectation.
 
 For every deterministic Rademacher sign vector, the expectation of the
