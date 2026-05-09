@@ -2747,6 +2747,102 @@ theorem chewi1311_affinePreimage_selfConcordantBarrierOn_equiv
 
 end AffinePreimageBarrier
 
+section InfProjectionBarrier
+
+variable {E₁ E₂ : Type*}
+  [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂]
+
+/--
+Projection domain for Chewi Proposition 13.11's partial-minimization rule:
+`x` is feasible when some `y` makes `(x, y)` feasible for the original
+barrier.
+-/
+def barrierInfProjectionSet (s : Set (WithLp 2 (E₁ × E₂))) : Set E₁ :=
+  {x | ∃ y : E₂, WithLp.toLp 2 (x, y) ∈ s}
+
+/-- Graph point associated with a supplied minimizer/selection map. -/
+def barrierInfProjectionPoint (selector : E₁ -> E₂) (x : E₁) :
+    WithLp 2 (E₁ × E₂) :=
+  WithLp.toLp 2 (x, selector x)
+
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
+theorem barrierInfProjectionPoint_mem_set
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂} {x : E₁}
+    (hx : barrierInfProjectionPoint selector x ∈ s) :
+    x ∈ barrierInfProjectionSet s :=
+  ⟨selector x, hx⟩
+
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
+theorem barrierInfProjectionSet_mono
+    {s t : Set (WithLp 2 (E₁ × E₂))}
+    (hst : s ⊆ t) :
+    barrierInfProjectionSet (E₁ := E₁) (E₂ := E₂) s ⊆
+      barrierInfProjectionSet t := by
+  intro x hx
+  rcases hx with ⟨y, hy⟩
+  exact ⟨y, hst hy⟩
+
+theorem SelfConcordantBarrierOn.infProjection_of_projected_oracles
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {projHess : E₁ -> E₁ →L[ℝ] E₁} {projGrad : E₁ -> E₁}
+    {projInvHess : E₁ -> E₁ →L[ℝ] E₁}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hproj_sc :
+      MixedThirdSelfConcordantOn (barrierInfProjectionSet s)
+        projHess projThird M)
+    (hinv_nonneg : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁, 0 ≤ inner ℝ v (projInvHess x v))
+    (hgradient_bound : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      dualLocalNorm projInvHess x (projGrad x) ≤ Real.sqrt nu) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      projHess projGrad projInvHess projThird M nu where
+  parameter_nonneg := hbar.parameter_nonneg
+  self_concordant := hproj_sc
+  invHess_nonneg := hinv_nonneg
+  gradient_bound := hgradient_bound
+
+/--
+Chewi Proposition 13.11, partial-minimization case, in supplied-projected-oracle
+form.  The hard Schur-complement/envelope verification is intentionally exposed
+as the projected self-concordance and dual-gradient gates.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_projected_oracles
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {projHess : E₁ -> E₁ →L[ℝ] E₁} {projGrad : E₁ -> E₁}
+    {projInvHess : E₁ -> E₁ →L[ℝ] E₁}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hproj_sc :
+      MixedThirdSelfConcordantOn (barrierInfProjectionSet s)
+        projHess projThird M)
+    (hinv_nonneg : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁, 0 ≤ inner ℝ v (projInvHess x v))
+    (hgradient_bound : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      dualLocalNorm projInvHess x (projGrad x) ≤ Real.sqrt nu) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      projHess projGrad projInvHess projThird M nu :=
+  hbar.infProjection_of_projected_oracles hproj_sc hinv_nonneg hgradient_bound
+
+end InfProjectionBarrier
+
 theorem hessianSegmentLocalNorm_riccatiDerivBound_of_mixedThirdSelfConcordantOn
     {s : Set E} {hess : E -> E →L[ℝ] E}
     {thirdMixed : E -> E -> E -> ℝ} {x y : E} {M : ℝ} {t : ℝ}

@@ -218,6 +218,17 @@ still needs a supplied inverse-Hessian/dual-gradient gate or a future
 surjective/pseudoinverse development.  Do not redo the adjoint transport
 or invertible-affine proof in the next packet.
 
+Latest inf-projection update: Proposition 13.11(4) now has a compiled
+supplied-projected-oracle spine through `barrierInfProjectionSet`,
+`barrierInfProjectionPoint`, `barrierInfProjectionPoint_mem_set`,
+`barrierInfProjectionSet_mono`,
+`SelfConcordantBarrierOn.infProjection_of_projected_oracles`, and
+`chewi1311_infProjection_selfConcordantBarrierOn_of_projected_oracles`.
+The next item-4 packet should attack the Schur-complement/envelope certificate
+that produces the projected Hessian, inverse-Hessian, gradient, and mixed
+third derivative oracles from an original product-domain barrier and a
+minimizer/first-order optimality map.
+
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,
 Definition 13.9, and the positive-orthant barrier packet are now substrate for
@@ -226,7 +237,7 @@ sum, sum component-Cauchy, adjoint-coordinate Cauchy reuse, and
 affine-preimage/equivalence wrappers; the next aggressive choices are the
 exact shared-domain sum inverse-Hessian/inverse-local gate, a
 principled non-invertible affine-preimage/range interface, or the
-inf-projection rule.
+inf-projection Schur-complement/envelope certificate.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

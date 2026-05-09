@@ -184,6 +184,15 @@ non-invertible statement still needs a careful range/surjective or
 pseudoinverse interface; do not silently replace Chewi's `dom f ⊆ range 𝒜`
 assumption with injectivity.
 
+The inf-projection case now has a compiled supplied-projected-oracle spine:
+`barrierInfProjectionSet`, `barrierInfProjectionPoint`,
+`SelfConcordantBarrierOn.infProjection_of_projected_oracles`, and
+`chewi1311_infProjection_selfConcordantBarrierOn_of_projected_oracles`.
+This opens Proposition 13.11(4) without hiding the hard part.  The remaining
+formalization task is to prove the Schur-complement/envelope certificate that
+turns a product-domain barrier and minimizer first-order conditions into the
+projected Hessian, inverse-Hessian, gradient, and mixed-third oracles.
+
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers
 in `StatInference/Optimization/ASGD.lean`.  The older right-product path with a

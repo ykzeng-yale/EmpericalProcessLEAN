@@ -114,12 +114,24 @@ This dashboard tracks the Chewi optimization formalization lane for
   `ContinuousLinearMap.adjoint_comp`, and
   `ContinuousLinearEquiv.coe_comp_coe_symm`; no direct Chewi affine barrier
   rule existed locally.
+- Latest inf-projection frontier: Proposition 13.11(4) now has a compiled
+  supplied-projected-oracle spine.  Reusable declarations include
+  `barrierInfProjectionSet`, `barrierInfProjectionPoint`,
+  `barrierInfProjectionPoint_mem_set`, `barrierInfProjectionSet_mono`,
+  `SelfConcordantBarrierOn.infProjection_of_projected_oracles`, and
+  `chewi1311_infProjection_selfConcordantBarrierOn_of_projected_oracles`.
+  The honest remaining proof debt is the Schur-complement/envelope theorem
+  that constructs projected Hessian, inverse-Hessian, gradient, and third
+  derivative oracles from the original product barrier plus minimizer
+  first-order conditions.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
-  compiled product, shared-domain sum, and affine-preimage layers in
+  compiled product, shared-domain sum, affine-preimage, and inf-projection
+  supplied-oracle layers in
   `StatInference/Optimization/InteriorPoint.lean`.  The next bounded choices
   are: close the exact shared-domain sum inverse-Hessian/inverse-local gate,
   extend affine-preimage beyond equivalences through a principled
-  surjective/range/pseudoinverse interface, or open the inf-projection rule.
+  surjective/range/pseudoinverse interface, or attack the inf-projection
+  Schur-complement/envelope certificate.
   The older Theorem 13.8/Definition 13.9 substrate remains reusable, but it is
   no longer the active blocker for this lane.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
