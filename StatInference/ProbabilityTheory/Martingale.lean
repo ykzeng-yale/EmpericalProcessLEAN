@@ -14415,6 +14415,108 @@ theorem durrett2019_theorem_4_4_8_martingale_conditional_variance_formula
   ring
 
 /--
+Durrett 2019, Theorem 4.5.1 increasing-process display: the canonical Doob
+predictable part of the square submartingale agrees a.e. with the finite sum of
+conditional squared increments.
+-/
+theorem durrett2019_theorem_4_5_1_predictablePart_square_ae_eq_sum_conditional_variance
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P) :
+    ∀ n,
+      predictablePart (fun k ω => X k ω ^ 2) ℱ P n =ᵐ[P]
+        fun ω =>
+          ∑ i ∈ Finset.range n,
+            P[(fun ω => (X (i + 1) ω - X i ω) ^ 2) | ℱ i] ω := by
+  intro n
+  rw [predictablePart]
+  have hsum :
+      (∑ i ∈ Finset.range n,
+        P[(fun ω => X (i + 1) ω ^ 2) - fun ω => X i ω ^ 2 | ℱ i]) =ᵐ[P]
+        (∑ i ∈ Finset.range n,
+          P[(fun ω => (X (i + 1) ω - X i ω) ^ 2) | ℱ i]) := by
+    refine eventuallyEq_sum fun i hi => ?_
+    have hXip1_sq_int : Integrable (fun ω => X (i + 1) ω ^ 2) P :=
+      durrett2019_integrable_sq_of_memLp_two (P := P) (Y := X (i + 1))
+        (hX_memLp_two (i + 1))
+    have hXi_sq_int : Integrable (fun ω => X i ω ^ 2) P :=
+      durrett2019_integrable_sq_of_memLp_two (P := P) (Y := X i)
+        (hX_memLp_two i)
+    have hPastSq :
+        P[(fun ω => X i ω ^ 2) | ℱ i] = fun ω => X i ω ^ 2 :=
+      condExp_of_stronglyMeasurable (ℱ.le i) ((hX.stronglyMeasurable i).pow 2)
+        hXi_sq_int
+    have hleft :
+        P[(fun ω => X (i + 1) ω ^ 2) - fun ω => X i ω ^ 2 | ℱ i] =ᵐ[P]
+          fun ω => P[(fun ω => X (i + 1) ω ^ 2) | ℱ i] ω - X i ω ^ 2 := by
+      refine (condExp_sub hXip1_sq_int hXi_sq_int (ℱ i)).trans ?_
+      exact EventuallyEq.of_eq (by
+        ext ω
+        simp [Pi.sub_apply, hPastSq])
+    have hvar :=
+      durrett2019_theorem_4_4_8_martingale_conditional_variance_formula
+        (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two
+        (m := i) (n := i + 1) i.le_succ
+    exact hleft.trans hvar.symm
+  exact hsum.trans (EventuallyEq.of_eq (by ext ω; simp [Finset.sum_apply]))
+
+/--
+Durrett 2019, Theorem 4.5.1 source bridge using the textbook increasing
+process display: if the finite conditional-variance sums converge a.e. to an
+integrable terminal variable `A∞`, then `E (sup_m |X_m|^2) ≤ 4 * E A∞` in
+`lintegral` form.
+-/
+theorem durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_conditionalVariance_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {Ainf : Ω -> ℝ}
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hAinf_int : Integrable Ainf P)
+    (hA_tendsto :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n =>
+            ∑ i ∈ Finset.range n,
+              P[(fun ω => (X (i + 1) ω - X i ω) ^ 2) | ℱ i] ω)
+          atTop (𝓝 (Ainf ω)))
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω ^ 2) ∂P) ≤
+      ENNReal.ofReal (4 * ∫ ω, Ainf ω ∂P) := by
+  have hdisplay_all :
+      ∀ᵐ ω ∂P,
+        ∀ n,
+          predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω =
+            ∑ i ∈ Finset.range n,
+              P[(fun ω => (X (i + 1) ω - X i ω) ^ 2) | ℱ i] ω := by
+    exact ae_all_iff.2
+      (durrett2019_theorem_4_5_1_predictablePart_square_ae_eq_sum_conditional_variance
+        (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two)
+  have hpred_tendsto :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n => predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω)
+          atTop (𝓝 (Ainf ω)) := by
+    filter_upwards [hdisplay_all, hA_tendsto] with ω hdisplayω htendω
+    have hseq :
+        (fun n => predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω) =
+          fun n =>
+            ∑ i ∈ Finset.range n,
+              P[(fun ω => (X (i + 1) ω - X i ω) ^ 2) | ℱ i] ω := by
+      funext n
+      exact hdisplayω n
+    simpa [hseq] using htendω
+  exact
+    durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_tendsto
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hX0
+      hAinf_int hpred_tendsto hBdd
+
+/--
 Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two
 square-integrable martingales.
 

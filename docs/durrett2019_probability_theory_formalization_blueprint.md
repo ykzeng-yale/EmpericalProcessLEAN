@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V165`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V166`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -54,10 +54,9 @@ reciprocal-normalizer source wrapper.  Section 4.5.1 now has the finite Doob
 source-facing ordinary finite second-moment display, the monotone `lintegral`
 iSup handoff, the `runningAbsSup` square identification, the supplied `A∞`
 increasing-process source bridge, the canonical square-process predictable-part
-identity `E X_n^2 = E A_n`, and the terminal monotone-limit handoff
-`E A_n ≤ E A∞`.  Continue by identifying the exact conditional-variance
-finite-sum display for Durrett's increasing process, or move to Theorem 4.5.2
-if that display is not immediately cheap.
+identity `E X_n^2 = E A_n`, the terminal monotone-limit handoff
+`E A_n ≤ E A∞`, and the exact conditional-variance finite-sum display for
+Durrett's increasing process.  Continue with Theorem 4.5.2.
 
 For each cycle, route from:
 
@@ -427,10 +426,9 @@ Next packet:
   finite Doob `L^2` `eLpNorm` bridge, automatic finite-max `L^2` membership,
   ordinary finite second-moment display, monotone iSup `lintegral` handoff, the
   `runningAbsSup` square handoff, the supplied `A∞` source bridge, the
-  canonical `E X_n^2 = E A_n` predictable-part identity, and the terminal
-  monotone-limit handoff.  Next, identify the exact conditional-variance
-  finite-sum display for Durrett's increasing process, or move to Theorem
-  4.5.2 if that display is not immediately cheap.
+  canonical `E X_n^2 = E A_n` predictable-part identity, the terminal
+  monotone-limit handoff, and the conditional-variance finite-sum display for
+  Durrett's increasing process.  Next, move to Theorem 4.5.2.
   The
   Section 3.10
   multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise

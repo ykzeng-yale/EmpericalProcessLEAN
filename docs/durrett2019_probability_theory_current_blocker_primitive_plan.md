@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V165
+## Live In-Thread Goal Prompt V166
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -20,7 +20,7 @@ Last compiled packet: Section 4.5.1 now has the finite Doob `L^2` bridge,
 ordinary finite second-moment display, monotone `lintegral` iSup handoff, and
 canonical running-supremum identification, the supplied `A∞`
 increasing-process source bridge, and the canonical square-process predictable
-part plus terminal-limit source bridges:
+part, terminal-limit, and conditional-variance finite-sum source bridges:
 `durrett2019_iSup_ofReal_runningAbsMax_sq_eq_ofReal_runningAbsSup_sq_of_bddAbove`,
 `durrett2019_lintegral_iSup_runningAbsMax_sq_eq_lintegral_runningAbsSup_sq_of_ae_bddAbove`,
 `durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_integral_sq_le`,
@@ -31,19 +31,20 @@ part plus terminal-limit source bridges:
 `durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_integral_bound`,
 `durrett2019_ae_le_of_ae_monotone_tendsto_atTop`,
 `durrett2019_theorem_4_5_1_predictablePart_square_integral_le_of_ae_le`, and
-`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_tendsto`.
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_tendsto`,
+`durrett2019_theorem_4_5_1_predictablePart_square_ae_eq_sum_conditional_variance`,
+and
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_conditionalVariance_tendsto`.
 
-Next aggressive step: finish the exact Section 4.5 increasing-process source
-display, or move directly to Theorem 4.5.2 if the display is not immediately
-cheap.  Best target: identify
-`predictablePart (fun n => X n ^ 2)` with Durrett's finite conditional-variance
-sum `∑ m < n, E((X_{m+1}-X_m)^2 | F_m)`, reusing Theorem 4.4.8 and mathlib
-`predictablePart`; then use the compiled Theorem 4.5.1 endpoint as the maximal
-input for Theorem 4.5.2.  Do not route back into Chapter 4.4 plumbing or the
-already compiled finite-maximum, ordinary second-moment, monotone-iSup,
+Next aggressive step: move to Theorem 4.5.2.  Best target: package the stopped
+process at `N = inf {n : A_{n+1} > a^2}`, apply the compiled Theorem 4.5.1
+maximal endpoint to `X_{N ∧ n}`, and derive convergence/finite-limit on
+`{A∞ < ∞}`.  Do not route back into Chapter 4.4 plumbing or the already
+compiled finite-maximum, ordinary second-moment, monotone-iSup,
 running-supremum identification, supplied-`A∞`, canonical `E X_n^2 = E A_n`,
-or terminal monotone-limit wrapper layers.  Theorem 4.1.16 remains deferred
-unless a targeted kernel search finds a direct source-shaped API.
+terminal monotone-limit, or conditional-variance finite-sum wrapper layers.
+Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
+source-shaped API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -532,6 +533,10 @@ The Section 4.5.1 terminal monotone-limit handoff now also compiles:
 `durrett2019_ae_le_of_ae_monotone_tendsto_atTop`,
 `durrett2019_theorem_4_5_1_predictablePart_square_integral_le_of_ae_le`, and
 `durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_predictablePart_square_tendsto`.
+The Section 4.5.1 conditional-variance finite-sum display now also compiles:
+`durrett2019_theorem_4_5_1_predictablePart_square_ae_eq_sum_conditional_variance`
+and
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_conditionalVariance_tendsto`.
 The canonical running-maximum layer now also compiles:
 `durrett2019_runningAbsSup`,
 `durrett2019_runningAbsMax_mono`,
