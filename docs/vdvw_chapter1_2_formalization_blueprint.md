@@ -2312,9 +2312,15 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243CenteredPairSubSignSwapBadEvent`, with the direct concrete
    adapter
    `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_pairSub_badEvent_signSwap_lower_bound`.
+   The successor route now also has canonical product-fiber sign support
+   `ae_vdVWProductMeasure_prod_vdVWRademacherSignVector`, the named Chebyshev
+   event wrapper
+   `VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad`,
+   and the direct Chebyshev-to-concrete fiber wrapper
+   `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_succ`.
    The remaining product-fiber source task is therefore the fixed-original
-   sign-swap mass transport from the unswapped centered pair-sub bad event to
-   the sign-swapped ghost/sign bad event.
+   sign-swap mass transport plus the two selected finite-center Hoeffding side
+   conditions, not Chebyshev mass or sign support.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,

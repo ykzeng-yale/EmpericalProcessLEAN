@@ -5,7 +5,7 @@ van der Vaart and Wellner Chapters 1 and 2.  The authoritative detailed
 inventory is `docs/vdvw_chapter1_2_formalization_blueprint.md`; this file is a
 human-facing monitor for what is proved, what is in progress, and what remains.
 
-Status snapshot date: 2026-05-08.
+Status snapshot date: 2026-05-09.
 
 Active blocker/primitives register:
 
@@ -219,9 +219,16 @@ The source probability proof is now split through
 `VdVWTheorem243CenteredPairSubSignSwapBadEvent`, with a.e.-component and
 direct concrete-fiber adapters ending in
 `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_pairSub_badEvent_signSwap_lower_bound`.
-Thus the product-fiber blocker is narrowed to the fixed-original sign-swap
-mass transport from the unswapped centered pair-sub bad event to the
-sign-swapped ghost/sign bad event.
+The canonical sign-support lift
+`ae_vdVWProductMeasure_prod_vdVWRademacherSignVector`, the named Chebyshev
+event wrapper
+`VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad`,
+and the successor-sample concrete fiber wrapper
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_succ`
+now remove Chebyshev mass and Rademacher sign support as separate caller
+inputs in the successor route.  Thus the product-fiber blocker is narrowed to
+the fixed-original sign-swap mass transport plus the original and ghost
+selected finite-center Hoeffding side conditions.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

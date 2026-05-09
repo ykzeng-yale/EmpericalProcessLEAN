@@ -8666,3 +8666,16 @@ and
 `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_pairSub_badEvent_signSwap_lower_bound`
 now expose the remaining `hfiber` blocker as exactly that fixed-original
 sign-swap mass transport, not the final concrete-event projection.
+
+2026-05-09 Chebyshev-to-concrete fiber source wrapper:
+`Theorem243.lean` now proves
+`ae_vdVWProductMeasure_prod_vdVWRademacherSignVector`,
+lifting canonical finite-product Rademacher sign support to the ghost/sign
+product fiber.  It also proves the named Chebyshev event wrapper
+`VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad`
+and the successor-sample concrete fiber handoff
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_succ`.
+Thus Chebyshev mass and sign support are no longer separate caller inputs for
+the successor-shaped product-fiber route.  The remaining source inputs are the
+fixed-original sign-swap mass transport and the two selected finite-center
+Hoeffding side conditions on the original and ghost samples.
