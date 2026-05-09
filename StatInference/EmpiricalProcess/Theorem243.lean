@@ -12079,6 +12079,23 @@ theorem ae_vdVWProductMeasure_prod_vdVWRademacherSignVector
       (ae_vdVWProductMeasure_vdVWRademacherSignVector n)
 
 /--
+On the sign-first product-pair space, the sign coordinate is a Rademacher sign
+vector almost surely.
+-/
+theorem ae_vdVWProductMeasure_rademacher_prod_productPair_vdVWRademacherSignVector
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P] (n : ℕ) :
+    ∀ᵐ z : SampleAt ℝ n × SampleAt (Observation × Observation) n
+        ∂((vdVWProductMeasure vdVWRademacherLaw n).prod
+            (vdVWProductMeasure (P.prod P) n)),
+      VdVWRademacherSignVector z.1 := by
+  exact
+    (MeasureTheory.measurePreserving_fst
+      (μ := vdVWProductMeasure vdVWRademacherLaw n)
+      (ν := vdVWProductMeasure (P.prod P) n)).quasiMeasurePreserving.ae
+      (ae_vdVWProductMeasure_vdVWRademacherSignVector n)
+
+/--
 The canonical finite product of real-valued Rademacher laws has independent
 coordinate signs.
 -/
@@ -38468,6 +38485,142 @@ theorem
       hsign hmaxOriginal hmaxGhost hbad
 
 /--
+Measure-level lower-bound transfer from the signed product-pair bad event to
+the product-pair selected finite-net event, using almost-everywhere support of
+the sign vector and the two selected finite-center side conditions.
+-/
+theorem
+    VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_components
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {beta : ℝ≥0∞}
+    (hbadLower :
+      beta ≤
+        ((vdVWProductMeasure vdVWRademacherLaw n).prod
+            (vdVWProductMeasure (P.prod P) n))
+          {z : SampleAt ℝ n × SampleAt (Observation × Observation) n |
+            epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun pair : Observation × Observation =>
+                    (vdVWTruncatedClassFun classFun envelope M index pair.1 -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                      (vdVWTruncatedClassFun classFun envelope M index pair.2 -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                  (vdVWRademacherWeights z.1) z.2)
+                (0 : ℝ)})
+    (hsign :
+      ∀ᵐ z : SampleAt ℝ n × SampleAt (Observation × Observation) n
+          ∂((vdVWProductMeasure vdVWRademacherLaw n).prod
+              (vdVWProductMeasure (P.prod P) n)),
+        VdVWRademacherSignVector z.1)
+    (hmaxOriginal :
+      ∀ᵐ z : SampleAt ℝ n × SampleAt (Observation × Observation) n
+          ∂((vdVWProductMeasure vdVWRademacherLaw n).prod
+              (vdVWProductMeasure (P.prod P) n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin n => (z.2 i).1)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin n => (z.2 i).1)).center z.1 M)
+    (hmaxGhost :
+      ∀ᵐ z : SampleAt ℝ n × SampleAt (Observation × Observation) n
+          ∂((vdVWProductMeasure vdVWRademacherLaw n).prod
+              (vdVWProductMeasure (P.prod P) n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin n => (z.2 i).2)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin n => (z.2 i).2)).center
+          (fun i : Fin n => -z.1 i) M) :
+    beta ≤
+      ((vdVWProductMeasure vdVWRademacherLaw n).prod
+          (vdVWProductMeasure (P.prod P) n))
+        (VdVWTheorem243ProductPairRademacherSelectedNetEvent P
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover)) := by
+  exact hbadLower.trans
+    (measure_mono_ae (by
+      filter_upwards [hsign, hmaxOriginal, hmaxGhost] with z hsignz
+        hmaxOriginalz hmaxGhostz hzbad
+      exact ⟨hsignz, hmaxOriginalz, hmaxGhostz, hzbad⟩))
+
+/--
+Variant of the product-pair selected finite-net lower bound with canonical
+Rademacher sign support discharged.
+-/
+theorem
+    VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_finiteCenter
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {beta : ℝ≥0∞}
+    (hbadLower :
+      beta ≤
+        ((vdVWProductMeasure vdVWRademacherLaw n).prod
+            (vdVWProductMeasure (P.prod P) n))
+          {z : SampleAt ℝ n × SampleAt (Observation × Observation) n |
+            epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun pair : Observation × Observation =>
+                    (vdVWTruncatedClassFun classFun envelope M index pair.1 -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                      (vdVWTruncatedClassFun classFun envelope M index pair.2 -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                  (vdVWRademacherWeights z.1) z.2)
+                (0 : ℝ)})
+    (hmaxOriginal :
+      ∀ᵐ z : SampleAt ℝ n × SampleAt (Observation × Observation) n
+          ∂((vdVWProductMeasure vdVWRademacherLaw n).prod
+              (vdVWProductMeasure (P.prod P) n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin n => (z.2 i).1)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin n => (z.2 i).1)).center z.1 M)
+    (hmaxGhost :
+      ∀ᵐ z : SampleAt ℝ n × SampleAt (Observation × Observation) n
+          ∂((vdVWProductMeasure vdVWRademacherLaw n).prod
+              (vdVWProductMeasure (P.prod P) n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin n => (z.2 i).2)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin n => (z.2 i).2)).center
+          (fun i : Fin n => -z.1 i) M) :
+    beta ≤
+      ((vdVWProductMeasure vdVWRademacherLaw n).prod
+          (vdVWProductMeasure (P.prod P) n))
+        (VdVWTheorem243ProductPairRademacherSelectedNetEvent P
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover)) := by
+  exact
+    VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_components
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinality := cardinality)
+      (cover := cover) hbadLower
+      (ae_vdVWProductMeasure_rademacher_prod_productPair_vdVWRademacherSignVector
+        P n)
+      hmaxOriginal hmaxGhost
+
+/--
 Lower-bound transfer for fibers of the concrete ghost/Rademacher event.
 
 To prove the displayed Chebyshev `hfiber` obligation it is enough to exhibit an
@@ -41245,6 +41398,82 @@ theorem
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) (M := M) (epsilon := epsilon) (n := n + 1)
         hcount hclass henvelope_meas)
+
+/--
+Countable-class Chebyshev source directly targeting the product-pair selected
+finite-net event, assuming the selected finite-center side conditions hold
+almost surely on the sign-first/product-pair space.
+-/
+theorem
+    VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_ae_finiteCenter_succ
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ} {n : ℕ}
+    {cardinality : SampleAt Observation (n + 1) -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation (n + 1),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon)
+    (hmaxOriginal :
+      ∀ᵐ z : SampleAt ℝ (n + 1) ×
+            SampleAt (Observation × Observation) (n + 1)
+          ∂((vdVWProductMeasure vdVWRademacherLaw (n + 1)).prod
+              (vdVWProductMeasure (P.prod P) (n + 1))),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin (n + 1) => (z.2 i).1)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin (n + 1) => (z.2 i).1)).center z.1 M)
+    (hmaxGhost :
+      ∀ᵐ z : SampleAt ℝ (n + 1) ×
+            SampleAt (Observation × Observation) (n + 1)
+          ∂((vdVWProductMeasure vdVWRademacherLaw (n + 1)).prod
+              (vdVWProductMeasure (P.prod P) (n + 1))),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin (n + 1) => (z.2 i).2)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin (n + 1) => (z.2 i).2)).center
+          (fun i : Fin (n + 1) => -z.1 i) M) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / ((((n + 1 : ℕ) : ℝ)) * epsilon ^ 2)) *
+        (vdVWProductMeasure P (n + 1))
+          {sample : SampleAt Observation (n + 1) |
+            2 * epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹) sample)
+                (0 : ℝ)} ≤
+      ((vdVWProductMeasure vdVWRademacherLaw (n + 1)).prod
+          (vdVWProductMeasure (P.prod P) (n + 1)))
+        (VdVWTheorem243ProductPairRademacherSelectedNetEvent P
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover)) := by
+  exact
+    VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_finiteCenter
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (n := n + 1) (cardinality := cardinality)
+      (cover := cover)
+      (VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_succ_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+        hcount hclass henvelope_meas henvelope hM htruncIntegrable hepsilon)
+      hmaxOriginal hmaxGhost
 
 /--
 Successor-sample concrete-fiber lower bound from Chebyshev mass plus the

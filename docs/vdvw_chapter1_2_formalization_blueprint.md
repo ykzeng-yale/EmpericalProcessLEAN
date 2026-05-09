@@ -2342,10 +2342,15 @@ above, so they do not change the theorem-level dashboard counts.
    The pointwise projection from the global signed product-pair event is now
    compiled through `VdVWTheorem243ProductPairRademacherSelectedNetEvent` and
    `VdVWTheorem243_productPairRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad`.
-   The remaining source route is measure-level transport from the
-   sign-first/product-pair event into the original/ghost/sign selected-net
-   comparison, with the selected finite-center Hoeffding components as side
-   conditions.
+   The product-pair selected-event measure lower bound is now compiled through
+   `ae_vdVWProductMeasure_rademacher_prod_productPair_vdVWRademacherSignVector`,
+   `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_components`,
+   `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_finiteCenter`,
+   and
+   `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_ae_finiteCenter_succ`.
+   The remaining source route is the measure-level map/union-bound handoff from
+   the sign-first/product-pair selected event to the original-or-ghost
+   selected-net outer-probability comparison.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
