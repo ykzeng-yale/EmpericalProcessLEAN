@@ -8679,3 +8679,18 @@ Thus Chebyshev mass and sign support are no longer separate caller inputs for
 the successor-shaped product-fiber route.  The remaining source inputs are the
 fixed-original sign-swap mass transport and the two selected finite-center
 Hoeffding side conditions on the original and ghost samples.
+
+2026-05-09 averaged product-pair Chebyshev route:
+`Theorem243.lean` now proves
+`measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
+`measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
+`measure_mul_le_vdVWProductMeasure_pairDifference_constWeights_bad_of_split_fiber_lower_bound`,
+and
+`VdVWTheorem243_productPair_centeredPairSubBadEvent_lower_bound_of_chebyshev_succ`.
+These shift the source proof away from the over-strong fixed-original
+sign-swap transport: Chebyshev ghost-fiber mass is integrated first, producing
+mass for the full `(P.prod P)^n` centered pair-difference bad event.  The next
+aggressive source step is to combine this averaged product-pair lower bound
+with the existing product-pair Rademacher sign-swap equality and then project
+through the original-or-ghost selected finite-net event, while separately
+supplying the selected finite-center Hoeffding side conditions.

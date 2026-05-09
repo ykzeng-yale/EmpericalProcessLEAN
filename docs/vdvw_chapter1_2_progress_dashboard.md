@@ -226,9 +226,18 @@ event wrapper
 and the successor-sample concrete fiber wrapper
 `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_succ`
 now remove Chebyshev mass and Rademacher sign support as separate caller
-inputs in the successor route.  Thus the product-fiber blocker is narrowed to
-the fixed-original sign-swap mass transport plus the original and ghost
-selected finite-center Hoeffding side conditions.
+inputs in the successor route.  The averaged product-pair route is now also
+compiled through
+`measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
+`measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
+`measure_mul_le_vdVWProductMeasure_pairDifference_constWeights_bad_of_split_fiber_lower_bound`,
+and
+`VdVWTheorem243_productPair_centeredPairSubBadEvent_lower_bound_of_chebyshev_succ`.
+This avoids treating fixed-original sign-swap as the main path: Chebyshev
+mass is first integrated into the full `(P.prod P)^n` pair event, where the
+existing product-pair sign symmetry applies.  The next blocker is the
+averaged sign-swap/projection assembly plus the original and ghost selected
+finite-center Hoeffding side conditions.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

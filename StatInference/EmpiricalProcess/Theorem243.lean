@@ -10248,6 +10248,110 @@ theorem measurePreserving_vdVWProductMeasure_prod_to_original_ghost
       (Q := fun _ : Fin n =>
         (⟨P, inferInstance⟩ : MeasureTheory.ProbabilityMeasure Observation)))
 
+/--
+Pairing an original sample and a ghost sample sends `P^n × P^n` to
+`(P.prod P)^n`.
+
+This is the reverse direction of
+`measurePreserving_vdVWProductMeasure_prod_to_original_ghost` and is the
+measure bridge needed by the averaged sign-symmetrization route.
+-/
+theorem measurePreserving_vdVWProductMeasure_original_ghost_to_prod
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] {n : ℕ} :
+    MeasurePreserving
+      (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+        fun i : Fin n => (splitSample.1 i, splitSample.2 i))
+      ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n))
+      (vdVWProductMeasure (P.prod P) n) := by
+  simpa [SampleAt, vdVWProductMeasure, MeasurableEquiv.arrowProdEquivProdArrow]
+    using
+      (MeasureTheory.MeasurePreserving.symm
+        (MeasurableEquiv.arrowProdEquivProdArrow Observation Observation (Fin n))
+        (MeasureTheory.measurePreserving_arrowProdEquivProdArrow
+          Observation Observation (Fin n)
+          (fun _ : Fin n => P) (fun _ : Fin n => P)))
+
+/--
+Split original/ghost pair-difference bad events have the same measure as their
+coordinate-paired `(P.prod P)^n` form.
+
+This removes the need to keep a fixed original sample while applying the
+product-pair sign-swap symmetry.
+-/
+theorem
+    measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation × Observation -> ℝ}
+    {n : ℕ} {epsilon : ℝ}
+    (hpair_meas :
+      MeasurableSet
+        {pairSample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass classFun
+                (fun _ : Fin n => (n : ℝ)⁻¹) pairSample)
+              (0 : ℝ)}) :
+    ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n))
+        {splitSample : SampleAt Observation n × SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass classFun
+                (fun _ : Fin n => (n : ℝ)⁻¹)
+                (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+              (0 : ℝ)} =
+      (vdVWProductMeasure (P.prod P) n)
+        {pairSample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass classFun
+                (fun _ : Fin n => (n : ℝ)⁻¹) pairSample)
+              (0 : ℝ)} := by
+  let pairMap : SampleAt Observation n × SampleAt Observation n ->
+      SampleAt (Observation × Observation) n :=
+    fun splitSample i => (splitSample.1 i, splitSample.2 i)
+  let pairEvent : Set (SampleAt (Observation × Observation) n) :=
+    {pairSample |
+      epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹) pairSample)
+          (0 : ℝ)}
+  let splitEvent : Set (SampleAt Observation n × SampleAt Observation n) :=
+    {splitSample |
+      epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+          (0 : ℝ)}
+  have hpre : pairMap ⁻¹' pairEvent = splitEvent := by
+    rfl
+  have hmap :
+      Measure.map pairMap
+          ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) =
+        vdVWProductMeasure (P.prod P) n :=
+    (measurePreserving_vdVWProductMeasure_original_ghost_to_prod
+      (P := P) (n := n)).map_eq
+  have hpair_meas' : MeasurableSet pairEvent := by
+    simpa [pairEvent] using hpair_meas
+  calc
+    ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)) splitEvent
+        =
+          ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n))
+            (pairMap ⁻¹' pairEvent) := by rw [hpre]
+    _ =
+          Measure.map pairMap
+              ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n))
+            pairEvent := by
+            rw [Measure.map_apply
+              (measurePreserving_vdVWProductMeasure_original_ghost_to_prod
+                (P := P) (n := n)).measurable hpair_meas']
+    _ =
+          (vdVWProductMeasure (P.prod P) n) pairEvent := by
+            rw [hmap]
+
 /-- The original-coordinate projection from `(P × P)^n` to `P^n`. -/
 theorem measurePreserving_vdVWProductMeasure_prod_to_original
     {Observation : Type u} [MeasurableSpace Observation]
@@ -37602,6 +37706,90 @@ theorem measure_mul_le_prod_measure_of_fiber_lower_bound
     _ = μ.prod ν joint := (Measure.prod_apply hjoint_meas).symm
 
 /--
+Integrated pair-difference lower bound from ghost-fiber lower bounds.
+
+This is the averaged replacement for the over-strong fixed-original sign-swap
+transport: Chebyshev lower bounds on ghost fibers over the bad original samples
+give mass to the full product-pair bad event on `(P.prod P)^n`.
+-/
+theorem
+    measure_mul_le_vdVWProductMeasure_pairDifference_constWeights_bad_of_split_fiber_lower_bound
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation × Observation -> ℝ}
+    {n : ℕ} {epsilon : ℝ} {left : Set (SampleAt Observation n)}
+    {beta : ℝ≥0∞}
+    (hpair_meas :
+      MeasurableSet
+        {pairSample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass classFun
+                (fun _ : Fin n => (n : ℝ)⁻¹) pairSample)
+              (0 : ℝ)})
+    (hfiber :
+      ∀ sample : SampleAt Observation n, sample ∈ left ->
+        beta ≤
+          (vdVWProductMeasure P n)
+            {ghostSample : SampleAt Observation n |
+              epsilon <
+                dist
+                  (vdVWWeightedClassSupremum indexClass classFun
+                    (fun _ : Fin n => (n : ℝ)⁻¹)
+                    (fun i : Fin n => (sample i, ghostSample i)))
+                  (0 : ℝ)}) :
+    beta * (vdVWProductMeasure P n) left ≤
+      (vdVWProductMeasure (P.prod P) n)
+        {pairSample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass classFun
+                (fun _ : Fin n => (n : ℝ)⁻¹) pairSample)
+              (0 : ℝ)} := by
+  let splitEvent : Set (SampleAt Observation n × SampleAt Observation n) :=
+    {splitSample |
+      epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass classFun
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+          (0 : ℝ)}
+  have hsplit_meas : MeasurableSet splitEvent := by
+    let pairMap : SampleAt Observation n × SampleAt Observation n ->
+        SampleAt (Observation × Observation) n :=
+      fun splitSample i => (splitSample.1 i, splitSample.2 i)
+    have hpairMap_meas : Measurable pairMap :=
+      (measurePreserving_vdVWProductMeasure_original_ghost_to_prod
+        (P := P) (n := n)).measurable
+    have hpre :
+        pairMap ⁻¹'
+            {pairSample : SampleAt (Observation × Observation) n |
+              epsilon <
+                dist
+                  (vdVWWeightedClassSupremum indexClass classFun
+                    (fun _ : Fin n => (n : ℝ)⁻¹) pairSample)
+                  (0 : ℝ)} =
+          splitEvent := by
+      rfl
+    rw [← hpre]
+    exact hpair_meas.preimage hpairMap_meas
+  have hsplit_lower :
+      beta * (vdVWProductMeasure P n) left ≤
+        ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n))
+          splitEvent := by
+    refine
+      measure_mul_le_prod_measure_of_fiber_lower_bound
+        (μ := vdVWProductMeasure P n) (ν := vdVWProductMeasure P n)
+        (left := left) (joint := splitEvent) (beta := beta)
+        hsplit_meas ?_
+    intro sample hsample
+    simpa [splitEvent] using hfiber sample hsample
+  exact hsplit_lower.trans_eq
+    (measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (n := n) (epsilon := epsilon) hpair_meas)
+
+/--
 Outer-probability form of `measure_mul_le_prod_measure_of_fiber_lower_bound`.
 
 If a measurable joint event has beta-large fibers over a left event and is
@@ -40310,6 +40498,136 @@ theorem
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
       (sample := sample) henvelope hM htruncIntegrable hepsilon hbad
+
+/--
+Averaged product-pair version of the threshold-doubled Chebyshev lower bound.
+
+This is the source shape needed before applying the already compiled
+product-pair sign-swap symmetry: beta times the original centered-bad
+probability is bounded by the `(P.prod P)^n` centered pair-difference bad
+probability, without requiring any fixed-original sign-swap transport.
+-/
+theorem
+    VdVWTheorem243_productPair_centeredPairSubBadEvent_lower_bound_of_chebyshev_succ
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon)
+    (hpair_meas :
+      MeasurableSet
+        {pairSample : SampleAt (Observation × Observation) (n + 1) |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  (vdVWTruncatedClassFun classFun envelope M index z.1 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                    (vdVWTruncatedClassFun classFun envelope M index z.2 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+                pairSample)
+              (0 : ℝ)}) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / ((((n + 1 : ℕ) : ℝ)) * epsilon ^ 2)) *
+        (vdVWProductMeasure P (n + 1))
+          {sample : SampleAt Observation (n + 1) |
+            2 * epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹) sample)
+                (0 : ℝ)} ≤
+      (vdVWProductMeasure (P.prod P) (n + 1))
+        {pairSample : SampleAt (Observation × Observation) (n + 1) |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  (vdVWTruncatedClassFun classFun envelope M index z.1 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                    (vdVWTruncatedClassFun classFun envelope M index z.2 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+                pairSample)
+              (0 : ℝ)} := by
+  let pairClassFun : Index -> Observation × Observation -> ℝ :=
+    fun index z =>
+      (vdVWTruncatedClassFun classFun envelope M index z.1 -
+          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+        (vdVWTruncatedClassFun classFun envelope M index z.2 -
+          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+  let beta : ℝ≥0∞ :=
+    ENNReal.ofReal
+      (1 - (16 * M ^ 2) / ((((n + 1 : ℕ) : ℝ)) * epsilon ^ 2))
+  let left : Set (SampleAt Observation (n + 1)) :=
+    {sample |
+      2 * epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹) sample)
+          (0 : ℝ)}
+  have hfiber :
+      ∀ sample : SampleAt Observation (n + 1), sample ∈ left ->
+        beta ≤
+          (vdVWProductMeasure P (n + 1))
+            {ghostSample : SampleAt Observation (n + 1) |
+              epsilon <
+                dist
+                  (vdVWWeightedClassSupremum indexClass pairClassFun
+                    (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+                    (fun i : Fin (n + 1) => (sample i, ghostSample i)))
+                  (0 : ℝ)} := by
+    intro sample hsample
+    have hcheb :
+        beta ≤
+          (vdVWProductMeasure P (n + 1))
+            (VdVWTheorem243CenteredPairSubBadEvent P indexClass classFun
+              envelope M epsilon sample) := by
+      exact
+        VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+          (sample := sample) henvelope hM htruncIntegrable hepsilon hsample
+    exact hcheb.trans (measure_mono (by
+      intro ghostSample hghost
+      have hghost_bad :
+          epsilon <
+            vdVWWeightedClassSupremum indexClass pairClassFun
+              (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+              (fun i : Fin (n + 1) => (sample i, ghostSample i)) := by
+        simpa [VdVWTheorem243CenteredPairSubBadEvent, pairClassFun] using hghost
+      have hsup_nonneg :
+          0 ≤
+            vdVWWeightedClassSupremum indexClass pairClassFun
+              (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+              (fun i : Fin (n + 1) => (sample i, ghostSample i)) :=
+        vdVWWeightedClassSupremum_nonneg indexClass pairClassFun
+          (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+          (fun i : Fin (n + 1) => (sample i, ghostSample i))
+      change epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass pairClassFun
+            (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+            (fun i : Fin (n + 1) => (sample i, ghostSample i)))
+          (0 : ℝ)
+      rw [Real.dist_eq, sub_zero, abs_of_nonneg hsup_nonneg]
+      exact hghost_bad))
+  simpa [pairClassFun, beta, left] using
+    measure_mul_le_vdVWProductMeasure_pairDifference_constWeights_bad_of_split_fiber_lower_bound
+      (P := P) (indexClass := indexClass) (classFun := pairClassFun)
+      (n := n + 1) (epsilon := epsilon) (left := left) (beta := beta)
+      hpair_meas hfiber
 
 /--
 Successor-sample concrete-fiber lower bound from Chebyshev mass plus the
