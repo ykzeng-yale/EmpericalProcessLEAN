@@ -757,6 +757,188 @@ theorem durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_of_supplied_density
       (P := P) (μ := μ) (ν := ν) hXY hX hY
   simpa [hdensity] using hsum
 
+/--
+Durrett 2019, Theorem 2.1.16, measure-level Fubini density formula.
+
+If the first law has density `f`, then its additive convolution with an
+arbitrary s-finite measure `ν` has density
+`x ↦ ∫⁻ y, f (x - y) ∂ν`.
+-/
+theorem durrett2019_theorem_2_1_16_conv_withDensity_left_lintegral
+    {f : ℝ -> ℝ≥0∞} (hf : Measurable f)
+    (ν : Measure ℝ) [SFinite ν] :
+    MeasureTheory.Measure.conv (volume.withDensity f) ν =
+      volume.withDensity (fun x => ∫⁻ y, f (x - y) ∂ν) := by
+  refine Measure.ext_of_lintegral _ ?_
+  intro φ hφ
+  have hinner_meas :
+      AEMeasurable (fun x : ℝ => ∫⁻ y, φ (x + y) ∂ν) volume := by
+    exact
+      (Measurable.lintegral_prod_right
+        (show Measurable (Function.uncurry fun x y : ℝ => φ (x + y)) from
+          hφ.comp (measurable_fst.add measurable_snd))).aemeasurable
+  have hkernel_meas :
+      AEMeasurable (fun x : ℝ => ∫⁻ y, f (x - y) ∂ν) volume := by
+    exact
+      (Measurable.lintegral_prod_right
+        (show Measurable (Function.uncurry fun x y : ℝ => f (x - y)) from
+          hf.comp (measurable_fst.sub measurable_snd))).aemeasurable
+  have hprod_meas :
+      AEMeasurable (Function.uncurry fun x y : ℝ => f x * φ (x + y))
+        (volume.prod ν) := by
+    exact
+      ((hf.comp measurable_fst).mul
+        (hφ.comp (measurable_fst.add measurable_snd))).aemeasurable
+  have hsubprod_meas :
+      AEMeasurable (Function.uncurry fun x y : ℝ => f (x - y) * φ x)
+        (volume.prod ν) := by
+    exact
+      ((hf.comp (measurable_fst.sub measurable_snd)).mul
+        (hφ.comp measurable_fst)).aemeasurable
+  have hchange (y : ℝ) :
+      ∫⁻ x, f x * φ (x + y) ∂volume =
+        ∫⁻ x, f (x - y) * φ x ∂volume := by
+    have h :=
+      (lintegral_add_right_eq_self
+        (μ := volume) (fun x : ℝ => f (x - y) * φ x) y)
+    simpa [add_sub_cancel_right] using h
+  calc
+    ∫⁻ z, φ z ∂MeasureTheory.Measure.conv (volume.withDensity f) ν =
+        ∫⁻ x, ∫⁻ y, φ (x + y) ∂ν ∂volume.withDensity f := by
+      rw [MeasureTheory.Measure.lintegral_conv hφ]
+    _ = ∫⁻ x, f x * (∫⁻ y, φ (x + y) ∂ν) ∂volume := by
+      rw [lintegral_withDensity_eq_lintegral_mul₀ hf.aemeasurable hinner_meas]
+      simp [Pi.mul_apply]
+    _ = ∫⁻ x, ∫⁻ y, f x * φ (x + y) ∂ν ∂volume := by
+      refine lintegral_congr fun x => ?_
+      rw [lintegral_const_mul'' (f x) (by fun_prop)]
+    _ = ∫⁻ y, ∫⁻ x, f x * φ (x + y) ∂volume ∂ν := by
+      rw [lintegral_lintegral_swap hprod_meas]
+    _ = ∫⁻ y, ∫⁻ x, f (x - y) * φ x ∂volume ∂ν := by
+      refine lintegral_congr hchange
+    _ = ∫⁻ x, ∫⁻ y, f (x - y) * φ x ∂ν ∂volume := by
+      rw [lintegral_lintegral_swap hsubprod_meas]
+    _ = ∫⁻ x, (∫⁻ y, f (x - y) ∂ν) * φ x ∂volume := by
+      refine lintegral_congr fun x => ?_
+      rw [lintegral_mul_const'' (φ x) (by fun_prop)]
+    _ = ∫⁻ z, φ z ∂volume.withDensity (fun x => ∫⁻ y, f (x - y) ∂ν) := by
+      rw [lintegral_withDensity_eq_lintegral_mul₀ hkernel_meas hφ.aemeasurable]
+      simp [Pi.mul_apply]
+
+/--
+Durrett 2019, Theorem 2.1.16, independent-sum density formula in
+`ℝ≥0∞` form.
+-/
+theorem durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_lintegral_density
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ν : Measure ℝ} [SigmaFinite ν] {f : ℝ -> ℝ≥0∞}
+    [SigmaFinite (volume.withDensity f)]
+    {X Y : Ω -> ℝ}
+    (hf : Measurable f)
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X (volume.withDensity f) P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X ω + Y ω)
+      (volume.withDensity fun x => ∫⁻ y, f (x - y) ∂ν) P := by
+  have hsum :
+      _root_.ProbabilityTheory.HasLaw (fun ω => X ω + Y ω)
+        (MeasureTheory.Measure.conv (volume.withDensity f) ν) P :=
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv
+      (P := P) (μ := volume.withDensity f) (ν := ν) hXY hX hY
+  simpa [durrett2019_theorem_2_1_16_conv_withDensity_left_lintegral
+    (f := f) hf ν] using hsum
+
+/--
+Durrett 2019, Theorem 2.1.16, independent-sum density formula for a
+real-valued nonnegative density encoded by `ENNReal.ofReal`.
+-/
+theorem durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_real_lintegral_density
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ν : Measure ℝ} [SigmaFinite ν] {f : ℝ -> ℝ}
+    {X Y : Ω -> ℝ}
+    (hf : Measurable f)
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X ω + Y ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f (x - y)) ∂ν) P :=
+  durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_lintegral_density
+    (P := P) (ν := ν) (f := fun x => ENNReal.ofReal (f x))
+    hf.ennreal_ofReal hXY hX hY
+
+/--
+Durrett 2019, Theorem 2.1.16, two-density kernel display.
+
+When `Y` also has density `g`, integration with respect to `dG` becomes the
+Lebesgue integral of `g y * f (x - y)`.
+-/
+theorem durrett2019_theorem_2_1_16_two_density_lintegral_kernel_eq
+    {f g : ℝ -> ℝ≥0∞} (hf : Measurable f) (hg : Measurable g) (x : ℝ) :
+    (∫⁻ y, f (x - y) ∂volume.withDensity g) =
+      ∫⁻ y, g y * f (x - y) ∂volume := by
+  have hkernel :
+      AEMeasurable (fun y : ℝ => f (x - y)) volume :=
+    (hf.comp (measurable_const.sub measurable_id)).aemeasurable
+  rw [lintegral_withDensity_eq_lintegral_mul₀ hg.aemeasurable hkernel]
+  simp [Pi.mul_apply]
+
+/--
+Durrett 2019, Theorem 2.1.16, independent-sum two-density formula in
+`ℝ≥0∞` form.
+-/
+theorem durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_lintegral_density
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f g : ℝ -> ℝ≥0∞}
+    [SigmaFinite (volume.withDensity f)] [SigmaFinite (volume.withDensity g)]
+    {X Y : Ω -> ℝ}
+    (hf : Measurable f) (hg : Measurable g)
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X (volume.withDensity f) P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y (volume.withDensity g) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X ω + Y ω)
+      (volume.withDensity fun x => ∫⁻ y, g y * f (x - y) ∂volume) P := by
+  have hsum :
+      _root_.ProbabilityTheory.HasLaw (fun ω => X ω + Y ω)
+        (volume.withDensity fun x =>
+          ∫⁻ y, f (x - y) ∂volume.withDensity g) P :=
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_lintegral_density
+      (P := P) (ν := volume.withDensity g) (f := f)
+      hf hXY hX hY
+  have hdensity :
+      (fun x : ℝ => ∫⁻ y, f (x - y) ∂volume.withDensity g) =ᵐ[volume]
+        fun x => ∫⁻ y, g y * f (x - y) ∂volume :=
+    ae_of_all _ fun x =>
+      durrett2019_theorem_2_1_16_two_density_lintegral_kernel_eq
+        (f := f) (g := g) hf hg x
+  have hmeasure :
+      volume.withDensity (fun x => ∫⁻ y, f (x - y) ∂volume.withDensity g) =
+        volume.withDensity (fun x => ∫⁻ y, g y * f (x - y) ∂volume) :=
+    withDensity_congr_ae hdensity
+  simpa [hmeasure] using hsum
+
+/--
+Durrett 2019, Theorem 2.1.16, independent-sum two-density formula for
+real-valued nonnegative densities encoded by `ENNReal.ofReal`.
+-/
+theorem durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_real_lintegral_density
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f g : ℝ -> ℝ} {X Y : Ω -> ℝ}
+    (hf : Measurable f) (hg : Measurable g)
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (volume.withDensity fun x => ENNReal.ofReal (g x)) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X ω + Y ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (g y) * ENNReal.ofReal (f (x - y)) ∂volume) P :=
+  durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_lintegral_density
+    (P := P) (f := fun x => ENNReal.ofReal (f x))
+    (g := fun x => ENNReal.ofReal (g x))
+    hf.ennreal_ofReal hg.ennreal_ofReal hXY hX hY
+
 /-! ## Durrett, Section 2.3 -/
 
 /--

@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V178` in
+Route from `Live In-Thread Goal Prompt V179` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -47,7 +47,13 @@ convolution handoffs
 `durrett2019_theorem_2_1_16_conv_absolutelyContinuous_of_left_density`,
 `durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_density`,
 `durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_real_density`,
-and `durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_of_supplied_density`.
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_of_supplied_density`,
+`durrett2019_theorem_2_1_16_conv_withDensity_left_lintegral`,
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_lintegral_density`,
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_real_lintegral_density`,
+`durrett2019_theorem_2_1_16_two_density_lintegral_kernel_eq`,
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_lintegral_density`,
+and `durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_real_lintegral_density`.
 Theorem 2.4.9 now has
 the arbitrary-law cutpoint-chain route and both the book-style and exact
 outer-a.s. empirical-CDF endpoints:
@@ -56,10 +62,10 @@ outer-a.s. empirical-CDF endpoints:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`,
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
-The next target is the exact Theorem 2.1.16 Fubini/withDensity density formula
-`h(x) = ∫ f (x - y) dG(y)` and the two-density specialization.  Do not route
-future cycles back to Chapter 4.5.2 or solved 2.4.9/2.1.15 plumbing unless the
-user explicitly pivots.
+The next target should move forward to downstream Chapter 2.1 product-law
+examples and finite independent product-law or expectation-factorization
+wrappers.  Do not route future cycles back to Chapter 4.5.2 or solved
+2.4.9/2.1.15/2.1.16 plumbing unless the user explicitly pivots.
 The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V178`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V179`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -35,9 +35,10 @@ automation.
 Current active frontier: Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled
 independence/product-law wrappers through Theorem 2.1.15's CDF convolution
-handoff and first Theorem 2.1.16 convolution-law / density-existence support;
-Theorem 2.4.9 has the full empirical-CDF Glivenko-Cantelli route through the
-arbitrary-law cutpoint-chain construction.  Treat
+handoff and Theorem 2.1.16's convolution-law, density-existence,
+Fubini/withDensity formula, and two-density support; Theorem 2.4.9 has the full
+empirical-CDF Glivenko-Cantelli route through the arbitrary-law cutpoint-chain
+construction.  Treat
 `durrett2019_theorem_2_1_15_product_cdf_convolution`,
 `durrett2019_theorem_2_1_15_indepFun_cdf_convolution`,
 `durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv`,
@@ -45,14 +46,19 @@ arbitrary-law cutpoint-chain construction.  Treat
 `durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_density`,
 `durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_real_density`,
 `durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_of_supplied_density`,
+`durrett2019_theorem_2_1_16_conv_withDensity_left_lintegral`,
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_lintegral_density`,
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_real_lintegral_density`,
+`durrett2019_theorem_2_1_16_two_density_lintegral_kernel_eq`,
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_lintegral_density`,
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_real_lintegral_density`,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure` as
-closed support.  Continue by proving the exact Theorem 2.1.16 Fubini/withDensity
-density formula `h(x) = ∫ f (x - y) dG(y)` and the two-density specialization,
-or by recording the precise formula-side primitive still missing after a
-focused mathlib/local search.
+closed support.  Continue by moving to downstream Chapter 2.1 product-law
+examples and finite independent product-law or expectation-factorization
+wrappers, after a focused mathlib/local search.
 
 For each cycle, route from:
 
