@@ -13,7 +13,7 @@ Active lane: van der Vaart 1998, Theorem 5.41, in
 `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeStrongLawBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Start every continuation by checking `git status` and the current Vaart diff.
 If an unfinished local Vaart Lean packet exists, finish and verify that packet
@@ -23,9 +23,8 @@ Make exactly one theorem-sized Lean advance per packet: remove one live source
 hypothesis from the current endpoint, or prove the next source theorem that
 feeds it directly.  Current priority order:
 
-1. Derivative source: operator-norm domination by the finite-entry strong-law
-   error bound, or a sharper operator strong-law theorem that feeds the
-   endpoint directly.
+1. Derivative source: scalar finite-entry action algebra that proves the
+   action bound consumed by the current endpoint.
 2. Score source: common-vector-law or Gaussian finite-coordinate score CLT.
 3. Tightness source: scaled-estimator law-tail or `O_P(1)` proof.
 
@@ -954,20 +953,27 @@ compiling:
    by the finite-entry strong-law source; the remaining derivative source field
    is the operator-norm domination by that finite-entry bound:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeStrongLawBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+332. Theorem 5.41 operator-norm domination from a nonzero-direction action
+   bound against the finite-entry derivative error:
+   `vaart1998_theorem_5_41_derivativeAverage_norm_le_finiteEntryBound_of_action_bound`.
+333. Theorem 5.41 current endpoint with the operator-norm domination
+   discharged from the action bound; the remaining derivative source field is
+   scalar finite-entry action algebra:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 finite derivative strong-law bound`).
+(`Add Vaart theorem 5.41 finite derivative action bound`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by instantiating the derivative
-error bound from a finite family of iid real derivative-entry strong laws.  The
-remaining derivative source obligation is now the operator-norm domination of
-the empirical derivative residual by that finite-entry error bound.
+asymptotic-normality route for Z-estimators by deriving the operator-norm
+domination from a nonzero-direction action bound against the finite-entry
+strong-law error.  The remaining derivative source obligation is now scalar
+finite-entry action algebra for the empirical derivative residual.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
-Prefer the finite-entry operator-norm domination inequality for the empirical
-derivative residual; otherwise move to one score-CLT law/source field or the
+Prefer scalar finite-entry action algebra for the empirical derivative
+residual; otherwise move to one score-CLT law/source field or the
 scaled-estimator tightness field.  Do not repeat solved Chapter 2-4
 infrastructure or earlier Theorem 5.41 wrapper layers unless a current proof
 directly depends on a small local API there.
