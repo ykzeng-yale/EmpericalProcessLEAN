@@ -14326,6 +14326,68 @@ theorem durrett2019_exercise_4_4_10_eventually_eLpNorm_increment_le_of_summable
   simpa [hroot_eq] using hsqrt_le
 
 /--
+Durrett 2019, Exercise 4.4.10 support: square-increment summability makes the
+martingale Cauchy in `L^2`.
+
+This packages the source convergence endpoint at the `Lp` level.  The actual
+limit object can then be obtained from completeness of `Lp`.
+-/
+theorem durrett2019_exercise_4_4_10_martingale_toLp_cauchySeq_of_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hinc_sq_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P) :
+    CauchySeq (fun n : ℕ => (hX_memLp_two n).toLp (X n)) := by
+  refine Metric.cauchySeq_iff'.2 ?_
+  intro eps heps
+  have heps_half : 0 < eps / 2 := half_pos heps
+  have hevent :
+      ∀ᶠ m in atTop, ∀ n, m ≤ n ->
+        eLpNorm (X n - X m) (2 : ℝ≥0∞) P ≤ ENNReal.ofReal (eps / 2) :=
+    durrett2019_exercise_4_4_10_eventually_eLpNorm_increment_le_of_summable
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hinc_sq_summable heps_half
+  rcases eventually_atTop.1 hevent with ⟨N, hN⟩
+  refine ⟨N, ?_⟩
+  intro n hn
+  have hbound := hN N le_rfl n hn
+  have hdist_eq :
+      dist ((hX_memLp_two n).toLp (X n)) ((hX_memLp_two N).toLp (X N)) =
+        (eLpNorm (X n - X N) (2 : ℝ≥0∞) P).toReal := by
+    rw [MeasureTheory.Lp.dist_def]
+    apply congrArg ENNReal.toReal
+    exact
+      eLpNorm_congr_ae
+        ((hX_memLp_two n).coeFn_toLp.sub (hX_memLp_two N).coeFn_toLp)
+  rw [hdist_eq]
+  have hreal_le :
+      (eLpNorm (X n - X N) (2 : ℝ≥0∞) P).toReal ≤ eps / 2 := by
+    have hmono := ENNReal.toReal_mono ENNReal.ofReal_ne_top hbound
+    simpa [ENNReal.toReal_ofReal heps_half.le] using hmono
+  linarith
+
+/--
+Durrett 2019, Exercise 4.4.10 endpoint: square-increment summability gives an
+`L^2` limit in the `Lp` space.
+-/
+theorem durrett2019_exercise_4_4_10_martingale_exists_toLp_tendsto_of_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hinc_sq_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P) :
+    ∃ Y : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) P,
+      Tendsto (fun n : ℕ => (hX_memLp_two n).toLp (X n)) atTop (nhds Y) := by
+  exact
+    cauchySeq_tendsto_of_complete
+      (durrett2019_exercise_4_4_10_martingale_toLp_cauchySeq_of_summable
+        (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hinc_sq_summable)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V150
+## Live In-Thread Goal Prompt V151
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -65,29 +65,29 @@ and
 `durrett2019_exercise_4_4_10_increment_sq_tsum_tail_tendsto_zero_of_summable`,
 and
 `durrett2019_exercise_4_4_10_eventually_eLpNorm_increment_le_of_summable`,
+`durrett2019_exercise_4_4_10_martingale_toLp_cauchySeq_of_summable`,
+and
+`durrett2019_exercise_4_4_10_martingale_exists_toLp_tendsto_of_summable`,
 as well as the earlier first-exit/stopped-variance handoff declarations.  Do
 not route back into optional-stopping, overshoot, stopped-integrability,
 deterministic-clock, exact-denominator, square-martingale-source, or
 natural-filtration independent-increment 4.4.6 plumbing, or Exercise 4.4.9
 product-covariance / finite square-increment / finite tail-identity /
 tail-bound-to-`L^2` / summability-to-shifted-tail / shifted-tail-to-Cauchy
-plumbing.
+plumbing or the `Lp` Cauchy/existence endpoint.
 
-Next aggressive step: finish the Exercise 4.4.10 handoff from finite tail
-identity to convergence.  Best target: package
-`durrett2019_exercise_4_4_10_eventually_eLpNorm_increment_le_of_summable` into
-the source endpoint expected by the textbook, ideally via an existing mathlib
-`L^2`/eLpNorm Cauchy or convergence wrapper.  If that endpoint is mostly
-definition chasing, finish it; otherwise move to Exercise 4.4.11 by combining
+Next aggressive step: move to Exercise 4.4.11.  Best target: combine the
 predictable-transform theorem 4.2.8 support with the square-summability
-hypothesis for scaled increments.  Do not loop back to already compiled
-Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises 4.4.5-4.4.9, Theorem
-4.4.1 plumbing, or the first-exit
+hypothesis for scaled martingale increments, reusing the Exercise 4.4.10
+square-summability-to-`L^2` convergence endpoint when the transformed
+increment sequence has the right martingale and `L^2` hypotheses.  Do not loop
+back to already compiled Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9,
+Exercises 4.4.5-4.4.10, Theorem 4.4.1 plumbing, or the first-exit
 overshoot/stopped-integrability/deterministic-clock/exact-denominator/
 square-martingale-source/natural-filtration/product-covariance/tail-identity/
-tail-bound-to-`L^2`/summability-to-shifted-tail/shifted-tail-to-Cauchy layer.
-Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
-source-shaped API.
+tail-bound-to-`L^2`/summability-to-shifted-tail/shifted-tail-to-Cauchy/`Lp`
+Cauchy endpoint layer.  Theorem 4.1.16 remains deferred unless a targeted
+kernel search finds a direct source-shaped API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
