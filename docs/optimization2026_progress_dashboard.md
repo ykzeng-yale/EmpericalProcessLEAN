@@ -1566,9 +1566,11 @@ now supplies that certificate into Theorem 13.8 with `M = 1` and
 derivative packet adds `positiveOrthantNegLogHessDerivCLM`,
 `positiveOrthantNegLogHessDerivCLM_mixed_inner`, and
 `chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_sourceNewtonSegment`,
-so the mixed-third identity is packaged too.  Next focus on the remaining
-Hessian/gradient differentiability and Newton-linearization hypotheses, or the
-Proposition 13.11 barrier-calculus lift.
+so the mixed-third identity is packaged too.  The additional wrapper
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_hasFDeriv_sourceNewtonSegment`
+derives Hessian continuity from the same `HasFDerivAt` proof.  Next focus on
+the remaining Hessian/gradient differentiability and Newton-linearization
+hypotheses, or the Proposition 13.11 barrier-calculus lift.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the

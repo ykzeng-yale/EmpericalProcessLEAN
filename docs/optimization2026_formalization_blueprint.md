@@ -102,9 +102,11 @@ The concrete Theorem 13.8 wrapper
 also compiles with `M = 1` and `thirdMixed = positiveOrthantNegLogThirdMixed`,
 and the Hessian-derivative wrapper
 `chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_sourceNewtonSegment`
-packages `positiveOrthantNegLogHessDerivCLM_mixed_inner`, so next lift that
-model through a reusable Proposition 13.11 barrier-calculus interface or
-instantiate the actual finite-dimensional/
+packages `positiveOrthantNegLogHessDerivCLM_mixed_inner`.  The wrapper
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_hasFDeriv_sourceNewtonSegment`
+also derives Hessian continuity from the supplied Hessian differentiability
+proof, so next lift that model through a reusable Proposition 13.11
+barrier-calculus interface or instantiate the actual finite-dimensional/
 matrix barrier Hessian model; all segment membership, `ψ` continuity,
 local-norm continuity/positivity, Riccati comparison, derivative inequality,
 coefficient scaling, final sandwich assembly, first Newton/Dikin membership,
