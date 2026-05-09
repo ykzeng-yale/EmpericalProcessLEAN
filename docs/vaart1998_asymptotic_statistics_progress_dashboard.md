@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 derivative convergence handoff`).
+(`Add Vaart theorem 5.41 derivative a.e. handoff`).
 Current packet verification passed for:
 
 - `lake build StatInference.AsymptoticStatistics.Basic`
@@ -627,11 +627,11 @@ Live continuation prompt: use the compact prompt in
 
 ## Next Aggressive Target
 
-For Vaart Theorem 5.41 in `MEstimators.lean`, derive the operator-valued
-empirical derivative convergence from reusable empirical-average LLN
-infrastructure if that route is immediately available; otherwise move to the
-score CLT or root/scaling consistency fields.  The scalar derivative-norm
-packaging, envelope stochastic-boundedness bridge, sampled-summand measurability bridge,
+For Vaart Theorem 5.41 in `MEstimators.lean`, prove the actual iid/operator
+empirical derivative strong law if a local route is immediately available;
+otherwise move to the score CLT or root/scaling consistency fields.  The
+derivative probability packaging, scalar derivative-norm packaging, envelope
+stochastic-boundedness bridge, sampled-summand measurability bridge,
 estimating-map and derivative-map `ContDiffOn` source regularity bridges,
 derivative-path regularity bridge, vector derivative Taylor bridge,
 `derivativeAt theta0` specialization, vector-to-coordinate continuity

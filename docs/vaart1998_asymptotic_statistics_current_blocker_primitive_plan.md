@@ -10,16 +10,17 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current frontier endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTendsto_envelopeTendsto_summandMeasurable_envelope`,
-using `vaart1998_tendstoInMeasure_norm_sub_const_zero_of_tendstoInMeasure_const`
-to replace the processed scalar operator-norm derivative LLN by convergence in
-probability of the empirical derivative average itself to `V`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeAE_envelopeTendsto_summandMeasurable_envelope`,
+using `vaart1998_tendstoInMeasure_of_tendsto_ae` and
+`vaart1998_tendstoInMeasure_norm_sub_const_zero_of_tendstoInMeasure_const` to
+replace derivative probability packaging by an a.e. empirical derivative law
+plus strong measurability.
 
-Next packet: produce the actual source theorem for the operator-valued
-empirical derivative convergence if a local empirical-average LLN route is
-available; otherwise move to the score CLT or root/scaling consistency fields.
-Do not revisit scalar derivative-norm packaging, smooth Taylor production,
-sampled-summand measurability, or envelope stochastic-boundedness plumbing.
+Next packet: prove the actual iid/operator empirical derivative strong law if
+an immediate local route exists; otherwise move to the score CLT or root/scaling
+consistency fields.  Do not revisit derivative probability packaging, scalar
+derivative-norm packaging, smooth Taylor production, sampled-summand
+measurability, or envelope stochastic-boundedness plumbing.
 
 Workflow: reconcile any local Vaart edits first, search local/mathlib APIs, add
 one theorem-sized Lean layer, run focused Lean plus the target module build and
@@ -882,19 +883,21 @@ compiling:
    `vaart1998_tendstoInMeasure_norm_sub_const_zero_of_tendstoInMeasure_const`
    and
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTendsto_envelopeTendsto_summandMeasurable_envelope`.
+317. Theorem 5.41 derivative source handoff from an almost-sure empirical
+   derivative law plus strong measurability:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeAE_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 derivative convergence handoff`).
+(`Add Vaart theorem 5.41 derivative a.e. handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by replacing the processed scalar
-operator-norm derivative LLN with convergence in probability of the empirical
-derivative average itself to `V`.
+asymptotic-normality route for Z-estimators by replacing derivative convergence
+in probability packaging with an almost-sure empirical derivative law plus
+strong measurability.
 
-The next aggressive packet should derive the operator-valued empirical
-derivative convergence from reusable empirical-average LLN infrastructure if
-that route is immediately available; otherwise move to the score CLT or
-estimator/root/scaling source fields.
+The next aggressive packet should prove the actual iid/operator empirical
+derivative strong law if a local route is immediately available; otherwise move
+to the score CLT or estimator/root/scaling source fields.
 
 ## Execution Notes
 
