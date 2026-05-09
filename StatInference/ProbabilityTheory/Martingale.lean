@@ -13286,6 +13286,42 @@ theorem durrett2019_exercise_4_4_6_smallBall_bound_of_deterministic_varianceCloc
       le_rfl hS0_abs hinc
 
 /--
+Durrett 2019, Exercise 4.4.6 exact-denominator wrapper.  If the deterministic
+variance clock endpoint has already been identified with the textbook
+`var(S_n)`, the small-ball bound is stated directly with that denominator.
+-/
+theorem durrett2019_exercise_4_4_6_smallBall_bound_of_variance_endpoint
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {S : ℕ -> Ω -> ℝ} {sigmaSq : ℕ -> ℝ} {x K variance : ℝ} {n : ℕ}
+    (hx_nonneg : 0 ≤ x) (hK_nonneg : 0 ≤ K)
+    (hvariance_pos : 0 < variance)
+    (hclock_eq_variance :
+      durrett2019_exercise_4_4_6_varianceClock sigmaSq n = variance)
+    (hS_adapted : StronglyAdapted ℱ S)
+    (hM :
+      Martingale
+        (fun k ω =>
+          S k ω ^ 2 - durrett2019_exercise_4_4_6_varianceClock sigmaSq k)
+        ℱ P)
+    (hsigmaSq_nonneg : ∀ m, 0 ≤ sigmaSq m)
+    (hS0_eq : ∀ᵐ ω ∂P, S 0 ω = 0)
+    (hinc :
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.Icc 1 n, |S k ω - S (k - 1) ω| ≤ K) :
+    P (durrett2019_exercise_4_4_6_smallBallEvent S x n) ≤
+      ENNReal.ofReal (((x + K) ^ 2) / variance) := by
+  have hclock_pos :
+      0 < durrett2019_exercise_4_4_6_varianceClock sigmaSq n := by
+    simpa [hclock_eq_variance] using hvariance_pos
+  have hbound :=
+    durrett2019_exercise_4_4_6_smallBall_bound_of_deterministic_varianceClock
+      (P := P) (ℱ := ℱ) (S := S) (sigmaSq := sigmaSq)
+      (x := x) (K := K) (n := n)
+      hx_nonneg hK_nonneg hclock_pos hS_adapted hM hsigmaSq_nonneg hS0_eq hinc
+  simpa [hclock_eq_variance] using hbound
+
+/--
 Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If
 `Y` is `ℱ_m`-measurable and square-integrable, then the increment
 `X_n - X_m` is orthogonal to `Y`.

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V141
+## Live In-Thread Goal Prompt V142
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -20,7 +20,7 @@ unless the next theorem directly needs one API.
 Current compiled packet: Exercise 4.4.6 now has finite absolute-exit objects,
 first-exit small-ball assembly, bounded-increment overshoot packaging,
 automatic stopped-value integrability from the square martingale, and the
-deterministic variance-clock wrapper:
+deterministic variance-clock / exact-denominator wrappers:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -30,20 +30,21 @@ deterministic variance-clock wrapper:
 `durrett2019_exercise_4_4_6_varianceClock_zero`,
 `durrett2019_exercise_4_4_6_varianceClock_nonneg`, and
 `durrett2019_exercise_4_4_6_smallBall_bound_of_deterministic_varianceClock`, in
-addition to the earlier first-exit and stopped-variance handoff declarations.
-Do not route back into optional-stopping, overshoot, stopped-integrability, or
-deterministic-clock plumbing.
+addition to `durrett2019_exercise_4_4_6_smallBall_bound_of_variance_endpoint`
+and the earlier first-exit/stopped-variance handoff declarations.  Do not route
+back into optional-stopping, overshoot, stopped-integrability,
+deterministic-clock, or exact-denominator plumbing.
 
 Next aggressive step: instantiate the remaining Exercise 4.4.6 source inputs:
-the square martingale `S_k^2 - s_k^2` from the increment hypotheses and the
-endpoint identification `s_n^2 = var(S_n)`, then package the exact source
-wrapper
-`P(max_{1 <= m <= n} |S_m| <= x) <= (x + K)^2 / var(S_n)`.  If this route is
-blocked, move to a theorem-sized Exercise 4.4.7 or 4.4.9-4.4.11 packet with the
-largest compileable reuse.  Do not loop back to already compiled Chapter 4.3.5,
-Chapter 4.3.8, Example 4.4.9, Exercise 4.4.5, Theorem 4.4.1 plumbing, or the
-first-exit overshoot/stopped-integrability/deterministic-clock layer.  Theorem
-4.1.16 remains deferred unless a targeted kernel search finds a direct
+derive the square martingale `S_k^2 - s_k^2` from the increment hypotheses
+using Exercise 4.2.2 / local quadratic-martingale support.  If immediate, add a
+source theorem that feeds this into
+`durrett2019_exercise_4_4_6_smallBall_bound_of_variance_endpoint`; otherwise
+move to a theorem-sized Exercise 4.4.7 or 4.4.9-4.4.11 packet with the largest
+compileable reuse.  Do not loop back to already compiled Chapter 4.3.5, Chapter
+4.3.8, Example 4.4.9, Exercise 4.4.5, Theorem 4.4.1 plumbing, or the first-exit
+overshoot/stopped-integrability/deterministic-clock/exact-denominator layer.
+Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
 source-shaped API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
@@ -548,10 +549,11 @@ Theorem 4.4.1 optional-stopping wrappers, Exercise 4.4.6's stopped-variance
 small-ball handoff, the finite first-exit/small-ball assembly, the
 bounded-increment overshoot/source wrapper, and the square-martingale wrapper
 with automatic stopped integrability, and the deterministic variance-clock
-wrapper now also compile.  Next target: instantiate the square-martingale source
-from increments and the `var(S_n) = s_n^2` endpoint needed for the exact
-Exercise 4.4.6 source wrapper.  Do not detour back into full Galton-Watson
-random-sum/extinction infrastructure unless a local API makes it cheap.
+wrapper plus exact-denominator wrapper now also compile.  Next target:
+instantiate the square-martingale source from increments using Exercise 4.2.2 /
+local quadratic-martingale support.  Do not detour back into full
+Galton-Watson random-sum/extinction infrastructure unless a local API makes it
+cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -1099,8 +1101,8 @@ optional-stopping wrappers, Exercise 4.4.6's stopped-variance small-ball
 handoff, the finite first-exit/small-ball assembly, the bounded-increment
 overshoot/source wrapper, and the square-martingale wrapper with automatic
 stopped integrability, and the deterministic variance-clock wrapper now also
-compile.  Next move to the remaining exact Exercise 4.4.6 source inputs:
-square-martingale source from increments and the `var(S_n) = s_n^2` endpoint.
+compile, along with the exact-denominator wrapper.  Next move to the remaining
+exact Exercise 4.4.6 source input: square-martingale source from increments.
 Keep Theorem 4.1.16 deferred unless a targeted kernel search finds a direct
 source-shaped API.
 
@@ -1214,6 +1216,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V141` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V142` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
