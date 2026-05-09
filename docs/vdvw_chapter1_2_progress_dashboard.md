@@ -235,9 +235,13 @@ and
 `VdVWTheorem243_productPair_centeredPairSubBadEvent_lower_bound_of_chebyshev_succ`.
 This avoids treating fixed-original sign-swap as the main path: Chebyshev
 mass is first integrated into the full `(P.prod P)^n` pair event, where the
-existing product-pair sign symmetry applies.  The next blocker is the
-averaged sign-swap/projection assembly plus the original and ghost selected
-finite-center Hoeffding side conditions.
+existing product-pair sign symmetry applies.  The deterministic sign-swapped
+averaged source is now compiled as
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_lower_bound_of_chebyshev_succ`,
+which applies that product-pair symmetry for every deterministic Rademacher
+sign vector.  The next blocker is canonical sign integration plus projection
+to the original-or-ghost selected finite-net event, together with the original
+and ghost selected finite-center Hoeffding side conditions.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

@@ -2327,8 +2327,13 @@ above, so they do not change the theorem-level dashboard counts.
    This is the preferred next path: integrate the Chebyshev ghost-fiber lower
    bound into the full `(P.prod P)^n` pair event, apply the compiled
    product-pair sign-swap equality there, then project to original-or-ghost
-   selected finite-net badness.  The remaining side conditions are the
-   selected finite-center Hoeffding components.
+   selected finite-net badness.  The deterministic sign-swapped averaged
+   source is now compiled as
+   `VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_lower_bound_of_chebyshev_succ`,
+   covering every deterministic Rademacher sign vector.  The remaining source
+   route is canonical sign integration plus projection to the original-or-ghost
+   selected finite-net event, with the selected finite-center Hoeffding
+   components as side conditions.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
