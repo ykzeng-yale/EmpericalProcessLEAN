@@ -280,13 +280,27 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	This reuses mathlib's `ContinuousLinearMap.opNorm_le_of_re_inner_le` so a
 	unit bilinear normalized Hessian-difference estimate can feed the same
 	Theorem 13.8 decrement wrapper without redoing operator-norm foundations.
+	The newest normalized symmetric-quadratic packet adds
+	`continuousLinearMap_opNorm_le_of_isSymmetric_abs_inner_le`,
+	`hessianDeltaQuadraticBound_of_normalizedSymmetricQuadraticBound`,
+	`hessianSegmentDelta_quadraticBound_of_normalizedSymmetricQuadraticBound`,
+	and
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSymmetricQuadraticConcreteDelta`.
+	This reuses mathlib's
+	`ContinuousLinearMap.norm_eq_iSup_rayleighQuotient` so a self-adjoint
+	normalized Hessian-difference operator plus the source-style absolute
+	quadratic-form estimate `|<A z,z>| <= coeff * ||z||^2` feeds the same
+	Theorem 13.8 decrement wrapper.
 
 Next theorem-sized target: prove the square-root/normalized-operator
-factorization and either the pointwise squared or unit-bilinear normalized
-bound for the concrete Delta operator, then feed it through
+factorization and either the pointwise squared, unit-bilinear, or
+self-adjoint absolute-quadratic normalized bound for the concrete Delta
+operator, then feed it through
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`
 or
-`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedUnitInnerConcreteDelta`.
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedUnitInnerConcreteDelta`
+or
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSymmetricQuadraticConcreteDelta`.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
@@ -298,8 +312,10 @@ The exact blockers are:
   `||sqrtH step||^2`, and prove the pointwise squared estimate
   `||A z||^2 <= (M * lambda / (1 - M * lambda))^2 * ||z||^2` or the unit
   bilinear estimate
-  `<A u, v> <= M * lambda / (1 - M * lambda)` for unit `u` and `v`.  The
-  conversion from either estimate to op norm, the final
+  `<A u, v> <= M * lambda / (1 - M * lambda)` for unit `u` and `v`, or the
+  symmetric quadratic route: `(A : E ->L[ℝ] E)` is self-adjoint and
+  `|<A z,z>| <= (M * lambda / (1 - M * lambda)) * ||z||^2`.  The
+  conversion from any of these estimates to op norm, the final
   `M * lambda^2 / (1 - M * lambda)^2` decrement algebra, and concrete residual
   identity are now compiled around this normalized route and the supplied
   inverse-Hessian transport blocker;

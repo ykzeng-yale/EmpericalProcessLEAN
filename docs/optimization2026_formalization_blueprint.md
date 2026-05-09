@@ -512,9 +512,16 @@ normalized unit-bilinear packet adds
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedUnitInnerConcreteDelta`,
 reusing mathlib's `ContinuousLinearMap.opNorm_le_of_re_inner_le` as an
 alternate bridge from a unit bilinear Hessian-difference estimate to the same
-Theorem 13.8 decrement wrapper.  After that, derive the inverse-Hessian
-comparison from concrete matrix/order hypotheses and remove the remaining
-mixed-third supplied source interface through the real
+Theorem 13.8 decrement wrapper.  The newest normalized symmetric-quadratic
+packet adds `continuousLinearMap_opNorm_le_of_isSymmetric_abs_inner_le`,
+`hessianDeltaQuadraticBound_of_normalizedSymmetricQuadraticBound`,
+`hessianSegmentDelta_quadraticBound_of_normalizedSymmetricQuadraticBound`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSymmetricQuadraticConcreteDelta`,
+reusing mathlib's `ContinuousLinearMap.norm_eq_iSup_rayleighQuotient` as the
+self-adjoint Rayleigh bridge from source-style absolute quadratic-form
+estimates to the same Theorem 13.8 decrement wrapper.  After that, derive the
+inverse-Hessian comparison from concrete matrix/order hypotheses and remove the
+remaining mixed-third supplied source interface through the real
 third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem

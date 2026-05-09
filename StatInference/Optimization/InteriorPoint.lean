@@ -2,6 +2,7 @@ import StatInference.Optimization.Basic
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Calculus.Deriv.ZPow
 import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.InnerProductSpace.Rayleigh
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
@@ -2790,6 +2791,32 @@ theorem continuousLinearMap_opNorm_le_of_unit_inner_le
       simpa using hbound u v hu hv)
 
 /--
+Operator-norm bound for a symmetric operator from an absolute quadratic-form
+estimate.  This wraps mathlib's Rayleigh quotient formula for self-adjoint
+operators and matches the usual source shape
+`|<A z, z>| <= coeff * ||z||^2`.
+-/
+theorem continuousLinearMap_opNorm_le_of_isSymmetric_abs_inner_le
+    {A : E →L[ℝ] E} {coeff : ℝ}
+    (hcoeff_nonneg : 0 ≤ coeff)
+    (hsymm : (A : E →ₗ[ℝ] E).IsSymmetric)
+    (hbound : ∀ z : E,
+      |inner ℝ (A z) z| ≤ coeff * ‖z‖ ^ (2 : ℕ)) :
+    ‖A‖ ≤ coeff := by
+  rw [ContinuousLinearMap.norm_eq_iSup_rayleighQuotient A hsymm]
+  refine ciSup_le ?_
+  intro z
+  by_cases hz : ‖z‖ = 0
+  · have hz0 : z = 0 := norm_eq_zero.mp hz
+    simpa [ContinuousLinearMap.rayleighQuotient, hz0] using hcoeff_nonneg
+  · have hden_pos : 0 < ‖z‖ ^ (2 : ℕ) := by positivity
+    have hdiv : |inner ℝ (A z) z| / ‖z‖ ^ (2 : ℕ) ≤ coeff := by
+      rw [div_le_iff₀ hden_pos]
+      exact hbound z
+    simpa [ContinuousLinearMap.rayleighQuotient,
+      ContinuousLinearMap.reApplyInnerSelf_apply, abs_div] using hdiv
+
+/--
 Generic normalized-operator route for Chewi Theorem 13.8.  If a Delta operator
 factors through a square-root coordinate system so that the dual quadratic form
 is `||A sqrtH(step)||^2`, and the Hessian quadratic form is
@@ -2877,6 +2904,31 @@ theorem hessianDeltaQuadraticBound_of_normalizedUnitInnerBound
       hcoeff_nonneg hnormalized_unit_inner)
 
 /--
+Variant of the normalized-operator route using a symmetric quadratic-form
+estimate for the normalized operator.  This is the Rayleigh-quotient route to
+the operator-norm line in Chewi Theorem 13.8.
+-/
+theorem hessianDeltaQuadraticBound_of_normalizedSymmetricQuadraticBound
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {x : E} {delta normalized sqrtH : E →L[ℝ] E} {coeff : ℝ}
+    (hcoeff_nonneg : 0 ≤ coeff)
+    (hdual_factor : ∀ step : E,
+      inner ℝ (delta step) (invHess x (delta step)) =
+        ‖normalized (sqrtH step)‖ ^ (2 : ℕ))
+    (hhess_factor : ∀ step : E,
+      inner ℝ step (hess x step) = ‖sqrtH step‖ ^ (2 : ℕ))
+    (hnormalized_symm : (normalized : E →ₗ[ℝ] E).IsSymmetric)
+    (hnormalized_abs_quad : ∀ z : E,
+      |inner ℝ (normalized z) z| ≤ coeff * ‖z‖ ^ (2 : ℕ)) :
+    HessianDeltaQuadraticBound hess invHess x delta coeff :=
+  hessianDeltaQuadraticBound_of_normalizedOperator
+    (hess := hess) (invHess := invHess) (x := x)
+    (delta := delta) (normalized := normalized) (sqrtH := sqrtH)
+    (coeff := coeff) hcoeff_nonneg hdual_factor hhess_factor
+    (continuousLinearMap_opNorm_le_of_isSymmetric_abs_inner_le
+      hcoeff_nonneg hnormalized_symm hnormalized_abs_quad)
+
+/--
 Concrete normalized-operator route for the integrated Hessian-difference
 operator in Chewi Theorem 13.8.
 -/
@@ -2946,6 +2998,32 @@ theorem hessianSegmentDelta_quadraticBound_of_normalizedUnitInnerBound
     (delta := hessianSegmentDelta hess x y)
     (normalized := normalized) (sqrtH := sqrtH) (coeff := coeff)
     hcoeff_nonneg hdual_factor hhess_factor hnormalized_unit_inner
+
+/--
+Concrete normalized symmetric quadratic-form route for the integrated
+Hessian-difference operator in Chewi Theorem 13.8.
+-/
+theorem hessianSegmentDelta_quadraticBound_of_normalizedSymmetricQuadraticBound
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {x y : E} {normalized sqrtH : E →L[ℝ] E} {coeff : ℝ}
+    (hcoeff_nonneg : 0 ≤ coeff)
+    (hdual_factor : ∀ step : E,
+      inner ℝ (hessianSegmentDelta hess x y step)
+          (invHess x (hessianSegmentDelta hess x y step)) =
+        ‖normalized (sqrtH step)‖ ^ (2 : ℕ))
+    (hhess_factor : ∀ step : E,
+      inner ℝ step (hess x step) = ‖sqrtH step‖ ^ (2 : ℕ))
+    (hnormalized_symm : (normalized : E →ₗ[ℝ] E).IsSymmetric)
+    (hnormalized_abs_quad : ∀ z : E,
+      |inner ℝ (normalized z) z| ≤ coeff * ‖z‖ ^ (2 : ℕ)) :
+    HessianDeltaQuadraticBound hess invHess x
+      (hessianSegmentDelta hess x y) coeff :=
+  hessianDeltaQuadraticBound_of_normalizedSymmetricQuadraticBound
+    (hess := hess) (invHess := invHess) (x := x)
+    (delta := hessianSegmentDelta hess x y)
+    (normalized := normalized) (sqrtH := sqrtH) (coeff := coeff)
+    hcoeff_nonneg hdual_factor hhess_factor hnormalized_symm
+    hnormalized_abs_quad
 
 /--
 Chewi Theorem 13.8 source residual identity.  If `delta` is the integrated
@@ -3559,6 +3637,80 @@ theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_nor
     continuousLinearMap_opNorm_le_of_norm_sq_le
       (A := normalized) (coeff := M * lam / (1 - M * lam))
       hcoeff_nonneg (by simpa [lam] using hnormalized_sq)
+  exact
+    chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedConcreteDelta
+      (hess := hess) (grad := grad) (invHess := invHess)
+      (normalized := normalized) (sqrtH := sqrtH) (s := s) (x := x)
+      (M := M)
+      hM_nonneg hMlambda_lt hstep_norm hhess hseg hgrad hnewton_linear
+      hdual_factor hhess_factor (by simpa [lam] using hnormalized_op)
+      hx_inv_nonneg hstep_inv_nonneg hupper hstep_hess_nonneg
+
+/--
+Chewi Theorem 13.8 assembly from a symmetric quadratic-form estimate on the
+normalized Delta operator.  This is the Rayleigh quotient path from the
+source-style bound `|<A z,z>| <= coeff * ||z||^2` to the already compiled
+operator-norm decrement wrapper.
+-/
+theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSymmetricQuadraticConcreteDelta
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {normalized sqrtH : E →L[ℝ] E} {s : Set E} {x : E} {M : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x (newtonStep grad invHess x) t ∈ s)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hdual_factor : ∀ step : E,
+      inner ℝ
+          (hessianSegmentDelta hess x (newtonStep grad invHess x) step)
+          (invHess x
+            (hessianSegmentDelta hess x (newtonStep grad invHess x) step)) =
+        ‖normalized (sqrtH step)‖ ^ (2 : ℕ))
+    (hhess_factor : ∀ step : E,
+      inner ℝ step (hess x step) = ‖sqrtH step‖ ^ (2 : ℕ))
+    (hnormalized_symm : (normalized : E →ₗ[ℝ] E).IsSymmetric)
+    (hnormalized_abs_quad : ∀ z : E,
+      |inner ℝ (normalized z) z| ≤
+        (M * newtonDecrement grad invHess x /
+          (1 - M * newtonDecrement grad invHess x)) * ‖z‖ ^ (2 : ℕ))
+    (hx_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hstep_inv_nonneg : ∀ v : E,
+      0 ≤ inner ℝ v (invHess (newtonStep grad invHess x) v))
+    (hupper : ∀ v : E,
+      inner ℝ v (invHess (newtonStep grad invHess x) v) ≤
+        ((1 - M * newtonDecrement grad invHess x)⁻¹) ^ (2 : ℕ) *
+          inner ℝ v (invHess x v))
+    (hstep_hess_nonneg :
+      0 ≤ inner ℝ (newtonStep grad invHess x - x)
+        (hess x (newtonStep grad invHess x - x))) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  let lam := newtonDecrement grad invHess x
+  have hlam_nonneg : 0 ≤ lam := by
+    dsimp [lam, newtonDecrement]
+    exact dualLocalNorm_nonneg invHess x (grad x)
+  have hden_pos : 0 < 1 - M * lam := by
+    dsimp [lam]
+    nlinarith
+  have hcoeff_nonneg : 0 ≤ M * lam / (1 - M * lam) :=
+    div_nonneg (mul_nonneg hM_nonneg hlam_nonneg) hden_pos.le
+  have hnormalized_op :
+      ‖normalized‖ ≤ M * lam / (1 - M * lam) :=
+    continuousLinearMap_opNorm_le_of_isSymmetric_abs_inner_le
+      (A := normalized) (coeff := M * lam / (1 - M * lam))
+      hcoeff_nonneg hnormalized_symm
+      (by simpa [lam] using hnormalized_abs_quad)
   exact
     chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedConcreteDelta
       (hess := hess) (grad := grad) (invHess := invHess)
