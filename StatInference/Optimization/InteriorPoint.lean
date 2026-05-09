@@ -2938,6 +2938,49 @@ theorem continuousLinearMap_adjointConj_isSymmetric_of_isSymmetric
   exact hconj.isSymmetric
 
 /--
+Dual quadratic-form factorization through an adjoint coordinate map.  If
+`normalized = coord† delta coord` and `coord sqrtH = id`, then the dual local
+quadratic form of `delta step` is the squared norm of
+`normalized (sqrtH step)`.
+-/
+theorem hessianDeltaDualFactor_of_adjointCoord
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {x : E}
+    {delta normalized coord sqrtH : E →L[ℝ] E}
+    (hnormalized_eq :
+      normalized = (ContinuousLinearMap.adjoint coord).comp (delta.comp coord))
+    (hcoord_sqrtH : ∀ step : E, coord (sqrtH step) = step)
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ)) :
+    ∀ step : E,
+      inner ℝ (delta step) (invHess x (delta step)) =
+        ‖normalized (sqrtH step)‖ ^ (2 : ℕ) := by
+  intro step
+  calc
+    inner ℝ (delta step) (invHess x (delta step))
+        = ‖(ContinuousLinearMap.adjoint coord) (delta step)‖ ^ (2 : ℕ) :=
+          hinv_factor (delta step)
+    _ = ‖normalized (sqrtH step)‖ ^ (2 : ℕ) := by
+      rw [hnormalized_eq]
+      simp [hcoord_sqrtH step]
+
+/--
+Primal Hessian quadratic-form factorization through a square-root coordinate
+map.
+-/
+theorem hessianPrimalFactor_of_adjointSqrt
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {x : E} {sqrtH : E →L[ℝ] E}
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH) :
+    ∀ step : E,
+      inner ℝ step (hess x step) = ‖sqrtH step‖ ^ (2 : ℕ) := by
+  intro step
+  rw [hhess_eq]
+  simpa using
+    (ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right sqrtH step).symm
+
+/--
 Generic normalized-operator route for Chewi Theorem 13.8.  If a Delta operator
 factors through a square-root coordinate system so that the dual quadratic form
 is `||A sqrtH(step)||^2`, and the Hessian quadratic form is
@@ -3911,6 +3954,82 @@ theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_nor
       hM_nonneg hMlambda_lt hstep_norm hhess hseg hgrad hnewton_linear
       hdual_factor hhess_factor hnormalized_symm hnormalized_abs_quad
       hx_inv_nonneg hstep_inv_nonneg hupper hstep_hess_nonneg
+
+/--
+Chewi Theorem 13.8 assembly with the dual and primal square-root
+factorizations derived from coordinate identities.  This removes the abstract
+`hdual_factor` and `hhess_factor` hypotheses from the adjoint-conjugation
+Rayleigh route.
+-/
+theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {normalized coord sqrtH : E →L[ℝ] E} {s : Set E} {x : E} {M : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x (newtonStep grad invHess x) t ∈ s)
+    (hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hnormalized_eq :
+      normalized =
+        (ContinuousLinearMap.adjoint coord).comp
+          ((hessianSegmentDelta hess x (newtonStep grad invHess x)).comp coord))
+    (hcoord_sqrtH : ∀ step : E, coord (sqrtH step) = step)
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hnormalized_abs_quad : ∀ z : E,
+      |inner ℝ (normalized z) z| ≤
+        (M * newtonDecrement grad invHess x /
+          (1 - M * newtonDecrement grad invHess x)) * ‖z‖ ^ (2 : ℕ))
+    (hx_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hstep_inv_nonneg : ∀ v : E,
+      0 ≤ inner ℝ v (invHess (newtonStep grad invHess x) v))
+    (hupper : ∀ v : E,
+      inner ℝ v (invHess (newtonStep grad invHess x) v) ≤
+        ((1 - M * newtonDecrement grad invHess x)⁻¹) ^ (2 : ℕ) *
+          inner ℝ v (invHess x v))
+    (hstep_hess_nonneg :
+      0 ≤ inner ℝ (newtonStep grad invHess x - x)
+        (hess x (newtonStep grad invHess x - x))) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  have hdual_factor : ∀ step : E,
+      inner ℝ
+          (hessianSegmentDelta hess x (newtonStep grad invHess x) step)
+          (invHess x
+            (hessianSegmentDelta hess x (newtonStep grad invHess x) step)) =
+        ‖normalized (sqrtH step)‖ ^ (2 : ℕ) :=
+    hessianDeltaDualFactor_of_adjointCoord
+      (invHess := invHess) (x := x)
+      (delta := hessianSegmentDelta hess x (newtonStep grad invHess x))
+      (normalized := normalized) (coord := coord) (sqrtH := sqrtH)
+      hnormalized_eq hcoord_sqrtH hinv_factor
+  have hhess_factor : ∀ step : E,
+      inner ℝ step (hess x step) = ‖sqrtH step‖ ^ (2 : ℕ) :=
+    hessianPrimalFactor_of_adjointSqrt
+      (hess := hess) (x := x) (sqrtH := sqrtH) hhess_eq
+  exact
+    chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedAdjointConjSymmetricQuadraticConcreteDelta
+      (hess := hess) (grad := grad) (invHess := invHess)
+      (normalized := normalized) (coord := coord) (sqrtH := sqrtH)
+      (s := s) (x := x) (M := M)
+      hM_nonneg hMlambda_lt hstep_norm hhess hseg hsymm hgrad
+      hnewton_linear hdual_factor hhess_factor hnormalized_eq
+      hnormalized_abs_quad hx_inv_nonneg hstep_inv_nonneg hupper
+      hstep_hess_nonneg
 
 /--
 Chewi Theorem 13.8 assembly from a unit bilinear estimate on the normalized

@@ -309,18 +309,29 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	symmetry through a coordinate map `coord`, so future source work can provide
 	`normalized = coord† Delta coord` plus the absolute quadratic-form bound
 	instead of a separate normalized self-adjointness assumption.
+	The newest coordinate-factorization packet adds
+	`hessianDeltaDualFactor_of_adjointCoord`,
+	`hessianPrimalFactor_of_adjointSqrt`, and
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta`.
+	It derives the Theorem 13.8 `hdual_factor` from
+	`normalized = coord† Delta coord`, `coord (sqrtH step) = step`, and the
+	dual quadratic factor
+	`<v, invHess(x)v> = ||coord† v||^2`, and derives `hhess_factor` from
+	`hess x = sqrtH† sqrtH` using
+	`ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right`.
 
 Next theorem-sized target: prove the square-root/normalized-operator
 factorization and either the pointwise squared, unit-bilinear, or
 self-adjoint absolute-quadratic normalized bound for the concrete Delta
 operator.  On the Rayleigh path, prefer the compiled adjoint-conjugation
-wrapper by proving `normalized = coord† Delta coord`; then feed the result
-through
+factorized wrapper by proving `normalized = coord† Delta coord`,
+`coord sqrtH = id`, the dual/primal square-root factorization identities, and
+the normalized absolute quadratic-form bound; then feed the result through
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`
 or
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedUnitInnerConcreteDelta`
 or
-`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedAdjointConjSymmetricQuadraticConcreteDelta`.
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta`.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:

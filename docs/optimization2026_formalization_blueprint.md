@@ -529,7 +529,13 @@ adds `continuousLinearMap_adjointConj_isSymmetric_of_isSymmetric`,
 `hessianSegmentDelta_adjointConj_isSymmetric_of_continuousOn`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedAdjointConjSymmetricQuadraticConcreteDelta`,
 reusing mathlib's `IsSelfAdjoint.adjoint_conj` so the source identity
-`normalized = coord† Delta coord` discharges normalized self-adjointness.  After
+`normalized = coord† Delta coord` discharges normalized self-adjointness.  The
+newest coordinate-factorization packet adds
+`hessianDeltaDualFactor_of_adjointCoord`,
+`hessianPrimalFactor_of_adjointSqrt`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta`,
+deriving the dual/primal square-root factors from coordinate identities and
+mathlib's `ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right`.  After
 that, derive the inverse-Hessian comparison from concrete matrix/order
 hypotheses and remove the remaining mixed-third supplied source interface
 through the real

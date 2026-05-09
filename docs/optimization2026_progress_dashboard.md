@@ -1423,7 +1423,13 @@ the segment.  The newest normalized adjoint-conjugation packet adds
 `hessianSegmentDelta_adjointConj_isSymmetric_of_continuousOn`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedAdjointConjSymmetricQuadraticConcreteDelta`,
 reusing mathlib's `IsSelfAdjoint.adjoint_conj` so `normalized = coord† Delta
-coord` supplies the normalized self-adjointness input.
+coord` supplies the normalized self-adjointness input.  The newest
+coordinate-factorization packet adds
+`hessianDeltaDualFactor_of_adjointCoord`,
+`hessianPrimalFactor_of_adjointSqrt`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta`,
+deriving the Theorem 13.8 dual/primal square-root factors from coordinate
+identities.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
@@ -1435,9 +1441,11 @@ compiled route uses `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
 `intervalIntegral.integral_sub`, `ContinuousLinearMap.le_opNorm`, and
 `ContinuousLinearMap.opNorm_le_of_re_inner_le`, plus
 `ContinuousLinearMap.norm_eq_iSup_rayleighQuotient`, `real_inner_comm`, and
-`LinearMap.IsSymmetric.sub`, plus `IsSelfAdjoint.adjoint_conj`; do not reprove
+`LinearMap.IsSymmetric.sub`, `IsSelfAdjoint.adjoint_conj`, and
+`ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right`; do not reprove
 Bochner interval-integral, inner-product/application commutation, Delta
-symmetry from pointwise Hessian symmetry, adjoint-conjugation symmetry, or
+symmetry from pointwise Hessian symmetry, adjoint-conjugation symmetry,
+dual/primal square-root factorization from coordinate identities, or
 operator-norm-from-unit-bilinear/Rayleigh estimates.
 Faraday's follow-up scout found no
 one-shot Hessian-derivative/third-Frechet bridge, but identified
@@ -1446,9 +1454,10 @@ one-shot Hessian-derivative/third-Frechet bridge, but identified
 right API stack.  Next Chapter 13 work should prove the concrete normalized
 Delta factorization plus either the pointwise squared, unit-bilinear, or
 self-adjoint absolute-quadratic bound.  On the Rayleigh path, provide the
-coordinate identity `normalized = coord† Delta coord` and use the compiled
-adjoint-conjugation wrapper; also derive inverse-Hessian comparison from
-concrete Hessian/matrix inverse hypotheses when needed.
+coordinate identities `normalized = coord† Delta coord`, `coord sqrtH = id`,
+`<v, invHess(x)v> = ||coord†v||^2`, and `hess x = sqrtH†sqrtH`, then use the
+compiled factorized adjoint-conjugation wrapper; also derive inverse-Hessian
+comparison from concrete Hessian/matrix inverse hypotheses when needed.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,
