@@ -14187,6 +14187,68 @@ theorem durrett2019_exercise_4_4_10_martingale_eLpNorm_increment_le_of_Ico_sum_l
     _ ≤ tailBound := htail
 
 /--
+Durrett 2019, Exercise 4.4.10 support: a finite nonnegative tail is bounded
+by the corresponding shifted infinite tail.
+
+This is the deterministic summability step used to turn
+`sum E xi_m^2 < infinity` into a usable finite tail estimate.
+-/
+theorem durrett2019_exercise_4_4_10_Ico_sum_le_tsum_tail_of_summable
+    {q : ℕ -> ℝ} (hq_nonneg : ∀ k, 0 ≤ q k) (hq_summable : Summable q)
+    {m n : ℕ} :
+    (∑ k ∈ Finset.Ico m n, q k) ≤ ∑' j : ℕ, q (m + j) := by
+  rw [Finset.sum_Ico_eq_sum_range]
+  refine Summable.sum_le_tsum (Finset.range (n - m)) (fun j _hj => ?_) ?_
+  · exact hq_nonneg (m + j)
+  · exact hq_summable.comp_injective (add_right_injective m)
+
+/--
+Durrett 2019, Exercise 4.4.10 support: square-increment summability bounds
+each finite martingale square-increment tail by the shifted infinite tail.
+-/
+theorem durrett2019_exercise_4_4_10_Ico_sum_increment_sq_le_tsum_tail_of_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hinc_sq_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P)
+    {m n : ℕ} :
+    (∑ k ∈ Finset.Ico m n,
+      ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P) ≤
+      ∑' j : ℕ,
+        ∫ ω, (X (m + j + 1) ω - X (m + j) ω) ^ 2 ∂P := by
+  exact
+    durrett2019_exercise_4_4_10_Ico_sum_le_tsum_tail_of_summable
+      (q := fun k : ℕ => ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P)
+      (fun k => integral_nonneg fun ω => sq_nonneg _)
+      hinc_sq_summable
+
+/--
+Durrett 2019, Exercise 4.4.10 support: square-increment summability gives the
+explicit shifted-tail `L^2` bound for martingale endpoints.
+-/
+theorem durrett2019_exercise_4_4_10_martingale_eLpNorm_increment_le_tsum_tail_of_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hinc_sq_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P)
+    {m n : ℕ} (hmn : m ≤ n) :
+    eLpNorm (X n - X m) (2 : ℝ≥0∞) P ≤
+      ENNReal.ofReal
+        ((∑' j : ℕ,
+          ∫ ω, (X (m + j + 1) ω - X (m + j) ω) ^ 2 ∂P) ^
+            ((2 : ℝ)⁻¹)) := by
+  refine
+    durrett2019_exercise_4_4_10_martingale_eLpNorm_increment_le_of_Ico_sum_le
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hmn ?_
+  exact
+    durrett2019_exercise_4_4_10_Ico_sum_increment_sq_le_tsum_tail_of_summable
+      (P := P) (X := X) hinc_sq_summable
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

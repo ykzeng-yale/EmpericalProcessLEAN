@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V148`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V149`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -38,10 +38,11 @@ bridge, the exact-denominator source-facing small-ball wrapper, and the
 natural-filtration independent-increment small-ball endpoint; Exercise 4.4.9
 now has the two-martingale product-covariance recurrence and finite-sum source
 display; Exercise 4.4.10 now has the finite square-increment second-moment
-identities, finite tail identity, and `L^2` Cauchy-bound consumer.  Continue
-by producing the Exercise 4.4.10 finite-tail bound from square summability and
-then completing the convergence handoff, or move to Exercise 4.4.11 if that
-handoff is blocked.
+identities, finite tail identity, `L^2` Cauchy-bound consumer, and
+square-summability shifted-tail bound.  Continue by proving the shifted
+infinite tail tends to zero and then completing the explicit `L^2`
+Cauchy/convergence handoff, or move to Exercise 4.4.11 if that handoff is
+blocked.
 
 For each cycle, route from:
 
