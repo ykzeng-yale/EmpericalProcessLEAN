@@ -2407,13 +2407,15 @@ above, so they do not change the theorem-level dashboard counts.
    The finite-center failure-tail closed form is now compiled as
    `vdVWTheorem243FiniteCenterHoeffdingFailureTail_exponent_eq`,
    `vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form`, and
-   `tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ`.  These
-   prove that the additive Hoeffding failure-tail term at the current display
-   scale has no automatic sample-size decay; the one-center case is constant.
-   The next source route should therefore not try to derive vanishing of this
-   additive error from bare stochastic entropy.  It should either add a
-   stronger honest tail/UI/cardinality-growth input, adjust the finite-center
-   threshold to include a true vanishing-probability penalty, or return to an
+   `tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ`, with
+   `not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ_zero`.
+   These prove that the additive Hoeffding failure-tail term at the current
+   display scale has no automatic sample-size decay; the one-center case is a
+   positive constant and cannot converge to zero.  The next source route should
+   therefore not try to derive vanishing of this additive error from bare
+   stochastic entropy.  It should either add a stronger honest
+   tail/UI/cardinality-growth input, adjust the finite-center threshold to
+   include a true vanishing-probability penalty, or return to an
    expectation/symmetrization comparison that avoids this additive-tail
    obstruction.  The Nat-indexed in-range selected-center selector
    measurability assumptions remain a separate concrete target.

@@ -139,14 +139,17 @@ and
 The compiled closed-form diagnostics
 `vdVWTheorem243FiniteCenterHoeffdingFailureTail_exponent_eq`,
 `vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form`, and
-`tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ` show that
-the displayed additive Hoeffding failure-tail term has no sample-size decay at
-the current scale, even for a one-center selected cover.  Do not spend the next
-round trying to prove vanishing of this additive error from bare stochastic
-entropy.  Either add an honest stronger tail/UI/cardinality-growth hypothesis,
-increase the finite-center threshold by a real vanishing-probability penalty,
-or switch back to an expectation/symmetrization route that avoids this
-additive-error obstruction.
+`tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ`, with the
+direct negation
+`not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ_zero`,
+show that the displayed additive Hoeffding failure-tail term has no
+sample-size decay at the current scale, even for a one-center selected cover:
+it cannot converge to zero.  Do not spend the next round trying to prove
+vanishing of this additive error from bare stochastic entropy.  Either add an
+honest stronger tail/UI/cardinality-growth hypothesis, increase the
+finite-center threshold by a real vanishing-probability penalty, or switch back
+to an expectation/symmetrization route that avoids this additive-error
+obstruction.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening and do not claim it follows from bare stochastic entropy.
 
