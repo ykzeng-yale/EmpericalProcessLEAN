@@ -2753,6 +2753,26 @@ theorem hessianSegmentDelta_quadraticBound_of_localNormUpper_and_dualEnergy
           ring
 
 /--
+Operator-norm bound from a squared pointwise norm estimate.  This is the
+shape produced by normalized Hessian-difference estimates in Chewi
+Theorem 13.8.
+-/
+theorem continuousLinearMap_opNorm_le_of_norm_sq_le
+    {A : E →L[ℝ] E} {coeff : ℝ}
+    (hcoeff_nonneg : 0 ≤ coeff)
+    (hbound : ∀ z : E,
+      ‖A z‖ ^ (2 : ℕ) ≤ coeff ^ (2 : ℕ) * ‖z‖ ^ (2 : ℕ)) :
+    ‖A‖ ≤ coeff := by
+  refine A.opNorm_le_bound hcoeff_nonneg ?_
+  intro z
+  have hrhs_nonneg : 0 ≤ coeff * ‖z‖ :=
+    mul_nonneg hcoeff_nonneg (norm_nonneg _)
+  have hsq :
+      ‖A z‖ ^ (2 : ℕ) ≤ (coeff * ‖z‖) ^ (2 : ℕ) := by
+    simpa [mul_pow] using hbound z
+  exact (sq_le_sq₀ (norm_nonneg _) hrhs_nonneg).mp hsq
+
+/--
 Generic normalized-operator route for Chewi Theorem 13.8.  If a Delta operator
 factors through a square-root coordinate system so that the dual quadratic form
 is `||A sqrtH(step)||^2`, and the Hessian quadratic form is
@@ -2793,6 +2813,29 @@ theorem hessianDeltaQuadraticBound_of_normalizedOperator
       ring
 
 /--
+Variant of the normalized-operator route using a squared pointwise bound for
+the normalized operator.  This is often closer to the source proof before
+packaging it as an operator-norm bound.
+-/
+theorem hessianDeltaQuadraticBound_of_normalizedSquaredBound
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {x : E} {delta normalized sqrtH : E →L[ℝ] E} {coeff : ℝ}
+    (hcoeff_nonneg : 0 ≤ coeff)
+    (hdual_factor : ∀ step : E,
+      inner ℝ (delta step) (invHess x (delta step)) =
+        ‖normalized (sqrtH step)‖ ^ (2 : ℕ))
+    (hhess_factor : ∀ step : E,
+      inner ℝ step (hess x step) = ‖sqrtH step‖ ^ (2 : ℕ))
+    (hnormalized_sq : ∀ z : E,
+      ‖normalized z‖ ^ (2 : ℕ) ≤ coeff ^ (2 : ℕ) * ‖z‖ ^ (2 : ℕ)) :
+    HessianDeltaQuadraticBound hess invHess x delta coeff :=
+  hessianDeltaQuadraticBound_of_normalizedOperator
+    (hess := hess) (invHess := invHess) (x := x)
+    (delta := delta) (normalized := normalized) (sqrtH := sqrtH)
+    (coeff := coeff) hcoeff_nonneg hdual_factor hhess_factor
+    (continuousLinearMap_opNorm_le_of_norm_sq_le hcoeff_nonneg hnormalized_sq)
+
+/--
 Concrete normalized-operator route for the integrated Hessian-difference
 operator in Chewi Theorem 13.8.
 -/
@@ -2814,6 +2857,30 @@ theorem hessianSegmentDelta_quadraticBound_of_normalizedOperator
     (delta := hessianSegmentDelta hess x y)
     (normalized := normalized) (sqrtH := sqrtH) (coeff := coeff)
     hcoeff_nonneg hdual_factor hhess_factor hnormalized_op
+
+/--
+Concrete normalized squared-bound route for the integrated Hessian-difference
+operator in Chewi Theorem 13.8.
+-/
+theorem hessianSegmentDelta_quadraticBound_of_normalizedSquaredBound
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {x y : E} {normalized sqrtH : E →L[ℝ] E} {coeff : ℝ}
+    (hcoeff_nonneg : 0 ≤ coeff)
+    (hdual_factor : ∀ step : E,
+      inner ℝ (hessianSegmentDelta hess x y step)
+          (invHess x (hessianSegmentDelta hess x y step)) =
+        ‖normalized (sqrtH step)‖ ^ (2 : ℕ))
+    (hhess_factor : ∀ step : E,
+      inner ℝ step (hess x step) = ‖sqrtH step‖ ^ (2 : ℕ))
+    (hnormalized_sq : ∀ z : E,
+      ‖normalized z‖ ^ (2 : ℕ) ≤ coeff ^ (2 : ℕ) * ‖z‖ ^ (2 : ℕ)) :
+    HessianDeltaQuadraticBound hess invHess x
+      (hessianSegmentDelta hess x y) coeff :=
+  hessianDeltaQuadraticBound_of_normalizedSquaredBound
+    (hess := hess) (invHess := invHess) (x := x)
+    (delta := hessianSegmentDelta hess x y)
+    (normalized := normalized) (sqrtH := sqrtH) (coeff := coeff)
+    hcoeff_nonneg hdual_factor hhess_factor hnormalized_sq
 
 /--
 Chewi Theorem 13.8 source residual identity.  If `delta` is the integrated
@@ -3363,6 +3430,78 @@ theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_nor
       hM_nonneg hMlambda_lt hstep_norm hhess hseg hgrad hnewton_linear
       hx_inv_nonneg hstep_inv_nonneg hupper hstep_hess_nonneg
       (by simpa [lam] using hdelta)
+
+/--
+Chewi Theorem 13.8 assembly from a squared pointwise bound on the normalized
+Delta operator.  This is the form closest to the displayed source estimate
+before converting it to an operator-norm statement.
+-/
+theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {normalized sqrtH : E →L[ℝ] E} {s : Set E} {x : E} {M : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x (newtonStep grad invHess x) t ∈ s)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hdual_factor : ∀ step : E,
+      inner ℝ
+          (hessianSegmentDelta hess x (newtonStep grad invHess x) step)
+          (invHess x
+            (hessianSegmentDelta hess x (newtonStep grad invHess x) step)) =
+        ‖normalized (sqrtH step)‖ ^ (2 : ℕ))
+    (hhess_factor : ∀ step : E,
+      inner ℝ step (hess x step) = ‖sqrtH step‖ ^ (2 : ℕ))
+    (hnormalized_sq : ∀ z : E,
+      ‖normalized z‖ ^ (2 : ℕ) ≤
+        (M * newtonDecrement grad invHess x /
+          (1 - M * newtonDecrement grad invHess x)) ^ (2 : ℕ) *
+            ‖z‖ ^ (2 : ℕ))
+    (hx_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hstep_inv_nonneg : ∀ v : E,
+      0 ≤ inner ℝ v (invHess (newtonStep grad invHess x) v))
+    (hupper : ∀ v : E,
+      inner ℝ v (invHess (newtonStep grad invHess x) v) ≤
+        ((1 - M * newtonDecrement grad invHess x)⁻¹) ^ (2 : ℕ) *
+          inner ℝ v (invHess x v))
+    (hstep_hess_nonneg :
+      0 ≤ inner ℝ (newtonStep grad invHess x - x)
+        (hess x (newtonStep grad invHess x - x))) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  let lam := newtonDecrement grad invHess x
+  have hlam_nonneg : 0 ≤ lam := by
+    dsimp [lam, newtonDecrement]
+    exact dualLocalNorm_nonneg invHess x (grad x)
+  have hden_pos : 0 < 1 - M * lam := by
+    dsimp [lam]
+    nlinarith
+  have hcoeff_nonneg : 0 ≤ M * lam / (1 - M * lam) :=
+    div_nonneg (mul_nonneg hM_nonneg hlam_nonneg) hden_pos.le
+  have hnormalized_op :
+      ‖normalized‖ ≤ M * lam / (1 - M * lam) :=
+    continuousLinearMap_opNorm_le_of_norm_sq_le
+      (A := normalized) (coeff := M * lam / (1 - M * lam))
+      hcoeff_nonneg (by simpa [lam] using hnormalized_sq)
+  exact
+    chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedConcreteDelta
+      (hess := hess) (grad := grad) (invHess := invHess)
+      (normalized := normalized) (sqrtH := sqrtH) (s := s) (x := x)
+      (M := M)
+      hM_nonneg hMlambda_lt hstep_norm hhess hseg hgrad hnewton_linear
+      hdual_factor hhess_factor (by simpa [lam] using hnormalized_op)
+      hx_inv_nonneg hstep_inv_nonneg hupper hstep_hess_nonneg
 
 /--
 Chewi Definition 13.3, source-shaped self-concordance interface using only the

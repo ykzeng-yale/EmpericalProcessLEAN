@@ -265,12 +265,19 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	This matches the textbook line
 	`||H(x)^(-1/2) Delta H(x)^(-1/2)||_op <= M * lambda / (1 - M * lambda)`
 	and makes the square-root factorization plus normalized operator-norm bound
-	the preferred next Delta route.
+	the preferred next Delta route.  The newest normalized squared-bound packet
+	adds `continuousLinearMap_opNorm_le_of_norm_sq_le`,
+	`hessianDeltaQuadraticBound_of_normalizedSquaredBound`,
+	`hessianSegmentDelta_quadraticBound_of_normalizedSquaredBound`, and
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`.
+	This lets the next proof use the pointwise squared normalized estimate
+	directly before packaging it as an op-norm bound.
 
 Next theorem-sized target: prove the square-root/normalized-operator
-factorization and operator-norm bound for the concrete Delta operator, then
+factorization and pointwise squared normalized bound for the concrete Delta
+operator, then
 feed it through
-`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedConcreteDelta`.
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
@@ -279,11 +286,12 @@ The exact blockers are:
   prove the normalized source line for `Delta = hessianSegmentDelta hess x x+`:
   identify `inner (Delta step) (invHess x (Delta step))` with
   `||A (sqrtH step)||^2`, identify `inner step (hess x step)` with
-  `||sqrtH step||^2`, and prove
-  `||A|| <= M * lambda / (1 - M * lambda)`.  The scalar Delta/order estimate,
-  final `M * lambda^2 / (1 - M * lambda)^2` decrement algebra, and concrete
-  residual identity are now compiled around this normalized route and the
-  supplied inverse-Hessian transport blocker;
+  `||sqrtH step||^2`, and prove the pointwise squared estimate
+  `||A z||^2 <= (M * lambda / (1 - M * lambda))^2 * ||z||^2`.  The conversion
+  from this squared estimate to op norm, the final
+  `M * lambda^2 / (1 - M * lambda)^2` decrement algebra, and concrete residual
+  identity are now compiled around this normalized route and the supplied
+  inverse-Hessian transport blocker;
 - connect the real third Frechet derivative or `iteratedFDeriv` representation
   to `MixedThirdSelfConcordantOn.mixed_third_bound` when removing the supplied
   mixed-third source interface.  Positivity of `||y - x||_{z_s}` is already

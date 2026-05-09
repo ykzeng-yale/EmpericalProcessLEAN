@@ -498,12 +498,16 @@ The newest normalized-operator packet adds
 `hessianSegmentDelta_quadraticBound_of_normalizedOperator`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedConcreteDelta`,
 using `ContinuousLinearMap.le_opNorm` to formalize Chewi's
-`||H(x)^(-1/2) Delta H(x)^(-1/2)||_op` route.  The next Chapter 13 packet
-should prove the concrete square-root factorization and normalized Delta
-operator-norm bound; after that, derive the inverse-Hessian comparison from
-concrete matrix/order hypotheses and remove the remaining mixed-third supplied
-source interface through the real third-derivative representation bridge to
-`MixedThirdSelfConcordantOn`.
+`||H(x)^(-1/2) Delta H(x)^(-1/2)||_op` route.  The newest normalized
+squared-bound packet adds `continuousLinearMap_opNorm_le_of_norm_sq_le`,
+`hessianDeltaQuadraticBound_of_normalizedSquaredBound`,
+`hessianSegmentDelta_quadraticBound_of_normalizedSquaredBound`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`,
+so the next Chapter 13 packet can prove the concrete square-root factorization
+and pointwise squared normalized Delta estimate directly.  After that, derive
+the inverse-Hessian comparison from concrete matrix/order hypotheses and remove
+the remaining mixed-third supplied source interface through the real
+third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

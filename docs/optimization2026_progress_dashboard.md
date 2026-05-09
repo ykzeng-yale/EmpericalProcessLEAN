@@ -46,7 +46,8 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current priority sequence: Chapter 13 Theorem 13.8 source completion in
   `StatInference/Optimization/InteriorPoint.lean`: first prove the concrete
   square-root/normalized-operator factorization and op-norm bound for Delta,
-  then feed it into the compiled normalized-concrete-Delta decrement wrapper;
+  or preferably the pointwise squared normalized bound for Delta, then feed it
+  into the compiled normalized-squared-concrete-Delta decrement wrapper;
   the concrete Delta action formula and scalar Delta/order-to-
   `HessianDeltaQuadraticBound` bridges are already compiled.  Then remove
   supplied inverse-Hessian comparison and
@@ -79,11 +80,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
   route-planning loop and not an already-solved ASGD tower peel; it is the
-  Theorem 13.8 square-root/normalized-operator Delta line, using the compiled
-  integrated Delta coefficient, concrete Delta action, scalar Delta/order
-  bridge, normalized-operator bridge, and gradient-FTC layers.  Broad searches,
-  old Chapter 3 routing, ASGD routing, and repeated Git sync loops are
-  explicitly out of budget unless they answer that blocker.
+  Theorem 13.8 square-root/normalized-operator Delta line, especially the
+  pointwise squared normalized estimate, using the compiled integrated Delta
+  coefficient, concrete Delta action, scalar Delta/order bridge,
+  normalized-operator/squared-bound bridges, and gradient-FTC layers.  Broad
+  searches, old Chapter 3 routing, ASGD routing, and repeated Git sync loops
+  are explicitly out of budget unless they answer that blocker.
 - Latest ASGD source-variance route improvement: the active right compensated
   full-inverse product no longer needs the suspicious auxiliary
   `‖1 + projectedCompensatedTaylorErrorFactor‖ ≤ 1` gate.  The new route
@@ -1390,7 +1392,13 @@ the remaining dual-energy/order comparison instead of a hand-supplied
 `hessianSegmentDelta_quadraticBound_of_normalizedOperator`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedConcreteDelta`,
 matching Chewi's
-`||H(x)^(-1/2) Delta H(x)^(-1/2)||_op <= M*lambda/(1-M*lambda)` line.
+`||H(x)^(-1/2) Delta H(x)^(-1/2)||_op <= M*lambda/(1-M*lambda)` line.  The
+newest normalized squared-bound packet adds
+`continuousLinearMap_opNorm_le_of_norm_sq_le`,
+`hessianDeltaQuadraticBound_of_normalizedSquaredBound`,
+`hessianSegmentDelta_quadraticBound_of_normalizedSquaredBound`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`,
+so callers can provide the squared pointwise normalized estimate directly.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
@@ -1406,8 +1414,8 @@ one-shot Hessian-derivative/third-Frechet bridge, but identified
 `fderiv_iteratedFDeriv`, `iteratedFDeriv_succ_apply_left/right`,
 `iteratedFDeriv_two_apply`, and `ContDiffAt.iteratedFDeriv_comp_perm` as the
 right API stack.  Next Chapter 13 work should prove the concrete normalized
-Delta factorization/operator-norm bound and derive inverse-Hessian comparison
-from concrete Hessian/matrix inverse hypotheses when needed.
+Delta factorization plus pointwise squared bound, and derive inverse-Hessian
+comparison from concrete Hessian/matrix inverse hypotheses when needed.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,
