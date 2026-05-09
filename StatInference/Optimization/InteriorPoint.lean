@@ -3258,6 +3258,37 @@ noncomputable def barrierInfProjectionSchurLift
     withLpProdInrCLM
       (barrierInfProjectionSchurCorrection selector hess invHyy x v)
 
+/--
+Canonical mixed-third oracle for the inf-projection Schur envelope: evaluate
+the original product-space third derivative on the Schur-lifted directions.
+-/
+noncomputable def barrierInfProjectionSchurLiftedThird
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂)
+    (third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ) :
+    E₁ -> E₁ -> E₁ -> ℝ :=
+  fun x u v =>
+    third (barrierInfProjectionPoint selector x)
+      (barrierInfProjectionSchurLift selector hess invHyy x u)
+      (barrierInfProjectionSchurLift selector hess invHyy x v)
+
+@[simp] theorem barrierInfProjectionSchurLiftedThird_apply
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂)
+    (third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ)
+    (x u v : E₁) :
+    barrierInfProjectionSchurLiftedThird selector hess invHyy third x u v =
+      third (barrierInfProjectionPoint selector x)
+        (barrierInfProjectionSchurLift selector hess invHyy x u)
+        (barrierInfProjectionSchurLift selector hess invHyy x v) := by
+  rfl
+
 @[simp] theorem barrierInfProjectionSchurLift_fst
     (selector : E₁ -> E₂)
     (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
@@ -3532,6 +3563,27 @@ theorem BarrierInfProjectionSelectorStationary.schurMixedThirdSelfConcordantOn_o
       (barrierInfProjectionSchurHessFrom selector hess invHyy) projThird M :=
   hsel.schurMixedThirdSelfConcordantOn_of_Hyy_right_inverse hbar hyy_right
     (hsel.schurMixedThird_bound_of_lift_third hbar hyy_right hthird_eq)
+
+theorem BarrierInfProjectionSelectorStationary.schurMixedThirdSelfConcordantOn_liftedThird
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w) :
+    MixedThirdSelfConcordantOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionSchurLiftedThird selector hess invHyy third) M :=
+  hsel.schurMixedThirdSelfConcordantOn_of_lift_third hbar hyy_right
+    (by intro x hx u v; rfl)
 
 theorem BarrierInfProjectionSelectorStationary.projectedInvHess_quadratic_nonneg_of_Hyy_right_inverse
     {s : Set (WithLp 2 (E₁ × E₂))}
@@ -4081,6 +4133,57 @@ theorem chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_ad
       (invH := invHess (barrierInfProjectionPoint selector x))
       (sqrtCoord := sqrtFull (barrierInfProjectionPoint selector x))
       (hfull_hess_eq hx) (hfull_inv_eq hx) v
+
+/--
+Canonical-lifted-third version of the finite-dimensional inf-projection
+Schur-envelope rule.  The projected mixed-third oracle is fixed to the lifted
+product-space third derivative, so no separate lifted-third equality is needed.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_liftedThird_adjointSqrtCoord_finiteDimHyy
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂}
+    {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_hess_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      barrierInfProjectionBlockYY selector hess x =
+        (ContinuousLinearMap.adjoint (sqrtHyy x).toContinuousLinearMap).comp
+          (sqrtHyy x).toContinuousLinearMap)
+    (hyy_inv_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      invHyy x =
+        (sqrtHyy x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtHyy x).symm.toContinuousLinearMap))
+    (hfull_hess_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      hess (barrierInfProjectionPoint selector x) =
+        (ContinuousLinearMap.adjoint
+            (sqrtFull (barrierInfProjectionPoint selector x)).toContinuousLinearMap).comp
+          (sqrtFull (barrierInfProjectionPoint selector x)).toContinuousLinearMap)
+    (hfull_inv_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      invHess (barrierInfProjectionPoint selector x) =
+        (sqrtFull (barrierInfProjectionPoint selector x)).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtFull (barrierInfProjectionPoint selector x)).symm.toContinuousLinearMap)) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionProjInvHessFromFullInv selector invHess)
+      (barrierInfProjectionSchurLiftedThird selector hess invHyy third) M nu :=
+  chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_adjointSqrtCoord_finiteDimHyy
+    hsel hbar hyy_hess_eq hyy_inv_eq hfull_hess_eq hfull_inv_eq
+    (by intro x hx u v; rfl)
 
 end InfProjectionBarrier
 

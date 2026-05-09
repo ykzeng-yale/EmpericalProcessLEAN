@@ -320,6 +320,17 @@ finite-dimensional inf-projection wrapper.  The active item-4 gates in this
 route are now the lifted third-derivative identity plus concrete square-root
 model equalities for the vertical block and full Hessian; do not route future
 runs through raw inverse equations when the square-root model is available.
+The canonical lifted-third packet adds `barrierInfProjectionSchurLiftedThird`,
+`barrierInfProjectionSchurLiftedThird_apply`,
+`BarrierInfProjectionSelectorStationary.schurMixedThirdSelfConcordantOn_liftedThird`,
+and
+`chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_liftedThird_adjointSqrtCoord_finiteDimHyy`.
+The best finite-dimensional square-root route now fixes the projected
+mixed-third oracle to `third (point x) (schurLift x u) (schurLift x v)`, so no
+separate lifted-third equality hypothesis is needed.  The remaining exact
+source work is the differentiability/envelope proof that this canonical oracle
+is the actual third derivative of the inf-projection value function, plus
+concrete square-root model equalities for the vertical block and full Hessian.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,

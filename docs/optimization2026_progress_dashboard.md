@@ -218,6 +218,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   finite-dimensional inf-projection wrapper.  The active item-4 gates in this
   route are now the lifted third-derivative identity plus concrete
   square-root model equalities for the vertical block and full Hessian.
+- Inf-projection canonical lifted-third shrink: the newest packet adds
+  `barrierInfProjectionSchurLiftedThird`,
+  `barrierInfProjectionSchurLiftedThird_apply`,
+  `BarrierInfProjectionSelectorStationary.schurMixedThirdSelfConcordantOn_liftedThird`,
+  and
+  `chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_liftedThird_adjointSqrtCoord_finiteDimHyy`.
+  The best finite-dimensional square-root route now fixes the projected
+  mixed-third oracle to the lifted product-space third derivative, so it no
+  longer asks callers for a separate `hthird_eq` proof.  The exact source
+  envelope theorem still needs the differentiability argument showing this
+  canonical oracle is the actual third derivative of the inf-projection value
+  function.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in
