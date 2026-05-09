@@ -14388,6 +14388,85 @@ theorem durrett2019_exercise_4_4_10_martingale_exists_toLp_tendsto_of_summable
         (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hinc_sq_summable)
 
 /--
+Durrett 2019, Exercise 4.4.10 support: square-increment summability gives a
+uniform `L^2` bound on the martingale endpoints.
+-/
+theorem durrett2019_exercise_4_4_10_martingale_eLpNorm_two_bdd_of_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hinc_sq_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P) :
+    ∃ R : ℝ≥0, ∀ n, eLpNorm (X n) (2 : ℝ≥0∞) P ≤ R := by
+  let q : ℕ -> ℝ :=
+    fun k => ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P
+  let C : ℝ := (∫ ω, X 0 ω ^ 2 ∂P) + ∑' k : ℕ, q k
+  let R : ℝ≥0 := Real.toNNReal (C ^ ((2 : ℝ)⁻¹))
+  refine ⟨R, ?_⟩
+  intro n
+  have hsum_le : (∑ k ∈ Finset.range n, q k) ≤ ∑' k : ℕ, q k := by
+    exact hinc_sq_summable.sum_le_tsum (Finset.range n)
+      (fun k _hk => integral_nonneg fun ω => sq_nonneg _)
+  have hsq_bound : (∫ ω, X n ω ^ 2 ∂P) ≤ C := by
+    have hsum :=
+      durrett2019_exercise_4_4_10_martingale_square_integral_sub_initial_eq_sum_increment_sq
+        (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two n
+    dsimp [C, q] at hsum_le hsum ⊢
+    linarith
+  have hLp_bound :
+      eLpNorm (X n) (2 : ℝ≥0∞) P ≤ ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) :=
+    durrett2019_eLpNorm_two_le_of_integral_sq_le
+      (P := P) (Y := X n) (hX_memLp_two n) hsq_bound
+  simpa [R, ENNReal.ofReal] using hLp_bound
+
+/--
+Durrett 2019, Exercise 4.4.10 support: on a probability space,
+square-increment summability gives a uniform `L^1` bound on the martingale
+endpoints.
+-/
+theorem durrett2019_exercise_4_4_10_martingale_eLpNorm_one_bdd_of_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hinc_sq_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P) :
+    ∃ R : ℝ≥0, ∀ n, eLpNorm (X n) 1 P ≤ R := by
+  obtain ⟨R, hR⟩ :=
+    durrett2019_exercise_4_4_10_martingale_eLpNorm_two_bdd_of_summable
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hinc_sq_summable
+  refine ⟨R, fun n => ?_⟩
+  have hone_two : (1 : ℝ≥0∞) ≤ (2 : ℝ≥0∞) := by norm_num
+  exact
+    (eLpNorm_le_eLpNorm_of_exponent_le (μ := P) (f := X n) hone_two
+      (hX_memLp_two n).aestronglyMeasurable).trans (hR n)
+
+/--
+Durrett 2019, Exercise 4.4.10 endpoint: square-increment summability gives
+almost-sure convergence of the martingale.
+-/
+theorem durrett2019_exercise_4_4_10_martingale_exists_ae_tendsto_of_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hinc_sq_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P) :
+    ∀ᵐ ω ∂P, ∃ Y : ℝ, Tendsto (fun n : ℕ => X n ω) atTop (𝓝 Y) := by
+  obtain ⟨R, hR⟩ :=
+    durrett2019_exercise_4_4_10_martingale_eLpNorm_one_bdd_of_summable
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hinc_sq_summable
+  exact
+    durrett2019_theorem_4_2_11_submartingale_exists_ae_tendsto_of_eLpNorm_bdd
+      (μ := P) (ℱ := ℱ) (X := X) hX.submartingale hR
+
+/--
 Durrett 2019, Exercise 4.4.11 support: the one-step increment of the discrete
 predictable transform is the scaled martingale increment.
 -/
@@ -14457,6 +14536,43 @@ theorem durrett2019_exercise_4_4_11_stochasticTransform_exists_toLp_tendsto_of_s
       hX hH_pred hH_bdd hH_nonneg
   exact
     durrett2019_exercise_4_4_10_martingale_exists_toLp_tendsto_of_summable
+      (P := P) (ℱ := ℱ) (X := durrett2019_stochasticTransform H X)
+      hTransform_martingale hTransform_memLp_two
+      (durrett2019_exercise_4_4_11_stochasticTransform_increment_sq_summable
+        (P := P) (H := H) (X := X) hscaled_summable)
+
+/--
+Durrett 2019, Exercise 4.4.11 support: a bounded nonnegative predictable
+transform with summable scaled square increments converges almost surely.
+
+This is the almost-sure version of the transform handoff needed before applying
+Kronecker's lemma pathwise.
+-/
+theorem durrett2019_exercise_4_4_11_stochasticTransform_exists_ae_tendsto_of_scaled_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {H X : ℕ -> Ω -> ℝ} {R : ℝ}
+    (hX : Martingale X ℱ P)
+    (hH_pred : StronglyAdapted ℱ (fun n => H (n + 1)))
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω)
+    (hTransform_memLp_two :
+      ∀ k, MemLp (durrett2019_stochasticTransform H X k) (2 : ℝ≥0∞) P)
+    (hscaled_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (H (k + 1) ω * (X (k + 1) ω - X k ω)) ^ 2 ∂P) :
+    ∀ᵐ ω ∂P,
+      ∃ Y : ℝ,
+        Tendsto (fun n : ℕ => durrett2019_stochasticTransform H X n ω)
+          atTop (𝓝 Y) := by
+  have hTransform_martingale :
+      Martingale (durrett2019_stochasticTransform H X) ℱ P :=
+    durrett2019_theorem_4_2_8_martingale_transform_nonnegative
+      (μ := P) (ℱ := ℱ) (H := H) (X := X) (R := R)
+      hX hH_pred hH_bdd hH_nonneg
+  exact
+    durrett2019_exercise_4_4_10_martingale_exists_ae_tendsto_of_summable
       (P := P) (ℱ := ℱ) (X := durrett2019_stochasticTransform H X)
       hTransform_martingale hTransform_memLp_two
       (durrett2019_exercise_4_4_11_stochasticTransform_increment_sq_summable
@@ -14782,6 +14898,125 @@ theorem durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_nonnegative_
       (durrett2019_exercise_4_4_11_weighted_average_tendsto_of_nonnegative_increments
         (A := A) (b := b) (L := L)
         hA_tendsto hb_increment_nonneg hb_atTop)
+
+/--
+Durrett 2019, Exercise 4.4.11 deterministic endpoint: if a scaled partial-sum
+process converges and its increments are `(X_{k+1} - X_k) / b_{k+1}`, then
+Kronecker's lemma gives `(X_{n+1} - X_0) / b_{n+1} -> 0`.
+-/
+theorem durrett2019_exercise_4_4_11_normalized_increment_sum_tendsto_zero
+    {A X b : ℕ -> ℝ} (hA0 : A 0 = 0)
+    (hA_increment :
+      ∀ k : ℕ, A (k + 1) - A k = (X (k + 1) - X k) / b (k + 1))
+    (hb_nonzero : ∀ k : ℕ, b (k + 1) ≠ 0) {L : ℝ}
+    (hA_tendsto : Tendsto (fun n : ℕ => A (n + 1)) atTop (nhds L))
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop) :
+    Tendsto (fun n : ℕ => (X (n + 1) - X 0) / b (n + 1))
+      atTop (nhds 0) := by
+  have hK :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), b (k + 1) * (A (k + 1) - A k)) /
+            b (n + 1))
+        atTop (nhds 0) :=
+    durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_nonnegative_increments
+      (A := A) (b := b) hA0 hA_tendsto hb_increment_nonneg hb_atTop
+  refine hK.congr' ?_
+  exact Eventually.of_forall fun n => by
+    have hsum :
+        (∑ k ∈ Finset.range (n + 1), b (k + 1) * (A (k + 1) - A k)) =
+          X (n + 1) - X 0 := by
+      calc
+        (∑ k ∈ Finset.range (n + 1), b (k + 1) * (A (k + 1) - A k))
+            = ∑ k ∈ Finset.range (n + 1),
+                b (k + 1) * ((X (k + 1) - X k) / b (k + 1)) := by
+                refine Finset.sum_congr rfl ?_
+                intro k hk
+                rw [hA_increment k]
+        _ = ∑ k ∈ Finset.range (n + 1), (X (k + 1) - X k) := by
+                refine Finset.sum_congr rfl ?_
+                intro k hk
+                field_simp [hb_nonzero k]
+        _ = X (n + 1) - X 0 := by
+                simpa using Finset.sum_range_sub X (n + 1)
+    simp [hsum]
+
+/--
+Durrett 2019, Exercise 4.4.11 martingale-transform endpoint: almost-sure
+convergence of the scaled predictable transform feeds the deterministic
+Kronecker endpoint pathwise.
+-/
+theorem durrett2019_exercise_4_4_11_normalized_increment_sum_ae_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {H X : ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (hH_eq : ∀ n ω, H n ω = (b n)⁻¹)
+    (hb_nonzero : ∀ k : ℕ, b (k + 1) ≠ 0)
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop)
+    (hTransform_tendsto :
+      ∀ᵐ ω ∂P,
+        ∃ Y : ℝ,
+          Tendsto (fun n : ℕ => durrett2019_stochasticTransform H X n ω)
+            atTop (𝓝 Y)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => (X (n + 1) ω - X 0 ω) / b (n + 1))
+        atTop (nhds 0) := by
+  filter_upwards [hTransform_tendsto] with ω hω
+  rcases hω with ⟨Y, hY⟩
+  refine
+    durrett2019_exercise_4_4_11_normalized_increment_sum_tendsto_zero
+      (A := fun n => durrett2019_stochasticTransform H X n ω)
+      (X := fun n => X n ω) (b := b) ?_ ?_ hb_nonzero
+      (L := Y) ?_ hb_increment_nonneg hb_atTop
+  · simp [durrett2019_stochasticTransform]
+  · intro k
+    have hinc :=
+      congrFun
+        (durrett2019_exercise_4_4_11_stochasticTransform_increment_eq H X k) ω
+    calc
+      durrett2019_stochasticTransform H X (k + 1) ω -
+          durrett2019_stochasticTransform H X k ω
+          = H (k + 1) ω * (X (k + 1) ω - X k ω) := by
+            simpa [Pi.sub_apply, Pi.mul_apply] using hinc
+      _ = (X (k + 1) ω - X k ω) / b (k + 1) := by
+            rw [hH_eq (k + 1) ω]
+            ring
+  · exact hY.comp (tendsto_add_atTop_nat 1)
+
+/--
+Durrett 2019, Exercise 4.4.11 source-facing transform route: square-summable
+scaled increments give the almost-sure Kronecker-normalized martingale
+difference conclusion.
+-/
+theorem durrett2019_exercise_4_4_11_normalized_increment_sum_ae_tendsto_zero_of_scaled_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {H X : ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {R : ℝ}
+    (hX : Martingale X ℱ P)
+    (hH_pred : StronglyAdapted ℱ (fun n => H (n + 1)))
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω)
+    (hH_eq : ∀ n ω, H n ω = (b n)⁻¹)
+    (hb_nonzero : ∀ k : ℕ, b (k + 1) ≠ 0)
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop)
+    (hTransform_memLp_two :
+      ∀ k, MemLp (durrett2019_stochasticTransform H X k) (2 : ℝ≥0∞) P)
+    (hscaled_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (H (k + 1) ω * (X (k + 1) ω - X k ω)) ^ 2 ∂P) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => (X (n + 1) ω - X 0 ω) / b (n + 1))
+        atTop (nhds 0) := by
+  exact
+    durrett2019_exercise_4_4_11_normalized_increment_sum_ae_tendsto_zero
+      (P := P) (H := H) (X := X) (b := b)
+      hH_eq hb_nonzero hb_increment_nonneg hb_atTop
+      (durrett2019_exercise_4_4_11_stochasticTransform_exists_ae_tendsto_of_scaled_summable
+        (P := P) (ℱ := ℱ) (H := H) (X := X) (R := R)
+        hX hH_pred hH_bdd hH_nonneg hTransform_memLp_two hscaled_summable)
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

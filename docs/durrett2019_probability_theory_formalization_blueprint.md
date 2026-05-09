@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V155`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V156`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -39,16 +39,16 @@ natural-filtration independent-increment small-ball endpoint; Exercise 4.4.9
 now has the two-martingale product-covariance recurrence and finite-sum source
 display; Exercise 4.4.10 now has the finite square-increment second-moment
 identities, finite tail identity, `L^2` Cauchy-bound consumer, and
-square-summability shifted-tail bound, shifted-tail tendsto-zero wrapper, and
-explicit eventual `L^2` Cauchy estimate, `Lp` Cauchy sequence endpoint, and
-existential `Lp` limit.  Exercise 4.4.11 now has the predictable-transform
-increment identity, scaled square-summability conversion, transformed
-martingale `Lp` convergence bridge, deterministic Abel/Kronecker ratio
-certificates, the Toeplitz constant/centered split, the centered Toeplitz
-remainder, and the nonnegative-increment weighted-average/Kronecker route.
-Continue by connecting this deterministic normalizer route to the martingale
-transform statement and packaging the bounded-variance Exercise 4.4.11
-corollary.
+square-summability shifted-tail bound, shifted-tail tendsto-zero wrapper,
+explicit eventual `L^2` Cauchy estimate, `Lp` Cauchy sequence endpoint,
+existential `Lp` limit, and almost-sure convergence handoff.  Exercise 4.4.11
+now has the predictable-transform increment identity, scaled square-summability
+conversion, transformed martingale `Lp` and almost-sure convergence bridges,
+deterministic Abel/Kronecker ratio certificates, the Toeplitz constant/centered
+split, the centered Toeplitz remainder, the nonnegative-increment
+weighted-average/Kronecker route, and the normalized increment-sum a.e.
+endpoint.  Continue by packaging the zero-initial/shifted `X_n / b_n` display
+and the bounded-variance Exercise 4.4.11 corollary.
 
 For each cycle, route from:
 
@@ -411,12 +411,10 @@ Next packet:
 
 - Chapter 4.4: continue Exercise 4.4.11.  The current frontier is no longer
   Exercise 4.4.6, Exercise 4.4.10, the predictable-transform convergence
-  bridge, Abel/Kronecker summation, the Toeplitz split, or the centered
-  Toeplitz remainder.  The compiled deterministic route now includes
-  nonnegative-increment weighted-average convergence and the final
-  nonnegative-increment Kronecker ratio wrapper.  Next, connect this
-  normalizer route to the martingale transform endpoint and package the
-  bounded-variance Exercise 4.4.11 corollary.  The
+  bridge, Abel/Kronecker summation, the Toeplitz split, the centered Toeplitz
+  remainder, or the normalized increment-sum a.e. endpoint.  Next, package the
+  zero-initial/shifted `X_n / b_n` display and instantiate the bounded-variance
+  corollary from `E ξ_n^2 ≤ K` and summability of `(b (n+1))⁻²`.  The
   Section 3.10
   multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise
   3.10.8 linear-combination characterization wrappers, Durrett conditional

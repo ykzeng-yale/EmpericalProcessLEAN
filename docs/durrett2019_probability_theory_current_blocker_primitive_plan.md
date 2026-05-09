@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V155
+## Live In-Thread Goal Prompt V156
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -26,11 +26,12 @@ independent-increment endpoint.  Exercise 4.4.9 now has the two-martingale
 product-covariance recurrence and finite-sum source display.  Exercise 4.4.10
 now has the finite square-increment second-moment identities and finite
 tail identity plus the `L^2` Cauchy-bound consumer and square-summability
-shifted-tail/Cauchy handoff.  Exercise 4.4.11 now has the predictable
-transform increment identity, `L^2` transform convergence bridge, and
-deterministic Abel/Kronecker summation certificates, the Toeplitz
-constant/centered split, and the nonnegative-increment Toeplitz/Kronecker
-route:
+shifted-tail/Cauchy handoff plus the `L^1`-bounded almost-sure convergence
+handoff.  Exercise 4.4.11 now has the predictable transform increment identity,
+`L^2` and almost-sure transform convergence bridges, deterministic
+Abel/Kronecker summation certificates, the Toeplitz constant/centered split,
+the nonnegative-increment Toeplitz/Kronecker route, and the pathwise/a.e.
+normalized increment-sum endpoint:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -70,13 +71,17 @@ and
 and
 `durrett2019_exercise_4_4_10_eventually_eLpNorm_increment_le_of_summable`,
 `durrett2019_exercise_4_4_10_martingale_toLp_cauchySeq_of_summable`,
-and
 `durrett2019_exercise_4_4_10_martingale_exists_toLp_tendsto_of_summable`,
+`durrett2019_exercise_4_4_10_martingale_eLpNorm_two_bdd_of_summable`,
+`durrett2019_exercise_4_4_10_martingale_eLpNorm_one_bdd_of_summable`,
+and
+`durrett2019_exercise_4_4_10_martingale_exists_ae_tendsto_of_summable`,
 plus
 `durrett2019_exercise_4_4_11_stochasticTransform_increment_eq`,
 `durrett2019_exercise_4_4_11_stochasticTransform_increment_sq_summable`,
-and
 `durrett2019_exercise_4_4_11_stochasticTransform_exists_toLp_tendsto_of_scaled_summable`,
+and
+`durrett2019_exercise_4_4_11_stochasticTransform_exists_ae_tendsto_of_scaled_summable`,
 plus
 `durrett2019_exercise_4_4_11_kronecker_summation_by_parts`,
 `durrett2019_exercise_4_4_11_kronecker_ratio_eq`,
@@ -89,8 +94,11 @@ plus
 `durrett2019_exercise_4_4_11_weighted_average_tendsto_of_centered_tendsto_zero`,
 `durrett2019_exercise_4_4_11_centered_toeplitz_remainder_tendsto_zero`,
 `durrett2019_exercise_4_4_11_weighted_average_tendsto_of_nonnegative_increments`,
-and
 `durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_nonnegative_increments`,
+`durrett2019_exercise_4_4_11_normalized_increment_sum_tendsto_zero`,
+`durrett2019_exercise_4_4_11_normalized_increment_sum_ae_tendsto_zero`,
+and
+`durrett2019_exercise_4_4_11_normalized_increment_sum_ae_tendsto_zero_of_scaled_summable`,
 as well as the earlier first-exit/stopped-variance handoff declarations.  Do
 not route back into optional-stopping, overshoot, stopped-integrability,
 deterministic-clock, exact-denominator, square-martingale-source, or
@@ -98,23 +106,25 @@ natural-filtration independent-increment 4.4.6 plumbing, or Exercise 4.4.9
 product-covariance / finite square-increment / finite tail-identity /
 tail-bound-to-`L^2` / summability-to-shifted-tail / shifted-tail-to-Cauchy
 plumbing or the `Lp` Cauchy/existence endpoint, or the Exercise 4.4.11
-predictable-transform `L^2` convergence bridge / Abel identity / Toeplitz
-constant-split / centered-remainder / nonnegative-increment Kronecker layer.
+predictable-transform `L^2`/a.s. convergence bridge / Abel identity / Toeplitz
+constant-split / centered-remainder / nonnegative-increment Kronecker /
+normalized increment-sum layer.
 
-Next aggressive step: connect the compiled deterministic Exercise 4.4.11
-normalizer route to the martingale statement.  Best target: package the
-bounded-variance source corollary by feeding the scaled stochastic-transform
-`Lp` convergence endpoint into the nonnegative-increment Kronecker wrapper and
-turning the normalized martingale sums into the textbook conclusion.  Only add
-new martingale-transform, variance-bound, or normalization bridge lemmas that
-directly discharge this endpoint.  Do not loop back to already compiled
-Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises 4.4.5-4.4.10, Theorem
-4.4.1 plumbing, or the first-exit overshoot/stopped-integrability/
-deterministic-clock/exact-denominator/square-martingale-source/
-natural-filtration/product-covariance/tail-identity/tail-bound-to-`L^2`/
-summability-to-shifted-tail/shifted-tail-to-Cauchy/`Lp` Cauchy endpoint/
-predictable-transform convergence/Abel identity/Toeplitz constant-split/
-centered-remainder/nonnegative-increment Kronecker layer.
+Next aggressive step: finish the source-facing Exercise 4.4.11 display.  Best
+target: package the zero-initial/shifted conclusion `X_n / b_n -> 0` from the
+compiled normalized increment-sum endpoint, then instantiate the textbook
+bounded-variance corollary by proving the scaled-square summability handoff
+from `E ξ_n^2 ≤ K` and `Summable fun n => (b (n+1))⁻²`.  Only add the direct
+`H n = (b n)⁻¹`, positivity/nonzero, predictability, boundedness, or
+variance-bound side-condition bridges needed for that corollary.  Do not loop
+back to already compiled Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9,
+Exercises 4.4.5-4.4.10, Theorem 4.4.1 plumbing, or the first-exit
+overshoot/stopped-integrability/deterministic-clock/exact-denominator/
+square-martingale-source/natural-filtration/product-covariance/tail-identity/
+tail-bound-to-`L^2`/summability-to-shifted-tail/shifted-tail-to-Cauchy/`Lp`
+Cauchy endpoint/predictable-transform convergence/Abel identity/Toeplitz
+constant-split/centered-remainder/nonnegative-increment Kronecker/normalized
+increment-sum layer.
 Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
 source-shaped API.
 
