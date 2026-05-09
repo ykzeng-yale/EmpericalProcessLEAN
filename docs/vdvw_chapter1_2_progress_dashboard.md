@@ -261,9 +261,16 @@ The map/union-bound handoff is now compiled as
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound`,
 and
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_ae_finiteCenter_succ`.
-The next blocker is scale/epsilon alignment into the named displayed-beta
-comparison, plus construction of the selected finite-center a.e. support
-inputs.
+The finite-center support frontier is now sharpened by
+`ae_vdVWProductMeasure_rademacher_prod_productPair_originalFiniteCenter_of_ae_sign_sample`,
+`ae_vdVWProductMeasure_rademacher_prod_productPair_ghostFiniteCenter_neg_of_ae_sign_sample`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_succ`,
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failures`.
+The next blocker is to bound the explicit original/ghost finite-center failure
+probabilities and build the scale/epsilon adapter into the convergence
+consumer; an a.e. Hoeffding-support assumption is no longer the preferred
+frontier shape.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

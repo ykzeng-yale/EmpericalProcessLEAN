@@ -8755,3 +8755,19 @@ product-pair selected event to original-or-ghost selected-net outer
 probability.  The remaining source route is the scale/epsilon alignment into
 the named displayed-beta comparison and the construction of the selected
 finite-center a.e. support inputs.
+
+2026-05-09 product-pair finite-center support frontier:
+`Theorem243.lean` now also proves
+`ae_vdVWProductMeasure_rademacher_prod_productPair_originalFiniteCenter_of_ae_sign_sample`,
+`ae_vdVWProductMeasure_rademacher_prod_productPair_ghostFiniteCenter_neg_of_ae_sign_sample`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_succ`,
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failures`.
+The first three transfer any honest sign-sample finite-center support input to
+the sign-first product-pair space.  The last theorem is the more realistic
+Hoeffding frontier: the signed-bad lower bound feeds the selected event up to
+explicit original and ghost finite-center failure probabilities.  The next
+aggressive source step should control those two failure probabilities by
+finite-center Hoeffding/union bounds and separately build the scale/epsilon
+adapter into the convergence consumer; do not replace this with an a.e.
+Hoeffding-support assumption unless it is separately proved.
