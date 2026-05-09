@@ -605,9 +605,16 @@ Initial modules:
   `vaart1998_theorem_5_41_estimatingMap_source_regular_ae_of_contDiffOn_open`,
   and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelope`,
-  so the remaining critical path has moved from smooth Taylor production to
-  the statistical source fields: empirical derivative LLN, score CLT,
-  measurability, envelope boundedness, and estimator/root/scaling hypotheses.
+  and the sampled-summand measurability packet adds
+  `vaart1998_empiricalAverageVector_aemeasurable_of_summands`,
+  `vaart1998_theorem_5_41_empiricalDerivative_aemeasurable_of_summands`,
+  `vaart1998_theorem_5_41_empiricalSecondDerivativeAction_aemeasurable_of_summands`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_summandMeasurable_envelope`,
+  so the remaining critical path has moved from smooth Taylor production and
+  empirical-average measurability to the statistical source fields: empirical
+  derivative LLN, score CLT, envelope boundedness, and estimator/root/scaling
+  hypotheses.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

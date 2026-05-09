@@ -10,15 +10,16 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_summandMeasurable_envelope`.
 It now consumes open-set `ContDiffOn ℝ 1` smoothness for both `estimatingMap`
-and `derivativeAt`, segment containment, and the corresponding `fderiv`
-identifications.
+and `derivativeAt`, segment containment, the corresponding `fderiv`
+identifications, and sampled summand a.e.-measurability for the empirical
+derivative and Hessian averages.
 
 Next packet: move past the smooth Taylor side.  Instantiate one remaining
 statistical source field feeding this endpoint, preferably the empirical
-derivative LLN or a measurability/envelope bridge from existing finite
-coordinate empirical-average infrastructure.
+derivative LLN or an envelope/stochastic-boundedness bridge from existing
+finite-coordinate empirical-average infrastructure.
 
 Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
 run the focused file and target module checks plus hygiene scans, fetch/rebase
@@ -858,19 +859,31 @@ compiling:
 310. Theorem 5.41 finite-coordinate empirical-average source handoff from
    open-set `C^1` smoothness of both the estimating map and derivative map:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelope`.
+311. A.e.-measurability of vector-valued empirical averages from sampled
+   summand a.e.-measurability:
+   `vaart1998_empiricalAverageVector_aemeasurable_of_summands`.
+312. Theorem 5.41 empirical derivative a.e.-measurability from sampled
+   derivative-map a.e.-measurability:
+   `vaart1998_theorem_5_41_empiricalDerivative_aemeasurable_of_summands`.
+313. Theorem 5.41 empirical second-derivative action a.e.-measurability from
+   sampled second-derivative a.e.-measurability:
+   `vaart1998_theorem_5_41_empiricalSecondDerivativeAction_aemeasurable_of_summands`.
+314. Theorem 5.41 finite-coordinate empirical-average source handoff from
+   open-set smoothness and sampled derivative/Hessian summand
+   a.e.-measurability:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 estimating map ContDiff handoff`).
+(`Add Vaart theorem 5.41 summand measurability handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving the remaining
-estimating-map path-continuity and Frechet-derivative fields from open-set
-`ContDiffOn ℝ 1 estimatingMap`, segment containment, and the selected `fderiv`
-identity.
+asymptotic-normality route for Z-estimators by deriving empirical derivative
+and Hessian average a.e.-measurability from finite sampled summand
+measurability, then forwarding into the open-set `ContDiffOn` endpoint.
 
 The next aggressive packet should instantiate a remaining statistical source
-field feeding this endpoint, preferably the empirical derivative LLN or a
-measurability/envelope bridge from existing finite-coordinate
+field feeding this endpoint, preferably the empirical derivative LLN or an
+envelope/stochastic-boundedness bridge from existing finite-coordinate
 empirical-average infrastructure.
 
 ## Execution Notes

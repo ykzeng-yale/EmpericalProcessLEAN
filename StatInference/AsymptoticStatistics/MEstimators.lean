@@ -1494,6 +1494,90 @@ theorem vaart1998_empiricalAverageVector_bilinear_apply
     (sample := sample) (statistic := fun z => statistic z x) (x := y)]
 
 /--
+A.e.-measurability of a vector-valued empirical average from a.e.-measurability
+of each realized summand.
+
+This is the basic finite-sample measurability bridge used for Vaart 5.41
+empirical derivative and empirical Hessian averages.
+-/
+theorem vaart1998_empiricalAverageVector_aemeasurable_of_summands
+    {Ω Observation E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace E]
+    [MeasurableAdd₂ E] [MeasurableConstSMul ℝ E]
+    {n : ℕ} (samples : Ω -> SampleAt Observation n)
+    (statistic : Ω -> Observation -> E)
+    (hSummands : ∀ i : Fin n,
+      AEMeasurable (fun ω => statistic ω (samples ω i)) P) :
+    AEMeasurable
+      (fun ω => empiricalAverageVector (samples ω) (statistic ω)) P := by
+  have hsum :
+      AEMeasurable
+        (fun ω => ∑ i : Fin n, statistic ω (samples ω i)) P :=
+    Finset.aemeasurable_fun_sum Finset.univ fun i _hi => hSummands i
+  simpa [empiricalAverageVector] using hsum.const_smul ((n : ℝ)⁻¹)
+
+/--
+van der Vaart 1998, Theorem 5.41, empirical derivative a.e.-measurability from
+sampled derivative-map a.e.-measurability.
+
+This discharges the empirical derivative measurability field in the current
+source endpoint from finite-sample summand measurability.
+-/
+theorem vaart1998_theorem_5_41_empiricalDerivative_aemeasurable_of_summands
+    {Ω Observation Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableAdd₂ (Θ →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ (Θ →L[ℝ] (Coord -> ℝ))]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> Θ -> Θ →L[ℝ] (Coord -> ℝ))
+    (theta0 : ℕ -> Ω -> Θ)
+    (hSummands : ∀ n : ℕ, ∀ i : Fin n,
+      AEMeasurable
+        (fun ω => derivativeAt n ω (samples n ω i) (theta0 n ω)) P) :
+    ∀ n : ℕ,
+      AEMeasurable
+        (fun ω =>
+          empiricalAverageVector (samples n ω)
+            (fun x => derivativeAt n ω x (theta0 n ω))) P := by
+  intro n
+  exact
+    vaart1998_empiricalAverageVector_aemeasurable_of_summands
+      (P := P) (samples := samples n)
+      (statistic := fun ω x => derivativeAt n ω x (theta0 n ω))
+      (hSummands n)
+
+/--
+van der Vaart 1998, Theorem 5.41, empirical second-derivative action
+a.e.-measurability from sampled second-derivative a.e.-measurability.
+
+This is the Hessian analogue of the empirical derivative measurability bridge.
+-/
+theorem vaart1998_theorem_5_41_empiricalSecondDerivativeAction_aemeasurable_of_summands
+    {Ω Observation Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableAdd₂ (Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ (Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (secondDerivative :
+      ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))
+    (hSummands : ∀ n : ℕ, ∀ i : Fin n,
+      AEMeasurable
+        (fun ω => secondDerivative n ω (samples n ω i)) P) :
+    ∀ n : ℕ,
+      AEMeasurable
+        (fun ω =>
+          empiricalAverageVector (samples n ω) (secondDerivative n ω)) P := by
+  intro n
+  exact
+    vaart1998_empiricalAverageVector_aemeasurable_of_summands
+      (P := P) (samples := samples n)
+      (statistic := fun ω x => secondDerivative n ω x)
+      (hSummands n)
+
+/--
 van der Vaart 1998, Theorem 5.41, empirical quadratic Taylor display from
 pointwise Taylor identities.
 
@@ -5776,6 +5860,152 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hScaledEstimator_meas hRoot hScore_scaled hEstimator_scaled
       hScaledEstimator_eq hEstimator_segment hEstimatingSource.1
       hEstimatingSource.2 hOpen hSegmentSubset hContDiffDerivativeAt
+      hSecondDerivative_eq_fderiv
+
+/--
+van der Vaart 1998, Theorem 5.41, finite-coordinate empirical-average source
+handoff from sampled empirical-derivative and Hessian a.e.-measurability.
+
+This removes two statistical-side measurability hypotheses from the current
+ContDiff endpoint: it is enough to know that every realized derivative and
+second-derivative summand is a.e.-measurable.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_summandMeasurable_envelope
+    {Ω Ω' Observation Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    [MeasurableAdd₂ (Θ →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ (Θ →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ (Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ (Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))]
+    (V : Θ →L[ℝ] (Coord -> ℝ)) (Vinv : (Coord -> ℝ) →L[ℝ] Θ)
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scale : ℕ -> Ω -> ℝ)
+    (estimatingMap : ℕ -> Ω -> Observation -> Θ -> Coord -> ℝ)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> Θ -> Θ →L[ℝ] (Coord -> ℝ))
+    (scoreAtTheta0 estimatingAtEstimator :
+      ℕ -> Ω -> Observation -> Coord -> ℝ)
+    (secondDerivative :
+      ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))
+    (sourceSet : ℕ -> Ω -> Observation -> Set Θ)
+    (envelope : Observation -> ℝ)
+    {theta0 estimator delta scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Coord -> ℝ}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT :
+      TendstoInDistribution
+        (fun n ω => empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω))
+        atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω =>
+          ‖empiricalAverageVector (samples n ω)
+              (fun x => derivativeAt n ω x (theta0 n ω)) - V‖)
+        atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hCurvatureBounded :
+      StochasticBounded P
+        (fun n ω => empiricalAverage (samples n ω) envelope))
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hEnvelopeBound : ∀ᶠ n in atTop, ∀ ω x,
+      ‖secondDerivative n ω x‖ ≤ envelope x)
+    (hDerivativeAtTheta0_summand_meas : ∀ n : ℕ, ∀ i : Fin n,
+      AEMeasurable
+        (fun ω => derivativeAt n ω (samples n ω i) (theta0 n ω)) P)
+    (hSecondDerivative_summand_meas : ∀ n : ℕ, ∀ i : Fin n,
+      AEMeasurable
+        (fun ω => secondDerivative n ω (samples n ω i)) P)
+    (hDelta_meas : ∀ n, AEMeasurable (delta n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P)
+    (hRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω) (estimatingAtEstimator n ω) = 0)
+    (hScore_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i) (theta0 n ω))
+    (hEstimator_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        estimatingAtEstimator n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i)
+            (estimator n ω))
+    (hScaledEstimator_eq : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, scaledEstimator n ω = scale n ω • delta n ω)
+    (hEstimator_segment : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, theta0 n ω + delta n ω = estimator n ω)
+    (hOpen : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        IsOpen (sourceSet n ω (samples n ω i)))
+    (hSegmentSubset : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ((fun t : ℝ => theta0 n ω + t • delta n ω) ''
+            Set.Icc (0 : ℝ) 1) ⊆
+          sourceSet n ω (samples n ω i))
+    (hContDiffEstimatingMap : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContDiffOn ℝ 1 (estimatingMap n ω (samples n ω i))
+          (sourceSet n ω (samples n ω i)))
+    (hDerivativeAt_eq_fderiv : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          fderiv ℝ (estimatingMap n ω (samples n ω i))
+              (theta0 n ω + x • delta n ω) =
+            derivativeAt n ω (samples n ω i)
+              (theta0 n ω + x • delta n ω))
+    (hContDiffDerivativeAt : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContDiffOn ℝ 1 (derivativeAt n ω (samples n ω i))
+          (sourceSet n ω (samples n ω i)))
+    (hSecondDerivative_eq_fderiv : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          fderiv ℝ (derivativeAt n ω (samples n ω i))
+              (theta0 n ω + x • delta n ω) =
+            secondDerivative n ω (samples n ω i)) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hEmpiricalDerivative_meas :
+      ∀ n,
+        AEMeasurable
+          (fun ω =>
+            empiricalAverageVector (samples n ω)
+              (fun x => derivativeAt n ω x (theta0 n ω))) P :=
+    vaart1998_theorem_5_41_empiricalDerivative_aemeasurable_of_summands
+      (P := P) (samples := samples) (derivativeAt := derivativeAt)
+      (theta0 := theta0) hDerivativeAtTheta0_summand_meas
+  have hSecondDerivativeAction_meas :
+      ∀ n,
+        AEMeasurable
+          (fun ω =>
+            empiricalAverageVector (samples n ω) (secondDerivative n ω)) P :=
+    vaart1998_theorem_5_41_empiricalSecondDerivativeAction_aemeasurable_of_summands
+      (P := P) (samples := samples) (secondDerivative := secondDerivative)
+      hSecondDerivative_summand_meas
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelope
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (samples := samples) (scale := scale)
+      (estimatingMap := estimatingMap) (derivativeAt := derivativeAt)
+      (scoreAtTheta0 := scoreAtTheta0)
+      (estimatingAtEstimator := estimatingAtEstimator)
+      (secondDerivative := secondDerivative)
+      (sourceSet := sourceSet)
+      (envelope := envelope) (theta0 := theta0) (estimator := estimator)
+      (delta := delta) (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hScoreCLT hDerivativeLLN hDelta hEnvelope_nonneg
+      hCurvatureBounded hScaledEstimator hEnvelopeBound
+      hEmpiricalDerivative_meas hSecondDerivativeAction_meas hDelta_meas
+      hScaledEstimator_meas hRoot hScore_scaled hEstimator_scaled
+      hScaledEstimator_eq hEstimator_segment hOpen hSegmentSubset
+      hContDiffEstimatingMap hDerivativeAt_eq_fderiv hContDiffDerivativeAt
       hSecondDerivative_eq_fderiv
 
 end AsymptoticStatistics
