@@ -255,9 +255,15 @@ The product-pair selected-event measure lower bound is now compiled through
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_ae_finiteCenter`,
 and
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_ae_finiteCenter_succ`.
-The next blocker is the measure-level map/union-bound handoff from the
-sign-first/product-pair selected event to the original-or-ghost selected-net
-outer-probability comparison.
+The map/union-bound handoff is now compiled as
+`VdVWOuterProbability_productPair_event_le_two_mul_of_original_or_ghost`,
+`VdVWOuterProbability_mul_left_le_two_mul_of_productPair_event_lower_bound_or_ghost`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound`,
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_ae_finiteCenter_succ`.
+The next blocker is scale/epsilon alignment into the named displayed-beta
+comparison, plus construction of the selected finite-center a.e. support
+inputs.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
