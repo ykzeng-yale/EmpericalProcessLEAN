@@ -2224,8 +2224,13 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWWeightedSampleSum_pairSub_abs_gt_half_of_original_bad_of_ghost_good`,
    and
    `vdVWWeightedClassSupremum_pairSub_gt_half_of_original_bad_of_ghost_good`;
-   the missing bridge is now the centered-bad supremum witness plus the
-   Chebyshev ghost-good event/fiber construction.
+   the centered-bad supremum witness and selected-witness pair-difference
+   bridges are compiled as
+   `exists_abs_vdVWWeightedSampleSum_gt_of_nonneg_lt_vdVWWeightedClassSupremum`,
+   `vdVWWeightedClassSupremum_pairSub_gt_half_of_sup_bad_of_forall_ghost_good`,
+   and `exists_index_for_sup_bad_pairSub_gt_half_of_ghost_good`.
+   The missing bridge is now the Chebyshev ghost-good event/fiber construction
+   for the selected witness.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,

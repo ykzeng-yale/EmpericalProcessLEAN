@@ -1811,6 +1811,48 @@ theorem abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove
         le_ciSup hbdd_range index
 
 /--
+A nonnegative strict bad event for `vdVWWeightedClassSupremum` has a concrete
+class-member witness.  The nonnegativity hypothesis excludes the empty-class
+fallback convention for real suprema, where `sSup ∅ = 0`.
+-/
+theorem exists_abs_vdVWWeightedSampleSum_gt_of_nonneg_lt_vdVWWeightedClassSupremum
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} {weights : Fin n -> ℝ} {sample : Fin n -> Observation}
+    {epsilon : ℝ} (hepsilon_nonneg : 0 ≤ epsilon)
+    (hbad :
+      epsilon <
+        vdVWWeightedClassSupremum indexClass classFun weights sample) :
+    ∃ index, index ∈ indexClass ∧
+      epsilon < |vdVWWeightedSampleSum classFun weights index sample| := by
+  classical
+  unfold vdVWWeightedClassSupremum at hbad
+  by_cases hIndex : Nonempty Index
+  · letI : Nonempty Index := hIndex
+    rcases exists_lt_of_lt_ciSup hbad with ⟨index, hinner⟩
+    by_cases hmem : index ∈ indexClass
+    · letI : Nonempty (index ∈ indexClass) := ⟨hmem⟩
+      rcases exists_lt_of_lt_ciSup hinner with ⟨hindex, hsum⟩
+      exact ⟨index, hindex, hsum⟩
+    · haveI : IsEmpty (index ∈ indexClass) := ⟨fun h => hmem h⟩
+      have hinner_zero :
+          (⨆ (_ : index ∈ indexClass),
+              |vdVWWeightedSampleSum classFun weights index sample|) = 0 := by
+        rw [iSup_of_empty', Real.sSup_empty]
+      have : epsilon < 0 := by
+        simpa [hinner_zero] using hinner
+      linarith
+  · haveI : IsEmpty Index := ⟨fun index => hIndex ⟨index⟩⟩
+    have hsup_zero :
+        (⨆ index : Index,
+            ⨆ (_ : index ∈ indexClass),
+              |vdVWWeightedSampleSum classFun weights index sample|) = 0 := by
+      rw [iSup_of_empty', Real.sSup_empty]
+    have : epsilon < 0 := by
+      simpa [hsup_zero] using hbad
+    linarith
+
+/--
 A pointwise uniform bound on every class member gives boundedness of the
 finite weighted value set.
 -/

@@ -8443,3 +8443,16 @@ same member, forces the pair-difference supremum into the `epsilon / 2` bad
 event.  The next exact edit is to extract or register the centered-bad
 supremum witness and combine it with the Chebyshev ghost-good fiber lower
 bound.
+
+2026-05-08 centered-bad witness and selected ghost-good bridge:
+`PMeasurable.lean` now proves
+`exists_abs_vdVWWeightedSampleSum_gt_of_nonneg_lt_vdVWWeightedClassSupremum`,
+and `Theorem243.lean` composes it with the ghost-good pair-difference core in
+`vdVWWeightedClassSupremum_pairSub_gt_half_of_sup_bad_of_forall_ghost_good`
+and the sharper selected-witness form
+`exists_index_for_sup_bad_pairSub_gt_half_of_ghost_good`.  The latter is the
+preferred Lemma 2.3.7 source shape: after a centered-bad sample chooses one
+class member, the ghost fiber only needs Chebyshev-goodness for that selected
+member.  The next exact edit is to define/prove the measurable ghost-good fiber
+lower bound for that selected witness and connect it to
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.

@@ -37723,6 +37723,98 @@ theorem
       hbdd hindex)
 
 /--
+Supremum bad-event version of the ghost-good pair-difference step.
+
+If the original class supremum is larger than `epsilon` and the ghost sample is
+uniformly good for every class member, a concrete bad witness from the original
+supremum yields the pair-difference `epsilon / 2` bad event.
+-/
+theorem
+    vdVWWeightedClassSupremum_pairSub_gt_half_of_sup_bad_of_forall_ghost_good
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {weights : Fin n -> ℝ}
+    {sample ghostSample : SampleAt Observation n} {epsilon : ℝ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hbdd :
+      BddAbove
+        (vdVWWeightedClassValueSet indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            classFun index z.1 - classFun index z.2)
+          weights (fun i : Fin n => (sample i, ghostSample i))))
+    (hbad :
+      epsilon <
+        vdVWWeightedClassSupremum indexClass classFun weights sample)
+    (hghostGood :
+      ∀ index, index ∈ indexClass ->
+        |vdVWWeightedSampleSum classFun weights index ghostSample| <
+          epsilon / 2) :
+    epsilon / 2 <
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun z : Observation × Observation =>
+          classFun index z.1 - classFun index z.2)
+        weights (fun i : Fin n => (sample i, ghostSample i)) := by
+  rcases
+    exists_abs_vdVWWeightedSampleSum_gt_of_nonneg_lt_vdVWWeightedClassSupremum
+      (indexClass := indexClass) (classFun := classFun)
+      (weights := weights) (sample := sample)
+      hepsilon_nonneg hbad with
+    ⟨index, hindex, hbad_index⟩
+  exact
+    vdVWWeightedClassSupremum_pairSub_gt_half_of_original_bad_of_ghost_good
+      (indexClass := indexClass) (classFun := classFun)
+      (weights := weights) (index := index)
+      (sample := sample) (ghostSample := ghostSample)
+      (epsilon := epsilon) hindex hbdd hbad_index
+      (hghostGood index hindex)
+
+/--
+Existential witness form of the supremum bad-event to pair-difference step.
+
+This is the shape needed for the Chebyshev fiber lower bound in Lemma 2.3.7:
+after choosing a class member that witnesses the original bad supremum, the
+ghost sample only has to be good for that selected member.
+-/
+theorem
+    exists_index_for_sup_bad_pairSub_gt_half_of_ghost_good
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {weights : Fin n -> ℝ} {sample : SampleAt Observation n} {epsilon : ℝ}
+    (hepsilon_nonneg : 0 ≤ epsilon)
+    (hbad :
+      epsilon <
+        vdVWWeightedClassSupremum indexClass classFun weights sample) :
+    ∃ index, index ∈ indexClass ∧
+      epsilon < |vdVWWeightedSampleSum classFun weights index sample| ∧
+      ∀ ghostSample : SampleAt Observation n,
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              classFun index z.1 - classFun index z.2)
+            weights (fun i : Fin n => (sample i, ghostSample i))) ->
+        |vdVWWeightedSampleSum classFun weights index ghostSample| <
+          epsilon / 2 ->
+        epsilon / 2 <
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              classFun index z.1 - classFun index z.2)
+            weights (fun i : Fin n => (sample i, ghostSample i)) := by
+  rcases
+    exists_abs_vdVWWeightedSampleSum_gt_of_nonneg_lt_vdVWWeightedClassSupremum
+      (indexClass := indexClass) (classFun := classFun)
+      (weights := weights) (sample := sample)
+      hepsilon_nonneg hbad with
+    ⟨index, hindex, hbad_index⟩
+  refine ⟨index, hindex, hbad_index, ?_⟩
+  intro ghostSample hbdd hgood
+  exact
+    vdVWWeightedClassSupremum_pairSub_gt_half_of_original_bad_of_ghost_good
+      (indexClass := indexClass) (classFun := classFun)
+      (weights := weights) (index := index)
+      (sample := sample) (ghostSample := ghostSample)
+      (epsilon := epsilon) hindex hbdd hbad_index hgood
+
+/--
 A scaled selected outer-probability comparison without the displayed beta factor
 implies the displayed-beta source primitive.
 

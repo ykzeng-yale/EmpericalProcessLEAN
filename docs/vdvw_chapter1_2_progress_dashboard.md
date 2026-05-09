@@ -123,10 +123,19 @@ The ghost-copy triangle step from the textbook proof is now compiled through
 `abs_sub_gt_half_of_lt_abs_of_abs_lt_half`,
 `vdVWWeightedSampleSum_pairSub_abs_gt_half_of_original_bad_of_ghost_good`, and
 `vdVWWeightedClassSupremum_pairSub_gt_half_of_original_bad_of_ghost_good`.
+The centered-bad witness extraction and uniform ghost-good composition are now
+compiled as
+`exists_abs_vdVWWeightedSampleSum_gt_of_nonneg_lt_vdVWWeightedClassSupremum`
+and
+`vdVWWeightedClassSupremum_pairSub_gt_half_of_sup_bad_of_forall_ghost_good`.
+The sharper selected-witness version
+`exists_index_for_sup_bad_pairSub_gt_half_of_ghost_good` is also compiled; it
+requires ghost-goodness only for the class member extracted from the centered
+bad supremum, matching the Chebyshev beta-fiber argument.
 Current next target: prove measurability and the displayed Chebyshev beta
-fiber lower bound for the named event by combining a centered-bad supremum
-witness with the Chebyshev ghost-good event.  Use the selected-log mean route
-only under honest L1/UI/countability strengthening.
+fiber lower bound for the named event by constructing the ghost-good event on
+the fiber over a centered-bad sample.  Use the selected-log mean route only
+under honest L1/UI/countability strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
 restatements, finite-index wrappers, or selected-cardinality transport unless
 it directly consumes that source proof.
