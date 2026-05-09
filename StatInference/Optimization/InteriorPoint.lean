@@ -2117,6 +2117,214 @@ theorem chewi1311_product_selfConcordantBarrierOn
 
 end ProductBarrier
 
+section SumBarrier
+
+/-- Intersection domain used in Chewi Proposition 13.11's shared-domain sum rule. -/
+def barrierInterSet (s₁ s₂ : Set E) : Set E :=
+  {x | x ∈ s₁ ∧ x ∈ s₂}
+
+/-- Hessian oracle for the shared-domain sum of two supplied barriers. -/
+noncomputable def barrierSumHess
+    (hess₁ hess₂ : E -> E →L[ℝ] E) : E -> E →L[ℝ] E :=
+  fun x => hess₁ x + hess₂ x
+
+/-- Gradient oracle for the shared-domain sum of two supplied barriers. -/
+def barrierSumGrad (grad₁ grad₂ : E -> E) : E -> E :=
+  fun x => grad₁ x + grad₂ x
+
+/-- Mixed-third oracle for the shared-domain sum of two supplied barriers. -/
+def barrierSumThirdMixed
+    (third₁ third₂ : E -> E -> E -> ℝ) : E -> E -> E -> ℝ :=
+  fun x u v => third₁ x u v + third₂ x u v
+
+@[simp] theorem barrierSumHess_apply
+    (hess₁ hess₂ : E -> E →L[ℝ] E) (x v : E) :
+    barrierSumHess hess₁ hess₂ x v = hess₁ x v + hess₂ x v := by
+  rfl
+
+theorem barrierSumHess_quadratic_eq
+    (hess₁ hess₂ : E -> E →L[ℝ] E) (x v : E) :
+    inner ℝ v (barrierSumHess hess₁ hess₂ x v) =
+      inner ℝ v (hess₁ x v) + inner ℝ v (hess₂ x v) := by
+  simp [barrierSumHess, inner_add_right]
+
+theorem barrierSumHess_quadratic_nonneg
+    (hess₁ hess₂ : E -> E →L[ℝ] E) (x v : E)
+    (hh₁ : ∀ w : E, 0 ≤ inner ℝ w (hess₁ x w))
+    (hh₂ : ∀ w : E, 0 ≤ inner ℝ w (hess₂ x w)) :
+    0 ≤ inner ℝ v (barrierSumHess hess₁ hess₂ x v) := by
+  rw [barrierSumHess_quadratic_eq]
+  exact add_nonneg (hh₁ v) (hh₂ v)
+
+theorem barrierSumLocalNorm_sq_eq
+    (hess₁ hess₂ : E -> E →L[ℝ] E) (x v : E)
+    (hh₁ : ∀ w : E, 0 ≤ inner ℝ w (hess₁ x w))
+    (hh₂ : ∀ w : E, 0 ≤ inner ℝ w (hess₂ x w)) :
+    (localNorm (barrierSumHess hess₁ hess₂) x v) ^ (2 : ℕ) =
+      (localNorm hess₁ x v) ^ (2 : ℕ) +
+        (localNorm hess₂ x v) ^ (2 : ℕ) := by
+  rw [localNorm_sq_eq_inner
+      (barrierSumHess_quadratic_nonneg hess₁ hess₂ x v hh₁ hh₂)]
+  rw [barrierSumHess_quadratic_eq]
+  rw [localNorm_sq_eq_inner (hh₁ v), localNorm_sq_eq_inner (hh₂ v)]
+
+theorem barrierSumLocalNorm_left_le
+    (hess₁ hess₂ : E -> E →L[ℝ] E) (x v : E)
+    (hh₁ : ∀ w : E, 0 ≤ inner ℝ w (hess₁ x w))
+    (hh₂ : ∀ w : E, 0 ≤ inner ℝ w (hess₂ x w)) :
+    localNorm hess₁ x v ≤ localNorm (barrierSumHess hess₁ hess₂) x v := by
+  refine (sq_le_sq₀ (localNorm_nonneg hess₁ x v)
+    (localNorm_nonneg (barrierSumHess hess₁ hess₂) x v)).mp ?_
+  rw [barrierSumLocalNorm_sq_eq hess₁ hess₂ x v hh₁ hh₂]
+  nlinarith [sq_nonneg (localNorm hess₂ x v)]
+
+theorem barrierSumLocalNorm_right_le
+    (hess₁ hess₂ : E -> E →L[ℝ] E) (x v : E)
+    (hh₁ : ∀ w : E, 0 ≤ inner ℝ w (hess₁ x w))
+    (hh₂ : ∀ w : E, 0 ≤ inner ℝ w (hess₂ x w)) :
+    localNorm hess₂ x v ≤ localNorm (barrierSumHess hess₁ hess₂) x v := by
+  refine (sq_le_sq₀ (localNorm_nonneg hess₂ x v)
+    (localNorm_nonneg (barrierSumHess hess₁ hess₂) x v)).mp ?_
+  rw [barrierSumLocalNorm_sq_eq hess₁ hess₂ x v hh₁ hh₂]
+  nlinarith [sq_nonneg (localNorm hess₁ x v)]
+
+theorem barrierSumGradient_bound_of_quadratic_le
+    (invHess : E -> E →L[ℝ] E) (grad₁ grad₂ : E -> E)
+    (x : E) {nu₁ nu₂ : ℝ}
+    (hnu₁ : 0 ≤ nu₁) (hnu₂ : 0 ≤ nu₂)
+    (hinv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hquad :
+      inner ℝ (barrierSumGrad grad₁ grad₂ x)
+          (invHess x (barrierSumGrad grad₁ grad₂ x)) ≤ nu₁ + nu₂) :
+    dualLocalNorm invHess x (barrierSumGrad grad₁ grad₂ x) ≤
+      Real.sqrt (nu₁ + nu₂) := by
+  refine (sq_le_sq₀
+    (dualLocalNorm_nonneg invHess x (barrierSumGrad grad₁ grad₂ x))
+    (Real.sqrt_nonneg _)).mp ?_
+  calc
+    (dualLocalNorm invHess x (barrierSumGrad grad₁ grad₂ x)) ^ (2 : ℕ)
+        = inner ℝ (barrierSumGrad grad₁ grad₂ x)
+            (invHess x (barrierSumGrad grad₁ grad₂ x)) := by
+          exact dualLocalNorm_sq_eq_inner (hinv_nonneg _)
+    _ ≤ nu₁ + nu₂ := hquad
+    _ = (Real.sqrt (nu₁ + nu₂)) ^ (2 : ℕ) := by
+      rw [Real.sq_sqrt (add_nonneg hnu₁ hnu₂)]
+
+theorem MixedThirdSelfConcordantOn.sum
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M : ℝ}
+    (hsc₁ : MixedThirdSelfConcordantOn s₁ hess₁ third₁ M)
+    (hsc₂ : MixedThirdSelfConcordantOn s₂ hess₂ third₂ M) :
+    MixedThirdSelfConcordantOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumThirdMixed third₁ third₂) M where
+  parameter_pos := hsc₁.parameter_pos
+  hess_nonneg := by
+    intro x hx v
+    exact barrierSumHess_quadratic_nonneg hess₁ hess₂ x v
+      (hsc₁.hess_nonneg hx.1) (hsc₂.hess_nonneg hx.2)
+  mixed_third_bound := by
+    intro x hx u v
+    have hb₁ := hsc₁.mixed_third_bound hx.1 u v
+    have hb₂ := hsc₂.mixed_third_bound hx.2 u v
+    have hU₁_le :
+        localNorm hess₁ x u ≤
+          localNorm (barrierSumHess hess₁ hess₂) x u :=
+      barrierSumLocalNorm_left_le hess₁ hess₂ x u
+        (hsc₁.hess_nonneg hx.1) (hsc₂.hess_nonneg hx.2)
+    have hU₂_le :
+        localNorm hess₂ x u ≤
+          localNorm (barrierSumHess hess₁ hess₂) x u :=
+      barrierSumLocalNorm_right_le hess₁ hess₂ x u
+        (hsc₁.hess_nonneg hx.1) (hsc₂.hess_nonneg hx.2)
+    have hsplit_v := barrierSumLocalNorm_sq_eq hess₁ hess₂ x v
+      (hsc₁.hess_nonneg hx.1) (hsc₂.hess_nonneg hx.2)
+    have hcoef_nonneg : 0 ≤ 2 * M := by
+      nlinarith [hsc₁.parameter_pos]
+    have hterm₁ :
+        2 * M * localNorm hess₁ x u *
+            (localNorm hess₁ x v) ^ (2 : ℕ) ≤
+          2 * M * localNorm (barrierSumHess hess₁ hess₂) x u *
+            (localNorm hess₁ x v) ^ (2 : ℕ) := by
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hU₁_le hcoef_nonneg)
+        (sq_nonneg (localNorm hess₁ x v))
+    have hterm₂ :
+        2 * M * localNorm hess₂ x u *
+            (localNorm hess₂ x v) ^ (2 : ℕ) ≤
+          2 * M * localNorm (barrierSumHess hess₁ hess₂) x u *
+            (localNorm hess₂ x v) ^ (2 : ℕ) := by
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hU₂_le hcoef_nonneg)
+        (sq_nonneg (localNorm hess₂ x v))
+    have habs_sum :
+        |third₁ x u v| + |third₂ x u v| ≤
+          2 * M * localNorm (barrierSumHess hess₁ hess₂) x u *
+            ((localNorm hess₁ x v) ^ (2 : ℕ) +
+              (localNorm hess₂ x v) ^ (2 : ℕ)) := by
+      nlinarith [hb₁, hb₂, hterm₁, hterm₂]
+    calc
+      |barrierSumThirdMixed third₁ third₂ x u v|
+          = |third₁ x u v + third₂ x u v| := by
+            rfl
+      _ ≤ |third₁ x u v| + |third₂ x u v| :=
+        abs_add_le _ _
+      _ ≤
+          2 * M * localNorm (barrierSumHess hess₁ hess₂) x u *
+            ((localNorm hess₁ x v) ^ (2 : ℕ) +
+              (localNorm hess₂ x v) ^ (2 : ℕ)) :=
+        habs_sum
+      _ =
+          2 * M * localNorm (barrierSumHess hess₁ hess₂) x u *
+            (localNorm (barrierSumHess hess₁ hess₂) x v) ^ (2 : ℕ) := by
+        rw [hsplit_v]
+
+theorem SelfConcordantBarrierOn.sum_of_gradient_bound
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E} {invHess : E -> E →L[ℝ] E}
+    {invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M nu₁ nu₂ : ℝ}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂)
+    (hinv_nonneg : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      0 ≤ inner ℝ v (invHess x v))
+    (hgradient_bound : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ ->
+      dualLocalNorm invHess x (barrierSumGrad grad₁ grad₂ x) ≤ Real.sqrt (nu₁ + nu₂)) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) where
+  parameter_nonneg := add_nonneg hbar₁.parameter_nonneg hbar₂.parameter_nonneg
+  self_concordant :=
+    hbar₁.self_concordant.sum hbar₂.self_concordant
+  invHess_nonneg := hinv_nonneg
+  gradient_bound := hgradient_bound
+
+/--
+Chewi Proposition 13.11, shared-domain sum case, in supplied-oracle form.
+The self-concordance/local-norm algebra is proved here; the inverse-Hessian
+dual-gradient comparison for the summed barrier is exposed as the remaining
+oracle gate.
+-/
+theorem chewi1311_sum_selfConcordantBarrierOn_of_gradient_bound
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E} {invHess : E -> E →L[ℝ] E}
+    {invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M nu₁ nu₂ : ℝ}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂)
+    (hinv_nonneg : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      0 ≤ inner ℝ v (invHess x v))
+    (hgradient_bound : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ ->
+      dualLocalNorm invHess x (barrierSumGrad grad₁ grad₂ x) ≤ Real.sqrt (nu₁ + nu₂)) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) :=
+  hbar₁.sum_of_gradient_bound hbar₂ hinv_nonneg hgradient_bound
+
+end SumBarrier
+
 theorem hessianSegmentLocalNorm_riccatiDerivBound_of_mixedThirdSelfConcordantOn
     {s : Set E} {hess : E -> E →L[ℝ] E}
     {thirdMixed : E -> E -> E -> ℝ} {x y : E} {M : ℝ} {t : ℝ}

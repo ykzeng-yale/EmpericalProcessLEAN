@@ -130,6 +130,18 @@ for future product work.  The next barrier-calculus targets should build on
 this packet instead of reconstructing product local-norm algebra: conic sums,
 affine preimages, and inf-projection/partial-minimization rules.
 
+The shared-domain sum case has also advanced through its reusable algebraic
+core.  Use `MixedThirdSelfConcordantOn.sum` for the exact summed Hessian
+self-concordance proof and
+`chewi1311_sum_selfConcordantBarrierOn_of_gradient_bound` for the current
+source-facing supplied-oracle wrapper.  The helper
+`barrierSumGradient_bound_of_quadratic_le` converts a quadratic bound for the
+summed inverse-Hessian oracle into the Definition 13.9 dual local-norm bound.
+The remaining proof debt for the fully unsupplied Proposition 13.11(1) rule is
+to prove that quadratic comparison for the canonical inverse of the summed
+Hessian; until then, do not duplicate the now-compiled sum local-norm or
+mixed-third algebra.
+
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers
 in `StatInference/Optimization/ASGD.lean`.  The older right-product path with a

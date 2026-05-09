@@ -152,6 +152,19 @@ and `WithLp 2 (E₁ × E₂)`.  Next aggressive target: continue Proposition 13.
 with the conic-sum or affine-preimage barrier calculus rule, reusing this
 product rule and avoiding another product-local-norm rebuild.
 
+Next frontier update: the shared-domain sum case now has compiled
+local-norm/self-concordance algebra through `barrierInterSet`,
+`barrierSumHess`, `barrierSumGrad`, `barrierSumThirdMixed`,
+`barrierSumLocalNorm_sq_eq`, `barrierSumLocalNorm_left_le`,
+`barrierSumLocalNorm_right_le`, `MixedThirdSelfConcordantOn.sum`,
+`SelfConcordantBarrierOn.sum_of_gradient_bound`, and the source-facing
+`chewi1311_sum_selfConcordantBarrierOn_of_gradient_bound`.  This closes the
+tedious mixed-third part of Proposition 13.11(1) in supplied-oracle form.  The
+remaining nontrivial gate for the exact unsupplied sum rule is the inverse-
+Hessian/dual-gradient comparison for the summed Hessian; reuse
+`barrierSumGradient_bound_of_quadratic_le` if proving it from a quadratic
+bound.  Do not redo product or sum local-norm algebra in the next packet.
+
 Current active lane: Chewi Chapter 13 interior-point/self-concordance in
 `StatInference/Optimization/InteriorPoint.lean`, supporting Lemma 13.6 and
 Theorem 13.8.  The latest verified local frontier is the Theorem 13.8 concrete
