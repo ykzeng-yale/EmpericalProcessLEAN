@@ -444,6 +444,13 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	finite-product model equalities `hess = S† S` and
 	`invHess = S^{-1}(S^{-1})†` needed by the generic Theorem 13.8
 	square-root-family wrapper.
+	The newest positive-orthant 13.8 specialization packet adds
+	`convex_positiveOrthant` and
+	`chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment`.
+	This source-facing wrapper fixes the Hessian/inverse-Hessian/square-root
+	model to the finite positive-orthant log barrier while leaving the gradient
+	oracle generic, so it can cover central-path objectives whose Hessian is
+	the barrier Hessian.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
@@ -455,11 +462,13 @@ normalized Delta bookkeeping from the model equalities.  The one-dimensional
 `-log` barrier model is now instantiated on `Set.Ioi 0`, including the exact
 1-self-concordant-barrier parameter identity in dual-local-norm form, and the
 finite positive-orthant product now has the exact barrier parameter `d` plus
-compiled diagonal Hessian/inverse-Hessian square-root model equalities.  Next
-lift these product equalities into the full Proposition 13.11 barrier-calculus
-interface, or instantiate the finite-dimensional matrix/barrier Hessian model,
-then use
-`chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`.
+compiled diagonal Hessian/inverse-Hessian square-root model equalities and a
+source-facing Theorem 13.8 positive-orthant wrapper.  Next discharge or package
+the remaining source differentiability/self-concordance hypotheses for the
+positive-orthant barrier, or lift these product equalities into the full
+Proposition 13.11 barrier-calculus interface.  Do not redo the
+square-root/right-inverse model plumbing; use
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment`.
 The Definition 13.7 norm identity,
 inverse-local identity, Cauchy bridge, dual-local-norm transport, and raw
 inverse-Hessian quadratic upper comparison should be obtained only via the

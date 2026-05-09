@@ -83,9 +83,13 @@ expected product barrier parameter `d`.  The same positive-orthant product now
 has compiled diagonal Hessian/inverse-Hessian square-root model equalities via
 `positiveOrthantNegLogHessCLM`,
 `positiveOrthantNegLogHessCLM_sqrtCoord_model_positiveOrthant`, and
-`positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant`.  Next lift
-that model through a reusable Proposition 13.11 barrier-calculus interface or
-instantiate the actual finite-dimensional/
+`positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant`.  It also
+has the source-facing Theorem 13.8 specialization
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment`, so
+future positive-orthant Newton work should provide the remaining
+self-concordance/differentiability/Newton-linearization inputs to that wrapper.
+Next lift that model through a reusable Proposition 13.11 barrier-calculus
+interface or instantiate the actual finite-dimensional/
 matrix barrier Hessian model; all segment membership, `ψ` continuity,
 local-norm continuity/positivity, Riccati comparison, derivative inequality,
 coefficient scaling, final sandwich assembly, first Newton/Dikin membership,

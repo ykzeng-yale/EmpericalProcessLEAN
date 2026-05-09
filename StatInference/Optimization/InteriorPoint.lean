@@ -6295,6 +6295,73 @@ theorem positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant {d : ℕ
   intro x hx
   exact positiveOrthantNegLogInvHessCLM_sqrtCoord_model hx
 
+theorem convex_positiveOrthant {d : ℕ} : Convex ℝ (positiveOrthant (d := d)) := by
+  rw [positiveOrthant]
+  intro x hx y hy a b ha hb hab i
+  simp
+  let m : ℝ := min (x i) (y i)
+  have hm_pos : 0 < m := lt_min (hx i) (hy i)
+  have hax : a * m ≤ a * x i := mul_le_mul_of_nonneg_left (min_le_left _ _) ha
+  have hby : b * m ≤ b * y i := mul_le_mul_of_nonneg_left (min_le_right _ _) hb
+  have hm_weight : 0 < (a + b) * m := by
+    rw [hab]
+    simpa using hm_pos
+  nlinarith
+
+/--
+Chewi Theorem 13.8 specialized to the finite positive-orthant logarithmic
+barrier Hessian/inverse-Hessian model.  The remaining assumptions are the
+source Newton-segment differentiability and self-concordance hypotheses; the
+diagonal square-root model, Hessian symmetry/positivity, and inverse-Hessian
+right-inverse are discharged by the compiled positive-orthant model.
+-/
+theorem chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment
+    {d : ℕ}
+    {hessDeriv : EuclideanSpace ℝ (Fin d) ->
+      EuclideanSpace ℝ (Fin d) →L[ℝ]
+        (EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d))}
+    {thirdMixed : EuclideanSpace ℝ (Fin d) -> EuclideanSpace ℝ (Fin d) ->
+      EuclideanSpace ℝ (Fin d) -> ℝ}
+    {grad : EuclideanSpace ℝ (Fin d) -> EuclideanSpace ℝ (Fin d)}
+    {x : EuclideanSpace ℝ (Fin d)} {M : ℝ}
+    (hMlambda_lt : M * newtonDecrement grad positiveOrthantNegLogInvHessCLM x < 1)
+    (hx : x ∈ positiveOrthant (d := d))
+    (hstep_mem :
+      newtonStep grad positiveOrthantNegLogInvHessCLM x ∈ positiveOrthant (d := d))
+    (hsc : MixedThirdSelfConcordantOn (positiveOrthant (d := d))
+      positiveOrthantNegLogHessCLM thirdMixed M)
+    (hhess_cont : ContinuousOn positiveOrthantNegLogHessCLM (positiveOrthant (d := d)))
+    (hhess : ∀ z, z ∈ positiveOrthant (d := d) ->
+      HasFDerivAt positiveOrthantNegLogHessCLM (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ positiveOrthant (d := d) ->
+      ∀ a v : EuclideanSpace ℝ (Fin d),
+        inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (positiveOrthantNegLogHessCLM
+          (hessianSegmentPoint x
+            (newtonStep grad positiveOrthantNegLogInvHessCLM x) t))
+        (hessianSegmentPoint x
+          (newtonStep grad positiveOrthantNegLogInvHessCLM x) t))
+    (hnewton_linear :
+      grad x + positiveOrthantNegLogHessCLM x
+        (newtonStep grad positiveOrthantNegLogInvHessCLM x - x) = 0) :
+    newtonDecrement grad positiveOrthantNegLogInvHessCLM
+        (newtonStep grad positiveOrthantNegLogInvHessCLM x) ≤
+      M * (newtonDecrement grad positiveOrthantNegLogInvHessCLM x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad positiveOrthantNegLogInvHessCLM x) ^ (2 : ℕ) := by
+  exact
+    chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment
+      (hess := positiveOrthantNegLogHessCLM) (hessDeriv := hessDeriv)
+      (thirdMixed := thirdMixed) (grad := grad)
+      (invHess := positiveOrthantNegLogInvHessCLM)
+      (sqrtCoord := positiveOrthantNegLogSqrtCoord)
+      (s := positiveOrthant (d := d)) (x := x) (M := M)
+      hMlambda_lt convex_positiveOrthant hx hstep_mem hsc hhess_cont hhess hmixed
+      hgrad hnewton_linear
+      positiveOrthantNegLogHessCLM_sqrtCoord_model_positiveOrthant
+      positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant
+
 /--
 Finite-product version of Chewi Example 13.10: the coordinatewise logarithmic
 barrier on the positive orthant has exact dual local norm `sqrt d`, i.e. barrier

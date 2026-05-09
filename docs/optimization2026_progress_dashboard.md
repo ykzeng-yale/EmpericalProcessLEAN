@@ -1543,7 +1543,12 @@ coordinate and inverse-coordinate maps, and
 `positiveOrthantNegLogHessCLM_sqrtCoord_model_positiveOrthant` /
 `positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant`, giving the
 diagonal finite-product model equalities required by the generic Theorem 13.8
-square-root-family wrapper.
+square-root-family wrapper.  The newest positive-orthant 13.8 specialization
+packet adds `convex_positiveOrthant` and
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment`,
+fixing the barrier Hessian, inverse-Hessian, and square-root coordinate model
+inside the generic Newton-decrement convergence wrapper while keeping the
+gradient oracle generic for central-path objectives.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
