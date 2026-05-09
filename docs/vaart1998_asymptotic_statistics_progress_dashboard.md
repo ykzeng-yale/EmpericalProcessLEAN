@@ -627,13 +627,11 @@ Live continuation prompt: use the compact prompt in
 
 ## Next Aggressive Target
 
-For Vaart Theorem 5.41 in `MEstimators.lean`, discharge one real source field
-for the current endpoint: an iid/operator strong law for the a.s.
-derivative-norm residual, the raw-score representation identity, one
-common-vector-law/Gaussian score CLT source field, or the scaled-estimator
-law-tail/tightness proof.  The prompt-level solved-layer list has intentionally
-been removed; the detailed history remains in the ledger above and should not
-be replayed as work.
+For Vaart Theorem 5.41 in `MEstimators.lean`, discharge exactly one live source
+field for the current endpoint.  Priority order: raw-score representation
+identity; iid/operator derivative-norm strong law; one common-vector-law or
+Gaussian score-CLT source field; scaled-estimator law-tail/tightness.  Do not
+replay solved Chapter 2-4 infrastructure or earlier Theorem 5.41 wrappers.
 
 ## Reuse Dependencies
 

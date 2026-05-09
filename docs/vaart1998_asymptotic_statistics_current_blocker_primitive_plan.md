@@ -6,31 +6,45 @@ manual `/goal` continuation before selecting a proof target.
 
 ## Live `/goal` Prompt
 
-Continue manually, with no automation.  Active lane: van der Vaart 1998
-Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
+Continue manually; do not create or modify automations.  Treat this section as
+the authoritative live `/goal` continuation until the full Vaart textbook goal
+is actually complete.
 
-Current frontier endpoint:
+Lane: van der Vaart 1998, Theorem 5.41, in
+`StatInference/AsymptoticStatistics/MEstimators.lean`.
+
+Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
-It consumes the Chapter 2 law-tail criterion for
-`P.map (scaledEstimator n)` and the source-shaped a.s. operator-norm residual
-`‖dotPsi_n(theta0) - V‖ -> 0`.  Its raw score CLT field is now supplied by
-finite-coordinate score-summand source fields: coordinate `L^2`, Gaussian
-limit/covariance, common-vector-law sample source, and an a.e. representation
-of the raw scaled estimating-map average as a scaled centered empirical moment.
 
-Next packet: discharge one real statistical source field for this endpoint.
-Prefer, in order, an iid/operator strong law proving the derivative-norm
-residual, the raw-score representation identity, one common-vector-law/Gaussian
-score CLT source field, or the law-tail/tightness source proof for the scaled
-estimator.  If none closes directly, add exactly one minimal theorem-shaped
-bridge that removes one remaining source hypothesis.
+Goal for each continuation: remove exactly one remaining source hypothesis from
+that endpoint, prove the resulting theorem-sized Lean layer, update only the
+Vaart route docs, commit, and push.
 
-Workflow: reconcile local Vaart edits, search local/mathlib APIs, implement one
-verified Lean layer, run focused Lean plus the target module build and hygiene
-scans, fetch/rebase over `origin/main`, update route docs, commit, and push.
-Use a disjoint worktree or agent only for independent search/proof work that
-shortens this exact path.  The long ledger below is historical evidence, not a
-queue to replay solved layers.
+Priority order:
+1. Raw-score representation identity from zero score mean plus the a.e.
+   `sqrt n` summand equality.
+2. Iid/operator strong law for the a.s. derivative-norm residual.
+3. One missing common-vector-law or Gaussian score-CLT source field.
+4. Scaled-estimator law-tail or tightness source proof.
+
+Execution loop:
+1. Inspect `git status`; preserve unrelated local-agent edits.
+2. If a local Vaart edit already targets one priority item, finish and verify
+   it before starting a new proof branch.
+3. Search local `StatInference` and pinned mathlib APIs first; avoid rebuilding
+   solved Chapter 2-4 or earlier Theorem 5.41 wrappers.
+4. Implement one minimal bridge or consumer theorem that strictly reduces the
+   current endpoint assumptions.
+5. Run focused Lean, the target module build, `git diff --check`, proof-hole
+   scan, credential scan, and English-only typo scan on changed Vaart files.
+6. Fetch/rebase over `origin/main`; rerun checks if Lean files changed under
+   the rebase.
+7. Stage only Vaart files, commit a theorem-specific message, push, and leave
+   the worktree with only unrelated edits if any remain.
+
+Use helper agents or extra worktrees only for independent API search,
+verification, or disjoint Lean write scopes that shorten this exact path.  The
+ledger below is historical evidence, not a queue to replay.
 
 ## Current Blocker
 
@@ -927,10 +941,10 @@ summand CLT from concrete common-vector-law/Gaussian source fields before
 feeding the reusable finite-coordinate Cramer-Wold lane and raw-score
 representation identity.
 
-The next aggressive packet should prove one real source field for the current
-endpoint: the derivative-norm strong law, raw-score representation identity,
-one common-vector-law/Gaussian score CLT source field, or scaled-estimator
-law-tail/tightness.
+The next aggressive packet should prove exactly one live source field for the
+current endpoint, following the priority order in the live `/goal` prompt.  Do
+not repeat solved Chapter 2-4 infrastructure or earlier Theorem 5.41 wrapper
+layers unless a current proof directly depends on a small local API there.
 
 ## Execution Notes
 
