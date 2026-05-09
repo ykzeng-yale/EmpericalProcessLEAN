@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 OP scaled-estimator law-tail source`).
+(`Add Vaart theorem 5.41 derivative-norm OP handoff`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -629,12 +629,12 @@ Live continuation prompt: use the efficient prompt in
 For Vaart Theorem 5.41 in `MEstimators.lean`, finish any existing local Vaart
 Lean packet first, then discharge exactly one live source field for the current
 endpoint.  The canonical product score-source packet now gives the
-projected-summand CLT, finite-vector score CLT, raw score CLT, and a
-derivative-norm Theorem 5.41 handoff.  Move next to the scaled-estimator
-law-tail/tightness field by proving a concrete `StochasticBounded` source for
-the scaled estimator, or move to a genuinely model-specific derivative
-representation.  Do not replay solved Chapter 2-4 infrastructure, earlier
-Theorem 5.41 wrappers, or historical ledger items.
+projected-summand CLT, finite-vector score CLT, raw score CLT, and both
+law-tail and explicit `O_P(1)` derivative-norm Theorem 5.41 handoffs.  Move
+next to the canonical-score specialization of the new `O_P(1)` handoff, a
+concrete `StochasticBounded` source for the scaled estimator, or a genuinely
+model-specific derivative representation.  Do not replay solved Chapter 2-4
+infrastructure, earlier Theorem 5.41 wrappers, or historical ledger items.
 
 ## Reuse Dependencies
 
