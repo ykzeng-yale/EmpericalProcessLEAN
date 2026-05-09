@@ -6049,6 +6049,29 @@ theorem negLogInvHessCLM_sqrtCoord_model_Ioi :
   intro x hx
   exact negLogInvHessCLM_eq_sqrtCoord_invModel_of_pos hx
 
+theorem negLogBarrier_deriv_sq_div_second_eq_one
+    {x : ℝ} (hx : 0 < x) :
+    (deriv negLogBarrier x) ^ (2 : ℕ) / negLogBarrierSecond x = 1 := by
+  rw [negLogBarrier_deriv]
+  dsimp [negLogBarrierSecond]
+  rw [← inv_sq_eq_zpow_neg_two x]
+  field_simp [hx.ne']
+
+theorem negLogBarrier_dualLocalNorm_deriv_eq_one
+    {x : ℝ} (hx : 0 < x) :
+    dualLocalNorm negLogInvHessCLM x (deriv negLogBarrier x) = 1 := by
+  have hquad :
+      inner ℝ (deriv negLogBarrier x)
+          (negLogInvHessCLM x (deriv negLogBarrier x)) = 1 := by
+    rw [negLogBarrier_deriv]
+    simp [negLogInvHessCLM, realScaleCLM]
+    field_simp [hx.ne']
+  dsimp [dualLocalNorm]
+  change Real.sqrt (inner ℝ (deriv negLogBarrier x)
+      (negLogInvHessCLM x (deriv negLogBarrier x))) = 1
+  rw [hquad]
+  norm_num
+
 theorem negLogBarrier_second_deriv (x : ℝ) :
     deriv^[2] negLogBarrier x = negLogBarrierSecond x := by
   change deriv (deriv negLogBarrier) x = negLogBarrierSecond x

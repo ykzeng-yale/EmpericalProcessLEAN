@@ -1526,7 +1526,11 @@ helpers and instantiates Chewi Examples 13.4/13.10 with
 `negLogHessCLM_sqrtCoord_model_Ioi`, and
 `negLogInvHessCLM_sqrtCoord_model_Ioi`; the `-log` Hessian model on `ℝ_{>0}`
 now has the square-root/inverse-Hessian equalities required by the compiled
-Theorem 13.8 source wrapper.
+Theorem 13.8 source wrapper.  The newest barrier-parameter packet adds
+`negLogBarrier_deriv_sq_div_second_eq_one` and
+`negLogBarrier_dualLocalNorm_deriv_eq_one`, closing the Chewi Example 13.10
+calculation `f'(x)^2 / f''(x) = 1` and the exact Definition 13.7 dual-local
+norm identity `||f'(x)||_x^* = 1` for `x > 0`.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the

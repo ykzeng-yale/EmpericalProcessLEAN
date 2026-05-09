@@ -421,6 +421,11 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	positive-domain/Ioi square-root model theorems
 	`negLogHessCLM_sqrtCoord_model_Ioi` and
 	`negLogInvHessCLM_sqrtCoord_model_Ioi` for Chewi Examples 13.4/13.10.
+	The newest logarithmic-barrier parameter packet adds
+	`negLogBarrier_deriv_sq_div_second_eq_one` and
+	`negLogBarrier_dualLocalNorm_deriv_eq_one`, formalizing the source
+	Example 13.10 calculation `f'(x)^2 / f''(x) = 1` and its Definition 13.7
+	dual-local-norm form for `f(x) = -log x` on `x > 0`.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
@@ -429,9 +434,10 @@ are now compiled, and the concrete square-root family wrapper now discharges
 Hessian positive definiteness, symmetry, the inverse-Hessian right-inverse
 identity, the Definition 13.7 norm identity, inverse-local identity, and the
 normalized Delta bookkeeping from the model equalities.  The one-dimensional
-`-log` barrier model is now instantiated on `Set.Ioi 0`; next lift this source
-model through products/affine barrier calculus or instantiate the finite-
-dimensional matrix/barrier Hessian model, then derive the source/model equalities
+`-log` barrier model is now instantiated on `Set.Ioi 0`, including the exact
+1-self-concordant-barrier parameter identity in dual-local-norm form.  Next
+lift this source model through products/affine barrier calculus or instantiate
+the finite-dimensional matrix/barrier Hessian model, then derive the source/model equalities
 `hess z = S_z† S_z` and `invHess z = S_z^{-1}(S_z^{-1})†` for the actual
 finite-dimensional/barrier Hessian model, then use
 `chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`.

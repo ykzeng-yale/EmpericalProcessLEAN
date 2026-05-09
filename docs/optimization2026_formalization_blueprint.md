@@ -71,8 +71,11 @@ identity, and the canonical normalized-Delta route from the source equalities
 source-model work now starts from the compiled `-log` positive-domain model:
 `negLogHessCLM_sqrtCoord_model_Ioi` and
 `negLogInvHessCLM_sqrtCoord_model_Ioi` instantiate the square-root/inverse-
-Hessian equalities for Chewi Examples 13.4/13.10.  Next lift that model through
-product/affine barrier calculus or instantiate the actual finite-dimensional/
+Hessian equalities for Chewi Examples 13.4/13.10, and
+`negLogBarrier_deriv_sq_div_second_eq_one` /
+`negLogBarrier_dualLocalNorm_deriv_eq_one` compile the exact Example 13.10
+barrier-parameter identity `||f'(x)||_x^* = 1` for `x > 0`.  Next lift that
+model through product/affine barrier calculus or instantiate the actual finite-dimensional/
 matrix barrier Hessian model; all segment membership, `ψ` continuity,
 local-norm continuity/positivity, Riccati comparison, derivative inequality,
 coefficient scaling, final sandwich assembly, first Newton/Dikin membership,
