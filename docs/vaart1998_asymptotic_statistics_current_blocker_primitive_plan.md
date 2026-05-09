@@ -982,21 +982,25 @@ compiling:
    `∑ param, x param * entryError (coordinate, param)` is bounded by the full
    finite derivative-entry table using `|x param| ≤ ‖x‖`:
    `vaart1998_theorem_5_41_derivativeAverage_coordinate_action_le_finiteEntryBound_of_matrix_entry_representation`.
+337. Theorem 5.41 finite-parameter matrix-entry action-bound handoff: the
+   row-wise matrix-entry representation now gives the full vector action bound
+   consumed by the finite-derivative endpoint:
+   `vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_matrix_entry_representation`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 matrix derivative entry bound`).
+(`Add Vaart theorem 5.41 matrix derivative action bound`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by specializing the weighted-entry
-derivative source to finite-dimensional parameter coordinates.  A row-wise
-Jacobian representation now gives the coordinate scalar action bound with the
-product-norm weight estimate discharged.  The current endpoint remains the
-finite-derivative action-bound handoff.
+asymptotic-normality route for Z-estimators by composing the finite-parameter
+matrix-entry source with the existing coordinate-to-action norm bridge.  A
+row-wise Jacobian representation now gives the full vector action bound
+required by the finite-derivative endpoint.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
-If immediate, package the finite-parameter matrix-entry lemma into the current
-endpoint; otherwise move to one score-CLT law/source field or the
+Do not try to add the oversized finite-parameter statistical endpoint wrapper;
+it is too costly to elaborate and the action-bound theorem is the reusable
+source handoff.  Move next to one score-CLT law/source field or the
 scaled-estimator tightness field.  Do not repeat solved Chapter 2-4
 infrastructure or earlier Theorem 5.41 wrapper layers unless a current proof
 directly depends on a small local API there.

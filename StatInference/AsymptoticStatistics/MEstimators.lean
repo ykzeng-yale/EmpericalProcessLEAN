@@ -8938,5 +8938,65 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hSegmentSubset hContDiffEstimatingMap hDerivativeAt_eq_fderiv
       hContDiffDerivativeAt hSecondDerivative_eq_fderiv
 
+set_option maxHeartbeats 800000
+
+/--
+van der Vaart 1998, Theorem 5.41, finite-parameter matrix-entry derivative
+action-bound handoff.
+
+For finite-dimensional parameter spaces `Param -> ℝ`, the row-wise matrix-entry
+representation of the empirical derivative residual gives the full vector
+action bound consumed by the current finite-derivative endpoint.  This composes
+the matrix-entry coordinate source lemma with the finite-product
+coordinate-to-action norm bound.
+-/
+theorem vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_matrix_entry_representation
+    {Param Ω Observation Coord : Type*} [Fintype Param] [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω}
+    (V : (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> (Param -> ℝ) ->
+        (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (theta0 : ℕ -> Ω -> Param -> ℝ)
+    (derivativeEntry : Coord -> Param -> ℕ -> Ω -> ℝ)
+    (hCoordinate_action_eq :
+      ∀ᵐ ω ∂P,
+        ∀ᶠ n in atTop,
+          ∀ x : Param -> ℝ, ∀ coordinate : Coord,
+            ((empiricalAverageVector (samples n ω)
+                (fun y => derivativeAt n ω y (theta0 n ω)) - V) x)
+                  coordinate =
+              ∑ param : Param,
+                x param *
+                  ((∑ i ∈ Finset.range n,
+                        derivativeEntry coordinate param i ω) / (n : ℝ) -
+                    ∫ sample, derivativeEntry coordinate param 0 sample ∂P)) :
+    ∀ᵐ ω ∂P,
+      ∀ᶠ n in atTop,
+        ∀ x : Param -> ℝ, ‖x‖ ≠ 0 ->
+          ‖(empiricalAverageVector (samples n ω)
+              (fun y => derivativeAt n ω y (theta0 n ω)) - V) x‖ ≤
+            (∑ entry : Coord × Param,
+              |(∑ i ∈ Finset.range n,
+                    derivativeEntry entry.1 entry.2 i ω) / (n : ℝ) -
+                ∫ sample, derivativeEntry entry.1 entry.2 0 sample ∂P|) *
+              ‖x‖ := by
+  have hCoordinate_action_le :=
+    vaart1998_theorem_5_41_derivativeAverage_coordinate_action_le_finiteEntryBound_of_matrix_entry_representation
+      (Param := Param) (Ω := Ω) (Observation := Observation) (Coord := Coord)
+      (P := P) (V := V) (samples := samples)
+      (derivativeAt := derivativeAt) (theta0 := theta0)
+      (derivativeEntry := derivativeEntry) hCoordinate_action_eq
+  exact
+    vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_coordinate_bound
+      (Entry := Coord × Param) (Ω := Ω) (Observation := Observation)
+      (Coord := Coord) (Θ := Param -> ℝ) (P := P) (V := V)
+      (samples := samples)
+      (derivativeAt := derivativeAt) (theta0 := theta0)
+      (derivativeEntry := fun entry n ω =>
+        derivativeEntry entry.1 entry.2 n ω)
+      hCoordinate_action_le
+
 end AsymptoticStatistics
 end StatInference

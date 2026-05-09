@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 matrix derivative entry bound`).
+(`Add Vaart theorem 5.41 matrix derivative action bound`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -628,11 +628,10 @@ Live continuation prompt: use the efficient prompt in
 
 For Vaart Theorem 5.41 in `MEstimators.lean`, finish any existing local Vaart
 Lean packet first, then discharge exactly one live source field for the current
-endpoint.  Current priority order: if immediate, package the finite-parameter
-matrix-entry representation into the current endpoint; then one score CLT
-law/source field; then scaled-estimator law-tail or tightness.  Do not replay
-solved Chapter 2-4 infrastructure, earlier Theorem 5.41 wrappers, or
-historical ledger items.
+endpoint.  The finite-parameter matrix-entry representation now gives the
+full vector action bound, so move next to one score CLT law/source field or
+the scaled-estimator law-tail/tightness field.  Do not replay solved Chapter
+2-4 infrastructure, earlier Theorem 5.41 wrappers, or historical ledger items.
 
 ## Reuse Dependencies
 
