@@ -613,13 +613,21 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 action-bound OP handoff`).
+(`Add Vaart theorem 5.41 scaled-estimator display OP bridge`).
 Current packet verification passed for:
 
+- `lake env lean StatInference/AsymptoticStatistics/Basic.lean`
+- `lake build StatInference.AsymptoticStatistics.Basic`
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MEstimators`
 - `git diff --check`
 - proof-hole and credential-pattern scans on changed Vaart files
+
+New verified source bridges:
+
+- `vaart1998_stochasticBounded_congr_ae`
+- `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_stochasticBounded`
+- `vaart1998_theorem_5_41_scaledEstimator_lawTail_of_displayStochasticBounded_estimatorSubMeas`
 
 Live continuation prompt: use the efficient prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
@@ -634,13 +642,15 @@ law-tail and explicit `O_P(1)` derivative-norm Theorem 5.41 handoffs, including
 the canonical, projected, common-vector-law, score-representation, and
 derivative-bound, finite-derivative strong-law, and action-bound
 specializations of the `O_P(1)` route.
-Move next to a concrete `StochasticBounded` source for the scaled estimator,
-the finite-parameter matrix-entry `O_P(1)` wrapper above the action-bound
-handoff, or a genuinely model-specific derivative representation.  Do not
-replay solved Chapter 2-4 infrastructure,
+Move next to a concrete source proving the displayed scaled estimator
+`scale_n • (estimator_n - theta0_n)` is `O_P(1)` from model-specific
+convergence, tightness, or localization.  If that source is not immediately
+available, use a genuinely model-specific derivative or score representation
+that removes a live endpoint hypothesis.  Do not replay solved Chapter 2-4
+infrastructure,
 canonical/projected/common-vector/score-representation/derivative-bound/finite
-strong-law/action-bound wrappers, earlier Theorem 5.41 wrappers, or historical
-ledger items.
+strong-law/action-bound/law-tail/display-congruence wrappers, earlier Theorem
+5.41 wrappers, or historical ledger items.
 
 ## Reuse Dependencies
 

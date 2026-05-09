@@ -688,10 +688,15 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeStrongLawBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
   and the finite-derivative action-bound `O_P(1)` handoff packet adds
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
-  so the remaining critical path should prove a concrete scaled-estimator
-  `StochasticBounded` source, push the finite-parameter matrix-entry wrapper
-  through the action-bound `O_P(1)` handoff, or move to a genuinely
-  model-specific derivative representation.
+  and the scaled-estimator display `O_P(1)` packet adds
+  `vaart1998_stochasticBounded_congr_ae`,
+  `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_stochasticBounded`,
+  and
+  `vaart1998_theorem_5_41_scaledEstimator_lawTail_of_displayStochasticBounded_estimatorSubMeas`,
+  so the remaining critical path should prove a concrete displayed scaled
+  estimator `O_P(1)` source from model-specific convergence, tightness, or
+  localization, or move to a genuinely model-specific derivative or score
+  representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

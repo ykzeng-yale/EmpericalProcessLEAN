@@ -59,6 +59,38 @@ def StochasticBounded
       ∀ᶠ n in atTop, P.real {ω | M ≤ ‖X n ω‖} < ε
 
 /--
+Stochastic boundedness is invariant under a.e.-equal versions of each
+statistic in the sequence.
+
+This is the Chapter 2 bookkeeping bridge used by later textbook displays such
+as `scaledEstimator_n = r_n • (estimator_n - theta0_n)`: once an `O_P(1)`
+bound is proved for the displayed version, the chosen a.e. representative
+inherits it without reopening the tail-probability proof.
+-/
+theorem vaart1998_stochasticBounded_congr_ae
+    {Ω E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [SeminormedAddCommGroup E]
+    {X Y : ℕ -> Ω -> E}
+    (hXY : ∀ n : ℕ, X n =ᵐ[P] Y n)
+    (hY : StochasticBounded P Y) :
+    StochasticBounded P X := by
+  intro ε hε
+  rcases hY ε hε with ⟨M, hMpos, htail⟩
+  refine ⟨M, hMpos, ?_⟩
+  filter_upwards [htail] with n hn
+  have hset :
+      {ω : Ω | M ≤ ‖X n ω‖} =ᵐ[P] {ω : Ω | M ≤ ‖Y n ω‖} := by
+    exact (hXY n).mono fun ω hω => by
+      apply propext
+      change M ≤ ‖X n ω‖ ↔ M ≤ ‖Y n ω‖
+      rw [hω]
+  have hmeasure :
+      P.real {ω : Ω | M ≤ ‖X n ω‖} =
+        P.real {ω : Ω | M ≤ ‖Y n ω‖} := by
+    rw [measureReal_def, measureReal_def, measure_congr hset]
+  simpa [hmeasure] using hn
+
+/--
 Almost-sure convergence implies convergence in probability.
 
 This is the Chapter 2 bridge that lets strong-law outputs feed later

@@ -7057,6 +7057,28 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hContDiffDerivativeAt hSecondDerivative_eq_fderiv
 
 /--
+van der Vaart 1998, Theorem 5.41, scaled-estimator display `O_P(1)` handoff.
+
+The theorem statement often supplies stochastic boundedness for the displayed
+quantity `scale_n • (estimator_n - theta0_n)`.  This wrapper transfers that
+bound to the selected a.e. representative `scaledEstimator`.
+-/
+theorem vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_stochasticBounded
+    {Ω Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (scale : ℕ -> Ω -> ℝ)
+    {theta0 estimator scaledEstimator : ℕ -> Ω -> Θ}
+    (hScaledEstimator_eq_sub : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        scaledEstimator n ω =
+          scale n ω • (estimator n ω - theta0 n ω))
+    (hDisplayOP :
+      StochasticBounded P
+        (fun n ω => scale n ω • (estimator n ω - theta0 n ω))) :
+    StochasticBounded P scaledEstimator :=
+  vaart1998_stochasticBounded_congr_ae hScaledEstimator_eq_sub hDisplayOP
+
+/--
 van der Vaart 1998, Theorem 5.41, scaled-estimator law tails from `O_P(1)`.
 
 The current source-facing Theorem 5.41 wrappers consume law tails for
@@ -7092,6 +7114,40 @@ theorem vaart1998_theorem_5_41_scaledEstimator_lawTail_of_stochasticBounded_esti
   exact
     vaart1998_law_real_norm_tail_of_stochasticBounded
       hScaledEstimator_meas hScaledEstimator
+
+/--
+van der Vaart 1998, Theorem 5.41, scaled-estimator law tails from display
+`O_P(1)`.
+
+This combines the displayed scaled-estimator `O_P(1)` handoff with the existing
+law-tail bridge, so later Theorem 5.41 wrappers can consume textbook-display
+tightness without restating the a.e.-representative conversion.
+-/
+theorem vaart1998_theorem_5_41_scaledEstimator_lawTail_of_displayStochasticBounded_estimatorSubMeas
+    {Ω Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [BorelSpace Θ] [MeasurableSub₂ Θ]
+    [MeasurableSMul₂ ℝ Θ]
+    (scale : ℕ -> Ω -> ℝ)
+    {theta0 estimator scaledEstimator : ℕ -> Ω -> Θ}
+    (hTheta0_meas : ∀ n, AEMeasurable (theta0 n) P)
+    (hEstimator_meas : ∀ n, AEMeasurable (estimator n) P)
+    (hScale_meas : ∀ n, AEMeasurable (scale n) P)
+    (hScaledEstimator_eq_sub : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        scaledEstimator n ω =
+          scale n ω • (estimator n ω - theta0 n ω))
+    (hDisplayOP :
+      StochasticBounded P
+        (fun n ω => scale n ω • (estimator n ω - theta0 n ω))) :
+    ∀ ε : ℝ, 0 < ε ->
+      ∃ M : ℝ, 0 < M ∧
+        ∀ᶠ n in atTop,
+          (P.map (scaledEstimator n)).real {x : Θ | M ≤ ‖x‖} < ε :=
+  vaart1998_theorem_5_41_scaledEstimator_lawTail_of_stochasticBounded_estimatorSubMeas
+    scale hTheta0_meas hEstimator_meas hScale_meas hScaledEstimator_eq_sub
+    (vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_stochasticBounded
+      scale hScaledEstimator_eq_sub hDisplayOP)
 
 /--
 van der Vaart 1998, Theorem 5.41, scaled-estimator tightness handoff from
