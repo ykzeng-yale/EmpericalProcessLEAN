@@ -2240,11 +2240,13 @@ above, so they do not change the theorem-level dashboard counts.
    and
    `VdVWChebyshev_betaLower_centeredPairSubBadEvent_of_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad`,
    with the latter discharging pair-difference boundedness from the usual
-   envelope/truncation hypotheses.  The missing bridge is now the
-   event/fiber-level Rademacher sign-swap from this centered pair-difference
-   bad event into `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`,
-   including the named event measurability and fiber lower-bound hypotheses
-   consumed by
+   envelope/truncation hypotheses.  The first event-level product-pair
+   Rademacher sign-swap equality is compiled as
+   `measure_vdVWProductMeasure_pairDifference_constWeights_bad_eq_rademacherWeights_bad`.
+   The missing bridge is now the product-fiber use of this equality, followed
+   by the one-sided original-sample projection into
+   `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`, including the
+   named event measurability and fiber lower-bound hypotheses consumed by
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
    The first adapted
    countable empirical-supremum bridge is compiled as

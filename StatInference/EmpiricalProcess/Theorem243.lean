@@ -12555,6 +12555,103 @@ theorem vdVWWeightedClassSupremum_pairDifference_constWeights_signSwap
     (classFun := classFun) sign hsign index sample]
 
 /--
+Event-level product-pair sign symmetry for pair-difference bad events.
+
+For a fixed deterministic Rademacher sign vector, the sign-swap map sends the
+constant-weight pair-difference bad event to the Rademacher-weighted
+pair-difference bad event and preserves `(P.prod P)^n`.  This is the
+probability-level form of
+`vdVWWeightedClassSupremum_pairDifference_constWeights_signSwap`; later
+fiber arguments can combine it with the selected ghost-good
+pair-difference event before projecting to the canonical selected-net event.
+-/
+theorem
+    measure_vdVWProductMeasure_pairDifference_constWeights_bad_eq_rademacherWeights_bad
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {n : ℕ} (sign : Fin n -> ℝ)
+    (hsign : VdVWRademacherSignVector sign) (epsilon : ℝ)
+    (hconst_meas :
+      MeasurableSet
+        {sample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  classFun index z.1 - classFun index z.2)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+              (0 : ℝ)}) :
+    (vdVWProductMeasure (P.prod P) n)
+        {sample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  classFun index z.1 - classFun index z.2)
+                (vdVWRademacherWeights sign) sample)
+              (0 : ℝ)} =
+      (vdVWProductMeasure (P.prod P) n)
+        {sample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  classFun index z.1 - classFun index z.2)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+              (0 : ℝ)} := by
+  let constEvent : Set (SampleAt (Observation × Observation) n) :=
+    {sample : SampleAt (Observation × Observation) n |
+      epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              classFun index z.1 - classFun index z.2)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+          (0 : ℝ)}
+  let signedEvent : Set (SampleAt (Observation × Observation) n) :=
+    {sample : SampleAt (Observation × Observation) n |
+      epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              classFun index z.1 - classFun index z.2)
+            (vdVWRademacherWeights sign) sample)
+          (0 : ℝ)}
+  have hpre :
+      (vdVWRademacherProductSampleSignSwap
+          (Observation := Observation) sign) ⁻¹' constEvent =
+        signedEvent := by
+    ext sample
+    simp [constEvent, signedEvent,
+      vdVWWeightedClassSupremum_pairDifference_constWeights_signSwap
+        (indexClass := indexClass) (classFun := classFun) sign hsign sample]
+  calc
+    (vdVWProductMeasure (P.prod P) n) signedEvent
+        =
+          (vdVWProductMeasure (P.prod P) n)
+            ((vdVWRademacherProductSampleSignSwap
+              (Observation := Observation) sign) ⁻¹' constEvent) := by
+            rw [hpre]
+    _ =
+          (vdVWProductMeasure (P.prod P) n) constEvent :=
+        Measure.measure_preimage_of_map_eq_self
+          ((measurePreserving_vdVWProductMeasure_rademacherProductSampleSignSwap
+            (P := P) sign).map_eq)
+          (by simpa [constEvent] using hconst_meas.nullMeasurableSet)
+    _ =
+          (vdVWProductMeasure (P.prod P) n)
+            {sample : SampleAt (Observation × Observation) n |
+              epsilon <
+                dist
+                  (vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun z : Observation × Observation =>
+                      classFun index z.1 - classFun index z.2)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                  (0 : ℝ)} := by
+            rfl
+
+/--
 Product-pair sign symmetry for the pair-difference supremum expectation.
 
 For every deterministic Rademacher sign vector, the expectation of the
