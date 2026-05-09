@@ -8453,6 +8453,18 @@ and the sharper selected-witness form
 `exists_index_for_sup_bad_pairSub_gt_half_of_ghost_good`.  The latter is the
 preferred Lemma 2.3.7 source shape: after a centered-bad sample chooses one
 class member, the ghost fiber only needs Chebyshev-goodness for that selected
-member.  The next exact edit is to define/prove the measurable ghost-good fiber
-lower bound for that selected witness and connect it to
-`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.
+member.
+
+2026-05-08 selected-witness Chebyshev ghost-good fiber:
+`Theorem243.lean` now defines
+`VdVWTheorem243SelectedWitnessGhostGoodEvent` and proves the displayed
+Chebyshev lower bound
+`VdVWChebyshev_betaLower_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ`,
+plus the distance-form wrapper
+`VdVWChebyshev_betaLower_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad`.
+This closes the one-index ghost-good fiber lower bound after a centered-bad
+sample selects its witness.  The next exact edit is the sign/Rademacher lift:
+intersect this selected ghost-good fiber with the canonical sign and finite-net
+Rademacher event, prove measurability and the displayed fiber lower bound for
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`, then feed
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.

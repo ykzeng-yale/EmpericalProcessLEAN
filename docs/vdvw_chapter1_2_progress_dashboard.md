@@ -132,10 +132,19 @@ The sharper selected-witness version
 `exists_index_for_sup_bad_pairSub_gt_half_of_ghost_good` is also compiled; it
 requires ghost-goodness only for the class member extracted from the centered
 bad supremum, matching the Chebyshev beta-fiber argument.
-Current next target: prove measurability and the displayed Chebyshev beta
-fiber lower bound for the named event by constructing the ghost-good event on
-the fiber over a centered-bad sample.  Use the selected-log mean route only
-under honest L1/UI/countability strengthening.
+The selected-witness Chebyshev fiber is now packaged as
+`VdVWTheorem243SelectedWitnessGhostGoodEvent`, with the displayed lower bound
+compiled in
+`VdVWChebyshev_betaLower_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ`
+and its distance-form wrapper
+`VdVWChebyshev_betaLower_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad`.
+Current next target: intersect this selected ghost-good fiber with the
+canonical Rademacher/sign finite-net event, prove the resulting measurable
+fiber lower bound for `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`,
+and feed it to
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
+Use the selected-log mean route only under honest L1/UI/countability
+strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
 restatements, finite-index wrappers, or selected-cardinality transport unless
 it directly consumes that source proof.

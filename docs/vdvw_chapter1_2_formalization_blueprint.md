@@ -2229,8 +2229,16 @@ above, so they do not change the theorem-level dashboard counts.
    `exists_abs_vdVWWeightedSampleSum_gt_of_nonneg_lt_vdVWWeightedClassSupremum`,
    `vdVWWeightedClassSupremum_pairSub_gt_half_of_sup_bad_of_forall_ghost_good`,
    and `exists_index_for_sup_bad_pairSub_gt_half_of_ghost_good`.
-   The missing bridge is now the Chebyshev ghost-good event/fiber construction
-   for the selected witness.
+   The selected-witness ghost-good event and its displayed Chebyshev lower
+   bound are compiled as `VdVWTheorem243SelectedWitnessGhostGoodEvent`,
+   `VdVWChebyshev_betaLower_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ`,
+   and
+   `VdVWChebyshev_betaLower_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad`.
+   The missing bridge is now the sign/Rademacher lift from this selected
+   ghost-good fiber into
+   `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`, including the
+   named event measurability and fiber lower-bound hypotheses consumed by
+   `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
