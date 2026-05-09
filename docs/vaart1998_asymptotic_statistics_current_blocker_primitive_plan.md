@@ -23,8 +23,8 @@ Make exactly one theorem-sized Lean advance per packet: remove one live source
 hypothesis from the current endpoint, or prove the next source theorem that
 feeds it directly.  Current priority order:
 
-1. Derivative source: scalar finite-entry action algebra that proves the
-   action bound consumed by the current endpoint.
+1. Derivative source: coordinate scalar derivative-entry algebra that proves
+   the coordinate action bound feeding the current endpoint.
 2. Score source: common-vector-law or Gaussian finite-coordinate score CLT.
 3. Tightness source: scaled-estimator law-tail or `O_P(1)` proof.
 
@@ -960,19 +960,23 @@ compiling:
    discharged from the action bound; the remaining derivative source field is
    scalar finite-entry action algebra:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+334. Theorem 5.41 derivative action bound from coordinate scalar bounds, using
+   the finite-product sup norm on `Coord -> ℝ`:
+   `vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_coordinate_bound`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 finite derivative action bound`).
+(`Add Vaart theorem 5.41 coordinate derivative action bound`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving the operator-norm
-domination from a nonzero-direction action bound against the finite-entry
-strong-law error.  The remaining derivative source obligation is now scalar
-finite-entry action algebra for the empirical derivative residual.
+asymptotic-normality route for Z-estimators by deriving the vector action bound
+from coordinate scalar action bounds via the finite-product sup norm.  The
+current endpoint remains the finite-derivative action-bound handoff, and the
+remaining derivative source obligation is now coordinate derivative-entry
+algebra for the empirical derivative residual.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
-Prefer scalar finite-entry action algebra for the empirical derivative
+Prefer coordinate scalar derivative-entry algebra for the empirical derivative
 residual; otherwise move to one score-CLT law/source field or the
 scaled-estimator tightness field.  Do not repeat solved Chapter 2-4
 infrastructure or earlier Theorem 5.41 wrapper layers unless a current proof

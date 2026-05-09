@@ -7942,6 +7942,58 @@ theorem vaart1998_theorem_5_41_derivativeAverage_norm_le_finiteEntryBound_of_act
       hbound_nonneg hn
 
 /--
+van der Vaart 1998, Theorem 5.41, derivative action bound from coordinate
+scalar bounds.
+
+For finite-dimensional score spaces `Coord -> ℝ`, it is enough to bound each
+coordinate of the empirical derivative residual action by the same
+finite-entry scalar error times `‖x‖`.  The product-space sup norm then gives
+the vector action bound consumed by the operator-norm handoff.
+-/
+theorem vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_coordinate_bound
+    {Entry Ω Observation Coord Θ : Type*} [Fintype Entry] [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (V : Θ →L[ℝ] (Coord -> ℝ))
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> Θ -> Θ →L[ℝ] (Coord -> ℝ))
+    (theta0 : ℕ -> Ω -> Θ)
+    (derivativeEntry : Entry -> ℕ -> Ω -> ℝ)
+    (hDerivativeAverage_coordinate_action_le :
+      ∀ᵐ ω ∂P,
+        ∀ᶠ n in atTop,
+          ∀ x : Θ, ‖x‖ ≠ 0 -> ∀ coordinate : Coord,
+            |((empiricalAverageVector (samples n ω)
+                (fun y => derivativeAt n ω y (theta0 n ω)) - V) x)
+                  coordinate| ≤
+              (∑ entry : Entry,
+                |(∑ i ∈ Finset.range n, derivativeEntry entry i ω) / (n : ℝ) -
+                  ∫ sample, derivativeEntry entry 0 sample ∂P|) * ‖x‖) :
+    ∀ᵐ ω ∂P,
+      ∀ᶠ n in atTop,
+        ∀ x : Θ, ‖x‖ ≠ 0 ->
+          ‖(empiricalAverageVector (samples n ω)
+              (fun y => derivativeAt n ω y (theta0 n ω)) - V) x‖ ≤
+            (∑ entry : Entry,
+              |(∑ i ∈ Finset.range n, derivativeEntry entry i ω) / (n : ℝ) -
+                ∫ sample, derivativeEntry entry 0 sample ∂P|) * ‖x‖ := by
+  filter_upwards [hDerivativeAverage_coordinate_action_le] with ω hω
+  filter_upwards [hω] with n hn
+  intro x hx
+  have hbound_nonneg :
+      0 ≤
+        (∑ entry : Entry,
+          |(∑ i ∈ Finset.range n, derivativeEntry entry i ω) / (n : ℝ) -
+            ∫ sample, derivativeEntry entry 0 sample ∂P|) * ‖x‖ := by
+    exact mul_nonneg
+      (Finset.sum_nonneg fun entry _hentry => abs_nonneg _)
+      (norm_nonneg x)
+  refine (pi_norm_le_iff_of_nonneg hbound_nonneg).mpr ?_
+  intro coordinate
+  simpa [Real.norm_eq_abs] using hn x hx coordinate
+
+/--
 van der Vaart 1998, Theorem 5.41, score CLT handoff with the raw-score
 finite-coordinate representation discharged.
 

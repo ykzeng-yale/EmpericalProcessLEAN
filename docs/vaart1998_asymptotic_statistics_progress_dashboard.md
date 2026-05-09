@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 finite derivative action bound`).
+(`Add Vaart theorem 5.41 coordinate derivative action bound`).
 Current packet verification passed for:
 
 - `lake build StatInference.AsymptoticStatistics.Basic`
@@ -629,10 +629,11 @@ Live continuation prompt: use the efficient prompt in
 
 For Vaart Theorem 5.41 in `MEstimators.lean`, finish any existing local Vaart
 Lean packet first, then discharge exactly one live source field for the current
-endpoint.  Current priority order: prove scalar finite-entry action algebra for
-the empirical derivative residual; then one score CLT law/source field; then
-scaled-estimator law-tail or tightness.  Do not replay solved Chapter 2-4
-infrastructure, earlier Theorem 5.41 wrappers, or historical ledger items.
+endpoint.  Current priority order: prove coordinate scalar derivative-entry
+algebra for the empirical derivative residual; then one score CLT law/source
+field; then scaled-estimator law-tail or tightness.  Do not replay solved
+Chapter 2-4 infrastructure, earlier Theorem 5.41 wrappers, or historical
+ledger items.
 
 ## Reuse Dependencies
 

@@ -652,12 +652,14 @@ Initial modules:
   `vaart1998_theorem_5_41_derivativeAverage_norm_le_finiteEntryBound_of_action_bound`
   plus
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
+  and the coordinate derivative action-bound packet adds
+  `vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_coordinate_bound`,
   so the remaining critical path is now the final real source-field layer.
-  Continue in this order: prove scalar finite-entry action algebra for the
-  empirical derivative residual; one common-vector-law or Gaussian score-CLT
-  source field; scaled-estimator law-tail/tightness source proof.  Earlier
-  wrappers are closed infrastructure and should not be replayed except for
-  direct local API reuse.
+  Continue in this order: prove coordinate scalar derivative-entry algebra for
+  the empirical derivative residual; one common-vector-law or Gaussian
+  score-CLT source field; scaled-estimator law-tail/tightness source proof.
+  Earlier wrappers are closed infrastructure and should not be replayed except
+  for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 
