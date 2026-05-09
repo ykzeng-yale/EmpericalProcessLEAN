@@ -10633,5 +10633,73 @@ theorem durrett2019_example_4_4_3_kolmogorov_maximal_inequality_abs_varianceBoun
         ENNReal.div_le_div_right (ENNReal.ofReal_le_ofReal hvarianceBound)
           ((x ^ 2 : ℝ≥0) : ℝ≥0∞)
 
+/--
+Durrett 2019, Theorem 4.4.4, martingale consequence bridge.  Once the
+positive-part Lp maximal inequality is available for submartingales, applying
+it to the submartingale `|Y_n|` gives the textbook martingale absolute-maximum
+bound.
+-/
+theorem durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_of_positivePart_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} (hY : Martingale Y ℱ P)
+    {p C : ℝ≥0∞} (n : ℕ)
+    (hPositivePartBound :
+      ∀ {X : ℕ -> Ω -> ℝ}, Submartingale X ℱ P ->
+        eLpNorm
+          (fun ω =>
+            (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              fun k => max (X k ω) 0)
+          p P ≤
+        C * eLpNorm (fun ω => max (X n ω) 0) p P) :
+    eLpNorm
+        (fun ω =>
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => |Y k ω|)
+        p P ≤
+      C * eLpNorm (Y n) p P := by
+  have hY_abs_int :
+      ∀ k, Integrable (fun ω => |Y k ω| ^ (1 : ℝ)) P := by
+    intro k
+    simpa [Real.rpow_one, Real.norm_eq_abs] using (hY.integrable k).norm
+  have hAbs :
+      Submartingale (fun k ω => |Y k ω|) ℱ P := by
+    simpa [Real.rpow_one] using
+      (durrett2019_theorem_4_2_6_abs_rpow_submartingale
+        (μ := P) (ℱ := ℱ) (X := Y) (p := (1 : ℝ))
+        hY le_rfl hY_abs_int)
+  have hsup_eq :
+      (fun ω =>
+        (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+          fun k => max (|Y k ω|) 0) =
+      (fun ω =>
+        (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+          fun k => |Y k ω|) := by
+    funext ω
+    have hfun :
+        (fun k => max (|Y k ω|) 0) = fun k => |Y k ω| := by
+      funext k
+      exact max_eq_left (abs_nonneg (Y k ω))
+    rw [hfun]
+  have hterminal_eq :
+      eLpNorm (fun ω => max (|Y n ω|) 0) p P = eLpNorm (Y n) p P := by
+    refine eLpNorm_congr_norm_ae ?_
+    exact Eventually.of_forall fun ω => by
+      simp [Real.norm_eq_abs, abs_of_nonneg (abs_nonneg (Y n ω))]
+  calc
+    eLpNorm
+        (fun ω =>
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => |Y k ω|)
+        p P
+        = eLpNorm
+            (fun ω =>
+              (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                fun k => max (|Y k ω|) 0)
+            p P := by rw [hsup_eq]
+    _ ≤ C * eLpNorm (fun ω => max (|Y n ω|) 0) p P :=
+        hPositivePartBound hAbs
+    _ = C * eLpNorm (Y n) p P := by rw [hterminal_eq]
+
 end ProbabilityTheory
 end StatInference

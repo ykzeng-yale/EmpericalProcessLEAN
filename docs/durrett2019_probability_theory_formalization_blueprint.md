@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V114`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V115`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -576,7 +576,10 @@ Next packet:
   squared-threshold Kolmogorov maximal wrapper, so the next frontier is the
   exact absolute-max/variance display if cheap, otherwise Theorem 4.4.4.  The
   Example 4.4.3 division and absolute-maximum variance-bound displays now also
-  compile, so the active frontier is Theorem 4.4.4.
+  compile.  Theorem 4.4.4's martingale absolute-maximum consequence bridge now
+  compiles from a supplied positive-part Lp maximal bound, so the active
+  frontier is the first positive-part Lp maximal inequality / integration
+  Hölder layer.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
