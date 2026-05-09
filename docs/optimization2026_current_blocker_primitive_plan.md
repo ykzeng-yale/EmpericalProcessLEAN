@@ -500,12 +500,18 @@ The newest concrete-Hessian packet adds `positiveOrthantDiagonalCLM`,
 It uses the searched mathlib APIs `hasStrictDerivAt_zpow`,
 `hasStrictFDerivAt_euclidean`, `PiLp.hasStrictFDerivAt_apply`, and
 `ContinuousLinearMap.toSpanSingleton` rather than inventing new calculus
-infrastructure.  Next discharge the remaining concrete positive-orthant
-source hypotheses: gradient differentiability along the Newton segment and
-the Newton linearization identity.  Do not redo the
+infrastructure.  The newest concrete-gradient/Newton packet adds
+`positiveOrthantNegLogGrad_hasFDerivAt`,
+`positiveOrthantNegLog_newtonStep_mem`,
+`positiveOrthantNegLog_newton_linear`, and
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier`, so the finite
+positive-orthant log-barrier Theorem 13.8 wrapper now has only the source
+feasibility hypothesis `x ∈ positiveOrthant` and the radius condition
+`newtonDecrement positiveOrthantNegLogGrad positiveOrthantNegLogInvHessCLM x < 1`.
+Do not redo the
 square-root/right-inverse/Hessian-nonnegativity/self-concordance/model-Hessian
 plumbing; use
-`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment_finalHessian`.
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier`.
 The Definition 13.7 norm identity,
 inverse-local identity, Cauchy bridge, dual-local-norm transport, and raw
 inverse-Hessian quadratic upper comparison should be obtained only via the
@@ -517,22 +523,16 @@ zero-step split wrapper.  Do not ask separately for `coord sqrtH = id` and
 both; use the compiled `ContinuousLinearEquiv` coordinate wrapper.
 The exact blockers are:
 
-- prove `positiveOrthantNegLogGrad_hasFDerivAt` on the positive orthant, with
-  derivative `positiveOrthantNegLogHessCLM x`, by reusing
-  `negLogBarrier_deriv`, scalar inverse/zpow calculus, the Euclidean
-  coordinate derivative bridge, and the same diagonal-vector pattern used for
-  `positiveOrthantNegLogHessCoeff_hasFDerivAt`;
-- prove the concrete Newton-linearization identity for
-  `grad = positiveOrthantNegLogGrad` from the coordinate formulas for
-  `positiveOrthantNegLogGrad`, `positiveOrthantNegLogHessCLM`,
-  `positiveOrthantNegLogInvHessCLM`, and `newtonStep`; then add a final
-  source-facing positive-orthant Theorem 13.8 wrapper with no supplied
-  Hessian/gradient differentiability or Newton-linearization assumptions;
 - connect the real third Frechet derivative or `iteratedFDeriv` representation
   to `MixedThirdSelfConcordantOn.mixed_third_bound` when removing the supplied
   mixed-third source interface.  Positivity of `||y - x||_{z_s}` is already
   packaged from a source-shaped positive-definite Hessian hypothesis and
   `y - x ≠ 0`; do not add more generic Gronwall/`ψ` plumbing.
+- decide the next theorem-sized Chapter 13 packet after this positive-orthant
+  Theorem 13.8 closure: either lift the coordinate proof into the broader
+  Proposition 13.11 barrier-calculus interface, or package the exact
+  source-anchored Theorem 13.8/Example 13.10 positive-orthant report only
+  after source screenshots and local report PDF compilation.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi
 Hessian-stability theorem and no direct derivative theorem for

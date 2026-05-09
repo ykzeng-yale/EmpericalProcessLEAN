@@ -54,12 +54,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   identity, inverse-local identity, Cauchy bridge, source dual-local-norm
   transport, raw inverse-Hessian quadratic upper comparison, zero-step split,
   positive-orthant mixed-third certificate, mixed-third/Hessian-derivative
-  identity, and concrete Hessian differentiability/continuity are now compiled.
-  Next prove the concrete gradient differentiability and Newton-linearization
-  facts for `positiveOrthantNegLogGrad`, then package the positive-orthant
-  Theorem 13.8 wrapper with only feasibility and `lambda < 1` hypotheses.
-  After that, remove the remaining mixed-third-source interface by connecting
-  the real third Frechet/iterated derivative to the existing
+  identity, concrete Hessian differentiability/continuity, concrete gradient
+  differentiability, positive-orthant Newton-step feasibility, and Newton
+  linearization are now compiled.  The source-facing
+  `chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier` wrapper has
+  only feasibility and `lambda < 1` hypotheses.  Next choose the theorem-sized
+  Chapter 13 continuation: lift this closure into the broader Proposition
+  13.11 barrier-calculus interface, or prepare an exact source-anchored
+  Theorem 13.8/Example 13.10 report only after screenshots and local report
+  PDF compilation.  The remaining general-interface cleanup is to connect the
+  real third Frechet/iterated derivative to the existing
   `positiveOrthantNegLogThirdMixed` certificate when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
