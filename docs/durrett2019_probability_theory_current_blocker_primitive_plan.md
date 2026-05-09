@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V143
+## Live In-Thread Goal Prompt V144
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -21,7 +21,8 @@ Current compiled packet: Exercise 4.4.6 now has finite absolute-exit objects,
 first-exit small-ball assembly, bounded-increment overshoot packaging,
 automatic stopped-value integrability from the square martingale, and the
 deterministic variance-clock / exact-denominator wrappers, plus the
-variable-variance square-martingale source bridge:
+variable-variance square-martingale source bridge and the natural-filtration
+independent-increment endpoint:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -36,23 +37,26 @@ variable-variance square-martingale source bridge:
 and `durrett2019_exercise_4_4_6_smallBall_bound_of_deterministic_varianceClock`, in
 addition to `durrett2019_exercise_4_4_6_smallBall_bound_of_variance_endpoint`
 and the source-facing
-`durrett2019_exercise_4_4_6_smallBall_bound_of_source`, as well as the earlier
-first-exit/stopped-variance handoff declarations.  Do not route back into
-optional-stopping, overshoot, stopped-integrability, deterministic-clock,
-exact-denominator, or square-martingale-source plumbing.
+`durrett2019_exercise_4_4_6_smallBall_bound_of_source`,
+`durrett2019_exercise_4_4_6_linearRandomWalk_increment_eq`,
+`durrett2019_exercise_4_4_6_incrementSquare_condExp_natural_ae_eq_sigmaSq_of_iIndepFun`,
+`durrett2019_exercise_4_4_6_linearRandomWalk_squareMinusVarianceClock_martingale_of_iIndepFun_zeroMean_secondMoments`,
+and
+`durrett2019_exercise_4_4_6_linearRandomWalk_smallBall_bound_of_iIndepFun_zeroMean_secondMoments`,
+as well as the earlier first-exit/stopped-variance handoff declarations.  Do
+not route back into optional-stopping, overshoot, stopped-integrability,
+deterministic-clock, exact-denominator, square-martingale-source, or
+natural-filtration independent-increment 4.4.6 plumbing.
 
-Next aggressive step: instantiate the remaining Exercise 4.4.6 source inputs
-from concrete increment assumptions.  Best first target is the natural
-filtration / independent-increment specialization: reuse the existing Example
-4.2.2 natural-filtration conditional-mean and conditional-square machinery,
-prove the variable `sigmaSq (n + 1)` conditional second-moment identity, and
-feed it into
-`durrett2019_exercise_4_4_6_smallBall_bound_of_source`.  If that is not
-immediate, move to a theorem-sized Exercise 4.4.7 or 4.4.9-4.4.11 packet with
-the largest compileable reuse.  Do not loop back to already compiled Chapter
-4.3.5, Chapter 4.3.8, Example 4.4.9, Exercise 4.4.5, Theorem 4.4.1 plumbing,
-or the first-exit overshoot/stopped-integrability/deterministic-clock/
-exact-denominator/square-martingale-source layer.  Theorem 4.1.16 remains
+Next aggressive step: move forward to a theorem-sized Exercise 4.4.7 or
+4.4.9-4.4.11 packet with the largest compileable reuse.  Prefer packaging the
+remaining local Chapter 4.4 orthogonality/variance identities around the
+already compiled Theorem 4.4.7 and Theorem 4.4.8 support, then use them where
+they unlock the branching-process or random-walk applications.  Do not loop
+back to already compiled Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9,
+Exercise 4.4.5, Exercise 4.4.6, Theorem 4.4.1 plumbing, or the first-exit
+overshoot/stopped-integrability/deterministic-clock/exact-denominator/
+square-martingale-source/natural-filtration layer.  Theorem 4.1.16 remains
 deferred unless a targeted kernel search finds a direct source-shaped API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,

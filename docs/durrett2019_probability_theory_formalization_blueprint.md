@@ -27,17 +27,17 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V143`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V144`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier: Exercise 4.4.6 now has the deterministic
 variance-clock recurrence, the variable-variance square-martingale source
-bridge, and the exact-denominator source-facing small-ball wrapper.  Continue
-by instantiating those source hypotheses from natural filtration /
-independent-increment assumptions, especially the variable conditional
-second-moment identity.
+bridge, the exact-denominator source-facing small-ball wrapper, and the
+natural-filtration independent-increment small-ball endpoint.  Continue by
+moving to a theorem-sized Exercise 4.4.7 or 4.4.9-4.4.11 packet that reuses
+the compiled Chapter 4.4 martingale/variance infrastructure.
 
 For each cycle, route from:
 

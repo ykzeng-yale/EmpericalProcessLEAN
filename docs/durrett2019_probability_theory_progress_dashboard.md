@@ -32,17 +32,20 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V143` in
+Route from `Live In-Thread Goal Prompt V144` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 4.4 martingale maximal inequalities.  The
-current frontier is the concrete-increment Exercise 4.4.6 specialization:
-instantiate the compiled source-facing small-ball wrapper from natural
-filtration / independent-increment hypotheses by proving the variable
-conditional second-moment identity for `sigmaSq (n + 1)`.
-The V143 packet added `durrett2019_exercise_4_4_6_varianceClock_succ`,
+current frontier has moved past Exercise 4.4.6's natural-filtration
+independent-increment specialization.  The next target is a theorem-sized
+Exercise 4.4.7 or 4.4.9-4.4.11 packet using the largest compiled reuse.
+The V143/V144 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,
-and `durrett2019_exercise_4_4_6_smallBall_bound_of_source`.
+`durrett2019_exercise_4_4_6_smallBall_bound_of_source`,
+`durrett2019_exercise_4_4_6_incrementSquare_condExp_natural_ae_eq_sigmaSq_of_iIndepFun`,
+`durrett2019_exercise_4_4_6_linearRandomWalk_squareMinusVarianceClock_martingale_of_iIndepFun_zeroMean_secondMoments`,
+and
+`durrett2019_exercise_4_4_6_linearRandomWalk_smallBall_bound_of_iIndepFun_zeroMean_secondMoments`.
 Treat compiled Chapter 2, Chapter 3, Chapter 4.1
 through Theorem 4.1.15, Chapter 4.2, Chapter 4.3, Theorem 4.4.2, Example 4.4.3,
 Theorems 4.4.4, 4.4.6, 4.4.7, and 4.4.8, Theorem 4.4.1 optional-stopping

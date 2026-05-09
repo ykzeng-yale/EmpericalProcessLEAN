@@ -13519,6 +13519,170 @@ theorem durrett2019_exercise_4_4_6_smallBall_bound_of_source
       hcross_int hStepSq heta_cond_zero heta_sq_cond_sigma
 
 /--
+Durrett 2019, Exercise 4.4.6, linear-random-walk increment identity.
+
+For positive `k`, the increment of `S_k = s0 + sum_{i <= k} xi_i` from
+`k - 1` to `k` is exactly `xi_k`.
+-/
+theorem durrett2019_exercise_4_4_6_linearRandomWalk_increment_eq
+    {Ω : Type*} (s0 : ℝ) (ξ : ℕ -> Ω -> ℝ)
+    {k : ℕ} (hk : 1 ≤ k) (ω : Ω) :
+    durrett2019_example_4_2_1_linearRandomWalk s0 ξ k ω -
+        durrett2019_example_4_2_1_linearRandomWalk s0 ξ (k - 1) ω =
+      ξ k ω := by
+  have hk_eq : k = (k - 1) + 1 := by omega
+  rw [hk_eq]
+  rw [show ξ ((k - 1) + 1) ω = ξ k ω by rw [← hk_eq]]
+  rw [show
+      durrett2019_example_4_2_1_linearRandomWalk s0 ξ ((k - 1) + 1) ω =
+        (durrett2019_example_4_2_1_linearRandomWalk s0 ξ (k - 1) +
+          ξ ((k - 1) + 1)) ω by
+        exact congrFun
+          (durrett2019_example_4_2_1_linearRandomWalk_succ s0 ξ (k - 1)) ω]
+  simp only [Pi.add_apply]
+  rw [show k - 1 + 1 = k by omega]
+  ring
+
+/--
+Durrett 2019, Exercise 4.4.6, natural-filtration variable second-moment bridge.
+
+For independent increments, the conditional second moment of the next
+increment is the deterministic variance value `sigmaSq (n + 1)`.
+-/
+theorem durrett2019_exercise_4_4_6_incrementSquare_condExp_natural_ae_eq_sigmaSq_of_iIndepFun
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {ξ : ℕ -> Ω -> ℝ} {sigmaSq : ℕ -> ℝ}
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n))
+    (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ μ)
+    (hξ_second_moment : ∀ n, (∫ ω, ξ n ω ^ 2 ∂μ) = sigmaSq n)
+    (n : ℕ) :
+    μ[(fun ω => ξ (n + 1) ω ^ 2) | Filtration.natural ξ hξ_sm n] =ᵐ[μ]
+      fun _ => sigmaSq (n + 1) := by
+  filter_upwards
+    [durrett2019_example_4_2_2_incrementSquare_condExp_natural_ae_eq_integral_of_iIndepFun
+      (μ := μ) hξ_sm hξ_indep n] with ω hω
+  simpa [hξ_second_moment (n + 1)] using hω
+
+/--
+Durrett 2019, Exercise 4.4.6, natural-filtration variable-variance square
+martingale for independent increments.
+
+This specializes the source bridge to `S_n = s0 + xi_1 + ... + xi_n` with
+independent mean-zero increments and deterministic second moments
+`sigmaSq n`.
+-/
+theorem durrett2019_exercise_4_4_6_linearRandomWalk_squareMinusVarianceClock_martingale_of_iIndepFun_zeroMean_secondMoments
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    (s0 : ℝ) {ξ : ℕ -> Ω -> ℝ} {sigmaSq : ℕ -> ℝ}
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n))
+    (hξ_memLp_two : ∀ n, MemLp (ξ n) 2 μ)
+    (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ μ)
+    (hξ_mean_zero : ∀ n, (∫ ω, ξ n ω ∂μ) = 0)
+    (hξ_second_moment : ∀ n, (∫ ω, ξ n ω ^ 2 ∂μ) = sigmaSq n) :
+    Martingale
+      (fun k ω =>
+        durrett2019_example_4_2_1_linearRandomWalk s0 ξ k ω ^ 2 -
+          durrett2019_exercise_4_4_6_varianceClock sigmaSq k)
+      (Filtration.natural ξ hξ_sm) μ := by
+  have hξ_int : ∀ n, Integrable (ξ n) μ :=
+    fun n => (hξ_memLp_two n).integrable one_le_two
+  have hS_memLp_two :
+      ∀ n,
+        MemLp (durrett2019_example_4_2_1_linearRandomWalk s0 ξ n) 2 μ :=
+    durrett2019_example_4_2_1_linearRandomWalk_memLp_two
+      (μ := μ) (s0 := s0) hξ_memLp_two
+  refine
+    durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source
+      (S := durrett2019_example_4_2_1_linearRandomWalk s0 ξ) (eta := ξ)
+      (ℱ := Filtration.natural ξ hξ_sm)
+      (durrett2019_example_4_2_1_linearRandomWalk_stronglyAdapted_natural
+        (s0 := s0) hξ_sm)
+      (fun n => (hS_memLp_two n).integrable_sq)
+      hξ_int
+      (fun n => (hξ_memLp_two n).integrable_sq)
+      (fun n => MemLp.integrable_mul (hS_memLp_two n) (hξ_memLp_two (n + 1)))
+      (fun n =>
+        EventuallyEq.of_eq
+          (durrett2019_example_4_2_2_linearRandomWalk_square_succ s0 ξ n))
+      ?_
+      ?_
+  · intro n
+    filter_upwards
+      [durrett2019_example_4_2_1_increment_condExp_natural_ae_eq_integral_of_iIndepFun
+        (μ := μ) hξ_sm hξ_indep n] with ω hω
+    simpa [hξ_mean_zero (n + 1)] using hω
+  · intro n
+    exact
+      durrett2019_exercise_4_4_6_incrementSquare_condExp_natural_ae_eq_sigmaSq_of_iIndepFun
+        (μ := μ) hξ_sm hξ_indep hξ_second_moment n
+
+/--
+Durrett 2019, Exercise 4.4.6, natural-filtration independent-increment
+small-ball bound.
+
+This is the compiled source endpoint for
+`S_n = xi_1 + ... + xi_n`: independent mean-zero increments, deterministic
+second moments, bounded increments, and a supplied endpoint identification
+`s_n^2 = variance` give Durrett's small-ball denominator.
+-/
+theorem durrett2019_exercise_4_4_6_linearRandomWalk_smallBall_bound_of_iIndepFun_zeroMean_secondMoments
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {ξ : ℕ -> Ω -> ℝ} {sigmaSq : ℕ -> ℝ}
+    {x K variance : ℝ} {n : ℕ}
+    (hx_nonneg : 0 ≤ x) (hK_nonneg : 0 ≤ K)
+    (hvariance_pos : 0 < variance)
+    (hclock_eq_variance :
+      durrett2019_exercise_4_4_6_varianceClock sigmaSq n = variance)
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n))
+    (hξ_memLp_two : ∀ n, MemLp (ξ n) 2 P)
+    (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ P)
+    (hξ_mean_zero : ∀ n, (∫ ω, ξ n ω ∂P) = 0)
+    (hξ_second_moment : ∀ n, (∫ ω, ξ n ω ^ 2 ∂P) = sigmaSq n)
+    (hsigmaSq_nonneg : ∀ m, 0 ≤ sigmaSq m)
+    (hξ_bdd :
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.Icc 1 n, |ξ k ω| ≤ K) :
+    P (durrett2019_exercise_4_4_6_smallBallEvent
+        (durrett2019_example_4_2_1_linearRandomWalk 0 ξ) x n) ≤
+      ENNReal.ofReal (((x + K) ^ 2) / variance) := by
+  have hS_adapted :
+      StronglyAdapted (Filtration.natural ξ hξ_sm)
+        (durrett2019_example_4_2_1_linearRandomWalk 0 ξ) :=
+    durrett2019_example_4_2_1_linearRandomWalk_stronglyAdapted_natural
+      (s0 := 0) hξ_sm
+  have hM :
+      Martingale
+        (fun k ω =>
+          durrett2019_example_4_2_1_linearRandomWalk 0 ξ k ω ^ 2 -
+            durrett2019_exercise_4_4_6_varianceClock sigmaSq k)
+        (Filtration.natural ξ hξ_sm) P :=
+    durrett2019_exercise_4_4_6_linearRandomWalk_squareMinusVarianceClock_martingale_of_iIndepFun_zeroMean_secondMoments
+      (μ := P) (s0 := 0) hξ_sm hξ_memLp_two hξ_indep hξ_mean_zero
+      hξ_second_moment
+  have hS0_eq :
+      ∀ᵐ ω ∂P, durrett2019_example_4_2_1_linearRandomWalk 0 ξ 0 ω = 0 := by
+    exact Eventually.of_forall fun ω => by
+      simp [durrett2019_example_4_2_1_linearRandomWalk]
+  have hinc :
+      ∀ᵐ ω ∂P,
+        ∀ k ∈ Finset.Icc 1 n,
+          |durrett2019_example_4_2_1_linearRandomWalk 0 ξ k ω -
+            durrett2019_example_4_2_1_linearRandomWalk 0 ξ (k - 1) ω| ≤ K := by
+    filter_upwards [hξ_bdd] with ω hω
+    intro k hk
+    have hk_pos : 1 ≤ k := (Finset.mem_Icc.mp hk).1
+    rw [durrett2019_exercise_4_4_6_linearRandomWalk_increment_eq
+      (s0 := 0) (ξ := ξ) hk_pos ω]
+    exact hω k hk
+  exact
+    durrett2019_exercise_4_4_6_smallBall_bound_of_variance_endpoint
+      (P := P) (ℱ := Filtration.natural ξ hξ_sm)
+      (S := durrett2019_example_4_2_1_linearRandomWalk 0 ξ)
+      (sigmaSq := sigmaSq) (x := x) (K := K) (variance := variance) (n := n)
+      hx_nonneg hK_nonneg hvariance_pos hclock_eq_variance hS_adapted hM
+      hsigmaSq_nonneg hS0_eq hinc
+
+/--
 Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If
 `Y` is `ℱ_m`-measurable and square-integrable, then the increment
 `X_n - X_m` is orthogonal to `Y`.
