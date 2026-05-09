@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V172
+## Live In-Thread Goal Prompt V173
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -61,17 +61,23 @@ The stopped maximal-estimate assembly also now compiles:
 `durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_terminal_integral_sq_le`
 and
 `durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_terminal_integral_sq_le`.
+The stopped increasing-process integral bridge also now compiles:
+`durrett2019_theorem_4_5_2_stopped_square_integral_le_of_stopped_increasing_le`,
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_le_of_stopped_increasing_le`,
+and
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_stopped_increasing_le`.
 
-Next aggressive step: prove the stopped terminal second-moment bound consumed
-by
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_terminal_integral_sq_le`
+Next aggressive step: prove the two direct inputs consumed by
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_stopped_increasing_le`
 for the compiled threshold time
-`durrett2019_theorem_4_5_2_firstPredictableAbove A a`: derive the pathwise
-stopped increasing-process bound `A_{N_a ∧ n} ≤ a^2`, turn it into
-`∫ (X_{N_a ∧ n})^2 ≤ a^2` using the square/increasing-process identity already
-compiled in Section 4.5.1, and feed the resulting stopped convergence into the
-event-cover skeleton.  Then package the countable threshold cover of
-`{A∞ < ∞}`.  Do not route back into Chapter 4.4 plumbing or the already
+`durrett2019_theorem_4_5_2_firstPredictableAbove A a`: first prove the
+pathwise stopped increasing-process bound
+`stoppedProcess A N_a n ≤ a^2`, then prove or package the stopped
+square/increasing-process identity
+`∫ (stoppedProcess X N_a n)^2 = ∫ stoppedProcess A N_a n`.  Feed the resulting
+stopped convergence into the event-cover skeleton, then package the countable
+threshold cover of `{A∞ < ∞}`.  Do not route back into Chapter 4.4 plumbing or
+the already
 compiled finite-maximum, ordinary second-moment, monotone-iSup,
 running-supremum identification, supplied-`A∞`, canonical `E X_n^2 = E A_n`,
 terminal monotone-limit, or conditional-variance finite-sum wrapper layers.

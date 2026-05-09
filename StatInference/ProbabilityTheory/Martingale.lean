@@ -14960,6 +14960,116 @@ theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendst
     hX_memLp_two hC_nonneg hStopped_sq_le hBdd
 
 /--
+Durrett 2019, Theorem 4.5.2 integral bridge: a stopped increasing process
+bounded by `C`, together with the stopped square/increasing-process identity,
+gives the stopped terminal second-moment bound.
+-/
+theorem durrett2019_theorem_4_5_2_stopped_square_integral_le_of_stopped_increasing_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} {X A : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {C : ℝ}
+    (hN : IsStoppingTime ℱ N)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hSquare_eq_A :
+      ∀ n,
+        (∫ ω, stoppedProcess X N n ω ^ 2 ∂P) =
+          ∫ ω, stoppedProcess A N n ω ∂P)
+    (hA_le : ∀ n, stoppedProcess A N n ≤ᵐ[P] fun _ => C) :
+    ∀ n, (∫ ω, stoppedProcess X N n ω ^ 2 ∂P) ≤ C := by
+  intro n
+  have hA_stopped_int : Integrable (stoppedProcess A N n) P :=
+    integrable_stoppedProcess (ι := ℕ) hN hA_int n
+  have hconst_int : Integrable (fun _ : Ω => C) P := integrable_const C
+  have hA_integral_le :
+      (∫ ω, stoppedProcess A N n ω ∂P) ≤ ∫ _ : Ω, C ∂P :=
+    integral_mono_ae hA_stopped_int hconst_int (hA_le n)
+  calc
+    (∫ ω, stoppedProcess X N n ω ^ 2 ∂P)
+        = ∫ ω, stoppedProcess A N n ω ∂P := hSquare_eq_A n
+    _ ≤ ∫ _ : Ω, C ∂P := hA_integral_le
+    _ = C := by
+      simp [integral_const, probReal_univ, smul_eq_mul]
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold-time stopped square integral bridge.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_le_of_stopped_increasing_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} {X A : ℕ -> Ω -> ℝ} {a : ℝ}
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hSquare_eq_A :
+      ∀ n,
+        (∫ ω,
+          stoppedProcess X
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) =
+          ∫ ω,
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ∂P)
+    (hA_le :
+      ∀ n,
+        stoppedProcess A (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n
+          ≤ᵐ[P] fun _ => a ^ 2) :
+    ∀ n,
+      (∫ ω,
+        stoppedProcess X
+          (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+        a ^ 2 :=
+  durrett2019_theorem_4_5_2_stopped_square_integral_le_of_stopped_increasing_le
+    (P := P) (ℱ := ℱ) (X := X) (A := A)
+    (N := durrett2019_theorem_4_5_2_firstPredictableAbove A a) (C := a ^ 2)
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
+      (ℱ := ℱ) (A := A) a hA_predictable)
+    hA_int hSquare_eq_A hA_le
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold stopped-convergence bridge from the
+stopped increasing-process bound and stopped square identity.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_stopped_increasing_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hSquare_eq_A :
+      ∀ n,
+        (∫ ω,
+          stoppedProcess X
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) =
+          ∫ ω,
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ∂P)
+    (hA_le :
+      ∀ n,
+        stoppedProcess A (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n
+          ≤ᵐ[P] fun _ => a ^ 2)
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove
+          (Set.range fun m =>
+            durrett2019_runningAbsMax
+              (stoppedProcess X
+                (durrett2019_theorem_4_5_2_firstPredictableAbove A a)) m ω)) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto
+        (fun n =>
+          stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+            n ω)
+        atTop (𝓝 z) :=
+  durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_terminal_integral_sq_le
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a) (C := a ^ 2)
+    hX hA_predictable hX_memLp_two (sq_nonneg a)
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_le_of_stopped_increasing_le
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+      hA_predictable hA_int hSquare_eq_A hA_le)
+    hBdd
+
+/--
 Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two
 square-integrable martingales.
 

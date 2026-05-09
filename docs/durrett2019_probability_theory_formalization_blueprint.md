@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V172`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V173`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -67,10 +67,12 @@ turns a stopped running-supremum `eLpNorm` bound into the terminal bounds
 needed by that handoff, plus the `lintegral` maximal-estimate consumer that
 turns Theorem 4.5.1's square `lintegral` bound into stopped a.e. convergence.
 It also has the stopped maximal-estimate assembly that applies Theorem 4.5.1
-once a stopped terminal second-moment bound is available.  Continue by proving
-the stopped `A` process bound by `a^2`, converting it into
-`∫ (X_{N_a ∧ n})^2 ≤ a^2`, and feeding that bound directly into the stopped
-convergence/event-cover skeleton.
+once a stopped terminal second-moment bound is available, and the bridge that
+turns a stopped increasing-process bound plus the stopped square identity into
+that second-moment bound.  Continue by proving
+`stoppedProcess A N_a n ≤ a^2`, packaging
+`∫ (stoppedProcess X N_a n)^2 = ∫ stoppedProcess A N_a n`, and feeding those
+directly into the stopped convergence/event-cover skeleton.
 
 For each cycle, route from:
 
