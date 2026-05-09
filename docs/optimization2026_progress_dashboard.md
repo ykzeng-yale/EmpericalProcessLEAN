@@ -1559,8 +1559,11 @@ preparation packet adds `positiveOrthantNegLogThirdMixed`,
 `positiveOrthantNegLog_mixedThird_bound`, and
 `positiveOrthantNegLog_mixedThirdSelfConcordantOn`.  The finite weighted
 Cauchy blocker is now closed for the concrete positive-orthant product
-barrier; next use this compiled certificate in the positive-orthant Theorem
-13.8 wrapper and focus on differentiability/Newton-linearization or the
+barrier.  The follow-up concrete wrapper
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment`
+now supplies that certificate into Theorem 13.8 with `M = 1` and
+`thirdMixed = positiveOrthantNegLogThirdMixed`; next focus on the remaining
+Hessian/gradient differentiability and Newton-linearization hypotheses, or the
 Proposition 13.11 barrier-calculus lift.
 Search
 found no direct mathlib/local theorem for the derivative of

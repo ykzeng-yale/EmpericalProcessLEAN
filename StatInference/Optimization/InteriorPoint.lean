@@ -6533,6 +6533,57 @@ theorem chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment
       positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant
 
 /--
+Chewi Theorem 13.8 specialized to the finite positive-orthant logarithmic
+barrier, with the concrete product self-concordance certificate supplied.
+The remaining source hypotheses are the Hessian/gradient differentiability
+and Newton-linearization facts along the source Newton segment.
+-/
+theorem chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment
+    {d : ℕ}
+    {hessDeriv : EuclideanSpace ℝ (Fin d) ->
+      EuclideanSpace ℝ (Fin d) →L[ℝ]
+        (EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d))}
+    {grad : EuclideanSpace ℝ (Fin d) -> EuclideanSpace ℝ (Fin d)}
+    {x : EuclideanSpace ℝ (Fin d)}
+    (hlambda_lt : newtonDecrement grad positiveOrthantNegLogInvHessCLM x < 1)
+    (hx : x ∈ positiveOrthant (d := d))
+    (hstep_mem :
+      newtonStep grad positiveOrthantNegLogInvHessCLM x ∈ positiveOrthant (d := d))
+    (hhess_cont : ContinuousOn positiveOrthantNegLogHessCLM (positiveOrthant (d := d)))
+    (hhess : ∀ z, z ∈ positiveOrthant (d := d) ->
+      HasFDerivAt positiveOrthantNegLogHessCLM (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ positiveOrthant (d := d) ->
+      ∀ a v : EuclideanSpace ℝ (Fin d),
+        inner ℝ v ((hessDeriv z a) v) =
+          positiveOrthantNegLogThirdMixed z a v)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (positiveOrthantNegLogHessCLM
+          (hessianSegmentPoint x
+            (newtonStep grad positiveOrthantNegLogInvHessCLM x) t))
+        (hessianSegmentPoint x
+          (newtonStep grad positiveOrthantNegLogInvHessCLM x) t))
+    (hnewton_linear :
+      grad x + positiveOrthantNegLogHessCLM x
+        (newtonStep grad positiveOrthantNegLogInvHessCLM x - x) = 0) :
+    newtonDecrement grad positiveOrthantNegLogInvHessCLM
+        (newtonStep grad positiveOrthantNegLogInvHessCLM x) ≤
+      (newtonDecrement grad positiveOrthantNegLogInvHessCLM x) ^ (2 : ℕ) /
+        (1 - newtonDecrement grad positiveOrthantNegLogInvHessCLM x) ^ (2 : ℕ) := by
+  have hMlambda_lt :
+      (1 : ℝ) * newtonDecrement grad positiveOrthantNegLogInvHessCLM x < 1 := by
+    simpa using hlambda_lt
+  have hbase :=
+    chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment
+      (hessDeriv := hessDeriv)
+      (thirdMixed := positiveOrthantNegLogThirdMixed)
+      (grad := grad) (x := x) (M := (1 : ℝ))
+      hMlambda_lt hx hstep_mem
+      positiveOrthantNegLog_mixedThirdSelfConcordantOn
+      hhess_cont hhess hmixed hgrad hnewton_linear
+  simpa using hbase
+
+/--
 Finite-product version of Chewi Example 13.10: the coordinatewise logarithmic
 barrier on the positive orthant has exact dual local norm `sqrt d`, i.e. barrier
 parameter `d`.

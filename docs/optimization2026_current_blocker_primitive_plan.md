@@ -476,14 +476,18 @@ normalized Delta bookkeeping from the model equalities.  The one-dimensional
 1-self-concordant-barrier parameter identity in dual-local-norm form, and the
 finite positive-orthant product now has the exact barrier parameter `d` plus
 compiled diagonal Hessian/inverse-Hessian square-root model equalities and a
-source-facing Theorem 13.8 positive-orthant wrapper.  Next discharge or package
-the compiled certificate `positiveOrthantNegLog_mixedThirdSelfConcordantOn`
-inside `chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment`,
-then discharge the remaining differentiability/Newton-linearization hypotheses
-for the positive-orthant barrier, or lift these product equalities into the
-full Proposition 13.11 barrier-calculus interface.  Do not redo the
-square-root/right-inverse/Hessian-nonnegativity model plumbing; use
-`chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment`.
+source-facing Theorem 13.8 positive-orthant wrapper.  The newest wrapper
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment`
+supplies the compiled certificate
+`positiveOrthantNegLog_mixedThirdSelfConcordantOn`, fixes `M = 1` and
+`thirdMixed = positiveOrthantNegLogThirdMixed`, and leaves only the
+Hessian/gradient differentiability plus Newton-linearization source hypotheses.
+Next discharge those remaining hypotheses for the concrete positive-orthant
+barrier, or lift these product equalities into the full Proposition 13.11
+barrier-calculus interface.  Do not redo the
+square-root/right-inverse/Hessian-nonnegativity/self-concordance model
+plumbing; use
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment`.
 The Definition 13.7 norm identity,
 inverse-local identity, Cauchy bridge, dual-local-norm transport, and raw
 inverse-Hessian quadratic upper comparison should be obtained only via the
