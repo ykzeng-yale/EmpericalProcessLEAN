@@ -169,6 +169,15 @@ The newest sum-gradient packet also adds `real_two_term_cauchy_sqrt`,
 `chewi1311_sum_selfConcordantBarrierOn_of_component_cauchy`, reducing that
 gate to standard component Cauchy bridges plus the summed inverse-local
 identity.
+The latest Cauchy reuse packet adds
+`SelfConcordantBarrierOn.sum_of_adjointCoord_cauchy` and
+`chewi1311_sum_selfConcordantBarrierOn_of_adjointCoord_cauchy`, using
+`dualPrimalCauchy_of_adjointCoordSqrt` to discharge those component Cauchy
+bridges from the same adjoint square-root coordinate models already used in
+Theorem 13.8.  Search-first result: mathlib has raw Cauchy/positive-operator
+APIs, but the local supplied-oracle theorem is the right abstraction here.
+The exact unsupplied sum rule is now concentrated on the canonical summed
+inverse-Hessian/inverse-local identity, not on component Cauchy.
 
 Latest affine-preimage update: Proposition 13.11(3) now has a compiled
 supplied-oracle affine-preimage spine and an invertible-affine corollary.
@@ -197,8 +206,9 @@ Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,
 Definition 13.9, and the positive-orthant barrier packet are now substrate for
 the calculus rules, not the live blocker.  Continue from the compiled product,
-sum, sum component-Cauchy, and affine-preimage/equivalence wrappers; the next
-aggressive choices are the exact shared-domain sum inverse-Hessian gate, a
+sum, sum component-Cauchy, adjoint-coordinate Cauchy reuse, and
+affine-preimage/equivalence wrappers; the next aggressive choices are the
+exact shared-domain sum inverse-Hessian/inverse-local gate, a
 principled non-invertible affine-preimage/range interface, or the
 inf-projection rule.
 
@@ -586,8 +596,8 @@ The exact blockers are:
   `y - x ≠ 0`; do not add more generic Gronwall/`ψ` plumbing.
 - continue Proposition 13.11 from the already-compiled product, shared-domain
   sum, and affine-preimage supplied-oracle layers.  The next aggressive
-  targets are either closing the exact shared-domain sum inverse-Hessian gate,
-  extending affine-preimage from equivalences to a well-scoped surjective
+  targets are either closing the exact shared-domain sum inverse-Hessian /
+  inverse-local gate, extending affine-preimage from equivalences to a well-scoped surjective
   linear-map/pseudoinverse interface, or opening the inf-projection rule.
   Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 

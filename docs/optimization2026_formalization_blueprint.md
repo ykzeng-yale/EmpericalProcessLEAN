@@ -146,6 +146,12 @@ the sum-rule gradient-bound gate: it combines the component barrier gradient
 bounds, component Cauchy bridges, a two-term real Cauchy-Schwarz helper, and
 the summed inverse-local identity to produce the Definition 13.9 bound for
 `barrierSumGrad`.
+The follow-on adjoint-coordinate Cauchy wrapper
+`chewi1311_sum_selfConcordantBarrierOn_of_adjointCoord_cauchy` now discharges
+the component Cauchy bridges from explicit adjoint square-root coordinate
+models, reusing `dualPrimalCauchy_of_adjointCoordSqrt`.  Thus the remaining
+exact sum-rule proof debt is the canonical summed inverse-Hessian /
+inverse-local identity for `barrierSumHess`, not another Cauchy proof.
 
 The affine-preimage case has a compiled supplied-oracle spine and an
 invertible-affine corollary.  Use `barrierAffinePreimageSet`,

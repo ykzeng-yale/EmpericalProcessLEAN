@@ -75,6 +75,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1311_sum_selfConcordantBarrierOn_of_component_cauchy`.  The sum-rule
   gradient bound can now be discharged from component Cauchy bridges and the
   summed inverse-local identity rather than being assumed wholesale.
+- Sum Cauchy gate shrink: the newest packet adds
+  `SelfConcordantBarrierOn.sum_of_adjointCoord_cauchy` and
+  `chewi1311_sum_selfConcordantBarrierOn_of_adjointCoord_cauchy`, reusing the
+  existing `dualPrimalCauchy_of_adjointCoordSqrt` theorem to discharge the two
+  component Cauchy bridges from adjoint square-root coordinate models.  The
+  exact unsupplied sum rule is now concentrated on the canonical summed
+  inverse-Hessian/inverse-local identity.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
   supplied-oracle form and for invertible affine maps.  Reusable declarations
   include `barrierAffinePreimageSet`, `barrierAffinePreimageHess`,
@@ -93,8 +100,8 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, and affine-preimage layers in
   `StatInference/Optimization/InteriorPoint.lean`.  The next bounded choices
-  are: close the exact shared-domain sum inverse-Hessian gate, extend
-  affine-preimage beyond equivalences through a principled
+  are: close the exact shared-domain sum inverse-Hessian/inverse-local gate,
+  extend affine-preimage beyond equivalences through a principled
   surjective/range/pseudoinverse interface, or open the inf-projection rule.
   The older Theorem 13.8/Definition 13.9 substrate remains reusable, but it is
   no longer the active blocker for this lane.

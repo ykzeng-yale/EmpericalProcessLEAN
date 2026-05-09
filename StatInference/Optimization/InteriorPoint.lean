@@ -4726,6 +4726,97 @@ theorem dualPrimalCauchy_of_adjointCoordSqrt
     _ = dualLocalNorm invHess x v * localNorm hess x w := by
       rw [← hdual_eq, ← hlocal_eq]
 
+theorem SelfConcordantBarrierOn.sum_of_adjointCoord_cauchy
+    [CompleteSpace E]
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E} {invHess : E -> E →L[ℝ] E}
+    {invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M nu₁ nu₂ : ℝ}
+    {coord₁ sqrtH₁ coord₂ sqrtH₂ : E -> E →L[ℝ] E}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂)
+    (hinv_nonneg : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      0 ≤ inner ℝ v (invHess x v))
+    (hsum_inv_local : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      localNorm (barrierSumHess hess₁ hess₂) x (invHess x v) =
+        dualLocalNorm invHess x v)
+    (hcoord₁_sqrtH₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ step : E,
+      coord₁ x (sqrtH₁ x step) = step)
+    (hinv₁_factor : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ v : E,
+      inner ℝ v (invHess₁ x v) =
+        ‖(ContinuousLinearMap.adjoint (coord₁ x)) v‖ ^ (2 : ℕ))
+    (hhess₁_eq : ∀ ⦃x : E⦄, x ∈ s₁ ->
+      hess₁ x = (ContinuousLinearMap.adjoint (sqrtH₁ x)).comp (sqrtH₁ x))
+    (hcoord₂_sqrtH₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ step : E,
+      coord₂ x (sqrtH₂ x step) = step)
+    (hinv₂_factor : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ v : E,
+      inner ℝ v (invHess₂ x v) =
+        ‖(ContinuousLinearMap.adjoint (coord₂ x)) v‖ ^ (2 : ℕ))
+    (hhess₂_eq : ∀ ⦃x : E⦄, x ∈ s₂ ->
+      hess₂ x = (ContinuousLinearMap.adjoint (sqrtH₂ x)).comp (sqrtH₂ x)) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) :=
+  hbar₁.sum_of_component_cauchy hbar₂ hinv_nonneg hsum_inv_local
+    (by
+      intro x hx w
+      exact dualPrimalCauchy_of_adjointCoordSqrt
+        (hess := hess₁) (invHess := invHess₁) (x := x)
+        (coord := coord₁ x) (sqrtH := sqrtH₁ x)
+        (hcoord₁_sqrtH₁ hx) (hinv₁_factor hx) (hhess₁_eq hx)
+        (hbar₁.invHess_nonneg hx) (hbar₁.self_concordant.hess_nonneg hx)
+        (grad₁ x) w)
+    (by
+      intro x hx w
+      exact dualPrimalCauchy_of_adjointCoordSqrt
+        (hess := hess₂) (invHess := invHess₂) (x := x)
+        (coord := coord₂ x) (sqrtH := sqrtH₂ x)
+        (hcoord₂_sqrtH₂ hx) (hinv₂_factor hx) (hhess₂_eq hx)
+        (hbar₂.invHess_nonneg hx) (hbar₂.self_concordant.hess_nonneg hx)
+        (grad₂ x) w)
+
+/--
+Chewi Proposition 13.11, shared-domain sum case, with component Cauchy
+bridges discharged by adjoint square-root coordinate models for the two
+component barriers.
+-/
+theorem chewi1311_sum_selfConcordantBarrierOn_of_adjointCoord_cauchy
+    [CompleteSpace E]
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E} {invHess : E -> E →L[ℝ] E}
+    {invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M nu₁ nu₂ : ℝ}
+    {coord₁ sqrtH₁ coord₂ sqrtH₂ : E -> E →L[ℝ] E}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂)
+    (hinv_nonneg : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      0 ≤ inner ℝ v (invHess x v))
+    (hsum_inv_local : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      localNorm (barrierSumHess hess₁ hess₂) x (invHess x v) =
+        dualLocalNorm invHess x v)
+    (hcoord₁_sqrtH₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ step : E,
+      coord₁ x (sqrtH₁ x step) = step)
+    (hinv₁_factor : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ v : E,
+      inner ℝ v (invHess₁ x v) =
+        ‖(ContinuousLinearMap.adjoint (coord₁ x)) v‖ ^ (2 : ℕ))
+    (hhess₁_eq : ∀ ⦃x : E⦄, x ∈ s₁ ->
+      hess₁ x = (ContinuousLinearMap.adjoint (sqrtH₁ x)).comp (sqrtH₁ x))
+    (hcoord₂_sqrtH₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ step : E,
+      coord₂ x (sqrtH₂ x step) = step)
+    (hinv₂_factor : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ v : E,
+      inner ℝ v (invHess₂ x v) =
+        ‖(ContinuousLinearMap.adjoint (coord₂ x)) v‖ ^ (2 : ℕ))
+    (hhess₂_eq : ∀ ⦃x : E⦄, x ∈ s₂ ->
+      hess₂ x = (ContinuousLinearMap.adjoint (sqrtH₂ x)).comp (sqrtH₂ x)) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) :=
+  hbar₁.sum_of_adjointCoord_cauchy hbar₂ hinv_nonneg hsum_inv_local
+    hcoord₁_sqrtH₁ hinv₁_factor hhess₁_eq
+    hcoord₂_sqrtH₂ hinv₂_factor hhess₂_eq
+
 /--
 The dual inverse-Hessian factorization follows from a square-root Hessian
 factorization, a right-inverse identity for the inverse-Hessian oracle, and a
