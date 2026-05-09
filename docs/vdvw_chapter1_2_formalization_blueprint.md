@@ -2318,9 +2318,17 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad`,
    and the direct Chebyshev-to-concrete fiber wrapper
    `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_succ`.
-   The remaining product-fiber source task is therefore the fixed-original
-   sign-swap mass transport plus the two selected finite-center Hoeffding side
-   conditions, not Chebyshev mass or sign support.
+   The averaged product-pair alternative is now compiled through
+   `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
+   `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
+   `measure_mul_le_vdVWProductMeasure_pairDifference_constWeights_bad_of_split_fiber_lower_bound`,
+   and
+   `VdVWTheorem243_productPair_centeredPairSubBadEvent_lower_bound_of_chebyshev_succ`.
+   This is the preferred next path: integrate the Chebyshev ghost-fiber lower
+   bound into the full `(P.prod P)^n` pair event, apply the compiled
+   product-pair sign-swap equality there, then project to original-or-ghost
+   selected finite-net badness.  The remaining side conditions are the
+   selected finite-center Hoeffding components.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
