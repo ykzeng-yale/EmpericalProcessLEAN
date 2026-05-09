@@ -563,6 +563,95 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_integral_prod_eq_prod_integral
   exact StatInference.ProbabilityMeasure.iIndepFun_integral_prod_eq_prod_integral
     hX mX
 
+/--
+Durrett 2019, Theorem 2.1.15, product-space CDF convolution form.
+
+For independent coordinates with laws `μ` and `ν`, the distribution function
+of the coordinate sum is the integral of the shifted first-coordinate CDF
+against the second-coordinate law.
+-/
+theorem durrett2019_theorem_2_1_15_product_cdf_convolution
+    {μ ν : Measure ℝ} [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    (z : ℝ) :
+    (μ.prod ν).real {p : ℝ × ℝ | p.1 + p.2 ≤ z} =
+      ∫ y, ProbabilityTheory.cdf μ (z - y) ∂ν := by
+  let s : Set (ℝ × ℝ) := {p : ℝ × ℝ | p.1 + p.2 ≤ z}
+  have hs : MeasurableSet s := by
+    dsimp [s]
+    exact measurableSet_le (measurable_fst.add measurable_snd) measurable_const
+  have hint :
+      Integrable (fun p : ℝ × ℝ => s.indicator (fun _ => (1 : ℝ)) p)
+        (μ.prod ν) :=
+    (integrable_const (1 : ℝ)).indicator hs
+  calc
+    (μ.prod ν).real s =
+        ∫ p, s.indicator (fun _ : ℝ × ℝ => (1 : ℝ)) p ∂μ.prod ν := by
+      simpa using (integral_indicator_one (μ := μ.prod ν) hs).symm
+    _ = ∫ y, ∫ x, s.indicator (fun _ : ℝ × ℝ => (1 : ℝ)) (x, y) ∂μ ∂ν :=
+      MeasureTheory.integral_prod_symm _ hint
+    _ = ∫ y, ProbabilityTheory.cdf μ (z - y) ∂ν := by
+      refine integral_congr_ae ?_
+      exact Eventually.of_forall fun y => by
+        have hfun :
+            (fun x : ℝ => s.indicator (fun _ : ℝ × ℝ => (1 : ℝ)) (x, y)) =
+              fun x : ℝ => (Set.Iic (z - y)).indicator (fun _ : ℝ => (1 : ℝ)) x := by
+          funext x
+          have hiff : (x, y) ∈ s ↔ x ∈ Set.Iic (z - y) := by
+            dsimp [s, Set.Iic]
+            constructor <;> intro h <;> linarith
+          by_cases hsxy : (x, y) ∈ s
+          · have hx : x ∈ Set.Iic (z - y) := hiff.mp hsxy
+            simp [Set.indicator_of_mem, hsxy, hx]
+          · have hx : x ∉ Set.Iic (z - y) := fun hx => hsxy (hiff.mpr hx)
+            simp [Set.indicator_of_notMem, hsxy, hx]
+        calc
+          ∫ x, s.indicator (fun _ : ℝ × ℝ => (1 : ℝ)) (x, y) ∂μ =
+              ∫ x, (Set.Iic (z - y)).indicator (fun _ : ℝ => (1 : ℝ)) x ∂μ := by
+            rw [hfun]
+          _ = μ.real (Set.Iic (z - y)) := by
+            simp
+          _ = ProbabilityTheory.cdf μ (z - y) := by
+            rw [ProbabilityTheory.cdf_eq_real]
+
+/--
+Durrett 2019, Theorem 2.1.15, independent-random-variable CDF convolution
+form.
+
+This is the source-facing version of Durrett's formula
+`P(X + Y ≤ z) = ∫ F(z - y) dG(y)`, where `F` is the CDF of the law of `X`
+and `G` is the law of `Y`.
+-/
+theorem durrett2019_theorem_2_1_15_indepFun_cdf_convolution
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {μ ν : Measure ℝ} [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {X Y : Ω -> ℝ}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X μ P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P)
+    (z : ℝ) :
+    P.real {ω | X ω + Y ω ≤ z} =
+      ∫ y, ProbabilityTheory.cdf μ (z - y) ∂ν := by
+  letI : IsFiniteMeasure P := hX.isFiniteMeasure
+  let S : Set (ℝ × ℝ) := {p : ℝ × ℝ | p.1 + p.2 ≤ z}
+  have hS : MeasurableSet S := by
+    dsimp [S]
+    exact measurableSet_le (measurable_fst.add measurable_snd) measurable_const
+  have hpair :
+      _root_.ProbabilityTheory.HasLaw (fun ω => (X ω, Y ω)) (μ.prod ν) P :=
+    hXY.hasLaw_prod hX hY
+  have hpre :
+      (fun ω => (X ω, Y ω)) ⁻¹' S = {ω | X ω + Y ω ≤ z} := by
+    rfl
+  calc
+    P.real {ω | X ω + Y ω ≤ z} =
+        (μ.prod ν).real S := by
+      rw [← hpair.map_eq]
+      rw [MeasureTheory.map_measureReal_apply_of_aemeasurable
+        hpair.aemeasurable hS]
+      rw [hpre]
+    _ = ∫ y, ProbabilityTheory.cdf μ (z - y) ∂ν :=
+      durrett2019_theorem_2_1_15_product_cdf_convolution (μ := μ) (ν := ν) z
+
 /-! ## Durrett, Section 2.3 -/
 
 /--

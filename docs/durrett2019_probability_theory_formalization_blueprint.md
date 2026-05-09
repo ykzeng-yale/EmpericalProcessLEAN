@@ -34,16 +34,18 @@ automation.
 
 Current active frontier: Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled
-independence/product-law wrappers through Theorem 2.1.13, and Theorem 2.4.9 has
-the full empirical-CDF Glivenko-Cantelli route through the arbitrary-law
-cutpoint-chain construction.  Treat
+independence/product-law wrappers through Theorem 2.1.15's CDF convolution
+handoff, and Theorem 2.4.9 has the full empirical-CDF Glivenko-Cantelli route
+through the arbitrary-law cutpoint-chain construction.  Treat
+`durrett2019_theorem_2_1_15_product_cdf_convolution`,
+`durrett2019_theorem_2_1_15_indepFun_cdf_convolution`,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure` as
 closed support.  Continue by adding only missing Chapter 2.1 product-law /
 independence source wrappers that unlock later Chapter 2 statements, with
-Theorem 2.1.15 convolution/CDF handoffs as the first likely target.
+Theorem 2.1.16 density/convolution handoffs as the first likely target.
 
 For each cycle, route from:
 

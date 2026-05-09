@@ -16,9 +16,11 @@ bracketing infrastructure in `StatInference/EmpiricalProcess/RealHalfLine*.lean`
 and `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.
 
 Treat the following as compiled support and do not redo it: Chapter 2.1
-independence/product-law wrappers through Theorem 2.1.13, Theorem 2.3.1/2.3.7
-Borel-Cantelli wrappers, Theorem 2.4.1 strong-law wrappers, and the full
-Durrett Theorem 2.4.9 empirical-CDF route:
+independence/product-law wrappers through Theorem 2.1.15's CDF convolution
+handoff, Theorem 2.3.1/2.3.7 Borel-Cantelli wrappers, Theorem 2.4.1
+strong-law wrappers, and the full Durrett Theorem 2.4.9 empirical-CDF route:
+`durrett2019_theorem_2_1_15_product_cdf_convolution`,
+`durrett2019_theorem_2_1_15_indepFun_cdf_convolution`,
 `durrett2019_theorem_2_4_9_cutpointChain`,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
@@ -30,10 +32,11 @@ Next aggressive step: extend only the missing Chapter 2.1 product-law /
 independence source wrappers that unlock later Durrett Chapter 2 results.  Search
 mathlib and local wrappers first, especially `HasLaw`, `IndepFun`,
 `iIndepFun`, `Measure.prod`, `Measure.pi`, product integrals, and the existing
-`StatInference.ProbabilityMeasure.ProductMeasure` layer.  Good targets are
-Theorem 2.1.15 convolution/CDF handoffs and any exact finite-product law or
-expectation-factorization shape needed downstream.  Do not route back to
-Chapter 4.5.2 unless the user explicitly pivots the active goal.
+`StatInference.ProbabilityMeasure.ProductMeasure` layer.  Good targets are the
+next Chapter 2.1 convolution/density handoffs after Theorem 2.1.15, especially
+Theorem 2.1.16 and the exact finite-product law or expectation-factorization
+shapes needed downstream.  Do not route back to Chapter 4.5.2 unless the user
+explicitly pivots the active goal.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including

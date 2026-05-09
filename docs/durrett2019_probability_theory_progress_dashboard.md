@@ -38,8 +38,11 @@ The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
 `StatInference/EmpiricalProcess/RealHalfLine*.lean` and
 `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.  Chapter 2.1 now has
-independence/product-law wrappers through Theorem 2.1.13.  Theorem 2.4.9 now
-has the arbitrary-law cutpoint-chain route and both the book-style and exact
+independence/product-law wrappers through Theorem 2.1.13, plus Theorem 2.1.15's
+CDF convolution handoffs
+`durrett2019_theorem_2_1_15_product_cdf_convolution` and
+`durrett2019_theorem_2_1_15_indepFun_cdf_convolution`.  Theorem 2.4.9 now has
+the arbitrary-law cutpoint-chain route and both the book-style and exact
 outer-a.s. empirical-CDF endpoints:
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
@@ -47,8 +50,8 @@ outer-a.s. empirical-CDF endpoints:
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
 The next target is missing Chapter 2.1 product-law / independence source
-wrappers that unlock later Chapter 2 results, especially Theorem 2.1.15
-convolution/CDF handoffs.  Do not route future cycles back to Chapter 4.5.2
+wrappers that unlock later Chapter 2 results, especially the Theorem 2.1.16
+density/convolution handoff.  Do not route future cycles back to Chapter 4.5.2
 unless the user explicitly pivots.
 The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
