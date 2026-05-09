@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V151`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V152`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -41,9 +41,10 @@ display; Exercise 4.4.10 now has the finite square-increment second-moment
 identities, finite tail identity, `L^2` Cauchy-bound consumer, and
 square-summability shifted-tail bound, shifted-tail tendsto-zero wrapper, and
 explicit eventual `L^2` Cauchy estimate, `Lp` Cauchy sequence endpoint, and
-existential `Lp` limit.  Continue with Exercise 4.4.11 by reusing predictable
-transform support and the compiled Exercise 4.4.10 square-summability
-endpoint.
+existential `Lp` limit.  Exercise 4.4.11 now has the predictable-transform
+increment identity, scaled square-summability conversion, and transformed
+martingale `Lp` convergence bridge.  Continue with the deterministic
+Kronecker/Toeplitz normalization step and the bounded-variance corollary.
 
 For each cycle, route from:
 

@@ -14388,6 +14388,81 @@ theorem durrett2019_exercise_4_4_10_martingale_exists_toLp_tendsto_of_summable
         (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hinc_sq_summable)
 
 /--
+Durrett 2019, Exercise 4.4.11 support: the one-step increment of the discrete
+predictable transform is the scaled martingale increment.
+-/
+theorem durrett2019_exercise_4_4_11_stochasticTransform_increment_eq
+    {Ω : Type*} (H X : ℕ -> Ω -> ℝ) (n : ℕ) :
+    durrett2019_stochasticTransform H X (n + 1) -
+        durrett2019_stochasticTransform H X n =
+      H (n + 1) * (X (n + 1) - X n) := by
+  ext ω
+  simp [durrett2019_stochasticTransform, Finset.sum_range_succ]
+
+/--
+Durrett 2019, Exercise 4.4.11 support: summability of the scaled original
+increments is exactly the square-increment summability needed by Exercise
+4.4.10 for the predictable transform.
+-/
+theorem durrett2019_exercise_4_4_11_stochasticTransform_increment_sq_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {H X : ℕ -> Ω -> ℝ}
+    (hscaled_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (H (k + 1) ω * (X (k + 1) ω - X k ω)) ^ 2 ∂P) :
+    Summable fun k : ℕ =>
+      ∫ ω,
+        (durrett2019_stochasticTransform H X (k + 1) ω -
+          durrett2019_stochasticTransform H X k ω) ^ 2 ∂P := by
+  refine hscaled_summable.congr ?_
+  intro k
+  refine integral_congr_ae ?_
+  exact ae_of_all P fun ω => by
+    have hinc :=
+      durrett2019_exercise_4_4_11_stochasticTransform_increment_eq H X k
+    have hpoint := congrFun hinc ω
+    simpa [Pi.sub_apply, Pi.mul_apply] using
+      (congrArg (fun z : ℝ => z ^ 2) hpoint).symm
+
+/--
+Durrett 2019, Exercise 4.4.11 support: a bounded nonnegative predictable
+transform with summable scaled square increments has an `L^2` limit.
+
+This is the martingale-transform convergence handoff used before the
+Kronecker-normalization step in the textbook proof.
+-/
+theorem durrett2019_exercise_4_4_11_stochasticTransform_exists_toLp_tendsto_of_scaled_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {H X : ℕ -> Ω -> ℝ} {R : ℝ}
+    (hX : Martingale X ℱ P)
+    (hH_pred : StronglyAdapted ℱ (fun n => H (n + 1)))
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω)
+    (hTransform_memLp_two :
+      ∀ k, MemLp (durrett2019_stochasticTransform H X k) (2 : ℝ≥0∞) P)
+    (hscaled_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (H (k + 1) ω * (X (k + 1) ω - X k ω)) ^ 2 ∂P) :
+    ∃ Y : MeasureTheory.Lp ℝ (2 : ℝ≥0∞) P,
+      Tendsto
+        (fun n : ℕ =>
+          (hTransform_memLp_two n).toLp
+            (durrett2019_stochasticTransform H X n))
+        atTop (nhds Y) := by
+  have hTransform_martingale :
+      Martingale (durrett2019_stochasticTransform H X) ℱ P :=
+    durrett2019_theorem_4_2_8_martingale_transform_nonnegative
+      (μ := P) (ℱ := ℱ) (H := H) (X := X) (R := R)
+      hX hH_pred hH_bdd hH_nonneg
+  exact
+    durrett2019_exercise_4_4_10_martingale_exists_toLp_tendsto_of_summable
+      (P := P) (ℱ := ℱ) (X := durrett2019_stochasticTransform H X)
+      hTransform_martingale hTransform_memLp_two
+      (durrett2019_exercise_4_4_11_stochasticTransform_increment_sq_summable
+        (P := P) (H := H) (X := X) hscaled_summable)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
