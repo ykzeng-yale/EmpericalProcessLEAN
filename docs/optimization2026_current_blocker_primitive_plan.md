@@ -281,6 +281,22 @@ remaining item-4 gates are therefore the projected-third lift identity, the
 Schur projected inverse/right-inverse construction, and the scalar projected
 gradient energy certificate; do not route future runs through a raw projected
 mixed-third bound.
+The projected-full-inverse packet adds `withLpProdInl_fst_add_inr_snd`,
+`barrierInfProjectionBlockXX_add_XY_eq_hess_fst`,
+`barrierInfProjectionBlockYX_add_YY_eq_hess_snd`,
+`barrierInfProjectionProjInvHessFromFullInv`,
+`barrierInfProjectionSchurHessFrom_projInvHessFromFullInv_right_inverse`,
+`BarrierInfProjectionSelectorStationary.projectedFullInv_gradient_quadratic_le`,
+`chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_energy`,
+and `chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third`.
+This removes the raw Schur projected-inverse/right-inverse and scalar
+projected-gradient energy gates from the final item-4 wrapper: the projected
+inverse is the horizontal part of the full inverse-Hessian, the Schur
+right-inverse follows from the full Hessian right-inverse plus an `Hyy`
+left-inverse, and the projected energy bound follows from the original barrier
+gradient bound plus selector stationarity.  The remaining item-4 gates are now
+the lifted third-derivative identity and the two-sided `Hyy`/full-Hessian
+inverse identities needed by that final wrapper.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,

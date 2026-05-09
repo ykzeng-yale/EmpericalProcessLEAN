@@ -2869,6 +2869,12 @@ noncomputable def withLpProdInrCLM : E₂ →L[ℝ] WithLp 2 (E₁ × E₂) :=
       WithLp.toLp 2 (0, v) := by
   rfl
 
+theorem withLpProdInl_fst_add_inr_snd (p : WithLp 2 (E₁ × E₂)) :
+    withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) p.fst +
+      withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) p.snd = p := by
+  apply WithLp.ofLp_injective 2
+  exact Prod.ext (by simp) (by simp)
+
 noncomputable def barrierInfProjectionBlockXX
     (selector : E₁ -> E₂)
     (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
@@ -2941,6 +2947,44 @@ noncomputable def barrierInfProjectionBlockYY
         (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) v)).snd := by
   rfl
 
+theorem barrierInfProjectionBlockXX_add_XY_eq_hess_fst
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (x : E₁) (p : WithLp 2 (E₁ × E₂)) :
+    barrierInfProjectionBlockXX selector hess x p.fst +
+      barrierInfProjectionBlockXY selector hess x p.snd =
+        (hess (barrierInfProjectionPoint selector x) p).fst := by
+  have hdecomp := withLpProdInl_fst_add_inr_snd (E₁ := E₁) (E₂ := E₂) p
+  calc
+    barrierInfProjectionBlockXX selector hess x p.fst +
+        barrierInfProjectionBlockXY selector hess x p.snd =
+        (hess (barrierInfProjectionPoint selector x)
+          (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) p.fst +
+            withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) p.snd)).fst := by
+          simp [map_add]
+    _ = (hess (barrierInfProjectionPoint selector x) p).fst := by
+          rw [hdecomp]
+
+theorem barrierInfProjectionBlockYX_add_YY_eq_hess_snd
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (x : E₁) (p : WithLp 2 (E₁ × E₂)) :
+    barrierInfProjectionBlockYX selector hess x p.fst +
+      barrierInfProjectionBlockYY selector hess x p.snd =
+        (hess (barrierInfProjectionPoint selector x) p).snd := by
+  have hdecomp := withLpProdInl_fst_add_inr_snd (E₁ := E₁) (E₂ := E₂) p
+  calc
+    barrierInfProjectionBlockYX selector hess x p.fst +
+        barrierInfProjectionBlockYY selector hess x p.snd =
+        (hess (barrierInfProjectionPoint selector x)
+          (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) p.fst +
+            withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) p.snd)).snd := by
+          simp [map_add]
+    _ = (hess (barrierInfProjectionPoint selector x) p).snd := by
+          rw [hdecomp]
+
 /--
 Schur-complement Hessian oracle for a partial minimization/envelope proof:
 `Hxx - Hxy Hyy⁻¹ Hyx`.
@@ -2981,6 +3025,145 @@ noncomputable def barrierInfProjectionSchurHessFrom
         barrierInfProjectionBlockXY selector hess x
           (invHyy x (barrierInfProjectionBlockYX selector hess x v)) := by
   rfl
+
+/--
+Projected inverse-Hessian candidate obtained by applying the original full
+inverse-Hessian to a horizontal covector and taking its horizontal component.
+-/
+noncomputable def barrierInfProjectionProjInvHessFromFullInv
+    (selector : E₁ -> E₂)
+    (invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)) :
+    E₁ -> E₁ →L[ℝ] E₁ :=
+  fun x => withLpProdFstCLM.comp
+    ((invHess (barrierInfProjectionPoint selector x)).comp withLpProdInlCLM)
+
+@[simp] theorem barrierInfProjectionProjInvHessFromFullInv_apply
+    (selector : E₁ -> E₂)
+    (invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (x v : E₁) :
+    barrierInfProjectionProjInvHessFromFullInv selector invHess x v =
+      (invHess (barrierInfProjectionPoint selector x)
+        (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).fst := by
+  rfl
+
+theorem barrierInfProjectionSchurHessFrom_projInvHessFromFullInv_right_inverse
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x : E₁)
+    (hfull_right : ∀ w : WithLp 2 (E₁ × E₂),
+      hess (barrierInfProjectionPoint selector x)
+        (invHess (barrierInfProjectionPoint selector x) w) = w)
+    (hyy_left : ∀ w : E₂,
+      invHyy x (barrierInfProjectionBlockYY selector hess x w) = w) :
+    ∀ v : E₁,
+      barrierInfProjectionSchurHessFrom selector hess invHyy x
+        (barrierInfProjectionProjInvHessFromFullInv selector invHess x v) = v := by
+  intro v
+  let p : WithLp 2 (E₁ × E₂) :=
+    invHess (barrierInfProjectionPoint selector x)
+      (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)
+  have hfull :
+      hess (barrierInfProjectionPoint selector x) p =
+        withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v := by
+    simpa [p] using
+      hfull_right (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)
+  have hfst :
+      barrierInfProjectionBlockXX selector hess x p.fst +
+        barrierInfProjectionBlockXY selector hess x p.snd = v := by
+    calc
+      barrierInfProjectionBlockXX selector hess x p.fst +
+          barrierInfProjectionBlockXY selector hess x p.snd =
+          (hess (barrierInfProjectionPoint selector x) p).fst :=
+            barrierInfProjectionBlockXX_add_XY_eq_hess_fst selector hess x p
+      _ = (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v).fst := by
+            rw [hfull]
+      _ = v := by simp
+  have hsnd :
+      barrierInfProjectionBlockYX selector hess x p.fst +
+        barrierInfProjectionBlockYY selector hess x p.snd = 0 := by
+    calc
+      barrierInfProjectionBlockYX selector hess x p.fst +
+          barrierInfProjectionBlockYY selector hess x p.snd =
+          (hess (barrierInfProjectionPoint selector x) p).snd :=
+            barrierInfProjectionBlockYX_add_YY_eq_hess_snd selector hess x p
+      _ = (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v).snd := by
+            rw [hfull]
+      _ = 0 := by simp
+  have hhyx :
+      barrierInfProjectionBlockYX selector hess x p.fst =
+        -barrierInfProjectionBlockYY selector hess x p.snd := by
+    simpa [add_eq_zero_iff_eq_neg] using hsnd
+  have hcorr :
+      invHyy x (barrierInfProjectionBlockYX selector hess x p.fst) = -p.snd := by
+    rw [hhyx, map_neg, hyy_left]
+  change barrierInfProjectionSchurHessFrom selector hess invHyy x p.fst = v
+  calc
+    barrierInfProjectionSchurHessFrom selector hess invHyy x p.fst =
+        barrierInfProjectionBlockXX selector hess x p.fst -
+          barrierInfProjectionBlockXY selector hess x
+            (invHyy x (barrierInfProjectionBlockYX selector hess x p.fst)) := by
+          rfl
+    _ = barrierInfProjectionBlockXX selector hess x p.fst -
+          barrierInfProjectionBlockXY selector hess x (-p.snd) := by
+          rw [hcorr]
+    _ = barrierInfProjectionBlockXX selector hess x p.fst +
+          barrierInfProjectionBlockXY selector hess x p.snd := by
+          rw [map_neg]
+          simp
+    _ = v := hfst
+
+theorem BarrierInfProjectionSelectorStationary.projectedFullInv_gradient_quadratic_le
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu) :
+    ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      inner ℝ (barrierInfProjectionGrad selector grad x)
+          (barrierInfProjectionProjInvHessFromFullInv selector invHess x
+            (barrierInfProjectionGrad selector grad x)) ≤ nu := by
+  intro x hx
+  let z := barrierInfProjectionPoint selector x
+  let g := barrierInfProjectionGrad selector grad x
+  have hz : z ∈ s := hsel.point_mem hx
+  have hgrad_lift : withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) g = grad z := by
+    apply WithLp.ofLp_injective 2
+    exact Prod.ext (by simp [g, z])
+      (by
+        simpa [g, z, barrierInfProjectionVerticalGrad] using
+          (hsel.vertical_grad_eq_zero hx).symm)
+  have henergy_eq :
+      inner ℝ g
+          (barrierInfProjectionProjInvHessFromFullInv selector invHess x g) =
+        inner ℝ (grad z) (invHess z (grad z)) := by
+    rw [← hgrad_lift]
+    rw [WithLp.prod_inner_apply]
+    simp [g, z]
+  have hdual := hbar.gradient_bound hz
+  have hquad_nonneg : 0 ≤ inner ℝ (grad z) (invHess z (grad z)) :=
+    hbar.invHess_nonneg hz (grad z)
+  have hsquare :
+      inner ℝ (grad z) (invHess z (grad z)) ≤ nu := by
+    have hsquare' :
+        (dualLocalNorm invHess z (grad z)) ^ (2 : ℕ) ≤
+          (Real.sqrt nu) ^ (2 : ℕ) :=
+      (sq_le_sq₀ (dualLocalNorm_nonneg invHess z (grad z))
+        (Real.sqrt_nonneg _)).2 hdual
+    rw [dualLocalNorm_sq_eq_inner hquad_nonneg,
+      Real.sq_sqrt hbar.parameter_nonneg] at hsquare'
+    exact hsquare'
+  rwa [henergy_eq]
 
 /-- Vertical correction used in the Schur-complement lift. -/
 noncomputable def barrierInfProjectionSchurCorrection
@@ -3573,6 +3756,101 @@ theorem chewi1311_infProjection_selfConcordantBarrierOn_of_lift_third_projInv_ri
     hsel hbar hyy_right
     (hsel.schurMixedThird_bound_of_lift_third hbar hyy_right hthird_eq)
     hproj_right hgradient_quadratic
+
+/--
+Chewi Proposition 13.11(4), Schur-envelope rule with the projected
+inverse-Hessian fixed to the horizontal block of the full inverse-Hessian.  The
+Schur right-inverse gate is discharged from the full Hessian right-inverse and
+the `Hyy` left-inverse.  The remaining source-facing gates are the lifted
+third-derivative identity and the scalar projected-gradient energy bound.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_energy
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hyy_left : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, invHyy x (barrierInfProjectionBlockYY selector hess x w) = w)
+    (hfull_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : WithLp 2 (E₁ × E₂),
+        hess (barrierInfProjectionPoint selector x)
+          (invHess (barrierInfProjectionPoint selector x) w) = w)
+    (hthird_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        projThird x u v =
+          third (barrierInfProjectionPoint selector x)
+            (barrierInfProjectionSchurLift selector hess invHyy x u)
+            (barrierInfProjectionSchurLift selector hess invHyy x v))
+    (hgradient_quadratic : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      inner ℝ (barrierInfProjectionGrad selector grad x)
+          (barrierInfProjectionProjInvHessFromFullInv selector invHess x
+            (barrierInfProjectionGrad selector grad x)) ≤ nu) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionProjInvHessFromFullInv selector invHess)
+      projThird M nu :=
+  chewi1311_infProjection_selfConcordantBarrierOn_of_lift_third_projInv_right_inverse
+    hsel hbar hyy_right hthird_eq
+    (by
+      intro x hx
+      exact barrierInfProjectionSchurHessFrom_projInvHessFromFullInv_right_inverse
+        selector hess invHess invHyy x (hfull_right hx) (hyy_left hx))
+    hgradient_quadratic
+
+/--
+Chewi Proposition 13.11(4), Schur-envelope rule with the projected
+inverse-Hessian fixed to the horizontal block of the full inverse-Hessian.  The
+Schur right-inverse gate is discharged from full inverse identities, and the
+projected-gradient energy bound is inherited from the original barrier using
+selector stationarity.  The remaining source-facing gate is the lifted
+third-derivative identity, together with two-sided `Hyy` inverse identities.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hyy_left : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, invHyy x (barrierInfProjectionBlockYY selector hess x w) = w)
+    (hfull_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : WithLp 2 (E₁ × E₂),
+        hess (barrierInfProjectionPoint selector x)
+          (invHess (barrierInfProjectionPoint selector x) w) = w)
+    (hthird_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        projThird x u v =
+          third (barrierInfProjectionPoint selector x)
+            (barrierInfProjectionSchurLift selector hess invHyy x u)
+            (barrierInfProjectionSchurLift selector hess invHyy x v)) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionProjInvHessFromFullInv selector invHess)
+      projThird M nu :=
+  chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_lift_third_energy
+    hsel hbar hyy_right hyy_left hfull_right hthird_eq
+    (hsel.projectedFullInv_gradient_quadratic_le hbar)
 
 end InfProjectionBarrier
 
