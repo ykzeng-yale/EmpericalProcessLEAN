@@ -37125,6 +37125,177 @@ theorem
         hjoint_meas hfiber hjoint_subset
 
 /--
+Canonical Rademacher selected-finite-net product-event source constructor.
+
+This is the next event-level layer above
+`of_eventual_product_fiber_lower_bound`: the caller supplies an eventual
+measurable joint event on original samples and canonical finite-product
+Rademacher signs, beta-large fibers over the centered bad event, and a
+pointwise inclusion of the joint event into the selected-cover Rademacher
+finite-net ingredients.  The deterministic selected finite-net handoff then
+turns that inclusion into the scaled selected Hoeffding bad event needed by
+the raw product-fiber bridge.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedFiniteNet_product_event
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_nonneg : 0 ≤ M)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (jointEvent :
+      ∀ (eta : ℝ), 0 < eta -> ∀ (epsilon : ℝ), 0 < epsilon ->
+        ∀ n, Set (SampleAt Observation n × SampleAt ℝ n))
+    (hjoint_meas :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          MeasurableSet (jointEvent eta heta epsilon hepsilon n))
+    (hfiber :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          ∀ sample : SampleAt Observation n,
+            sample ∈
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)} ->
+              ENNReal.ofReal
+                  (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                (vdVWProductMeasure vdVWRademacherLaw n)
+                  (Prod.mk sample ⁻¹' jointEvent eta heta epsilon hepsilon n))
+    (hjoint_event :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          ∀ z : SampleAt Observation n × SampleAt ℝ n,
+            z ∈ jointEvent eta heta epsilon hepsilon n ->
+              VdVWRademacherSignVector z.2 ∧
+                VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+                  (vdVWTruncatedClassFun classFun envelope M)
+                  (cover eta heta n z.1).center z.2 M ∧
+                epsilon <
+                  dist
+                    (2 *
+                      vdVWWeightedClassSupremum indexClass
+                        (vdVWTruncatedClassFun classFun envelope M)
+                        (vdVWRademacherWeights z.2) z.1)
+                    (0 : ℝ)) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 2 1 selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_product_fiber_lower_bound
+      (P := P) (ν := fun n : ℕ => vdVWProductMeasure vdVWRademacherLaw n)
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := 2)
+      (selectedCardinality := selectedCardinality) (by norm_num) ?_
+  intro eta heta epsilon hepsilon
+  filter_upwards
+    [hjoint_meas eta heta epsilon hepsilon,
+      hfiber eta heta epsilon hepsilon,
+      hjoint_event eta heta epsilon hepsilon]
+    with n hjoint_meas_n hfiber_n hjoint_event_n
+  refine
+    ⟨jointEvent eta heta epsilon hepsilon n, hjoint_meas_n, hfiber_n, ?_⟩
+  intro z hz
+  rcases hjoint_event_n z hz with ⟨hsign, hmaximal, hrad_bad⟩
+  have hrad_le :
+      vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights z.2) z.1 ≤
+        vdVWTheorem243FiniteNetHoeffdingUpper
+            (selectedCardinality eta n z.1 n) n M + eta / 2 :=
+    vdVWWeightedClassSupremum_le_finiteNetHoeffdingUpper_add_of_rademacherSignVector
+      (sample := z.1) (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (epsilon := eta / 2) (M := M)
+      (cover := cover eta heta n z.1) (sign := z.2)
+      hsign (by linarith) hM_nonneg hmaximal
+  have hrad_nonneg :
+      0 ≤
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights z.2) z.1 :=
+    vdVWWeightedClassSupremum_nonneg indexClass
+      (vdVWTruncatedClassFun classFun envelope M)
+      (vdVWRademacherWeights z.2) z.1
+  have hupper_nonneg :
+      0 ≤
+        vdVWTheorem243FiniteNetHoeffdingUpper
+          (selectedCardinality eta n z.1 n) n M :=
+    vdVWTheorem243FiniteNetHoeffdingUpper_nonneg
+      (selectedCardinality eta n z.1 n) n hM_nonneg
+  have hrad_bad_real :
+      epsilon <
+        2 *
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights z.2) z.1 := by
+    have htwo_rad_nonneg :
+        0 ≤
+          2 *
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights z.2) z.1 := by
+      nlinarith
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg htwo_rad_nonneg] at hrad_bad
+    exact hrad_bad
+  have hscaled_le :
+      2 *
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights z.2) z.1 ≤
+        2 *
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality eta n z.1 n) n M + eta := by
+    calc
+      2 *
+          vdVWWeightedClassSupremum indexClass
+            (vdVWTruncatedClassFun classFun envelope M)
+            (vdVWRademacherWeights z.2) z.1
+          ≤ 2 *
+              (vdVWTheorem243FiniteNetHoeffdingUpper
+                (selectedCardinality eta n z.1 n) n M + eta / 2) := by
+            exact mul_le_mul_of_nonneg_left hrad_le (by norm_num)
+      _ =
+          2 *
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                (selectedCardinality eta n z.1 n) n M + eta := by
+            ring
+  have htarget_real :
+      epsilon <
+        2 *
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality eta n z.1 n) n M + eta :=
+    lt_of_lt_of_le hrad_bad_real hscaled_le
+  have htarget_nonneg :
+      0 ≤
+        2 *
+            vdVWTheorem243FiniteNetHoeffdingUpper
+              (selectedCardinality eta n z.1 n) n M + eta := by
+    nlinarith
+  have htarget :
+      epsilon <
+        dist
+          (2 *
+              vdVWTheorem243FiniteNetHoeffdingUpper
+                (selectedCardinality eta n z.1 n) n M + eta)
+          (0 : ℝ) := by
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg htarget_nonneg]
+    exact htarget_real
+  simpa using htarget
+
+/--
 A scaled selected outer-probability comparison without the displayed beta factor
 implies the displayed-beta source primitive.
 

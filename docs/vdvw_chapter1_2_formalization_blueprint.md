@@ -2208,6 +2208,12 @@ above, so they do not change the theorem-level dashboard counts.
    `measure_mul_le_prod_measure_of_fiber_lower_bound`,
    `VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound`, and
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_product_fiber_lower_bound`.
+   Its canonical finite-product Rademacher selected-net wrapper is compiled as
+   `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedFiniteNet_product_event`,
+   so the remaining event-route source proof only has to build the measurable
+   joint event with beta-large fibers and the three deterministic pointwise
+   ingredients: sign vector, finite-center maximal bound, and scaled
+   Rademacher bad event.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
