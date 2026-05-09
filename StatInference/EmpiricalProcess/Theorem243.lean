@@ -15486,6 +15486,72 @@ noncomputable def vdVWTheorem243FiniteCenterHoeffdingFailureTail
           (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)) : ℝ≥0) : ℝ))))
 
 /--
+Closed-form exponent for the displayed finite-center Hoeffding failure tail.
+
+For positive sample size and nonzero truncation level, the `n` and `M` factors
+cancel out of the displayed exponent.  This is important for the active
+Theorem 2.4.3 route: the additive finite-center failure-tail term is not a
+small-`n` error merely from the Hoeffding display scale.
+-/
+theorem vdVWTheorem243FiniteCenterHoeffdingFailureTail_exponent_eq
+    (cardinality : ℕ) {n : ℕ} {M : ℝ} (hn : 0 < n) (hM_ne : M ≠ 0) :
+    -((vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M) ^ 2) /
+        (2 * ((NNReal.mk (M ^ 2 / (n : ℝ))
+          (div_nonneg (sq_nonneg M) (Nat.cast_nonneg n)) : ℝ≥0) : ℝ)) =
+      -(3 * (1 + Real.log ((cardinality : ℝ) + 1))) := by
+  have hn_ne : (n : ℝ) ≠ 0 := by
+    exact_mod_cast (Nat.ne_of_gt hn)
+  have hM_sq_ne : M ^ 2 ≠ 0 := pow_ne_zero 2 hM_ne
+  rw [vdVWTheorem243FiniteNetHoeffdingUpper_sq]
+  simp only [NNReal.coe_mk]
+  field_simp [hn_ne, hM_sq_ne]
+  ring
+
+/--
+Closed form of the finite-center Hoeffding failure tail at the selected
+display scale.
+
+The right-hand side has no sample-size dependence.  Thus any proof that the
+additive product-pair failure-tail error vanishes must use additional
+structure beyond the bare `log N_n / n -> 0` stochastic-entropy hypothesis, or
+avoid this additive-error route.
+-/
+theorem vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form
+    (cardinality : ℕ) {n : ℕ} {M : ℝ} (hn : 0 < n) (hM_ne : M ≠ 0) :
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail cardinality n M =
+      (cardinality : ℝ) *
+        (2 * Real.exp (-(3 * (1 + Real.log ((cardinality : ℝ) + 1))))) := by
+  have hExp :=
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail_exponent_eq
+      cardinality hn hM_ne
+  unfold vdVWTheorem243FiniteCenterHoeffdingFailureTail
+  rw [hExp]
+
+/--
+The one-center displayed failure tail is a nonzero constant along positive
+sample sizes.
+
+This formalizes the current route warning: the additive tail does not tend to
+zero for a constant one-center selected cover.
+-/
+theorem tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ
+    {M : ℝ} (hM_ne : M ≠ 0) :
+    Tendsto
+      (fun n : ℕ => vdVWTheorem243FiniteCenterHoeffdingFailureTail 1 (n + 1) M)
+      atTop (𝓝 (2 * Real.exp (-(3 * (1 + Real.log 2))))) := by
+  have hEq :
+      (fun n : ℕ =>
+          vdVWTheorem243FiniteCenterHoeffdingFailureTail 1 (n + 1) M) =
+        fun _ : ℕ => 2 * Real.exp (-(3 * (1 + Real.log 2))) := by
+    funext n
+    have hn : 0 < n + 1 := Nat.succ_pos n
+    rw [vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form
+      1 (n := n + 1) (M := M) hn hM_ne]
+    norm_num
+  rw [hEq]
+  exact tendsto_const_nhds
+
+/--
 Fixed-sample finite-center failure tail for the Rademacher Hoeffding predicate.
 
 The complement of `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` is

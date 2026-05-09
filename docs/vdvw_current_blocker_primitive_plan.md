@@ -128,13 +128,25 @@ from Nat-indexed selectors through
 `measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt`, and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selectedCenterAt`.
 The next exact target is now sharper: prove the integrated random
-selected-cover finite-center Hoeffding tails vanish, and prove the remaining
+selected-cover finite-center Hoeffding tails vanish only if an additional
+structural tail/large-cardinality input is available, and prove the remaining
 Nat-indexed in-range selected-center selector measurability assumptions.  The
 selected-center measurability interface remains
 `VdVWFiniteEmpiricalL1CoverSelectedCenterAt`,
 `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`,
 and
 `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`.
+The compiled closed-form diagnostics
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_exponent_eq`,
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form`, and
+`tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ` show that
+the displayed additive Hoeffding failure-tail term has no sample-size decay at
+the current scale, even for a one-center selected cover.  Do not spend the next
+round trying to prove vanishing of this additive error from bare stochastic
+entropy.  Either add an honest stronger tail/UI/cardinality-growth hypothesis,
+increase the finite-center threshold by a real vanishing-probability penalty,
+or switch back to an expectation/symmetrization route that avoids this
+additive-error obstruction.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening and do not claim it follows from bare stochastic entropy.
 
