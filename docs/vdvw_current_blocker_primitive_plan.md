@@ -132,9 +132,12 @@ named as `VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent`, and
 `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent`
 turns a probability lower bound for that source event directly into the named
 concrete-event fiber bound.  The next missing bridge is therefore the
-probability lower bound for this source event; alternatively, discharge the
-Nat-indexed selector assumptions from a stronger selected-center measurable
-selection primitive.
+fixed-original sign-swap mass transport
+`vdVWProductMeasure P n (VdVWTheorem243CenteredPairSubBadEvent ...) <=
+((vdVWProductMeasure P n).prod (vdVWProductMeasure vdVWRademacherLaw n))
+  (VdVWTheorem243CenteredPairSubSignSwapBadEvent ...)`; alternatively,
+discharge the Nat-indexed selector assumptions from a stronger selected-center
+measurable selection primitive.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening and do not claim it follows from bare stochastic entropy.
 
@@ -8651,5 +8654,15 @@ inclusion
 `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_of_centeredPairSubSignSwapFiberSourceEvent`,
 and direct fiber lower-bound adapter
 `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent`.
-The remaining `hfiber` blocker is the probability lower bound for this named
-source event, not the final concrete-event projection.
+The new mass-carrying bad events
+`VdVWTheorem243CenteredPairSubBadEvent` and
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent` split this source proof into
+Chebyshev mass, fixed-original sign-swap transport, and a.e. component
+support.  The compiled adapters
+`VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_ae_components`,
+`VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_pairSub_badEvent_signSwap_lower_bound`,
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapBadEvent_ae_components`,
+and
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_pairSub_badEvent_signSwap_lower_bound`
+now expose the remaining `hfiber` blocker as exactly that fixed-original
+sign-swap mass transport, not the final concrete-event projection.

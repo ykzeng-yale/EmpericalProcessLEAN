@@ -38746,6 +38746,58 @@ theorem vdVWWeightedClassSupremum_centered_pairSub_eq_truncated_pairSub
   ring
 
 /--
+Centered pair-sub bad event before adding Rademacher signs.
+
+This is the event targeted by the Chebyshev selected-witness lower bound.  The
+remaining sign-swap probability step must transport its mass to
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent`.
+-/
+noncomputable def VdVWTheorem243CenteredPairSubBadEvent
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ) (M epsilon : ℝ)
+    {n : ℕ} (sample : SampleAt Observation n) :
+    Set (SampleAt Observation n) :=
+  {ghostSample |
+    epsilon <
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun z : Observation × Observation =>
+          (vdVWTruncatedClassFun classFun envelope M index z.1 -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+            (vdVWTruncatedClassFun classFun envelope M index z.2 -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+        (fun i : Fin n => (sample i, ghostSample i))}
+
+/--
+Centered pair-sub bad event after the deterministic product-pair sign swap.
+
+This is the mass-carrying part of
+`VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent`: the remaining source
+event is obtained by intersecting this bad event with sign support and the two
+selected finite-center Hoeffding side conditions.
+-/
+noncomputable def VdVWTheorem243CenteredPairSubSignSwapBadEvent
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ) (M epsilon : ℝ)
+    {n : ℕ} (sample : SampleAt Observation n) :
+    Set (SampleAt Observation n × SampleAt ℝ n) :=
+  {z |
+    epsilon <
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun pair : Observation × Observation =>
+          (vdVWTruncatedClassFun classFun envelope M index pair.1 -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+            (vdVWTruncatedClassFun classFun envelope M index pair.2 -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+        (fun _ : Fin n => (n : ℝ)⁻¹)
+        (vdVWRademacherProductSampleSignSwap z.2
+          (fun i : Fin n => (sample i, z.1 i)))}
+
+/--
 Source fiber event before the concrete pair-difference event.
 
 For a fixed original sample, this event keeps exactly the ingredients produced
@@ -38783,6 +38835,129 @@ noncomputable def VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent
           (fun _ : Fin n => (n : ℝ)⁻¹)
           (vdVWRademacherProductSampleSignSwap z.2
             (fun i : Fin n => (sample i, z.1 i)))}
+
+/--
+The centered sign-swapped source-event lower bound follows from a lower bound
+for the bad part plus almost-everywhere component support.
+
+This isolates the remaining probability work: prove mass for
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent`, then supply a.e. Rademacher
+support and the two selected finite-center Hoeffding side conditions.
+-/
+theorem
+    VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_ae_components
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {sample : SampleAt Observation n} {beta : ℝ≥0∞}
+    (hbadLower :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+            P indexClass classFun envelope M epsilon sample))
+    (hsign :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWRademacherSignVector z.2)
+    (hmaxOriginal :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover sample).center z.2 M)
+    (hmaxGhost :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover z.1).center (fun i : Fin n => -z.2 i) M) :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent
+            P indexClass classFun envelope M eta epsilon cover sample) := by
+  exact hbadLower.trans
+    (measure_mono_ae (by
+      filter_upwards [hsign, hmaxOriginal, hmaxGhost] with z hsignz hmaxOriginalz
+        hmaxGhostz hzbad
+      exact ⟨hsignz, hmaxOriginalz, hmaxGhostz, hzbad⟩))
+
+/--
+Source-event lower bound from the Chebyshev pair-sub bad event plus a supplied
+fixed-original sign-swap mass transport.
+
+The supplied `hsignSwapLower` is the genuine remaining probability step: it
+transports mass from the unswapped centered pair-sub bad ghost event to the
+sign-swapped ghost/sign bad event.
+-/
+theorem
+    VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_pairSub_badEvent_signSwap_lower_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {sample : SampleAt Observation n} {beta : ℝ≥0∞}
+    (hpairLower :
+      beta ≤
+        (vdVWProductMeasure P n)
+          (VdVWTheorem243CenteredPairSubBadEvent
+            P indexClass classFun envelope M epsilon sample))
+    (hsignSwapLower :
+      (vdVWProductMeasure P n)
+          (VdVWTheorem243CenteredPairSubBadEvent
+            P indexClass classFun envelope M epsilon sample) ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+            P indexClass classFun envelope M epsilon sample))
+    (hsign :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWRademacherSignVector z.2)
+    (hmaxOriginal :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover sample).center z.2 M)
+    (hmaxGhost :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover z.1).center (fun i : Fin n => -z.2 i) M) :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent
+            P indexClass classFun envelope M eta epsilon cover sample) := by
+  exact
+    VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_ae_components
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinality := cardinality)
+      (cover := cover) (sample := sample)
+      (hpairLower.trans hsignSwapLower) hsign hmaxOriginal hmaxGhost
 
 /--
 The centered sign-swapped pair-sub fiber source is contained in the concrete
@@ -38868,6 +39043,150 @@ theorem
         (envelope := envelope) (M := M) (eta := eta)
         (epsilon := epsilon) (cardinality := cardinality)
         (cover := cover) (sample := sample) (z := z) hz))
+
+/--
+Direct concrete-fiber lower bound from the centered sign-swapped bad event and
+almost-everywhere component support.
+
+This is the next `hfiber`-facing interface: once the remaining probability
+argument proves mass for `VdVWTheorem243CenteredPairSubSignSwapBadEvent`, the
+a.e. sign-support and finite-center side-condition inputs turn it directly
+into the concrete pair-difference event's product-fiber lower bound.
+-/
+theorem
+    VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapBadEvent_ae_components
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {sample : SampleAt Observation n} {beta : ℝ≥0∞}
+    (hbadLower :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+            P indexClass classFun envelope M epsilon sample))
+    (hsign :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWRademacherSignVector z.2)
+    (hmaxOriginal :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover sample).center z.2 M)
+    (hmaxGhost :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover z.1).center (fun i : Fin n => -z.2 i) M) :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (Prod.mk sample ⁻¹'
+            VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon) (cardinality := cardinality)
+              (cover := cover)) := by
+  exact
+    VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinality := cardinality)
+      (cover := cover) (sample := sample)
+      (VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_ae_components
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (cover := cover) (sample := sample)
+        hbadLower hsign hmaxOriginal hmaxGhost)
+
+/--
+Concrete-fiber lower bound from Chebyshev pair-sub mass plus a supplied
+fixed-original sign-swap mass transport.
+
+This is the most direct remaining `hfiber` adapter: the only nontrivial
+probability input left is `hsignSwapLower`, transporting the Chebyshev
+unswapped pair-sub bad event to the sign-swapped bad event.
+-/
+theorem
+    VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_pairSub_badEvent_signSwap_lower_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {sample : SampleAt Observation n} {beta : ℝ≥0∞}
+    (hpairLower :
+      beta ≤
+        (vdVWProductMeasure P n)
+          (VdVWTheorem243CenteredPairSubBadEvent
+            P indexClass classFun envelope M epsilon sample))
+    (hsignSwapLower :
+      (vdVWProductMeasure P n)
+          (VdVWTheorem243CenteredPairSubBadEvent
+            P indexClass classFun envelope M epsilon sample) ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+            P indexClass classFun envelope M epsilon sample))
+    (hsign :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWRademacherSignVector z.2)
+    (hmaxOriginal :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover sample).center z.2 M)
+    (hmaxGhost :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover z.1).center (fun i : Fin n => -z.2 i) M) :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (Prod.mk sample ⁻¹'
+            VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon) (cardinality := cardinality)
+              (cover := cover)) := by
+  exact
+    VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinality := cardinality)
+      (cover := cover) (sample := sample)
+      (VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_pairSub_badEvent_signSwap_lower_bound
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (cover := cover) (sample := sample)
+        hpairLower hsignSwapLower hsign hmaxOriginal hmaxGhost)
 
 /--
 Concrete-event constructor for the factor-two Lemma 2.3.7 source comparison.

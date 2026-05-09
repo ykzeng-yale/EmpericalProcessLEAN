@@ -214,8 +214,14 @@ inclusion and fiber transfer through
 `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_of_centeredPairSubSignSwapFiberSourceEvent`
 and
 `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent`.
-Thus the product-fiber blocker is narrowed to proving the probability lower
-bound for this named source event.
+The source probability proof is now split through
+`VdVWTheorem243CenteredPairSubBadEvent` and
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent`, with a.e.-component and
+direct concrete-fiber adapters ending in
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_pairSub_badEvent_signSwap_lower_bound`.
+Thus the product-fiber blocker is narrowed to the fixed-original sign-swap
+mass transport from the unswapped centered pair-sub bad event to the
+sign-swapped ghost/sign bad event.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

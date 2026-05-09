@@ -2307,8 +2307,14 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWWeightedClassSupremum_centered_pairSub_eq_truncated_pairSub`, and
    `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent`
    transports a probability lower bound for that source event to the concrete
-   product fiber.  The remaining product-fiber source task is therefore the
-   probability lower bound for this named source event.
+   product fiber.  The source probability proof is now further split through
+   `VdVWTheorem243CenteredPairSubBadEvent` and
+   `VdVWTheorem243CenteredPairSubSignSwapBadEvent`, with the direct concrete
+   adapter
+   `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_pairSub_badEvent_signSwap_lower_bound`.
+   The remaining product-fiber source task is therefore the fixed-original
+   sign-swap mass transport from the unswapped centered pair-sub bad event to
+   the sign-swapped ghost/sign bad event.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
