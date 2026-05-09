@@ -11828,6 +11828,24 @@ theorem ae_id_vdVWRademacherLaw_eq_neg_one_or_one :
     hident.ae_snd hmeas
       (ae_of_all _ fun b => vdVWBoolToRademacherSign_eq_neg_one_or_one b)
 
+/-- The finite-product Rademacher support predicate is measurable. -/
+theorem measurableSet_vdVWRademacherSignVector {n : ℕ} :
+    MeasurableSet {signSample : SampleAt ℝ n |
+      VdVWRademacherSignVector signSample} := by
+  have hcoord :
+      ∀ i : Fin n,
+        Measurable fun signSample : SampleAt ℝ n =>
+          signSample i = -1 ∨ signSample i = 1 := by
+    intro i
+    have hset : MeasurableSet ({x : ℝ | x = -1 ∨ x = 1}) := by
+      convert
+        (measurableSet_singleton (-1 : ℝ)).union
+          (measurableSet_singleton (1 : ℝ)) using 1
+    exact measurableSet_setOf.1 <| by
+      simpa using hset.preimage (measurable_pi_apply i)
+  rw [measurableSet_setOf]
+  simpa [VdVWRademacherSignVector] using Measurable.forall hcoord
+
 /--
 The coordinate process on the canonical finite product of real-valued
 Rademacher laws is a Rademacher sign vector almost surely.
@@ -37734,6 +37752,90 @@ noncomputable def VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
               vdVWTruncatedClassFun classFun envelope M index z.2)
           (vdVWRademacherWeights z.2.2)
           (fun i : Fin n => (z.1 i, z.2.1 i))}
+
+/--
+Measurability constructor for the concrete ghost/Rademacher pair-difference
+event.
+
+The sign-vector support part is now closed canonically; the remaining
+measurability obligations are exactly the original finite-center component,
+the ghost finite-center component, and the signed pair-difference bad event.
+-/
+theorem measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_components
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hmaxOriginal :
+      MeasurableSet
+        {z : SampleAt Observation n ×
+            (SampleAt Observation n × SampleAt ℝ n) |
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover z.1).center z.2.2 M})
+    (hmaxGhost :
+      MeasurableSet
+        {z : SampleAt Observation n ×
+            (SampleAt Observation n × SampleAt ℝ n) |
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.2.1
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover z.2.1).center (fun i : Fin n => -z.2.2 i) M})
+    (hpair :
+      MeasurableSet
+        {z : SampleAt Observation n ×
+            (SampleAt Observation n × SampleAt ℝ n) |
+          epsilon <
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (vdVWRademacherWeights z.2.2)
+              (fun i : Fin n => (z.1 i, z.2.1 i))}) :
+    MeasurableSet
+      (VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (cover := cover)) := by
+  have hsign :
+      Measurable fun z : SampleAt Observation n ×
+          (SampleAt Observation n × SampleAt ℝ n) =>
+        VdVWRademacherSignVector z.2.2 := by
+    exact measurableSet_setOf.1 <|
+      measurableSet_vdVWRademacherSignVector.preimage (by fun_prop)
+  have hmaxOriginal' :
+      Measurable fun z : SampleAt Observation n ×
+          (SampleAt Observation n × SampleAt ℝ n) =>
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover z.1).center z.2.2 M :=
+    measurableSet_setOf.1 hmaxOriginal
+  have hmaxGhost' :
+      Measurable fun z : SampleAt Observation n ×
+          (SampleAt Observation n × SampleAt ℝ n) =>
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.2.1
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover z.2.1).center (fun i : Fin n => -z.2.2 i) M :=
+    measurableSet_setOf.1 hmaxGhost
+  have hpair' :
+      Measurable fun z : SampleAt Observation n ×
+          (SampleAt Observation n × SampleAt ℝ n) =>
+        epsilon <
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            (vdVWRademacherWeights z.2.2)
+            (fun i : Fin n => (z.1 i, z.2.1 i)) :=
+    measurableSet_setOf.1 hpair
+  rw [VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent,
+    measurableSet_setOf]
+  exact hsign.and (hmaxOriginal'.and (hmaxGhost'.and hpair'))
 
 /--
 The concrete ghost/Rademacher pair-difference event lands in the
