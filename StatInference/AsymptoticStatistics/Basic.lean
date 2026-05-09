@@ -146,6 +146,28 @@ theorem vaart1998_stochasticBounded_of_tendstoInMeasure_const
   exact lt_of_le_of_lt (measureReal_mono hsubset) hn
 
 /--
+Convergence in probability to a fixed value implies convergence in probability
+of the norm residual to zero.
+
+This is the Chapter 2 bridge used to turn an operator-valued LLN into the
+scalar norm-residual form consumed by later asymptotic normality packets.
+-/
+theorem vaart1998_tendstoInMeasure_norm_sub_const_zero_of_tendstoInMeasure_const
+    {ι Ω E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P] [SeminormedAddCommGroup E]
+    {l : Filter ι} {X : ι -> Ω -> E} (c : E)
+    (hX : TendstoInMeasure P X l (fun _ : Ω => c)) :
+    TendstoInMeasure P (fun i ω => ‖X i ω - c‖) l 0 := by
+  rw [MeasureTheory.tendstoInMeasure_iff_measureReal_norm]
+  intro ε hε
+  have htail :
+      Tendsto
+        (fun i : ι => P.real {ω : Ω | ε ≤ ‖X i ω - c‖})
+        l (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm.mp hX) ε hε
+  simpa [sub_zero] using htail
+
+/--
 VdV&W tightness of a sequence of laws gives the real-valued norm-tail bound
 used by van der Vaart's `O_P(1)` criterion.
 

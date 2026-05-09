@@ -614,10 +614,15 @@ Initial modules:
   while the envelope-convergence packet adds
   `vaart1998_stochasticBounded_of_tendstoInMeasure_const` and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelopeTendsto_summandMeasurable_envelope`,
+  and the derivative-convergence packet adds
+  `vaart1998_tendstoInMeasure_norm_sub_const_zero_of_tendstoInMeasure_const`
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTendsto_envelopeTendsto_summandMeasurable_envelope`,
   so the remaining critical path has moved from smooth Taylor production,
-  empirical-average measurability, and envelope stochastic-boundedness plumbing
-  to the statistical source fields: empirical derivative LLN, score CLT, and
-  estimator/root/scaling hypotheses.
+  empirical-average measurability, envelope stochastic-boundedness plumbing,
+  and scalar derivative-norm packaging to the statistical source fields:
+  source proof of the operator-valued empirical derivative convergence, score
+  CLT, and estimator/root/scaling hypotheses.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
 - `LAN.lean`: Chapter 7 DQM/LAN structures and MLE consequences.
 

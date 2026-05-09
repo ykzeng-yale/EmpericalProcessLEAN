@@ -10,14 +10,15 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current frontier endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelopeTendsto_summandMeasurable_envelope`,
-using `vaart1998_stochasticBounded_of_tendstoInMeasure_const` to replace the
-opaque empirical-envelope `O_P(1)` hypothesis by convergence in probability of
-the empirical envelope average to a finite value.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTendsto_envelopeTendsto_summandMeasurable_envelope`,
+using `vaart1998_tendstoInMeasure_norm_sub_const_zero_of_tendstoInMeasure_const`
+to replace the processed scalar operator-norm derivative LLN by convergence in
+probability of the empirical derivative average itself to `V`.
 
-Next packet: instantiate exactly one remaining statistical source field feeding
-this endpoint, prioritizing the empirical derivative LLN, then the score CLT,
-then root/scaling consistency.  Do not revisit smooth Taylor production,
+Next packet: produce the actual source theorem for the operator-valued
+empirical derivative convergence if a local empirical-average LLN route is
+available; otherwise move to the score CLT or root/scaling consistency fields.
+Do not revisit scalar derivative-norm packaging, smooth Taylor production,
 sampled-summand measurability, or envelope stochastic-boundedness plumbing.
 
 Workflow: reconcile any local Vaart edits first, search local/mathlib APIs, add
@@ -875,18 +876,25 @@ compiling:
    boundedness, plus the Theorem 5.41 envelope-convergence source handoff:
    `vaart1998_stochasticBounded_of_tendstoInMeasure_const` and
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelopeTendsto_summandMeasurable_envelope`.
+316. Convergence in probability to a fixed value implies convergence of the
+   scalar norm residual to zero, plus the Theorem 5.41 operator-valued
+   derivative-convergence source handoff:
+   `vaart1998_tendstoInMeasure_norm_sub_const_zero_of_tendstoInMeasure_const`
+   and
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTendsto_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 envelope convergence handoff`).
+(`Add Vaart theorem 5.41 derivative convergence handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by replacing the opaque empirical
-envelope stochastic-boundedness assumption with convergence in probability of
-the empirical envelope average to a finite real value.
+asymptotic-normality route for Z-estimators by replacing the processed scalar
+operator-norm derivative LLN with convergence in probability of the empirical
+derivative average itself to `V`.
 
-The next aggressive packet should instantiate a remaining statistical source
-field feeding this endpoint, preferably the empirical derivative LLN, then the
-score CLT, then estimator/root/scaling consistency.
+The next aggressive packet should derive the operator-valued empirical
+derivative convergence from reusable empirical-average LLN infrastructure if
+that route is immediately available; otherwise move to the score CLT or
+estimator/root/scaling source fields.
 
 ## Execution Notes
 
