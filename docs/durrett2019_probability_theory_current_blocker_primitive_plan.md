@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V116
+## Live In-Thread Goal Prompt V117
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -423,10 +423,15 @@ and its p-th-power source layer now compiles via
 `durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound_of_lintegral_rpow_enorm_le`,
 and
 `durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_of_positivePart_lintegral_bound`.
-Next target: prove/package the actual Durrett positive-part p-th-power estimate
-for submartingales from Theorem 4.4.2 plus the integration/Hölder layer, likely
-through the smallest finite-truncation or monotone-convergence bridge that feeds
-the compiled `lintegral_rpow` source hypothesis.  Do not detour back into full
+The layer-cake and Hölder proof body now also has compiled support:
+`durrett2019_theorem_4_4_4_positivePart_layercake_lintegral_rpow_enorm`,
+`durrett2019_theorem_4_4_4_positivePart_doob_layercake_integrand_bound`, and
+`durrett2019_theorem_4_4_4_positivePart_holder_integral_bound`.
+Next target: assemble the Fubini/set-integral step that integrates the pointwise
+Doob layer-cake integrand bound into
+`∫ X_n^+ (bar X_n)^(p-1)`, then package the finite-truncation, monotone
+convergence, and conjugate-exponent division algebra that feeds the compiled
+`lintegral_rpow` source hypothesis.  Do not detour back into full
 Galton-Watson random-sum infrastructure unless a local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
@@ -944,10 +949,12 @@ maximal wrapper, the probability-display division wrapper, and the
 absolute-maximum variance-bound display.  Theorem 4.4.4 now has the martingale
 absolute-maximum consequence bridge from a supplied positive-part Lp maximal
 bound, plus the p-th-power `lintegral` to `eLpNorm` bridge and martingale
-source wrapper from a supplied positive-part p-th-power estimate.  Next move to
-the actual Durrett positive-part p-th-power estimate from Doob 4.4.2 and
-integration/Hölder, whichever gives the largest compiled step without building
-unrelated infrastructure.
+source wrapper from a supplied positive-part p-th-power estimate.  The
+positive-part layer-cake equality, pointwise Doob layer-cake integrand bound,
+and Hölder integral bound now also compile.  Next move to the Fubini/set-integral
+assembly plus finite-truncation/monotone-convergence/division algebra for the
+actual Durrett p-th-power estimate, whichever gives the largest compiled step
+without building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1061,6 +1068,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V116` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V117` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

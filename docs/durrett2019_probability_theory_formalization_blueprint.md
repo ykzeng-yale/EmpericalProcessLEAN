@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V116`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V117`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -579,8 +579,11 @@ Next packet:
   compile.  Theorem 4.4.4's martingale absolute-maximum consequence bridge now
   compiles from a supplied positive-part Lp maximal bound.  The p-th-power
   `lintegral` to `eLpNorm` bridge and martingale source wrapper now also
-  compile, so the active frontier is the actual positive-part p-th-power
-  estimate from Doob 4.4.2 plus the integration/Hölder layer.
+  compile.  The positive-part layer-cake equality, pointwise Doob layer-cake
+  integrand bound, and Hölder integral bound now also compile, so the active
+  frontier is the Fubini/set-integral assembly plus
+  finite-truncation/monotone-convergence/division algebra for the actual
+  positive-part p-th-power estimate.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:

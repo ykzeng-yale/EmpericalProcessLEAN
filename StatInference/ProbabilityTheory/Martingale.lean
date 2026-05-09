@@ -5,6 +5,7 @@ import Mathlib.Probability.Martingale.Centering
 import Mathlib.Probability.Martingale.Convergence
 import Mathlib.Probability.Martingale.OptionalStopping
 import Mathlib.Probability.Martingale.Upcrossing
+import Mathlib.Analysis.SpecialFunctions.Pow.Integral
 import Mathlib.MeasureTheory.Integral.Lebesgue.DominatedConvergence
 import StatInference.ProbabilityTheory.ConditionalExpectation
 
@@ -10779,6 +10780,177 @@ theorem durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_of_positivePart_lint
       durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound_of_lintegral_rpow_enorm_le
         (P := P) (X := X) hp_ne_zero hp_ne_top n
         (hPositivePartPowerBound hX))
+
+/--
+Durrett 2019, Theorem 4.4.4, layer-cake support for the positive-part running
+maximum.  This packages the textbook step
+`E (bar X_n)^p = p ∫ t^{p-1} P(bar X_n ≥ t) dt` in the exact finite-time
+positive-part form used by Theorem 4.4.2.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_layercake_lintegral_rpow_enorm
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p : ℝ} (hp : 0 < p) (n : ℕ) :
+    (∫⁻ ω,
+        ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) =
+      ENNReal.ofReal p *
+        ∫⁻ t in Set.Ioi (0 : ℝ),
+          P {ω |
+              t ≤
+                (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  fun k => max (X k ω) 0} *
+            ENNReal.ofReal (t ^ (p - 1)) := by
+  let A : Ω -> ℝ := fun ω =>
+    (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+      fun k => max (X k ω) 0
+  have hA_nonneg : 0 ≤ᵐ[P] A := by
+    exact Eventually.of_forall fun ω => by
+      rw [Finset.le_sup'_iff]
+      exact ⟨0, by simp, le_max_right (X 0 ω) 0⟩
+  have hA_meas : AEMeasurable A P := by
+    have hmeas : Measurable A := by
+      dsimp [A]
+      refine Finset.measurable_range_sup'' ?_
+      intro k _hk
+      exact
+        (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).max
+          measurable_const)
+    exact hmeas.aemeasurable
+  have hleft :
+      (∫⁻ ω, ‖A ω‖ₑ ^ p ∂P) =
+        ∫⁻ ω, ENNReal.ofReal (A ω ^ p) ∂P := by
+    refine lintegral_congr fun ω => ?_
+    have hAω_nonneg : 0 ≤ A ω := by
+      rw [Finset.le_sup'_iff]
+      exact ⟨0, by simp, le_max_right (X 0 ω) 0⟩
+    rw [← ofReal_norm_eq_enorm (A ω), Real.norm_eq_abs,
+      abs_of_nonneg hAω_nonneg,
+      ENNReal.ofReal_rpow_of_nonneg hAω_nonneg hp.le]
+  rw [show
+      (∫⁻ ω,
+          ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) =
+        (∫⁻ ω, ‖A ω‖ₑ ^ p ∂P) by rfl]
+  rw [hleft]
+  simpa [A] using
+    (MeasureTheory.lintegral_rpow_eq_lintegral_meas_le_mul
+      (μ := P) hA_nonneg hA_meas hp)
+
+/--
+Durrett 2019, Theorem 4.4.4, Doob-to-layer-cake integrand bridge.  At each
+positive threshold `t`, Theorem 4.4.2 converts the tail probability integrand
+into the set integral of the terminal positive part.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_doob_layercake_integrand_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p t : ℝ} (ht : 0 < t) (n : ℕ) :
+    P {ω |
+        t ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => max (X k ω) 0} *
+        ENNReal.ofReal (t ^ (p - 1)) ≤
+      ENNReal.ofReal (t ^ (p - 2)) *
+        ENNReal.ofReal
+          (∫ ω in {ω |
+              t ≤
+                (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  fun k => max (X k ω) 0},
+            max (X n ω) 0 ∂P) := by
+  let ε : ℝ≥0 := ⟨t, ht.le⟩
+  have hDoob :=
+    durrett2019_theorem_4_4_2_doob_maximal_inequality_positivePart
+      (P := P) (ℱ := ℱ) (X := X) hX (ε := ε) n
+  have hDoob' :
+      ENNReal.ofReal t *
+          P {ω |
+              t ≤
+                (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  fun k => max (X k ω) 0} ≤
+        ENNReal.ofReal
+          (∫ ω in {ω |
+              t ≤
+                (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  fun k => max (X k ω) 0},
+            max (X n ω) 0 ∂P) := by
+    simpa [ε, ENNReal.ofReal, Real.toNNReal_of_nonneg ht.le] using hDoob
+  have hscale_nonneg : 0 ≤ t ^ (p - 2) :=
+    Real.rpow_nonneg ht.le _
+  have hpow : t ^ (p - 2) * t = t ^ (p - 1) := by
+    calc
+      t ^ (p - 2) * t = t ^ (p - 2) * t ^ (1 : ℝ) := by
+        rw [Real.rpow_one]
+      _ = t ^ ((p - 2) + 1) := by
+        rw [← Real.rpow_add ht]
+      _ = t ^ (p - 1) := by
+        ring_nf
+  calc
+    P {ω |
+        t ≤
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => max (X k ω) 0} *
+        ENNReal.ofReal (t ^ (p - 1))
+        = ENNReal.ofReal (t ^ (p - 2)) *
+            (ENNReal.ofReal t *
+              P {ω |
+                t ≤
+                  (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                    fun k => max (X k ω) 0}) := by
+            rw [← hpow, ENNReal.ofReal_mul hscale_nonneg]
+            ac_rfl
+    _ ≤ ENNReal.ofReal (t ^ (p - 2)) *
+        ENNReal.ofReal
+          (∫ ω in {ω |
+              t ≤
+                (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+                  fun k => max (X k ω) 0},
+            max (X n ω) 0 ∂P) :=
+          mul_le_mul_right hDoob' _
+
+/--
+Durrett 2019, Theorem 4.4.4, Hölder support for the positive-part running
+maximum.  This is the textbook Hölder step after the Fubini calculation:
+`∫ X_n^+ (bar X_n)^{p-1}` is bounded by the product of the `L^p` terminal
+positive-part seminorm and the `L^p` running-maximum seminorm to the conjugate
+power.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_holder_integral_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) (n : ℕ) :
+    (∫⁻ ω,
+        ‖max (X n ω) 0‖ₑ *
+          ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              (fun k => max (X k ω) 0)‖ₑ ^ (p - 1) ∂P) ≤
+      (∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p) *
+        (∫⁻ ω,
+          ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) ^ (1 / q) := by
+  let A : Ω -> ℝ := fun ω =>
+    (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+      fun k => max (X k ω) 0
+  have hterminal :
+      AEMeasurable (fun ω => ‖max (X n ω) 0‖ₑ) P := by
+    have hmeas : Measurable fun ω => max (X n ω) 0 :=
+      (((hX.stronglyMeasurable n).measurable.mono (ℱ.le n) le_rfl).max
+        measurable_const)
+    exact hmeas.aemeasurable.enorm
+  have hmax : AEMeasurable (fun ω => ‖A ω‖ₑ) P := by
+    have hmeas : Measurable A := by
+      dsimp [A]
+      refine Finset.measurable_range_sup'' ?_
+      intro k _hk
+      exact
+        (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).max
+          measurable_const)
+    exact hmeas.aemeasurable.enorm
+  simpa [A, Pi.mul_apply] using
+    (ENNReal.lintegral_mul_rpow_le_lintegral_rpow_mul_lintegral_rpow
+      (μ := P) hpq hterminal hmax)
 
 end ProbabilityTheory
 end StatInference
