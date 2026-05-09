@@ -14,18 +14,18 @@ Lane: van der Vaart 1998, Theorem 5.41, in
 `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreSummandRepresentation_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Goal for each continuation: remove exactly one remaining source hypothesis from
 that endpoint, prove the resulting theorem-sized Lean layer, update only the
 Vaart route docs, commit, and push.
 
 Priority order:
-1. Raw-score representation identity from zero score mean plus the a.e.
-   `sqrt n` summand equality.
-2. Iid/operator strong law for the a.s. derivative-norm residual.
-3. One missing common-vector-law or Gaussian score-CLT source field.
-4. Scaled-estimator law-tail or tightness source proof.
+1. Iid/operator strong law for the a.s. derivative-norm residual.
+2. One missing common-vector-law or Gaussian score-CLT source field.
+3. Scaled-estimator law-tail or tightness source proof.
+4. Further source-side packaging for the zero-mean or a.e. score-summand
+   equality only if it directly feeds the current endpoint.
 
 Execution loop:
 1. Inspect `git status`; preserve unrelated local-agent edits.
@@ -931,15 +931,22 @@ compiling:
    summands, Gaussian limit/covariance fields, and a common-vector-law
    infinite-product sample source:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+326. Theorem 5.41 raw-score representation identity as a scaled centered
+   finite-coordinate empirical moment from zero score mean and the a.e.
+   `sqrt n` score-summand equality:
+   `vaart1998_theorem_5_41_rawScore_eq_finiteCoordinateScaledCentered_of_summand_eq`.
+327. Theorem 5.41 current endpoint with the raw-score representation
+   hypothesis discharged by the source-shaped score-summand representation:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreSummandRepresentation_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 common vector law score CLT handoff`).
+(`Add Vaart theorem 5.41 raw score representation handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving the score projected
-summand CLT from concrete common-vector-law/Gaussian source fields before
-feeding the reusable finite-coordinate Cramer-Wold lane and raw-score
-representation identity.
+asymptotic-normality route for Z-estimators by proving the raw scaled
+estimating-map score average is the scaled centered finite-coordinate empirical
+moment whenever the score summands have zero mean and agree a.e. with the
+scaled estimating-map summands.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.  Do

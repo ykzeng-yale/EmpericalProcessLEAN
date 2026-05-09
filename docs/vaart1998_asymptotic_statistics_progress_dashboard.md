@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 common vector law score CLT handoff`).
+(`Add Vaart theorem 5.41 raw score representation handoff`).
 Current packet verification passed for:
 
 - `lake build StatInference.AsymptoticStatistics.Basic`
@@ -628,10 +628,11 @@ Live continuation prompt: use the compact prompt in
 ## Next Aggressive Target
 
 For Vaart Theorem 5.41 in `MEstimators.lean`, discharge exactly one live source
-field for the current endpoint.  Priority order: raw-score representation
-identity; iid/operator derivative-norm strong law; one common-vector-law or
-Gaussian score-CLT source field; scaled-estimator law-tail/tightness.  Do not
-replay solved Chapter 2-4 infrastructure or earlier Theorem 5.41 wrappers.
+field for the current endpoint.  Priority order: iid/operator derivative-norm
+strong law; one common-vector-law or Gaussian score-CLT source field;
+scaled-estimator law-tail/tightness; only then further source-side packaging
+for the zero-mean or a.e. score-summand equality.  Do not replay solved
+Chapter 2-4 infrastructure or earlier Theorem 5.41 wrappers.
 
 ## Reuse Dependencies
 
