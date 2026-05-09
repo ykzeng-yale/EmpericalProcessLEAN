@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V147
+## Live In-Thread Goal Prompt V148
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -25,7 +25,7 @@ variable-variance square-martingale source bridge and the natural-filtration
 independent-increment endpoint.  Exercise 4.4.9 now has the two-martingale
 product-covariance recurrence and finite-sum source display.  Exercise 4.4.10
 now has the finite square-increment second-moment identities and finite
-tail identity:
+tail identity plus the `L^2` Cauchy-bound consumer:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -54,25 +54,29 @@ plus `durrett2019_exercise_4_4_10_martingale_square_integral_succ` and
 `durrett2019_exercise_4_4_10_martingale_increment_sq_integral_eq_square_integral_sub`,
 and
 `durrett2019_exercise_4_4_10_martingale_increment_sq_integral_eq_sum_Ico_increment_sq`,
+and
+`durrett2019_exercise_4_4_10_martingale_eLpNorm_increment_le_of_Ico_sum_le`,
 as well as the earlier first-exit/stopped-variance handoff declarations.  Do
 not route back into optional-stopping, overshoot, stopped-integrability,
 deterministic-clock, exact-denominator, square-martingale-source, or
 natural-filtration independent-increment 4.4.6 plumbing, or Exercise 4.4.9
-product-covariance / finite square-increment / finite tail-identity plumbing.
+product-covariance / finite square-increment / finite tail-identity /
+tail-bound-to-`L^2` plumbing.
 
 Next aggressive step: finish the Exercise 4.4.10 handoff from finite tail
-identity to convergence.  Best target: package a source-facing Cauchy bound
-from the supplied square-summability hypothesis, e.g. `E (X_n - X_m)^2` is
-bounded by the tail of `sum E (ΔX)^2`, then feed the existing Theorem 4.4.6
+identity to convergence.  Best target: produce the finite tail-bound hypothesis
+from a supplied `Summable`/tsum square-increment hypothesis, then feed
+`durrett2019_exercise_4_4_10_martingale_eLpNorm_increment_le_of_Ico_sum_le`
+to obtain an explicit `L^2` Cauchy statement or the existing Theorem 4.4.6
 `L^2` convergence wrappers where possible.  If that stalls, move to Exercise
 4.4.11 by combining predictable-transform theorem 4.2.8 support with the
 square-summability hypothesis for scaled increments.  Do not loop back to
 already compiled Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises
 4.4.5-4.4.9, Theorem 4.4.1 plumbing, or the first-exit
 overshoot/stopped-integrability/deterministic-clock/exact-denominator/
-square-martingale-source/natural-filtration/product-covariance/tail-identity
-layer.  Theorem 4.1.16 remains deferred unless a targeted kernel search finds a
-direct source-shaped API.
+square-martingale-source/natural-filtration/product-covariance/tail-identity/
+tail-bound-to-`L^2` layer.  Theorem 4.1.16 remains deferred unless a targeted
+kernel search finds a direct source-shaped API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including

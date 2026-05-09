@@ -14153,6 +14153,40 @@ theorem durrett2019_exercise_4_4_10_martingale_increment_sq_integral_eq_sum_Ico_
   exact htail
 
 /--
+Durrett 2019, Exercise 4.4.10 support: a square-increment tail bound gives an
+`L^2` Cauchy bound for the martingale endpoints.
+
+This is the source-facing consumer for the summability hypothesis
+`sum E xi_m^2 < infinity`: once a tail estimate is available, it immediately
+controls `||X_n - X_m||_2`.
+-/
+theorem durrett2019_exercise_4_4_10_martingale_eLpNorm_increment_le_of_Ico_sum_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    {m n : ℕ} (hmn : m ≤ n) {tailBound : ℝ}
+    (htail :
+      (∑ k ∈ Finset.Ico m n,
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P) ≤ tailBound) :
+    eLpNorm (X n - X m) (2 : ℝ≥0∞) P ≤
+      ENNReal.ofReal (tailBound ^ ((2 : ℝ)⁻¹)) := by
+  have hdiff_memLp : MemLp (X n - X m) (2 : ℝ≥0∞) P := by
+    simpa [Pi.sub_apply] using (hX_memLp_two n).sub (hX_memLp_two m)
+  refine
+    durrett2019_eLpNorm_two_le_of_integral_sq_le
+      (P := P) (Y := X n - X m) hdiff_memLp ?_
+  calc
+    (∫ ω, (X n - X m) ω ^ 2 ∂P)
+        = ∫ ω, (X n ω - X m ω) ^ 2 ∂P := by
+            rfl
+    _ = ∑ k ∈ Finset.Ico m n,
+          ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P :=
+        durrett2019_exercise_4_4_10_martingale_increment_sq_integral_eq_sum_Ico_increment_sq
+          (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hmn
+    _ ≤ tailBound := htail
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
