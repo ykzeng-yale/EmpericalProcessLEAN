@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V160
+## Live In-Thread Goal Prompt V161
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -34,8 +34,9 @@ the nonnegative-increment Toeplitz/Kronecker route, the pathwise/a.e.
 normalized increment-sum endpoint, the zero-initial normalized-process display,
 the bounded-variance summability corollary route, the deterministic
 reciprocal-normalizer source wrapper, and the first Section 4.5.1 finite
-Doob `L^2` maximal bridge with automatic finite-max `L^2` membership and the
-ordinary finite second-moment display:
+Doob `L^2` maximal bridge with automatic finite-max `L^2` membership, the
+ordinary finite second-moment display, and the monotone `lintegral` iSup
+handoff:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -117,6 +118,9 @@ plus
 `durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_integral_sq_le`,
 and
 `durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_terminal_integral_sq_le`,
+plus
+`durrett2019_runningAbsMax_lintegral_iSup_sq_le_of_integral_sq_le` and
+`durrett2019_theorem_4_5_1_lintegral_iSup_runningAbsMax_sq_le_of_terminal_integral_sq_le`,
 as well as the earlier first-exit/stopped-variance handoff declarations.  Do
 not route back into optional-stopping, overshoot, stopped-integrability,
 deterministic-clock, exact-denominator, square-martingale-source, or
@@ -128,16 +132,14 @@ predictable-transform `L^2`/a.s. convergence bridge / Abel identity / Toeplitz
 constant-split / centered-remainder / nonnegative-increment Kronecker /
 normalized increment-sum / zero-initial process / bounded-variance summability
 layer / deterministic reciprocal-normalizer wrapper / finite Doob `L^2`
-`eLpNorm` or ordinary second-moment running-maximum layer.
+`eLpNorm`, ordinary second-moment, or monotone-iSup running-maximum layer.
 
-Next aggressive step: continue Section 4.5.1 from the compiled finite
-ordinary second-moment display.  Best target: package the monotone-convergence
-handoff from
-`∫ (runningAbsMax X n)^2 ≤ 4 * C_n` to
-`E (sup_m |X_m|^2) ≤ 4 * E A∞`, using `lintegral_iSup` /
-`lintegral_tendsto_of_tendsto_of_monotone` as appropriate and a supplied
-increasing-process second-moment identity for `A_n`.  Do not loop back to
-already compiled Chapter 4.3.5,
+Next aggressive step: continue Section 4.5.1 from the compiled monotone iSup
+`lintegral` handoff.  Best target: identify
+`⨆ n, ofReal ((runningAbsMax X n)^2)` with the `runningAbsSup` square under the
+right a.e. boundedness/finite-lintegral hypothesis, then connect the bound to
+`4 * E A∞` through a supplied increasing-process second-moment identity for
+`A_n`.  Do not loop back to already compiled Chapter 4.3.5,
 Chapter 4.3.8, Example 4.4.9, Exercises 4.4.5-4.4.11, Theorem 4.4.1 plumbing,
 or the first-exit
 overshoot/stopped-integrability/deterministic-clock/exact-denominator/
@@ -147,7 +149,7 @@ Cauchy endpoint/predictable-transform convergence/Abel identity/Toeplitz
 constant-split/centered-remainder/nonnegative-increment Kronecker/normalized
 increment-sum/zero-initial process/bounded-variance summability/deterministic
 reciprocal-normalizer/finite Doob `L^2` running-maximum or ordinary finite
-second-moment layer.
+second-moment / monotone-iSup layer.
 Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
 source-shaped API.
 
@@ -614,6 +616,11 @@ The Section 4.5.1 finite second-moment layer now also compiles:
 `durrett2019_theorem_4_5_1_runningAbsMax_memLp_two_of_integral_sq_le`,
 `durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_integral_sq_le`, and
 `durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_terminal_integral_sq_le`.
+The Section 4.5.1 monotone iSup handoff now also compiles:
+`durrett2019_runningAbsMax_nonneg`,
+`durrett2019_runningAbsMax_measurable`,
+`durrett2019_runningAbsMax_lintegral_iSup_sq_le_of_integral_sq_le`, and
+`durrett2019_theorem_4_5_1_lintegral_iSup_runningAbsMax_sq_le_of_terminal_integral_sq_le`.
 The canonical running-maximum layer now also compiles:
 `durrett2019_runningAbsSup`,
 `durrett2019_runningAbsMax_mono`,

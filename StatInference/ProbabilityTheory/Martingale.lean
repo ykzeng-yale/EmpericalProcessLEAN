@@ -12174,6 +12174,25 @@ def durrett2019_runningAbsMax {Ω : Type*} (X : ℕ -> Ω -> ℝ) (n : ℕ) (ω 
   (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
     fun k => |X k ω|
 
+/-- The finite running absolute maximum is nonnegative. -/
+theorem durrett2019_runningAbsMax_nonneg
+    {Ω : Type*} {X : ℕ -> Ω -> ℝ} (n : ℕ) (ω : Ω) :
+    0 ≤ durrett2019_runningAbsMax X n ω := by
+  dsimp [durrett2019_runningAbsMax]
+  exact (abs_nonneg (X 0 ω)).trans
+    (Finset.le_sup' (fun k => |X k ω|) (by simp))
+
+/-- The finite running absolute maximum of a real martingale is measurable. -/
+theorem durrett2019_runningAbsMax_measurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P) (n : ℕ) :
+    Measurable (durrett2019_runningAbsMax X n) := by
+  refine Finset.measurable_range_sup'' ?_
+  intro k _hk
+  simpa [durrett2019_runningAbsMax] using
+    (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).abs)
+
 /--
 Durrett 2019, Section 4.4 notation: the pointwise supremum of the finite
 running absolute maxima.
@@ -12207,10 +12226,8 @@ theorem durrett2019_runningAbsSup_aestronglyMeasurable
     AEStronglyMeasurable (durrett2019_runningAbsSup X) P := by
   have hA_meas : ∀ n, Measurable (durrett2019_runningAbsMax X n) := by
     intro n
-    refine Finset.measurable_range_sup'' ?_
-    intro k _hk
-    simpa [durrett2019_runningAbsMax] using
-      (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).abs)
+    exact durrett2019_runningAbsMax_measurable
+      (P := P) (ℱ := ℱ) (X := X) hX n
   exact (Measurable.iSup hA_meas).aestronglyMeasurable
 
 /--
@@ -12835,6 +12852,85 @@ theorem durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_terminal_integ
       (durrett2019_theorem_4_5_1_runningAbsMax_memLp_two_of_integral_sq_le
         (P := P) (ℱ := ℱ) (X := X) hX hXn_memLp_two hXn_sq_le)
       hXn_sq_le
+
+/--
+Durrett 2019, Theorem 4.5.1 monotone-convergence support: uniform ordinary
+second-moment bounds on the finite running maxima pass to the nonnegative
+`lintegral` of their pointwise `iSup`.
+-/
+theorem durrett2019_runningAbsMax_lintegral_iSup_sq_le_of_integral_sq_le
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {C : ℝ}
+    (hMax_meas : ∀ n, Measurable (durrett2019_runningAbsMax X n))
+    (hMax_sq_int :
+      ∀ n, Integrable (fun ω => durrett2019_runningAbsMax X n ω ^ 2) P)
+    (hMax_sq_le :
+      ∀ n, (∫ ω, durrett2019_runningAbsMax X n ω ^ 2 ∂P) ≤ C) :
+    (∫⁻ ω,
+        ⨆ n : ℕ,
+          ENNReal.ofReal (durrett2019_runningAbsMax X n ω ^ 2) ∂P) ≤
+      ENNReal.ofReal C := by
+  let f : ℕ -> Ω -> ℝ≥0∞ := fun n ω =>
+    ENNReal.ofReal (durrett2019_runningAbsMax X n ω ^ 2)
+  have hf : ∀ n, Measurable (f n) := by
+    intro n
+    exact ((hMax_meas n).pow_const (2 : ℕ)).ennreal_ofReal
+  have hmono : Monotone f := by
+    intro n m hnm ω
+    dsimp [f]
+    refine ENNReal.ofReal_le_ofReal ?_
+    exact
+      (sq_le_sq₀
+        (durrett2019_runningAbsMax_nonneg (X := X) n ω)
+        (durrett2019_runningAbsMax_nonneg (X := X) m ω)).2
+        ((durrett2019_runningAbsMax_mono (X := X) ω) hnm)
+  have hbound :
+      (∫⁻ ω, ⨆ n : ℕ, f n ω ∂P) ≤ ENNReal.ofReal C := by
+    calc
+      (∫⁻ ω, ⨆ n : ℕ, f n ω ∂P)
+          = ⨆ n : ℕ, ∫⁻ ω, f n ω ∂P := lintegral_iSup hf hmono
+      _ ≤ ENNReal.ofReal C := by
+          refine iSup_le ?_
+          intro n
+          rw [← ofReal_integral_eq_lintegral_ofReal (hMax_sq_int n)
+            (Eventually.of_forall fun ω => sq_nonneg
+              (durrett2019_runningAbsMax X n ω))]
+          exact ENNReal.ofReal_le_ofReal (hMax_sq_le n)
+  simpa [f] using hbound
+
+/--
+Durrett 2019, Theorem 4.5.1 monotone-convergence support: if the terminal
+martingale second moments are uniformly bounded by `C`, then the pointwise
+`iSup` of the finite running maximum squares has nonnegative `lintegral`
+bounded by `4 * C`.
+-/
+theorem durrett2019_theorem_4_5_1_lintegral_iSup_runningAbsMax_sq_le_of_terminal_integral_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {C : ℝ}
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hX_sq_le : ∀ n, (∫ ω, X n ω ^ 2 ∂P) ≤ C) :
+    (∫⁻ ω,
+        ⨆ n : ℕ,
+          ENNReal.ofReal (durrett2019_runningAbsMax X n ω ^ 2) ∂P) ≤
+      ENNReal.ofReal (4 * C) := by
+  refine
+    durrett2019_runningAbsMax_lintegral_iSup_sq_le_of_integral_sq_le
+      (P := P) (X := X) (C := 4 * C) ?_ ?_ ?_
+  · intro n
+    exact durrett2019_runningAbsMax_measurable
+      (P := P) (ℱ := ℱ) (X := X) hX n
+  · intro n
+    exact
+      durrett2019_integrable_sq_of_memLp_two
+        (P := P) (Y := durrett2019_runningAbsMax X n)
+        (durrett2019_theorem_4_5_1_runningAbsMax_memLp_two_of_integral_sq_le
+          (P := P) (ℱ := ℱ) (X := X) hX (hX_memLp_two n) (hX_sq_le n))
+  · intro n
+    exact
+      durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_terminal_integral_sq_le
+        (P := P) (ℱ := ℱ) (X := X) hX (hX_memLp_two n) (hX_sq_le n)
 
 /--
 Durrett 2019, `L^2` support: convergence in `eLpNorm · 2` on a probability
