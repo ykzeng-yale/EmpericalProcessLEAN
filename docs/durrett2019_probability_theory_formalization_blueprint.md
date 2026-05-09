@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V140`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V141`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -393,13 +393,13 @@ Next packet:
 
 - Chapter 4.4: continue the martingale maximal-inequality layer.  The current
   frontier is the remaining exact Exercise 4.4.6 source instantiation:
-  deterministic variance clock, square-martingale source from increments,
-  initialization, clock nonnegativity, and `var(S_n)` endpoint.  Theorem 4.4.1
-  optional-stopping wrappers, Exercise 4.4.5's conditional-variance variant,
-  Exercise 4.4.6's stopped-variance small-ball handoff, the finite
-  first-exit/small-ball assembly, the bounded-increment overshoot/source
-  wrapper, and the square-martingale wrapper with automatic stopped
-  integrability now compile.  The
+  square-martingale source from increments and the `var(S_n) = s_n^2` endpoint.
+  Theorem 4.4.1 optional-stopping wrappers, Exercise 4.4.5's
+  conditional-variance variant, Exercise 4.4.6's stopped-variance small-ball
+  handoff, the finite first-exit/small-ball assembly, the bounded-increment
+  overshoot/source wrapper, the square-martingale wrapper with automatic
+  stopped integrability, and the deterministic variance-clock wrapper now
+  compile.  The
   finite-sum display, shifted geometric-sum, uniform second-moment bound,
   `eLpNorm 2` handoff, `L^2` convergence endpoint, expectation handoff,
   `E X = 1`, and nonzero-limit endpoint now compile for Example 4.4.9.  The
@@ -621,8 +621,8 @@ Next packet:
   also compiles.  Theorem 4.4.1 optional-stopping wrappers, Exercise 4.4.6's
   stopped-variance small-ball handoff, the finite first-exit/small-ball
   assembly, the bounded-increment overshoot/source wrapper, and the
-  square-martingale wrapper with automatic stopped integrability now also
-  compile.
+  square-martingale wrapper with automatic stopped integrability, plus the
+  deterministic variance-clock wrapper, now also compile.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:

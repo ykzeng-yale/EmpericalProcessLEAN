@@ -13218,6 +13218,74 @@ theorem durrett2019_exercise_4_4_6_smallBall_bound_of_square_martingale
       (by simpa [τ] using hstoppedVar_int)
 
 /--
+Durrett 2019, Exercise 4.4.6 deterministic variance clock
+`s_n^2 = sum_{1 <= m <= n} sigma_m^2`.
+-/
+def durrett2019_exercise_4_4_6_varianceClock (sigmaSq : ℕ -> ℝ) : ℕ -> ℝ :=
+  fun n => ∑ m ∈ Finset.Icc 1 n, sigmaSq m
+
+@[simp]
+theorem durrett2019_exercise_4_4_6_varianceClock_zero
+    (sigmaSq : ℕ -> ℝ) :
+    durrett2019_exercise_4_4_6_varianceClock sigmaSq 0 = 0 := by
+  simp [durrett2019_exercise_4_4_6_varianceClock]
+
+theorem durrett2019_exercise_4_4_6_varianceClock_nonneg
+    {sigmaSq : ℕ -> ℝ} (hsigmaSq_nonneg : ∀ m, 0 ≤ sigmaSq m) :
+    ∀ n, 0 ≤ durrett2019_exercise_4_4_6_varianceClock sigmaSq n := by
+  intro n
+  exact Finset.sum_nonneg fun m _hm => hsigmaSq_nonneg m
+
+/--
+Durrett 2019, Exercise 4.4.6 source wrapper with the deterministic variance
+clock.  This packages the clock initialization, clock nonnegativity, and
+`S_0 = 0` small-ball start from the textbook hypotheses.  The remaining
+source-facing obligations are the square martingale for this clock and the
+identification of the clock endpoint with `var(S_n)`.
+-/
+theorem durrett2019_exercise_4_4_6_smallBall_bound_of_deterministic_varianceClock
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {S : ℕ -> Ω -> ℝ} {sigmaSq : ℕ -> ℝ} {x K : ℝ} {n : ℕ}
+    (hx_nonneg : 0 ≤ x) (hK_nonneg : 0 ≤ K)
+    (hvariance_pos : 0 < durrett2019_exercise_4_4_6_varianceClock sigmaSq n)
+    (hS_adapted : StronglyAdapted ℱ S)
+    (hM :
+      Martingale
+        (fun k ω =>
+          S k ω ^ 2 - durrett2019_exercise_4_4_6_varianceClock sigmaSq k)
+        ℱ P)
+    (hsigmaSq_nonneg : ∀ m, 0 ≤ sigmaSq m)
+    (hS0_eq : ∀ᵐ ω ∂P, S 0 ω = 0)
+    (hinc :
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.Icc 1 n, |S k ω - S (k - 1) ω| ≤ K) :
+    P (durrett2019_exercise_4_4_6_smallBallEvent S x n) ≤
+      ENNReal.ofReal
+        (((x + K) ^ 2) /
+          durrett2019_exercise_4_4_6_varianceClock sigmaSq n) := by
+  have hM0 :
+      ∀ᵐ ω ∂P,
+        S 0 ω ^ 2 - durrett2019_exercise_4_4_6_varianceClock sigmaSq 0 = 0 := by
+    filter_upwards [hS0_eq] with ω hω
+    simp [hω]
+  have hclock_nonneg :
+      ∀ k, 0 ≤ durrett2019_exercise_4_4_6_varianceClock sigmaSq k :=
+    durrett2019_exercise_4_4_6_varianceClock_nonneg hsigmaSq_nonneg
+  have hS0_abs : ∀ᵐ ω ∂P, |S 0 ω| ≤ x := by
+    filter_upwards [hS0_eq] with ω hω
+    simpa [hω] using hx_nonneg
+  exact
+    durrett2019_exercise_4_4_6_smallBall_bound_of_square_martingale
+      (P := P) (ℱ := ℱ) (S := S)
+      (varianceClock := durrett2019_exercise_4_4_6_varianceClock sigmaSq)
+      (x := x) (K := K)
+      (variance := durrett2019_exercise_4_4_6_varianceClock sigmaSq n)
+      (n := n)
+      hx_nonneg hK_nonneg hvariance_pos hS_adapted hM hM0 hclock_nonneg
+      le_rfl hS0_abs hinc
+
+/--
 Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If
 `Y` is `ℱ_m`-measurable and square-integrable, then the increment
 `X_n - X_m` is orthogonal to `Y`.
