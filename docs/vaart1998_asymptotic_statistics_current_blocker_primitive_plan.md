@@ -20,7 +20,7 @@ Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Current verified source bridge:
-`vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_tendstoInMeasure_const`.
+`vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_tendstoInDistribution`.
 
 Continuation recipe:
 
@@ -33,8 +33,8 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Tightness source: prove a model-specific convergence, tightness, or
-   localization result for the textbook displayed scaled estimator
+1. Tightness source: prove a model-specific weak convergence, convergence in
+   probability, tightness, or localization result for the textbook displayed scaled estimator
    `scale_n • (estimator_n - theta0_n)`, then feed the source bridge above.
 2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
@@ -1069,27 +1069,31 @@ compiling:
    in probability to a fixed finite limit: Chapter 2 stochastic boundedness
    from convergence in probability now feeds the selected a.e. representative:
    `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_tendstoInMeasure_const`.
+355. Theorem 5.41 scaled-estimator `O_P(1)` source from displayed weak
+   convergence: Chapter 2 weak-convergence tightness now feeds the selected
+   a.e. representative:
+   `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_tendstoInDistribution`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 display convergence OP bridge`).
+(`Add Vaart theorem 5.41 display weak convergence OP bridge`).
 
-The latest theorem-sized packet turns convergence in probability of the
-displayed quantity `scale_n • (estimator_n - theta0_n)` to a fixed finite
-limit into the `StochasticBounded` field consumed by the current Theorem 5.41
-endpoint, without reopening the a.e.-representative or law-tail conversions.
+The latest theorem-sized packet turns weak convergence of the displayed
+quantity `scale_n • (estimator_n - theta0_n)` into the `StochasticBounded`
+field consumed by the current Theorem 5.41 endpoint, without reopening the
+a.e.-representative or law-tail conversions.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to a model-specific proof of convergence in
-probability, tightness, or localization for that displayed scaled estimator,
-or to a genuinely model-specific derivative or score representation that
-removes a live hypothesis.  Do not repeat solved Chapter 2-4 infrastructure,
-canonical, projected, common-vector, score-representation, derivative-bound,
-finite-derivative strong-law, action-bound, law-tail, display-congruence, or
-display-convergence wrappers unless a current proof directly depends on a
-small local API there.
+source handoff.  Move next to a model-specific proof of weak convergence,
+convergence in probability, tightness, or localization for that displayed
+scaled estimator, or to a genuinely model-specific derivative or score
+representation that removes a live hypothesis.  Do not repeat solved Chapter
+2-4 infrastructure, canonical, projected, common-vector, score-representation,
+derivative-bound, finite-derivative strong-law, action-bound, law-tail,
+display-congruence, display-convergence, or display-weak-convergence wrappers
+unless a current proof directly depends on a small local API there.
 
 ## Execution Notes
 

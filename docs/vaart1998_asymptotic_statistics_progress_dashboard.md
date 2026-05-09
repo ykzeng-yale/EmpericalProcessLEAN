@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 display convergence OP bridge`).
+(`Add Vaart theorem 5.41 display weak convergence OP bridge`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -623,7 +623,7 @@ Current packet verification passed for:
 
 New verified source bridge:
 
-- `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_tendstoInMeasure_const`
+- `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_tendstoInDistribution`
 
 Live continuation prompt: use the efficient prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
@@ -639,13 +639,13 @@ the canonical, projected, common-vector-law, score-representation, and
 derivative-bound, finite-derivative strong-law, and action-bound
 specializations of the `O_P(1)` route.
 Move next to a model-specific proof that the displayed scaled estimator
-`scale_n • (estimator_n - theta0_n)` converges in probability to a fixed finite
-limit, or otherwise prove a model-specific tightness/localization source for
-that display.  If that source is not immediately available, use a genuinely
-model-specific derivative or score representation that removes a live endpoint
-hypothesis.  Do not replay solved Chapter 2-4 infrastructure,
+`scale_n • (estimator_n - theta0_n)` converges weakly, converges in
+probability, or has a model-specific tightness/localization source.  If that
+source is not immediately available, use a genuinely model-specific derivative
+or score representation that removes a live endpoint hypothesis.  Do not
+replay solved Chapter 2-4 infrastructure,
 canonical/projected/common-vector/score-representation/derivative-bound/finite
-strong-law/action-bound/law-tail/display-congruence/display-convergence
+strong-law/action-bound/law-tail/display-congruence/display-convergence/display-weak-convergence
 wrappers, earlier Theorem 5.41 wrappers, or historical ledger items.
 
 ## Reuse Dependencies

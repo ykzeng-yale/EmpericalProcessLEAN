@@ -7107,6 +7107,37 @@ theorem vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_tend
       limit hDisplay_tendsto)
 
 /--
+van der Vaart 1998, Theorem 5.41, scaled-estimator display weak-convergence
+source for `O_P(1)`.
+
+If the displayed scaled estimator converges in distribution, then Chapter 2
+tightness gives stochastic boundedness, and the selected a.e. representative
+`scaledEstimator` inherits that bound.
+-/
+theorem vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_tendstoInDistribution
+    {Ω Ω' Θ : Type*} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {Q : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [OpensMeasurableSpace Θ] [BorelSpace Θ]
+    [SecondCountableTopology Θ] [CompleteSpace Θ]
+    (scale : ℕ -> Ω -> ℝ)
+    {theta0 estimator scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Θ}
+    (hScaledEstimator_eq_sub : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        scaledEstimator n ω =
+          scale n ω • (estimator n ω - theta0 n ω))
+    (hDisplay_tendsto :
+      TendstoInDistribution
+        (fun n ω => scale n ω • (estimator n ω - theta0 n ω))
+        atTop Z (fun _ => P) Q) :
+    StochasticBounded P scaledEstimator :=
+  vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_stochasticBounded
+    scale hScaledEstimator_eq_sub
+    (vaart1998_stochasticBounded_of_tendstoInDistribution hDisplay_tendsto)
+
+/--
 van der Vaart 1998, Theorem 5.41, scaled-estimator law tails from `O_P(1)`.
 
 The current source-facing Theorem 5.41 wrappers consume law tails for
