@@ -68,6 +68,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1311_sum_selfConcordantBarrierOn_of_gradient_bound`.  The exact
   unsupplied sum rule still needs the summed inverse-Hessian dual-gradient
   comparison; this is now the only exposed gate for that item.
+- Sum-gradient gate shrink: the latest packet adds `real_two_term_cauchy_sqrt`,
+  `barrierSumGradient_bound_of_component_cauchy`,
+  `SelfConcordantBarrierOn.sum_of_component_cauchy`, and
+  `chewi1311_sum_selfConcordantBarrierOn_of_component_cauchy`.  The sum-rule
+  gradient bound can now be discharged from component Cauchy bridges and the
+  summed inverse-local identity rather than being assumed wholesale.
 - Current priority sequence: Chapter 13 Theorem 13.8 source completion in
   `StatInference/Optimization/InteriorPoint.lean`: the normalized Rayleigh
   line now has a compiled route from the two-sided Lemma 13.6 local-norm

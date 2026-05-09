@@ -164,6 +164,12 @@ remaining nontrivial gate for the exact unsupplied sum rule is the inverse-
 Hessian/dual-gradient comparison for the summed Hessian; reuse
 `barrierSumGradient_bound_of_quadratic_le` if proving it from a quadratic
 bound.  Do not redo product or sum local-norm algebra in the next packet.
+The newest sum-gradient packet also adds `real_two_term_cauchy_sqrt`,
+`barrierSumGradient_bound_of_component_cauchy`,
+`SelfConcordantBarrierOn.sum_of_component_cauchy`, and
+`chewi1311_sum_selfConcordantBarrierOn_of_component_cauchy`, reducing that
+gate to standard component Cauchy bridges plus the summed inverse-local
+identity.
 
 Current active lane: Chewi Chapter 13 interior-point/self-concordance in
 `StatInference/Optimization/InteriorPoint.lean`, supporting Lemma 13.6 and

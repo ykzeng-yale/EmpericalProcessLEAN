@@ -2188,6 +2188,34 @@ theorem barrierSumLocalNorm_right_le
   rw [barrierSumLocalNorm_sq_eq hess₁ hess₂ x v hh₁ hh₂]
   nlinarith [sq_nonneg (localNorm hess₁ x v)]
 
+/-- Two-term real Cauchy-Schwarz inequality in square-root form. -/
+theorem real_two_term_cauchy_sqrt
+    {a b c d : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hd : 0 ≤ d) :
+    a * c + b * d ≤
+      Real.sqrt (a ^ (2 : ℕ) + b ^ (2 : ℕ)) *
+        Real.sqrt (c ^ (2 : ℕ) + d ^ (2 : ℕ)) := by
+  have hleft_nonneg : 0 ≤ a * c + b * d := by positivity
+  have hprod_nonneg :
+      0 ≤ (a ^ (2 : ℕ) + b ^ (2 : ℕ)) *
+          (c ^ (2 : ℕ) + d ^ (2 : ℕ)) := by
+    exact mul_nonneg (add_nonneg (sq_nonneg a) (sq_nonneg b))
+      (add_nonneg (sq_nonneg c) (sq_nonneg d))
+  have hsq :
+      (a * c + b * d) ^ (2 : ℕ) ≤
+        (a ^ (2 : ℕ) + b ^ (2 : ℕ)) *
+          (c ^ (2 : ℕ) + d ^ (2 : ℕ)) := by
+    nlinarith [sq_nonneg (a * d - b * c)]
+  have hsqrt :
+      a * c + b * d ≤
+        Real.sqrt ((a ^ (2 : ℕ) + b ^ (2 : ℕ)) *
+          (c ^ (2 : ℕ) + d ^ (2 : ℕ))) := by
+    exact (sq_le_sq₀ hleft_nonneg (Real.sqrt_nonneg _)).mp
+      (by simpa [Real.sq_sqrt hprod_nonneg] using hsq)
+  rwa [Real.sqrt_mul
+    (x := a ^ (2 : ℕ) + b ^ (2 : ℕ))
+    (add_nonneg (sq_nonneg a) (sq_nonneg b))
+    (y := c ^ (2 : ℕ) + d ^ (2 : ℕ))] at hsqrt
+
 theorem barrierSumGradient_bound_of_quadratic_le
     (invHess : E -> E →L[ℝ] E) (grad₁ grad₂ : E -> E)
     (x : E) {nu₁ nu₂ : ℝ}
@@ -2209,6 +2237,92 @@ theorem barrierSumGradient_bound_of_quadratic_le
     _ ≤ nu₁ + nu₂ := hquad
     _ = (Real.sqrt (nu₁ + nu₂)) ^ (2 : ℕ) := by
       rw [Real.sq_sqrt (add_nonneg hnu₁ hnu₂)]
+
+theorem barrierSumGradient_bound_of_component_cauchy
+    {hess₁ hess₂ : E -> E →L[ℝ] E} {grad₁ grad₂ : E -> E}
+    {invHess invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    (x : E) {nu₁ nu₂ : ℝ}
+    (hnu₁ : 0 ≤ nu₁) (hnu₂ : 0 ≤ nu₂)
+    (hinv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hhess₁ : ∀ w : E, 0 ≤ inner ℝ w (hess₁ x w))
+    (hhess₂ : ∀ w : E, 0 ≤ inner ℝ w (hess₂ x w))
+    (hsum_inv_local : ∀ v : E,
+      localNorm (barrierSumHess hess₁ hess₂) x (invHess x v) =
+        dualLocalNorm invHess x v)
+    (hcauchy₁ : ∀ w : E,
+      inner ℝ (grad₁ x) w ≤
+        dualLocalNorm invHess₁ x (grad₁ x) * localNorm hess₁ x w)
+    (hcauchy₂ : ∀ w : E,
+      inner ℝ (grad₂ x) w ≤
+        dualLocalNorm invHess₂ x (grad₂ x) * localNorm hess₂ x w)
+    (hg₁ : dualLocalNorm invHess₁ x (grad₁ x) ≤ Real.sqrt nu₁)
+    (hg₂ : dualLocalNorm invHess₂ x (grad₂ x) ≤ Real.sqrt nu₂) :
+    dualLocalNorm invHess x (barrierSumGrad grad₁ grad₂ x) ≤
+      Real.sqrt (nu₁ + nu₂) := by
+  let g := barrierSumGrad grad₁ grad₂ x
+  let Dy := dualLocalNorm invHess x g
+  let w := invHess x g
+  change Dy ≤ Real.sqrt (nu₁ + nu₂)
+  have hDy_nonneg : 0 ≤ Dy := by
+    dsimp [Dy]
+    exact dualLocalNorm_nonneg invHess x g
+  by_cases hDy_zero : Dy = 0
+  · rw [hDy_zero]
+    exact Real.sqrt_nonneg _
+  have hDy_pos : 0 < Dy := lt_of_le_of_ne hDy_nonneg (Ne.symm hDy_zero)
+  have hDy_sq : Dy ^ (2 : ℕ) = inner ℝ g w := by
+    dsimp [Dy, w]
+    exact dualLocalNorm_sq_eq_inner (hinv_nonneg g)
+  have hinner_split :
+      inner ℝ g w = inner ℝ (grad₁ x) w + inner ℝ (grad₂ x) w := by
+    simp [g, barrierSumGrad, inner_add_left]
+  have hcomponent_bound :
+      inner ℝ g w ≤
+        dualLocalNorm invHess₁ x (grad₁ x) * localNorm hess₁ x w +
+          dualLocalNorm invHess₂ x (grad₂ x) * localNorm hess₂ x w := by
+    rw [hinner_split]
+    exact add_le_add (hcauchy₁ w) (hcauchy₂ w)
+  have hcomponent_sqrt :
+      dualLocalNorm invHess₁ x (grad₁ x) * localNorm hess₁ x w +
+          dualLocalNorm invHess₂ x (grad₂ x) * localNorm hess₂ x w ≤
+        Real.sqrt nu₁ * localNorm hess₁ x w +
+          Real.sqrt nu₂ * localNorm hess₂ x w := by
+    exact add_le_add
+      (mul_le_mul_of_nonneg_right hg₁ (localNorm_nonneg hess₁ x w))
+      (mul_le_mul_of_nonneg_right hg₂ (localNorm_nonneg hess₂ x w))
+  have hcs :
+      Real.sqrt nu₁ * localNorm hess₁ x w +
+          Real.sqrt nu₂ * localNorm hess₂ x w ≤
+        Real.sqrt (nu₁ + nu₂) *
+          localNorm (barrierSumHess hess₁ hess₂) x w := by
+    have hraw := real_two_term_cauchy_sqrt
+      (Real.sqrt_nonneg nu₁) (Real.sqrt_nonneg nu₂)
+      (localNorm_nonneg hess₁ x w) (localNorm_nonneg hess₂ x w)
+    have hsplit := barrierSumLocalNorm_sq_eq hess₁ hess₂ x w hhess₁ hhess₂
+    rw [Real.sq_sqrt hnu₁, Real.sq_sqrt hnu₂] at hraw
+    rw [← hsplit] at hraw
+    rw [Real.sqrt_sq (localNorm_nonneg (barrierSumHess hess₁ hess₂) x w)] at hraw
+    exact hraw
+  have hDy_sq_bound :
+      Dy ^ (2 : ℕ) ≤ Real.sqrt (nu₁ + nu₂) * Dy := by
+    calc
+      Dy ^ (2 : ℕ) = inner ℝ g w := hDy_sq
+      _ ≤
+          dualLocalNorm invHess₁ x (grad₁ x) * localNorm hess₁ x w +
+            dualLocalNorm invHess₂ x (grad₂ x) * localNorm hess₂ x w :=
+        hcomponent_bound
+      _ ≤ Real.sqrt nu₁ * localNorm hess₁ x w +
+            Real.sqrt nu₂ * localNorm hess₂ x w :=
+        hcomponent_sqrt
+      _ ≤
+          Real.sqrt (nu₁ + nu₂) *
+            localNorm (barrierSumHess hess₁ hess₂) x w :=
+        hcs
+      _ = Real.sqrt (nu₁ + nu₂) * Dy := by
+        simp [Dy, w, hsum_inv_local g]
+  have hmul : Dy * Dy ≤ Real.sqrt (nu₁ + nu₂) * Dy := by
+    simpa [pow_two] using hDy_sq_bound
+  exact le_of_mul_le_mul_right hmul hDy_pos
 
 theorem MixedThirdSelfConcordantOn.sum
     {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
@@ -2300,6 +2414,40 @@ theorem SelfConcordantBarrierOn.sum_of_gradient_bound
   invHess_nonneg := hinv_nonneg
   gradient_bound := hgradient_bound
 
+theorem SelfConcordantBarrierOn.sum_of_component_cauchy
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E} {invHess : E -> E →L[ℝ] E}
+    {invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M nu₁ nu₂ : ℝ}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂)
+    (hinv_nonneg : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      0 ≤ inner ℝ v (invHess x v))
+    (hsum_inv_local : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      localNorm (barrierSumHess hess₁ hess₂) x (invHess x v) =
+        dualLocalNorm invHess x v)
+    (hcauchy₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ w : E,
+      inner ℝ (grad₁ x) w ≤
+        dualLocalNorm invHess₁ x (grad₁ x) * localNorm hess₁ x w)
+    (hcauchy₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ w : E,
+      inner ℝ (grad₂ x) w ≤
+        dualLocalNorm invHess₂ x (grad₂ x) * localNorm hess₂ x w) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) :=
+  hbar₁.sum_of_gradient_bound hbar₂ hinv_nonneg (by
+    intro x hx
+    exact barrierSumGradient_bound_of_component_cauchy
+      (hess₁ := hess₁) (hess₂ := hess₂)
+      (grad₁ := grad₁) (grad₂ := grad₂)
+      (invHess := invHess) (invHess₁ := invHess₁) (invHess₂ := invHess₂)
+      x hbar₁.parameter_nonneg hbar₂.parameter_nonneg
+      (hinv_nonneg hx) (hbar₁.self_concordant.hess_nonneg hx.1)
+      (hbar₂.self_concordant.hess_nonneg hx.2) (hsum_inv_local hx)
+      (hcauchy₁ hx.1) (hcauchy₂ hx.2)
+      (hbar₁.gradient_bound hx.1) (hbar₂.gradient_bound hx.2))
+
 /--
 Chewi Proposition 13.11, shared-domain sum case, in supplied-oracle form.
 The self-concordance/local-norm algebra is proved here; the inverse-Hessian
@@ -2322,6 +2470,35 @@ theorem chewi1311_sum_selfConcordantBarrierOn_of_gradient_bound
       (barrierSumGrad grad₁ grad₂) invHess
       (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) :=
   hbar₁.sum_of_gradient_bound hbar₂ hinv_nonneg hgradient_bound
+
+/--
+Chewi Proposition 13.11, shared-domain sum case, with the summed gradient
+bound discharged from component Cauchy bridges and the summed inverse-local
+identity.
+-/
+theorem chewi1311_sum_selfConcordantBarrierOn_of_component_cauchy
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E} {invHess : E -> E →L[ℝ] E}
+    {invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M nu₁ nu₂ : ℝ}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂)
+    (hinv_nonneg : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      0 ≤ inner ℝ v (invHess x v))
+    (hsum_inv_local : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      localNorm (barrierSumHess hess₁ hess₂) x (invHess x v) =
+        dualLocalNorm invHess x v)
+    (hcauchy₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ w : E,
+      inner ℝ (grad₁ x) w ≤
+        dualLocalNorm invHess₁ x (grad₁ x) * localNorm hess₁ x w)
+    (hcauchy₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ w : E,
+      inner ℝ (grad₂ x) w ≤
+        dualLocalNorm invHess₂ x (grad₂ x) * localNorm hess₂ x w) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) :=
+  hbar₁.sum_of_component_cauchy hbar₂ hinv_nonneg hsum_inv_local hcauchy₁ hcauchy₂
 
 end SumBarrier
 

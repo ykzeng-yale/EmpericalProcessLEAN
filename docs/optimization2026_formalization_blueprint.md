@@ -141,6 +141,12 @@ The remaining proof debt for the fully unsupplied Proposition 13.11(1) rule is
 to prove that quadratic comparison for the canonical inverse of the summed
 Hessian; until then, do not duplicate the now-compiled sum local-norm or
 mixed-third algebra.
+The new component-Cauchy wrapper
+`chewi1311_sum_selfConcordantBarrierOn_of_component_cauchy` further reduces
+the sum-rule gradient-bound gate: it combines the component barrier gradient
+bounds, component Cauchy bridges, a two-term real Cauchy-Schwarz helper, and
+the summed inverse-local identity to produce the Definition 13.9 bound for
+`barrierSumGrad`.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers
