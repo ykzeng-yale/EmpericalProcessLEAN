@@ -14,18 +14,20 @@ Lane: van der Vaart 1998, Theorem 5.41, in
 `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreSummandRepresentation_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Goal for each continuation: remove exactly one remaining source hypothesis from
 that endpoint, prove the resulting theorem-sized Lean layer, update only the
 Vaart route docs, commit, and push.
 
 Priority order:
-1. Iid/operator strong law for the a.s. derivative-norm residual.
+1. Actual iid/operator strong law or finite-dimensional operator source theorem
+   producing the derivative error bound used by the current endpoint.
 2. One missing common-vector-law or Gaussian score-CLT source field.
 3. Scaled-estimator law-tail or tightness source proof.
 4. Further source-side packaging for the zero-mean or a.e. score-summand
-   equality only if it directly feeds the current endpoint.
+   equality, or derivative-bound domination, only if it directly feeds the
+   current endpoint.
 
 Execution loop:
 1. Inspect `git status`; preserve unrelated local-agent edits.
@@ -938,15 +940,22 @@ compiling:
 327. Theorem 5.41 current endpoint with the raw-score representation
    hypothesis discharged by the source-shaped score-summand representation:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreSummandRepresentation_commonVectorLawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+328. Theorem 5.41 derivative operator-norm residual from an eventual a.s.
+   error bound tending to zero:
+   `vaart1998_theorem_5_41_derivativeAverage_norm_tendsto_ae_of_eventual_bound`.
+329. Theorem 5.41 current endpoint with derivative-average strong
+   measurability discharged from sampled derivative summand measurability and
+   the derivative-norm residual discharged from the a.s. error-bound source:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 raw score representation handoff`).
+(`Add Vaart theorem 5.41 derivative bound handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by proving the raw scaled
-estimating-map score average is the scaled centered finite-coordinate empirical
-moment whenever the score summands have zero mean and agree a.e. with the
-scaled estimating-map summands.
+asymptotic-normality route for Z-estimators by replacing the opaque derivative
+average measurability and operator-norm residual assumptions with sampled
+derivative summand measurability plus an a.s. derivative error bound that tends
+to zero and eventually dominates the operator-norm residual.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.  Do
