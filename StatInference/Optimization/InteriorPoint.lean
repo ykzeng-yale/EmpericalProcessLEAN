@@ -3165,6 +3165,120 @@ theorem BarrierInfProjectionSelectorStationary.schurMixedThirdSelfConcordantOn_o
   hess_nonneg := hsel.schurHessFrom_quadratic_nonneg_of_Hyy_right_inverse hbar hyy_right
   mixed_third_bound := hmixed_bound
 
+theorem barrierInfProjectionSchurLift_localNorm_eq_of_Hyy_right_inverse
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x v : E₁)
+    (hfull_nonneg : ∀ w : WithLp 2 (E₁ × E₂),
+      0 ≤ inner ℝ w (hess (barrierInfProjectionPoint selector x) w))
+    (hyy_right : ∀ w : E₂,
+      barrierInfProjectionBlockYY selector hess x (invHyy x w) = w) :
+    localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v =
+      localNorm hess (barrierInfProjectionPoint selector x)
+        (barrierInfProjectionSchurLift selector hess invHyy x v) := by
+  have hquad_eq :=
+    barrierInfProjectionSchurHessFrom_quadratic_eq_lift_of_Hyy_right_inverse
+      selector hess invHyy x v hyy_right
+  have hschur_nonneg :
+      0 ≤ inner ℝ v
+        (barrierInfProjectionSchurHessFrom selector hess invHyy x v) := by
+    rw [hquad_eq]
+    exact hfull_nonneg _
+  refine (sq_eq_sq₀
+    (localNorm_nonneg (barrierInfProjectionSchurHessFrom selector hess invHyy) x v)
+    (localNorm_nonneg hess (barrierInfProjectionPoint selector x)
+      (barrierInfProjectionSchurLift selector hess invHyy x v))).mp ?_
+  rw [localNorm_sq_eq_inner hschur_nonneg,
+    localNorm_sq_eq_inner (hfull_nonneg _)]
+  exact hquad_eq
+
+theorem BarrierInfProjectionSelectorStationary.schurLift_localNorm_eq_of_Hyy_right_inverse
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w) :
+    ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁,
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v =
+          localNorm hess (barrierInfProjectionPoint selector x)
+            (barrierInfProjectionSchurLift selector hess invHyy x v) := by
+  intro x hx v
+  exact barrierInfProjectionSchurLift_localNorm_eq_of_Hyy_right_inverse
+    selector hess invHyy x v
+    (hbar.self_concordant.hess_nonneg (hsel.point_mem hx)) (hyy_right hx)
+
+theorem BarrierInfProjectionSelectorStationary.schurMixedThird_bound_of_lift_third
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hthird_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        projThird x u v =
+          third (barrierInfProjectionPoint selector x)
+            (barrierInfProjectionSchurLift selector hess invHyy x u)
+            (barrierInfProjectionSchurLift selector hess invHyy x v)) :
+    ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        |projThird x u v| ≤
+          2 * M *
+            localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x u *
+              (localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+                x v) ^ (2 : ℕ) := by
+  intro x hx u v
+  have hbound := hbar.self_concordant.mixed_third_bound (hsel.point_mem hx)
+    (barrierInfProjectionSchurLift selector hess invHyy x u)
+    (barrierInfProjectionSchurLift selector hess invHyy x v)
+  have hu := hsel.schurLift_localNorm_eq_of_Hyy_right_inverse hbar hyy_right hx u
+  have hv := hsel.schurLift_localNorm_eq_of_Hyy_right_inverse hbar hyy_right hx v
+  simpa [hthird_eq hx u v, hu, hv] using hbound
+
+theorem BarrierInfProjectionSelectorStationary.schurMixedThirdSelfConcordantOn_of_lift_third
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hthird_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        projThird x u v =
+          third (barrierInfProjectionPoint selector x)
+            (barrierInfProjectionSchurLift selector hess invHyy x u)
+            (barrierInfProjectionSchurLift selector hess invHyy x v)) :
+    MixedThirdSelfConcordantOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy) projThird M :=
+  hsel.schurMixedThirdSelfConcordantOn_of_Hyy_right_inverse hbar hyy_right
+    (hsel.schurMixedThird_bound_of_lift_third hbar hyy_right hthird_eq)
+
 theorem BarrierInfProjectionSelectorStationary.projectedInvHess_quadratic_nonneg_of_Hyy_right_inverse
     {s : Set (WithLp 2 (E₁ × E₂))}
     {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
@@ -3416,6 +3530,49 @@ theorem chewi1311_infProjection_selfConcordantBarrierOn_of_Hyy_projInv_right_inv
       exact barrierInfProjectionGrad_bound_of_quadratic_le
         selector grad projInvHess x hbar.parameter_nonneg (hinv_nonneg hx)
         (hgradient_quadratic hx))
+
+/--
+Chewi Proposition 13.11(4), Schur-envelope rule with the projected mixed-third
+gate reduced to the lifted third-derivative identity, projected inverse
+positivity discharged from a right-inverse identity, and the dual-gradient gate
+reduced to the scalar quadratic energy bound.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_lift_third_projInv_right_inverse
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {projInvHess : E₁ -> E₁ →L[ℝ] E₁}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hthird_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        projThird x u v =
+          third (barrierInfProjectionPoint selector x)
+            (barrierInfProjectionSchurLift selector hess invHyy x u)
+            (barrierInfProjectionSchurLift selector hess invHyy x v))
+    (hproj_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁,
+        barrierInfProjectionSchurHessFrom selector hess invHyy x
+          (projInvHess x v) = v)
+    (hgradient_quadratic : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      inner ℝ (barrierInfProjectionGrad selector grad x)
+          (projInvHess x (barrierInfProjectionGrad selector grad x)) ≤ nu) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad) projInvHess projThird M nu :=
+  chewi1311_infProjection_selfConcordantBarrierOn_of_Hyy_projInv_right_inverse
+    hsel hbar hyy_right
+    (hsel.schurMixedThird_bound_of_lift_third hbar hyy_right hthird_eq)
+    hproj_right hgradient_quadratic
 
 end InfProjectionBarrier
 

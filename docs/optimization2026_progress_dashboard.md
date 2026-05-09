@@ -167,6 +167,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `<grad, projInvHess grad> <= nu`.  The remaining item-4 gates are now the
   projected mixed-third bound plus construction of the Schur inverse
   right-inverse/scalar energy certificates.
+- Inf-projection mixed-third lift shrink: the newest packet adds
+  `barrierInfProjectionSchurLift_localNorm_eq_of_Hyy_right_inverse`,
+  `BarrierInfProjectionSelectorStationary.schurLift_localNorm_eq_of_Hyy_right_inverse`,
+  `BarrierInfProjectionSelectorStationary.schurMixedThird_bound_of_lift_third`,
+  `BarrierInfProjectionSelectorStationary.schurMixedThirdSelfConcordantOn_of_lift_third`,
+  and
+  `chewi1311_infProjection_selfConcordantBarrierOn_of_lift_third_projInv_right_inverse`.
+  The projected mixed-third gate is now reduced to the lifted third-derivative
+  identity
+  `projThird x u v = third (point x) (schurLift x u) (schurLift x v)`.
+  The remaining item-4 gates are the projected-third lift identity, Schur
+  projected inverse/right-inverse construction, and scalar projected-gradient
+  energy certificate.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

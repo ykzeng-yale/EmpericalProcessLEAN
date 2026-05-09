@@ -267,6 +267,20 @@ to the scalar energy estimate `<grad, projInvHess grad> <= nu`.  The next
 item-4 proof should attack the projected mixed-third bound or construct the
 Schur inverse right-inverse/scalar energy certificates; do not ask future runs
 to directly supply projected inverse positivity or a raw dual-gradient bound.
+The mixed-third lift packet adds
+`barrierInfProjectionSchurLift_localNorm_eq_of_Hyy_right_inverse`,
+`BarrierInfProjectionSelectorStationary.schurLift_localNorm_eq_of_Hyy_right_inverse`,
+`BarrierInfProjectionSelectorStationary.schurMixedThird_bound_of_lift_third`,
+`BarrierInfProjectionSelectorStationary.schurMixedThirdSelfConcordantOn_of_lift_third`,
+and
+`chewi1311_infProjection_selfConcordantBarrierOn_of_lift_third_projInv_right_inverse`.
+The projected mixed-third gate is now reduced to the lifted third-derivative
+identity
+`projThird x u v = third (point x) (schurLift x u) (schurLift x v)`.  The
+remaining item-4 gates are therefore the projected-third lift identity, the
+Schur projected inverse/right-inverse construction, and the scalar projected
+gradient energy certificate; do not route future runs through a raw projected
+mixed-third bound.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,
