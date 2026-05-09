@@ -13147,6 +13147,77 @@ theorem durrett2019_exercise_4_4_6_smallBall_bound_of_bounded_increments
       hx_nonneg hK_nonneg hS0 hinc)
 
 /--
+Durrett 2019, Exercise 4.4.6 source wrapper from the square martingale.  Once
+`S_k^2 - varianceClock k` is known to be a martingale, the stopped-square and
+stopped-clock integrability hypotheses required by the first-exit handoff are
+automatic for the bounded first-exit time.
+-/
+theorem durrett2019_exercise_4_4_6_smallBall_bound_of_square_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {S : ℕ -> Ω -> ℝ} {varianceClock : ℕ -> ℝ} {x K variance : ℝ} {n : ℕ}
+    (hx_nonneg : 0 ≤ x) (hK_nonneg : 0 ≤ K)
+    (hvariance_pos : 0 < variance)
+    (hS_adapted : StronglyAdapted ℱ S)
+    (hM : Martingale (fun k ω => S k ω ^ 2 - varianceClock k) ℱ P)
+    (hM0 : ∀ᵐ ω ∂P, S 0 ω ^ 2 - varianceClock 0 = 0)
+    (hclock_nonneg : ∀ k, 0 ≤ varianceClock k)
+    (hvariance_le_clock : variance ≤ varianceClock n)
+    (hS0 : ∀ᵐ ω ∂P, |S 0 ω| ≤ x)
+    (hinc :
+      ∀ᵐ ω ∂P, ∀ k ∈ Finset.Icc 1 n, |S k ω - S (k - 1) ω| ≤ K) :
+    P (durrett2019_exercise_4_4_6_smallBallEvent S x n) ≤
+      ENNReal.ofReal (((x + K) ^ 2) / variance) := by
+  let τ : Ω -> WithTop ℕ := durrett2019_exercise_4_4_6_firstExitAbs S x n
+  have hτ_stop : IsStoppingTime ℱ τ := by
+    simpa [τ] using
+      durrett2019_exercise_4_4_6_firstExitAbs_isStoppingTime
+        (ℱ := ℱ) hS_adapted x n
+  have hτ_bdd : ∀ ω, τ ω ≤ n := by
+    intro ω
+    dsimp [τ, durrett2019_exercise_4_4_6_firstExitAbs]
+    exact_mod_cast
+      hittingBtwn_le
+        (u := S) (s := durrett2019_exercise_4_4_6_absExitSet x)
+        (n := 1) (m := n) (ω := ω)
+  have hS_sq_int : ∀ k, Integrable (fun ω => S k ω ^ 2) P := by
+    intro k
+    have hdiff : Integrable (fun ω => S k ω ^ 2 - varianceClock k) P :=
+      hM.integrable k
+    have hclock : Integrable (fun _ : Ω => varianceClock k) P :=
+      integrable_const (varianceClock k)
+    have hsum := hdiff.add hclock
+    simpa [Pi.add_apply, sub_eq_add_neg, add_assoc] using hsum
+  have hstoppedSq_int :
+      Integrable (fun ω => stoppedValue S τ ω ^ 2) P := by
+    have hproc :
+        Integrable (stoppedValue (fun k ω => S k ω ^ 2) τ) P :=
+      integrable_stoppedValue ℕ hτ_stop hS_sq_int hτ_bdd
+    have hpoint :
+        stoppedValue (fun k ω => S k ω ^ 2) τ =
+          fun ω => stoppedValue S τ ω ^ 2 := by
+      funext ω
+      simp [stoppedValue]
+    simpa [hpoint] using hproc
+  have hstoppedVar_int :
+      Integrable
+        (fun ω =>
+          stoppedValue (fun k => fun _ : Ω => varianceClock k) τ ω)
+        P := by
+    exact
+      integrable_stoppedValue ℕ hτ_stop
+        (fun k => integrable_const (varianceClock k)) hτ_bdd
+  exact
+    durrett2019_exercise_4_4_6_smallBall_bound_of_bounded_increments
+      (P := P) (ℱ := ℱ) (S := S) (varianceClock := varianceClock)
+      (x := x) (K := K) (variance := variance) (n := n)
+      hx_nonneg hK_nonneg hvariance_pos hS_adapted hM hM0 hclock_nonneg
+      hvariance_le_clock hS0 hinc
+      (by simpa [τ] using hstoppedSq_int)
+      (by simpa [τ] using hstoppedVar_int)
+
+/--
 Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If
 `Y` is `ℱ_m`-measurable and square-integrable, then the increment
 `X_n - X_m` is orthogonal to `Y`.
