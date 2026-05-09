@@ -8704,3 +8704,18 @@ product-pair Chebyshev lower bound with
 The remaining source route is now canonical sign integration plus projection
 to the original-or-ghost selected finite-net bad event, together with the
 selected finite-center Hoeffding side-condition support.
+
+2026-05-09 sign-averaged product-pair source:
+`Theorem243.lean` now proves the product-pair measurability lemmas
+`measurableSet_vdVWProductPair_centeredPairSubBadEvent_of_countable` and
+`measurableSet_vdVWProductPair_centeredPairSubRademacherBadEvent_of_countable`,
+plus the integrated source wrappers
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_succ`
+and
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_succ_of_countable`.
+The deterministic sign lower bound is now averaged over canonical Rademacher
+signs, with the Rademacher support probability discharged by
+`ae_vdVWProductMeasure_vdVWRademacherSignVector`.  The remaining source route
+is projection from the global signed product-pair bad event to the
+original-or-ghost selected finite-net event, together with the selected
+finite-center Hoeffding side-condition support.
