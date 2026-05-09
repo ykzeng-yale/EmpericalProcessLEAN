@@ -6,44 +6,55 @@ manual `/goal` continuation before selecting a proof target.
 
 ## Live `/goal` Prompt
 
-Continue manually in this chat; do not create or modify automations.  This
-section is the authoritative replacement for any stale app-level `/goal` text.
+Use this section as the authoritative continuation prompt for the active chat
+goal; do not create or modify automations.
 
-Active lane: van der Vaart 1998, Theorem 5.41, in
-`StatInference/AsymptoticStatistics/MEstimators.lean`.
+Objective: formalize and prove van der Vaart 1998, *Asymptotic Statistics*, in
+Lean under `StatInference/AsymptoticStatistics`, reusing local `StatInference`,
+mathlib, and VdV&W infrastructure before adding new foundations.
+
+Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
+normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
-Start every continuation by checking `git status` and the current Vaart diff.
-If an unfinished local Vaart Lean packet exists, finish and verify that packet
-first.  Preserve unrelated local or agent edits.
+Continuation recipe:
 
-Make exactly one theorem-sized Lean advance per packet: remove one live source
-hypothesis from the current endpoint, or prove the next source theorem that
-feeds it directly.  Current priority order:
+1. Check `git status`, the Vaart diff, and the live hypotheses of the endpoint
+   above.
+2. If an unfinished local Vaart Lean diff exists, either finish and verify it
+   immediately, or remove it from the packet before editing route docs.
+3. Choose exactly one source hypothesis feeding the endpoint and discharge it
+   with one theorem-sized Lean advance.
 
-1. Derivative source: coordinate scalar derivative-entry algebra that proves
-   the coordinate action bound feeding the current endpoint.
-2. Score source: common-vector-law or Gaussian finite-coordinate score CLT.
-3. Tightness source: scaled-estimator law-tail or `O_P(1)` proof.
+Priority order for the next packet:
 
-Efficiency rules:
+1. Derivative source: prove the actual coordinate or weighted derivative-entry
+   representation, or the scalar algebra directly feeding
+   `finiteDerivativeActionBound`.
+2. Score source: discharge the common-vector-law or finite-coordinate score
+   CLT input.
+3. Tightness source: discharge scaled-estimator law-tail or `O_P(1)`.
 
-1. Search local `StatInference` and pinned mathlib APIs before adding new
+Operating rules:
+
+1. Do not replay completed Chapters 2-4 infrastructure, older Theorem 5.41
+   wrappers, historical ledger entries, or stale prompt items.
+2. Search local `StatInference` and pinned mathlib APIs before adding
    infrastructure.
-2. Use helper agents or worktrees only for independent API search,
+3. Use helper agents or worktrees only for independent API search,
    verification, or disjoint Lean write scopes.
-3. Do not replay solved Chapter 2-4 infrastructure, older Theorem 5.41
-   wrappers, or historical ledger items.
-4. Update only the Vaart route docs to the new frontier.
-5. Verify with focused Lean, the target module build, `git diff --check`,
+4. Keep theorem names source-shaped and keep all files, code, and docs in
+   English.
+5. Update only the Vaart route docs to state the new frontier.
+6. Verify with focused Lean, the target module build, `git diff --check`,
    proof-hole scan, credential scan, and English-only typo scan on changed
    Vaart files.
-6. Fetch/rebase over `origin/main`; rerun checks if Lean files changed under
+7. Fetch/rebase over `origin/main`; rerun checks if Lean files changed under
    the rebase.
-7. Stage only Vaart files, commit a theorem-specific message, push, and leave
-   only unrelated edits if any remain.
+8. Stage only Vaart files, commit a theorem-specific message, push, and leave
+   unrelated user or agent edits untouched.
 
 The ledger below is historical evidence, not a queue to replay.
 
