@@ -49,17 +49,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   sandwich through concrete Delta absolute quadratic forms and the
   adjoint-conjugate square-root coordinate identity, and the pointwise
   Newton-segment local-norm sandwich at `z_t` is compiled from the Lemma 13.6
-  source-radius theorem.  Next discharge the concrete square-root/inverse-
-  Hessian coordinate identities and prove the concrete right-inverse identities
-  `hess(x) (invHess(x) v) = v` and `hess(x+) (invHess(x+) v) = v`; the
-  Definition 13.7 decrement norm identity, inverse-local identity, Cauchy
-  bridge, source dual-local-norm transport, and raw inverse-Hessian quadratic
-  upper comparison are now compiled consequences of those identities, the
-  square-root coordinate factorization, and Lemma 13.6 primal lower transport.
-  The source-facing wrapper also handles the zero Newton-step case without a
-  nonzero-step assumption.  The square-root coordinate inverse equations are
-  now derived from a single `ContinuousLinearEquiv` coordinate model.  Then
-  remove mixed-third-source interfaces when bounded.
+  source-radius theorem.  The concrete square-root/inverse-Hessian coordinate
+  identities, right-inverse identities, Definition 13.7 decrement norm
+  identity, inverse-local identity, Cauchy bridge, source dual-local-norm
+  transport, raw inverse-Hessian quadratic upper comparison, zero-step split,
+  positive-orthant mixed-third certificate, mixed-third/Hessian-derivative
+  identity, and concrete Hessian differentiability/continuity are now compiled.
+  Next prove the concrete gradient differentiability and Newton-linearization
+  facts for `positiveOrthantNegLogGrad`, then package the positive-orthant
+  Theorem 13.8 wrapper with only feasibility and `lambda < 1` hypotheses.
+  After that, remove the remaining mixed-third-source interface by connecting
+  the real third Frechet/iterated derivative to the existing
+  `positiveOrthantNegLogThirdMixed` certificate when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was

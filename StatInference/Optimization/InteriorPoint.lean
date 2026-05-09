@@ -6143,6 +6143,83 @@ noncomputable def positiveOrthantNegLogHessCLM {d : ℕ}
     positiveOrthantNegLogHessCLM x v i = (x i) ^ (-2 : ℤ) * v i := by
   simp [positiveOrthantNegLogHessCLM]
 
+/-- Diagonal continuous-linear operator built from a finite coordinate vector. -/
+noncomputable def positiveOrthantDiagonalCLM {d : ℕ} :
+    EuclideanSpace ℝ (Fin d) →L[ℝ]
+      (EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d)) :=
+  LinearMap.toContinuousLinearMap
+    { toFun := fun c =>
+        LinearMap.toContinuousLinearMap
+          { toFun := fun v => WithLp.toLp 2 fun i : Fin d => c i * v i
+            map_add' := by
+              intro v w
+              ext i
+              simp [mul_add]
+            map_smul' := by
+              intro a v
+              ext i
+              simp
+              ring }
+      map_add' := by
+        intro c d
+        apply ContinuousLinearMap.ext
+        intro v
+        ext i
+        simp [add_mul]
+      map_smul' := by
+        intro a c
+        apply ContinuousLinearMap.ext
+        intro v
+        ext i
+        simp
+        ring }
+
+@[simp] theorem positiveOrthantDiagonalCLM_apply {d : ℕ}
+    (c v : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    positiveOrthantDiagonalCLM c v i = c i * v i := by
+  simp [positiveOrthantDiagonalCLM]
+
+/-- Coordinate vector of the finite product logarithmic-barrier Hessian. -/
+noncomputable def positiveOrthantNegLogHessCoeff {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) : EuclideanSpace ℝ (Fin d) :=
+  WithLp.toLp 2 fun i : Fin d => (x i) ^ (-2 : ℤ)
+
+@[simp] theorem positiveOrthantNegLogHessCoeff_apply {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    positiveOrthantNegLogHessCoeff x i = (x i) ^ (-2 : ℤ) := by
+  simp [positiveOrthantNegLogHessCoeff, PiLp.toLp_apply]
+
+/-- Derivative of the Hessian coefficient vector at a positive-orthant point. -/
+noncomputable def positiveOrthantNegLogHessCoeffDerivCLM {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) :
+    EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+  LinearMap.toContinuousLinearMap
+    { toFun := fun a => WithLp.toLp 2 fun i : Fin d => negLogBarrierThird (x i) * a i
+      map_add' := by
+        intro a b
+        ext i
+        simp [mul_add]
+      map_smul' := by
+        intro c a
+        ext i
+        simp
+        ring }
+
+@[simp] theorem positiveOrthantNegLogHessCoeffDerivCLM_apply {d : ℕ}
+    (x a : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    positiveOrthantNegLogHessCoeffDerivCLM x a i =
+      negLogBarrierThird (x i) * a i := by
+  simp [positiveOrthantNegLogHessCoeffDerivCLM]
+
+theorem positiveOrthantNegLogHessCLM_eq_diagonal {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) :
+    positiveOrthantNegLogHessCLM x =
+      positiveOrthantDiagonalCLM (positiveOrthantNegLogHessCoeff x) := by
+  apply ContinuousLinearMap.ext
+  intro v
+  ext i
+  simp
+
 /--
 The positive-orthant square-root Hessian coordinate map at a point known to lie
 in the positive orthant.
@@ -6358,6 +6435,83 @@ theorem positiveOrthantNegLogHessDerivCLM_mixed_inner {d : ℕ}
   intro i _hi
   simp [RCLike.inner_apply]
   ring
+
+theorem positiveOrthantNegLogHessDerivCLM_eq_diagonal_comp {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) :
+    positiveOrthantNegLogHessDerivCLM x =
+      positiveOrthantDiagonalCLM.comp (positiveOrthantNegLogHessCoeffDerivCLM x) := by
+  apply ContinuousLinearMap.ext
+  intro a
+  apply ContinuousLinearMap.ext
+  intro v
+  ext i
+  simp
+
+theorem positiveOrthantNegLogHessCoeff_hasFDerivAt {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    HasFDerivAt positiveOrthantNegLogHessCoeff
+      (positiveOrthantNegLogHessCoeffDerivCLM x) x := by
+  have hstrict :
+      HasStrictFDerivAt positiveOrthantNegLogHessCoeff
+        (positiveOrthantNegLogHessCoeffDerivCLM x) x := by
+    rw [hasStrictFDerivAt_euclidean]
+    intro i
+    have hz :
+        HasStrictDerivAt (fun t : ℝ => t ^ (-2 : ℤ))
+          (negLogBarrierThird (x i)) (x i) := by
+      have hbase := hasStrictDerivAt_zpow (-2 : ℤ) (x i) (Or.inl (hx i).ne')
+      convert hbase using 1
+      simp [negLogBarrierThird]
+    have hcoord :
+        HasStrictFDerivAt (fun y : EuclideanSpace ℝ (Fin d) => y i)
+          (PiLp.proj 2 (fun _ : Fin d => ℝ) i) x :=
+      PiLp.hasStrictFDerivAt_apply
+        (𝕜 := ℝ) (p := 2) (E := fun _ : Fin d => ℝ) x i
+    have hcomp := hz.hasStrictFDerivAt.comp x hcoord
+    have hproj :
+        (PiLp.proj 2 (fun _ : Fin d => ℝ) i).comp
+            (positiveOrthantNegLogHessCoeffDerivCLM x) =
+          (ContinuousLinearMap.toSpanSingleton ℝ (negLogBarrierThird (x i))).comp
+            (PiLp.proj 2 (fun _ : Fin d => ℝ) i) := by
+      apply ContinuousLinearMap.ext
+      intro a
+      simp
+      ring
+    simpa [positiveOrthantNegLogHessCoeff, hproj] using hcomp
+  exact hstrict.hasFDerivAt
+
+theorem positiveOrthantNegLogHessCLM_hasFDerivAt {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    HasFDerivAt positiveOrthantNegLogHessCLM
+      (positiveOrthantNegLogHessDerivCLM x) x := by
+  have hcoeff := positiveOrthantNegLogHessCoeff_hasFDerivAt hx
+  have hdiag :
+      HasFDerivAt
+        (fun y : EuclideanSpace ℝ (Fin d) =>
+          positiveOrthantDiagonalCLM (positiveOrthantNegLogHessCoeff y))
+        (positiveOrthantDiagonalCLM.comp
+          (positiveOrthantNegLogHessCoeffDerivCLM x)) x :=
+    by
+      have hlin :
+          HasFDerivAt
+            (fun c : EuclideanSpace ℝ (Fin d) => positiveOrthantDiagonalCLM c)
+            positiveOrthantDiagonalCLM (positiveOrthantNegLogHessCoeff x) :=
+        by
+          simpa using
+            (positiveOrthantDiagonalCLM (d := d)).hasFDerivAt
+              (x := positiveOrthantNegLogHessCoeff x)
+      exact hlin.comp x hcoeff
+  have hfun :
+      (fun y : EuclideanSpace ℝ (Fin d) =>
+          positiveOrthantDiagonalCLM (positiveOrthantNegLogHessCoeff y)) =
+        positiveOrthantNegLogHessCLM := by
+    funext y
+    exact (positiveOrthantNegLogHessCLM_eq_diagonal y).symm
+  have hderiv :
+      positiveOrthantDiagonalCLM.comp (positiveOrthantNegLogHessCoeffDerivCLM x) =
+        positiveOrthantNegLogHessDerivCLM x :=
+    (positiveOrthantNegLogHessDerivCLM_eq_diagonal_comp x).symm
+  simpa [hfun, hderiv] using hdiag
 
 theorem positiveOrthantNegLogHessCLM_quadratic_eq_sum {d : ℕ}
     (x v : EuclideanSpace ℝ (Fin d)) :
@@ -6712,6 +6866,39 @@ theorem chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv
     (continuousOn_of_forall_continuousAt
       (fun z hz => (hhess z hz).continuousAt))
     hhess hgrad hnewton_linear
+
+/--
+Concrete positive-orthant logarithmic-barrier Theorem 13.8 wrapper with the
+Hessian differentiability proof discharged from the diagonal coefficient
+calculus.  The remaining hypotheses are gradient differentiability along the
+Newton segment and the Newton linearization identity.
+-/
+theorem chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment_finalHessian
+    {d : ℕ}
+    {grad : EuclideanSpace ℝ (Fin d) -> EuclideanSpace ℝ (Fin d)}
+    {x : EuclideanSpace ℝ (Fin d)}
+    (hlambda_lt : newtonDecrement grad positiveOrthantNegLogInvHessCLM x < 1)
+    (hx : x ∈ positiveOrthant (d := d))
+    (hstep_mem :
+      newtonStep grad positiveOrthantNegLogInvHessCLM x ∈ positiveOrthant (d := d))
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (positiveOrthantNegLogHessCLM
+          (hessianSegmentPoint x
+            (newtonStep grad positiveOrthantNegLogInvHessCLM x) t))
+        (hessianSegmentPoint x
+          (newtonStep grad positiveOrthantNegLogInvHessCLM x) t))
+    (hnewton_linear :
+      grad x + positiveOrthantNegLogHessCLM x
+        (newtonStep grad positiveOrthantNegLogInvHessCLM x - x) = 0) :
+    newtonDecrement grad positiveOrthantNegLogInvHessCLM
+        (newtonStep grad positiveOrthantNegLogInvHessCLM x) ≤
+      (newtonDecrement grad positiveOrthantNegLogInvHessCLM x) ^ (2 : ℕ) /
+        (1 - newtonDecrement grad positiveOrthantNegLogInvHessCLM x) ^ (2 : ℕ) :=
+    chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_hasFDeriv_sourceNewtonSegment
+    hlambda_lt hx hstep_mem
+    (fun _ hz => positiveOrthantNegLogHessCLM_hasFDerivAt hz)
+    hgrad hnewton_linear
 
 /--
 Finite-product version of Chewi Example 13.10: the coordinatewise logarithmic

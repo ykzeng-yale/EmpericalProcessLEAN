@@ -147,7 +147,9 @@ concrete/mixed-third certificates, Frechet-Hessian derivative to `ψ`
 derivative bridge, mixed-third self-concordance source interface, local-norm
 sandwich consumers, scalar Delta integration, concrete Delta action, and the
 concrete Delta scalar/order, normalized-operator, normalized squared-bound, and
-normalized unit-bilinear bridges into the decrement wrapper.
+normalized unit-bilinear bridges into the decrement wrapper.  The newest
+positive-orthant packet discharges the concrete Hessian differentiability and
+continuity side of that wrapper from finite-coordinate diagonal calculus.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
@@ -489,12 +491,21 @@ The newest Hessian-derivative packet adds
 so callers no longer need to supply the mixed-third identity separately.
 `chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_hasFDeriv_sourceNewtonSegment`
 also derives Hessian continuity from the supplied `HasFDerivAt` Hessian proof.
-Next discharge those remaining hypotheses for the concrete positive-orthant
-barrier, or lift these product equalities into the full Proposition 13.11
-barrier-calculus interface.  Do not redo the
-square-root/right-inverse/Hessian-nonnegativity/self-concordance model
+The newest concrete-Hessian packet adds `positiveOrthantDiagonalCLM`,
+`positiveOrthantNegLogHessCoeff`,
+`positiveOrthantNegLogHessCoeffDerivCLM`,
+`positiveOrthantNegLogHessCoeff_hasFDerivAt`,
+`positiveOrthantNegLogHessCLM_hasFDerivAt`, and
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment_finalHessian`.
+It uses the searched mathlib APIs `hasStrictDerivAt_zpow`,
+`hasStrictFDerivAt_euclidean`, `PiLp.hasStrictFDerivAt_apply`, and
+`ContinuousLinearMap.toSpanSingleton` rather than inventing new calculus
+infrastructure.  Next discharge the remaining concrete positive-orthant
+source hypotheses: gradient differentiability along the Newton segment and
+the Newton linearization identity.  Do not redo the
+square-root/right-inverse/Hessian-nonnegativity/self-concordance/model-Hessian
 plumbing; use
-`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_hasFDeriv_sourceNewtonSegment`.
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment_finalHessian`.
 The Definition 13.7 norm identity,
 inverse-local identity, Cauchy bridge, dual-local-norm transport, and raw
 inverse-Hessian quadratic upper comparison should be obtained only via the
@@ -506,18 +517,17 @@ zero-step split wrapper.  Do not ask separately for `coord sqrtH = id` and
 both; use the compiled `ContinuousLinearEquiv` coordinate wrapper.
 The exact blockers are:
 
-- build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
-  derive the concrete square-root family model
-  `hess z = S_z† S_z` and `invHess z = S_z^{-1}(S_z^{-1})†` for the
-  Hessian/inverse-Hessian or matrix model, then use the source wrapper
-  required by
-  `chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`.
-  The conversion from those inputs to the normalized Rayleigh bound, op norm,
-  Delta quadratic bound, residual bound, and final decrement estimate is
-  compiled; do not reprove it.
-  `M * lambda^2 / (1 - M * lambda)^2` decrement algebra, and concrete residual
-  identity are now compiled around this normalized route and the supplied
-  inverse-Hessian transport blocker;
+- prove `positiveOrthantNegLogGrad_hasFDerivAt` on the positive orthant, with
+  derivative `positiveOrthantNegLogHessCLM x`, by reusing
+  `negLogBarrier_deriv`, scalar inverse/zpow calculus, the Euclidean
+  coordinate derivative bridge, and the same diagonal-vector pattern used for
+  `positiveOrthantNegLogHessCoeff_hasFDerivAt`;
+- prove the concrete Newton-linearization identity for
+  `grad = positiveOrthantNegLogGrad` from the coordinate formulas for
+  `positiveOrthantNegLogGrad`, `positiveOrthantNegLogHessCLM`,
+  `positiveOrthantNegLogInvHessCLM`, and `newtonStep`; then add a final
+  source-facing positive-orthant Theorem 13.8 wrapper with no supplied
+  Hessian/gradient differentiability or Newton-linearization assumptions;
 - connect the real third Frechet derivative or `iteratedFDeriv` representation
   to `MixedThirdSelfConcordantOn.mixed_third_bound` when removing the supplied
   mixed-third source interface.  Positivity of `||y - x||_{z_s}` is already
