@@ -32,16 +32,23 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V177` in
+Route from `Live In-Thread Goal Prompt V178` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
 `StatInference/EmpiricalProcess/RealHalfLine*.lean` and
 `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.  Chapter 2.1 now has
-independence/product-law wrappers through Theorem 2.1.13, plus Theorem 2.1.15's
-CDF convolution handoffs
+independence/product-law wrappers through Theorem 2.1.13, Theorem 2.1.15's CDF
+convolution handoffs
 `durrett2019_theorem_2_1_15_product_cdf_convolution` and
-`durrett2019_theorem_2_1_15_indepFun_cdf_convolution`.  Theorem 2.4.9 now has
+`durrett2019_theorem_2_1_15_indepFun_cdf_convolution`, and the first Theorem
+2.1.16 convolution-law / density-existence support:
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv`,
+`durrett2019_theorem_2_1_16_conv_absolutelyContinuous_of_left_density`,
+`durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_density`,
+`durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_real_density`,
+and `durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_of_supplied_density`.
+Theorem 2.4.9 now has
 the arbitrary-law cutpoint-chain route and both the book-style and exact
 outer-a.s. empirical-CDF endpoints:
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
@@ -49,10 +56,10 @@ outer-a.s. empirical-CDF endpoints:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`,
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
-The next target is missing Chapter 2.1 product-law / independence source
-wrappers that unlock later Chapter 2 results, especially the Theorem 2.1.16
-density/convolution handoff.  Do not route future cycles back to Chapter 4.5.2
-unless the user explicitly pivots.
+The next target is the exact Theorem 2.1.16 Fubini/withDensity density formula
+`h(x) = ∫ f (x - y) dG(y)` and the two-density specialization.  Do not route
+future cycles back to Chapter 4.5.2 or solved 2.4.9/2.1.15 plumbing unless the
+user explicitly pivots.
 The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V177
+## Live In-Thread Goal Prompt V178
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -17,10 +17,16 @@ and `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.
 
 Treat the following as compiled support and do not redo it: Chapter 2.1
 independence/product-law wrappers through Theorem 2.1.15's CDF convolution
-handoff, Theorem 2.3.1/2.3.7 Borel-Cantelli wrappers, Theorem 2.4.1
+handoff, the first Theorem 2.1.16 convolution-law and density-existence
+handoffs, Theorem 2.3.1/2.3.7 Borel-Cantelli wrappers, Theorem 2.4.1
 strong-law wrappers, and the full Durrett Theorem 2.4.9 empirical-CDF route:
 `durrett2019_theorem_2_1_15_product_cdf_convolution`,
 `durrett2019_theorem_2_1_15_indepFun_cdf_convolution`,
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv`,
+`durrett2019_theorem_2_1_16_conv_absolutelyContinuous_of_left_density`,
+`durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_density`,
+`durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_real_density`,
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_of_supplied_density`,
 `durrett2019_theorem_2_4_9_cutpointChain`,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
@@ -28,15 +34,18 @@ strong-law wrappers, and the full Durrett Theorem 2.4.9 empirical-CDF route:
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
 
-Next aggressive step: extend only the missing Chapter 2.1 product-law /
-independence source wrappers that unlock later Durrett Chapter 2 results.  Search
-mathlib and local wrappers first, especially `HasLaw`, `IndepFun`,
-`iIndepFun`, `Measure.prod`, `Measure.pi`, product integrals, and the existing
-`StatInference.ProbabilityMeasure.ProductMeasure` layer.  Good targets are the
-next Chapter 2.1 convolution/density handoffs after Theorem 2.1.15, especially
-Theorem 2.1.16 and the exact finite-product law or expectation-factorization
-shapes needed downstream.  Do not route back to Chapter 4.5.2 unless the user
-explicitly pivots the active goal.
+Next aggressive step: finish the exact Theorem 2.1.16 density formula layer.
+The compiled support already proves that independent sums have convolution law
+and that a left density gives absolute continuity of the sum law.  The remaining
+2.1.16 target is the Fubini/withDensity calculation identifying the convolution
+density with Durrett's displayed formula `h(x) = ∫ f (x - y) dG(y)`, then the
+special two-density formula.  Search mathlib and local wrappers first,
+especially `Measure.conv`, `withDensity`, `rnDeriv`, product integrals,
+nonnegative lintegrals, `integral_prod_symm`, and the existing
+`StatInference.ProbabilityMeasure.ProductMeasure` layer.  If the exact formula
+is too large for one packet, add only a reusable formula-side source bridge and
+record the narrowed blocker.  Do not route back to Chapter 4.5.2 or any solved
+2.4.9/2.1.15 plumbing unless the user explicitly pivots the active goal.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including

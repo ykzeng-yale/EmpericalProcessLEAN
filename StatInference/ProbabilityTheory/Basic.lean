@@ -652,6 +652,111 @@ theorem durrett2019_theorem_2_1_15_indepFun_cdf_convolution
     _ = ∫ y, ProbabilityTheory.cdf μ (z - y) ∂ν :=
       durrett2019_theorem_2_1_15_product_cdf_convolution (μ := μ) (ν := ν) z
 
+/--
+Durrett 2019, Theorem 2.1.16, first law-level handoff.
+
+For independent real-valued random variables, the law of `X + Y` is the
+additive convolution of the two laws.
+-/
+theorem durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {μ ν : Measure ℝ} [SigmaFinite μ] [SigmaFinite ν]
+    {X Y : Ω -> ℝ}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X μ P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X ω + Y ω)
+      (MeasureTheory.Measure.conv μ ν) P := by
+  simpa [MeasureTheory.Measure.conv] using
+    _root_.ProbabilityTheory.IndepFun.hasLaw_fun_add hX hY hXY
+
+/--
+Durrett 2019, Theorem 2.1.16, absolute-continuity consequence of the
+convolution law.
+
+If the first summand law has a density with respect to Lebesgue measure, then
+the convolution law also has a density.
+-/
+theorem durrett2019_theorem_2_1_16_conv_absolutelyContinuous_of_left_density
+    {μ ν : Measure ℝ} [SigmaFinite μ] [SigmaFinite ν]
+    (hμ : μ ≪ volume) :
+    MeasureTheory.Measure.conv μ ν ≪ volume := by
+  have hswap : MeasureTheory.Measure.conv ν μ ≪ volume :=
+    MeasureTheory.Measure.conv_absolutelyContinuous (μ := ν) (ν := μ)
+      (ρ := volume) hμ
+  rw [MeasureTheory.Measure.conv_comm ν μ] at hswap
+  exact hswap
+
+/--
+Durrett 2019, Theorem 2.1.16, source-facing density-existence handoff.
+
+If `X` has a density and `Y` is independent of `X`, then the law of `X + Y`
+is absolutely continuous with respect to Lebesgue measure.
+-/
+theorem durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_density
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {μ ν : Measure ℝ} [SigmaFinite μ] [SigmaFinite ν]
+    {X Y : Ω -> ℝ}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X μ P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P)
+    (hμ : μ ≪ volume) :
+    Measure.map (fun ω => X ω + Y ω) P ≪ volume := by
+  have hsum :
+      _root_.ProbabilityTheory.HasLaw (fun ω => X ω + Y ω)
+        (MeasureTheory.Measure.conv μ ν) P :=
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv
+      (P := P) (μ := μ) (ν := ν) hXY hX hY
+  rw [hsum.map_eq]
+  exact durrett2019_theorem_2_1_16_conv_absolutelyContinuous_of_left_density
+    (μ := μ) (ν := ν) hμ
+
+/--
+Durrett 2019, Theorem 2.1.16, real-density source version.
+
+This packages the textbook phrase "`X` has density `f`" as the law
+`volume.withDensity (fun x => ENNReal.ofReal (f x))`.
+-/
+theorem durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_real_density
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ν : Measure ℝ} [SigmaFinite ν] {f : ℝ -> ℝ}
+    {X Y : Ω -> ℝ}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P) :
+    Measure.map (fun ω => X ω + Y ω) P ≪ volume :=
+  durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_density
+    (P := P) (μ := volume.withDensity fun x => ENNReal.ofReal (f x))
+    (ν := ν) hXY hX hY
+    (MeasureTheory.withDensity_absolutelyContinuous volume
+      (fun x => ENNReal.ofReal (f x)))
+
+/--
+Durrett 2019, Theorem 2.1.16, supplied-density-formula handoff.
+
+Once the Fubini calculation identifies the convolution measure with a supplied
+density `h`, the independent sum immediately has that density.
+-/
+theorem durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_of_supplied_density
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {μ ν : Measure ℝ} [SigmaFinite μ] [SigmaFinite ν]
+    {h : ℝ -> ℝ} {X Y : Ω -> ℝ}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X μ P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P)
+    (hdensity :
+      MeasureTheory.Measure.conv μ ν =
+        volume.withDensity (fun x => ENNReal.ofReal (h x))) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X ω + Y ω)
+      (volume.withDensity fun x => ENNReal.ofReal (h x)) P := by
+  have hsum :
+      _root_.ProbabilityTheory.HasLaw (fun ω => X ω + Y ω)
+        (MeasureTheory.Measure.conv μ ν) P :=
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv
+      (P := P) (μ := μ) (ν := ν) hXY hX hY
+  simpa [hdensity] using hsum
+
 /-! ## Durrett, Section 2.3 -/
 
 /--

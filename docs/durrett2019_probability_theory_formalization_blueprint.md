@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V177`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V178`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -35,17 +35,24 @@ automation.
 Current active frontier: Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled
 independence/product-law wrappers through Theorem 2.1.15's CDF convolution
-handoff, and Theorem 2.4.9 has the full empirical-CDF Glivenko-Cantelli route
-through the arbitrary-law cutpoint-chain construction.  Treat
+handoff and first Theorem 2.1.16 convolution-law / density-existence support;
+Theorem 2.4.9 has the full empirical-CDF Glivenko-Cantelli route through the
+arbitrary-law cutpoint-chain construction.  Treat
 `durrett2019_theorem_2_1_15_product_cdf_convolution`,
 `durrett2019_theorem_2_1_15_indepFun_cdf_convolution`,
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv`,
+`durrett2019_theorem_2_1_16_conv_absolutelyContinuous_of_left_density`,
+`durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_density`,
+`durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_real_density`,
+`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_of_supplied_density`,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure` as
-closed support.  Continue by adding only missing Chapter 2.1 product-law /
-independence source wrappers that unlock later Chapter 2 statements, with
-Theorem 2.1.16 density/convolution handoffs as the first likely target.
+closed support.  Continue by proving the exact Theorem 2.1.16 Fubini/withDensity
+density formula `h(x) = ∫ f (x - y) dG(y)` and the two-density specialization,
+or by recording the precise formula-side primitive still missing after a
+focused mathlib/local search.
 
 For each cycle, route from:
 
