@@ -88,6 +88,12 @@ has the source-facing Theorem 13.8 specialization
 `chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment`, so
 future positive-orthant Newton work should provide the remaining
 self-concordance/differentiability/Newton-linearization inputs to that wrapper.
+The easy self-concordance infrastructure now compiles through
+`positiveOrthantNegLogThirdMixed`,
+`positiveOrthantNegLogHessCLM_quadratic_nonneg`,
+`positiveOrthantNegLog_localNorm_sq_eq_sum`, and
+`positiveOrthantNegLog_mixedThirdSelfConcordantOn_of_bound`; next prove the
+finite weighted Cauchy mixed-third inequality for the concrete oracle.
 Next lift that model through a reusable Proposition 13.11 barrier-calculus
 interface or instantiate the actual finite-dimensional/
 matrix barrier Hessian model; all segment membership, `ψ` continuity,

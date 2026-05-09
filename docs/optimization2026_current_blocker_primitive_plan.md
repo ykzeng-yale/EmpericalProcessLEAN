@@ -451,6 +451,15 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	model to the finite positive-orthant log barrier while leaving the gradient
 	oracle generic, so it can cover central-path objectives whose Hessian is
 	the barrier Hessian.
+	The newest positive-orthant mixed-third preparation packet adds
+	`positiveOrthantNegLogThirdMixed`,
+	`positiveOrthantNegLogHessCLM_quadratic_eq_sum`,
+	`positiveOrthantNegLogHessCLM_quadratic_nonneg`,
+	`positiveOrthantNegLog_localNorm_sq_eq_sum`, and
+	`positiveOrthantNegLog_mixedThirdSelfConcordantOn_of_bound`.  This removes
+	the easy parts of the `MixedThirdSelfConcordantOn` assumption for the
+	positive-orthant product barrier; only the genuine finite weighted Cauchy
+	mixed-third inequality remains.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
@@ -464,10 +473,12 @@ normalized Delta bookkeeping from the model equalities.  The one-dimensional
 finite positive-orthant product now has the exact barrier parameter `d` plus
 compiled diagonal Hessian/inverse-Hessian square-root model equalities and a
 source-facing Theorem 13.8 positive-orthant wrapper.  Next discharge or package
-the remaining source differentiability/self-concordance hypotheses for the
+the finite weighted Cauchy bound for `positiveOrthantNegLogThirdMixed` to close
+`positiveOrthantNegLog_mixedThirdSelfConcordantOn_of_bound`, then discharge the
+remaining differentiability/Newton-linearization hypotheses for the
 positive-orthant barrier, or lift these product equalities into the full
 Proposition 13.11 barrier-calculus interface.  Do not redo the
-square-root/right-inverse model plumbing; use
+square-root/right-inverse/Hessian-nonnegativity model plumbing; use
 `chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment`.
 The Definition 13.7 norm identity,
 inverse-local identity, Cauchy bridge, dual-local-norm transport, and raw

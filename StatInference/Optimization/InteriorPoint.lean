@@ -6295,6 +6295,67 @@ theorem positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant {d : ℕ
   intro x hx
   exact positiveOrthantNegLogInvHessCLM_sqrtCoord_model hx
 
+/--
+The coordinatewise mixed third derivative for the finite positive-orthant
+logarithmic barrier:
+`∑ i, f'''(x_i) u_i v_i^2`.
+-/
+noncomputable def positiveOrthantNegLogThirdMixed {d : ℕ}
+    (x u v : EuclideanSpace ℝ (Fin d)) : ℝ :=
+  ∑ i : Fin d, negLogBarrierThird (x i) * u i * (v i) ^ (2 : ℕ)
+
+theorem positiveOrthantNegLogHessCLM_quadratic_eq_sum {d : ℕ}
+    (x v : EuclideanSpace ℝ (Fin d)) :
+    inner ℝ v (positiveOrthantNegLogHessCLM x v) =
+      ∑ i : Fin d, (x i) ^ (-2 : ℤ) * (v i) ^ (2 : ℕ) := by
+  rw [PiLp.inner_apply]
+  simp [RCLike.inner_apply, positiveOrthantNegLogHessCLM]
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  ring_nf
+
+theorem positiveOrthantNegLogHessCLM_quadratic_nonneg {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
+    (v : EuclideanSpace ℝ (Fin d)) :
+    0 ≤ inner ℝ v (positiveOrthantNegLogHessCLM x v) := by
+  have hfactor :=
+    hessianPrimalFactor_of_adjointSqrt
+      (hess := positiveOrthantNegLogHessCLM) (x := x)
+      (sqrtH := (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap)
+      (positiveOrthantNegLogHessCLM_sqrtCoord_model hx) v
+  rw [hfactor]
+  exact sq_nonneg _
+
+theorem positiveOrthantNegLog_localNorm_sq_eq_sum {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
+    (v : EuclideanSpace ℝ (Fin d)) :
+    (localNorm positiveOrthantNegLogHessCLM x v) ^ (2 : ℕ) =
+      ∑ i : Fin d, (x i) ^ (-2 : ℤ) * (v i) ^ (2 : ℕ) := by
+  rw [localNorm_sq_eq_inner (positiveOrthantNegLogHessCLM_quadratic_nonneg hx v)]
+  exact positiveOrthantNegLogHessCLM_quadratic_eq_sum x v
+
+/--
+Constructor for the finite positive-orthant product self-concordance
+certificate.  The remaining source work is exactly the finite weighted Cauchy
+mixed-third estimate in `hbound`; positivity of the barrier parameter and
+Hessian quadratic form are discharged here.
+-/
+theorem positiveOrthantNegLog_mixedThirdSelfConcordantOn_of_bound {d : ℕ}
+    (hbound : ∀ ⦃x : EuclideanSpace ℝ (Fin d)⦄,
+      x ∈ positiveOrthant (d := d) -> ∀ u v : EuclideanSpace ℝ (Fin d),
+        |positiveOrthantNegLogThirdMixed x u v| ≤
+          2 * (1 : ℝ) * localNorm positiveOrthantNegLogHessCLM x u *
+            (localNorm positiveOrthantNegLogHessCLM x v) ^ (2 : ℕ)) :
+    MixedThirdSelfConcordantOn (positiveOrthant (d := d))
+      positiveOrthantNegLogHessCLM positiveOrthantNegLogThirdMixed 1 where
+  parameter_pos := by norm_num
+  hess_nonneg := by
+    intro x hx v
+    exact positiveOrthantNegLogHessCLM_quadratic_nonneg hx v
+  mixed_third_bound := by
+    intro x hx u v
+    exact hbound hx u v
+
 theorem convex_positiveOrthant {d : ℕ} : Convex ℝ (positiveOrthant (d := d)) := by
   rw [positiveOrthant]
   intro x hx y hy a b ha hb hab i

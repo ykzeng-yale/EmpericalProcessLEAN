@@ -1548,7 +1548,14 @@ packet adds `convex_positiveOrthant` and
 `chewi138_positiveOrthant_newtonDecrement_step_le_of_sourceNewtonSegment`,
 fixing the barrier Hessian, inverse-Hessian, and square-root coordinate model
 inside the generic Newton-decrement convergence wrapper while keeping the
-gradient oracle generic for central-path objectives.
+gradient oracle generic for central-path objectives.  The newest mixed-third
+preparation packet adds `positiveOrthantNegLogThirdMixed`,
+`positiveOrthantNegLogHessCLM_quadratic_eq_sum`,
+`positiveOrthantNegLogHessCLM_quadratic_nonneg`,
+`positiveOrthantNegLog_localNorm_sq_eq_sum`, and
+`positiveOrthantNegLog_mixedThirdSelfConcordantOn_of_bound`; the remaining
+self-concordance blocker is the finite weighted Cauchy bound for this concrete
+mixed-third oracle.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
