@@ -122,10 +122,15 @@ with the stochastic-entropy/Chebyshev specialization
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_of_chebyshevPenalty_invNat_bound_scaledSelectedFiniteNetHoeffdingUpper_add_error`
 and the concrete product-pair finite-center failure-tail consumer
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale`.
+The sign-first product-pair finite-center failure events are now measurable
+from Nat-indexed selectors through
+`measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt`,
+`measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt`, and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selectedCenterAt`.
 The next exact target is now sharper: prove the integrated random
-selected-cover finite-center Hoeffding tails vanish, and separately close the
-sign-first selected-center event measurability obligations.  The selected-center
-measurability interface remains
+selected-cover finite-center Hoeffding tails vanish, and prove the remaining
+Nat-indexed in-range selected-center selector measurability assumptions.  The
+selected-center measurability interface remains
 `VdVWFiniteEmpiricalL1CoverSelectedCenterAt`,
 `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`,
 and
@@ -8827,8 +8832,17 @@ the stochastic-entropy/Chebyshev specialization
 and the concrete product-pair finite-center failure-tail route
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale`.
 The fixed-`M` convergence consumer now accepts the explicit integrated
-original/ghost finite-center failure-tail error directly.  The remaining
-aggressive source step is no longer another convergence wrapper: prove that
-integrated random selected-cover failure-tail error tends to zero, and close
-the exposed sign-first event measurability obligations from selected-center
-selector measurability.
+original/ghost finite-center failure-tail error directly.
+
+2026-05-09 sign-first selected-center failure-event measurability:
+`Theorem243.lean` now proves the sign-first product-pair wrappers
+`measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt`
+and
+`measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt`.
+The active fixed-`M` route is exposed as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selectedCenterAt`,
+so it no longer asks directly for raw original/ghost finite-center failure
+event measurability.  The remaining aggressive source step is now exactly:
+prove the integrated random selected-cover failure-tail error tends to zero
+and prove the Nat-indexed in-range selected-center selector measurability
+assumptions.
