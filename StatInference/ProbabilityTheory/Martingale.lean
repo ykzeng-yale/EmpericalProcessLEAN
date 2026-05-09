@@ -12575,6 +12575,19 @@ theorem durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_eLpNorm_bdd
         (P := P) (ℱ := ℱ) (X := X) hX hpq hR)
 
 /--
+Square-integrability in mathlib's `MemLp` form gives integrability of the
+ordinary real square.
+-/
+theorem durrett2019_integrable_sq_of_memLp_two
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Y : Ω -> ℝ} (hY : MemLp Y (2 : ℝ≥0∞) P) :
+    Integrable (fun ω => Y ω ^ 2) P := by
+  have hnorm : Integrable (fun ω => ‖Y ω‖ ^ (2 : ℕ)) P :=
+    hY.integrable_norm_pow'
+  exact hnorm.congr (ae_of_all P fun ω => by
+    simp [Real.norm_eq_abs, sq_abs])
+
+/--
 Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If
 `Y` is `ℱ_m`-measurable and square-integrable, then the increment
 `X_n - X_m` is orthogonal to `Y`.
@@ -12647,6 +12660,68 @@ theorem durrett2019_theorem_4_4_7_martingale_increment_increment_integral_eq_zer
       ((hX.stronglyMeasurable m).sub
         ((hX.stronglyMeasurable ℓ).mono (ℱ.mono hℓm)))
       ((hX_memLp_two m).sub (hX_memLp_two ℓ))
+
+/--
+Durrett 2019, Theorem 4.4.8, conditional variance formula for a
+square-integrable martingale.
+-/
+theorem durrett2019_theorem_4_4_8_martingale_conditional_variance_formula
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    {m n : ℕ} (hmn : m ≤ n) :
+    P[(fun ω => (X n ω - X m ω) ^ 2) | ℱ m] =ᵐ[P]
+      fun ω => P[(fun ω => X n ω ^ 2) | ℱ m] ω - X m ω ^ 2 := by
+  have hXn_sq_int : Integrable (fun ω => X n ω ^ 2) P :=
+    durrett2019_integrable_sq_of_memLp_two (P := P) (Y := X n) (hX_memLp_two n)
+  have hXm_sq_int : Integrable (fun ω => X m ω ^ 2) P :=
+    durrett2019_integrable_sq_of_memLp_two (P := P) (Y := X m) (hX_memLp_two m)
+  have hcross_int : Integrable (fun ω => X m ω * X n ω) P := by
+    simpa [Pi.mul_apply] using (hX_memLp_two m).integrable_mul (hX_memLp_two n)
+  have htwo_cross_int :
+      Integrable (fun ω => 2 * (X m ω * X n ω)) P :=
+    hcross_int.const_mul 2
+  have hPastSq :
+      P[(fun ω => X m ω ^ 2) | ℱ m] = fun ω => X m ω ^ 2 :=
+    condExp_of_stronglyMeasurable (ℱ.le m) ((hX.stronglyMeasurable m).pow 2)
+      hXm_sq_int
+  have hPullCross :
+      P[(fun ω => X m ω * X n ω) | ℱ m] =ᵐ[P]
+        fun ω => X m ω * P[X n | ℱ m] ω := by
+    filter_upwards
+      [condExp_mul_of_stronglyMeasurable_left (hX.stronglyMeasurable m)
+        hcross_int (hX.integrable n)] with ω hω
+    simpa [Pi.mul_apply] using hω
+  have hTwoCross :
+      P[(fun ω => 2 * (X m ω * X n ω)) | ℱ m] =ᵐ[P]
+        fun ω => 2 * P[(fun ω => X m ω * X n ω) | ℱ m] ω := by
+    filter_upwards
+      [condExp_ofNat (μ := P) (m := ℱ m) 2
+        (fun ω => X m ω * X n ω)] with ω hω
+    simpa using hω
+  have hExpand :
+      (fun ω => (X n ω - X m ω) ^ 2) =ᵐ[P]
+        ((fun ω => X n ω ^ 2) - (fun ω => 2 * (X m ω * X n ω))) +
+          fun ω => X m ω ^ 2 :=
+    ae_of_all P fun ω => by
+      simp only [Pi.add_apply, Pi.sub_apply]
+      ring_nf
+  refine (condExp_congr_ae hExpand).trans ?_
+  filter_upwards
+    [condExp_add (hXn_sq_int.sub htwo_cross_int) hXm_sq_int (ℱ m),
+     condExp_sub hXn_sq_int htwo_cross_int (ℱ m),
+     hTwoCross,
+     hPullCross,
+     hX.condExp_ae_eq hmn,
+     EventuallyEq.of_eq hPastSq] with
+    ω hAdd hSub hTwo hPull hCond hPast
+  rw [hAdd]
+  simp only [Pi.add_apply]
+  rw [hSub]
+  simp only [Pi.sub_apply]
+  rw [hTwo, hPull, hCond, hPast]
+  ring
 
 end ProbabilityTheory
 end StatInference

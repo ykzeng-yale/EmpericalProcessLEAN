@@ -4,32 +4,35 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V129
+## Live In-Thread Goal Prompt V130
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane only: Durrett Chapter 4.4 martingale maximal inequalities in
-`StatInference/ProbabilityTheory/Martingale.lean`.  Treat compiled Chapter 2,
-Chapter 3, Chapter 4.1 through Theorem 4.1.15, Examples 4.2.1-4.2.3, and
-Theorems 4.2.4-4.2.12 as closed dependencies, including the exact
-positive-part-boundedness source bridge for Theorem 4.2.11 and the Fatou
-expectation inequality `E X ≤ E X_0` for Theorem 4.2.12.  Theorem 4.1.16
-remains deferred unless a future targeted kernel search finds a direct
-source-shaped API.
+synced `main`.  Active lane only: Durrett Chapter 4.4 martingale maximal
+inequalities in `StatInference/ProbabilityTheory/Martingale.lean`.  Treat
+compiled Chapter 2, Chapter 3, Chapter 4.1 through Theorem 4.1.15, Chapter 4.2,
+Chapter 4.3, Theorem 4.4.2, Example 4.4.3, and Theorems 4.4.4, 4.4.6, 4.4.7,
+and 4.4.8 as closed support unless the next theorem directly needs one of their
+APIs.  Theorem 4.1.16 remains deferred unless a future targeted kernel search
+finds a direct source-shaped API.
 
-Current target: move past Durrett Theorem 4.4.7.  The `L^p` convergence theorem
-4.4.6 and the Theorem 4.4.7 orthogonality wrappers now compile.  Do not revisit
-the completed Theorem 4.4.4 Fubini/Hölder/coefficient/truncation plumbing, the
-completed Theorem 4.4.6 running-maximum route, or the completed 4.4.7
-conditional-expectation pull-out proof.
+Current compiled packet: Durrett Theorem 4.4.8 conditional variance formula now
+compiles through `durrett2019_integrable_sq_of_memLp_two` and
+`durrett2019_theorem_4_4_8_martingale_conditional_variance_formula`, after the
+4.4.7 orthogonality and increment-increment wrappers.
 
-Next aggressive step: Durrett Theorem 4.4.8, conditional variance formula.
-Search first for conditional-expectation multiplication/pull-out and square
-integrability APIs; prove a source-shaped wrapper for
-`E((X_n - X_m)^2 | ℱ_m) = E(X_n^2 | ℱ_m) - X_m^2` under the martingale and
-square-integrability hypotheses consumed by the existing 4.4.7 layer.
+Next aggressive step: Durrett Example 4.4.9, the branching-process
+second-moment and `L^2` convergence calculation after Theorem 4.4.8.  Search
+first for the existing normalized branching-process martingale bridge
+`durrett2019_lemma_4_3_9_normalized_branchingProcess_martingale_of_condExp_succ`
+and local conditional-variance/square-integrability APIs.  Prefer a
+source-shaped wrapper that reuses Theorem 4.4.8 to turn the supplied offspring
+variance identity into the recurrence
+`E X_n^2 = E X_{n-1}^2 + σ^2 / μ^(n+1)`; only push the full geometric-sum and
+`L^2` convergence endpoint if it compiles without building full Galton-Watson
+random-sum infrastructure.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -503,8 +506,12 @@ The final Theorem 4.4.6 endpoint now also compiles:
 Theorem 4.4.7 now also compiles:
 `durrett2019_theorem_4_4_7_martingale_increment_mul_integral_eq_zero` and
 `durrett2019_theorem_4_4_7_martingale_increment_increment_integral_eq_zero`.
-Next target: Theorem 4.4.8 conditional variance formula; only formalize Example
-4.4.5's counterexample if it becomes a cheap reusable support lemma.
+Theorem 4.4.8 now also compiles:
+`durrett2019_integrable_sq_of_memLp_two` and
+`durrett2019_theorem_4_4_8_martingale_conditional_variance_formula`.
+Next target: Example 4.4.9 branching-process second-moment and `L^2`
+convergence support; only formalize Example 4.4.5's counterexample if it becomes
+a cheap reusable support lemma.
 Do not detour back into full Galton-Watson random-sum infrastructure unless a
 local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
@@ -1044,9 +1051,10 @@ its convergence from a.s. bounded finite maxima, and the final running-`S`
 assembly now also compile.  The a.s. boundedness hypothesis from compiled finite
 maximal `eLpNorm` bounds and the final Theorem 4.4.6 `L^p` convergence endpoint
 now compile.  The Theorem 4.4.7 orthogonality and increment-increment wrappers
-now compile.  Next move to Theorem 4.4.8 conditional variance formula,
-whichever route gives the largest compiled step without building unrelated
-infrastructure.
+now compile.  The Theorem 4.4.8 conditional variance formula now also compiles.
+Next move to Example 4.4.9 branching-process second-moment and `L^2`
+convergence support, whichever route gives the largest compiled step without
+building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1160,6 +1168,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V129` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V130` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V129`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V130`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -391,7 +391,13 @@ Compiled Section 3.2 packets:
 
 Next packet:
 
-- Chapter 4.2: continue the martingale layer.  The Section 3.10
+- Chapter 4.4: continue the martingale maximal-inequality layer.  The current
+  frontier is Example 4.4.9 branching-process second-moment and `L^2`
+  convergence support.  The first useful packet should search for the existing
+  normalized branching-process martingale bridge, conditional-variance APIs,
+  and square-integrability recurrence support, then prove the largest
+  source-shaped wrapper that compiles without reopening full Galton-Watson
+  random-sum infrastructure.  The Section 3.10
   multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise
   3.10.8 linear-combination characterization wrappers, Durrett conditional
   expectation version predicate, mathlib-condExp version wrapper, Example 4.1.3
@@ -600,8 +606,8 @@ Next packet:
   assembly now also compile.  The a.s. boundedness bridge from uniform
   finite-maximal `eLpNorm` bounds and the final Theorem 4.4.6 `L^p` convergence
   endpoint now compile.  The Theorem 4.4.7 orthogonality and
-  increment-increment wrappers now compile.  The active frontier is Theorem
-  4.4.8 conditional variance formula.
+  increment-increment wrappers now compile.  The Theorem 4.4.8 conditional
+  variance formula now also compiles.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
