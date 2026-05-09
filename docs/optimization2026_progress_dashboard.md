@@ -50,13 +50,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   adjoint-conjugate square-root coordinate identity, and the pointwise
   Newton-segment local-norm sandwich at `z_t` is compiled from the Lemma 13.6
   source-radius theorem.  Next discharge the concrete square-root/inverse-
-  Hessian coordinate identities and prove the concrete right-inverse identity
-  `hess(x+) (invHess(x+) v) = v`; the inverse-local identity, Cauchy bridge,
-  source
-  dual-local-norm transport, and raw inverse-Hessian quadratic upper comparison
-  are now compiled consequences of the square-root coordinate factorization and
-  Lemma 13.6 primal lower transport.  Then remove mixed-third-source
-  interfaces when bounded.
+  Hessian coordinate identities and prove the concrete right-inverse identities
+  `hess(x) (invHess(x) v) = v` and `hess(x+) (invHess(x+) v) = v`; the
+  Definition 13.7 decrement norm identity, inverse-local identity, Cauchy
+  bridge, source dual-local-norm transport, and raw inverse-Hessian quadratic
+  upper comparison are now compiled consequences of those identities, the
+  square-root coordinate factorization, and Lemma 13.6 primal lower transport.
+  Then remove mixed-third-source interfaces when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
@@ -1475,9 +1475,13 @@ used by the normalized Rayleigh line.  The newest right-inverse packet adds
 `inverseHessianQuadratic_nonneg_of_adjointCoordFactor`, and
 `chewi138_newtonDecrement_step_le_of_hessianRightInverse_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
 deriving inverse-Hessian nonnegativity and the inverse-local identity from the
-concrete right-inverse equation.  The live 13.8 blockers are now the concrete
-coordinate/square-root identities and the right-inverse identity
-`hess(x+) (invHess(x+) v) = v` for the concrete Hessian inverse model.
+concrete right-inverse equation.  The newest right-inverse-at-`x` packet adds
+`localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse` and
+`chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
+so the Definition 13.7 norm identity is also derived from the concrete
+right-inverse equation at `x`.  The live 13.8 blockers are now the concrete
+coordinate/square-root identities and right-inverse identities at `x` and `x+`
+for the concrete Hessian inverse model.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the

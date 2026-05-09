@@ -703,6 +703,23 @@ theorem localNorm_newtonStep_sub_eq_newtonDecrement_of_inner
   simp [localNorm, dualLocalNorm, newtonDecrement, hinner]
 
 /--
+Newton decrement norm identity from a concrete right-inverse identity for the
+Hessian at the current point.
+-/
+theorem localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {x : E}
+    (hright : ∀ v : E, hess x (invHess x v) = v) :
+    localNorm hess x (newtonStep grad invHess x - x) =
+      newtonDecrement grad invHess x := by
+  have hinner :
+      inner ℝ (invHess x (grad x)) (hess x (invHess x (grad x))) =
+        inner ℝ (grad x) (invHess x (grad x)) := by
+    simp [hright (grad x), real_inner_comm]
+  exact localNorm_newtonStep_sub_eq_newtonDecrement_of_inner
+    (hess := hess) (grad := grad) (invHess := invHess) (x := x) hinner
+
+/--
 The Dikin-ellipsoid membership consequence of the Newton decrement bound,
 using a supplied proof of the Definition 13.7 norm identity.
 -/
@@ -5181,6 +5198,69 @@ theorem chewi138_newtonDecrement_step_le_of_hessianRightInverse_and_factorizedNo
       hhess_cont hhess hmixed hsymm hgrad hnewton_linear
       hnormalized_eq hcoord_sqrtH hsqrtH_coord hinv_factor hhess_eq
       hx_inv_nonneg hstep_inv_nonneg hstep_inv_local
+
+/--
+Chewi Theorem 13.8 source-Newton-segment assembly where both the Definition
+13.7 Newton-decrement norm identity at `x` and the inverse-local identity at
+`x+` are derived from concrete right-inverse identities.
+-/
+theorem chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    {normalized coord sqrtH : E →L[ℝ] E} {s : Set E} {x : E} {M : ℝ}
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hs : Convex ℝ s) (hx : x ∈ s)
+    (hstep_mem : newtonStep grad invHess x ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hstep_ne : newtonStep grad invHess x - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hnormalized_eq :
+      normalized =
+        (ContinuousLinearMap.adjoint coord).comp
+          ((hessianSegmentDelta hess x (newtonStep grad invHess x)).comp coord))
+    (hcoord_sqrtH : ∀ step : E, coord (sqrtH step) = step)
+    (hsqrtH_coord : ∀ z : E, sqrtH (coord z) = z)
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hx_right_inverse : ∀ v : E, hess x (invHess x v) = v)
+    (hstep_right_inverse : ∀ v : E,
+      hess (newtonStep grad invHess x)
+          (invHess (newtonStep grad invHess x) v) = v) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  have hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x :=
+    localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse
+      (hess := hess) (grad := grad) (invHess := invHess) (x := x)
+      hx_right_inverse
+  exact
+    chewi138_newtonDecrement_step_le_of_hessianRightInverse_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment
+      (hess := hess) (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (grad := grad) (invHess := invHess)
+      (normalized := normalized) (coord := coord) (sqrtH := sqrtH)
+      (s := s) (x := x) (M := M)
+      hMlambda_lt hstep_norm hs hx hstep_mem hsc hess_pos hstep_ne
+      hhess_cont hhess hmixed hsymm hgrad hnewton_linear
+      hnormalized_eq hcoord_sqrtH hsqrtH_coord hinv_factor hhess_eq
+      hstep_right_inverse
 
 /--
 Chewi Theorem 13.8 assembly from a unit bilinear estimate on the normalized

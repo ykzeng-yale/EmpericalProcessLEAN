@@ -575,10 +575,14 @@ adds `inverseHessianQuadratic_nonneg_of_hessian_right_inverse`,
 `inverseHessianQuadratic_nonneg_of_adjointCoordFactor`, and
 `chewi138_newtonDecrement_step_le_of_hessianRightInverse_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
 so the inverse-local identity is now derived from the concrete right-inverse
-equation.  After that, derive the right-inverse and coordinate identities from
-concrete matrix/order hypotheses and remove the remaining mixed-third supplied
-source interface through the real third-derivative representation bridge to
-`MixedThirdSelfConcordantOn`.
+equation.  The newest right-inverse-at-`x` packet adds
+`localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse` and
+`chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
+so the Definition 13.7 Newton-decrement norm identity is also derived from a
+concrete right-inverse equation.  After that, derive the right-inverse and
+coordinate identities from concrete matrix/order hypotheses and remove the
+remaining mixed-third supplied source interface through the real third-
+derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,
