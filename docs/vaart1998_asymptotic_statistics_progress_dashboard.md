@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 finite derivative OP handoff`).
+(`Add Vaart theorem 5.41 action-bound OP handoff`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -632,14 +632,15 @@ endpoint.  The canonical product score-source packet now gives the
 projected-summand CLT, finite-vector score CLT, raw score CLT, and both
 law-tail and explicit `O_P(1)` derivative-norm Theorem 5.41 handoffs, including
 the canonical, projected, common-vector-law, score-representation, and
-derivative-bound and finite-derivative strong-law specializations of the
-`O_P(1)` route.
+derivative-bound, finite-derivative strong-law, and action-bound
+specializations of the `O_P(1)` route.
 Move next to a concrete `StochasticBounded` source for the scaled estimator,
-the finite-derivative action-bound `O_P(1)` wrapper above the finite-derivative
-strong-law handoff, or a genuinely model-specific derivative representation.
-Do not replay solved Chapter 2-4 infrastructure,
+the finite-parameter matrix-entry `O_P(1)` wrapper above the action-bound
+handoff, or a genuinely model-specific derivative representation.  Do not
+replay solved Chapter 2-4 infrastructure,
 canonical/projected/common-vector/score-representation/derivative-bound/finite
-strong-law wrappers, earlier Theorem 5.41 wrappers, or historical ledger items.
+strong-law/action-bound wrappers, earlier Theorem 5.41 wrappers, or historical
+ledger items.
 
 ## Reuse Dependencies
 
