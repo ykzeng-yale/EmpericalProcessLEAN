@@ -7057,6 +7057,43 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hContDiffDerivativeAt hSecondDerivative_eq_fderiv
 
 /--
+van der Vaart 1998, Theorem 5.41, scaled-estimator law tails from `O_P(1)`.
+
+The current source-facing Theorem 5.41 wrappers consume law tails for
+`P.map scaledEstimator_n`.  If the scaled estimator is already known to be
+`O_P(1)`, and its usual display
+`scaledEstimator_n = scale_n • (estimator_n - theta0_n)` supplies
+a.e.-measurability, then the Chapter 2 stochastic-boundedness/law-tail bridge
+provides that exact field.
+-/
+theorem vaart1998_theorem_5_41_scaledEstimator_lawTail_of_stochasticBounded_estimatorSubMeas
+    {Ω Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [BorelSpace Θ] [MeasurableSub₂ Θ]
+    [MeasurableSMul₂ ℝ Θ]
+    (scale : ℕ -> Ω -> ℝ)
+    {theta0 estimator scaledEstimator : ℕ -> Ω -> Θ}
+    (hTheta0_meas : ∀ n, AEMeasurable (theta0 n) P)
+    (hEstimator_meas : ∀ n, AEMeasurable (estimator n) P)
+    (hScale_meas : ∀ n, AEMeasurable (scale n) P)
+    (hScaledEstimator_eq_sub : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        scaledEstimator n ω =
+          scale n ω • (estimator n ω - theta0 n ω))
+    (hScaledEstimator : StochasticBounded P scaledEstimator) :
+    ∀ ε : ℝ, 0 < ε ->
+      ∃ M : ℝ, 0 < M ∧
+        ∀ᶠ n in atTop,
+          (P.map (scaledEstimator n)).real {x : Θ | M ≤ ‖x‖} < ε := by
+  have hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P := by
+    intro n
+    exact ((hScale_meas n).smul ((hEstimator_meas n).sub (hTheta0_meas n))).congr
+      ((hScaledEstimator_eq_sub n).mono fun ω hω => hω.symm)
+  exact
+    vaart1998_law_real_norm_tail_of_stochasticBounded
+      hScaledEstimator_meas hScaledEstimator
+
+/--
 van der Vaart 1998, Theorem 5.41, scaled-estimator tightness handoff from
 law tails.
 

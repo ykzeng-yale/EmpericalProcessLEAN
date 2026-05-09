@@ -1006,24 +1006,29 @@ compiling:
    `O_P(1)` sequences now provide the law-tail field used by the Theorem 5.41
    law-tail wrappers:
    `vaart1998_law_real_norm_tail_of_stochasticBounded`.
+342. Theorem 5.41 scaled-estimator law-tail source from `O_P(1)`: the usual
+   display `scaledEstimator_n = scale_n • (estimator_n - theta0_n)` now gives
+   a.e.-measurability, so a compiled `StochasticBounded` proof supplies the
+   exact law-tail field consumed by the current 5.41 wrappers:
+   `vaart1998_theorem_5_41_scaledEstimator_lawTail_of_stochasticBounded_estimatorSubMeas`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart stochastic bounded law-tail bridge`).
+(`Add Vaart theorem 5.41 OP scaled-estimator law-tail source`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by adding the converse bookkeeping
-bridge from `O_P(1)` to law tails.  Any a.e.-measurable scaled estimator with a
-compiled `StochasticBounded` proof can now feed the law-tail source expected by
-the current Theorem 5.41 wrappers.
+asymptotic-normality route for Z-estimators by specializing the `O_P(1)` to
+law-tail bridge to the scaled-estimator display.  A compiled
+`StochasticBounded` proof for the scaled estimator now gives the exact
+law-tail hypothesis expected by the current Theorem 5.41 wrappers.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to the scaled-estimator tightness field or a
-genuinely model-specific derivative representation.  Do not repeat solved
-Chapter 2-4 infrastructure or earlier Theorem 5.41 wrapper layers unless a
-current proof directly depends on a small local API there.
+source handoff.  Move next to a concrete source of `StochasticBounded` for the
+scaled estimator, or a genuinely model-specific derivative representation.  Do
+not repeat solved Chapter 2-4 infrastructure or earlier Theorem 5.41 wrapper
+layers unless a current proof directly depends on a small local API there.
 
 ## Execution Notes
 

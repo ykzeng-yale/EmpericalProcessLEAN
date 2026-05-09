@@ -670,9 +670,11 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductRawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
   and the stochastic-boundedness law-tail packet adds
   `vaart1998_law_real_norm_tail_of_stochasticBounded`,
-  so the remaining critical path should feed that bridge from a concrete
-  scaled-estimator `O_P(1)` source or move to a genuinely model-specific
-  derivative representation.
+  and the scaled-estimator `O_P(1)` law-tail source packet adds
+  `vaart1998_theorem_5_41_scaledEstimator_lawTail_of_stochasticBounded_estimatorSubMeas`,
+  so the remaining critical path should prove a concrete scaled-estimator
+  `StochasticBounded` source or move to a genuinely model-specific derivative
+  representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
