@@ -37268,6 +37268,69 @@ theorem
     hleft_joint.trans hjoint_le_right_prod
 
 /--
+Product-fiber lower bound with an original-or-ghost projection.
+
+This is the measure-theoretic constant-loss step behind the selected-cover
+Lemma 2.3.7 route.  A beta-large fiber event over an original bad sample may
+project to either the original selected-net bad event or the ghost selected-net
+bad event.  Since the auxiliary ghost sample has the same law as the original
+sample, the union costs only the finite factor `2`.
+-/
+theorem
+    VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost
+    {α : Type u} {γ : Type v} [MeasurableSpace α] [MeasurableSpace γ]
+    {μ : Measure α} {ν : Measure γ} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {left right : Set α} {joint : Set (α × (α × γ))}
+    {beta : ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (hfiber :
+      ∀ x : α, x ∈ left -> beta ≤ (μ.prod ν) (Prod.mk x ⁻¹' joint))
+    (hjoint_subset :
+      ∀ z : α × (α × γ), z ∈ joint -> z.1 ∈ right ∨ z.2.1 ∈ right) :
+    beta * VdVWOuterProbability μ left ≤
+      (2 : ℝ≥0∞) * VdVWOuterProbability μ right := by
+  let rightOriginal : Set (α × (α × γ)) :=
+    right ×ˢ (Set.univ : Set (α × γ))
+  let rightGhost : Set (α × (α × γ)) :=
+    (Set.univ : Set α) ×ˢ (right ×ˢ (Set.univ : Set γ))
+  have hleft_joint :
+      beta * μ left ≤ μ.prod (μ.prod ν) joint :=
+    measure_mul_le_prod_measure_of_fiber_lower_bound
+      (μ := μ) (ν := μ.prod ν) hjoint_meas hfiber
+  have hjoint_le_union :
+      μ.prod (μ.prod ν) joint ≤
+        μ.prod (μ.prod ν) (rightOriginal ∪ rightGhost) := by
+    refine measure_mono ?_
+    intro z hz
+    rcases hjoint_subset z hz with hright | hghost
+    · exact Or.inl ⟨hright, trivial⟩
+    · exact Or.inr ⟨trivial, hghost, trivial⟩
+  have hunion_le :
+      μ.prod (μ.prod ν) (rightOriginal ∪ rightGhost) ≤
+        μ.prod (μ.prod ν) rightOriginal +
+          μ.prod (μ.prod ν) rightGhost :=
+    measure_union_le rightOriginal rightGhost
+  have hrightOriginal :
+      μ.prod (μ.prod ν) rightOriginal = μ right := by
+    rw [Measure.prod_prod, measure_univ]
+    simp
+  have hrightGhost :
+      μ.prod (μ.prod ν) rightGhost = μ right := by
+    rw [Measure.prod_prod, measure_univ, Measure.prod_prod, measure_univ]
+    simp
+  calc
+    beta * VdVWOuterProbability μ left
+        = beta * μ left := by
+          rfl
+    _ ≤ μ.prod (μ.prod ν) joint := hleft_joint
+    _ ≤ μ.prod (μ.prod ν) (rightOriginal ∪ rightGhost) := hjoint_le_union
+    _ ≤ μ.prod (μ.prod ν) rightOriginal +
+          μ.prod (μ.prod ν) rightGhost := hunion_le
+    _ = (2 : ℝ≥0∞) * VdVWOuterProbability μ right := by
+          simp [VdVWOuterProbability, hrightOriginal, hrightGhost, two_mul]
+
+/--
 Product-event source constructor for the displayed Chebyshev-beta comparison.
 
 This is the event-level interface the remaining ghost/Rademacher proof should
@@ -37326,6 +37389,100 @@ theorem
     simpa [one_mul] using
       VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound
         (μ := vdVWProductMeasure P n) (ν := ν n)
+        (left :=
+          {sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                (0 : ℝ)})
+        (right :=
+          {sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                    (selectedCardinality eta n sample n) n M + eta)
+                (0 : ℝ)})
+        (joint := joint)
+        (beta :=
+          ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)))
+        hjoint_meas hfiber hjoint_subset
+
+/--
+Product-event source constructor with the VdV&W Lemma 2.3.7 factor-two loss.
+
+This is the product/fiber interface for the already compiled deterministic
+original-or-ghost selected-net projection.  The caller supplies a measurable
+joint event on original samples, ghost samples, and canonical Rademacher signs.
+Its fibers over the centered bad event have the displayed Chebyshev beta lower
+bound, and each point of the joint event lands in either the original or ghost
+selected finite-net bad event.  The ghost sample has the same marginal law, so
+the resulting displayed-beta comparison has finite loss `A = 2`.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ghost_product_fiber_lower_bound_or_selectedNet
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hC_pos : 0 < C)
+    (hproduct :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∃ joint : Set (SampleAt Observation n ×
+              (SampleAt Observation n × SampleAt ℝ n)),
+            MeasurableSet joint ∧
+              (∀ sample : SampleAt Observation n,
+                sample ∈
+                  {sample : SampleAt Observation n |
+                    epsilon <
+                      dist
+                        (vdVWWeightedClassSupremum indexClass
+                          (fun index : Index => fun observation : Observation =>
+                            vdVWTruncatedClassFun classFun envelope M index observation -
+                              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                        (0 : ℝ)} ->
+                  ENNReal.ofReal
+                      (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                    ((vdVWProductMeasure P n).prod
+                        (vdVWProductMeasure vdVWRademacherLaw n))
+                      (Prod.mk sample ⁻¹' joint)) ∧
+              (∀ z : SampleAt Observation n ×
+                  (SampleAt Observation n × SampleAt ℝ n),
+                z ∈ joint ->
+                  z.1 ∈
+                    {sample : SampleAt Observation n |
+                      epsilon <
+                        dist
+                          (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                              (selectedCardinality eta n sample n) n M + eta)
+                          (0 : ℝ)} ∨
+                  z.2.1 ∈
+                    {sample : SampleAt Observation n |
+                      epsilon <
+                        dist
+                          (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                              (selectedCardinality eta n sample n) n M + eta)
+                          (0 : ℝ)})) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M C (2 : ℝ≥0∞) selectedCardinality where
+  constant_ne_top := by norm_num
+  scale_pos := hC_pos
+  outerProbability_bound := by
+    intro eta heta epsilon hepsilon
+    filter_upwards [hproduct eta heta epsilon hepsilon] with n hproduct_n
+    rcases hproduct_n with ⟨joint, hjoint_meas, hfiber, hjoint_subset⟩
+    simpa using
+      VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost
+        (μ := vdVWProductMeasure P n)
+        (ν := vdVWProductMeasure vdVWRademacherLaw n)
         (left :=
           {sample : SampleAt Observation n |
             epsilon <

@@ -155,11 +155,15 @@ The selected finite-net side condition is now packaged in the deterministic
 two-sided projection
 `VdVWTheorem243_selectedFiniteNetHoeffding_original_or_ghost_bad_of_pairDifference_rademacher_bad`,
 with sign-negation support from `VdVWRademacherSignVector.neg` and
-`vdVWRademacherWeights_neg_sign`.  The remaining work is to combine these in
-the ghost/sign product fiber, use sign-negation/ghost symmetry to turn the
-original-or-ghost disjunction into the correct constant-loss original-side
-bound, and prove named-event measurability plus the displayed fiber lower
-bound for
+`vdVWRademacherWeights_neg_sign`.  The factor-two product-fiber loss is now
+packaged by
+`VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ghost_product_fiber_lower_bound_or_selectedNet`.
+The remaining work is to build the concrete ghost/Rademacher joint event,
+prove its measurability and displayed Chebyshev fiber lower bound, and show
+that its points satisfy the original-or-ghost selected-net inclusion consumed
+by that factor-two constructor, then specialize back to
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
