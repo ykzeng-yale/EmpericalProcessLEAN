@@ -120,6 +120,16 @@ membership, and inverse-Hessian transport wrappers are now compiled.  Do not
 return to ASGD or generic process-prompt edits unless the user explicitly
 switches lanes.
 
+Latest Proposition 13.11 update: the product-separable supplied-oracle barrier
+rule is now compiled as `chewi1311_product_selfConcordantBarrierOn`, with the
+general method `SelfConcordantBarrierOn.product` and the supporting
+`MixedThirdSelfConcordantOn.product` theorem.  The formalization uses the L2
+product carrier `WithLp 2 (E₁ × E₂)` from
+`Mathlib.Analysis.InnerProductSpace.ProdL2`; this is the cached search result
+for future product work.  The next barrier-calculus targets should build on
+this packet instead of reconstructing product local-norm algebra: conic sums,
+affine preimages, and inf-projection/partial-minimization rules.
+
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers
 in `StatInference/Optimization/ASGD.lean`.  The older right-product path with a

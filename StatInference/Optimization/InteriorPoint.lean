@@ -2,6 +2,7 @@ import StatInference.Optimization.Basic
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Calculus.Deriv.ZPow
 import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.InnerProductSpace.ProdL2
 import Mathlib.Analysis.InnerProductSpace.Rayleigh
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
@@ -1765,6 +1766,8 @@ structure SelfConcordantBarrierOn
     (thirdMixed : E -> E -> E -> ℝ) (M nu : ℝ) : Prop where
   parameter_nonneg : 0 ≤ nu
   self_concordant : MixedThirdSelfConcordantOn s hess thirdMixed M
+  invHess_nonneg : ∀ ⦃x : E⦄, x ∈ s -> ∀ v : E,
+    0 ≤ inner ℝ v (invHess x v)
   gradient_bound : ∀ ⦃x : E⦄, x ∈ s ->
     dualLocalNorm invHess x (grad x) ≤ Real.sqrt nu
 
@@ -1777,9 +1780,342 @@ theorem SelfConcordantBarrierOn.of_le_parameter
     SelfConcordantBarrierOn s hess grad invHess thirdMixed M nu' where
   parameter_nonneg := hbar.parameter_nonneg.trans hnu
   self_concordant := hbar.self_concordant
+  invHess_nonneg := hbar.invHess_nonneg
   gradient_bound := by
     intro x hx
     exact (hbar.gradient_bound hx).trans (Real.sqrt_le_sqrt hnu)
+
+section ProductBarrier
+
+variable {E₁ E₂ : Type*}
+  [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂]
+
+/-- Product domain used in Chewi Proposition 13.11's separable product rule. -/
+def barrierProductSet (s₁ : Set E₁) (s₂ : Set E₂) :
+    Set (WithLp 2 (E₁ × E₂)) :=
+  {p | p.fst ∈ s₁ ∧ p.snd ∈ s₂}
+
+/-- Block-diagonal continuous linear map on the L2 product space. -/
+noncomputable def barrierProductCLM
+    (A : E₁ →L[ℝ] E₁) (B : E₂ →L[ℝ] E₂) :
+    WithLp 2 (E₁ × E₂) →L[ℝ] WithLp 2 (E₁ × E₂) :=
+  (WithLp.prodContinuousLinearEquiv 2 ℝ E₁ E₂).symm.toContinuousLinearMap.comp
+    ((A.prodMap B).comp
+      (WithLp.prodContinuousLinearEquiv 2 ℝ E₁ E₂).toContinuousLinearMap)
+
+/-- Block-diagonal Hessian oracle for a separable product barrier. -/
+noncomputable def barrierProductHess
+    (hess₁ : E₁ -> E₁ →L[ℝ] E₁) (hess₂ : E₂ -> E₂ →L[ℝ] E₂) :
+    WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ] WithLp 2 (E₁ × E₂) :=
+  fun p => barrierProductCLM (hess₁ p.fst) (hess₂ p.snd)
+
+/-- Block-diagonal inverse-Hessian oracle for a separable product barrier. -/
+noncomputable def barrierProductInvHess
+    (invHess₁ : E₁ -> E₁ →L[ℝ] E₁) (invHess₂ : E₂ -> E₂ →L[ℝ] E₂) :
+    WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ] WithLp 2 (E₁ × E₂) :=
+  fun p => barrierProductCLM (invHess₁ p.fst) (invHess₂ p.snd)
+
+/-- Product gradient oracle for a separable product barrier. -/
+def barrierProductGrad (grad₁ : E₁ -> E₁) (grad₂ : E₂ -> E₂) :
+    WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) :=
+  fun p => WithLp.toLp 2 (grad₁ p.fst, grad₂ p.snd)
+
+/-- Product mixed-third oracle for a separable product barrier. -/
+def barrierProductThirdMixed
+    (third₁ : E₁ -> E₁ -> E₁ -> ℝ) (third₂ : E₂ -> E₂ -> E₂ -> ℝ) :
+    WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) -> ℝ :=
+  fun p u v => third₁ p.fst u.fst v.fst + third₂ p.snd u.snd v.snd
+
+@[simp] theorem barrierProductCLM_apply
+    (A : E₁ →L[ℝ] E₁) (B : E₂ →L[ℝ] E₂)
+    (v : WithLp 2 (E₁ × E₂)) :
+    barrierProductCLM A B v = WithLp.toLp 2 (A v.fst, B v.snd) := by
+  rfl
+
+@[simp] theorem barrierProductHess_apply
+    (hess₁ : E₁ -> E₁ →L[ℝ] E₁) (hess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂)) :
+    barrierProductHess hess₁ hess₂ p v =
+      WithLp.toLp 2 (hess₁ p.fst v.fst, hess₂ p.snd v.snd) := by
+  rfl
+
+@[simp] theorem barrierProductInvHess_apply
+    (invHess₁ : E₁ -> E₁ →L[ℝ] E₁) (invHess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂)) :
+    barrierProductInvHess invHess₁ invHess₂ p v =
+      WithLp.toLp 2 (invHess₁ p.fst v.fst, invHess₂ p.snd v.snd) := by
+  rfl
+
+theorem barrierProductHess_quadratic_eq
+    (hess₁ : E₁ -> E₁ →L[ℝ] E₁) (hess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂)) :
+    inner ℝ v (barrierProductHess hess₁ hess₂ p v) =
+      inner ℝ v.fst (hess₁ p.fst v.fst) + inner ℝ v.snd (hess₂ p.snd v.snd) := by
+  simp [barrierProductHess]
+
+theorem barrierProductInvHess_quadratic_eq
+    (invHess₁ : E₁ -> E₁ →L[ℝ] E₁) (invHess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂)) :
+    inner ℝ v (barrierProductInvHess invHess₁ invHess₂ p v) =
+      inner ℝ v.fst (invHess₁ p.fst v.fst) + inner ℝ v.snd (invHess₂ p.snd v.snd) := by
+  simp [barrierProductInvHess]
+
+theorem barrierProductHess_quadratic_nonneg
+    (hess₁ : E₁ -> E₁ →L[ℝ] E₁) (hess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂))
+    (hh₁ : ∀ w : E₁, 0 ≤ inner ℝ w (hess₁ p.fst w))
+    (hh₂ : ∀ w : E₂, 0 ≤ inner ℝ w (hess₂ p.snd w)) :
+    0 ≤ inner ℝ v (barrierProductHess hess₁ hess₂ p v) := by
+  rw [barrierProductHess_quadratic_eq]
+  exact add_nonneg (hh₁ v.fst) (hh₂ v.snd)
+
+theorem barrierProductInvHess_quadratic_nonneg
+    (invHess₁ : E₁ -> E₁ →L[ℝ] E₁) (invHess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂))
+    (hh₁ : ∀ w : E₁, 0 ≤ inner ℝ w (invHess₁ p.fst w))
+    (hh₂ : ∀ w : E₂, 0 ≤ inner ℝ w (invHess₂ p.snd w)) :
+    0 ≤ inner ℝ v (barrierProductInvHess invHess₁ invHess₂ p v) := by
+  rw [barrierProductInvHess_quadratic_eq]
+  exact add_nonneg (hh₁ v.fst) (hh₂ v.snd)
+
+theorem barrierProductLocalNorm_sq_eq
+    (hess₁ : E₁ -> E₁ →L[ℝ] E₁) (hess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂))
+    (hh₁ : ∀ w : E₁, 0 ≤ inner ℝ w (hess₁ p.fst w))
+    (hh₂ : ∀ w : E₂, 0 ≤ inner ℝ w (hess₂ p.snd w)) :
+    (localNorm (barrierProductHess hess₁ hess₂) p v) ^ (2 : ℕ) =
+      (localNorm hess₁ p.fst v.fst) ^ (2 : ℕ) +
+        (localNorm hess₂ p.snd v.snd) ^ (2 : ℕ) := by
+  rw [localNorm_sq_eq_inner
+      (barrierProductHess_quadratic_nonneg hess₁ hess₂ p v hh₁ hh₂)]
+  rw [barrierProductHess_quadratic_eq]
+  rw [localNorm_sq_eq_inner (hh₁ v.fst), localNorm_sq_eq_inner (hh₂ v.snd)]
+
+theorem barrierProductDualLocalNorm_sq_eq
+    (invHess₁ : E₁ -> E₁ →L[ℝ] E₁) (invHess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂))
+    (hh₁ : ∀ w : E₁, 0 ≤ inner ℝ w (invHess₁ p.fst w))
+    (hh₂ : ∀ w : E₂, 0 ≤ inner ℝ w (invHess₂ p.snd w)) :
+    (dualLocalNorm (barrierProductInvHess invHess₁ invHess₂) p v) ^ (2 : ℕ) =
+      (dualLocalNorm invHess₁ p.fst v.fst) ^ (2 : ℕ) +
+        (dualLocalNorm invHess₂ p.snd v.snd) ^ (2 : ℕ) := by
+  rw [dualLocalNorm_sq_eq_inner
+      (barrierProductInvHess_quadratic_nonneg invHess₁ invHess₂ p v hh₁ hh₂)]
+  rw [barrierProductInvHess_quadratic_eq]
+  rw [dualLocalNorm_sq_eq_inner (hh₁ v.fst),
+    dualLocalNorm_sq_eq_inner (hh₂ v.snd)]
+
+theorem barrierProductLocalNorm_fst_le
+    (hess₁ : E₁ -> E₁ →L[ℝ] E₁) (hess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂))
+    (hh₁ : ∀ w : E₁, 0 ≤ inner ℝ w (hess₁ p.fst w))
+    (hh₂ : ∀ w : E₂, 0 ≤ inner ℝ w (hess₂ p.snd w)) :
+    localNorm hess₁ p.fst v.fst ≤
+      localNorm (barrierProductHess hess₁ hess₂) p v := by
+  refine (sq_le_sq₀ (localNorm_nonneg hess₁ p.fst v.fst)
+    (localNorm_nonneg (barrierProductHess hess₁ hess₂) p v)).mp ?_
+  rw [barrierProductLocalNorm_sq_eq hess₁ hess₂ p v hh₁ hh₂]
+  nlinarith [sq_nonneg (localNorm hess₂ p.snd v.snd)]
+
+theorem barrierProductLocalNorm_snd_le
+    (hess₁ : E₁ -> E₁ →L[ℝ] E₁) (hess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂))
+    (hh₁ : ∀ w : E₁, 0 ≤ inner ℝ w (hess₁ p.fst w))
+    (hh₂ : ∀ w : E₂, 0 ≤ inner ℝ w (hess₂ p.snd w)) :
+    localNorm hess₂ p.snd v.snd ≤
+      localNorm (barrierProductHess hess₁ hess₂) p v := by
+  refine (sq_le_sq₀ (localNorm_nonneg hess₂ p.snd v.snd)
+    (localNorm_nonneg (barrierProductHess hess₁ hess₂) p v)).mp ?_
+  rw [barrierProductLocalNorm_sq_eq hess₁ hess₂ p v hh₁ hh₂]
+  nlinarith [sq_nonneg (localNorm hess₁ p.fst v.fst)]
+
+theorem barrierProductDualLocalNorm_fst_le
+    (invHess₁ : E₁ -> E₁ →L[ℝ] E₁) (invHess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂))
+    (hh₁ : ∀ w : E₁, 0 ≤ inner ℝ w (invHess₁ p.fst w))
+    (hh₂ : ∀ w : E₂, 0 ≤ inner ℝ w (invHess₂ p.snd w)) :
+    dualLocalNorm invHess₁ p.fst v.fst ≤
+      dualLocalNorm (barrierProductInvHess invHess₁ invHess₂) p v := by
+  refine (sq_le_sq₀ (dualLocalNorm_nonneg invHess₁ p.fst v.fst)
+    (dualLocalNorm_nonneg (barrierProductInvHess invHess₁ invHess₂) p v)).mp ?_
+  rw [barrierProductDualLocalNorm_sq_eq invHess₁ invHess₂ p v hh₁ hh₂]
+  nlinarith [sq_nonneg (dualLocalNorm invHess₂ p.snd v.snd)]
+
+theorem barrierProductDualLocalNorm_snd_le
+    (invHess₁ : E₁ -> E₁ →L[ℝ] E₁) (invHess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (p v : WithLp 2 (E₁ × E₂))
+    (hh₁ : ∀ w : E₁, 0 ≤ inner ℝ w (invHess₁ p.fst w))
+    (hh₂ : ∀ w : E₂, 0 ≤ inner ℝ w (invHess₂ p.snd w)) :
+    dualLocalNorm invHess₂ p.snd v.snd ≤
+      dualLocalNorm (barrierProductInvHess invHess₁ invHess₂) p v := by
+  refine (sq_le_sq₀ (dualLocalNorm_nonneg invHess₂ p.snd v.snd)
+    (dualLocalNorm_nonneg (barrierProductInvHess invHess₁ invHess₂) p v)).mp ?_
+  rw [barrierProductDualLocalNorm_sq_eq invHess₁ invHess₂ p v hh₁ hh₂]
+  nlinarith [sq_nonneg (dualLocalNorm invHess₁ p.fst v.fst)]
+
+theorem barrierProductGradient_bound
+    (invHess₁ : E₁ -> E₁ →L[ℝ] E₁) (invHess₂ : E₂ -> E₂ →L[ℝ] E₂)
+    (grad₁ : E₁ -> E₁) (grad₂ : E₂ -> E₂)
+    (p : WithLp 2 (E₁ × E₂)) {nu₁ nu₂ : ℝ}
+    (hnu₁ : 0 ≤ nu₁) (hnu₂ : 0 ≤ nu₂)
+    (hh₁ : ∀ w : E₁, 0 ≤ inner ℝ w (invHess₁ p.fst w))
+    (hh₂ : ∀ w : E₂, 0 ≤ inner ℝ w (invHess₂ p.snd w))
+    (hg₁ : dualLocalNorm invHess₁ p.fst (grad₁ p.fst) ≤ Real.sqrt nu₁)
+    (hg₂ : dualLocalNorm invHess₂ p.snd (grad₂ p.snd) ≤ Real.sqrt nu₂) :
+    dualLocalNorm (barrierProductInvHess invHess₁ invHess₂) p
+        (barrierProductGrad grad₁ grad₂ p) ≤
+      Real.sqrt (nu₁ + nu₂) := by
+  refine (sq_le_sq₀
+    (dualLocalNorm_nonneg (barrierProductInvHess invHess₁ invHess₂) p
+      (barrierProductGrad grad₁ grad₂ p))
+    (Real.sqrt_nonneg _)).mp ?_
+  have hsplit := barrierProductDualLocalNorm_sq_eq invHess₁ invHess₂ p
+    (barrierProductGrad grad₁ grad₂ p) hh₁ hh₂
+  have hsq₁ :
+      (dualLocalNorm invHess₁ p.fst (grad₁ p.fst)) ^ (2 : ℕ) ≤ nu₁ := by
+    have hsq := (sq_le_sq₀
+      (dualLocalNorm_nonneg invHess₁ p.fst (grad₁ p.fst))
+      (Real.sqrt_nonneg nu₁)).mpr hg₁
+    simpa [Real.sq_sqrt hnu₁] using hsq
+  have hsq₂ :
+      (dualLocalNorm invHess₂ p.snd (grad₂ p.snd)) ^ (2 : ℕ) ≤ nu₂ := by
+    have hsq := (sq_le_sq₀
+      (dualLocalNorm_nonneg invHess₂ p.snd (grad₂ p.snd))
+      (Real.sqrt_nonneg nu₂)).mpr hg₂
+    simpa [Real.sq_sqrt hnu₂] using hsq
+  calc
+    (dualLocalNorm (barrierProductInvHess invHess₁ invHess₂) p
+        (barrierProductGrad grad₁ grad₂ p)) ^ (2 : ℕ)
+        = (dualLocalNorm invHess₁ p.fst (grad₁ p.fst)) ^ (2 : ℕ) +
+            (dualLocalNorm invHess₂ p.snd (grad₂ p.snd)) ^ (2 : ℕ) := by
+          simpa [barrierProductGrad] using hsplit
+    _ ≤ nu₁ + nu₂ := by
+      nlinarith
+    _ = (Real.sqrt (nu₁ + nu₂)) ^ (2 : ℕ) := by
+      rw [Real.sq_sqrt (add_nonneg hnu₁ hnu₂)]
+
+theorem MixedThirdSelfConcordantOn.product
+    {s₁ : Set E₁} {s₂ : Set E₂}
+    {hess₁ : E₁ -> E₁ →L[ℝ] E₁} {hess₂ : E₂ -> E₂ →L[ℝ] E₂}
+    {third₁ : E₁ -> E₁ -> E₁ -> ℝ} {third₂ : E₂ -> E₂ -> E₂ -> ℝ}
+    {M : ℝ}
+    (hsc₁ : MixedThirdSelfConcordantOn s₁ hess₁ third₁ M)
+    (hsc₂ : MixedThirdSelfConcordantOn s₂ hess₂ third₂ M) :
+    MixedThirdSelfConcordantOn (barrierProductSet s₁ s₂)
+      (barrierProductHess hess₁ hess₂)
+      (barrierProductThirdMixed third₁ third₂) M where
+  parameter_pos := hsc₁.parameter_pos
+  hess_nonneg := by
+    intro x hx v
+    exact barrierProductHess_quadratic_nonneg hess₁ hess₂ x v
+      (hsc₁.hess_nonneg hx.1) (hsc₂.hess_nonneg hx.2)
+  mixed_third_bound := by
+    intro x hx u v
+    have hb₁ := hsc₁.mixed_third_bound hx.1 u.fst v.fst
+    have hb₂ := hsc₂.mixed_third_bound hx.2 u.snd v.snd
+    have hU₁_le :
+        localNorm hess₁ x.fst u.fst ≤
+          localNorm (barrierProductHess hess₁ hess₂) x u :=
+      barrierProductLocalNorm_fst_le hess₁ hess₂ x u
+        (hsc₁.hess_nonneg hx.1) (hsc₂.hess_nonneg hx.2)
+    have hU₂_le :
+        localNorm hess₂ x.snd u.snd ≤
+          localNorm (barrierProductHess hess₁ hess₂) x u :=
+      barrierProductLocalNorm_snd_le hess₁ hess₂ x u
+        (hsc₁.hess_nonneg hx.1) (hsc₂.hess_nonneg hx.2)
+    have hsplit_v := barrierProductLocalNorm_sq_eq hess₁ hess₂ x v
+      (hsc₁.hess_nonneg hx.1) (hsc₂.hess_nonneg hx.2)
+    have hcoef_nonneg : 0 ≤ 2 * M := by
+      nlinarith [hsc₁.parameter_pos]
+    have hterm₁ :
+        2 * M * localNorm hess₁ x.fst u.fst *
+            (localNorm hess₁ x.fst v.fst) ^ (2 : ℕ) ≤
+          2 * M * localNorm (barrierProductHess hess₁ hess₂) x u *
+            (localNorm hess₁ x.fst v.fst) ^ (2 : ℕ) := by
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hU₁_le hcoef_nonneg)
+        (sq_nonneg (localNorm hess₁ x.fst v.fst))
+    have hterm₂ :
+        2 * M * localNorm hess₂ x.snd u.snd *
+            (localNorm hess₂ x.snd v.snd) ^ (2 : ℕ) ≤
+          2 * M * localNorm (barrierProductHess hess₁ hess₂) x u *
+            (localNorm hess₂ x.snd v.snd) ^ (2 : ℕ) := by
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hU₂_le hcoef_nonneg)
+        (sq_nonneg (localNorm hess₂ x.snd v.snd))
+    have habs_sum :
+        |third₁ x.fst u.fst v.fst| + |third₂ x.snd u.snd v.snd| ≤
+          2 * M * localNorm (barrierProductHess hess₁ hess₂) x u *
+            ((localNorm hess₁ x.fst v.fst) ^ (2 : ℕ) +
+              (localNorm hess₂ x.snd v.snd) ^ (2 : ℕ)) := by
+      nlinarith [hb₁, hb₂, hterm₁, hterm₂]
+    calc
+      |barrierProductThirdMixed third₁ third₂ x u v|
+          = |third₁ x.fst u.fst v.fst + third₂ x.snd u.snd v.snd| := by
+            rfl
+      _ ≤ |third₁ x.fst u.fst v.fst| + |third₂ x.snd u.snd v.snd| :=
+        abs_add_le _ _
+      _ ≤
+          2 * M * localNorm (barrierProductHess hess₁ hess₂) x u *
+            ((localNorm hess₁ x.fst v.fst) ^ (2 : ℕ) +
+              (localNorm hess₂ x.snd v.snd) ^ (2 : ℕ)) :=
+        habs_sum
+      _ =
+          2 * M * localNorm (barrierProductHess hess₁ hess₂) x u *
+            (localNorm (barrierProductHess hess₁ hess₂) x v) ^ (2 : ℕ) := by
+        rw [hsplit_v]
+
+theorem SelfConcordantBarrierOn.product
+    {s₁ : Set E₁} {s₂ : Set E₂}
+    {hess₁ : E₁ -> E₁ →L[ℝ] E₁} {hess₂ : E₂ -> E₂ →L[ℝ] E₂}
+    {grad₁ : E₁ -> E₁} {grad₂ : E₂ -> E₂}
+    {invHess₁ : E₁ -> E₁ →L[ℝ] E₁} {invHess₂ : E₂ -> E₂ →L[ℝ] E₂}
+    {third₁ : E₁ -> E₁ -> E₁ -> ℝ} {third₂ : E₂ -> E₂ -> E₂ -> ℝ}
+    {M nu₁ nu₂ : ℝ}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂) :
+    SelfConcordantBarrierOn (barrierProductSet s₁ s₂)
+      (barrierProductHess hess₁ hess₂)
+      (barrierProductGrad grad₁ grad₂)
+      (barrierProductInvHess invHess₁ invHess₂)
+      (barrierProductThirdMixed third₁ third₂) M (nu₁ + nu₂) where
+  parameter_nonneg := add_nonneg hbar₁.parameter_nonneg hbar₂.parameter_nonneg
+  self_concordant :=
+    hbar₁.self_concordant.product hbar₂.self_concordant
+  invHess_nonneg := by
+    intro x hx v
+    exact barrierProductInvHess_quadratic_nonneg invHess₁ invHess₂ x v
+      (hbar₁.invHess_nonneg hx.1) (hbar₂.invHess_nonneg hx.2)
+  gradient_bound := by
+    intro x hx
+    exact barrierProductGradient_bound invHess₁ invHess₂ grad₁ grad₂ x
+      hbar₁.parameter_nonneg hbar₂.parameter_nonneg
+      (hbar₁.invHess_nonneg hx.1) (hbar₂.invHess_nonneg hx.2)
+      (hbar₁.gradient_bound hx.1) (hbar₂.gradient_bound hx.2)
+
+/--
+Chewi Proposition 13.11, product case: the product of two supplied-oracle
+self-concordant barriers is a supplied-oracle self-concordant barrier, with
+the barrier parameters adding.
+-/
+theorem chewi1311_product_selfConcordantBarrierOn
+    {s₁ : Set E₁} {s₂ : Set E₂}
+    {hess₁ : E₁ -> E₁ →L[ℝ] E₁} {hess₂ : E₂ -> E₂ →L[ℝ] E₂}
+    {grad₁ : E₁ -> E₁} {grad₂ : E₂ -> E₂}
+    {invHess₁ : E₁ -> E₁ →L[ℝ] E₁} {invHess₂ : E₂ -> E₂ →L[ℝ] E₂}
+    {third₁ : E₁ -> E₁ -> E₁ -> ℝ} {third₂ : E₂ -> E₂ -> E₂ -> ℝ}
+    {M nu₁ nu₂ : ℝ}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂) :
+    SelfConcordantBarrierOn (barrierProductSet s₁ s₂)
+      (barrierProductHess hess₁ hess₂)
+      (barrierProductGrad grad₁ grad₂)
+      (barrierProductInvHess invHess₁ invHess₂)
+      (barrierProductThirdMixed third₁ third₂) M (nu₁ + nu₂) :=
+  hbar₁.product hbar₂
+
+end ProductBarrier
 
 theorem hessianSegmentLocalNorm_riccatiDerivBound_of_mixedThirdSelfConcordantOn
     {s : Set E} {hess : E -> E →L[ℝ] E}
@@ -6146,6 +6482,17 @@ noncomputable def positiveOrthantNegLogInvHessCLM {d : ℕ}
     positiveOrthantNegLogInvHessCLM x v i = (x i) ^ (2 : ℕ) * v i := by
   simp [positiveOrthantNegLogInvHessCLM]
 
+theorem positiveOrthantNegLogInvHessCLM_quadratic_nonneg {d : ℕ}
+    (x v : EuclideanSpace ℝ (Fin d)) :
+    0 ≤ inner ℝ v (positiveOrthantNegLogInvHessCLM x v) := by
+  rw [PiLp.inner_apply]
+  refine Finset.sum_nonneg ?_
+  intro i _hi
+  have hxi_sq : 0 ≤ (x i) ^ (2 : ℕ) := sq_nonneg (x i)
+  have hvi_sq : 0 ≤ (v i) ^ (2 : ℕ) := sq_nonneg (v i)
+  simp [RCLike.inner_apply]
+  nlinarith
+
 /--
 The coordinatewise Hessian model for the finite product logarithmic barrier.
 On coordinate `i` this applies the scalar Hessian `x_i^{-2}`.
@@ -7055,6 +7402,9 @@ theorem positiveOrthantNegLog_selfConcordantBarrierOn {d : ℕ} :
       1 (d : ℝ) where
   parameter_nonneg := by exact_mod_cast Nat.zero_le d
   self_concordant := positiveOrthantNegLog_mixedThirdSelfConcordantOn
+  invHess_nonneg := by
+    intro x _hx v
+    exact positiveOrthantNegLogInvHessCLM_quadratic_nonneg x v
   gradient_bound := by
     intro x hx
     rw [positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card hx]

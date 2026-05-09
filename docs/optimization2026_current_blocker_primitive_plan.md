@@ -137,6 +137,21 @@ objective and should be preferred over archived prompts.
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
+Superseding update for the current frontier: the active Chapter 13 lane has
+moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9
+barrier packaging into Chewi Proposition 13.11 barrier calculus.  The newest
+verified packet adds the `WithLp 2` product-space infrastructure, product
+Hessian/inverse-Hessian/gradient/mixed-third oracles, product local/dual local
+norm square identities and component domination lemmas,
+`barrierProductGradient_bound`, `MixedThirdSelfConcordantOn.product`,
+`SelfConcordantBarrierOn.product`, and the source-facing
+`chewi1311_product_selfConcordantBarrierOn`.  Search-first result: raw
+`E₁ × E₂` does not carry the needed L2 inner-product instance in this mathlib;
+the reusable product rule should use `Mathlib.Analysis.InnerProductSpace.ProdL2`
+and `WithLp 2 (E₁ × E₂)`.  Next aggressive target: continue Proposition 13.11
+with the conic-sum or affine-preimage barrier calculus rule, reusing this
+product rule and avoiding another product-local-norm rebuild.
+
 Current active lane: Chewi Chapter 13 interior-point/self-concordance in
 `StatInference/Optimization/InteriorPoint.lean`, supporting Lemma 13.6 and
 Theorem 13.8.  The latest verified local frontier is the Theorem 13.8 concrete

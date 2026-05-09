@@ -43,6 +43,20 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/private/tmp/chewi-smpgd-probability` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
+- Latest Chapter 13 frontier: Chewi Proposition 13.11 now has a compiled
+  product-separable supplied-oracle barrier rule in
+  `StatInference/Optimization/InteriorPoint.lean`.  The product calculus uses
+  mathlib's `WithLp 2` L2 product inner-product structure from
+  `Mathlib.Analysis.InnerProductSpace.ProdL2`, not raw `E₁ × E₂`.  Reusable
+  declarations include `barrierProductSet`, `barrierProductCLM`,
+  `barrierProductHess`, `barrierProductInvHess`, `barrierProductGrad`,
+  `barrierProductThirdMixed`, the product local/dual-local norm square
+  identities and component domination lemmas, `barrierProductGradient_bound`,
+  `MixedThirdSelfConcordantOn.product`, `SelfConcordantBarrierOn.product`, and
+  the source-facing `chewi1311_product_selfConcordantBarrierOn`.
+- Next Chapter 13 target: continue Proposition 13.11 with the conic-sum or
+  affine-preimage barrier-calculus rule, reusing the product rule and the
+  strengthened `SelfConcordantBarrierOn.invHess_nonneg` interface.
 - Current priority sequence: Chapter 13 Theorem 13.8 source completion in
   `StatInference/Optimization/InteriorPoint.lean`: the normalized Rayleigh
   line now has a compiled route from the two-sided Lemma 13.6 local-norm
