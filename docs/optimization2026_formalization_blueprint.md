@@ -582,10 +582,13 @@ so the Definition 13.7 Newton-decrement norm identity is also derived from a
 concrete right-inverse equation.  The newest zero-step packet adds
 `chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment_or_zero`,
 so the source-facing 13.8 wrapper no longer needs a global nonzero-step
-assumption.  After that, derive the right-inverse and coordinate identities
-from concrete matrix/order hypotheses and remove the remaining mixed-third
-supplied source interface through the real third-derivative representation
-bridge to `MixedThirdSelfConcordantOn`.
+assumption.  The newest continuous-equivalence coordinate packet adds
+`chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_continuousLinearEquivCoord_of_sourceNewtonSegment`,
+so the inverse coordinate equations are derived from a single
+`sqrtCoord : E ≃L[ℝ] E`.  After that, derive the right-inverse and remaining
+factorization identities from concrete matrix/order hypotheses and remove the
+remaining mixed-third supplied source interface through the real third-
+derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

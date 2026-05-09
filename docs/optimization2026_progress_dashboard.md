@@ -57,8 +57,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   upper comparison are now compiled consequences of those identities, the
   square-root coordinate factorization, and Lemma 13.6 primal lower transport.
   The source-facing wrapper also handles the zero Newton-step case without a
-  nonzero-step assumption.  Then remove mixed-third-source interfaces when
-  bounded.
+  nonzero-step assumption.  The square-root coordinate inverse equations are
+  now derived from a single `ContinuousLinearEquiv` coordinate model.  Then
+  remove mixed-third-source interfaces when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
@@ -1487,7 +1488,16 @@ for the concrete Hessian inverse model.  The newest zero-step packet adds
 `chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment_or_zero`,
 which splits off `x+ = x` and proves the decrement bound directly from
 Newton's linear equation, so the current source-facing 13.8 wrapper no longer
-requires a nonzero Newton step.
+requires a nonzero Newton step.  The newest continuous-equivalence coordinate
+packet adds
+`chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_continuousLinearEquivCoord_of_sourceNewtonSegment`,
+deriving `coord sqrtH = id` and `sqrtH coord = id` from one
+`sqrtCoord : E ≃L[ℝ] E` with `coord = sqrtCoord.symm.toContinuousLinearMap`
+and `sqrtH = sqrtCoord.toContinuousLinearMap`.  The remaining concrete
+13.8 model blockers are now the right-inverse identities at `x` and `x+`,
+the factorization identities
+`<v, invHess(x)v> = ||coord†v||^2` and `hess x = sqrtH†sqrtH`, and the
+Delta normalization identity in that coordinate model.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
