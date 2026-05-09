@@ -2614,6 +2614,145 @@ theorem hessianSegmentDelta_apply
   simp [hessianSegmentDelta, ← happly]
 
 /--
+The quadratic form of the concrete Delta operator is the scalar integrated
+Hessian difference from Chewi's proof.
+-/
+theorem hessianSegmentDelta_inner_eq_integral_sub_of_continuousOn
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y v : E}
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s) :
+    inner ℝ v (hessianSegmentDelta hess x y v) =
+      ∫ t in (0 : ℝ)..1,
+        inner ℝ v (hess (hessianSegmentPoint x y t) v) -
+          inner ℝ v (hess x v) := by
+  let z : ℝ -> E := fun t => hessianSegmentPoint x y t
+  have hint_op : IntervalIntegrable
+      (fun t : ℝ => hess (z t)) MeasureTheory.volume (0 : ℝ) 1 :=
+    hessianSegmentHessian_intervalIntegrable_of_continuousOn
+      (hess := hess) (s := s) (x := x) (y := y) hhess hseg
+  have hint_vec : IntervalIntegrable
+      (fun t : ℝ => hess (z t) v) MeasureTheory.volume (0 : ℝ) 1 :=
+    hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn
+      (hess := hess) (s := s) (x := x) (y := y) (v := v) hhess hseg
+  have hpsi_cont :
+      ContinuousOn (hessianSegmentPsi hess x y v) (Set.Icc (0 : ℝ) 1) :=
+    hessianSegmentPsi_continuousOn_of_continuousOn
+      (hess := hess) (s := s) (x := x) (y := y) hhess hseg v
+  have hint_inner : IntervalIntegrable
+      (fun t : ℝ => inner ℝ v (hess (z t) v))
+      MeasureTheory.volume (0 : ℝ) 1 := by
+    simpa [hessianSegmentPsi, z] using
+      hpsi_cont.intervalIntegrable_of_Icc zero_le_one
+  have hinner :
+      (∫ t in (0 : ℝ)..1, inner ℝ v (hess (z t) v)) =
+        inner ℝ v (∫ t in (0 : ℝ)..1, hess (z t) v) := by
+    simpa [innerSL_apply_apply, z] using
+      ((innerSL ℝ v).intervalIntegral_comp_comm
+        (f := fun t : ℝ => hess (z t) v) hint_vec)
+  calc
+    inner ℝ v (hessianSegmentDelta hess x y v)
+        = inner ℝ v
+            ((∫ t in (0 : ℝ)..1, hess (z t) v) - hess x v) := by
+          have hdelta :=
+            hessianSegmentDelta_apply (hess := hess) (x := x) (y := y)
+              (v := v) (by simpa [z] using hint_op)
+          simpa [z] using congrArg (fun w : E => inner ℝ v w) hdelta
+    _ = inner ℝ v (∫ t in (0 : ℝ)..1, hess (z t) v) -
+          inner ℝ v (hess x v) := by
+        rw [inner_sub_right]
+    _ = (∫ t in (0 : ℝ)..1, inner ℝ v (hess (z t) v)) -
+          inner ℝ v (hess x v) := by
+        rw [hinner]
+    _ = (∫ t in (0 : ℝ)..1, inner ℝ v (hess (z t) v)) -
+          (∫ t in (0 : ℝ)..1, inner ℝ v (hess x v)) := by
+        simp
+    _ = ∫ t in (0 : ℝ)..1,
+          inner ℝ v (hess (z t) v) - inner ℝ v (hess x v) := by
+        rw [intervalIntegral.integral_sub hint_inner intervalIntegrable_const]
+
+/--
+Concrete scalar Delta quadratic-form bound from Lemma 13.6-style local-norm
+control along the segment.
+-/
+theorem hessianSegmentDelta_inner_le_of_localNormUpper
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y v : E} {M lambda : ℝ}
+    (hMlambda_lt : M * lambda < 1)
+    (hhess_cont : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s)
+    (hx_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hz_nonneg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      0 ≤ inner ℝ w (hess (hessianSegmentPoint x y t) w))
+    (hnorm : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      localNorm hess (hessianSegmentPoint x y t) w ≤
+        localNorm hess x w / (1 - M * lambda * t)) :
+    inner ℝ v (hessianSegmentDelta hess x y v) ≤
+      (M * lambda / (1 - M * lambda)) * inner ℝ v (hess x v) := by
+  rw [hessianSegmentDelta_inner_eq_integral_sub_of_continuousOn
+    (hess := hess) (s := s) (x := x) (y := y) (v := v) hhess_cont hseg]
+  exact chewi138_hessianSegmentDelta_integral_le_of_localNormUpper
+    (hess := hess) (s := s) (x := x) (y := y) (v := v)
+    (M := M) (lambda := lambda) hMlambda_lt hhess_cont hseg
+    hx_nonneg hz_nonneg hnorm
+
+/--
+Concrete Delta quadratic-bound bridge.  The scalar Delta/order estimates
+control `inner step (Delta step)`; a remaining dual-energy/order hypothesis
+turns that scalar control into the full dual quadratic form needed by Chewi
+Theorem 13.8.
+-/
+theorem hessianSegmentDelta_quadraticBound_of_localNormUpper_and_dualEnergy
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {s : Set E} {x y : E} {M lambda : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hlambda_nonneg : 0 ≤ lambda)
+    (hMlambda_lt : M * lambda < 1)
+    (hhess_cont : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s)
+    (hx_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hz_nonneg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      0 ≤ inner ℝ w (hess (hessianSegmentPoint x y t) w))
+    (hnorm : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      localNorm hess (hessianSegmentPoint x y t) w ≤
+        localNorm hess x w / (1 - M * lambda * t))
+    (hdual_energy : ∀ step : E,
+      inner ℝ (hessianSegmentDelta hess x y step)
+          (invHess x (hessianSegmentDelta hess x y step)) ≤
+        (M * lambda / (1 - M * lambda)) *
+          inner ℝ step (hessianSegmentDelta hess x y step)) :
+    HessianDeltaQuadraticBound hess invHess x
+      (hessianSegmentDelta hess x y)
+      (M * lambda / (1 - M * lambda)) := by
+  refine ⟨?_⟩
+  intro step
+  let coeff := M * lambda / (1 - M * lambda)
+  have hden_pos : 0 < 1 - M * lambda := by nlinarith
+  have hcoeff_nonneg : 0 ≤ coeff := by
+    exact div_nonneg (mul_nonneg hM_nonneg hlambda_nonneg) hden_pos.le
+  have hscalar :
+      inner ℝ step (hessianSegmentDelta hess x y step) ≤
+        coeff * inner ℝ step (hess x step) := by
+    simpa [coeff] using
+      hessianSegmentDelta_inner_le_of_localNormUpper
+        (hess := hess) (s := s) (x := x) (y := y) (v := step)
+        (M := M) (lambda := lambda) hMlambda_lt hhess_cont hseg
+        hx_nonneg hz_nonneg hnorm
+  calc
+    inner ℝ (hessianSegmentDelta hess x y step)
+        (invHess x (hessianSegmentDelta hess x y step))
+        ≤ coeff * inner ℝ step (hessianSegmentDelta hess x y step) := by
+          simpa [coeff] using hdual_energy step
+    _ ≤ coeff * (coeff * inner ℝ step (hess x step)) :=
+          mul_le_mul_of_nonneg_left hscalar hcoeff_nonneg
+    _ = coeff ^ (2 : ℕ) * inner ℝ step (hess x step) := by
+          ring
+
+/--
 Chewi Theorem 13.8 source residual identity.  If `delta` is the integrated
 Hessian-difference operator on the Newton step and Newton's linear equation
 holds, then `grad(x+) = delta (x+ - x)`.
@@ -3004,6 +3143,83 @@ theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_con
       (x := x) (M := M)
       hM_nonneg hMlambda_lt hstep_norm hresidual hx_inv_nonneg
       hstep_inv_nonneg hupper hstep_hess_nonneg hdelta
+
+/--
+Chewi Theorem 13.8 assembly from concrete Delta scalar/order data.  This
+replaces the `HessianDeltaQuadraticBound` input by the local-norm segment upper
+bound plus the remaining dual-energy/order comparison.
+-/
+theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaEnergy
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {s : Set E} {x : E} {M : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x (newtonStep grad invHess x) t ∈ s)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hx_hess_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hz_hess_nonneg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      0 ≤ inner ℝ w
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t) w))
+    (hnorm : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      localNorm hess (hessianSegmentPoint x (newtonStep grad invHess x) t) w ≤
+        localNorm hess x w /
+          (1 - M * newtonDecrement grad invHess x * t))
+    (hdual_energy : ∀ step : E,
+      inner ℝ
+          (hessianSegmentDelta hess x (newtonStep grad invHess x) step)
+          (invHess x
+            (hessianSegmentDelta hess x (newtonStep grad invHess x) step)) ≤
+        (M * newtonDecrement grad invHess x /
+            (1 - M * newtonDecrement grad invHess x)) *
+          inner ℝ step
+            (hessianSegmentDelta hess x (newtonStep grad invHess x) step))
+    (hx_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hstep_inv_nonneg : ∀ v : E,
+      0 ≤ inner ℝ v (invHess (newtonStep grad invHess x) v))
+    (hupper : ∀ v : E,
+      inner ℝ v (invHess (newtonStep grad invHess x) v) ≤
+        ((1 - M * newtonDecrement grad invHess x)⁻¹) ^ (2 : ℕ) *
+          inner ℝ v (invHess x v))
+    (hstep_hess_nonneg :
+      0 ≤ inner ℝ (newtonStep grad invHess x - x)
+        (hess x (newtonStep grad invHess x - x))) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  let lam := newtonDecrement grad invHess x
+  have hlam_nonneg : 0 ≤ lam := by
+    dsimp [lam, newtonDecrement]
+    exact dualLocalNorm_nonneg invHess x (grad x)
+  have hdelta :
+      HessianDeltaQuadraticBound hess invHess x
+        (hessianSegmentDelta hess x (newtonStep grad invHess x))
+        (M * lam / (1 - M * lam)) := by
+    simpa [lam] using
+      hessianSegmentDelta_quadraticBound_of_localNormUpper_and_dualEnergy
+        (hess := hess) (invHess := invHess) (s := s) (x := x)
+        (y := newtonStep grad invHess x) (M := M) (lambda := lam)
+        hM_nonneg hlam_nonneg (by simpa [lam] using hMlambda_lt)
+        hhess hseg hx_hess_nonneg hz_hess_nonneg
+        (by simpa [lam] using hnorm)
+        (by simpa [lam] using hdual_energy)
+  exact
+    chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaQuadraticBound
+      (hess := hess) (grad := grad) (invHess := invHess) (s := s)
+      (x := x) (M := M)
+      hM_nonneg hMlambda_lt hstep_norm hhess hseg hgrad hnewton_linear
+      hx_inv_nonneg hstep_inv_nonneg hupper hstep_hess_nonneg
+      (by simpa [lam] using hdelta)
 
 /--
 Chewi Definition 13.3, source-shaped self-concordance interface using only the

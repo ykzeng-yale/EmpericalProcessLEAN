@@ -146,7 +146,7 @@ on `[0,1]`, concrete segment point and `ψ_v(t) = <v, Hess(z_t)v>`,
 concrete/mixed-third certificates, Frechet-Hessian derivative to `ψ`
 derivative bridge, mixed-third self-concordance source interface, local-norm
 sandwich consumers, scalar Delta integration, concrete Delta action, and the
-concrete-residual decrement wrapper.
+concrete Delta scalar/order bridge into the decrement wrapper.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
@@ -248,20 +248,32 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`hessianSegmentDelta_apply`,
 	`chewi138_gradientResidual_eq_hessianSegmentDelta_step`, and
 	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaQuadraticBound`.
-	This removes the supplied Delta action formula from the residual route.
+	This removes the supplied Delta action formula from the residual route.  The
+	newest concrete Delta scalar/order packet adds
+	`hessianSegmentDelta_inner_eq_integral_sub_of_continuousOn`,
+	`hessianSegmentDelta_inner_le_of_localNormUpper`,
+	`hessianSegmentDelta_quadraticBound_of_localNormUpper_and_dualEnergy`, and
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaEnergy`.
+	It converts the scalar integrated Hessian-difference estimate into the
+	`HessianDeltaQuadraticBound` input, leaving only the explicit
+	dual-energy/order comparison as the remaining Delta-operator source
+	obligation.
 
-Next theorem-sized target: prove the concrete Delta operator quadratic bound
-for `hessianSegmentDelta` from the scalar Hessian-difference integral/order
-facts, then feed it into the concrete-residual decrement wrapper.  The exact
-blockers are:
+Next theorem-sized target: prove the remaining dual-energy/order comparison
+for the concrete Delta operator, then feed it through
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaEnergy`.
+The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
   derive the needed inverse-Hessian quadratic upper comparison from Lemma
   13.6/matrix inverse order when moving beyond the supplied interface, and
-  prove `HessianDeltaQuadraticBound` for `hessianSegmentDelta hess x x+` from
-  the scalar Delta/order estimates.  The final
-  `M * lambda^2 / (1 - M * lambda)^2` decrement algebra and concrete residual
-  identity are now compiled from these two supplied blockers;
+  prove the dual-energy/order comparison
+  `inner (Delta step) (invHess x (Delta step)) <= coeff * inner step (Delta step)`
+  for `Delta = hessianSegmentDelta hess x x+` from concrete
+  inverse-Hessian/square-root/operator-norm hypotheses.  The scalar
+  Delta/order estimate, final `M * lambda^2 / (1 - M * lambda)^2` decrement
+  algebra, and concrete residual identity are now compiled from this and the
+  supplied inverse-Hessian transport blocker;
 - connect the real third Frechet derivative or `iteratedFDeriv` representation
   to `MixedThirdSelfConcordantOn.mixed_third_bound` when removing the supplied
   mixed-third source interface.  Positivity of `||y - x||_{z_s}` is already
@@ -279,6 +291,8 @@ Riccati comparison theorem matching `q' <= M*q^2`.  Reuse
 `Continuous.clm_apply`/`ContinuousOn.clm_apply`,
 `ContinuousOn.intervalIntegrable_of_Icc`,
 `ContinuousLinearMap.intervalIntegral_comp_comm`,
+`innerSL`/`innerSL_apply_apply`,
+`intervalIntegral.integral_sub`,
 `ContinuousMultilinearMap` and `iteratedFDeriv` APIs, plus
 `ContinuousLinearMap.IsPositive`/matrix `PosSemidef` APIs only when the
 supplied-Hessian interface is insufficient.  Faraday's API scout found no

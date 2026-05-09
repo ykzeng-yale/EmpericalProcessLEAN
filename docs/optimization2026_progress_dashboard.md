@@ -45,10 +45,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   local state without `.lake` or working-tree interference.
 - Current priority sequence: Chapter 13 Theorem 13.8 source completion in
   `StatInference/Optimization/InteriorPoint.lean`: first prove the concrete
-  `HessianDeltaQuadraticBound` for the integrated Hessian-difference operator
-  and feed it into the concrete-residual decrement assembly wrapper; the
-  concrete Delta action formula is already compiled.  Then remove supplied
-  inverse-Hessian comparison and mixed-third-source interfaces when bounded.
+  Delta dual-energy/order comparison and feed it into the compiled
+  concrete-Delta-energy decrement wrapper; the concrete Delta action formula
+  and scalar Delta/order-to-`HessianDeltaQuadraticBound` bridge are already
+  compiled.  Then remove supplied inverse-Hessian comparison and
+  mixed-third-source interfaces when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
@@ -77,10 +78,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
   route-planning loop and not an already-solved ASGD tower peel; it is the
-  Theorem 13.8 concrete Delta operator quadratic bound, using the compiled
-  integrated Delta coefficient, concrete Delta action, and gradient-FTC layers.
-  Broad searches, old Chapter 3 routing, ASGD routing, and repeated Git sync
-  loops are explicitly out of budget unless they answer that blocker.
+  Theorem 13.8 concrete Delta dual-energy/order comparison, using the compiled
+  integrated Delta coefficient, concrete Delta action, scalar Delta/order
+  bridge, and gradient-FTC layers.  Broad searches, old Chapter 3 routing, ASGD
+  routing, and repeated Git sync loops are explicitly out of budget unless they
+  answer that blocker.
 - Latest ASGD source-variance route improvement: the active right compensated
   full-inverse product no longer needs the suspicious auxiliary
   `‖1 + projectedCompensatedTaylorErrorFactor‖ ≤ 1` gate.  The new route
@@ -1374,7 +1376,15 @@ Delta/operator-norm estimate.  The newest concrete Delta-action packet adds
 `chewi138_gradientResidual_eq_hessianSegmentDelta_step`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaQuadraticBound`,
 so the residual route now uses the actual integrated Hessian-difference
-operator rather than a supplied Delta action formula.
+operator rather than a supplied Delta action formula.  The newest concrete
+Delta scalar/order packet adds
+`hessianSegmentDelta_inner_eq_integral_sub_of_continuousOn`,
+`hessianSegmentDelta_inner_le_of_localNormUpper`,
+`hessianSegmentDelta_quadraticBound_of_localNormUpper_and_dualEnergy`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaEnergy`,
+so the final decrement wrapper can consume local-norm segment upper bounds plus
+the remaining dual-energy/order comparison instead of a hand-supplied
+`HessianDeltaQuadraticBound`.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
@@ -1382,15 +1392,15 @@ compiled route uses `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
 `HasDerivAt.inner`, `HasDerivWithinAt.sqrt`, `HasDerivWithinAt.inv`, and
 `monotoneOn_of_hasDerivWithinAt_nonneg`.  For the concrete Delta action, reuse
 `ContinuousOn.intervalIntegrable_of_Icc` and
-`ContinuousLinearMap.intervalIntegral_comp_comm`; do not reprove Bochner
-interval-integral/application commutation.  Faraday's follow-up scout found no
+`ContinuousLinearMap.intervalIntegral_comp_comm`, `innerSL_apply_apply`, and
+`intervalIntegral.integral_sub`; do not reprove Bochner interval-integral or
+inner-product/application commutation.  Faraday's follow-up scout found no
 one-shot Hessian-derivative/third-Frechet bridge, but identified
 `fderiv_iteratedFDeriv`, `iteratedFDeriv_succ_apply_left/right`,
 `iteratedFDeriv_two_apply`, and `ContDiffAt.iteratedFDeriv_comp_perm` as the
-right API stack.  Next Chapter 13 work should derive inverse-Hessian comparison
-from concrete Hessian/matrix inverse hypotheses when needed and prove the
-Theorem 13.8 `HessianDeltaQuadraticBound` for `hessianSegmentDelta`, reusing
-`chewi138_deltaCoefficient_integral_eq_mul` for the scalar integral.
+right API stack.  Next Chapter 13 work should prove the dual-energy/order
+comparison for `hessianSegmentDelta` and derive inverse-Hessian comparison from
+concrete Hessian/matrix inverse hypotheses when needed.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,

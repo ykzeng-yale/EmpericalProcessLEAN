@@ -485,12 +485,19 @@ Delta-action packet adds `hessianSegmentDelta`,
 `chewi138_gradientResidual_eq_hessianSegmentDelta_step`, and
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaQuadraticBound`,
 using `ContinuousLinearMap.intervalIntegral_comp_comm` to commute application
-through the operator-valued interval integral.  The next Chapter 13 packet
-should prove the concrete `HessianDeltaQuadraticBound` for
-`hessianSegmentDelta` from the scalar Delta/order estimates; after that, derive
-the inverse-Hessian comparison from concrete matrix/order hypotheses and remove
-the remaining mixed-third supplied source interface through the real
-third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
+through the operator-valued interval integral.  The newest concrete Delta
+scalar/order packet adds
+`hessianSegmentDelta_inner_eq_integral_sub_of_continuousOn`,
+`hessianSegmentDelta_inner_le_of_localNormUpper`,
+`hessianSegmentDelta_quadraticBound_of_localNormUpper_and_dualEnergy`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaEnergy`,
+using `innerSL_apply_apply` and `intervalIntegral.integral_sub` to identify
+`inner v (Delta v)` with the scalar integrated Hessian-difference estimate.
+The next Chapter 13 packet should prove the remaining dual-energy/order
+comparison for `hessianSegmentDelta`; after that, derive the inverse-Hessian
+comparison from concrete matrix/order hypotheses and remove the remaining
+mixed-third supplied source interface through the real third-derivative
+representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,
