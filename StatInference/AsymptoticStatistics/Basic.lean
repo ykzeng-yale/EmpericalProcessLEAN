@@ -104,6 +104,48 @@ theorem vaart1998_stochasticBounded_of_law_real_norm_tail
   exact hmap ▸ hn
 
 /--
+Convergence in probability to a fixed finite value implies stochastic
+boundedness.
+
+This is the Chapter 2 `O_P(1)` bridge used when a scalar empirical average has
+already been shown to converge in probability to its population value.
+-/
+theorem vaart1998_stochasticBounded_of_tendstoInMeasure_const
+    {Ω E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P]
+    [SeminormedAddCommGroup E]
+    {X : ℕ -> Ω -> E} (c : E)
+    (hX : TendstoInMeasure P X atTop (fun _ : Ω => c)) :
+    StochasticBounded P X := by
+  intro ε hε
+  let M : ℝ := ‖c‖ + 1
+  have hMpos : 0 < M := by
+    have hnorm_nonneg : 0 ≤ ‖c‖ := norm_nonneg c
+    linarith
+  refine ⟨M, hMpos, ?_⟩
+  have htail :
+      Tendsto
+        (fun n : ℕ => P.real {ω : Ω | 1 ≤ ‖X n ω - c‖})
+        atTop (𝓝 0) := by
+    simpa using
+      (MeasureTheory.tendstoInMeasure_iff_measureReal_norm.mp hX)
+        1 (by norm_num : (0 : ℝ) < 1)
+  filter_upwards [htail.eventually_lt_const hε] with n hn
+  have hsubset :
+      {ω : Ω | M ≤ ‖X n ω‖} ⊆
+        {ω : Ω | 1 ≤ ‖X n ω - c‖} := by
+    intro ω hω
+    have hnorm_le :
+        ‖X n ω‖ ≤ ‖X n ω - c‖ + ‖c‖ := by
+      simpa [sub_add_cancel] using
+        norm_add_le (X n ω - c) c
+    have : 1 ≤ ‖X n ω - c‖ := by
+      dsimp [M] at hω
+      linarith
+    exact this
+  exact lt_of_le_of_lt (measureReal_mono hsubset) hn
+
+/--
 VdV&W tightness of a sequence of laws gives the real-valued norm-tail bound
 used by van der Vaart's `O_P(1)` criterion.
 

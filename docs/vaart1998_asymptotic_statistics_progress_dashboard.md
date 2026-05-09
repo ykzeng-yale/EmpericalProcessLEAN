@@ -613,9 +613,10 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 summand measurability handoff`).
+(`Add Vaart theorem 5.41 envelope convergence handoff`).
 Current packet verification passed for:
 
+- `lake build StatInference.AsymptoticStatistics.Basic`
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
 - `lake build StatInference.AsymptoticStatistics.MEstimators`
 - `git diff --check`
@@ -626,11 +627,11 @@ Live continuation prompt: use the compact prompt in
 
 ## Next Aggressive Target
 
-Move past the smooth Taylor side for Vaart Theorem 5.41 in `MEstimators.lean`:
-instantiate one remaining statistical source field feeding the current
-ContDiff endpoint, preferably the empirical derivative LLN or an
-envelope/stochastic-boundedness bridge from existing finite-coordinate
-empirical-average infrastructure.  The sampled-summand measurability bridge,
+For Vaart Theorem 5.41 in `MEstimators.lean`, instantiate exactly one remaining
+statistical source field feeding the current envelope-convergence endpoint:
+prioritize the empirical derivative LLN, then the score CLT, then root/scaling
+consistency.  The envelope stochastic-boundedness bridge,
+sampled-summand measurability bridge,
 estimating-map and derivative-map `ContDiffOn` source regularity bridges,
 derivative-path regularity bridge, vector derivative Taylor bridge,
 `derivativeAt theta0` specialization, vector-to-coordinate continuity

@@ -9,24 +9,23 @@ manual `/goal` continuation before selecting a proof target.
 Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
-Verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_summandMeasurable_envelope`.
-It now consumes open-set `ContDiffOn ℝ 1` smoothness for both `estimatingMap`
-and `derivativeAt`, segment containment, the corresponding `fderiv`
-identifications, and sampled summand a.e.-measurability for the empirical
-derivative and Hessian averages.
+Current frontier endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelopeTendsto_summandMeasurable_envelope`,
+using `vaart1998_stochasticBounded_of_tendstoInMeasure_const` to replace the
+opaque empirical-envelope `O_P(1)` hypothesis by convergence in probability of
+the empirical envelope average to a finite value.
 
-Next packet: move past the smooth Taylor side.  Instantiate one remaining
-statistical source field feeding this endpoint, preferably the empirical
-derivative LLN or an envelope/stochastic-boundedness bridge from existing
-finite-coordinate empirical-average infrastructure.
+Next packet: instantiate exactly one remaining statistical source field feeding
+this endpoint, prioritizing the empirical derivative LLN, then the score CLT,
+then root/scaling consistency.  Do not revisit smooth Taylor production,
+sampled-summand measurability, or envelope stochastic-boundedness plumbing.
 
-Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
-run the focused file and target module checks plus hygiene scans, fetch/rebase
-over `origin/main`, rerun affected checks, update route docs, commit, and push.
-Use a disjoint worktree or agent only when it shortens this exact path while
-preserving other agents' changes.  Treat the long ledger below as evidence only,
-not as a prompt to replay solved layers.
+Workflow: reconcile any local Vaart edits first, search local/mathlib APIs, add
+one theorem-sized Lean layer, run focused Lean plus the target module build and
+hygiene scans, fetch/rebase over `origin/main`, rerun affected checks, update
+route docs, commit, and push.  Use a disjoint worktree or agent only when it
+shortens this exact path while preserving other agents' changes.  Treat the
+long ledger below as evidence only, not as a prompt to replay solved layers.
 
 ## Current Blocker
 
@@ -872,19 +871,22 @@ compiling:
    open-set smoothness and sampled derivative/Hessian summand
    a.e.-measurability:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_summandMeasurable_envelope`.
+315. Convergence in probability to a fixed finite value implies stochastic
+   boundedness, plus the Theorem 5.41 envelope-convergence source handoff:
+   `vaart1998_stochasticBounded_of_tendstoInMeasure_const` and
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 summand measurability handoff`).
+(`Add Vaart theorem 5.41 envelope convergence handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving empirical derivative
-and Hessian average a.e.-measurability from finite sampled summand
-measurability, then forwarding into the open-set `ContDiffOn` endpoint.
+asymptotic-normality route for Z-estimators by replacing the opaque empirical
+envelope stochastic-boundedness assumption with convergence in probability of
+the empirical envelope average to a finite real value.
 
 The next aggressive packet should instantiate a remaining statistical source
-field feeding this endpoint, preferably the empirical derivative LLN or an
-envelope/stochastic-boundedness bridge from existing finite-coordinate
-empirical-average infrastructure.
+field feeding this endpoint, preferably the empirical derivative LLN, then the
+score CLT, then estimator/root/scaling consistency.
 
 ## Execution Notes
 
