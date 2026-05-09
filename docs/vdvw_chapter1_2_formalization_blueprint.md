@@ -2371,14 +2371,19 @@ above, so they do not change the theorem-level dashboard counts.
    and
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale`,
    closing the scale/penalty route into the fixed-`M` entropy consumer.
-   The remaining source route is to control the explicit original/ghost
-   finite-center failure probabilities by a fixed-sample Rademacher
-   finite-center Hoeffding tail and a product-fiber upper-bound lift for the
-   random selected cover.
-   The fixed-sample tail is compiled as
+   The explicit original/ghost finite-center failure probabilities are now
+   controlled by a fixed-sample Rademacher finite-center Hoeffding tail plus a
+   product-fiber upper-bound lift.  The fixed-sample tail is
    `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le`; the
-   remaining source route is now the product-fiber upper lift for the
-   original/ghost random selected-cover failure probabilities.
+   reusable Fubini upper lemma is `prod_measure_le_lintegral_fiber_bound`; and
+   the selected-cover product-pair lifts are
+   `VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`
+   and
+   `VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`.
+   The next source route is to turn those integrated random selected-cover
+   tails into a vanishing error term, and to close the exposed sign-first
+   event measurability obligations from selected-center selector
+   measurability.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,

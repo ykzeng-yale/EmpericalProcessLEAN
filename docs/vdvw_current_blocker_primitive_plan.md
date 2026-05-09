@@ -95,49 +95,28 @@ Matching/WDSM edits, so do not use it for VdVW proof commits.  Use this
 paragraph, not older rebase paragraphs below, as the operative continuation
 prompt.
 
-Current newest source-side progress: fixed finite-center side-condition
-measurability is now compiled.  The generic lemmas
-`measurableSet_VdVWTheorem243FiniteCenterMaximalBound_varying_weights` and
-`measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_fixed_center`
-prove measurability for fixed center lists with measurably varying samples and
-Rademacher signs, and the concrete product-space lemmas
-`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_fixed_center`
+Current newest source-side progress: the product-pair selected-cover route now
+has both the finite-center failure tail and its product-fiber upper lift.  The
+fixed-sample tail is
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le`; the reusable
+Fubini upper lemma is `prod_measure_le_lintegral_fiber_bound`; and the
+original/ghost selected-cover failure terms are bounded by
+`VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`
 and
-`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_fixed_center`
-instantiate this for the original and ghost coordinates.  Together with the
-previous signed pair-difference bridge
-`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_pairBad_of_countable`,
-the event-level constructor
-`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_maximal_components_countable`
-now leaves only two event-measurability inputs: the original finite-center
-Hoeffding side condition and the ghost finite-center side condition with
-negated signs for the sample-dependent selected cover centers.
-`VdVWFiniteEmpiricalL1CoverSelectedCenterAt` and
-`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`
-now expose the minimal Nat-indexed selected-center measurable-selector
-interface, and
-`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`
-turns those selector assumptions into concrete-event measurability under the
-same countability hypotheses as the signed pair-difference component.
-Next exact target: prove the product-fiber displayed Chebyshev lower bound for
-the named concrete event.  The threshold-doubling Chebyshev adapter
-`VdVWChebyshev_betaLower_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad`
-now matches a `2 * epsilon` centered-bad sample to an `epsilon` centered
-pair-difference bad fiber with the displayed beta weakened back to the standard
-epsilon denominator, and
-`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_auxiliary_event`
-reduces the concrete-event fiber lower bound to an auxiliary ghost/sign event
-with four pointwise components.  The centered sign-swap source event is now
-named as `VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent`, and
-`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapFiberSourceEvent`
-turns a probability lower bound for that source event directly into the named
-concrete-event fiber bound.  The next missing bridge is therefore the
-fixed-original sign-swap mass transport
-`vdVWProductMeasure P n (VdVWTheorem243CenteredPairSubBadEvent ...) <=
-((vdVWProductMeasure P n).prod (vdVWProductMeasure vdVWRademacherLaw n))
-  (VdVWTheorem243CenteredPairSubSignSwapBadEvent ...)`; alternatively,
-discharge the Nat-indexed selector assumptions from a stronger selected-center
-measurable selection primitive.
+`VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`.
+This builds on the compiled product-pair half-scale comparison
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale`
+and on the lossy finite-center-failure split
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failures`.
+The next exact target is now to convert those integrated random
+selected-cover tails into a vanishing error under the active stochastic
+entropy/cardinality hypotheses, while separately closing the exposed
+sign-first selected-center measurability obligations.  The selected-center
+measurability interface remains
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAt`,
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`,
+and
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening and do not claim it follows from bare stochastic entropy.
 
@@ -8798,7 +8777,20 @@ measure of the complement of
 `VdVWTheorem243RademacherFiniteCenterHoeffdingBound` by the finite-center
 sub-Gaussian union tail at
 `vdVWTheorem243FiniteNetHoeffdingUpper`.  This closes the fixed-sample tail
-piece needed for both original and ghost sign fibers.  The next source
-primitive should lift this fixed-sample bound through product fibers for the
-random selected cover, using the existing selected-center measurability facts
-and a product-measure upper integration/disintegration lemma.
+piece needed for both original and ghost sign fibers.
+
+2026-05-09 product-fiber finite-center failure upper lifts:
+`Theorem243.lean` now proves the reusable upper disintegration lemma
+`prod_measure_le_lintegral_fiber_bound`, introduces the displayed tail helper
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail`, and applies the fixed-sample
+tail to the random selected-cover original and ghost failure terms through
+`VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`
+and
+`VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`.
+This closes the product-fiber upper-lift blocker for the explicit failure
+probabilities in
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failures`.
+The next aggressive source step is to convert those integrated random
+selected-cover tails into a vanishing error term under the active stochastic
+entropy/cardinality hypotheses, and separately close the exposed sign-first
+event measurability obligations from selected-center selector measurability.
