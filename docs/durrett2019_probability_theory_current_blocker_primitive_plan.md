@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V125
+## Live In-Thread Goal Prompt V126
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -23,12 +23,12 @@ Current target: finish Durrett Theorem 4.4.6, the `L^p` convergence theorem
 for martingales with `sup_n E |X_n|^p < ∞` and `1 < p`.  Durrett Theorem 4.4.4
 now has the full positive-part and martingale maximal inequality route.  The
 Theorem 4.4.6 a.s.-limit, limit `MemLp`, dominated-uniform-integrability, and
-supplied-domination `L^p` convergence endpoint now compile.  Next aggressive
-step: instantiate the supplied dominating variable `S` from the completed
-4.4.4 maximal estimate, i.e. construct/package the infinite running absolute
-maximum domination object (or an equivalent `L^p` domination object) from the
-finite martingale absolute-maximum wrappers.  Do not revisit the completed
-Theorem 4.4.4
+supplied-domination `L^p` convergence endpoint now compile.  The finite running
+absolute-maximum notation, the Theorem 4.4.4 finite-maximal-bound handoff, and
+the supplied running-maximum-limit assembly now also compile.  Next aggressive
+step: construct the canonical infinite running absolute maximum `S`, prove its
+a.e. measurability and a.s. convergence from the finite running maxima, and
+feed the compiled assembly theorem.  Do not revisit the completed Theorem 4.4.4
 Fubini/Hölder/coefficient/truncation plumbing.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
@@ -483,9 +483,14 @@ and
 The supplied-domination endpoint now also compiles:
 `durrett2019_theorem_4_4_6_unifIntegrable_of_memLp_dominated` and
 `durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_memLp_dominated`.
-Next target: construct/package the infinite running absolute maximum domination
-object needed to feed this endpoint from Theorem 4.4.4's finite maximal
-wrappers; only formalize Example 4.4.5's counterexample if it becomes a cheap
+The finite running-maximum assembly now also compiles:
+`durrett2019_runningAbsMax`,
+`durrett2019_theorem_4_4_6_runningAbsMax_eLpNorm_bound_of_eLpNorm_bdd`,
+`durrett2019_theorem_4_4_6_runningAbsMax_limit_memLp_and_domination`, and
+`durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_runningAbsMax_limit`.
+Next target: construct the canonical infinite running absolute maximum `S` and
+prove the supplied convergence/measurability hypotheses consumed by this
+assembly; only formalize Example 4.4.5's counterexample if it becomes a cheap
 reusable support lemma.
 Do not detour back into full Galton-Watson random-sum infrastructure unless a
 local API makes it cheap.
@@ -1019,9 +1024,11 @@ assembly, finite truncation `lintegral` proof, and per-cutoff truncated
 also compile.  The Theorem 4.4.6 bridge from a uniform `L^p` martingale bound
 to the 4.2.11 almost-sure limit and limit-process `MemLp` now also compiles, as
 does the final `L^p` convergence endpoint when a single `MemLp` dominating
-variable `S` is supplied.  Next construct the domination object from the
-compiled finite maximal inequalities, whichever route gives the largest
-compiled step without building unrelated infrastructure.
+variable `S` is supplied.  The finite running absolute-maximum notation,
+finite-maximal-bound handoff, and supplied running-maximum-limit assembly now
+also compile.  Next construct the canonical infinite running maximum `S` and
+its measurability/convergence facts, whichever route gives the largest compiled
+step without building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1135,6 +1142,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V125` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V126` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

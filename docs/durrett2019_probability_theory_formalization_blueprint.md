@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V125`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V126`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -593,9 +593,11 @@ Next packet:
   `eLpNorm` wrapper now also compile.  The Theorem 4.4.6 bridge from a uniform
   `L^p` martingale bound to the 4.2.11 almost-sure limit and limit-process
   `MemLp` now also compiles, and the final `L^p` convergence endpoint compiles
-  when a single `MemLp` dominating variable is supplied.  The active frontier is
-  constructing that domination object from the finite martingale maximal
-  wrappers.
+  when a single `MemLp` dominating variable is supplied.  The finite
+  running-maximum assembly now also compiles from Theorem 4.4.4 bounds and a
+  supplied a.s. running-maximum limit.  The active frontier is constructing the
+  canonical infinite running maximum `S` and proving the supplied
+  convergence/measurability hypotheses.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:

@@ -12114,6 +12114,34 @@ theorem durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_bound
   simpa [hp_toReal, hTerminal] using hPowerReal
 
 /--
+Durrett 2019, Section 4.4 notation: the finite running absolute maximum
+`max_{k ≤ n} |X_k|`.
+-/
+def durrett2019_runningAbsMax {Ω : Type*} (X : ℕ -> Ω -> ℝ) (n : ℕ) (ω : Ω) :
+    ℝ :=
+  (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+    fun k => |X k ω|
+
+/--
+Durrett 2019, Theorem 4.4.6 support from Theorem 4.4.4: a uniform terminal
+`L^p` bound gives a uniform finite-running-maximum bound with Doob's
+`p/(p-1)` constant.
+-/
+theorem durrett2019_theorem_4_4_6_runningAbsMax_eLpNorm_bound_of_eLpNorm_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) {R : ℝ≥0∞}
+    (hR : ∀ n, eLpNorm (X n) (ENNReal.ofReal p) P ≤ R) (n : ℕ) :
+    eLpNorm (durrett2019_runningAbsMax X n) (ENNReal.ofReal p) P ≤
+      ENNReal.ofReal (p / (p - 1)) * R := by
+  have hmax :=
+    durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_bound
+      (P := P) (ℱ := ℱ) (Y := X) hX hpq n
+  exact hmax.trans
+    (mul_le_mul_right (hR n) (ENNReal.ofReal (p / (p - 1))))
+
+/--
 Durrett 2019, Theorem 4.4.6 support: on a probability space, a uniform
 `L^p` bound with `1 ≤ p` implies the `L^1` bound consumed by the compiled
 martingale convergence theorem 4.2.11.
@@ -12242,6 +12270,94 @@ theorem durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_memLp_dominated
   exact
     tendsto_Lp_finite_of_tendsto_ae
       (μ := P) hp_en hp_ne_top hmeas hlimit_memLp hui hlim
+
+/--
+Durrett 2019, Theorem 4.4.6 support: if the finite running absolute maxima
+converge almost surely to a supplied random variable `S`, and those finite
+maxima have a common finite `L^p` bound, then `S` is in `L^p` and dominates
+each martingale time.
+-/
+theorem durrett2019_theorem_4_4_6_runningAbsMax_limit_memLp_and_domination
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p : ℝ} {S : Ω -> ℝ} (hS : AEStronglyMeasurable S P)
+    (hS_lim :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n => durrett2019_runningAbsMax X n ω) atTop (𝓝 (S ω)))
+    {C : ℝ≥0∞} (hC_lt : C < ∞)
+    (hbound :
+      ∀ n, eLpNorm (durrett2019_runningAbsMax X n) (ENNReal.ofReal p) P ≤ C) :
+    MemLp S (ENNReal.ofReal p) P ∧
+      ∀ n, ∀ᵐ ω ∂P, ‖X n ω‖ ≤ S ω := by
+  have hA_meas :
+      ∀ n, AEStronglyMeasurable (durrett2019_runningAbsMax X n) P := by
+    intro n
+    refine (Finset.measurable_range_sup'' ?_).aestronglyMeasurable
+    intro k _hk
+    simpa [durrett2019_runningAbsMax] using
+      (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).abs)
+  have hS_norm :
+      eLpNorm S (ENNReal.ofReal p) P ≤ C :=
+    Lp.eLpNorm_le_of_ae_tendsto
+      (p := ENNReal.ofReal p) (μ := P)
+      (f := fun n => durrett2019_runningAbsMax X n) (g := S) (C := C)
+      (Eventually.of_forall hbound) hA_meas hS_lim
+  have hS_mem : MemLp S (ENNReal.ofReal p) P :=
+    ⟨hS, lt_of_le_of_lt hS_norm hC_lt⟩
+  have hdom : ∀ n, ∀ᵐ ω ∂P, ‖X n ω‖ ≤ S ω := by
+    intro n
+    filter_upwards [hS_lim] with ω hω
+    have hevent :
+        ∀ᶠ m in atTop, ‖X n ω‖ ≤ durrett2019_runningAbsMax X m ω := by
+      refine eventually_atTop.2 ⟨n, fun m hnm => ?_⟩
+      have hn_mem : n ∈ Finset.range (m + 1) := by
+        rw [Finset.mem_range]
+        exact Nat.lt_succ_of_le hnm
+      have hle :
+          |X n ω| ≤ durrett2019_runningAbsMax X m ω := by
+        rw [durrett2019_runningAbsMax, Finset.le_sup'_iff]
+        exact ⟨n, hn_mem, le_rfl⟩
+      simpa [Real.norm_eq_abs] using hle
+    exact ge_of_tendsto hω hevent
+  exact ⟨hS_mem, hdom⟩
+
+/--
+Durrett 2019, Theorem 4.4.6 assembly: once the finite running absolute maxima
+have an almost-sure limit `S`, Theorem 4.4.4 supplies the finite maximal bounds
+needed to prove the martingale convergence in `L^p`.
+-/
+theorem durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_runningAbsMax_limit
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) {R : ℝ≥0}
+    (hR : ∀ n, eLpNorm (X n) (ENNReal.ofReal p) P ≤ R)
+    {S : Ω -> ℝ} (hS : AEStronglyMeasurable S P)
+    (hS_lim :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n => durrett2019_runningAbsMax X n ω) atTop (𝓝 (S ω))) :
+    Tendsto
+      (fun n => eLpNorm (X n - ℱ.limitProcess X P) (ENNReal.ofReal p) P)
+      atTop (𝓝 0) := by
+  let C : ℝ≥0∞ := ENNReal.ofReal (p / (p - 1)) * (R : ℝ≥0∞)
+  have hC_lt : C < ∞ := by
+    dsimp [C]
+    finiteness
+  have hbound :
+      ∀ n, eLpNorm (durrett2019_runningAbsMax X n) (ENNReal.ofReal p) P ≤ C := by
+    intro n
+    exact
+      durrett2019_theorem_4_4_6_runningAbsMax_eLpNorm_bound_of_eLpNorm_bdd
+        (P := P) (ℱ := ℱ) (X := X) hX hpq
+        (R := (R : ℝ≥0∞)) (fun m => hR m) n
+  obtain ⟨hS_mem, hdom⟩ :=
+    durrett2019_theorem_4_4_6_runningAbsMax_limit_memLp_and_domination
+      (P := P) (ℱ := ℱ) (X := X) hX hS hS_lim hC_lt hbound
+  exact
+    durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_memLp_dominated
+      (P := P) (ℱ := ℱ) (X := X) hX hpq.lt.le hR hS_mem hdom
 
 end ProbabilityTheory
 end StatInference
