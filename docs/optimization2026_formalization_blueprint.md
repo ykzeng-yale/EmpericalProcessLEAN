@@ -63,9 +63,13 @@ on-set right-inverse wrapper
 The preferred route is now its canonical normalized-Delta successor
 `chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoordDelta_of_sourceNewtonSegment`,
 which defines the normalized operator as `coord† Delta coord` internally.
-The next genuine source-model work is to derive the concrete on-set Hessian
-inverse identity, `sqrtCoord : E ≃L[ℝ] E`, `hess x = sqrtH†sqrtH`, and
-the concrete square-root coordinate model; all segment membership, `ψ` continuity,
+The newest concrete model wrapper
+`chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`
+derives Hessian positivity, Hessian symmetry, the inverse-Hessian right-inverse
+identity, and the canonical normalized-Delta route from the source equalities
+`hess z = S_z†S_z` and `invHess z = S_z^{-1}(S_z^{-1})†`.  The next genuine
+source-model work is to instantiate that square-root family for the actual
+finite-dimensional/barrier Hessian model; all segment membership, `ψ` continuity,
 local-norm continuity/positivity, Riccati comparison, derivative inequality,
 coefficient scaling, final sandwich assembly, first Newton/Dikin membership,
 and inverse-Hessian transport wrappers are now compiled.  Do not return to

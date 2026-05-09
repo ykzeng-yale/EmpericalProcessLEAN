@@ -1512,6 +1512,14 @@ right-inverse identities at `x` and `x+`.  It also adds
 which takes the normalized Delta operator definitionally as `coord† Delta
 coord` and removes the separate normalization-equality hypothesis from the
 preferred route.
+The newest concrete square-root-family packet adds
+`hessianSymmetric_of_adjointSqrt`,
+`hessianQuadratic_pos_of_adjointSqrtCoord`,
+`hessianRightInverse_of_adjointSqrtCoord_invHess`, and
+`chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`.
+Thus `hess z = S_z†S_z` and `invHess z = S_z^{-1}(S_z^{-1})†` now discharge
+Hessian symmetry, positive definiteness, the on-set inverse-Hessian
+right-inverse identity, and the preferred canonical-Delta 13.8 wrapper.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
@@ -1535,11 +1543,11 @@ one-shot Hessian-derivative/third-Frechet bridge, but identified
 `iteratedFDeriv_two_apply`, and `ContDiffAt.iteratedFDeriv_comp_perm` as the
 right API stack.  Next Chapter 13 work should prove the concrete normalized
 Delta factorization plus either the pointwise squared, unit-bilinear, or
-self-adjoint absolute-quadratic bound.  On the Rayleigh path, provide the
-coordinate identities `coord sqrtH = id`,
-`<v, invHess(x)v> = ||coord†v||^2`, and `hess x = sqrtH†sqrtH`, then use the
-compiled canonical-Delta right-inverse-on adjoint-conjugation wrapper; also derive inverse-
-Hessian comparison from concrete Hessian/matrix inverse hypotheses when needed.
+self-adjoint absolute-quadratic bound.  On the Rayleigh path, instantiate the
+square-root family model and use the compiled
+`chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`;
+do not separately pass Hessian positivity, symmetry, right-inverse identities,
+or normalized-Delta equalities.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,

@@ -3592,6 +3592,88 @@ theorem hessianPrimalFactor_of_adjointSqrt
     (ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right sqrtH step).symm
 
 /--
+An adjoint-square Hessian factorization is symmetric.
+-/
+theorem hessianSymmetric_of_adjointSqrt
+    [CompleteSpace E]
+    {H sqrtH : E →L[ℝ] E}
+    (hH_eq : H = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH) :
+    (H : E →ₗ[ℝ] E).IsSymmetric := by
+  intro u v
+  rw [hH_eq]
+  simp [ContinuousLinearMap.adjoint_inner_left,
+    ContinuousLinearMap.adjoint_inner_right]
+
+/--
+An adjoint-square factorization by a continuous linear equivalence is positive
+definite.
+-/
+theorem hessianQuadratic_pos_of_adjointSqrtCoord
+    [CompleteSpace E]
+    {H : E →L[ℝ] E} (sqrtCoord : E ≃L[ℝ] E)
+    (hH_eq :
+      H =
+        (ContinuousLinearMap.adjoint sqrtCoord.toContinuousLinearMap).comp
+          sqrtCoord.toContinuousLinearMap)
+    {v : E} (hv : v ≠ 0) :
+    0 < inner ℝ v (H v) := by
+  have hmap_ne : sqrtCoord.toContinuousLinearMap v ≠ 0 := by
+    intro hmap
+    apply hv
+    have h := congrArg (fun y : E => sqrtCoord.symm y) hmap
+    simpa using h
+  rw [hH_eq]
+  have hquad :
+      inner ℝ v
+          (((ContinuousLinearMap.adjoint sqrtCoord.toContinuousLinearMap).comp
+            sqrtCoord.toContinuousLinearMap) v) =
+        ‖sqrtCoord.toContinuousLinearMap v‖ ^ (2 : ℕ) := by
+    simpa using
+      (ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right
+        sqrtCoord.toContinuousLinearMap v).symm
+  rw [hquad]
+  exact pow_pos (norm_pos_iff.mpr hmap_ne) 2
+
+/--
+If `H = S†S` and `H^{-1}` is supplied as `S^{-1}(S^{-1})†`, then the supplied
+inverse-Hessian is a right inverse for the Hessian.
+-/
+theorem hessianRightInverse_of_adjointSqrtCoord_invHess
+    [CompleteSpace E]
+    {H invH : E →L[ℝ] E} (sqrtCoord : E ≃L[ℝ] E)
+    (hH_eq :
+      H =
+        (ContinuousLinearMap.adjoint sqrtCoord.toContinuousLinearMap).comp
+          sqrtCoord.toContinuousLinearMap)
+    (hinv_eq :
+      invH =
+        sqrtCoord.symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint sqrtCoord.symm.toContinuousLinearMap)) :
+    ∀ v : E, H (invH v) = v := by
+  intro v
+  let S : E →L[ℝ] E := sqrtCoord.toContinuousLinearMap
+  let C : E →L[ℝ] E := sqrtCoord.symm.toContinuousLinearMap
+  rw [hH_eq, hinv_eq]
+  apply ext_inner_right ℝ
+  intro w
+  calc
+    inner ℝ
+        (((ContinuousLinearMap.adjoint S).comp S)
+          ((C.comp (ContinuousLinearMap.adjoint C)) v)) w =
+        inner ℝ
+          (S ((C.comp (ContinuousLinearMap.adjoint C)) v)) (S w) := by
+          simpa [ContinuousLinearMap.comp_apply] using
+            (ContinuousLinearMap.adjoint_inner_left S w
+              (S ((C.comp (ContinuousLinearMap.adjoint C)) v)))
+    _ = inner ℝ ((ContinuousLinearMap.adjoint C) v) (S w) := by
+          simp [S, C, ContinuousLinearMap.comp_apply]
+    _ = inner ℝ v (C (S w)) := by
+          simpa using
+            (ContinuousLinearMap.adjoint_inner_left C (S w) v)
+    _ = inner ℝ v w := by
+          simp [S, C]
+
+/--
 Cauchy bridge between the supplied dual and primal local norms from the
 square-root coordinate factorization at a point.
 -/
@@ -5623,6 +5705,71 @@ theorem chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqr
       (sqrtCoord := sqrtCoord) (s := s) (x := x) (M := M)
       hMlambda_lt hs hx hstep_mem hsc hess_pos hhess_cont hhess hmixed
       hsymm hgrad hnewton_linear rfl hhess_eq hinv_right
+
+/--
+Chewi Theorem 13.8 source-Newton-segment assembly from a concrete square-root
+coordinate model for the Hessian and inverse Hessian on the feasible set.
+-/
+theorem chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {sqrtCoord : E -> E ≃L[ℝ] E}
+    {s : Set E} {x : E} {M : ℝ}
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hs : Convex ℝ s) (hx : x ∈ s)
+    (hstep_mem : newtonStep grad invHess x ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hhess_model : ∀ ⦃z : E⦄, z ∈ s ->
+      hess z =
+        (ContinuousLinearMap.adjoint (sqrtCoord z).toContinuousLinearMap).comp
+          (sqrtCoord z).toContinuousLinearMap)
+    (hinv_model : ∀ ⦃z : E⦄, z ∈ s ->
+      invHess z =
+        (sqrtCoord z).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtCoord z).symm.toContinuousLinearMap)) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  have hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v) := by
+    intro z hz v hv
+    exact
+      hessianQuadratic_pos_of_adjointSqrtCoord
+        (H := hess z) (sqrtCoord := sqrtCoord z)
+        (hhess_model hz) hv
+  have hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric := by
+    intro z hz
+    exact
+      hessianSymmetric_of_adjointSqrt
+        (H := hess z) (sqrtH := (sqrtCoord z).toContinuousLinearMap)
+        (hhess_model hz)
+  have hinv_right : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E,
+      hess z (invHess z v) = v := by
+    intro z hz
+    exact
+      hessianRightInverse_of_adjointSqrtCoord_invHess
+        (H := hess z) (invH := invHess z)
+        (sqrtCoord := sqrtCoord z)
+        (hhess_model hz) (hinv_model hz)
+  exact
+    chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoordDelta_of_sourceNewtonSegment
+      (hess := hess) (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (grad := grad) (invHess := invHess) (sqrtCoord := sqrtCoord x)
+      (s := s) (x := x) (M := M)
+      hMlambda_lt hs hx hstep_mem hsc hess_pos hhess_cont hhess hmixed
+      hsymm hgrad hnewton_linear (hhess_model hx) hinv_right
 
 /--
 Chewi Theorem 13.8 assembly from a unit bilinear estimate on the normalized

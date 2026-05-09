@@ -407,17 +407,27 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	where the normalized Delta operator is chosen definitionally as
 	`coord† Delta coord`; use this stronger wrapper when no external
 	`normalized` operator needs to be named.
+	The newest concrete square-root-family packet adds
+	`hessianSymmetric_of_adjointSqrt`,
+	`hessianQuadratic_pos_of_adjointSqrtCoord`,
+	`hessianRightInverse_of_adjointSqrtCoord_invHess`, and
+	`chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`.
+	This derives Hessian symmetry, positive definiteness, and the on-set
+	inverse-Hessian right-inverse identity from the source model
+	`hess z = S_z† S_z` and `invHess z = S_z^{-1}(S_z^{-1})†`.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
 local-norm sandwich and its integration into the Rayleigh decrement wrapper
-are now compiled, so next derive the square-root coordinate
-identities
-`coord sqrtH = id`, `sqrtH coord = id`,
-`<v, invHess(x)v> = ||coord†v||^2`, and `hess x = sqrtH†sqrtH` from the
-concrete Hessian/inverse-Hessian model.  In parallel, prove the concrete
-on-set right-inverse hypothesis `∀ z ∈ s, ∀ v, hess z (invHess z v) = v`
-instead of passing separate pointwise identities.  The Definition 13.7 norm identity,
+are now compiled, and the concrete square-root family wrapper now discharges
+Hessian positive definiteness, symmetry, the inverse-Hessian right-inverse
+identity, the Definition 13.7 norm identity, inverse-local identity, and the
+normalized Delta bookkeeping from the model equalities.  Next derive or
+instantiate the source/model equalities
+`hess z = S_z† S_z` and `invHess z = S_z^{-1}(S_z^{-1})†` for the actual
+finite-dimensional/barrier Hessian model, then use
+`chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`.
+The Definition 13.7 norm identity,
 inverse-local identity, Cauchy bridge, dual-local-norm transport, and raw
 inverse-Hessian quadratic upper comparison should be obtained only via the
 compiled right-inverse, square-root/Cauchy, duality, and reverse-algebra
@@ -429,12 +439,11 @@ both; use the compiled `ContinuousLinearEquiv` coordinate wrapper.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
-  derive the needed on-set right-inverse identity from the concrete Hessian/
-  inverse-Hessian or matrix model, derive the `sqrtCoord : E ≃L[ℝ] E`
-  coordinate model, derive the square-root Hessian factorization
-  `hess x = sqrtH†sqrtH`, and use the canonical normalized-Delta theorem
+  derive the concrete square-root family model
+  `hess z = S_z† S_z` and `invHess z = S_z^{-1}(S_z^{-1})†` for the
+  Hessian/inverse-Hessian or matrix model, then use the source wrapper
   required by
-  `chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoordDelta_of_sourceNewtonSegment`.
+  `chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`.
   The conversion from those inputs to the normalized Rayleigh bound, op norm,
   Delta quadratic bound, residual bound, and final decrement estimate is
   compiled; do not reprove it.
