@@ -697,9 +697,11 @@ Initial modules:
   `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_tendstoInMeasure_const`,
   and the displayed weak-convergence `O_P(1)` packet adds
   `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_tendstoInDistribution`,
-  so the remaining critical path should prove a model-specific convergence,
-  tightness, or localization source for the displayed scaled estimator, or
-  move to a genuinely model-specific derivative or score representation.
+  and the score-equation `O_P(1)` packet adds
+  `vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_scoreEquation`,
+  so the remaining critical path should prove a model-specific linear score
+  equation and negligible residual, or move to a genuinely model-specific
+  derivative or score representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
