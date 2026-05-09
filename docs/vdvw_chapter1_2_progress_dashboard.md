@@ -302,9 +302,15 @@ The additive-error fixed-`M` convergence consumer is now compiled through
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_of_chebyshevPenalty_invNat_bound_scaledSelectedFiniteNetHoeffdingUpper_add_error`,
 and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale`.
+The sign-first finite-center failure-event measurability layer is now compiled
+as
+`measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt`,
+`measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selectedCenterAt`.
 The next blocker is now exactly to prove the integrated random selected-cover
-finite-center failure-tail error vanishes, and to close the sign-first
-selected-center event measurability obligations.
+finite-center failure-tail error vanishes, and to prove the Nat-indexed
+in-range selected-center selector measurability assumptions.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
