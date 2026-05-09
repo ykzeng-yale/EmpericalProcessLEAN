@@ -1307,18 +1307,23 @@ sandwich.  The newest mixed-third derivative packet adds
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
-the mixed-third certificate-to-exponential bridges, and
+`hessianSegmentCoeffBound_of_localNorm_bound`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`,
+the mixed-third certificate-to-exponential bridges,
 `localNorm_sandwich_of_hessianSegmentMixedThirdCertificate` /
-`localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate`.  Search
+`localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate`, and
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`.
+The newest bridge means a source proof of the segment estimate
+`||y - x||_{z_t} <= r / (1 - M*r*t)` now directly supplies the coefficient
+bound needed by the mixed-third certificate and the final local-norm sandwich.
+Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)`; the compiled route uses
 `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`, and
-`HasDerivAt.inner`.  Next Chapter 13 work should construct
-`HessianSegmentMixedThirdLocalNormCertificate` from the source
-third-derivative representation and the segment local-norm coefficient
-estimate; segment membership and `ψ` continuity are now discharged by the
-convex/`ContinuousOn hess s` constructor.  Then state/prove Lemma 13.6(4) and
-continue to Newton decrement estimates.
+`HasDerivAt.inner`.  Next Chapter 13 work should prove the segment local-norm
+bound from the self-concordance differential inequality, connect the real
+third-derivative representation to `MixedThirdSelfConcordantOn`, then
+state/prove Lemma 13.6(4) and continue to Newton decrement estimates.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,

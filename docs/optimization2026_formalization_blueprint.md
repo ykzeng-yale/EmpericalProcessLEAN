@@ -33,12 +33,15 @@ active blocker.
 Current live route: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
 `ψ_v(t)`, mixed-third certificate, Frechet-Hessian derivative, and local-norm
-sandwich declarations.  The next proof target is to construct
-`HessianSegmentMixedThirdLocalNormCertificate` from source hypotheses:
-mixed third derivative/self-concordance and the segment local-norm coefficient
-estimate.  Segment membership and `ψ` continuity are now compiled from
-convexity plus `ContinuousOn hess s`; do not return to ASGD or generic
-process-prompt edits unless the user explicitly switches lanes.
+sandwich declarations.  The newest source wrapper turns convexity,
+`ContinuousOn hess s`, the mixed-third derivative bridge, and a segment
+local-norm estimate
+`||y - x||_{z_t} <= r / (1 - M*r*t)` directly into the Lemma 13.6(4)
+local-norm sandwich.  The next proof target is therefore the analytic segment
+local-norm estimate and the real third-derivative-to-`MixedThirdSelfConcordantOn`
+bridge.  Segment membership, `ψ` continuity, and coefficient scaling are now
+compiled; do not return to ASGD or generic process-prompt edits unless the
+user explicitly switches lanes.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers
@@ -392,12 +395,15 @@ sandwich.  The newest mixed-third packet adds
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
+`hessianSegmentCoeffBound_of_localNorm_bound`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`,
 the mixed-third exponential-bound bridges, and the mixed-third local-norm
-sandwich consumers.  The next Chapter 13 packet should construct
-`HessianSegmentMixedThirdLocalNormCertificate` from the source third-derivative
-and segment local-norm coefficient estimates, using the convex source
-constructor to discharge segment membership and `ψ` continuity, then assemble
-Lemma 13.6(4) and continue to Newton decrement estimates.
+sandwich consumers, including the convex/source wrapper
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`.
+The next Chapter 13 packet should prove the source segment local-norm bound
+`||y - x||_{z_t} <= r / (1 - M*r*t)`, connect the real third-derivative
+representation to `MixedThirdSelfConcordantOn`, then assemble Lemma 13.6(4) and
+continue to Newton decrement estimates.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

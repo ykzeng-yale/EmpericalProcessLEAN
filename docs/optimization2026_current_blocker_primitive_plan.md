@@ -160,29 +160,34 @@ Compiled declarations to reuse include
 `hessianSegmentPsi_continuousOn_of_continuousOn`,
 `hessianSegmentPsi_continuousOn_of_continuous`,
 `hessianSegmentPsi_continuousOn_of_convex_continuousOn`,
+`hessianSegmentCoeffBound_of_localNorm_bound`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`,
 the corresponding `.toHessianSegmentConcretePsiCertificate` and
 `.toHessianSegmentExponentialBounds` bridges, and
 `localNorm_sandwich_of_hessianSegmentMixedThirdCertificate` /
-`localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate`.
+`localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate` /
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`.
 
 Next theorem-sized target: construct the source hypotheses for
-`HessianSegmentMixedThirdLocalNormCertificate` rather than adding more generic
-Gronwall/`ψ` plumbing.  The exact blockers are:
+`HessianSegmentMixedThirdLocalNormCertificate` from the remaining analytic
+source facts rather than adding more generic Gronwall/`ψ` plumbing.  The exact
+blockers are:
 
-- prove the segment coefficient estimate
-  `2 * M * ||y - x||_{z_s} <= 2 * M * r / (1 - M*r*s)` from Chewi Lemma 13.6's
-  local-norm differential inequality;
+- prove the natural segment local-norm estimate
+  `||y - x||_{z_s} <= r / (1 - M*r*s)` from Chewi Lemma 13.6's differential
+  inequality for `||y - x||_{z_s}`; the scalar multiplication into the
+  certificate coefficient is now compiled as
+  `hessianSegmentCoeffBound_of_localNorm_bound`;
 - connect a real third Frechet derivative or `iteratedFDeriv` representation
   to `MixedThirdSelfConcordantOn.mixed_third_bound`;
 - reuse the compiled convex/continuity source constructor to discharge
   segment membership and `ContinuousOn (hessianSegmentPsi hess x y v) [0,1]`
   from `Convex ℝ s`, `x ∈ s`, `y ∈ s`, and `ContinuousOn hess s`;
-- then consume
-  `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate` to state
-  and prove the source-shaped Lemma 13.6(4), before moving to Newton decrement
+- then consume the convex/mixed-third/segment-local-norm wrapper to state and
+  prove the source-shaped Lemma 13.6(4), before moving to Newton decrement
   estimates.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi
