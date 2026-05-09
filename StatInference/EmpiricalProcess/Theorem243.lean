@@ -37835,6 +37835,44 @@ def VdVWTheorem243SelectedWitnessGhostGoodEvent
           epsilon / 2}
 
 /--
+Selected-witness ghost-good fibers are contained in the pair-difference bad
+event.
+
+This is the pointwise bridge between the Chebyshev fiber lower bound and the
+later sign/Rademacher comparison: once the ghost sample is good for a class
+member that witnesses the original bad event, the pair-difference supremum is
+bad at radius `epsilon / 2`.
+-/
+theorem
+    vdVWWeightedClassSupremum_pairSub_gt_half_of_selectedWitnessGhostGoodEvent
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {weights : Fin n -> ℝ}
+    {sample ghostSample : SampleAt Observation n} {epsilon : ℝ}
+    (hbdd :
+      BddAbove
+        (vdVWWeightedClassValueSet indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            classFun index z.1 - classFun index z.2)
+          weights (fun i : Fin n => (sample i, ghostSample i))))
+    (hghost :
+      ghostSample ∈
+        VdVWTheorem243SelectedWitnessGhostGoodEvent
+          indexClass classFun weights sample epsilon) :
+    epsilon / 2 <
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun z : Observation × Observation =>
+          classFun index z.1 - classFun index z.2)
+        weights (fun i : Fin n => (sample i, ghostSample i)) := by
+  rcases hghost with ⟨index, hindex, hbad_index, hgood⟩
+  exact
+    vdVWWeightedClassSupremum_pairSub_gt_half_of_original_bad_of_ghost_good
+      (indexClass := indexClass) (classFun := classFun)
+      (weights := weights) (index := index)
+      (sample := sample) (ghostSample := ghostSample)
+      (epsilon := epsilon) hindex hbdd hbad_index hgood
+
+/--
 Chebyshev lower bound for the selected-witness ghost-good fiber event.
 
 After a centered truncated supremum bad event selects one class member,
@@ -37961,6 +37999,111 @@ theorem
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
       (sample := sample) henvelope hM htruncIntegrable hepsilon hbad_sup
+
+/--
+Chebyshev lower bound transported from the selected-witness ghost-good fiber to
+the centered pair-difference bad event.
+
+The target event is the next source-side object before the Rademacher
+sign-swap: for every ghost sample in the selected witness fiber, the centered
+pair-difference class supremum is larger than `epsilon / 2`.
+-/
+theorem
+    VdVWChebyshev_betaLower_centeredPairSubBadEvent_of_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    {sample : SampleAt Observation (n + 1)}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon)
+    (hbad :
+      epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹) sample)
+          (0 : ℝ)) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / ((((n + 1 : ℕ) : ℝ)) * epsilon ^ 2)) ≤
+      (vdVWProductMeasure P (n + 1))
+        {ghostSample : SampleAt Observation (n + 1) |
+          epsilon / 2 <
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                (vdVWTruncatedClassFun classFun envelope M index z.1 -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                  (vdVWTruncatedClassFun classFun envelope M index z.2 -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+              (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+              (fun i : Fin (n + 1) => (sample i, ghostSample i))} := by
+  let centeredClassFun : Index -> Observation -> ℝ :=
+    fun index observation =>
+      vdVWTruncatedClassFun classFun envelope M index observation -
+        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P
+  have hcheb :
+      ENNReal.ofReal
+          (1 - (16 * M ^ 2) / ((((n + 1 : ℕ) : ℝ)) * epsilon ^ 2)) ≤
+        (vdVWProductMeasure P (n + 1))
+          (VdVWTheorem243SelectedWitnessGhostGoodEvent indexClass
+            centeredClassFun
+            (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+            sample epsilon) := by
+    simpa [centeredClassFun] using
+      VdVWChebyshev_betaLower_selectedWitnessGhostGoodEvent_centeredTruncated_uniformWeights_succ_of_dist_bad
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+        (sample := sample) henvelope hM htruncIntegrable hepsilon hbad
+  exact hcheb.trans
+    (measure_mono (by
+      intro ghostSample hghost
+      have hbdd :
+          BddAbove
+            (vdVWWeightedClassValueSet indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                centeredClassFun index z.1 - centeredClassFun index z.2)
+              (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+              (fun i : Fin (n + 1) => (sample i, ghostSample i))) := by
+        exact
+          bddAbove_vdVWWeightedClassValueSet_of_uniform_bound
+            (fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+            (fun i : Fin (n + 1) => (sample i, ghostSample i))
+            (bound := 4 * M)
+            (fun index hindex z => by
+              have hleft :
+                  |centeredClassFun index z.1| ≤ 2 * M := by
+                simpa [centeredClassFun] using
+                  abs_centered_vdVWTruncatedClassFun_le_two_mul_M
+                    (P := P) (indexClass := indexClass)
+                    (classFun := classFun) (envelope := envelope)
+                    (M := M) henvelope hM hindex
+                    (htruncIntegrable index hindex) z.1
+              have hright :
+                  |centeredClassFun index z.2| ≤ 2 * M := by
+                simpa [centeredClassFun] using
+                  abs_centered_vdVWTruncatedClassFun_le_two_mul_M
+                    (P := P) (indexClass := indexClass)
+                    (classFun := classFun) (envelope := envelope)
+                    (M := M) henvelope hM hindex
+                    (htruncIntegrable index hindex) z.2
+              calc
+                |centeredClassFun index z.1 - centeredClassFun index z.2|
+                    ≤ |centeredClassFun index z.1| +
+                        |centeredClassFun index z.2| := abs_sub _ _
+                _ ≤ 2 * M + 2 * M := add_le_add hleft hright
+                _ = 4 * M := by ring)
+      simpa [centeredClassFun] using
+        vdVWWeightedClassSupremum_pairSub_gt_half_of_selectedWitnessGhostGoodEvent
+          (indexClass := indexClass) (classFun := centeredClassFun)
+          (weights := fun _ : Fin (n + 1) => (((n + 1 : ℕ) : ℝ))⁻¹)
+          (sample := sample) (ghostSample := ghostSample)
+          (epsilon := epsilon) hbdd hghost))
 
 /--
 A scaled selected outer-probability comparison without the displayed beta factor
