@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 ContDiff regularity handoff`).
+(`Add Vaart theorem 5.41 estimating map ContDiff handoff`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -626,13 +626,14 @@ Live continuation prompt: use the compact prompt in
 
 ## Next Aggressive Target
 
-Discharge the remaining source-shaped Taylor inputs for Vaart Theorem 5.41 in
-`MEstimators.lean`: instantiate the remaining estimating-map path-continuity
-and Frechet-derivative fields from a standard open-set smoothness package for
-the estimating map.  The derivative-map `ContDiffOn` source regularity bridge,
-derivative-path regularity bridge, vector derivative Taylor bridge,
-`derivativeAt theta0` specialization, vector-to-coordinate continuity
-reduction, coordinate scalar derivative-at-zero/display reduction,
+Move past the smooth Taylor side for Vaart Theorem 5.41 in `MEstimators.lean`:
+instantiate one remaining statistical source field feeding the current
+ContDiff endpoint, preferably the empirical derivative LLN or a
+measurability/envelope bridge from existing finite-coordinate empirical-average
+infrastructure.  The estimating-map and derivative-map `ContDiffOn` source
+regularity bridges, derivative-path regularity bridge, vector derivative
+Taylor bridge, `derivativeAt theta0` specialization, vector-to-coordinate
+continuity reduction, coordinate scalar derivative-at-zero/display reduction,
 Frechet-to-one-dimensional chain rule, estimating-map segment instantiation,
 second-derivative action matching, path-selected Taylor bridge, coordinate
 assembly, the scalar Taylor bridge, scaling bridge, auxiliary quadratic

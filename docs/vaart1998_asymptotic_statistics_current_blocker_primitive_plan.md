@@ -10,16 +10,15 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativeContDiff_envelope`.
-It now consumes open-set `ContDiffOn ℝ 1 derivativeAt`, segment containment,
-and the identification of mathlib's `fderiv` with the selected second
-derivative.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelope`.
+It now consumes open-set `ContDiffOn ℝ 1` smoothness for both `estimatingMap`
+and `derivativeAt`, segment containment, and the corresponding `fderiv`
+identifications.
 
-Next packet: instantiate the remaining estimating-map source fields feeding
-this endpoint.  Prefer an open-set smoothness wrapper for `estimatingMap` that
-yields path continuity on `theta0 + t • delta` and open-segment
-`HasFDerivAt estimatingMap (derivativeAt point) point`, then forward directly
-to the current `...SecondDerivativeContDiff_envelope`.
+Next packet: move past the smooth Taylor side.  Instantiate one remaining
+statistical source field feeding this endpoint, preferably the empirical
+derivative LLN or a measurability/envelope bridge from existing finite
+coordinate empirical-average infrastructure.
 
 Workflow: search local/mathlib APIs first, add one theorem-sized Lean layer,
 run the focused file and target module checks plus hygiene scans, fetch/rebase
@@ -850,18 +849,29 @@ compiling:
 307. Theorem 5.41 finite-coordinate empirical-average source handoff from
    theta0 Frechet derivative and open-set `C^1` derivative-map smoothness:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativeContDiff_envelope`.
+308. Theorem 5.41 estimating-map source regularity from open-set `C^1`
+   smoothness:
+   `vaart1998_theorem_5_41_estimatingMap_source_regular_of_contDiffOn_open`.
+309. Theorem 5.41 a.e. sampled estimating-map source regularity from open-set
+   `C^1` smoothness:
+   `vaart1998_theorem_5_41_estimatingMap_source_regular_ae_of_contDiffOn_open`.
+310. Theorem 5.41 finite-coordinate empirical-average source handoff from
+   open-set `C^1` smoothness of both the estimating map and derivative map:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 ContDiff regularity handoff`).
+(`Add Vaart theorem 5.41 estimating map ContDiff handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving the source
-second-derivative regularity fields from open-set `ContDiffOn ℝ 1
-derivativeAt`, segment containment, and the selected `fderiv` identity.
+asymptotic-normality route for Z-estimators by deriving the remaining
+estimating-map path-continuity and Frechet-derivative fields from open-set
+`ContDiffOn ℝ 1 estimatingMap`, segment containment, and the selected `fderiv`
+identity.
 
-The next aggressive packet should instantiate the remaining estimating-map
-path-continuity and Frechet-derivative fields from a standard smoothness
-package for the estimating map.
+The next aggressive packet should instantiate a remaining statistical source
+field feeding this endpoint, preferably the empirical derivative LLN or a
+measurability/envelope bridge from existing finite-coordinate
+empirical-average infrastructure.
 
 ## Execution Notes
 

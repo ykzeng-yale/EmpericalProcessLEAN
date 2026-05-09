@@ -4168,6 +4168,138 @@ theorem vaart1998_theorem_5_41_estimatingMap_coordinate_path_hasDerivAt_ae_of_ha
       (hω i x hx)
 
 /--
+van der Vaart 1998, Theorem 5.41, estimating-map source regularity from
+open-set `C^1` smoothness.
+
+Open-set `ContDiffOn ℝ 1` gives continuity of the actual textbook path and
+Frechet derivatives along the open segment, after identifying mathlib's
+`fderiv` with the selected derivative map.
+-/
+theorem vaart1998_theorem_5_41_estimatingMap_source_regular_of_contDiffOn_open
+    {Coord Θ : Type*} [Fintype Coord]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (estimatingMap : Θ -> Coord -> ℝ)
+    (derivativeAt : Θ -> Θ →L[ℝ] (Coord -> ℝ))
+    (theta0 delta : Θ) (sourceSet : Set Θ)
+    (hOpen : IsOpen sourceSet)
+    (hSegmentSubset :
+      ((fun t : ℝ => theta0 + t • delta) '' Set.Icc (0 : ℝ) 1) ⊆
+        sourceSet)
+    (hContDiffEstimatingMap : ContDiffOn ℝ 1 estimatingMap sourceSet)
+    (hDerivativeAt_eq_fderiv : ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+      fderiv ℝ estimatingMap (theta0 + x • delta) =
+        derivativeAt (theta0 + x • delta)) :
+    ContinuousOn (fun t : ℝ => estimatingMap (theta0 + t • delta))
+        (Set.Icc (0 : ℝ) 1) ∧
+    ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+      HasFDerivAt estimatingMap
+        (derivativeAt (theta0 + x • delta))
+        (theta0 + x • delta) := by
+  let path : ℝ -> Θ := fun t => theta0 + t • delta
+  have hpath : ContinuousOn path (Set.Icc (0 : ℝ) 1) := by
+    have hsmul : ContinuousOn (fun t : ℝ => t • delta) (Set.Icc (0 : ℝ) 1) :=
+      continuousOn_id.smul continuousOn_const
+    simpa [path] using hsmul.const_add theta0
+  have hcontSource :
+      ContinuousOn estimatingMap
+        ((fun t : ℝ => theta0 + t • delta) '' Set.Icc (0 : ℝ) 1) :=
+    hContDiffEstimatingMap.continuousOn.mono hSegmentSubset
+  refine ⟨?_, ?_⟩
+  · simpa [path, Function.comp_def] using hcontSource.comp hpath
+      (by
+        intro t ht
+        exact ⟨t, ht, rfl⟩)
+  · intro x hx
+    have hxmem : theta0 + x • delta ∈ sourceSet := by
+      exact hSegmentSubset ⟨x, ⟨le_of_lt hx.1, le_of_lt hx.2⟩, rfl⟩
+    have hdiffOn : DifferentiableOn ℝ estimatingMap sourceSet :=
+      hContDiffEstimatingMap.differentiableOn_one
+    have hderiv :
+        HasFDerivAt estimatingMap
+          (fderiv ℝ estimatingMap (theta0 + x • delta))
+          (theta0 + x • delta) :=
+      hdiffOn.hasFDerivAt (hOpen.mem_nhds hxmem)
+    simpa [hDerivativeAt_eq_fderiv x hx] using hderiv
+
+/--
+van der Vaart 1998, Theorem 5.41, a.e. sampled estimating-map source
+regularity from open-set `C^1` smoothness.
+
+This packages the remaining estimating-map smoothness assumptions consumed by
+the current finite-coordinate empirical-average endpoint.
+-/
+theorem vaart1998_theorem_5_41_estimatingMap_source_regular_ae_of_contDiffOn_open
+    {Ω Observation Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (estimatingMap : ℕ -> Ω -> Observation -> Θ -> Coord -> ℝ)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> Θ -> Θ →L[ℝ] (Coord -> ℝ))
+    (sourceSet : ℕ -> Ω -> Observation -> Set Θ)
+    (theta0 delta : ℕ -> Ω -> Θ)
+    (hOpen : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        IsOpen (sourceSet n ω (samples n ω i)))
+    (hSegmentSubset : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ((fun t : ℝ => theta0 n ω + t • delta n ω) ''
+            Set.Icc (0 : ℝ) 1) ⊆
+          sourceSet n ω (samples n ω i))
+    (hContDiffEstimatingMap : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContDiffOn ℝ 1 (estimatingMap n ω (samples n ω i))
+          (sourceSet n ω (samples n ω i)))
+    (hDerivativeAt_eq_fderiv : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          fderiv ℝ (estimatingMap n ω (samples n ω i))
+              (theta0 n ω + x • delta n ω) =
+            derivativeAt n ω (samples n ω i)
+              (theta0 n ω + x • delta n ω)) :
+    (∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContinuousOn
+          (fun t : ℝ =>
+            estimatingMap n ω (samples n ω i)
+              (theta0 n ω + t • delta n ω))
+          (Set.Icc (0 : ℝ) 1)) ∧
+    (∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          HasFDerivAt (estimatingMap n ω (samples n ω i))
+            (derivativeAt n ω (samples n ω i)
+              (theta0 n ω + x • delta n ω))
+            (theta0 n ω + x • delta n ω)) := by
+  refine ⟨?_, ?_⟩
+  · intro n
+    filter_upwards [hOpen n, hSegmentSubset n, hContDiffEstimatingMap n,
+      hDerivativeAt_eq_fderiv n] with ω hopen hsubset hcont hderiv
+    intro i
+    exact
+      (vaart1998_theorem_5_41_estimatingMap_source_regular_of_contDiffOn_open
+        (estimatingMap := estimatingMap n ω (samples n ω i))
+        (derivativeAt := derivativeAt n ω (samples n ω i))
+        (theta0 := theta0 n ω) (delta := delta n ω)
+        (sourceSet := sourceSet n ω (samples n ω i))
+        (hOpen := hopen i) (hSegmentSubset := hsubset i)
+        (hContDiffEstimatingMap := hcont i)
+        (hDerivativeAt_eq_fderiv := hderiv i)).1
+  · intro n
+    filter_upwards [hOpen n, hSegmentSubset n, hContDiffEstimatingMap n,
+      hDerivativeAt_eq_fderiv n] with ω hopen hsubset hcont hderiv
+    intro i x hx
+    exact
+      (vaart1998_theorem_5_41_estimatingMap_source_regular_of_contDiffOn_open
+        (estimatingMap := estimatingMap n ω (samples n ω i))
+        (derivativeAt := derivativeAt n ω (samples n ω i))
+        (theta0 := theta0 n ω) (delta := delta n ω)
+        (sourceSet := sourceSet n ω (samples n ω i))
+        (hOpen := hopen i) (hSegmentSubset := hsubset i)
+        (hContDiffEstimatingMap := hcont i)
+        (hDerivativeAt_eq_fderiv := hderiv i)).2 x hx
+
+/--
 van der Vaart 1998, Theorem 5.41, derivative-path continuity from source
 continuity of the Frechet derivative on the segment image.
 
@@ -5510,6 +5642,141 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hScaledEstimator_meas hRoot hScore_scaled hEstimator_scaled
       hScaledEstimator_eq hEstimator_segment hContinuous hFDeriv
       hSource.1 hSource.2
+
+/--
+van der Vaart 1998, Theorem 5.41, finite-coordinate empirical-average source
+handoff from open-set `C^1` smoothness of both the estimating map and the
+derivative map.
+
+This wrapper discharges the remaining estimating-map path-continuity and
+Frechet-derivative fields before applying the derivative-map `ContDiffOn`
+endpoint above.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelope
+    {Ω Ω' Observation Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] (Coord -> ℝ)) (Vinv : (Coord -> ℝ) →L[ℝ] Θ)
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scale : ℕ -> Ω -> ℝ)
+    (estimatingMap : ℕ -> Ω -> Observation -> Θ -> Coord -> ℝ)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> Θ -> Θ →L[ℝ] (Coord -> ℝ))
+    (scoreAtTheta0 estimatingAtEstimator :
+      ℕ -> Ω -> Observation -> Coord -> ℝ)
+    (secondDerivative :
+      ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))
+    (sourceSet : ℕ -> Ω -> Observation -> Set Θ)
+    (envelope : Observation -> ℝ)
+    {theta0 estimator delta scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Coord -> ℝ}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT :
+      TendstoInDistribution
+        (fun n ω => empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω))
+        atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω =>
+          ‖empiricalAverageVector (samples n ω)
+              (fun x => derivativeAt n ω x (theta0 n ω)) - V‖)
+        atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hCurvatureBounded :
+      StochasticBounded P
+        (fun n ω => empiricalAverage (samples n ω) envelope))
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hEnvelopeBound : ∀ᶠ n in atTop, ∀ ω x,
+      ‖secondDerivative n ω x‖ ≤ envelope x)
+    (hEmpiricalDerivative_meas : ∀ n,
+      AEMeasurable
+        (fun ω =>
+          empiricalAverageVector (samples n ω)
+            (fun x => derivativeAt n ω x (theta0 n ω))) P)
+    (hSecondDerivativeAction_meas : ∀ n,
+      AEMeasurable
+        (fun ω =>
+          empiricalAverageVector (samples n ω) (secondDerivative n ω)) P)
+    (hDelta_meas : ∀ n, AEMeasurable (delta n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P)
+    (hRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω) (estimatingAtEstimator n ω) = 0)
+    (hScore_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i) (theta0 n ω))
+    (hEstimator_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        estimatingAtEstimator n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i)
+            (estimator n ω))
+    (hScaledEstimator_eq : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, scaledEstimator n ω = scale n ω • delta n ω)
+    (hEstimator_segment : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, theta0 n ω + delta n ω = estimator n ω)
+    (hOpen : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        IsOpen (sourceSet n ω (samples n ω i)))
+    (hSegmentSubset : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ((fun t : ℝ => theta0 n ω + t • delta n ω) ''
+            Set.Icc (0 : ℝ) 1) ⊆
+          sourceSet n ω (samples n ω i))
+    (hContDiffEstimatingMap : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContDiffOn ℝ 1 (estimatingMap n ω (samples n ω i))
+          (sourceSet n ω (samples n ω i)))
+    (hDerivativeAt_eq_fderiv : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          fderiv ℝ (estimatingMap n ω (samples n ω i))
+              (theta0 n ω + x • delta n ω) =
+            derivativeAt n ω (samples n ω i)
+              (theta0 n ω + x • delta n ω))
+    (hContDiffDerivativeAt : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContDiffOn ℝ 1 (derivativeAt n ω (samples n ω i))
+          (sourceSet n ω (samples n ω i)))
+    (hSecondDerivative_eq_fderiv : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          fderiv ℝ (derivativeAt n ω (samples n ω i))
+              (theta0 n ω + x • delta n ω) =
+            secondDerivative n ω (samples n ω i)) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hEstimatingSource :=
+    vaart1998_theorem_5_41_estimatingMap_source_regular_ae_of_contDiffOn_open
+      (P := P) (samples := samples) (estimatingMap := estimatingMap)
+      (derivativeAt := derivativeAt) (sourceSet := sourceSet)
+      (theta0 := theta0) (delta := delta)
+      hOpen hSegmentSubset hContDiffEstimatingMap hDerivativeAt_eq_fderiv
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativeContDiff_envelope
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (samples := samples) (scale := scale)
+      (estimatingMap := estimatingMap) (derivativeAt := derivativeAt)
+      (scoreAtTheta0 := scoreAtTheta0)
+      (estimatingAtEstimator := estimatingAtEstimator)
+      (secondDerivative := secondDerivative)
+      (sourceSet := sourceSet)
+      (envelope := envelope) (theta0 := theta0) (estimator := estimator)
+      (delta := delta) (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hScoreCLT hDerivativeLLN hDelta hEnvelope_nonneg
+      hCurvatureBounded hScaledEstimator hEnvelopeBound
+      hEmpiricalDerivative_meas hSecondDerivativeAction_meas hDelta_meas
+      hScaledEstimator_meas hRoot hScore_scaled hEstimator_scaled
+      hScaledEstimator_eq hEstimator_segment hEstimatingSource.1
+      hEstimatingSource.2 hOpen hSegmentSubset hContDiffDerivativeAt
+      hSecondDerivative_eq_fderiv
 
 end AsymptoticStatistics
 end StatInference
