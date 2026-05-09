@@ -822,6 +822,50 @@ theorem mul_one_sub_localNorm_le_of_hessianQuadraticLower
   simpa [hsqrt, mul_comm, mul_left_comm, mul_assoc] using hbase
 
 /--
+Reverse algebra for Chewi Lemma 13.6: a supplied local-norm upper comparison
+implies the corresponding Hessian quadratic-form upper comparison.
+-/
+theorem hessianQuadraticUpper_of_localNorm_le_div
+    {hess : E -> E →L[ℝ] E} {x y : E} {den : ℝ}
+    (hden_pos : 0 < den)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hnorm : ∀ v : E, localNorm hess y v ≤ localNorm hess x v / den)
+    (v : E) :
+    inner ℝ v (hess y v) ≤ den⁻¹ ^ (2 : ℕ) * inner ℝ v (hess x v) := by
+  have hrhs_nonneg : 0 ≤ localNorm hess x v / den :=
+    div_nonneg (localNorm_nonneg hess x v) hden_pos.le
+  have hsq :
+      (localNorm hess y v) ^ (2 : ℕ) ≤
+        (localNorm hess x v / den) ^ (2 : ℕ) :=
+    (sq_le_sq₀ (localNorm_nonneg hess y v) hrhs_nonneg).2 (hnorm v)
+  rw [localNorm_sq_eq_inner (hy_nonneg v)] at hsq
+  rw [div_pow, localNorm_sq_eq_inner (hx_nonneg v)] at hsq
+  have hden_ne : den ≠ 0 := hden_pos.ne'
+  calc
+    inner ℝ v (hess y v) ≤ inner ℝ v (hess x v) / den ^ (2 : ℕ) := hsq
+    _ = den⁻¹ ^ (2 : ℕ) * inner ℝ v (hess x v) := by
+      field_simp [hden_ne]
+
+/--
+Denominator-shaped version of `hessianQuadraticUpper_of_localNorm_le_div`.
+-/
+theorem hessianQuadraticUpper_of_localNorm_le_div_one_sub
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    (hMr_lt : M * r < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hnorm : ∀ v : E,
+      localNorm hess y v ≤ localNorm hess x v / (1 - M * r))
+    (v : E) :
+    inner ℝ v (hess y v) ≤
+      ((1 - M * r)⁻¹) ^ (2 : ℕ) * inner ℝ v (hess x v) := by
+  have hden_pos : 0 < 1 - M * r := by nlinarith
+  exact hessianQuadraticUpper_of_localNorm_le_div
+    (hess := hess) (x := x) (y := y) (den := 1 - M * r)
+    hden_pos hx_nonneg hy_nonneg hnorm v
+
+/--
 Supplied quadratic-form comparison between two inverse-Hessian oracles.  This
 is the dual-local-norm analogue of `HessianQuadraticBounds`.
 -/
@@ -2338,6 +2382,94 @@ theorem chewi136_newtonStep_localNorm_sandwich_sourceRadius
       (y := newtonStep grad invHess x) (M := M)
       hMr_lt hs hx hstep_mem hsc hess_pos hdiff_ne hhess_cont hhess hmixed v
   simpa [hstep_norm] using hsand
+
+/--
+Chewi Theorem 13.8 Delta step, scalar quadratic-form version.  If the Hessian
+along the segment has the pointwise Lemma 13.6 upper coefficient, then the
+integrated Hessian difference has the closed Delta coefficient.
+-/
+theorem chewi138_hessianSegmentDelta_integral_le_of_hessianUpper
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y v : E} {M lambda : ℝ}
+    (hMlambda_lt : M * lambda < 1)
+    (hhess_cont : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s)
+    (hupper : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      inner ℝ v (hess (hessianSegmentPoint x y t) v) ≤
+        (((1 - M * lambda * t)⁻¹) ^ (2 : ℕ)) * inner ℝ v (hess x v)) :
+    (∫ t in (0 : ℝ)..1,
+        inner ℝ v (hess (hessianSegmentPoint x y t) v) -
+          inner ℝ v (hess x v)) ≤
+      (M * lambda / (1 - M * lambda)) * inner ℝ v (hess x v) := by
+  let g : ℝ -> ℝ := fun t =>
+    inner ℝ v (hess (hessianSegmentPoint x y t) v) - inner ℝ v (hess x v)
+  have hpsi_cont :
+      ContinuousOn (hessianSegmentPsi hess x y v) (Set.Icc (0 : ℝ) 1) :=
+    hessianSegmentPsi_continuousOn_of_continuousOn
+      (hess := hess) (s := s) (x := x) (y := y) hhess_cont hseg v
+  have hg_cont : ContinuousOn g (Set.Icc (0 : ℝ) 1) := by
+    simpa [g, hessianSegmentPsi] using hpsi_cont.sub continuousOn_const
+  have hg_int : IntervalIntegrable g MeasureTheory.volume (0 : ℝ) 1 :=
+    hg_cont.intervalIntegrable_of_Icc zero_le_one
+  have hbound : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      g t ≤ ((((1 - M * lambda * t)⁻¹) ^ (2 : ℕ) - 1) *
+        inner ℝ v (hess x v)) := by
+    intro t ht
+    calc
+      g t ≤
+          (((1 - M * lambda * t)⁻¹) ^ (2 : ℕ)) *
+              inner ℝ v (hess x v) -
+            inner ℝ v (hess x v) := by
+        exact sub_le_sub_right (hupper t ht) (inner ℝ v (hess x v))
+      _ = ((((1 - M * lambda * t)⁻¹) ^ (2 : ℕ) - 1) *
+            inner ℝ v (hess x v)) := by
+        ring
+  simpa [g] using
+    chewi138_integral_le_deltaCoefficient_mul
+      (g := g) (M := M) (lambda := lambda) (B := inner ℝ v (hess x v))
+      hMlambda_lt hg_int hbound
+
+/--
+Chewi Theorem 13.8 Delta step from local-norm control.  This packages the
+common route: Lemma 13.6 gives pointwise local-norm control along the segment;
+squaring it gives the Hessian upper bound used by the Delta integral estimate.
+-/
+theorem chewi138_hessianSegmentDelta_integral_le_of_localNormUpper
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y v : E} {M lambda : ℝ}
+    (hMlambda_lt : M * lambda < 1)
+    (hhess_cont : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s)
+    (hx_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hz_nonneg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      0 ≤ inner ℝ w (hess (hessianSegmentPoint x y t) w))
+    (hnorm : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 -> ∀ w : E,
+      localNorm hess (hessianSegmentPoint x y t) w ≤
+        localNorm hess x w / (1 - M * lambda * t)) :
+    (∫ t in (0 : ℝ)..1,
+        inner ℝ v (hess (hessianSegmentPoint x y t) v) -
+          inner ℝ v (hess x v)) ≤
+      (M * lambda / (1 - M * lambda)) * inner ℝ v (hess x v) := by
+  refine chewi138_hessianSegmentDelta_integral_le_of_hessianUpper
+    (hess := hess) (s := s) (x := x) (y := y) (v := v)
+    (M := M) (lambda := lambda) hMlambda_lt hhess_cont hseg ?_
+  intro t ht
+  have ht_nonneg : 0 ≤ t := ht.1
+  have ht_le_one : t ≤ 1 := ht.2
+  have hMt_lt : M * lambda * t < 1 := by
+    by_cases hMl_nonneg : 0 ≤ M * lambda
+    · have hle : M * lambda * t ≤ M * lambda * 1 :=
+        mul_le_mul_of_nonneg_left ht_le_one hMl_nonneg
+      nlinarith
+    · have hMl_neg : M * lambda < 0 := lt_of_not_ge hMl_nonneg
+      have hle_zero : M * lambda * t ≤ 0 :=
+        mul_nonpos_of_nonpos_of_nonneg hMl_neg.le ht_nonneg
+      nlinarith
+  have hden_pos : 0 < 1 - M * lambda * t := by nlinarith
+  exact hessianQuadraticUpper_of_localNorm_le_div
+    (hess := hess) (x := x) (y := hessianSegmentPoint x y t)
+    (den := 1 - M * lambda * t) hden_pos hx_nonneg (hz_nonneg t ht)
+    (hnorm t ht) v
 
 /--
 The first norm-transport line in Chewi Theorem 13.8, in supplied-inverse-Hessian

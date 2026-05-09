@@ -459,12 +459,19 @@ The newest integrated Delta-bound packet adds
 `chewi138_deltaCoefficient_intervalIntegrable` and
 `chewi138_integral_le_deltaCoefficient_mul`, turning a pointwise
 coefficient-times-`B` residual bound on `[0,1]` into the closed coefficient
-`(M * lambda / (1 - M * lambda)) * B`.  The next Chapter 13 packet should
-prove the source pointwise residual/Delta quadratic bound and feed it into the
-compiled Theorem 13.8 assembly; after that, derive the inverse-Hessian
-comparison from concrete matrix/order hypotheses and remove the remaining
-mixed-third supplied source interface through the real third-derivative
-representation bridge to `MixedThirdSelfConcordantOn`.
+`(M * lambda / (1 - M * lambda)) * B`.  The newest Delta source packet adds
+`hessianQuadraticUpper_of_localNorm_le_div`,
+`hessianQuadraticUpper_of_localNorm_le_div_one_sub`,
+`chewi138_hessianSegmentDelta_integral_le_of_hessianUpper`, and
+`chewi138_hessianSegmentDelta_integral_le_of_localNormUpper`, converting
+Lemma 13.6-style pointwise local-norm control along the segment into the
+integrated scalar Hessian-difference bound in Theorem 13.8.  The next Chapter
+13 packet should lift this scalar Delta estimate to the source vector residual
+quadratic/operator bound and feed it into the compiled Theorem 13.8 assembly;
+after that, derive the inverse-Hessian comparison from concrete matrix/order
+hypotheses and remove the remaining mixed-third supplied source interface
+through the real third-derivative representation bridge to
+`MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

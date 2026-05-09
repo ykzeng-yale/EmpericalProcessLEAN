@@ -44,9 +44,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
 - Current priority sequence: Chapter 13 Theorem 13.8 source completion in
-  `StatInference/Optimization/InteriorPoint.lean`: first prove the pointwise
-  Hessian-difference residual/Delta quadratic bound, then feed it through the
-  compiled integrated Delta coefficient theorem and the existing decrement
+  `StatInference/Optimization/InteriorPoint.lean`: first lift the compiled
+  scalar Hessian-difference Delta integral bound to the vector residual
+  quadratic/operator estimate, then feed it through the existing decrement
   assembly wrapper, then remove supplied inverse-Hessian comparison and
   mixed-third-source interfaces when bounded.  Do not return to ASGD unless
   Chapter 13 stalls or the user explicitly switches lanes.
@@ -76,10 +76,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
   route-planning loop and not an already-solved ASGD tower peel; it is the
-  Theorem 13.8 pointwise residual/Delta quadratic bound and its connection to
-  the compiled integrated Delta coefficient layer.  Broad searches, old
-  Chapter 3 routing, ASGD routing, and repeated Git sync loops are explicitly
-  out of budget unless they answer that blocker.
+  Theorem 13.8 scalar-to-vector residual/Delta quadratic bound and its
+  connection to the compiled integrated Delta coefficient layer.  Broad
+  searches, old Chapter 3 routing, ASGD routing, and repeated Git sync loops
+  are explicitly out of budget unless they answer that blocker.
 - Latest ASGD source-variance route improvement: the active right compensated
   full-inverse product no longer needs the suspicious auxiliary
   `‖1 + projectedCompensatedTaylorErrorFactor‖ ≤ 1` gate.  The new route
