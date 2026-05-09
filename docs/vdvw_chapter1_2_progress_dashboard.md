@@ -183,6 +183,14 @@ The stronger constructor
 `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_maximal_components_countable`
 therefore leaves only the original and ghost selected finite-center side
 conditions as event-measurability inputs.
+The fixed-center version of those side conditions is now closed by
+`measurableSet_VdVWTheorem243FiniteCenterMaximalBound_varying_weights`,
+`measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_fixed_center`,
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_fixed_center`,
+and
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_fixed_center`.
+The remaining measurability blocker is therefore specifically the
+sample-dependent selected cover centers.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

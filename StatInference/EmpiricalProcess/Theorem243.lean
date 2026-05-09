@@ -11557,6 +11557,53 @@ theorem VdVWTheorem243FiniteCenterMaximalBound_finCoordinatePerm
     vdVWWeightedSampleSum_finCoordinatePerm] using hmaximal centerIndex
 
 /--
+Fixed finite-center maximal-bound predicates are measurable when the sample and
+weights vary measurably.
+
+This isolates the selected-cover measurability issue: for fixed centers, the
+finite conjunction of weighted-sum inequalities is an ordinary measurable set.
+-/
+theorem measurableSet_VdVWTheorem243FiniteCenterMaximalBound_varying_weights
+    {Ω : Type x} [MeasurableSpace Ω]
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n cardinality : ℕ} (sample : Ω -> SampleAt Observation n)
+    {classFun : Index -> Observation -> ℝ}
+    (center : Fin cardinality -> Index) (weights : Ω -> Fin n -> ℝ)
+    (centerScale : ℝ)
+    (hsample : ∀ i : Fin n, Measurable fun ω : Ω => sample ω i)
+    (hweights : ∀ i : Fin n, Measurable fun ω : Ω => weights ω i)
+    (hcenter_meas : ∀ centerIndex : Fin cardinality,
+      Measurable (classFun (center centerIndex))) :
+    MeasurableSet
+      {ω : Ω |
+        VdVWTheorem243FiniteCenterMaximalBound (sample ω) classFun center
+          (weights ω) centerScale} := by
+  have hcenter :
+      ∀ centerIndex : Fin cardinality,
+        Measurable fun ω : Ω =>
+          |vdVWWeightedSampleSum classFun (weights ω)
+            (center centerIndex) (sample ω)| ≤
+            vdVWTheorem243FiniteNetMaximalUpper cardinality centerScale := by
+    intro centerIndex
+    have hsum :
+        Measurable fun ω : Ω =>
+          vdVWWeightedSampleSum classFun (weights ω)
+            (center centerIndex) (sample ω) :=
+      measurable_vdVWWeightedSampleSum_varying_weights
+        (weights := weights) (sample := sample) hweights hsample
+        (index := center centerIndex) (hcenter_meas centerIndex)
+    exact measurableSet_setOf.1 <| by
+      change MeasurableSet
+        ((fun ω : Ω =>
+          |vdVWWeightedSampleSum classFun (weights ω)
+            (center centerIndex) (sample ω)|) ⁻¹'
+          Set.Iic (vdVWTheorem243FiniteNetMaximalUpper cardinality centerScale))
+      exact measurableSet_Iic.preimage hsum.abs
+  rw [measurableSet_setOf]
+  simpa [VdVWTheorem243FiniteCenterMaximalBound] using
+    Measurable.forall hcenter
+
+/--
 The finite-center maximal-inequality output plugs into the empirical-net
 display `(2.4.4)`.
 
@@ -15308,6 +15355,36 @@ theorem VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm
     vdVWRademacherWeights_finCoordinatePerm] using
     (VdVWTheorem243FiniteCenterMaximalBound_finCoordinatePerm
       (Observation := Observation) (Index := Index) perm hmaximal)
+
+/--
+Fixed-center Rademacher finite-center Hoeffding predicates are measurable when
+the sample and Rademacher signs vary measurably.
+-/
+theorem measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_fixed_center
+    {Ω : Type x} [MeasurableSpace Ω]
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n cardinality : ℕ} (sample : Ω -> SampleAt Observation n)
+    {classFun : Index -> Observation -> ℝ}
+    (center : Fin cardinality -> Index) (sign : Ω -> SampleAt ℝ n)
+    (M : ℝ)
+    (hsample : ∀ i : Fin n, Measurable fun ω : Ω => sample ω i)
+    (hsign : ∀ i : Fin n, Measurable fun ω : Ω => sign ω i)
+    (hcenter_meas : ∀ centerIndex : Fin cardinality,
+      Measurable (classFun (center centerIndex))) :
+    MeasurableSet
+      {ω : Ω |
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound (sample ω)
+          classFun center (sign ω) M} := by
+  let weights : Ω -> Fin n -> ℝ := fun ω => vdVWRademacherWeights (sign ω)
+  have hweights : ∀ i : Fin n, Measurable fun ω : Ω => weights ω i := by
+    intro i
+    simpa [weights, vdVWRademacherWeights] using
+      (measurable_const.mul (hsign i))
+  simpa [VdVWTheorem243RademacherFiniteCenterHoeffdingBound, weights] using
+    measurableSet_VdVWTheorem243FiniteCenterMaximalBound_varying_weights
+      (sample := sample) (classFun := classFun) (center := center)
+      (weights := weights) (centerScale := vdVWTheorem243HoeffdingCenterScale n M)
+      hsample hweights hcenter_meas
 
 /--
 Rademacher-sign specialization of the finite empirical-net Hoeffding handoff.
@@ -37955,6 +38032,97 @@ theorem measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_pairBad_of_cou
       vdVWWeightedClassSupremum indexClass pairClassFun (weights z)
         (pairSample z)) ⁻¹' Set.Ioi epsilon)
   exact measurableSet_Ioi.preimage hsup
+
+/--
+Original-sample fixed-center finite-center side condition is measurable on the
+concrete ghost/Rademacher product space.
+-/
+theorem
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_fixed_center
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ} {n cardinality : ℕ}
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (center : Fin cardinality -> Index)
+    (hcenter_mem : ∀ centerIndex, center centerIndex ∈ indexClass) :
+    MeasurableSet
+      {z : SampleAt Observation n ×
+          (SampleAt Observation n × SampleAt ℝ n) |
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+          (vdVWTruncatedClassFun classFun envelope M) center z.2.2 M} := by
+  let Ωevent : Type _ :=
+    SampleAt Observation n × (SampleAt Observation n × SampleAt ℝ n)
+  let sample : Ωevent -> SampleAt Observation n := fun z => z.1
+  let sign : Ωevent -> SampleAt ℝ n := fun z => z.2.2
+  have hsample : ∀ i : Fin n, Measurable fun z : Ωevent => sample z i := by
+    intro i
+    simpa [sample] using (measurable_pi_apply i).comp measurable_fst
+  have hsign : ∀ i : Fin n, Measurable fun z : Ωevent => sign z i := by
+    intro i
+    simpa [sign] using
+      (measurable_pi_apply i).comp (measurable_snd.comp measurable_snd)
+  have hcenter_meas :
+      ∀ centerIndex : Fin cardinality,
+        Measurable
+          (vdVWTruncatedClassFun classFun envelope M
+            (center centerIndex)) := by
+    intro centerIndex
+    exact measurable_vdVWTruncatedClassFun
+      (hclass (center centerIndex) (hcenter_mem centerIndex)) henvelope_meas
+  simpa [Ωevent, sample, sign] using
+    measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_fixed_center
+      (sample := sample)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (center := center) (sign := sign) (M := M)
+      hsample hsign hcenter_meas
+
+/--
+Ghost-sample fixed-center finite-center side condition with negated signs is
+measurable on the concrete ghost/Rademacher product space.
+-/
+theorem
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_fixed_center
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ} {n cardinality : ℕ}
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (center : Fin cardinality -> Index)
+    (hcenter_mem : ∀ centerIndex, center centerIndex ∈ indexClass) :
+    MeasurableSet
+      {z : SampleAt Observation n ×
+          (SampleAt Observation n × SampleAt ℝ n) |
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.2.1
+          (vdVWTruncatedClassFun classFun envelope M) center
+          (fun i : Fin n => -z.2.2 i) M} := by
+  let Ωevent : Type _ :=
+    SampleAt Observation n × (SampleAt Observation n × SampleAt ℝ n)
+  let sample : Ωevent -> SampleAt Observation n := fun z => z.2.1
+  let sign : Ωevent -> SampleAt ℝ n := fun z i => -z.2.2 i
+  have hsample : ∀ i : Fin n, Measurable fun z : Ωevent => sample z i := by
+    intro i
+    simpa [sample] using
+      (measurable_pi_apply i).comp (measurable_fst.comp measurable_snd)
+  have hsign : ∀ i : Fin n, Measurable fun z : Ωevent => sign z i := by
+    intro i
+    have hcoord : Measurable fun z : Ωevent => z.2.2 i :=
+      (measurable_pi_apply i).comp (measurable_snd.comp measurable_snd)
+    simpa [sign] using hcoord.neg
+  have hcenter_meas :
+      ∀ centerIndex : Fin cardinality,
+        Measurable
+          (vdVWTruncatedClassFun classFun envelope M
+            (center centerIndex)) := by
+    intro centerIndex
+    exact measurable_vdVWTruncatedClassFun
+      (hclass (center centerIndex) (hcenter_mem centerIndex)) henvelope_meas
+  simpa [Ωevent, sample, sign] using
+    measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_fixed_center
+      (sample := sample)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (center := center) (sign := sign) (M := M)
+      hsample hsign hcenter_meas
 
 /--
 Countability-based event measurability constructor for the concrete

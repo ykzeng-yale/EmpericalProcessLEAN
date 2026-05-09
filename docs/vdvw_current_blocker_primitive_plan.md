@@ -95,24 +95,30 @@ Matching/WDSM edits, so do not use it for VdVW proof commits.  Use this
 paragraph, not older rebase paragraphs below, as the operative continuation
 prompt.
 
-Current newest source-side progress: the signed pair-difference bad component
-of the named concrete ghost/Rademacher event now has a compiled countability
-measurability bridge.  `measurable_vdVWWeightedSampleSum_varying_weights` and
-`measurable_vdVWWeightedClassSupremum_of_countable_varying_weights` supply the
-generic varying-weight countable-supremum machinery, and
-`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_pairBad_of_countable`
-closes the concrete signed pair-difference bad set from countability,
-coordinate measurability, and envelope measurability.  The event-level
-constructor
+Current newest source-side progress: fixed finite-center side-condition
+measurability is now compiled.  The generic lemmas
+`measurableSet_VdVWTheorem243FiniteCenterMaximalBound_varying_weights` and
+`measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_fixed_center`
+prove measurability for fixed center lists with measurably varying samples and
+Rademacher signs, and the concrete product-space lemmas
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_fixed_center`
+and
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_fixed_center`
+instantiate this for the original and ghost coordinates.  Together with the
+previous signed pair-difference bridge
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_pairBad_of_countable`,
+the event-level constructor
 `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_maximal_components_countable`
 now leaves only two event-measurability inputs: the original finite-center
 Hoeffding side condition and the ghost finite-center side condition with
-negated signs.
-Next exact target: prove those two selected finite-center component
-measurability facts and the product-fiber displayed Chebyshev lower bound for
-the named concrete event by combining the centered pair-difference fiber lower
-bound, the product-pair sign-swap equality, sign-negation/ghost symmetry, and
-the selected finite-net Hoeffding side condition.
+negated signs for the sample-dependent selected cover centers.
+Next exact target: prove measurability of those sample-dependent selected
+finite-center component events, or honestly expose the minimal selected-center
+measurable-selector assumption, then prove the product-fiber displayed
+Chebyshev lower bound for the named concrete event by combining the centered
+pair-difference fiber lower bound, the product-pair sign-swap equality,
+sign-negation/ghost symmetry, and the selected finite-net Hoeffding side
+condition.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening and do not claim it follows from bare stochastic entropy.
 
@@ -8579,3 +8585,14 @@ The corresponding event constructor
 reduces concrete-event measurability to the two selected finite-center
 side-condition sets.  The next exact proof target is those two selected-center
 measurability facts, plus the displayed Chebyshev product-fiber lower bound.
+
+2026-05-09 fixed finite-center side-condition measurability:
+`Theorem243.lean` now proves
+`measurableSet_VdVWTheorem243FiniteCenterMaximalBound_varying_weights`,
+`measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_fixed_center`,
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_fixed_center`,
+and
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_fixed_center`.
+Thus fixed center lists no longer block concrete-event measurability; the
+remaining event-measurability issue is exactly the sample-dependent selected
+cover centers `(cover sample).center`.

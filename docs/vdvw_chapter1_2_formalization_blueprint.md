@@ -2277,6 +2277,14 @@ above, so they do not change the theorem-level dashboard counts.
    `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_maximal_components_countable`
    reduces concrete-event measurability to the original and ghost selected
    finite-center side-condition components.
+   Fixed center lists no longer block this path:
+   `measurableSet_VdVWTheorem243FiniteCenterMaximalBound_varying_weights`,
+   `measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_fixed_center`,
+   `measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_originalFiniteCenter_fixed_center`,
+   and
+   `measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_ghostFiniteCenter_fixed_center`
+   are compiled.  The remaining event-measurability issue is the
+   sample-dependent selected cover center list.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
