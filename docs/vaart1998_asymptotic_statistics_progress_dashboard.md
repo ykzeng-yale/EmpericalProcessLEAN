@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 common-vector OP handoff`).
+(`Add Vaart theorem 5.41 score representation OP handoff`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -631,13 +631,14 @@ Lean packet first, then discharge exactly one live source field for the current
 endpoint.  The canonical product score-source packet now gives the
 projected-summand CLT, finite-vector score CLT, raw score CLT, and both
 law-tail and explicit `O_P(1)` derivative-norm Theorem 5.41 handoffs, including
-the canonical, projected, and common-vector-law specializations of the
-`O_P(1)` route.
+the canonical, projected, common-vector-law, and score-representation
+specializations of the `O_P(1)` route.
 Move next to a concrete `StochasticBounded` source for the scaled estimator,
-the score-summand representation `O_P(1)` wrapper that feeds the common-vector
-handoff, or a genuinely model-specific derivative representation.  Do not
-replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
-score wrappers, earlier Theorem 5.41 wrappers, or historical ledger items.
+the derivative-bound `O_P(1)` wrapper above the score-representation handoff,
+or a genuinely model-specific derivative representation.  Do not replay solved
+Chapter 2-4 infrastructure, canonical/projected/common-vector/score
+representation wrappers, earlier Theorem 5.41 wrappers, or historical ledger
+items.
 
 ## Reuse Dependencies
 
