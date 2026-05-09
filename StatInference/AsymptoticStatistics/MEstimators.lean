@@ -4578,6 +4578,116 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hScaledEstimator_meas hRoot hTaylorExpansion
 
 /--
+van der Vaart 1998, Theorem 5.41, empirical-average source handoff from
+pointwise Taylor identities and an envelope bound, with non-circular
+scaled-estimator tightness.
+
+This is the empirical-average version of the absorbing quadratic Taylor
+endpoint.  The source hypotheses no longer include an external
+`scaledEstimator = O_P(1)` field; tightness is derived internally from the
+score CLT, derivative LLN, consistency, the envelope-bounded second derivative,
+and the root/Taylor display.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_pointwiseTaylor_envelope_absorbing
+    {Ω Ω' Observation Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score] [CompleteSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scoreAtTheta0 estimatingAtEstimator : ℕ -> Ω -> Observation -> Score)
+    (derivative : ℕ -> Ω -> Observation -> Θ →L[ℝ] Score)
+    (secondDerivative : ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] Score)
+    (envelope : Observation -> ℝ)
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT :
+      TendstoInDistribution
+        (fun n ω => empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω))
+        atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω =>
+          ‖empiricalAverageVector (samples n ω) (derivative n ω) - V‖)
+        atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hCurvatureBounded :
+      StochasticBounded P
+        (fun n ω => empiricalAverage (samples n ω) envelope))
+    (hEnvelopeBound : ∀ᶠ n in atTop, ∀ ω x,
+      ‖secondDerivative n ω x‖ ≤ envelope x)
+    (hEmpiricalDerivative_meas : ∀ n,
+      AEMeasurable
+        (fun ω => empiricalAverageVector (samples n ω) (derivative n ω)) P)
+    (hSecondDerivativeAction_meas : ∀ n,
+      AEMeasurable
+        (fun ω =>
+          empiricalAverageVector (samples n ω) (secondDerivative n ω)) P)
+    (hDelta_meas : ∀ n, AEMeasurable (delta n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P)
+    (hRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω) (estimatingAtEstimator n ω) = 0)
+    (hPointwiseTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) +
+            derivative n ω (samples n ω i) (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              secondDerivative n ω (samples n ω i)
+                (delta n ω) (scaledEstimator n ω) =
+          estimatingAtEstimator n ω (samples n ω i)) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hCurvatureOpBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖empiricalAverageVector (samples n ω) (secondDerivative n ω)‖ ≤
+        ‖empiricalAverage (samples n ω) envelope‖ :=
+    vaart1998_theorem_5_41_curvatureOpBound_of_empiricalSecondDerivative_envelope
+      (samples := samples) (secondDerivative := secondDerivative)
+      (envelope := envelope) hEnvelope_nonneg hEnvelopeBound
+  have hTaylorExpansion : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω) +
+            (empiricalAverageVector (samples n ω) (derivative n ω))
+              (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              (empiricalAverageVector (samples n ω) (secondDerivative n ω))
+                (delta n ω) (scaledEstimator n ω) =
+          empiricalAverageVector (samples n ω)
+            (estimatingAtEstimator n ω) :=
+    vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise_ae
+      (P := P) (samples := samples)
+      (scoreAtTheta0 := scoreAtTheta0)
+      (estimatingAtEstimator := estimatingAtEstimator)
+      (derivative := derivative) (secondDerivative := secondDerivative)
+      (delta := delta) (scaledEstimator := scaledEstimator)
+      hPointwiseTaylor
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN_absorbing
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (empiricalDerivative := fun n ω =>
+        empiricalAverageVector (samples n ω) (derivative n ω))
+      (delta := delta) (scaledEstimator := scaledEstimator)
+      (curvatureBound := fun n ω =>
+        empiricalAverage (samples n ω) envelope)
+      (secondDerivativeAction := fun n ω =>
+        empiricalAverageVector (samples n ω) (secondDerivative n ω))
+      (score := fun n ω =>
+        empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω))
+      (estimatingEquationAtEstimator := fun n ω =>
+        empiricalAverageVector (samples n ω) (estimatingAtEstimator n ω))
+      (Z := Z) hLeftInverse hScoreCLT hDerivativeLLN hDelta
+      hCurvatureBounded hCurvatureOpBound hEmpiricalDerivative_meas
+      hSecondDerivativeAction_meas hDelta_meas hScaledEstimator_meas hRoot
+      hTaylorExpansion
+
+/--
 van der Vaart 1998, Theorem 5.41, empirical-average source handoff from raw
 per-observation Taylor identities.
 

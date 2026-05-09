@@ -20,7 +20,7 @@ Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Current verified absorbing source endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN_absorbing`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_pointwiseTaylor_envelope_absorbing`.
 
 Continuation recipe:
 
@@ -33,10 +33,10 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Tightness source: remove the external `hScaledEstimator` field from the
-   empirical-average/root Taylor endpoint by feeding it through the absorbing
-   quadratic/root Taylor endpoint, or prove the next model-specific Taylor
-   display feeding that endpoint.
+1. Tightness source: propagate the absorbing empirical-average endpoint into
+   the raw per-observation, coordinate, path, and finite-derivative source
+   wrappers, removing the external `hScaledEstimator` field one layer at a
+   time.
 2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
    finite-entry norm/action wrapper stack.
@@ -1117,29 +1117,37 @@ compiling:
    quadratic-residual, and literal quadratic Taylor asymptotic-normality
    handoffs.  These wrappers remove the external `scaledEstimator = O_P(1)`
    hypothesis from the source-facing Taylor endpoint stack.
+363. Theorem 5.41 absorbing empirical-average pointwise Taylor endpoint:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_pointwiseTaylor_envelope_absorbing`
+   instantiates the absorbing quadratic Taylor endpoint with empirical
+   averages, an envelope-bounded second derivative, and the pointwise selected
+   Taylor identity.  It removes the external `scaledEstimator = O_P(1)`
+   hypothesis from the first empirical-average source layer.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 absorbing source endpoint`).
+(`Add Vaart theorem 5.41 absorbing empirical endpoint`).
 
 The latest theorem-sized packet turns the model-shaped derivative LLN,
 unscaled consistency, bounded curvature, second-derivative half-bound or
 quadratic Taylor residual, and root/Taylor display into the final
 scaled-estimator asymptotic-normality conclusion, without assuming
-scaled-estimator tightness first.
+scaled-estimator tightness first.  The newest empirical-average wrapper applies
+that endpoint to pointwise Taylor identities and an envelope bound.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to a wrapper that removes `hScaledEstimator` from
-the empirical-average/root Taylor endpoint by calling the absorbing quadratic
-Taylor endpoint, or to a genuinely model-specific Taylor display, derivative,
-or score representation that removes a live hypothesis.  Do not repeat solved Chapter
+source handoff.  Move next to the raw per-observation Taylor wrapper and remove
+its `hScaledEstimator` hypothesis by calling the absorbing empirical-average
+endpoint, or to a genuinely model-specific Taylor display, derivative, or
+score representation that removes a live hypothesis.  Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
 derivative-bound, finite-derivative strong-law, action-bound, law-tail,
 display-congruence, display-convergence, display-weak-convergence,
-score-equation `O_P(1)`, Taylor-zero `O_P(1)`, absorbing-tightness, or
-derivative absorbing-tightness or absorbing-source-endpoint wrappers unless a current proof directly
+score-equation `O_P(1)`, Taylor-zero `O_P(1)`, absorbing-tightness,
+derivative absorbing-tightness, absorbing-source-endpoint, or
+absorbing-empirical-endpoint wrappers unless a current proof directly
 depends on a small local API there.
 
 ## Execution Notes

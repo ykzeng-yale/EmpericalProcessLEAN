@@ -715,10 +715,12 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_taylorExpansion_measurableDerivativeLLN_secondDerivativeQuadraticBound_absorbing`,
   and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_root_quadraticTaylorExpansion_measurableDerivativeLLN_absorbing`,
-  so the remaining critical path should remove `hScaledEstimator` from the
-  empirical-average/root Taylor endpoint by calling this absorbing endpoint
-  stack, or move to a genuinely model-specific Taylor display, derivative, or
-  score representation.
+  and the absorbing empirical-average endpoint packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_pointwiseTaylor_envelope_absorbing`,
+  so the remaining critical path should remove `hScaledEstimator` from the raw
+  per-observation and downstream coordinate/path source wrappers by calling
+  this absorbing empirical endpoint, or move to a genuinely model-specific
+  Taylor display, derivative, or score representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
