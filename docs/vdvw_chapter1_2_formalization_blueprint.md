@@ -2253,11 +2253,12 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost`
    and
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ghost_product_fiber_lower_bound_or_selectedNet`.
-   The missing bridge is now the concrete ghost/Rademacher joint event:
-   prove its measurability, displayed Chebyshev fiber lower bound, and
-   original-or-ghost selected-net inclusion from the centered pair-difference
-   beta fiber, sign-swap, and deterministic two-sided projection, then
-   specialize back to
+   The concrete event itself is named
+   `VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent`, and its
+   pointwise original-or-ghost selected-net inclusion is compiled as
+   `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad`.
+   The missing bridge is now measurability and the displayed Chebyshev fiber
+   lower bound for this event, then specialization back to
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
    The first adapted
    countable empirical-supremum bridge is compiled as
