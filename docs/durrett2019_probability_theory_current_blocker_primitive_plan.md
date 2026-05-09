@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V157
+## Live In-Thread Goal Prompt V158
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -32,7 +32,8 @@ handoff.  Exercise 4.4.11 now has the predictable transform increment identity,
 Abel/Kronecker summation certificates, the Toeplitz constant/centered split,
 the nonnegative-increment Toeplitz/Kronecker route, the pathwise/a.e.
 normalized increment-sum endpoint, the zero-initial normalized-process display,
-and the bounded-variance summability corollary route:
+the bounded-variance summability corollary route, and the deterministic
+reciprocal-normalizer source wrapper:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -104,8 +105,10 @@ plus
 `durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_shifted`,
 `durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_scaled_summable`,
 `durrett2019_exercise_4_4_11_scaled_summable_of_variance_bound`,
-and
 `durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_bounded_variance`,
+`durrett2019_exercise_4_4_11_reciprocalTransform_memLp_two_of_process_memLp`,
+and
+`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_reciprocal_bounded_variance`,
 as well as the earlier first-exit/stopped-variance handoff declarations.  Do
 not route back into optional-stopping, overshoot, stopped-integrability,
 deterministic-clock, exact-denominator, square-martingale-source, or
@@ -116,24 +119,23 @@ plumbing or the `Lp` Cauchy/existence endpoint, or the Exercise 4.4.11
 predictable-transform `L^2`/a.s. convergence bridge / Abel identity / Toeplitz
 constant-split / centered-remainder / nonnegative-increment Kronecker /
 normalized increment-sum / zero-initial process / bounded-variance summability
-layer.
+layer / deterministic reciprocal-normalizer wrapper.
 
-Next aggressive step: close the remaining explicit side conditions around the
-reciprocal deterministic transform for Exercise 4.4.11.  Best target: package
-the direct `H n = (b n)⁻¹`, positivity/nonzero, boundedness, predictability,
-and transform `MemLp` side-condition bridges needed to call
-`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_bounded_variance`
-with minimal assumptions on a positive monotone normalizer.  If those are not
-immediate, move to the next nearby Chapter 4.4 theorem-sized packet rather than
-redoing Kronecker or 4.4.10.  Do not loop back to already compiled Chapter
-4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises 4.4.5-4.4.10, Theorem 4.4.1
-plumbing, or the first-exit
+Next aggressive step: do not redo Exercise 4.4.11 reciprocal-transform
+plumbing.  If immediate, add exact source-polish that derives the current
+`b_n ≥ 1` / square-integrability assumptions from a local monotone positive
+normalizer or a stronger textbook source hypothesis.  Otherwise move forward to
+Section 4.5 square-integrable martingales, starting with theorem-sized support
+for Theorem 4.5.1's increasing-process/Doob `L^2` maximal inequality route.
+Do not loop back to already compiled Chapter 4.3.5, Chapter 4.3.8, Example
+4.4.9, Exercises 4.4.5-4.4.11, Theorem 4.4.1 plumbing, or the first-exit
 overshoot/stopped-integrability/deterministic-clock/exact-denominator/
 square-martingale-source/natural-filtration/product-covariance/tail-identity/
 tail-bound-to-`L^2`/summability-to-shifted-tail/shifted-tail-to-Cauchy/`Lp`
 Cauchy endpoint/predictable-transform convergence/Abel identity/Toeplitz
 constant-split/centered-remainder/nonnegative-increment Kronecker/normalized
-increment-sum/zero-initial process/bounded-variance summability layer.
+increment-sum/zero-initial process/bounded-variance summability/deterministic
+reciprocal-normalizer layer.
 Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
 source-shaped API.
 

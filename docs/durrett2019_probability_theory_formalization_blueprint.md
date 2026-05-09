@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V157`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V158`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -48,10 +48,10 @@ deterministic Abel/Kronecker ratio certificates, the Toeplitz constant/centered
 split, the centered Toeplitz remainder, the nonnegative-increment
 weighted-average/Kronecker route, the normalized increment-sum a.e.
 endpoint, the zero-initial/shifted `X_n / b_n` display, and the
-bounded-variance Exercise 4.4.11 corollary route.  Continue by packaging the
-reciprocal deterministic-transform side conditions for a positive monotone
-normalizer, or move to a nearby Chapter 4.4 theorem-sized packet if that
-packaging is not immediate.
+bounded-variance Exercise 4.4.11 corollary route, and the deterministic
+reciprocal-normalizer source wrapper.  Continue with exact source-polish for
+the remaining Exercise 4.4.11 assumptions only if immediate; otherwise move to
+Section 4.5 square-integrable martingales.
 
 For each cycle, route from:
 
@@ -416,11 +416,11 @@ Next packet:
   Exercise 4.4.6, Exercise 4.4.10, the predictable-transform convergence
   bridge, Abel/Kronecker summation, the Toeplitz split, the centered Toeplitz
   remainder, the normalized increment-sum a.e. endpoint, the zero-initial
-  normalized-process display, or the bounded-variance summability route.  Next,
-  package the reciprocal deterministic-transform side conditions for a
-  positive monotone normalizer: direct `H n = (b n)⁻¹`, positivity/nonzero,
-  boundedness, predictability, and transform `MemLp` bridges.  If this does
-  not close quickly, move to the next nearby Chapter 4.4 theorem-sized packet.
+  normalized-process display, the bounded-variance summability route, or the
+  deterministic reciprocal-normalizer wrapper.  Next, add exact source-polish
+  for the remaining `b_n ≥ 1` / square-integrability assumptions only if
+  immediate; otherwise move to Section 4.5 Theorem 4.5.1 increasing-process
+  and Doob `L^2` maximal-inequality support.
   The
   Section 3.10
   multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise

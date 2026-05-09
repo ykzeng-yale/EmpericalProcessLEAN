@@ -14504,6 +14504,30 @@ theorem durrett2019_exercise_4_4_11_stochasticTransform_increment_sq_summable
       (congrArg (fun z : ℝ => z ^ 2) hpoint).symm
 
 /--
+Durrett 2019, Exercise 4.4.11 support: the deterministic reciprocal transform
+has square-integrable finite partial sums whenever the original martingale
+process is square-integrable at each time.
+-/
+theorem durrett2019_exercise_4_4_11_reciprocalTransform_memLp_two_of_process_memLp
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P) :
+    ∀ n,
+      MemLp
+        (durrett2019_stochasticTransform (fun n : ℕ => fun _ : Ω => (b n)⁻¹) X n)
+        (2 : ℝ≥0∞) P := by
+  intro n
+  simp only [durrett2019_stochasticTransform]
+  refine
+    memLp_finsetSum' (μ := P) (p := (2 : ℝ≥0∞)) (s := Finset.range n)
+      (f := fun k : ℕ => fun ω : Ω => (b (k + 1))⁻¹ * (X (k + 1) ω - X k ω))
+      ?_
+  intro k hk
+  have hdiff : MemLp (fun ω => X (k + 1) ω - X k ω) (2 : ℝ≥0∞) P :=
+    (hX_memLp_two (k + 1)).sub (hX_memLp_two k)
+  exact hdiff.const_mul ((b (k + 1))⁻¹)
+
+/--
 Durrett 2019, Exercise 4.4.11 support: a bounded nonnegative predictable
 transform with summable scaled square increments has an `L^2` limit.
 
@@ -15187,6 +15211,53 @@ theorem durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_bounde
       (durrett2019_exercise_4_4_11_scaled_summable_of_variance_bound
         (P := P) (H := H) (X := X) (b := b) (K := K)
         hH_eq hvariance_bound hb_inv_sq_summable)
+
+/--
+Durrett 2019, Exercise 4.4.11 source-facing reciprocal-normalizer route:
+for the deterministic transform `H_n = b_n⁻¹`, the predictability,
+nonnegativity, boundedness, exact-transform, nonzero-denominator, and transform
+`MemLp` side conditions are discharged from a positive normalizer and
+square-integrability of the martingale process.
+-/
+theorem durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_reciprocal_bounded_variance
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {K : ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hb_one_le : ∀ n : ℕ, 1 ≤ b n)
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop)
+    (hvariance_bound :
+      ∀ k : ℕ,
+        (∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P) ≤ K)
+    (hb_inv_sq_summable :
+      Summable fun k : ℕ => ((b (k + 1))⁻¹) ^ 2) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / b n) atTop (nhds 0) := by
+  refine
+    durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_bounded_variance
+      (P := P) (ℱ := ℱ)
+      (H := fun n : ℕ => fun _ : Ω => (b n)⁻¹) (X := X) (b := b)
+      (R := 1) (K := K)
+      hX hX0 ?_ ?_ ?_ ?_ ?_ hb_increment_nonneg hb_atTop ?_
+      hvariance_bound hb_inv_sq_summable
+  · simpa using
+      (stronglyAdapted_const' ℱ (fun n : ℕ => (b (n + 1))⁻¹) :
+        StronglyAdapted ℱ (fun n : ℕ => fun _ : Ω => (b (n + 1))⁻¹))
+  · intro n ω
+    exact inv_le_one_of_one_le₀ (hb_one_le n)
+  · intro n ω
+    exact inv_nonneg.mpr (zero_le_one.trans (hb_one_le n))
+  · intro n ω
+    rfl
+  · intro k
+    exact ne_of_gt (zero_lt_one.trans_le (hb_one_le (k + 1)))
+  · exact
+      durrett2019_exercise_4_4_11_reciprocalTransform_memLp_two_of_process_memLp
+        (P := P) (X := X) (b := b) hX_memLp_two
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
