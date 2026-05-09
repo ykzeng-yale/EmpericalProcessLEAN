@@ -482,12 +482,17 @@ supplies the compiled certificate
 `positiveOrthantNegLog_mixedThirdSelfConcordantOn`, fixes `M = 1` and
 `thirdMixed = positiveOrthantNegLogThirdMixed`, and leaves only the
 Hessian/gradient differentiability plus Newton-linearization source hypotheses.
+The newest Hessian-derivative packet adds
+`positiveOrthantNegLogHessDerivCLM`,
+`positiveOrthantNegLogHessDerivCLM_mixed_inner`, and
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_sourceNewtonSegment`,
+so callers no longer need to supply the mixed-third identity separately.
 Next discharge those remaining hypotheses for the concrete positive-orthant
 barrier, or lift these product equalities into the full Proposition 13.11
 barrier-calculus interface.  Do not redo the
 square-root/right-inverse/Hessian-nonnegativity/self-concordance model
 plumbing; use
-`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment`.
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_sourceNewtonSegment`.
 The Definition 13.7 norm identity,
 inverse-local identity, Cauchy bridge, dual-local-norm transport, and raw
 inverse-Hessian quadratic upper comparison should be obtained only via the

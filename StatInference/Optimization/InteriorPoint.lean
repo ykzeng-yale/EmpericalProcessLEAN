@@ -6304,6 +6304,61 @@ noncomputable def positiveOrthantNegLogThirdMixed {d : ℕ}
     (x u v : EuclideanSpace ℝ (Fin d)) : ℝ :=
   ∑ i : Fin d, negLogBarrierThird (x i) * u i * (v i) ^ (2 : ℕ)
 
+/--
+The coordinatewise Hessian-derivative oracle for the finite positive-orthant
+logarithmic barrier.  In direction `a`, coordinate `i` multiplies by
+`f'''(x_i) a_i`.
+-/
+noncomputable def positiveOrthantNegLogHessDerivCLM {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) :
+    EuclideanSpace ℝ (Fin d) →L[ℝ]
+      (EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d)) :=
+  LinearMap.toContinuousLinearMap
+    { toFun := fun a =>
+        LinearMap.toContinuousLinearMap
+          { toFun := fun v =>
+              WithLp.toLp 2 fun i : Fin d => negLogBarrierThird (x i) * a i * v i
+            map_add' := by
+              intro v w
+              ext i
+              simp [mul_add]
+            map_smul' := by
+              intro c v
+              ext i
+              simp
+              ring }
+      map_add' := by
+        intro a b
+        apply ContinuousLinearMap.ext
+        intro v
+        ext i
+        simp
+        ring
+      map_smul' := by
+        intro c a
+        apply ContinuousLinearMap.ext
+        intro v
+        ext i
+        simp
+        ring }
+
+@[simp] theorem positiveOrthantNegLogHessDerivCLM_apply {d : ℕ}
+    (x a v : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
+    positiveOrthantNegLogHessDerivCLM x a v i =
+      negLogBarrierThird (x i) * a i * v i := by
+  simp [positiveOrthantNegLogHessDerivCLM]
+
+theorem positiveOrthantNegLogHessDerivCLM_mixed_inner {d : ℕ}
+    (x a v : EuclideanSpace ℝ (Fin d)) :
+    inner ℝ v ((positiveOrthantNegLogHessDerivCLM x a) v) =
+      positiveOrthantNegLogThirdMixed x a v := by
+  rw [PiLp.inner_apply]
+  unfold positiveOrthantNegLogThirdMixed
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  simp [RCLike.inner_apply]
+  ring
+
 theorem positiveOrthantNegLogHessCLM_quadratic_eq_sum {d : ℕ}
     (x v : EuclideanSpace ℝ (Fin d)) :
     inner ℝ v (positiveOrthantNegLogHessCLM x v) =
@@ -6582,6 +6637,46 @@ theorem chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNew
       positiveOrthantNegLog_mixedThirdSelfConcordantOn
       hhess_cont hhess hmixed hgrad hnewton_linear
   simpa using hbase
+
+/--
+Chewi Theorem 13.8 specialized further with the concrete Hessian-derivative
+oracle for the positive-orthant logarithmic barrier.  This packages the
+mixed-third identity, leaving Hessian/gradient differentiability and
+Newton-linearization as the source hypotheses.
+-/
+theorem chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_sourceNewtonSegment
+    {d : ℕ}
+    {grad : EuclideanSpace ℝ (Fin d) -> EuclideanSpace ℝ (Fin d)}
+    {x : EuclideanSpace ℝ (Fin d)}
+    (hlambda_lt : newtonDecrement grad positiveOrthantNegLogInvHessCLM x < 1)
+    (hx : x ∈ positiveOrthant (d := d))
+    (hstep_mem :
+      newtonStep grad positiveOrthantNegLogInvHessCLM x ∈ positiveOrthant (d := d))
+    (hhess_cont : ContinuousOn positiveOrthantNegLogHessCLM (positiveOrthant (d := d)))
+    (hhess : ∀ z, z ∈ positiveOrthant (d := d) ->
+      HasFDerivAt positiveOrthantNegLogHessCLM
+        (positiveOrthantNegLogHessDerivCLM z) z)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (positiveOrthantNegLogHessCLM
+          (hessianSegmentPoint x
+            (newtonStep grad positiveOrthantNegLogInvHessCLM x) t))
+        (hessianSegmentPoint x
+          (newtonStep grad positiveOrthantNegLogInvHessCLM x) t))
+    (hnewton_linear :
+      grad x + positiveOrthantNegLogHessCLM x
+        (newtonStep grad positiveOrthantNegLogInvHessCLM x - x) = 0) :
+    newtonDecrement grad positiveOrthantNegLogInvHessCLM
+        (newtonStep grad positiveOrthantNegLogInvHessCLM x) ≤
+      (newtonDecrement grad positiveOrthantNegLogInvHessCLM x) ^ (2 : ℕ) /
+        (1 - newtonDecrement grad positiveOrthantNegLogInvHessCLM x) ^ (2 : ℕ) :=
+  chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment
+    (hessDeriv := positiveOrthantNegLogHessDerivCLM)
+    hlambda_lt hx hstep_mem hhess_cont hhess
+    (by
+      intro z _hz a v
+      exact positiveOrthantNegLogHessDerivCLM_mixed_inner z a v)
+    hgrad hnewton_linear
 
 /--
 Finite-product version of Chewi Example 13.10: the coordinatewise logarithmic

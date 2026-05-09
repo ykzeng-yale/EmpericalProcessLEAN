@@ -100,8 +100,11 @@ Cauchy mixed-third inequality for the concrete oracle is closed.
 The concrete Theorem 13.8 wrapper
 `chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment`
 also compiles with `M = 1` and `thirdMixed = positiveOrthantNegLogThirdMixed`,
-so next lift that model through a reusable Proposition 13.11 barrier-calculus
-interface or instantiate the actual finite-dimensional/
+and the Hessian-derivative wrapper
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_sourceNewtonSegment`
+packages `positiveOrthantNegLogHessDerivCLM_mixed_inner`, so next lift that
+model through a reusable Proposition 13.11 barrier-calculus interface or
+instantiate the actual finite-dimensional/
 matrix barrier Hessian model; all segment membership, `ψ` continuity,
 local-norm continuity/positivity, Riccati comparison, derivative inequality,
 coefficient scaling, final sandwich assembly, first Newton/Dikin membership,

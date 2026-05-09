@@ -1562,7 +1562,11 @@ Cauchy blocker is now closed for the concrete positive-orthant product
 barrier.  The follow-up concrete wrapper
 `chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment`
 now supplies that certificate into Theorem 13.8 with `M = 1` and
-`thirdMixed = positiveOrthantNegLogThirdMixed`; next focus on the remaining
+`thirdMixed = positiveOrthantNegLogThirdMixed`.  The follow-up Hessian-
+derivative packet adds `positiveOrthantNegLogHessDerivCLM`,
+`positiveOrthantNegLogHessDerivCLM_mixed_inner`, and
+`chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_hessDeriv_sourceNewtonSegment`,
+so the mixed-third identity is packaged too.  Next focus on the remaining
 Hessian/gradient differentiability and Newton-linearization hypotheses, or the
 Proposition 13.11 barrier-calculus lift.
 Search
