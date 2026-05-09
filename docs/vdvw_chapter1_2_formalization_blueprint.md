@@ -2375,6 +2375,10 @@ above, so they do not change the theorem-level dashboard counts.
    finite-center failure probabilities by a fixed-sample Rademacher
    finite-center Hoeffding tail and a product-fiber upper-bound lift for the
    random selected cover.
+   The fixed-sample tail is compiled as
+   `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le`; the
+   remaining source route is now the product-fiber upper lift for the
+   original/ghost random selected-cover failure probabilities.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
