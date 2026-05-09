@@ -1338,13 +1338,22 @@ consequence layer
 `newtonStep_mem_dikinEllipsoid_of_inner_of_newtonDecrement_lt`,
 `newtonStep_mem_dikinEllipsoid_inv_of_mul_newtonDecrement_lt`,
 `newtonStep_mem_dikinEllipsoid_inv_of_inner_of_mul_newtonDecrement_lt`, and
-`chewi136_newtonStep_localNorm_sandwich_sourceRadius`.
+`chewi136_newtonStep_localNorm_sandwich_sourceRadius`.  The newest
+dual-transport packet adds `InverseHessianQuadraticBounds`,
+`dualLocalNorm_le_sqrt_mul_dualLocalNorm_of_inverseHessianQuadraticUpper`,
+`sqrt_mul_dualLocalNorm_le_dualLocalNorm_of_inverseHessianQuadraticLower`,
+`dualLocalNorm_le_sqrt_mul_dualLocalNorm_of_inverseHessianQuadraticBounds`,
+`sqrt_mul_dualLocalNorm_le_dualLocalNorm_of_inverseHessianQuadraticBounds`,
+`dualLocalNorm_le_div_one_sub_of_inverseHessianQuadraticUpper`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper`.
 The newest positivity/source-radius packet derives segment local-norm
 positivity from a source-shaped positive-definite Hessian hypothesis and
 `y - x ≠ 0`, then proves the named source-radius Lemma 13.6(4) local-norm
 sandwich with `r = ||y - x||_x`.  The Newton packet proves the supplied-oracle
 Definition 13.7 identity `lambda = ||x+ - x||_x`, converts `M * lambda < 1`
 into `x+ in Dikin(x, 1/M)`, and specializes Lemma 13.6 to the Newton segment.
+The dual-transport packet proves the supplied-inverse-Hessian comparison needed
+for the first displayed inequality in Theorem 13.8.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
@@ -1354,8 +1363,9 @@ compiled route uses `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
 one-shot Hessian-derivative/third-Frechet bridge, but identified
 `fderiv_iteratedFDeriv`, `iteratedFDeriv_succ_apply_left/right`,
 `iteratedFDeriv_two_apply`, and `ContDiffAt.iteratedFDeriv_comp_perm` as the
-right API stack.  Next Chapter 13 work should finish dual-local-norm transport
-and the Theorem 13.8 gradient-residual/Delta bound.
+right API stack.  Next Chapter 13 work should derive inverse-Hessian comparison
+from concrete Hessian/matrix inverse hypotheses when needed and prove the
+Theorem 13.8 gradient-residual/Delta bound.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,

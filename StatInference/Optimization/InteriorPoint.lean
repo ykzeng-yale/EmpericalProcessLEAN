@@ -653,6 +653,100 @@ theorem mul_one_sub_localNorm_le_of_hessianQuadraticLower
     exact Real.sqrt_sq hden_pos.le
   simpa [hsqrt, mul_comm, mul_left_comm, mul_assoc] using hbase
 
+/--
+Supplied quadratic-form comparison between two inverse-Hessian oracles.  This
+is the dual-local-norm analogue of `HessianQuadraticBounds`.
+-/
+structure InverseHessianQuadraticBounds
+    (invHess : E -> E →L[ℝ] E) (x y : E) (lower upper : ℝ) : Prop where
+  lower_bound : ∀ v : E,
+    lower * inner ℝ v (invHess x v) ≤ inner ℝ v (invHess y v)
+  upper_bound : ∀ v : E,
+    inner ℝ v (invHess y v) ≤ upper * inner ℝ v (invHess x v)
+
+theorem dualLocalNorm_le_sqrt_mul_dualLocalNorm_of_inverseHessianQuadraticUpper
+    {invHess : E -> E →L[ℝ] E} {x y : E} {upper : ℝ}
+    (hupper_nonneg : 0 ≤ upper)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess y v))
+    (hupper : ∀ v : E,
+      inner ℝ v (invHess y v) ≤ upper * inner ℝ v (invHess x v))
+    (v : E) :
+    dualLocalNorm invHess y v ≤ Real.sqrt upper * dualLocalNorm invHess x v := by
+  refine (sq_le_sq₀ (dualLocalNorm_nonneg invHess y v) ?hrhs_nonneg).mp ?hsq
+  · exact mul_nonneg (Real.sqrt_nonneg _) (dualLocalNorm_nonneg invHess x v)
+  rw [dualLocalNorm_sq_eq_inner (hy_nonneg v)]
+  rw [mul_pow, Real.sq_sqrt hupper_nonneg,
+    dualLocalNorm_sq_eq_inner (hx_nonneg v)]
+  exact hupper v
+
+theorem sqrt_mul_dualLocalNorm_le_dualLocalNorm_of_inverseHessianQuadraticLower
+    {invHess : E -> E →L[ℝ] E} {x y : E} {lower : ℝ}
+    (hlower_nonneg : 0 ≤ lower)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess y v))
+    (hlower : ∀ v : E,
+      lower * inner ℝ v (invHess x v) ≤ inner ℝ v (invHess y v))
+    (v : E) :
+    Real.sqrt lower * dualLocalNorm invHess x v ≤ dualLocalNorm invHess y v := by
+  refine (sq_le_sq₀ ?hlhs_nonneg (dualLocalNorm_nonneg invHess y v)).mp ?hsq
+  · exact mul_nonneg (Real.sqrt_nonneg _) (dualLocalNorm_nonneg invHess x v)
+  rw [mul_pow, Real.sq_sqrt hlower_nonneg,
+    dualLocalNorm_sq_eq_inner (hx_nonneg v)]
+  rw [dualLocalNorm_sq_eq_inner (hy_nonneg v)]
+  exact hlower v
+
+theorem dualLocalNorm_le_sqrt_mul_dualLocalNorm_of_inverseHessianQuadraticBounds
+    {invHess : E -> E →L[ℝ] E} {x y : E} {lower upper : ℝ}
+    (hupper_nonneg : 0 ≤ upper)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess y v))
+    (hbounds : InverseHessianQuadraticBounds invHess x y lower upper)
+    (v : E) :
+    dualLocalNorm invHess y v ≤ Real.sqrt upper * dualLocalNorm invHess x v :=
+  dualLocalNorm_le_sqrt_mul_dualLocalNorm_of_inverseHessianQuadraticUpper
+    hupper_nonneg hx_nonneg hy_nonneg hbounds.upper_bound v
+
+theorem sqrt_mul_dualLocalNorm_le_dualLocalNorm_of_inverseHessianQuadraticBounds
+    {invHess : E -> E →L[ℝ] E} {x y : E} {lower upper : ℝ}
+    (hlower_nonneg : 0 ≤ lower)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess y v))
+    (hbounds : InverseHessianQuadraticBounds invHess x y lower upper)
+    (v : E) :
+    Real.sqrt lower * dualLocalNorm invHess x v ≤ dualLocalNorm invHess y v :=
+  sqrt_mul_dualLocalNorm_le_dualLocalNorm_of_inverseHessianQuadraticLower
+    hlower_nonneg hx_nonneg hy_nonneg hbounds.lower_bound v
+
+/--
+Dual-local-norm upper transport with the same denominator used in Theorem
+13.8, once the inverse-Hessian quadratic upper bound has been supplied.
+-/
+theorem dualLocalNorm_le_div_one_sub_of_inverseHessianQuadraticUpper
+    {invHess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    (hMr_lt : M * r < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess y v))
+    (hupper : ∀ v : E,
+      inner ℝ v (invHess y v) ≤
+        ((1 - M * r)⁻¹) ^ (2 : ℕ) * inner ℝ v (invHess x v))
+    (v : E) :
+    dualLocalNorm invHess y v ≤
+      dualLocalNorm invHess x v / (1 - M * r) := by
+  have hden_pos : 0 < 1 - M * r := by nlinarith
+  have hupper_nonneg : 0 ≤ ((1 - M * r)⁻¹) ^ (2 : ℕ) := sq_nonneg _
+  have hbase :=
+    dualLocalNorm_le_sqrt_mul_dualLocalNorm_of_inverseHessianQuadraticUpper
+      (invHess := invHess) (x := x) (y := y)
+      (upper := ((1 - M * r)⁻¹) ^ (2 : ℕ))
+      hupper_nonneg hx_nonneg hy_nonneg hupper v
+  have hsqrt :
+      Real.sqrt (((1 - M * r)⁻¹) ^ (2 : ℕ)) =
+        (1 - M * r)⁻¹ := by
+    exact Real.sqrt_sq (inv_nonneg.mpr hden_pos.le)
+  rw [hsqrt] at hbase
+  simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hbase
+
 /-- Chewi Lemma 13.6's displayed exponential constant for the `ψ(t)` step. -/
 noncomputable def chewi136HessianStabilityExponent (M r : ℝ) : ℝ :=
   2 * Real.log ((1 - M * r)⁻¹)
@@ -2055,6 +2149,32 @@ theorem chewi136_newtonStep_localNorm_sandwich_sourceRadius
       (y := newtonStep grad invHess x) (M := M)
       hMr_lt hs hx hstep_mem hsc hess_pos hdiff_ne hhess_cont hhess hmixed v
   simpa [hstep_norm] using hsand
+
+/--
+The first norm-transport line in Chewi Theorem 13.8, in supplied-inverse-Hessian
+form: after the inverse-Hessian quadratic comparison is available along the
+Newton segment, the Newton decrement at `x+` is bounded by the dual local norm
+at `x` divided by `1 - M * lambda(x)`.
+-/
+theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper
+    {grad : E -> E} {invHess : E -> E →L[ℝ] E} {x : E} {M : ℝ}
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hstep_nonneg : ∀ v : E,
+      0 ≤ inner ℝ v (invHess (newtonStep grad invHess x) v))
+    (hupper : ∀ v : E,
+      inner ℝ v (invHess (newtonStep grad invHess x) v) ≤
+        ((1 - M * newtonDecrement grad invHess x)⁻¹) ^ (2 : ℕ) *
+          inner ℝ v (invHess x v)) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      dualLocalNorm invHess x (grad (newtonStep grad invHess x)) /
+        (1 - M * newtonDecrement grad invHess x) := by
+  simpa [newtonDecrement] using
+    dualLocalNorm_le_div_one_sub_of_inverseHessianQuadraticUpper
+      (invHess := invHess) (x := x) (y := newtonStep grad invHess x)
+      (M := M) (r := newtonDecrement grad invHess x)
+      hMlambda_lt hx_nonneg hstep_nonneg hupper
+      (grad (newtonStep grad invHess x))
 
 /--
 Chewi Definition 13.3, source-shaped self-concordance interface using only the

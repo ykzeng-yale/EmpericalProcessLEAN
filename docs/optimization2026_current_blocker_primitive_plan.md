@@ -194,7 +194,15 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`newtonStep_mem_dikinEllipsoid_of_inner_of_newtonDecrement_lt`,
 	`newtonStep_mem_dikinEllipsoid_inv_of_mul_newtonDecrement_lt`,
 	`newtonStep_mem_dikinEllipsoid_inv_of_inner_of_mul_newtonDecrement_lt`, and
-	`chewi136_newtonStep_localNorm_sandwich_sourceRadius`.
+	`chewi136_newtonStep_localNorm_sandwich_sourceRadius`.  The newest
+	Theorem 13.8 dual-transport packet adds
+	`InverseHessianQuadraticBounds`,
+	`dualLocalNorm_le_sqrt_mul_dualLocalNorm_of_inverseHessianQuadraticUpper`,
+	`sqrt_mul_dualLocalNorm_le_dualLocalNorm_of_inverseHessianQuadraticLower`,
+	`dualLocalNorm_le_sqrt_mul_dualLocalNorm_of_inverseHessianQuadraticBounds`,
+	`sqrt_mul_dualLocalNorm_le_dualLocalNorm_of_inverseHessianQuadraticBounds`,
+	`dualLocalNorm_le_div_one_sub_of_inverseHessianQuadraticUpper`, and
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper`.
 
 Next theorem-sized target: construct the source hypotheses for
 `HessianSegmentMixedThirdLocalNormCertificate` from the remaining analytic
@@ -207,9 +215,10 @@ blockers are:
   Hessian hypothesis and `y - x ≠ 0`; the derivative formula, Riccati
   derivative estimate, scalar comparison, coefficient scaling, and named
   source-radius Lemma 13.6(4) theorem are compiled;
-- build the remaining Theorem 13.8 Newton convergence path: dual-local-norm
-  transport from Lemma 13.6 Hessian bounds/inverse-Hessian assumptions, the
-  gradient residual integral/Delta bound, and the final
+- build the remaining Theorem 13.8 Newton convergence path: derive the needed
+  inverse-Hessian quadratic upper comparison from Lemma 13.6/matrix inverse
+  order when moving beyond the supplied interface, prove the gradient residual
+  integral/Delta bound, and assemble the final
   `M * lambda^2 / (1 - M * lambda)^2` decrement inequality.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi
