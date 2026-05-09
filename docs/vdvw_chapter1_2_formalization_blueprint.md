@@ -2293,6 +2293,15 @@ above, so they do not change the theorem-level dashboard counts.
    `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`,
    so the remaining event-measurability burden is an explicit family of
    Nat-indexed in-range selected-center measurability assumptions.
+   This burden is now lowered on the product-pair finite-center failure side by
+   `measurableSet_imp_abs_le_of_measurable`,
+   `measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_measurable_components`,
+   `measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_measurable_components`,
+   and
+   `measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_measurable_components`:
+   a measurable selected cardinality plus measurable Nat-indexed
+   selected-center weighted sums now imply those product-pair failure-event
+   measurability obligations.
    On the product-fiber side, the concrete event now has the fiber interface
    `mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff`
    and the lower-bound transfer
