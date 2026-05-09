@@ -10,16 +10,16 @@ Continue manually, with no automation.  Active lane: van der Vaart 1998
 Theorem 5.41 in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current frontier endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope`.
 It consumes the Chapter 2 law-tail criterion for
-`P.map (scaledEstimator n)` and no longer needs an opaque scaled-estimator
-`O_P(1)` input.
+`P.map (scaledEstimator n)` and the source-shaped a.s. operator-norm residual
+`‖dotPsi_n(theta0) - V‖ -> 0`.
 
 Next packet: discharge one real statistical source field for this endpoint.
-Prefer, in order, the iid/operator empirical derivative strong law, the raw
-scaled score CLT, or the law-tail/tightness source proof for the scaled
-estimator.  If none closes directly, add exactly one minimal theorem-shaped
-bridge that removes one remaining source hypothesis.
+Prefer, in order, an iid/operator strong law proving the derivative-norm
+residual, the raw scaled score CLT, or the law-tail/tightness source proof for
+the scaled estimator.  If none closes directly, add exactly one minimal
+theorem-shaped bridge that removes one remaining source hypothesis.
 
 Workflow: reconcile local Vaart edits, search local/mathlib APIs, implement one
 verified Lean layer, run focused Lean plus the target module build and hygiene
@@ -902,19 +902,22 @@ compiling:
 322. Theorem 5.41 scaled-estimator stochastic-boundedness handoff from the
    Chapter 2 law-tail criterion for `P.map (scaledEstimator n)`:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope`.
+323. Theorem 5.41 derivative strong-law handoff from a source-shaped
+   a.s. operator-norm residual:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 scaled estimator law-tail handoff`).
+(`Add Vaart theorem 5.41 derivative norm a.e. handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by deriving the
-scaled-estimator `O_P(1)` field from law tails of its pushed-forward laws,
-after the measurability and source-shaped increment identities have already
-been discharged.
+asymptotic-normality route for Z-estimators by deriving the operator-valued
+empirical derivative a.s. convergence field from the source-shaped norm
+residual `‖dotPsi_n(theta0) - V‖ -> 0`, after the scaled-estimator law-tail
+and measurability handoffs have already been discharged.
 
 The next aggressive packet should prove one real source field for the current
-endpoint: iid/operator empirical derivative strong law, raw scaled score CLT,
-or scaled-estimator law-tail/tightness.
+endpoint: the derivative-norm strong law, raw scaled score CLT, or
+scaled-estimator law-tail/tightness.
 
 ## Execution Notes
 

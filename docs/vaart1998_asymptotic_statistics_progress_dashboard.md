@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 scaled estimator law-tail handoff`).
+(`Add Vaart theorem 5.41 derivative norm a.e. handoff`).
 Current packet verification passed for:
 
 - `lake build StatInference.AsymptoticStatistics.Basic`
@@ -628,10 +628,11 @@ Live continuation prompt: use the compact prompt in
 ## Next Aggressive Target
 
 For Vaart Theorem 5.41 in `MEstimators.lean`, discharge one real source field
-for the current endpoint: the iid/operator empirical derivative strong law, the
-raw scaled score CLT, or the scaled-estimator law-tail/tightness proof.  The
-prompt-level solved-layer list has intentionally been removed; the detailed
-history remains in the ledger above and should not be replayed as work.
+for the current endpoint: an iid/operator strong law for the a.s.
+derivative-norm residual, the raw scaled score CLT, or the scaled-estimator
+law-tail/tightness proof.  The prompt-level solved-layer list has intentionally
+been removed; the detailed history remains in the ledger above and should not
+be replayed as work.
 
 ## Reuse Dependencies
 
