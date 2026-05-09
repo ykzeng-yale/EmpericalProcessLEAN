@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V145
+## Live In-Thread Goal Prompt V146
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -23,7 +23,8 @@ automatic stopped-value integrability from the square martingale, and the
 deterministic variance-clock / exact-denominator wrappers, plus the
 variable-variance square-martingale source bridge and the natural-filtration
 independent-increment endpoint.  Exercise 4.4.9 now has the two-martingale
-product-covariance recurrence and finite-sum source display:
+product-covariance recurrence and finite-sum source display.  Exercise 4.4.10
+now has the finite square-increment second-moment identities:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -47,22 +48,25 @@ and
 plus
 `durrett2019_exercise_4_4_9_two_martingales_product_integral_succ` and
 `durrett2019_exercise_4_4_9_two_martingales_product_integral_sub_initial_eq_sum_increment_products`,
+plus `durrett2019_exercise_4_4_10_martingale_square_integral_succ` and
+`durrett2019_exercise_4_4_10_martingale_square_integral_sub_initial_eq_sum_increment_sq`,
 as well as the earlier first-exit/stopped-variance handoff declarations.  Do
 not route back into optional-stopping, overshoot, stopped-integrability,
 deterministic-clock, exact-denominator, square-martingale-source, or
 natural-filtration independent-increment 4.4.6 plumbing, or Exercise 4.4.9
-product-covariance plumbing.
+product-covariance / finite square-increment plumbing.
 
-Next aggressive step: move forward to Exercise 4.4.10 or 4.4.11 with the
-largest compileable reuse.  For Exercise 4.4.10, use the new Exercise 4.4.9
-finite product identity with `Y = X` to prove finite second-moment Cauchy /
-increment-square tail identities, then feed the existing Theorem 4.4.6 `L^2`
-convergence wrappers where possible.  For Exercise 4.4.11, combine the
-predictable-transform theorem 4.2.8 support with the square-summability
-hypothesis for scaled increments.  Do not loop back to already compiled Chapter
-4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises 4.4.5-4.4.9, Theorem 4.4.1
-plumbing, or the first-exit overshoot/stopped-integrability/deterministic-clock/
-exact-denominator/square-martingale-source/natural-filtration layer.  Theorem
+Next aggressive step: finish the Exercise 4.4.10 handoff from finite
+square-increment identities to convergence.  Best target: prove a tail identity
+or Cauchy bound for `E (X_n - X_m)^2` from the compiled square-increment sum
+identity and the supplied square-summability hypothesis, then feed the existing
+Theorem 4.4.6 `L^2` convergence wrappers where possible.  If that stalls, move
+to Exercise 4.4.11 by combining predictable-transform theorem 4.2.8 support
+with the square-summability hypothesis for scaled increments.  Do not loop back
+to already compiled Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises
+4.4.5-4.4.9, Theorem 4.4.1 plumbing, or the first-exit
+overshoot/stopped-integrability/deterministic-clock/exact-denominator/
+square-martingale-source/natural-filtration/product-covariance layer.  Theorem
 4.1.16 remains deferred unless a targeted kernel search finds a direct
 source-shaped API.
 

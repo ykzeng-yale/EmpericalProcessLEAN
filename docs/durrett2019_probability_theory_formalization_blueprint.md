@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V145`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V146`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -37,8 +37,9 @@ variance-clock recurrence, the variable-variance square-martingale source
 bridge, the exact-denominator source-facing small-ball wrapper, and the
 natural-filtration independent-increment small-ball endpoint; Exercise 4.4.9
 now has the two-martingale product-covariance recurrence and finite-sum source
-display.  Continue by moving to Exercise 4.4.10 or 4.4.11 using the compiled
-Chapter 4.4 martingale/variance infrastructure.
+display; Exercise 4.4.10 now has the finite square-increment second-moment
+identities.  Continue by proving the Exercise 4.4.10 tail/Cauchy handoff to
+convergence, or move to Exercise 4.4.11 if that handoff is blocked.
 
 For each cycle, route from:
 

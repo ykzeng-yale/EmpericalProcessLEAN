@@ -13981,6 +13981,79 @@ theorem durrett2019_exercise_4_4_9_two_martingales_product_integral_sub_initial_
       ring
 
 /--
+Durrett 2019, Exercise 4.4.10 support: one-step square-integral recurrence.
+
+This is Exercise 4.4.9 with `Y = X`, rewritten as a square identity for the
+martingale increment.
+-/
+theorem durrett2019_exercise_4_4_10_martingale_square_integral_succ
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (k : ℕ) :
+    (∫ ω, X (k + 1) ω ^ 2 ∂P) =
+      (∫ ω, X k ω ^ 2 ∂P) +
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P := by
+  have hstep :=
+    durrett2019_exercise_4_4_9_two_martingales_product_integral_succ
+      (P := P) (ℱ := ℱ) (X := X) (Y := X)
+      hX hX hX_memLp_two hX_memLp_two k
+  calc
+    (∫ ω, X (k + 1) ω ^ 2 ∂P)
+        = ∫ ω, X (k + 1) ω * X (k + 1) ω ∂P := by
+            refine integral_congr_ae (ae_of_all P fun ω => ?_)
+            ring
+    _ = (∫ ω, X k ω * X k ω ∂P) +
+          ∫ ω, (X (k + 1) ω - X k ω) *
+            (X (k + 1) ω - X k ω) ∂P := hstep
+    _ = (∫ ω, X k ω ^ 2 ∂P) +
+          ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P := by
+            congr 1
+            · refine integral_congr_ae (ae_of_all P fun ω => ?_)
+              ring
+            · refine integral_congr_ae (ae_of_all P fun ω => ?_)
+              ring
+
+/--
+Durrett 2019, Exercise 4.4.10 support: finite square-increment sum identity.
+
+For a square-integrable martingale, the terminal second moment equals the
+initial second moment plus the sum of the squared one-step increments.
+-/
+theorem durrett2019_exercise_4_4_10_martingale_square_integral_sub_initial_eq_sum_increment_sq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P) :
+    ∀ n,
+      (∫ ω, X n ω ^ 2 ∂P) - (∫ ω, X 0 ω ^ 2 ∂P) =
+        ∑ k ∈ Finset.range n,
+          ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P := by
+  intro n
+  have hprod :=
+    durrett2019_exercise_4_4_9_two_martingales_product_integral_sub_initial_eq_sum_increment_products
+      (P := P) (ℱ := ℱ) (X := X) (Y := X)
+      hX hX hX_memLp_two hX_memLp_two n
+  calc
+    (∫ ω, X n ω ^ 2 ∂P) - (∫ ω, X 0 ω ^ 2 ∂P)
+        = (∫ ω, X n ω * X n ω ∂P) -
+            (∫ ω, X 0 ω * X 0 ω ∂P) := by
+            congr 1
+            · refine integral_congr_ae (ae_of_all P fun ω => ?_)
+              ring
+            · refine integral_congr_ae (ae_of_all P fun ω => ?_)
+              ring
+    _ = ∑ k ∈ Finset.range n,
+          ∫ ω, (X (k + 1) ω - X k ω) * (X (k + 1) ω - X k ω) ∂P := hprod
+    _ = ∑ k ∈ Finset.range n,
+          ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P := by
+            refine Finset.sum_congr rfl ?_
+            intro k hk
+            refine integral_congr_ae (ae_of_all P fun ω => ?_)
+            ring
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

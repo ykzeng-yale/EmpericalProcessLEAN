@@ -32,14 +32,15 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V145` in
+Route from `Live In-Thread Goal Prompt V146` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 4.4 martingale maximal inequalities.  The
 current frontier has moved past Exercise 4.4.6's natural-filtration
 independent-increment specialization and Exercise 4.4.9's two-martingale
-product-covariance identity.  The next target is Exercise 4.4.10 or 4.4.11
-using the largest compiled reuse.
-The V143-V145 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
+product-covariance identity.  Exercise 4.4.10 now has the finite
+square-increment second-moment identities; the next target is the tail/Cauchy
+handoff to convergence, or Exercise 4.4.11 if that stalls.
+The V143-V146 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,
 `durrett2019_exercise_4_4_6_smallBall_bound_of_source`,
@@ -48,7 +49,9 @@ The V143-V145 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 and
 `durrett2019_exercise_4_4_6_linearRandomWalk_smallBall_bound_of_iIndepFun_zeroMean_secondMoments`,
 plus `durrett2019_exercise_4_4_9_two_martingales_product_integral_succ` and
-`durrett2019_exercise_4_4_9_two_martingales_product_integral_sub_initial_eq_sum_increment_products`.
+`durrett2019_exercise_4_4_9_two_martingales_product_integral_sub_initial_eq_sum_increment_products`,
+and `durrett2019_exercise_4_4_10_martingale_square_integral_succ` plus
+`durrett2019_exercise_4_4_10_martingale_square_integral_sub_initial_eq_sum_increment_sq`.
 Treat compiled Chapter 2, Chapter 3, Chapter 4.1
 through Theorem 4.1.15, Chapter 4.2, Chapter 4.3, Theorem 4.4.2, Example 4.4.3,
 Theorems 4.4.4, 4.4.6, 4.4.7, and 4.4.8, Theorem 4.4.1 optional-stopping
