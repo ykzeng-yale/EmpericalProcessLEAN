@@ -8541,3 +8541,12 @@ negated signs, and signed pair-difference badness.  Its pointwise projection
 now feeds the factor-two product-fiber constructor.  The exact remaining
 source obligations are measurability of this event and the displayed
 Chebyshev beta lower bound for its fibers over the centered bad event.
+
+2026-05-09 concrete-event displayed comparison constructor:
+`Theorem243.lean` now proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent`.
+This specializes the factor-two product-fiber constructor to the named
+pair-difference ghost/Rademacher event and produces the displayed Chebyshev
+beta comparison with `C = 2` and `A = 2` from only two remaining source
+inputs: event measurability and the displayed beta fiber lower bound over the
+centered bad event.
