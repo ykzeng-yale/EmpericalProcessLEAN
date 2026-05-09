@@ -566,9 +566,13 @@ duality packet adds
 `chewi138_newtonDecrement_step_le_of_primalLowerDualIdentity_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
 so the dual comparison is now derived from Lemma 13.6 primal lower transport
 once the concrete model supplies the Cauchy bridge and inverse-local identity.
-After that, derive those identities and the coordinate identities from
-concrete matrix/order hypotheses and remove the remaining mixed-third supplied
-source interface through the real third-derivative representation bridge to
+The newest Cauchy packet adds `dualPrimalCauchy_of_adjointCoordSqrt` and
+`chewi138_newtonDecrement_step_le_of_inverseLocal_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`,
+so the Cauchy bridge is derived from the same square-root coordinate
+factorization as the normalized Rayleigh line.  After that, derive the
+inverse-local identity and coordinate identities from concrete matrix/order
+hypotheses and remove the remaining mixed-third supplied source interface
+through the real third-derivative representation bridge to
 `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
