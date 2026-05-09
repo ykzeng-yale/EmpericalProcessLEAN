@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V174`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V175`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -72,10 +72,12 @@ turns a stopped increasing-process bound plus the stopped square identity into
 that second-moment bound.  The threshold stopped increasing-process bound
 `stoppedProcess A N_a n ≤ a^2`, its a.e. form, and the initial-bound source
 wrappers into stopped second-moment and stopped convergence now compile.
-Continue by packaging
-`∫ (stoppedProcess X N_a n)^2 = ∫ stoppedProcess A N_a n`, then feed the
-compiled initial-bound stopped convergence wrapper directly into the event-cover
-skeleton and the countable threshold cover of `{A∞ < ∞}`.
+The ordinary stopped square/increasing-process identity is now packaged from
+the stopped predictable-part identification.  Continue by proving
+`predictablePart (fun k ω => stoppedProcess X N_a k ω ^ 2) ℱ P n
+  =ᵐ[P] stoppedProcess A N_a n`, then feed the compiled initial-bound stopped
+convergence wrapper directly into the event-cover skeleton and the countable
+threshold cover of `{A∞ < ∞}`.
 
 For each cycle, route from:
 

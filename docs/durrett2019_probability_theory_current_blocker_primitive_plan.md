@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V174
+## Live In-Thread Goal Prompt V175
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -73,17 +73,23 @@ wrappers also now compile:
 `durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_le_of_initial_le_and_square_identity`,
 and
 `durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_square_identity`.
+The stopped square/increasing-process integral identity is now packaged from a
+stopped predictable-part identification:
+`durrett2019_theorem_4_5_2_stopped_square_integral_eq_of_predictablePart_ae_eq`,
+`durrett2019_theorem_4_5_2_firstPredictableAbove_zero_le`,
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_eq_of_predictablePart_ae_eq`,
+and
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_predictablePart_identity`.
 
-Next aggressive step: prove or package the stopped square/increasing-process
-identity
-`∫ (stoppedProcess X N_a n)^2 = ∫ stoppedProcess A N_a n` for
-`N_a = durrett2019_theorem_4_5_2_firstPredictableAbove A a`, using the
-compiled square-process predictable-part identities and stopped martingale
-support directly.  Then feed
-`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_square_identity`
+Next aggressive step: prove the actual stopped predictable-part identification
+`predictablePart (fun k ω => stoppedProcess X N_a k ω ^ 2) ℱ P n
+  =ᵐ[P] stoppedProcess A N_a n`
+for `N_a = durrett2019_theorem_4_5_2_firstPredictableAbove A a`, then feed
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_predictablePart_identity`
 into the event-cover skeleton and package the countable threshold cover of
-`{A∞ < ∞}`.  Do not reprove the stopped `A_{n∧N_a} ≤ a^2` bound, and do not
-route back into Chapter 4.4 plumbing or the already
+`{A∞ < ∞}`.  Do not reprove the stopped `A_{n∧N_a} ≤ a^2` bound or the
+ordinary integral identity from predictable-part equality, and do not route
+back into Chapter 4.4 plumbing or the already
 compiled finite-maximum, ordinary second-moment, monotone-iSup,
 running-supremum identification, supplied-`A∞`, canonical `E X_n^2 = E A_n`,
 terminal monotone-limit, or conditional-variance finite-sum wrapper layers.
