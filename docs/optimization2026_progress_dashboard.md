@@ -1300,12 +1300,15 @@ sandwich.  The newest mixed-third derivative packet adds
 `hessianSegmentPsi_continuousOn_of_convex_continuousOn`,
 `hessianSegmentPsi_hasDerivAt_of_hasFDerivAt`,
 `hessianSegmentPsi_hasDerivWithinAt_of_hasFDerivAt`,
+`hessianSegmentLocalNorm_hasDerivWithinAt_of_hasFDerivAt`,
 `hessianSegmentMixedThirdPsiDeriv`,
+`hessianSegmentLocalNorm_hasDerivWithinAt_of_mixedThird`,
 `hessianSegmentLocalNorm_continuousOn_of_continuousOn`,
 `hessianSegmentLocalNorm_continuousOn_of_convex_continuousOn`,
 `HessianSegmentMixedThirdCertificate`,
 `HessianSegmentMixedThirdLocalNormCertificate`,
 `MixedThirdSelfConcordantOn`,
+`hessianSegmentLocalNorm_riccatiDerivBound_of_mixedThirdSelfConcordantOn`,
 `scalar_riccati_upper_bound_on_unit_interval`,
 `hessianSegmentLocalNorm_le_of_riccati_bound`,
 `hessianSegmentLocalNorm_le_of_riccati_bound_of_mul_lt`,
@@ -1315,24 +1318,26 @@ sandwich.  The newest mixed-third derivative packet adds
 `hessianSegmentCoeffBound_of_localNorm_bound`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm`,
 the mixed-third certificate-to-exponential bridges,
 `localNorm_sandwich_of_hessianSegmentMixedThirdCertificate` /
 `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate`, and
 `localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound` /
-`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound`.
-The newest Riccati bridge proves the scalar comparison from
-`q' <= M*q^2`, `q(0) <= r`, and positivity to
-`q(t) <= r / (1 - M*r*t)`, then packages that comparison for
-`q(t)=||y-x||_{z_t}` and feeds the mixed-third certificate/final sandwich.
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound` /
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm`.
+The newest derivative packet proves the `sqrt(ψ)` local-norm derivative
+formula, specializes it to the mixed-third oracle, derives
+`q' <= M*q^2` from `MixedThirdSelfConcordantOn`, and feeds this into the
+Riccati/final-sandwich wrapper under the remaining positive-local-norm
+assumption.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
 compiled route uses `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
-`HasDerivAt.inner`, `HasDerivWithinAt.inv`, and
+`HasDerivAt.inner`, `HasDerivWithinAt.sqrt`, `HasDerivWithinAt.inv`, and
 `monotoneOn_of_hasDerivWithinAt_nonneg`.  Next Chapter 13 work should prove
-positivity and the local-norm derivative inequality
-`d/dt ||y-x||_{z_t} <= M ||y-x||_{z_t}^2`, connect the real third-derivative
-representation to `MixedThirdSelfConcordantOn`, then
+or package local-norm positivity on the nondegenerate segment, connect the
+real third-derivative representation to `MixedThirdSelfConcordantOn`, then
 state/prove Lemma 13.6(4) and continue to Newton decrement estimates.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also

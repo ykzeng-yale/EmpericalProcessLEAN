@@ -149,10 +149,13 @@ Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
 `hessianSegmentPsi_hasDerivAt_of_hasFDerivAt`,
 `hessianSegmentPsi_hasDerivWithinAt_of_hasFDerivAt`,
+`hessianSegmentLocalNorm_hasDerivWithinAt_of_hasFDerivAt`,
 `hessianSegmentMixedThirdPsiDeriv`,
+`hessianSegmentLocalNorm_hasDerivWithinAt_of_mixedThird`,
 `HessianSegmentMixedThirdCertificate`,
 `HessianSegmentMixedThirdLocalNormCertificate`,
 `MixedThirdSelfConcordantOn`,
+`hessianSegmentLocalNorm_riccatiDerivBound_of_mixedThirdSelfConcordantOn`,
 `hessianSegmentPoint_eq_lineMap`,
 `hessianSegmentPoint_mem_of_convex`,
 `hessianSegmentPoint_mem_of_convex_interior`,
@@ -171,23 +174,26 @@ Compiled declarations to reuse include
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm`,
 the corresponding `.toHessianSegmentConcretePsiCertificate` and
 `.toHessianSegmentExponentialBounds` bridges, and
 `localNorm_sandwich_of_hessianSegmentMixedThirdCertificate` /
 `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate` /
 `localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound` /
-`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound`.
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound` /
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_positiveLocalNorm`.
 
 Next theorem-sized target: construct the source hypotheses for
 `HessianSegmentMixedThirdLocalNormCertificate` from the remaining analytic
 source facts rather than adding more generic Gronwall/`ψ` plumbing.  The exact
 blockers are:
 
-- prove positivity of `||y - x||_{z_s}` on the nondegenerate segment and the
-  Riccati derivative estimate
-  `d/ds ||y - x||_{z_s} <= M * ||y - x||_{z_s}^2`; the scalar comparison from
-  that estimate to `||y - x||_{z_s} <= r / (1 - M*r*s)`, the coefficient
-  scaling, and the final sandwich assembly are now compiled;
+- prove or package positivity of `||y - x||_{z_s}` on the nondegenerate
+  segment.  The derivative formula for the local norm, the
+  self-concordance-to-Riccati derivative estimate
+  `d/ds ||y - x||_{z_s} <= M * ||y - x||_{z_s}^2`, the scalar comparison to
+  `||y - x||_{z_s} <= r / (1 - M*r*s)`, coefficient scaling, and final
+  sandwich assembly are now compiled;
 - connect a real third Frechet derivative or `iteratedFDeriv` representation
   to `MixedThirdSelfConcordantOn.mixed_third_bound`;
 - then consume the convex/mixed-third/Riccati wrapper to state and prove the
@@ -199,6 +205,7 @@ Hessian-stability theorem and no direct derivative theorem for
 Riccati comparison theorem matching `q' <= M*q^2`.  Reuse
 `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
 `HasDerivAt.inner`, `HasDerivWithinAt.inner`, `HasDerivWithinAt.inv`,
+`HasDerivWithinAt.sqrt`,
 `monotoneOn_of_hasDerivWithinAt_nonneg`,
 `Continuous.clm_apply`/`ContinuousOn.clm_apply`,
 `ContinuousMultilinearMap` and `iteratedFDeriv` APIs, plus
