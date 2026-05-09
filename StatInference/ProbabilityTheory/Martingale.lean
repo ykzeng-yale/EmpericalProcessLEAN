@@ -11922,5 +11922,196 @@ theorem durrett2019_theorem_4_4_4_positivePart_truncated_lintegral_rpow_bound
   rw [← hCoeff]
   exact hScalar
 
+/--
+Durrett 2019, Theorem 4.4.4 truncation support: if all natural-level bounded
+truncations of a nonnegative measurable random variable have p-th `lintegral`
+bounded by the same constant, then the untruncated p-th `lintegral` has the
+same bound.
+-/
+theorem durrett2019_theorem_4_4_4_lintegral_rpow_enorm_le_of_nat_truncations
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {A : Ω -> ℝ} {p : ℝ} {C : ℝ≥0∞}
+    (hA_nonneg : ∀ ω, 0 ≤ A ω) (hA_meas : Measurable A) (hp : 0 < p)
+    (htrunc :
+      ∀ R : ℕ,
+        (∫⁻ ω, ‖min (A ω) (R : ℝ)‖ₑ ^ p ∂P) ≤ C) :
+    (∫⁻ ω, ‖A ω‖ₑ ^ p ∂P) ≤ C := by
+  let f : ℕ -> Ω -> ℝ≥0∞ := fun R ω => ‖min (A ω) (R : ℝ)‖ₑ ^ p
+  have hf : ∀ R, Measurable (f R) := by
+    intro R
+    dsimp [f]
+    exact ((hA_meas.min measurable_const).enorm).pow_const p
+  have hmono : Monotone f := by
+    intro R S hRS ω
+    dsimp [f]
+    have hR_nonneg : (0 : ℝ) ≤ (R : ℝ) := by exact_mod_cast Nat.zero_le R
+    have hS_nonneg : (0 : ℝ) ≤ (S : ℝ) := by exact_mod_cast Nat.zero_le S
+    have hminR_nonneg : 0 ≤ min (A ω) (R : ℝ) :=
+      le_min (hA_nonneg ω) hR_nonneg
+    have hminS_nonneg : 0 ≤ min (A ω) (S : ℝ) :=
+      le_min (hA_nonneg ω) hS_nonneg
+    have hRS_real : (R : ℝ) ≤ (S : ℝ) := by exact_mod_cast hRS
+    have hmin_le : min (A ω) (R : ℝ) ≤ min (A ω) (S : ℝ) :=
+      min_le_min_left (A ω) hRS_real
+    have henorm :
+        ‖min (A ω) (R : ℝ)‖ₑ ≤ ‖min (A ω) (S : ℝ)‖ₑ := by
+      rw [← ofReal_norm_eq_enorm (min (A ω) (R : ℝ)), Real.norm_eq_abs,
+        abs_of_nonneg hminR_nonneg,
+        ← ofReal_norm_eq_enorm (min (A ω) (S : ℝ)), Real.norm_eq_abs,
+        abs_of_nonneg hminS_nonneg]
+      exact ENNReal.ofReal_le_ofReal hmin_le
+    exact ENNReal.rpow_le_rpow henorm hp.le
+  have hpoint :
+      (fun ω => ⨆ R : ℕ, f R ω) = fun ω => ‖A ω‖ₑ ^ p := by
+    funext ω
+    refine le_antisymm ?_ ?_
+    · refine iSup_le fun R => ?_
+      dsimp [f]
+      have hR_nonneg : (0 : ℝ) ≤ (R : ℝ) := by exact_mod_cast Nat.zero_le R
+      have hmin_nonneg : 0 ≤ min (A ω) (R : ℝ) :=
+        le_min (hA_nonneg ω) hR_nonneg
+      have hmin_le : min (A ω) (R : ℝ) ≤ A ω :=
+        min_le_left (A ω) (R : ℝ)
+      have henorm :
+          ‖min (A ω) (R : ℝ)‖ₑ ≤ ‖A ω‖ₑ := by
+        rw [← ofReal_norm_eq_enorm (min (A ω) (R : ℝ)), Real.norm_eq_abs,
+          abs_of_nonneg hmin_nonneg,
+          ← ofReal_norm_eq_enorm (A ω), Real.norm_eq_abs,
+          abs_of_nonneg (hA_nonneg ω)]
+        exact ENNReal.ofReal_le_ofReal hmin_le
+      exact ENNReal.rpow_le_rpow henorm hp.le
+    · obtain ⟨R, hR⟩ := exists_nat_ge (A ω)
+      refine le_iSup_of_le R ?_
+      dsimp [f]
+      rw [min_eq_left hR]
+  calc
+    (∫⁻ ω, ‖A ω‖ₑ ^ p ∂P)
+        = ∫⁻ ω, ⨆ R : ℕ, f R ω ∂P := by rw [← hpoint]
+    _ = ⨆ R : ℕ, ∫⁻ ω, f R ω ∂P := lintegral_iSup hf hmono
+    _ ≤ C := iSup_le htrunc
+
+/--
+Durrett 2019, Theorem 4.4.4: positive-part p-th-power maximal estimate with
+the textbook constant `p/(p-1)`, obtained by passing the bounded truncation
+estimates to the untruncated running maximum.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_lintegral_rpow_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) (n : ℕ) :
+    (∫⁻ ω,
+        ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+          (fun k => max (X k ω) 0)‖ₑ ^ p ∂P) ≤
+      (ENNReal.ofReal (p / (p - 1)) *
+        (∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p)) ^ p := by
+  let A : Ω -> ℝ := fun ω =>
+    (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+      fun k => max (X k ω) 0
+  have hA_nonneg : ∀ ω, 0 ≤ A ω := by
+    intro ω
+    rw [Finset.le_sup'_iff]
+    exact ⟨0, by simp, le_max_right (X 0 ω) 0⟩
+  have hA_meas : Measurable A := by
+    dsimp [A]
+    refine Finset.measurable_range_sup'' ?_
+    intro k _hk
+    exact
+      (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).max
+        measurable_const)
+  refine
+    durrett2019_theorem_4_4_4_lintegral_rpow_enorm_le_of_nat_truncations
+      (P := P) (A := A) (p := p)
+      (C := (ENNReal.ofReal (p / (p - 1)) *
+        (∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p)) ^ p)
+      hA_nonneg hA_meas hpq.pos ?_
+  intro R
+  have hR_nonneg : (0 : ℝ) ≤ (R : ℝ) := by exact_mod_cast Nat.zero_le R
+  simpa [A] using
+    durrett2019_theorem_4_4_4_positivePart_truncated_lintegral_rpow_bound
+      (P := P) (ℱ := ℱ) (X := X) hX hpq hR_nonneg n
+
+/--
+Durrett 2019, Theorem 4.4.4: source-facing positive-part `eLpNorm` maximal
+inequality with constant `p/(p-1)`.
+-/
+theorem durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) (n : ℕ) :
+    eLpNorm
+        (fun ω =>
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => max (X k ω) 0)
+        (ENNReal.ofReal p) P ≤
+      ENNReal.ofReal (p / (p - 1)) *
+        eLpNorm (fun ω => max (X n ω) 0) (ENNReal.ofReal p) P := by
+  have hp_pos : 0 < p := hpq.pos
+  have hp_nonneg : 0 ≤ p := hp_pos.le
+  have hp_ne_zero : (ENNReal.ofReal p) ≠ 0 := by
+    rw [ne_eq, ENNReal.ofReal_eq_zero]
+    exact not_le_of_gt hp_pos
+  have hp_ne_top : (ENNReal.ofReal p) ≠ ∞ := ENNReal.ofReal_ne_top
+  have hp_toReal : (ENNReal.ofReal p).toReal = p :=
+    ENNReal.toReal_ofReal hp_nonneg
+  have hTerminal :
+      eLpNorm (fun ω => max (X n ω) 0) (ENNReal.ofReal p) P =
+        (∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p) := by
+    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_ne_top]
+    rw [hp_toReal]
+  have hPowerReal :=
+    durrett2019_theorem_4_4_4_positivePart_lintegral_rpow_bound
+      (P := P) (ℱ := ℱ) (X := X) hX hpq n
+  have hPower :
+      (∫⁻ ω,
+          ‖(Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+              (fun k => max (X k ω) 0)‖ₑ ^ (ENNReal.ofReal p).toReal ∂P) ≤
+        (ENNReal.ofReal (p / (p - 1)) *
+          eLpNorm (fun ω => max (X n ω) 0) (ENNReal.ofReal p) P) ^
+            (ENNReal.ofReal p).toReal := by
+    simpa [hp_toReal, hTerminal] using hPowerReal
+  exact
+    durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound_of_lintegral_rpow_enorm_le
+      (P := P) (X := X) hp_ne_zero hp_ne_top n hPower
+
+/--
+Durrett 2019, Theorem 4.4.4: martingale absolute-maximum `eLpNorm` maximal
+inequality with constant `p/(p-1)`.
+-/
+theorem durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} (hY : Martingale Y ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) (n : ℕ) :
+    eLpNorm
+        (fun ω =>
+          (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+            fun k => |Y k ω|)
+        (ENNReal.ofReal p) P ≤
+      ENNReal.ofReal (p / (p - 1)) * eLpNorm (Y n) (ENNReal.ofReal p) P := by
+  have hp_pos : 0 < p := hpq.pos
+  have hp_nonneg : 0 ≤ p := hp_pos.le
+  have hp_ne_zero : (ENNReal.ofReal p) ≠ 0 := by
+    rw [ne_eq, ENNReal.ofReal_eq_zero]
+    exact not_le_of_gt hp_pos
+  have hp_ne_top : (ENNReal.ofReal p) ≠ ∞ := ENNReal.ofReal_ne_top
+  refine
+    durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_of_positivePart_lintegral_bound
+      (P := P) (ℱ := ℱ) (Y := Y) hY hp_ne_zero hp_ne_top n
+      (C := ENNReal.ofReal (p / (p - 1))) ?_
+  intro X hX
+  have hp_toReal : (ENNReal.ofReal p).toReal = p :=
+    ENNReal.toReal_ofReal hp_nonneg
+  have hTerminal :
+      eLpNorm (fun ω => max (X n ω) 0) (ENNReal.ofReal p) P =
+        (∫⁻ ω, ‖max (X n ω) 0‖ₑ ^ p ∂P) ^ (1 / p) := by
+    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_ne_top]
+    rw [hp_toReal]
+  have hPowerReal :=
+    durrett2019_theorem_4_4_4_positivePart_lintegral_rpow_bound
+      (P := P) (ℱ := ℱ) (X := X) hX hpq n
+  simpa [hp_toReal, hTerminal] using hPowerReal
+
 end ProbabilityTheory
 end StatInference

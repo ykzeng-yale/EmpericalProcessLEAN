@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V122
+## Live In-Thread Goal Prompt V123
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -19,17 +19,17 @@ expectation inequality `E X ≤ E X_0` for Theorem 4.2.12.  Theorem 4.1.16
 remains deferred unless a future targeted kernel search finds a direct
 source-shaped API.
 
-Current target: finish Durrett Theorem 4.4.4 positive-part maximal inequality.
-The layer-cake, Doob integrand, weighted/Fubini, coefficient extraction,
-assembled Doob/Fubini/Hölder bound, scalar cancellation lemma, finite
-`lintegral` estimate, finite `eLpNorm` wrapper, generic nonnegative layer-cake
-helper, measurable-comparison Hölder helper, bounded-truncation
-Doob/Fubini/Hölder assembly, finite truncation `lintegral` proof, and
-per-cutoff truncated `lintegral` estimate now compile.  Next aggressive step:
-prove the monotone-convergence/iSup handoff from `min runningMax R` to the
-untruncated running maximum, then package the final source-facing positive-part
-and martingale `p/(p-1)` wrappers.  Do not revisit the completed
-Fubini/Hölder/coefficient/truncation plumbing.
+Current target: move to Durrett Theorem 4.4.6, the `L^p` convergence theorem
+for martingales with `sup_n E |X_n|^p < ∞` and `1 < p`.  Durrett Theorem 4.4.4
+now has the full positive-part and martingale maximal inequality route:
+layer-cake, Doob integrand, weighted/Fubini, coefficient extraction, assembled
+Doob/Fubini/Hölder bound, scalar cancellation, bounded truncations,
+monotone-convergence/iSup handoff, final positive-part `eLpNorm`, and final
+martingale absolute-maximum `eLpNorm` wrappers all compile.  Next aggressive
+step: use Theorem 4.2.11 plus the compiled Theorem 4.4.4 maximal estimate to
+package Theorem 4.4.6's a.s. convergence, `sup |X_n| ∈ L^p`, and `L^p`
+convergence dominated-convergence handoff.  Do not revisit the completed
+Theorem 4.4.4 Fubini/Hölder/coefficient/truncation plumbing.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -469,11 +469,15 @@ The bounded-truncation layer now also compiles:
 `durrett2019_theorem_4_4_4_positivePart_truncated_layercake_doob_holder_bound`,
 `durrett2019_theorem_4_4_4_positivePart_truncated_lintegral_rpow_ne_top`, and
 `durrett2019_theorem_4_4_4_positivePart_truncated_lintegral_rpow_bound`.
-Next target: prove the monotone-convergence/iSup handoff from the bounded
-truncations to the original running maximum, then feed the existing
-positive-part and martingale source wrappers with the textbook constant
-`p/(p-1)`.  Do not detour back into full Galton-Watson random-sum
-infrastructure unless a local API makes it cheap.
+The monotone handoff and final source-facing Theorem 4.4.4 wrappers now compile:
+`durrett2019_theorem_4_4_4_lintegral_rpow_enorm_le_of_nat_truncations`,
+`durrett2019_theorem_4_4_4_positivePart_lintegral_rpow_bound`,
+`durrett2019_theorem_4_4_4_positivePart_eLpNorm_bound`, and
+`durrett2019_theorem_4_4_4_martingale_absMax_eLpNorm_bound`.
+Next target: package Durrett Theorem 4.4.6 from Theorem 4.2.11 plus this final
+maximal inequality; only formalize Example 4.4.5's counterexample if it becomes
+a cheap reusable support lemma.  Do not detour back into full Galton-Watson
+random-sum infrastructure unless a local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
 measurability, RN martingale/convergence
 bridge, regular/singular decomposition identity, density-ratio bridge, top-set
@@ -999,9 +1003,9 @@ assembled Doob/Fubini/Hölder endpoint, scalar cancellation lemma, finite
 `lintegral` estimate, finite `eLpNorm` wrapper, nonnegative layer-cake helper,
 measurable-comparison Hölder helper, bounded-truncation Doob/Fubini/Hölder
 assembly, finite truncation `lintegral` proof, and per-cutoff truncated
-`lintegral` estimate now also compile.  Next prove the monotone-convergence/iSup
-handoff from bounded truncations to the original running maximum, then package
-the final Durrett p-th-power estimate and maximal inequality wrappers,
+`lintegral` estimate, monotone-convergence/iSup handoff, final positive-part
+`eLpNorm` wrapper, and final martingale absolute-maximum `eLpNorm` wrapper now
+also compile.  Next package Theorem 4.4.6's `L^p` convergence theorem,
 whichever gives the largest compiled step without building unrelated
 infrastructure.
 Keep Theorem 4.1.16 deferred unless a
@@ -1117,6 +1121,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V122` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V123` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
