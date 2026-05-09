@@ -1418,7 +1418,12 @@ concrete Delta symmetry packet adds
 `hessianSegmentHessian_intervalIntegral_isSymmetric_of_continuousOn` and
 `hessianSegmentDelta_isSymmetric_of_continuousOn`, proving the integrated
 Hessian-difference operator is symmetric from pointwise Hessian symmetry along
-the segment.
+the segment.  The newest normalized adjoint-conjugation packet adds
+`continuousLinearMap_adjointConj_isSymmetric_of_isSymmetric`,
+`hessianSegmentDelta_adjointConj_isSymmetric_of_continuousOn`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedAdjointConjSymmetricQuadraticConcreteDelta`,
+reusing mathlib's `IsSelfAdjoint.adjoint_conj` so `normalized = coord† Delta
+coord` supplies the normalized self-adjointness input.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
@@ -1430,19 +1435,20 @@ compiled route uses `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
 `intervalIntegral.integral_sub`, `ContinuousLinearMap.le_opNorm`, and
 `ContinuousLinearMap.opNorm_le_of_re_inner_le`, plus
 `ContinuousLinearMap.norm_eq_iSup_rayleighQuotient`, `real_inner_comm`, and
-`LinearMap.IsSymmetric.sub`; do not reprove Bochner interval-integral,
-inner-product/application commutation, Delta symmetry from pointwise Hessian
-symmetry, or operator-norm-from-unit-bilinear/Rayleigh estimates.
+`LinearMap.IsSymmetric.sub`, plus `IsSelfAdjoint.adjoint_conj`; do not reprove
+Bochner interval-integral, inner-product/application commutation, Delta
+symmetry from pointwise Hessian symmetry, adjoint-conjugation symmetry, or
+operator-norm-from-unit-bilinear/Rayleigh estimates.
 Faraday's follow-up scout found no
 one-shot Hessian-derivative/third-Frechet bridge, but identified
 `fderiv_iteratedFDeriv`, `iteratedFDeriv_succ_apply_left/right`,
 `iteratedFDeriv_two_apply`, and `ContDiffAt.iteratedFDeriv_comp_perm` as the
 right API stack.  Next Chapter 13 work should prove the concrete normalized
 Delta factorization plus either the pointwise squared, unit-bilinear, or
-self-adjoint absolute-quadratic bound, carrying the compiled concrete Delta
-symmetry through the square-root coordinates when needed; also derive
-inverse-Hessian comparison from concrete Hessian/matrix inverse hypotheses when
-needed.
+self-adjoint absolute-quadratic bound.  On the Rayleigh path, provide the
+coordinate identity `normalized = coord† Delta coord` and use the compiled
+adjoint-conjugation wrapper; also derive inverse-Hessian comparison from
+concrete Hessian/matrix inverse hypotheses when needed.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,

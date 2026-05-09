@@ -2692,6 +2692,34 @@ theorem hessianSegmentDelta_isSymmetric_of_continuousOn
   simpa [hessianSegmentDelta, z] using hint_symm.sub hx_symm
 
 /--
+The normalized adjoint-conjugate of the concrete Delta operator is symmetric.
+This carries the compiled concrete Delta symmetry through a square-root style
+coordinate change.
+-/
+theorem hessianSegmentDelta_adjointConj_isSymmetric_of_continuousOn
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y : E} {coord : E →L[ℝ] E}
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s)
+    (hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric) :
+    ((((ContinuousLinearMap.adjoint coord).comp
+        ((hessianSegmentDelta hess x y).comp coord)) : E →L[ℝ] E) :
+      E →ₗ[ℝ] E).IsSymmetric := by
+  have hdelta_symm :
+      (hessianSegmentDelta hess x y : E →ₗ[ℝ] E).IsSymmetric :=
+    hessianSegmentDelta_isSymmetric_of_continuousOn
+      (hess := hess) (s := s) (x := x) (y := y) hhess hseg hsymm
+  have hdelta_self : IsSelfAdjoint (hessianSegmentDelta hess x y) :=
+    hdelta_symm.isSelfAdjoint
+  have hconj : IsSelfAdjoint
+      ((ContinuousLinearMap.adjoint coord).comp
+        ((hessianSegmentDelta hess x y).comp coord)) :=
+    IsSelfAdjoint.adjoint_conj
+      (T := hessianSegmentDelta hess x y) (S := coord) hdelta_self
+  exact hconj.isSymmetric
+
+/--
 The quadratic form of the concrete Delta operator is the scalar integrated
 Hessian difference from Chewi's proof.
 -/
@@ -2892,6 +2920,22 @@ theorem continuousLinearMap_opNorm_le_of_isSymmetric_abs_inner_le
       exact hbound z
     simpa [ContinuousLinearMap.rayleighQuotient,
       ContinuousLinearMap.reApplyInnerSelf_apply, abs_div] using hdiv
+
+/--
+Symmetry is preserved by adjoint conjugation for continuous linear maps.  This
+is the coordinate-change bridge used by the normalized Rayleigh route.
+-/
+theorem continuousLinearMap_adjointConj_isSymmetric_of_isSymmetric
+    [CompleteSpace E]
+    {delta coord : E →L[ℝ] E}
+    (hdelta : (delta : E →ₗ[ℝ] E).IsSymmetric) :
+    ((((ContinuousLinearMap.adjoint coord).comp (delta.comp coord)) :
+        E →L[ℝ] E) : E →ₗ[ℝ] E).IsSymmetric := by
+  have hself : IsSelfAdjoint delta := hdelta.isSelfAdjoint
+  have hconj : IsSelfAdjoint
+      ((ContinuousLinearMap.adjoint coord).comp (delta.comp coord)) :=
+    IsSelfAdjoint.adjoint_conj (T := delta) (S := coord) hself
+  exact hconj.isSymmetric
 
 /--
 Generic normalized-operator route for Chewi Theorem 13.8.  If a Delta operator
@@ -3795,6 +3839,77 @@ theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_nor
       (M := M)
       hM_nonneg hMlambda_lt hstep_norm hhess hseg hgrad hnewton_linear
       hdual_factor hhess_factor (by simpa [lam] using hnormalized_op)
+      hx_inv_nonneg hstep_inv_nonneg hupper hstep_hess_nonneg
+
+/--
+Chewi Theorem 13.8 assembly for a normalized operator identified as an adjoint
+conjugate `coord† Delta coord`.  The concrete Delta symmetry is derived from
+pointwise Hessian symmetry along the Newton segment, leaving only the
+coordinate factorization and absolute quadratic-form estimate as normalized
+source obligations.
+-/
+theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedAdjointConjSymmetricQuadraticConcreteDelta
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {normalized coord sqrtH : E →L[ℝ] E} {s : Set E} {x : E} {M : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x (newtonStep grad invHess x) t ∈ s)
+    (hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hdual_factor : ∀ step : E,
+      inner ℝ
+          (hessianSegmentDelta hess x (newtonStep grad invHess x) step)
+          (invHess x
+            (hessianSegmentDelta hess x (newtonStep grad invHess x) step)) =
+        ‖normalized (sqrtH step)‖ ^ (2 : ℕ))
+    (hhess_factor : ∀ step : E,
+      inner ℝ step (hess x step) = ‖sqrtH step‖ ^ (2 : ℕ))
+    (hnormalized_eq :
+      normalized =
+        (ContinuousLinearMap.adjoint coord).comp
+          ((hessianSegmentDelta hess x (newtonStep grad invHess x)).comp coord))
+    (hnormalized_abs_quad : ∀ z : E,
+      |inner ℝ (normalized z) z| ≤
+        (M * newtonDecrement grad invHess x /
+          (1 - M * newtonDecrement grad invHess x)) * ‖z‖ ^ (2 : ℕ))
+    (hx_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hstep_inv_nonneg : ∀ v : E,
+      0 ≤ inner ℝ v (invHess (newtonStep grad invHess x) v))
+    (hupper : ∀ v : E,
+      inner ℝ v (invHess (newtonStep grad invHess x) v) ≤
+        ((1 - M * newtonDecrement grad invHess x)⁻¹) ^ (2 : ℕ) *
+          inner ℝ v (invHess x v))
+    (hstep_hess_nonneg :
+      0 ≤ inner ℝ (newtonStep grad invHess x - x)
+        (hess x (newtonStep grad invHess x - x))) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  have hnormalized_symm : (normalized : E →ₗ[ℝ] E).IsSymmetric := by
+    rw [hnormalized_eq]
+    exact
+      hessianSegmentDelta_adjointConj_isSymmetric_of_continuousOn
+        (hess := hess) (s := s) (x := x)
+        (y := newtonStep grad invHess x) (coord := coord)
+        hhess hseg hsymm
+  exact
+    chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSymmetricQuadraticConcreteDelta
+      (hess := hess) (grad := grad) (invHess := invHess)
+      (normalized := normalized) (sqrtH := sqrtH) (s := s) (x := x)
+      (M := M)
+      hM_nonneg hMlambda_lt hstep_norm hhess hseg hgrad hnewton_linear
+      hdual_factor hhess_factor hnormalized_symm hnormalized_abs_quad
       hx_inv_nonneg hstep_inv_nonneg hupper hstep_hess_nonneg
 
 /--

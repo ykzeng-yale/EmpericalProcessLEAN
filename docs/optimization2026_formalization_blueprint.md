@@ -524,9 +524,15 @@ Delta symmetry packet adds
 `hessianSegmentHessian_intervalIntegral_isSymmetric_of_continuousOn` and
 `hessianSegmentDelta_isSymmetric_of_continuousOn`, proving the unnormalized
 integrated Hessian-difference operator is self-adjoint from pointwise Hessian
-symmetry along the segment.  After that, derive the inverse-Hessian comparison
-from concrete matrix/order hypotheses and remove the remaining mixed-third
-supplied source interface through the real
+symmetry along the segment.  The newest normalized adjoint-conjugation packet
+adds `continuousLinearMap_adjointConj_isSymmetric_of_isSymmetric`,
+`hessianSegmentDelta_adjointConj_isSymmetric_of_continuousOn`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedAdjointConjSymmetricQuadraticConcreteDelta`,
+reusing mathlib's `IsSelfAdjoint.adjoint_conj` so the source identity
+`normalized = coord† Delta coord` discharges normalized self-adjointness.  After
+that, derive the inverse-Hessian comparison from concrete matrix/order
+hypotheses and remove the remaining mixed-third supplied source interface
+through the real
 third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem

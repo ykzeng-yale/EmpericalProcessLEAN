@@ -301,16 +301,26 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	self-adjoint from pointwise Hessian symmetry along the segment; the remaining
 	Rayleigh-route work is the square-root coordinate factorization and
 	normalized absolute quadratic-form estimate.
+	The newest normalized adjoint-conjugation packet adds
+	`continuousLinearMap_adjointConj_isSymmetric_of_isSymmetric`,
+	`hessianSegmentDelta_adjointConj_isSymmetric_of_continuousOn`, and
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedAdjointConjSymmetricQuadraticConcreteDelta`.
+	This reuses mathlib's `IsSelfAdjoint.adjoint_conj` to carry concrete Delta
+	symmetry through a coordinate map `coord`, so future source work can provide
+	`normalized = coord† Delta coord` plus the absolute quadratic-form bound
+	instead of a separate normalized self-adjointness assumption.
 
 Next theorem-sized target: prove the square-root/normalized-operator
 factorization and either the pointwise squared, unit-bilinear, or
 self-adjoint absolute-quadratic normalized bound for the concrete Delta
-operator, then feed it through
+operator.  On the Rayleigh path, prefer the compiled adjoint-conjugation
+wrapper by proving `normalized = coord† Delta coord`; then feed the result
+through
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSquaredConcreteDelta`
 or
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedUnitInnerConcreteDelta`
 or
-`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedSymmetricQuadraticConcreteDelta`.
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_normalizedAdjointConjSymmetricQuadraticConcreteDelta`.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
