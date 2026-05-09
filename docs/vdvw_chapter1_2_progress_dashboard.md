@@ -308,9 +308,19 @@ as
 `measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt`,
 and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selectedCenterAt`.
-The next blocker is now exactly to prove the integrated random selected-cover
-finite-center failure-tail error vanishes, and to prove the Nat-indexed
-in-range selected-center selector measurability assumptions.
+The finite-center failure-tail closed form is now compiled through
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_exponent_eq`,
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form`, and
+`tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ`.  These
+formalize the route warning: the additive Hoeffding failure-tail term at the
+current display scale does not have automatic sample-size decay, and for a
+one-center selected cover it is constant.  The next blocker is therefore not
+to force this additive error to vanish from bare stochastic entropy; it is to
+either supply a stronger honest tail/UI/cardinality-growth input, adjust the
+threshold route, or return to an expectation/symmetrization comparison that
+avoids the additive-tail obstruction.  The Nat-indexed in-range
+selected-center selector measurability assumptions remain a separate concrete
+measurability target.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
