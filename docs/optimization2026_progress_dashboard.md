@@ -1520,6 +1520,13 @@ The newest concrete square-root-family packet adds
 Thus `hess z = S_z†S_z` and `invHess z = S_z^{-1}(S_z^{-1})†` now discharge
 Hessian symmetry, positive definiteness, the on-set inverse-Hessian
 right-inverse identity, and the preferred canonical-Delta 13.8 wrapper.
+The newest one-dimensional barrier model packet adds real scalar CLM/CLE
+helpers and instantiates Chewi Examples 13.4/13.10 with
+`negLogHessCLM`, `negLogInvHessCLM`, `negLogSqrtCoord`,
+`negLogHessCLM_sqrtCoord_model_Ioi`, and
+`negLogInvHessCLM_sqrtCoord_model_Ioi`; the `-log` Hessian model on `ℝ_{>0}`
+now has the square-root/inverse-Hessian equalities required by the compiled
+Theorem 13.8 source wrapper.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the

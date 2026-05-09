@@ -68,8 +68,12 @@ The newest concrete model wrapper
 derives Hessian positivity, Hessian symmetry, the inverse-Hessian right-inverse
 identity, and the canonical normalized-Delta route from the source equalities
 `hess z = S_z†S_z` and `invHess z = S_z^{-1}(S_z^{-1})†`.  The next genuine
-source-model work is to instantiate that square-root family for the actual
-finite-dimensional/barrier Hessian model; all segment membership, `ψ` continuity,
+source-model work now starts from the compiled `-log` positive-domain model:
+`negLogHessCLM_sqrtCoord_model_Ioi` and
+`negLogInvHessCLM_sqrtCoord_model_Ioi` instantiate the square-root/inverse-
+Hessian equalities for Chewi Examples 13.4/13.10.  Next lift that model through
+product/affine barrier calculus or instantiate the actual finite-dimensional/
+matrix barrier Hessian model; all segment membership, `ψ` continuity,
 local-norm continuity/positivity, Riccati comparison, derivative inequality,
 coefficient scaling, final sandwich assembly, first Newton/Dikin membership,
 and inverse-Hessian transport wrappers are now compiled.  Do not return to

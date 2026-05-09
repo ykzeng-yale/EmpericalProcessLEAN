@@ -415,6 +415,12 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	This derives Hessian symmetry, positive definiteness, and the on-set
 	inverse-Hessian right-inverse identity from the source model
 	`hess z = S_z† S_z` and `invHess z = S_z^{-1}(S_z^{-1})†`.
+	The newest one-dimensional barrier model packet adds `realScaleCLM`,
+	`realScaleCLE`, their adjoint/comp/inverse-map lemmas, plus
+	`negLogHessCLM`, `negLogInvHessCLM`, `negLogSqrtCoord`, and the compiled
+	positive-domain/Ioi square-root model theorems
+	`negLogHessCLM_sqrtCoord_model_Ioi` and
+	`negLogInvHessCLM_sqrtCoord_model_Ioi` for Chewi Examples 13.4/13.10.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
@@ -422,8 +428,10 @@ local-norm sandwich and its integration into the Rayleigh decrement wrapper
 are now compiled, and the concrete square-root family wrapper now discharges
 Hessian positive definiteness, symmetry, the inverse-Hessian right-inverse
 identity, the Definition 13.7 norm identity, inverse-local identity, and the
-normalized Delta bookkeeping from the model equalities.  Next derive or
-instantiate the source/model equalities
+normalized Delta bookkeeping from the model equalities.  The one-dimensional
+`-log` barrier model is now instantiated on `Set.Ioi 0`; next lift this source
+model through products/affine barrier calculus or instantiate the finite-
+dimensional matrix/barrier Hessian model, then derive the source/model equalities
 `hess z = S_z† S_z` and `invHess z = S_z^{-1}(S_z^{-1})†` for the actual
 finite-dimensional/barrier Hessian model, then use
 `chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`.
