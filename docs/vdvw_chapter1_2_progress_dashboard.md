@@ -246,9 +246,12 @@ with the countable-class measurability wrapper
 The product-pair bad-event measurability inputs are discharged by
 `measurableSet_vdVWProductPair_centeredPairSubBadEvent_of_countable` and
 `measurableSet_vdVWProductPair_centeredPairSubRademacherBadEvent_of_countable`.
-The next blocker is projection to the original-or-ghost selected finite-net
-event, together with the original and ghost selected finite-center Hoeffding
-side conditions.
+The product-pair selected-event pointwise projection is now compiled as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent` and
+`VdVWTheorem243_productPairRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad`.
+The next blocker is measure-level transport from that sign-first/product-pair
+event into the original/ghost/sign selected-net comparison, together with the
+original and ghost selected finite-center Hoeffding side conditions.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

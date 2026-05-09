@@ -38334,6 +38334,140 @@ theorem
   rfl
 
 /--
+Product-pair/sign version of the selected finite-net source event.
+
+This is the global product-pair event naturally produced by the averaged
+Chebyshev/sign-symmetry route.  It is written on `sign × pairSample`; projecting
+`pairSample` to original and ghost coordinates gives the selected finite-center
+side conditions needed by the existing pointwise selected-net projection.
+-/
+noncomputable def VdVWTheorem243ProductPairRademacherSelectedNetEvent
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample)) :
+    Set (SampleAt ℝ n × SampleAt (Observation × Observation) n) :=
+  {z |
+    VdVWRademacherSignVector z.1 ∧
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+        (fun i : Fin n => (z.2 i).1)
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover (fun i : Fin n => (z.2 i).1)).center z.1 M ∧
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+        (fun i : Fin n => (z.2 i).2)
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover (fun i : Fin n => (z.2 i).2)).center
+        (fun i : Fin n => -z.1 i) M ∧
+      epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun pair : Observation × Observation =>
+              (vdVWTruncatedClassFun classFun envelope M index pair.1 -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                (vdVWTruncatedClassFun classFun envelope M index pair.2 -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+            (vdVWRademacherWeights z.1) z.2)
+          (0 : ℝ)}
+
+/--
+Pointwise projection from the product-pair/sign selected event to the
+original-or-ghost selected finite-net bad conclusion.
+-/
+theorem
+    VdVWTheorem243_productPairRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M) (heta : 0 < eta)
+    {z : SampleAt ℝ n × SampleAt (Observation × Observation) n}
+    (hz :
+      z ∈
+        VdVWTheorem243ProductPairRademacherSelectedNetEvent P
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover)) :
+    epsilon <
+        dist
+          (2 * vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality (fun i : Fin n => (z.2 i).1)) n M + eta)
+          (0 : ℝ) ∨
+      epsilon <
+        dist
+          (2 * vdVWTheorem243FiniteNetHoeffdingUpper
+              (cardinality (fun i : Fin n => (z.2 i).2)) n M + eta)
+          (0 : ℝ) := by
+  let sample : SampleAt Observation n := fun i => (z.2 i).1
+  let ghostSample : SampleAt Observation n := fun i => (z.2 i).2
+  let sign : SampleAt ℝ n := z.1
+  have hz' :
+      VdVWRademacherSignVector sign ∧
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover sample).center sign M ∧
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound ghostSample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover ghostSample).center (fun i : Fin n => -sign i) M ∧
+        epsilon <
+          dist
+            (vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (vdVWRademacherWeights sign)
+              (fun i : Fin n => (sample i, ghostSample i)))
+            (0 : ℝ) := by
+    simpa [VdVWTheorem243ProductPairRademacherSelectedNetEvent, sample,
+      ghostSample, sign] using hz
+  rcases hz' with ⟨hsign, hmaxOriginal, hmaxGhost, hbad_dist⟩
+  have hbad :
+      epsilon <
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            vdVWTruncatedClassFun classFun envelope M index z.1 -
+              vdVWTruncatedClassFun classFun envelope M index z.2)
+          (vdVWRademacherWeights sign)
+          (fun i : Fin n => (sample i, ghostSample i)) := by
+    have hnonneg :
+        0 ≤
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            (vdVWRademacherWeights sign)
+            (fun i : Fin n => (sample i, ghostSample i)) :=
+      vdVWWeightedClassSupremum_nonneg indexClass
+        (fun index : Index => fun z : Observation × Observation =>
+          vdVWTruncatedClassFun classFun envelope M index z.1 -
+            vdVWTruncatedClassFun classFun envelope M index z.2)
+        (vdVWRademacherWeights sign)
+        (fun i : Fin n => (sample i, ghostSample i))
+    simpa [Real.dist_eq, sub_zero, abs_of_nonneg hnonneg] using hbad_dist
+  simpa [sample, ghostSample, sign] using
+    VdVWTheorem243_selectedFiniteNetHoeffding_original_or_ghost_bad_of_pairDifference_rademacher_bad
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinalityOriginal := cardinality sample)
+      (cardinalityGhost := cardinality ghostSample)
+      (sample := sample) (ghostSample := ghostSample) (sign := sign)
+      henvelope hM_nonneg heta (cover sample) (cover ghostSample)
+      hsign hmaxOriginal hmaxGhost hbad
+
+/--
 Lower-bound transfer for fibers of the concrete ghost/Rademacher event.
 
 To prove the displayed Chebyshev `hfiber` obligation it is enough to exhibit an
