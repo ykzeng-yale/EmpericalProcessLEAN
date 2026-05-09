@@ -2219,6 +2219,13 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_selectedFiniteNetHoeffding_bad_of_rademacher_bad`, so the
    remaining event-route source proof is measurability and the displayed beta
    fiber lower bound for that named event.
+   The deterministic ghost-good step in Lemma 2.3.7 is compiled as
+   `abs_sub_gt_half_of_lt_abs_of_abs_lt_half`,
+   `vdVWWeightedSampleSum_pairSub_abs_gt_half_of_original_bad_of_ghost_good`,
+   and
+   `vdVWWeightedClassSupremum_pairSub_gt_half_of_original_bad_of_ghost_good`;
+   the missing bridge is now the centered-bad supremum witness plus the
+   Chebyshev ghost-good event/fiber construction.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,

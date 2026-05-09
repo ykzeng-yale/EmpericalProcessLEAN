@@ -37611,6 +37611,118 @@ theorem
     simpa [VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent] using hz
 
 /--
+Real triangle step in the proof of VdV&W Lemma 2.3.7.
+
+If the original fixed-coordinate sum is larger than `x` and the ghost copy is
+smaller than `x / 2`, then their pair difference is larger than `x / 2`.
+-/
+theorem abs_sub_gt_half_of_lt_abs_of_abs_lt_half
+    {a b x : ℝ} (ha : x < |a|) (hb : |b| < x / 2) :
+    x / 2 < |a - b| := by
+  have hdecomp : b + (a - b) = a := by ring
+  have htri : |a| ≤ |b| + |a - b| := by
+    calc
+      |a| = |b + (a - b)| := by rw [hdecomp]
+      _ ≤ |b| + |a - b| := abs_add_le b (a - b)
+  have hlt : x < |b| + |a - b| := lt_of_lt_of_le ha htri
+  linarith
+
+/--
+Pair-sample weighted sums split as original minus ghost weighted sums.
+-/
+theorem vdVWWeightedSampleSum_pairSub_eq_sub
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (classFun : Index -> Observation -> ℝ) (weights : Fin n -> ℝ)
+    (index : Index) (sample ghostSample : SampleAt Observation n) :
+    vdVWWeightedSampleSum
+        (fun index : Index => fun z : Observation × Observation =>
+          classFun index z.1 - classFun index z.2)
+        weights index (fun i : Fin n => (sample i, ghostSample i)) =
+      vdVWWeightedSampleSum classFun weights index sample -
+        vdVWWeightedSampleSum classFun weights index ghostSample := by
+  unfold vdVWWeightedSampleSum
+  rw [← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl ?_
+  intro i _hi
+  ring
+
+/--
+Fixed-index ghost-good to pair-difference bad-event step.
+
+This is the samplewise core of the first half of Lemma 2.3.7 before taking
+suprema over the class.
+-/
+theorem
+    vdVWWeightedSampleSum_pairSub_abs_gt_half_of_original_bad_of_ghost_good
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {classFun : Index -> Observation -> ℝ} {weights : Fin n -> ℝ}
+    {index : Index} {sample ghostSample : SampleAt Observation n}
+    {epsilon : ℝ}
+    (hbad :
+      epsilon < |vdVWWeightedSampleSum classFun weights index sample|)
+    (hgood :
+      |vdVWWeightedSampleSum classFun weights index ghostSample| <
+        epsilon / 2) :
+    epsilon / 2 <
+      |vdVWWeightedSampleSum
+        (fun index : Index => fun z : Observation × Observation =>
+          classFun index z.1 - classFun index z.2)
+        weights index (fun i : Fin n => (sample i, ghostSample i))| := by
+  have hreal :
+      epsilon / 2 <
+        |vdVWWeightedSampleSum classFun weights index sample -
+          vdVWWeightedSampleSum classFun weights index ghostSample| :=
+    abs_sub_gt_half_of_lt_abs_of_abs_lt_half hbad hgood
+  simpa [vdVWWeightedSampleSum_pairSub_eq_sub] using hreal
+
+/--
+Class-supremum version of the ghost-good to pair-difference bad-event step.
+
+Once a fixed class member witnesses the original bad event and the ghost copy
+is good for that same member, the pair-difference class supremum is in the
+`epsilon / 2` bad event.
+-/
+theorem
+    vdVWWeightedClassSupremum_pairSub_gt_half_of_original_bad_of_ghost_good
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {weights : Fin n -> ℝ} {index : Index}
+    {sample ghostSample : SampleAt Observation n} {epsilon : ℝ}
+    (hindex : index ∈ indexClass)
+    (hbdd :
+      BddAbove
+        (vdVWWeightedClassValueSet indexClass
+          (fun index : Index => fun z : Observation × Observation =>
+            classFun index z.1 - classFun index z.2)
+          weights (fun i : Fin n => (sample i, ghostSample i))))
+    (hbad :
+      epsilon < |vdVWWeightedSampleSum classFun weights index sample|)
+    (hgood :
+      |vdVWWeightedSampleSum classFun weights index ghostSample| <
+        epsilon / 2) :
+    epsilon / 2 <
+      vdVWWeightedClassSupremum indexClass
+        (fun index : Index => fun z : Observation × Observation =>
+          classFun index z.1 - classFun index z.2)
+        weights (fun i : Fin n => (sample i, ghostSample i)) := by
+  have hpair_bad :
+      epsilon / 2 <
+        |vdVWWeightedSampleSum
+          (fun index : Index => fun z : Observation × Observation =>
+            classFun index z.1 - classFun index z.2)
+          weights index (fun i : Fin n => (sample i, ghostSample i))| :=
+    vdVWWeightedSampleSum_pairSub_abs_gt_half_of_original_bad_of_ghost_good
+      hbad hgood
+  exact hpair_bad.trans_le
+    (abs_vdVWWeightedSampleSum_le_vdVWWeightedClassSupremum_of_bddAbove
+      (indexClass := indexClass)
+      (classFun := fun index : Index => fun z : Observation × Observation =>
+        classFun index z.1 - classFun index z.2)
+      (weights := weights)
+      (sample := fun i : Fin n => (sample i, ghostSample i))
+      hbdd hindex)
+
+/--
 A scaled selected outer-probability comparison without the displayed beta factor
 implies the displayed-beta source primitive.
 
