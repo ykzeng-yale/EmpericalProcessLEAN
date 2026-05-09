@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V124
+## Live In-Thread Goal Prompt V125
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -21,14 +21,14 @@ source-shaped API.
 
 Current target: finish Durrett Theorem 4.4.6, the `L^p` convergence theorem
 for martingales with `sup_n E |X_n|^p < ∞` and `1 < p`.  Durrett Theorem 4.4.4
-now has the full positive-part and martingale maximal inequality route, and the
-first Theorem 4.4.6 bridge now compiles: an `eLpNorm`-bounded martingale on a
-probability space has the 4.2.11 almost-sure limit and that canonical limit
-lies in `L^p`.  Next aggressive step: prove the remaining `L^p` convergence
-endpoint `eLpNorm (X n - ℱ.limitProcess X P) (ofReal p) P -> 0`, using either
-the completed 4.4.4 maximal estimate to produce a dominating `sup |X_n|` bound
-or mathlib's uniform-integrability route if it gives a shorter compiled proof.
-Do not revisit the completed Theorem 4.4.4
+now has the full positive-part and martingale maximal inequality route.  The
+Theorem 4.4.6 a.s.-limit, limit `MemLp`, dominated-uniform-integrability, and
+supplied-domination `L^p` convergence endpoint now compile.  Next aggressive
+step: instantiate the supplied dominating variable `S` from the completed
+4.4.4 maximal estimate, i.e. construct/package the infinite running absolute
+maximum domination object (or an equivalent `L^p` domination object) from the
+finite martingale absolute-maximum wrappers.  Do not revisit the completed
+Theorem 4.4.4
 Fubini/Hölder/coefficient/truncation plumbing.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
@@ -480,9 +480,13 @@ The first Theorem 4.4.6 bridge now also compiles:
 `durrett2019_theorem_4_4_6_martingale_limitProcess_memLp_of_eLpNorm_p_bdd`,
 and
 `durrett2019_theorem_4_4_6_martingale_ae_tendsto_and_limitProcess_memLp_of_eLpNorm_p_bdd`.
-Next target: prove/package the `L^p` convergence endpoint
-`eLpNorm (X n - ℱ.limitProcess X P) (ofReal p) P -> 0`; only formalize
-Example 4.4.5's counterexample if it becomes a cheap reusable support lemma.
+The supplied-domination endpoint now also compiles:
+`durrett2019_theorem_4_4_6_unifIntegrable_of_memLp_dominated` and
+`durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_memLp_dominated`.
+Next target: construct/package the infinite running absolute maximum domination
+object needed to feed this endpoint from Theorem 4.4.4's finite maximal
+wrappers; only formalize Example 4.4.5's counterexample if it becomes a cheap
+reusable support lemma.
 Do not detour back into full Galton-Watson random-sum infrastructure unless a
 local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
@@ -1012,10 +1016,12 @@ measurable-comparison Hölder helper, bounded-truncation Doob/Fubini/Hölder
 assembly, finite truncation `lintegral` proof, and per-cutoff truncated
 `lintegral` estimate, monotone-convergence/iSup handoff, final positive-part
 `eLpNorm` wrapper, and final martingale absolute-maximum `eLpNorm` wrapper now
-also compile.  The first Theorem 4.4.6 bridge from a uniform `L^p` martingale
-bound to the 4.2.11 almost-sure limit and limit-process `MemLp` now also
-compiles.  Next prove the final `L^p` convergence endpoint, whichever gives the
-largest compiled step without building unrelated infrastructure.
+also compile.  The Theorem 4.4.6 bridge from a uniform `L^p` martingale bound
+to the 4.2.11 almost-sure limit and limit-process `MemLp` now also compiles, as
+does the final `L^p` convergence endpoint when a single `MemLp` dominating
+variable `S` is supplied.  Next construct the domination object from the
+compiled finite maximal inequalities, whichever route gives the largest
+compiled step without building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1129,6 +1135,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V124` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V125` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

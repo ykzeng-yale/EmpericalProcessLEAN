@@ -12184,5 +12184,64 @@ theorem durrett2019_theorem_4_4_6_martingale_ae_tendsto_and_limitProcess_memLp_o
     durrett2019_theorem_4_4_6_martingale_limitProcess_memLp_of_eLpNorm_p_bdd
       (P := P) (ℱ := ℱ) (X := X) hX hR⟩
 
+/--
+Durrett 2019, Theorem 4.4.6 dominated-convergence support: a family dominated
+by a single `L^p` random variable is uniformly integrable in the measure-theory
+`L^p` sense.
+-/
+theorem durrett2019_theorem_4_4_6_unifIntegrable_of_memLp_dominated
+    {Ω ι : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {f : ι -> Ω -> ℝ} {S : Ω -> ℝ} {p : ℝ≥0∞}
+    (hp : 1 ≤ p) (hp_ne_top : p ≠ ∞)
+    (hS : MemLp S p P)
+    (hdom : ∀ i, ∀ᵐ ω ∂P, ‖f i ω‖ ≤ S ω) :
+    UnifIntegrable f p P := by
+  intro ε hε
+  obtain ⟨δ, hδpos, hδ⟩ := hS.eLpNorm_indicator_le hp hp_ne_top hε
+  refine ⟨δ, hδpos, fun i s hs hμs => ?_⟩
+  refine (eLpNorm_mono_ae_real ?_).trans (hδ s hs hμs)
+  filter_upwards [hdom i] with ω hω
+  by_cases hωs : ω ∈ s
+  · simpa [hωs, Real.norm_eq_abs] using hω
+  · simp [hωs]
+
+/--
+Durrett 2019, Theorem 4.4.6 dominated-convergence endpoint: once the martingale
+is dominated by a single `L^p` random variable, the 4.2.11 almost-sure limit and
+the `MemLp` limit bridge imply convergence in `L^p`.
+-/
+theorem durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_memLp_dominated
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p : ℝ} (hp : 1 ≤ p) {R : ℝ≥0}
+    (hR : ∀ n, eLpNorm (X n) (ENNReal.ofReal p) P ≤ R)
+    {S : Ω -> ℝ} (hS : MemLp S (ENNReal.ofReal p) P)
+    (hdom : ∀ n, ∀ᵐ ω ∂P, ‖X n ω‖ ≤ S ω) :
+    Tendsto
+      (fun n => eLpNorm (X n - ℱ.limitProcess X P) (ENNReal.ofReal p) P)
+      atTop (𝓝 0) := by
+  have hp_en : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p := by
+    rw [← ENNReal.ofReal_one]
+    exact ENNReal.ofReal_le_ofReal hp
+  have hp_ne_top : (ENNReal.ofReal p) ≠ ∞ := ENNReal.ofReal_ne_top
+  have hmeas : ∀ n, AEStronglyMeasurable (X n) P := fun n =>
+    ((hX.stronglyMeasurable n).mono (ℱ.le n)).aestronglyMeasurable
+  have hlimit_memLp :
+      MemLp (ℱ.limitProcess X P) (ENNReal.ofReal p) P :=
+    durrett2019_theorem_4_4_6_martingale_limitProcess_memLp_of_eLpNorm_p_bdd
+      (P := P) (ℱ := ℱ) (X := X) hX hR
+  have hui : UnifIntegrable X (ENNReal.ofReal p) P :=
+    durrett2019_theorem_4_4_6_unifIntegrable_of_memLp_dominated
+      (P := P) (f := X) (S := S) hp_en hp_ne_top hS hdom
+  have hlim :
+      ∀ᵐ ω ∂P, Tendsto (fun n => X n ω) atTop (𝓝 (ℱ.limitProcess X P ω)) :=
+    durrett2019_theorem_4_4_6_martingale_ae_tendsto_limitProcess_of_eLpNorm_p_bdd
+      (P := P) (ℱ := ℱ) (X := X) hX hp hR
+  exact
+    tendsto_Lp_finite_of_tendsto_ae
+      (μ := P) hp_en hp_ne_top hmeas hlimit_memLp hui hlim
+
 end ProbabilityTheory
 end StatInference
