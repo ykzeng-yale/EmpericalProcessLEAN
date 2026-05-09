@@ -4983,6 +4983,138 @@ theorem chewi1311_sum_selfConcordantBarrierOn_of_adjointCoord_right_inverse
     hcoord₂_sqrtH₂ hsqrtH₂_coord₂ hright₂ hhess₂_eq
 
 /--
+Chewi Proposition 13.11, shared-domain sum case, specialized to explicit
+continuous-linear-equivalence square-root models for the two component
+Hessians and the summed Hessian.
+-/
+theorem SelfConcordantBarrierOn.sum_of_adjointSqrtCoord
+    [CompleteSpace E]
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E} {invHess : E -> E →L[ℝ] E}
+    {invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M nu₁ nu₂ : ℝ}
+    {sqrtSum sqrt₁ sqrt₂ : E -> E ≃L[ℝ] E}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂)
+    (hsum_hess_eq : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ ->
+      barrierSumHess hess₁ hess₂ x =
+        (ContinuousLinearMap.adjoint (sqrtSum x).toContinuousLinearMap).comp
+          (sqrtSum x).toContinuousLinearMap)
+    (hsum_inv_eq : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ ->
+      invHess x =
+        (sqrtSum x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrtSum x).symm.toContinuousLinearMap))
+    (hhess₁_eq : ∀ ⦃x : E⦄, x ∈ s₁ ->
+      hess₁ x =
+        (ContinuousLinearMap.adjoint (sqrt₁ x).toContinuousLinearMap).comp
+          (sqrt₁ x).toContinuousLinearMap)
+    (hinv₁_eq : ∀ ⦃x : E⦄, x ∈ s₁ ->
+      invHess₁ x =
+        (sqrt₁ x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrt₁ x).symm.toContinuousLinearMap))
+    (hhess₂_eq : ∀ ⦃x : E⦄, x ∈ s₂ ->
+      hess₂ x =
+        (ContinuousLinearMap.adjoint (sqrt₂ x).toContinuousLinearMap).comp
+          (sqrt₂ x).toContinuousLinearMap)
+    (hinv₂_eq : ∀ ⦃x : E⦄, x ∈ s₂ ->
+      invHess₂ x =
+        (sqrt₂ x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrt₂ x).symm.toContinuousLinearMap)) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) := by
+  have hsum_right : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      barrierSumHess hess₁ hess₂ x (invHess x v) = v := by
+    intro x hx v
+    exact hessianRightInverse_of_adjointSqrtCoord_invHess
+      (H := barrierSumHess hess₁ hess₂ x) (invH := invHess x)
+      (sqrtCoord := sqrtSum x) (hsum_hess_eq hx) (hsum_inv_eq hx) v
+  have hcoord₁_sqrtH₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ step : E,
+      (sqrt₁ x).symm.toContinuousLinearMap ((sqrt₁ x).toContinuousLinearMap step) =
+        step := by
+    intro x hx step
+    simp
+  have hsqrtH₁_coord₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ z : E,
+      (sqrt₁ x).toContinuousLinearMap ((sqrt₁ x).symm.toContinuousLinearMap z) =
+        z := by
+    intro x hx z
+    simp
+  have hright₁ : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ v : E,
+      hess₁ x (invHess₁ x v) = v := by
+    intro x hx v
+    exact hessianRightInverse_of_adjointSqrtCoord_invHess
+      (H := hess₁ x) (invH := invHess₁ x) (sqrtCoord := sqrt₁ x)
+      (hhess₁_eq hx) (hinv₁_eq hx) v
+  have hcoord₂_sqrtH₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ step : E,
+      (sqrt₂ x).symm.toContinuousLinearMap ((sqrt₂ x).toContinuousLinearMap step) =
+        step := by
+    intro x hx step
+    simp
+  have hsqrtH₂_coord₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ z : E,
+      (sqrt₂ x).toContinuousLinearMap ((sqrt₂ x).symm.toContinuousLinearMap z) =
+        z := by
+    intro x hx z
+    simp
+  have hright₂ : ∀ ⦃x : E⦄, x ∈ s₂ -> ∀ v : E,
+      hess₂ x (invHess₂ x v) = v := by
+    intro x hx v
+    exact hessianRightInverse_of_adjointSqrtCoord_invHess
+      (H := hess₂ x) (invH := invHess₂ x) (sqrtCoord := sqrt₂ x)
+      (hhess₂_eq hx) (hinv₂_eq hx) v
+  exact hbar₁.sum_of_adjointCoord_right_inverse hbar₂ hsum_right
+    (coord₁ := fun x => (sqrt₁ x).symm.toContinuousLinearMap)
+    (sqrtH₁ := fun x => (sqrt₁ x).toContinuousLinearMap)
+    (coord₂ := fun x => (sqrt₂ x).symm.toContinuousLinearMap)
+    (sqrtH₂ := fun x => (sqrt₂ x).toContinuousLinearMap)
+    hcoord₁_sqrtH₁ hsqrtH₁_coord₁ hright₁ hhess₁_eq
+    hcoord₂_sqrtH₂ hsqrtH₂_coord₂ hright₂ hhess₂_eq
+
+/--
+Source-facing continuous-linear-equivalence square-root wrapper for Chewi
+Proposition 13.11(1).
+-/
+theorem chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtCoord
+    [CompleteSpace E]
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E} {invHess : E -> E →L[ℝ] E}
+    {invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M nu₁ nu₂ : ℝ}
+    {sqrtSum sqrt₁ sqrt₂ : E -> E ≃L[ℝ] E}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂)
+    (hsum_hess_eq : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ ->
+      barrierSumHess hess₁ hess₂ x =
+        (ContinuousLinearMap.adjoint (sqrtSum x).toContinuousLinearMap).comp
+          (sqrtSum x).toContinuousLinearMap)
+    (hsum_inv_eq : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ ->
+      invHess x =
+        (sqrtSum x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrtSum x).symm.toContinuousLinearMap))
+    (hhess₁_eq : ∀ ⦃x : E⦄, x ∈ s₁ ->
+      hess₁ x =
+        (ContinuousLinearMap.adjoint (sqrt₁ x).toContinuousLinearMap).comp
+          (sqrt₁ x).toContinuousLinearMap)
+    (hinv₁_eq : ∀ ⦃x : E⦄, x ∈ s₁ ->
+      invHess₁ x =
+        (sqrt₁ x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrt₁ x).symm.toContinuousLinearMap))
+    (hhess₂_eq : ∀ ⦃x : E⦄, x ∈ s₂ ->
+      hess₂ x =
+        (ContinuousLinearMap.adjoint (sqrt₂ x).toContinuousLinearMap).comp
+          (sqrt₂ x).toContinuousLinearMap)
+    (hinv₂_eq : ∀ ⦃x : E⦄, x ∈ s₂ ->
+      invHess₂ x =
+        (sqrt₂ x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrt₂ x).symm.toContinuousLinearMap)) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) :=
+  hbar₁.sum_of_adjointSqrtCoord hbar₂ hsum_hess_eq hsum_inv_eq
+    hhess₁_eq hinv₁_eq hhess₂_eq hinv₂_eq
+
+/--
 Generic normalized-operator route for Chewi Theorem 13.8.  If a Delta operator
 factors through a square-root coordinate system so that the dual quadratic form
 is `||A sqrtH(step)||^2`, and the Hessian quadratic form is

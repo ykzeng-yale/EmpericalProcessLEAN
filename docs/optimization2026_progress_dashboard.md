@@ -91,6 +91,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   models.  The exact Proposition 13.11(1) blocker is now the model-specific
   construction/proof that the canonical summed inverse-Hessian oracle is a
   right inverse of the summed Hessian.
+- Sum square-root-equivalence shrink: the newest packet adds
+  `SelfConcordantBarrierOn.sum_of_adjointSqrtCoord` and
+  `chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtCoord`.  These derive
+  the component and summed Hessian right-inverse hypotheses from explicit
+  continuous-linear-equivalence square-root models
+  `H = S†S`, `H⁻¹ = S⁻¹(S⁻¹)†`.  The next exact-sum work should instantiate
+  or construct the summed square-root equivalence for the concrete barrier
+  model rather than re-proving Cauchy or inverse-local identities.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
   supplied-oracle form and for invertible affine maps.  Reusable declarations
   include `barrierAffinePreimageSet`, `barrierAffinePreimageHess`,

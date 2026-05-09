@@ -186,6 +186,14 @@ derives the summed inverse-local identity from a right-inverse identity for
 component Hessian right-inverses plus square-root coordinate models.  The
 remaining exact Proposition 13.11(1) blocker is to instantiate the canonical
 summed inverse-Hessian oracle and prove that right-inverse identity.
+The square-root-equivalence packet adds
+`SelfConcordantBarrierOn.sum_of_adjointSqrtCoord` and
+`chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtCoord`.  It derives the
+right-inverse hypotheses themselves from continuous-linear-equivalence
+square-root models for the component Hessians and the summed Hessian:
+`H = S†S`, `H⁻¹ = S⁻¹(S⁻¹)†`.  The next exact sum step should construct or
+instantiate the summed square-root equivalence for a concrete model; do not
+re-open the already-compiled Cauchy/right-inverse algebra.
 
 Latest affine-preimage update: Proposition 13.11(3) now has a compiled
 supplied-oracle affine-preimage spine and an invertible-affine corollary.

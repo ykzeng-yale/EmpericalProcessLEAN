@@ -159,6 +159,12 @@ and derives the component inverse quadratic factors from component Hessian
 right-inverses plus the same square-root coordinate models.  The unsupplied
 sum rule is now reduced to proving the model-specific canonical summed
 inverse-Hessian oracle is a right inverse of the summed Hessian.
+The stronger square-root-equivalence wrapper
+`chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtCoord` derives those
+right-inverse hypotheses from explicit continuous-linear-equivalence
+square-root models for the component and summed Hessians.  For future concrete
+barriers, the expected endpoint is to provide `H = S†S` and
+`H⁻¹ = S⁻¹(S⁻¹)†` for the summed Hessian, then invoke this wrapper directly.
 
 The affine-preimage case has a compiled supplied-oracle spine and an
 invertible-affine corollary.  Use `barrierAffinePreimageSet`,
