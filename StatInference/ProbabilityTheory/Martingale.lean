@@ -12192,6 +12192,33 @@ theorem durrett2019_runningAbsMax_ae_tendsto_runningAbsSup_of_ae_bddAbove
     (X := X) (ω := ω) hω
 
 /--
+A monotone nonnegative real sequence whose extended-norm liminf is finite is
+bounded above.  This is the pointwise order conversion needed after applying
+mathlib's `Lp.ae_bdd_liminf_atTop_of_eLpNorm_bdd`.
+-/
+theorem durrett2019_bddAbove_range_of_mono_nonneg_liminf_enorm_lt_top
+    {a : ℕ -> ℝ} (hmono : Monotone a) (hnonneg : ∀ n, 0 ≤ a n)
+    (hliminf : liminf (fun n => ‖a n‖ₑ) atTop < ∞) :
+    BddAbove (Set.range a) := by
+  refine ⟨(liminf (fun n => ‖a n‖ₑ) atTop).toReal, ?_⟩
+  rintro _ ⟨n, rfl⟩
+  have htop : liminf (fun n => ‖a n‖ₑ) atTop ≠ ∞ :=
+    ne_of_lt hliminf
+  have hle_liminf :
+      ‖a n‖ₑ ≤ liminf (fun m => ‖a m‖ₑ) atTop := by
+    exact le_liminf_of_le
+      (f := atTop) (u := fun m : ℕ => ‖a m‖ₑ) (a := ‖a n‖ₑ)
+      (h := eventually_atTop.2 ⟨n, fun m hnm => by
+        have hle : ENNReal.ofReal (a n) ≤ ENNReal.ofReal (a m) :=
+          ENNReal.ofReal_le_ofReal (hmono hnm)
+        simpa [Real.enorm_eq_ofReal (hnonneg n), Real.enorm_eq_ofReal (hnonneg m)]
+          using hle⟩)
+  have h_ofReal_le :
+      ENNReal.ofReal (a n) ≤ liminf (fun m => ‖a m‖ₑ) atTop := by
+    simpa [Real.enorm_eq_ofReal (hnonneg n)] using hle_liminf
+  exact (ENNReal.ofReal_le_iff_le_toReal htop).1 h_ofReal_le
+
+/--
 Durrett 2019, Theorem 4.4.6 support from Theorem 4.4.4: a uniform terminal
 `L^p` bound gives a uniform finite-running-maximum bound with Doob's
 `p/(p-1)` constant.
@@ -12209,6 +12236,78 @@ theorem durrett2019_theorem_4_4_6_runningAbsMax_eLpNorm_bound_of_eLpNorm_bdd
       (P := P) (ℱ := ℱ) (Y := X) hX hpq n
   exact hmax.trans
     (mul_le_mul_right (hR n) (ENNReal.ofReal (p / (p - 1))))
+
+/--
+Durrett 2019, Theorem 4.4.6 support: a uniform finite `L^p` bound on the
+finite running absolute maxima implies that those maxima are a.s. bounded
+above as a sequence.
+-/
+theorem durrett2019_runningAbsMax_ae_bddAbove_of_eLpNorm_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p : ℝ≥0∞} (hp : p ≠ 0) {C : ℝ≥0∞} (hC_lt : C < ∞)
+    (hbound :
+      ∀ n, eLpNorm (durrett2019_runningAbsMax X n) p P ≤ C) :
+    ∀ᵐ ω ∂P,
+      BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω) := by
+  have hC_ne_top : C ≠ ∞ := ne_of_lt hC_lt
+  have hbound_nn :
+      ∀ n, eLpNorm (durrett2019_runningAbsMax X n) p P ≤ C.toNNReal := by
+    intro n
+    simpa [ENNReal.coe_toNNReal hC_ne_top] using hbound n
+  have hmeas : ∀ n, Measurable (durrett2019_runningAbsMax X n) := by
+    intro n
+    refine Finset.measurable_range_sup'' ?_
+    intro k _hk
+    simpa [durrett2019_runningAbsMax] using
+      (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).abs)
+  have hliminf :
+      ∀ᵐ ω ∂P,
+        liminf (fun n => ‖durrett2019_runningAbsMax X n ω‖ₑ) atTop < ∞ :=
+    MeasureTheory.ae_bdd_liminf_atTop_of_eLpNorm_bdd
+      (μ := P) (p := p) (R := C.toNNReal) hp hmeas hbound_nn
+  filter_upwards [hliminf] with ω hω
+  exact
+    durrett2019_bddAbove_range_of_mono_nonneg_liminf_enorm_lt_top
+      (a := fun n => durrett2019_runningAbsMax X n ω)
+      (durrett2019_runningAbsMax_mono (X := X) ω)
+      (fun n => by
+        dsimp [durrett2019_runningAbsMax]
+        exact (abs_nonneg (X 0 ω)).trans
+          (Finset.le_sup' (fun k => |X k ω|)
+            (by simp)))
+      hω
+
+/--
+Durrett 2019, Theorem 4.4.6 support: Theorem 4.4.4's finite maximal bounds
+imply the a.s. boundedness needed by the canonical running-supremum assembly.
+-/
+theorem durrett2019_theorem_4_4_6_runningAbsMax_ae_bddAbove_of_eLpNorm_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) {R : ℝ≥0}
+    (hR : ∀ n, eLpNorm (X n) (ENNReal.ofReal p) P ≤ R) :
+    ∀ᵐ ω ∂P,
+      BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω) := by
+  let C : ℝ≥0∞ := ENNReal.ofReal (p / (p - 1)) * (R : ℝ≥0∞)
+  have hC_lt : C < ∞ := by
+    dsimp [C]
+    finiteness
+  have hp_ne_zero : (ENNReal.ofReal p) ≠ 0 := by
+    rw [ne_eq, ENNReal.ofReal_eq_zero]
+    exact not_le_of_gt hpq.pos
+  have hbound :
+      ∀ n, eLpNorm (durrett2019_runningAbsMax X n) (ENNReal.ofReal p) P ≤ C := by
+    intro n
+    exact
+      durrett2019_theorem_4_4_6_runningAbsMax_eLpNorm_bound_of_eLpNorm_bdd
+        (P := P) (ℱ := ℱ) (X := X) hX hpq
+        (R := (R : ℝ≥0∞)) (fun m => hR m) n
+  exact
+    durrett2019_runningAbsMax_ae_bddAbove_of_eLpNorm_bound
+      (P := P) (ℱ := ℱ) (X := X) hX hp_ne_zero hC_lt hbound
 
 /--
 Durrett 2019, Theorem 4.4.6 support: on a probability space, a uniform
@@ -12453,6 +12552,27 @@ theorem durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_runningAbsSup_bd
         (P := P) (ℱ := ℱ) (X := X) hX)
       (durrett2019_runningAbsMax_ae_tendsto_runningAbsSup_of_ae_bddAbove
         (P := P) (X := X) hBdd)
+
+/--
+Durrett 2019, Theorem 4.4.6 final `L^p` convergence endpoint: a martingale
+bounded in `L^p`, `p > 1`, converges to the canonical filtration limit in
+`L^p`.
+-/
+theorem durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_eLpNorm_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) {R : ℝ≥0}
+    (hR : ∀ n, eLpNorm (X n) (ENNReal.ofReal p) P ≤ R) :
+    Tendsto
+      (fun n => eLpNorm (X n - ℱ.limitProcess X P) (ENNReal.ofReal p) P)
+      atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_runningAbsSup_bddAbove
+      (P := P) (ℱ := ℱ) (X := X) hX hpq hR
+      (durrett2019_theorem_4_4_6_runningAbsMax_ae_bddAbove_of_eLpNorm_bdd
+        (P := P) (ℱ := ℱ) (X := X) hX hpq hR)
 
 end ProbabilityTheory
 end StatInference

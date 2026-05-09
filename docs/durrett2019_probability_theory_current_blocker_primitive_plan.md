@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V127
+## Live In-Thread Goal Prompt V128
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -19,19 +19,20 @@ expectation inequality `E X ≤ E X_0` for Theorem 4.2.12.  Theorem 4.1.16
 remains deferred unless a future targeted kernel search finds a direct
 source-shaped API.
 
-Current target: finish Durrett Theorem 4.4.6, the `L^p` convergence theorem
-for martingales with `sup_n E |X_n|^p < ∞` and `1 < p`.  Durrett Theorem 4.4.4
-now has the full positive-part and martingale maximal inequality route.  The
-Theorem 4.4.6 a.s.-limit, limit `MemLp`, dominated-uniform-integrability, and
-supplied-domination `L^p` convergence endpoint now compile.  The finite running
-absolute-maximum notation, the Theorem 4.4.4 finite-maximal-bound handoff, and
-the supplied running-maximum-limit assembly now also compile.  The canonical
-infinite running absolute maximum `S`, its measurability, its convergence from
-a.s. bounded finite maxima, and the final running-`S` assembly now compile.
-Next aggressive step: prove the a.s. boundedness of the finite running maxima
-from the uniform finite-maximal `eLpNorm` bounds supplied by Theorem 4.4.4.
-Do not revisit the completed Theorem 4.4.4
-Fubini/Hölder/coefficient/truncation plumbing.
+Current target: move past Durrett Theorem 4.4.6.  The `L^p` convergence theorem
+for martingales with `sup_n E |X_n|^p < ∞` and `1 < p` now has compiled
+a.s.-limit, limit `MemLp`, supplied-domination, canonical running-supremum,
+a.s. boundedness-from-finite-maximal-bounds, and final `eLpNorm` convergence
+wrappers.  Do not revisit the completed Theorem 4.4.4
+Fubini/Hölder/coefficient/truncation plumbing or the completed Theorem 4.4.6
+running-maximum route.
+
+Next aggressive step: Durrett Theorem 4.4.7, orthogonality of square-integrable
+martingale increments.  Search first for conditional-expectation multiplication,
+integrability, and inner-product/integral APIs; prove a source-shaped wrapper
+for `E ((X_n - X_m) * Y) = 0` when `m ≤ n`, `Y` is `ℱ m`-measurable, and the
+needed square-integrability/integrability hypotheses are supplied.  Then add the
+increment-increment corollary for `ℓ < m < n` by taking `Y = X_m - X_ℓ`.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -497,10 +498,14 @@ The canonical running-maximum layer now also compiles:
 `durrett2019_runningAbsMax_tendsto_runningAbsSup_of_bddAbove`,
 `durrett2019_runningAbsMax_ae_tendsto_runningAbsSup_of_ae_bddAbove`, and
 `durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_runningAbsSup_bddAbove`.
-Next target: prove the a.s. boundedness hypothesis
-`∀ᵐ ω, BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)` from
-the uniform finite-maximal `eLpNorm` bounds; only formalize Example 4.4.5's
-counterexample if it becomes a cheap reusable support lemma.
+The final Theorem 4.4.6 endpoint now also compiles:
+`durrett2019_bddAbove_range_of_mono_nonneg_liminf_enorm_lt_top`,
+`durrett2019_runningAbsMax_ae_bddAbove_of_eLpNorm_bound`,
+`durrett2019_theorem_4_4_6_runningAbsMax_ae_bddAbove_of_eLpNorm_bdd`, and
+`durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_eLpNorm_bdd`.
+Next target: Theorem 4.4.7 orthogonality of martingale increments; only
+formalize Example 4.4.5's counterexample if it becomes a cheap reusable support
+lemma.
 Do not detour back into full Galton-Watson random-sum infrastructure unless a
 local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
@@ -1037,9 +1042,11 @@ variable `S` is supplied.  The finite running absolute-maximum notation,
 finite-maximal-bound handoff, and supplied running-maximum-limit assembly now
 also compile.  The canonical infinite running maximum `S`, its measurability,
 its convergence from a.s. bounded finite maxima, and the final running-`S`
-assembly now also compile.  Next prove the a.s. boundedness hypothesis from the
-compiled finite maximal `eLpNorm` bounds, whichever route gives the largest
-compiled step without building unrelated infrastructure.
+assembly now also compile.  The a.s. boundedness hypothesis from compiled finite
+maximal `eLpNorm` bounds and the final Theorem 4.4.6 `L^p` convergence endpoint
+now compile.  Next move to Theorem 4.4.7 orthogonality of martingale increments,
+whichever route gives the largest compiled step without building unrelated
+infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1153,6 +1160,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V127` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V128` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
