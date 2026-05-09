@@ -8719,3 +8719,13 @@ signs, with the Rademacher support probability discharged by
 is projection from the global signed product-pair bad event to the
 original-or-ghost selected finite-net event, together with the selected
 finite-center Hoeffding side-condition support.
+
+2026-05-09 product-pair selected-event pointwise projection:
+`Theorem243.lean` now defines
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent` and proves
+`VdVWTheorem243_productPairRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad`.
+This gives the pointwise projection from the global signed product-pair event
+to the original-or-ghost selected finite-net bad conclusion.  The remaining
+source route is measure-level transport from the sign-first/product-pair event
+into the original/ghost/sign product space, plus the selected finite-center
+Hoeffding side-condition support.
