@@ -12864,5 +12864,63 @@ theorem durrett2019_example_4_4_9_branchingProcess_second_moment_integral_recurr
           variance / offspringMean ^ (n + 1) := by
             rw [hterm_integral]
 
+/--
+Durrett 2019, Example 4.4.9 scalar recurrence unrolled into the finite
+geometric-prefix display.
+-/
+theorem durrett2019_example_4_4_9_second_moment_finite_sum_of_recurrence
+    {a : ℕ -> ℝ} {offspringMean variance : ℝ}
+    (h0 : a 0 = 1)
+    (hrec : ∀ n, a (n + 1) = a n + variance / offspringMean ^ (n + 2)) :
+    ∀ n, a n =
+      1 + ∑ k ∈ Finset.range n, variance / offspringMean ^ (k + 2) := by
+  intro n
+  induction n with
+  | zero =>
+      simp [h0]
+  | succ n ih =>
+      rw [hrec n, ih]
+      simp [Finset.sum_range_succ]
+      ring
+
+/--
+Durrett 2019, Example 4.4.9, finite-sum second-moment display for the
+normalized branching-process martingale.  The actual offspring random-sum
+calculation remains isolated in the supplied conditional variance hypotheses.
+-/
+theorem durrett2019_example_4_4_9_branchingProcess_second_moment_integral_finite_sum
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X Z : ℕ -> Ω -> ℝ} {offspringMean variance : ℝ}
+    (hmean_pos : 0 < offspringMean)
+    (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hX_zero_sq : (∫ ω, X 0 ω ^ 2 ∂P) = 1)
+    (hX_prev :
+      ∀ n, 0 < n ->
+        X (n - 1) =ᵐ[P] fun ω => Z (n - 1) ω / offspringMean ^ (n - 1))
+    (hVariance :
+      ∀ n, 0 < n ->
+        P[(fun ω => (X n ω - X (n - 1) ω) ^ 2) | ℱ (n - 1)] =ᵐ[P]
+          fun ω => variance * Z (n - 1) ω / offspringMean ^ (2 * n))
+    (hMeanPrev : ∀ n, 0 < n -> (∫ ω, X (n - 1) ω ∂P) = 1) :
+    ∀ n, (∫ ω, X n ω ^ 2 ∂P) =
+      1 + ∑ k ∈ Finset.range n, variance / offspringMean ^ (k + 2) := by
+  refine
+    durrett2019_example_4_4_9_second_moment_finite_sum_of_recurrence
+      (a := fun n => ∫ ω, X n ω ^ 2 ∂P)
+      (offspringMean := offspringMean) (variance := variance)
+      hX_zero_sq ?_
+  intro n
+  have hstep :=
+    durrett2019_example_4_4_9_branchingProcess_second_moment_integral_recurrence
+      (P := P) (ℱ := ℱ) (X := X) (Z := Z)
+      (offspringMean := offspringMean) (variance := variance)
+      hmean_pos hX hX_memLp_two (Nat.succ_pos n)
+      (hX_prev (n + 1) (Nat.succ_pos n))
+      (hVariance (n + 1) (Nat.succ_pos n))
+      (hMeanPrev (n + 1) (Nat.succ_pos n))
+  simpa [Nat.add_assoc] using hstep
+
 end ProbabilityTheory
 end StatInference

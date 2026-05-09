@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V131
+## Live In-Thread Goal Prompt V132
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -19,22 +19,24 @@ APIs.  Theorem 4.1.16 remains deferred unless a future targeted kernel search
 finds a direct source-shaped API.
 
 Current compiled packet: Durrett Example 4.4.9 now has the theorem-sized
-conditional and integrated second-moment recurrence layer:
+finite-sum second-moment display:
 `durrett2019_example_4_4_9_conditional_second_moment_from_variance`,
 `durrett2019_example_4_4_9_branchingProcess_conditional_second_moment`, and
-`durrett2019_example_4_4_9_branchingProcess_second_moment_integral_recurrence`.
+`durrett2019_example_4_4_9_branchingProcess_second_moment_integral_recurrence`,
+plus `durrett2019_example_4_4_9_second_moment_finite_sum_of_recurrence` and
+`durrett2019_example_4_4_9_branchingProcess_second_moment_integral_finite_sum`.
 This reuses Theorem 4.4.8 and the existing normalized branching-process
 martingale bridge; it deliberately leaves the full Galton-Watson random-sum
 construction as supplied source hypotheses.
 
-Next aggressive step: finish Durrett Example 4.4.9's second-moment endpoint.
-Search first for finite geometric-sum, summability, `eLpNorm`/`MemLp` for
-`p = 2`, and martingale `L^p` convergence APIs.  Prefer a wrapper that turns
-the compiled recurrence plus `μ > 1`, `E X_0^2 = 1`, and `E X_k = 1` into
-`E X_n^2 = 1 + σ^2 * ∑ k in range n, μ^(-(k+2))` or a source-equivalent
-finite-sum display, then the uniform square-integrability bound consumed by
-Theorem 4.4.6.  Push the final `L^2` convergence/nonzero-limit endpoint only
-if it compiles without reopening full Galton-Watson infrastructure.
+Next aggressive step: finish Durrett Example 4.4.9's bounded second-moment and
+`L^2` convergence endpoint.  Search first for mathlib
+`geom_sum_Ico_le_of_lt_one`, shifted-range reindexing, summability,
+`eLpNorm`/`MemLp` for `p = 2`, and martingale `L^p` convergence APIs.  Prefer a
+wrapper that turns the compiled finite-sum display plus `μ > 1` and
+`0 ≤ σ^2` into a uniform square-integrability bound consumed by Theorem 4.4.6.
+Push the final `L^2` convergence/nonzero-limit endpoint only if it compiles
+without reopening full Galton-Watson infrastructure.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -515,8 +517,11 @@ Example 4.4.9 now also compiles through its conditional and integrated
 second-moment recurrence layer:
 `durrett2019_example_4_4_9_conditional_second_moment_from_variance`,
 `durrett2019_example_4_4_9_branchingProcess_conditional_second_moment`, and
-`durrett2019_example_4_4_9_branchingProcess_second_moment_integral_recurrence`.
-Next target: Example 4.4.9 finite geometric-sum bound and `L^2` convergence
+`durrett2019_example_4_4_9_branchingProcess_second_moment_integral_recurrence`,
+and now its finite-sum display layer:
+`durrett2019_example_4_4_9_second_moment_finite_sum_of_recurrence` and
+`durrett2019_example_4_4_9_branchingProcess_second_moment_integral_finite_sum`.
+Next target: Example 4.4.9 shifted geometric-sum bound and `L^2` convergence
 support; only formalize Example 4.4.5's counterexample if it becomes a cheap
 reusable support lemma.
 Do not detour back into full Galton-Watson random-sum infrastructure unless a
@@ -1059,10 +1064,10 @@ assembly now also compile.  The a.s. boundedness hypothesis from compiled finite
 maximal `eLpNorm` bounds and the final Theorem 4.4.6 `L^p` convergence endpoint
 now compile.  The Theorem 4.4.7 orthogonality and increment-increment wrappers
 now compile.  The Theorem 4.4.8 conditional variance formula now also compiles.
-The Example 4.4.9 conditional and integrated second-moment recurrence layer now
-also compiles.  Next move to Example 4.4.9 finite geometric-sum bound and `L^2`
-convergence support, whichever route gives the largest compiled step without
-building unrelated infrastructure.
+The Example 4.4.9 conditional, integrated second-moment recurrence, and
+finite-sum display layers now also compile.  Next move to Example 4.4.9 shifted
+geometric-sum bound and `L^2` convergence support, whichever route gives the
+largest compiled step without building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1176,6 +1181,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V131` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V132` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
