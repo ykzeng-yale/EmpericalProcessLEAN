@@ -1503,6 +1503,15 @@ and
 `chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_adjointSqrtCoord_of_sourceNewtonSegment`,
 deriving `<v, invHess(x)v> = ||coord†v||^2` from `hess x = sqrtH†sqrtH`,
 `hess(x)(invHess(x)v)=v`, and the coordinate equivalence.
+The newest right-inverse-on packet adds
+`chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoord_of_sourceNewtonSegment`,
+so the source-facing 13.8 route now asks for one feasible-set inverse-Hessian
+identity `∀ z ∈ s, ∀ v, hess z (invHess z v) = v` instead of separate
+right-inverse identities at `x` and `x+`.  It also adds
+`chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoordDelta_of_sourceNewtonSegment`,
+which takes the normalized Delta operator definitionally as `coord† Delta
+coord` and removes the separate normalization-equality hypothesis from the
+preferred route.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
@@ -1527,10 +1536,10 @@ one-shot Hessian-derivative/third-Frechet bridge, but identified
 right API stack.  Next Chapter 13 work should prove the concrete normalized
 Delta factorization plus either the pointwise squared, unit-bilinear, or
 self-adjoint absolute-quadratic bound.  On the Rayleigh path, provide the
-coordinate identities `normalized = coord† Delta coord`, `coord sqrtH = id`,
+coordinate identities `coord sqrtH = id`,
 `<v, invHess(x)v> = ||coord†v||^2`, and `hess x = sqrtH†sqrtH`, then use the
-compiled factorized adjoint-conjugation wrapper; also derive inverse-Hessian
-comparison from concrete Hessian/matrix inverse hypotheses when needed.
+compiled canonical-Delta right-inverse-on adjoint-conjugation wrapper; also derive inverse-
+Hessian comparison from concrete Hessian/matrix inverse hypotheses when needed.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,

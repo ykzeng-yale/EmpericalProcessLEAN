@@ -397,17 +397,27 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	This derives `<v, invHess(x)v> = ||coord†v||^2` from
 	`hess x = sqrtH†sqrtH`, `hess(x)(invHess(x)v)=v`, and the coordinate
 	equivalence.
+	The newest right-inverse-on packet adds
+	`chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoord_of_sourceNewtonSegment`,
+	replacing the two pointwise inverse-Hessian equations at `x` and `x+` by
+	one feasible-set hypothesis
+	`∀ z ∈ s, ∀ v, hess z (invHess z v) = v`.
+	It also adds
+	`chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoordDelta_of_sourceNewtonSegment`,
+	where the normalized Delta operator is chosen definitionally as
+	`coord† Delta coord`; use this stronger wrapper when no external
+	`normalized` operator needs to be named.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
 local-norm sandwich and its integration into the Rayleigh decrement wrapper
 are now compiled, so next derive the square-root coordinate
 identities
-`normalized = coord† Delta coord`, `coord sqrtH = id`, `sqrtH coord = id`,
+`coord sqrtH = id`, `sqrtH coord = id`,
 `<v, invHess(x)v> = ||coord†v||^2`, and `hess x = sqrtH†sqrtH` from the
 concrete Hessian/inverse-Hessian model.  In parallel, prove the concrete
-right-inverse identities `hess(x) (invHess(x) v) = v` and
-`hess(x+) (invHess(x+) v) = v`.  The Definition 13.7 norm identity,
+on-set right-inverse hypothesis `∀ z ∈ s, ∀ v, hess z (invHess z v) = v`
+instead of passing separate pointwise identities.  The Definition 13.7 norm identity,
 inverse-local identity, Cauchy bridge, dual-local-norm transport, and raw
 inverse-Hessian quadratic upper comparison should be obtained only via the
 compiled right-inverse, square-root/Cauchy, duality, and reverse-algebra
@@ -419,12 +429,12 @@ both; use the compiled `ContinuousLinearEquiv` coordinate wrapper.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
-  derive the needed right-inverse identities from the concrete Hessian/
+  derive the needed on-set right-inverse identity from the concrete Hessian/
   inverse-Hessian or matrix model, derive the `sqrtCoord : E ≃L[ℝ] E`
   coordinate model, derive the square-root Hessian factorization
-  `hess x = sqrtH†sqrtH`, and derive `normalized = coord† Delta coord`
+  `hess x = sqrtH†sqrtH`, and use the canonical normalized-Delta theorem
   required by
-  `chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_adjointSqrtCoord_of_sourceNewtonSegment`.
+  `chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoordDelta_of_sourceNewtonSegment`.
   The conversion from those inputs to the normalized Rayleigh bound, op norm,
   Delta quadratic bound, residual bound, and final decrement estimate is
   compiled; do not reprove it.

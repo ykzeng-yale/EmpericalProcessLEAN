@@ -54,10 +54,22 @@ Theorem 13.8.  The latest assembly packet proves the final Theorem 13.8
 decrement algebra from a supplied inverse-Hessian comparison plus a supplied
 Delta/gradient-residual quadratic bound.  The newest scalar packet formalizes
 the Delta coefficient integral
-`int_0^1 ((1 - M*lambda*t)^(-2) - 1) dt = M*lambda/(1-M*lambda)`.  Segment membership, `ψ` continuity,
+`int_0^1 ((1 - M*lambda*t)^(-2) - 1) dt = M*lambda/(1-M*lambda)`.  The current
+Theorem 13.8 route has advanced through the normalized Rayleigh/adjoint
+conjugation line, including the continuous-linear-equivalence coordinate
+wrapper, square-root inverse-quadratic identity, zero-step split, and the
+on-set right-inverse wrapper
+`chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoord_of_sourceNewtonSegment`.
+The preferred route is now its canonical normalized-Delta successor
+`chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoordDelta_of_sourceNewtonSegment`,
+which defines the normalized operator as `coord† Delta coord` internally.
+The next genuine source-model work is to derive the concrete on-set Hessian
+inverse identity, `sqrtCoord : E ≃L[ℝ] E`, `hess x = sqrtH†sqrtH`, and
+the concrete square-root coordinate model; all segment membership, `ψ` continuity,
 local-norm continuity/positivity, Riccati comparison, derivative inequality,
-coefficient scaling, final sandwich assembly, and first Newton/Dikin
-membership wrappers are now compiled; do not return to ASGD or generic process-prompt edits unless the user
+coefficient scaling, final sandwich assembly, first Newton/Dikin membership,
+and inverse-Hessian transport wrappers are now compiled.  Do not return to
+ASGD or generic process-prompt edits unless the user
 explicitly switches lanes.
 
 As of the current ASGD source-variance packet, route new characteristic-

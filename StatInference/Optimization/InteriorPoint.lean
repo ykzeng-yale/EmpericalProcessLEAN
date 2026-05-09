@@ -5519,6 +5519,112 @@ theorem chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_adjointSqrt
       hx_right_inverse hstep_right_inverse
 
 /--
+Chewi Theorem 13.8 source-Newton-segment assembly with the inverse-Hessian
+right-inverse equation supplied uniformly on the feasible set.
+-/
+theorem chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoord_of_sourceNewtonSegment
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    {normalized : E →L[ℝ] E} {sqrtCoord : E ≃L[ℝ] E}
+    {s : Set E} {x : E} {M : ℝ}
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hs : Convex ℝ s) (hx : x ∈ s)
+    (hstep_mem : newtonStep grad invHess x ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hnormalized_eq :
+      normalized =
+        (ContinuousLinearMap.adjoint sqrtCoord.symm.toContinuousLinearMap).comp
+          ((hessianSegmentDelta hess x (newtonStep grad invHess x)).comp
+            sqrtCoord.symm.toContinuousLinearMap))
+    (hhess_eq :
+      hess x =
+        (ContinuousLinearMap.adjoint sqrtCoord.toContinuousLinearMap).comp
+          sqrtCoord.toContinuousLinearMap)
+    (hinv_right : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E,
+      hess z (invHess z v) = v) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  have hx_right_inverse : ∀ v : E, hess x (invHess x v) = v :=
+    hinv_right (z := x) hx
+  have hstep_right_inverse : ∀ v : E,
+      hess (newtonStep grad invHess x)
+          (invHess (newtonStep grad invHess x) v) = v :=
+    hinv_right (z := newtonStep grad invHess x) hstep_mem
+  exact
+    chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_adjointSqrtCoord_of_sourceNewtonSegment
+      (hess := hess) (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (grad := grad) (invHess := invHess)
+      (normalized := normalized) (sqrtCoord := sqrtCoord)
+      (s := s) (x := x) (M := M)
+      hMlambda_lt hs hx hstep_mem hsc hess_pos hhess_cont hhess hmixed
+      hsymm hgrad hnewton_linear hnormalized_eq hhess_eq
+      hx_right_inverse hstep_right_inverse
+
+/--
+Chewi Theorem 13.8 source-Newton-segment assembly with the normalized Delta
+operator chosen definitionally as the adjoint coordinate conjugate.
+-/
+theorem chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoordDelta_of_sourceNewtonSegment
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {sqrtCoord : E ≃L[ℝ] E}
+    {s : Set E} {x : E} {M : ℝ}
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hs : Convex ℝ s) (hx : x ∈ s)
+    (hstep_mem : newtonStep grad invHess x ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hsymm : ∀ z, z ∈ s -> (hess z : E →ₗ[ℝ] E).IsSymmetric)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hhess_eq :
+      hess x =
+        (ContinuousLinearMap.adjoint sqrtCoord.toContinuousLinearMap).comp
+          sqrtCoord.toContinuousLinearMap)
+    (hinv_right : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E,
+      hess z (invHess z v) = v) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  exact
+    chewi138_newtonDecrement_step_le_of_hessianRightInverseOn_and_adjointSqrtCoord_of_sourceNewtonSegment
+      (hess := hess) (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (grad := grad) (invHess := invHess)
+      (normalized :=
+        (ContinuousLinearMap.adjoint sqrtCoord.symm.toContinuousLinearMap).comp
+          ((hessianSegmentDelta hess x (newtonStep grad invHess x)).comp
+            sqrtCoord.symm.toContinuousLinearMap))
+      (sqrtCoord := sqrtCoord) (s := s) (x := x) (M := M)
+      hMlambda_lt hs hx hstep_mem hsc hess_pos hhess_cont hhess hmixed
+      hsymm hgrad hnewton_linear rfl hhess_eq hinv_right
+
+/--
 Chewi Theorem 13.8 assembly from a unit bilinear estimate on the normalized
 Delta operator.  This leaves the remaining textbook work as the symmetric or
 bilinear Hessian-difference estimate, while reusing mathlib for the
