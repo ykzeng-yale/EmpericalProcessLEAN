@@ -3021,6 +3021,49 @@ noncomputable def barrierInfProjectionSchurLift
       -barrierInfProjectionSchurCorrection selector hess invHyy x v := by
   simp [barrierInfProjectionSchurLift]
 
+@[simp] theorem barrierInfProjectionSchurLift_hess_fst
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x v : E₁) :
+    (hess (barrierInfProjectionPoint selector x)
+        (barrierInfProjectionSchurLift selector hess invHyy x v)).fst =
+      barrierInfProjectionSchurHessFrom selector hess invHyy x v := by
+  simp [barrierInfProjectionSchurLift, barrierInfProjectionSchurCorrection]
+
+@[simp] theorem barrierInfProjectionSchurLift_hess_snd_of_Hyy_right_inverse
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x v : E₁)
+    (hyy_right : ∀ w : E₂,
+      barrierInfProjectionBlockYY selector hess x (invHyy x w) = w) :
+    (hess (barrierInfProjectionPoint selector x)
+        (barrierInfProjectionSchurLift selector hess invHyy x v)).snd = 0 := by
+  have hright := hyy_right (barrierInfProjectionBlockYX selector hess x v)
+  simpa [barrierInfProjectionSchurLift, barrierInfProjectionSchurCorrection,
+    barrierInfProjectionBlockYX, barrierInfProjectionBlockYY] using
+    sub_eq_zero.mpr hright.symm
+
+/--
+Completed-square identity for the Schur lift: if the supplied `Hyy` inverse is
+a right inverse, then the original Hessian has no vertical component on the
+lifted direction, so its full quadratic form is the Schur quadratic form.
+-/
+theorem barrierInfProjectionSchurHessFrom_quadratic_eq_lift_of_Hyy_right_inverse
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x v : E₁)
+    (hyy_right : ∀ w : E₂,
+      barrierInfProjectionBlockYY selector hess x (invHyy x w) = w) :
+    inner ℝ v (barrierInfProjectionSchurHessFrom selector hess invHyy x v) =
+      inner ℝ (barrierInfProjectionSchurLift selector hess invHyy x v)
+        (hess (barrierInfProjectionPoint selector x)
+          (barrierInfProjectionSchurLift selector hess invHyy x v)) := by
+  rw [WithLp.prod_inner_apply]
+  simp [hyy_right]
+
 /--
 If the Schur-complement quadratic form is identified with the full Hessian
 quadratic form of the lifted direction, nonnegativity follows from the original
@@ -3070,6 +3113,57 @@ theorem BarrierInfProjectionSelectorStationary.schurHessFrom_quadratic_nonneg_of
   exact barrierInfProjectionSchurHessFrom_quadratic_nonneg_of_lift_eq
     selector hess invHyy x
     (hbar.self_concordant.hess_nonneg (hsel.point_mem hx)) (hquad_eq hx)
+
+theorem BarrierInfProjectionSelectorStationary.schurHessFrom_quadratic_nonneg_of_Hyy_right_inverse
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w) :
+    ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁,
+        0 ≤ inner ℝ v
+          (barrierInfProjectionSchurHessFrom selector hess invHyy x v) := by
+  refine hsel.schurHessFrom_quadratic_nonneg_of_lift_eq hbar ?_
+  intro x hx v
+  exact barrierInfProjectionSchurHessFrom_quadratic_eq_lift_of_Hyy_right_inverse
+    selector hess invHyy x v (hyy_right hx)
+
+theorem BarrierInfProjectionSelectorStationary.schurMixedThirdSelfConcordantOn_of_Hyy_right_inverse
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hmixed_bound : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        |projThird x u v| ≤
+          2 * M *
+            localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x u *
+              (localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+                x v) ^ (2 : ℕ)) :
+    MixedThirdSelfConcordantOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy) projThird M where
+  parameter_pos := hbar.self_concordant.parameter_pos
+  hess_nonneg := hsel.schurHessFrom_quadratic_nonneg_of_Hyy_right_inverse hbar hyy_right
+  mixed_third_bound := hmixed_bound
 
 omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
   [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
@@ -3177,6 +3271,48 @@ theorem chewi1311_infProjection_selfConcordantBarrierOn_of_schur_oracles
       (barrierInfProjectionSchurHessFrom selector hess invHyy)
       (barrierInfProjectionGrad selector grad) projInvHess projThird M nu :=
   hbar.infProjection_of_projected_oracles hproj_sc hinv_nonneg hgradient_bound
+
+/--
+Chewi Proposition 13.11(4), Schur-envelope rule with the Hessian nonnegativity
+part of projected self-concordance discharged from the `Hyy` right-inverse.
+The remaining source-facing gates are the projected mixed-third bound,
+projected inverse positivity, and the projected dual-gradient bound.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_Hyy_right_inverse
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {projInvHess : E₁ -> E₁ →L[ℝ] E₁}
+    {projThird : E₁ -> E₁ -> E₁ -> ℝ} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hmixed_bound : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        |projThird x u v| ≤
+          2 * M *
+            localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x u *
+              (localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+                x v) ^ (2 : ℕ))
+    (hinv_nonneg : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁, 0 ≤ inner ℝ v (projInvHess x v))
+    (hgradient_bound : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      dualLocalNorm projInvHess x
+        (barrierInfProjectionGrad selector grad x) ≤ Real.sqrt nu) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad) projInvHess projThird M nu :=
+  chewi1311_infProjection_selfConcordantBarrierOn_of_schur_oracles hbar
+    (hsel.schurMixedThirdSelfConcordantOn_of_Hyy_right_inverse hbar hyy_right
+      hmixed_bound)
+    hinv_nonneg hgradient_bound
 
 end InfProjectionBarrier
 

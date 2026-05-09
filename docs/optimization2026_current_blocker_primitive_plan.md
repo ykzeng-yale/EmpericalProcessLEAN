@@ -244,11 +244,19 @@ The Schur-lift bridge packet adds `barrierInfProjectionSchurCorrection`,
 `barrierInfProjectionSchurLift`, its first/second-coordinate simp lemmas,
 `barrierInfProjectionSchurHessFrom_quadratic_nonneg_of_lift_eq`, and
 `BarrierInfProjectionSelectorStationary.schurHessFrom_quadratic_nonneg_of_lift_eq`.
-The next item-4 proof should now prove the completed-square identity equating
-the Schur quadratic form to the original Hessian quadratic form on
-`barrierInfProjectionSchurLift`, using block symmetry and the `Hyy`
-right-inverse.  Do not redo the selector, projected-gradient, Schur block, or
-WithLp product-coordinate interfaces.
+The Schur completed-square packet adds `barrierInfProjectionSchurLift_hess_fst`,
+`barrierInfProjectionSchurLift_hess_snd_of_Hyy_right_inverse`,
+`barrierInfProjectionSchurHessFrom_quadratic_eq_lift_of_Hyy_right_inverse`,
+`BarrierInfProjectionSelectorStationary.schurHessFrom_quadratic_nonneg_of_Hyy_right_inverse`,
+`BarrierInfProjectionSelectorStationary.schurMixedThirdSelfConcordantOn_of_Hyy_right_inverse`,
+and `chewi1311_infProjection_selfConcordantBarrierOn_of_Hyy_right_inverse`.
+Search-first result: the quadratic identity reuses mathlib
+`WithLp.prod_inner_apply` and the local Schur block definitions; block symmetry
+is not needed for Hessian nonnegativity once the `Hyy` right-inverse zeroes the
+vertical Hessian component.  The next item-4 proof should attack the projected
+mixed-third bound, projected inverse positivity, or projected dual-gradient
+bound.  Do not redo the selector, projected-gradient, Schur block,
+Schur-lift, or WithLp product-coordinate interfaces.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,
