@@ -381,6 +381,10 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	This derives the Definition 13.7 Newton-decrement norm identity from
 	`hess(x) (invHess(x) v) = v`, so callers no longer need to supply
 	`||x+ - x||_x = lambda_f(x)` separately.
+	The newest zero-step packet adds
+	`chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment_or_zero`.
+	This handles the case `x+ = x` directly from Newton's linear equation, so
+	the source-facing 13.8 wrapper no longer needs a nonzero-step assumption.
 
 Next theorem-sized target: discharge the remaining source hypotheses for the
 new source-Newton-segment 13.8 wrapper.  The pointwise Newton-segment
@@ -395,14 +399,16 @@ right-inverse identities `hess(x) (invHess(x) v) = v` and
 inverse-local identity, Cauchy bridge, dual-local-norm transport, and raw
 inverse-Hessian quadratic upper comparison should be obtained only via the
 compiled right-inverse, square-root/Cauchy, duality, and reverse-algebra
-bridges, not reproved at each theorem wrapper.
+bridges, not reproved at each theorem wrapper.  Do not reintroduce a global
+`x+ - x != 0` requirement at the source-facing layer; use the compiled
+zero-step split wrapper.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
   derive the needed right-inverse identities from the concrete Hessian/
   inverse-Hessian or matrix model, and
   derive the square-root coordinate identities required by
-  `chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment`.
+  `chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment_or_zero`.
   The conversion from those inputs to the normalized Rayleigh bound, op norm,
   Delta quadratic bound, residual bound, and final decrement estimate is
   compiled; do not reprove it.

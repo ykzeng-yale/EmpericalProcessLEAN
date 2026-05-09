@@ -56,7 +56,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   bridge, source dual-local-norm transport, and raw inverse-Hessian quadratic
   upper comparison are now compiled consequences of those identities, the
   square-root coordinate factorization, and Lemma 13.6 primal lower transport.
-  Then remove mixed-third-source interfaces when bounded.
+  The source-facing wrapper also handles the zero Newton-step case without a
+  nonzero-step assumption.  Then remove mixed-third-source interfaces when
+  bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
 - Process audit: the speed bottleneck was not only Lean difficulty; it was
@@ -1481,7 +1483,11 @@ concrete right-inverse equation.  The newest right-inverse-at-`x` packet adds
 so the Definition 13.7 norm identity is also derived from the concrete
 right-inverse equation at `x`.  The live 13.8 blockers are now the concrete
 coordinate/square-root identities and right-inverse identities at `x` and `x+`
-for the concrete Hessian inverse model.
+for the concrete Hessian inverse model.  The newest zero-step packet adds
+`chewi138_newtonDecrement_step_le_of_hessianRightInverses_and_factorizedNormalizedAdjointConjSymmetricQuadraticConcreteDelta_of_sourceNewtonSegment_or_zero`,
+which splits off `x+ = x` and proves the decrement bound directly from
+Newton's linear equation, so the current source-facing 13.8 wrapper no longer
+requires a nonzero Newton step.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
