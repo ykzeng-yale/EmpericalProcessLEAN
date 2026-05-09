@@ -46,8 +46,8 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current priority sequence: Chapter 13 Theorem 13.8 source completion in
   `StatInference/Optimization/InteriorPoint.lean`: first prove the concrete
   `HessianDeltaQuadraticBound` for the integrated Hessian-difference operator
-  and discharge `grad x+ = Delta (x+ - x)`, then feed those into the existing
-  Delta-operator decrement assembly wrapper, then remove supplied
+  and the concrete Delta action formula, then feed those into the existing
+  gradient-FTC/Delta-operator decrement assembly wrapper, then remove supplied
   inverse-Hessian comparison and mixed-third-source interfaces when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
@@ -77,10 +77,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
   route-planning loop and not an already-solved ASGD tower peel; it is the
-  Theorem 13.8 concrete Delta operator quadratic bound and gradient residual
-  identity, using the compiled integrated Delta coefficient layer.  Broad
-  searches, old Chapter 3 routing, ASGD routing, and repeated Git sync loops
-  are explicitly out of budget unless they answer that blocker.
+  Theorem 13.8 concrete Delta operator quadratic bound and Delta action
+  formula, using the compiled integrated Delta coefficient and gradient-FTC
+  layers.  Broad searches, old Chapter 3 routing, ASGD routing, and repeated
+  Git sync loops are explicitly out of budget unless they answer that blocker.
 - Latest ASGD source-variance route improvement: the active right compensated
   full-inverse product no longer needs the suspicious auxiliary
   `‖1 + projectedCompensatedTaylorErrorFactor‖ ≤ 1` gate.  The new route

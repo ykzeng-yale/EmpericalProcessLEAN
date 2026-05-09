@@ -472,12 +472,18 @@ Delta-operator residual packet adds `HessianDeltaQuadraticBound`,
 `chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_deltaQuadraticBound`,
 replacing the raw residual quadratic-form hypothesis by the source
 decomposition `grad x+ = Delta (x+ - x)` plus a Delta operator quadratic
-bound.  The next Chapter 13 packet should prove that concrete Delta operator
-quadratic bound from the scalar Delta/order estimates and discharge the
-gradient residual identity by the fundamental theorem of calculus; after that,
-derive the inverse-Hessian comparison from concrete matrix/order hypotheses
-and remove the remaining mixed-third supplied source interface through the
-real third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
+bound.  The newest gradient-residual FTC packet adds
+`hessianSegmentGradient_hasDerivAt_of_hasFDerivAt`,
+`hessianSegmentGradient_integral_eq_sub_of_hasFDerivAt`, and
+`chewi138_gradientResidual_eq_deltaStep_of_integral_delta`, proving the source
+identity `grad x+ = Delta (x+ - x)` from the segment gradient FTC, a supplied
+Delta action formula, and Newton's linear equation.  The next Chapter 13
+packet should prove the concrete Delta operator quadratic bound from the
+scalar Delta/order estimates and prove the concrete Delta action formula for
+the integrated Hessian-difference operator; after that, derive the
+inverse-Hessian comparison from concrete matrix/order hypotheses and remove
+the remaining mixed-third supplied source interface through the real
+third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

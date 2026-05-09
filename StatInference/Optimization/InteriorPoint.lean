@@ -2504,6 +2504,97 @@ theorem chewi138_hessianSegmentDelta_integral_le_of_localNormUpper
     (hnorm t ht) v
 
 /--
+Derivative of the gradient along the Chewi segment.  This is the chain-rule
+piece behind the identity
+`d/dt ∇f(z_t) = ∇² f(z_t) (y - x)`.
+-/
+theorem hessianSegmentGradient_hasDerivAt_of_hasFDerivAt
+    {grad : E -> E} {hess : E -> E →L[ℝ] E} {x y : E} {t : ℝ}
+    (hgrad :
+      HasFDerivAt grad (hess (hessianSegmentPoint x y t))
+        (hessianSegmentPoint x y t)) :
+    HasDerivAt (fun s : ℝ => grad (hessianSegmentPoint x y s))
+      (hess (hessianSegmentPoint x y t) (y - x)) t :=
+  hgrad.comp_hasDerivAt t (hessianSegmentPoint_hasDerivAt x y t)
+
+/--
+Chewi Theorem 13.8 gradient fundamental-theorem identity along the segment:
+`∫_0^1 Hess(z_t) (y - x) dt = grad y - grad x`.
+-/
+theorem hessianSegmentGradient_integral_eq_sub_of_hasFDerivAt
+    [CompleteSpace E]
+    {grad : E -> E} {hess : E -> E →L[ℝ] E} {x y : E}
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad (hess (hessianSegmentPoint x y t))
+        (hessianSegmentPoint x y t))
+    (hint : IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint x y t) (y - x))
+      MeasureTheory.volume (0 : ℝ) 1) :
+    (∫ t in (0 : ℝ)..1,
+        hess (hessianSegmentPoint x y t) (y - x)) =
+      grad y - grad x := by
+  have hderiv : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasDerivAt (fun s : ℝ => grad (hessianSegmentPoint x y s))
+        (hess (hessianSegmentPoint x y t) (y - x)) t := by
+    intro t ht
+    exact hessianSegmentGradient_hasDerivAt_of_hasFDerivAt
+      (grad := grad) (hess := hess) (x := x) (y := y) (t := t)
+      (hgrad t ht)
+  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint
+  simpa [hessianSegmentPoint_zero, hessianSegmentPoint_one] using hFTC
+
+/--
+Chewi Theorem 13.8 source residual identity.  If `delta` is the integrated
+Hessian-difference operator on the Newton step and Newton's linear equation
+holds, then `grad(x+) = delta (x+ - x)`.
+-/
+theorem chewi138_gradientResidual_eq_deltaStep_of_integral_delta
+    [CompleteSpace E]
+    {grad : E -> E} {hess : E -> E →L[ℝ] E}
+    {invHess : E -> E →L[ℝ] E} {delta : E →L[ℝ] E} {x : E}
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hint : IntervalIntegrable
+      (fun t : ℝ =>
+        hess (hessianSegmentPoint x (newtonStep grad invHess x) t)
+          (newtonStep grad invHess x - x))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hdelta_action :
+      delta (newtonStep grad invHess x - x) =
+        (∫ t in (0 : ℝ)..1,
+          hess (hessianSegmentPoint x (newtonStep grad invHess x) t)
+            (newtonStep grad invHess x - x)) -
+          hess x (newtonStep grad invHess x - x))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0) :
+    grad (newtonStep grad invHess x) =
+      delta (newtonStep grad invHess x - x) := by
+  let y := newtonStep grad invHess x
+  let step := y - x
+  have hInt :
+      (∫ t in (0 : ℝ)..1,
+          hess (hessianSegmentPoint x y t) step) =
+        grad y - grad x := by
+    simpa [y, step] using
+      hessianSegmentGradient_integral_eq_sub_of_hasFDerivAt
+        (grad := grad) (hess := hess) (x := x) (y := y)
+        (by
+          intro t ht
+          simpa [y] using hgrad t ht)
+        (by simpa [y, step] using hint)
+  have hhess_step : hess x step = -grad x := by
+    simpa [step, y, eq_neg_iff_add_eq_zero, add_comm] using hnewton_linear
+  calc
+    grad y = (∫ t in (0 : ℝ)..1,
+          hess (hessianSegmentPoint x y t) step) - hess x step := by
+      rw [hInt, hhess_step]
+      simp
+    _ = delta step := by
+      simpa [y, step] using hdelta_action.symm
+
+/--
 The first norm-transport line in Chewi Theorem 13.8, in supplied-inverse-Hessian
 form: after the inverse-Hessian quadratic comparison is available along the
 Newton segment, the Newton decrement at `x+` is bounded by the dual local norm

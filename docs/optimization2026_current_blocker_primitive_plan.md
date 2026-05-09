@@ -233,12 +233,17 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_deltaQuadraticBound`,
 	so the final decrement wrapper now takes the source decomposition
 	`grad x+ = Delta (x+ - x)` plus a Delta operator quadratic bound instead
-	of a raw residual quadratic-form hypothesis.
+	of a raw residual quadratic-form hypothesis.  The newest gradient-residual
+	FTC packet adds `hessianSegmentGradient_hasDerivAt_of_hasFDerivAt`,
+	`hessianSegmentGradient_integral_eq_sub_of_hasFDerivAt`, and
+	`chewi138_gradientResidual_eq_deltaStep_of_integral_delta`, discharging
+	the source identity `grad x+ = Delta (x+ - x)` from the gradient FTC along
+	the Newton segment, a supplied Delta action formula, and Newton's linear
+	equation.
 
 Next theorem-sized target: prove the concrete Delta operator quadratic bound
-from the scalar Hessian-difference integral/order facts, then discharge the
-residual identity `grad x+ = Delta (x+ - x)` from the fundamental theorem of
-calculus for the gradient along the Newton segment.
+from the scalar Hessian-difference integral/order facts, then prove the
+concrete Delta action formula for the integrated Hessian-difference operator.
 The exact blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
