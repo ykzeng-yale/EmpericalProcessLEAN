@@ -12669,6 +12669,48 @@ theorem durrett2019_eLpNorm_two_le_of_integral_sq_le
   exact Real.rpow_le_rpow hnorm_nonneg hnorm_bound (by norm_num)
 
 /--
+Durrett 2019, `L^2` support: an `eLpNorm · 2` bound by a real radius gives the
+ordinary real second-moment bound.
+-/
+theorem durrett2019_integral_sq_le_of_eLpNorm_two_le_ofReal
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Y : Ω -> ℝ} {R : ℝ}
+    (hY : MemLp Y (2 : ℝ≥0∞) P) (hR_nonneg : 0 ≤ R)
+    (hLp : eLpNorm Y (2 : ℝ≥0∞) P ≤ ENNReal.ofReal R) :
+    (∫ ω, Y ω ^ 2 ∂P) ≤ R ^ 2 := by
+  let I : ℝ := ∫ ω, ‖Y ω‖ ^ (2 : ℝ) ∂P
+  have hI_nonneg : 0 ≤ I := by
+    dsimp [I]
+    refine integral_nonneg (fun ω => ?_)
+    positivity
+  have h_eq :
+      eLpNorm Y (2 : ℝ≥0∞) P =
+        ENNReal.ofReal (I ^ ((2 : ℝ)⁻¹)) := by
+    have hraw :=
+      MemLp.eLpNorm_eq_integral_rpow_norm
+        (f := Y) (p := (2 : ℝ≥0∞)) (by norm_num) (by norm_num) hY
+    simpa [I] using hraw
+  have hroot_nonneg : 0 ≤ I ^ ((2 : ℝ)⁻¹) :=
+    Real.rpow_nonneg hI_nonneg _
+  have hroot_le : I ^ ((2 : ℝ)⁻¹) ≤ R := by
+    have hle_ofReal :
+        ENNReal.ofReal (I ^ ((2 : ℝ)⁻¹)) ≤ ENNReal.ofReal R := by
+      simpa [h_eq] using hLp
+    have htoReal :=
+      ENNReal.toReal_le_of_le_ofReal hR_nonneg hle_ofReal
+    simpa [ENNReal.toReal_ofReal hroot_nonneg] using htoReal
+  have hsquare :
+      (I ^ ((2 : ℝ)⁻¹)) ^ 2 ≤ R ^ 2 :=
+    (sq_le_sq₀ hroot_nonneg hR_nonneg).2 hroot_le
+  have hleft_eq : (I ^ ((2 : ℝ)⁻¹)) ^ 2 = I := by
+    rw [show ((2 : ℝ)⁻¹) = (1 / (2 : ℝ)) by norm_num]
+    rw [← Real.sqrt_eq_rpow, Real.sq_sqrt hI_nonneg]
+  have hI_le : I ≤ R ^ 2 := by
+    rw [hleft_eq] at hsquare
+    exact hsquare
+  simpa [I, Real.norm_eq_abs, Real.rpow_two, sq_abs] using hI_le
+
+/--
 Durrett 2019, Theorem 4.5.1 finite-horizon support: Doob's `L^2` maximal
 inequality plus a supplied second-moment bound controls the finite running
 absolute maximum in `eLpNorm` form.
@@ -12702,6 +12744,97 @@ theorem durrett2019_theorem_4_5_1_runningAbsMax_eLpNorm_two_le_of_integral_sq_le
               mul_le_mul_right hTerminal (ENNReal.ofReal ((2 : ℝ) / (2 - 1)))
     _ = ENNReal.ofReal (2 : ℝ) * ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) := by
           norm_num
+
+/--
+Durrett 2019, Theorem 4.5.1 finite-horizon support: the finite running
+absolute maximum is in `L^2` once the terminal second moment is bounded.
+-/
+theorem durrett2019_theorem_4_5_1_runningAbsMax_memLp_two_of_integral_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {n : ℕ} {C : ℝ}
+    (hXn_memLp_two : MemLp (X n) (2 : ℝ≥0∞) P)
+    (hXn_sq_le : (∫ ω, X n ω ^ 2 ∂P) ≤ C) :
+    MemLp (durrett2019_runningAbsMax X n) (2 : ℝ≥0∞) P := by
+  have hmeas : Measurable (durrett2019_runningAbsMax X n) := by
+    refine Finset.measurable_range_sup'' ?_
+    intro k _hk
+    simpa [durrett2019_runningAbsMax] using
+      (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).abs)
+  refine ⟨hmeas.aestronglyMeasurable, ?_⟩
+  have hLp :
+      eLpNorm (durrett2019_runningAbsMax X n) (2 : ℝ≥0∞) P ≤
+        ENNReal.ofReal (2 : ℝ) * ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) :=
+    durrett2019_theorem_4_5_1_runningAbsMax_eLpNorm_two_le_of_integral_sq_le
+      (P := P) (ℱ := ℱ) (X := X) hX hXn_memLp_two hXn_sq_le
+  exact hLp.trans_lt
+    (ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top)
+
+/--
+Durrett 2019, Theorem 4.5.1 finite-horizon support: the finite Doob `L^2`
+`eLpNorm` bridge gives the textbook ordinary second-moment display for the
+running absolute maximum.
+-/
+theorem durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_integral_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {n : ℕ} {C : ℝ}
+    (hXn_memLp_two : MemLp (X n) (2 : ℝ≥0∞) P)
+    (hMax_memLp_two : MemLp (durrett2019_runningAbsMax X n) (2 : ℝ≥0∞) P)
+    (hXn_sq_le : (∫ ω, X n ω ^ 2 ∂P) ≤ C) :
+    (∫ ω, durrett2019_runningAbsMax X n ω ^ 2 ∂P) ≤ 4 * C := by
+  have hC_nonneg : 0 ≤ C := by
+    have hnonneg : 0 ≤ (∫ ω, X n ω ^ 2 ∂P) := by
+      exact integral_nonneg fun ω => sq_nonneg _
+    exact hnonneg.trans hXn_sq_le
+  have hroot_nonneg : 0 ≤ C ^ ((2 : ℝ)⁻¹) :=
+    Real.rpow_nonneg hC_nonneg _
+  have hLp_raw :
+      eLpNorm (durrett2019_runningAbsMax X n) (2 : ℝ≥0∞) P ≤
+        ENNReal.ofReal (2 : ℝ) * ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹)) :=
+    durrett2019_theorem_4_5_1_runningAbsMax_eLpNorm_two_le_of_integral_sq_le
+      (P := P) (ℱ := ℱ) (X := X) hX hXn_memLp_two hXn_sq_le
+  have hLp :
+      eLpNorm (durrett2019_runningAbsMax X n) (2 : ℝ≥0∞) P ≤
+        ENNReal.ofReal ((2 : ℝ) * C ^ ((2 : ℝ)⁻¹)) := by
+    simpa [ENNReal.ofReal_mul (by norm_num : 0 ≤ (2 : ℝ))] using hLp_raw
+  have hR_nonneg : 0 ≤ (2 : ℝ) * C ^ ((2 : ℝ)⁻¹) :=
+    mul_nonneg (by norm_num) hroot_nonneg
+  have hmoment :
+      (∫ ω, durrett2019_runningAbsMax X n ω ^ 2 ∂P) ≤
+        ((2 : ℝ) * C ^ ((2 : ℝ)⁻¹)) ^ 2 :=
+    durrett2019_integral_sq_le_of_eLpNorm_two_le_ofReal
+      (P := P) (Y := durrett2019_runningAbsMax X n)
+      hMax_memLp_two hR_nonneg hLp
+  have hR_sq : ((2 : ℝ) * C ^ ((2 : ℝ)⁻¹)) ^ 2 = 4 * C := by
+    have hroot_sq : (C ^ ((2 : ℝ)⁻¹)) ^ 2 = C := by
+      rw [show ((2 : ℝ)⁻¹) = (1 / (2 : ℝ)) by norm_num]
+      rw [← Real.sqrt_eq_rpow, Real.sq_sqrt hC_nonneg]
+    rw [mul_pow, hroot_sq]
+    ring
+  exact hmoment.trans_eq hR_sq
+
+/--
+Durrett 2019, Theorem 4.5.1 finite-horizon support: source-facing finite
+second-moment display, with the finite running maximum's `L^2` side condition
+discharged from the same Doob bound.
+-/
+theorem durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_terminal_integral_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {n : ℕ} {C : ℝ}
+    (hXn_memLp_two : MemLp (X n) (2 : ℝ≥0∞) P)
+    (hXn_sq_le : (∫ ω, X n ω ^ 2 ∂P) ≤ C) :
+    (∫ ω, durrett2019_runningAbsMax X n ω ^ 2 ∂P) ≤ 4 * C := by
+  exact
+    durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_integral_sq_le
+      (P := P) (ℱ := ℱ) (X := X) hX hXn_memLp_two
+      (durrett2019_theorem_4_5_1_runningAbsMax_memLp_two_of_integral_sq_le
+        (P := P) (ℱ := ℱ) (X := X) hX hXn_memLp_two hXn_sq_le)
+      hXn_sq_le
 
 /--
 Durrett 2019, `L^2` support: convergence in `eLpNorm · 2` on a probability

@@ -4,18 +4,18 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V159
+## Live In-Thread Goal Prompt V160
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane: Durrett Chapter 4.4 martingale maximal
-inequalities in `StatInference/ProbabilityTheory/Martingale.lean` plus the
-three Durrett route docs.  Treat compiled Chapter 2, Chapter 3, Chapter 4.1
-through Theorem 4.1.15, Chapter 4.2, Chapter 4.3, and Chapter 4.4 through
-Exercise 4.4.9 as closed support unless the next theorem directly needs one
-API.
+synced `main`.  Active lane: Durrett Chapter 4.5.1 in
+`StatInference/ProbabilityTheory/Martingale.lean` plus the three Durrett route
+docs, with Chapter 4.4 maximal inequalities as compiled support.  Treat
+compiled Chapter 2, Chapter 3, Chapter 4.1 through Theorem 4.1.15, Chapter 4.2,
+Chapter 4.3, and Chapter 4.4 through Exercise 4.4.11 as closed support unless
+the next theorem directly needs one API.
 
 Current compiled packet: Exercise 4.4.6 now has finite absolute-exit objects,
 first-exit small-ball assembly, bounded-increment overshoot packaging,
@@ -34,7 +34,8 @@ the nonnegative-increment Toeplitz/Kronecker route, the pathwise/a.e.
 normalized increment-sum endpoint, the zero-initial normalized-process display,
 the bounded-variance summability corollary route, the deterministic
 reciprocal-normalizer source wrapper, and the first Section 4.5.1 finite
-Doob `L^2` maximal bridge:
+Doob `L^2` maximal bridge with automatic finite-max `L^2` membership and the
+ordinary finite second-moment display:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -112,6 +113,10 @@ and
 `durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_reciprocal_bounded_variance`,
 plus
 `durrett2019_theorem_4_5_1_runningAbsMax_eLpNorm_two_le_of_integral_sq_le`,
+`durrett2019_theorem_4_5_1_runningAbsMax_memLp_two_of_integral_sq_le`,
+`durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_integral_sq_le`,
+and
+`durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_terminal_integral_sq_le`,
 as well as the earlier first-exit/stopped-variance handoff declarations.  Do
 not route back into optional-stopping, overshoot, stopped-integrability,
 deterministic-clock, exact-denominator, square-martingale-source, or
@@ -123,14 +128,16 @@ predictable-transform `L^2`/a.s. convergence bridge / Abel identity / Toeplitz
 constant-split / centered-remainder / nonnegative-increment Kronecker /
 normalized increment-sum / zero-initial process / bounded-variance summability
 layer / deterministic reciprocal-normalizer wrapper / finite Doob `L^2`
-running-maximum bridge.
+`eLpNorm` or ordinary second-moment running-maximum layer.
 
 Next aggressive step: continue Section 4.5.1 from the compiled finite
-`eLpNorm` Doob `L^2` bridge.  Best target: convert the finite running-maximum
-`eLpNorm` bound into the ordinary second-moment display
-`∫ (runningAbsMax X n)^2 ≤ 4 * C`, then package the monotone-convergence handoff
-toward `E (sup_m |X_m|^2) ≤ 4 * E A∞` from a supplied increasing-process
-second-moment identity.  Do not loop back to already compiled Chapter 4.3.5,
+ordinary second-moment display.  Best target: package the monotone-convergence
+handoff from
+`∫ (runningAbsMax X n)^2 ≤ 4 * C_n` to
+`E (sup_m |X_m|^2) ≤ 4 * E A∞`, using `lintegral_iSup` /
+`lintegral_tendsto_of_tendsto_of_monotone` as appropriate and a supplied
+increasing-process second-moment identity for `A_n`.  Do not loop back to
+already compiled Chapter 4.3.5,
 Chapter 4.3.8, Example 4.4.9, Exercises 4.4.5-4.4.11, Theorem 4.4.1 plumbing,
 or the first-exit
 overshoot/stopped-integrability/deterministic-clock/exact-denominator/
@@ -139,7 +146,8 @@ tail-bound-to-`L^2`/summability-to-shifted-tail/shifted-tail-to-Cauchy/`Lp`
 Cauchy endpoint/predictable-transform convergence/Abel identity/Toeplitz
 constant-split/centered-remainder/nonnegative-increment Kronecker/normalized
 increment-sum/zero-initial process/bounded-variance summability/deterministic
-reciprocal-normalizer/finite Doob `L^2` running-maximum layer.
+reciprocal-normalizer/finite Doob `L^2` running-maximum or ordinary finite
+second-moment layer.
 Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
 source-shaped API.
 
@@ -600,6 +608,12 @@ The finite running-maximum assembly now also compiles:
 `durrett2019_theorem_4_4_6_runningAbsMax_eLpNorm_bound_of_eLpNorm_bdd`,
 `durrett2019_theorem_4_4_6_runningAbsMax_limit_memLp_and_domination`, and
 `durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_runningAbsMax_limit`.
+The Section 4.5.1 finite second-moment layer now also compiles:
+`durrett2019_integral_sq_le_of_eLpNorm_two_le_ofReal`,
+`durrett2019_theorem_4_5_1_runningAbsMax_eLpNorm_two_le_of_integral_sq_le`,
+`durrett2019_theorem_4_5_1_runningAbsMax_memLp_two_of_integral_sq_le`,
+`durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_integral_sq_le`, and
+`durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_terminal_integral_sq_le`.
 The canonical running-maximum layer now also compiles:
 `durrett2019_runningAbsSup`,
 `durrett2019_runningAbsMax_mono`,

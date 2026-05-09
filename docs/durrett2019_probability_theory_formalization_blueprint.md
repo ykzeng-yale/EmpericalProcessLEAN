@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V159`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V160`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -50,9 +50,9 @@ weighted-average/Kronecker route, the normalized increment-sum a.e.
 endpoint, the zero-initial/shifted `X_n / b_n` display, and the
 bounded-variance Exercise 4.4.11 corollary route, and the deterministic
 reciprocal-normalizer source wrapper.  Section 4.5.1 now has the finite Doob
-`L^2` `eLpNorm` bridge from a supplied second-moment bound.  Continue by
-turning that bridge into the ordinary second-moment display and monotone-limit
-support for Theorem 4.5.1.
+`L^2` `eLpNorm` bridge, automatic finite running-maximum `L^2` membership, and
+the source-facing ordinary finite second-moment display.  Continue by packaging
+the monotone-limit support for Theorem 4.5.1.
 
 For each cycle, route from:
 
@@ -419,8 +419,8 @@ Next packet:
   remainder, the normalized increment-sum a.e. endpoint, the zero-initial
   normalized-process display, the bounded-variance summability route, or the
   deterministic reciprocal-normalizer wrapper.  Section 4.5.1 now has the
-  finite Doob `L^2` `eLpNorm` bridge.  Next, convert that bridge into the
-  ordinary finite second-moment display and then package the monotone
+  finite Doob `L^2` `eLpNorm` bridge, automatic finite-max `L^2` membership,
+  and ordinary finite second-moment display.  Next, package the monotone
   convergence handoff toward `E (sup_m |X_m|^2) ≤ 4 * E A∞`.
   The
   Section 3.10
