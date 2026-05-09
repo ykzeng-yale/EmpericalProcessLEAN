@@ -176,6 +176,13 @@ source work is those three component measurability facts plus the displayed
 Chebyshev fiber lower bound for this concrete event, then optional
 specialization back to
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
+The signed pair-difference bad component is now also measurable under
+countability, coordinate measurability, and envelope measurability, through
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_pairBad_of_countable`.
+The stronger constructor
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_maximal_components_countable`
+therefore leaves only the original and ghost selected finite-center side
+conditions as event-measurability inputs.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

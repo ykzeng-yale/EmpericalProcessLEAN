@@ -4378,6 +4378,49 @@ theorem measurable_vdVWWeightedClassSupremum_of_countable
     (hterm index hindex).abs
 
 /--
+Fixed-index weighted sample sums remain measurable when both the weights and
+the sample vary measurably with an ambient parameter.
+-/
+theorem measurable_vdVWWeightedSampleSum_varying_weights
+    {Ω : Type x} [MeasurableSpace Ω]
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {classFun : Index -> Observation -> ℝ} {n : ℕ}
+    (weights : Ω -> Fin n -> ℝ) (sample : Ω -> SampleAt Observation n)
+    (hweights : ∀ i : Fin n, Measurable fun ω : Ω => weights ω i)
+    (hsample : ∀ i : Fin n, Measurable fun ω : Ω => sample ω i)
+    {index : Index} (hmeas : Measurable (classFun index)) :
+    Measurable
+      (fun ω : Ω =>
+        vdVWWeightedSampleSum classFun (weights ω) index (sample ω)) := by
+  unfold vdVWWeightedSampleSum
+  exact Finset.measurable_fun_sum Finset.univ fun i _hi =>
+    (hweights i).mul (hmeas.comp (hsample i))
+
+/--
+Countable classes give measurability of weighted suprema with measurably
+varying weights and samples, once every fixed-index weighted sample sum is
+measurable.
+-/
+theorem measurable_vdVWWeightedClassSupremum_of_countable_varying_weights
+    {Ω : Type x} [MeasurableSpace Ω]
+    {Observation : Type u} {Index : Type v}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    (hcount : indexClass.Countable) {n : ℕ}
+    (weights : Ω -> Fin n -> ℝ) (sample : Ω -> SampleAt Observation n)
+    (hterm :
+      ∀ index, index ∈ indexClass ->
+        Measurable
+          (fun ω : Ω =>
+            vdVWWeightedSampleSum classFun (weights ω) index (sample ω))) :
+    Measurable
+      (fun ω : Ω =>
+        vdVWWeightedClassSupremum indexClass classFun (weights ω)
+          (sample ω)) := by
+  unfold vdVWWeightedClassSupremum
+  exact Measurable.biSup indexClass hcount fun index hindex =>
+    (hterm index hindex).abs
+
+/--
 For a countable coordinate-measurable class, the infinite-sequence uniform
 empirical supremum is measurable with respect to the VdV&W
 permutation-symmetric sigma-field `Σ_n`.
@@ -37836,6 +37879,135 @@ theorem measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEven
   rw [VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent,
     measurableSet_setOf]
   exact hsign.and (hmaxOriginal'.and (hmaxGhost'.and hpair'))
+
+/--
+The signed pair-difference bad component of the concrete ghost/Rademacher event
+is measurable under countability and coordinate measurability.
+
+This closes the only component whose measurability follows from ordinary
+countable-supremum arguments.  The selected finite-center side conditions still
+depend on the sample-selected centers and remain explicit in the next
+constructor.
+-/
+theorem measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_pairBad_of_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope) :
+    MeasurableSet
+      {z : SampleAt Observation n ×
+          (SampleAt Observation n × SampleAt ℝ n) |
+        epsilon <
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            (vdVWRademacherWeights z.2.2)
+            (fun i : Fin n => (z.1 i, z.2.1 i))} := by
+  let Ωevent : Type _ :=
+    SampleAt Observation n × (SampleAt Observation n × SampleAt ℝ n)
+  let pairClassFun : Index -> Observation × Observation -> ℝ :=
+    fun index z =>
+      vdVWTruncatedClassFun classFun envelope M index z.1 -
+        vdVWTruncatedClassFun classFun envelope M index z.2
+  let weights : Ωevent -> Fin n -> ℝ :=
+    fun z => vdVWRademacherWeights z.2.2
+  let pairSample : Ωevent -> SampleAt (Observation × Observation) n :=
+    fun z i => (z.1 i, z.2.1 i)
+  have hweights :
+      ∀ i : Fin n, Measurable fun z : Ωevent => weights z i := by
+    intro i
+    simpa [weights, vdVWRademacherWeights] using
+      (measurable_const.mul
+        ((measurable_pi_apply i).comp
+          (measurable_snd.comp measurable_snd)))
+  have hsample :
+      ∀ i : Fin n, Measurable fun z : Ωevent => pairSample z i := by
+    intro i
+    simpa [pairSample] using
+      (((measurable_pi_apply i).comp measurable_fst).prodMk
+        ((measurable_pi_apply i).comp
+          (measurable_fst.comp measurable_snd)))
+  have hsup :
+      Measurable fun z : Ωevent =>
+        vdVWWeightedClassSupremum indexClass pairClassFun (weights z)
+          (pairSample z) := by
+    refine
+      measurable_vdVWWeightedClassSupremum_of_countable_varying_weights
+        (Ω := Ωevent) (Observation := Observation × Observation)
+        (Index := Index) (indexClass := indexClass)
+        (classFun := pairClassFun) hcount weights pairSample ?_
+    intro index hindex
+    exact
+      measurable_vdVWWeightedSampleSum_varying_weights
+        (weights := weights) (sample := pairSample) hweights hsample
+        (index := index)
+        (by
+          simpa [pairClassFun] using
+            measurable_vdVWTruncatedClassFun_pairDifference
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M)
+              hclass henvelope_meas hindex)
+  change MeasurableSet
+    ((fun z : Ωevent =>
+      vdVWWeightedClassSupremum indexClass pairClassFun (weights z)
+        (pairSample z)) ⁻¹' Set.Ioi epsilon)
+  exact measurableSet_Ioi.preimage hsup
+
+/--
+Countability-based event measurability constructor for the concrete
+ghost/Rademacher pair-difference event.
+
+After the previous lemma closes the signed pair-difference bad component, only
+the two selected finite-center side-condition components remain as explicit
+measurability inputs.
+-/
+theorem
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_maximal_components_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hmaxOriginal :
+      MeasurableSet
+        {z : SampleAt Observation n ×
+            (SampleAt Observation n × SampleAt ℝ n) |
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover z.1).center z.2.2 M})
+    (hmaxGhost :
+      MeasurableSet
+        {z : SampleAt Observation n ×
+            (SampleAt Observation n × SampleAt ℝ n) |
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.2.1
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover z.2.1).center (fun i : Fin n => -z.2.2 i) M}) :
+    MeasurableSet
+      (VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (cover := cover)) := by
+  exact
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_components
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinality := cardinality)
+      (cover := cover) hmaxOriginal hmaxGhost
+      (measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_pairBad_of_countable
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (epsilon := epsilon)
+        (n := n) hcount hclass henvelope_meas)
 
 /--
 The concrete ghost/Rademacher pair-difference event lands in the

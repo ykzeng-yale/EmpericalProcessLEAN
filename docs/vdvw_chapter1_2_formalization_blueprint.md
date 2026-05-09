@@ -2268,6 +2268,15 @@ above, so they do not change the theorem-level dashboard counts.
    component measurability facts plus the displayed Chebyshev fiber lower
    bound for this event, then optional specialization back to
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent`.
+   The signed pair-difference bad component is now closed under countability by
+   `measurableSet_VdVWTheorem243PairDifferenceGhostRademacher_pairBad_of_countable`,
+   using the generic varying-weight measurability bridges
+   `measurable_vdVWWeightedSampleSum_varying_weights` and
+   `measurable_vdVWWeightedClassSupremum_of_countable_varying_weights`.
+   Consequently
+   `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_maximal_components_countable`
+   reduces concrete-event measurability to the original and ghost selected
+   finite-center side-condition components.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
