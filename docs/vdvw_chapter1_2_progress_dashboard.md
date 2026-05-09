@@ -290,9 +290,17 @@ The new additive wrappers are
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`,
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound_add_error`, and
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`.
-The next blocker is the half-scale fixed-`M` convergence handoff with those
-additive errors, plus tail convergence and sign-first selected-center
-measurability.
+The additive half-scale source adapters are now compiled as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_succ`
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_of_pos`.
+They keep the explicit integrated original/ghost finite-center failure tails
+while converting the selected-net target to
+`epsilon < dist (4 * finiteNetHoeffdingUpper + eta) 0`.
+The next blocker is to feed these additive errors through the fixed-`M`
+convergence consumer by proving their vanishing under the active
+stochastic-entropy/cardinality hypotheses, and to close the sign-first
+selected-center event measurability obligations.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer

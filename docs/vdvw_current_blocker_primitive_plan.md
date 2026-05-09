@@ -110,11 +110,16 @@ The new chaining lemmas are
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound_add_error`,
 and
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`.
-The next exact target is to adapt this additive-tail comparison through the
-half-scale fixed-`M` convergence route and then prove the integrated random
-selected-cover tails vanish under honest stochastic entropy/cardinality
-hypotheses, while separately closing the exposed sign-first selected-center
-measurability obligations.  The selected-center
+The additive half-scale finite-center failure-tail handoff is compiled as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_succ`
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_of_pos`.
+It preserves explicit integrated original/ghost failure-tail errors while
+converting to the fixed-`M` half-scale target.  The next exact target is to
+prove the integrated random selected-cover finite-center Hoeffding tails vanish
+under honest stochastic entropy/cardinality hypotheses, feed that into the
+fixed-`M` convergence consumer, and separately close the sign-first
+selected-center event measurability obligations.  The selected-center
 measurability interface remains
 `VdVWFiniteEmpiricalL1CoverSelectedCenterAt`,
 `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`,
@@ -8793,7 +8798,22 @@ and
 This closes the product-fiber upper-lift blocker for the explicit failure
 probabilities in
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failures`.
-The next aggressive source step is to convert those integrated random
+The additive comparison layer is compiled through
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failure_tails`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound_add_error`, and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`.
+
+2026-05-09 additive half-scale finite-center failure-tail handoff:
+`Theorem243.lean` now proves
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_succ`
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_of_pos`.
+These preserve the explicit integrated original/ghost finite-center failure
+tail errors while converting the Chebyshev comparison to the fixed-`M`
+half-scale target
+`epsilon < dist (4 * vdVWTheorem243FiniteNetHoeffdingUpper ... + eta) 0`.
+The next aggressive source step is to convert the integrated random
 selected-cover tails into a vanishing error term under the active stochastic
 entropy/cardinality hypotheses, and separately close the exposed sign-first
 event measurability obligations from selected-center selector measurability.

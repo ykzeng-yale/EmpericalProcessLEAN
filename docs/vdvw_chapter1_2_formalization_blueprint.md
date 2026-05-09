@@ -2386,10 +2386,17 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`,
    `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_lower_bound_add_error`, and
    `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`.
-   The next source route is to push this additive-tail comparison through the
-   half-scale fixed-`M` convergence handoff, prove the integrated random
-   selected-cover tails vanish, and close the exposed sign-first event
-   measurability obligations from selected-center selector measurability.
+   The additive half-scale source adapters are now compiled as
+   `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_succ`
+   and
+   `VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_of_pos`.
+   These preserve the explicit integrated original/ghost finite-center failure
+   tails while converting the selected-net target to
+   `epsilon < dist (4 * finiteNetHoeffdingUpper + eta) 0`.  The next source
+   route is to prove the integrated random selected-cover tails vanish under
+   the active stochastic-entropy/cardinality hypotheses and close the exposed
+   sign-first event measurability obligations from selected-center selector
+   measurability.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,
