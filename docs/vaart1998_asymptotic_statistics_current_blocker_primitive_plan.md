@@ -1016,25 +1016,30 @@ compiling:
    raw-score endpoint while consuming `StochasticBounded` for the scaled
    estimator directly:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorOP_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope`.
+344. Theorem 5.41 canonical raw-score handoff with explicit `O_P(1)`: the
+   canonical product score law now feeds the raw-score CLT and the
+   derivative-norm endpoint while keeping scaled-estimator tightness as the
+   direct `StochasticBounded` hypothesis:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductRawScoreCLT_derivativeNormAE_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 derivative-norm OP handoff`).
+(`Add Vaart theorem 5.41 canonical OP handoff`).
 
 The latest theorem-sized packet strengthens the Chapter 5.41
-asymptotic-normality route for Z-estimators by adding the derivative-norm
-handoff that consumes `StochasticBounded` for the scaled estimator directly.
-This bypasses the intermediate law-tail field when an `O_P(1)` proof is
-already available.
+asymptotic-normality route for Z-estimators by plugging the canonical product
+raw-score CLT into the derivative-norm handoff that consumes
+`StochasticBounded` for the scaled estimator directly.  This bypasses the
+intermediate law-tail field when an `O_P(1)` proof is already available.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
 source handoff.  Move next to a concrete source of `StochasticBounded` for the
-scaled estimator, the canonical-score specialization of the new `O_P(1)`
-handoff, or a genuinely model-specific derivative representation.  Do not
-repeat solved Chapter 2-4 infrastructure or earlier Theorem 5.41 wrapper layers
-unless a current proof directly depends on a small local API there.
+scaled estimator, or a genuinely model-specific derivative representation.  Do
+not repeat solved Chapter 2-4 infrastructure, canonical score wrappers, or
+earlier Theorem 5.41 wrapper layers unless a current proof directly depends on
+a small local API there.
 
 ## Execution Notes
 
