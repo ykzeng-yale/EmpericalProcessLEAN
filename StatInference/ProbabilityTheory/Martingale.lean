@@ -12123,6 +12123,75 @@ def durrett2019_runningAbsMax {Ω : Type*} (X : ℕ -> Ω -> ℝ) (n : ℕ) (ω 
     fun k => |X k ω|
 
 /--
+Durrett 2019, Section 4.4 notation: the pointwise supremum of the finite
+running absolute maxima.
+-/
+noncomputable def durrett2019_runningAbsSup {Ω : Type*} (X : ℕ -> Ω -> ℝ) (ω : Ω) : ℝ :=
+  ⨆ n : ℕ, durrett2019_runningAbsMax X n ω
+
+/--
+The finite running absolute maxima are monotone in the time horizon.
+-/
+theorem durrett2019_runningAbsMax_mono
+    {Ω : Type*} {X : ℕ -> Ω -> ℝ} (ω : Ω) :
+    Monotone (fun n => durrett2019_runningAbsMax X n ω) := by
+  intro n m hnm
+  dsimp [durrett2019_runningAbsMax]
+  refine Finset.sup'_le Finset.nonempty_range_add_one (fun k => |X k ω|) ?_
+  intro k hk
+  exact Finset.le_sup' (fun k => |X k ω|)
+    (by
+      rw [Finset.mem_range] at hk ⊢
+      exact lt_of_lt_of_le hk (Nat.succ_le_succ hnm))
+
+/--
+The canonical running absolute supremum is a.e. strongly measurable for a
+real martingale.
+-/
+theorem durrett2019_runningAbsSup_aestronglyMeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P) :
+    AEStronglyMeasurable (durrett2019_runningAbsSup X) P := by
+  have hA_meas : ∀ n, Measurable (durrett2019_runningAbsMax X n) := by
+    intro n
+    refine Finset.measurable_range_sup'' ?_
+    intro k _hk
+    simpa [durrett2019_runningAbsMax] using
+      (((hX.stronglyMeasurable k).measurable.mono (ℱ.le k) le_rfl).abs)
+  exact (Measurable.iSup hA_meas).aestronglyMeasurable
+
+/--
+On any path where the finite running absolute maxima are bounded above, they
+converge to the canonical running absolute supremum.
+-/
+theorem durrett2019_runningAbsMax_tendsto_runningAbsSup_of_bddAbove
+    {Ω : Type*} {X : ℕ -> Ω -> ℝ} {ω : Ω}
+    (hBdd :
+      BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    Tendsto (fun n => durrett2019_runningAbsMax X n ω) atTop
+      (𝓝 (durrett2019_runningAbsSup X ω)) := by
+  simpa [durrett2019_runningAbsSup] using
+    tendsto_atTop_ciSup (durrett2019_runningAbsMax_mono (X := X) ω) hBdd
+
+/--
+Almost-sure boundedness of the finite running absolute maxima supplies the
+almost-sure convergence hypothesis for the canonical running absolute supremum.
+-/
+theorem durrett2019_runningAbsMax_ae_tendsto_runningAbsSup_of_ae_bddAbove
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => durrett2019_runningAbsMax X n ω) atTop
+        (𝓝 (durrett2019_runningAbsSup X ω)) := by
+  filter_upwards [hBdd] with ω hω
+  exact durrett2019_runningAbsMax_tendsto_runningAbsSup_of_bddAbove
+    (X := X) (ω := ω) hω
+
+/--
 Durrett 2019, Theorem 4.4.6 support from Theorem 4.4.4: a uniform terminal
 `L^p` bound gives a uniform finite-running-maximum bound with Doob's
 `p/(p-1)` constant.
@@ -12358,6 +12427,32 @@ theorem durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_runningAbsMax_li
   exact
     durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_memLp_dominated
       (P := P) (ℱ := ℱ) (X := X) hX hpq.lt.le hR hS_mem hdom
+
+/--
+Durrett 2019, Theorem 4.4.6 canonical-running-maximum assembly: once the finite
+running absolute maxima are a.s. bounded, their canonical pointwise supremum
+is the supplied dominating variable in the compiled running-maximum bridge.
+-/
+theorem durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_runningAbsSup_bddAbove
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {p q : ℝ} (hpq : p.HolderConjugate q) {R : ℝ≥0}
+    (hR : ∀ n, eLpNorm (X n) (ENNReal.ofReal p) P ≤ R)
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    Tendsto
+      (fun n => eLpNorm (X n - ℱ.limitProcess X P) (ENNReal.ofReal p) P)
+      atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_runningAbsMax_limit
+      (P := P) (ℱ := ℱ) (X := X) hX hpq hR
+      (durrett2019_runningAbsSup_aestronglyMeasurable
+        (P := P) (ℱ := ℱ) (X := X) hX)
+      (durrett2019_runningAbsMax_ae_tendsto_runningAbsSup_of_ae_bddAbove
+        (P := P) (X := X) hBdd)
 
 end ProbabilityTheory
 end StatInference

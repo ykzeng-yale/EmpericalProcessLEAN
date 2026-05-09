@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V126
+## Live In-Thread Goal Prompt V127
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -25,10 +25,12 @@ now has the full positive-part and martingale maximal inequality route.  The
 Theorem 4.4.6 a.s.-limit, limit `MemLp`, dominated-uniform-integrability, and
 supplied-domination `L^p` convergence endpoint now compile.  The finite running
 absolute-maximum notation, the Theorem 4.4.4 finite-maximal-bound handoff, and
-the supplied running-maximum-limit assembly now also compile.  Next aggressive
-step: construct the canonical infinite running absolute maximum `S`, prove its
-a.e. measurability and a.s. convergence from the finite running maxima, and
-feed the compiled assembly theorem.  Do not revisit the completed Theorem 4.4.4
+the supplied running-maximum-limit assembly now also compile.  The canonical
+infinite running absolute maximum `S`, its measurability, its convergence from
+a.s. bounded finite maxima, and the final running-`S` assembly now compile.
+Next aggressive step: prove the a.s. boundedness of the finite running maxima
+from the uniform finite-maximal `eLpNorm` bounds supplied by Theorem 4.4.4.
+Do not revisit the completed Theorem 4.4.4
 Fubini/Hölder/coefficient/truncation plumbing.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
@@ -488,10 +490,17 @@ The finite running-maximum assembly now also compiles:
 `durrett2019_theorem_4_4_6_runningAbsMax_eLpNorm_bound_of_eLpNorm_bdd`,
 `durrett2019_theorem_4_4_6_runningAbsMax_limit_memLp_and_domination`, and
 `durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_runningAbsMax_limit`.
-Next target: construct the canonical infinite running absolute maximum `S` and
-prove the supplied convergence/measurability hypotheses consumed by this
-assembly; only formalize Example 4.4.5's counterexample if it becomes a cheap
-reusable support lemma.
+The canonical running-maximum layer now also compiles:
+`durrett2019_runningAbsSup`,
+`durrett2019_runningAbsMax_mono`,
+`durrett2019_runningAbsSup_aestronglyMeasurable`,
+`durrett2019_runningAbsMax_tendsto_runningAbsSup_of_bddAbove`,
+`durrett2019_runningAbsMax_ae_tendsto_runningAbsSup_of_ae_bddAbove`, and
+`durrett2019_theorem_4_4_6_martingale_tendsto_eLpNorm_of_runningAbsSup_bddAbove`.
+Next target: prove the a.s. boundedness hypothesis
+`∀ᵐ ω, BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)` from
+the uniform finite-maximal `eLpNorm` bounds; only formalize Example 4.4.5's
+counterexample if it becomes a cheap reusable support lemma.
 Do not detour back into full Galton-Watson random-sum infrastructure unless a
 local API makes it cheap.
 Do not redo the already compiled ENNReal prefix convergence, canonical
@@ -1026,9 +1035,11 @@ to the 4.2.11 almost-sure limit and limit-process `MemLp` now also compiles, as
 does the final `L^p` convergence endpoint when a single `MemLp` dominating
 variable `S` is supplied.  The finite running absolute-maximum notation,
 finite-maximal-bound handoff, and supplied running-maximum-limit assembly now
-also compile.  Next construct the canonical infinite running maximum `S` and
-its measurability/convergence facts, whichever route gives the largest compiled
-step without building unrelated infrastructure.
+also compile.  The canonical infinite running maximum `S`, its measurability,
+its convergence from a.s. bounded finite maxima, and the final running-`S`
+assembly now also compile.  Next prove the a.s. boundedness hypothesis from the
+compiled finite maximal `eLpNorm` bounds, whichever route gives the largest
+compiled step without building unrelated infrastructure.
 Keep Theorem 4.1.16 deferred unless a
 targeted kernel search finds a direct source-shaped API.
 
@@ -1142,6 +1153,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V126` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V127` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
