@@ -160,41 +160,46 @@ Compiled declarations to reuse include
 `hessianSegmentPsi_continuousOn_of_continuousOn`,
 `hessianSegmentPsi_continuousOn_of_continuous`,
 `hessianSegmentPsi_continuousOn_of_convex_continuousOn`,
+`hessianSegmentLocalNorm_continuousOn_of_continuousOn`,
+`hessianSegmentLocalNorm_continuousOn_of_convex_continuousOn`,
+`scalar_riccati_upper_bound_on_unit_interval`,
+`hessianSegmentLocalNorm_le_of_riccati_bound`,
+`hessianSegmentLocalNorm_le_of_riccati_bound_of_mul_lt`,
 `hessianSegmentCoeffBound_of_localNorm_bound`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
 `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound`,
 the corresponding `.toHessianSegmentConcretePsiCertificate` and
 `.toHessianSegmentExponentialBounds` bridges, and
 `localNorm_sandwich_of_hessianSegmentMixedThirdCertificate` /
 `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate` /
-`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound`.
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_segmentLocalNormBound` /
+`localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_of_riccatiBound`.
 
 Next theorem-sized target: construct the source hypotheses for
 `HessianSegmentMixedThirdLocalNormCertificate` from the remaining analytic
 source facts rather than adding more generic Gronwall/`ψ` plumbing.  The exact
 blockers are:
 
-- prove the natural segment local-norm estimate
-  `||y - x||_{z_s} <= r / (1 - M*r*s)` from Chewi Lemma 13.6's differential
-  inequality for `||y - x||_{z_s}`; the scalar multiplication into the
-  certificate coefficient is now compiled as
-  `hessianSegmentCoeffBound_of_localNorm_bound`;
+- prove positivity of `||y - x||_{z_s}` on the nondegenerate segment and the
+  Riccati derivative estimate
+  `d/ds ||y - x||_{z_s} <= M * ||y - x||_{z_s}^2`; the scalar comparison from
+  that estimate to `||y - x||_{z_s} <= r / (1 - M*r*s)`, the coefficient
+  scaling, and the final sandwich assembly are now compiled;
 - connect a real third Frechet derivative or `iteratedFDeriv` representation
   to `MixedThirdSelfConcordantOn.mixed_third_bound`;
-- reuse the compiled convex/continuity source constructor to discharge
-  segment membership and `ContinuousOn (hessianSegmentPsi hess x y v) [0,1]`
-  from `Convex ℝ s`, `x ∈ s`, `y ∈ s`, and `ContinuousOn hess s`;
-- then consume the convex/mixed-third/segment-local-norm wrapper to state and
-  prove the source-shaped Lemma 13.6(4), before moving to Newton decrement
-  estimates.
+- then consume the convex/mixed-third/Riccati wrapper to state and prove the
+  source-shaped Lemma 13.6(4), before moving to Newton decrement estimates.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi
 Hessian-stability theorem and no direct derivative theorem for
-`fun t => inner ℝ v (hess (hessianSegmentPoint x y t) v)`.  Reuse
+`fun t => inner ℝ v (hess (hessianSegmentPoint x y t) v)`, and no direct
+Riccati comparison theorem matching `q' <= M*q^2`.  Reuse
 `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
-`HasDerivAt.inner`, `HasDerivWithinAt.inner`,
+`HasDerivAt.inner`, `HasDerivWithinAt.inner`, `HasDerivWithinAt.inv`,
+`monotoneOn_of_hasDerivWithinAt_nonneg`,
 `Continuous.clm_apply`/`ContinuousOn.clm_apply`,
 `ContinuousMultilinearMap` and `iteratedFDeriv` APIs, plus
 `ContinuousLinearMap.IsPositive`/matrix `PosSemidef` APIs only when the
