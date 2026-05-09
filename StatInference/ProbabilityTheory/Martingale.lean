@@ -12827,6 +12827,175 @@ theorem durrett2019_exercise_4_4_6_smallBall_bound_of_stopped_variance_identity
   rw [← ENNReal.ofReal_toReal hA_ne_top]
   exact ENNReal.ofReal_le_ofReal hreal
 
+/-- Durrett 2019, Exercise 4.4.6: the finite exit set `{y : |y| > x}`. -/
+noncomputable def durrett2019_exercise_4_4_6_absExitSet (x : ℝ) : Set ℝ :=
+  {y | x < |y|}
+
+/--
+Durrett 2019, Exercise 4.4.6: the small-ball event
+`max_{1 ≤ k ≤ n} |S_k| ≤ x`.
+-/
+def durrett2019_exercise_4_4_6_smallBallEvent
+    {Ω : Type*} (S : ℕ -> Ω -> ℝ) (x : ℝ) (n : ℕ) : Set Ω :=
+  {ω | ∀ k ∈ Finset.Icc 1 n, |S k ω| ≤ x}
+
+/--
+Durrett 2019, Exercise 4.4.6: finite first exit time from `[-x, x]` between
+times `1` and `n`, coerced to the `WithTop ℕ` stopping-time convention used by
+mathlib.
+-/
+noncomputable def durrett2019_exercise_4_4_6_firstExitAbs
+    {Ω : Type*} (S : ℕ -> Ω -> ℝ) (x : ℝ) (n : ℕ) : Ω -> WithTop ℕ :=
+  fun ω =>
+    (hittingBtwn (ι := ℕ) S
+      (durrett2019_exercise_4_4_6_absExitSet x) 1 n ω : WithTop ℕ)
+
+theorem durrett2019_exercise_4_4_6_absExitSet_measurable (x : ℝ) :
+    MeasurableSet (durrett2019_exercise_4_4_6_absExitSet x) := by
+  dsimp [durrett2019_exercise_4_4_6_absExitSet]
+  exact measurableSet_Ioi.preimage continuous_abs.measurable
+
+/--
+Durrett 2019, Exercise 4.4.6: the finite absolute-exit time is a stopping time
+for an adapted process.
+-/
+theorem durrett2019_exercise_4_4_6_firstExitAbs_isStoppingTime
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ℱ : Filtration ℕ mΩ}
+    {S : ℕ -> Ω -> ℝ} (hS : StronglyAdapted ℱ S) (x : ℝ) (n : ℕ) :
+    IsStoppingTime ℱ (durrett2019_exercise_4_4_6_firstExitAbs S x n) := by
+  simpa [durrett2019_exercise_4_4_6_firstExitAbs] using
+    hS.adapted.isStoppingTime_hittingBtwn
+      (durrett2019_exercise_4_4_6_absExitSet_measurable x)
+
+theorem durrett2019_exercise_4_4_6_smallBallEvent_measurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ℱ : Filtration ℕ mΩ}
+    {S : ℕ -> Ω -> ℝ} (hS : StronglyAdapted ℱ S) (x : ℝ) (n : ℕ) :
+    MeasurableSet (durrett2019_exercise_4_4_6_smallBallEvent S x n) := by
+  classical
+  have hInter :
+      MeasurableSet (⋂ k ∈ Finset.Icc 1 n, {ω : Ω | |S k ω| ≤ x}) := by
+    refine Finset.measurableSet_biInter _ ?_
+    intro k _hk
+    refine measurableSet_le ?_ measurable_const
+    exact (((hS k).measurable.mono (ℱ.le k) le_rfl).abs)
+  have hEq :
+      durrett2019_exercise_4_4_6_smallBallEvent S x n =
+        (⋂ k ∈ Finset.Icc 1 n, {ω : Ω | |S k ω| ≤ x}) := by
+    ext ω
+    simp [durrett2019_exercise_4_4_6_smallBallEvent]
+  rw [hEq]
+  exact hInter
+
+/--
+Durrett 2019, Exercise 4.4.6 first-exit assembly.  The finite hitting time,
+optional-stopping identity for `S_k^2 - varianceClock k`, and the deterministic
+variance clock now feed the stopped-variance small-ball handoff.  The remaining
+source obligation is the bounded-increment overshoot estimate for the stopped
+square.
+-/
+theorem durrett2019_exercise_4_4_6_smallBall_bound_of_firstExitAbs
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {S : ℕ -> Ω -> ℝ} {varianceClock : ℕ -> ℝ} {x K variance : ℝ} {n : ℕ}
+    (hvariance_pos : 0 < variance)
+    (hS_adapted : StronglyAdapted ℱ S)
+    (hM : Martingale (fun k ω => S k ω ^ 2 - varianceClock k) ℱ P)
+    (hM0 : ∀ᵐ ω ∂P, S 0 ω ^ 2 - varianceClock 0 = 0)
+    (hclock_nonneg : ∀ k, 0 ≤ varianceClock k)
+    (hvariance_le_clock : variance ≤ varianceClock n)
+    (hstoppedSq_int :
+      Integrable
+        (fun ω =>
+          stoppedValue S (durrett2019_exercise_4_4_6_firstExitAbs S x n) ω ^ 2)
+        P)
+    (hstoppedVar_int :
+      Integrable
+        (fun ω =>
+          stoppedValue (fun k => fun _ : Ω => varianceClock k)
+            (durrett2019_exercise_4_4_6_firstExitAbs S x n) ω)
+        P)
+    (hOvershoot :
+      (fun ω =>
+        stoppedValue S (durrett2019_exercise_4_4_6_firstExitAbs S x n) ω ^ 2) ≤ᵐ[P]
+          fun _ => (x + K) ^ 2) :
+    P (durrett2019_exercise_4_4_6_smallBallEvent S x n) ≤
+      ENNReal.ofReal (((x + K) ^ 2) / variance) := by
+  let τ : Ω -> WithTop ℕ := durrett2019_exercise_4_4_6_firstExitAbs S x n
+  let V : ℕ -> Ω -> ℝ := fun k _ => varianceClock k
+  have hτ_stop : IsStoppingTime ℱ τ := by
+    simpa [τ] using
+      durrett2019_exercise_4_4_6_firstExitAbs_isStoppingTime
+        (ℱ := ℱ) hS_adapted x n
+  have hτ_bdd : ∀ ω, τ ω ≤ n := by
+    intro ω
+    dsimp [τ, durrett2019_exercise_4_4_6_firstExitAbs]
+    exact_mod_cast
+      hittingBtwn_le
+        (u := S) (s := durrett2019_exercise_4_4_6_absExitSet x)
+        (n := 1) (m := n) (ω := ω)
+  have hoptionalM :=
+    durrett2019_theorem_4_4_1_martingale_integral_stoppedValue_eq_initial
+      (P := P) (ℱ := ℱ)
+      (X := fun k ω => S k ω ^ 2 - varianceClock k) (N := τ)
+      hM hτ_stop hτ_bdd
+  have hinit_zero : (∫ ω, S 0 ω ^ 2 - varianceClock 0 ∂P) = 0 := by
+    exact integral_eq_zero_of_ae hM0
+  have hoptional_sub :
+      (∫ ω, stoppedValue S τ ω ^ 2 - stoppedValue V τ ω ∂P) = 0 := by
+    have hpoint :
+        stoppedValue (fun k ω => S k ω ^ 2 - varianceClock k) τ =
+          fun ω => stoppedValue S τ ω ^ 2 - stoppedValue V τ ω := by
+      funext ω
+      simp [stoppedValue, V]
+    rw [← hpoint]
+    exact hoptionalM.trans hinit_zero
+  have hoptional :
+      (∫ ω, stoppedValue V τ ω ∂P) =
+        ∫ ω, stoppedValue S τ ω ^ 2 ∂P := by
+    have hsub := integral_sub hstoppedSq_int hstoppedVar_int
+    rw [hsub] at hoptional_sub
+    linarith
+  have hvar_nonneg : 0 ≤ᵐ[P] fun ω => stoppedValue V τ ω := by
+    exact Eventually.of_forall fun ω => by
+      simp [stoppedValue, V, hclock_nonneg]
+  have hvar_on_A :
+      ∀ᵐ ω ∂P,
+        ω ∈ durrett2019_exercise_4_4_6_smallBallEvent S x n ->
+          variance ≤ stoppedValue V τ ω := by
+    refine Eventually.of_forall fun ω hωA => ?_
+    have hno :
+        ¬ ∃ j ∈ Set.Icc 1 n,
+            S j ω ∈ durrett2019_exercise_4_4_6_absExitSet x := by
+      rintro ⟨j, hj, hjexit⟩
+      have hjfin : j ∈ Finset.Icc 1 n := by
+        simpa [Finset.mem_Icc] using hj
+      have hle := hωA j hjfin
+      have hlt : x < |S j ω| := by
+        simpa [durrett2019_exercise_4_4_6_absExitSet] using hjexit
+      exact not_lt_of_ge hle hlt
+    have hhit :
+        hittingBtwn (ι := ℕ) S (durrett2019_exercise_4_4_6_absExitSet x) 1 n ω =
+          n := by
+      rw [hittingBtwn]
+      rw [if_neg hno]
+    have hτ_eq : τ ω = (n : WithTop ℕ) := by
+      simp [τ, durrett2019_exercise_4_4_6_firstExitAbs, hhit]
+    rw [show stoppedValue V τ ω = varianceClock n by
+      rw [stoppedValue, hτ_eq]
+      rfl]
+    exact hvariance_le_clock
+  exact
+    durrett2019_exercise_4_4_6_smallBall_bound_of_stopped_variance_identity
+      (P := P) (A := durrett2019_exercise_4_4_6_smallBallEvent S x n)
+      (stoppedSq := fun ω => stoppedValue S τ ω ^ 2)
+      (stoppedVar := fun ω => stoppedValue V τ ω)
+      (x := x) (K := K) (variance := variance)
+      (durrett2019_exercise_4_4_6_smallBallEvent_measurable
+        (ℱ := ℱ) hS_adapted x n)
+      hvariance_pos hstoppedSq_int hstoppedVar_int hoptional hvar_nonneg
+      hvar_on_A (by simpa [τ] using hOvershoot)
+
 /--
 Durrett 2019, Theorem 4.4.7, orthogonality of martingale increments.  If
 `Y` is `ℱ_m`-measurable and square-integrable, then the increment

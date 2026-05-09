@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V137`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V138`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -392,10 +392,11 @@ Compiled Section 3.2 packets:
 Next packet:
 
 - Chapter 4.4: continue the martingale maximal-inequality layer.  The current
-  frontier is Exercise 4.4.6's exit/hitting stopping-time and variance-clock
-  instantiation feeding the compiled stopped-variance handoff.  Theorem 4.4.1
-  optional-stopping wrappers, Exercise 4.4.5's conditional-variance variant,
-  and Exercise 4.4.6's stopped-variance small-ball handoff now compile.  The
+  frontier is Exercise 4.4.6's bounded-increment overshoot estimate for the
+  compiled finite absolute-exit stopping time, followed by the exact source
+  wrapper.  Theorem 4.4.1 optional-stopping wrappers, Exercise 4.4.5's
+  conditional-variance variant, Exercise 4.4.6's stopped-variance small-ball
+  handoff, and the finite first-exit/small-ball assembly now compile.  The
   finite-sum display, shifted geometric-sum, uniform second-moment bound,
   `eLpNorm 2` handoff, `L^2` convergence endpoint, expectation handoff,
   `E X = 1`, and nonzero-limit endpoint now compile for Example 4.4.9.  The
@@ -615,7 +616,8 @@ Next packet:
   convergence endpoint, expectation handoff, `E X = 1`, and nonzero-limit
   endpoint now also compile.  Exercise 4.4.5's conditional-variance variant now
   also compiles.  Theorem 4.4.1 optional-stopping wrappers and Exercise 4.4.6's
-  stopped-variance small-ball handoff now also compile.
+  stopped-variance small-ball handoff and the finite first-exit/small-ball
+  assembly now also compile.
   Theorem 4.1.16 remains deferred unless a direct kernel API appears.
 
 Support-only dependencies:
