@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V161`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V162`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -50,10 +50,10 @@ weighted-average/Kronecker route, the normalized increment-sum a.e.
 endpoint, the zero-initial/shifted `X_n / b_n` display, and the
 bounded-variance Exercise 4.4.11 corollary route, and the deterministic
 reciprocal-normalizer source wrapper.  Section 4.5.1 now has the finite Doob
-`L^2` `eLpNorm` bridge, automatic finite running-maximum `L^2` membership, and
-the source-facing ordinary finite second-moment display, plus the monotone
-`lintegral` iSup handoff.  Continue by identifying the iSup with the
-`runningAbsSup` square and attaching the `A∞` source identity.
+`L^2` `eLpNorm` bridge, automatic finite running-maximum `L^2` membership, the
+source-facing ordinary finite second-moment display, the monotone `lintegral`
+iSup handoff, and the `runningAbsSup` square identification.  Continue by
+attaching the source-facing `A∞` second-moment identity.
 
 For each cycle, route from:
 
@@ -421,8 +421,9 @@ Next packet:
   normalized-process display, the bounded-variance summability route, or the
   deterministic reciprocal-normalizer wrapper.  Section 4.5.1 now has the
   finite Doob `L^2` `eLpNorm` bridge, automatic finite-max `L^2` membership,
-  ordinary finite second-moment display, and monotone iSup `lintegral` handoff.
-  Next, identify the iSup with `runningAbsSup` square and connect it to
+  ordinary finite second-moment display, monotone iSup `lintegral` handoff, and
+  the `runningAbsSup` square handoff.  Next, attach the source-facing `A∞`
+  second-moment identity and connect it to
   `E (sup_m |X_m|^2) ≤ 4 * E A∞`.
   The
   Section 3.10

@@ -12933,6 +12933,92 @@ theorem durrett2019_theorem_4_5_1_lintegral_iSup_runningAbsMax_sq_le_of_terminal
         (P := P) (ℱ := ℱ) (X := X) hX (hX_memLp_two n) (hX_sq_le n)
 
 /--
+Durrett 2019, Theorem 4.5.1 monotone-convergence support: on a path where the
+finite running absolute maxima are bounded above, the nonnegative `ENNReal`
+`iSup` of their squares is exactly the square of the canonical real running
+absolute supremum.
+-/
+theorem durrett2019_iSup_ofReal_runningAbsMax_sq_eq_ofReal_runningAbsSup_sq_of_bddAbove
+    {Ω : Type*} {X : ℕ -> Ω -> ℝ} {ω : Ω}
+    (hBdd :
+      BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    (⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω ^ 2)) =
+      ENNReal.ofReal (durrett2019_runningAbsSup X ω ^ 2) := by
+  let a : ℕ -> ℝ := fun n => durrett2019_runningAbsMax X n ω
+  have hmono_a : Monotone a :=
+    durrett2019_runningAbsMax_mono (X := X) ω
+  have hmono_sq : Monotone fun n => ENNReal.ofReal (a n ^ 2) := by
+    intro n m hnm
+    refine ENNReal.ofReal_le_ofReal ?_
+    exact
+      (sq_le_sq₀
+        (durrett2019_runningAbsMax_nonneg (X := X) n ω)
+        (durrett2019_runningAbsMax_nonneg (X := X) m ω)).2
+        (hmono_a hnm)
+  have htend_a : Tendsto a atTop (𝓝 (durrett2019_runningAbsSup X ω)) := by
+    simpa [a] using
+      durrett2019_runningAbsMax_tendsto_runningAbsSup_of_bddAbove
+        (X := X) (ω := ω) hBdd
+  have htend_sq :
+      Tendsto (fun n => a n ^ 2) atTop
+        (𝓝 (durrett2019_runningAbsSup X ω ^ 2)) := by
+    simpa [pow_two] using htend_a.mul htend_a
+  have htend_ofReal :
+      Tendsto (fun n => ENNReal.ofReal (a n ^ 2)) atTop
+        (𝓝 (ENNReal.ofReal (durrett2019_runningAbsSup X ω ^ 2))) :=
+    ENNReal.continuous_ofReal.continuousAt.tendsto.comp htend_sq
+  have htend_iSup :
+      Tendsto (fun n => ENNReal.ofReal (a n ^ 2)) atTop
+        (𝓝 (⨆ n : ℕ, ENNReal.ofReal (a n ^ 2))) :=
+    tendsto_atTop_iSup hmono_sq
+  have heq := tendsto_nhds_unique htend_iSup htend_ofReal
+  simpa [a] using heq
+
+/--
+Durrett 2019, Theorem 4.5.1 monotone-convergence support: the previous
+pointwise `iSup` identification can be used inside a `lintegral`.
+-/
+theorem durrett2019_lintegral_iSup_runningAbsMax_sq_eq_lintegral_runningAbsSup_sq_of_ae_bddAbove
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    (∫⁻ ω,
+        ⨆ n : ℕ,
+          ENNReal.ofReal (durrett2019_runningAbsMax X n ω ^ 2) ∂P) =
+      ∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω ^ 2) ∂P := by
+  refine lintegral_congr_ae ?_
+  filter_upwards [hBdd] with ω hω
+  exact
+    durrett2019_iSup_ofReal_runningAbsMax_sq_eq_ofReal_runningAbsSup_sq_of_bddAbove
+      (X := X) (ω := ω) hω
+
+/--
+Durrett 2019, Theorem 4.5.1 monotone-convergence support: after the pointwise
+`iSup` is identified with the canonical running supremum square, the uniform
+terminal second-moment bound controls the `lintegral` of that square.
+-/
+theorem durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_integral_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    {C : ℝ}
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hX_sq_le : ∀ n, (∫ ω, X n ω ^ 2 ∂P) ≤ C)
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω ^ 2) ∂P) ≤
+      ENNReal.ofReal (4 * C) := by
+  rw [←
+    durrett2019_lintegral_iSup_runningAbsMax_sq_eq_lintegral_runningAbsSup_sq_of_ae_bddAbove
+      (P := P) (X := X) hBdd]
+  exact
+    durrett2019_theorem_4_5_1_lintegral_iSup_runningAbsMax_sq_le_of_terminal_integral_sq_le
+      (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two hX_sq_le
+
+/--
 Durrett 2019, `L^2` support: convergence in `eLpNorm · 2` on a probability
 space implies convergence of expectations.
 -/

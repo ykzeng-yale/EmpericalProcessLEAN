@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V161
+## Live In-Thread Goal Prompt V162
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -12,146 +12,26 @@ older than the verified route docs:
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane: Durrett Chapter 4.5.1 in
 `StatInference/ProbabilityTheory/Martingale.lean` plus the three Durrett route
-docs, with Chapter 4.4 maximal inequalities as compiled support.  Treat
-compiled Chapter 2, Chapter 3, Chapter 4.1 through Theorem 4.1.15, Chapter 4.2,
-Chapter 4.3, and Chapter 4.4 through Exercise 4.4.11 as closed support unless
-the next theorem directly needs one API.
+docs.  Treat compiled Chapter 2, Chapter 3, Chapter 4.1 through Theorem 4.1.15,
+Chapter 4.2, Chapter 4.3, and Chapter 4.4 through Exercise 4.4.11 as closed
+support unless the next theorem directly needs one API.
 
-Current compiled packet: Exercise 4.4.6 now has finite absolute-exit objects,
-first-exit small-ball assembly, bounded-increment overshoot packaging,
-automatic stopped-value integrability from the square martingale, and the
-deterministic variance-clock / exact-denominator wrappers, plus the
-variable-variance square-martingale source bridge and the natural-filtration
-independent-increment endpoint.  Exercise 4.4.9 now has the two-martingale
-product-covariance recurrence and finite-sum source display.  Exercise 4.4.10
-now has the finite square-increment second-moment identities and finite
-tail identity plus the `L^2` Cauchy-bound consumer and square-summability
-shifted-tail/Cauchy handoff plus the `L^1`-bounded almost-sure convergence
-handoff.  Exercise 4.4.11 now has the predictable transform increment identity,
-`L^2` and almost-sure transform convergence bridges, deterministic
-Abel/Kronecker summation certificates, the Toeplitz constant/centered split,
-the nonnegative-increment Toeplitz/Kronecker route, the pathwise/a.e.
-normalized increment-sum endpoint, the zero-initial normalized-process display,
-the bounded-variance summability corollary route, the deterministic
-reciprocal-normalizer source wrapper, and the first Section 4.5.1 finite
-Doob `L^2` maximal bridge with automatic finite-max `L^2` membership, the
-ordinary finite second-moment display, and the monotone `lintegral` iSup
-handoff:
-`durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
-`durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
-`durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
-`durrett2019_exercise_4_4_6_smallBall_bound_of_bounded_increments`, plus
-`durrett2019_exercise_4_4_6_smallBall_bound_of_square_martingale`,
-`durrett2019_exercise_4_4_6_varianceClock`,
-`durrett2019_exercise_4_4_6_varianceClock_zero`,
-`durrett2019_exercise_4_4_6_varianceClock_nonneg`,
-`durrett2019_exercise_4_4_6_varianceClock_succ`,
-`durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
-`durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,
-and `durrett2019_exercise_4_4_6_smallBall_bound_of_deterministic_varianceClock`, in
-addition to `durrett2019_exercise_4_4_6_smallBall_bound_of_variance_endpoint`
-and the source-facing
-`durrett2019_exercise_4_4_6_smallBall_bound_of_source`,
-`durrett2019_exercise_4_4_6_linearRandomWalk_increment_eq`,
-`durrett2019_exercise_4_4_6_incrementSquare_condExp_natural_ae_eq_sigmaSq_of_iIndepFun`,
-`durrett2019_exercise_4_4_6_linearRandomWalk_squareMinusVarianceClock_martingale_of_iIndepFun_zeroMean_secondMoments`,
+Last compiled packet: Section 4.5.1 now has the finite Doob `L^2` bridge,
+ordinary finite second-moment display, monotone `lintegral` iSup handoff, and
+canonical running-supremum identification:
+`durrett2019_iSup_ofReal_runningAbsMax_sq_eq_ofReal_runningAbsSup_sq_of_bddAbove`,
+`durrett2019_lintegral_iSup_runningAbsMax_sq_eq_lintegral_runningAbsSup_sq_of_ae_bddAbove`,
 and
-`durrett2019_exercise_4_4_6_linearRandomWalk_smallBall_bound_of_iIndepFun_zeroMean_secondMoments`,
-plus
-`durrett2019_exercise_4_4_9_two_martingales_product_integral_succ` and
-`durrett2019_exercise_4_4_9_two_martingales_product_integral_sub_initial_eq_sum_increment_products`,
-plus `durrett2019_exercise_4_4_10_martingale_square_integral_succ` and
-`durrett2019_exercise_4_4_10_martingale_square_integral_sub_initial_eq_sum_increment_sq`,
-`durrett2019_exercise_4_4_10_martingale_increment_sq_integral_eq_square_integral_sub`,
-and
-`durrett2019_exercise_4_4_10_martingale_increment_sq_integral_eq_sum_Ico_increment_sq`,
-and
-`durrett2019_exercise_4_4_10_martingale_eLpNorm_increment_le_of_Ico_sum_le`,
-`durrett2019_exercise_4_4_10_Ico_sum_le_tsum_tail_of_summable`,
-`durrett2019_exercise_4_4_10_Ico_sum_increment_sq_le_tsum_tail_of_summable`,
-and
-`durrett2019_exercise_4_4_10_martingale_eLpNorm_increment_le_tsum_tail_of_summable`,
-`durrett2019_exercise_4_4_10_tsum_tail_tendsto_zero_of_summable`,
-`durrett2019_exercise_4_4_10_increment_sq_tsum_tail_tendsto_zero_of_summable`,
-and
-`durrett2019_exercise_4_4_10_eventually_eLpNorm_increment_le_of_summable`,
-`durrett2019_exercise_4_4_10_martingale_toLp_cauchySeq_of_summable`,
-`durrett2019_exercise_4_4_10_martingale_exists_toLp_tendsto_of_summable`,
-`durrett2019_exercise_4_4_10_martingale_eLpNorm_two_bdd_of_summable`,
-`durrett2019_exercise_4_4_10_martingale_eLpNorm_one_bdd_of_summable`,
-and
-`durrett2019_exercise_4_4_10_martingale_exists_ae_tendsto_of_summable`,
-plus
-`durrett2019_exercise_4_4_11_stochasticTransform_increment_eq`,
-`durrett2019_exercise_4_4_11_stochasticTransform_increment_sq_summable`,
-`durrett2019_exercise_4_4_11_stochasticTransform_exists_toLp_tendsto_of_scaled_summable`,
-and
-`durrett2019_exercise_4_4_11_stochasticTransform_exists_ae_tendsto_of_scaled_summable`,
-plus
-`durrett2019_exercise_4_4_11_kronecker_summation_by_parts`,
-`durrett2019_exercise_4_4_11_kronecker_ratio_eq`,
-and
-`durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_weighted_tendsto`,
-plus
-`durrett2019_exercise_4_4_11_weight_increment_sum_eq`,
-`durrett2019_exercise_4_4_11_constant_weighted_tendsto`,
-`durrett2019_exercise_4_4_11_weighted_average_eq_constant_add_centered`,
-`durrett2019_exercise_4_4_11_weighted_average_tendsto_of_centered_tendsto_zero`,
-`durrett2019_exercise_4_4_11_centered_toeplitz_remainder_tendsto_zero`,
-`durrett2019_exercise_4_4_11_weighted_average_tendsto_of_nonnegative_increments`,
-`durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_nonnegative_increments`,
-`durrett2019_exercise_4_4_11_normalized_increment_sum_tendsto_zero`,
-`durrett2019_exercise_4_4_11_normalized_increment_sum_ae_tendsto_zero`,
-`durrett2019_exercise_4_4_11_normalized_increment_sum_ae_tendsto_zero_of_scaled_summable`,
-`durrett2019_exercise_4_4_11_normalized_process_tendsto_zero_of_initial_zero`,
-`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_initial_zero`,
-`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_shifted`,
-`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_scaled_summable`,
-`durrett2019_exercise_4_4_11_scaled_summable_of_variance_bound`,
-`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_bounded_variance`,
-`durrett2019_exercise_4_4_11_reciprocalTransform_memLp_two_of_process_memLp`,
-and
-`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_reciprocal_bounded_variance`,
-plus
-`durrett2019_theorem_4_5_1_runningAbsMax_eLpNorm_two_le_of_integral_sq_le`,
-`durrett2019_theorem_4_5_1_runningAbsMax_memLp_two_of_integral_sq_le`,
-`durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_integral_sq_le`,
-and
-`durrett2019_theorem_4_5_1_runningAbsMax_integral_sq_le_of_terminal_integral_sq_le`,
-plus
-`durrett2019_runningAbsMax_lintegral_iSup_sq_le_of_integral_sq_le` and
-`durrett2019_theorem_4_5_1_lintegral_iSup_runningAbsMax_sq_le_of_terminal_integral_sq_le`,
-as well as the earlier first-exit/stopped-variance handoff declarations.  Do
-not route back into optional-stopping, overshoot, stopped-integrability,
-deterministic-clock, exact-denominator, square-martingale-source, or
-natural-filtration independent-increment 4.4.6 plumbing, or Exercise 4.4.9
-product-covariance / finite square-increment / finite tail-identity /
-tail-bound-to-`L^2` / summability-to-shifted-tail / shifted-tail-to-Cauchy
-plumbing or the `Lp` Cauchy/existence endpoint, or the Exercise 4.4.11
-predictable-transform `L^2`/a.s. convergence bridge / Abel identity / Toeplitz
-constant-split / centered-remainder / nonnegative-increment Kronecker /
-normalized increment-sum / zero-initial process / bounded-variance summability
-layer / deterministic reciprocal-normalizer wrapper / finite Doob `L^2`
-`eLpNorm`, ordinary second-moment, or monotone-iSup running-maximum layer.
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_integral_sq_le`.
 
-Next aggressive step: continue Section 4.5.1 from the compiled monotone iSup
-`lintegral` handoff.  Best target: identify
-`⨆ n, ofReal ((runningAbsMax X n)^2)` with the `runningAbsSup` square under the
-right a.e. boundedness/finite-lintegral hypothesis, then connect the bound to
-`4 * E A∞` through a supplied increasing-process second-moment identity for
-`A_n`.  Do not loop back to already compiled Chapter 4.3.5,
-Chapter 4.3.8, Example 4.4.9, Exercises 4.4.5-4.4.11, Theorem 4.4.1 plumbing,
-or the first-exit
-overshoot/stopped-integrability/deterministic-clock/exact-denominator/
-square-martingale-source/natural-filtration/product-covariance/tail-identity/
-tail-bound-to-`L^2`/summability-to-shifted-tail/shifted-tail-to-Cauchy/`Lp`
-Cauchy endpoint/predictable-transform convergence/Abel identity/Toeplitz
-constant-split/centered-remainder/nonnegative-increment Kronecker/normalized
-increment-sum/zero-initial process/bounded-variance summability/deterministic
-reciprocal-normalizer/finite Doob `L^2` running-maximum or ordinary finite
-second-moment / monotone-iSup layer.
-Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
-source-shaped API.
+Next aggressive step: attach the textbook `A∞` source.  Best target: package a
+source-facing increasing-process second-moment identity/limit assumption for
+`A_n` that converts the compiled terminal uniform bound into
+`E (sup_m |X_m|^2) ≤ 4 * E A∞`, reusing the new `runningAbsSup` `lintegral`
+endpoint.  Do not route back into Chapter 4.4 plumbing or the already compiled
+finite-maximum, ordinary second-moment, monotone-iSup, or running-supremum
+identification layers.  Theorem 4.1.16 remains deferred unless a targeted
+kernel search finds a direct source-shaped API.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
@@ -621,6 +501,11 @@ The Section 4.5.1 monotone iSup handoff now also compiles:
 `durrett2019_runningAbsMax_measurable`,
 `durrett2019_runningAbsMax_lintegral_iSup_sq_le_of_integral_sq_le`, and
 `durrett2019_theorem_4_5_1_lintegral_iSup_runningAbsMax_sq_le_of_terminal_integral_sq_le`.
+The Section 4.5.1 running-supremum square handoff now also compiles:
+`durrett2019_iSup_ofReal_runningAbsMax_sq_eq_ofReal_runningAbsSup_sq_of_bddAbove`,
+`durrett2019_lintegral_iSup_runningAbsMax_sq_eq_lintegral_runningAbsSup_sq_of_ae_bddAbove`,
+and
+`durrett2019_theorem_4_5_1_lintegral_runningAbsSup_sq_le_of_terminal_integral_sq_le`.
 The canonical running-maximum layer now also compiles:
 `durrett2019_runningAbsSup`,
 `durrett2019_runningAbsMax_mono`,
