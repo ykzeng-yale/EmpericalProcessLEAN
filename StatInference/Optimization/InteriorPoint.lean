@@ -1,5 +1,7 @@
 import StatInference.Optimization.Basic
+import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Calculus.Deriv.ZPow
+import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
@@ -7,10 +9,9 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 /-!
 # Chewi Chapter 13 interior-point methods
 
-This module starts the finite-dimensional interior-point/self-concordance
-lane.  The first packet records a one-dimensional source-shaped
-self-concordance interface and verifies Chewi Example 13.4 for the logarithmic
-barrier `x ↦ -log x` on `ℝ_{>0}`.
+This module develops the finite-dimensional interior-point/self-concordance
+lane: Chewi Example 13.4 for the logarithmic barrier, the supplied-Hessian
+local-norm/Newton substrate, and the Lemma 13.6 Hessian-stability spine.
 -/
 
 namespace StatInference
@@ -592,6 +593,18 @@ theorem hessianSegmentPoint_one (x y : E) :
     hessianSegmentPoint x y 1 = y := by
   simp [hessianSegmentPoint]
 
+theorem hessianSegmentPoint_hasDerivAt (x y : E) (t : ℝ) :
+    HasDerivAt (hessianSegmentPoint x y) (y - x) t := by
+  have hone_sub : HasDerivAt (fun s : ℝ => 1 - s) (-1) t := by
+    simpa using (hasDerivAt_const t (1 : ℝ)).sub (hasDerivAt_id t)
+  have hleft : HasDerivAt (fun s : ℝ => (1 - s) • x) (-x) t := by
+    simpa using hone_sub.smul_const x
+  have hright : HasDerivAt (fun s : ℝ => s • y) y t := by
+    simpa using (hasDerivAt_id t).smul_const y
+  have hsum := hleft.add hright
+  convert hsum using 1
+  simp [sub_eq_add_neg, add_comm]
+
 /-- Concrete per-vector `ψ(t) = <v, Hess(z_t) v>` used in Chewi Lemma 13.6. -/
 def hessianSegmentPsi
     (hess : E -> E →L[ℝ] E) (x y v : E) (t : ℝ) : ℝ :=
@@ -606,6 +619,50 @@ theorem hessianSegmentPsi_one
     (hess : E -> E →L[ℝ] E) (x y v : E) :
     hessianSegmentPsi hess x y v 1 = inner ℝ v (hess y v) := by
   simp [hessianSegmentPsi, hessianSegmentPoint_one]
+
+theorem hessianSegmentPsi_hasDerivAt_of_hasFDerivAt
+    {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {x y v : E} {t : ℝ}
+    (hhess : HasFDerivAt hess
+      (hessDeriv (hessianSegmentPoint x y t))
+      (hessianSegmentPoint x y t)) :
+    HasDerivAt (hessianSegmentPsi hess x y v)
+      (inner ℝ v ((hessDeriv (hessianSegmentPoint x y t) (y - x)) v)) t := by
+  have hseg := hessianSegmentPoint_hasDerivAt x y t
+  have hcomp :
+      HasDerivAt (fun s : ℝ => hess (hessianSegmentPoint x y s))
+        (hessDeriv (hessianSegmentPoint x y t) (y - x)) t := by
+    have hcomp' :
+        HasDerivAt (hess ∘ hessianSegmentPoint x y)
+          (hessDeriv (hessianSegmentPoint x y t) (y - x)) t :=
+      hhess.comp_hasDerivAt (x := t) hseg
+    simpa [Function.comp_def] using hcomp'
+  have happly :
+      HasDerivAt
+        (fun s : ℝ => hess (hessianSegmentPoint x y s) v)
+        ((hessDeriv (hessianSegmentPoint x y t) (y - x)) v) t := by
+    have hconst : HasDerivAt (fun _ : ℝ => v) 0 t :=
+      hasDerivAt_const t v
+    have happly := hcomp.clm_apply hconst
+    simpa using happly
+  have hconst_left : HasDerivAt (fun _ : ℝ => v) 0 t :=
+    hasDerivAt_const t v
+  have hinner := HasDerivAt.inner (𝕜 := ℝ) hconst_left happly
+  simpa [hessianSegmentPsi] using hinner
+
+theorem hessianSegmentPsi_hasDerivWithinAt_of_hasFDerivAt
+    {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {x y v : E} {t : ℝ} {u : Set ℝ}
+    (hhess : HasFDerivAt hess
+      (hessDeriv (hessianSegmentPoint x y t))
+      (hessianSegmentPoint x y t)) :
+    HasDerivWithinAt (hessianSegmentPsi hess x y v)
+      (inner ℝ v ((hessDeriv (hessianSegmentPoint x y t) (y - x)) v)) u t :=
+  (hessianSegmentPsi_hasDerivAt_of_hasFDerivAt
+    (hess := hess) (hessDeriv := hessDeriv)
+    (x := x) (y := y) (v := v) (t := t) hhess).hasDerivWithinAt
 
 /--
 Per-vector `ψ(t) = <v, Hess(z_t) v>` certificate for Chewi Lemma 13.6's
@@ -646,6 +703,156 @@ structure HessianSegmentConcretePsiCertificate
         (2 * M * r / (1 - M * r * s)) *
           hessianSegmentPsi hess x y v s
 
+/--
+Mixed-third oracle for Chewi Lemma 13.6's segment proof:
+`ψ_v'(t) = ∇³f(z_t)[y - x, v, v]`.
+-/
+def hessianSegmentMixedThirdPsiDeriv
+    (thirdMixed : E -> E -> E -> ℝ) (x y : E) (v : E) (t : ℝ) : ℝ :=
+  thirdMixed (hessianSegmentPoint x y t) (y - x) v
+
+/--
+Source-shaped mixed-third certificate for the concrete segment `ψ_v(t)`.
+This is the next analytic gate after the scalar Gronwall layer: prove the
+derivative formula and the displayed self-concordance bound for the supplied
+mixed third derivative.
+-/
+structure HessianSegmentMixedThirdCertificate
+    (hess : E -> E →L[ℝ] E) (thirdMixed : E -> E -> E -> ℝ)
+    (x y : E) (M r : ℝ) : Prop where
+  psi_continuous : ∀ v : E,
+    ContinuousOn (hessianSegmentPsi hess x y v) (Set.Icc (0 : ℝ) 1)
+  psi_hasDerivWithin : ∀ v : E, ∀ s,
+    s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      HasDerivWithinAt (hessianSegmentPsi hess x y v)
+        (hessianSegmentMixedThirdPsiDeriv thirdMixed x y v s)
+        (interior (Set.Icc (0 : ℝ) 1)) s
+  psi_deriv_bound : ∀ v : E, ∀ s,
+    s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      |hessianSegmentMixedThirdPsiDeriv thirdMixed x y v s| ≤
+        (2 * M * r / (1 - M * r * s)) *
+          hessianSegmentPsi hess x y v s
+
+/--
+More decomposed source gate for Chewi Lemma 13.6.  It separates the
+self-concordance mixed-third estimate from the segment local-norm estimate
+`||y - x||_{z_s} ≤ r / (1 - M r s)`.
+-/
+structure HessianSegmentMixedThirdLocalNormCertificate
+    (hess : E -> E →L[ℝ] E) (thirdMixed : E -> E -> E -> ℝ)
+    (x y : E) (M r : ℝ) : Prop where
+  psi_continuous : ∀ v : E,
+    ContinuousOn (hessianSegmentPsi hess x y v) (Set.Icc (0 : ℝ) 1)
+  psi_hasDerivWithin : ∀ v : E, ∀ s,
+    s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      HasDerivWithinAt (hessianSegmentPsi hess x y v)
+        (hessianSegmentMixedThirdPsiDeriv thirdMixed x y v s)
+        (interior (Set.Icc (0 : ℝ) 1)) s
+  psi_nonneg : ∀ v : E, ∀ s,
+    s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      0 ≤ hessianSegmentPsi hess x y v s
+  mixed_third_bound : ∀ v : E, ∀ s,
+    s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      |hessianSegmentMixedThirdPsiDeriv thirdMixed x y v s| ≤
+        (2 * M * localNorm hess (hessianSegmentPoint x y s) (y - x)) *
+          hessianSegmentPsi hess x y v s
+  segment_coeff_bound : ∀ s,
+    s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      2 * M * localNorm hess (hessianSegmentPoint x y s) (y - x) ≤
+        2 * M * r / (1 - M * r * s)
+
+/--
+Mixed-third self-concordance interface used for the Hessian-stability proof:
+`|∇³f(x)[u,v,v]| ≤ 2 M ||u||_x ||v||_x^2`.
+-/
+structure MixedThirdSelfConcordantOn
+    (s : Set E) (hess : E -> E →L[ℝ] E)
+    (thirdMixed : E -> E -> E -> ℝ) (M : ℝ) : Prop where
+  parameter_pos : 0 < M
+  hess_nonneg : ∀ ⦃x : E⦄, x ∈ s -> ∀ v : E,
+    0 ≤ inner ℝ v (hess x v)
+  mixed_third_bound : ∀ ⦃x : E⦄, x ∈ s -> ∀ u v : E,
+    |thirdMixed x u v| ≤
+      2 * M * localNorm hess x u * (localNorm hess x v) ^ (2 : ℕ)
+
+theorem HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {x y : E} {M r : ℝ}
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hseg : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        hessianSegmentPoint x y t ∈ s)
+    (hpsi_cont : ∀ v : E,
+      ContinuousOn (hessianSegmentPsi hess x y v) (Set.Icc (0 : ℝ) 1))
+    (hpsi_deriv : ∀ v : E, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasDerivWithinAt (hessianSegmentPsi hess x y v)
+          (hessianSegmentMixedThirdPsiDeriv thirdMixed x y v t)
+          (interior (Set.Icc (0 : ℝ) 1)) t)
+    (hsegment_coeff : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        2 * M * localNorm hess (hessianSegmentPoint x y t) (y - x) ≤
+          2 * M * r / (1 - M * r * t)) :
+    HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed x y M r where
+  psi_continuous := hpsi_cont
+  psi_hasDerivWithin := hpsi_deriv
+  psi_nonneg := by
+    intro v t ht
+    exact hsc.hess_nonneg (hseg t ht) v
+  mixed_third_bound := by
+    intro v t ht
+    have hz := hseg t ht
+    have hquad : 0 ≤ inner ℝ v
+        (hess (hessianSegmentPoint x y t) v) :=
+      hsc.hess_nonneg hz v
+    have hbound := hsc.mixed_third_bound hz (y - x) v
+    have hsq :
+        (localNorm hess (hessianSegmentPoint x y t) v) ^ (2 : ℕ) =
+          hessianSegmentPsi hess x y v t := by
+      rw [localNorm_sq_eq_inner hquad]
+      rfl
+    simpa [hessianSegmentMixedThirdPsiDeriv, hsq, mul_assoc]
+      using hbound
+  segment_coeff_bound := hsegment_coeff
+
+theorem HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {x y : E} {M r : ℝ}
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hseg : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        hessianSegmentPoint x y t ∈ s)
+    (hpsi_cont : ∀ v : E,
+      ContinuousOn (hessianSegmentPsi hess x y v) (Set.Icc (0 : ℝ) 1))
+    (hhess : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint x y t))
+          (hessianSegmentPoint x y t))
+    (hmixed : ∀ v : E, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v ((hessDeriv (hessianSegmentPoint x y t) (y - x)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x y v t)
+    (hsegment_coeff : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        2 * M * localNorm hess (hessianSegmentPoint x y t) (y - x) ≤
+          2 * M * r / (1 - M * r * t)) :
+    HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed x y M r :=
+  HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn
+    (s := s) (hess := hess) (thirdMixed := thirdMixed)
+    (x := x) (y := y) (M := M) (r := r)
+    hsc hseg hpsi_cont
+    (by
+      intro v t ht
+      have hderiv :=
+        hessianSegmentPsi_hasDerivWithinAt_of_hasFDerivAt
+          (hess := hess) (hessDeriv := hessDeriv)
+          (x := x) (y := y) (v := v) (t := t)
+          (u := interior (Set.Icc (0 : ℝ) 1)) (hhess t ht)
+      simpa only [hmixed v t ht] using hderiv)
+    hsegment_coeff
+
 theorem HessianSegmentConcretePsiCertificate.toHessianSegmentPsiCertificate
     {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
     {psiDeriv : E -> ℝ -> ℝ}
@@ -657,6 +864,40 @@ theorem HessianSegmentConcretePsiCertificate.toHessianSegmentPsiCertificate
   psi_continuous := hpsi.psi_continuous
   psi_hasDerivWithin := hpsi.psi_hasDerivWithin
   psi_deriv_bound := hpsi.psi_deriv_bound
+
+theorem HessianSegmentMixedThirdCertificate.toHessianSegmentConcretePsiCertificate
+    {hess : E -> E →L[ℝ] E} {thirdMixed : E -> E -> E -> ℝ}
+    {x y : E} {M r : ℝ}
+    (hpsi : HessianSegmentMixedThirdCertificate hess thirdMixed x y M r) :
+    HessianSegmentConcretePsiCertificate hess x y M r
+      (hessianSegmentMixedThirdPsiDeriv thirdMixed x y) where
+  psi_continuous := hpsi.psi_continuous
+  psi_hasDerivWithin := hpsi.psi_hasDerivWithin
+  psi_deriv_bound := hpsi.psi_deriv_bound
+
+theorem HessianSegmentMixedThirdLocalNormCertificate.toHessianSegmentMixedThirdCertificate
+    {hess : E -> E →L[ℝ] E} {thirdMixed : E -> E -> E -> ℝ}
+    {x y : E} {M r : ℝ}
+    (hpsi :
+      HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed x y M r) :
+    HessianSegmentMixedThirdCertificate hess thirdMixed x y M r where
+  psi_continuous := hpsi.psi_continuous
+  psi_hasDerivWithin := hpsi.psi_hasDerivWithin
+  psi_deriv_bound := by
+    intro v s hs
+    have hmixed := hpsi.mixed_third_bound v s hs
+    have hcoeff := hpsi.segment_coeff_bound s hs
+    have hpsi_nonneg := hpsi.psi_nonneg v s hs
+    exact hmixed.trans (mul_le_mul_of_nonneg_right hcoeff hpsi_nonneg)
+
+theorem HessianSegmentMixedThirdLocalNormCertificate.toHessianSegmentConcretePsiCertificate
+    {hess : E -> E →L[ℝ] E} {thirdMixed : E -> E -> E -> ℝ}
+    {x y : E} {M r : ℝ}
+    (hpsi :
+      HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed x y M r) :
+    HessianSegmentConcretePsiCertificate hess x y M r
+      (hessianSegmentMixedThirdPsiDeriv thirdMixed x y) :=
+  hpsi.toHessianSegmentMixedThirdCertificate.toHessianSegmentConcretePsiCertificate
 
 theorem HessianSegmentPsiCertificate.toHessianSegmentExponentialBounds
     {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
@@ -708,6 +949,25 @@ theorem HessianSegmentConcretePsiCertificate.toHessianSegmentExponentialBounds
     (hpsi : HessianSegmentConcretePsiCertificate hess x y M r psiDeriv) :
     HessianSegmentExponentialBounds hess x y M r :=
   hpsi.toHessianSegmentPsiCertificate.toHessianSegmentExponentialBounds
+    hMr_nonneg hMr_lt
+
+theorem HessianSegmentMixedThirdCertificate.toHessianSegmentExponentialBounds
+    {hess : E -> E →L[ℝ] E} {thirdMixed : E -> E -> E -> ℝ}
+    {x y : E} {M r : ℝ}
+    (hMr_nonneg : 0 ≤ M * r) (hMr_lt : M * r < 1)
+    (hpsi : HessianSegmentMixedThirdCertificate hess thirdMixed x y M r) :
+    HessianSegmentExponentialBounds hess x y M r :=
+  hpsi.toHessianSegmentConcretePsiCertificate.toHessianSegmentExponentialBounds
+    hMr_nonneg hMr_lt
+
+theorem HessianSegmentMixedThirdLocalNormCertificate.toHessianSegmentExponentialBounds
+    {hess : E -> E →L[ℝ] E} {thirdMixed : E -> E -> E -> ℝ}
+    {x y : E} {M r : ℝ}
+    (hMr_nonneg : 0 ≤ M * r) (hMr_lt : M * r < 1)
+    (hpsi :
+      HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed x y M r) :
+    HessianSegmentExponentialBounds hess x y M r :=
+  hpsi.toHessianSegmentMixedThirdCertificate.toHessianSegmentExponentialBounds
     hMr_nonneg hMr_lt
 
 theorem HessianSegmentExponentialBounds.toHessianQuadraticBounds
@@ -786,6 +1046,36 @@ theorem localNorm_sandwich_of_hessianSegmentConcretePsiCertificate
     hpsi.toHessianSegmentExponentialBounds hMr_nonneg hMr_lt
   exact localNorm_sandwich_of_hessianSegmentExponentialBounds
     hMr_lt hx_nonneg hy_nonneg henv v
+
+theorem localNorm_sandwich_of_hessianSegmentMixedThirdCertificate
+    {hess : E -> E →L[ℝ] E} {thirdMixed : E -> E -> E -> ℝ}
+    {x y : E} {M r : ℝ}
+    (hMr_nonneg : 0 ≤ M * r) (hMr_lt : M * r < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hpsi : HessianSegmentMixedThirdCertificate hess thirdMixed x y M r)
+    (v : E) :
+    (1 - M * r) * localNorm hess x v ≤ localNorm hess y v ∧
+      localNorm hess y v ≤ localNorm hess x v / (1 - M * r) := by
+  have henv :=
+    hpsi.toHessianSegmentExponentialBounds hMr_nonneg hMr_lt
+  exact localNorm_sandwich_of_hessianSegmentExponentialBounds
+    hMr_lt hx_nonneg hy_nonneg henv v
+
+theorem localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate
+    {hess : E -> E →L[ℝ] E} {thirdMixed : E -> E -> E -> ℝ}
+    {x y : E} {M r : ℝ}
+    (hMr_nonneg : 0 ≤ M * r) (hMr_lt : M * r < 1)
+    (hx_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess x v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hpsi :
+      HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed x y M r)
+    (v : E) :
+    (1 - M * r) * localNorm hess x v ≤ localNorm hess y v ∧
+      localNorm hess y v ≤ localNorm hess x v / (1 - M * r) := by
+  exact localNorm_sandwich_of_hessianSegmentMixedThirdCertificate
+    hMr_nonneg hMr_lt hx_nonneg hy_nonneg
+    hpsi.toHessianSegmentMixedThirdCertificate v
 
 /--
 Chewi Definition 13.3, source-shaped self-concordance interface using only the

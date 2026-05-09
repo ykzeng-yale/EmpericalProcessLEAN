@@ -19,15 +19,25 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V5` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V6` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
-context only; they must not override the current ASGD scalar martingale CLT
-route.  If a run starts with a dirty Lean diff, compile or record the precise
-blocker for that diff before changing strategy docs.  The current speed rule is
-to move from that live prompt directly into one endpoint-moving Lean theorem, with
-only one bounded API search for the active blocker.
+context only; they must not override the current Chapter 13
+interior-point/self-concordance route.  If a run starts with a dirty Lean diff,
+compile or record the precise blocker for that diff before changing strategy
+docs.  The current speed rule is to move from that live prompt directly into
+one endpoint-moving Lean theorem, with only one bounded API search for the
+active blocker.
+
+Current live route: `StatInference/Optimization/InteriorPoint.lean` supports
+Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
+`ψ_v(t)`, mixed-third certificate, Frechet-Hessian derivative, and local-norm
+sandwich declarations.  The next proof target is to construct
+`HessianSegmentMixedThirdLocalNormCertificate` from source hypotheses:
+Hessian continuity on the segment, mixed third derivative/self-concordance, and
+the segment local-norm coefficient estimate.  Do not return to ASGD or generic
+process-prompt edits unless the user explicitly switches lanes.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers
@@ -363,10 +373,21 @@ packet adds `hessianSegmentPoint`, `hessianSegmentPoint_zero`,
 `HessianSegmentConcretePsiCertificate.toHessianSegmentExponentialBounds`, and
 `localNorm_sandwich_of_hessianSegmentConcretePsiCertificate`, giving a direct
 route from Chewi's actual `z_t`/`ψ_v(t)` certificate to the local-norm
-sandwich.  The next Chapter 13 packet should prove the concrete certificate
-fields, especially `psi_deriv_bound`, from the self-concordance/third-derivative
-inequality and the segment local-norm estimate, then assemble Lemma 13.6 and
-the Newton decrement convergence layer.
+sandwich.  The newest mixed-third packet adds
+`hessianSegmentPoint_hasDerivAt`,
+`hessianSegmentPsi_hasDerivAt_of_hasFDerivAt`,
+`hessianSegmentPsi_hasDerivWithinAt_of_hasFDerivAt`,
+`hessianSegmentMixedThirdPsiDeriv`,
+`HessianSegmentMixedThirdCertificate`,
+`HessianSegmentMixedThirdLocalNormCertificate`,
+`MixedThirdSelfConcordantOn`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
+the mixed-third exponential-bound bridges, and the mixed-third local-norm
+sandwich consumers.  The next Chapter 13 packet should construct
+`HessianSegmentMixedThirdLocalNormCertificate` from the source third-derivative
+and segment local-norm estimates, then assemble Lemma 13.6(4) and continue to
+Newton decrement estimates.
 The new `RandomizedAlternatingMinimization.lean` module is imported by
 `StatInference.lean` and compiles the scalar expected-gap layer for Theorem
 11.5: `chewi115StrongFactor`, `chewi115ZeroK`,

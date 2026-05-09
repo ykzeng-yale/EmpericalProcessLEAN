@@ -65,10 +65,10 @@ This section is the operating discipline for manual `/goal` runs.  It is meant
 to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
-1. Source of truth.  The immutable app-level `/goal` objective is stale and
-   still names the old Theorem 3.4 frontier.  Until the full book is complete,
-   route from this file's top sections plus the dashboard snapshot, not from
-   the old app-level wording.
+1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
+   the full book is complete, route from `Live Goal Prompt V6`, this file's top
+   sections, and the dashboard snapshot, not from older ASGD or Chapter 3
+   archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
    primary Lean theorem layer plus any directly needed algebra/interface
    support and route-doc updates.  Do not commit a search-only or
@@ -132,10 +132,76 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V5
+## Live Goal Prompt V6
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
+
+Current active lane: Chewi Chapter 13 interior-point/self-concordance in
+`StatInference/Optimization/InteriorPoint.lean`, supporting Lemma 13.6.  The
+latest verified local frontier is the concrete Hessian segment `ψ_v(t)` spine:
+scalar variable-coefficient Gronwall on `[0,1]`, concrete segment point and
+`ψ_v(t) = <v, Hess(z_t)v>`, concrete/mixed-third certificates, Frechet-Hessian
+derivative to `ψ` derivative bridge, mixed-third self-concordance source
+interface, and local-norm sandwich consumers.
+
+Compiled declarations to reuse include
+`hessianSegmentPoint_hasDerivAt`,
+`hessianSegmentPsi_hasDerivAt_of_hasFDerivAt`,
+`hessianSegmentPsi_hasDerivWithinAt_of_hasFDerivAt`,
+`hessianSegmentMixedThirdPsiDeriv`,
+`HessianSegmentMixedThirdCertificate`,
+`HessianSegmentMixedThirdLocalNormCertificate`,
+`MixedThirdSelfConcordantOn`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
+the corresponding `.toHessianSegmentConcretePsiCertificate` and
+`.toHessianSegmentExponentialBounds` bridges, and
+`localNorm_sandwich_of_hessianSegmentMixedThirdCertificate` /
+`localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate`.
+
+Next theorem-sized target: construct the source hypotheses for
+`HessianSegmentMixedThirdLocalNormCertificate` rather than adding more generic
+Gronwall/`ψ` plumbing.  The exact blockers are:
+
+- prove the segment coefficient estimate
+  `2 * M * ||y - x||_{z_s} <= 2 * M * r / (1 - M*r*s)` from Chewi Lemma 13.6's
+  local-norm differential inequality;
+- connect a real third Frechet derivative or `iteratedFDeriv` representation
+  to `MixedThirdSelfConcordantOn.mixed_third_bound`;
+- prove/transport `ContinuousOn (hessianSegmentPsi hess x y v) [0,1]` from
+  Hessian continuity on the segment;
+- then consume
+  `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate` to state
+  and prove the source-shaped Lemma 13.6(4), before moving to Newton decrement
+  estimates.
+
+Search-first cache for this lane: pinned mathlib has no direct Chewi
+Hessian-stability theorem and no direct derivative theorem for
+`fun t => inner ℝ v (hess (hessianSegmentPoint x y t) v)`.  Reuse
+`HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
+`HasDerivAt.inner`, `HasDerivWithinAt.inner`,
+`Continuous.clm_apply`/`ContinuousOn.clm_apply`,
+`ContinuousMultilinearMap` and `iteratedFDeriv` APIs, plus
+`ContinuousLinearMap.IsPositive`/matrix `PosSemidef` APIs only when the
+supplied-Hessian interface is insufficient.  Do not return to ASGD, old
+Chapter 3, or generic process-prompt edits unless the user explicitly switches
+lanes.
+
+Verification gate: after Lean edits run
+`lake env lean StatInference/Optimization/InteriorPoint.lean`, then
+`lake build StatInference.Optimization.InteriorPoint`; run root
+`lake build StatInference` only for root imports or broad cross-module changes.
+Scan `StatInference/Optimization` plus
+`StatInference/ProbabilityTheory/ProductBounds.lean` for
+`sorry|admit|axiom|unsafe`, run `git diff --check`, scan changed files for
+secrets, then fetch/rebase once and push verified progress.
+
+## Archived Live Goal Prompt V5 (ASGD)
+
+This archived ASGD prompt is retained for historical route context only.  It is
+not the current `/goal` target selector unless the user explicitly switches
+back to ASGD.
 
 Latest verified ASGD packet: the right compensated full-inverse
 route has been sharpened to the normalized Taylor product route.  Reuse the
@@ -1010,118 +1076,51 @@ archived automation prompts and should override them when they conflict.
 
 ## Current Frontier Contract
 
-This is the authoritative manual route after the ASGD scalar-projection,
-scalar-Lindeberg, scalar characteristic-function bridge, and projected
-Gaussian characteristic-function target packets.  The app-level `/goal`
-objective and the archived long prompt below may still mention older Chapter 3
-or `029d017` frontiers; do not use those older references to choose work.
+This is the authoritative manual route for the current `/goal` run.  The
+app-level `/goal` objective and archived prompts still mention older Chapter 3
+or ASGD frontiers; do not use those references to choose work unless the user
+explicitly switches lanes.
 
 Stable substrate:
 
-- Chapters 3-8: deterministic convex optimization, lower bounds,
-  Frank-Wolfe, PGD/APGD, and supporting algebra are reusable infrastructure.
-- Chapters 9-11: finite-valued Fenchel/Bregman/mirror-descent, ABP,
-  alternating minimization, RAM, Sinkhorn selectors, and the 11.8 supplied
-  mirror-descent endpoint are reusable infrastructure.
-- Chapter 12 SMPGD: `StochasticGradient.lean` is stable through the
-  source-displayed smooth/non-smooth averaged-iterate wrappers and
-  filtration-level conditional-mean handoffs.
-- Chapter 12 ASGD: `ASGD.lean` is stable through the supplied martingale CLT
-  handoff/covariance package, exact scaled-noise and averaged-covariance
-  definitions, quadratic ASGD recurrence/unrolling, triangular regrouping
-  around `A^{-1}`, the `sqrt N` source display, exact projected scaled-noise
-  sums, the projected variance convergence accessor, and the source-shaped
-  projected Cramér-Wold martingale CLT bridge/source constructor, plus scalar
-  projected martingale-data accessors for adaptedness, integrability,
-  conditional mean-zero, conditional second moment, variance convergence,
-  uniform boundedness, and boundedness-implied scalar Lindeberg summand/average
-  eventual a.e. vanishing.  The scalar scaled-sum measurability and
-  Lévy/characteristic-function bridge are also compiled, reducing each
-  projected scalar CLT to pointwise convergence of characteristic functions for
-  the scalar scaled sums.  The projected Gaussian limit has a compiled
-  source-shaped scalar law and characteristic-function display
-  `exp (-(S_infty L L) t^2 / 2)` once the projected Gaussian mean is identified
-  as zero.  The characteristic-function version of the bounded martingale CLT
-  source is now compiled: it replaces the old `projected_clt` field by
-  projected mean-zero plus explicit projected characteristic-function
-  convergence, then constructs the old bounded source and the source-facing
-  martingale CLT certificate.  The first analytic Taylor layer for the scalar
-  characteristic-function proof is also compiled:
-  `chewi127_complex_exp_quadratic_remainder_norm_le` and its source-shaped
-  real specialization
-  `chewi127_complex_exp_I_mul_quadratic_remainder_norm_le`.  The next
-  random-variable layer is compiled too: the named scalar Taylor remainder,
-  its exact pointwise decomposition and norm bound, the norm-one integrability
-  of the scalar characteristic-function factor, boundedness-to-integrability
-  lemmas for `x`, `x^2`, and the Taylor remainder, and the conditional
-  one-step Taylor expansion
-  `chewi127ScalarCharFun_condExp_taylor_expansion`.  The substitution layer is
-  now compiled too: the generic zero/quadratic conditional Taylor wrapper,
-  real conditional-mean-zero to complex-linear bridge, real conditional-square
-  to complex quadratic bridge, the combined mean-zero/square wrapper, and the
-  source-facing
-  `Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`.
-  The first finite product/tower layer is compiled as well:
-  `chewi127ScalarScaledSum_charFun_eq_integral_prod` rewrites the scaled-sum
-  characteristic function as the integral of a finite product of one-step
-  exponential factors, and
-  `integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left` is the
-  reusable complex conditional-expectation pull-out step for a filtration-
-  measurable product prefix.
+- Chapters 3-12 are reusable infrastructure for now; do not reopen ASGD,
+  SMPGD, Sinkhorn, or deterministic-rate packaging unless Chapter 13 stalls or
+  the user redirects.
+- Chapter 13 `InteriorPoint.lean` is stable through the logarithmic barrier
+  example, supplied-Hessian local/dual norm, Dikin ellipsoid, Newton
+  step/decrement, scalar Gronwall, concrete segment `ψ_v(t)` bridge,
+  exponential Hessian bounds, and local-norm sandwich consumers.
+- Search-first result for this packet: mathlib/local code has no direct Chewi
+  Hessian-stability theorem and no direct derivative theorem for
+  `fun t => inner ℝ v (hess (hessianSegmentPoint x y t) v)`.  The reusable
+  path is the compiled Frechet-Hessian derivative bridge using
+  `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`, and
+  `HasDerivAt.inner`.
 
 Current priority packet sequence:
 
-1. `ASGD-scalar-martingale-CLT`: prove the actual one-dimensional bounded
-   martingale characteristic-function convergence field
-   `projected_charFun_tendsto_exp` from the compiled scalar projection data:
-   conditional mean-zero, conditional second moment, averaged conditional
-   variance convergence, uniform boundedness, and the now-compiled scalar
-   Lindeberg a.e.-zero, scalar Lévy bridge, projected Gaussian target, and
-   charFun-source certificate layers.  The vector-to-scalar plumbing,
-   bounded-tail Lindeberg discharge, distribution-from-characteristic-functions
-   bridge, Gaussian target identification, and certificate conversion are
-   compiled; do not repeat them.
-2. `ASGD-endpoint`: connect the exact scaled noise sum, recurrence-derived
-   decomposition, and certificate to the source Theorem 12.7/12.3 ASGD limit
-   statement.
-3. `Sinkhorn-concrete`: return to the concrete row/column KL normalization
-   identities for Theorem 11.8 only after the current ASGD packet would
-   otherwise stall.
+1. `Chapter13-Lemma13.6-source`: construct
+   `HessianSegmentMixedThirdLocalNormCertificate` from source hypotheses by
+   proving the segment coefficient/local-norm estimate, Hessian continuity on
+   the segment, and the mixed-third self-concordance bound from a real
+   third-derivative or `iteratedFDeriv` representation.
+2. `Chapter13-Lemma13.6-statement`: consume
+   `localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate` to
+   state/prove the source-shaped Lemma 13.6(4) local-norm sandwich.
+3. `Chapter13-Newton`: use Lemma 13.6 to build the Newton decrement and
+   Dikin-ellipsoid consequences, then continue the Chapter 13 theorem stack.
 
-Execution rule for the next proof run: the conditional one-step
-characteristic-function Taylor expansion, the projected mean-zero/second-
-moment substitution layer, and the first finite product/tower algebra are now
-compiled.  Do not repeat Taylor setup, linear mean-zero conversion, quadratic
-conditional-square conversion, the source-facing one-step Taylor wrapper, the
-scaled-sum characteristic-function product rewrite, or the generic complex
-conditional pull-out step.  The next packet should build the recursive finite
-product/tower estimate itself: apply
-`integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left` to peel the
-last one-step factor, substitute
-`Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`,
-and start bounding the accumulated conditional remainder/variance error toward
-`projected_charFun_tendsto_exp`.  Cached scout results found no direct
-martingale CLT in pinned mathlib/local code.  Useful mathlib APIs are
-`MeasureTheory.Filtration.condExp_condExp`,
-`MeasureTheory.condExp_condExp_of_le`, `MeasureTheory.integral_condExp`,
-`condExp_mul_of_aestronglyMeasurable_left/right`,
-`condExp_smul_of_aestronglyMeasurable_left/right`,
-`MeasureTheory.taylorWithinEval_charFun_two_zero`,
-`MeasureTheory.taylor_charFun_two`,
-`Complex.tendsto_pow_exp_of_isLittleO_sub_add_div`,
-`Finset.norm_prod_le`, and `Finset.dist_prod_prod_le`.  Local reuse includes
-`Chewi127MartingaleDifferenceProcess.condExp_linear_next_eq_zero`,
-`Chewi127ConditionalCovarianceProcess.condExp_projected_square_eq`,
-`Chewi127AveragedConditionalCovarianceLimit.variance_tendstoInMeasure`,
-`chewi127ScalarLindebergAverage_eventually_ae_eq_zero_of_uniform_bound`,
-`chewi127ScalarScaledSum_tendstoInDistribution_of_charFun`, the new
-`Chewi127BoundedMartingaleCharFunCLTSource` conversion layer, and the new
-quadratic exponential/scalar Taylor remainder and conditional substitution
-lemmas.  The next packet should reuse
-`chewi127ScalarScaledSum_charFun_eq_integral_prod`,
-`integral_mul_eq_integral_mul_condExp_of_aestronglyMeasurable_left`, and
-`Chewi127BoundedMartingaleCLTSource.projected_charFun_condExp_taylor_step`,
-not reprove their product or conditional-expectation algebra.
+Execution rule for the next proof run: do not add more generic Gronwall or
+`ψ` certificate plumbing.  Reuse
+`hessianSegmentPoint_hasDerivAt`,
+`hessianSegmentPsi_hasDerivAt_of_hasFDerivAt`,
+`hessianSegmentPsi_hasDerivWithinAt_of_hasFDerivAt`,
+`MixedThirdSelfConcordantOn`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`,
+and the mixed-third local-norm sandwich consumers.  The next proof should
+attack the segment coefficient estimate and the true third-derivative
+interpretation; if blocked, record the exact missing mathlib API or algebraic
+subgoal and two viable routes.
 
 Keep exercise statements and cheap reusable exercise proofs in
 `StatInference/Optimization/Exercises.lean`, but never let exercises block the
