@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V156
+## Live In-Thread Goal Prompt V157
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -30,8 +30,9 @@ shifted-tail/Cauchy handoff plus the `L^1`-bounded almost-sure convergence
 handoff.  Exercise 4.4.11 now has the predictable transform increment identity,
 `L^2` and almost-sure transform convergence bridges, deterministic
 Abel/Kronecker summation certificates, the Toeplitz constant/centered split,
-the nonnegative-increment Toeplitz/Kronecker route, and the pathwise/a.e.
-normalized increment-sum endpoint:
+the nonnegative-increment Toeplitz/Kronecker route, the pathwise/a.e.
+normalized increment-sum endpoint, the zero-initial normalized-process display,
+and the bounded-variance summability corollary route:
 `durrett2019_exercise_4_4_6_firstExitAbs_abs_stoppedValue_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_stoppedValue_sq_le`,
 `durrett2019_exercise_4_4_6_firstExitAbs_overshoot_ae`, and
@@ -97,8 +98,14 @@ plus
 `durrett2019_exercise_4_4_11_kronecker_ratio_tendsto_zero_of_nonnegative_increments`,
 `durrett2019_exercise_4_4_11_normalized_increment_sum_tendsto_zero`,
 `durrett2019_exercise_4_4_11_normalized_increment_sum_ae_tendsto_zero`,
-and
 `durrett2019_exercise_4_4_11_normalized_increment_sum_ae_tendsto_zero_of_scaled_summable`,
+`durrett2019_exercise_4_4_11_normalized_process_tendsto_zero_of_initial_zero`,
+`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_initial_zero`,
+`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_shifted`,
+`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_scaled_summable`,
+`durrett2019_exercise_4_4_11_scaled_summable_of_variance_bound`,
+and
+`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_bounded_variance`,
 as well as the earlier first-exit/stopped-variance handoff declarations.  Do
 not route back into optional-stopping, overshoot, stopped-integrability,
 deterministic-clock, exact-denominator, square-martingale-source, or
@@ -108,23 +115,25 @@ tail-bound-to-`L^2` / summability-to-shifted-tail / shifted-tail-to-Cauchy
 plumbing or the `Lp` Cauchy/existence endpoint, or the Exercise 4.4.11
 predictable-transform `L^2`/a.s. convergence bridge / Abel identity / Toeplitz
 constant-split / centered-remainder / nonnegative-increment Kronecker /
-normalized increment-sum layer.
+normalized increment-sum / zero-initial process / bounded-variance summability
+layer.
 
-Next aggressive step: finish the source-facing Exercise 4.4.11 display.  Best
-target: package the zero-initial/shifted conclusion `X_n / b_n -> 0` from the
-compiled normalized increment-sum endpoint, then instantiate the textbook
-bounded-variance corollary by proving the scaled-square summability handoff
-from `E ξ_n^2 ≤ K` and `Summable fun n => (b (n+1))⁻²`.  Only add the direct
-`H n = (b n)⁻¹`, positivity/nonzero, predictability, boundedness, or
-variance-bound side-condition bridges needed for that corollary.  Do not loop
-back to already compiled Chapter 4.3.5, Chapter 4.3.8, Example 4.4.9,
-Exercises 4.4.5-4.4.10, Theorem 4.4.1 plumbing, or the first-exit
+Next aggressive step: close the remaining explicit side conditions around the
+reciprocal deterministic transform for Exercise 4.4.11.  Best target: package
+the direct `H n = (b n)⁻¹`, positivity/nonzero, boundedness, predictability,
+and transform `MemLp` side-condition bridges needed to call
+`durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_bounded_variance`
+with minimal assumptions on a positive monotone normalizer.  If those are not
+immediate, move to the next nearby Chapter 4.4 theorem-sized packet rather than
+redoing Kronecker or 4.4.10.  Do not loop back to already compiled Chapter
+4.3.5, Chapter 4.3.8, Example 4.4.9, Exercises 4.4.5-4.4.10, Theorem 4.4.1
+plumbing, or the first-exit
 overshoot/stopped-integrability/deterministic-clock/exact-denominator/
 square-martingale-source/natural-filtration/product-covariance/tail-identity/
 tail-bound-to-`L^2`/summability-to-shifted-tail/shifted-tail-to-Cauchy/`Lp`
 Cauchy endpoint/predictable-transform convergence/Abel identity/Toeplitz
 constant-split/centered-remainder/nonnegative-increment Kronecker/normalized
-increment-sum layer.
+increment-sum/zero-initial process/bounded-variance summability layer.
 Theorem 4.1.16 remains deferred unless a targeted kernel search finds a direct
 source-shaped API.
 

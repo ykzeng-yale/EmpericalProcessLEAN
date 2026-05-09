@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V156`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V157`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -46,9 +46,12 @@ now has the predictable-transform increment identity, scaled square-summability
 conversion, transformed martingale `Lp` and almost-sure convergence bridges,
 deterministic Abel/Kronecker ratio certificates, the Toeplitz constant/centered
 split, the centered Toeplitz remainder, the nonnegative-increment
-weighted-average/Kronecker route, and the normalized increment-sum a.e.
-endpoint.  Continue by packaging the zero-initial/shifted `X_n / b_n` display
-and the bounded-variance Exercise 4.4.11 corollary.
+weighted-average/Kronecker route, the normalized increment-sum a.e.
+endpoint, the zero-initial/shifted `X_n / b_n` display, and the
+bounded-variance Exercise 4.4.11 corollary route.  Continue by packaging the
+reciprocal deterministic-transform side conditions for a positive monotone
+normalizer, or move to a nearby Chapter 4.4 theorem-sized packet if that
+packaging is not immediate.
 
 For each cycle, route from:
 
@@ -412,9 +415,13 @@ Next packet:
 - Chapter 4.4: continue Exercise 4.4.11.  The current frontier is no longer
   Exercise 4.4.6, Exercise 4.4.10, the predictable-transform convergence
   bridge, Abel/Kronecker summation, the Toeplitz split, the centered Toeplitz
-  remainder, or the normalized increment-sum a.e. endpoint.  Next, package the
-  zero-initial/shifted `X_n / b_n` display and instantiate the bounded-variance
-  corollary from `E ξ_n^2 ≤ K` and summability of `(b (n+1))⁻²`.  The
+  remainder, the normalized increment-sum a.e. endpoint, the zero-initial
+  normalized-process display, or the bounded-variance summability route.  Next,
+  package the reciprocal deterministic-transform side conditions for a
+  positive monotone normalizer: direct `H n = (b n)⁻¹`, positivity/nonzero,
+  boundedness, predictability, and transform `MemLp` bridges.  If this does
+  not close quickly, move to the next nearby Chapter 4.4 theorem-sized packet.
+  The
   Section 3.10
   multivariate CLT chain, Gaussian-coordinate independence criterion, Exercise
   3.10.8 linear-combination characterization wrappers, Durrett conditional

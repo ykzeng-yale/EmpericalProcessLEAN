@@ -15019,6 +15019,176 @@ theorem durrett2019_exercise_4_4_11_normalized_increment_sum_ae_tendsto_zero_of_
         hX hH_pred hH_bdd hH_nonneg hTransform_memLp_two hscaled_summable)
 
 /--
+Durrett 2019, Exercise 4.4.11 deterministic support: when the initial value is
+zero, the normalized increment-sum conclusion is the normalized process
+conclusion.
+-/
+theorem durrett2019_exercise_4_4_11_normalized_process_tendsto_zero_of_initial_zero
+    {X b : ℕ -> ℝ} (hX0 : X 0 = 0)
+    (hincrement :
+      Tendsto (fun n : ℕ => (X (n + 1) - X 0) / b (n + 1))
+        atTop (nhds 0)) :
+    Tendsto (fun n : ℕ => X (n + 1) / b (n + 1)) atTop (nhds 0) := by
+  refine hincrement.congr' ?_
+  exact Eventually.of_forall fun n => by
+    simp [hX0]
+
+/--
+Durrett 2019, Exercise 4.4.11 martingale endpoint: under a zero initial value,
+the normalized increment-sum a.e. conclusion gives the shifted normalized
+process display.
+-/
+theorem durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_initial_zero
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hincrement :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n : ℕ => (X (n + 1) ω - X 0 ω) / b (n + 1))
+          atTop (nhds 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X (n + 1) ω / b (n + 1)) atTop (nhds 0) := by
+  filter_upwards [hX0, hincrement] with ω hω0 hω
+  exact
+    durrett2019_exercise_4_4_11_normalized_process_tendsto_zero_of_initial_zero
+      (X := fun n => X n ω) (b := b) hω0 hω
+
+/--
+Durrett 2019, Exercise 4.4.11 martingale endpoint: the shifted normalized
+display implies the textbook unshifted normalized process display.
+-/
+theorem durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_shifted
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (hshifted :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n : ℕ => X (n + 1) ω / b (n + 1)) atTop (nhds 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / b n) atTop (nhds 0) := by
+  filter_upwards [hshifted] with ω hω
+  exact
+    (tendsto_add_atTop_iff_nat
+      (f := fun n : ℕ => X n ω / b n) 1).mp hω
+
+/--
+Durrett 2019, Exercise 4.4.11 source-facing zero-initial route: the compiled
+scaled-summability endpoint gives the textbook normalized process conclusion.
+-/
+theorem durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_scaled_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {H X : ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {R : ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hH_pred : StronglyAdapted ℱ (fun n => H (n + 1)))
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω)
+    (hH_eq : ∀ n ω, H n ω = (b n)⁻¹)
+    (hb_nonzero : ∀ k : ℕ, b (k + 1) ≠ 0)
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop)
+    (hTransform_memLp_two :
+      ∀ k, MemLp (durrett2019_stochasticTransform H X k) (2 : ℝ≥0∞) P)
+    (hscaled_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (H (k + 1) ω * (X (k + 1) ω - X k ω)) ^ 2 ∂P) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / b n) atTop (nhds 0) := by
+  refine
+    durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_shifted
+      (P := P) (X := X) (b := b) ?_
+  exact
+    durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_initial_zero
+      (P := P) (X := X) (b := b) hX0
+      (durrett2019_exercise_4_4_11_normalized_increment_sum_ae_tendsto_zero_of_scaled_summable
+        (P := P) (ℱ := ℱ) (H := H) (X := X) (b := b) (R := R)
+        hX hH_pred hH_bdd hH_nonneg hH_eq hb_nonzero hb_increment_nonneg
+        hb_atTop hTransform_memLp_two hscaled_summable)
+
+/--
+Durrett 2019, Exercise 4.4.11 bounded-variance support: a uniform second
+moment bound and summable inverse-square normalizer imply the scaled
+square-increment summability consumed by the transform route.
+-/
+theorem durrett2019_exercise_4_4_11_scaled_summable_of_variance_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {H X : ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {K : ℝ}
+    (hH_eq : ∀ n ω, H n ω = (b n)⁻¹)
+    (hvariance_bound :
+      ∀ k : ℕ,
+        (∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P) ≤ K)
+    (hb_inv_sq_summable :
+      Summable fun k : ℕ => ((b (k + 1))⁻¹) ^ 2) :
+    Summable fun k : ℕ =>
+      ∫ ω, (H (k + 1) ω * (X (k + 1) ω - X k ω)) ^ 2 ∂P := by
+  refine Summable.of_nonneg_of_le (fun k => integral_nonneg fun ω => sq_nonneg _) ?_
+    (hb_inv_sq_summable.mul_left K)
+  intro k
+  have hscale_nonneg : 0 ≤ ((b (k + 1))⁻¹) ^ 2 := sq_nonneg _
+  have hscaled_eq :
+      (∫ ω, (H (k + 1) ω * (X (k + 1) ω - X k ω)) ^ 2 ∂P) =
+        ((b (k + 1))⁻¹) ^ 2 *
+          ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P := by
+    calc
+      (∫ ω, (H (k + 1) ω * (X (k + 1) ω - X k ω)) ^ 2 ∂P)
+          = ∫ ω,
+              ((b (k + 1))⁻¹) ^ 2 *
+                (X (k + 1) ω - X k ω) ^ 2 ∂P := by
+              refine integral_congr_ae (ae_of_all P fun ω => ?_)
+              change (H (k + 1) ω * (X (k + 1) ω - X k ω)) ^ 2 =
+                ((b (k + 1))⁻¹) ^ 2 * (X (k + 1) ω - X k ω) ^ 2
+              rw [hH_eq (k + 1) ω]
+              ring
+      _ = ((b (k + 1))⁻¹) ^ 2 *
+            ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P := by
+              rw [integral_const_mul]
+  rw [hscaled_eq]
+  calc
+    ((b (k + 1))⁻¹) ^ 2 *
+        ∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P
+        ≤ ((b (k + 1))⁻¹) ^ 2 * K :=
+          mul_le_mul_of_nonneg_left (hvariance_bound k) hscale_nonneg
+    _ = K * ((b (k + 1))⁻¹) ^ 2 := by ring
+
+/--
+Durrett 2019, Exercise 4.4.11 bounded-variance corollary route: the
+bounded-variance summability handoff feeds the zero-initial normalized process
+endpoint.
+-/
+theorem durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_bounded_variance
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {H X : ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {R K : ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hH_pred : StronglyAdapted ℱ (fun n => H (n + 1)))
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω)
+    (hH_eq : ∀ n ω, H n ω = (b n)⁻¹)
+    (hb_nonzero : ∀ k : ℕ, b (k + 1) ≠ 0)
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop)
+    (hTransform_memLp_two :
+      ∀ k, MemLp (durrett2019_stochasticTransform H X k) (2 : ℝ≥0∞) P)
+    (hvariance_bound :
+      ∀ k : ℕ,
+        (∫ ω, (X (k + 1) ω - X k ω) ^ 2 ∂P) ≤ K)
+    (hb_inv_sq_summable :
+      Summable fun k : ℕ => ((b (k + 1))⁻¹) ^ 2) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / b n) atTop (nhds 0) := by
+  exact
+    durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_scaled_summable
+      (P := P) (ℱ := ℱ) (H := H) (X := X) (b := b) (R := R)
+      hX hX0 hH_pred hH_bdd hH_nonneg hH_eq hb_nonzero hb_increment_nonneg
+      hb_atTop hTransform_memLp_two
+      (durrett2019_exercise_4_4_11_scaled_summable_of_variance_bound
+        (P := P) (H := H) (X := X) (b := b) (K := K)
+        hH_eq hvariance_bound hb_inv_sq_summable)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
