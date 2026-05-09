@@ -199,6 +199,14 @@ The countable concrete-event constructor
 `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`
 therefore reduces selected-cover event measurability to Nat-indexed in-range
 selector measurability assumptions.
+The product-pair selected finite-center failure events can now use scalar
+component measurability instead of raw selector-event assumptions through
+`measurableSet_imp_abs_le_of_measurable`,
+`measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_measurable_components`,
+`measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_measurable_components`, and
+`measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_measurable_components`.
+The remaining selected-center task is therefore concrete scalar measurability:
+selected cardinalities and Nat-indexed selected-center weighted sums.
 The concrete product-fiber side now has the fiber-unpacking and lower-bound
 transfer pair
 `mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff`
