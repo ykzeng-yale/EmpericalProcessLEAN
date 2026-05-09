@@ -139,12 +139,14 @@ stale and cannot be edited until the whole textbook goal is complete.
 
 Current active lane: Chewi Chapter 13 interior-point/self-concordance in
 `StatInference/Optimization/InteriorPoint.lean`, supporting Lemma 13.6 and
-Theorem 13.8.  The latest verified local frontier is the Theorem 13.8 scalar
-Delta integration layer on top of the concrete Hessian segment `ψ_v(t)` spine:
-scalar variable-coefficient Gronwall on `[0,1]`, concrete segment point and
-`ψ_v(t) = <v, Hess(z_t)v>`, concrete/mixed-third certificates, Frechet-Hessian
-derivative to `ψ` derivative bridge, mixed-third self-concordance source
-interface, and local-norm sandwich consumers.
+Theorem 13.8.  The latest verified local frontier is the Theorem 13.8 concrete
+integrated Hessian-difference/gradient-residual assembly layer on top of the
+concrete Hessian segment `ψ_v(t)` spine: scalar variable-coefficient Gronwall
+on `[0,1]`, concrete segment point and `ψ_v(t) = <v, Hess(z_t)v>`,
+concrete/mixed-third certificates, Frechet-Hessian derivative to `ψ`
+derivative bridge, mixed-third self-concordance source interface, local-norm
+sandwich consumers, scalar Delta integration, concrete Delta action, and the
+concrete-residual decrement wrapper.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
@@ -239,20 +241,27 @@ the corresponding `.toHessianSegmentConcretePsiCertificate` and
 	`chewi138_gradientResidual_eq_deltaStep_of_integral_delta`, discharging
 	the source identity `grad x+ = Delta (x+ - x)` from the gradient FTC along
 	the Newton segment, a supplied Delta action formula, and Newton's linear
-	equation.
+	equation.  The newest concrete Delta-action packet adds
+	`hessianSegmentDelta`,
+	`hessianSegmentHessian_intervalIntegrable_of_continuousOn`,
+	`hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn`,
+	`hessianSegmentDelta_apply`,
+	`chewi138_gradientResidual_eq_hessianSegmentDelta_step`, and
+	`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaQuadraticBound`.
+	This removes the supplied Delta action formula from the residual route.
 
 Next theorem-sized target: prove the concrete Delta operator quadratic bound
-from the scalar Hessian-difference integral/order facts, then prove the
-concrete Delta action formula for the integrated Hessian-difference operator.
-The exact blockers are:
+for `hessianSegmentDelta` from the scalar Hessian-difference integral/order
+facts, then feed it into the concrete-residual decrement wrapper.  The exact
+blockers are:
 
 - build the remaining source hypotheses for the compiled Theorem 13.8 assembly:
   derive the needed inverse-Hessian quadratic upper comparison from Lemma
   13.6/matrix inverse order when moving beyond the supplied interface, and
-  prove `HessianDeltaQuadraticBound` for the concrete integrated Hessian
-  difference operator from the scalar Delta/order estimates.  The final
-  `M * lambda^2 / (1 - M * lambda)^2` decrement algebra is now compiled from
-  these two supplied blockers;
+  prove `HessianDeltaQuadraticBound` for `hessianSegmentDelta hess x x+` from
+  the scalar Delta/order estimates.  The final
+  `M * lambda^2 / (1 - M * lambda)^2` decrement algebra and concrete residual
+  identity are now compiled from these two supplied blockers;
 - connect the real third Frechet derivative or `iteratedFDeriv` representation
   to `MixedThirdSelfConcordantOn.mixed_third_bound` when removing the supplied
   mixed-third source interface.  Positivity of `||y - x||_{z_s}` is already
@@ -268,6 +277,8 @@ Riccati comparison theorem matching `q' <= M*q^2`.  Reuse
 `HasDerivWithinAt.sqrt`,
 `monotoneOn_of_hasDerivWithinAt_nonneg`,
 `Continuous.clm_apply`/`ContinuousOn.clm_apply`,
+`ContinuousOn.intervalIntegrable_of_Icc`,
+`ContinuousLinearMap.intervalIntegral_comp_comm`,
 `ContinuousMultilinearMap` and `iteratedFDeriv` APIs, plus
 `ContinuousLinearMap.IsPositive`/matrix `PosSemidef` APIs only when the
 supplied-Hessian interface is insufficient.  Faraday's API scout found no

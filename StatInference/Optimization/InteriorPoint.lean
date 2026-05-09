@@ -2544,6 +2544,76 @@ theorem hessianSegmentGradient_integral_eq_sub_of_hasFDerivAt
   simpa [hessianSegmentPoint_zero, hessianSegmentPoint_one] using hFTC
 
 /--
+Chewi Theorem 13.8 integrated Hessian-difference operator
+`Delta = ∫_0^1 Hess(z_t) dt - Hess(x)` along the segment from `x` to `y`.
+-/
+noncomputable def hessianSegmentDelta
+    (hess : E -> E →L[ℝ] E) (x y : E) : E →L[ℝ] E :=
+  (∫ t in (0 : ℝ)..1, hess (hessianSegmentPoint x y t)) - hess x
+
+/--
+Continuity of the Hessian oracle along a Chewi segment gives interval
+integrability of the operator-valued Hessian path.
+-/
+theorem hessianSegmentHessian_intervalIntegrable_of_continuousOn
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y : E}
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s) :
+    IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint x y t))
+      MeasureTheory.volume (0 : ℝ) 1 := by
+  have hz : ContinuousOn
+      (fun t : ℝ => hess (hessianSegmentPoint x y t))
+      (Set.Icc (0 : ℝ) 1) :=
+    hhess.comp (hessianSegmentPoint_continuous x y).continuousOn hseg
+  exact hz.intervalIntegrable_of_Icc zero_le_one
+
+/--
+Continuity of the Hessian oracle along a Chewi segment gives interval
+integrability of every fixed Hessian action along that segment.
+-/
+theorem hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn
+    {hess : E -> E →L[ℝ] E} {s : Set E} {x y v : E}
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x y t ∈ s) :
+    IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint x y t) v)
+      MeasureTheory.volume (0 : ℝ) 1 := by
+  have hz : ContinuousOn
+      (fun t : ℝ => hess (hessianSegmentPoint x y t))
+      (Set.Icc (0 : ℝ) 1) :=
+    hhess.comp (hessianSegmentPoint_continuous x y).continuousOn hseg
+  have happly : ContinuousOn
+      (fun t : ℝ => hess (hessianSegmentPoint x y t) v)
+      (Set.Icc (0 : ℝ) 1) :=
+    hz.clm_apply continuousOn_const
+  exact happly.intervalIntegrable_of_Icc zero_le_one
+
+/--
+Applying the integrated Hessian-difference operator is the same as integrating
+the Hessian actions and subtracting the base Hessian action.
+-/
+theorem hessianSegmentDelta_apply
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {x y v : E}
+    (hint : IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint x y t))
+      MeasureTheory.volume (0 : ℝ) 1) :
+    hessianSegmentDelta hess x y v =
+      (∫ t in (0 : ℝ)..1, hess (hessianSegmentPoint x y t) v) -
+        hess x v := by
+  have happly :
+      (∫ t in (0 : ℝ)..1, hess (hessianSegmentPoint x y t) v) =
+        (∫ t in (0 : ℝ)..1, hess (hessianSegmentPoint x y t)) v := by
+    simpa using
+      ((ContinuousLinearMap.apply ℝ E v).intervalIntegral_comp_comm
+        (f := fun t : ℝ => hess (hessianSegmentPoint x y t))
+        hint)
+  simp [hessianSegmentDelta, ← happly]
+
+/--
 Chewi Theorem 13.8 source residual identity.  If `delta` is the integrated
 Hessian-difference operator on the Newton step and Newton's linear equation
 holds, then `grad(x+) = delta (x+ - x)`.
@@ -2593,6 +2663,53 @@ theorem chewi138_gradientResidual_eq_deltaStep_of_integral_delta
       simp
     _ = delta step := by
       simpa [y, step] using hdelta_action.symm
+
+/--
+Chewi Theorem 13.8 residual identity using the concrete integrated
+Hessian-difference operator from the source proof.
+-/
+theorem chewi138_gradientResidual_eq_hessianSegmentDelta_step
+    [CompleteSpace E]
+    {grad : E -> E} {hess : E -> E →L[ℝ] E}
+    {invHess : E -> E →L[ℝ] E} {s : Set E} {x : E}
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x (newtonStep grad invHess x) t ∈ s)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0) :
+    grad (newtonStep grad invHess x) =
+      hessianSegmentDelta hess x (newtonStep grad invHess x)
+        (newtonStep grad invHess x - x) := by
+  let y := newtonStep grad invHess x
+  let step := y - x
+  have hint_vec : IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint x y t) step)
+      MeasureTheory.volume (0 : ℝ) 1 :=
+    hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn
+      (hess := hess) (s := s) (x := x) (y := y) (v := step) hhess
+      (by simpa [y] using hseg)
+  have hint_op : IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint x y t))
+      MeasureTheory.volume (0 : ℝ) 1 :=
+    hessianSegmentHessian_intervalIntegrable_of_continuousOn
+      (hess := hess) (s := s) (x := x) (y := y) hhess
+      (by simpa [y] using hseg)
+  exact
+    chewi138_gradientResidual_eq_deltaStep_of_integral_delta
+      (grad := grad) (hess := hess) (invHess := invHess)
+      (delta := hessianSegmentDelta hess x (newtonStep grad invHess x))
+      (x := x)
+      hgrad
+      (by simpa [y, step] using hint_vec)
+      (by
+        simpa [y, step] using
+          hessianSegmentDelta_apply
+            (hess := hess) (x := x) (y := y) (v := step) hint_op)
+      hnewton_linear
 
 /--
 The first norm-transport line in Chewi Theorem 13.8, in supplied-inverse-Hessian
@@ -2830,6 +2947,63 @@ theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_del
       (hess := hess) (grad := grad) (invHess := invHess) (x := x) (M := M)
       hM_nonneg hMlambda_lt hstep_norm hx_inv_nonneg hstep_inv_nonneg hupper
       hstep_hess_nonneg hquad
+
+/--
+Chewi Theorem 13.8 assembly with the concrete integrated Hessian-difference
+operator.  This discharges the source residual identity from the gradient FTC;
+the remaining source obligations are the inverse-Hessian transport comparison
+and the Delta operator quadratic-form bound.
+-/
+theorem chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaQuadraticBound
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {grad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {s : Set E} {x : E} {M : ℝ}
+    (hM_nonneg : 0 ≤ M)
+    (hMlambda_lt : M * newtonDecrement grad invHess x < 1)
+    (hstep_norm :
+      localNorm hess x (newtonStep grad invHess x - x) =
+        newtonDecrement grad invHess x)
+    (hhess : ContinuousOn hess s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint x (newtonStep grad invHess x) t ∈ s)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hx_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess x v))
+    (hstep_inv_nonneg : ∀ v : E,
+      0 ≤ inner ℝ v (invHess (newtonStep grad invHess x) v))
+    (hupper : ∀ v : E,
+      inner ℝ v (invHess (newtonStep grad invHess x) v) ≤
+        ((1 - M * newtonDecrement grad invHess x)⁻¹) ^ (2 : ℕ) *
+          inner ℝ v (invHess x v))
+    (hstep_hess_nonneg :
+      0 ≤ inner ℝ (newtonStep grad invHess x - x)
+        (hess x (newtonStep grad invHess x - x)))
+    (hdelta :
+      HessianDeltaQuadraticBound hess invHess x
+        (hessianSegmentDelta hess x (newtonStep grad invHess x))
+        (M * newtonDecrement grad invHess x /
+          (1 - M * newtonDecrement grad invHess x))) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+      M * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+        (1 - M * newtonDecrement grad invHess x) ^ (2 : ℕ) := by
+  have hresidual :
+      grad (newtonStep grad invHess x) =
+        hessianSegmentDelta hess x (newtonStep grad invHess x)
+          (newtonStep grad invHess x - x) :=
+    chewi138_gradientResidual_eq_hessianSegmentDelta_step
+      (grad := grad) (hess := hess) (invHess := invHess)
+      (s := s) (x := x) hhess hseg hgrad hnewton_linear
+  exact
+    chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_deltaQuadraticBound
+      (hess := hess) (grad := grad) (invHess := invHess)
+      (delta := hessianSegmentDelta hess x (newtonStep grad invHess x))
+      (x := x) (M := M)
+      hM_nonneg hMlambda_lt hstep_norm hresidual hx_inv_nonneg
+      hstep_inv_nonneg hupper hstep_hess_nonneg hdelta
 
 /--
 Chewi Definition 13.3, source-shaped self-concordance interface using only the

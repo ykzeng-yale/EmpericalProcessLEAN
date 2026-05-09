@@ -477,11 +477,18 @@ bound.  The newest gradient-residual FTC packet adds
 `hessianSegmentGradient_integral_eq_sub_of_hasFDerivAt`, and
 `chewi138_gradientResidual_eq_deltaStep_of_integral_delta`, proving the source
 identity `grad x+ = Delta (x+ - x)` from the segment gradient FTC, a supplied
-Delta action formula, and Newton's linear equation.  The next Chapter 13
-packet should prove the concrete Delta operator quadratic bound from the
-scalar Delta/order estimates and prove the concrete Delta action formula for
-the integrated Hessian-difference operator; after that, derive the
-inverse-Hessian comparison from concrete matrix/order hypotheses and remove
+Delta action formula, and Newton's linear equation.  The newest concrete
+Delta-action packet adds `hessianSegmentDelta`,
+`hessianSegmentHessian_intervalIntegrable_of_continuousOn`,
+`hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn`,
+`hessianSegmentDelta_apply`,
+`chewi138_gradientResidual_eq_hessianSegmentDelta_step`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaQuadraticBound`,
+using `ContinuousLinearMap.intervalIntegral_comp_comm` to commute application
+through the operator-valued interval integral.  The next Chapter 13 packet
+should prove the concrete `HessianDeltaQuadraticBound` for
+`hessianSegmentDelta` from the scalar Delta/order estimates; after that, derive
+the inverse-Hessian comparison from concrete matrix/order hypotheses and remove
 the remaining mixed-third supplied source interface through the real
 third-derivative representation bridge to `MixedThirdSelfConcordantOn`.
 The new `RandomizedAlternatingMinimization.lean` module is imported by

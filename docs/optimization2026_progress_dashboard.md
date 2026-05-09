@@ -46,8 +46,8 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current priority sequence: Chapter 13 Theorem 13.8 source completion in
   `StatInference/Optimization/InteriorPoint.lean`: first prove the concrete
   `HessianDeltaQuadraticBound` for the integrated Hessian-difference operator
-  and the concrete Delta action formula, then feed those into the existing
-  gradient-FTC/Delta-operator decrement assembly wrapper, then remove supplied
+  and feed it into the concrete-residual decrement assembly wrapper; the
+  concrete Delta action formula is already compiled.  Then remove supplied
   inverse-Hessian comparison and mixed-third-source interfaces when bounded.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly
   switches lanes.
@@ -77,10 +77,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
   route-planning loop and not an already-solved ASGD tower peel; it is the
-  Theorem 13.8 concrete Delta operator quadratic bound and Delta action
-  formula, using the compiled integrated Delta coefficient and gradient-FTC
-  layers.  Broad searches, old Chapter 3 routing, ASGD routing, and repeated
-  Git sync loops are explicitly out of budget unless they answer that blocker.
+  Theorem 13.8 concrete Delta operator quadratic bound, using the compiled
+  integrated Delta coefficient, concrete Delta action, and gradient-FTC layers.
+  Broad searches, old Chapter 3 routing, ASGD routing, and repeated Git sync
+  loops are explicitly out of budget unless they answer that blocker.
 - Latest ASGD source-variance route improvement: the active right compensated
   full-inverse product no longer needs the suspicious auxiliary
   `‖1 + projectedCompensatedTaylorErrorFactor‖ ≤ 1` gate.  The new route
@@ -1366,21 +1366,31 @@ a supplied Delta/gradient-residual quadratic bound into
 transport to prove the final `lambda(x+) <= M*lambda^2/(1-M*lambda)^2`
 inequality.  The scalar coefficient packet formalizes the source computation
 `int_0^1 ((1 - M*lambda*t)^(-2) - 1) dt = M*lambda/(1-M*lambda)` used in the
-Delta/operator-norm estimate.
+Delta/operator-norm estimate.  The newest concrete Delta-action packet adds
+`hessianSegmentDelta`,
+`hessianSegmentHessian_intervalIntegrable_of_continuousOn`,
+`hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn`,
+`hessianSegmentDelta_apply`,
+`chewi138_gradientResidual_eq_hessianSegmentDelta_step`, and
+`chewi138_newtonDecrement_step_le_of_inverseHessianQuadraticUpper_and_concreteDeltaQuadraticBound`,
+so the residual route now uses the actual integrated Hessian-difference
+operator rather than a supplied Delta action formula.
 Search
 found no direct mathlib/local theorem for the derivative of
 `fun t => inner ℝ v (hess (z_t) v)` or for this exact Riccati comparison; the
 compiled route uses `HasFDerivAt.comp_hasDerivAt`, `HasDerivAt.clm_apply`,
 `HasDerivAt.inner`, `HasDerivWithinAt.sqrt`, `HasDerivWithinAt.inv`, and
-`monotoneOn_of_hasDerivWithinAt_nonneg`.  Faraday's follow-up scout found no
+`monotoneOn_of_hasDerivWithinAt_nonneg`.  For the concrete Delta action, reuse
+`ContinuousOn.intervalIntegrable_of_Icc` and
+`ContinuousLinearMap.intervalIntegral_comp_comm`; do not reprove Bochner
+interval-integral/application commutation.  Faraday's follow-up scout found no
 one-shot Hessian-derivative/third-Frechet bridge, but identified
 `fderiv_iteratedFDeriv`, `iteratedFDeriv_succ_apply_left/right`,
 `iteratedFDeriv_two_apply`, and `ContDiffAt.iteratedFDeriv_comp_perm` as the
 right API stack.  Next Chapter 13 work should derive inverse-Hessian comparison
 from concrete Hessian/matrix inverse hypotheses when needed and prove the
-Theorem 13.8 gradient-residual/Delta quadratic bound supplying the compiled
-assembly theorem, reusing `chewi138_deltaCoefficient_integral_eq_mul` for the
-scalar integral.
+Theorem 13.8 `HessianDeltaQuadraticBound` for `hessianSegmentDelta`, reusing
+`chewi138_deltaCoefficient_integral_eq_mul` for the scalar integral.
 
 Chapter 12 row update: the non-smooth relative-subgradient packet now also
 compiles `IsRelativeSubgradientAt`,
