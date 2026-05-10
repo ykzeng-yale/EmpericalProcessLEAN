@@ -3115,6 +3115,15 @@ remaining theorem-facing probability inputs are the two eventual a.e.
 finite-center support facts for the canonical first-level selected cover, or
 the product-fiber/Chebyshev replacement that bypasses them.
 
+The corresponding source-level outer-probability wrapper is now compiled as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+It exposes the sign-averaged product-pair comparison before the convergence
+consumer and before any endpoint packaging: the first-level selected cover is
+internal, and the remaining assumptions are exactly the original and ghost
+finite-center Hoeffding support facts on `sign × sample`.  This keeps the
+preferred source route separate from the over-strong fixed-original sign-swap
+fiber transport.
+
 The displayed Chebyshev-beta source constructor now has the same canonical
 first-level cover specialization:
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.

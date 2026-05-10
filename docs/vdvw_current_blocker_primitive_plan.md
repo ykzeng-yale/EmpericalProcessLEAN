@@ -9254,6 +9254,17 @@ probability-side target is still the product-fiber/Chebyshev source theorem
 that would avoid needing those support facts or the false additive
 failure-tail convergence.
 
+2026-05-10 first-level product-pair source wrapper:
+`Theorem243.lean` now also proves
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+This is the canonical first-level selected-cover source comparison before the
+convergence consumer: it instantiates the sign-averaged product-pair
+Chebyshev route with the `Nat.find` first-level selected cover at radius
+`(eta / 2) / 2`.  The fixed-original sign-swap route is still not justified;
+the remaining honest inputs on this branch are exactly the original and ghost
+finite-center Hoeffding support facts on `sign × sample`, or a replacement
+product-fiber/Chebyshev lower bound that bypasses those support facts.
+
 2026-05-10 first-level displayed-beta selected-cover route:
 `Theorem243.lean` now also proves
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.

@@ -304,6 +304,12 @@ and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale`,
 closing the scale/penalty packaging into the fixed-`M` stochastic-entropy
 consumer with `C = 4` and `A = 2`.
+The canonical first-level selected-cover source wrapper is now compiled as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+It chooses the first-level selected cover internally and leaves only the two
+finite-center Hoeffding support facts on the natural `sign × sample` product
+spaces.  This is the honest sign-averaged product-pair source layer; it does
+not assume the invalid fixed-original sign-swap fiber transport.
 The explicit original/ghost finite-center failure probabilities are now split
 through the fixed-sample Rademacher finite-center Hoeffding tail, a
 product-fiber upper-bound lift, and additive-error product-pair comparison
