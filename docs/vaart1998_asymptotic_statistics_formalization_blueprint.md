@@ -753,10 +753,13 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope_absorbing`,
   and the absorbing estimator-substitution packet adds
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatorSub_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope_absorbing`,
+  and the absorbing estimator-measurability packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatorSubMeas_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope_absorbing`,
   so the remaining critical path should remove `hScaledEstimator` from the
-  estimator-measurability and law-tail source wrappers by calling this
-  absorbing estimator-substitution endpoint, or move to a genuinely
-  model-specific Taylor display, derivative, or score representation.
+  law-tail and derivative-norm source wrappers by using the supplied law-tail
+  criterion and calling this absorbing estimator-measurability endpoint, or
+  move to a genuinely model-specific Taylor display, derivative, or score
+  representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
