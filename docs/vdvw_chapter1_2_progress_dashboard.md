@@ -5,7 +5,7 @@ van der Vaart and Wellner Chapters 1 and 2.  The authoritative detailed
 inventory is `docs/vdvw_chapter1_2_formalization_blueprint.md`; this file is a
 human-facing monitor for what is proved, what is in progress, and what remains.
 
-Status snapshot date: 2026-05-09.
+Status snapshot date: 2026-05-10.
 
 Active blocker/primitives register:
 
@@ -3931,3 +3931,20 @@ remaining selector task is now the theorem-facing data supply: build the
 Nat-enumerated tuple candidates and `hexists` witness from the selected
 empirical-cover/cardinality hypotheses used in the quarter-radius route, then
 instantiate the canonical-cover coordinate theorem there.
+
+The stronger-than-needed selector existence assumption has now been removed
+from the canonical route.  `Theorem243.lean` adds the level-local selector
+layer `vdVWFirstLevelEmpiricalL1CoverCenterTuple`,
+`vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass`,
+`measurableSet_vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass_eq`,
+`vdVWFirstLevelEmpiricalL1CoverAtCard`,
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_eq_firstLevel`,
+`measurableSet_VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_firstLevel_eq`,
+and `measurable_vdVWTruncatedClassFun_firstLevelSelectedCenterAtInClass`.
+This version only needs a successful Nat tuple candidate at
+`cardinality sample`, which matches selected empirical-cover existence.  The
+next proof target is to supply the concrete tuple enumeration/surjection and
+level-local existence witness from the quarter-radius selected-cover
+hypotheses, then instantiate this `firstLevel` selector in the current
+Theorem 2.4.3 source route.  The product-fiber/Chebyshev lower bound remains
+open separately.

@@ -3010,6 +3010,24 @@ measurability bridge; it is to supply the concrete Nat tuple enumeration and
 existence proof from the selected empirical-cover hypotheses in the
 quarter-radius Theorem 2.4.3 route.
 
+The canonical selected-cover route now has the level-local version needed for
+the real selected empirical-cover existence hypotheses:
+`vdVWFirstLevelEmpiricalL1CoverCenterTuple`,
+`vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass`,
+`vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass_mem`,
+`measurableSet_vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass_eq`,
+`vdVWFirstLevelEmpiricalL1CoverCenterTuple_spec`,
+`vdVWFirstLevelEmpiricalL1CoverAtCard`,
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_eq_firstLevel`,
+`measurableSet_VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_firstLevel_eq`,
+and `measurable_vdVWTruncatedClassFun_firstLevelSelectedCenterAtInClass`.
+This replaces the global `∀ m sample` success assumption by a selected-level
+assumption at `cardinality sample`.  The next proof target is to instantiate
+this from the actual quarter-radius selected empirical-cover data by building
+the Nat tuple enumeration/surjection and the level-local existence witness.
+The product-fiber/Chebyshev lower bound remains an independent probability
+source input.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
