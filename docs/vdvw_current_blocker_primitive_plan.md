@@ -9199,3 +9199,13 @@ coordinate measurability from countability and the covering-number envelope.
 The only remaining input to this displayed-beta branch is now the actual
 product-fiber lower bound for the canonical
 `VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent`.
+
+2026-05-10 displayed-beta first-level convergence endpoint:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel`.
+It composes the first-level displayed-beta constructor with the stochastic
+entropy consumer and internally proves the selected-cardinality comparison
+against the entropy envelope at radius `eta / 2`.  The theorem-facing source
+frontier is now a single probability statement: the canonical pair-difference
+ghost/Rademacher selected-net event has displayed beta-large fibers over the
+centered bad event.

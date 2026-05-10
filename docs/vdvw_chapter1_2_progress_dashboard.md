@@ -3993,3 +3993,10 @@ It removes the explicit cover and coordinate-measurability arguments from that
 branch.  The remaining displayed-beta source assumption is exactly the
 product-fiber lower bound for the canonical pair-difference ghost/Rademacher
 selected-net event.
+
+The displayed-beta branch now also reaches the fixed-`M` convergence endpoint:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel`.
+This theorem shifts the entropy envelope to radius `eta / 2`, proves the
+selected-cardinality comparison internally, and consumes the canonical
+first-level displayed-beta primitive.  The remaining blocker is therefore the
+single canonical product-fiber lower-bound hypothesis.
