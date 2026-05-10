@@ -56259,6 +56259,127 @@ theorem
     simpa [selectedCardinality] using hselected_ge eta heta
 
 /--
+Untruncated convergence from the sign-only Rademacher inverse-square
+first-level lower-growth route.
+
+This packages the canonical fixed-`M` sign-only failure-tail endpoint with the
+large-`M` envelope-tail handoff.  The remaining source inputs are the pure
+Rademacher bad-event lower bound and, for each truncation level, an a.e.
+lower-growth theorem for the canonical half-radius selected-cover cardinality.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hcovering_all :
+      ∀ M, 0 < M -> ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality M radius n))
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (henv_integrable : Integrable envelope P)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    (htruncIntegrable :
+      ∀ M index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hbdd_truncated :
+      ∀ M n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hlog :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality M eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hbadLower :
+      ∀ M, 0 < M -> ∀ eta : ℝ, 0 < eta -> ∀ epsilon : ℝ, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∀ sample : SampleAt Observation n,
+            sample ∈
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)} ->
+              ENNReal.ofReal
+                  (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                (vdVWProductMeasure vdVWRademacherLaw n)
+                  {signSample : SampleAt ℝ n |
+                    epsilon <
+                      dist
+                        (2 *
+                          vdVWWeightedClassSupremum indexClass
+                            (vdVWTruncatedClassFun classFun envelope M)
+                            (vdVWRademacherWeights signSample) sample)
+                        (0 : ℝ)})
+    (lower : ℝ -> ℝ -> ℕ -> ℕ)
+    (hlower :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        Tendsto (lower M eta) atTop atTop)
+    (hselected_ge :
+      ∀ M (hM_pos : 0 < M), ∀ eta : ℝ, (heta : 0 < eta) ->
+        ∀ᶠ n in atTop,
+          ∀ᵐ sample ∂(vdVWProductMeasure P n),
+            lower M eta n ≤
+              (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M)
+                (cardinality := cardinality M) (X M)
+                (hcovering_all M hM_pos) (eta / 2)) n sample n) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) henvelope hclass henvelope_meas
+      henv_integrable hclassIntegrable htruncIntegrable hbdd_truncated
+      (by
+        intro M hM_pos
+        exact
+          VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (cardinality := cardinality M)
+            (X := X M) (hX_samplePath := hX_samplePath M)
+            (hcovering_all := hcovering_all M hM_pos) hcount hclass
+            henvelope_meas hindexClass_nonempty henvelope hM_pos
+            (hlog M hM_pos) (hbadLower M hM_pos) (lower M)
+            (hlower M hM_pos) (hselected_ge M hM_pos))
+
+/--
 Canonical first-level displayed-beta convergence from sign-swapped bad-fiber
 mass and finite-center a.e. support.
 

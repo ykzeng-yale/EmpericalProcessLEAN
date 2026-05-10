@@ -9768,3 +9768,12 @@ canonical quarter-radius selected cover cardinalities.  The remaining source
 burden on this lane is therefore the structural lower-growth theorem for those
 selected cardinalities, not the integrated failure-tail or untruncation
 bookkeeping.
+
+2026-05-10 untruncated sign-only lower-growth endpoint:
+`Theorem243.lean` now adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+This composes the canonical sign-only inverse-square first-level
+lower-growth route with the large-`M` envelope-tail handoff.  The sign-only
+failure-tail branch now reaches untruncated centered convergence from
+per-truncation stochastic entropy, the pure Rademacher bad-event lower bound,
+and a.e. lower growth of the canonical half-radius selected cover cardinality.

@@ -4376,3 +4376,10 @@ This removes the raw integrated failure-tail and large-`M` bookkeeping from
 that route.  Its remaining blocker is an actual structural proof that the
 canonical original and ghost selected quarter-radius cover cardinalities grow
 at a deterministic rate tending to infinity, almost surely.
+
+The sign-only inverse-square lower-growth branch now also reaches the
+untruncated theorem layer through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+The exposed inputs are now sharply mathematical: the pure Rademacher bad-event
+lower bound and a.e. lower growth of the canonical half-radius selected
+cardinality, both for each positive truncation level.

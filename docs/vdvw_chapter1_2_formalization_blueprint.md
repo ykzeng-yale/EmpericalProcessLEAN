@@ -3459,6 +3459,13 @@ inverse-square tail control: the remaining mathematical input is an a.e.
 lower-growth theorem for the canonical original and ghost selected
 quarter-radius cover cardinalities at every positive truncation level.
 
+The sign-only failure-tail lane has the analogous untruncated lower-growth
+endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+It should be used only after the pure Rademacher bad-event lower bound is
+available; the remaining second input is a.e. lower growth of the canonical
+half-radius selected cover cardinality for each positive truncation level.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
