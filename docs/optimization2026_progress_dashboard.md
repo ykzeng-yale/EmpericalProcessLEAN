@@ -525,6 +525,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   inf-projection source step is therefore the genuine construction of the
   Schur derivative certificate and actual lifted-third identity from selector
   stationarity and model derivative data.
+- Inf-projection scalar applied-Hessian adapter: the newest packet adds
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv`.
+  The adjoint-square model now also consumes the narrower scalar route where
+  callers prove differentiability of
+  `t ↦ H_schur(x + t • (y - x)) v` and identify
+  `<v, d/dt H_schur(z_t) v>` with the lifted third derivative.  This keeps the
+  next exact source target focused on the segment applied-Hessian derivative
+  identity, without requiring an operator-valued Schur derivative certificate
+  first.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

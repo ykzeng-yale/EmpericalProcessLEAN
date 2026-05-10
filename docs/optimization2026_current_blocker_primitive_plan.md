@@ -642,6 +642,15 @@ third-order envelope and source-radius local-norm sandwich.  The remaining
 exact item-4 source work is therefore not local-norm transport or raw inverse
 derivative plumbing; it is constructing the actual Schur derivative certificate
 and lifted-third identity from the selector/envelope derivative hypotheses.
+The scalar applied-Hessian adapter is now also available as
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv`.
+It lets the adjoint-square model consume the narrower segment proof route:
+continuity of `H_schur` on the projected domain, differentiability of
+`t ↦ H_schur(x + t • (y - x)) v`, the scalar pairing identity with lifted
+third, and the standard source-radius coefficient bound.  The next exact
+packet can therefore attack the segment applied-Hessian derivative identity
+directly instead of constructing the full operator-valued
+`BarrierInfProjectionSchurHessDerivativeOn` first.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
