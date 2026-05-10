@@ -9294,6 +9294,16 @@ uses the compiled deterministic bound
 The remaining additive-error route input is now exactly inverse-square
 integral convergence or selected-cardinality growth.
 
+2026-05-10 fixed-`n` inverse-square lower-cardinality source wrappers:
+`Theorem243.lean` now proves
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_invSq_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable_lowerBound`
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_invSq_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable_ae_lowerBound`.
+These variants replace the two inverse-square selected-cardinality lintegrals
+by the deterministic error `2 * (2 * exp(-3)/(lower+1)^2)` from pointwise or
+a.e. lower selected-cardinality bounds.  They are source-level fixed-`n`
+bridges toward the existing cardinality-growth convergence consumers.
+
 2026-05-10 first-level displayed-beta selected-cover route:
 `Theorem243.lean` now also proves
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.

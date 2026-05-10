@@ -329,6 +329,14 @@ the explicit `(selected cardinality + 1)^(-2)` lintegrals already used by the
 convergence consumers.  Thus this branch's remaining extra input is exactly
 inverse-square selected-cardinality integrability/growth, not another
 measurability or cover-selection bridge.
+The fixed-`n` deterministic and a.e. lower-cardinality source wrappers are
+also compiled as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_invSq_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable_lowerBound`
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_invSq_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable_ae_lowerBound`.
+They replace the two inverse-square lintegrals by the deterministic error
+`2 * (2 * exp(-3)/(lower+1)^2)` under pointwise or a.e. lower selected
+cardinality bounds.
 The explicit original/ghost finite-center failure probabilities are now split
 through the fixed-sample Rademacher finite-center Hoeffding tail, a
 product-fiber upper-bound lift, and additive-error product-pair comparison

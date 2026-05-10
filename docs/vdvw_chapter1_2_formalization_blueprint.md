@@ -3146,6 +3146,14 @@ It combines the countable source wrapper with
 so the source comparison is stated directly with the two explicit
 inverse-square selected-cardinality lintegrals.  This aligns the source layer
 with the existing inverse-square and cardinality-growth convergence consumers.
+The fixed-`n` deterministic and a.e. lower-cardinality versions are compiled
+as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_invSq_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable_lowerBound`
+and
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_invSq_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable_ae_lowerBound`.
+They collapse those two inverse-square lintegrals to the deterministic
+fixed-`n` error `2 * (2 * exp(-3)/(lower+1)^2)` from pointwise or a.e. lower
+selected-cardinality bounds.
 
 The displayed Chebyshev-beta source constructor now has the same canonical
 first-level cover specialization:
