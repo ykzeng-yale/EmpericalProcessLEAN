@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 finite Taylor-zero action endpoint`).
+(`Add Vaart theorem 5.41 finite root Taylor action endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -682,6 +682,12 @@ New verified absorbing source endpoint stack:
   converts the finite-coordinate Taylor-zero display into the centered
   finite-coordinate score equation and calls the finite-coordinate
   score-equation action-bound endpoint.
+- `vaart1998_theorem_5_41_finiteCoordinateTaylorZero_of_root_taylorExpansion`
+  packages raw root plus finite-coordinate Taylor expansion into the
+  Taylor-zero display.
+- `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateRootTaylor_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+  calls the finite Taylor-zero action-bound endpoint from those root/Taylor
+  identities.
 
 Live continuation prompt: use the efficient prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
@@ -698,7 +704,9 @@ supplies that displayed weak convergence internally.  The finite-coordinate
 Taylor-zero action endpoint now supplies the centered score equation
 internally.  Move next only on a live source hypothesis: derive that
 finite-coordinate Taylor-zero display from a raw root equation plus a
-model-specific Taylor expansion, or instantiate the negligible residual from
+model-specific Taylor expansion.  Move next only on a live source hypothesis:
+instantiate that finite-coordinate Taylor expansion from sampled
+per-observation Taylor identities, or instantiate the negligible residual from
 derivative LLN and the second-derivative envelope.
 Do not replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
 score infrastructure, derivative-bound and finite strong-law infrastructure,

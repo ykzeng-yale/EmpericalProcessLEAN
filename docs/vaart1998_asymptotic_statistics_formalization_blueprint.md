@@ -785,9 +785,14 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateTaylorZero_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
   converting the finite-coordinate Taylor-zero display into the centered
   finite-coordinate score equation before calling the finite score-equation
-  endpoint.  Next derive that Taylor-zero display from a raw root equation plus
-  a genuinely model-specific Taylor expansion, or instantiate the negligible
-  residual from derivative LLN and the second-derivative envelope.
+  endpoint.  The finite root/Taylor action packet adds
+  `vaart1998_theorem_5_41_finiteCoordinateTaylorZero_of_root_taylorExpansion`
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateRootTaylor_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
+  feeding raw root plus finite-coordinate Taylor expansion into that endpoint.
+  Next instantiate the finite-coordinate Taylor expansion from sampled
+  per-observation Taylor identities, or instantiate the negligible residual
+  from derivative LLN and the second-derivative envelope.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

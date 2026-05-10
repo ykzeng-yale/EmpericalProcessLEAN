@@ -1294,21 +1294,27 @@ compiling:
    converts the finite-coordinate Taylor-zero display into the centered
    finite-coordinate score equation, then calls the finite-coordinate
    score-equation action-bound endpoint.
+389. Theorem 5.41 finite-coordinate root/Taylor action-bound endpoint:
+   `vaart1998_theorem_5_41_finiteCoordinateTaylorZero_of_root_taylorExpansion`
+   packages raw root plus finite-coordinate Taylor expansion into the
+   Taylor-zero display, and
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateRootTaylor_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+   feeds that display into the finite Taylor-zero action-bound endpoint.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 finite Taylor-zero action endpoint`).
+(`Add Vaart theorem 5.41 finite root Taylor action endpoint`).
 
-The latest theorem-sized packet removes the centered finite-coordinate score
-equation source field when the textbook finite-coordinate Taylor-zero display
-is available.
+The latest theorem-sized packet removes the finite-coordinate Taylor-zero
+source field when raw root and finite-coordinate Taylor expansion identities
+are available.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next only on a genuinely live source hypothesis: derive
-the finite-coordinate Taylor-zero display from the raw root equation plus a
-model-specific Taylor expansion, or instantiate the negligible residual from
+source handoff.  Move next only on a genuinely live source hypothesis:
+instantiate the finite-coordinate Taylor expansion from sampled
+per-observation Taylor identities, or instantiate the negligible residual from
 derivative LLN and the second-derivative envelope.
 Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
