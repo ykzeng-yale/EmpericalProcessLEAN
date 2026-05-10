@@ -230,6 +230,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   envelope theorem still needs the differentiability argument showing this
   canonical oracle is the actual third derivative of the inf-projection value
   function.
+- Inf-projection adjoint-sqrt envelope certificate: the newest packet adds
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel`,
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.selfConcordantBarrierOn`, and
+  `chewi1311_infProjection_selfConcordantBarrierOn_of_adjointSqrtEnvelopeModel`.
+  The current best item-4 route is now packaged as one source-facing
+  certificate carrying selector stationarity, the original barrier, and the
+  vertical/full Hessian square-root equalities.  The next exact source step is
+  to construct this certificate from an envelope differentiability theorem and
+  concrete square-root models, not to restate the raw assumptions in every
+  wrapper.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

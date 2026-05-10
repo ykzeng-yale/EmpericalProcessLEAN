@@ -4185,6 +4185,107 @@ theorem chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_liftedThird_a
     hsel hbar hyy_hess_eq hyy_inv_eq hfull_hess_eq hfull_inv_eq
     (by intro x hx u v; rfl)
 
+/--
+Certificate package for Chewi Proposition 13.11's finite-dimensional
+inf-projection rule in the current square-root Schur-envelope form.
+-/
+structure BarrierInfProjectionAdjointSqrtEnvelopeModel
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    (s : Set (WithLp 2 (E₁ × E₂))) (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂))
+    (invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ)
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂)
+    (sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂))
+    (sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂) (M nu : ℝ) : Prop where
+  selector_stationary : BarrierInfProjectionSelectorStationary s selector grad
+  barrier : SelfConcordantBarrierOn s hess grad invHess third M nu
+  hyy_hess_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+    barrierInfProjectionBlockYY selector hess x =
+      (ContinuousLinearMap.adjoint (sqrtHyy x).toContinuousLinearMap).comp
+        (sqrtHyy x).toContinuousLinearMap
+  hyy_inv_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+    invHyy x =
+      (sqrtHyy x).symm.toContinuousLinearMap.comp
+        (ContinuousLinearMap.adjoint
+          (sqrtHyy x).symm.toContinuousLinearMap)
+  full_hess_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+    hess (barrierInfProjectionPoint selector x) =
+      (ContinuousLinearMap.adjoint
+          (sqrtFull (barrierInfProjectionPoint selector x)).toContinuousLinearMap).comp
+        (sqrtFull (barrierInfProjectionPoint selector x)).toContinuousLinearMap
+  full_inv_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+    invHess (barrierInfProjectionPoint selector x) =
+      (sqrtFull (barrierInfProjectionPoint selector x)).symm.toContinuousLinearMap.comp
+        (ContinuousLinearMap.adjoint
+          (sqrtFull (barrierInfProjectionPoint selector x)).symm.toContinuousLinearMap)
+
+/--
+The square-root Schur-envelope certificate immediately yields the current best
+finite-dimensional inf-projection self-concordant barrier rule.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.selfConcordantBarrierOn
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionProjInvHessFromFullInv selector invHess)
+      (barrierInfProjectionSchurLiftedThird selector hess invHyy third) M nu :=
+  chewi1311_infProjection_selfConcordantBarrierOn_of_fullInv_liftedThird_adjointSqrtCoord_finiteDimHyy
+    hmodel.selector_stationary hmodel.barrier hmodel.hyy_hess_eq
+    hmodel.hyy_inv_eq hmodel.full_hess_eq hmodel.full_inv_eq
+
+/--
+Source-facing Chewi Proposition 13.11(4) wrapper from the packaged
+finite-dimensional square-root Schur-envelope model.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_adjointSqrtEnvelopeModel
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionProjInvHessFromFullInv selector invHess)
+      (barrierInfProjectionSchurLiftedThird selector hess invHyy third) M nu :=
+  hmodel.selfConcordantBarrierOn
+
 end InfProjectionBarrier
 
 theorem hessianSegmentLocalNorm_riccatiDerivBound_of_mixedThirdSelfConcordantOn

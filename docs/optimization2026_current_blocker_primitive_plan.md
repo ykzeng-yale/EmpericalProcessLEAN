@@ -331,6 +331,15 @@ separate lifted-third equality hypothesis is needed.  The remaining exact
 source work is the differentiability/envelope proof that this canonical oracle
 is the actual third derivative of the inf-projection value function, plus
 concrete square-root model equalities for the vertical block and full Hessian.
+The adjoint-sqrt envelope certificate packet adds
+`BarrierInfProjectionAdjointSqrtEnvelopeModel`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.selfConcordantBarrierOn`, and
+`chewi1311_infProjection_selfConcordantBarrierOn_of_adjointSqrtEnvelopeModel`.
+Future exact inf-projection work should construct this one certificate from a
+selector/envelope differentiability theorem and concrete square-root models,
+rather than restating the selector stationarity, original barrier, vertical
+block square-root, and full Hessian square-root hypotheses at every theorem
+call.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,
