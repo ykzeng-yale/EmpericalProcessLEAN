@@ -9991,5 +9991,19 @@ Rademacher bad-fiber beta lower bound while retaining the integrated
 finite-center failure-tail and inverse-square selected-cardinality controls.
 The probability blocker is still unchanged: prove the a.e. pure Rademacher
 bad-fiber mass itself, or switch to the product-pair/pair-sub sign-swap source
-theorem.  Remaining wrapper work is only to expose the selected first-level
-lower-growth consumers with this a.e. `hbadLower` surface.
+theorem.
+
+2026-05-10 selected first-level a.e. sign-only source propagation:
+`Theorem243.lean` now also propagates the a.e. pure Rademacher source through
+the inverse-square selected-cardinality lower-growth and canonical first-level
+selected-cover routes:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_cardinality_ge`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_ae_cardinality_ge`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_cardinality_ge`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`, and the untruncated consumer
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+Thus the sign-only route no longer has a downstream wrapper blocker once an
+a.e. Rademacher bad-fiber lower bound and selected-cover lower-growth input
+are supplied.  The active proof blocker is now exactly the source probability
+theorem: prove that a.e. pure Rademacher bad-fiber mass, or replace it by the
+product-pair/pair-sub sign-swap source theorem with correct constants.
