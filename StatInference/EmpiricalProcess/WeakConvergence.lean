@@ -3568,6 +3568,26 @@ theorem vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq
   exact MeasureTheory.ext_of_forall_integral_eq_of_IsFiniteMeasure h
 
 /--
+VdV&W Lemma 1.3.12(ii), finite-measure separating-class form.
+
+On a Polish Borel space, a point-separating star subalgebra of bounded
+continuous `𝕜`-valued functions determines finite measures through equality of
+integrals.  This is the measure-uniqueness half of the VdV&W
+vector-lattice/separating-class criterion.
+-/
+theorem vdVW1312_measure_ext_of_forall_separating_starSubalgebra_integral_eq
+    {𝕜 : Type x} [RCLike 𝕜]
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    [PolishSpace S] [BorelSpace S]
+    {μ ν : Measure S} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {A : StarSubalgebra 𝕜 (S →ᵇ 𝕜)}
+    (hA :
+      (A.map (BoundedContinuousFunction.toContinuousMapStarₐ 𝕜)).SeparatesPoints)
+    (hint : ∀ g ∈ A, ∫ s, g s ∂μ = ∫ s, g s ∂ν) :
+    μ = ν := by
+  exact MeasureTheory.ext_of_forall_mem_subalgebra_integral_eq_of_polish hA hint
+
+/--
 VdV&W Lemma 1.3.12(ii), measure-level tight separating-class form.
 
 For probability measures on a Polish Borel space, tightness plus convergence of

@@ -1117,6 +1117,18 @@ variant is now also available in measure-level form as
 wrapping pinned mathlib's tight point-separating star-subalgebra criterion for
 probability measures on Polish Borel spaces.
 
+2026-05-10 separating-subalgebra uniqueness follow-up:
+`WeakConvergence.lean` now also adds the finite-measure VdV&W 1.3.12(ii)
+measure-uniqueness wrapper
+`vdVW1312_measure_ext_of_forall_separating_starSubalgebra_integral_eq`.  It
+wraps pinned mathlib's
+`MeasureTheory.ext_of_forall_mem_subalgebra_integral_eq_of_polish`, so a
+point-separating star subalgebra of bounded continuous `𝕜`-valued functions
+determines finite measures on Polish Borel spaces by equality of its
+integrals.  This closes the measure-level separating-class uniqueness half;
+the exact VdV&W arbitrary-map/nonmeasurable formulation remains a separate
+outer-expectation/process layer.
+
 2026-05-05 bounded-continuous generated-sigma follow-up:
 `WeakConvergence.lean` now adds VdV&W 1.3.1 generated-sigma wrappers:
 `vdVW131_measurableSet_isClosed_of_forall_boundedContinuous_measurable`,
@@ -1345,10 +1357,10 @@ quotes; the anchor is the authoritative local source location.
 | 1.3.8 | Lemma | `..._1-100.md:678` | blocked-vdvw: Hoffmann-Jørgensen arbitrary-map weak-convergence infrastructure; missing exact local arbitrary-map/asymptotic-measurability primitive |
 | 1.3.9 | Theorem | `..._1-100.md:688` | local-layer/mathlib-foundation: probability-measure tightness wrapper, compact-set characterization, Prokhorov compact-closure wrapper, closed-ball characterization on proper pseudo-metric spaces, norm-tail family characterization, sequence/range limsup norm-tail criterion, and finite-dimensional inner-product tail criteria including unit-vector and real-measure sequence forms proved over mathlib; exact arbitrary-map/asymptotic-tightness extension remains pending |
 | 1.3.10 | Theorem | `..._1-100.md:756` | blocked-vdvw: exact nonmeasurable/arbitrary-map weak-convergence layer missing; measure-level weak-convergence/Portmanteau/tightness wrappers are already local, so the remaining gap is the exact arbitrary-map extension |
-| 1.3.12 | Lemma | `..._1-100.md:768` | local-layer/mathlib-foundation: part (i) finite Borel measure uniqueness from bounded-continuous real integrals wrapped as `vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`; part (ii) tight separating star-subalgebra convergence wrapped as `VdVWWeakConvergenceProbabilityMeasures.of_tight_of_separating_starSubalgebra`; exact arbitrary-map/nonmeasurable variant still pending |
+| 1.3.12 | Lemma | `..._1-100.md:768` | local-layer/mathlib-foundation: part (i) finite Borel measure uniqueness from bounded-continuous real integrals wrapped as `vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`; part (ii) finite-measure uniqueness from a point-separating star subalgebra wrapped as `vdVW1312_measure_ext_of_forall_separating_starSubalgebra_integral_eq`, and tight separating star-subalgebra convergence wrapped as `VdVWWeakConvergenceProbabilityMeasures.of_tight_of_separating_starSubalgebra`; exact arbitrary-map/nonmeasurable variant still pending |
 | 1.3.13 | Lemma | `..._1-100.md:778` | blocked-vdvw: arbitrary-map/asymptotic-measurability infrastructure missing after mathlib search |
 | 1.4.1 | Lemma | `..._1-100.md:848` | local-layer/mathlib-foundation: product Borel equality for separable pseudometric Borel spaces wrapped as `vdVW141_prod_borel_eq_product_borel` |
-| 1.4.2 | Lemma | `..._1-100.md:849` | local-layer/mathlib-foundation: product bounded-continuous test uniqueness wrappers compiled as `vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul` and `vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`; exact nonnegative-Lipschitz spelling is a source-alignment refinement |
+| 1.4.2 | Lemma | `..._1-100.md:849` | local-layer/mathlib-foundation: product bounded-continuous test uniqueness wrappers compiled as `vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul` and `vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`; nonnegative bounded-continuous `NNReal`/lintegral variants compiled as `vdVW142_prod_measure_ext_of_forall_nnreal_boundedContinuous_lintegral_mul` and `vdVW142_prod_measure_eq_prod_of_forall_nnreal_boundedContinuous_lintegral_mul`; exact real nonnegative-Lipschitz spelling is a source-alignment refinement |
 | 1.4.3 | Lemma | `..._1-100.md:857` | local-layer/mathlib-foundation: binary and finite product-law weak-convergence wrappers proved as `VdVWWeakConvergenceProbabilityMeasures.prod` and `.pi`; arbitrary-map/asymptotic-tightness extension pending |
 | 1.4.4 | Lemma | `..._1-100.md:858` | local-layer/mathlib-foundation: finite-coordinate projection/FDD forward wrapper proved as `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict`; converse FDD iff theorem still missing |
 | 1.4.5 / 1.4.6 | Corollary/Example | `..._1-100.md:878`, `..._1-100.md:883` | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper plus binary and finite-coordinate independent joint-law convergence wrappers `vdVWTendstoInDistribution_prodMk_laws_of_indepFun`, `vdVWTendstoInDistribution_pi_laws_of_iIndepFun`, `vdVWTendstoInDistribution_prodMk_of_indepFun`, and `vdVWTendstoInDistribution_pi_of_iIndepFun` proved; exact VdV&W product/arbitrary-map/asymptotic-independence criteria still pending |
@@ -2740,6 +2752,18 @@ backed by pinned mathlib product-measure extensionality.  These are
 measure-level foundations for product/FDD work and should not be confused with
 the still-pending arbitrary-index VdV&W 1.4.8 process weak-convergence
 criterion.
+
+2026-05-10 nonnegative product-test follow-up: `FiniteDimensional.lean` now
+also adds
+`vdVW142_prod_measure_ext_of_forall_nnreal_boundedContinuous_lintegral_mul`
+and
+`vdVW142_prod_measure_eq_prod_of_forall_nnreal_boundedContinuous_lintegral_mul`.
+These specialize pinned mathlib's finite-family
+`Measure.ext_of_lintegral_prod_mul_prod_boundedContinuousFunction` through
+`Unit`, giving the nonnegative bounded-continuous `NNReal`/lintegral product
+test form of VdV&W 1.4.2.  The only remaining source-alignment refinement here
+is the exact real nonnegative-Lipschitz spelling, not the product-law
+uniqueness theorem itself.
 
 2026-05-05 independent product-law follow-up: `WeakConvergence.lean` now adds
 `vdVWTendstoInDistribution_prodMk_laws_of_indepFun`, the measurable

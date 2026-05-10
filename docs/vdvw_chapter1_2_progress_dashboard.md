@@ -1605,6 +1605,17 @@ the standard `HasOuterApproxClosed` hypothesis.  The vector-lattice/tight
 `VdVWWeakConvergenceProbabilityMeasures.of_tight_of_separating_starSubalgebra`,
 reusing pinned mathlib's tight separating star-subalgebra convergence theorem.
 
+2026-05-10 separating-subalgebra uniqueness follow-up:
+`WeakConvergence.lean` now also exports
+`vdVW1312_measure_ext_of_forall_separating_starSubalgebra_integral_eq`, a
+finite-measure Polish-space uniqueness wrapper for point-separating star
+subalgebras of bounded continuous `𝕜`-valued functions.  This reuses pinned
+mathlib's
+`MeasureTheory.ext_of_forall_mem_subalgebra_integral_eq_of_polish` and closes
+the measure-level separating-class uniqueness half of VdV&W 1.3.12(ii).  The
+remaining 1.3.12 gap is the exact arbitrary-map/nonmeasurable formulation, not
+the measure-level Borel/Polish uniqueness theorem.
+
 2026-05-05 bounded-continuous generated-sigma follow-up:
 `WeakConvergence.lean` now exports the VdV&W 1.3.1 generated-sigma wrappers
 `vdVW131_measurableSet_isClosed_of_forall_boundedContinuous_measurable`,
@@ -1622,9 +1633,13 @@ still needs local definitions before it can be marked exact.
 2026-05-05 product Borel-space follow-up: `FiniteDimensional.lean` now exports
 `vdVW141_prod_borel_eq_product_borel`, proving the VdV&W 1.4.1 product
 Borel-space equality for separable pseudometric Borel spaces.  The exact
-1.4.2 product-test uniqueness is compiled in bounded-continuous form; the
-exact nonnegative-Lipschitz spelling is a source-alignment refinement, not a
-missing product-law primitive.
+1.4.2 product-test uniqueness is compiled in bounded-continuous form and now
+also in nonnegative bounded-continuous `NNReal`/lintegral form as
+`vdVW142_prod_measure_ext_of_forall_nnreal_boundedContinuous_lintegral_mul`
+and
+`vdVW142_prod_measure_eq_prod_of_forall_nnreal_boundedContinuous_lintegral_mul`;
+the exact real nonnegative-Lipschitz spelling is a source-alignment
+refinement, not a missing product-law primitive.
 
 ## Status Legend
 

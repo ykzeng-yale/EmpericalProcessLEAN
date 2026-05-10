@@ -51,7 +51,8 @@ Current main-line target: finish VdV&W Chapters 1-2 by dependency order, using
 the already compiled Theorem 2.4.3 endpoint infrastructure and Chapter 1
 measure-level wrappers instead of rebuilding them.  The finite-index
 `ell_infty(T)`/FDD converse, Portmanteau converse, norm-tail tightness,
-π-system convergence-determining, VdV&W 1.4.2 product-test uniqueness, and
+π-system convergence-determining, VdV&W 1.4.2 product-test uniqueness
+including the nonnegative `NNReal`/lintegral form, and
 measurable independent-product law convergence layers are now compiled, and
 measure-level weak convergence has target/source congruence via
 `VdVWWeakConvergenceProbabilityMeasures.congr_limit` and
@@ -1201,7 +1202,11 @@ the π-system convergence-determining wrapper
 `vdVWWeakConvergenceProbabilityMeasures_of_piSystem_tendsto`;
 and the VdV&W 1.4.2 product-test uniqueness wrappers
 `vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul` and
-`vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`;
+`vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`,
+plus the nonnegative `NNReal`/lintegral variants
+`vdVW142_prod_measure_ext_of_forall_nnreal_boundedContinuous_lintegral_mul`
+and
+`vdVW142_prod_measure_eq_prod_of_forall_nnreal_boundedContinuous_lintegral_mul`;
 and the measurable independent-coordinate joint-law convergence wrappers
 `vdVWTendstoInDistribution_prodMk_laws_of_indepFun` and
 `vdVWTendstoInDistribution_pi_laws_of_iIndepFun`, plus the corresponding
@@ -6654,6 +6659,19 @@ now proves VdV&W 1.4.2-named wrappers
 are ordinary measure-level product/FDD foundations and do not close the
 arbitrary-index process weak-convergence converse.
 
+2026-05-10 nonnegative product-test follow-up: `FiniteDimensional.lean` now
+also proves
+`vdVW142_prod_measure_ext_of_forall_nnreal_boundedContinuous_lintegral_mul`
+and
+`vdVW142_prod_measure_eq_prod_of_forall_nnreal_boundedContinuous_lintegral_mul`,
+the nonnegative bounded-continuous `NNReal`/lintegral product-test uniqueness
+and product-law forms of VdV&W 1.4.2.  They reuse pinned mathlib's
+`Measure.ext_of_lintegral_prod_mul_prod_boundedContinuousFunction` via a
+`Unit` specialization.  The remaining product-test source-alignment gap is
+only the exact real nonnegative-Lipschitz spelling; the measure-level product
+uniqueness theorem itself is now available in both signed integral and
+nonnegative lintegral forms.
+
 2026-05-05 independent product-law follow-up: local search found the already
 compiled binary product-law wrapper `VdVWWeakConvergenceProbabilityMeasures.prod`,
 finite product-law wrapper `VdVWWeakConvergenceProbabilityMeasures.pi`, and
@@ -9397,3 +9415,15 @@ that the deterministic sign-vector mass tends to zero and is eventually
 strictly smaller than the displayed beta factor.  This rules out a
 deterministic sign/section proof as a replacement for Lemma 2.3.7's beta-large
 ghost/Rademacher fiber.
+
+2026-05-10 Chapter 1 fallback closure:
+`WeakConvergence.lean` now proves
+`vdVW1312_measure_ext_of_forall_separating_starSubalgebra_integral_eq`, the
+finite-measure Polish-space separating star-subalgebra uniqueness half of
+VdV&W 1.3.12(ii), by wrapping pinned mathlib's
+`MeasureTheory.ext_of_forall_mem_subalgebra_integral_eq_of_polish`.  This is
+not the Theorem 2.4.3 source blocker, but it removes a real Chapter 1
+measure-level dependency row.  The remaining 1.3.12 work is the exact
+arbitrary-map/nonmeasurable VdV&W formulation; the active Theorem 2.4.3
+blocker remains the canonical displayed-beta/product-fiber lower bound or an
+equivalent selected-entropy/tail/UI source theorem.

@@ -73,6 +73,58 @@ theorem vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul
   exact Measure.eq_prod_of_integral_mul_boundedContinuousFunction h
 
 /--
+VdV&W 1.4.2 nonnegative product-test uniqueness layer: equality of
+nonnegative bounded-continuous product-test lintegrals determines a finite
+measure on `D × E`.
+
+This is the source-facing nonnegative-test variant of the bounded-continuous
+product uniqueness wrapper above.  It is a two-space specialization of
+mathlib's finite-family `NNReal` product-test extensionality theorem.
+-/
+theorem vdVW142_prod_measure_ext_of_forall_nnreal_boundedContinuous_lintegral_mul
+    {D E : Type*}
+    [MeasurableSpace D] [TopologicalSpace D] [BorelSpace D] [HasOuterApproxClosed D]
+    [MeasurableSpace E] [TopologicalSpace E] [BorelSpace E] [HasOuterApproxClosed E]
+    {μ ν : Measure (D × E)} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    (h : ∀ (f : D →ᵇ NNReal) (g : E →ᵇ NNReal),
+      ∫⁻ p, (f p.1 : ENNReal) * (g p.2 : ENNReal) ∂μ =
+        ∫⁻ p, (f p.1 : ENNReal) * (g p.2 : ENNReal) ∂ν) :
+    μ = ν := by
+  let e : (D × E) ≃ᵐ ((Unit -> D) × (Unit -> E)) :=
+    .symm <| .prodCongr (.funUnique Unit D) (.funUnique Unit E)
+  rw [← e.map_measurableEquiv_injective.eq_iff]
+  refine Measure.ext_of_lintegral_prod_mul_prod_boundedContinuousFunction ?_
+  intro f g
+  rw [MeasureTheory.lintegral_map_equiv, MeasureTheory.lintegral_map_equiv]
+  simpa [e] using h (f ()) (g ())
+
+/--
+VdV&W 1.4.2 nonnegative product-law uniqueness layer: a finite measure on
+`D × E` is the product `μ.prod ν` if all nonnegative bounded-continuous
+product-test lintegrals factor into the product of their marginal lintegrals.
+-/
+theorem vdVW142_prod_measure_eq_prod_of_forall_nnreal_boundedContinuous_lintegral_mul
+    {D E : Type*}
+    [MeasurableSpace D] [TopologicalSpace D] [BorelSpace D] [HasOuterApproxClosed D]
+    [MeasurableSpace E] [TopologicalSpace E] [BorelSpace E] [HasOuterApproxClosed E]
+    {μ : Measure D} {ν : Measure E} {ξ : Measure (D × E)}
+    [IsFiniteMeasure μ] [IsFiniteMeasure ν] [IsFiniteMeasure ξ]
+    (h : ∀ (f : D →ᵇ NNReal) (g : E →ᵇ NNReal),
+      ∫⁻ p, (f p.1 : ENNReal) * (g p.2 : ENNReal) ∂ξ =
+        (∫⁻ x, (f x : ENNReal) ∂μ) * (∫⁻ y, (g y : ENNReal) ∂ν)) :
+    ξ = μ.prod ν := by
+  let e : (D × E) ≃ᵐ ((Unit -> D) × (Unit -> E)) :=
+    .symm <| .prodCongr (.funUnique Unit D) (.funUnique Unit E)
+  rw [← e.map_measurableEquiv_injective.eq_iff]
+  refine Measure.ext_of_lintegral_prod_mul_prod_boundedContinuousFunction ?_
+  intro f g
+  rw [MeasureTheory.lintegral_map_equiv, MeasureTheory.lintegral_map_equiv]
+  simpa [e] using (h (f ()) (g ())).trans <|
+    (MeasureTheory.lintegral_prod_mul
+      ((BoundedContinuousFunction.measurable_coe_ennreal_comp (f ())).aemeasurable)
+      ((BoundedContinuousFunction.measurable_coe_ennreal_comp (g ())).aemeasurable)).symm
+
+/--
 VdV&W 1.4.8 uniqueness-only layer: a process law is determined by all of its
 finite-dimensional distributions.
 
