@@ -9488,3 +9488,17 @@ measure-level dependency row.  The remaining 1.3.12 work is the exact
 arbitrary-map/nonmeasurable VdV&W formulation; the active Theorem 2.4.3
 blocker remains the canonical displayed-beta/product-fiber lower bound or an
 equivalent selected-entropy/tail/UI source theorem.
+
+2026-05-10 Chapter 1.12 fallback closure:
+`WeakConvergence.lean` now also exposes VdV&W-numbered measure-level
+bounded-Lipschitz and Levy-Prokhorov wrappers:
+`vdVW1122_weakConvergenceProbabilityMeasures_of_forall_bounded_lipschitz_integral_tendsto`,
+`vdVW1122_forall_bounded_lipschitz_integral_tendsto_of_weakConvergenceProbabilityMeasures`,
+`vdVW1124_weakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero`,
+`vdVW1124_weakConvergenceProbabilityMeasures_of_levyProkhorovDist_tendsto_zero`,
+and
+`vdVW1124_levyProkhorovDist_tendsto_zero_of_weakConvergenceProbabilityMeasures`.
+These reuse pinned mathlib's bounded-Lipschitz Portmanteau criterion and
+Levy-Prokhorov metrization.  They close the ordinary probability-measure core
+for VdV&W 1.12.2 and 1.12.4; the exact arbitrary-map/nonmeasurable textbook
+versions remain separate.

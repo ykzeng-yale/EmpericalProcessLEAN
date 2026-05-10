@@ -4190,3 +4190,17 @@ and
 This rules out any endpoint proof that tries to upgrade a deterministic
 sign-section coefficient `(1 / 2)^n` into the displayed Chebyshev beta by an
 eventual monotonicity argument.
+
+2026-05-10 Chapter 1.12 bounded-Lipschitz / Levy-Prokhorov foundation:
+`WeakConvergence.lean` now gives VdV&W-numbered measure-level wrappers for the
+bounded-Lipschitz determining-class theorem and the Levy-Prokhorov metric
+criterion:
+`vdVW1122_weakConvergenceProbabilityMeasures_of_forall_bounded_lipschitz_integral_tendsto`,
+`vdVW1122_forall_bounded_lipschitz_integral_tendsto_of_weakConvergenceProbabilityMeasures`,
+`vdVW1124_weakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero`,
+`vdVW1124_weakConvergenceProbabilityMeasures_of_levyProkhorovDist_tendsto_zero`,
+and
+`vdVW1124_levyProkhorovDist_tendsto_zero_of_weakConvergenceProbabilityMeasures`.
+These close the ordinary probability-measure core of VdV&W 1.12.2 and 1.12.4
+using pinned mathlib; the remaining exact textbook gap is still the
+arbitrary-map/nonmeasurable outer-expectation version.

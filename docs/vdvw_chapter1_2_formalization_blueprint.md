@@ -1389,8 +1389,8 @@ quotes; the anchor is the authoritative local source location.
 | 1.11.1 | Theorem | `..._1-100.md:1630` | foundation-lane/mathlib-foundation: extended continuous-mapping wrapper target over mathlib continuous mapping plus local outer-probability layer |
 | 1.11.3 | Theorem | `..._1-100.md:1674` | foundation-lane: refined mapping/integrability theorem target; needs local integrability/tail primitive audit |
 | 1.12.1 | Theorem | `..._1-100.md:1706` | foundation-lane: uniformity over bounded equicontinuous test classes, local test-class primitive needed |
-| 1.12.2 | Theorem | `..._1-100.md:1718` | foundation-lane: bounded-Lipschitz determining-class theorem target, search/wrap mathlib metric weak-convergence APIs |
-| 1.12.4 | Theorem | `..._1-100.md:1751` | foundation-lane/mathlib-foundation: bounded-Lipschitz/Levy-Prokhorov metric wrapper target |
+| 1.12.2 | Theorem | `..._1-100.md:1718` | local-layer/mathlib-foundation: measure-level bounded-Lipschitz determining-class direction and testing consequence wrapped as `vdVW1122_weakConvergenceProbabilityMeasures_of_forall_bounded_lipschitz_integral_tendsto` and `vdVW1122_forall_bounded_lipschitz_integral_tendsto_of_weakConvergenceProbabilityMeasures`; exact arbitrary-map/nonmeasurable version pending |
+| 1.12.4 | Theorem | `..._1-100.md:1751` | local-layer/mathlib-foundation: measure-level Levy-Prokhorov distance criterion wrapped as `vdVW1124_weakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero`, with both one-way directions; exact arbitrary-map/nonmeasurable bounded-Lipschitz metric theorem pending |
 | 2.1.11 | Proposition | `..._101-200.md:169` | pending-local |
 | 2.2.1 | Lemma | `..._101-200.md:229` | pending-local |
 | 2.2.2 | Lemma | `..._101-200.md:246` | pending-local |

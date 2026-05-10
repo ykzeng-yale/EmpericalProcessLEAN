@@ -281,9 +281,9 @@ through 2.4.1 requires accounting for them.
 | 1.11.5 Example | `M1:1693` | Gaussian moment convergence | later roadmap |
 | 1.11.6 Example | `M1:1694` | dominated convergence under weak convergence | later roadmap |
 | 1.12.1 Theorem | `M1:1706` | uniformity in bounded equicontinuous test classes | later roadmap |
-| 1.12.2 Theorem | `M1:1718` | bounded Lipschitz determining class | mathlib weak topology foundation reusable; exact statement pending |
+| 1.12.2 Theorem | `M1:1718` | bounded Lipschitz determining class | local-layer/mathlib-foundation: measure-level bounded-Lipschitz determining direction and testing consequence compiled as `vdVW1122_weakConvergenceProbabilityMeasures_of_forall_bounded_lipschitz_integral_tendsto` and `vdVW1122_forall_bounded_lipschitz_integral_tendsto_of_weakConvergenceProbabilityMeasures`; exact arbitrary-map/nonmeasurable version pending |
 | 1.12.3 Addendum | `M1:1722` | explicit bounded Lipschitz class | later roadmap |
-| 1.12.4 Theorem | `M1:1751` | bounded Lipschitz metric for weak convergence | mathlib finite/probability measure topology reusable; exact statement pending |
+| 1.12.4 Theorem | `M1:1751` | bounded Lipschitz metric for weak convergence | local-layer/mathlib-foundation: measure-level Levy-Prokhorov distance criterion compiled as `vdVW1124_weakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero`, plus both directions `vdVW1124_weakConvergenceProbabilityMeasures_of_levyProkhorovDist_tendsto_zero` and `vdVW1124_levyProkhorovDist_tendsto_zero_of_weakConvergenceProbabilityMeasures`; exact arbitrary-map/nonmeasurable bounded-Lipschitz metric theorem pending |
 
 ## Chapter 2 Named Items Through Theorem 2.4.1
 

@@ -3469,6 +3469,46 @@ theorem vdVWWeakConvergenceProbabilityMeasures_iff_forall_bounded_lipschitz_inte
   exact MeasureTheory.tendsto_iff_forall_lipschitz_integral_tendsto
 
 /--
+VdV&W Theorem 1.12.2, measure-level bounded-Lipschitz determining direction.
+
+For Borel probability measures on a pseudo-emetric space, convergence of
+integrals against every bounded Lipschitz real-valued test function implies
+weak convergence.  The full arbitrary-map VdV&W statement still needs the
+outer-expectation/asymptotic-measurability layer; this theorem is the
+mathlib-backed probability-measure core.
+-/
+theorem vdVW1122_weakConvergenceProbabilityMeasures_of_forall_bounded_lipschitz_integral_tendsto
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoEMetricSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι} [l.IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (h :
+      ∀ f : S → ℝ, (∃ C : ℝ, ∀ x y, dist (f x) (f y) ≤ C) →
+        (∃ L, LipschitzWith L f) →
+          Tendsto (fun i => ∫ s, f s ∂(μs i : Measure S)) l
+            (𝓝 (∫ s, f s ∂(μ : Measure S)))) :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ :=
+  (vdVWWeakConvergenceProbabilityMeasures_iff_forall_bounded_lipschitz_integral_tendsto).2 h
+
+/--
+VdV&W Theorem 1.12.2, measure-level bounded-Lipschitz testing consequence.
+
+Weak convergence of probability measures gives convergence of integrals
+against every bounded Lipschitz real-valued test function.
+-/
+theorem vdVW1122_forall_bounded_lipschitz_integral_tendsto_of_weakConvergenceProbabilityMeasures
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoEMetricSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι} [l.IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ) :
+      ∀ f : S → ℝ, (∃ C : ℝ, ∀ x y, dist (f x) (f y) ≤ C) →
+        (∃ L, LipschitzWith L f) →
+          Tendsto (fun i => ∫ s, f s ∂(μs i : Measure S)) l
+            (𝓝 (∫ s, f s ∂(μ : Measure S))) :=
+  (vdVWWeakConvergenceProbabilityMeasures_iff_forall_bounded_lipschitz_integral_tendsto).1 h
+
+/--
 VdV&W Lemma 1.3.1, closed-set step: if every bounded-continuous real test is
 measurable for a sigma-field `m`, then every closed set is `m`-measurable.
 
@@ -4472,6 +4512,51 @@ theorem vdVWWeakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zer
         (𝓝 (LevyProkhorov.ofMeasure μ)) ↔
       Tendsto (fun i => dist (LevyProkhorov.ofMeasure (μs i))
         (LevyProkhorov.ofMeasure μ)) l (𝓝 0))
+
+/--
+VdV&W Theorem 1.12.4, measure-level Levy-Prokhorov metric criterion.
+
+On separable pseudometric Borel spaces, weak convergence of probability
+measures is equivalent to convergence to zero in Levy-Prokhorov distance.  This
+is the probability-measure metric core of the textbook bounded-Lipschitz metric
+theorem.
+-/
+theorem vdVW1124_weakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoMetricSpace S]
+    [OpensMeasurableSpace S] [SeparableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S} :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ ↔
+      Tendsto (fun i => levyProkhorovDist (μs i : Measure S) (μ : Measure S)) l (𝓝 0) :=
+  vdVWWeakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero
+
+/--
+VdV&W Theorem 1.12.4, Levy-Prokhorov convergence implies weak convergence.
+-/
+theorem vdVW1124_weakConvergenceProbabilityMeasures_of_levyProkhorovDist_tendsto_zero
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoMetricSpace S]
+    [OpensMeasurableSpace S] [SeparableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h :
+      Tendsto (fun i => levyProkhorovDist (μs i : Measure S) (μ : Measure S)) l
+        (𝓝 0)) :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ :=
+  (vdVW1124_weakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero).2 h
+
+/--
+VdV&W Theorem 1.12.4, weak convergence implies Levy-Prokhorov distance
+convergence to zero.
+-/
+theorem vdVW1124_levyProkhorovDist_tendsto_zero_of_weakConvergenceProbabilityMeasures
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoMetricSpace S]
+    [OpensMeasurableSpace S] [SeparableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ) :
+      Tendsto (fun i => levyProkhorovDist (μs i : Measure S) (μ : Measure S)) l
+        (𝓝 0) :=
+  (vdVW1124_weakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero).1 h
 
 /--
 Measure-level continuous mapping theorem.
