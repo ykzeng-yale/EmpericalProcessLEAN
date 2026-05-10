@@ -2937,6 +2937,17 @@ next selected-cover task is therefore to build a canonical selected-cover
 tuple with measurable fibers, or to replace the default fallback with a
 canonical in-class fallback before final Theorem 2.4.3 assembly.
 
+2026-05-09 selected-cover fiber-route consumer:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_fibers`.
+This is the preferred half-scale source consumer after the selected-cardinality
+closure: selected-center measurability is requested as measurable fibers of
+the Nat-indexed selected-center selector, plus an in-class `default` fallback,
+rather than as raw scalar-coordinate measurability.  The next proof step should
+construct a canonical selected-cover tuple with measurable fibers or replace
+the fallback/default adapter with an explicit class member selected from
+nonemptiness.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

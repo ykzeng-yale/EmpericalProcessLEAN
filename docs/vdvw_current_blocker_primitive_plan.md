@@ -9009,3 +9009,17 @@ is measurable.  The arbitrary `Classical.choice` cover selector is still not
 proved measurable; the next source task is now to construct measurable fibers
 for a canonical selected-cover tuple, or to replace the fallback/default
 adapter with an in-class measurable selector.
+
+2026-05-09 selected-cover fiber-route consumer:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_fibers`.
+This composes the countable-fiber selected-center bridge with the current
+canonical quarter-radius half-scale Theorem 2.4.3 route.  The route no longer
+exposes the raw scalar-coordinate measurability family; instead it asks for
+measurable fibers of
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAt`, membership of the out-of-range
+`default` branch in the class, the finite selected cover, and convergence to
+zero of the integrated finite-center failure-tail error.  The next source task
+is therefore a canonical selected-cover tuple with measurable fibers, or a
+version of the selected-center adapter whose fallback is explicitly chosen
+inside the nonempty class.
