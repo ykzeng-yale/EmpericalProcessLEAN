@@ -2948,6 +2948,16 @@ construct a canonical selected-cover tuple with measurable fibers or replace
 the fallback/default adapter with an explicit class member selected from
 nonemptiness.
 
+2026-05-09 in-class selected-center fallback:
+`Theorem243.lean` now adds
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass` and the corresponding
+quarter-radius half-scale consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_inClass_fibers`.
+This removes the artificial `default ∈ indexClass` side condition from the
+selected-center fiber route.  Continue by proving measurable fibers for this
+in-class selector, or by constructing a canonical selected cover whose fibers
+are measurable by `Nat.find` over an enumeration of the countable class.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

@@ -3872,3 +3872,11 @@ Nat-indexed selector, plus `default ∈ indexClass`, instead of a raw family of
 scalar coordinate measurability assumptions.  Remaining source work is to
 construct those fibers for a canonical selected-cover tuple and to handle the
 integrated finite-center failure-tail convergence.
+
+The selected-center route no longer depends on an ambient `default` being in
+the class.  `Theorem243.lean` introduces
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass` and the consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_inClass_fibers`.
+The out-of-range selected-center value is now the nonempty-class witness, so
+the live selected-center blocker is exactly measurable fibers for this
+in-class selector.
