@@ -545,6 +545,15 @@ Hessian symmetry, `Hyy` inverse identities, selector derivative equation,
 differentiated inverse equation, and the standard full mixed-third identity.
 Do not re-split those scalar obligations unless this combined constructor
 is too strong for a concrete model.
+The inverse-identity derivative packet adds
+`barrierInfProjectionBlockYY_invHyy_deriv_cancel_of_eventually_right_inverse`
+and
+`BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_symmetric_inverse_eventually`.
+It derives the differentiated inverse equation from the local/eventual
+right-inverse identity `Hyy(y) (Hyy⁻¹(y) w) = w` via mathlib
+`HasFDerivAt.clm_apply`.  Prefer this constructor whenever the concrete
+selector model gives a local `Hyy` inverse, and do not pass a raw
+`hderiv_cancel` field unless the local identity is unavailable.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

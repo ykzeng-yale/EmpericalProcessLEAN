@@ -392,6 +392,57 @@ theorem barrierInfProjectionSchurLiftedThird_eq_component_expansion_of_pairing
       (P := P) (v := v) (w := a))
 
 /--
+Differentiate the local right-inverse identity `Hyy(y) (Hyy⁻¹(y) w) = w`.
+This is the source-shaped equation used to cancel the derivative of the
+vertical inverse block in the Schur-Hessian derivative.
+-/
+theorem barrierInfProjectionBlockYY_invHyy_deriv_cancel_of_eventually_right_inverse
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂)
+    {hessDerivAt : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselectorAt : E₁ →L[ℝ] E₂}
+    {invHyyDerivAt : E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    {x : E₁}
+    (hhess : HasFDerivAt hess hessDerivAt
+      (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselectorAt x)
+    (hinv : HasFDerivAt invHyy invHyyDerivAt x)
+    (hright_eventually : ∀ w : E₂,
+      (fun y : E₁ => barrierInfProjectionBlockYY selector hess y (invHyy y w))
+        =ᶠ[nhds x] fun _ : E₁ => w)
+    (u : E₁) (w : E₂) :
+    barrierInfProjectionBlockYY selector hess x (invHyyDerivAt u w) +
+      (barrierInfProjectionBlockYYDeriv hessDerivAt dselectorAt u)
+        (invHyy x w) = 0 := by
+  have hHyy :
+      HasFDerivAt (barrierInfProjectionBlockYY selector hess)
+        (barrierInfProjectionBlockYYDeriv hessDerivAt dselectorAt) x :=
+    barrierInfProjectionBlockYY_hasFDerivAt
+      (E₁ := E₁) (E₂ := E₂) hhess hselector
+  have hinv_apply :
+      HasFDerivAt (fun y : E₁ => invHyy y w)
+        ((invHyy x).comp (0 : E₁ →L[ℝ] E₂) +
+          invHyyDerivAt.flip w) x :=
+    hinv.clm_apply (hasFDerivAt_const w x)
+  have hactual :=
+    hHyy.clm_apply hinv_apply
+  have hconst :
+      HasFDerivAt (fun _ : E₁ => w) (0 : E₁ →L[ℝ] E₂) x :=
+    hasFDerivAt_const w x
+  have hzero :
+      HasFDerivAt
+        (fun y : E₁ =>
+          barrierInfProjectionBlockYY selector hess y (invHyy y w))
+        (0 : E₁ →L[ℝ] E₂) x :=
+    hconst.congr_of_eventuallyEq (hright_eventually w)
+  have hclm := hactual.unique hzero
+  have happly := congrArg (fun L : E₁ →L[ℝ] E₂ => L u) hclm
+  simpa [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply] using happly
+
+/--
 Full-Hessian derivative certificate for the Schur Hessian from the
 source-shaped lifted-third pairing.  This removes the raw four-term component
 expansion assumption from the next layer of the envelope proof.
@@ -549,6 +600,71 @@ theorem BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_symme
         hmixed_full (x := x) hx
           (barrierInfProjectionSchurLift selector hess invHyy x u)
           (barrierInfProjectionSchurLift selector hess invHyy x v))
+
+/--
+Variant of the source-facing constructor that derives the differentiated
+inverse equation from the local right-inverse identity
+`Hyy(y) (Hyy⁻¹(y) w) = w`.
+-/
+theorem BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_symmetric_inverse_eventually
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {hessDeriv : E₁ -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hhess : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt hess (hessDeriv x) (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hinvDeriv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x)
+    (hsymm : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ((hess (barrierInfProjectionPoint selector x)) :
+        WithLp 2 (E₁ × E₂) →ₗ[ℝ] WithLp 2 (E₁ × E₂)).IsSymmetric)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hyy_right_eventually : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂,
+        (fun y : E₁ => barrierInfProjectionBlockYY selector hess y (invHyy y w))
+          =ᶠ[nhds x] fun _ : E₁ => w)
+    (hyy_left : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, invHyy x (barrierInfProjectionBlockYY selector hess x w) = w)
+    (hdselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u : E₁,
+        dselector x u =
+          -invHyy x (barrierInfProjectionBlockYX selector hess x u))
+    (hmixed_full : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ a v : WithLp 2 (E₁ × E₂),
+        inner ℝ v ((hessDeriv x a) v) =
+          third (barrierInfProjectionPoint selector x) a v) :
+    BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+      (fun x =>
+        barrierInfProjectionSchurHessDeriv
+          (barrierInfProjectionBlockXY selector hess)
+          (barrierInfProjectionBlockYX selector hess)
+          invHyy
+          (fun x => barrierInfProjectionBlockXXDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockXYDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockYXDeriv (hessDeriv x) (dselector x))
+          invHyyDeriv x) :=
+  BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_symmetric_inverse
+    (s := s) (selector := selector) (hess := hess) (invHyy := invHyy)
+    (third := third) (hessDeriv := hessDeriv) (dselector := dselector)
+    (invHyyDeriv := invHyyDeriv) hhess hselector hinvDeriv hsymm hyy_right
+    hyy_left hdselector
+    (by
+      intro x hx u w
+      exact
+        barrierInfProjectionBlockYY_invHyy_deriv_cancel_of_eventually_right_inverse
+          selector hess invHyy (hhess (x := x) hx) (hselector (x := x) hx)
+          (hinvDeriv (x := x) hx) (hyy_right_eventually (x := x) hx) u w)
+    hmixed_full
 
 end InfProjectionSchurSymmetry
 

@@ -422,6 +422,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `<b, (D hess(point x)[a]) b> = third(point x,a,b)`.  The next blocker is
   not Schur component algebra; it is constructing these source hypotheses from
   local minimizer/envelope data and concrete square-root/inverse models.
+- Inf-projection inverse-identity derivative shrink: the newest packet adds
+  `barrierInfProjectionBlockYY_invHyy_deriv_cancel_of_eventually_right_inverse`
+  and
+  `BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_symmetric_inverse_eventually`.
+  The differentiated inverse equation is now derived from the local identity
+  `Hyy(y) (Hyy⁻¹(y) w) = w` using mathlib `HasFDerivAt.clm_apply`, plus the
+  already compiled `barrierInfProjectionBlockYY_hasFDerivAt`.  The preferred
+  inf-projection route should now supply local/eventual `Hyy` right-inverse
+  identities rather than a raw derivative-cancellation hypothesis.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in
