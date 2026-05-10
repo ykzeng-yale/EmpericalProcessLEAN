@@ -4040,3 +4040,13 @@ It instantiates the positive-size bridge at `epsilon / 2`, yielding the usual
 `epsilon < 4 * H + eta`.  This aligns the fixed-fiber route with the existing
 product-pair half-scale scale constants; the unsolved inputs remain
 fixed-sample sign-swap transport and original/ghost finite-center a.e. support.
+
+The fixed-fiber pair-difference source route now reaches the same fixed-`M`
+convergence boundary as the product-pair half-scale route:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale`.
+It consumes stochastic entropy, the selected-cardinality comparison, concrete
+event measurability, fixed-sample sign-swap transport, and the original/ghost
+finite-center a.e. support facts.  The remaining blocker is now fully
+probability-side: prove those fixed-fiber inputs for the chosen cover, or
+switch the final source theorem to the already compiled integrated
+product-pair symmetry route.

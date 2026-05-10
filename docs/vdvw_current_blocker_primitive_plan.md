@@ -9262,3 +9262,16 @@ radius `eta`.  The fixed-fiber route now matches the scale of the compiled
 product-pair half-scale route; the remaining open inputs are still concrete
 event measurability, fixed-sample sign-swap transport, and original/ghost
 finite-center a.e. support for the chosen cover.
+
+2026-05-10 fixed-fiber pair-difference convergence endpoint:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale`.
+This composes the half-scale pair-difference outer-probability handoff with
+the stochastic-entropy Chebyshev-penalty consumer.  The fixed-fiber route now
+reaches the fixed-`M` centered-truncated convergence conclusion with constants
+`C = 4` and `A = 2`, provided the caller supplies eventual concrete event
+measurability, fixed-sample pair-sub sign-swap transport, and original/ghost
+finite-center a.e. support for the selected cover.  The blocker is therefore
+not endpoint assembly anymore; it is deciding and proving those probability
+inputs, or pivoting to the integrated product-pair route where fixed-fiber
+sign-swap is too strong.

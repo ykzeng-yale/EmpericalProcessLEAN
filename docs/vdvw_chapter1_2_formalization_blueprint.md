@@ -3126,6 +3126,17 @@ closure should either discharge the fixed-sample sign-swap/finite-center
 inputs for the canonical selected cover or explicitly switch to the integrated
 product-pair source route if those fixed-fiber inputs are too strong.
 
+The same fixed-fiber route now reaches the fixed-`M` stochastic-entropy
+convergence endpoint through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale`.
+This theorem uses the half-scale pair-difference source comparison as the
+eventual beta-selected comparison in the existing Chebyshev-penalty consumer.
+The source gap has therefore moved to the actual probability inputs:
+concrete measurability for the selected event, fixed-sample pair-sub
+sign-swap transport, and original/ghost finite-center a.e. support.  Do not
+add more endpoint wrappers before making a mathematical decision on those
+inputs or pivoting to the integrated product-pair source route.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
