@@ -304,13 +304,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_deriv`
   and
   `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv`.
+  The follow-up scalar-segment packet adds
+  `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_scalarPsi`,
+  `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_segmentCertificate`,
+  and
+  `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi`.
   Search-first reuse: the bridge reuses the already compiled canonical
   lifted-third self-concordance theorem and the generic
-  `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`
-  constructors.  The exact remaining proof is now sharply isolated to proving
-  the projected Schur Hessian derivative identity from selector/Schur algebra;
-  continuity and the projected source-radius local-norm sandwich are no longer
-  separate live blockers once that certificate is available.
+  `HessianSegmentMixedThirdLocalNormCertificate` constructors and sandwich
+  consumers.  The exact remaining proof is now weaker than the full
+  operator-valued Schur derivative certificate: it can be attacked as the
+  scalar segment identity
+  `d/dt <v, H_schur(z_t) v> = liftedThird(z_t, y - x, v)` plus the already
+  standard segment coefficient bound.  Continuity, strict positivity, and
+  local-norm sandwich transport are no longer separate live blockers once the
+  scalar `ψ` derivative certificate is supplied.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

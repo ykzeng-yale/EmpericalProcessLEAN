@@ -409,13 +409,20 @@ plus the derivative-continuity variant
 `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_deriv`
 and the projected source-radius sandwich
 `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv`.
-It isolates the real remaining third-derivative blocker as the identity
-`inner v ((D H_schur[x] u) v) = liftedThird x u v`; once supplied, the
-existing Chewi Lemma 13.6 mixed-third segment certificate machinery applies to
-the projected envelope, and Schur-Hessian continuity is derived automatically
-from `HasFDerivAt`.  Future work should prove this derivative certificate from
-the concrete selector/Schur-Hessian algebra rather than rebuilding the segment
-Gronwall or continuity/local-norm sandwich layers.
+The scalar-segment packet adds
+`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_scalarPsi`,
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_segmentCertificate`,
+and
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi`.
+This weakens the next exact source gate: future work may prove only the
+source-shaped scalar segment derivative
+`d/dt <v, H_schur(z_t) v> = liftedThird(z_t, y - x, v)` instead of first
+constructing a full operator-valued Frechet derivative for `H_schur`.  The
+stronger certificate remains available when convenient, but the local-norm
+sandwich no longer needs strict projected-Hessian positivity or a separate
+Schur-Hessian continuity proof once the scalar `ψ` derivative and segment
+coefficient bound are supplied.  Do not rebuild the segment Gronwall,
+canonical lifted-third self-concordance, or local-norm transport layers.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,

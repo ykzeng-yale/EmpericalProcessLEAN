@@ -205,9 +205,17 @@ gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after
 proving that the vertical residual is locally zero and providing the relevant
 `Hyy` left inverse.  The remaining exact inf-projection calculus work is no
-longer the selector derivative equation; it is the actual third-derivative
-identity for the selected value/projected Hessian and the construction of the
-packaged adjoint-square-root envelope certificate from concrete selector and
+longer the selector derivative equation.  The preferred next gate is now the
+scalar segment form of the actual third-derivative identity,
+`d/dt <v, H_schur(z_t) v> = liftedThird(z_t, y - x, v)`, because
+`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_scalarPsi`
+and
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi`
+feed that source-shaped derivative directly into the Lemma 13.6 local-norm
+sandwich without first proving a full operator-valued Frechet derivative for
+the Schur Hessian.  The remaining exact envelope task is to prove that scalar
+identity and construct the packaged adjoint-square-root envelope certificate
+from concrete selector and
 Hessian square-root models.
 The local stationarity source bridge now also compiles through
 `BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero`,
