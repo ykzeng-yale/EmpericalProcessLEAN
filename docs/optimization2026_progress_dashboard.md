@@ -514,6 +514,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   local-norm sandwich.  Future work should therefore focus on constructing the
   actual third-order envelope certificate from selector/envelope data, not on
   re-supplying full-Hessian derivative inputs to the sandwich wrapper.
+- Inf-projection Schur-certificate envelope adapter: the newest packet adds
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_isOpen`
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_schurHessDerivativeOn_isOpen`.
+  Once a `BarrierInfProjectionSchurHessDerivativeOn` certificate is available,
+  the adjoint-square model now supplies the selected-value second-order
+  envelope and projected local-norm sandwich without reopening raw
+  `hhess`/`hinvDeriv`/mixed-full derivative plumbing.  The remaining exact
+  inf-projection source step is therefore the genuine construction of the
+  Schur derivative certificate and actual lifted-third identity from selector
+  stationarity and model derivative data.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

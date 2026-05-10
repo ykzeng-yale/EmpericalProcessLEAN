@@ -631,6 +631,17 @@ uses the adjoint-square envelope model to supply the Schur positivity and
 should construct this third-order envelope from selector/envelope data; do not
 route future work back through raw full-Hessian derivative inputs if the
 third-order envelope certificate is available.
+The Schur-certificate envelope adapter is now also available as
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_isOpen`
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_schurHessDerivativeOn_isOpen`.
+It constructs the selected-value second-order envelope from the open-domain
+first/second derivative data and the adjoint-square `Hyy` right-inverse, then
+packages any already-built `BarrierInfProjectionSchurHessDerivativeOn` into the
+third-order envelope and source-radius local-norm sandwich.  The remaining
+exact item-4 source work is therefore not local-norm transport or raw inverse
+derivative plumbing; it is constructing the actual Schur derivative certificate
+and lifted-third identity from the selector/envelope derivative hypotheses.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

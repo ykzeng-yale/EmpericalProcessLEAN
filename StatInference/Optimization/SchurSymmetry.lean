@@ -1346,6 +1346,61 @@ theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_ful
       hmixed_full
 
 /--
+Third-order selected-envelope certificate from a supplied Schur-Hessian
+derivative certificate.  This separates the easy selected-value
+first/second-order envelope part from the harder Schur derivative construction:
+future exact inf-projection packets can build `BarrierInfProjectionSchurHessDerivativeOn`
+once and then reuse this adapter without re-threading the raw Hessian inverse
+derivative data.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_isOpen
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₁] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hfgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hschur :
+      BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+        schurDeriv) :
+    BarrierInfProjectionThirdOrderEnvelopeOn s f selector grad hess invHyy third
+      schurDeriv := by
+  refine ⟨?second_order, hschur⟩
+  intro x hx
+  refine hmodel.selector_stationary.secondOrderEnvelopeAt_of_isOpen_finiteDimHyy
+    hopen hx (hfgrad hx) (hgrad hx) (hselector hx) ?hyy_right
+  intro w
+  exact continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv
+    (H := barrierInfProjectionBlockYY selector hess x)
+    (invH := invHyy x) (sqrtCoord := sqrtHyy x)
+    (hmodel.hyy_hess_eq (x := x) hx)
+    (hmodel.hyy_inv_eq (x := x) hx) w
+
+/--
 Projected mixed-third segment certificate from the packaged adjoint-square
 envelope model and the source derivative data for the original Hessian.  This
 feeds the Schur-envelope route directly into the reusable Lemma 13.6 segment
@@ -1871,6 +1926,69 @@ theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwic
       hmodel.selector_stationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv
         (hbar := hmodel.barrier) hyy_right henv.schur_deriv hMr_lt hs hx hy
         hmodel.projectedSchurHess_quadratic_pos hdiff v
+
+/--
+Source-radius projected local-norm sandwich from a supplied Schur-Hessian
+derivative certificate.  This is the theorem-facing adapter for the exact
+inf-projection route after the Schur derivative has been built.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_schurHessDerivativeOn_isOpen
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₁] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    {x y v : E₁}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hfgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hschur :
+      BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+        schurDeriv)
+    (hMr_lt :
+      M *
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+            x (y - x) < 1)
+    (hs : Convex ℝ (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hy : y ∈ barrierInfProjectionSet s) :
+    (1 - M *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+          x (y - x)) *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v ≤
+      localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ∧
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ≤
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v /
+            (1 - M *
+              localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+                x (y - x)) :=
+  hmodel.projected_localNorm_sandwich_sourceRadius_of_thirdOrderEnvelope
+    (henv :=
+      hmodel.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_isOpen
+        hopen hfgrad hgrad hselector hschur)
+    hMr_lt hs hx hy
 
 end InfProjectionSchurSymmetry
 
