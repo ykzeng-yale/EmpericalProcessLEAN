@@ -4,37 +4,41 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V200
+## Live In-Thread Goal Prompt V201
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane: Durrett Chapter 2 in
-`StatInference/ProbabilityTheory/Basic.lean`, starting from the now-compiled
-Theorem 2.2.11 large-jump truncation bridge, truncated-row variance and
-centering bridge, combined centered triangular-row weak-law assembly, and
-source-side truncation independence/`L^2` inheritance plus final original-row
-independence wrapper, plus the Theorem 2.2.12 single-sequence specialization,
-truncated mean identification, exact textbook-display bridge, row-to-single
-numeric reductions for the large-jump and truncated second-moment hypotheses,
-the real-tail-to-natural-tail bridge from Durrett's displayed assumption, and
-the first Lemma 2.2.13 layer-cake / second-moment-bound consumer layer, plus
-the real-tail-to-tail-average Cesaro bridge, automatic local integrability of
-the clipped tail profile, exact tail-average endpoint wrappers, truncated
-tail-event domination support, the ordinary-layer-cake-to-tail-average
-comparison bridge, the ordinary square-tail layer-cake support, positive
-square-tail event rewrite, the radius-layer-cake `(0,∞)` to `(0,n]`
-finite-support bridge, the ordinary `p = 2` radius-layer-cake conversion, the
-layer-cake-free tail-average bound, and the final source-facing Theorem 2.2.12
-real-tail endpoint.
+synced `main`.  Active lane: Durrett Chapter 4 martingales in
+`StatInference/ProbabilityTheory/Martingale.lean`, specifically Section 4.5.2.
+Chapter 2.1 independence/product/convolution support, Theorem 2.4.9
+Glivenko-Cantelli, Theorem 2.2.12 layer-cake/source endpoint, Chapter 3 weak
+convergence/characteristic-function/CLT wrappers, and Section 4.5.1 maximal
+support are closed reusable support unless a later theorem exposes a precise
+missing primitive.
+
+V201 compiled the Theorem 4.5.2 countable-threshold source assembly:
+`durrett2019_theorem_4_5_2_stopped_square_minus_increasing_martingale_of_source`,
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_minus_increasing_martingale_of_source`,
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_source_square_minus_martingale`,
+`durrett2019_theorem_4_5_2_threshold_cover_of_ae_le_terminal`,
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_martingale_cover`,
+and
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_martingale_monotone_terminal`.
+
+Next aggressive step: finish the remaining source side for Theorem 4.5.2 by
+deriving the stopped-predictability and stopped running-maximum boundedness
+inputs from the standard increasing/predictable terminal-variation hypotheses,
+or, if those are already available through mathlib/local APIs, package the
+exact textbook theorem statement and then move to the next Section 4.5 result.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V200 compiled support now includes:
+Closed Chapter 2 support through V200 includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -143,19 +147,14 @@ plus the completed radius-layer-cake and source endpoint:
 `durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_real_tail`, and
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail`.
 
-Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
-Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, Theorem 2.2.12 layer-cake, or
-Theorem 2.4.9.  The Durrett 2.2.12 real-tail source endpoint now compiles from
-the displayed hypothesis `x * P(|X_0| > x) -> 0`, independence, identical
-distribution, and measurability.  Move to the next unsaturated textbook spine
-already indicated by the dashboard: Chapter 3 weak convergence / characteristic
-functions / CLT wrappers, or a later theorem that explicitly needs a missing
-Chapter 2 primitive.  Reuse the compiled independence/product wrappers,
-finite-sum variance support, Borel-Cantelli, strong-law, empirical-CDF
-infrastructure, and mathlib layer-cake/tail-integral APIs.  Search mathlib and
-local `StatInference` first; use `origin/codex/vdvw-selected-cover-source` only
-as selective reference via `git grep`/`git show` or an isolated worktree; do not
-merge it wholesale into this lane.
+Do not route back to Chapter 2.1, Theorem 2.2.1, Theorem 2.2.3 scalar
+plumbing, Theorem 2.2.6, Theorem 2.2.12 layer-cake, Chapter 3 wrappers, or
+Theorem 2.4.9.  The active theorem-facing frontier is now the remaining source
+instantiation around Durrett Theorem 4.5.2 in `Martingale.lean`.  Search
+mathlib and local `StatInference` first; use
+`origin/codex/vdvw-selected-cover-source` only as selective reference via
+`git grep`/`git show` or an isolated worktree; do not merge it wholesale into
+this lane.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including

@@ -27,12 +27,23 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V200`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V201`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current active frontier: Durrett Chapter 2 in
+Current active frontier: Durrett Section 4.5.2 in
+`StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the source
+square-minus stopped certificate, finite-terminal threshold cover, countable
+event-cover assembly, and monotone-terminal source wrapper for Theorem 4.5.2.
+The next theorem-facing target is to derive the remaining
+stopped-predictability and stopped running-maximum boundedness inputs from the
+standard increasing/predictable terminal-variation hypotheses, then package the
+exact source statement.  Do not route back to Chapter 2.1, Theorem 2.4.9,
+Theorem 2.2.12, or Chapter 3 wrappers unless a later theorem exposes a precise
+missing primitive.
+
+Closed Chapter 2 support lives in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled
 independence/product-law wrappers, including Theorem 2.1.10's partial-sum
 difference versus early-block statistic/indicator wrappers, Theorem 2.1.12's
