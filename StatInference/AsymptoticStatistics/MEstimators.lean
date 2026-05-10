@@ -2844,6 +2844,111 @@ theorem vaart1998_theorem_5_41_scoreResidual_add_tendstoInMeasure
           {ω : Ω | ε / 2 ≤ ‖residual₂ n ω - 0‖})
 
 /--
+van der Vaart 1998, Theorem 5.41, residual source package from derivative LLN
+and a dominated second derivative.
+
+This theorem supplies the live residual fields for the pointwise-Taylor
+Z-estimator endpoint.  If the empirical derivative converges to `V` in
+operator norm, the selected second-derivative action is bounded by an
+`O_P(1)` envelope, the unscaled estimator difference is `o_P(1)`, and the
+scaled estimator is `O_P(1)`, then the literal Taylor residual
+`(dotPsi_n(theta0) - V) x_n + (1 / 2) ddotPsi_n(tildeTheta_n) delta_n x_n`
+is negligible and a.e. measurable.
+-/
+theorem vaart1998_theorem_5_41_residual_tendstoInMeasure_and_aemeasurable_of_derivativeLLN_secondDerivativeBound
+    {Ω Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [IsFiniteMeasure P]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [BorelSpace Score] [MeasurableAdd₂ Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    {empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] Score}
+    (V : Θ →L[ℝ] Score)
+    {secondDerivativeAction : ℕ -> Ω -> Θ →L[ℝ] Θ →L[ℝ] Score}
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {curvatureBound : ℕ -> Ω -> ℝ}
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hCurvatureBounded : StochasticBounded P curvatureBound)
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hCurvatureOpBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondDerivativeAction n ω‖ ≤ ‖curvatureBound n ω‖)
+    (hEmpiricalDerivative_meas : ∀ n, AEMeasurable (empiricalDerivative n) P)
+    (hSecondDerivativeAction_meas :
+      ∀ n, AEMeasurable (secondDerivativeAction n) P)
+    (hDelta_meas : ∀ n, AEMeasurable (delta n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (empiricalDerivative n ω - V) (scaledEstimator n ω) +
+          (1 / 2 : ℝ) •
+            secondDerivativeAction n ω (delta n ω) (scaledEstimator n ω))
+      atTop 0 ∧
+      ∀ n,
+        AEMeasurable
+          (fun ω =>
+            (empiricalDerivative n ω - V) (scaledEstimator n ω) +
+              (1 / 2 : ℝ) •
+                secondDerivativeAction n ω
+                  (delta n ω) (scaledEstimator n ω)) P := by
+  let derivativeResidual : ℕ -> Ω -> Score :=
+    fun n ω => (empiricalDerivative n ω - V) (scaledEstimator n ω)
+  let secondResidual : ℕ -> Ω -> Score :=
+    fun n ω =>
+      (1 / 2 : ℝ) •
+        secondDerivativeAction n ω (delta n ω) (scaledEstimator n ω)
+  have hDerivativeResidual :
+      TendstoInMeasure P derivativeResidual atTop 0 :=
+    vaart1998_theorem_5_41_derivativeResidual_tendstoInMeasure_of_opNorm
+      (P := P) (empiricalDerivative := empiricalDerivative) (V := V)
+      (scaledEstimator := scaledEstimator) hDerivativeLLN hScaledEstimator
+  have hSecondResidual_eq : ∀ᶠ n in atTop, ∀ ω,
+      secondResidual n ω =
+        (1 / 2 : ℝ) •
+          secondDerivativeAction n ω (delta n ω) (scaledEstimator n ω) :=
+    Eventually.of_forall fun _n _ω => rfl
+  have hSecondHalfBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondResidual n ω‖ ≤
+        (1 / 2 : ℝ) *
+          (‖delta n ω‖ *
+            (‖curvatureBound n ω‖ * ‖scaledEstimator n ω‖)) :=
+    vaart1998_theorem_5_41_secondDerivativeResidual_half_bound_of_bilinear_opNorm_bound
+      (delta := delta) (scaledEstimator := scaledEstimator)
+      (curvatureBound := curvatureBound)
+      (secondDerivativeAction := secondDerivativeAction)
+      (secondResidual := secondResidual) hSecondResidual_eq hCurvatureOpBound
+  have hSecondResidual :
+      TendstoInMeasure P secondResidual atTop 0 :=
+    vaart1998_theorem_5_41_secondDerivativeResidual_tendstoInMeasure_of_half_bound
+      (P := P) (delta := delta) (scaledEstimator := scaledEstimator)
+      (curvatureBound := curvatureBound) (secondResidual := secondResidual)
+      hDelta hCurvatureBounded hScaledEstimator hSecondHalfBound
+  have hResidual :
+      TendstoInMeasure P
+        (fun n ω => derivativeResidual n ω + secondResidual n ω) atTop 0 :=
+    vaart1998_theorem_5_41_scoreResidual_add_tendstoInMeasure
+      (P := P) hDerivativeResidual hSecondResidual
+  have hDerivativeResidual_meas :
+      ∀ n, AEMeasurable (derivativeResidual n) P :=
+    vaart1998_theorem_5_41_derivativeResidual_aemeasurable_of_operator
+      (P := P) (empiricalDerivative := empiricalDerivative) (V := V)
+      (scaledEstimator := scaledEstimator)
+      hEmpiricalDerivative_meas hScaledEstimator_meas
+  have hSecondResidual_meas :
+      ∀ n, AEMeasurable (secondResidual n) P :=
+    vaart1998_theorem_5_41_secondDerivativeResidual_aemeasurable_of_operator
+      (P := P) (secondDerivativeAction := secondDerivativeAction)
+      (delta := delta) (scaledEstimator := scaledEstimator)
+      hSecondDerivativeAction_meas hDelta_meas hScaledEstimator_meas
+  constructor
+  · simpa [derivativeResidual, secondResidual] using hResidual
+  · intro n
+    simpa [derivativeResidual, secondResidual] using
+      (hDerivativeResidual_meas n).add (hSecondResidual_meas n)
+
+/--
 van der Vaart 1998, Theorem 5.41, absorbable Taylor coefficient from the
 derivative LLN and curvature bound.
 

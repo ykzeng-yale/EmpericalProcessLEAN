@@ -34,6 +34,8 @@ and
 `vaart1998_theorem_5_41_finiteCoordinateTaylorExpansion_of_pointwiseTaylor_residual`.
 The score-average representation bridge is
 `vaart1998_theorem_5_41_scoreAverage_eq_finiteCoordinateScaledCentered_of_summand_eq_scoreScaled`.
+The residual source package is
+`vaart1998_theorem_5_41_residual_tendstoInMeasure_and_aemeasurable_of_derivativeLLN_secondDerivativeBound`.
 
 Continuation recipe:
 
@@ -46,10 +48,11 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Residual source: instantiate the negligible finite-coordinate residual from
-   derivative LLN plus the second-derivative envelope, using the residual
-   definition consumed by
-   `vaart1998_theorem_5_41_finiteCoordinateTaylorExpansion_of_pointwiseTaylor_residual`.
+1. Residual endpoint wrapper: feed
+   `vaart1998_theorem_5_41_residual_tendstoInMeasure_and_aemeasurable_of_derivativeLLN_secondDerivativeBound`
+   into the current pointwise-Taylor residual endpoint, removing the explicit
+   `hResidual` and `hResidual_meas` fields when either direct `O_P(1)` tightness
+   or the absorbing non-circular tightness route is available.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    pointwise-Taylor residual endpoint; do not rebuild completed score CLT, display

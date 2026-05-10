@@ -15,11 +15,15 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: pointwise-Taylor residual Theorem 5.41 action
-endpoint plus sampled Taylor source bridges in `MEstimators.lean`.
+Latest verified packet: residual source package
+`vaart1998_theorem_5_41_residual_tendstoInMeasure_and_aemeasurable_of_derivativeLLN_secondDerivativeBound`
+in `MEstimators.lean`, after the pointwise-Taylor residual Theorem 5.41 action
+endpoint plus sampled Taylor source bridges.
 
-Current next blocker: instantiate the negligible finite-coordinate residual
-from derivative LLN plus the second-derivative envelope.
+Current next blocker: route the residual source package into the current
+pointwise-Taylor residual endpoint, removing the explicit residual convergence
+and residual measurability fields under either a direct `O_P(1)` scaled-estimator
+input or the existing absorbing non-circular tightness route.
 
 ## Verified Frontier
 
