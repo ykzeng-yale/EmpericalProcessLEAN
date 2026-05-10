@@ -10154,3 +10154,18 @@ single sign-only finite-center support hypothesis.  The remaining
 probability-side frontier is therefore the a.e. pair-sub mass theorem plus a
 coefficient-correct a.e. sign-swap transport, or an averaged product-pair
 replacement that bypasses fixed-original transport.
+
+2026-05-10 a.e. half-scale sign-swap transport outer-probability bridge:
+`Theorem243.lean` now adds
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_ae_signSwap_lower_bound_of_pos`
+and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_ae_signSwap_lower_bound_halfScale_of_pos`.
+These combine the pointwise Chebyshev lower bound for the unswapped pair-sub
+bad event with fixed-original sign-swap transport that only holds
+`P^n.restrict centeredBad`-a.e.  The half-scale adapter applies Chebyshev at
+`epsilon / 2`, producing the coefficient
+`1 - 16 * M ^ 2 / (n * (epsilon / 2) ^ 2)` and the selected-net target
+`4 * H + eta`.  The remaining source theorem is now the actual a.e.
+fixed-original sign-swap transport on centered-bad samples, together with the
+pair-sub mass source already supplied by Chebyshev, or an averaged
+product-pair replacement that avoids fixed-original transport.

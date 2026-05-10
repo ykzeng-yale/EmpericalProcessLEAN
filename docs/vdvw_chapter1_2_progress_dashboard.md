@@ -4667,3 +4667,13 @@ a.e. fixed-original sign-swap transport before feeding the a.e. sign-swapped
 bad-fiber consumer.  The dashboard frontier is now the actual a.e.
 probability source for those two inputs, or the averaged product-pair route
 that avoids fixed-original transport.
+
+The pair-sub/sign-swap route now also has the lower half-scale
+outer-probability bridge in restricted-a.e. form:
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_ae_signSwap_lower_bound_of_pos`
+and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_ae_signSwap_lower_bound_halfScale_of_pos`.
+They reuse the pointwise Chebyshev pair-sub mass theorem and allow only the
+fixed-original sign-swap transport to be a.e. on the centered-bad left event.
+The dashboard frontier is therefore sharpened to the actual a.e. sign-swap
+transport theorem, or to the averaged product-pair source that replaces it.

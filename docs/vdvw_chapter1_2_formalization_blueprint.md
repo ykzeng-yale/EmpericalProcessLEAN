@@ -3754,6 +3754,18 @@ mathematical blocker is the actual a.e. probability source for those inputs,
 or an averaged product-pair source theorem that replaces fixed-original
 transport.
 
+The lower Chebyshev pair-sub/sign-swap outer-probability comparison now also
+accepts restricted-a.e. fixed-original sign-swap transport at the half-scale:
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_ae_signSwap_lower_bound_of_pos`
+and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_ae_signSwap_lower_bound_halfScale_of_pos`.
+The first theorem feeds an a.e. sign-swap lower bound through the generic
+factor-two product-fiber bridge; the half-scale theorem rewrites
+`2 * (epsilon / 2)` to `epsilon` and widens the right event from
+`2 * H + eta / 2` to `4 * H + eta`.  Future proof work can therefore focus on
+the actual a.e. fixed-original sign-swap transport on centered-bad samples, or
+replace that source with an averaged product-pair argument.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
