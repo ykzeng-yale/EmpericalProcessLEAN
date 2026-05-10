@@ -15,7 +15,14 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: direct `O_P(1)` residual-source wrapper
+Latest verified packet: absorbing-tightness consumer for the residual-source
+wrapper
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingTightness_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+in `MEstimators.lean`.  It consumes the existing non-circular absorbing route's
+weak-convergence output, converts it to `scaledEstimator = O_P(1)`, and feeds
+the direct residual-source endpoint.
+
+Immediate predecessor packet: direct `O_P(1)` residual-source wrapper
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It defines the literal Taylor residual internally and
 uses
@@ -23,11 +30,10 @@ uses
 to remove the explicit residual convergence and residual measurability fields
 from the pointwise-Taylor Theorem 5.41 action endpoint.
 
-Current next blocker: compose this residual-source endpoint with the existing
-absorbing non-circular tightness route, removing the explicit
-`StochasticBounded P scaledEstimator` input when the absorbing hypotheses are
-available.  If that is not immediate, only discharge a derivative or score
-source hypothesis that is still live in the residual-source endpoint.
+Current next blocker: inline the existing raw-score CLT / derivative LLN /
+root / Taylor absorbing route to produce the `hAbsorbingTightness` input for
+the newest bridge.  If that is not immediate, only discharge a derivative or
+score source hypothesis that is still live in the residual-source endpoint.
 
 ## Verified Frontier
 

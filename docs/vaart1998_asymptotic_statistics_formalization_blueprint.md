@@ -28,10 +28,13 @@ external `hResidual` or `hResidual_meas` fields.  The residual convergence and
 measurability source package
 `vaart1998_theorem_5_41_residual_tendstoInMeasure_and_aemeasurable_of_derivativeLLN_secondDerivativeBound`
 now converts derivative LLN, consistency, a second-derivative envelope, and
-scaled-estimator tightness into those literal Taylor residual fields.  The next
-proof packet should remove the remaining explicit `scaledEstimator = O_P(1)`
-input by composing the residual-source endpoint with the existing absorbing
-non-circular tightness route, not replay display weak-convergence,
+scaled-estimator tightness into those literal Taylor residual fields.  The
+absorbing-tightness consumer bridge
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingTightness_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+removes the explicit `scaledEstimator = O_P(1)` input once the existing
+non-circular absorbing route has produced weak convergence of the selected
+scaled estimator.  The next proof packet should inline that already compiled
+absorbing source route into this bridge, not replay display weak-convergence,
 display-tightness, score-CLT, residual convergence, derivative-action wrappers,
 or the now-packaged pointwise Taylor bridge.
 

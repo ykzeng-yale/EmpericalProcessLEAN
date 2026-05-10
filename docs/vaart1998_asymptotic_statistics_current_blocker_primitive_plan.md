@@ -17,6 +17,9 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingTightness_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Immediate direct `O_P(1)` residual-source endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Immediate predecessor pointwise-Taylor endpoint with explicit residual fields:
@@ -41,7 +44,11 @@ The residual source package is
 `vaart1998_theorem_5_41_residual_tendstoInMeasure_and_aemeasurable_of_derivativeLLN_secondDerivativeBound`.
 The direct `O_P(1)` residual-source wrapper now composes that package into the
 pointwise-Taylor residual endpoint, so explicit `hResidual`, `hResidual_meas`,
-and `hResidual_eq` are no longer live for that route.
+and `hResidual_eq` are no longer live for that route.  The newest
+absorbing-tightness consumer bridge removes the explicit
+`StochasticBounded P scaledEstimator` field whenever the existing
+non-circular absorbing route has already produced weak convergence of the
+selected scaled estimator.
 
 Continuation recipe:
 
@@ -54,11 +61,11 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Absorbing residual-source wrapper: compose the new direct `O_P(1)`
-   residual-source endpoint with the existing non-circular scaled-estimator
-   tightness route, removing the explicit `hScaledEstimator :
-   StochasticBounded P scaledEstimator` field when the absorbing hypotheses are
-   already available.
+1. Fully inlined absorbing residual-source source wrapper: derive the
+   `hAbsorbingTightness` field used by the newest bridge from the already
+   compiled raw-score CLT / derivative LLN / root / Taylor source route, then
+   call the absorbing-tightness consumer.  Do not rebuild the residual-source
+   package or the absorbing bootstrap proof.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    residual-source endpoint; do not rebuild completed score CLT, display weak
