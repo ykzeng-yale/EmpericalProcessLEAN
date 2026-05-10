@@ -18545,6 +18545,66 @@ theorem durrett2019_theorem_4_5_3_tsum_variance_ratio_le_of_integral_clock_bound
         (hclock_bound N)
 
 /--
+Durrett 2019, Theorem 4.5.3 random pathwise summability package.
+
+This lifts the deterministic V212 summability theorem through an almost-sure
+clock-bound certificate.
+-/
+theorem durrett2019_theorem_4_5_3_ae_variance_ratio_summable_of_integral_clock_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {A : ℕ -> Ω -> ℝ} {C : ℝ}
+    (hA_mono_step :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ᵐ ω ∂P, ∀ k : ℕ,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)))
+    (hf_one_le :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t)
+    (hf_int :
+      ∀ᵐ ω ∂P, ∀ k : ℕ,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume (A k ω) (A (k + 1) ω))
+    (hclock_bound :
+      ∀ᵐ ω ∂P, ∀ N : ℕ, ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2 ≤ C) :
+    ∀ᵐ ω ∂P,
+      Summable fun k : ℕ =>
+        (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 := by
+  filter_upwards [hA_mono_step, hf_mono, hf_one_le, hf_int, hclock_bound] with
+    ω hA_mono_stepω hf_monoω hf_one_leω hf_intω hclock_boundω
+  exact
+    durrett2019_theorem_4_5_3_variance_ratio_summable_of_integral_clock_bound
+      (f := f) (A := fun k => A k ω) (C := C)
+      hA_mono_stepω hf_monoω hf_one_leω hf_intω hclock_boundω
+
+/--
+Durrett 2019, Theorem 4.5.3 random pathwise total-bound package.
+
+This is the almost-sure version of the V212 total variance-ratio bound.
+-/
+theorem durrett2019_theorem_4_5_3_ae_tsum_variance_ratio_le_of_integral_clock_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {A : ℕ -> Ω -> ℝ} {C : ℝ}
+    (hA_mono_step :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ᵐ ω ∂P, ∀ k : ℕ,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)))
+    (hf_one_le :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t)
+    (hf_int :
+      ∀ᵐ ω ∂P, ∀ k : ℕ,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume (A k ω) (A (k + 1) ω))
+    (hclock_bound :
+      ∀ᵐ ω ∂P, ∀ N : ℕ, ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2 ≤ C) :
+    ∀ᵐ ω ∂P,
+      (∑' k : ℕ, (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2) ≤ C := by
+  filter_upwards [hA_mono_step, hf_mono, hf_one_le, hf_int, hclock_bound] with
+    ω hA_mono_stepω hf_monoω hf_one_leω hf_intω hclock_boundω
+  exact
+    durrett2019_theorem_4_5_3_tsum_variance_ratio_le_of_integral_clock_bound
+      (f := f) (A := fun k => A k ω) (C := C)
+      hA_mono_stepω hf_monoω hf_one_leω hf_intω hclock_boundω
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
