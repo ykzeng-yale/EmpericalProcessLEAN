@@ -9023,3 +9023,14 @@ zero of the integrated finite-center failure-tail error.  The next source task
 is therefore a canonical selected-cover tuple with measurable fibers, or a
 version of the selected-center adapter whose fallback is explicitly chosen
 inside the nonempty class.
+
+2026-05-09 in-class selected-center fallback:
+`Theorem243.lean` now defines
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass`, proves its in-range
+equality and class-membership facts, and adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_inClass_fibers`.
+This removes the artificial `default ∈ indexClass` hypothesis from the
+fiber-route consumer: the out-of-range value is now the explicit witness from
+the already-required nonempty theorem class.  The remaining selected-center
+source blocker is measurable fibers for this in-class Nat-indexed selected
+cover, not any ambient `Inhabited` default issue.
