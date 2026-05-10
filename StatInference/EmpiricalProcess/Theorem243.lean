@@ -17221,6 +17221,567 @@ theorem
       hcount hindexClass_nonempty hcard candidate hexists hdist k index
 
 /--
+Sample-dependent finite empirical-cover center tuple obtained by taking the
+first successful candidate only at the selected cardinality level.
+
+This is weaker than `vdVWFirstVariableEmpiricalL1CoverCenterTuple`: the
+existence input is needed only for `cardinality sample`, which is the interface
+available from selected empirical covers.
+-/
+noncomputable def vdVWFirstLevelEmpiricalL1CoverCenterTuple
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index}
+    (classFun : Index -> Observation -> ℝ) (epsilon : ℝ)
+    (cardinality : SampleAt Observation n -> ℕ)
+    (candidate :
+      ∀ m : ℕ, ℕ -> Fin m -> {index : Index // index ∈ indexClass})
+    (hexistsLevel :
+      ∀ sample : SampleAt Observation n, ∃ r : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample
+          (candidate (cardinality sample) r))
+    (sample : SampleAt Observation n) :
+    Fin (cardinality sample) -> {index : Index // index ∈ indexClass} := by
+  classical
+  exact candidate (cardinality sample) (Nat.find (hexistsLevel sample))
+
+/--
+Nat-indexed selected center for the level-local sample-dependent tuple selector,
+with an explicit in-class fallback outside the selected cardinality range.
+-/
+noncomputable def vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index}
+    (classFun : Index -> Observation -> ℝ) (epsilon : ℝ)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (cardinality : SampleAt Observation n -> ℕ)
+    (candidate :
+      ∀ m : ℕ, ℕ -> Fin m -> {index : Index // index ∈ indexClass})
+    (hexistsLevel :
+      ∀ sample : SampleAt Observation n, ∃ r : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample
+          (candidate (cardinality sample) r))
+    (sample : SampleAt Observation n) (k : ℕ) : Index :=
+  if hk : k < cardinality sample then
+    ((vdVWFirstLevelEmpiricalL1CoverCenterTuple
+      (indexClass := indexClass) classFun epsilon cardinality candidate
+      hexistsLevel sample) ⟨k, hk⟩).1
+  else
+    hindexClass_nonempty.choose
+
+theorem vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass_mem
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    {cardinality : SampleAt Observation n -> ℕ}
+    {candidate :
+      ∀ m : ℕ, ℕ -> Fin m -> {index : Index // index ∈ indexClass}}
+    {hexistsLevel :
+      ∀ sample : SampleAt Observation n, ∃ r : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample
+          (candidate (cardinality sample) r)}
+    (sample : SampleAt Observation n) (k : ℕ) :
+    vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass
+        (indexClass := indexClass) classFun epsilon hindexClass_nonempty
+        cardinality candidate hexistsLevel sample k ∈ indexClass := by
+  by_cases hk : k < cardinality sample
+  · simp [vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass,
+      vdVWFirstLevelEmpiricalL1CoverCenterTuple, hk]
+  · simpa [vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass, hk] using
+      hindexClass_nonempty.choose_spec
+
+/--
+Fibers of the level-local selected-center selector are measurable after
+splitting by measurable selected-cardinality level sets.
+
+The proof expands the first successful candidate inside each cardinality level,
+so the existence assumption is needed only for the selected level of the sample.
+-/
+theorem
+    measurableSet_vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass_eq
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n : ℕ}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hcount : indexClass.Countable)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    {cardinality : SampleAt Observation n -> ℕ}
+    (hcard : Measurable cardinality)
+    (candidate :
+      ∀ m : ℕ, ℕ -> Fin m -> {index : Index // index ∈ indexClass})
+    (hexistsLevel :
+      ∀ sample : SampleAt Observation n, ∃ r : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample
+          (candidate (cardinality sample) r))
+    (hdist :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          Measurable fun sample : SampleAt Observation n =>
+            empiricalL1Distance sample (classFun index) (classFun center))
+    (k : ℕ) (index : Index) :
+    MeasurableSet
+      {sample : SampleAt Observation n |
+        vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass
+          (indexClass := indexClass) classFun epsilon hindexClass_nonempty
+          cardinality candidate hexistsLevel sample k = index} := by
+  classical
+  let selector : SampleAt Observation n -> Index :=
+    fun sample =>
+      vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass
+        (indexClass := indexClass) classFun epsilon hindexClass_nonempty
+        cardinality candidate hexistsLevel sample k
+  let predicate :
+      (m : ℕ) -> (ℕ -> Fin m -> {index : Index // index ∈ indexClass}) ->
+        SampleAt Observation n -> ℕ -> Prop :=
+    fun m candidateAtCard sample r =>
+      vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+        (indexClass := indexClass) classFun epsilon sample
+        (candidateAtCard r)
+  let levelEvent : ℕ -> Set (SampleAt Observation n) :=
+    fun m => {sample | cardinality sample = m}
+  let firstFiber :
+      (m : ℕ) -> (k < m) -> ℕ -> Set (SampleAt Observation n) :=
+    fun m hk r =>
+      if hcandidate : ((candidate m r ⟨k, hk⟩).1 : Index) = index then
+        {sample |
+          predicate m (candidate m) sample r ∧
+            ∀ s : ℕ, s < r -> ¬ predicate m (candidate m) sample s}
+      else
+        ∅
+  let levelFiber : ℕ -> Set (SampleAt Observation n) :=
+    fun m =>
+      levelEvent m ∩
+        if hk : k < m then
+          ⋃ r : ℕ, firstFiber m hk r
+        else if hfallback : hindexClass_nonempty.choose = index then
+          Set.univ
+        else
+          ∅
+  have hlevel : ∀ m : ℕ, MeasurableSet (levelEvent m) := by
+    intro m
+    have hsingleton : MeasurableSet ({m} : Set ℕ) := MeasurableSet.of_discrete
+    simpa [levelEvent, Set.preimage, Set.mem_singleton_iff] using
+      hcard hsingleton
+  have hpredicate : ∀ m r : ℕ,
+      MeasurableSet {sample : SampleAt Observation n |
+        predicate m (candidate m) sample r} := by
+    intro m r
+    simpa [predicate] using
+      measurableSet_vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+        (indexClass := indexClass) (classFun := classFun)
+        (epsilon := epsilon) hcount (candidate m r) hdist
+  have hfirstFiber : ∀ m hk r, MeasurableSet (firstFiber m hk r) := by
+    intro m hk r
+    by_cases hcandidate : ((candidate m r ⟨k, hk⟩).1 : Index) = index
+    · have hminimal :
+          MeasurableSet
+            (⋂ s : ℕ,
+              {sample : SampleAt Observation n |
+                s < r -> ¬ predicate m (candidate m) sample s}) := by
+        refine MeasurableSet.iInter fun s => ?_
+        by_cases hs : s < r
+        · have hset :
+              {sample : SampleAt Observation n |
+                s < r -> ¬ predicate m (candidate m) sample s} =
+                {sample : SampleAt Observation n |
+                  predicate m (candidate m) sample s}ᶜ := by
+            ext sample
+            simp [hs]
+          rw [hset]
+          exact (hpredicate m s).compl
+        · have hset :
+              {sample : SampleAt Observation n |
+                s < r -> ¬ predicate m (candidate m) sample s} =
+                Set.univ := by
+            ext sample
+            simp [hs]
+          rw [hset]
+          exact MeasurableSet.univ
+      have hfirst_eq :
+          firstFiber m hk r =
+            {sample : SampleAt Observation n |
+              predicate m (candidate m) sample r} ∩
+              ⋂ s : ℕ,
+                {sample : SampleAt Observation n |
+                  s < r -> ¬ predicate m (candidate m) sample s} := by
+        ext sample
+        simp [firstFiber, hcandidate, Set.mem_iInter]
+      rw [hfirst_eq]
+      exact (hpredicate m r).inter hminimal
+    · have hfirst_eq : firstFiber m hk r = Set.univᶜ := by
+        ext sample
+        simp [firstFiber, hcandidate]
+      rw [hfirst_eq]
+      exact MeasurableSet.univ.compl
+  have hlevelFiber : ∀ m : ℕ, MeasurableSet (levelFiber m) := by
+    intro m
+    refine (hlevel m).inter ?_
+    by_cases hk : k < m
+    · simpa [levelFiber, hk] using
+        MeasurableSet.iUnion (hfirstFiber m hk)
+    · by_cases hfallback : hindexClass_nonempty.choose = index
+      · simp [hk, hfallback]
+      · simp [hk, hfallback]
+  have hfiber_eq :
+      {sample : SampleAt Observation n | selector sample = index} =
+        ⋃ m : ℕ, levelFiber m := by
+    ext sample
+    constructor
+    · intro hsample
+      refine Set.mem_iUnion.2 ⟨cardinality sample, ?_⟩
+      refine ⟨by simp [levelEvent], ?_⟩
+      by_cases hk : k < cardinality sample
+      · have hcandidate :
+            ((candidate (cardinality sample) (Nat.find (hexistsLevel sample))
+              ⟨k, hk⟩).1 : Index) = index := by
+          simpa [selector,
+            vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass,
+            vdVWFirstLevelEmpiricalL1CoverCenterTuple, hk] using hsample
+        have hspec :
+            predicate (cardinality sample) (candidate (cardinality sample))
+              sample (Nat.find (hexistsLevel sample)) := by
+          simpa [predicate] using Nat.find_spec (hexistsLevel sample)
+        have hminimal :
+            ∀ s : ℕ, s < Nat.find (hexistsLevel sample) ->
+              ¬ predicate (cardinality sample) (candidate (cardinality sample))
+                sample s := by
+          intro s hs
+          exact Nat.find_min (hexistsLevel sample) hs
+        have hfirstMem :
+            sample ∈ ⋃ r : ℕ,
+              firstFiber (cardinality sample) hk r := by
+          refine Set.mem_iUnion.2
+            ⟨Nat.find (hexistsLevel sample), ?_⟩
+          simpa [firstFiber, hcandidate] using And.intro hspec hminimal
+        simpa [levelFiber, hk] using hfirstMem
+      · by_cases hfallback : hindexClass_nonempty.choose = index
+        · simp [hk, hfallback]
+        · have hcontr :
+            hindexClass_nonempty.choose = index := by
+            simpa [selector,
+              vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass, hk]
+              using hsample
+          exact False.elim (hfallback hcontr)
+    · intro hsample
+      rcases Set.mem_iUnion.1 hsample with ⟨m, hm⟩
+      rcases hm with ⟨hcard_eq, hinner⟩
+      subst m
+      by_cases hk : k < cardinality sample
+      · have hinnerUnion :
+            sample ∈ ⋃ r : ℕ,
+              firstFiber (cardinality sample) hk r := by
+          simpa [levelFiber, hk] using hinner
+        rcases Set.mem_iUnion.1 hinnerUnion with ⟨r, hfirst⟩
+        have hcandidate :
+            ((candidate (cardinality sample) r ⟨k, hk⟩).1 : Index) =
+              index := by
+          by_contra hneq
+          simp [firstFiber, hneq] at hfirst
+        have hfirst_pair :
+            predicate (cardinality sample) (candidate (cardinality sample))
+                sample r ∧
+              ∀ s : ℕ, s < r ->
+                ¬ predicate (cardinality sample)
+                  (candidate (cardinality sample)) sample s := by
+          simpa [firstFiber, hcandidate] using hfirst
+        have hpred :
+            predicate (cardinality sample) (candidate (cardinality sample))
+              sample r := by
+          exact hfirst_pair.1
+        have hminimal :
+            ∀ s : ℕ, s < r ->
+              ¬ predicate (cardinality sample) (candidate (cardinality sample))
+                sample s := by
+          exact hfirst_pair.2
+        have hle : Nat.find (hexistsLevel sample) ≤ r :=
+          Nat.find_min' (hexistsLevel sample) (by
+            simpa [predicate] using hpred)
+        have hnot_lt : ¬ Nat.find (hexistsLevel sample) < r := by
+          intro hlt
+          exact hminimal (Nat.find (hexistsLevel sample)) hlt
+            (by
+              simpa [predicate] using Nat.find_spec (hexistsLevel sample))
+        have hfind_eq : Nat.find (hexistsLevel sample) = r :=
+          le_antisymm hle (Nat.le_of_not_gt hnot_lt)
+        simpa [selector,
+          vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass,
+          vdVWFirstLevelEmpiricalL1CoverCenterTuple, hk, hfind_eq] using
+          hcandidate
+      · by_cases hfallback : hindexClass_nonempty.choose = index
+        · simp [selector,
+            vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass, hk,
+            hfallback]
+        · have hfalse : False := by
+            simp [hk, hfallback] at hinner
+          exact False.elim hfalse
+  simpa [selector, hfiber_eq] using MeasurableSet.iUnion hlevelFiber
+
+/--
+The level-local sample-dependent first successful tuple is an empirical cover.
+-/
+theorem vdVWFirstLevelEmpiricalL1CoverCenterTuple_spec
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    {candidate :
+      ∀ m : ℕ, ℕ -> Fin m -> {index : Index // index ∈ indexClass}}
+    {hexistsLevel :
+      ∀ sample : SampleAt Observation n, ∃ r : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample
+          (candidate (cardinality sample) r)}
+    (sample : SampleAt Observation n) :
+    vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+      (indexClass := indexClass) classFun epsilon sample
+      (vdVWFirstLevelEmpiricalL1CoverCenterTuple
+        (indexClass := indexClass) classFun epsilon cardinality candidate
+        hexistsLevel sample) := by
+  classical
+  simpa [vdVWFirstLevelEmpiricalL1CoverCenterTuple] using
+    Nat.find_spec (hexistsLevel sample)
+
+/--
+The proof-carrying empirical cover generated by the level-local canonical
+selector.
+-/
+noncomputable def vdVWFirstLevelEmpiricalL1CoverAtCard
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index}
+    (classFun : Index -> Observation -> ℝ) (epsilon : ℝ)
+    (cardinality : SampleAt Observation n -> ℕ)
+    (candidate :
+      ∀ m : ℕ, ℕ -> Fin m -> {index : Index // index ∈ indexClass})
+    (hexistsLevel :
+      ∀ sample : SampleAt Observation n, ∃ r : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample
+          (candidate (cardinality sample) r))
+    (sample : SampleAt Observation n) :
+    FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+      (cardinality sample) where
+  center centerIndex :=
+    ((vdVWFirstLevelEmpiricalL1CoverCenterTuple
+      (indexClass := indexClass) classFun epsilon cardinality candidate
+      hexistsLevel sample) centerIndex).1
+  center_mem centerIndex :=
+    ((vdVWFirstLevelEmpiricalL1CoverCenterTuple
+      (indexClass := indexClass) classFun epsilon cardinality candidate
+      hexistsLevel sample) centerIndex).2
+  centerOf index hindex :=
+    Classical.choose
+      (vdVWFirstLevelEmpiricalL1CoverCenterTuple_spec
+        (indexClass := indexClass) (classFun := classFun)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (candidate := candidate) (hexistsLevel := hexistsLevel) sample
+        ⟨index, hindex⟩)
+  dist_le index hindex :=
+    Classical.choose_spec
+      (vdVWFirstLevelEmpiricalL1CoverCenterTuple_spec
+        (indexClass := indexClass) (classFun := classFun)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (candidate := candidate) (hexistsLevel := hexistsLevel) sample
+        ⟨index, hindex⟩)
+
+/--
+The standard in-class selected-center adapter agrees with the level-local
+canonical selector when its cover argument is generated by that selector.
+-/
+theorem
+    VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_eq_firstLevel
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M eta : ℝ}
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    {cardinality : SampleAt Observation n -> ℕ}
+    {candidate :
+      ∀ m : ℕ, ℕ -> Fin m -> {index : Index // index ∈ indexClass}}
+    {hexistsLevel :
+      ∀ sample : SampleAt Observation n, ∃ r : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) (vdVWTruncatedClassFun classFun envelope M)
+          (eta / 2) sample (candidate (cardinality sample) r)}
+    (sample : SampleAt Observation n) (k : ℕ) :
+    VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass
+        (Observation := Observation) (Index := Index) (n := n)
+        indexClass classFun envelope M eta hindexClass_nonempty
+        cardinality
+        (fun sample : SampleAt Observation n =>
+          vdVWFirstLevelEmpiricalL1CoverAtCard
+            (indexClass := indexClass)
+            (classFun := vdVWTruncatedClassFun classFun envelope M)
+            (epsilon := eta / 2) cardinality candidate hexistsLevel sample)
+        sample k =
+      vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (epsilon := eta / 2) hindexClass_nonempty cardinality candidate
+        hexistsLevel sample k := by
+  by_cases hk : k < cardinality sample
+  · simp [VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass,
+      vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass,
+      vdVWFirstLevelEmpiricalL1CoverAtCard, hk]
+  · simp [VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass,
+      vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass, hk]
+
+/--
+Measurable fibers for the standard in-class selected-center adapter when its
+cover is the level-local canonical empirical cover.
+-/
+theorem
+    measurableSet_VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_firstLevel_eq
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n : ℕ}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M eta : ℝ}
+    (hcount : indexClass.Countable)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    {cardinality : SampleAt Observation n -> ℕ}
+    (hcard : Measurable cardinality)
+    (candidate :
+      ∀ m : ℕ, ℕ -> Fin m -> {index : Index // index ∈ indexClass})
+    (hexistsLevel :
+      ∀ sample : SampleAt Observation n, ∃ r : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) (vdVWTruncatedClassFun classFun envelope M)
+          (eta / 2) sample (candidate (cardinality sample) r))
+    (hdist :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          Measurable fun sample : SampleAt Observation n =>
+            empiricalL1Distance sample
+              (vdVWTruncatedClassFun classFun envelope M index)
+              (vdVWTruncatedClassFun classFun envelope M center))
+    (k : ℕ) (index : Index) :
+    MeasurableSet
+      {sample : SampleAt Observation n |
+        VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass
+          (Observation := Observation) (Index := Index) (n := n)
+          indexClass classFun envelope M eta hindexClass_nonempty
+          cardinality
+          (fun sample : SampleAt Observation n =>
+            vdVWFirstLevelEmpiricalL1CoverAtCard
+              (indexClass := indexClass)
+              (classFun := vdVWTruncatedClassFun classFun envelope M)
+              (epsilon := eta / 2) cardinality candidate hexistsLevel sample)
+          sample k = index} := by
+  have hcanonical :
+      MeasurableSet
+        {sample : SampleAt Observation n |
+          vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass
+            (indexClass := indexClass)
+            (classFun := vdVWTruncatedClassFun classFun envelope M)
+            (epsilon := eta / 2) hindexClass_nonempty cardinality candidate
+            hexistsLevel sample k = index} :=
+    measurableSet_vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass_eq
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (epsilon := eta / 2) hcount hindexClass_nonempty hcard candidate
+      hexistsLevel hdist k index
+  have hfiber_eq :
+      {sample : SampleAt Observation n |
+        VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass
+          (Observation := Observation) (Index := Index) (n := n)
+          indexClass classFun envelope M eta hindexClass_nonempty
+          cardinality
+          (fun sample : SampleAt Observation n =>
+            vdVWFirstLevelEmpiricalL1CoverAtCard
+              (indexClass := indexClass)
+              (classFun := vdVWTruncatedClassFun classFun envelope M)
+              (epsilon := eta / 2) cardinality candidate hexistsLevel sample)
+          sample k = index} =
+        {sample : SampleAt Observation n |
+          vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass
+            (indexClass := indexClass)
+            (classFun := vdVWTruncatedClassFun classFun envelope M)
+            (epsilon := eta / 2) hindexClass_nonempty cardinality candidate
+            hexistsLevel sample k = index} := by
+    ext sample
+    simp only [Set.mem_setOf_eq]
+    rw [
+      VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_eq_firstLevel
+        (Observation := Observation) (Index := Index) (n := n)
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        hindexClass_nonempty (cardinality := cardinality)
+        (candidate := candidate) (hexistsLevel := hexistsLevel) sample k]
+  rwa [hfiber_eq]
+
+/--
+Scalar coordinate measurability for level-local canonical selected centers.
+
+This is the selected-cover interface needed downstream: cover existence is only
+assumed at the sample's selected cardinality level.
+-/
+theorem
+    measurable_vdVWTruncatedClassFun_firstLevelSelectedCenterAtInClass
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n : ℕ}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M eta : ℝ}
+    (hcount : indexClass.Countable)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    {cardinality : SampleAt Observation n -> ℕ}
+    (hcard : Measurable cardinality)
+    (candidate :
+      ∀ m : ℕ, ℕ -> Fin m -> {index : Index // index ∈ indexClass})
+    (hexistsLevel :
+      ∀ sample : SampleAt Observation n, ∃ r : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) (vdVWTruncatedClassFun classFun envelope M)
+          (eta / 2) sample (candidate (cardinality sample) r))
+    (hdist :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          Measurable fun sample : SampleAt Observation n =>
+            empiricalL1Distance sample
+              (vdVWTruncatedClassFun classFun envelope M index)
+              (vdVWTruncatedClassFun classFun envelope M center))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope) :
+    ∀ k : ℕ, ∀ i : Fin n,
+      Measurable fun sample : SampleAt Observation n =>
+        vdVWTruncatedClassFun classFun envelope M
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta hindexClass_nonempty
+            cardinality
+            (fun sample : SampleAt Observation n =>
+              vdVWFirstLevelEmpiricalL1CoverAtCard
+                (indexClass := indexClass)
+                (classFun := vdVWTruncatedClassFun classFun envelope M)
+                (epsilon := eta / 2) cardinality candidate hexistsLevel sample)
+            sample k)
+          (sample i) := by
+  refine
+    measurable_vdVWTruncatedClassFun_selectedCenterAtInClass_of_countable_fibers
+      (Observation := Observation) (Index := Index) (n := n)
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      hindexClass_nonempty
+      (cardinality := cardinality)
+      (cover := fun sample : SampleAt Observation n =>
+        vdVWFirstLevelEmpiricalL1CoverAtCard
+          (indexClass := indexClass)
+          (classFun := vdVWTruncatedClassFun classFun envelope M)
+          (epsilon := eta / 2) cardinality candidate hexistsLevel sample)
+      hcount ?_ hclass henvelope_meas
+  intro k index hindex
+  exact
+    measurableSet_VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_firstLevel_eq
+      (Observation := Observation) (Index := Index) (n := n)
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      hcount hindexClass_nonempty hcard candidate hexistsLevel hdist k index
+
+/--
 Selected-center measurability bridge from scalar components.
 
 Instead of assuming each implication-shaped selected-center event is

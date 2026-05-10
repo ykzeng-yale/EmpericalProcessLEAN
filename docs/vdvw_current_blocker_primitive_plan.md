@@ -1,6 +1,6 @@
 # VdV&W Current Blocker Primitive Plan
 
-Status date: 2026-05-09.
+Status date: 2026-05-10.
 
 This file pins down the active blocker and the primitive Lean declarations
 needed to close it.  It is not a theorem report.  A formal report is created
@@ -9112,3 +9112,26 @@ existence hypotheses already available in the quarter-radius route.  After
 that, the remaining non-selector source input is still the product-fiber
 Chebyshev lower bound or an honest replacement for the finite-center
 failure-tail obstruction.
+
+2026-05-10 level-local canonical selected-cover selector:
+`Theorem243.lean` now proves the weaker theorem-facing selector interface
+needed by the actual selected-cover route:
+`vdVWFirstLevelEmpiricalL1CoverCenterTuple`,
+`vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass`,
+`vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass_mem`,
+`measurableSet_vdVWFirstLevelEmpiricalL1CoverSelectedCenterAtInClass_eq`,
+`vdVWFirstLevelEmpiricalL1CoverCenterTuple_spec`,
+`vdVWFirstLevelEmpiricalL1CoverAtCard`,
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_eq_firstLevel`,
+`measurableSet_VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_firstLevel_eq`,
+and `measurable_vdVWTruncatedClassFun_firstLevelSelectedCenterAtInClass`.
+Unlike the earlier `firstVariable` bridge, this interface only assumes a
+successful Nat candidate at the selected level `cardinality sample`, not at
+every fixed cardinality for every sample.  The measurable-fiber proof expands
+the `Nat.find` choice inside cardinality level sets, so it is compatible with
+selected empirical-cover existence hypotheses.  The next theorem-facing edit is
+to build the actual Nat enumeration/surjection of in-class finite center tuples
+and the level-local existence proof from the selected empirical-cover
+cardinality hypotheses in the quarter-radius route, then instantiate the
+`firstLevel` coordinate theorem there.  The product-fiber/Chebyshev lower bound
+remains a separate probability-side source input.
