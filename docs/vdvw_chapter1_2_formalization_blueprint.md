@@ -3824,6 +3824,19 @@ the existing Chebyshev penalty and log-cardinality machinery.  This closes the
 fixed-`M` adapter gap for that route; the remaining source work is the actual
 fiber lower bound or tail-control proof.
 
+The samplewise-error product-fiber route now also has the finite-center
+failure-tail control theorem:
+`vdVWTheorem243_selectedFailureTail_centered_setLIntegral_tendsto_zero_of_invSq_lintegral`
+feeds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_invSq`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_of_eventually_cardinality_ge`
+replaces the inverse-square input by deterministic selected-cardinality lower
+growth.  Future source work can therefore state an a.e. product-fiber beta
+lower bound with a samplewise finite-center failure-tail error; the remaining
+mathematics is proving that beta lower bound, not closing the tail-control
+or fixed-`M` consumer layer.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

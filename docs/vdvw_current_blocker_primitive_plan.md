@@ -10232,3 +10232,18 @@ consumer.  A future source proof now only needs to provide the measurable
 joint event, the a.e. fiber lower bound up to `errorSample`, and a deterministic
 vanishing bound for `∫⁻ sample in centeredBad, errorSample sample`; the
 fixed-`M` convergence handoff is compiled.
+
+2026-05-10 product-fiber samplewise-error tail-control specialization:
+`Theorem243.lean` now adds the named source-event abbreviations
+`VdVWTheorem243CenteredTruncatedBadSet` and
+`VdVWTheorem243SelectedFiniteNetBadSet`, plus
+`vdVWTheorem243_selectedFailureTail_centered_setLIntegral_tendsto_zero_of_invSq_lintegral`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_invSq`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_of_eventually_cardinality_ge`.
+The product-fiber additive-error route can now use the displayed finite-center
+Hoeffding failure tail as `errorSample` control and discharge its vanishing
+from the existing inverse-square selected-cardinality lintegral, or from a
+deterministic selected-cardinality lower-growth hypothesis.  The remaining
+frontier is the actual a.e. product-fiber beta lower bound, not the
+tail-control handoff.

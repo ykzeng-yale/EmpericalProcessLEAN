@@ -4731,3 +4731,14 @@ deterministic vanishing integrated-error bound with the Chebyshev penalty
 machinery.  The frontier is therefore no longer a fixed-`M` wrapper; it is the
 honest product-fiber lower bound or tail-control theorem that supplies those
 source hypotheses.
+
+The samplewise-error product-fiber lane now has its inverse-square
+finite-center failure-tail specialization:
+`vdVWTheorem243_selectedFailureTail_centered_setLIntegral_tendsto_zero_of_invSq_lintegral`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_invSq`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_of_eventually_cardinality_ge`.
+The route can now pay centered-bad `errorSample` mass by the displayed
+finite-center Hoeffding failure tail and close that tail with either an
+inverse-square selected-cardinality lintegral or deterministic lower growth.
+The dashboard blocker is now the a.e. product-fiber beta lower bound itself.
