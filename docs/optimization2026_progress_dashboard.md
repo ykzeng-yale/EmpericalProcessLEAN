@@ -534,6 +534,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   next exact source target focused on the segment applied-Hessian derivative
   identity, without requiring an operator-valued Schur derivative certificate
   first.
+- Inf-projection scalar source-radius shrink: the newest packet adds the
+  generic `hessianSegmentLocalNorm_hasDerivWithinAt_of_psi`,
+  `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_scalarPsi_sourceRadius`,
+  the projected
+  `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius`,
+  and the adjoint-square-model
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius`.
+  The scalar applied-Hessian route now derives the Riccati/source-radius segment
+  coefficient internally.  Future exact source work should supply projected
+  Schur-Hessian continuity plus the segment applied-vector derivative and
+  lifted-third pairing; it should not pass a separate `hsegment_coeff`.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

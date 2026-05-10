@@ -651,6 +651,17 @@ third, and the standard source-radius coefficient bound.  The next exact
 packet can therefore attack the segment applied-Hessian derivative identity
 directly instead of constructing the full operator-valued
 `BarrierInfProjectionSchurHessDerivativeOn` first.
+The scalar source-radius shrink is now also available through
+`hessianSegmentLocalNorm_hasDerivWithinAt_of_psi`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_scalarPsi_sourceRadius`,
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius`,
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius`.
+This derives the Riccati/source-radius segment coefficient internally from the
+scalar `ψ_{y-x}` derivative, strict projected Hessian positivity, and
+self-concordance.  The next exact item-4 packet should provide the projected
+Schur-Hessian continuity and applied-vector derivative/pairing identity; do
+not ask for a separate `hsegment_coeff`.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

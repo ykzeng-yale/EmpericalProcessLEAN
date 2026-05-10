@@ -2014,6 +2014,85 @@ theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwic
       happly_deriv hmixed hsegment_coeff v
 
 /--
+Source-radius projected local-norm sandwich from the scalar applied-Hessian
+path derivative route, with the Riccati segment coefficient derived internally.
+The only analytic scalar inputs are continuity of the projected Schur Hessian
+on the projected domain and the applied-vector derivative/pairing identity.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {schurApplyDeriv : E₁ -> ℝ -> E₁}
+    {x y v : E₁}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    (hMr_lt :
+      M *
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+            x (y - x) < 1)
+    (hs : Convex ℝ (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hy : y ∈ barrierInfProjectionSet s)
+    (hschur_cont :
+      ContinuousOn (barrierInfProjectionSchurHessFrom selector hess invHyy)
+        (barrierInfProjectionSet s))
+    (happly_deriv : ∀ w : E₁, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasDerivWithinAt
+          (fun τ : ℝ =>
+            barrierInfProjectionSchurHessFrom selector hess invHyy
+              (hessianSegmentPoint x y τ) w)
+          (schurApplyDeriv w t)
+          (interior (Set.Icc (0 : ℝ) 1)) t)
+    (hmixed : ∀ w : E₁, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ w (schurApplyDeriv w t) =
+          hessianSegmentMixedThirdPsiDeriv
+            (barrierInfProjectionSchurLiftedThird selector hess invHyy third)
+            x y w t) :
+    (1 - M *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+          x (y - x)) *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v ≤
+      localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ∧
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ≤
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v /
+            (1 - M *
+              localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+                x (y - x)) := by
+  by_cases hdiff : y - x = 0
+  · have hyx : y = x := sub_eq_zero.mp hdiff
+    subst y
+    simp [localNorm_zero]
+  · let hyy_right : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+        ∀ w : E₂, barrierInfProjectionBlockYY selector hess z (invHyy z w) = w := by
+      intro z hz w
+      exact continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv
+        (H := barrierInfProjectionBlockYY selector hess z)
+        (invH := invHyy z) (sqrtCoord := sqrtHyy z)
+        (hmodel.hyy_hess_eq (x := z) hz)
+        (hmodel.hyy_inv_eq (x := z) hz) w
+    exact
+      hmodel.selector_stationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius
+        (hbar := hmodel.barrier) hyy_right hMr_lt hs hx hy
+        hmodel.projectedSchurHess_quadratic_pos hdiff hschur_cont
+        happly_deriv hmixed v
+
+/--
 Source-radius projected local-norm sandwich from a supplied Schur-Hessian
 derivative certificate.  This is the theorem-facing adapter for the exact
 inf-projection route after the Schur derivative has been built.
