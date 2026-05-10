@@ -2997,6 +2997,18 @@ selected empirical-cover centers used by the quarter-radius route to this
 canonical variable-cardinality selector, then feed the compiled fiber theorem
 into the in-class selected-center coordinate measurability bridge.  The
 probability-side product-fiber lower bound remains a distinct open input.
+The canonical variable-cardinality selector is now also turned into the
+standard proof-carrying cover object through
+`vdVWFirstVariableEmpiricalL1CoverCenterTuple_spec`,
+`vdVWFirstVariableEmpiricalL1CoverAtCard`,
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_eq_firstVariable`,
+`measurableSet_VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_firstVariable_eq`,
+and `measurable_vdVWTruncatedClassFun_firstVariableSelectedCenterAtInClass`.
+Thus the downstream in-class selected-center adapter can use the canonical
+cover directly.  The remaining selector work is no longer an abstract
+measurability bridge; it is to supply the concrete Nat tuple enumeration and
+existence proof from the selected empirical-cover hypotheses in the
+quarter-radius Theorem 2.4.3 route.
 
 ## Automation Checklist
 

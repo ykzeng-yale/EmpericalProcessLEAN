@@ -9091,3 +9091,24 @@ for the selected empirical cover, then feed the resulting fibers into
 `measurable_vdVWTruncatedClassFun_selectedCenterAtInClass_of_countable_fibers`
 and the quarter-radius Theorem 2.4.3 source consumer.  The product-fiber
 Chebyshev lower bound remains the separate probability-side source input.
+
+2026-05-10 canonical selected-cover adapter bridge:
+`Theorem243.lean` now packages the canonical variable-cardinality selector as
+an actual proof-carrying empirical cover through
+`vdVWFirstVariableEmpiricalL1CoverCenterTuple_spec` and
+`vdVWFirstVariableEmpiricalL1CoverAtCard`.  It also proves the adapter
+equality
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_eq_firstVariable`, the
+standard-adapter fiber theorem
+`measurableSet_VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_firstVariable_eq`,
+and the downstream scalar-coordinate theorem
+`measurable_vdVWTruncatedClassFun_firstVariableSelectedCenterAtInClass`.
+This means the standard in-class selected-center adapter now has measurable
+fibers and scalar coordinates whenever its cover is the canonical first
+Nat-enumerated successful variable-cardinality tuple.  The live selector
+frontier is the theorem-facing candidate supply: construct the Nat tuple
+enumeration/surjection and `hexists` field from the selected empirical-cover
+existence hypotheses already available in the quarter-radius route.  After
+that, the remaining non-selector source input is still the product-fiber
+Chebyshev lower bound or an honest replacement for the finite-center
+failure-tail obstruction.
