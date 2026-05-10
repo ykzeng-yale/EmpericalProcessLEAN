@@ -3917,3 +3917,17 @@ canonical variable-cardinality selector to the actual selected-cover object
 used by the quarter-radius route, using a Nat enumeration/surjection of
 in-class finite center tuples and the selected cover existence witness.  The
 separate product-fiber/Chebyshev source probability input remains open.
+
+The canonical selector is now also packaged as an actual proof-carrying
+empirical cover.  `Theorem243.lean` adds
+`vdVWFirstVariableEmpiricalL1CoverCenterTuple_spec`,
+`vdVWFirstVariableEmpiricalL1CoverAtCard`,
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_eq_firstVariable`,
+`measurableSet_VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_firstVariable_eq`,
+and `measurable_vdVWTruncatedClassFun_firstVariableSelectedCenterAtInClass`.
+This closes the abstract bridge from the canonical variable-cardinality
+selector to the standard downstream in-class selected-center adapter.  The
+remaining selector task is now the theorem-facing data supply: build the
+Nat-enumerated tuple candidates and `hexists` witness from the selected
+empirical-cover/cardinality hypotheses used in the quarter-radius route, then
+instantiate the canonical-cover coordinate theorem there.
