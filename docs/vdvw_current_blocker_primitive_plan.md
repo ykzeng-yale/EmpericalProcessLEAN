@@ -9819,3 +9819,17 @@ sign-swapped bad-fiber lower bound plus original/ghost finite-center a.e.
 support; the second exposes the lower layer: Chebyshev pair-sub bad-event mass
 plus fixed-original sign-swap transport.  The selected cover and cardinality
 bookkeeping are internal to these wrappers.
+
+2026-05-10 positive-size product-pair Chebyshev source adapters:
+`Theorem243.lean` now also removes the successor-only `n + 1` shape from the
+raw Chebyshev/product-pair source layer through
+`VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_of_pos`,
+`VdVWTheorem243_productPair_centeredPairSubBadEvent_lower_bound_of_chebyshev_of_pos`,
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_lower_bound_of_chebyshev_of_pos`,
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_of_pos`, and
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_of_pos_of_countable`.
+These are source-facing normalization adapters, not a new probability proof.
+The live blocker is unchanged: prove a genuine displayed-beta/product-fiber
+lower bound or a coefficient-correct fixed-fiber sign-swap theorem, plus the
+needed original/ghost finite-center support, rather than adding more endpoint
+aliases.

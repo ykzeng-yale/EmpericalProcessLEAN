@@ -48294,6 +48294,256 @@ theorem
   simpa [beta, left, support, signedEvent, centeredClassFun, hsupport] using hprod
 
 /--
+Positive-sample-size version of the named threshold-doubled Chebyshev lower
+bound.
+
+The source estimate is naturally proved for `n + 1`; this exposes the same
+named pair-sub bad event lower bound at an arbitrary positive sample size.
+-/
+theorem
+    VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_of_pos
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    {sample : SampleAt Observation n}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon) (hn : 0 < n)
+    (hbad :
+      2 * epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => ((n : ℝ))⁻¹) sample)
+          (0 : ℝ)) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / (((n : ℝ)) * epsilon ^ 2)) ≤
+      (vdVWProductMeasure P n)
+        (VdVWTheorem243CenteredPairSubBadEvent P indexClass classFun
+          envelope M epsilon sample) := by
+  cases n with
+  | zero =>
+      cases hn
+  | succ n =>
+      simpa [Nat.succ_eq_add_one] using
+        VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+          (sample := sample) henvelope hM htruncIntegrable hepsilon hbad
+
+/--
+Positive-sample-size version of the averaged product-pair Chebyshev lower
+bound.
+-/
+theorem
+    VdVWTheorem243_productPair_centeredPairSubBadEvent_lower_bound_of_chebyshev_of_pos
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon) (hn : 0 < n)
+    (hpair_meas :
+      MeasurableSet
+        {pairSample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  (vdVWTruncatedClassFun classFun envelope M index z.1 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                    (vdVWTruncatedClassFun classFun envelope M index z.2 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                (fun _ : Fin n => ((n : ℝ))⁻¹) pairSample)
+              (0 : ℝ)}) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / (((n : ℝ)) * epsilon ^ 2)) *
+        (vdVWProductMeasure P n)
+          {sample : SampleAt Observation n |
+            2 * epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => ((n : ℝ))⁻¹) sample)
+                (0 : ℝ)} ≤
+      (vdVWProductMeasure (P.prod P) n)
+        {pairSample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  (vdVWTruncatedClassFun classFun envelope M index z.1 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                    (vdVWTruncatedClassFun classFun envelope M index z.2 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                (fun _ : Fin n => ((n : ℝ))⁻¹) pairSample)
+              (0 : ℝ)} := by
+  cases n with
+  | zero =>
+      cases hn
+  | succ n =>
+      simpa [Nat.succ_eq_add_one] using
+        VdVWTheorem243_productPair_centeredPairSubBadEvent_lower_bound_of_chebyshev_succ
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+          henvelope hM htruncIntegrable hepsilon hpair_meas
+
+/--
+Positive-sample-size version of the deterministic sign-swapped product-pair
+Chebyshev lower bound.
+-/
+theorem
+    VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_lower_bound_of_chebyshev_of_pos
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    (sign : Fin n -> ℝ) (hsign : VdVWRademacherSignVector sign)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon) (hn : 0 < n)
+    (hpair_meas :
+      MeasurableSet
+        {pairSample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  (vdVWTruncatedClassFun classFun envelope M index z.1 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                    (vdVWTruncatedClassFun classFun envelope M index z.2 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                (fun _ : Fin n => ((n : ℝ))⁻¹) pairSample)
+              (0 : ℝ)}) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / (((n : ℝ)) * epsilon ^ 2)) *
+        (vdVWProductMeasure P n)
+          {sample : SampleAt Observation n |
+            2 * epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => ((n : ℝ))⁻¹) sample)
+                (0 : ℝ)} ≤
+      (vdVWProductMeasure (P.prod P) n)
+        {pairSample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  (vdVWTruncatedClassFun classFun envelope M index z.1 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                    (vdVWTruncatedClassFun classFun envelope M index z.2 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                (vdVWRademacherWeights sign) pairSample)
+              (0 : ℝ)} := by
+  cases n with
+  | zero =>
+      cases hn
+  | succ n =>
+      simpa [Nat.succ_eq_add_one] using
+        VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_lower_bound_of_chebyshev_succ
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+          sign hsign henvelope hM htruncIntegrable hepsilon hpair_meas
+
+/--
+Positive-sample-size version of the sign-averaged product-pair Chebyshev
+source.
+-/
+theorem
+    VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_of_pos
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon) (hn : 0 < n)
+    (hpair_meas :
+      MeasurableSet
+        {pairSample : SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun z : Observation × Observation =>
+                  (vdVWTruncatedClassFun classFun envelope M index z.1 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                    (vdVWTruncatedClassFun classFun envelope M index z.2 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                (fun _ : Fin n => ((n : ℝ))⁻¹) pairSample)
+              (0 : ℝ)})
+    (hsigned_meas :
+      MeasurableSet
+        {z :
+            SampleAt ℝ n × SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun pair : Observation × Observation =>
+                  (vdVWTruncatedClassFun classFun envelope M index pair.1 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                    (vdVWTruncatedClassFun classFun envelope M index pair.2 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                (vdVWRademacherWeights z.1) z.2)
+              (0 : ℝ)}) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / (((n : ℝ)) * epsilon ^ 2)) *
+        (vdVWProductMeasure P n)
+          {sample : SampleAt Observation n |
+            2 * epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => ((n : ℝ))⁻¹) sample)
+                (0 : ℝ)} ≤
+      ((vdVWProductMeasure vdVWRademacherLaw n).prod
+          (vdVWProductMeasure (P.prod P) n))
+        {z :
+            SampleAt ℝ n × SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun pair : Observation × Observation =>
+                  (vdVWTruncatedClassFun classFun envelope M index pair.1 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                    (vdVWTruncatedClassFun classFun envelope M index pair.2 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                (vdVWRademacherWeights z.1) z.2)
+              (0 : ℝ)} := by
+  cases n with
+  | zero =>
+      cases hn
+  | succ n =>
+      simpa [Nat.succ_eq_add_one] using
+        VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_succ
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+          henvelope hM htruncIntegrable hepsilon hpair_meas hsigned_meas
+
+/--
 Countable-class wrapper for the sign-averaged product-pair Chebyshev source.
 
 This discharges both product-pair measurability inputs using the local
@@ -48353,6 +48603,68 @@ theorem
       (measurableSet_vdVWProductPair_centeredPairSubRademacherBadEvent_of_countable
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) (M := M) (epsilon := epsilon) (n := n + 1)
+        hcount hclass henvelope_meas)
+
+/--
+Positive-sample-size countable-class wrapper for the sign-averaged product-pair
+Chebyshev source.
+
+This is the arbitrary-positive-`n` form of
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_succ_of_countable`.
+-/
+theorem
+    VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_of_pos_of_countable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon) (hn : 0 < n) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / (((n : ℝ)) * epsilon ^ 2)) *
+        (vdVWProductMeasure P n)
+          {sample : SampleAt Observation n |
+            2 * epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => ((n : ℝ))⁻¹) sample)
+                (0 : ℝ)} ≤
+      ((vdVWProductMeasure vdVWRademacherLaw n).prod
+          (vdVWProductMeasure (P.prod P) n))
+        {z :
+            SampleAt ℝ n × SampleAt (Observation × Observation) n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun pair : Observation × Observation =>
+                  (vdVWTruncatedClassFun classFun envelope M index pair.1 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                    (vdVWTruncatedClassFun classFun envelope M index pair.2 -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                (vdVWRademacherWeights z.1) z.2)
+              (0 : ℝ)} := by
+  exact
+    VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_of_pos
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+      henvelope hM htruncIntegrable hepsilon hn
+      (measurableSet_vdVWProductPair_centeredPairSubBadEvent_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+        hcount hclass henvelope_meas)
+      (measurableSet_vdVWProductPair_centeredPairSubRademacherBadEvent_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
         hcount hclass henvelope_meas)
 
 /--

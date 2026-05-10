@@ -2387,6 +2387,16 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_succ`,
    with the countable-class wrapper
    `VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_succ_of_countable`.
+   The same raw Chebyshev/product-pair source layer now has arbitrary
+   positive-sample-size forms:
+   `VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_of_pos`,
+   `VdVWTheorem243_productPair_centeredPairSubBadEvent_lower_bound_of_chebyshev_of_pos`,
+   `VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_lower_bound_of_chebyshev_of_pos`,
+   `VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_of_pos`, and
+   `VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_of_pos_of_countable`.
+   These are normalization adapters for positive `n`; the remaining theorem
+   work is still the genuine displayed-beta/product-fiber lower bound or a
+   coefficient-correct fixed-fiber sign-swap source theorem.
    The supporting product-pair bad-event measurability lemmas are
    `measurableSet_vdVWProductPair_centeredPairSubBadEvent_of_countable`
    and

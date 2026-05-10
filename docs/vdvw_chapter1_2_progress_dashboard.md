@@ -4419,3 +4419,14 @@ They internalize the countable first-level selected cover and leave only the
 probability-side source inputs: sign-swapped bad-fiber mass, or pair-sub
 bad-event mass plus fixed-original sign-swap transport, together with the
 original/ghost finite-center a.e. support facts.
+
+The raw product-pair Chebyshev source layer now also has arbitrary positive
+sample-size forms:
+`VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_of_pos`,
+`VdVWTheorem243_productPair_centeredPairSubBadEvent_lower_bound_of_chebyshev_of_pos`,
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_lower_bound_of_chebyshev_of_pos`,
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_of_pos`, and
+`VdVWTheorem243_productPair_centeredPairSubRademacherBadEvent_integral_lower_bound_of_chebyshev_of_pos_of_countable`.
+These remove a recurring successor-index adapter gap before the next source
+proof, but they do not solve the probability-side displayed-beta/sign-swap
+blocker.
