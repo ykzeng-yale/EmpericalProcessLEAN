@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 finite score-equation display bridge`).
+(`Add Vaart theorem 5.41 finite score-equation action endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -675,6 +675,9 @@ New verified absorbing source endpoint stack:
   derives displayed weak convergence from the common-vector-law
   finite-coordinate score CLT, a centered finite-coordinate score equation,
   and a negligible score residual.
+- `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateScoreEquation_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+  assembles that finite-coordinate score-equation display bridge with the
+  display weak-tightness action-bound endpoint.
 
 Live continuation prompt: use the efficient prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
@@ -686,11 +689,11 @@ Lean packet first, then discharge exactly one live source field for the current
 endpoint.  The canonical and projected-to-action law-tail stack now routes
 through the absorbing derivative-norm endpoint, and the current action-bound
 source endpoint now derives displayed `O_P(1)` from displayed weak
-convergence.  The displayed weak convergence field can now be supplied by the
-finite-coordinate score-equation common-law helper.  Move next only on a live
-source hypothesis: assemble the display weak-tightness action-bound endpoint
-with that helper, or derive the score-equation/Taylor-zero source from a
-genuinely model-specific Taylor display, derivative, or score representation.
+convergence, and the finite-coordinate score-equation action endpoint now
+supplies that displayed weak convergence internally.  Move next only on a live
+source hypothesis: derive the centered finite-coordinate score equation from a
+model-specific Taylor/root display, or add the analogous Taylor-zero
+action-bound assembly if it removes a current source field.
 Do not replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
 score infrastructure, derivative-bound and finite strong-law infrastructure,
 law-tail routing, display-congruence, display-convergence, display weak

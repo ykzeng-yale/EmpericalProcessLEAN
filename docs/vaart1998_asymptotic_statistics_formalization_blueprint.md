@@ -777,10 +777,13 @@ Initial modules:
   The finite score-equation display packet adds
   `vaart1998_theorem_5_41_display_tendstoInDistribution_of_finiteCoordinateScoreEquation_commonVectorLawScoreCLT`,
   deriving displayed weak convergence from the common-vector-law score CLT, a
-  centered finite-coordinate score equation, and a negligible residual.  Next
-  assemble the display weak-tightness action-bound endpoint with this helper,
-  or move lower to a genuinely model-specific Taylor display, derivative, or
-  score representation.
+  centered finite-coordinate score equation, and a negligible residual.  The
+  finite score-equation action packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateScoreEquation_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
+  which assembles that helper with the display weak-tightness action-bound
+  endpoint.  Next derive the centered finite-coordinate score equation from a
+  genuinely model-specific Taylor/root display, or add the analogous
+  Taylor-zero action-bound assembly if it removes a current source field.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
