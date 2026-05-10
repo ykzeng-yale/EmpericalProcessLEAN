@@ -10354,3 +10354,11 @@ finite-center error from deterministic selected-cardinality lower growth,
 rather than requiring callers to provide the raw inverse-square lintegral.
 The only live mathematical blocker on this lane remains the displayed-beta
 probability source for the sign-swapped bad fibers.
+
+2026-05-10 base-a.e. sign-swap two-tail a.e. lower-growth wrapper:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_of_eventually_ae_cardinality_ge`.
+This is the fully a.e.-shaped tail-control companion: the sign-swapped
+bad-fiber beta source is a `P^n`-a.e. implication, and the selected-cover lower
+growth may also hold only eventually `P^n`-a.e.  The blocker remains the
+probability lower bound itself.

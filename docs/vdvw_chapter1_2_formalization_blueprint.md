@@ -3925,6 +3925,13 @@ This keeps the future source theorem focused on the probability lower bound:
 tail control can be supplied by the same lower-growth condition used elsewhere
 in the selected-cover finite-center lanes.
 
+An a.e. lower-growth companion is also compiled:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_of_eventually_ae_cardinality_ge`.
+This is the most natural source shape for a future Fubini argument on this
+lane: both the sign-swapped bad-fiber probability statement and the
+selected-cardinality growth condition may be supplied eventually almost
+everywhere.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

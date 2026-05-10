@@ -4819,3 +4819,9 @@ lower-growth specialization:
 Selected-cardinality growth tending to infinity now supplies the inverse-square
 tail-control input for this source surface.  The dashboard frontier is still
 the sign-swapped bad-fiber beta lower bound.
+
+The same base-a.e. two-tail sign-swap surface now has an a.e. lower-growth
+variant:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_of_eventually_ae_cardinality_ge`.
+This matches the natural eventual `P^n`-a.e. selected-cardinality growth shape,
+so both remaining source-side hypotheses can be stated a.e.
