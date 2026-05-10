@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V187`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V188`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -89,14 +89,24 @@ hypotheses now feed the final `TendstoInMeasure` weak-law endpoints directly.
 V186 also compiles the Theorem 2.2.6 normalized variance bridge:
 second-moment convergence gives convergence in probability, the normalized
 centered square-moment identity is packaged as `Var(S_n) / b_n^2`, and the
-source-facing weak-law endpoint follows.  Continue toward Theorem 2.2.11, the
-triangular-array weak law.  V187 compiles the first large-jump truncation
-bridge: `S_n` and `bar S_n` differ only on the union of large-jump events, the
-finite union bound controls that probability, and hypothesis (i) gives
-`S_n - bar S_n -> 0` in probability.  Continue with the truncated-row
-variance/centering half: `a_n = E bar S_n`, `Var(bar S_n) / b_n^2 -> 0` from
-hypothesis (ii), Theorem 2.2.6 for `bar S_n`, and then final assembly.  Do not
-repeat 2.1, 2.2.1, 2.2.3 scalar plumbing, 2.2.6, or 2.4.9.
+source-facing weak-law endpoint follows.  Theorem 2.2.11, the triangular-array
+weak law, now has its first source-facing spine: V187 compiles the large-jump
+truncation bridge, and V188 compiles the truncated-row variance/centering
+bridge plus the final assembly from hypotheses (i)/(ii) under supplied
+truncated-row independence and `L^2` hypotheses.  New V188 declarations are
+`durrett2019_theorem_2_2_11_truncatedMeanRowSum`,
+`durrett2019_theorem_2_2_11_integral_truncatedRowSum_eq_truncatedMeanRowSum`,
+`durrett2019_theorem_2_2_11_truncatedRowSum_memLp_two`,
+`durrett2019_theorem_2_2_11_variance_truncatedRowSum_le_secondMomentSum`,
+`durrett2019_theorem_2_2_11_variance_div_sq_tendsto_zero_of_truncatedSecondMoment`,
+`durrett2019_theorem_2_2_11_tendstoInMeasure_truncatedRowSum_sub_mean_of_truncatedSecondMoment`,
+`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncated`,
+and
+`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncatedSecondMoment`.
+Continue by deriving the supplied truncated-row independence and `L^2`
+hypotheses from the book's source assumptions, or by adding the exact wrapper
+that exposes those hypotheses deliberately.  Do not repeat 2.1, 2.2.1, 2.2.3
+scalar plumbing, 2.2.6, or 2.4.9.
 
 For each cycle, route from:
 

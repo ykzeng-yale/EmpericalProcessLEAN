@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V187` in
+Route from `Live In-Thread Goal Prompt V188` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -96,17 +96,27 @@ uncorrelated and independent source hypotheses.  V186 adds Theorem 2.2.6:
 ordinary second moments tending to zero now imply `eLpNorm` convergence and
 convergence in probability, the normalized centered square-moment identity is
 packaged as `Var(S_n) / b_n^2`, and the source-facing normalized variance weak
-law compiles.  The next active target is Theorem 2.2.11, the triangular-array
-weak law.  V187 adds the first 2.2.11 truncation packet: source notation for
-`bar X_{n,k}`, `S_n`, and `bar S_n`; the event inclusion
+law compiles.  V187 adds the first 2.2.11 truncation packet: source notation
+for `bar X_{n,k}`, `S_n`, and `bar S_n`; the event inclusion
 `{S_n != bar S_n} subset union_k {|X_{n,k}| > b_n}`; the finite union
 probability bound; and the convergence-in-probability replacement bridge from
-hypothesis (i).  The next active target is the truncated-row variance and
-centering half: package `a_n = E bar S_n`, derive `Var(bar S_n) / b_n^2 -> 0`
-from hypothesis (ii), feed Theorem 2.2.6, then assemble the full triangular
-array weak law.  Do not route future cycles back to Chapter 4.5.2 or solved
-2.1.10 partial-sum, 2.1.13 product-consumer, 2.2.1 variance-sum, 2.2.3, 2.2.6,
-2.4.9, 2.1.12, 2.1.15, or 2.1.16 plumbing unless the user explicitly pivots.
+hypothesis (i).  V188 adds the truncated-row variance/centering half and the
+combined centered triangular-row weak-law assembly:
+`durrett2019_theorem_2_2_11_truncatedMeanRowSum`,
+`durrett2019_theorem_2_2_11_integral_truncatedRowSum_eq_truncatedMeanRowSum`,
+`durrett2019_theorem_2_2_11_truncatedRowSum_memLp_two`,
+`durrett2019_theorem_2_2_11_variance_truncatedRowSum_le_secondMomentSum`,
+`durrett2019_theorem_2_2_11_variance_div_sq_tendsto_zero_of_truncatedSecondMoment`,
+`durrett2019_theorem_2_2_11_tendstoInMeasure_truncatedRowSum_sub_mean_of_truncatedSecondMoment`,
+`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncated`,
+and
+`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncatedSecondMoment`.
+The next active target is deriving the supplied truncated-row independence and
+`L^2` hypotheses from the book's source assumptions, or exposing the exact
+wrapper if those are meant to remain supplied.  Do not route future cycles back
+to Chapter 4.5.2 or solved 2.1.10 partial-sum, 2.1.13 product-consumer, 2.2.1
+variance-sum, 2.2.3, 2.2.6, 2.4.9, 2.1.12, 2.1.15, or 2.1.16 plumbing unless
+the user explicitly pivots.
 The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,

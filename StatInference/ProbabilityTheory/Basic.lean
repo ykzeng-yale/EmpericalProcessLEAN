@@ -2020,6 +2020,271 @@ theorem durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_truncatedRowSum_o
       durrett2019_theorem_2_2_11_probReal_rowSum_ne_truncatedRowSum_le_tailSum
         (P := P) (X := X) (b := b) (n := n)
 
+/--
+Durrett 2019, Theorem 2.2.11, centering constant
+`a_n = sum_k E bar X_{n,k}`.
+-/
+noncomputable def durrett2019_theorem_2_2_11_truncatedMeanRowSum
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> ℕ -> Ω -> ℝ) (b : ℕ -> ℝ) (n : ℕ) : ℝ :=
+  ∑ k ∈ Finset.range n,
+    ∫ ω, durrett2019_theorem_2_2_11_truncated X b n k ω ∂P
+
+/--
+Durrett 2019, Theorem 2.2.11 support: the mean of the truncated row sum is
+`a_n`.
+-/
+theorem durrett2019_theorem_2_2_11_integral_truncatedRowSum_eq_truncatedMeanRowSum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {n : ℕ}
+    (htrunc_int : ∀ k ∈ Finset.range n,
+      Integrable (durrett2019_theorem_2_2_11_truncated X b n k) P) :
+    ∫ ω, durrett2019_theorem_2_2_11_truncatedRowSum X b n ω ∂P =
+      durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n := by
+  unfold durrett2019_theorem_2_2_11_truncatedRowSum
+    durrett2019_theorem_2_2_11_truncatedMeanRowSum
+  rw [integral_finsetSum (Finset.range n)]
+  exact htrunc_int
+
+/--
+Durrett 2019, Theorem 2.2.11 support: finite truncated rows are in `L^2` when
+their entries are.
+-/
+theorem durrett2019_theorem_2_2_11_truncatedRowSum_memLp_two
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {n : ℕ}
+    (htrunc_mem : ∀ k ∈ Finset.range n,
+      MemLp (durrett2019_theorem_2_2_11_truncated X b n k) (2 : ℝ≥0∞) P) :
+    MemLp (durrett2019_theorem_2_2_11_truncatedRowSum X b n)
+      (2 : ℝ≥0∞) P := by
+  have hsum : MemLp (fun ω => ∑ k ∈ Finset.range n,
+      durrett2019_theorem_2_2_11_truncated X b n k ω) (2 : ℝ≥0∞) P := by
+    have hsumfun :
+        (fun ω => ∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_2_11_truncated X b n k ω) =
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_2_11_truncated X b n k) := by
+      ext ω
+      simp [Finset.sum_apply]
+    rw [hsumfun]
+    exact memLp_finsetSum' (Finset.range n) htrunc_mem
+  simpa [durrett2019_theorem_2_2_11_truncatedRowSum] using hsum
+
+/--
+Durrett 2019, Theorem 2.2.11 support: for an independent truncated row,
+`Var(bar S_n)` is bounded by the summed second moments.
+-/
+theorem durrett2019_theorem_2_2_11_variance_truncatedRowSum_le_secondMomentSum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {n : ℕ}
+    (htrunc_indep : _root_.ProbabilityTheory.iIndepFun
+      (fun k : ℕ => durrett2019_theorem_2_2_11_truncated X b n k) P)
+    (htrunc_mem : ∀ k ∈ Finset.range n,
+      MemLp (durrett2019_theorem_2_2_11_truncated X b n k) (2 : ℝ≥0∞) P) :
+    _root_.ProbabilityTheory.variance
+        (durrett2019_theorem_2_2_11_truncatedRowSum X b n) P ≤
+      ∑ k ∈ Finset.range n,
+        ∫ ω, (durrett2019_theorem_2_2_11_truncated X b n k ω) ^ 2 ∂P := by
+  calc
+    _root_.ProbabilityTheory.variance
+        (durrett2019_theorem_2_2_11_truncatedRowSum X b n) P =
+      ∑ k ∈ Finset.range n,
+        _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_2_2_11_truncated X b n k) P := by
+        simpa [durrett2019_theorem_2_2_11_truncatedRowSum] using
+          durrett2019_theorem_2_2_1_variance_rangeSum_of_iIndepFun
+            (P := P)
+            (X := fun k : ℕ => durrett2019_theorem_2_2_11_truncated X b n k)
+            (n := n) htrunc_indep htrunc_mem
+    _ ≤ ∑ k ∈ Finset.range n,
+        ∫ ω, (durrett2019_theorem_2_2_11_truncated X b n k ω) ^ 2 ∂P := by
+      exact Finset.sum_le_sum fun k hk =>
+        _root_.ProbabilityTheory.variance_le_expectation_sq
+          (μ := P) (X := durrett2019_theorem_2_2_11_truncated X b n k)
+          (htrunc_mem k hk).aestronglyMeasurable
+
+/--
+Durrett 2019, Theorem 2.2.11 support: hypothesis (ii) implies the normalized
+variance condition for the truncated row sums.
+-/
+theorem durrett2019_theorem_2_2_11_variance_div_sq_tendsto_zero_of_truncatedSecondMoment
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (htrunc_indep : ∀ n : ℕ, _root_.ProbabilityTheory.iIndepFun
+      (fun k : ℕ => durrett2019_theorem_2_2_11_truncated X b n k) P)
+    (htrunc_mem : ∀ n k : ℕ,
+      MemLp (durrett2019_theorem_2_2_11_truncated X b n k) (2 : ℝ≥0∞) P)
+    (hsecond : Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          ∫ ω, (durrett2019_theorem_2_2_11_truncated X b n k ω) ^ 2 ∂P) /
+            (b n) ^ 2)
+      atTop (𝓝 (0 : ℝ))) :
+    Tendsto
+      (fun n : ℕ => _root_.ProbabilityTheory.variance
+        (durrett2019_theorem_2_2_11_truncatedRowSum X b n) P / (b n) ^ 2)
+      atTop (𝓝 (0 : ℝ)) := by
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
+    hsecond ?_ ?_
+  · exact Eventually.of_forall fun n =>
+      div_nonneg (_root_.ProbabilityTheory.variance_nonneg _ _) (sq_nonneg _)
+  · exact Eventually.of_forall fun n => by
+      exact div_le_div_of_nonneg_right
+        (durrett2019_theorem_2_2_11_variance_truncatedRowSum_le_secondMomentSum
+          (P := P) (X := X) (b := b) (n := n)
+          (htrunc_indep n) (fun k _ => htrunc_mem n k))
+        (sq_nonneg _)
+
+/--
+Durrett 2019, Theorem 2.2.11 support: hypothesis (ii), together with row-wise
+independence of the truncated variables, gives
+`(bar S_n - a_n) / b_n -> 0` in probability.
+-/
+theorem durrett2019_theorem_2_2_11_tendstoInMeasure_truncatedRowSum_sub_mean_of_truncatedSecondMoment
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (htrunc_indep : ∀ n : ℕ, _root_.ProbabilityTheory.iIndepFun
+      (fun k : ℕ => durrett2019_theorem_2_2_11_truncated X b n k) P)
+    (htrunc_mem : ∀ n k : ℕ,
+      MemLp (durrett2019_theorem_2_2_11_truncated X b n k) (2 : ℝ≥0∞) P)
+    (hsecond : Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          ∫ ω, (durrett2019_theorem_2_2_11_truncated X b n k ω) ^ 2 ∂P) /
+            (b n) ^ 2)
+      atTop (𝓝 (0 : ℝ))) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (durrett2019_theorem_2_2_11_truncatedRowSum X b n ω -
+          durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n) / b n)
+      atTop (fun _ => 0) := by
+  have hrow_mem : ∀ n : ℕ,
+      MemLp (durrett2019_theorem_2_2_11_truncatedRowSum X b n)
+        (2 : ℝ≥0∞) P := by
+    intro n
+    exact durrett2019_theorem_2_2_11_truncatedRowSum_memLp_two
+      (P := P) (X := X) (b := b) (n := n) (fun k _ => htrunc_mem n k)
+  have hconv :=
+    durrett2019_theorem_2_2_6_tendstoInMeasure_centered_div_of_variance_div_sq
+      (P := P) (S := fun n =>
+        durrett2019_theorem_2_2_11_truncatedRowSum X b n)
+      (b := b) hrow_mem
+      (durrett2019_theorem_2_2_11_variance_div_sq_tendsto_zero_of_truncatedSecondMoment
+        (P := P) (X := X) (b := b) htrunc_indep htrunc_mem hsecond)
+  simpa [durrett2019_theorem_2_2_11_integral_truncatedRowSum_eq_truncatedMeanRowSum
+      (P := P) (X := X) (b := b)
+      (fun k _ => (htrunc_mem _ k).integrable one_le_two)] using hconv
+
+/--
+Durrett 2019, Theorem 2.2.11 support: combine the large-jump replacement step
+with convergence of the centered truncated row sums.
+-/
+theorem durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncated
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (htail : Tendsto
+      (fun n : ℕ => ∑ k ∈ Finset.range n, P.real {ω : Ω | b n < |X n k ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (htrunc : TendstoInMeasure P
+      (fun n ω =>
+        (durrett2019_theorem_2_2_11_truncatedRowSum X b n ω -
+          durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n) / b n)
+      atTop (fun _ => 0)) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (durrett2019_theorem_2_2_11_rowSum X n ω -
+          durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n) / b n)
+      atTop (fun _ => 0) := by
+  rw [MeasureTheory.tendstoInMeasure_iff_measureReal_norm]
+  intro ε hε
+  have htrunc_event :=
+    (MeasureTheory.tendstoInMeasure_iff_measureReal_norm.mp htrunc) ε hε
+  have hsum : Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n, P.real {ω : Ω | b n < |X n k ω|}) +
+          P.real {ω : Ω |
+            ε ≤ ‖(durrett2019_theorem_2_2_11_truncatedRowSum X b n ω -
+              durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n) / b n - 0‖})
+      atTop (𝓝 (0 + 0 : ℝ)) :=
+    htail.add htrunc_event
+  have hsum_zero : Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n, P.real {ω : Ω | b n < |X n k ω|}) +
+          P.real {ω : Ω |
+            ε ≤ ‖(durrett2019_theorem_2_2_11_truncatedRowSum X b n ω -
+              durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n) / b n - 0‖})
+      atTop (𝓝 (0 : ℝ)) := by
+    simpa using hsum
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hsum_zero
+    (fun _ => measureReal_nonneg) ?_
+  intro n
+  calc
+    P.real {ω : Ω |
+        ε ≤ ‖(durrett2019_theorem_2_2_11_rowSum X n ω -
+          durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n) / b n - 0‖} ≤
+        P.real
+          ({ω : Ω |
+            durrett2019_theorem_2_2_11_rowSum X n ω ≠
+              durrett2019_theorem_2_2_11_truncatedRowSum X b n ω} ∪
+            {ω : Ω |
+              ε ≤ ‖(durrett2019_theorem_2_2_11_truncatedRowSum X b n ω -
+                durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n) / b n - 0‖}) := by
+      refine measureReal_mono ?_ (measure_ne_top P _)
+      intro ω hω
+      by_cases hbad : durrett2019_theorem_2_2_11_rowSum X n ω ≠
+          durrett2019_theorem_2_2_11_truncatedRowSum X b n ω
+      · exact Or.inl hbad
+      · right
+        have heq : durrett2019_theorem_2_2_11_rowSum X n ω =
+            durrett2019_theorem_2_2_11_truncatedRowSum X b n ω :=
+          not_not.mp hbad
+        simpa [heq] using hω
+    _ ≤ P.real {ω : Ω |
+            durrett2019_theorem_2_2_11_rowSum X n ω ≠
+              durrett2019_theorem_2_2_11_truncatedRowSum X b n ω} +
+          P.real {ω : Ω |
+            ε ≤ ‖(durrett2019_theorem_2_2_11_truncatedRowSum X b n ω -
+              durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n) / b n - 0‖} :=
+      measureReal_union_le _ _
+    _ ≤ (∑ k ∈ Finset.range n, P.real {ω : Ω | b n < |X n k ω|}) +
+          P.real {ω : Ω |
+            ε ≤ ‖(durrett2019_theorem_2_2_11_truncatedRowSum X b n ω -
+              durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n) / b n - 0‖} := by
+      exact add_le_add
+        (durrett2019_theorem_2_2_11_probReal_rowSum_ne_truncatedRowSum_le_tailSum
+          (P := P) (X := X) (b := b) (n := n)) le_rfl
+
+/--
+Durrett 2019, Theorem 2.2.11 support: hypotheses (i) and (ii), with row-wise
+independence and square-integrability for the truncated variables, imply the
+centered triangular-row weak-law conclusion.
+-/
+theorem durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncatedSecondMoment
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (htail : Tendsto
+      (fun n : ℕ => ∑ k ∈ Finset.range n, P.real {ω : Ω | b n < |X n k ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (htrunc_indep : ∀ n : ℕ, _root_.ProbabilityTheory.iIndepFun
+      (fun k : ℕ => durrett2019_theorem_2_2_11_truncated X b n k) P)
+    (htrunc_mem : ∀ n k : ℕ,
+      MemLp (durrett2019_theorem_2_2_11_truncated X b n k) (2 : ℝ≥0∞) P)
+    (hsecond : Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          ∫ ω, (durrett2019_theorem_2_2_11_truncated X b n k ω) ^ 2 ∂P) /
+            (b n) ^ 2)
+      atTop (𝓝 (0 : ℝ))) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (durrett2019_theorem_2_2_11_rowSum X n ω -
+          durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n) / b n)
+      atTop (fun _ => 0) :=
+  durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncated
+    (P := P) (X := X) (b := b) htail
+    (durrett2019_theorem_2_2_11_tendstoInMeasure_truncatedRowSum_sub_mean_of_truncatedSecondMoment
+      (P := P) (X := X) (b := b) htrunc_indep htrunc_mem hsecond)
+
 /-! ## Durrett, Section 2.3 -/
 
 /--
