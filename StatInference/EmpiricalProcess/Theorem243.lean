@@ -12265,6 +12265,93 @@ theorem ae_vdVWProductMeasure_vdVWRademacherSignVector (n : ℕ) :
   simpa [VdVWRademacherSignVector] using (eventually_all.2 hcoord)
 
 /--
+The one-dimensional real-valued Rademacher law assigns mass `1 / 2` to each
+supported sign.
+-/
+theorem vdVWRademacherLaw_singleton_of_eq_neg_one_or_one
+    {x : ℝ} (hx : x = -1 ∨ x = 1) :
+    vdVWRademacherLaw {x} = (2⁻¹ : ℝ≥0∞) := by
+  rcases hx with rfl | rfl
+  · unfold vdVWRademacherLaw vdVWRademacherPMF
+    rw [PMF.toMeasure_apply_singleton]
+    rw [PMF.map_apply]
+    norm_num [vdVWRademacherBoolPMF, vdVWBoolToRademacherSign,
+      PMF.bernoulli_apply]
+    exact measurableSet_singleton _
+  · unfold vdVWRademacherLaw vdVWRademacherPMF
+    rw [PMF.toMeasure_apply_singleton]
+    rw [PMF.map_apply]
+    norm_num [vdVWRademacherBoolPMF, vdVWBoolToRademacherSign,
+      PMF.bernoulli_apply]
+    exact measurableSet_singleton _
+
+/--
+Exact mass of a deterministic Rademacher sign vector under the canonical
+finite-product Rademacher law.
+
+This records the coefficient paid by a fixed-fiber argument that keeps only
+one deterministic sign vector instead of using the integrated product-pair
+symmetry route.
+-/
+theorem vdVWProductMeasure_vdVWRademacherLaw_singleton_signVector
+    {n : ℕ} {sign : SampleAt ℝ n}
+    (hsign : VdVWRademacherSignVector sign) :
+    (vdVWProductMeasure vdVWRademacherLaw n) {sign} =
+      (2⁻¹ : ℝ≥0∞) ^ n := by
+  rw [vdVWProductMeasure, Measure.pi_singleton]
+  have hcoord :
+      ∀ i : Fin n, vdVWRademacherLaw {sign i} = (2⁻¹ : ℝ≥0∞) := by
+    intro i
+    exact vdVWRademacherLaw_singleton_of_eq_neg_one_or_one (hsign i)
+  simp_rw [hcoord]
+  simp
+
+/--
+Product-measure mass of an original-sample event paired with a fixed
+Rademacher sign vector.
+-/
+theorem measure_vdVWProductMeasure_prod_vdVWRademacherLaw_signSlice
+    {Observation : Type u} [MeasurableSpace Observation] {P : Measure Observation}
+    {n : ℕ} {sign : SampleAt ℝ n}
+    (hsign : VdVWRademacherSignVector sign)
+    (A : Set (SampleAt Observation n)) :
+    ((vdVWProductMeasure P n).prod (vdVWProductMeasure vdVWRademacherLaw n))
+        (A ×ˢ ({sign} : Set (SampleAt ℝ n))) =
+      (vdVWProductMeasure P n) A * (2⁻¹ : ℝ≥0∞) ^ n := by
+  rw [Measure.prod_prod]
+  rw [vdVWProductMeasure_vdVWRademacherLaw_singleton_signVector hsign]
+
+/--
+Coefficient-correct fixed-sign lower bound for a ghost/sign product event.
+
+If a joint ghost/Rademacher event contains the slice `A × {sign}`, then its
+product probability is at least the original `A` probability times the exact
+finite-product Rademacher mass `(1 / 2)^n`.
+-/
+theorem measure_mul_rademacherSignVector_mass_le_prod_of_signSlice_subset
+    {Observation : Type u} [MeasurableSpace Observation] {P : Measure Observation}
+    {n : ℕ} {sign : SampleAt ℝ n}
+    (hsign : VdVWRademacherSignVector sign)
+    {A : Set (SampleAt Observation n)}
+    {joint : Set (SampleAt Observation n × SampleAt ℝ n)}
+    (hsubset : A ×ˢ ({sign} : Set (SampleAt ℝ n)) ⊆ joint) :
+    (vdVWProductMeasure P n) A * (2⁻¹ : ℝ≥0∞) ^ n ≤
+      ((vdVWProductMeasure P n).prod (vdVWProductMeasure vdVWRademacherLaw n))
+        joint := by
+  calc
+    (vdVWProductMeasure P n) A * (2⁻¹ : ℝ≥0∞) ^ n =
+        ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n))
+          (A ×ˢ ({sign} : Set (SampleAt ℝ n))) := by
+          exact
+            (measure_vdVWProductMeasure_prod_vdVWRademacherLaw_signSlice
+              (P := P) hsign A).symm
+    _ ≤
+        ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n)) joint :=
+          measure_mono hsubset
+
+/--
 On the ghost/sign product space, the sign coordinate is a Rademacher sign
 vector almost surely.
 -/

@@ -3413,6 +3413,20 @@ finite-product `L1(P^n)` convergence theorem for
 `|P_n f - P f|`; finite-sum domination, integrability, and book-facing
 packaging are no longer blockers.
 
+2026-05-10 fixed-sign Rademacher mass primitive:
+The fixed-fiber probability analysis now has exact sign-mass accounting:
+`vdVWRademacherLaw_singleton_of_eq_neg_one_or_one`,
+`vdVWProductMeasure_vdVWRademacherLaw_singleton_signVector`,
+`measure_vdVWProductMeasure_prod_vdVWRademacherLaw_signSlice`, and
+`measure_mul_rademacherSignVector_mass_le_prod_of_signSlice_subset`.
+These primitives prove that a supported deterministic sign vector has mass
+`(1 / 2)^n` under `vdVWProductMeasure vdVWRademacherLaw n`, and that any
+ghost/sign event containing a slice `A × {sign}` inherits the lower bound
+`P^n(A) * (1 / 2)^n`.  They are not an endpoint wrapper; they are the
+coefficient-correct ingredient needed before deciding whether a fixed-fiber
+source theorem can be made useful or whether the final route must stay with
+integrated product-pair symmetry.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
