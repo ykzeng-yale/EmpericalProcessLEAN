@@ -331,6 +331,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierInfProjectionSchurHessDerivativeOn.hessApply_mixed_inner_eq`, so a
   full `BarrierInfProjectionSchurHessDerivativeOn` certificate now directly
   supplies the applied-vector derivative and its lifted-third pairing.
+  The newest scalar-display bridge adds
+  `BarrierInfProjectionSchurHessDerivativeOn.hessianSegmentPsi_hasDerivWithinAt_liftedThird`,
+  naming the source identity
+  `d/dt <v, H_schur(z_t) v> = liftedThird(z_t, y - x, v)` directly from that
+  certificate.
   The newest source-radius consumer adds
   `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv_apply`,
   routing the full Schur derivative certificate through the applied-vector

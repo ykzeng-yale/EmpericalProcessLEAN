@@ -438,6 +438,11 @@ The newest Schur-certificate bridge adds
 that feed-through for the actual `BarrierInfProjectionSchurHessDerivativeOn`
 interface and identifying the paired derivative with the canonical lifted
 third derivative.
+The newest scalar-display bridge adds
+`BarrierInfProjectionSchurHessDerivativeOn.hessianSegmentPsi_hasDerivWithinAt_liftedThird`,
+so the source identity
+`d/dt <v, H_schur(z_t) v> = liftedThird(z_t, y - x, v)` is now a named theorem
+once the Schur derivative certificate is available.
 The newest source-radius consumer adds
 `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv_apply`,
 so the preferred full-Schur-derivative route now passes through the

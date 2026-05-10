@@ -230,8 +230,10 @@ full Frechet Schur-Hessian derivative route produce the same applied-vector
 gate directly.  The Schur-certificate bridge now packages this for
 `BarrierInfProjectionSchurHessDerivativeOn` itself through
 `BarrierInfProjectionSchurHessDerivativeOn.hessApply_hasDerivWithinAt` and
-`BarrierInfProjectionSchurHessDerivativeOn.hessApply_mixed_inner_eq`; the
-consumer
+`BarrierInfProjectionSchurHessDerivativeOn.hessApply_mixed_inner_eq`, and the
+scalar-display theorem
+`BarrierInfProjectionSchurHessDerivativeOn.hessianSegmentPsi_hasDerivWithinAt_liftedThird`
+names the source derivative identity directly; the consumer
 `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv_apply`
 then removes the older strict positivity and nonzero-displacement side
 conditions from the full-Schur-derivative source-radius route.  The remaining

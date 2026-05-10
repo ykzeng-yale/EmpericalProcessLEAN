@@ -4386,6 +4386,50 @@ theorem BarrierInfProjectionSchurHessDerivativeOn.hessApply_mixed_inner_eq
   simpa [hessianSegmentMixedThirdPsiDeriv] using
     hderiv.mixed_inner_eq hz (y - x) v
 
+/--
+Source-shaped scalar Schur-envelope derivative along a segment.  This names the
+displayed identity
+`d/dt <v, H_schur(z_t) v> = liftedThird(z_t, y - x, v)` once the projected
+Schur-Hessian derivative certificate is available.
+-/
+theorem BarrierInfProjectionSchurHessDerivativeOn.hessianSegmentPsi_hasDerivWithinAt_liftedThird
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    (hderiv :
+      BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+        schurDeriv)
+    {x y v : E₁} {t : ℝ} {u : Set ℝ}
+    (hz : hessianSegmentPoint x y t ∈ barrierInfProjectionSet s) :
+    HasDerivWithinAt
+      (hessianSegmentPsi (barrierInfProjectionSchurHessFrom selector hess invHyy)
+        x y v)
+      (hessianSegmentMixedThirdPsiDeriv
+        (barrierInfProjectionSchurLiftedThird selector hess invHyy third)
+        x y v t) u t := by
+  have happly :
+      HasDerivWithinAt
+        (fun τ : ℝ =>
+          barrierInfProjectionSchurHessFrom selector hess invHyy
+            (hessianSegmentPoint x y τ) v)
+        ((schurDeriv (hessianSegmentPoint x y t) (y - x)) v) u t :=
+    hderiv.hessApply_hasDerivWithinAt (x := x) (y := y) (v := v)
+      (t := t) (u := u) hz
+  have hpsi :=
+    hessianSegmentPsi_hasDerivWithinAt_of_hasDerivWithinAt_apply
+      (hess := barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (x := x) (y := y) (v := v)
+      (deriv := (schurDeriv (hessianSegmentPoint x y t) (y - x)) v)
+      (t := t) (u := u) happly
+  rw [← hderiv.hessApply_mixed_inner_eq (x := x) (y := y) (v := v)
+    (t := t) hz]
+  simpa using hpsi
+
 theorem BarrierInfProjectionSelectorStationary.projectedInvHess_quadratic_nonneg_of_Hyy_right_inverse
     {s : Set (WithLp 2 (E₁ × E₂))}
     {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
