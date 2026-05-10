@@ -4624,3 +4624,13 @@ These wrappers accept either restricted-a.e. pair-difference fibers or the
 base-`P^n` a.e. centered-bad implication while choosing the first-level cover
 internally.  The remaining dashboard blocker for this lane is therefore the
 probability source theorem for the canonical first-level selected cover.
+
+The fixed-`M` stochastic-entropy handoff now consumes that a.e. first-level
+source surface directly:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_primitive`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae_imp`.
+The dashboard blocker has moved to the actual probability proof for the
+canonical first-level selected-cover pair-difference fiber mass; fixed-`M`
+propagation is no longer a separate obstruction.

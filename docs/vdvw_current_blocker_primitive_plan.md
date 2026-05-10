@@ -10099,3 +10099,18 @@ can now target the canonical first-level selected cover directly; no
 additional first-level selected-cover plumbing is needed before proving the
 pair-difference fiber mass or replacing it with a coefficient-correct
 product-pair/sign-swap source theorem.
+
+2026-05-10 fixed-`M` first-level a.e. displayed-beta source handoff:
+`Theorem243.lean` now adds the shared handoff
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_primitive`
+and the a.e. source consumers
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae_imp`.
+The canonical first-level selected-cover pair-difference source now feeds the
+fixed-`M` stochastic-entropy endpoint whether it is proved as a restricted-a.e.
+fiber statement or as a base-`P^n` a.e. centered-bad implication.  The
+remaining blocker is therefore not fixed-`M` propagation; it is the probability
+source theorem establishing that displayed Chebyshev-beta fiber mass for the
+canonical first-level selected cover, or an equivalent coefficient-correct
+product-pair/sign-swap replacement.

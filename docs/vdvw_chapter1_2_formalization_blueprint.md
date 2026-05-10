@@ -3712,6 +3712,16 @@ directly for the canonical first-level selected cover, either on
 `P^n.restrict centeredBad`-a.e. samples or as a base-`P^n` a.e. centered-bad
 implication.
 
+That first-level a.e. source shape now feeds the fixed-`M` stochastic-entropy
+endpoint:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_primitive`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae_imp`.
+The remaining blueprint item is the actual canonical first-level
+pair-difference displayed-beta probability source, not another fixed-`M`
+handoff theorem.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
