@@ -4796,3 +4796,11 @@ The first theorem controls the centered-bad integral of
 `originalTail sample + ghostTail n` from the existing inverse-square
 selected-cardinality lintegral; the second feeds that plural-tail error into
 the fixed-`M` a.e. product-fiber additive-error route.
+
+The fixed-original sign-swap lane now has a direct fixed-`M` two-tail endpoint:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_signSwapBad_finiteCenter_failure_tails_invSq`.
+It packages the concrete pair-difference selected-net event, restricted-a.e.
+sign-swapped bad-fiber beta mass, and the two-tail finite-center error into
+the convergence theorem with constant `2`.  The dashboard frontier is now only
+the sign-swapped bad-fiber probability source itself, or the averaged
+product-pair replacement that avoids fixed-original sign-swap transport.

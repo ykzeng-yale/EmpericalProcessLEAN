@@ -10322,3 +10322,15 @@ needs separate tail-control packaging; its remaining source blocker is the
 genuine displayed-beta lower bound for the centered sign-swapped bad fibers,
 or an averaged product-pair replacement that avoids fixed-original sign-swap
 transport.
+
+2026-05-10 fixed-`M` sign-swap two-tail adapter:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_signSwapBad_finiteCenter_failure_tails_invSq`.
+This composes the concrete pair-difference selected-net event, the a.e.
+centered sign-swapped bad-fiber displayed-beta lower bound, and the explicit
+two-tail finite-center error `originalTail sample + ghostTail n` directly into
+the fixed-`M` stochastic-entropy convergence endpoint with constant `2`.  The
+remaining blocker is now exactly the probability source: prove the a.e.
+displayed-beta lower bound for
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent`, or replace the fixed-original
+transport lane by the averaged product-pair source theorem.

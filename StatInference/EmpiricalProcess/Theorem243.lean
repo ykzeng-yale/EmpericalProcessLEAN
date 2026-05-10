@@ -48346,6 +48346,176 @@ theorem
         (cover := cover) henvelope hM_pos.le heta hz
 
 /--
+Fixed-`M` convergence from a.e. sign-swapped bad fibers with explicit
+two-sided finite-center failure-tail errors.
+
+This theorem-facing adapter closes the assembly between the concrete
+sign-swap fiber source and the fixed-`M` convergence consumer.  The remaining
+probability input is the displayed Chebyshev beta lower bound for
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent`, holding almost everywhere on
+the centered-bad original samples.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_signSwapBad_finiteCenter_failure_tails_invSq
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (cover :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n)
+    (hinvSq :
+      ∀ eta, 0 < eta ->
+        Tendsto
+          (fun n : ℕ =>
+            ∫⁻ sample : SampleAt Observation n,
+              ENNReal.ofReal
+                ((2 * Real.exp (-3)) /
+                  (((selectedCardinality eta n sample n : ℝ) + 1) ^ 2))
+              ∂(vdVWProductMeasure P n))
+          atTop (𝓝 0))
+    (hevent_meas :
+      ∀ eta (heta : 0 < eta), ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          MeasurableSet
+            (VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon)
+              (cardinality := fun sample : SampleAt Observation n =>
+                selectedCardinality eta n sample n)
+              (cover := cover eta heta n)))
+    (herror_aemeas :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          AEMeasurable
+            (fun sample : SampleAt Observation n =>
+              ENNReal.ofReal
+                (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                  (selectedCardinality eta n sample n) n M) +
+                ∫⁻ ghostSample : SampleAt Observation n,
+                  ENNReal.ofReal
+                    (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                      (selectedCardinality eta n ghostSample n) n M)
+                  ∂(vdVWProductMeasure P n))
+            ((vdVWProductMeasure P n).restrict
+              (VdVWTheorem243CenteredTruncatedBadSet P indexClass classFun
+                envelope M epsilon n)))
+    (hfailureOriginal_meas :
+      ∀ eta (heta : 0 < eta) (n : ℕ) (sample : SampleAt Observation n),
+        MeasurableSet
+          {z : SampleAt Observation n × SampleAt ℝ n |
+            ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+              (vdVWTruncatedClassFun classFun envelope M)
+              (cover eta heta n sample).center z.2 M})
+    (hfailureGhost_meas :
+      ∀ eta (heta : 0 < eta) (n : ℕ),
+        MeasurableSet
+          {z : SampleAt Observation n × SampleAt ℝ n |
+            ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+              (vdVWTruncatedClassFun classFun envelope M)
+              (cover eta heta n z.1).center (fun i : Fin n => -z.2 i) M})
+    (hbadLower :
+      ∀ (eta : ℝ), 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∀ᵐ sample ∂((vdVWProductMeasure P n).restrict
+              (VdVWTheorem243CenteredTruncatedBadSet P indexClass classFun
+                envelope M epsilon n)),
+            ENNReal.ofReal
+                (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+              ((vdVWProductMeasure P n).prod
+                  (vdVWProductMeasure vdVWRademacherLaw n))
+                (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+                  P indexClass classFun envelope M epsilon sample)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  refine
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tails_invSq
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := 2)
+      (selectedCardinality := selectedCardinality) (cardinality := cardinality)
+      hM_pos (by norm_num) hlog hselected_le hinvSq ?_
+  intro eta heta epsilon hepsilon
+  filter_upwards
+    [hevent_meas eta heta epsilon hepsilon,
+      herror_aemeas eta heta epsilon hepsilon,
+      hbadLower eta heta epsilon hepsilon]
+    with n hevent_meas_n herror_aemeas_n hbadLower_n
+  let joint :
+      Set (SampleAt Observation n × (SampleAt Observation n × SampleAt ℝ n)) :=
+    VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon)
+      (cardinality := fun sample : SampleAt Observation n =>
+        selectedCardinality eta n sample n)
+      (cover := cover eta heta n)
+  let errorSample : SampleAt Observation n -> ℝ≥0∞ := fun sample =>
+    ENNReal.ofReal
+      (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+        (selectedCardinality eta n sample n) n M) +
+      ∫⁻ ghostSample : SampleAt Observation n,
+        ENNReal.ofReal
+          (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+            (selectedCardinality eta n ghostSample n) n M)
+        ∂(vdVWProductMeasure P n)
+  refine ⟨joint, errorSample, ?_, ?_, ?_, ?_, ?_⟩
+  · simpa [joint] using hevent_meas_n
+  · simpa [errorSample] using herror_aemeas_n
+  · filter_upwards [hbadLower_n] with sample hbadLower_sample
+    simpa [joint, errorSample] using
+      VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapBadEvent_finiteCenter_failure_tails
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon)
+        (cardinality := fun sample : SampleAt Observation n =>
+          selectedCardinality eta n sample n)
+        (cover := cover eta heta n) hindexClass_nonempty henvelope hM_pos
+        (sample := sample) hbadLower_sample
+        (hfailureOriginal_meas eta heta n sample)
+        (hfailureGhost_meas eta heta n)
+  · simp [errorSample]
+  · intro z hz
+    simpa [joint, VdVWTheorem243SelectedFiniteNetBadSet] using
+      VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon)
+        (cardinality := fun sample : SampleAt Observation n =>
+          selectedCardinality eta n sample n)
+        (cover := cover eta heta n) henvelope hM_pos.le heta hz
+
+/--
 Concrete-fiber lower bound from Chebyshev pair-sub mass plus a supplied
 fixed-original sign-swap mass transport.
 

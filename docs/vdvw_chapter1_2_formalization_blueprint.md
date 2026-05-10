@@ -3898,6 +3898,17 @@ frontier for this lane is now the sign-swapped bad-fiber displayed-beta mass
 source itself, or an averaged product-pair source theorem that bypasses the
 fixed-original sign-swap transport.
 
+The fixed-original sign-swap lane now reaches the fixed-`M` convergence
+endpoint through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_signSwapBad_finiteCenter_failure_tails_invSq`.
+This adapter takes the concrete selected-net event measurability, a.e.
+centered sign-swapped bad-fiber displayed-beta mass, finite-center failure
+measurability, and inverse-square selected-cardinality tail control, then
+returns fixed-`M` convergence with constant `2`.  The remaining blueprint
+target is therefore the probability source theorem for
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent`, or the averaged product-pair
+replacement that avoids fixed-original sign-swap transport.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
