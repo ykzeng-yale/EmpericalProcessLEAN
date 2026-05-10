@@ -9849,3 +9849,16 @@ invalid unit-coefficient fixed-original sign-swap shortcut.  The next
 probability source theorem must still obtain non-exponential sign/ghost mass
 by an averaged argument or add an explicit stronger structural
 tail/cardinality hypothesis.
+
+Follow-up compiled route audit: `Theorem243.lean` also proves
+`eventually_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass_lt_displayedChebyshevBeta`,
+`eventually_not_displayedChebyshevBeta_le_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass`,
+and
+`not_eventually_displayedChebyshevBeta_le_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass`.
+These show that even if the all-one fixed-sign source starts from the displayed
+Chebyshev beta, multiplying by the deterministic sign-slice mass `(2⁻¹)^n`
+makes the coefficient eventually strictly smaller than the displayed beta.
+Thus the fixed-sign branch is now formally closed as a route to the current
+displayed-beta source primitive; the next aggressive step should be an honest
+averaged sign/ghost source theorem or an explicit stronger structural
+tail/cardinality input.

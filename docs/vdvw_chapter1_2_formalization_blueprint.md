@@ -3321,6 +3321,17 @@ These make the failed shortcut reusable in Lean: a deterministic sign-section
 proof cannot be promoted to the displayed-beta comparison by claiming the
 displayed beta is eventually bounded by `(1 / 2)^n`.
 
+The coefficient-correct all-one route is also ruled out at the exact
+displayed-beta product scale by
+`eventually_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass_lt_displayedChebyshevBeta`,
+`eventually_not_displayedChebyshevBeta_le_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass`,
+and
+`not_eventually_displayedChebyshevBeta_le_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass`.
+These say that multiplying the displayed beta by the deterministic sign-slice
+mass `(2⁻¹)^n` is eventually strictly below the displayed beta itself.  The
+remaining source proof must therefore use nontrivial averaged sign/ghost mass
+or an explicitly stronger structural probability assumption.
+
 2026-05-10 selected half-radius a.e. domination adapter:
 The fixed-`M` source route now also has the canonical selected-cover adapter
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_selected_truncated_halfRadius_eventualAe_scaledFiniteNetHoeffdingUpper`.

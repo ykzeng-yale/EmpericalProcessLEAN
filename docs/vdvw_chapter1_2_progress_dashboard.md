@@ -4442,3 +4442,13 @@ only with the exact `(2⁻¹)^n` Rademacher coefficient.  It confirms the
 unit-coefficient fixed-fiber assumption is not justified by this route; the
 remaining displayed-beta blocker still needs averaged sign/ghost mass or an
 explicit stronger structural hypothesis.
+
+The coefficient loss is now also recorded in the displayed-beta scale:
+`eventually_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass_lt_displayedChebyshevBeta`,
+`eventually_not_displayedChebyshevBeta_le_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass`,
+and
+`not_eventually_displayedChebyshevBeta_le_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass`
+prove that the all-one fixed-sign coefficient is eventually too small even
+after starting from the displayed Chebyshev beta.  Do not reopen the
+deterministic fixed-sign shortcut; the live source target is averaged
+sign/ghost mass or a stated stronger structural tail/cardinality route.

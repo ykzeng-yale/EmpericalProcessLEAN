@@ -41953,6 +41953,92 @@ theorem
   exact atTop_neBot.ne (Filter.eventually_false_iff_eq_bot.mp hfalse)
 
 /--
+Even after starting from the displayed Chebyshev beta factor, paying the mass
+of one deterministic Rademacher sign vector makes the coefficient eventually
+strictly smaller than the displayed beta itself.
+
+This is the coefficient-level obstruction for the coefficient-correct
+fixed-sign route: the all-one sign slice gives a valid source lower bound, but
+its extra `(1 / 2)^n` factor cannot be absorbed into the textbook
+displayed-beta comparison.
+-/
+theorem
+    eventually_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass_lt_displayedChebyshevBeta
+    {M epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ∀ᶠ n : ℕ in atTop,
+      ENNReal.ofReal
+          (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) *
+          (2⁻¹ : ℝ≥0∞) ^ n <
+        ENNReal.ofReal
+          (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) := by
+  have hbeta_half :
+      ∀ᶠ n : ℕ in atTop,
+        ENNReal.ofReal (1 / 2 : ℝ) ≤
+          ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) :=
+    eventually_ennreal_ofReal_half_le_ofReal_one_sub_of_tendsto_zero
+      (VdVWTheorem243_uniformChebyshevPenalty_tendsto_zero
+        (M := M) epsilon hepsilon)
+  filter_upwards [eventually_rademacherSignVector_singleton_mass_lt_half,
+    hbeta_half] with n hmass hbeta
+  let beta : ℝ≥0∞ :=
+    ENNReal.ofReal
+      (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2))
+  have hmass_lt_one : (2⁻¹ : ℝ≥0∞) ^ n < 1 := by
+    have hhalf_lt_one : ENNReal.ofReal (1 / 2 : ℝ) < 1 := by
+      norm_num
+    exact hmass.trans hhalf_lt_one
+  have hbeta_pos : 0 < beta := by
+    have hhalf_pos : (0 : ℝ≥0∞) < ENNReal.ofReal (1 / 2 : ℝ) := by
+      norm_num
+    exact hhalf_pos.trans_le hbeta
+  have hmul :
+      beta * (2⁻¹ : ℝ≥0∞) ^ n < beta * 1 :=
+    ENNReal.mul_lt_mul_right (ne_of_gt hbeta_pos) ENNReal.ofReal_ne_top
+      hmass_lt_one
+  simpa [beta] using hmul
+
+/--
+It is eventually false that the displayed Chebyshev beta is bounded by the
+coefficient produced by the coefficient-correct fixed-sign route.
+-/
+theorem
+    eventually_not_displayedChebyshevBeta_le_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass
+    {M epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ∀ᶠ n : ℕ in atTop,
+      ¬ ENNReal.ofReal
+          (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+        ENNReal.ofReal
+          (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) *
+          (2⁻¹ : ℝ≥0∞) ^ n := by
+  filter_upwards
+    [eventually_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass_lt_displayedChebyshevBeta
+      (M := M) hepsilon] with n hlt
+  exact not_le_of_gt hlt
+
+/--
+The coefficient-correct fixed-sign coefficient cannot eventually supply the
+displayed Chebyshev beta lower bound.
+-/
+theorem
+    not_eventually_displayedChebyshevBeta_le_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass
+    {M epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ¬ ∀ᶠ n : ℕ in atTop,
+      ENNReal.ofReal
+          (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+        ENNReal.ofReal
+          (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) *
+          (2⁻¹ : ℝ≥0∞) ^ n := by
+  intro hle
+  have hfalse : ∀ᶠ _n : ℕ in atTop, False := by
+    filter_upwards
+      [hle,
+        eventually_not_displayedChebyshevBeta_le_displayedChebyshevBeta_mul_rademacherSignVector_singleton_mass
+          (M := M) hepsilon] with n hle_n hnot
+    exact hnot hle_n
+  exact atTop_neBot.ne (Filter.eventually_false_iff_eq_bot.mp hfalse)
+
+/--
 Product-measure fiber upper bound.
 
 If every right-indexed fiber of a measurable joint event is bounded by a
