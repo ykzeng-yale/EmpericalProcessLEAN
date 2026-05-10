@@ -662,6 +662,15 @@ scalar `ψ_{y-x}` derivative, strict projected Hessian positivity, and
 self-concordance.  The next exact item-4 packet should provide the projected
 Schur-Hessian continuity and applied-vector derivative/pairing identity; do
 not ask for a separate `hsegment_coeff`.
+The scalar-continuity shrink now adds
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_scalarPsi_sourceRadius_of_continuity`,
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_continuity`,
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_continuity`.
+This removes the operator-valued `ContinuousOn H_schur` gate from the scalar
+source-radius route.  The exact source proof should now supply per-vector
+`ψ_v` continuity, segment local-norm continuity, the segment applied-vector
+derivative, and the lifted-third pairing identity directly.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
