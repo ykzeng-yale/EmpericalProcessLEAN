@@ -14897,6 +14897,51 @@ theorem durrett2019_theorem_4_5_2_runningAbsSup_eLpNorm_two_le_of_lintegral_sq_l
     (P := P) (Y := durrett2019_runningAbsSup Y) hC_nonneg hbound
 
 /--
+Durrett 2019, Theorem 4.5.2 automatic bounded-running-maximum bridge.
+
+The finite stopped terminal square estimates already imply the a.s. boundedness
+of the stopped finite running absolute maxima.  This removes the former
+manual `hBdd` side condition from the threshold convergence route.
+-/
+theorem durrett2019_theorem_4_5_2_stopped_runningAbsMax_ae_bddAbove_of_terminal_integral_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {C : ℝ}
+    (hX : Martingale X ℱ P) (hN : IsStoppingTime ℱ N)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hStopped_sq_le :
+      ∀ n, (∫ ω, stoppedProcess X N n ω ^ 2 ∂P) ≤ C) :
+    ∀ᵐ ω ∂P,
+      BddAbove
+        (Set.range fun m => durrett2019_runningAbsMax (stoppedProcess X N) m ω) := by
+  have hStopped : Martingale (stoppedProcess X N) ℱ P :=
+    durrett2019_theorem_4_2_9_martingale_stoppedProcess hX hN
+  have hStopped_memLp_two :
+      ∀ n, MemLp (stoppedProcess X N n) (2 : ℝ≥0∞) P := by
+    intro n
+    exact memLp_stoppedProcess (ι := ℕ) hN hX_memLp_two n
+  let R : ℝ≥0∞ :=
+    ENNReal.ofReal (2 : ℝ) * ENNReal.ofReal (C ^ ((2 : ℝ)⁻¹))
+  have hR_lt : R < ∞ := by
+    dsimp [R]
+    finiteness
+  have hp_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
+  have hbound :
+      ∀ n,
+        eLpNorm (durrett2019_runningAbsMax (stoppedProcess X N) n)
+          (2 : ℝ≥0∞) P ≤ R := by
+    intro n
+    exact
+      durrett2019_theorem_4_5_1_runningAbsMax_eLpNorm_two_le_of_integral_sq_le
+        (P := P) (ℱ := ℱ) (X := stoppedProcess X N) hStopped
+        (hStopped_memLp_two n) (hStopped_sq_le n)
+  exact
+    durrett2019_runningAbsMax_ae_bddAbove_of_eLpNorm_bound
+      (P := P) (ℱ := ℱ) (X := stoppedProcess X N) hStopped
+      (p := (2 : ℝ≥0∞)) (C := R) hp_ne_zero hR_lt hbound
+
+/--
 Durrett 2019, Theorem 4.5.2 stopped-convergence handoff from a stopped
 running-supremum square `lintegral` bound.
 
@@ -14979,6 +15024,34 @@ theorem durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_terminal_integral
       hX hN (mul_nonneg (by norm_num) hC_nonneg) hBdd hlintegral
 
 /--
+Durrett 2019, Theorem 4.5.2 stopped maximal-estimate assembly with automatic
+bounded-running-maximum side condition.
+
+The stopped terminal square estimates both give the maximal `lintegral` bound
+and discharge the a.s. boundedness needed to identify the canonical running
+supremum.
+-/
+theorem durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_terminal_integral_sq_le_auto_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {C : ℝ}
+    (hX : Martingale X ℱ P) (hN : IsStoppingTime ℱ N)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hC_nonneg : 0 ≤ C)
+    (hStopped_sq_le :
+      ∀ n, (∫ ω, stoppedProcess X N n ω ^ 2 ∂P) ≤ C) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto (fun n => stoppedProcess X N n ω) atTop (𝓝 z) := by
+  exact
+    durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_terminal_integral_sq_le
+      (P := P) (ℱ := ℱ) (X := X) (N := N) (C := C)
+      hX hN hX_memLp_two hC_nonneg hStopped_sq_le
+      (durrett2019_theorem_4_5_2_stopped_runningAbsMax_ae_bddAbove_of_terminal_integral_sq_le
+        (P := P) (ℱ := ℱ) (X := X) (N := N) (C := C)
+        hX hN hX_memLp_two hStopped_sq_le)
+
+/--
 Durrett 2019, Theorem 4.5.2 threshold-stopped maximal-estimate assembly.
 -/
 theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_terminal_integral_sq_le
@@ -15016,6 +15089,40 @@ theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendst
     (durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
       (ℱ := ℱ) (A := A) a hA_predictable)
     hX_memLp_two hC_nonneg hStopped_sq_le hBdd
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold-stopped maximal-estimate assembly with
+automatic bounded-running-maximum side condition.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_terminal_integral_sq_le_auto_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {a C : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hC_nonneg : 0 ≤ C)
+    (hStopped_sq_le :
+      ∀ n,
+        (∫ ω,
+          stoppedProcess X
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+          C) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto
+        (fun n =>
+          stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+            n ω)
+        atTop (𝓝 z) := by
+  exact
+    durrett2019_theorem_4_5_2_stopped_exists_ae_tendsto_of_terminal_integral_sq_le_auto_bdd
+      (P := P) (ℱ := ℱ) (X := X)
+      (N := durrett2019_theorem_4_5_2_firstPredictableAbove A a) (C := C)
+      hX
+      (durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
+        (ℱ := ℱ) (A := A) a hA_predictable)
+      hX_memLp_two hC_nonneg hStopped_sq_le
 
 /--
 Durrett 2019, Theorem 4.5.2 integral bridge: a stopped increasing process
@@ -15122,10 +15229,49 @@ theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendst
   durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_terminal_integral_sq_le
     (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a) (C := a ^ 2)
     hX hA_predictable hX_memLp_two (sq_nonneg a)
+      (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_le_of_stopped_increasing_le
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+        hA_predictable hA_int hSquare_eq_A hA_le)
+    hBdd
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold stopped-convergence bridge from the
+stopped increasing-process bound and stopped square identity, with automatic
+bounded-running-maximum side condition.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_stopped_increasing_le_auto_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hSquare_eq_A :
+      ∀ n,
+        (∫ ω,
+          stoppedProcess X
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) =
+          ∫ ω,
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ∂P)
+    (hA_le :
+      ∀ n,
+        stoppedProcess A (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n
+          ≤ᵐ[P] fun _ => a ^ 2) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto
+        (fun n =>
+          stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+            n ω)
+        atTop (𝓝 z) :=
+  durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_terminal_integral_sq_le_auto_bdd
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a) (C := a ^ 2)
+    hX hA_predictable hX_memLp_two (sq_nonneg a)
     (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_le_of_stopped_increasing_le
       (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
       hA_predictable hA_int hSquare_eq_A hA_le)
-    hBdd
 
 /--
 Durrett 2019, Theorem 4.5.2 threshold stopped second-moment bridge from the
@@ -15200,6 +15346,41 @@ theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendst
     (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_increasing_ae_le
       (P := P) (A := A) (a := a) hA0_le)
     hBdd
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold stopped-convergence bridge from the
+initial increasing-process bound and stopped square identity, with automatic
+bounded-running-maximum side condition.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_square_identity_auto_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hA0_le : ∀ᵐ ω ∂P, A 0 ω ≤ a ^ 2)
+    (hSquare_eq_A :
+      ∀ n,
+        (∫ ω,
+          stoppedProcess X
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) =
+          ∫ ω,
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ∂P) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto
+        (fun n =>
+          stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+            n ω)
+        atTop (𝓝 z) :=
+  durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_stopped_increasing_le_auto_bdd
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+    hX hA_predictable hX_memLp_two hA_int hSquare_eq_A
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_increasing_ae_le
+      (P := P) (A := A) (a := a) hA0_le)
 
 /--
 Durrett 2019, Theorem 4.5.2 stopped square/increasing-process integral
@@ -15344,6 +15525,45 @@ theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendst
       (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
       hX hA_predictable hX_memLp_two hX0 hPredictablePart_eq_A)
     hBdd
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold stopped-convergence bridge from the
+initial increasing-process bound and stopped predictable-part identity, with
+automatic bounded-running-maximum side condition.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_predictablePart_identity_auto_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0_le : ∀ᵐ ω ∂P, A 0 ω ≤ a ^ 2)
+    (hPredictablePart_eq_A :
+      ∀ n,
+        predictablePart
+            (fun k ω =>
+              stoppedProcess X
+                (durrett2019_theorem_4_5_2_firstPredictableAbove A a) k ω ^ 2)
+            ℱ P n
+          =ᵐ[P]
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto
+        (fun n =>
+          stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+            n ω)
+        atTop (𝓝 z) :=
+  durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_square_identity_auto_bdd
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+    hX hA_predictable hX_memLp_two hA_int hA0_le
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_eq_of_predictablePart_ae_eq
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+      hX hA_predictable hX_memLp_two hX0 hPredictablePart_eq_A)
 
 /--
 Durrett 2019, Theorem 4.5.2 stopped predictable-part identification from a
@@ -15493,6 +15713,47 @@ theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendst
     hBdd
 
 /--
+Durrett 2019, Theorem 4.5.2 threshold stopped-convergence bridge from a
+stopped Doob-decomposition certificate, with automatic bounded-running-maximum
+side condition.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_square_minus_increasing_martingale_auto_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_shift_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA0_le : ∀ᵐ ω ∂P, A 0 ω ≤ a ^ 2)
+    (hSquareMinus :
+      Martingale
+        (fun n ω =>
+          stoppedProcess X
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 -
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω)
+        ℱ P)
+    (hStoppedA_predictable :
+      IsStronglyPredictable ℱ
+        (stoppedProcess A (durrett2019_theorem_4_5_2_firstPredictableAbove A a))) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto
+        (fun n =>
+          stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+            n ω)
+        atTop (𝓝 z) :=
+  durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_initial_le_and_predictablePart_identity_auto_bdd
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+    hX hA_shift_predictable hX_memLp_two hA_int hX0 hA0_le
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_predictablePart_eq_of_square_minus_increasing_martingale
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+      hA_shift_predictable hA_int hSquareMinus hStoppedA_predictable hA0)
+
+/--
 Durrett 2019, Theorem 4.5.2 stopped square-minus-increasing martingale
 certificate from the source square-minus-increasing martingale.
 
@@ -15586,6 +15847,41 @@ theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendst
       (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
       hA_shift_predictable hSquareMinus)
     hStoppedA_predictable hBdd
+
+/--
+Durrett 2019, Theorem 4.5.2 threshold stopped-convergence bridge from the
+source square-minus-increasing martingale plus stopped predictability of the
+increasing process, with automatic bounded-running-maximum side condition.
+-/
+theorem durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_source_square_minus_martingale_auto_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_shift_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA0_le : ∀ᵐ ω ∂P, A 0 ω ≤ a ^ 2)
+    (hStoppedA_predictable :
+      IsStronglyPredictable ℱ
+        (stoppedProcess A (durrett2019_theorem_4_5_2_firstPredictableAbove A a))) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ,
+      Tendsto
+        (fun n =>
+          stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+            n ω)
+        atTop (𝓝 z) :=
+  durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_square_minus_increasing_martingale_auto_bdd
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+    hX hA_shift_predictable hX_memLp_two hA_int hX0 hA0 hA0_le
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_minus_increasing_martingale_of_source
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+      hA_shift_predictable hSquareMinus)
+    hStoppedA_predictable
 
 /--
 Durrett 2019, Theorem 4.5.2 terminal-bound threshold cover.
@@ -15690,6 +15986,64 @@ theorem durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_marti
   exact hω trivial
 
 /--
+Durrett 2019, Theorem 4.5.2 event-cover convergence from the source
+square-minus-increasing martingale certificates, with automatic
+bounded-running-maximum side conditions for all thresholds.
+-/
+theorem durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_martingale_cover_auto_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_shift_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_le_Ainf : ∀ᵐ ω ∂P, ∀ n, A (n + 1) ω ≤ Ainf ω)
+    (hStoppedA_predictable :
+      ∀ a : ℝ,
+        IsStronglyPredictable ℱ
+          (stoppedProcess A (durrett2019_theorem_4_5_2_firstPredictableAbove A a))) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+  let E : ℕ -> Set Ω :=
+    fun k => {ω : Ω | ∀ n, A (n + 1) ω ≤ (k : ℝ) ^ 2}
+  let N : ℕ -> Ω -> ℕ∞ :=
+    fun k => durrett2019_theorem_4_5_2_firstPredictableAbove A (k : ℝ)
+  have hcover :
+      ∀ᵐ ω ∂P, ω ∈ (Set.univ : Set Ω) -> ∃ k, ω ∈ E k := by
+    simpa [E] using
+      durrett2019_theorem_4_5_2_threshold_cover_of_ae_le_terminal
+        (P := P) (A := A) (Ainf := Ainf) hA_le_Ainf
+  have hStopped :
+      ∀ k, ∀ᵐ ω ∂P, ∃ z : ℝ,
+        Tendsto (fun n => stoppedProcess X (N k) n ω) atTop (𝓝 z) := by
+    intro k
+    have hA0_le : ∀ᵐ ω ∂P, A 0 ω ≤ ((k : ℝ) ^ 2) :=
+      Eventually.of_forall fun ω => by
+        rw [congrFun hA0 ω]
+        exact sq_nonneg (k : ℝ)
+    simpa [N] using
+      durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_source_square_minus_martingale_auto_bdd
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (a := (k : ℝ))
+        hX hA_shift_predictable hSquareMinus hX_memLp_two hA_int hX0 hA0 hA0_le
+        (hStoppedA_predictable (k : ℝ))
+  have hSurvive : ∀ k, ∀ᵐ ω ∂P, ω ∈ E k -> N k ω = ⊤ := by
+    intro k
+    simpa [E, N] using
+      durrett2019_theorem_4_5_2_firstPredictableAbove_survival_of_forall_le_ae
+        (P := P) (A := A) (a := (k : ℝ)) (E := E k)
+        (Eventually.of_forall fun ω hω => hω)
+  have hresult :=
+    durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover
+      (P := P) (X := X) (N := N) (FiniteVar := (Set.univ : Set Ω)) (E := E)
+      hcover hStopped hSurvive
+  filter_upwards [hresult] with ω hω
+  exact hω trivial
+
+/--
 Durrett 2019, Theorem 4.5.2 monotone terminal source wrapper.
 
 The textbook terminal assumption is often given as monotone convergence
@@ -15733,6 +16087,40 @@ theorem durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_marti
       (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
       hX hA_shift_predictable hSquareMinus hX_memLp_two hA_int hX0 hA0
       hA_le_Ainf hStoppedA_predictable hBdd
+
+/--
+Durrett 2019, Theorem 4.5.2 monotone terminal source wrapper, with automatic
+bounded-running-maximum side conditions for all threshold-stopped processes.
+-/
+theorem durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_martingale_monotone_terminal_auto_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_shift_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (hStoppedA_predictable :
+      ∀ a : ℝ,
+        IsStronglyPredictable ℱ
+          (stoppedProcess A (durrett2019_theorem_4_5_2_firstPredictableAbove A a))) :
+    ∀ᵐ ω ∂P, ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+  have hA_le_all : ∀ n, A n ≤ᵐ[P] Ainf :=
+    durrett2019_ae_le_of_ae_monotone_tendsto_atTop
+      (P := P) (A := A) (Ainf := Ainf) hA_mono hA_tendsto
+  have hA_le_Ainf : ∀ᵐ ω ∂P, ∀ n, A (n + 1) ω ≤ Ainf ω :=
+    ae_all_iff.2 fun n => hA_le_all (n + 1)
+  exact
+    durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_martingale_cover_auto_bdd
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+      hX hA_shift_predictable hSquareMinus hX_memLp_two hA_int hX0 hA0
+      hA_le_Ainf hStoppedA_predictable
 
 /--
 Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two
