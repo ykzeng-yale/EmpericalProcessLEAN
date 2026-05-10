@@ -467,6 +467,17 @@ layer; no separate Schur-complement differentiability primitive exists in
 mathlib.  The next exact inf-projection gate should use the full-Hessian
 derivative wrapper and focus only on the scalar mixed pairing identity
 `inner v ((schurDeriv x u) v) = liftedThird x u v`.
+The newest component-pairing packet adds
+`barrierInfProjectionSchurHessDeriv_inner_eq_of_component_pairing` and
+`BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_componentPairing`.
+The scalar mixed pairing is now split into three concrete obligations:
+cross-block pairing
+`<v, Hxy Hyy⁻¹ w> = <Hyy⁻¹ Hyx v, w>`, inverse-derivative cancellation
+`<v, Hxy (D Hyy⁻¹[u] Hyx v)> =
+ -<Hyy⁻¹ Hyx v, D Hyy[u] (Hyy⁻¹ Hyx v)>`, and the four-term component
+expansion of the full Hessian derivative on Schur lifts.  Future work should
+prove these three obligations from Hessian symmetry, the differentiated
+`Hyy * Hyy⁻¹ = I` identity, and the product-space third-derivative formula.
 Thus the preferred exact source gate can now be proved by differentiating only
 the applied Schur-Hessian vector path `t ↦ H_schur(z_t) v` and pairing the
 result with `v`; a full operator-valued Schur derivative and even a direct
@@ -494,7 +505,10 @@ inf-projection route, do not re-prove block differentiability or raw Schur
 product rules; instantiate
 `BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative` and spend
 the proof budget on the scalar mixed-third pairing and concrete square-root
-models.
+models.  If taking the scalar route, call
+`BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_componentPairing`
+and prove its three component obligations instead of expanding the whole
+Schur derivative directly.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

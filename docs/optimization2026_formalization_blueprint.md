@@ -251,6 +251,12 @@ calculus is now reduced to full product-Hessian differentiability along the
 selected graph, selector differentiability, `invHyy` differentiability, and
 the scalar mixed-third pairing identity.  Do not rebuild block extraction or
 the Schur product rule in future inf-projection packets.
+The scalar mixed-third pairing now has a component interface:
+`barrierInfProjectionSchurHessDeriv_inner_eq_of_component_pairing` and
+`BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_componentPairing`.
+Use it to reduce the exact source proof to cross-block pairing, the
+differentiated inverse identity for `Hyy⁻¹`, and the four-term full-Hessian
+third-derivative expansion on Schur lifts.
 The local stationarity source bridge now also compiles through
 `BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero`,
 `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_mem_nhds`,

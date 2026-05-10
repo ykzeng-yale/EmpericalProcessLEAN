@@ -3618,6 +3618,50 @@ theorem barrierInfProjectionSchurHess_hasFDerivAt
   simpa [barrierInfProjectionSchurHess, barrierInfProjectionSchurHessDeriv]
     using hxx.sub hschurTerm
 
+set_option maxHeartbeats 400000
+
+/--
+Scalar component form of the Schur-Hessian derivative pairing.
+
+The derivative of `Hxx - Hxy Hyy⁻¹ Hyx`, paired against `v`, reduces to the
+four block-derivative terms that appear when the full Hessian derivative is
+evaluated on the Schur-lifted direction.  The two scalar side hypotheses are
+exactly the cross-block pairing and inverse-derivative cancellation that remain
+to be supplied by a concrete envelope/square-root model.
+-/
+theorem barrierInfProjectionSchurHessDeriv_inner_eq_of_component_pairing
+    (Hxy : E₁ -> E₂ →L[ℝ] E₁)
+    (Hyx : E₁ -> E₁ →L[ℝ] E₂)
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂)
+    (HxxDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁))
+    (HxyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₁))
+    (HyxDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₂))
+    (HyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂))
+    (invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂))
+    (x u v : E₁) (target : ℝ)
+    (hcross : ∀ w : E₂,
+      inner ℝ v (Hxy x (invHyy x w)) =
+        inner ℝ (invHyy x (Hyx x v)) w)
+    (hinv :
+      inner ℝ v (Hxy x (invHyyDeriv x u (Hyx x v))) =
+        -inner ℝ (invHyy x (Hyx x v))
+          ((HyyDeriv x u) (invHyy x (Hyx x v))))
+    (hcomponent :
+      inner ℝ v ((HxxDeriv x u) v) -
+          inner ℝ v ((HxyDeriv x u) (invHyy x (Hyx x v))) -
+          inner ℝ (invHyy x (Hyx x v)) ((HyxDeriv x u) v) +
+          inner ℝ (invHyy x (Hyx x v))
+            ((HyyDeriv x u) (invHyy x (Hyx x v))) =
+        target) :
+    inner ℝ v
+        ((barrierInfProjectionSchurHessDeriv Hxy Hyx invHyy
+            HxxDeriv HxyDeriv HyxDeriv invHyyDeriv x u) v) =
+      target := by
+  rw [← hcomponent]
+  simp [barrierInfProjectionSchurHessDeriv, inner_sub_right, inner_add_right]
+  rw [hcross ((HyxDeriv x u) v), hinv]
+  ring
+
 /--
 Second-order envelope identity for Chewi Proposition 13.11(4).  If the
 selected graph has derivative `(v, D selector v)`, the original gradient has
@@ -4705,6 +4749,100 @@ theorem BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative
       (hhess (x := x) hx) (hselector (x := x) hx))
     hinv
     hmixed
+
+/--
+Version of `of_fullHessianDerivative` whose mixed-third hypothesis is split
+into the natural Schur-envelope scalar components: cross-block pairing,
+inverse-Hessian derivative cancellation, and the four-term full-Hessian
+component identity.  This is the preferred interface for discharging the
+remaining Chewi Proposition 13.11(4) third-derivative gate from concrete
+selector/envelope data.
+-/
+theorem BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_componentPairing
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {hessDeriv : E₁ -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hhess : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt hess (hessDeriv x) (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hinvDeriv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x)
+    (hcross : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁, ∀ w : E₂,
+        inner ℝ v
+            (barrierInfProjectionBlockXY selector hess x (invHyy x w)) =
+          inner ℝ
+            (invHyy x (barrierInfProjectionBlockYX selector hess x v)) w)
+    (hinvPair : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        inner ℝ v
+            (barrierInfProjectionBlockXY selector hess x
+              (invHyyDeriv x u
+                (barrierInfProjectionBlockYX selector hess x v))) =
+          -inner ℝ
+            (invHyy x (barrierInfProjectionBlockYX selector hess x v))
+            ((barrierInfProjectionBlockYYDeriv (hessDeriv x) (dselector x) u)
+              (invHyy x (barrierInfProjectionBlockYX selector hess x v))))
+    (hcomponent : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        inner ℝ v
+            ((barrierInfProjectionBlockXXDeriv (hessDeriv x) (dselector x) u) v) -
+          inner ℝ v
+            ((barrierInfProjectionBlockXYDeriv (hessDeriv x) (dselector x) u)
+              (invHyy x (barrierInfProjectionBlockYX selector hess x v))) -
+          inner ℝ
+            (invHyy x (barrierInfProjectionBlockYX selector hess x v))
+            ((barrierInfProjectionBlockYXDeriv (hessDeriv x) (dselector x) u) v) +
+          inner ℝ
+            (invHyy x (barrierInfProjectionBlockYX selector hess x v))
+            ((barrierInfProjectionBlockYYDeriv (hessDeriv x) (dselector x) u)
+              (invHyy x (barrierInfProjectionBlockYX selector hess x v))) =
+            barrierInfProjectionSchurLiftedThird selector hess invHyy third
+              x u v) :
+    BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+      (fun x =>
+        barrierInfProjectionSchurHessDeriv
+          (barrierInfProjectionBlockXY selector hess)
+          (barrierInfProjectionBlockYX selector hess)
+          invHyy
+          (fun x => barrierInfProjectionBlockXXDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockXYDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockYXDeriv (hessDeriv x) (dselector x))
+          invHyyDeriv x) :=
+  BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative
+    (s := s) (selector := selector) (hess := hess) (invHyy := invHyy)
+    (third := third) (hessDeriv := hessDeriv) (dselector := dselector)
+    (invHyyDeriv := invHyyDeriv) hhess hselector hinvDeriv
+    (by
+      intro x hx u v
+      exact barrierInfProjectionSchurHessDeriv_inner_eq_of_component_pairing
+        (Hxy := barrierInfProjectionBlockXY selector hess)
+        (Hyx := barrierInfProjectionBlockYX selector hess)
+        (invHyy := invHyy)
+        (HxxDeriv := fun x =>
+          barrierInfProjectionBlockXXDeriv (hessDeriv x) (dselector x))
+        (HxyDeriv := fun x =>
+          barrierInfProjectionBlockXYDeriv (hessDeriv x) (dselector x))
+        (HyxDeriv := fun x =>
+          barrierInfProjectionBlockYXDeriv (hessDeriv x) (dselector x))
+        (HyyDeriv := fun x =>
+          barrierInfProjectionBlockYYDeriv (hessDeriv x) (dselector x))
+        (invHyyDeriv := invHyyDeriv)
+        (x := x) (u := u) (v := v)
+        (target := barrierInfProjectionSchurLiftedThird selector hess invHyy third
+          x u v)
+        (hcross (x := x) hx v)
+        (hinvPair (x := x) hx u v)
+        (hcomponent (x := x) hx u v))
 
 /--
 Restrict a projected Schur-Hessian derivative certificate to a smaller

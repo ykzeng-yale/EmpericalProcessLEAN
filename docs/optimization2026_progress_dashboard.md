@@ -355,6 +355,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   remaining exact item-4 source work is the scalar mixed-third pairing identity
   and concrete square-root/envelope model construction, not block derivative
   extraction.
+  The newest component-pairing packet adds
+  `barrierInfProjectionSchurHessDeriv_inner_eq_of_component_pairing` and
+  `BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_componentPairing`.
+  This replaces one monolithic `hmixed` proof with three model-facing
+  obligations: cross-block pairing, differentiated inverse-Hessian
+  cancellation, and the four-term full-Hessian derivative expansion on Schur
+  lifts.
   The live inf-projection derivative gate is now even narrower: prove the
   derivative of `t ↦ H_schur(z_t) v` and the paired identity with lifted third;
   the scalar `ψ` derivative follows by the generic inner-product calculus
