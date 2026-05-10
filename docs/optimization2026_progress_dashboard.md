@@ -281,6 +281,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   selector stationarity plus a projected-domain neighborhood/open-domain fact;
   future third-derivative/envelope work should not reintroduce raw local
   `EventuallyEq` stationarity assumptions.
+- Inf-projection second-order selected-value certificate: the newest packet
+  adds `BarrierInfProjectionSecondOrderEnvelopeAt`,
+  `BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_mem_nhds`,
+  `BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_isOpen`,
+  `BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_mem_nhds_finiteDimHyy`,
+  and
+  `BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_isOpen_finiteDimHyy`.
+  The selected value now has a compact local certificate carrying both the
+  projected gradient identity and the Schur projected-gradient derivative.  In
+  the finite-dimensional `Hyy` route, the wrapper derives the left inverse from
+  a right inverse, so the next exact source work should focus on the actual
+  third-derivative/lifted-third identity and concrete square-root envelope
+  model construction.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

@@ -216,6 +216,14 @@ and `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_isOpen`,
 so future envelope layers should discharge local vertical stationarity from
 the selector certificate plus neighborhood/open projected-domain hypotheses
 instead of exposing raw `EventuallyEq` assumptions.
+The selected-value second-order envelope is now packaged in
+`BarrierInfProjectionSecondOrderEnvelopeAt` and source constructors
+`BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_mem_nhds`,
+`BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_isOpen`, and
+their finite-dimensional `Hyy` right-inverse variants.  This is the reusable
+entry point for proving the actual third derivative of the selected value:
+start from this certificate rather than recombining the first- and
+second-order envelope identities.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers

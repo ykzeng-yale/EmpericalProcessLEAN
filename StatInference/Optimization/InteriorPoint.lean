@@ -3555,6 +3555,154 @@ theorem BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_isOpen
     (hopen.mem_nhds hx) hgrad hselector hyy_left
 
 /--
+Pointwise second-order envelope certificate for the inf-projection value
+function.  It records the first-order envelope theorem and the Schur-complement
+derivative of the projected gradient in one reusable object.
+-/
+structure BarrierInfProjectionSecondOrderEnvelopeAt
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    (s : Set (WithLp 2 (E₁ × E₂)))
+    (f : WithLp 2 (E₁ × E₂) -> ℝ)
+    (selector : E₁ -> E₂)
+    (grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂))
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x : E₁) : Prop where
+  x_mem : x ∈ barrierInfProjectionSet s
+  point_mem : barrierInfProjectionPoint selector x ∈ s
+  value_hasGradientAt :
+    HasGradientAt (barrierInfProjectionValue f selector)
+      (barrierInfProjectionGrad selector grad x) x
+  grad_hasFDerivAt :
+    HasFDerivAt (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy x) x
+
+/--
+Second-order selected-value envelope theorem from stationary selectors,
+neighborhood membership in the projected domain, differentiability of the
+original gradient, and a left inverse for the vertical Hessian block.
+-/
+theorem BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_mem_nhds
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂} {x : E₁}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hmem_nhds : ∀ᶠ y in nhds x, y ∈ barrierInfProjectionSet s)
+    (hfgrad :
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hgrad_deriv :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hyy_left : ∀ w : E₂,
+      invHyy x (barrierInfProjectionBlockYY selector hess x w) = w) :
+    BarrierInfProjectionSecondOrderEnvelopeAt s f selector grad hess invHyy x where
+  x_mem := hx
+  point_mem := hsel.point_mem hx
+  value_hasGradientAt := hsel.value_hasGradientAt hx hfgrad hselector
+  grad_hasFDerivAt :=
+    hsel.grad_hasFDerivAt_schur_of_mem_nhds
+      hmem_nhds hgrad_deriv hselector hyy_left
+
+/--
+Open-domain version of the pointwise second-order selected-value envelope
+theorem.
+-/
+theorem BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_isOpen
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂} {x : E₁}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hfgrad :
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hgrad_deriv :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hyy_left : ∀ w : E₂,
+      invHyy x (barrierInfProjectionBlockYY selector hess x w) = w) :
+    BarrierInfProjectionSecondOrderEnvelopeAt s f selector grad hess invHyy x :=
+  hsel.secondOrderEnvelopeAt_of_mem_nhds
+    hx (hopen.mem_nhds hx) hfgrad hgrad_deriv hselector hyy_left
+
+/--
+Finite-dimensional vertical-block version of the second-order envelope theorem:
+an `Hyy` right inverse is enough because it implies the needed left inverse.
+-/
+theorem BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_mem_nhds_finiteDimHyy
+    [FiniteDimensional ℝ E₂]
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂} {x : E₁}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hmem_nhds : ∀ᶠ y in nhds x, y ∈ barrierInfProjectionSet s)
+    (hfgrad :
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hgrad_deriv :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hyy_right : ∀ w : E₂,
+      barrierInfProjectionBlockYY selector hess x (invHyy x w) = w) :
+    BarrierInfProjectionSecondOrderEnvelopeAt s f selector grad hess invHyy x :=
+  hsel.secondOrderEnvelopeAt_of_mem_nhds
+    hx hmem_nhds hfgrad hgrad_deriv hselector
+    (barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim
+      selector hess invHyy x hyy_right)
+
+/--
+Open-domain, finite-dimensional vertical-block version of the second-order
+selected-value envelope theorem.
+-/
+theorem BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_isOpen_finiteDimHyy
+    [FiniteDimensional ℝ E₂]
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂} {x : E₁}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hfgrad :
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hgrad_deriv :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hyy_right : ∀ w : E₂,
+      barrierInfProjectionBlockYY selector hess x (invHyy x w) = w) :
+    BarrierInfProjectionSecondOrderEnvelopeAt s f selector grad hess invHyy x :=
+  hsel.secondOrderEnvelopeAt_of_mem_nhds_finiteDimHyy
+    hx (hopen.mem_nhds hx) hfgrad hgrad_deriv hselector hyy_right
+
+/--
 Projected inverse-Hessian candidate obtained by applying the original full
 inverse-Hessian to a horizontal covector and taking its horizontal component.
 -/

@@ -385,6 +385,20 @@ the stationary selector plus neighborhood membership or an open projected
 domain.  Future inf-projection work should reuse these source-facing bridges
 instead of passing `barrierInfProjectionVerticalGrad =ᶠ[nhds x] 0` directly.
 
+The second-order envelope packet adds
+`BarrierInfProjectionSecondOrderEnvelopeAt`,
+`BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_mem_nhds`,
+`BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_isOpen`,
+`BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_mem_nhds_finiteDimHyy`,
+and
+`BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_isOpen_finiteDimHyy`.
+It packages the first-order selected-value gradient identity together with the
+Schur derivative of the projected gradient.  In the finite-dimensional
+vertical-block route, callers now only need an `Hyy` right inverse; the needed
+left inverse is derived internally.  The remaining exact inf-projection step is
+therefore the actual third-derivative/lifted-third identity and concrete
+construction of the square-root envelope model.
+
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,
 Definition 13.9, and the positive-orthant barrier packet are now substrate for
