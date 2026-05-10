@@ -4077,3 +4077,16 @@ slot for the countable/full-subgraph branch.  The compiled route now includes
 `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`.
 Those are the declarations to reuse; repeating reverse/cofiltration handoff
 wrappers is now lower priority than closing the selected-entropy/source gap.
+
+2026-05-10 fixed-sign Rademacher mass primitive:
+`Theorem243.lean` now proves the exact finite-product mass for a deterministic
+Rademacher sign vector:
+`vdVWRademacherLaw_singleton_of_eq_neg_one_or_one`,
+`vdVWProductMeasure_vdVWRademacherLaw_singleton_signVector`,
+`measure_vdVWProductMeasure_prod_vdVWRademacherLaw_signSlice`, and
+`measure_mul_rademacherSignVector_mass_le_prod_of_signSlice_subset`.
+This is source-facing because it quantifies the real coefficient in any
+fixed-fiber/sign-slice proof attempt: a single deterministic sign contributes
+`(1 / 2)^n`, not unit mass.  Future probability work can use this to build a
+coefficient-correct fixed-fiber route, or to rule it out in favor of the
+already compiled integrated product-pair symmetry.

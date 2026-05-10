@@ -9307,3 +9307,18 @@ the strong full-subgraph package without a nonempty-class assumption as
 `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`.
 Future rounds should reuse those declarations rather than adding more
 reverse/cofiltration wrappers.
+
+2026-05-10 fixed-sign Rademacher mass primitive:
+`Theorem243.lean` now records the exact mass paid by any fixed-sign fiber
+argument:
+`vdVWRademacherLaw_singleton_of_eq_neg_one_or_one`,
+`vdVWProductMeasure_vdVWRademacherLaw_singleton_signVector`,
+`measure_vdVWProductMeasure_prod_vdVWRademacherLaw_signSlice`, and
+`measure_mul_rademacherSignVector_mass_le_prod_of_signSlice_subset`.
+These show that a deterministic supported sign vector has canonical product
+mass `(1 / 2)^n` and that any ghost/sign joint event containing an
+`A × {sign}` slice has product mass at least `P^n(A) * (1 / 2)^n`.  This is
+the coefficient-correct fixed-fiber accounting needed before attempting a
+fixed-sign replacement for the current source gap.  It also reinforces that
+the fixed-fiber route cannot be treated as a cost-free substitute for the
+compiled integrated product-pair symmetry.
