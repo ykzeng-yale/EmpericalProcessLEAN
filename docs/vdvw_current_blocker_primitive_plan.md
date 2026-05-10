@@ -9610,3 +9610,18 @@ entropy input, and selected-center measurability remain internal.  The active
 Theorem 2.4.3 source target is now as sharp as this lane can make it: prove
 the displayed Chebyshev beta lower bound for
 `VdVWTheorem243CanonicalRademacherSelectedNetEvent` over centered-bad samples.
+
+2026-05-10 canonical sign-only fiber split:
+`Theorem243.lean` now proves
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_ae_components`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_ae_finiteCenter`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_ae_finiteCenter_countable_firstLevel`.
+This splits the sign-only canonical source obligation into two exact
+probability inputs: displayed beta mass for the pure Rademacher bad event
+`epsilon < dist (2 * sup_f |n^-1 sum_i epsilon_i f(X_i)|) 0`, and
+almost-everywhere finite-center Hoeffding support for the first-level selected
+cover.  Canonical Rademacher sign support and all first-level selected-cover
+bookkeeping are internal.  The remaining blocker on this lane is therefore no
+longer the full canonical selected-net fiber; it is the pure Rademacher
+bad-event beta lower bound plus the selected finite-center support theorem.

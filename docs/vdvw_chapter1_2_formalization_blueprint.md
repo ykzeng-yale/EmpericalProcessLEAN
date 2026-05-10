@@ -3360,6 +3360,15 @@ The fixed-`M` endpoint for this reduced source shape is now compiled as
 It should be the canonical first-level target when the probability side proves
 beta mass for the sign-only selected-net event.
 
+The sign-only selected-net event has been split into reusable source parts.
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_ae_finiteCenter`
+packages pure Rademacher bad-event mass with the finite-center Hoeffding a.e.
+side condition, and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_ae_finiteCenter_countable_firstLevel`
+feeds those split inputs directly to fixed-`M` convergence.  Future proof work
+should target the pure Rademacher bad-event beta lower bound and the selected
+first-level finite-center support theorem separately.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

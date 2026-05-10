@@ -4274,3 +4274,11 @@ This is the current sharpest endpoint for the canonical lane: all first-level
 selected-cover bookkeeping is internal, and the only exposed source input is
 the displayed beta lower bound for
 `VdVWTheorem243CanonicalRademacherSelectedNetEvent`.
+
+That sign-only source input is now split by
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_ae_finiteCenter`
+and the fixed-`M` endpoint
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_ae_finiteCenter_countable_firstLevel`.
+The dashboard frontier is now: prove displayed beta mass for the pure
+Rademacher bad event over centered-bad samples, and prove the selected
+finite-center Hoeffding side condition a.e. for the first-level cover.
