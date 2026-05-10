@@ -3028,6 +3028,21 @@ the Nat tuple enumeration/surjection and the level-local existence witness.
 The product-fiber/Chebyshev lower bound remains an independent probability
 source input.
 
+The countable selected-cover instantiation is now compiled.  `Theorem243.lean`
+adds `vdVWFiniteEmpiricalL1CoverCenterTupleCandidateOfCountable`,
+`vdVWFiniteEmpiricalL1CoverCenterTupleCandidateOfCountable_surjective`,
+`exists_vdVWFiniteEmpiricalL1CoverCenterTupleCandidateOfCountable_of_cover`,
+`exists_vdVWFiniteEmpiricalL1CoverCenterTupleCandidateOfCountable_level`,
+`vdVWFirstLevelEmpiricalL1CoverAtCardOfCountable`,
+`measurable_vdVWTruncatedClassFun_firstLevelSelectedCenterAtInClass_of_countable_cover`,
+and the canonical quarter-radius source wrapper
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+This closes the selected-cover measurability and cover-choice gap for the
+compiled half-scale route.  The next source target is probability-side:
+prove the product-fiber/Chebyshev lower bound that avoids the additive
+finite-center failure-tail obstruction, or state an honest stronger tail/UI
+input if staying on the additive-error route.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
