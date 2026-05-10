@@ -3405,6 +3405,14 @@ Future source work should therefore prove either the pure Rademacher bad-fiber
 beta lower bound or the structural cardinality-growth/inverse-square condition
 that feeds this theorem.
 
+The finite-class in-mean path now has a no-global-countability assembly
+theorem:
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable_of_endpointL1`.
+The blueprint dependency for this lane is reduced to a single fixed-endpoint
+finite-product `L1(P^n)` convergence theorem for
+`|P_n f - P f|`; finite-sum domination, integrability, and book-facing
+packaging are no longer blockers.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

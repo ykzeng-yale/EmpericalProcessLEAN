@@ -9690,3 +9690,17 @@ Lemma 2.4.5 a.s. centered-supremum conclusion from `indexClass.Finite` without
 requiring a global `Countable Index`.  The in-mean finite-product integral
 upgrade remains in the stronger countable theorem
 `VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln`.
+
+2026-05-10 finite-class in-mean no-global-countability consumer:
+`Theorem243.lean` now proves
+`vdVWWeightedSampleSum_const_inv_eq_empiricalAverage`,
+`integrable_abs_empiricalAverage_sub_integral_of_integrable`,
+`vdVWWeightedClassSupremum_centered_const_inv_le_sum_abs_empiricalAverage_sub_integral_of_finite`,
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_endpointL1_no_global_countable`,
+and the package
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable_of_endpointL1`.
+This removes global `Countable Index` from the finite-class in-mean assembly
+once fixed-endpoint finite-product `L1(P^n)` convergence is supplied for each
+class member.  The finite-class blocker is now sharply localized to that
+single-endpoint `L1` primitive; the finite-sum domination, integrability, and
+book-style packaging are compiled.
