@@ -9807,3 +9807,15 @@ probability source: the remaining assumptions are still explicit event
 measurability, the coefficient-correct fixed-original sign-swap transport, and
 original/ghost finite-center a.e. support for the selected quarter-radius
 cover at each truncation level.
+
+2026-05-10 untruncated canonical displayed-beta first-level endpoints:
+`Theorem243.lean` now also adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers`.
+These compose the canonical countable first-level displayed-beta fixed-`M`
+wrappers with the large-`M` handoff.  The first endpoint exposes a
+sign-swapped bad-fiber lower bound plus original/ghost finite-center a.e.
+support; the second exposes the lower layer: Chebyshev pair-sub bad-event mass
+plus fixed-original sign-swap transport.  The selected cover and cardinality
+bookkeeping are internal to these wrappers.

@@ -4409,3 +4409,13 @@ untruncated lane, but the source assumptions are still the hard ones:
 measurability of the concrete pair-difference event, fixed-original sign-swap
 transport with the right coefficient, and original/ghost selected finite-center
 a.e. support.
+
+The canonical displayed-beta first-level source wrappers also now reach the
+untruncated theorem layer:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers`.
+They internalize the countable first-level selected cover and leave only the
+probability-side source inputs: sign-swapped bad-fiber mass, or pair-sub
+bad-event mass plus fixed-original sign-swap transport, together with the
+original/ghost finite-center a.e. support facts.

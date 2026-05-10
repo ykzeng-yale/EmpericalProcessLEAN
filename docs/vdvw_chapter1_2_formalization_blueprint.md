@@ -3490,6 +3490,18 @@ measurability, coefficient-correct fixed-original sign-swap transport, and
 original/ghost finite-center a.e. support, or a different product-fiber
 comparison that avoids those fixed-fiber assumptions.
 
+The canonical first-level displayed-beta route now has matching untruncated
+endpoints:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers`.
+These are the preferred conditional endpoints when using the displayed-beta
+source route, because they choose the countable first-level selected cover
+internally.  The next non-wrapper proof must still attack the actual
+probability inputs: sign-swapped bad-fiber mass, or pair-sub mass plus
+coefficient-correct fixed-original sign-swap transport, and finite-center
+a.e. support.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
