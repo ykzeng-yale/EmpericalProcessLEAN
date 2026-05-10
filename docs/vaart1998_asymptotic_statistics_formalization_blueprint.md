@@ -740,10 +740,15 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativeContDiff_envelope_absorbing`,
   and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelope_absorbing`,
+  and the absorbing measurable/envelope/derivative source packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_summandMeasurable_envelope_absorbing`,
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelopeTendsto_summandMeasurable_envelope_absorbing`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTendsto_envelopeTendsto_summandMeasurable_envelope_absorbing`,
   so the remaining critical path should remove `hScaledEstimator` from the
-  summand-measurable, envelope-tendsto, and derivative-tendsto source wrappers
-  by calling this absorbing smooth source endpoint, or move to a genuinely
-  model-specific Taylor display, derivative, or score representation.
+  derivative-a.e., raw-score-CLT, raw-root, and estimator-substitution source
+  wrappers by calling this absorbing derivative-tendsto endpoint, or move to a
+  genuinely model-specific Taylor display, derivative, or score representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
