@@ -4688,3 +4688,13 @@ stochastic-entropy beta/penalty machinery; the second chooses the countable
 first-level selected cover and supplies centered-bad measurability from the
 countable class interface.  The dashboard blocker remains the source
 sign-swap transport itself, not fixed-`M` propagation.
+
+The same sign-swap lane now accepts the natural base-measure implication form:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_ae_finiteCenter_halfScale`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+They use the existing dependent a.e.-restriction helper to turn
+`P^n`-a.e. conditional transport on centered-bad samples into the
+`P^n.restrict centeredBad` source required downstream.  The dashboard frontier
+is now the actual conditional sign-swap transport proof, or the averaged
+product-pair alternative.

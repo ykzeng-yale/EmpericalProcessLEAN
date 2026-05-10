@@ -3778,6 +3778,17 @@ fixed-original sign-swap transport directly as an a.e. fact under
 `P^n.restrict centeredBad`; no additional fixed-`M` or first-level selected
 cover handoff is needed for that lane.
 
+The restricted-a.e. sign-swap lane now also has base-measure implication
+consumers:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_ae_finiteCenter_halfScale`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+These wrappers apply `eventually_ae_restrict_of_eventually_ae_imp_dep`, so a
+future conditioning/Fubini proof can state the transport as a base-`P^n`
+a.e. implication from centered-bad membership.  The next source-facing theorem
+for this lane is that conditional sign-swap transport, not another restriction
+or selected-cover adapter.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

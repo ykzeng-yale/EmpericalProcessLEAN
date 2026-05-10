@@ -10182,3 +10182,15 @@ hypothesis.  Countability now discharges the centered-bad measurability input
 required by the restricted measure.  The remaining source theorem is the
 actual a.e. fixed-original sign-swap transport on centered-bad samples, or the
 averaged product-pair replacement.
+
+2026-05-10 base-a.e. sign-swap transport handoff:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_ae_finiteCenter_halfScale`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+These are the Fubini-style companions to the restricted-a.e. sign-swap
+handoffs: a future source proof may show the fixed-original sign-swap
+transport for `P^n`-a.e. samples, conditional on centered-bad membership, and
+the wrappers convert it to the restricted-measure input.  The live blocker is
+now exactly that base-a.e. conditional sign-swap transport theorem, or the
+averaged product-pair replacement.
