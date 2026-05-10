@@ -3820,3 +3820,13 @@ feeds the selected finite-net mean primitive from a single
 feeds the strongest textbook-aligned package from that same fixed VC-subgraph
 bound.  The artificial `M ↦ vcDegree M` parameter is no longer exposed in the
 clean original full-subgraph entry point.
+
+The selected-cover event route now also has a reusable positive-radius
+selected-cardinality measurability theorem:
+`measurable_vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_at_sampleSize_of_set_countable`.
+This closes the `hcard` side of the displayed-beta sample-coordinate event
+wrapper for the canonical `Nat.find` selected-cover cardinality at terminal
+sample size.  The current Theorem 2.4.3 event-route blocker is therefore
+sharper: prove scalar selected-center coordinate measurability for
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAt`, and prove the product-fiber lower
+bound with the displayed Chebyshev constants.

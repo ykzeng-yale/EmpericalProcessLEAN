@@ -19793,6 +19793,63 @@ theorem
           henvelope_meas)
 
 /--
+The positive-radius selected truncated empirical-cover cardinality is
+measurable at the terminal sample size.
+
+This packages the `Nat.find` measurability proof for the selected cardinality
+used in fixed-positive-radius Theorem 2.4.3 routes.  The zero fallback at
+nonpositive radii is irrelevant here because the theorem is stated under
+`0 < eta`.
+-/
+theorem
+    measurable_vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_at_sampleSize_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M eta : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hcount : indexClass.Countable)
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality radius n))
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (heta : 0 < eta) :
+    ∀ n,
+      Measurable fun sample : SampleAt Observation n =>
+        (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (cardinality := cardinality)
+          X hcovering_all eta) n sample n := by
+  let hfinite :
+      ∀ n (sample : SampleAt Observation n) m,
+        HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) eta :=
+    hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath
+      (indexClass := indexClass)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (coverRadius := fun _ : ℕ => eta)
+      (cardinality := cardinality) X hcovering_all
+      (by intro _; exact heta)
+  have hmeas :
+      ∀ n,
+        Measurable fun sample : SampleAt Observation n =>
+          finiteEmpiricalL1CoveringNumberCard (hfinite n sample n) :=
+    measurable_selected_truncatedRandomEmpiricalL1CoveringNumberCard_at_sampleSize_of_set_countable
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M)
+      (coverRadius := fun _ : ℕ => eta) hcount X hX_samplePath hfinite
+      hclass henvelope_meas
+  simpa [vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard,
+    heta] using hmeas
+
+/--
 The theorem-facing truncated-class version of
 `measurable_cardinality_at_sampleSize_of_eq_selected_randomEmpiricalL1CoveringNumberCard_of_countable_of_measurable`.
 -/
