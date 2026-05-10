@@ -431,6 +431,12 @@ The follow-up calculus extraction adds
 `hessianSegmentHessApply_hasDerivWithinAt_of_hasFDerivAt`, so a full Frechet
 derivative of the Schur Hessian can feed the applied-vector route directly
 without reproving `clm_apply` segment calculus.
+The newest Schur-certificate bridge adds
+`BarrierInfProjectionSchurHessDerivativeOn.hessApply_hasDerivWithinAt` and
+`BarrierInfProjectionSchurHessDerivativeOn.hessApply_mixed_inner_eq`, packaging
+that feed-through for the actual `BarrierInfProjectionSchurHessDerivativeOn`
+interface and identifying the paired derivative with the canonical lifted
+third derivative.
 Thus the preferred exact source gate can now be proved by differentiating only
 the applied Schur-Hessian vector path `t ↦ H_schur(z_t) v` and pairing the
 result with `v`; a full operator-valued Schur derivative and even a direct

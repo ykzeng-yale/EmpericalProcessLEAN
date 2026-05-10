@@ -227,10 +227,12 @@ third derivative, and let the generic `ψ` derivative bridge finish the scalar
 calculus.  The generic extraction
 `hessianSegmentHessApply_hasDerivWithinAt_of_hasFDerivAt` also lets any future
 full Frechet Schur-Hessian derivative route produce the same applied-vector
-gate directly.  The remaining exact envelope task is to prove that
-applied-vector identity and construct the packaged adjoint-square-root envelope certificate
-from concrete selector and
-Hessian square-root models.
+gate directly.  The Schur-certificate bridge now packages this for
+`BarrierInfProjectionSchurHessDerivativeOn` itself through
+`BarrierInfProjectionSchurHessDerivativeOn.hessApply_hasDerivWithinAt` and
+`BarrierInfProjectionSchurHessDerivativeOn.hessApply_mixed_inner_eq`.  The
+remaining exact envelope task is to construct such a Schur derivative
+certificate from concrete selector and Hessian square-root/envelope models.
 The local stationarity source bridge now also compiles through
 `BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero`,
 `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_mem_nhds`,

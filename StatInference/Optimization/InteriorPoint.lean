@@ -4305,6 +4305,61 @@ theorem BarrierInfProjectionSchurHessDerivativeOn.continuousOn
   intro x hx
   exact (hderiv.hess_hasFDerivAt hx).continuousAt.continuousWithinAt
 
+/--
+Applied-vector form of the projected Schur-Hessian derivative certificate.
+This is the source-shaped bridge needed for the scalar segment route:
+differentiate `t ↦ H_schur(z_t) v` directly after proving the Frechet
+derivative of `H_schur`.
+-/
+theorem BarrierInfProjectionSchurHessDerivativeOn.hessApply_hasDerivWithinAt
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    (hderiv :
+      BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+        schurDeriv)
+    {x y v : E₁} {t : ℝ} {u : Set ℝ}
+    (hz : hessianSegmentPoint x y t ∈ barrierInfProjectionSet s) :
+    HasDerivWithinAt
+      (fun τ : ℝ =>
+        barrierInfProjectionSchurHessFrom selector hess invHyy
+          (hessianSegmentPoint x y τ) v)
+      ((schurDeriv (hessianSegmentPoint x y t) (y - x)) v) u t :=
+  hessianSegmentHessApply_hasDerivWithinAt_of_hasFDerivAt
+    (hess := barrierInfProjectionSchurHessFrom selector hess invHyy)
+    (hessDeriv := schurDeriv) (x := x) (y := y) (v := v) (t := t) (u := u)
+    (hderiv.hess_hasFDerivAt hz)
+
+/--
+The applied Schur-Hessian derivative has exactly the lifted-third scalar
+pairing used by the projected self-concordance segment proof.
+-/
+theorem BarrierInfProjectionSchurHessDerivativeOn.hessApply_mixed_inner_eq
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    (hderiv :
+      BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+        schurDeriv)
+    {x y v : E₁} {t : ℝ}
+    (hz : hessianSegmentPoint x y t ∈ barrierInfProjectionSet s) :
+    inner ℝ v ((schurDeriv (hessianSegmentPoint x y t) (y - x)) v) =
+      hessianSegmentMixedThirdPsiDeriv
+        (barrierInfProjectionSchurLiftedThird selector hess invHyy third)
+        x y v t := by
+  simpa [hessianSegmentMixedThirdPsiDeriv] using
+    hderiv.mixed_inner_eq hz (y - x) v
+
 theorem BarrierInfProjectionSelectorStationary.projectedInvHess_quadratic_nonneg_of_Hyy_right_inverse
     {s : Set (WithLp 2 (E₁ × E₂))}
     {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
