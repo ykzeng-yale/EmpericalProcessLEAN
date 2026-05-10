@@ -3642,6 +3642,16 @@ The next blueprint item is therefore not another wrapper: prove the actual
 a.e. pure Rademacher bad-fiber probability theorem, or switch to the
 product-pair/pair-sub sign-swap source theorem with correct constants.
 
+The base-a.e. source handoff is also now explicit:
+`eventually_ae_restrict_of_eventually_ae_imp_dep` converts eventual
+base-measure a.e. implications on varying sample spaces into eventual
+restricted-measure a.e. facts, and
+`VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp`
+specializes it to the pure Rademacher centered-bad source surface.  Future
+Fubini work should aim directly for the base-product statement
+`∀ᵐ sample ∂P^n, centeredBad sample -> beta n <= rademacherBadMass n sample`,
+plus centered-bad measurability.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

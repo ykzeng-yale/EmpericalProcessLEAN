@@ -10007,3 +10007,20 @@ a.e. Rademacher bad-fiber lower bound and selected-cover lower-growth input
 are supplied.  The active proof blocker is now exactly the source probability
 theorem: prove that a.e. pure Rademacher bad-fiber mass, or replace it by the
 product-pair/pair-sub sign-swap source theorem with correct constants.
+
+2026-05-10 base-a.e. restricted-source adapter:
+Search found the relevant mathlib restriction API
+`ae_restrict_iff'`/`ae_imp_of_ae_restrict` and the local a.e. product-fiber
+interfaces, but no dependent-indexed adapter for the varying spaces
+`SampleAt Observation n`.  `Theorem243.lean` now adds
+`eventually_ae_restrict_of_eventually_ae_imp`,
+`eventually_ae_restrict_of_eventually_ae_imp_dep`, and
+`VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp`.
+Future Fubini or conditioning source proofs may now prove the natural base
+form
+`∀ᵐ sample ∂(vdVWProductMeasure P n), sample ∈ centeredBad n -> lowerBound n sample`
+eventually in `n`, together with centered-bad measurability, and feed the
+already compiled restricted-measure sign-only source route.  This does not
+prove the nontrivial Rademacher bad-fiber mass.  The next aggressive theorem
+target remains the actual a.e. pure Rademacher bad-fiber probability theorem,
+or a coefficient-correct product-pair/pair-sub sign-swap substitute.

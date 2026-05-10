@@ -4560,3 +4560,12 @@ The dashboard blocker for this lane is therefore no longer downstream
 propagation; it is the actual probability theorem proving the a.e. pure
 Rademacher bad-fiber lower bound, or a coefficient-correct product-pair/
 pair-sub sign-swap substitute.
+
+The base-measure source handoff is now also compiled through
+`eventually_ae_restrict_of_eventually_ae_imp_dep` and
+`VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp`.
+This means the next source proof can output the more natural Fubini shape
+`P^n`-a.e. on the centered-bad event, rather than constructing a restricted
+measure a.e. statement by hand.  It is plumbing only; the remaining blocker is
+still the pure Rademacher bad-fiber mass theorem or the coefficient-correct
+product-pair/sign-swap replacement.
