@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V184` in
+Route from `Live In-Thread Goal Prompt V185` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -89,9 +89,13 @@ Theorem 2.2.3 now has finite-block variance scaling, the `C / n` variance
 bound, the source-facing `E (S_n / n - μ)^2 <= C / n` display for uncorrelated
 and independent blocks, the `L^2 -> TendstoInMeasure` Lemma 2.2.2
 specialization, and the average convergence-in-probability consumer from
-supplied centered `eLpNorm` convergence.  The next target is the remaining
-finite-bound-to-`atTop` `L^2`/`eLpNorm` convergence bridge.  Do not route future
-cycles back to Chapter 4.5.2 or solved 2.1.10 partial-sum, 2.1.13
+supplied centered `eLpNorm` convergence.  V185 closes the remaining
+finite-bound-to-`atTop` bridge: `E (S_n / n - μ)^2 <= C / n` now yields
+centered `eLpNorm` convergence and then `TendstoInMeasure` for both
+uncorrelated and independent source hypotheses.  The next target is either a
+compact exact-source theorem report/alias for Theorem 2.2.3 after checking the
+book wording, or the next unsolved Chapter 2 theorem-sized wrapper.  Do not
+route future cycles back to Chapter 4.5.2 or solved 2.1.10 partial-sum, 2.1.13
 product-consumer, 2.2.1 variance-sum, 2.4.9, 2.1.12, 2.1.15, or 2.1.16
 plumbing unless the user explicitly pivots.
 The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,

@@ -4,21 +4,22 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V184
+## Live In-Thread Goal Prompt V185
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane only: Durrett Theorem 2.2.3, the `L^2` weak law, in
-`StatInference/ProbabilityTheory/Basic.lean`.
+synced `main`.  Active lane: Durrett Chapter 2 in
+`StatInference/ProbabilityTheory/Basic.lean`, starting from the now-compiled
+Theorem 2.2.3 `L^2` weak-law bridge.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V184 compiled support now includes:
+V185 compiled support now includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -27,14 +28,25 @@ V184 compiled support now includes:
 `durrett2019_theorem_2_2_3_integral_sq_centered_average_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_integral_sq_centered_average_le_of_iIndepFun`,
 `durrett2019_lemma_2_2_2_tendstoInMeasure_of_tendsto_eLpNorm_two`, and
-`durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_tendsto_eLpNorm_centered`.
+`durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_tendsto_eLpNorm_centered`,
+plus the final finite-bound-to-limit and source wrappers:
+`durrett2019_theorem_2_2_3_lpNorm_two_le_sqrt_of_integral_sq_le`,
+`durrett2019_theorem_2_2_3_eLpNorm_two_le_sqrt_of_integral_sq_le`,
+`durrett2019_theorem_2_2_3_tendsto_eLpNorm_two_zero_of_integral_sq_le_const_div`,
+`durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_integral_sq_bound`,
+`durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_uncorrelated`,
+`durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_iIndepFun`,
+`durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_uncorrelated`, and
+`durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_iIndepFun`.
 
-Next aggressive step: finish Theorem 2.2.3 by converting the compiled finite
-bound `E (S_n / n - mu)^2 <= C / n` into actual `atTop` `L^2`/`eLpNorm`
-convergence using `C / n -> 0`, then feed the existing
-`TendstoInMeasure` wrapper.  Search mathlib/local first for `eLpNorm`,
-`lpNorm`, `ofReal_integral_eq_lintegral_ofReal`, `Tendsto.squeeze`, `tendsto`
-division-by-`n`, and Chebyshev/Markov APIs.  Use
+Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
+Theorem 2.2.3 scalar plumbing, or Theorem 2.4.9.  If immediate, add a compact
+formal theorem report or exact-source alias for Durrett Theorem 2.2.3 after
+checking the book wording.  Otherwise read the next unsolved Chapter 2 source
+anchor and prove the largest source-facing wrapper that can compile in one
+packet, reusing the compiled independence, variance, convergence-in-measure,
+Borel-Cantelli, strong-law, and empirical-CDF infrastructure.  Search
+mathlib/local first for the exact primitive and use
 `origin/codex/vdvw-selected-cover-source` only as selective reference via
 `git grep`/`git show` or an isolated worktree; do not merge it wholesale into
 this lane.

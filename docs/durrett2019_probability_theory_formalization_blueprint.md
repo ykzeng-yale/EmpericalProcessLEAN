@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V184`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V185`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -82,9 +82,13 @@ closed support.  Theorem 2.2.3 now has finite-block variance scaling, the
 `C / n` variance bound, the source-facing `E (S_n / n - mu)^2 <= C / n`
 display for uncorrelated and independent blocks, the `L^2 -> TendstoInMeasure`
 Lemma 2.2.2 specialization, and the average convergence-in-probability
-consumer from supplied centered `eLpNorm` convergence.  Continue by converting
-the finite display into actual `atTop` `L^2`/`eLpNorm` convergence and feeding
-the compiled `TendstoInMeasure` consumer, after a focused mathlib/local search.
+consumer from supplied centered `eLpNorm` convergence.  V185 also compiles the
+finite-display-to-limit bridge: a `C / n` centered second-moment bound gives
+centered `eLpNorm` convergence, and the uncorrelated and independent source
+hypotheses now feed the final `TendstoInMeasure` weak-law endpoints directly.
+Continue by auditing the exact textbook wording for a compact Theorem 2.2.3
+report/alias if immediate; otherwise move to the next unsolved Chapter 2 source
+anchor rather than repeating 2.1, 2.2.1, 2.2.3 scalar plumbing, or 2.4.9.
 
 For each cycle, route from:
 

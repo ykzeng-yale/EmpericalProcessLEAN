@@ -1565,6 +1565,237 @@ theorem durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_tendsto_eLpNorm_ce
   · exact aestronglyMeasurable_const
   · simpa [Pi.sub_apply] using hL2
 
+/--
+Durrett 2019, Theorem 2.2.3 support: an ordinary second-moment bound controls
+the real `L^2` seminorm.
+-/
+theorem durrett2019_theorem_2_2_3_lpNorm_two_le_sqrt_of_integral_sq_le
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {Z : Ω -> ℝ} {B : ℝ}
+    (hZ_meas : AEStronglyMeasurable Z P)
+    (hbound : ∫ ω, (Z ω) ^ 2 ∂P ≤ B) :
+    lpNorm Z (2 : ℝ≥0∞) P ≤ Real.sqrt B := by
+  rw [MeasureTheory.lpNorm_eq_integral_norm_rpow_toReal (μ := P) (f := Z)
+    (p := (2 : ℝ≥0∞)) (by norm_num) (by norm_num) hZ_meas]
+  norm_num [Real.norm_eq_abs, sq_abs]
+  rw [← Real.sqrt_eq_rpow]
+  exact Real.sqrt_le_sqrt hbound
+
+/--
+Durrett 2019, Theorem 2.2.3 support: an ordinary second-moment bound controls
+mathlib's extended `eLpNorm · 2`.
+-/
+theorem durrett2019_theorem_2_2_3_eLpNorm_two_le_sqrt_of_integral_sq_le
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {Z : Ω -> ℝ} {B : ℝ}
+    (hZ : MemLp Z (2 : ℝ≥0∞) P)
+    (hbound : ∫ ω, (Z ω) ^ 2 ∂P ≤ B) :
+    eLpNorm Z (2 : ℝ≥0∞) P ≤ ENNReal.ofReal (Real.sqrt B) := by
+  rw [← MeasureTheory.ofReal_lpNorm hZ]
+  exact ENNReal.ofReal_le_ofReal
+    (durrett2019_theorem_2_2_3_lpNorm_two_le_sqrt_of_integral_sq_le
+      (P := P) (Z := Z) hZ.aestronglyMeasurable hbound)
+
+/--
+Durrett 2019, Theorem 2.2.3 support: if the ordinary second moments are
+eventually bounded by `C / n`, then the `L^2` seminorms converge to zero.
+-/
+theorem durrett2019_theorem_2_2_3_tendsto_eLpNorm_two_zero_of_integral_sq_le_const_div
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {Z : ℕ -> Ω -> ℝ} {C : ℝ}
+    (hZ : ∀ n, MemLp (Z n) (2 : ℝ≥0∞) P)
+    (hbound : ∀ᶠ n in atTop, ∫ ω, (Z n ω) ^ 2 ∂P ≤ C / n) :
+    Tendsto (fun n => eLpNorm (Z n) (2 : ℝ≥0∞) P) atTop (𝓝 0) := by
+  have hdiv : Tendsto (fun n : ℕ => C / n) atTop (𝓝 (0 : ℝ)) :=
+    tendsto_const_div_atTop_nhds_zero_nat C
+  have hsqrtReal :
+      Tendsto (fun n : ℕ => Real.sqrt (C / n)) atTop (𝓝 (0 : ℝ)) := by
+    simpa only [Function.comp_apply, Real.sqrt_zero] using
+      (Real.continuous_sqrt.continuousAt.tendsto.comp hdiv)
+  have hsqrtENN :
+      Tendsto (fun n : ℕ => ENNReal.ofReal (Real.sqrt (C / n))) atTop
+        (𝓝 (0 : ℝ≥0∞)) := by
+    simpa [ENNReal.ofReal_zero] using ENNReal.tendsto_ofReal hsqrtReal
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
+    hsqrtENN ?_ ?_
+  · exact Eventually.of_forall fun n => by
+      change (⊥ : ℝ≥0∞) ≤ eLpNorm (Z n) (2 : ℝ≥0∞) P
+      exact bot_le
+  · filter_upwards [hbound] with n hn
+    exact durrett2019_theorem_2_2_3_eLpNorm_two_le_sqrt_of_integral_sq_le
+      (P := P) (Z := Z n) (B := C / n) (hZ n) hn
+
+/--
+Durrett 2019, Theorem 2.2.3 support: finite sample averages of `L^2` variables
+are in `L^2`.
+-/
+theorem durrett2019_theorem_2_2_3_average_memLp_two
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {n : ℕ}
+    (hX : ∀ i ∈ Finset.range n, MemLp (X i) (2 : ℝ≥0∞) P) :
+    MemLp (fun ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω)
+      (2 : ℝ≥0∞) P := by
+  have hsum : MemLp (fun ω => ∑ i ∈ Finset.range n, X i ω)
+      (2 : ℝ≥0∞) P := by
+    have hsumfun :
+        (fun ω => ∑ i ∈ Finset.range n, X i ω) =
+          (∑ i ∈ Finset.range n, X i) := by
+      ext ω
+      simp [Finset.sum_apply]
+    rw [hsumfun]
+    exact memLp_finsetSum' (Finset.range n) hX
+  simpa using hsum.const_mul ((n : ℝ)⁻¹)
+
+/--
+Durrett 2019, Theorem 2.2.3 support: centered finite sample averages of `L^2`
+variables are in `L^2`.
+-/
+theorem durrett2019_theorem_2_2_3_centered_average_memLp_two
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {n : ℕ} {mu : ℝ}
+    (hX : ∀ i ∈ Finset.range n, MemLp (X i) (2 : ℝ≥0∞) P) :
+    MemLp (fun ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω - mu)
+      (2 : ℝ≥0∞) P := by
+  exact (durrett2019_theorem_2_2_3_average_memLp_two
+    (P := P) (X := X) (n := n) hX).sub (memLp_const mu)
+
+/--
+Durrett 2019, Theorem 2.2.3 support: the `C / n` second-moment display for
+centered averages gives the needed `L^2` convergence.
+-/
+theorem durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_integral_sq_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {mu C : ℝ}
+    (havg_centered : ∀ n : ℕ, MemLp
+      (fun ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω - mu)
+      (2 : ℝ≥0∞) P)
+    (hbound : ∀ᶠ n : ℕ in atTop,
+      ∫ ω, (((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω - mu) ^ 2 ∂P ≤
+        C / n) :
+    Tendsto
+      (fun n : ℕ =>
+        eLpNorm (fun ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω - mu)
+          (2 : ℝ≥0∞) P)
+      atTop (𝓝 0) :=
+  durrett2019_theorem_2_2_3_tendsto_eLpNorm_two_zero_of_integral_sq_le_const_div
+    (P := P)
+    (Z := fun n ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω - mu)
+    havg_centered hbound
+
+/--
+Durrett 2019, Theorem 2.2.3: uncorrelated variables with common mean and
+uniformly bounded variance have centered sample averages converging to zero in
+`L^2`.
+-/
+theorem durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_uncorrelated
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {mu C : ℝ}
+    (hX : ∀ i, MemLp (X i) (2 : ℝ≥0∞) P)
+    (huncorr :
+      ∀ ⦃i : ℕ⦄, ∀ ⦃j : ℕ⦄, i ≠ j ->
+        ∫ ω, X i ω * X j ω ∂P =
+          (∫ ω, X i ω ∂P) * ∫ ω, X j ω ∂P)
+    (hmean : ∀ i, ∫ ω, X i ω ∂P = mu)
+    (hvar : ∀ i, _root_.ProbabilityTheory.variance (X i) P ≤ C) :
+    Tendsto
+      (fun n : ℕ =>
+        eLpNorm (fun ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω - mu)
+          (2 : ℝ≥0∞) P)
+      atTop (𝓝 0) := by
+  refine
+    durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_integral_sq_bound
+      (P := P) (X := X) (mu := mu) (C := C) ?_ ?_
+  · intro n
+    exact durrett2019_theorem_2_2_3_centered_average_memLp_two
+      (P := P) (X := X) (n := n) (mu := mu) (fun i _ => hX i)
+  · filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hn
+    exact durrett2019_theorem_2_2_3_integral_sq_centered_average_le_of_uncorrelated
+      (P := P) (X := X) (n := n) (mu := mu) (C := C) hn
+      (fun i _ => hX i)
+      (by
+        intro i _ j _ hij
+        exact huncorr hij)
+      (fun i _ => hmean i)
+      (fun i _ => hvar i)
+
+/--
+Durrett 2019, Theorem 2.2.3: independent variables with common mean and
+uniformly bounded variance have centered sample averages converging to zero in
+`L^2`.
+-/
+theorem durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {mu C : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX : ∀ i, MemLp (X i) (2 : ℝ≥0∞) P)
+    (hmean : ∀ i, ∫ ω, X i ω ∂P = mu)
+    (hvar : ∀ i, _root_.ProbabilityTheory.variance (X i) P ≤ C) :
+    Tendsto
+      (fun n : ℕ =>
+        eLpNorm (fun ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω - mu)
+          (2 : ℝ≥0∞) P)
+      atTop (𝓝 0) := by
+  refine
+    durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_integral_sq_bound
+      (P := P) (X := X) (mu := mu) (C := C) ?_ ?_
+  · intro n
+    exact durrett2019_theorem_2_2_3_centered_average_memLp_two
+      (P := P) (X := X) (n := n) (mu := mu) (fun i _ => hX i)
+  · filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hn
+    exact durrett2019_theorem_2_2_3_integral_sq_centered_average_le_of_iIndepFun
+      (P := P) (X := X) (n := n) (mu := mu) (C := C) hn
+      hX_indep
+      (fun i _ => hX i)
+      (fun i _ => hmean i)
+      (fun i _ => hvar i)
+
+/--
+Durrett 2019, Theorem 2.2.3: uncorrelated variables with common mean and
+uniformly bounded variance satisfy the weak law in probability.
+-/
+theorem durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_uncorrelated
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {mu C : ℝ}
+    (hX : ∀ i, MemLp (X i) (2 : ℝ≥0∞) P)
+    (huncorr :
+      ∀ ⦃i : ℕ⦄, ∀ ⦃j : ℕ⦄, i ≠ j ->
+        ∫ ω, X i ω * X j ω ∂P =
+          (∫ ω, X i ω ∂P) * ∫ ω, X j ω ∂P)
+    (hmean : ∀ i, ∫ ω, X i ω ∂P = mu)
+    (hvar : ∀ i, _root_.ProbabilityTheory.variance (X i) P ≤ C) :
+    TendstoInMeasure P
+      (fun (n : ℕ) ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω) atTop
+      (fun _ => mu) := by
+  refine durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_tendsto_eLpNorm_centered
+    (P := P) (X := X) (mu := mu) ?_ ?_
+  · intro n
+    exact (durrett2019_theorem_2_2_3_average_memLp_two
+      (P := P) (X := X) (n := n) (fun i _ => hX i)).aestronglyMeasurable
+  · exact durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_uncorrelated
+      (P := P) (X := X) (mu := mu) (C := C) hX huncorr hmean hvar
+
+/--
+Durrett 2019, Theorem 2.2.3: independent variables with common mean and
+uniformly bounded variance satisfy the weak law in probability.
+-/
+theorem durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {mu C : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX : ∀ i, MemLp (X i) (2 : ℝ≥0∞) P)
+    (hmean : ∀ i, ∫ ω, X i ω ∂P = mu)
+    (hvar : ∀ i, _root_.ProbabilityTheory.variance (X i) P ≤ C) :
+    TendstoInMeasure P
+      (fun (n : ℕ) ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω) atTop
+      (fun _ => mu) := by
+  refine durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_tendsto_eLpNorm_centered
+    (P := P) (X := X) (mu := mu) ?_ ?_
+  · intro n
+    exact (durrett2019_theorem_2_2_3_average_memLp_two
+      (P := P) (X := X) (n := n) (fun i _ => hX i)).aestronglyMeasurable
+  · exact durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_iIndepFun
+      (P := P) (X := X) (mu := mu) (C := C) hX_indep hX hmean hvar
+
 /-! ## Durrett, Section 2.3 -/
 
 /--
