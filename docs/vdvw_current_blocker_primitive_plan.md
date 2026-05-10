@@ -9599,3 +9599,14 @@ the Rademacher sign fiber of
 that bound to the ghost/Rademacher product fiber and then to the displayed-beta
 comparison.  This is still a genuine probability source theorem, not a
 deterministic sign-section shortcut.
+
+2026-05-10 canonical sign-only first-level fixed-`M` endpoint:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalRademacher_countable_firstLevel`.
+This composes the sign-only Rademacher fiber lower-bound interface with the
+ghost-product lift and the canonical first-level fixed-`M` stochastic-entropy
+endpoint.  The selected cover, selected-cardinality comparison, radius-halved
+entropy input, and selected-center measurability remain internal.  The active
+Theorem 2.4.3 source target is now as sharp as this lane can make it: prove
+the displayed Chebyshev beta lower bound for
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent` over centered-bad samples.

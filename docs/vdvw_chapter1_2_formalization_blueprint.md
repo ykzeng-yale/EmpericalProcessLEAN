@@ -3355,6 +3355,11 @@ packages that lift with the existing countability-based event measurability.
 Future source work should target the displayed beta lower bound for this
 sign-only event, then feed the already compiled fixed-`M` endpoint.
 
+The fixed-`M` endpoint for this reduced source shape is now compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalRademacher_countable_firstLevel`.
+It should be the canonical first-level target when the probability side proves
+beta mass for the sign-only selected-net event.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

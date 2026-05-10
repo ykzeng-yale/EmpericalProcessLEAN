@@ -4267,3 +4267,10 @@ and the displayed-beta constructor
 uses that lift directly.  The remaining probability target on this lane is
 therefore the displayed beta lower bound for the Rademacher sign fiber of the
 sign-only event.
+
+The sign-only event now also reaches fixed-`M` convergence directly through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalRademacher_countable_firstLevel`.
+This is the current sharpest endpoint for the canonical lane: all first-level
+selected-cover bookkeeping is internal, and the only exposed source input is
+the displayed beta lower bound for
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent`.
