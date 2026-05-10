@@ -72118,6 +72118,53 @@ theorem
             (envelope := envelope) hindex_finite henvelope hclass henv_integrable
 
 /--
+Finite-class textbook-aligned `P`-GC/Lemma 2.4.5 package without a global
+`Countable Index` assumption.
+
+This records the direct finite-class SLLN route in the book-facing
+measurable-envelope form for the conclusions that do not require the in-mean
+finite-product integral upgrade.  The stronger in-mean version remains
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln`, which uses
+the countable centered-supremum integrability/tail infrastructure.
+-/
+theorem
+    VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_no_global_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWPMeasurableClass P indexClass classFun ∧
+      VdVWOuterExpectation P (fun observation => ENNReal.ofReal (envelope observation)) < ∞ ∧
+      VdVWOuterProbabilityPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWOuterAlmostSurePGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  have hpkg :=
+    VdVWTheorem243_finite_indexClass_pGlivenkoCantelli_and_lemma245_canonical_slln
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hindex_finite henvelope hclass henv_integrable
+  exact
+    ⟨VdVWPMeasurableClass.of_countable_of_measurable
+        (P := P) hindex_finite.countable hclass,
+      henvelope.outerExpectation_lt_top_of_measurable_integrable henv henv_integrable,
+      hpkg.1, hpkg.2.1, hpkg.2.2.1, hpkg.2.2.2⟩
+
+/--
 The finite-class Theorem 2.4.3/Lemma 2.4.5 package, with the
 textbook-facing measurability and envelope assumptions made explicit.
 

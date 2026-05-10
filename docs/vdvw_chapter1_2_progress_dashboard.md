@@ -4313,3 +4313,10 @@ Rademacher finite-center Hoeffding bound.  The practical frontier is therefore
 sharper: either integrate this tail error and prove it vanishes under stronger
 cardinality/tail assumptions, or use the product-pair averaged sign/ghost
 failure-tail route that is already compiled.
+
+The finite-class route now also reuses the scratch-branch no-global-countability
+package:
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_no_global_countable`.
+It keeps the direct finite-class `P`-GC and Lemma 2.4.5 conclusions available
+from `indexClass.Finite`; only the in-mean finite-product integral upgrade
+stays in the stronger countable theorem.

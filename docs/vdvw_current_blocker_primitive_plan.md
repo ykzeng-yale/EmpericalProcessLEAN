@@ -9680,3 +9680,13 @@ cardinality-growth input analogous to the product-pair inverse-square route.
 The remaining non-wrapper tasks are to prove the pure Rademacher bad-fiber
 displayed beta lower bound and to obtain the needed inverse-square/growth
 condition from a structural entropy or cover source.
+
+2026-05-10 reused finite-class no-global-countability package:
+`Theorem243.lean` now ports the local scratch-branch theorem
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_no_global_countable`.
+It packages finite-class `P`-measurability, finite outer-envelope expectation,
+outer-probability `P`-GC, outer-a.s. `P`-GC, local `P`-GC, and the canonical
+Lemma 2.4.5 a.s. centered-supremum conclusion from `indexClass.Finite` without
+requiring a global `Countable Index`.  The in-mean finite-product integral
+upgrade remains in the stronger countable theorem
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln`.
