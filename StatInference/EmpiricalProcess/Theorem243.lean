@@ -48691,6 +48691,87 @@ theorem
       hmaxOriginal hmaxGhost
 
 /--
+Positive-sample-size version of the Chebyshev/pair-sub/sign-swap fiber lower
+bound.
+
+The finite-sample source theorem is naturally stated at `n + 1`; this wrapper
+exposes the same statement for an arbitrary positive sample size, matching the
+shape used by eventual `atTop` consumers.
+-/
+theorem
+    VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_of_pos
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ} {n : ℕ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {sample : SampleAt Observation n}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon) (hn : 0 < n)
+    (hbad :
+      2 * epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => ((n : ℝ))⁻¹) sample)
+          (0 : ℝ))
+    (hsignSwapLower :
+      (vdVWProductMeasure P n)
+          (VdVWTheorem243CenteredPairSubBadEvent
+            P indexClass classFun envelope M epsilon sample) ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+            P indexClass classFun envelope M epsilon sample))
+    (hmaxOriginal :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover sample).center z.2 M)
+    (hmaxGhost :
+      ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+          ∂((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n)),
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover z.1).center (fun i : Fin n => -z.2 i) M) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / (((n : ℝ)) * epsilon ^ 2)) ≤
+      ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n))
+        (Prod.mk sample ⁻¹'
+          VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality)
+            (cover := cover)) := by
+  cases n with
+  | zero =>
+      cases hn
+  | succ n =>
+      simpa [Nat.succ_eq_add_one] using
+        VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_succ
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (n := n) (cardinality := cardinality)
+          (cover := cover) (sample := sample)
+          henvelope hM htruncIntegrable hepsilon hbad hsignSwapLower
+          hmaxOriginal hmaxGhost
+
+/--
 A scaled selected outer-probability comparison without the displayed beta factor
 implies the displayed-beta source primitive.
 
