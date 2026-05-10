@@ -500,6 +500,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   completed-square Schur lift identity.  The local-norm sandwich wrapper now
   exposes only the distinct-point side condition `y - x ≠ 0` instead of a
   manually supplied projected Hessian positivity hypothesis.
+- Inf-projection zero-displacement shrink: the newest packet adds
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_of_sourceRadius`.
+  It splits on `y - x = 0`, closes the trivial branch with `localNorm_zero`,
+  and otherwise uses the strict-positivity wrapper.  The source-radius
+  projected local-norm sandwich gate now exposes no manual segment coefficient,
+  no manual projected Hessian positivity, and no distinct-point hypothesis.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

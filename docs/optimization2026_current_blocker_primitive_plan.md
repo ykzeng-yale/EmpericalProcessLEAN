@@ -617,6 +617,12 @@ Thus the adjoint-square envelope model now derives strict projected Hessian
 positivity internally from the full Hessian factorization `H = S^* S` and the
 Schur lift identity.  The remaining nontrivial source-radius side gate for
 this wrapper is the distinct-point condition `y - x ≠ 0`.
+The zero-displacement split is now closed by
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_of_sourceRadius`.
+This wrapper handles `y = x` by simplification with `localNorm_zero` and uses
+the strict-positivity route only for `y - x ≠ 0`.  The local-norm sandwich
+gate is now reduced to concrete derivative inputs, convex projected-domain
+membership, openness, and the scalar source-radius condition.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
