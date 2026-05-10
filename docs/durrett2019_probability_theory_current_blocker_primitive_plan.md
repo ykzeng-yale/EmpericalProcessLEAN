@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V198
+## Live In-Thread Goal Prompt V199
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -21,16 +21,18 @@ numeric reductions for the large-jump and truncated second-moment hypotheses,
 the real-tail-to-natural-tail bridge from Durrett's displayed assumption, and
 the first Lemma 2.2.13 layer-cake / second-moment-bound consumer layer, plus
 the real-tail-to-tail-average Cesaro bridge, automatic local integrability of
-the clipped tail profile, exact tail-average endpoint wrappers, and truncated
-tail-event domination support, plus the ordinary-layer-cake-to-tail-average
-comparison bridge.
+the clipped tail profile, exact tail-average endpoint wrappers, truncated
+tail-event domination support, the ordinary-layer-cake-to-tail-average
+comparison bridge, the ordinary square-tail layer-cake support, positive
+square-tail event rewrite, and the radius-layer-cake `(0,∞)` to `(0,n]`
+finite-support bridge.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V198 compiled support now includes:
+V199 compiled support now includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -121,7 +123,14 @@ plus truncated-tail event support:
 and
 `durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_le`,
 plus the supplied-layer-cake comparison bridge
-`durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake`.
+`durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake`,
+plus the square-tail and radius-layer-cake support:
+`durrett2019_theorem_2_2_12_truncated_sq_integrable`,
+`durrett2019_theorem_2_2_12_truncated_sq_layercake_tail_sq`,
+`durrett2019_theorem_2_2_12_sq_tail_event_eq_abs_tail`,
+`durrett2019_theorem_2_2_12_measureReal_sq_tail_eq_abs_tail`,
+`durrett2019_theorem_2_2_12_truncated_layercake_Ioc_of_Ioi`, and
+`durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake_Ioi`.
 
 Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
 Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, or Theorem 2.4.9.  Move toward
@@ -145,12 +154,15 @@ textbook truncated-square comparison
 `E[bar X_{n,0}^2] / n ≤ (1/n) * ∫_0^n 2*y*P(|X_0|>y) dy` eventually; the
 compiled exact tail-average endpoint will then finish Theorem 2.2.12.  The
 needed event-level facts `|bar X| ≤ |X|`, `|bar X| ≤ n`, tail-probability
-domination, and zero tail above the truncation level are already compiled.
-The ordinary truncated-square layer-cake display, once supplied, now produces
-the exact tail-average bound automatically.  Next prove that ordinary
-layer-cake display for `|bar X_{n,0}|^2`, likely by converting mathlib's
-`lintegral_rpow_eq_lintegral_meas_lt_mul` at `p = 2` plus the finite/bounded
-ordinary-integral conversion.
+domination, zero tail above the truncation level, ordinary square-tail
+layer-cake display for `bar X_{n,0}^2`, positive square-tail event rewriting,
+and the `(0,∞)` radius-layer-cake to `(0,n]` truncation step are already
+compiled.  Next prove only the radius-form ordinary layer-cake display over
+`(0,∞)`,
+`E[bar X_{n,0}^2] = ∫_0^∞ 2*y*P(|bar X_{n,0}|>y) dy`, likely by converting
+mathlib's `lintegral_rpow_eq_lintegral_meas_lt_mul` at `p = 2` to ordinary
+real integrals using boundedness/finite-measure conversions.  Do not redo the
+square-tail `∫ t, P(t < bar X^2)` layer or the finite-support `(0,n]` cutdown.
 Reuse
 independence/product wrappers, finite-sum
 variance support, Borel-Cantelli, strong-law, empirical-CDF infrastructure, and

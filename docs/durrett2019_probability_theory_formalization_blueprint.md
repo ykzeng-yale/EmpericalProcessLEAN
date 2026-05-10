@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V194`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V199`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -114,7 +114,11 @@ integrability of the clipped tail profile and packages the exact tail-average
 endpoint wrappers.  V197 adds the truncated-tail event domination support
 needed for the final layer-cake comparison.  V198 adds the bridge from a
 supplied ordinary truncated-square layer-cake display to the exact
-tail-average bound.  New V188-V198 declarations are
+tail-average bound.  V199 adds ordinary square-tail layer-cake support, the
+positive square-tail event rewrite, the finite-support conversion from the
+radius-layer-cake display over `(0,∞)` to the textbook display over `(0,n]`,
+and the direct `(0,∞)` radius-layer-cake consumer.  New V188-V199 declarations
+are
 `durrett2019_theorem_2_2_11_measurable_truncationMap`,
 `durrett2019_theorem_2_2_11_measurable_truncated`,
 `durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound`,
@@ -168,11 +172,19 @@ and
 and
 `durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_le`,
 and
-`durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake`.
-Continue with the remaining Theorem 2.2.12 support: prove the ordinary
-layer-cake display for `|bar X_{n,0}|^2` and feed it to the compiled
-tail-average bound bridge.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar
-plumbing, 2.2.6, or 2.4.9.
+`durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake`,
+`durrett2019_theorem_2_2_12_truncated_sq_integrable`,
+`durrett2019_theorem_2_2_12_truncated_sq_layercake_tail_sq`,
+`durrett2019_theorem_2_2_12_sq_tail_event_eq_abs_tail`,
+`durrett2019_theorem_2_2_12_measureReal_sq_tail_eq_abs_tail`,
+`durrett2019_theorem_2_2_12_truncated_layercake_Ioc_of_Ioi`, and
+`durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake_Ioi`.
+Continue with the remaining Theorem 2.2.12 support: prove the radius-form
+ordinary layer-cake display over `(0,∞)` for `|bar X_{n,0}|^2` by converting
+mathlib's `lintegral_rpow_eq_lintegral_meas_lt_mul` at `p = 2` to ordinary
+real integrals.  Feed that display to the compiled `(0,∞)` consumer.  Do not
+repeat 2.1, 2.2.1, 2.2.3 scalar plumbing, 2.2.6, 2.4.9, the square-tail
+ordinary layer-cake layer, or the finite-support `(0,n]` cutdown.
 
 For each cycle, route from:
 

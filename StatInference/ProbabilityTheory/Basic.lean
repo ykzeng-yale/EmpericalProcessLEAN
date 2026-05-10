@@ -3,6 +3,7 @@ import StatInference.ProbabilityMeasure.BorelCantelli
 import StatInference.ProbabilityMeasure.GeneratedSigma
 import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.StrongLaw
+import StatInference.ProbabilityMeasure.Tail
 import StatInference.ProbabilityMeasure.WeakConvergence
 import Mathlib.Analysis.SpecialFunctions.Pow.Integral
 import Mathlib.MeasureTheory.Measure.LevyConvergence
@@ -3434,6 +3435,175 @@ theorem durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_l
   simp
 
 /--
+Durrett 2019, Theorem 2.2.12 support: the single truncated square is
+integrable.
+
+This is the ordinary-integral side condition needed before applying the local
+real layer-cake wrapper to `bar X_{n,0}^2`.
+-/
+theorem durrett2019_theorem_2_2_12_truncated_sq_integrable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX0 : Measurable (X 0)) (n : ℕ) :
+    Integrable
+      (fun ω =>
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2)
+      P :=
+  (durrett2019_theorem_2_2_11_truncated_memLp_two_of_measurable
+    (P := P) (X := fun _ k => X k) (b := fun n : ℕ => (n : ℝ))
+    (n := n) (k := 0) hX0).integrable_sq
+
+/--
+Durrett 2019, Theorem 2.2.12 support: ordinary real layer-cake for the
+truncated square, still in square-tail coordinates.
+
+The remaining analytic conversion is the textbook substitution from the
+square-tail variable `t` to the radius variable `y`, producing the integrand
+`2 * y * P(|bar X_{n,0}| > y)`.
+-/
+theorem durrett2019_theorem_2_2_12_truncated_sq_layercake_tail_sq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX0 : Measurable (X 0)) (n : ℕ) :
+    (∫ ω,
+      (durrett2019_theorem_2_2_11_truncated
+        (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) =
+      ∫ t in Set.Ioi (0 : ℝ),
+        P.real {ω : Ω |
+          t <
+            (durrett2019_theorem_2_2_11_truncated
+              (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2} := by
+  have hsq_int :
+      Integrable
+        (fun ω =>
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2)
+        P :=
+    durrett2019_theorem_2_2_12_truncated_sq_integrable
+      (P := P) (X := X) hX0 n
+  have hsq_nonneg :
+      0 ≤ᵐ[P]
+        (fun ω =>
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2) :=
+    Eventually.of_forall fun ω => sq_nonneg _
+  exact StatInference.ProbabilityMeasure.integral_eq_integral_tail_lt
+    hsq_int hsq_nonneg
+
+/--
+Durrett 2019, Theorem 2.2.12 support: positive square-tail events are the same
+as absolute-value tail events.
+-/
+theorem durrett2019_theorem_2_2_12_sq_tail_event_eq_abs_tail
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} (n : ℕ) {y : ℝ}
+    (hy : 0 ≤ y) :
+    {ω : Ω |
+      y ^ 2 <
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2} =
+      {ω : Ω |
+        y <
+          |durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|} := by
+  ext ω
+  constructor
+  · intro hω
+    have hsq :
+        |y| <
+          |durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω| :=
+      sq_lt_sq.mp hω
+    simpa [abs_of_nonneg hy] using hsq
+  · intro hω
+    have hsq :
+        |y| <
+          |durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω| := by
+      simpa [abs_of_nonneg hy] using hω
+    exact sq_lt_sq.mpr hsq
+
+/--
+Durrett 2019, Theorem 2.2.12 support: measure-real form of the positive
+square-tail event rewrite.
+-/
+theorem durrett2019_theorem_2_2_12_measureReal_sq_tail_eq_abs_tail
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} (n : ℕ) {y : ℝ}
+    (hy : 0 ≤ y) :
+    P.real {ω : Ω |
+      y ^ 2 <
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2} =
+      P.real {ω : Ω |
+        y <
+          |durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|} := by
+  rw [durrett2019_theorem_2_2_12_sq_tail_event_eq_abs_tail
+    (X := X) n hy]
+
+/--
+Durrett 2019, Theorem 2.2.12 support: an ordinary radius-form layer-cake
+display over `(0,∞)` is equivalent to the source display over `(0,n]` for the
+truncated variable.
+
+The only input is the bounded support of `bar X_{n,0}`: its tail probability is
+zero above the truncation level `n`.
+-/
+theorem durrett2019_theorem_2_2_12_truncated_layercake_Ioc_of_Ioi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hlayercake : ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) =
+        ∫ y in Set.Ioi (0 : ℝ),
+          2 * y * P.real {ω : Ω |
+            y <
+              |durrett2019_theorem_2_2_11_truncated
+                (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|}) :
+    ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) =
+        ∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+          2 * y * P.real {ω : Ω |
+            y <
+              |durrett2019_theorem_2_2_11_truncated
+                (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|} := by
+  filter_upwards [hlayercake] with n hlayercake_n
+  let f : ℝ -> ℝ :=
+    fun y =>
+      2 * y * P.real {ω : Ω |
+        y <
+          |durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|}
+  have hsupport :
+      ∀ y ∈ Set.Ioi (n : ℝ), f y = 0 := by
+    intro y hy
+    have hzero :
+        P.real {ω : Ω |
+          y <
+            |durrett2019_theorem_2_2_11_truncated
+              (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|} = 0 :=
+      durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_le
+        (P := P) (X := X) (n := n) (y := y) (le_of_lt hy)
+    simp [f, hzero]
+  have hIoi_eq_Ioc :
+      (∫ y in Set.Ioi (0 : ℝ), f y) =
+        ∫ y in Set.Ioc (0 : ℝ) (n : ℝ), f y := by
+    have hU : Set.Ioc (0 : ℝ) (n : ℝ) ∪ Set.Ioi (n : ℝ) =
+        Set.Ioi (0 : ℝ) :=
+      Set.Ioc_union_Ioi_eq_Ioi (by positivity)
+    rw [← hU]
+    exact integral_union_eq_left_of_forall
+      (μ := volume) (f := f)
+      (s := Set.Ioc (0 : ℝ) (n : ℝ)) (t := Set.Ioi (n : ℝ))
+      measurableSet_Ioi hsupport
+  rw [hlayercake_n]
+  exact hIoi_eq_Ioc
+
+/--
 Durrett 2019, Theorem 2.2.12 support: a supplied ordinary layer-cake display
 for the truncated square moment gives the exact textbook tail-average upper
 bound.
@@ -3531,6 +3701,38 @@ theorem durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake
       (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
         2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ) := by
         exact div_le_div_of_nonneg_right hintegral_le (by positivity)
+
+/--
+Durrett 2019, Theorem 2.2.12 support: a supplied radius-form ordinary
+layer-cake display over `(0,∞)` already gives the exact textbook tail-average
+upper bound.
+
+This variant lets the next proof step use the natural output of the
+`p = 2` layer-cake formula before the finite-support truncation to `(0,n]`.
+-/
+theorem durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake_Ioi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hlayercake : ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) =
+        ∫ y in Set.Ioi (0 : ℝ),
+          2 * y * P.real {ω : Ω |
+            y <
+              |durrett2019_theorem_2_2_11_truncated
+                (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|}) :
+    ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+        (n : ℝ) ≤
+          (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+            2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ) :=
+  durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake
+    (P := P) (X := X)
+    (durrett2019_theorem_2_2_12_truncated_layercake_Ioc_of_Ioi
+      (P := P) (X := X) hlayercake)
 
 /-! ## Durrett, Section 2.3 -/
 
