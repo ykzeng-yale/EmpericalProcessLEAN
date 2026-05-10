@@ -388,6 +388,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   `LinearMap.IsSymmetric`, `WithLp.prod_inner_apply`, and local WithLp block
   extractors/injections are sufficient; future Schur-derivative packets should
   no longer pass this cross-block pairing as a raw assumption.
+- Inf-projection inverse-derivative cancellation shrink: the newest packet
+  extends `StatInference/Optimization/SchurSymmetry.lean` with
+  `barrierInfProjectionBlockXY_invHyyDeriv_pair_eq_neg_of_hessian_symmetric`.
+  This discharges the second component-pairing obligation
+  `<v, Hxy (D Hyy⁻¹[u] Hyx v)> =
+   -<Hyy⁻¹ Hyx v, D Hyy[u] (Hyy⁻¹ Hyx v)>` from the cross-block symmetry
+  bridge, an `Hyy` left inverse, and the differentiated inverse identity
+  `Hyy (D Hyy⁻¹[u] w) + D Hyy[u] (Hyy⁻¹ w) = 0`.  The remaining
+  component-pairing gate is now the four-term full-Hessian derivative
+  expansion on Schur lifts; do not re-supply or re-prove cross-block symmetry
+  or inverse-derivative cancellation in the next packet.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

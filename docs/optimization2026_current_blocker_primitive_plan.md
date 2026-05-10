@@ -518,8 +518,15 @@ of the three component obligations is now closed whenever the full
 product-space Hessian is symmetric and `Hyy * Hyy⁻¹ = I`.  Search-first result:
 mathlib's `LinearMap.IsSymmetric` plus `WithLp.prod_inner_apply` and the local
 block definitions are enough; future runs should spend proof budget on the
-remaining inverse-derivative cancellation and four-term lifted-third expansion,
-not on a supplied cross-block pairing.
+remaining four-term lifted-third expansion, not on a supplied cross-block
+pairing.
+The inverse-derivative cancellation packet extends the same module with
+`barrierInfProjectionBlockXY_invHyyDeriv_pair_eq_neg_of_hessian_symmetric`.
+The second component obligation is now closed from the cross-block symmetry
+bridge, an `Hyy` left inverse, and the differentiated inverse equation
+`Hyy (D Hyy⁻¹[u] w) + D Hyy[u] (Hyy⁻¹ w) = 0`.  Future work should not
+re-supply this scalar cancellation either; the remaining component-pairing
+gate is the four-term full-Hessian derivative expansion on Schur lifts.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

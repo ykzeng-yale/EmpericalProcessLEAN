@@ -120,6 +120,75 @@ theorem barrierInfProjectionBlockXY_invHyy_pair_eq_of_hessian_symmetric
     _ = inner ℝ c w := hyy
     _ = inner ℝ (invHyy x (barrierInfProjectionBlockYX selector hess x v)) w := rfl
 
+/--
+The inverse-derivative cancellation needed in the Schur-Hessian derivative
+calculation.  It follows from the cross-block symmetry bridge, a left inverse
+for the vertical block, and the differentiated identity
+`Hyy * Hyy⁻¹ = I`.
+-/
+theorem barrierInfProjectionBlockXY_invHyyDeriv_pair_eq_neg_of_hessian_symmetric
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂) (x : E₁)
+    (HyyDerivAt invHyyDerivAt : E₂ →L[ℝ] E₂)
+    (hsymm : ((hess (barrierInfProjectionPoint selector x)) :
+      WithLp 2 (E₁ × E₂) →ₗ[ℝ] WithLp 2 (E₁ × E₂)).IsSymmetric)
+    (hyy_right : ∀ w : E₂,
+      barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hyy_left : ∀ w : E₂,
+      invHyy x (barrierInfProjectionBlockYY selector hess x w) = w)
+    (hderiv_cancel : ∀ w : E₂,
+      barrierInfProjectionBlockYY selector hess x (invHyyDerivAt w) +
+        HyyDerivAt (invHyy x w) = 0)
+    (v : E₁) :
+    inner ℝ v
+        (barrierInfProjectionBlockXY selector hess x
+          (invHyyDerivAt (barrierInfProjectionBlockYX selector hess x v))) =
+      -inner ℝ (invHyy x (barrierInfProjectionBlockYX selector hess x v))
+        (HyyDerivAt
+          (invHyy x (barrierInfProjectionBlockYX selector hess x v))) := by
+  let b := barrierInfProjectionBlockYX selector hess x v
+  let a := invHyy x b
+  let y := invHyyDerivAt b
+  have hy_as_inv :
+      y = invHyy x (barrierInfProjectionBlockYY selector hess x y) := by
+    exact (hyy_left y).symm
+  have hpair :
+      inner ℝ v (barrierInfProjectionBlockXY selector hess x y) =
+        inner ℝ a (barrierInfProjectionBlockYY selector hess x y) := by
+    calc
+      inner ℝ v (barrierInfProjectionBlockXY selector hess x y)
+          = inner ℝ v
+              (barrierInfProjectionBlockXY selector hess x
+                (invHyy x (barrierInfProjectionBlockYY selector hess x y))) := by
+            exact congrArg
+              (fun z => inner ℝ v
+                (barrierInfProjectionBlockXY selector hess x z))
+              hy_as_inv
+      _ = inner ℝ (invHyy x (barrierInfProjectionBlockYX selector hess x v))
+              (barrierInfProjectionBlockYY selector hess x y) := by
+            exact
+              barrierInfProjectionBlockXY_invHyy_pair_eq_of_hessian_symmetric
+                selector hess invHyy x hsymm hyy_right v
+                (barrierInfProjectionBlockYY selector hess x y)
+      _ = inner ℝ a (barrierInfProjectionBlockYY selector hess x y) := rfl
+  have hcancel :
+      barrierInfProjectionBlockYY selector hess x y = -HyyDerivAt a := by
+    rw [eq_neg_iff_add_eq_zero]
+    simpa [a, b, y] using hderiv_cancel b
+  calc
+    inner ℝ v
+        (barrierInfProjectionBlockXY selector hess x
+          (invHyyDerivAt (barrierInfProjectionBlockYX selector hess x v)))
+        = inner ℝ v (barrierInfProjectionBlockXY selector hess x y) := rfl
+    _ = inner ℝ a (barrierInfProjectionBlockYY selector hess x y) := hpair
+    _ = inner ℝ a (-HyyDerivAt a) := by rw [hcancel]
+    _ = -inner ℝ a (HyyDerivAt a) := by rw [inner_neg_right]
+    _ = -inner ℝ (invHyy x (barrierInfProjectionBlockYX selector hess x v))
+        (HyyDerivAt
+          (invHyy x (barrierInfProjectionBlockYX selector hess x v))) := rfl
+
 end InfProjectionSchurSymmetry
 
 end Optimization
