@@ -2464,8 +2464,14 @@ above, so they do not change the theorem-level dashboard counts.
    stochastic entropy.  Otherwise the next source route should adjust the
    finite-center threshold to include a true vanishing-probability penalty, or
    return to an expectation/symmetrization comparison that avoids this
-   additive-tail obstruction.  The Nat-indexed in-range selected-center selector
-   measurability assumptions remain a separate concrete target.
+   additive-tail obstruction.  The explicit lower-growth consumer is now
+   compiled as
+   `vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge`
+   and the canonical first-level selected-cover wrapper
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_cardinality_ge`.
+   This branch is now conditional on proving selected-cover cardinality lower
+   growth for concrete classes; otherwise the displayed-beta/product-fiber
+   source theorem remains the more faithful generic route.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,

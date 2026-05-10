@@ -15944,6 +15944,207 @@ theorem
       hM_ne (hinvSq eta heta)
 
 /--
+The explicit inverse-square selected-cardinality error is monotone in the
+selected cardinality.  This is the deterministic pointwise comparison used by
+honest cardinality-growth variants of the finite-center failure-tail route.
+-/
+theorem
+    vdVWTheorem243_invSq_selectedCardinality_le_of_lower_le
+    {lower cardinality : ℕ} (hcard : lower ≤ cardinality) :
+    (2 * Real.exp (-3)) / (((cardinality : ℝ) + 1) ^ 2) ≤
+      (2 * Real.exp (-3)) / (((lower : ℝ) + 1) ^ 2) := by
+  have hnum_nonneg : 0 ≤ 2 * Real.exp (-3) := by positivity
+  have hlower_pos : 0 < (lower : ℝ) + 1 := by positivity
+  have hcard_pos : 0 < (cardinality : ℝ) + 1 := by positivity
+  have hbase_le : (lower : ℝ) + 1 ≤ (cardinality : ℝ) + 1 := by
+    have hcard_cast : (lower : ℝ) ≤ (cardinality : ℝ) := by
+      exact_mod_cast hcard
+    linarith
+  have hden_le : ((lower : ℝ) + 1) ^ 2 ≤ ((cardinality : ℝ) + 1) ^ 2 := by
+    nlinarith [hbase_le, sq_nonneg ((lower : ℝ) + 1),
+      sq_nonneg ((cardinality : ℝ) + 1)]
+  exact div_le_div_of_nonneg_left hnum_nonneg (sq_pos_of_pos hlower_pos) hden_le
+
+/--
+If a deterministic lower cardinality bound tends to infinity, then the
+corresponding doubled inverse-square upper bound tends to zero in `ℝ≥0∞`.
+-/
+theorem vdVWTheorem243_invSq_lowerBound_pair_tendsto_zero
+    (lower : ℕ -> ℕ) (hlower : Tendsto lower atTop atTop) :
+    Tendsto
+      (fun n : ℕ =>
+        ENNReal.ofReal
+          (2 * ((2 * Real.exp (-3)) /
+            (((lower n : ℝ) + 1) ^ 2))))
+      atTop (𝓝 0) := by
+  have hcast : Tendsto (fun n : ℕ => (lower n : ℝ)) atTop atTop :=
+    tendsto_natCast_atTop_iff.mpr hlower
+  have hadd :
+      Tendsto (fun n : ℕ => (lower n : ℝ) + 1) atTop atTop :=
+    tendsto_atTop_add_const_right atTop (1 : ℝ) hcast
+  have hden :
+      Tendsto (fun n : ℕ => ((lower n : ℝ) + 1) ^ 2) atTop atTop :=
+    (tendsto_pow_atTop (by norm_num : (2 : ℕ) ≠ 0)).comp hadd
+  have hreal :
+      Tendsto
+        (fun n : ℕ =>
+          2 * ((2 * Real.exp (-3)) /
+            (((lower n : ℝ) + 1) ^ 2)))
+        atTop (𝓝 0) := by
+    have hbase :
+        Tendsto
+          (fun n : ℕ =>
+            (2 * Real.exp (-3)) / (((lower n : ℝ) + 1) ^ 2))
+          atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop hden
+    simpa [mul_assoc] using hbase.const_mul (2 : ℝ)
+  simpa [ENNReal.ofReal_zero] using ENNReal.tendsto_ofReal hreal
+
+/--
+Generic probability-space squeeze for a pair of nonnegative lintegral errors.
+If both real-valued integrands are eventually bounded by a deterministic
+nonnegative `bound n`, and `2 * bound n -> 0` in `ℝ≥0∞`, then the sum of their
+`ofReal` lintegrals tends to zero.
+-/
+theorem vdVW_pair_lintegral_sum_tendsto_zero_of_eventual_ofReal_bound
+    {Ω : ℕ -> Type u} [∀ n, MeasurableSpace (Ω n)]
+    (μ : ∀ n, Measure (Ω n)) [∀ n, IsProbabilityMeasure (μ n)]
+    (left right : (n : ℕ) -> Ω n -> ℝ) (bound : ℕ -> ℝ)
+    (hbound_nonneg : ∀ᶠ n in atTop, 0 ≤ bound n)
+    (hleft : ∀ᶠ n in atTop, ∀ ω, left n ω ≤ bound n)
+    (hright : ∀ᶠ n in atTop, ∀ ω, right n ω ≤ bound n)
+    (hbound_tendsto :
+      Tendsto (fun n : ℕ => ENNReal.ofReal (2 * bound n)) atTop (𝓝 0)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∫⁻ ω : Ω n, ENNReal.ofReal (left n ω) ∂(μ n)) +
+        (∫⁻ ω : Ω n, ENNReal.ofReal (right n ω) ∂(μ n)))
+      atTop (𝓝 0) := by
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    tendsto_const_nhds hbound_tendsto ?_ ?_
+  · exact Eventually.of_forall fun _ => bot_le
+  · filter_upwards [hbound_nonneg, hleft, hright] with n hnonneg hleft_n hright_n
+    have hleft_lintegral :
+        (∫⁻ ω : Ω n, ENNReal.ofReal (left n ω) ∂(μ n)) ≤
+          ENNReal.ofReal (bound n) := by
+      calc
+        (∫⁻ ω : Ω n, ENNReal.ofReal (left n ω) ∂(μ n)) ≤
+            ∫⁻ _ω : Ω n, ENNReal.ofReal (bound n) ∂(μ n) :=
+          lintegral_mono fun ω => ENNReal.ofReal_le_ofReal (hleft_n ω)
+        _ = ENNReal.ofReal (bound n) := by
+          simp [lintegral_const]
+    have hright_lintegral :
+        (∫⁻ ω : Ω n, ENNReal.ofReal (right n ω) ∂(μ n)) ≤
+          ENNReal.ofReal (bound n) := by
+      calc
+        (∫⁻ ω : Ω n, ENNReal.ofReal (right n ω) ∂(μ n)) ≤
+            ∫⁻ _ω : Ω n, ENNReal.ofReal (bound n) ∂(μ n) :=
+          lintegral_mono fun ω => ENNReal.ofReal_le_ofReal (hright_n ω)
+        _ = ENNReal.ofReal (bound n) := by
+          simp [lintegral_const]
+    have hsum :
+        (∫⁻ ω : Ω n, ENNReal.ofReal (left n ω) ∂(μ n)) +
+            (∫⁻ ω : Ω n, ENNReal.ofReal (right n ω) ∂(μ n)) ≤
+          ENNReal.ofReal (bound n) + ENNReal.ofReal (bound n) :=
+      add_le_add hleft_lintegral hright_lintegral
+    have htwo :
+        ENNReal.ofReal (bound n) + ENNReal.ofReal (bound n) =
+          ENNReal.ofReal (2 * bound n) := by
+      rw [← ENNReal.ofReal_add hnonneg hnonneg]
+      ring_nf
+    simpa [htwo] using hsum
+
+/--
+Selected-cardinality inverse-square lintegral convergence from an explicit
+deterministic lower bound that diverges to infinity.
+
+This is an honest stronger input for the additive finite-center failure-tail
+route: it does not claim the displayed Hoeffding tail vanishes from stochastic
+entropy alone; it asks for concrete selected-cardinality growth.
+-/
+theorem
+    vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (lower : ℝ -> ℕ -> ℕ)
+    (hlower : ∀ eta, 0 < eta -> Tendsto (lower eta) atTop atTop)
+    (hleft_ge :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ pairSample : SampleAt (Observation × Observation) n,
+          lower eta n ≤
+            selectedCardinality eta n (fun i : Fin n => (pairSample i).1) n)
+    (hright_ge :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ pairSample : SampleAt (Observation × Observation) n,
+          lower eta n ≤
+            selectedCardinality eta n (fun i : Fin n => (pairSample i).2) n) :
+    ∀ eta, 0 < eta ->
+      Tendsto
+        (fun n : ℕ =>
+          (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+            ENNReal.ofReal
+              ((2 * Real.exp (-3)) /
+                (((selectedCardinality eta n
+                  (fun i : Fin n => (pairSample i).1) n : ℝ) + 1) ^ 2))
+            ∂(vdVWProductMeasure (P.prod P) n)) +
+          (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+            ENNReal.ofReal
+              ((2 * Real.exp (-3)) /
+                (((selectedCardinality eta n
+                  (fun i : Fin n => (pairSample i).2) n : ℝ) + 1) ^ 2))
+            ∂(vdVWProductMeasure (P.prod P) n)))
+        atTop (𝓝 0) := by
+  intro eta heta
+  let bound : ℕ -> ℝ :=
+    fun n => (2 * Real.exp (-3)) / (((lower eta n : ℝ) + 1) ^ 2)
+  have hbound_nonneg : ∀ᶠ n in atTop, 0 ≤ bound n :=
+    Eventually.of_forall fun n => by
+      dsimp [bound]
+      positivity
+  have hleft_bound :
+      ∀ᶠ n in atTop, ∀ pairSample : SampleAt (Observation × Observation) n,
+        (2 * Real.exp (-3)) /
+            (((selectedCardinality eta n
+              (fun i : Fin n => (pairSample i).1) n : ℝ) + 1) ^ 2) ≤
+          bound n := by
+    filter_upwards [hleft_ge eta heta] with n hn pairSample
+    exact
+      vdVWTheorem243_invSq_selectedCardinality_le_of_lower_le
+        (lower := lower eta n)
+        (cardinality := selectedCardinality eta n
+          (fun i : Fin n => (pairSample i).1) n) (hn pairSample)
+  have hright_bound :
+      ∀ᶠ n in atTop, ∀ pairSample : SampleAt (Observation × Observation) n,
+        (2 * Real.exp (-3)) /
+            (((selectedCardinality eta n
+              (fun i : Fin n => (pairSample i).2) n : ℝ) + 1) ^ 2) ≤
+          bound n := by
+    filter_upwards [hright_ge eta heta] with n hn pairSample
+    exact
+      vdVWTheorem243_invSq_selectedCardinality_le_of_lower_le
+        (lower := lower eta n)
+        (cardinality := selectedCardinality eta n
+          (fun i : Fin n => (pairSample i).2) n) (hn pairSample)
+  exact
+    vdVW_pair_lintegral_sum_tendsto_zero_of_eventual_ofReal_bound
+      (μ := fun n => vdVWProductMeasure (P.prod P) n)
+      (left := fun n pairSample =>
+        (2 * Real.exp (-3)) /
+          (((selectedCardinality eta n
+            (fun i : Fin n => (pairSample i).1) n : ℝ) + 1) ^ 2))
+      (right := fun n pairSample =>
+        (2 * Real.exp (-3)) /
+          (((selectedCardinality eta n
+            (fun i : Fin n => (pairSample i).2) n : ℝ) + 1) ^ 2))
+      (bound := bound) hbound_nonneg hleft_bound hright_bound
+      (by
+        simpa [bound] using
+          vdVWTheorem243_invSq_lowerBound_pair_tendsto_zero
+            (lower eta) (hlower eta heta))
+
+/--
 The one-center displayed failure tail is a nonzero constant along positive
 sample sizes.
 
@@ -48751,6 +48952,97 @@ theorem
           (envelope := envelope) (M := M) (cardinality := cardinality)
           X hcovering_all ((eta / 2) / 2))
       (M := M) (ne_of_gt hM_pos) hinvSq)
+
+/--
+Canonical countable selected-cover half-scale route with an explicit
+selected-cardinality growth hypothesis.
+
+This is the honest theorem-facing version of the inverse-square additive-error
+route: the caller supplies a deterministic lower bound on the canonical selected
+cover cardinality, and that lower bound must tend to infinity.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_cardinality_ge
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality radius n))
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (lower : ℝ -> ℕ -> ℕ)
+    (hlower : ∀ eta, 0 < eta -> Tendsto (lower eta) atTop atTop)
+    (hleft_ge :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ pairSample : SampleAt (Observation × Observation) n,
+          lower eta n ≤
+            (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M)
+              (cardinality := cardinality)
+              X hcovering_all ((eta / 2) / 2)) n
+              (fun i : Fin n => (pairSample i).1) n)
+    (hright_ge :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ pairSample : SampleAt (Observation × Observation) n,
+          lower eta n ≤
+            (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M)
+              (cardinality := cardinality)
+              X hcovering_all ((eta / 2) / 2)) n
+              (fun i : Fin n => (pairSample i).2) n) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) :=
+  VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_invSq_lintegral
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) (M := M) (cardinality := cardinality)
+    X hX_samplePath hcovering_all hcount hclass henvelope_meas
+    hindexClass_nonempty henvelope hM_pos htruncIntegrable hlog
+    (vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge
+      (P := P)
+      (selectedCardinality := fun eta =>
+        vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (cardinality := cardinality)
+          X hcovering_all ((eta / 2) / 2))
+      lower hlower hleft_ge hright_ge)
 
 /--
 Canonical selected-cardinality version of the product-pair Chebyshev route with

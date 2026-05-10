@@ -8903,6 +8903,21 @@ not the raw Hoeffding failure tail anymore, but an honest proof that those
 inverse-square random selected-cardinality integrals vanish, or a different
 symmetrization/product-fiber route that avoids the additive failure-tail term.
 
+2026-05-10 explicit selected-cardinality lower-growth consumer:
+`Theorem243.lean` now proves the pointwise monotonicity and lintegral squeeze
+helpers
+`vdVWTheorem243_invSq_selectedCardinality_le_of_lower_le`,
+`vdVWTheorem243_invSq_lowerBound_pair_tendsto_zero`,
+`vdVW_pair_lintegral_sum_tendsto_zero_of_eventual_ofReal_bound`, and
+`vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge`.
+It also adds the canonical first-level selected-cover route
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_cardinality_ge`.
+Thus the additive route is honest under an explicit deterministic lower bound
+on the canonical selected-cover cardinality that tends to infinity.  The
+remaining mathematical question is not Mathlib plumbing: prove that lower
+growth for a concrete class, or use the displayed-beta/product-fiber source
+route that avoids the additive finite-center failure-tail obstruction.
+
 2026-05-09 sign-first selected-center failure-event measurability:
 `Theorem243.lean` now proves the sign-first product-pair wrappers
 `measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt`

@@ -361,9 +361,14 @@ additive error to vanish from bare stochastic entropy; it is now sharpened to
 proving convergence to zero of the explicit inverse-square original/ghost
 selected-cardinality lintegrals, or else supplying a different
 expectation/symmetrization comparison that avoids the additive-tail
-obstruction.  The Nat-indexed in-range
-selected-center selector measurability assumptions remain a separate concrete
-measurability target.
+obstruction.  A new lower-growth consumer now proves those inverse-square
+lintegrals vanish from an explicit deterministic lower bound on the canonical
+selected-cover cardinality tending to infinity:
+`vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_cardinality_ge`.
+This is a stronger structural assumption, not a consequence of bare stochastic
+entropy.
 Use the selected-log mean route only under honest L1/UI/countability
 strengthening.
 Do not spend the next batch on more endpoint aliases, code-set/quantizer
