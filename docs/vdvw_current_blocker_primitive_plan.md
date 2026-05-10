@@ -9681,6 +9681,22 @@ The remaining non-wrapper tasks are to prove the pure Rademacher bad-fiber
 displayed beta lower bound and to obtain the needed inverse-square/growth
 condition from a structural entropy or cover source.
 
+2026-05-10 sign-only selected-cardinality lower-growth consumers:
+`Theorem243.lean` now adds the single-sample inverse-square convergence
+lemmas
+`vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge_single`
+and
+`vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_ae_cardinality_ge_single`,
+then feeds them into
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_cardinality_ge`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_ae_cardinality_ge`.
+Thus the sign-only additive-tail route no longer exposes a raw inverse-square
+lintegral as its only tail-control option; it can now consume pointwise or
+a.e. selected-cardinality lower growth.  The remaining sign-only source gap is
+the pure Rademacher bad-fiber displayed-beta lower bound plus an actual
+structural proof of such selected-cardinality growth for the class in scope.
+
 2026-05-10 reused finite-class no-global-countability package:
 `Theorem243.lean` now ports the local scratch-branch theorem
 `VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_no_global_countable`.

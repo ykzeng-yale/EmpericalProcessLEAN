@@ -4314,6 +4314,14 @@ sharper: either integrate this tail error and prove it vanishes under stronger
 cardinality/tail assumptions, or use the product-pair averaged sign/ghost
 failure-tail route that is already compiled.
 
+The sign-only inverse-square tail branch now has the same lower-growth
+consumer shape as the product-pair branch.  The new compiled endpoints
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_cardinality_ge`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_ae_cardinality_ge`
+replace the raw single-sample inverse-square lintegral assumption by pointwise
+or a.e. selected-cardinality lower growth tending to infinity.
+
 The finite-class route now also reuses the scratch-branch no-global-countability
 package:
 `VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_no_global_countable`.

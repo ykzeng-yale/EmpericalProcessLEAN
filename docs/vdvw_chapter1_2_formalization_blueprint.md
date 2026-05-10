@@ -3405,6 +3405,15 @@ Future source work should therefore prove either the pure Rademacher bad-fiber
 beta lower bound or the structural cardinality-growth/inverse-square condition
 that feeds this theorem.
 
+The sign-only branch now also has pointwise and a.e. selected-cardinality
+lower-growth consumers:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_cardinality_ge`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_ae_cardinality_ge`.
+These reduce the sign-only tail-control input to an explicit lower bound
+`lower eta n -> infinity` on the selected cover cardinality, matching the
+already compiled product-pair lower-growth route.
+
 The finite-class in-mean path now has a no-global-countability assembly
 theorem:
 `VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable_of_endpointL1`.
