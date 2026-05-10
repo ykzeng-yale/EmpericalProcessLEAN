@@ -32,15 +32,19 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V180` in
+Route from `Live In-Thread Goal Prompt V181` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
 `StatInference/EmpiricalProcess/RealHalfLine*.lean` and
 `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.  Chapter 2.1 now has
 independence/product-law wrappers through Theorem 2.1.13, including Theorem
-2.1.12 source-facing nonnegative and integrable independent-pair expectation
-formulas
+2.1.10 partial-sum/block-independence source wrappers
+`durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction`,
+`durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction`, and
+`durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator`,
+Theorem 2.1.12 source-facing nonnegative and integrable independent-pair
+expectation formulas
 `durrett2019_theorem_2_1_12_indepFun_lintegral_pair` and
 `durrett2019_theorem_2_1_12_indepFun_integral_pair`, Theorem 2.1.15's CDF
 convolution handoffs
@@ -67,10 +71,10 @@ outer-a.s. empirical-CDF endpoints:
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
 The next target should move forward to downstream Chapter 2.1 product-law
-examples, partial-sum/block-independence wrappers, and finite independent
-product-law or expectation-factorization wrappers.  Do not route future cycles
-back to Chapter 4.5.2 or solved 2.4.9/2.1.12/2.1.15/2.1.16 plumbing unless
-the user explicitly pivots.
+examples and finite independent product-law or expectation-factorization
+wrappers.  Do not route future cycles back to Chapter 4.5.2 or solved 2.1.10
+partial-sum, 2.4.9, 2.1.12, 2.1.15, or 2.1.16 plumbing unless the user
+explicitly pivots.
 The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,

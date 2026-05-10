@@ -356,6 +356,99 @@ theorem durrett2019_theorem_2_1_10_indepFun_finset_block_functions
   simpa [Function.comp_def] using hblocks.comp hφ hψ
 
 /--
+Durrett 2019, Theorem 2.1.10, partial-sum increment versus early-block
+statistic form.
+
+If `X_0, X_1, ...` are independent, then the sum over the later block
+`{m, ..., n - 1}` is independent of every measurable statistic of the early
+block `{0, ..., m - 1}`.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {T : Type v} [MeasurableSpace T]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ}
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => ∑ k ∈ Finset.Ico m n, X k ω)
+      (fun ω => ψ (fun i : Finset.range m => X i ω)) := by
+  have hdisj : Disjoint (Finset.Ico m n) (Finset.range m) := by
+    rw [Finset.disjoint_left]
+    intro k hkI hkR
+    exact (Nat.not_lt_of_ge (Finset.mem_Ico.mp hkI).1) (Finset.mem_range.mp hkR)
+  have hsum :
+      Measurable (fun z : ((i : Finset.Ico m n) -> ℝ) => ∑ i, z i) := by
+    exact Finset.univ.measurable_fun_sum fun i _ => measurable_pi_apply i
+  have hblocks :=
+    durrett2019_theorem_2_1_10_indepFun_finset_block_functions
+      (P := P) (S := fun _ : ℕ => ℝ) (X := X)
+      hX_indep hX_meas (Finset.Ico m n) (Finset.range m) hdisj
+      (φ := fun z : ((i : Finset.Ico m n) -> ℝ) => ∑ i, z i)
+      (ψ := ψ) hsum hψ
+  convert hblocks using 1
+  ext ω
+  simpa using
+    (Finset.sum_attach (Finset.Ico m n) (fun k : ℕ => X k ω)).symm
+
+/--
+Durrett 2019, Theorem 2.1.10, partial-sum difference versus early-block
+statistic form.
+
+This is the source display `S_n - S_m` used after Theorem 2.1.10.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {T : Type v} [MeasurableSpace T]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => (∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω)
+      (fun ω => ψ (fun i : Finset.range m => X i ω)) := by
+  have hinc :=
+    durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction
+      (P := P) (X := X) (m := m) (n := n) hX_indep hX_meas hψ
+  have hleft :
+      (fun ω => (∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) =
+        fun ω => ∑ k ∈ Finset.Ico m n, X k ω := by
+    ext ω
+    exact (Finset.sum_Ico_eq_sub (fun k => X k ω) hmn).symm
+  simpa [hleft] using hinc
+
+/--
+Durrett 2019, Theorem 2.1.10, partial-sum difference independent of an
+early-block event indicator.
+
+The measurable set `A` may encode events such as the maximum of the first `m`
+partial sums crossing a threshold.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => (∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω)
+      (fun ω =>
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X i ω)) := by
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction
+      (P := P) (X := X) hX_indep hX_meas hmn
+      (ψ := Set.indicator A
+        (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ)))
+      (measurable_const.indicator hA)
+
+/--
 Durrett 2019, Theorem 2.1.10, two-variable measurable-function form.
 
 Measurable functions of two independent random variables are independent.
