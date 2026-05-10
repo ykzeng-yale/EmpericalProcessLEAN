@@ -17,6 +17,9 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidual_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Immediate predecessor finite root-Taylor endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateRootTaylor_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Immediate predecessor finite Taylor-zero endpoint:
@@ -29,6 +32,8 @@ Current verified sampled Taylor source bridges:
 `vaart1998_theorem_5_41_estimatingEquationRoot_of_rawRoot_estimatorScaled`
 and
 `vaart1998_theorem_5_41_finiteCoordinateTaylorExpansion_of_pointwiseTaylor_residual`.
+The score-average representation bridge is
+`vaart1998_theorem_5_41_scoreAverage_eq_finiteCoordinateScaledCentered_of_summand_eq_scoreScaled`.
 
 Continuation recipe:
 
@@ -45,12 +50,9 @@ Priority order for the next packet:
    derivative LLN plus the second-derivative envelope, using the residual
    definition consumed by
    `vaart1998_theorem_5_41_finiteCoordinateTaylorExpansion_of_pointwiseTaylor_residual`.
-2. Packaging source: if it is cheap, add the action endpoint wrapper that calls
-   the current root-Taylor action endpoint after applying the two sampled
-   Taylor source bridges above.
-3. Derivative or score source: only add a model-specific coordinate/matrix or
+2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
-   finite-root-Taylor endpoint; do not rebuild completed score CLT, display
+   pointwise-Taylor residual endpoint; do not rebuild completed score CLT, display
    weak convergence, display tightness, or action-bound wrapper stacks.
 
 Operating rules:

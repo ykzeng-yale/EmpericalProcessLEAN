@@ -15,12 +15,11 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: finite-coordinate root-Taylor Theorem 5.41 action
+Latest verified packet: pointwise-Taylor residual Theorem 5.41 action
 endpoint plus sampled Taylor source bridges in `MEstimators.lean`.
 
 Current next blocker: instantiate the negligible finite-coordinate residual
-from derivative LLN plus the second-derivative envelope, or cheaply package the
-new sampled Taylor source bridges into the action endpoint wrapper.
+from derivative LLN plus the second-derivative envelope.
 
 ## Verified Frontier
 

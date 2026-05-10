@@ -21,10 +21,11 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
 
 Current frontier: Theorem 5.41 now has a compiled finite-coordinate
 root-Taylor action endpoint and sampled pointwise-Taylor bridges into its
-root/Taylor-expansion fields.  The next proof packet should instantiate the
-negligible residual source or package these bridges into the action endpoint,
-not replay display weak-convergence, display-tightness, score-CLT, or
-derivative-action wrappers.
+root/Taylor-expansion fields, plus an action endpoint consuming a pointwise
+Taylor identity and residual definition directly.  The next proof packet
+should instantiate the negligible residual source, not replay display
+weak-convergence, display-tightness, score-CLT, derivative-action wrappers, or
+the now-packaged pointwise Taylor bridge.
 
 ## Chapter Map
 
