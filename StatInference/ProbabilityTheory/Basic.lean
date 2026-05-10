@@ -2427,6 +2427,149 @@ theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_sub_truncatedMean
       (P := P) (X := fun _ k => X k) (b := fun n : ℕ => (n : ℝ))
       htail (fun _ => hX_indep) (fun _ k => hX_meas k) hsecond)
 
+/--
+Durrett 2019, Theorem 2.2.12 notation:
+`mu_n = E[X_0 1_{|X_0| <= n}]` in zero-based sequence indexing.
+-/
+noncomputable def durrett2019_theorem_2_2_12_truncatedMean
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> Ω -> ℝ) (n : ℕ) : ℝ :=
+  ∫ ω,
+    durrett2019_theorem_2_2_11_truncated
+      (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω ∂P
+
+/--
+Durrett 2019, Theorem 2.2.12 support: if every truncated summand in the
+single-sequence row has the same mean as the zeroth summand, then the triangular
+row centering constant is `n * mu_n`.
+-/
+theorem durrett2019_theorem_2_2_12_truncatedMeanRowSum_eq_nat_mul_truncatedMean_of_integral_eq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {n : ℕ}
+    (hmean : ∀ k ∈ Finset.range n,
+      (∫ ω,
+        durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n k ω ∂P) =
+        durrett2019_theorem_2_2_12_truncatedMean P X n) :
+    durrett2019_theorem_2_2_11_truncatedMeanRowSum P
+      (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n =
+        (n : ℝ) * durrett2019_theorem_2_2_12_truncatedMean P X n := by
+  calc
+    durrett2019_theorem_2_2_11_truncatedMeanRowSum P
+        (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n =
+      ∑ k ∈ Finset.range n,
+        durrett2019_theorem_2_2_12_truncatedMean P X n := by
+        unfold durrett2019_theorem_2_2_11_truncatedMeanRowSum
+        exact Finset.sum_congr rfl hmean
+    _ = (n : ℝ) * durrett2019_theorem_2_2_12_truncatedMean P X n := by
+        simp
+
+/--
+Durrett 2019, Theorem 2.2.12 support: identical distribution of the original
+sequence transfers to equality of the truncated means at a fixed truncation
+level.
+-/
+theorem durrett2019_theorem_2_2_12_integral_truncated_eq_truncatedMean_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (n k : ℕ) :
+    (∫ ω,
+      durrett2019_theorem_2_2_11_truncated
+        (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n k ω ∂P) =
+      durrett2019_theorem_2_2_12_truncatedMean P X n := by
+  let truncMap : ℝ -> ℝ :=
+    fun x => Set.indicator {y : ℝ | |y| ≤ (n : ℝ)} (fun y => y) x
+  have htrunc_meas : Measurable truncMap :=
+    durrett2019_theorem_2_2_11_measurable_truncationMap
+      (c := (n : ℝ))
+  have hident_trunc :
+      _root_.ProbabilityTheory.IdentDistrib (truncMap ∘ X k) (truncMap ∘ X 0) P P :=
+    (hX_ident k).comp htrunc_meas
+  simpa [durrett2019_theorem_2_2_12_truncatedMean,
+    durrett2019_theorem_2_2_11_truncated, truncMap, Function.comp_def]
+    using hident_trunc.integral_eq
+
+/--
+Durrett 2019, Theorem 2.2.12 support: for an identically distributed
+single-sequence row, the triangular centering constant is exactly `n * mu_n`.
+-/
+theorem durrett2019_theorem_2_2_12_truncatedMeanRowSum_eq_nat_mul_truncatedMean_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (n : ℕ) :
+    durrett2019_theorem_2_2_11_truncatedMeanRowSum P
+      (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n =
+        (n : ℝ) * durrett2019_theorem_2_2_12_truncatedMean P X n :=
+  durrett2019_theorem_2_2_12_truncatedMeanRowSum_eq_nat_mul_truncatedMean_of_integral_eq
+    (P := P) (X := X) (n := n)
+    (fun k _ =>
+      durrett2019_theorem_2_2_12_integral_truncated_eq_truncatedMean_of_identDistrib
+        (P := P) (X := X) hX_ident n k)
+
+/--
+Durrett 2019, Theorem 2.2.12 display bridge: after the identically distributed
+centering is identified as `n * mu_n`, the compiled triangular-array conclusion
+is the textbook expression `S_n / n - mu_n -> 0` in probability.
+
+The remaining theorem-specific work is still to prove the large-jump and
+truncated-second-moment hypotheses from Durrett's tail assumption
+`x * P(|X_0| > x) -> 0`.
+-/
+theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (htail : Tendsto
+      (fun n : ℕ => ∑ k ∈ Finset.range n, P.real {ω : Ω | (n : ℝ) < |X k ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hsecond : Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          ∫ ω,
+            (durrett2019_theorem_2_2_11_truncated
+              (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n k ω) ^ 2 ∂P) /
+            (n : ℝ) ^ 2)
+      atTop (𝓝 (0 : ℝ))) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (∑ k ∈ Finset.range n, X k ω) / (n : ℝ) -
+          durrett2019_theorem_2_2_12_truncatedMean P X n)
+      atTop (fun _ => 0) := by
+  have hbase :=
+    durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_sub_truncatedMean_of_iIndepFun
+      (P := P) (X := X) htail hX_indep hX_meas hsecond
+  refine MeasureTheory.TendstoInMeasure.congr' ?_ (ae_of_all P fun _ => rfl) hbase
+  refine eventually_atTop.2 ⟨1, ?_⟩
+  intro n hn
+  refine ae_of_all P ?_
+  intro ω
+  have hn_pos : (0 : ℕ) < n := lt_of_lt_of_le Nat.zero_lt_one hn
+  have hn_ne : (n : ℝ) ≠ 0 := by
+    exact_mod_cast (Nat.ne_of_gt hn_pos)
+  have hmean :
+      durrett2019_theorem_2_2_11_truncatedMeanRowSum P
+        (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n =
+          (n : ℝ) * durrett2019_theorem_2_2_12_truncatedMean P X n :=
+    durrett2019_theorem_2_2_12_truncatedMeanRowSum_eq_nat_mul_truncatedMean_of_identDistrib
+      (P := P) (X := X) hX_ident n
+  calc
+    ((∑ k ∈ Finset.range n, X k ω) -
+        durrett2019_theorem_2_2_11_truncatedMeanRowSum P
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n) / (n : ℝ) =
+      ((∑ k ∈ Finset.range n, X k ω) -
+        (n : ℝ) * durrett2019_theorem_2_2_12_truncatedMean P X n) /
+          (n : ℝ) := by
+        rw [hmean]
+    _ = (∑ k ∈ Finset.range n, X k ω) / (n : ℝ) -
+        durrett2019_theorem_2_2_12_truncatedMean P X n := by
+        field_simp [hn_ne]
+
 /-! ## Durrett, Section 2.3 -/
 
 /--

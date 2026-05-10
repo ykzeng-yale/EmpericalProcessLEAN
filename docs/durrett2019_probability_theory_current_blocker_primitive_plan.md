@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V190
+## Live In-Thread Goal Prompt V191
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -15,15 +15,15 @@ synced `main`.  Active lane: Durrett Chapter 2 in
 Theorem 2.2.11 large-jump truncation bridge, truncated-row variance and
 centering bridge, combined centered triangular-row weak-law assembly, and
 source-side truncation independence/`L^2` inheritance plus final original-row
-independence wrapper, plus the first Theorem 2.2.12 single-sequence
-specialization.
+independence wrapper, plus the Theorem 2.2.12 single-sequence specialization,
+truncated mean identification, and exact textbook-display bridge.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V190 compiled support now includes:
+V191 compiled support now includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -72,17 +72,26 @@ and
 `durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncatedSecondMoment`,
 plus the original-row source-facing wrapper
 `durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_iIndepFun`,
-and the first Theorem 2.2.12 specialization
-`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_sub_truncatedMean_of_iIndepFun`.
+and the Theorem 2.2.12 specialization/display layer:
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_sub_truncatedMean_of_iIndepFun`,
+`durrett2019_theorem_2_2_12_truncatedMean`,
+`durrett2019_theorem_2_2_12_truncatedMeanRowSum_eq_nat_mul_truncatedMean_of_integral_eq`,
+`durrett2019_theorem_2_2_12_integral_truncated_eq_truncatedMean_of_identDistrib`,
+`durrett2019_theorem_2_2_12_truncatedMeanRowSum_eq_nat_mul_truncatedMean_of_identDistrib`,
+and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun`.
 
 Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
 Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, or Theorem 2.4.9.  Move toward
 Theorem 2.2.12 and Lemma 2.2.13 support.  The 2.2.11 large-jump replacement,
 truncated-row variance/centering, final assembly from hypotheses (i)/(ii),
-truncation measurability, bounded `L^2`, row-wise independence inheritance, and
-original-row source wrapper are compiled.  Next package the single-sequence
-specialization `X_{n,k}=X_k`, `b_n=n` and the tail-integral/layer-cake support
-needed for Theorem 2.2.12.  Reuse independence/product wrappers, finite-sum
+truncation measurability, bounded `L^2`, row-wise independence inheritance,
+original-row source wrapper, and the single-sequence specialization
+`X_{n,k}=X_k`, `b_n=n` through the exact display
+`S_n / n - mu_n -> 0` are compiled, assuming the two numeric hypotheses from
+Theorem 2.2.11.  Next package the tail-integral/layer-cake support needed to
+derive those hypotheses from Durrett's `x * P(|X_0| > x) -> 0` assumption,
+starting with Lemma 2.2.13.  Reuse independence/product wrappers, finite-sum
 variance support, Borel-Cantelli, strong-law, empirical-CDF infrastructure, and
 mathlib layer-cake/tail-integral APIs.  Search mathlib/local first for the
 exact primitive and use

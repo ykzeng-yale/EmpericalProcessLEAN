@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V190`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V191`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -95,7 +95,11 @@ truncation bridge, V188 compiles the truncated-row variance/centering bridge
 plus the final assembly from hypotheses (i)/(ii), and V189 compiles
 source-side truncation inheritance for measurability, bounded `L^2`, and
 row-wise independence, plus the final original-row source wrapper and the first
-Theorem 2.2.12 single-sequence specialization.  New V188-V190 declarations are
+Theorem 2.2.12 single-sequence specialization.  V191 adds the exact
+Theorem 2.2.12 centering/display bridge: the truncated mean `mu_n`, equality of
+the triangular centering constant with `n * mu_n` from identical distribution,
+and the textbook display `S_n / n - mu_n -> 0` from the compiled
+Theorem 2.2.11 numeric hypotheses.  New V188-V191 declarations are
 `durrett2019_theorem_2_2_11_measurable_truncationMap`,
 `durrett2019_theorem_2_2_11_measurable_truncated`,
 `durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound`,
@@ -113,7 +117,13 @@ and
 and
 `durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_iIndepFun`,
 and
-`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_sub_truncatedMean_of_iIndepFun`.
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_sub_truncatedMean_of_iIndepFun`,
+`durrett2019_theorem_2_2_12_truncatedMean`,
+`durrett2019_theorem_2_2_12_truncatedMeanRowSum_eq_nat_mul_truncatedMean_of_integral_eq`,
+`durrett2019_theorem_2_2_12_integral_truncated_eq_truncatedMean_of_identDistrib`,
+`durrett2019_theorem_2_2_12_truncatedMeanRowSum_eq_nat_mul_truncatedMean_of_identDistrib`,
+and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun`.
 Continue with Lemma 2.2.13 and the remaining Theorem 2.2.12 support: package
 the tail-integral/layer-cake inputs for Durrett's
 `x * P(|X_1| > x) -> 0` hypothesis.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar

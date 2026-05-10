@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V190` in
+Route from `Live In-Thread Goal Prompt V191` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -121,6 +121,16 @@ source-facing original-row wrapper
 `durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_iIndepFun`.
 V190 adds the first Theorem 2.2.12 single-sequence specialization
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_sub_truncatedMean_of_iIndepFun`.
+V191 adds the exact Theorem 2.2.12 centering/display bridge:
+`durrett2019_theorem_2_2_12_truncatedMean`,
+`durrett2019_theorem_2_2_12_truncatedMeanRowSum_eq_nat_mul_truncatedMean_of_integral_eq`,
+`durrett2019_theorem_2_2_12_integral_truncated_eq_truncatedMean_of_identDistrib`,
+`durrett2019_theorem_2_2_12_truncatedMeanRowSum_eq_nat_mul_truncatedMean_of_identDistrib`,
+and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun`.
+The textbook display `S_n / n - mu_n -> 0` now compiles from the already
+compiled Theorem 2.2.11 numeric hypotheses, independence, measurability, and
+identical distribution.
 The next active target is Lemma 2.2.13 and the remaining Theorem 2.2.12
 support: package the tail-integral/layer-cake inputs needed to prove the two
 numeric hypotheses from Durrett's
