@@ -525,8 +525,18 @@ The inverse-derivative cancellation packet extends the same module with
 The second component obligation is now closed from the cross-block symmetry
 bridge, an `Hyy` left inverse, and the differentiated inverse equation
 `Hyy (D Hyy⁻¹[u] w) + D Hyy[u] (Hyy⁻¹ w) = 0`.  Future work should not
-re-supply this scalar cancellation either; the remaining component-pairing
-gate is the four-term full-Hessian derivative expansion on Schur lifts.
+re-supply this scalar cancellation either.
+The lifted-third component packet extends `SchurSymmetry.lean` with
+`withLpProdInlSubInr_inner_map_sub_self`, the four
+`barrierInfProjectionBlock*Deriv_apply` lemmas,
+`barrierInfProjectionPointFDeriv_eq_schurLift_of_selector_deriv_eq`,
+`barrierInfProjectionSchurLiftedThird_eq_component_expansion_of_pairing`, and
+`BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_liftPairing`.
+The raw four-term component-expansion gate is now closed by product-space
+inner-product algebra once the graph derivative is the Schur lift and the full
+Hessian derivative has the source-shaped lifted-third pairing.  The next
+inf-projection source blocker is therefore the actual lifted-third/third-
+derivative identity for the selected value, not the block component algebra.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

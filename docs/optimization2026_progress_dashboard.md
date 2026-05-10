@@ -395,10 +395,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   `<v, Hxy (D Hyy⁻¹[u] Hyx v)> =
    -<Hyy⁻¹ Hyx v, D Hyy[u] (Hyy⁻¹ Hyx v)>` from the cross-block symmetry
   bridge, an `Hyy` left inverse, and the differentiated inverse identity
-  `Hyy (D Hyy⁻¹[u] w) + D Hyy[u] (Hyy⁻¹ w) = 0`.  The remaining
-  component-pairing gate is now the four-term full-Hessian derivative
-  expansion on Schur lifts; do not re-supply or re-prove cross-block symmetry
-  or inverse-derivative cancellation in the next packet.
+  `Hyy (D Hyy⁻¹[u] w) + D Hyy[u] (Hyy⁻¹ w) = 0`.
+- Inf-projection lifted-third component shrink: the newest packet extends
+  `StatInference/Optimization/SchurSymmetry.lean` with
+  `withLpProdInlSubInr_inner_map_sub_self`, the four
+  `barrierInfProjectionBlock*Deriv_apply` lemmas,
+  `barrierInfProjectionPointFDeriv_eq_schurLift_of_selector_deriv_eq`,
+  `barrierInfProjectionSchurLiftedThird_eq_component_expansion_of_pairing`,
+  and
+  `BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_liftPairing`.
+  This removes the raw four-term component-expansion assumption: a
+  source-shaped lifted-third pairing now supplies the component obligation.
+  Search-first reuse: local `WithLp` block injections/extractors plus mathlib
+  `WithLp.prod_inner_apply`, `map_sub`, and `inner_sub_left/right` were enough;
+  future work should prove the lifted-third pairing/actual third-derivative
+  identity rather than re-supplying component algebra.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

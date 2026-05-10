@@ -45,6 +45,86 @@ theorem inner_withLpProdInrCLM (p : WithLp 2 (E₁ × E₂)) (v : E₂) :
   rw [inner_zero_right, zero_add]
 
 /--
+Expanding a product-space quadratic form on a direction
+`(v, 0) - (0, w)` gives the four block-coordinate scalar terms.
+-/
+theorem withLpProdInlSubInr_inner_map_sub_self
+    (P : WithLp 2 (E₁ × E₂) →L[ℝ] WithLp 2 (E₁ × E₂))
+    (v : E₁) (w : E₂) :
+    inner ℝ v
+        (P (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).fst -
+      inner ℝ v
+        (P (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)).fst -
+      inner ℝ w
+        (P (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).snd +
+      inner ℝ w
+        (P (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)).snd =
+      inner ℝ
+        (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v -
+          withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)
+        (P
+          (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v -
+            withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)) := by
+  have h :
+      inner ℝ
+          (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v -
+            withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)
+          (P
+            (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v -
+              withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)) =
+        inner ℝ v
+            (P (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).fst -
+          inner ℝ v
+            (P (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)).fst -
+          inner ℝ w
+            (P (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).snd +
+          inner ℝ w
+            (P (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)).snd := by
+    calc
+      inner ℝ
+          (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v -
+            withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)
+          (P
+            (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v -
+              withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w))
+          = inner ℝ
+              (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v -
+                withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)
+              (P (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v) -
+                P (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)) := by
+            rw [map_sub]
+      _ = inner ℝ (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)
+              (P (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v) -
+                P (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)) -
+            inner ℝ (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)
+              (P (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v) -
+                P (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)) := by
+            rw [inner_sub_left]
+      _ =
+          (inner ℝ (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)
+              (P (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)) -
+            inner ℝ (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)
+              (P (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w))) -
+          (inner ℝ (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)
+              (P (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)) -
+            inner ℝ (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)
+              (P (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w))) := by
+            rw [inner_sub_right, inner_sub_right]
+      _ =
+          inner ℝ v
+              (P (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).fst -
+            inner ℝ v
+              (P (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)).fst -
+            inner ℝ w
+              (P (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).snd +
+            inner ℝ w
+              (P (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)).snd := by
+            rw [withLpProdInlCLM_inner, withLpProdInlCLM_inner,
+              withLpProdInrCLM_inner, withLpProdInrCLM_inner]
+            ring
+  exact h.symm
+
+/--
 Full Hessian symmetry plus the vertical block right inverse gives the
 cross-block pairing needed in the Schur-Hessian derivative calculation.
 -/
@@ -188,6 +268,201 @@ theorem barrierInfProjectionBlockXY_invHyyDeriv_pair_eq_neg_of_hessian_symmetric
     _ = -inner ℝ (invHyy x (barrierInfProjectionBlockYX selector hess x v))
         (HyyDerivAt
           (invHyy x (barrierInfProjectionBlockYX selector hess x v))) := rfl
+
+/-- Application form of the `XX` block derivative extractor. -/
+@[simp] theorem barrierInfProjectionBlockXXDeriv_apply
+    (hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)))
+    (dselector : E₁ →L[ℝ] E₂) (u v : E₁) :
+    (barrierInfProjectionBlockXXDeriv hessDeriv dselector u) v =
+      (hessDeriv (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+          dselector u)
+        (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).fst := by
+  rfl
+
+/-- Application form of the `XY` block derivative extractor. -/
+@[simp] theorem barrierInfProjectionBlockXYDeriv_apply
+    (hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)))
+    (dselector : E₁ →L[ℝ] E₂) (u : E₁) (w : E₂) :
+    (barrierInfProjectionBlockXYDeriv hessDeriv dselector u) w =
+      (hessDeriv (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+          dselector u)
+        (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)).fst := by
+  rfl
+
+/-- Application form of the `YX` block derivative extractor. -/
+@[simp] theorem barrierInfProjectionBlockYXDeriv_apply
+    (hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)))
+    (dselector : E₁ →L[ℝ] E₂) (u v : E₁) :
+    (barrierInfProjectionBlockYXDeriv hessDeriv dselector u) v =
+      (hessDeriv (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+          dselector u)
+        (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).snd := by
+  rfl
+
+/-- Application form of the `YY` block derivative extractor. -/
+@[simp] theorem barrierInfProjectionBlockYYDeriv_apply
+    (hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)))
+    (dselector : E₁ →L[ℝ] E₂) (u : E₁) (w : E₂) :
+    (barrierInfProjectionBlockYYDeriv hessDeriv dselector u) w =
+      (hessDeriv (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+          dselector u)
+        (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) w)).snd := by
+  rfl
+
+/--
+If the selector derivative solves the implicit Schur equation, the selected
+graph derivative is exactly the Schur lift.
+-/
+theorem barrierInfProjectionPointFDeriv_eq_schurLift_of_selector_deriv_eq
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂)
+    (dselectorAt : E₁ →L[ℝ] E₂) (x v : E₁)
+    (hdselector :
+      dselectorAt v =
+        -invHyy x (barrierInfProjectionBlockYX selector hess x v)) :
+    barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+        dselectorAt v =
+      barrierInfProjectionSchurLift selector hess invHyy x v := by
+  apply WithLp.ofLp_injective 2
+  exact Prod.ext
+    (by simp [barrierInfProjectionSchurLift])
+    (by
+      simp [barrierInfProjectionSchurLift, barrierInfProjectionSchurCorrection,
+        hdselector])
+
+/--
+If the selected graph derivative is the Schur lift, then the four scalar block
+terms in the Schur-Hessian derivative are exactly the product-space Hessian
+derivative paired against the Schur lift.
+-/
+theorem barrierInfProjectionSchurLiftedThird_eq_component_expansion_of_pairing
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂)
+    (third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ)
+    (hessDerivAt : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)))
+    (dselectorAt : E₁ →L[ℝ] E₂) (x u v : E₁)
+    (hpoint :
+      barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+          dselectorAt u =
+        barrierInfProjectionSchurLift selector hess invHyy x u)
+    (hthird_pair :
+      inner ℝ (barrierInfProjectionSchurLift selector hess invHyy x v)
+          (hessDerivAt
+            (barrierInfProjectionSchurLift selector hess invHyy x u)
+            (barrierInfProjectionSchurLift selector hess invHyy x v)) =
+        barrierInfProjectionSchurLiftedThird selector hess invHyy third
+          x u v) :
+    inner ℝ v
+        ((barrierInfProjectionBlockXXDeriv hessDerivAt dselectorAt u) v) -
+      inner ℝ v
+        ((barrierInfProjectionBlockXYDeriv hessDerivAt dselectorAt u)
+          (invHyy x (barrierInfProjectionBlockYX selector hess x v))) -
+      inner ℝ
+        (invHyy x (barrierInfProjectionBlockYX selector hess x v))
+        ((barrierInfProjectionBlockYXDeriv hessDerivAt dselectorAt u) v) +
+      inner ℝ
+        (invHyy x (barrierInfProjectionBlockYX selector hess x v))
+        ((barrierInfProjectionBlockYYDeriv hessDerivAt dselectorAt u)
+          (invHyy x (barrierInfProjectionBlockYX selector hess x v))) =
+        barrierInfProjectionSchurLiftedThird selector hess invHyy third
+          x u v := by
+  let a := invHyy x (barrierInfProjectionBlockYX selector hess x v)
+  let P := hessDerivAt
+    (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+      dselectorAt u)
+  rw [← hthird_pair]
+  rw [← hpoint]
+  simpa only [a, P, barrierInfProjectionSchurLift,
+    barrierInfProjectionSchurCorrection,
+    barrierInfProjectionBlockXXDeriv_apply,
+    barrierInfProjectionBlockXYDeriv_apply,
+    barrierInfProjectionBlockYXDeriv_apply,
+    barrierInfProjectionBlockYYDeriv_apply] using
+    (withLpProdInlSubInr_inner_map_sub_self
+      (P := P) (v := v) (w := a))
+
+/--
+Full-Hessian derivative certificate for the Schur Hessian from the
+source-shaped lifted-third pairing.  This removes the raw four-term component
+expansion assumption from the next layer of the envelope proof.
+-/
+theorem BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_liftPairing
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {hessDeriv : E₁ -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hhess : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt hess (hessDeriv x) (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hinvDeriv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x)
+    (hcross : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁, ∀ w : E₂,
+        inner ℝ v
+            (barrierInfProjectionBlockXY selector hess x (invHyy x w)) =
+          inner ℝ
+            (invHyy x (barrierInfProjectionBlockYX selector hess x v)) w)
+    (hinvPair : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        inner ℝ v
+            (barrierInfProjectionBlockXY selector hess x
+              (invHyyDeriv x u
+                (barrierInfProjectionBlockYX selector hess x v))) =
+          -inner ℝ
+            (invHyy x (barrierInfProjectionBlockYX selector hess x v))
+            ((barrierInfProjectionBlockYYDeriv (hessDeriv x) (dselector x) u)
+              (invHyy x (barrierInfProjectionBlockYX selector hess x v))))
+    (hpoint : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u : E₁,
+        barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+            (dselector x) u =
+          barrierInfProjectionSchurLift selector hess invHyy x u)
+    (hthird_pair : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        inner ℝ (barrierInfProjectionSchurLift selector hess invHyy x v)
+            ((hessDeriv x
+              (barrierInfProjectionSchurLift selector hess invHyy x u))
+              (barrierInfProjectionSchurLift selector hess invHyy x v)) =
+          barrierInfProjectionSchurLiftedThird selector hess invHyy third
+            x u v) :
+    BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+      (fun x =>
+        barrierInfProjectionSchurHessDeriv
+          (barrierInfProjectionBlockXY selector hess)
+          (barrierInfProjectionBlockYX selector hess)
+          invHyy
+          (fun x => barrierInfProjectionBlockXXDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockXYDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockYXDeriv (hessDeriv x) (dselector x))
+          invHyyDeriv x) :=
+  BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_componentPairing
+    (s := s) (selector := selector) (hess := hess) (invHyy := invHyy)
+    (third := third) (hessDeriv := hessDeriv) (dselector := dselector)
+    (invHyyDeriv := invHyyDeriv) hhess hselector hinvDeriv hcross hinvPair
+    (by
+      intro x hx u v
+      exact
+        barrierInfProjectionSchurLiftedThird_eq_component_expansion_of_pairing
+          selector hess invHyy third (hessDeriv x) (dselector x) x u v
+          (hpoint (x := x) hx u) (hthird_pair (x := x) hx u v))
 
 end InfProjectionSchurSymmetry
 
