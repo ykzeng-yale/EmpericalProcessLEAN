@@ -4000,3 +4000,14 @@ This theorem shifts the entropy envelope to radius `eta / 2`, proves the
 selected-cardinality comparison internally, and consumes the canonical
 first-level displayed-beta primitive.  The remaining blocker is therefore the
 single canonical product-fiber lower-bound hypothesis.
+
+The canonical displayed-beta branch now has a sign-swapped bad-fiber
+factorization endpoint:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers`.
+It reuses
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapBadEvent_ae_components`
+to reduce the remaining canonical product-fiber hypothesis to the
+sign-swapped bad-event fiber lower bound plus original and ghost
+finite-center a.e. support for the canonical first-level selected cover.  This
+is progress on the source interface, not a final probability closure; the
+active blocker is now exactly those probability-side three inputs.
