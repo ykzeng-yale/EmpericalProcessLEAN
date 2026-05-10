@@ -322,6 +322,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_hessApplyDeriv`,
   and
   `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv`.
+  The follow-up extraction names the Frechet-to-applied-vector calculus as
+  `hessianSegmentHessApply_hasDerivAt_of_hasFDerivAt` and
+  `hessianSegmentHessApply_hasDerivWithinAt_of_hasFDerivAt`.
   The live inf-projection derivative gate is now even narrower: prove the
   derivative of `t ↦ H_schur(z_t) v` and the paired identity with lifted third;
   the scalar `ψ` derivative follows by the generic inner-product calculus

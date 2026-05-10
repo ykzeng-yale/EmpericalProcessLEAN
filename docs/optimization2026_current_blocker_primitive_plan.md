@@ -426,6 +426,11 @@ The newest vector-path packet adds
 `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_hessApplyDeriv`,
 and
 `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv`.
+The follow-up calculus extraction adds
+`hessianSegmentHessApply_hasDerivAt_of_hasFDerivAt` and
+`hessianSegmentHessApply_hasDerivWithinAt_of_hasFDerivAt`, so a full Frechet
+derivative of the Schur Hessian can feed the applied-vector route directly
+without reproving `clm_apply` segment calculus.
 Thus the preferred exact source gate can now be proved by differentiating only
 the applied Schur-Hessian vector path `t ↦ H_schur(z_t) v` and pairing the
 result with `v`; a full operator-valued Schur derivative and even a direct

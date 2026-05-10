@@ -1549,15 +1549,20 @@ theorem hessianSegmentLocalNorm_pos_of_hessian_pos
     (hess_pos (hessianSegmentPoint_mem_of_convex hs hx hy ht)
       (y - x) hdiff_ne)
 
-theorem hessianSegmentPsi_hasDerivAt_of_hasFDerivAt
+/--
+Derivative of the applied Hessian vector path
+`t ↦ Hess((1-t)x+t y) v` from a Frechet derivative of the Hessian oracle.
+This is the reusable vector-valued gate behind the scalar `ψ` derivative.
+-/
+theorem hessianSegmentHessApply_hasDerivAt_of_hasFDerivAt
     {hess : E -> E →L[ℝ] E}
     {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
     {x y v : E} {t : ℝ}
     (hhess : HasFDerivAt hess
       (hessDeriv (hessianSegmentPoint x y t))
       (hessianSegmentPoint x y t)) :
-    HasDerivAt (hessianSegmentPsi hess x y v)
-      (inner ℝ v ((hessDeriv (hessianSegmentPoint x y t) (y - x)) v)) t := by
+    HasDerivAt (fun s : ℝ => hess (hessianSegmentPoint x y s) v)
+      ((hessDeriv (hessianSegmentPoint x y t) (y - x)) v) t := by
   have hseg := hessianSegmentPoint_hasDerivAt x y t
   have hcomp :
       HasDerivAt (fun s : ℝ => hess (hessianSegmentPoint x y s))
@@ -1567,14 +1572,42 @@ theorem hessianSegmentPsi_hasDerivAt_of_hasFDerivAt
           (hessDeriv (hessianSegmentPoint x y t) (y - x)) t :=
       hhess.comp_hasDerivAt (x := t) hseg
     simpa [Function.comp_def] using hcomp'
+  have hconst : HasDerivAt (fun _ : ℝ => v) 0 t :=
+    hasDerivAt_const t v
+  simpa using hcomp.clm_apply hconst
+
+/--
+Within-set version of `hessianSegmentHessApply_hasDerivAt_of_hasFDerivAt`.
+-/
+theorem hessianSegmentHessApply_hasDerivWithinAt_of_hasFDerivAt
+    {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {x y v : E} {t : ℝ} {u : Set ℝ}
+    (hhess : HasFDerivAt hess
+      (hessDeriv (hessianSegmentPoint x y t))
+      (hessianSegmentPoint x y t)) :
+    HasDerivWithinAt (fun s : ℝ => hess (hessianSegmentPoint x y s) v)
+      ((hessDeriv (hessianSegmentPoint x y t) (y - x)) v) u t :=
+  (hessianSegmentHessApply_hasDerivAt_of_hasFDerivAt
+    (hess := hess) (hessDeriv := hessDeriv)
+    (x := x) (y := y) (v := v) (t := t) hhess).hasDerivWithinAt
+
+theorem hessianSegmentPsi_hasDerivAt_of_hasFDerivAt
+    {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {x y v : E} {t : ℝ}
+    (hhess : HasFDerivAt hess
+      (hessDeriv (hessianSegmentPoint x y t))
+      (hessianSegmentPoint x y t)) :
+    HasDerivAt (hessianSegmentPsi hess x y v)
+      (inner ℝ v ((hessDeriv (hessianSegmentPoint x y t) (y - x)) v)) t := by
   have happly :
       HasDerivAt
         (fun s : ℝ => hess (hessianSegmentPoint x y s) v)
         ((hessDeriv (hessianSegmentPoint x y t) (y - x)) v) t := by
-    have hconst : HasDerivAt (fun _ : ℝ => v) 0 t :=
-      hasDerivAt_const t v
-    have happly := hcomp.clm_apply hconst
-    simpa using happly
+    exact hessianSegmentHessApply_hasDerivAt_of_hasFDerivAt
+      (hess := hess) (hessDeriv := hessDeriv)
+      (x := x) (y := y) (v := v) (t := t) hhess
   have hconst_left : HasDerivAt (fun _ : ℝ => v) 0 t :=
     hasDerivAt_const t v
   have hinner := HasDerivAt.inner (𝕜 := ℝ) hconst_left happly
