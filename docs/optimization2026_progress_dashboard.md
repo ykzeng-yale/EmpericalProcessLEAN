@@ -376,6 +376,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   standard segment coefficient bound.  Continuity, strict positivity, and
   local-norm sandwich transport are no longer separate live blockers once the
   scalar `ψ` derivative certificate is supplied.
+- Inf-projection cross-block symmetry shrink: the newest packet adds
+  `StatInference/Optimization/SchurSymmetry.lean`, root-imported by
+  `StatInference.lean`, with reusable product-injection inner-product lemmas
+  `withLpProdInlCLM_inner`, `withLpProdInrCLM_inner`,
+  `inner_withLpProdInrCLM`, and
+  `barrierInfProjectionBlockXY_invHyy_pair_eq_of_hessian_symmetric`.
+  This discharges the first component-pairing obligation
+  `<v, Hxy Hyy⁻¹ w> = <Hyy⁻¹ Hyx v, w>` from full product-Hessian symmetry
+  and the `Hyy` right-inverse.  Search-first reuse: mathlib
+  `LinearMap.IsSymmetric`, `WithLp.prod_inner_apply`, and local WithLp block
+  extractors/injections are sufficient; future Schur-derivative packets should
+  no longer pass this cross-block pairing as a raw assumption.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

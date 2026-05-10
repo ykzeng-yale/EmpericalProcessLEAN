@@ -509,6 +509,17 @@ models.  If taking the scalar route, call
 `BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_componentPairing`
 and prove its three component obligations instead of expanding the whole
 Schur derivative directly.
+The cross-block symmetry packet adds the new root-imported module
+`StatInference/Optimization/SchurSymmetry.lean` with
+`withLpProdInlCLM_inner`, `withLpProdInrCLM_inner`,
+`inner_withLpProdInrCLM`, and
+`barrierInfProjectionBlockXY_invHyy_pair_eq_of_hessian_symmetric`.  The first
+of the three component obligations is now closed whenever the full
+product-space Hessian is symmetric and `Hyy * Hyy⁻¹ = I`.  Search-first result:
+mathlib's `LinearMap.IsSymmetric` plus `WithLp.prod_inner_apply` and the local
+block definitions are enough; future runs should spend proof budget on the
+remaining inverse-derivative cancellation and four-term lifted-third expansion,
+not on a supplied cross-block pairing.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

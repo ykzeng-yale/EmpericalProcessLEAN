@@ -57,6 +57,7 @@ import StatInference.Optimization.ProjectedSubgradient
 import StatInference.Optimization.Proximal
 import StatInference.Optimization.RandomizedAlternatingMinimization
 import StatInference.Optimization.Reductions
+import StatInference.Optimization.SchurSymmetry
 import StatInference.Optimization.StochasticGradient
 import StatInference.Optimization.Theorem27
 import StatInference.Optimization.Theorem28
