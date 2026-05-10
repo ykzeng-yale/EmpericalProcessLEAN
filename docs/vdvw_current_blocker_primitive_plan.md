@@ -10114,3 +10114,16 @@ remaining blocker is therefore not fixed-`M` propagation; it is the probability
 source theorem establishing that displayed Chebyshev-beta fiber mass for the
 canonical first-level selected cover, or an equivalent coefficient-correct
 product-pair/sign-swap replacement.
+
+2026-05-10 a.e. sign-swapped bad-fiber first-level source factorization:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_signSwapBad_fibers`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_imp_signSwapBad_fibers`.
+These factor the a.e. canonical first-level pair-difference source through the
+sign-swapped pair-sub bad event plus the original/ghost finite-center
+Hoeffding side conditions.  The sign-swapped bad-fiber lower bound can now be
+proved either on `P^n.restrict centeredBad`-a.e. samples or in the natural
+base-`P^n` a.e. implication form.  The remaining mathematical source is the
+probability theorem for that sign-swapped bad-fiber mass, or the lower
+pair-sub/sign-swap replacement with correct constants.

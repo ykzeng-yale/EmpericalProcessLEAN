@@ -3722,6 +3722,16 @@ The remaining blueprint item is the actual canonical first-level
 pair-difference displayed-beta probability source, not another fixed-`M`
 handoff theorem.
 
+The a.e. first-level pair-difference source is also factored through the
+sign-swapped pair-sub bad event:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_signSwapBad_fibers`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_imp_signSwapBad_fibers`.
+Future proof work can now aim at a restricted-a.e. or base-a.e. lower bound
+for `VdVWTheorem243CenteredPairSubSignSwapBadEvent`, plus the existing
+original/ghost finite-center side conditions for the canonical first-level
+selected cover.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

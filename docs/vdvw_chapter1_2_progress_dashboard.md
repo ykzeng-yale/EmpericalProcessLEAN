@@ -4634,3 +4634,14 @@ and
 The dashboard blocker has moved to the actual probability proof for the
 canonical first-level selected-cover pair-difference fiber mass; fixed-`M`
 propagation is no longer a separate obstruction.
+
+The first-level pair-difference source is now factored one level lower in the
+a.e. shape:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_signSwapBad_fibers`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_imp_signSwapBad_fibers`.
+They expose the sign-swapped pair-sub bad-fiber mass as the remaining a.e.
+probability source, with original/ghost selected finite-center support kept as
+explicit side conditions.  The dashboard blocker for this lane is now that
+sign-swapped bad-fiber mass theorem, or the coefficient-correct pair-sub
+transport below it.
