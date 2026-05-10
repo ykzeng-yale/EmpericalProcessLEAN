@@ -3124,6 +3124,21 @@ finite-center Hoeffding support facts on `sign × sample`.  This keeps the
 preferred source route separate from the over-strong fixed-original sign-swap
 fiber transport.
 
+The matching finite-center failure-tail source wrapper is compiled as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+This version uses the same canonical first-level selected cover and exposes
+the original/ghost finite-center failures as explicit lintegral additive
+errors.  The frontier is now the probability content of those failure terms
+and the product-fiber replacement, not selected-cover or selected-cardinality
+instantiation.
+
+The countable source specialization
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable`
+also compiles.  It discharges the original and ghost failure-event
+measurability assumptions using the first-level selected-center coordinate
+measurability bridge, so the additive-error route's source-side blocker is now
+only the size/asymptotics of the two lintegral failure-tail terms.
+
 The displayed Chebyshev-beta source constructor now has the same canonical
 first-level cover specialization:
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.

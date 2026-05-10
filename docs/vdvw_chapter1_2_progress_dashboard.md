@@ -310,6 +310,18 @@ It chooses the first-level selected cover internally and leaves only the two
 finite-center Hoeffding support facts on the natural `sign × sample` product
 spaces.  This is the honest sign-averaged product-pair source layer; it does
 not assume the invalid fixed-original sign-swap fiber transport.
+The matching first-level additive-error source wrapper is now compiled as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+It uses the same canonical selected cover while exposing the original and
+ghost finite-center failures as explicit lintegral error terms.  The live
+work on this branch is failure-event measurability plus tail control, or the
+product-fiber replacement that avoids this additive error.
+Its countable specialization
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable`
+now discharges those two failure-event measurability inputs internally from
+the canonical first-level selected-center coordinate bridge.  The branch's
+remaining source burden is therefore only tail control for the displayed
+lintegral failure terms, or the product-fiber replacement.
 The explicit original/ghost finite-center failure probabilities are now split
 through the fixed-sample Rademacher finite-center Hoeffding tail, a
 product-fiber upper-bound lift, and additive-error product-pair comparison

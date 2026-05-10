@@ -9265,6 +9265,25 @@ the remaining honest inputs on this branch are exactly the original and ghost
 finite-center Hoeffding support facts on `sign × sample`, or a replacement
 product-fiber/Chebyshev lower bound that bypasses those support facts.
 
+2026-05-10 first-level finite-center failure-tail source wrapper:
+`Theorem243.lean` now also proves
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+This is the canonical selected-cover source comparison for the additive-error
+route: it supplies the `Nat.find` first-level cover at radius `(eta / 2) / 2`
+internally and leaves only measurable original/ghost finite-center failure
+events, with their two displayed lintegral failure-tail errors.  This confirms
+that the next blocker is probability-side tail control or the product-fiber
+replacement, not cover choice.
+
+2026-05-10 countable first-level failure-tail source wrapper:
+`Theorem243.lean` now also proves
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable`.
+This variant discharges the original and ghost failure-event measurability
+inputs from countability, selected-cardinality measurability, and the compiled
+first-level selected-center scalar-coordinate theorem.  The additive-error
+branch's remaining primitive is therefore a genuine tail-control/asymptotic
+input for the two lintegral finite-center failure terms.
+
 2026-05-10 first-level displayed-beta selected-cover route:
 `Theorem243.lean` now also proves
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.
