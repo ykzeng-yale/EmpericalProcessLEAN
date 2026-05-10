@@ -42077,6 +42077,52 @@ theorem
   exact hmass.trans_le hbeta
 
 /--
+The displayed Chebyshev beta factor is eventually not dominated by the mass of
+a single deterministic Rademacher sign vector.
+
+This is the coefficient-level obstruction for fixed-sign or pointwise
+deterministic sign-section proofs: their available Rademacher mass is
+eventually strictly smaller than the beta factor required by the textbook
+source comparison.
+-/
+theorem
+    eventually_not_displayedChebyshevBeta_le_rademacherSignVector_singleton_mass
+    {M epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ∀ᶠ n : ℕ in atTop,
+      ¬ ENNReal.ofReal
+          (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+        (2⁻¹ : ℝ≥0∞) ^ n := by
+  filter_upwards
+    [eventually_rademacherSignVector_singleton_mass_lt_displayedChebyshevBeta
+      (M := M) hepsilon] with n hlt
+  exact not_le_of_gt hlt
+
+/--
+It is not eventually true that the displayed Chebyshev beta factor is bounded
+by deterministic Rademacher sign-vector mass.
+
+This packages the preceding eventual strict inequality in the exact negative
+form useful for route audits: a proof that only supplies the fixed-sign
+coefficient `(1 / 2)^n` cannot be promoted to the displayed-beta source
+comparison by an eventual coefficient monotonicity argument.
+-/
+theorem
+    not_eventually_displayedChebyshevBeta_le_rademacherSignVector_singleton_mass
+    {M epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ¬ ∀ᶠ n : ℕ in atTop,
+      ENNReal.ofReal
+          (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+        (2⁻¹ : ℝ≥0∞) ^ n := by
+  intro hle
+  have hfalse : ∀ᶠ _n : ℕ in atTop, False := by
+    filter_upwards
+      [hle,
+        eventually_not_displayedChebyshevBeta_le_rademacherSignVector_singleton_mass
+          (M := M) hepsilon] with n hle_n hnot
+    exact hnot hle_n
+  exact atTop_neBot.ne (Filter.eventually_false_iff_eq_bot.mp hfalse)
+
+/--
 Product-measure fiber upper bound.
 
 If every right-indexed fiber of a measurable joint event is bounded by a
