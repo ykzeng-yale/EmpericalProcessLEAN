@@ -3841,3 +3841,14 @@ general measurable selector theorem for arbitrary `Classical.choice` empirical
 covers and no undoubled concrete-fiber theorem for the displayed constants;
 the available fallback remains the compiled half-scale `C = 4`, `A = 2`
 comparison route.
+
+The half-scale route now has the matching canonical selected-cardinality
+coordinate wrapper:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_coordinate`.
+It specializes the selected process to the least empirical-cover cardinality
+at radius `(eta / 2) / 2`, transports the book entropy log convergence from
+that radius, proves selected cardinality is measurable, and proves the
+selected cardinality is bounded by the book-facing envelope.  Remaining
+half-scale source obligations are now scalar selected-center coordinate
+measurability for the chosen cover and vanishing integrated finite-center
+failure-tail error.
