@@ -3117,6 +3117,15 @@ mathematical question remains unchanged: prove or reject the fixed-sample
 sign-swap transport and a.e. finite-center support inputs, then choose the
 fixed-fiber or integrated product-pair route accordingly.
 
+The fixed-fiber route now also has the half-threshold outer-probability
+adapter
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_halfScale_of_pos`.
+This supplies the standard normal-threshold comparison with Chebyshev penalty
+at `epsilon / 2` and selected finite-net scale `4`.  The next theorem-facing
+closure should either discharge the fixed-sample sign-swap/finite-center
+inputs for the canonical selected cover or explicitly switch to the integrated
+product-pair source route if those fixed-fiber inputs are too strong.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

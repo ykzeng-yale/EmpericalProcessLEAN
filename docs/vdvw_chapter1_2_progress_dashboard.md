@@ -4031,3 +4031,12 @@ fiber lower bound into a factor-two outer-probability comparison for the
 `2 * epsilon` centered-bad event.  The remaining blocker is not this
 measure-theory plumbing; it is still the validity/proof of fixed-sample
 sign-swap transport and the finite-center a.e. support assumptions.
+
+The same fixed-fiber source route now has the normal half-scale
+outer-probability comparison:
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_halfScale_of_pos`.
+It instantiates the positive-size bridge at `epsilon / 2`, yielding the usual
+`epsilon` centered-bad event and the selected finite-net event
+`epsilon < 4 * H + eta`.  This aligns the fixed-fiber route with the existing
+product-pair half-scale scale constants; the unsolved inputs remain
+fixed-sample sign-swap transport and original/ghost finite-center a.e. support.
