@@ -42875,6 +42875,148 @@ theorem
           simp [VdVWOuterProbability, hrightOriginal, hrightGhost, two_mul]
 
 /--
+Generic product-fiber original-or-ghost projection bound.
+
+This isolates the union-bound part of the Lemma 2.3.7 product-fiber argument:
+if every point of a joint event projects either to the original right event or
+to the ghost right event, then the joint product mass is bounded by twice the
+right marginal outer probability.
+-/
+theorem
+    VdVWOuterProbability_product_fiber_event_le_two_mul_of_original_or_ghost
+    {α : Type u} {γ : Type v} [MeasurableSpace α] [MeasurableSpace γ]
+    {μ : Measure α} {ν : Measure γ} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {right : Set α} {joint : Set (α × (α × γ))}
+    (hjoint_subset :
+      ∀ z : α × (α × γ), z ∈ joint -> z.1 ∈ right ∨ z.2.1 ∈ right) :
+    μ.prod (μ.prod ν) joint ≤
+      (2 : ℝ≥0∞) * VdVWOuterProbability μ right := by
+  let rightOriginal : Set (α × (α × γ)) :=
+    right ×ˢ (Set.univ : Set (α × γ))
+  let rightGhost : Set (α × (α × γ)) :=
+    (Set.univ : Set α) ×ˢ (right ×ˢ (Set.univ : Set γ))
+  have hjoint_le_union :
+      μ.prod (μ.prod ν) joint ≤
+        μ.prod (μ.prod ν) (rightOriginal ∪ rightGhost) := by
+    refine measure_mono ?_
+    intro z hz
+    rcases hjoint_subset z hz with hright | hghost
+    · exact Or.inl ⟨hright, trivial⟩
+    · exact Or.inr ⟨trivial, hghost, trivial⟩
+  have hunion_le :
+      μ.prod (μ.prod ν) (rightOriginal ∪ rightGhost) ≤
+        μ.prod (μ.prod ν) rightOriginal +
+          μ.prod (μ.prod ν) rightGhost :=
+    measure_union_le rightOriginal rightGhost
+  have hrightOriginal :
+      μ.prod (μ.prod ν) rightOriginal = μ right := by
+    rw [Measure.prod_prod, measure_univ]
+    simp
+  have hrightGhost :
+      μ.prod (μ.prod ν) rightGhost = μ right := by
+    rw [Measure.prod_prod, measure_univ, Measure.prod_prod, measure_univ]
+    simp
+  calc
+    μ.prod (μ.prod ν) joint
+        ≤ μ.prod (μ.prod ν) (rightOriginal ∪ rightGhost) :=
+          hjoint_le_union
+    _ ≤ μ.prod (μ.prod ν) rightOriginal +
+          μ.prod (μ.prod ν) rightGhost := hunion_le
+    _ = (2 : ℝ≥0∞) * VdVWOuterProbability μ right := by
+          simp [VdVWOuterProbability, hrightOriginal, hrightGhost, two_mul]
+
+/--
+Product-fiber lower bound with original-or-ghost projection and samplewise
+additive error.
+
+This is the additive-error companion of
+`VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost`:
+the source proof may lose a nonnegative error depending on the original sample,
+and only its integral over the left event is charged downstream.
+-/
+theorem
+    VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost_add_error
+    {α : Type u} {γ : Type v} [MeasurableSpace α] [MeasurableSpace γ]
+    {μ : Measure α} {ν : Measure γ} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {left right : Set α} {joint : Set (α × (α × γ))}
+    {beta : ℝ≥0∞} {error : α -> ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (herror_aemeas : AEMeasurable error (μ.restrict left))
+    (hfiber :
+      ∀ x : α, x ∈ left ->
+        beta ≤ (μ.prod ν) (Prod.mk x ⁻¹' joint) + error x)
+    (hjoint_subset :
+      ∀ z : α × (α × γ), z ∈ joint -> z.1 ∈ right ∨ z.2.1 ∈ right) :
+    beta * VdVWOuterProbability μ left ≤
+      (2 : ℝ≥0∞) * VdVWOuterProbability μ right +
+        (∫⁻ x in left, error x ∂μ) := by
+  have hleft_joint :
+      beta * μ left ≤
+        μ.prod (μ.prod ν) joint + (∫⁻ x in left, error x ∂μ) :=
+    measure_mul_le_prod_measure_add_setLIntegral_error_of_fiber_lower_bound_add_error
+      (μ := μ) (ν := μ.prod ν) hjoint_meas herror_aemeas hfiber
+  have hjoint_project :
+      μ.prod (μ.prod ν) joint ≤
+        (2 : ℝ≥0∞) * VdVWOuterProbability μ right :=
+    VdVWOuterProbability_product_fiber_event_le_two_mul_of_original_or_ghost
+      (μ := μ) (ν := ν) hjoint_subset
+  calc
+    beta * VdVWOuterProbability μ left
+        = beta * μ left := by
+          rfl
+    _ ≤ μ.prod (μ.prod ν) joint + (∫⁻ x in left, error x ∂μ) :=
+          hleft_joint
+    _ ≤ (2 : ℝ≥0∞) * VdVWOuterProbability μ right +
+          (∫⁻ x in left, error x ∂μ) :=
+        add_le_add hjoint_project le_rfl
+
+/--
+Almost-everywhere version of the additive-error original-or-ghost
+product-fiber projection.
+
+This is the Fubini-ready source interface: the beta lower bound with
+samplewise error only has to hold for `μ.restrict left`-a.e. original sample.
+-/
+theorem
+    VdVWOuterProbability_mul_left_le_two_mul_of_ae_product_fiber_lower_bound_or_ghost_add_error
+    {α : Type u} {γ : Type v} [MeasurableSpace α] [MeasurableSpace γ]
+    {μ : Measure α} {ν : Measure γ} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {left right : Set α} {joint : Set (α × (α × γ))}
+    {beta : ℝ≥0∞} {error : α -> ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (herror_aemeas : AEMeasurable error (μ.restrict left))
+    (hfiber :
+      ∀ᵐ x ∂(μ.restrict left),
+        beta ≤ (μ.prod ν) (Prod.mk x ⁻¹' joint) + error x)
+    (hjoint_subset :
+      ∀ z : α × (α × γ), z ∈ joint -> z.1 ∈ right ∨ z.2.1 ∈ right) :
+    beta * VdVWOuterProbability μ left ≤
+      (2 : ℝ≥0∞) * VdVWOuterProbability μ right +
+        (∫⁻ x in left, error x ∂μ) := by
+  have hleft_joint :
+      beta * μ left ≤
+        μ.prod (μ.prod ν) joint + (∫⁻ x in left, error x ∂μ) :=
+    measure_mul_le_prod_measure_add_setLIntegral_error_of_ae_fiber_lower_bound_add_error
+      (μ := μ) (ν := μ.prod ν) hjoint_meas herror_aemeas hfiber
+  have hjoint_project :
+      μ.prod (μ.prod ν) joint ≤
+        (2 : ℝ≥0∞) * VdVWOuterProbability μ right :=
+    VdVWOuterProbability_product_fiber_event_le_two_mul_of_original_or_ghost
+      (μ := μ) (ν := ν) hjoint_subset
+  calc
+    beta * VdVWOuterProbability μ left
+        = beta * μ left := by
+          rfl
+    _ ≤ μ.prod (μ.prod ν) joint + (∫⁻ x in left, error x ∂μ) :=
+          hleft_joint
+    _ ≤ (2 : ℝ≥0∞) * VdVWOuterProbability μ right +
+          (∫⁻ x in left, error x ∂μ) :=
+        add_le_add hjoint_project le_rfl
+
+/--
 Product-event source constructor for the displayed Chebyshev-beta comparison.
 
 This is the event-level interface the remaining ghost/Rademacher proof should

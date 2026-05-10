@@ -10207,3 +10207,18 @@ chooses the canonical countable first-level selected cover with one sign-only
 finite-center support hypothesis.  The remaining source gap is therefore the
 actual base-a.e. conditional fixed-original sign-swap transport on
 centered-bad samples, or the averaged product-pair replacement.
+
+2026-05-10 product-fiber original-or-ghost additive-error bridge:
+`Theorem243.lean` now adds the generic projection helper
+`VdVWOuterProbability_product_fiber_event_le_two_mul_of_original_or_ghost`
+and its samplewise-error companions
+`VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost_add_error`
+and
+`VdVWOuterProbability_mul_left_le_two_mul_of_ae_product_fiber_lower_bound_or_ghost_add_error`.
+These are source-layer measure bridges for the honest product-fiber route:
+a beta-large fiber proof may lose a nonnegative error depending on the
+original sample, and the downstream comparison only pays the set integral of
+that error over the centered-bad left event, with the usual original-or-ghost
+factor two.  This does not prove the hard product-fiber lower bound, but it
+keeps finite-center failure costs explicit instead of converting them into
+false a.s. support assumptions.

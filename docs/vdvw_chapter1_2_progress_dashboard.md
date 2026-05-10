@@ -4709,3 +4709,15 @@ untruncation theorem.  The dashboard blocker for this lane is now purely the
 probability source theorem: prove the conditional fixed-original sign-swap
 transport for `P^n`-a.e. centered-bad samples, or use the product-pair route
 that avoids that transport.
+
+The product-fiber route now has a generic original-or-ghost additive-error
+projection:
+`VdVWOuterProbability_product_fiber_event_le_two_mul_of_original_or_ghost`,
+`VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost_add_error`,
+and
+`VdVWOuterProbability_mul_left_le_two_mul_of_ae_product_fiber_lower_bound_or_ghost_add_error`.
+This is the source-facing shape needed when finite-center failures are carried
+as a samplewise error term rather than as an a.s. support hypothesis.  The
+dashboard frontier remains the actual product-fiber/Chebyshev lower bound or
+tail-control theorem, but that proof can now pay the integrated error over the
+centered-bad left event directly.

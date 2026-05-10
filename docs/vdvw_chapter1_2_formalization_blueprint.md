@@ -3801,6 +3801,19 @@ hypothesis.  Future proof work can now aim the base-a.e. conditional
 sign-swap source directly at an untruncated centered Theorem 2.4.3 endpoint,
 or replace it with the averaged product-pair source route.
 
+The product-fiber source layer now also supports original-or-ghost projection
+with a samplewise additive error:
+`VdVWOuterProbability_product_fiber_event_le_two_mul_of_original_or_ghost`,
+`VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost_add_error`,
+and
+`VdVWOuterProbability_mul_left_le_two_mul_of_ae_product_fiber_lower_bound_or_ghost_add_error`.
+This keeps the factor-two ghost/original union-bound step compatible with
+finite-center failure accounting: a future fiber proof may charge
+`∫⁻ x in centeredBad, error x` instead of assuming the finite-center
+Hoeffding side conditions hold almost surely.  The next theorem-facing source
+work is still the product-fiber/Chebyshev lower bound or an honest tail-control
+input for that integrated error.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
