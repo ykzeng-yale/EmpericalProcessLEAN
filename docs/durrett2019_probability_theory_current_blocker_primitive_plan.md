@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V195
+## Live In-Thread Goal Prompt V196
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -20,14 +20,15 @@ truncated mean identification, exact textbook-display bridge, row-to-single
 numeric reductions for the large-jump and truncated second-moment hypotheses,
 the real-tail-to-natural-tail bridge from Durrett's displayed assumption, and
 the first Lemma 2.2.13 layer-cake / second-moment-bound consumer layer, plus
-the real-tail-to-tail-average Cesaro bridge.
+the real-tail-to-tail-average Cesaro bridge, automatic local integrability of
+the clipped tail profile, and the exact tail-average endpoint wrappers.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V195 compiled support now includes:
+V196 compiled support now includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -101,7 +102,15 @@ plus the first Lemma 2.2.13 and second-bound bridge layer:
 plus the tail-average/Cesaro layer:
 `durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_bounded_tendsto_zero`
 and
-`durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail`.
+`durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail`,
+plus the automatic local-integrability and exact tail-average endpoint layer:
+`durrett2019_theorem_2_2_12_tail_profile_integrableOn`,
+`durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail_auto_integrable`,
+`durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound`,
+`durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound_auto_integrable`,
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound`,
+and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable`.
 
 Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
 Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, or Theorem 2.4.9.  Move toward
@@ -118,10 +127,13 @@ these is discharged from the real-tail source hypothesis
 `lintegral` layer-cake form, and any vanishing upper-bound sequence for
 `E[bar X_{n,0}^2] / n` now feeds the final Theorem 2.2.12 display.  The
 Cesaro/tail-average bridge from the real-tail source assumption to
-`(1/n) * ∫_0^n 2*y*P(|X_0|>y) dy -> 0` is compiled.  Next prove the actual
-textbook upper bound by connecting the truncated square moment to that
-tail-average expression, including the needed local integrability/measurability
-handoffs for the clipped tail profile.  Reuse independence/product wrappers, finite-sum
+`(1/n) * ∫_0^n 2*y*P(|X_0|>y) dy -> 0` is compiled, and the clipped tail profile's
+local integrability is now discharged automatically from antitone tail
+measurability and the probability bound `≤ 1`.  Next prove only the actual
+textbook truncated-square comparison
+`E[bar X_{n,0}^2] / n ≤ (1/n) * ∫_0^n 2*y*P(|X_0|>y) dy` eventually; the
+compiled exact tail-average endpoint will then finish Theorem 2.2.12.  Reuse
+independence/product wrappers, finite-sum
 variance support, Borel-Cantelli, strong-law, empirical-CDF infrastructure, and
 mathlib layer-cake/tail-integral APIs.  Search mathlib/local first for the
 exact primitive and use

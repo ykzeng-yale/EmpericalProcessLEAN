@@ -150,12 +150,21 @@ V195 adds the tail-average/Cesaro bridge:
 `durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_bounded_tendsto_zero`
 and
 `durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail`.
+V196 adds the automatic local-integrability and exact tail-average endpoint
+layer:
+`durrett2019_theorem_2_2_12_tail_profile_integrableOn`,
+`durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail_auto_integrable`,
+`durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound`,
+`durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound_auto_integrable`,
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound`,
+and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable`.
 The active numeric frontier is now sharply the actual textbook upper bound
 from the truncated square moment to the compiled tail integral average
-`(1 / n) * ∫_0^n 2*y*P(|X_0|>y) dy`.  The remaining work is the
-local-integrability/measurability handoff for the clipped tail profile and the
-set-integral comparison feeding
-`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_second_bound`.
+`(1 / n) * ∫_0^n 2*y*P(|X_0|>y) dy`.  The clipped tail profile's local
+integrability is now compiled, so the remaining work is the set-integral /
+layer-cake comparison feeding
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable`.
 Do not route future cycles back to Chapter 4.5.2 or solved 2.1.10 partial-sum,
 2.1.13 product-consumer, 2.2.1 variance-sum, 2.2.3, 2.2.6, 2.4.9, 2.1.12,
 2.1.15, or 2.1.16 plumbing unless the user explicitly pivots.

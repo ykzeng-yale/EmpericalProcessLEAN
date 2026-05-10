@@ -3114,6 +3114,240 @@ theorem durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail
         2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ))
   rw [hIntegral]
 
+/--
+Durrett 2019, Theorem 2.2.12 support: the clipped real-tail profile is locally
+integrable.
+
+The proof uses only monotonicity of `y ↦ P(|X_0| > y)` and the probability
+bound `P(|X_0| > y) ≤ 1`, so no measurability assumption on `X_0` is needed
+for this one-dimensional local-integrability side condition.
+-/
+theorem durrett2019_theorem_2_2_12_tail_profile_integrableOn
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} :
+    ∀ a b : ℝ,
+      IntegrableOn
+        (fun y : ℝ =>
+          if 0 ≤ y then 2 * y * P.real {ω : Ω | y < |X 0 ω|} else 0)
+        (Set.Ioc a b) volume := by
+  intro a b
+  let tail : ℝ -> ℝ := fun y => P.real {ω : Ω | y < |X 0 ω|}
+  let g : ℝ -> ℝ := fun y => if 0 ≤ y then 2 * y * tail y else 0
+  have htail_meas : Measurable tail := by
+    refine Antitone.measurable ?_
+    intro s t hst
+    exact measureReal_mono (fun ω hω => lt_of_le_of_lt hst hω)
+  have hg_meas : Measurable g := by
+    have hpos : MeasurableSet {y : ℝ | 0 ≤ y} :=
+      measurableSet_le measurable_const measurable_id
+    have hprod : Measurable (fun y : ℝ => 2 * y * tail y) :=
+      (measurable_const.mul measurable_id).mul htail_meas
+    exact hprod.ite hpos measurable_const
+  let M : ℝ := max 1 (2 * max |a| |b|)
+  have hM_nonneg : 0 ≤ M := le_trans zero_le_one (le_max_left 1 (2 * max |a| |b|))
+  refine Measure.integrableOn_of_bounded
+    (μ := volume) (s := Set.Ioc a b) (M := M)
+    measure_Ioc_lt_top.ne hg_meas.aestronglyMeasurable ?_
+  refine (ae_restrict_mem measurableSet_Ioc).mono ?_
+  intro y hy
+  by_cases hy_nonneg : 0 ≤ y
+  · have hy_abs_le : |y| ≤ max |a| |b| := by
+      refine abs_le.2 ⟨?_, ?_⟩
+      · have hle_a : -max |a| |b| ≤ -|a| := by
+          exact neg_le_neg (le_max_left |a| |b|)
+        exact hle_a.trans ((neg_abs_le a).trans (le_of_lt hy.1))
+      · exact hy.2.trans ((le_abs_self b).trans (le_max_right |a| |b|))
+    have htail_nonneg : 0 ≤ tail y := measureReal_nonneg
+    have htail_le_one : tail y ≤ 1 := measureReal_le_one
+    have hval_nonneg : 0 ≤ 2 * y * tail y :=
+      mul_nonneg (mul_nonneg zero_le_two hy_nonneg) htail_nonneg
+    have hval_le : 2 * y * tail y ≤ 2 * max |a| |b| := by
+      calc
+        2 * y * tail y ≤ 2 * y * 1 := by
+          exact mul_le_mul_of_nonneg_left htail_le_one
+            (mul_nonneg zero_le_two hy_nonneg)
+        _ = 2 * y := by ring
+        _ ≤ 2 * |y| := by nlinarith [le_abs_self y]
+        _ ≤ 2 * max |a| |b| := by nlinarith [hy_abs_le]
+    have hg_eq : g y = 2 * y * tail y := by
+      simp [g, hy_nonneg]
+    change ‖g y‖ ≤ M
+    rw [hg_eq, Real.norm_eq_abs, abs_of_nonneg hval_nonneg]
+    exact hval_le.trans (le_max_right 1 (2 * max |a| |b|))
+  · have hg_eq : g y = 0 := by
+      simp [g, hy_nonneg]
+    change ‖g y‖ ≤ M
+    rw [hg_eq, norm_zero]
+    exact hM_nonneg
+
+/--
+Durrett 2019, Theorem 2.2.12 support: Durrett's real-tail hypothesis makes
+the textbook tail-integral average vanish, with local integrability discharged
+from the probability tail profile itself.
+-/
+theorem durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail_auto_integrable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (htail_real : Tendsto
+      (fun x : ℝ => x * P.real {ω : Ω | x < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ))) :
+    Tendsto
+      (fun n : ℕ =>
+        (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+          2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ))
+      atTop (𝓝 (0 : ℝ)) :=
+  durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail
+    (P := P) (X := X)
+    (durrett2019_theorem_2_2_12_tail_profile_integrableOn (P := P) (X := X))
+    htail_real
+
+/--
+Durrett 2019, Theorem 2.2.12 support: the exact tail-average upper bound
+implies the remaining single truncated second-moment limit.
+
+This specializes the earlier arbitrary-upper-bound bridge to Durrett's
+displayed integral
+`(1/n) * ∫_0^n 2*y*P(|X_0| > y) dy`, whose convergence to zero is supplied by
+the real-tail hypothesis through the compiled tail-average lemma.
+-/
+theorem durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (htail_integrable :
+      ∀ a b : ℝ,
+        IntegrableOn
+          (fun y : ℝ =>
+            if 0 ≤ y then 2 * y * P.real {ω : Ω | y < |X 0 ω|} else 0)
+          (Set.Ioc a b) volume)
+    (htail_real : Tendsto
+      (fun x : ℝ => x * P.real {ω : Ω | x < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (hsecond_tail_bound : ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+        (n : ℝ) ≤
+          (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+            2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∫ ω,
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+          (n : ℝ))
+      atTop (𝓝 (0 : ℝ)) :=
+  durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_eventual_bound
+    (P := P) (X := X)
+    (B := fun n : ℕ =>
+      (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+        2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ))
+    hsecond_tail_bound
+    (durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail
+      (P := P) (X := X) htail_integrable htail_real)
+
+/--
+Durrett 2019, Theorem 2.2.12 support: the exact tail-average upper bound
+implies the single truncated second-moment limit, with local integrability
+discharged automatically.
+-/
+theorem durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound_auto_integrable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (htail_real : Tendsto
+      (fun x : ℝ => x * P.real {ω : Ω | x < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (hsecond_tail_bound : ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+        (n : ℝ) ≤
+          (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+            2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∫ ω,
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+          (n : ℝ))
+      atTop (𝓝 (0 : ℝ)) :=
+  durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound
+    (P := P) (X := X)
+    (durrett2019_theorem_2_2_12_tail_profile_integrableOn (P := P) (X := X))
+    htail_real hsecond_tail_bound
+
+/--
+Durrett 2019, Theorem 2.2.12 source-facing endpoint from the exact textbook
+tail-average upper bound.
+
+After this bridge, the only remaining analytic task for the full theorem is to
+prove the displayed truncated-square comparison itself, with its local
+integrability/measurability side conditions.
+-/
+theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (htail_integrable :
+      ∀ a b : ℝ,
+        IntegrableOn
+          (fun y : ℝ =>
+            if 0 ≤ y then 2 * y * P.real {ω : Ω | y < |X 0 ω|} else 0)
+          (Set.Ioc a b) volume)
+    (htail_real : Tendsto
+      (fun x : ℝ => x * P.real {ω : Ω | x < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (hsecond_tail_bound : ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+        (n : ℝ) ≤
+          (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+            2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ))
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hX_meas : ∀ k : ℕ, Measurable (X k)) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (∑ k ∈ Finset.range n, X k ω) / (n : ℝ) -
+          durrett2019_theorem_2_2_12_truncatedMean P X n)
+      atTop (fun _ => 0) :=
+  durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_single_second
+    (P := P) (X := X) htail_real
+    (durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound
+      (P := P) (X := X) htail_integrable htail_real hsecond_tail_bound)
+    hX_indep hX_ident hX_meas
+
+/--
+Durrett 2019, Theorem 2.2.12 source-facing endpoint from the exact textbook
+tail-average upper bound, with local integrability discharged automatically.
+-/
+theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (htail_real : Tendsto
+      (fun x : ℝ => x * P.real {ω : Ω | x < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (hsecond_tail_bound : ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+        (n : ℝ) ≤
+          (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+            2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ))
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hX_meas : ∀ k : ℕ, Measurable (X k)) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (∑ k ∈ Finset.range n, X k ω) / (n : ℝ) -
+          durrett2019_theorem_2_2_12_truncatedMean P X n)
+      atTop (fun _ => 0) :=
+  durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound
+    (P := P) (X := X)
+    (durrett2019_theorem_2_2_12_tail_profile_integrableOn (P := P) (X := X))
+    htail_real hsecond_tail_bound hX_indep hX_ident hX_meas
+
 /-! ## Durrett, Section 2.3 -/
 
 /--

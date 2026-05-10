@@ -109,7 +109,9 @@ layer-cake form and adds a source-facing second-bound consumer, so a verified
 vanishing upper bound for `E[bar X_{n,0}^2] / n` now feeds the final
 Theorem 2.2.12 display directly.  V195 proves the tail-average/Cesaro bridge
 from Durrett's real-tail source assumption to
-`(1/n) * ∫_0^n 2*y*P(|X_0|>y) dy -> 0`.  New V188-V195 declarations are
+`(1/n) * ∫_0^n 2*y*P(|X_0|>y) dy -> 0`.  V196 proves automatic local
+integrability of the clipped tail profile and packages the exact tail-average
+endpoint wrappers.  New V188-V196 declarations are
 `durrett2019_theorem_2_2_11_measurable_truncationMap`,
 `durrett2019_theorem_2_2_11_measurable_truncated`,
 `durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound`,
@@ -148,10 +150,16 @@ and
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_second_bound`,
 `durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_bounded_tendsto_zero`,
 and
-`durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail`.
+`durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail`,
+`durrett2019_theorem_2_2_12_tail_profile_integrableOn`,
+`durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail_auto_integrable`,
+`durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound`,
+`durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound_auto_integrable`,
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound`,
+and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable`.
 Continue with the remaining Theorem 2.2.12 support: prove the actual
-truncated-square upper bound into the compiled tail-integral average, including
-local integrability/measurability handoffs for the clipped tail profile.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar
+truncated-square upper bound into the compiled tail-integral average.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar
 plumbing, 2.2.6, or 2.4.9.
 
 For each cycle, route from:
