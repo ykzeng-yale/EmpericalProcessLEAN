@@ -768,11 +768,15 @@ Initial modules:
   which derives the law-tail field from displayed `O_P(1)`, and now the
   display weak-tightness packet adds
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_displayWeakTightness_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
-  which derives displayed `O_P(1)` from displayed weak convergence.  Next
-  remove that displayed weak convergence field by composing already compiled
-  score-equation, Taylor-zero, or absorbing root/Taylor weak-limit bridges, or
-  move to a genuinely model-specific Taylor display, derivative, or score
-  representation.
+  which derives displayed `O_P(1)` from displayed weak convergence.  The
+  display weak-convergence source packet adds
+  `vaart1998_theorem_5_41_display_tendstoInDistribution_of_scaledEstimator_tendstoInDistribution`,
+  `vaart1998_theorem_5_41_display_tendstoInDistribution_of_scoreEquation`,
+  and
+  `vaart1998_theorem_5_41_display_tendstoInDistribution_of_taylorZero`.
+  Next assemble the display weak-tightness action-bound endpoint with one of
+  those helpers, or move lower to a genuinely model-specific Taylor display,
+  derivative, or score representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

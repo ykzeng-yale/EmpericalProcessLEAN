@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 display weak-tightness action endpoint`).
+(`Add Vaart theorem 5.41 display weak convergence source bridges`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -661,6 +661,16 @@ New verified absorbing source endpoint stack:
 - `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_displayWeakTightness_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
   derives the displayed `O_P(1)` field from displayed weak convergence of
   `scale_n • (estimator_n - theta0_n)`.
+- `vaart1998_theorem_5_41_display_tendstoInDistribution_of_scaledEstimator_tendstoInDistribution`
+  transfers weak convergence from the selected representative
+  `scaledEstimator` to the textbook display
+  `scale_n • (estimator_n - theta0_n)`.
+- `vaart1998_theorem_5_41_display_tendstoInDistribution_of_scoreEquation`
+  derives that displayed weak convergence from the compiled score-equation
+  weak-limit handoff.
+- `vaart1998_theorem_5_41_display_tendstoInDistribution_of_taylorZero`
+  derives that displayed weak convergence from the compiled Taylor-zero
+  weak-limit handoff.
 
 Live continuation prompt: use the efficient prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
@@ -672,18 +682,20 @@ Lean packet first, then discharge exactly one live source field for the current
 endpoint.  The canonical and projected-to-action law-tail stack now routes
 through the absorbing derivative-norm endpoint, and the current action-bound
 source endpoint now derives displayed `O_P(1)` from displayed weak
-convergence.  Move next only on a live source hypothesis: derive that displayed
-weak convergence field from already compiled score-equation, Taylor-zero, or
-absorbing root/Taylor weak-limit bridges, or prove a genuinely model-specific
-Taylor display, derivative, or score representation that removes a live
-endpoint hypothesis.
+convergence.  The displayed weak convergence field can now be supplied by
+selected-representative, score-equation, or Taylor-zero helpers.  Move next
+only on a live source hypothesis: assemble the display weak-tightness
+action-bound endpoint with one of those helpers, or derive the score-equation
+or Taylor-zero source from a genuinely model-specific Taylor display,
+derivative, or score representation.
 Do not replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
 score infrastructure, derivative-bound and finite strong-law infrastructure,
 law-tail routing, display-congruence, display-convergence, display weak
 convergence, score-equation `O_P(1)`, Taylor-zero `O_P(1)`, absorbing
 tightness/source/Taylor/measurability endpoints, projected-to-action law-tail
 routing, display-tightness action-bound, display weak-tightness action-bound,
-earlier Theorem 5.41 wrappers, or historical ledger items.
+displayed weak-convergence source helpers, earlier Theorem 5.41 wrappers, or
+historical ledger items.
 
 ## Reuse Dependencies
 

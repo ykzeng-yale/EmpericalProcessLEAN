@@ -36,10 +36,10 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Weak-limit source: remove the live displayed weak convergence field only by
-   composing already-compiled score-equation, Taylor-zero, or absorbing
-   root/Taylor weak-limit bridges with the current display weak-tightness
-   action-bound endpoint.
+1. Weak-limit source: assemble the current display weak-tightness action-bound
+   endpoint with the compiled score-equation or Taylor-zero displayed
+   weak-convergence helper.  Then move to the root/Taylor source that produces
+   that score-equation or Taylor-zero field.
 2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
    finite-entry norm/action wrapper stack.
@@ -1271,26 +1271,34 @@ compiling:
    `scale_n • (estimator_n - theta0_n)` from displayed weak convergence via
    `vaart1998_stochasticBounded_of_tendstoInDistribution`, then calls the
    display-tightness action-bound endpoint.
+385. Theorem 5.41 displayed weak-convergence source helpers:
+   `vaart1998_theorem_5_41_display_tendstoInDistribution_of_scaledEstimator_tendstoInDistribution`
+   transfers weak convergence from the selected representative
+   `scaledEstimator` to the textbook display
+   `scale_n • (estimator_n - theta0_n)`.
+   `vaart1998_theorem_5_41_display_tendstoInDistribution_of_scoreEquation`
+   and
+   `vaart1998_theorem_5_41_display_tendstoInDistribution_of_taylorZero`
+   derive that displayed weak convergence from the compiled score-equation and
+   Taylor-zero weak-limit handoffs.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 display weak-tightness action endpoint`).
+(`Add Vaart theorem 5.41 display weak convergence source bridges`).
 
-The latest theorem-sized packet derives the displayed `O_P(1)` field for the
-chosen scaled-estimator representative from displayed weak convergence and then
-calls the display-tightness action-bound endpoint.  The reusable action-bound
-endpoint now turns model-shaped score, derivative, root/Taylor, measurability,
-and displayed weak-limit inputs into the final scaled-estimator
-asymptotic-normality conclusion.
+The latest theorem-sized packet derives the displayed weak convergence field
+from selected-representative weak convergence, score equations, and Taylor-zero
+displays.  The reusable action-bound endpoint can now be assembled with these
+helpers rather than carrying a raw displayed weak-convergence hypothesis.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next only on a genuinely live source hypothesis: derive
-the current displayed weak convergence field from already compiled
-score-equation, Taylor-zero, or absorbing root/Taylor weak-limit bridges, or
-prove a genuinely model-specific Taylor display, derivative, or score
-representation.
+source handoff.  Move next only on a genuinely live source hypothesis: assemble
+the current display weak-tightness action-bound endpoint with the score-equation
+or Taylor-zero displayed weak-convergence helper, or move one step lower by
+deriving the score-equation/Taylor-zero field from a genuinely model-specific
+Taylor display, derivative, or score representation.
 Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
 derivative-bound, finite-derivative strong-law, action-bound, law-tail,
@@ -1309,8 +1317,8 @@ absorbing-derivative-a.e., absorbing-raw-score-CLT, or absorbing-raw-root
 or absorbing-estimator-substitution, absorbing-estimator-measurability, or
 absorbing-law-tail-compatibility, or absorbing-derivative-norm-law-tail
 or absorbing-canonical-score-law-tail, projected-to-action law-tail routing,
-or display-tightness action-bound endpoint, or display weak-tightness
-action-bound endpoint
+or display-tightness action-bound endpoint, display weak-tightness action-bound
+endpoint, or displayed weak-convergence source helper
 wrappers unless a current proof directly depends on a small local API there.
 
 ## Execution Notes

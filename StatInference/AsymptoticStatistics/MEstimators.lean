@@ -10981,6 +10981,135 @@ theorem vaart1998_theorem_5_41_scaledEstimator_stochasticBounded_of_display_tend
     (vaart1998_stochasticBounded_of_tendstoInDistribution hDisplay_tendsto)
 
 /--
+van der Vaart 1998, Theorem 5.41, displayed scaled-estimator weak
+convergence from a selected a.e. representative.
+
+The source proof often first proves weak convergence for the selected
+representative `scaledEstimator`.  This congruence bridge transfers that limit
+to the textbook display `scale_n • (estimator_n - theta0_n)`.
+-/
+theorem vaart1998_theorem_5_41_display_tendstoInDistribution_of_scaledEstimator_tendstoInDistribution
+    {Ω Ω' Θ : Type*} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {Q : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [OpensMeasurableSpace Θ]
+    (scale : ℕ -> Ω -> ℝ)
+    {theta0 estimator scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Θ}
+    (hScaledEstimator_eq_sub : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        scaledEstimator n ω =
+          scale n ω • (estimator n ω - theta0 n ω))
+    (hScaledEstimator_tendsto :
+      TendstoInDistribution scaledEstimator atTop Z (fun _ => P) Q) :
+    TendstoInDistribution
+      (fun n ω => scale n ω • (estimator n ω - theta0 n ω))
+      atTop Z (fun _ => P) Q :=
+  hScaledEstimator_tendsto.congr hScaledEstimator_eq_sub
+    (ae_of_all _ fun _ => rfl)
+
+/--
+van der Vaart 1998, Theorem 5.41, displayed scaled-estimator weak
+convergence from the score equation.
+
+This removes the displayed weak-convergence field by composing the compiled
+score-equation weak-limit handoff with the textbook display congruence.
+-/
+theorem vaart1998_theorem_5_41_display_tendstoInDistribution_of_scoreEquation
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    (scale : ℕ -> Ω -> ℝ)
+    {score residual : ℕ -> Ω -> Score}
+    {theta0 estimator scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hResidual : TendstoInMeasure P residual atTop 0)
+    (hResidual_meas : ∀ n, AEMeasurable (residual n) P)
+    (hScoreEquation : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, V (scaledEstimator n ω) = -(score n ω + residual n ω))
+    (hScaledEstimator_eq_sub : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        scaledEstimator n ω =
+          scale n ω • (estimator n ω - theta0 n ω)) :
+    TendstoInDistribution
+      (fun n ω => scale n ω • (estimator n ω - theta0 n ω))
+      atTop (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hScaledEstimator_tendsto :
+      TendstoInDistribution scaledEstimator atTop
+        (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q :=
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_scoreEquation
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv) (score := score)
+      (residual := residual) (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hScoreCLT hResidual hResidual_meas hScoreEquation
+  exact
+    vaart1998_theorem_5_41_display_tendstoInDistribution_of_scaledEstimator_tendstoInDistribution
+      (P := P) (Q := Q) (scale := scale)
+      (theta0 := theta0) (estimator := estimator)
+      (scaledEstimator := scaledEstimator)
+      hScaledEstimator_eq_sub hScaledEstimator_tendsto
+
+/--
+van der Vaart 1998, Theorem 5.41, displayed scaled-estimator weak
+convergence from the Taylor-zero display.
+
+The textbook Taylor-zero equation first implies the score equation, hence weak
+convergence of the selected scaled estimator; this wrapper transfers the limit
+to the displayed scaled estimator.
+-/
+theorem vaart1998_theorem_5_41_display_tendstoInDistribution_of_taylorZero
+    {Ω Ω' Score Θ : Type*}
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    [MeasurableSpace Score] [SecondCountableTopology Score] [BorelSpace Score]
+    [OpensMeasurableSpace Score]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] Score) (Vinv : Score →L[ℝ] Θ)
+    (scale : ℕ -> Ω -> ℝ)
+    {score residual : ℕ -> Ω -> Score}
+    {theta0 estimator scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Score}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT : TendstoInDistribution score atTop Z (fun _ => P) Q)
+    (hResidual : TendstoInMeasure P residual atTop 0)
+    (hResidual_meas : ∀ n, AEMeasurable (residual n) P)
+    (hTaylorZero : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        score n ω + V (scaledEstimator n ω) + residual n ω = 0)
+    (hScaledEstimator_eq_sub : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        scaledEstimator n ω =
+          scale n ω • (estimator n ω - theta0 n ω)) :
+    TendstoInDistribution
+      (fun n ω => scale n ω • (estimator n ω - theta0 n ω))
+      atTop (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hScaledEstimator_tendsto :
+      TendstoInDistribution scaledEstimator atTop
+        (fun ω => (-Vinv : Score →L[ℝ] Θ) (Z ω)) (fun _ => P) Q :=
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_taylorZero
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv) (score := score)
+      (residual := residual) (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hScoreCLT hResidual hResidual_meas hTaylorZero
+  exact
+    vaart1998_theorem_5_41_display_tendstoInDistribution_of_scaledEstimator_tendstoInDistribution
+      (P := P) (Q := Q) (scale := scale)
+      (theta0 := theta0) (estimator := estimator)
+      (scaledEstimator := scaledEstimator)
+      hScaledEstimator_eq_sub hScaledEstimator_tendsto
+
+/--
 van der Vaart 1998, Theorem 5.41, scaled-estimator law tails from `O_P(1)`.
 
 The current source-facing Theorem 5.41 wrappers consume law tails for
