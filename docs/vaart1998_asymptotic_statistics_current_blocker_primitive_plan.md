@@ -20,7 +20,7 @@ Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Current verified absorbing source endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0FDerivVectorTaylor_envelope_absorbing`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativePath_envelope_absorbing`.
 
 Continuation recipe:
 
@@ -33,8 +33,8 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Tightness source: propagate the absorbing `theta0`-specialized Frechet
-   endpoint into the second-derivative path and finite-derivative source
+1. Tightness source: propagate the absorbing `theta0` second-derivative path
+   endpoint into second-derivative regularity and finite-derivative source
    wrappers, removing the external `hScaledEstimator` field one layer at a
    time.
 2. Derivative source: only add an exact model-specific coordinate/matrix
@@ -1174,26 +1174,32 @@ compiling:
    vector-continuity Taylor endpoint.  It removes the external
    `scaledEstimator = O_P(1)` hypothesis from the `theta0`-specialized source
    layer.
+372. Theorem 5.41 absorbing `theta0` second-derivative path endpoint:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativePath_envelope_absorbing`
+   applies the vector derivative Taylor bridge to the constant
+   second-derivative path, then calls the absorbing `theta0` Frechet endpoint.
+   It removes the external `scaledEstimator = O_P(1)` hypothesis from the
+   second-derivative path source layer.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 absorbing theta0 Frechet endpoint`).
+(`Add Vaart theorem 5.41 absorbing second derivative path endpoint`).
 
 The latest theorem-sized packet turns the model-shaped derivative LLN,
 unscaled consistency, bounded curvature, second-derivative half-bound or
 quadratic Taylor residual, and root/Taylor display into the final
 scaled-estimator asymptotic-normality conclusion, without assuming
-scaled-estimator tightness first.  The newest `theta0` Frechet wrapper
-specializes the empirical derivative to `derivativeAt theta0` and closes the
-derivative-at-zero identity by reflexivity.
+scaled-estimator tightness first.  The newest `theta0` second-derivative path
+wrapper applies the vector derivative Taylor bridge to the constant
+second-derivative path before calling the absorbing `theta0` Frechet endpoint.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to the `theta0` second-derivative path wrapper and
+source handoff.  Move next to the second-derivative regularity wrapper and
 remove its `hScaledEstimator` hypothesis by calling the absorbing `theta0`
-Frechet endpoint, or to a genuinely model-specific Taylor display, derivative,
-or score representation that removes a live hypothesis.
+second-derivative path endpoint, or to a genuinely model-specific Taylor
+display, derivative, or score representation that removes a live hypothesis.
 Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
 derivative-bound, finite-derivative strong-law, action-bound, law-tail,
@@ -1205,7 +1211,8 @@ absorbing-coordinate-raw-endpoint, absorbing-coordinate-path-endpoint, or
 absorbing-estimating-map-path-endpoint, or absorbing-Frechet-path-endpoint
 or absorbing-Frechet-vector-Taylor-endpoint, or
 absorbing-vector-continuity-Taylor-endpoint, or absorbing-theta0-Frechet
-wrappers unless a current proof directly depends on a small local API there.
+or absorbing-second-derivative-path wrappers unless a current proof directly
+depends on a small local API there.
 
 ## Execution Notes
 
