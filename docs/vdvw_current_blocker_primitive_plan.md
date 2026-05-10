@@ -9172,3 +9172,19 @@ separated from the selector machinery: either prove a product-fiber/Chebyshev
 lower-bound route that bypasses finite-center failure tails, or state and use
 an honest stronger hypothesis that supplies those finite-center support/tail
 facts.
+
+2026-05-10 first-level a.e. finite-center selected-cover route:
+`Theorem243.lean` now names the selected positive-radius finite-cover
+existence proof as
+`exists_vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoverAtCard` and the
+canonical countable first-level selected cover as
+`vdVWSelectedTruncatedPositiveRadiusFirstLevelEmpiricalL1CoverAtCardOfCountable`.
+It then proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+This removes the caller-supplied finite cover from the honest a.e.
+finite-center route as well.  The remaining assumptions in that branch are now
+only the original and ghost eventual a.e. finite-center Hoeffding support
+facts for this canonical first-level selected cover; the next aggressive
+probability-side target is still the product-fiber/Chebyshev source theorem
+that would avoid needing those support facts or the false additive
+failure-tail convergence.
