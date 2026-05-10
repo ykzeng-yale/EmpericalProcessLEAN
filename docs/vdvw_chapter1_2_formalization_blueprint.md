@@ -2302,6 +2302,15 @@ above, so they do not change the theorem-level dashboard counts.
    a measurable selected cardinality plus measurable Nat-indexed
    selected-center weighted sums now imply those product-pair failure-event
    measurability obligations.
+   The weighted-sum part has now been reduced one level further by
+   `measurable_vdVWWeightedSampleSum_varying_index_of_coordinate`,
+   `measurable_vdVWWeightedSampleSum_selectedCenterAt_of_coordinate`,
+   `measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_coordinate`,
+   and
+   `measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_coordinate`:
+   the remaining selected-center measurability burden is the scalar
+   coordinate evaluation of each selected center and the selected cardinality
+   process.
    On the product-fiber side, the concrete event now has the fiber interface
    `mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff`
    and the lower-bound transfer

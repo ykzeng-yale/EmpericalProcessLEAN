@@ -4397,6 +4397,30 @@ theorem measurable_vdVWWeightedSampleSum_varying_weights
     (hweights i).mul (hmeas.comp (hsample i))
 
 /--
+Weighted sample sums with a varying index are measurable once each scalar
+coordinate summand is measurable.
+
+This is the selected-center form needed for random empirical covers: it avoids
+putting a measurable-space structure on the index type and asks only for the
+observable real-valued coordinate evaluations.
+-/
+theorem measurable_vdVWWeightedSampleSum_varying_index_of_coordinate
+    {Ω : Type x} [MeasurableSpace Ω]
+    {Observation : Type u} {Index : Type v}
+    {classFun : Index -> Observation -> ℝ} {n : ℕ}
+    (weights : Ω -> Fin n -> ℝ) (index : Ω -> Index)
+    (sample : Ω -> SampleAt Observation n)
+    (hweights : ∀ i : Fin n, Measurable fun ω : Ω => weights ω i)
+    (hcoord : ∀ i : Fin n,
+      Measurable fun ω : Ω => classFun (index ω) (sample ω i)) :
+    Measurable
+      (fun ω : Ω =>
+        vdVWWeightedSampleSum classFun (weights ω) (index ω) (sample ω)) := by
+  unfold vdVWWeightedSampleSum
+  exact Finset.measurable_fun_sum Finset.univ fun i _hi =>
+    (hweights i).mul (hcoord i)
+
+/--
 Countable classes give measurability of weighted suprema with measurably
 varying weights and samples, once every fixed-index weighted sample sum is
 measurable.
@@ -15955,6 +15979,59 @@ theorem measurableSet_imp_abs_le_of_measurable
     by_cases hω : guard ω <;> simp [hω]
   rw [hEq]
   exact hguard.compl.union hle
+
+/--
+Selected-center weighted sums are measurable from measurable weights and
+measurable scalar coordinate evaluations of each selected center.
+
+This is the scalar selected-center interface used by the product-pair
+finite-center failure events below.
+-/
+theorem measurable_vdVWWeightedSampleSum_selectedCenterAt_of_coordinate
+    {Ω : Type x} [MeasurableSpace Ω]
+    {Observation : Type u} {Index : Type v} [Inhabited Index]
+    {n : ℕ} (sample : Ω -> SampleAt Observation n)
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M eta : ℝ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (weights : Ω -> Fin n -> ℝ)
+    (hweights : ∀ i : Fin n, Measurable fun ω : Ω => weights ω i)
+    (hcoord : ∀ k : ℕ, ∀ i : Fin n,
+      Measurable fun ω : Ω =>
+        vdVWTruncatedClassFun classFun envelope M
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta cardinality cover
+            (sample ω) k)
+          (sample ω i)) :
+    ∀ k : ℕ,
+      Measurable fun ω : Ω =>
+        vdVWWeightedSampleSum
+          (vdVWTruncatedClassFun classFun envelope M)
+          (weights ω)
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta cardinality cover
+            (sample ω) k)
+          (sample ω) := by
+  intro k
+  exact
+    measurable_vdVWWeightedSampleSum_varying_index_of_coordinate
+      (weights := weights)
+      (index := fun ω : Ω =>
+        VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+          (Observation := Observation) (Index := Index) (n := n)
+          indexClass classFun envelope M eta cardinality cover
+          (sample ω) k)
+      (sample := sample)
+      hweights
+      (hcoord k)
 
 /--
 Selected-center measurability bridge from scalar components.
@@ -40817,6 +40894,125 @@ theorem
     simp [Ωevent, sample, sign]
   rw [hEq]
   exact hpos.compl
+
+/--
+Original-sample finite-center failure event in the sign-first product-pair
+space from scalar selected-center coordinate measurability.
+-/
+theorem
+    measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_coordinate
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta : ℝ} {n : ℕ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hcard :
+      Measurable fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+        cardinality (fun i : Fin n => (z.2 i).1))
+    (hcoord : ∀ k : ℕ, ∀ i : Fin n,
+      Measurable fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+        vdVWTruncatedClassFun classFun envelope M
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta cardinality cover
+            (fun i : Fin n => (z.2 i).1) k)
+          ((z.2 i).1)) :
+    MeasurableSet
+      {z : SampleAt ℝ n × SampleAt (Observation × Observation) n |
+        ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin n => (z.2 i).1)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin n => (z.2 i).1)).center z.1 M} := by
+  have hweights : ∀ i : Fin n,
+      Measurable
+        fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+          vdVWRademacherWeights z.1 i := by
+    intro i
+    have hsign :
+        Measurable
+          fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+            z.1 i :=
+      (measurable_pi_apply i).comp measurable_fst
+    simpa [vdVWRademacherWeights] using
+      hsign.const_mul ((n : ℝ)⁻¹)
+  refine
+    measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_measurable_components
+      (indexClass := indexClass) (classFun := classFun) (envelope := envelope)
+      (M := M) (eta := eta) (cardinality := cardinality) cover hcard ?_
+  exact
+    measurable_vdVWWeightedSampleSum_selectedCenterAt_of_coordinate
+      (sample := fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+        fun i : Fin n => (z.2 i).1)
+      (indexClass := indexClass) (classFun := classFun) (envelope := envelope)
+      (M := M) (eta := eta) (cardinality := cardinality) cover
+      (weights := fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+        vdVWRademacherWeights z.1)
+      hweights hcoord
+
+/--
+Ghost-sample finite-center failure event with negated signs in the sign-first
+product-pair space from scalar selected-center coordinate measurability.
+-/
+theorem
+    measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_coordinate
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta : ℝ} {n : ℕ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hcard :
+      Measurable fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+        cardinality (fun i : Fin n => (z.2 i).2))
+    (hcoord : ∀ k : ℕ, ∀ i : Fin n,
+      Measurable fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+        vdVWTruncatedClassFun classFun envelope M
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta cardinality cover
+            (fun i : Fin n => (z.2 i).2) k)
+          ((z.2 i).2)) :
+    MeasurableSet
+      {z : SampleAt ℝ n × SampleAt (Observation × Observation) n |
+        ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin n => (z.2 i).2)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin n => (z.2 i).2)).center
+          (fun i : Fin n => -z.1 i) M} := by
+  have hweights : ∀ i : Fin n,
+      Measurable
+        fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+          vdVWRademacherWeights (fun i : Fin n => -z.1 i) i := by
+    intro i
+    have hsign :
+        Measurable
+          fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+            z.1 i :=
+      (measurable_pi_apply i).comp measurable_fst
+    simpa [vdVWRademacherWeights] using
+      hsign.neg.const_mul ((n : ℝ)⁻¹)
+  refine
+    measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_measurable_components
+      (indexClass := indexClass) (classFun := classFun) (envelope := envelope)
+      (M := M) (eta := eta) (cardinality := cardinality) cover hcard ?_
+  exact
+    measurable_vdVWWeightedSampleSum_selectedCenterAt_of_coordinate
+      (sample := fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+        fun i : Fin n => (z.2 i).2)
+      (indexClass := indexClass) (classFun := classFun) (envelope := envelope)
+      (M := M) (eta := eta) (cardinality := cardinality) cover
+      (weights := fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+        vdVWRademacherWeights (fun i : Fin n => -z.1 i))
+      hweights hcoord
 
 /--
 The concrete ghost/Rademacher pair-difference event lands in the

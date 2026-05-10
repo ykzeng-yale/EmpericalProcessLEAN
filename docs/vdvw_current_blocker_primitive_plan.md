@@ -135,10 +135,17 @@ The selector burden is now lowered further by
 the product-pair side can assume a measurable selected cardinality and
 measurable Nat-indexed selected-center weighted sums instead of whole
 implication-shaped selector events.
+The selected weighted sums are now reduced further by
+`measurable_vdVWWeightedSampleSum_varying_index_of_coordinate`,
+`measurable_vdVWWeightedSampleSum_selectedCenterAt_of_coordinate`,
+`measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_coordinate`, and
+`measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_coordinate`:
+it is enough to prove measurable selected cardinalities plus scalar
+coordinate measurability of each selected center evaluation.
 The next exact target is now sharper: prove the integrated random
 selected-cover finite-center Hoeffding tails vanish only if an additional
 structural tail/large-cardinality input is available, and prove the remaining
-Nat-indexed in-range selected-center selector measurability assumptions.  The
+Nat-indexed scalar selected-center evaluation measurability assumptions.  The
 selected-center measurability interface remains
 `VdVWFiniteEmpiricalL1CoverSelectedCenterAt`,
 `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_iff`,
@@ -8869,3 +8876,19 @@ event measurability.  The remaining aggressive source step is now exactly:
 prove the integrated random selected-cover failure-tail error tends to zero
 and prove the Nat-indexed in-range selected-center selector measurability
 assumptions.
+
+2026-05-09 selected-center scalar-coordinate measurability:
+`Theorem243.lean` now proves
+`measurable_vdVWWeightedSampleSum_varying_index_of_coordinate` and
+`measurable_vdVWWeightedSampleSum_selectedCenterAt_of_coordinate`, reducing
+selected weighted-sum measurability to measurable weights and measurable
+scalar coordinate evaluations of each selected center.  The product-pair
+failure-event wrappers
+`measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_coordinate`
+and
+`measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_coordinate`
+now consume those coordinate hypotheses directly.  The remaining
+selected-center measurability blocker is therefore not the finite weighted
+sum algebra; it is the actual scalar measurability of
+`omega ↦ vdVWTruncatedClassFun ... (VdVWFiniteEmpiricalL1CoverSelectedCenterAt ... (sample omega) k) (sample omega i)`
+and the selected cardinality process.
