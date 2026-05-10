@@ -3135,6 +3135,230 @@ noncomputable def barrierInfProjectionBlockYY
   fun x => withLpProdSndCLM.comp
     ((hess (barrierInfProjectionPoint selector x)).comp withLpProdInrCLM)
 
+/-- Fixed linear extraction of the `XX` block from a full product-space Hessian. -/
+noncomputable def barrierInfProjectionBlockXXCLM :
+    ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)) →L[ℝ]
+      (E₁ →L[ℝ] E₁) :=
+  (ContinuousLinearMap.compL ℝ E₁ (WithLp 2 (E₁ × E₂)) E₁
+      (withLpProdFstCLM (E₁ := E₁) (E₂ := E₂))).comp
+    ((ContinuousLinearMap.compL ℝ E₁ (WithLp 2 (E₁ × E₂))
+        (WithLp 2 (E₁ × E₂))).flip
+      (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂)))
+
+/-- Fixed linear extraction of the `XY` block from a full product-space Hessian. -/
+noncomputable def barrierInfProjectionBlockXYCLM :
+    ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)) →L[ℝ]
+      (E₂ →L[ℝ] E₁) :=
+  (ContinuousLinearMap.compL ℝ E₂ (WithLp 2 (E₁ × E₂)) E₁
+      (withLpProdFstCLM (E₁ := E₁) (E₂ := E₂))).comp
+    ((ContinuousLinearMap.compL ℝ E₂ (WithLp 2 (E₁ × E₂))
+        (WithLp 2 (E₁ × E₂))).flip
+      (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂)))
+
+/-- Fixed linear extraction of the `YX` block from a full product-space Hessian. -/
+noncomputable def barrierInfProjectionBlockYXCLM :
+    ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)) →L[ℝ]
+      (E₁ →L[ℝ] E₂) :=
+  (ContinuousLinearMap.compL ℝ E₁ (WithLp 2 (E₁ × E₂)) E₂
+      (withLpProdSndCLM (E₁ := E₁) (E₂ := E₂))).comp
+    ((ContinuousLinearMap.compL ℝ E₁ (WithLp 2 (E₁ × E₂))
+        (WithLp 2 (E₁ × E₂))).flip
+      (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂)))
+
+/-- Fixed linear extraction of the `YY` block from a full product-space Hessian. -/
+noncomputable def barrierInfProjectionBlockYYCLM :
+    ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)) →L[ℝ]
+      (E₂ →L[ℝ] E₂) :=
+  (ContinuousLinearMap.compL ℝ E₂ (WithLp 2 (E₁ × E₂)) E₂
+      (withLpProdSndCLM (E₁ := E₁) (E₂ := E₂))).comp
+    ((ContinuousLinearMap.compL ℝ E₂ (WithLp 2 (E₁ × E₂))
+        (WithLp 2 (E₁ × E₂))).flip
+      (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂)))
+
+noncomputable def barrierInfProjectionBlockXXDeriv
+    (hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)))
+    (dselector : E₁ →L[ℝ] E₂) :
+    E₁ →L[ℝ] (E₁ →L[ℝ] E₁) :=
+  barrierInfProjectionBlockXXCLM.comp
+    (hessDeriv.comp (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+      dselector))
+
+noncomputable def barrierInfProjectionBlockXYDeriv
+    (hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)))
+    (dselector : E₁ →L[ℝ] E₂) :
+    E₁ →L[ℝ] (E₂ →L[ℝ] E₁) :=
+  barrierInfProjectionBlockXYCLM.comp
+    (hessDeriv.comp (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+      dselector))
+
+noncomputable def barrierInfProjectionBlockYXDeriv
+    (hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)))
+    (dselector : E₁ →L[ℝ] E₂) :
+    E₁ →L[ℝ] (E₁ →L[ℝ] E₂) :=
+  barrierInfProjectionBlockYXCLM.comp
+    (hessDeriv.comp (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+      dselector))
+
+noncomputable def barrierInfProjectionBlockYYDeriv
+    (hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂)))
+    (dselector : E₁ →L[ℝ] E₂) :
+    E₁ →L[ℝ] (E₂ →L[ℝ] E₂) :=
+  barrierInfProjectionBlockYYCLM.comp
+    (hessDeriv.comp (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂)
+      dselector))
+
+theorem barrierInfProjectionBlockXX_hasFDerivAt
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hhess : HasFDerivAt hess hessDeriv (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x) :
+    HasFDerivAt (barrierInfProjectionBlockXX selector hess)
+      (barrierInfProjectionBlockXXDeriv hessDeriv dselector) x := by
+  have hpoint :=
+    barrierInfProjectionPoint_hasFDerivAt
+      (E₁ := E₁) (E₂ := E₂) hselector
+  have hcomp :
+      HasFDerivAt (fun y : E₁ => hess (barrierInfProjectionPoint selector y))
+        (hessDeriv.comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector))
+        x :=
+    by
+      simpa [Function.comp_def] using
+        (HasFDerivAt.comp (𝕜 := ℝ)
+          (f := barrierInfProjectionPoint selector)
+          (f' := barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector)
+          (g := hess) (g' := hessDeriv) x hhess hpoint)
+  simpa [barrierInfProjectionBlockXX, barrierInfProjectionBlockXXCLM,
+    barrierInfProjectionBlockXXDeriv] using
+      (HasFDerivAt.comp (𝕜 := ℝ)
+        (f := fun y : E₁ => hess (barrierInfProjectionPoint selector y))
+        (f' := hessDeriv.comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector))
+        (g := barrierInfProjectionBlockXXCLM (E₁ := E₁) (E₂ := E₂))
+        (g' := barrierInfProjectionBlockXXCLM (E₁ := E₁) (E₂ := E₂))
+        x
+        (barrierInfProjectionBlockXXCLM (E₁ := E₁) (E₂ := E₂)).hasFDerivAt
+        hcomp)
+
+theorem barrierInfProjectionBlockXY_hasFDerivAt
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hhess : HasFDerivAt hess hessDeriv (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x) :
+    HasFDerivAt (barrierInfProjectionBlockXY selector hess)
+      (barrierInfProjectionBlockXYDeriv hessDeriv dselector) x := by
+  have hpoint :=
+    barrierInfProjectionPoint_hasFDerivAt
+      (E₁ := E₁) (E₂ := E₂) hselector
+  have hcomp :
+      HasFDerivAt (fun y : E₁ => hess (barrierInfProjectionPoint selector y))
+        (hessDeriv.comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector))
+        x :=
+    by
+      simpa [Function.comp_def] using
+        (HasFDerivAt.comp (𝕜 := ℝ)
+          (f := barrierInfProjectionPoint selector)
+          (f' := barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector)
+          (g := hess) (g' := hessDeriv) x hhess hpoint)
+  simpa [barrierInfProjectionBlockXY, barrierInfProjectionBlockXYCLM,
+    barrierInfProjectionBlockXYDeriv] using
+      (HasFDerivAt.comp (𝕜 := ℝ)
+        (f := fun y : E₁ => hess (barrierInfProjectionPoint selector y))
+        (f' := hessDeriv.comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector))
+        (g := barrierInfProjectionBlockXYCLM (E₁ := E₁) (E₂ := E₂))
+        (g' := barrierInfProjectionBlockXYCLM (E₁ := E₁) (E₂ := E₂))
+        x
+        (barrierInfProjectionBlockXYCLM (E₁ := E₁) (E₂ := E₂)).hasFDerivAt
+        hcomp)
+
+theorem barrierInfProjectionBlockYX_hasFDerivAt
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hhess : HasFDerivAt hess hessDeriv (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x) :
+    HasFDerivAt (barrierInfProjectionBlockYX selector hess)
+      (barrierInfProjectionBlockYXDeriv hessDeriv dselector) x := by
+  have hpoint :=
+    barrierInfProjectionPoint_hasFDerivAt
+      (E₁ := E₁) (E₂ := E₂) hselector
+  have hcomp :
+      HasFDerivAt (fun y : E₁ => hess (barrierInfProjectionPoint selector y))
+        (hessDeriv.comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector))
+        x :=
+    by
+      simpa [Function.comp_def] using
+        (HasFDerivAt.comp (𝕜 := ℝ)
+          (f := barrierInfProjectionPoint selector)
+          (f' := barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector)
+          (g := hess) (g' := hessDeriv) x hhess hpoint)
+  simpa [barrierInfProjectionBlockYX, barrierInfProjectionBlockYXCLM,
+    barrierInfProjectionBlockYXDeriv] using
+      (HasFDerivAt.comp (𝕜 := ℝ)
+        (f := fun y : E₁ => hess (barrierInfProjectionPoint selector y))
+        (f' := hessDeriv.comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector))
+        (g := barrierInfProjectionBlockYXCLM (E₁ := E₁) (E₂ := E₂))
+        (g' := barrierInfProjectionBlockYXCLM (E₁ := E₁) (E₂ := E₂))
+        x
+        (barrierInfProjectionBlockYXCLM (E₁ := E₁) (E₂ := E₂)).hasFDerivAt
+        hcomp)
+
+theorem barrierInfProjectionBlockYY_hasFDerivAt
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {hessDeriv : WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hhess : HasFDerivAt hess hessDeriv (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x) :
+    HasFDerivAt (barrierInfProjectionBlockYY selector hess)
+      (barrierInfProjectionBlockYYDeriv hessDeriv dselector) x := by
+  have hpoint :=
+    barrierInfProjectionPoint_hasFDerivAt
+      (E₁ := E₁) (E₂ := E₂) hselector
+  have hcomp :
+      HasFDerivAt (fun y : E₁ => hess (barrierInfProjectionPoint selector y))
+        (hessDeriv.comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector))
+        x :=
+    by
+      simpa [Function.comp_def] using
+        (HasFDerivAt.comp (𝕜 := ℝ)
+          (f := barrierInfProjectionPoint selector)
+          (f' := barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector)
+          (g := hess) (g' := hessDeriv) x hhess hpoint)
+  simpa [barrierInfProjectionBlockYY, barrierInfProjectionBlockYYCLM,
+    barrierInfProjectionBlockYYDeriv] using
+      (HasFDerivAt.comp (𝕜 := ℝ)
+        (f := fun y : E₁ => hess (barrierInfProjectionPoint selector y))
+        (f' := hessDeriv.comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector))
+        (g := barrierInfProjectionBlockYYCLM (E₁ := E₁) (E₂ := E₂))
+        (g' := barrierInfProjectionBlockYYCLM (E₁ := E₁) (E₂ := E₂))
+        x
+        (barrierInfProjectionBlockYYCLM (E₁ := E₁) (E₂ := E₂)).hasFDerivAt
+        hcomp)
+
 @[simp] theorem barrierInfProjectionBlockXX_apply
     (selector : E₁ -> E₂)
     (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
@@ -3324,6 +3548,75 @@ noncomputable def barrierInfProjectionSchurHessFrom
         barrierInfProjectionBlockXY selector hess x
           (invHyy x (barrierInfProjectionBlockYX selector hess x v)) := by
   rfl
+
+/--
+Frechet derivative formula for the Schur-complement Hessian
+`Hxx - Hxy Hyy⁻¹ Hyx`.  This packages the mathlib `clm_comp` product rule for
+continuous-linear-map composition in the exact shape needed by the Chewi
+inf-projection envelope route.
+-/
+noncomputable def barrierInfProjectionSchurHessDeriv
+    (Hxy : E₁ -> E₂ →L[ℝ] E₁)
+    (Hyx : E₁ -> E₁ →L[ℝ] E₂)
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂)
+    (HxxDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁))
+    (HxyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₁))
+    (HyxDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₂))
+    (invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂))
+    (x : E₁) :
+    E₁ →L[ℝ] (E₁ →L[ℝ] E₁) :=
+  HxxDeriv x -
+    ((ContinuousLinearMap.compL ℝ E₁ E₂ E₁ (Hxy x)).comp
+        ((ContinuousLinearMap.compL ℝ E₁ E₂ E₂ (invHyy x)).comp
+            (HyxDeriv x) +
+          ((ContinuousLinearMap.compL ℝ E₁ E₂ E₂).flip (Hyx x)).comp
+            (invHyyDeriv x)) +
+      ((ContinuousLinearMap.compL ℝ E₁ E₂ E₁).flip
+          ((invHyy x).comp (Hyx x))).comp
+        (HxyDeriv x))
+
+/--
+Derivative of the Schur-complement Hessian from derivatives of the four block
+oracles.  This is the reusable calculus primitive behind the remaining
+inf-projection third-derivative/envelope certificate.
+-/
+theorem barrierInfProjectionSchurHess_hasFDerivAt
+    {Hxx : E₁ -> E₁ →L[ℝ] E₁}
+    {Hxy : E₁ -> E₂ →L[ℝ] E₁}
+    {Hyx : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {HxxDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    {HxyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₁)}
+    {HyxDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₂)}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    {x : E₁}
+    (hxx : HasFDerivAt Hxx (HxxDeriv x) x)
+    (hxy : HasFDerivAt Hxy (HxyDeriv x) x)
+    (hyx : HasFDerivAt Hyx (HyxDeriv x) x)
+    (hinv : HasFDerivAt invHyy (invHyyDeriv x) x) :
+    HasFDerivAt (barrierInfProjectionSchurHess Hxx Hxy Hyx invHyy)
+      (barrierInfProjectionSchurHessDeriv
+        Hxy Hyx invHyy HxxDeriv HxyDeriv HyxDeriv invHyyDeriv x) x := by
+  have hinner :
+      HasFDerivAt (fun y : E₁ => (invHyy y).comp (Hyx y))
+        ((ContinuousLinearMap.compL ℝ E₁ E₂ E₂ (invHyy x)).comp
+            (HyxDeriv x) +
+          ((ContinuousLinearMap.compL ℝ E₁ E₂ E₂).flip (Hyx x)).comp
+            (invHyyDeriv x)) x :=
+    hinv.clm_comp hyx
+  have hschurTerm :
+      HasFDerivAt (fun y : E₁ => (Hxy y).comp ((invHyy y).comp (Hyx y)))
+        ((ContinuousLinearMap.compL ℝ E₁ E₂ E₁ (Hxy x)).comp
+            ((ContinuousLinearMap.compL ℝ E₁ E₂ E₂ (invHyy x)).comp
+                (HyxDeriv x) +
+              ((ContinuousLinearMap.compL ℝ E₁ E₂ E₂).flip (Hyx x)).comp
+                (invHyyDeriv x)) +
+          ((ContinuousLinearMap.compL ℝ E₁ E₂ E₁).flip
+              ((invHyy x).comp (Hyx x))).comp
+            (HxyDeriv x)) x :=
+    hxy.clm_comp hinner
+  simpa [barrierInfProjectionSchurHess, barrierInfProjectionSchurHessDeriv]
+    using hxx.sub hschurTerm
 
 /--
 Second-order envelope identity for Chewi Proposition 13.11(4).  If the
@@ -4283,6 +4576,135 @@ structure BarrierInfProjectionSchurHessDerivativeOn
     ∀ u v : E₁,
       inner ℝ v ((schurDeriv x u) v) =
         barrierInfProjectionSchurLiftedThird selector hess invHyy third x u v
+
+/--
+Build the projected Schur-Hessian derivative certificate from derivatives of
+the four Schur block oracles.  The remaining source-specific third-derivative
+content is the scalar pairing equality `hmixed`; the Frechet derivative of
+`H_schur` itself is now discharged by the reusable block calculus theorem
+`barrierInfProjectionSchurHess_hasFDerivAt`.
+-/
+theorem BarrierInfProjectionSchurHessDerivativeOn.of_blockDerivatives
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {HxxDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    {HxyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₁)}
+    {HyxDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₂)}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hxx : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt (barrierInfProjectionBlockXX selector hess)
+        (HxxDeriv x) x)
+    (hxy : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt (barrierInfProjectionBlockXY selector hess)
+        (HxyDeriv x) x)
+    (hyx : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt (barrierInfProjectionBlockYX selector hess)
+        (HyxDeriv x) x)
+    (hinv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x)
+    (hmixed : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        inner ℝ v
+            ((barrierInfProjectionSchurHessDeriv
+                (barrierInfProjectionBlockXY selector hess)
+                (barrierInfProjectionBlockYX selector hess)
+                invHyy HxxDeriv HxyDeriv HyxDeriv invHyyDeriv x u) v) =
+          barrierInfProjectionSchurLiftedThird selector hess invHyy third
+            x u v) :
+    BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+      (fun x =>
+        barrierInfProjectionSchurHessDeriv
+          (barrierInfProjectionBlockXY selector hess)
+          (barrierInfProjectionBlockYX selector hess)
+          invHyy HxxDeriv HxyDeriv HyxDeriv invHyyDeriv x) where
+  hess_hasFDerivAt := by
+    intro x hx
+    exact barrierInfProjectionSchurHess_hasFDerivAt
+      (Hxx := barrierInfProjectionBlockXX selector hess)
+      (Hxy := barrierInfProjectionBlockXY selector hess)
+      (Hyx := barrierInfProjectionBlockYX selector hess)
+      (invHyy := invHyy)
+      (HxxDeriv := HxxDeriv) (HxyDeriv := HxyDeriv)
+      (HyxDeriv := HyxDeriv) (invHyyDeriv := invHyyDeriv)
+      (hxx hx) (hxy hx) (hyx hx) (hinv hx)
+  mixed_inner_eq := by
+    intro x hx u v
+    exact hmixed hx u v
+
+/--
+Build the projected Schur-Hessian derivative certificate from a derivative of
+the full product-space Hessian along the selected graph.  The four block
+derivatives are extracted by fixed continuous-linear block projections, so the
+only remaining source-specific calculus input is the scalar mixed-third
+pairing identity `hmixed`.
+-/
+theorem BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {hessDeriv : E₁ -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hhess : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt hess (hessDeriv x) (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hinv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x)
+    (hmixed : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u v : E₁,
+        inner ℝ v
+            ((barrierInfProjectionSchurHessDeriv
+                (barrierInfProjectionBlockXY selector hess)
+                (barrierInfProjectionBlockYX selector hess)
+                invHyy
+                (fun x =>
+                  barrierInfProjectionBlockXXDeriv (hessDeriv x) (dselector x))
+                (fun x =>
+                  barrierInfProjectionBlockXYDeriv (hessDeriv x) (dselector x))
+                (fun x =>
+                  barrierInfProjectionBlockYXDeriv (hessDeriv x) (dselector x))
+                invHyyDeriv x u) v) =
+          barrierInfProjectionSchurLiftedThird selector hess invHyy third
+            x u v) :
+    BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+      (fun x =>
+        barrierInfProjectionSchurHessDeriv
+          (barrierInfProjectionBlockXY selector hess)
+          (barrierInfProjectionBlockYX selector hess)
+          invHyy
+          (fun x => barrierInfProjectionBlockXXDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockXYDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockYXDeriv (hessDeriv x) (dselector x))
+          invHyyDeriv x) :=
+  BarrierInfProjectionSchurHessDerivativeOn.of_blockDerivatives
+    (s := s) (selector := selector) (hess := hess) (invHyy := invHyy)
+    (third := third)
+    (HxxDeriv := fun x =>
+      barrierInfProjectionBlockXXDeriv (hessDeriv x) (dselector x))
+    (HxyDeriv := fun x =>
+      barrierInfProjectionBlockXYDeriv (hessDeriv x) (dselector x))
+    (HyxDeriv := fun x =>
+      barrierInfProjectionBlockYXDeriv (hessDeriv x) (dselector x))
+    (invHyyDeriv := invHyyDeriv)
+    (fun {x} hx => barrierInfProjectionBlockXX_hasFDerivAt
+      (hhess (x := x) hx) (hselector (x := x) hx))
+    (fun {x} hx => barrierInfProjectionBlockXY_hasFDerivAt
+      (hhess (x := x) hx) (hselector (x := x) hx))
+    (fun {x} hx => barrierInfProjectionBlockYX_hasFDerivAt
+      (hhess (x := x) hx) (hselector (x := x) hx))
+    hinv
+    hmixed
 
 /--
 Restrict a projected Schur-Hessian derivative certificate to a smaller

@@ -448,6 +448,25 @@ The newest source-radius consumer adds
 so the preferred full-Schur-derivative route now passes through the
 applied-vector scalar segment certificate and no longer exposes the older
 strict projected-Hessian positivity or nonzero-displacement side conditions.
+The newest Schur block-calculus packet adds the fixed extraction maps
+`barrierInfProjectionBlockXXCLM`, `barrierInfProjectionBlockXYCLM`,
+`barrierInfProjectionBlockYXCLM`, `barrierInfProjectionBlockYYCLM`, the four
+derived block-derivative maps
+`barrierInfProjectionBlockXXDeriv`,
+`barrierInfProjectionBlockXYDeriv`,
+`barrierInfProjectionBlockYXDeriv`, and
+`barrierInfProjectionBlockYYDeriv`, plus the corresponding
+`barrierInfProjectionBlock*_hasFDerivAt` lemmas.  It also adds
+`barrierInfProjectionSchurHessDeriv`,
+`barrierInfProjectionSchurHess_hasFDerivAt`,
+`BarrierInfProjectionSchurHessDerivativeOn.of_blockDerivatives`, and
+`BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative`.  Search
+reuse: mathlib's `HasFDerivAt.comp`, `HasFDerivAt.clm_comp`,
+`HasFDerivAt.sub`, and `ContinuousLinearMap.hasFDerivAt` are enough for this
+layer; no separate Schur-complement differentiability primitive exists in
+mathlib.  The next exact inf-projection gate should use the full-Hessian
+derivative wrapper and focus only on the scalar mixed pairing identity
+`inner v ((schurDeriv x u) v) = liftedThird x u v`.
 Thus the preferred exact source gate can now be proved by differentiating only
 the applied Schur-Hessian vector path `t ↦ H_schur(z_t) v` and pairing the
 result with `v`; a full operator-valued Schur derivative and even a direct
@@ -470,7 +489,12 @@ sum, sum component-Cauchy, adjoint-coordinate Cauchy reuse, and
 affine-preimage/equivalence wrappers; the next aggressive choices are the
 exact shared-domain sum inverse-Hessian/inverse-local gate, a
 principled non-invertible affine-preimage/range interface, or the
-inf-projection third-derivative/envelope-certificate construction.
+inf-projection third-derivative/envelope-certificate construction.  For the
+inf-projection route, do not re-prove block differentiability or raw Schur
+product rules; instantiate
+`BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative` and spend
+the proof budget on the scalar mixed-third pairing and concrete square-root
+models.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

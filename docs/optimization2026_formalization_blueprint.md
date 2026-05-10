@@ -239,6 +239,18 @@ then removes the older strict positivity and nonzero-displacement side
 conditions from the full-Schur-derivative source-radius route.  The remaining
 exact envelope task is to construct such a Schur derivative certificate from
 concrete selector and Hessian square-root/envelope models.
+The Schur block-calculus layer now supplies that certificate from concrete
+derivative data: use `barrierInfProjectionBlockXXCLM`,
+`barrierInfProjectionBlockXYCLM`, `barrierInfProjectionBlockYXCLM`,
+`barrierInfProjectionBlockYYCLM`, the matching
+`barrierInfProjectionBlock*_hasFDerivAt` lemmas,
+`barrierInfProjectionSchurHessDeriv`,
+`barrierInfProjectionSchurHess_hasFDerivAt`, and especially
+`BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative`.  The
+calculus is now reduced to full product-Hessian differentiability along the
+selected graph, selector differentiability, `invHyy` differentiability, and
+the scalar mixed-third pairing identity.  Do not rebuild block extraction or
+the Schur product rule in future inf-projection packets.
 The local stationarity source bridge now also compiles through
 `BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero`,
 `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_mem_nhds`,

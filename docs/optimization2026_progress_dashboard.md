@@ -341,6 +341,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   routing the full Schur derivative certificate through the applied-vector
   scalar segment path and removing the older strict projected-Hessian
   positivity and nonzero-displacement side conditions from that route.
+  The newest Schur block-calculus packet adds the fixed block extraction CLMs
+  `barrierInfProjectionBlockXXCLM`, `barrierInfProjectionBlockXYCLM`,
+  `barrierInfProjectionBlockYXCLM`, `barrierInfProjectionBlockYYCLM`, their
+  derivative maps and `barrierInfProjectionBlock*_hasFDerivAt` lemmas, plus
+  `barrierInfProjectionSchurHessDeriv`,
+  `barrierInfProjectionSchurHess_hasFDerivAt`,
+  `BarrierInfProjectionSchurHessDerivativeOn.of_blockDerivatives`, and
+  `BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative`.
+  Mathlib reuse is now explicit: `HasFDerivAt.comp`,
+  `HasFDerivAt.clm_comp`, `HasFDerivAt.sub`, and
+  `ContinuousLinearMap.hasFDerivAt` discharge the block/Schur calculus.  The
+  remaining exact item-4 source work is the scalar mixed-third pairing identity
+  and concrete square-root/envelope model construction, not block derivative
+  extraction.
   The live inf-projection derivative gate is now even narrower: prove the
   derivative of `t ↦ H_schur(z_t) v` and the paired identity with lifted third;
   the scalar `ψ` derivative follows by the generic inner-product calculus
