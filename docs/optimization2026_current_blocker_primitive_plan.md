@@ -554,6 +554,16 @@ right-inverse identity `Hyy(y) (Hyy⁻¹(y) w) = w` via mathlib
 `HasFDerivAt.clm_apply`.  Prefer this constructor whenever the concrete
 selector model gives a local `Hyy` inverse, and do not pass a raw
 `hderiv_cancel` field unless the local identity is unavailable.
+The stationary-neighborhood packet adds
+`barrierInfProjectionBlockYY_invHyy_eventually_right_inverse_of_mem_nhds`,
+`BarrierInfProjectionSelectorStationary.schurHessDerivativeOn_of_fullHessianDerivative_symmetric_inverse_mem_nhds`,
+and
+`BarrierInfProjectionSelectorStationary.schurHessDerivativeOn_of_fullHessianDerivative_symmetric_inverse_isOpen`.
+It derives the eventual `Hyy * Hyy⁻¹ = I` identity from projected-domain
+neighborhood membership, and derives the selector derivative equation from the
+stationary-selector certificate.  Future exact item-4 work should use selector
+stationarity plus a projected-domain neighborhood/open-domain fact, not raw
+`hdselector` or raw eventual inverse assumptions.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

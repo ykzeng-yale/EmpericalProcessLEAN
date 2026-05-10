@@ -431,6 +431,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   already compiled `barrierInfProjectionBlockYY_hasFDerivAt`.  The preferred
   inf-projection route should now supply local/eventual `Hyy` right-inverse
   identities rather than a raw derivative-cancellation hypothesis.
+- Inf-projection stationary-neighborhood Schur derivative shrink: the newest
+  packet adds
+  `barrierInfProjectionBlockYY_invHyy_eventually_right_inverse_of_mem_nhds`,
+  `BarrierInfProjectionSelectorStationary.schurHessDerivativeOn_of_fullHessianDerivative_symmetric_inverse_mem_nhds`,
+  and
+  `BarrierInfProjectionSelectorStationary.schurHessDerivativeOn_of_fullHessianDerivative_symmetric_inverse_isOpen`.
+  These wrappers derive the eventual `Hyy * Hyy⁻¹ = I` identity from
+  neighborhood membership and derive the selector derivative equation from
+  `BarrierInfProjectionSelectorStationary.selector_deriv_eq_neg_invHyy_of_mem_nhds`.
+  Future source-facing inf-projection work should pass selector stationarity
+  plus projected-domain neighborhood/open-domain facts rather than raw
+  `hdselector` or raw eventual inverse hypotheses.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

@@ -666,6 +666,149 @@ theorem BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_symme
           (hinvDeriv (x := x) hx) (hyy_right_eventually (x := x) hx) u w)
     hmixed_full
 
+/--
+Pointwise right-inverse identities on a projected-domain neighborhood give the
+eventual right-inverse identity needed to differentiate `Hyy * Hyy⁻¹ = I`.
+-/
+theorem barrierInfProjectionBlockYY_invHyy_eventually_right_inverse_of_mem_nhds
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    (selector : E₁ -> E₂)
+    (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂))
+    (invHyy : E₁ -> E₂ →L[ℝ] E₂)
+    {x : E₁}
+    (hmem_nhds : ∀ᶠ y in nhds x, y ∈ barrierInfProjectionSet s)
+    (hyy_right : ∀ ⦃y : E₁⦄, y ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess y (invHyy y w) = w)
+    (w : E₂) :
+    (fun y : E₁ => barrierInfProjectionBlockYY selector hess y (invHyy y w))
+      =ᶠ[nhds x] fun _ : E₁ => w :=
+  hmem_nhds.mono fun y hy => hyy_right (y := y) hy w
+
+/--
+Stationary-selector version of the source-facing Schur-Hessian derivative
+certificate.  Neighborhood membership supplies both local vertical stationarity
+and the eventual `Hyy * Hyy⁻¹ = I` identity, so callers no longer provide the
+selector derivative equation or the inverse-identity derivative equation by
+hand.
+-/
+theorem BarrierInfProjectionSelectorStationary.schurHessDerivativeOn_of_fullHessianDerivative_symmetric_inverse_mem_nhds
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {hessDeriv : E₁ -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hmem_nhds : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ᶠ y in nhds x, y ∈ barrierInfProjectionSet s)
+    (hgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hhess : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt hess (hessDeriv x) (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hinvDeriv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x)
+    (hsymm : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ((hess (barrierInfProjectionPoint selector x)) :
+        WithLp 2 (E₁ × E₂) →ₗ[ℝ] WithLp 2 (E₁ × E₂)).IsSymmetric)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hyy_left : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, invHyy x (barrierInfProjectionBlockYY selector hess x w) = w)
+    (hmixed_full : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ a v : WithLp 2 (E₁ × E₂),
+        inner ℝ v ((hessDeriv x a) v) =
+          third (barrierInfProjectionPoint selector x) a v) :
+    BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+      (fun x =>
+        barrierInfProjectionSchurHessDeriv
+          (barrierInfProjectionBlockXY selector hess)
+          (barrierInfProjectionBlockYX selector hess)
+          invHyy
+          (fun x => barrierInfProjectionBlockXXDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockXYDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockYXDeriv (hessDeriv x) (dselector x))
+          invHyyDeriv x) :=
+  BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_symmetric_inverse_eventually
+    (s := s) (selector := selector) (hess := hess) (invHyy := invHyy)
+    (third := third) (hessDeriv := hessDeriv) (dselector := dselector)
+    (invHyyDeriv := invHyyDeriv) hhess hselector hinvDeriv hsymm hyy_right
+    (by
+      intro x hx w
+      exact
+        barrierInfProjectionBlockYY_invHyy_eventually_right_inverse_of_mem_nhds
+          (s := s) selector hess invHyy (hmem_nhds (x := x) hx)
+          hyy_right w)
+    hyy_left
+    (by
+      intro x hx u
+      exact hsel.selector_deriv_eq_neg_invHyy_of_mem_nhds
+        (hmem_nhds (x := x) hx) (hgrad (x := x) hx)
+        (hselector (x := x) hx) (hyy_left (x := x) hx) u)
+    hmixed_full
+
+/--
+Open-projected-domain version of the stationary-selector Schur-Hessian
+derivative certificate.
+-/
+theorem BarrierInfProjectionSelectorStationary.schurHessDerivativeOn_of_fullHessianDerivative_symmetric_inverse_isOpen
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {hessDeriv : E₁ -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hhess : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt hess (hessDeriv x) (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hinvDeriv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x)
+    (hsymm : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ((hess (barrierInfProjectionPoint selector x)) :
+        WithLp 2 (E₁ × E₂) →ₗ[ℝ] WithLp 2 (E₁ × E₂)).IsSymmetric)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hyy_left : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, invHyy x (barrierInfProjectionBlockYY selector hess x w) = w)
+    (hmixed_full : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ a v : WithLp 2 (E₁ × E₂),
+        inner ℝ v ((hessDeriv x a) v) =
+          third (barrierInfProjectionPoint selector x) a v) :
+    BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+      (fun x =>
+        barrierInfProjectionSchurHessDeriv
+          (barrierInfProjectionBlockXY selector hess)
+          (barrierInfProjectionBlockYX selector hess)
+          invHyy
+          (fun x => barrierInfProjectionBlockXXDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockXYDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockYXDeriv (hessDeriv x) (dselector x))
+          invHyyDeriv x) :=
+  hsel.schurHessDerivativeOn_of_fullHessianDerivative_symmetric_inverse_mem_nhds
+    (hmem_nhds := fun {_} hx => hopen.mem_nhds hx)
+    hgrad hhess hselector hinvDeriv hsymm hyy_right hyy_left hmixed_full
+
 end InfProjectionSchurSymmetry
 
 end Optimization
