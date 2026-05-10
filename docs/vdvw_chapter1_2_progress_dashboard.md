@@ -3985,3 +3985,11 @@ This wrapper chooses the finite empirical cover internally from the selected
 positive-radius cardinality and the countable first-level tuple selector.  The
 only remaining a.e. finite-center inputs are now stated for that canonical
 cover.
+
+The displayed-beta product-fiber branch now has the analogous canonical
+first-level selected-cover endpoint:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.
+It removes the explicit cover and coordinate-measurability arguments from that
+branch.  The remaining displayed-beta source assumption is exactly the
+product-fiber lower bound for the canonical pair-difference ghost/Rademacher
+selected-net event.

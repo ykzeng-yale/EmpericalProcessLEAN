@@ -9188,3 +9188,14 @@ facts for this canonical first-level selected cover; the next aggressive
 probability-side target is still the product-fiber/Chebyshev source theorem
 that would avoid needing those support facts or the false additive
 failure-tail convergence.
+
+2026-05-10 first-level displayed-beta selected-cover route:
+`Theorem243.lean` now also proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.
+This is the canonical first-level selected-cover version of the displayed
+Chebyshev-beta product-fiber source constructor.  It internally supplies the
+selected positive-radius cardinality, finite cover, and selected-center scalar
+coordinate measurability from countability and the covering-number envelope.
+The only remaining input to this displayed-beta branch is now the actual
+product-fiber lower bound for the canonical
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent`.
