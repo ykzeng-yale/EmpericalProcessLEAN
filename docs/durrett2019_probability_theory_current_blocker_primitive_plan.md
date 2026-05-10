@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V192
+## Live In-Thread Goal Prompt V193
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -16,15 +16,16 @@ Theorem 2.2.11 large-jump truncation bridge, truncated-row variance and
 centering bridge, combined centered triangular-row weak-law assembly, and
 source-side truncation independence/`L^2` inheritance plus final original-row
 independence wrapper, plus the Theorem 2.2.12 single-sequence specialization,
-truncated mean identification, exact textbook-display bridge, and row-to-single
-numeric reductions for the large-jump and truncated second-moment hypotheses.
+truncated mean identification, exact textbook-display bridge, row-to-single
+numeric reductions for the large-jump and truncated second-moment hypotheses,
+and the real-tail-to-natural-tail bridge from Durrett's displayed assumption.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V192 compiled support now includes:
+V193 compiled support now includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -84,10 +85,13 @@ and
 plus the row-to-single numeric reductions:
 `durrett2019_theorem_2_2_12_tailSum_eq_nat_mul_tailProb_of_identDistrib`,
 `durrett2019_theorem_2_2_12_tailSum_tendsto_zero_of_identDistrib`,
+`durrett2019_theorem_2_2_12_nat_tail_tendsto_zero_of_real_tail`,
 `durrett2019_theorem_2_2_12_integral_truncated_sq_eq_single_of_identDistrib`,
 `durrett2019_theorem_2_2_12_truncatedSecondMoment_tendsto_zero_of_single`,
 and
-`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_single`.
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_single`,
+plus the real-tail source bridge
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_single_second`.
 
 Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
 Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, or Theorem 2.4.9.  Move toward
@@ -98,10 +102,11 @@ original-row source wrapper, and the single-sequence specialization
 `X_{n,k}=X_k`, `b_n=n` through the exact display
 `S_n / n - mu_n -> 0` are compiled.  The two row numeric hypotheses from
 Theorem 2.2.11 are now reduced to the single-variable limits
-`n * P(|X_0| > n) -> 0` and `E[bar X_{n,0}^2] / n -> 0`.  Next package the
-tail-integral/layer-cake support needed to derive the second single-variable
-limit from Durrett's `x * P(|X_0| > x) -> 0` assumption, starting with
-Lemma 2.2.13 and the average of `g(y)=2*y*P(|X_0|>y)`.  Reuse independence/product wrappers, finite-sum
+`n * P(|X_0| > n) -> 0` and `E[bar X_{n,0}^2] / n -> 0`, and the first of
+these is discharged from the real-tail source hypothesis
+`x * P(|X_0| > x) -> 0`.  Next package the tail-integral/layer-cake support
+needed to derive the second single-variable limit from the same assumption,
+starting with Lemma 2.2.13 and the average of `g(y)=2*y*P(|X_0|>y)`.  Reuse independence/product wrappers, finite-sum
 variance support, Borel-Cantelli, strong-law, empirical-CDF infrastructure, and
 mathlib layer-cake/tail-integral APIs.  Search mathlib/local first for the
 exact primitive and use

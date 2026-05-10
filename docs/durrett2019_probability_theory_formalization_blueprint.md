@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V192`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V193`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -102,7 +102,9 @@ and the textbook display `S_n / n - mu_n -> 0` from the compiled
 Theorem 2.2.11 numeric hypotheses.  V192 adds row-to-single numeric reductions:
 the large-jump row sum is reduced to `n * P(|X_0| > n)`, and the row truncated
 second-moment hypothesis is reduced to `E[bar X_{n,0}^2] / n -> 0`.
-New V188-V192 declarations are
+V193 discharges the large-jump side from Durrett's real-tail assumption
+`x * P(|X_0| > x) -> 0`, leaving only the truncated second-moment average to
+derive from Lemma 2.2.13.  New V188-V193 declarations are
 `durrett2019_theorem_2_2_11_measurable_truncationMap`,
 `durrett2019_theorem_2_2_11_measurable_truncated`,
 `durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound`,
@@ -129,10 +131,13 @@ and
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun`,
 `durrett2019_theorem_2_2_12_tailSum_eq_nat_mul_tailProb_of_identDistrib`,
 `durrett2019_theorem_2_2_12_tailSum_tendsto_zero_of_identDistrib`,
+`durrett2019_theorem_2_2_12_nat_tail_tendsto_zero_of_real_tail`,
 `durrett2019_theorem_2_2_12_integral_truncated_sq_eq_single_of_identDistrib`,
 `durrett2019_theorem_2_2_12_truncatedSecondMoment_tendsto_zero_of_single`,
 and
-`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_single`.
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_single`,
+and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_single_second`.
 Continue with Lemma 2.2.13 and the remaining Theorem 2.2.12 support: package
 the tail-integral/layer-cake inputs for Durrett's
 `x * P(|X_1| > x) -> 0` hypothesis.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar

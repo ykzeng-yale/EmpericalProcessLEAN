@@ -2620,6 +2620,22 @@ theorem durrett2019_theorem_2_2_12_tailSum_tendsto_zero_of_identDistrib
       (P := P) (X := X) hX_ident n).symm)
 
 /--
+Durrett 2019, Theorem 2.2.12 support: the real-variable tail assumption
+`x * P(|X_0| > x) -> 0` implies its natural-subsequence version
+`n * P(|X_0| > n) -> 0`.
+-/
+theorem durrett2019_theorem_2_2_12_nat_tail_tendsto_zero_of_real_tail
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (htail_real : Tendsto
+      (fun x : ℝ => x * P.real {ω : Ω | x < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ))) :
+    Tendsto
+      (fun n : ℕ => (n : ℝ) * P.real {ω : Ω | (n : ℝ) < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ)) := by
+  simpa using htail_real.comp tendsto_natCast_atTop_atTop
+
+/--
 Durrett 2019, Theorem 2.2.12 support: identical distribution transfers the
 second moment of the truncated entry at level `n` from `X_k` to `X_0`.
 -/
@@ -2755,6 +2771,43 @@ theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncated
     hX_indep hX_ident hX_meas
     (durrett2019_theorem_2_2_12_truncatedSecondMoment_tendsto_zero_of_single
       (P := P) (X := X) hX_ident hsecond_single)
+
+/--
+Durrett 2019, Theorem 2.2.12 source-facing real-tail bridge: the textbook
+display follows from Durrett's real tail assumption together with the remaining
+single truncated second-moment average.
+
+The only unresolved theorem-specific analytic input after this bridge is to
+prove `E[bar X_{n,0}^2] / n -> 0` from the same real tail assumption, via
+Lemma 2.2.13 and the Cesaro/tail-average argument.
+-/
+theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_single_second
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (htail_real : Tendsto
+      (fun x : ℝ => x * P.real {ω : Ω | x < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (hsecond_single : Tendsto
+      (fun n : ℕ =>
+        (∫ ω,
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+          (n : ℝ))
+      atTop (𝓝 (0 : ℝ)))
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hX_meas : ∀ k : ℕ, Measurable (X k)) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (∑ k ∈ Finset.range n, X k ω) / (n : ℝ) -
+          durrett2019_theorem_2_2_12_truncatedMean P X n)
+      atTop (fun _ => 0) :=
+  durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_single
+    (P := P) (X := X)
+    (durrett2019_theorem_2_2_12_nat_tail_tendsto_zero_of_real_tail
+      (P := P) (X := X) htail_real)
+    hsecond_single hX_indep hX_ident hX_meas
 
 /-! ## Durrett, Section 2.3 -/
 
