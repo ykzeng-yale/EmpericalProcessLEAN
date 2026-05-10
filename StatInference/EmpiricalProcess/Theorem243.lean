@@ -16336,6 +16336,69 @@ theorem measurable_vdVWTruncatedClassFun_selectedCenterAt_of_countable_fibers
     exact hselector_fiber k index hindex
 
 /--
+Selected-cover scalar coordinate measurability from measurable selected-center
+fibers for the explicit in-class fallback adapter.
+
+Unlike `measurable_vdVWTruncatedClassFun_selectedCenterAt_of_countable_fibers`,
+this version has no ambient `default` side condition: the out-of-range value of
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass` is the supplied nonempty
+class witness.
+-/
+theorem measurable_vdVWTruncatedClassFun_selectedCenterAtInClass_of_countable_fibers
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n : ℕ}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M eta : ℝ}
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hcount : indexClass.Countable)
+    (hselector_fiber : ∀ k index, index ∈ indexClass ->
+      MeasurableSet
+        {sample : SampleAt Observation n |
+          VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta hindexClass_nonempty
+            cardinality cover sample k =
+              index})
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope) :
+    ∀ k : ℕ, ∀ i : Fin n,
+      Measurable fun sample : SampleAt Observation n =>
+        vdVWTruncatedClassFun classFun envelope M
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta hindexClass_nonempty
+            cardinality cover sample k)
+          (sample i) := by
+  intro k i
+  refine
+    measurable_vdVWTruncatedClassFun_selected_index_of_countable_fibers
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) hcount
+      (selector := fun sample : SampleAt Observation n =>
+        VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass
+          (Observation := Observation) (Index := Index) (n := n)
+          indexClass classFun envelope M eta hindexClass_nonempty
+          cardinality cover sample k)
+      (observation := fun sample : SampleAt Observation n => sample i)
+      ?_ ?_ (measurable_pi_apply i) hclass henvelope_meas
+  · intro sample
+    exact
+      VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass_mem
+        (Observation := Observation) (Index := Index) (n := n)
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        hindexClass_nonempty cover sample k
+  · intro index hindex
+    exact hselector_fiber k index hindex
+
+/--
 Selected-center measurability bridge from scalar components.
 
 Instead of assuming each implication-shaped selected-center event is

@@ -9034,3 +9034,14 @@ fiber-route consumer: the out-of-range value is now the explicit witness from
 the already-required nonempty theorem class.  The remaining selected-center
 source blocker is measurable fibers for this in-class Nat-indexed selected
 cover, not any ambient `Inhabited` default issue.
+
+2026-05-10 in-class selected-center scalar-coordinate bridge:
+`Theorem243.lean` now also proves
+`measurable_vdVWTruncatedClassFun_selectedCenterAtInClass_of_countable_fibers`.
+This is the default-free coordinate measurability interface corresponding to
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass`: countability,
+class-membership, and measurable fibers of the in-class Nat-indexed selector
+imply measurability of each selected truncated class coordinate.  This does
+not make the arbitrary selected cover measurable; the next source primitive
+remains a canonical selected-cover tuple, or equivalent selector construction,
+with measurable fibers.

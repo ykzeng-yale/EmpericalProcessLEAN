@@ -2958,6 +2958,15 @@ selected-center fiber route.  Continue by proving measurable fibers for this
 in-class selector, or by constructing a canonical selected cover whose fibers
 are measurable by `Nat.find` over an enumeration of the countable class.
 
+2026-05-10 in-class selected-center coordinate bridge:
+`Theorem243.lean` now proves
+`measurable_vdVWTruncatedClassFun_selectedCenterAtInClass_of_countable_fibers`.
+The selected-center coordinate interface is therefore fully aligned with the
+explicit nonempty-class fallback; no ambient `Inhabited` default is needed.
+The next selected-cover proof target is unchanged mathematically: construct a
+canonical selected cover whose in-class Nat-indexed selector has measurable
+fibers, then feed that into the half-scale Theorem 2.4.3 source route.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
