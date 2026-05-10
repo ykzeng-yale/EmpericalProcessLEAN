@@ -142,6 +142,14 @@ The selected weighted sums are now reduced further by
 `measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_coordinate`:
 it is enough to prove measurable selected cardinalities plus scalar
 coordinate measurability of each selected center evaluation.
+The product-pair projection bookkeeping is now also closed by
+`measurable_vdVWSignProductPair_originalSample`,
+`measurable_vdVWSignProductPair_ghostSample`,
+`measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_sample_coordinate`, and
+`measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_sample_coordinate`:
+single-sample selected cardinality measurability and single-sample
+Nat-indexed selected-center coordinate measurability imply both sign-first
+product-pair failure-event measurability obligations.
 The next exact target is now sharper: prove the integrated random
 selected-cover finite-center Hoeffding tails vanish only if an additional
 structural tail/large-cardinality input is available, and prove the remaining
@@ -8892,3 +8900,17 @@ selected-center measurability blocker is therefore not the finite weighted
 sum algebra; it is the actual scalar measurability of
 `omega ↦ vdVWTruncatedClassFun ... (VdVWFiniteEmpiricalL1CoverSelectedCenterAt ... (sample omega) k) (sample omega i)`
 and the selected cardinality process.
+
+2026-05-09 selected-center sample-coordinate projection:
+`Theorem243.lean` now proves
+`measurable_vdVWSignProductPair_originalSample` and
+`measurable_vdVWSignProductPair_ghostSample`, then uses them in
+`measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_sample_coordinate`
+and
+`measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_sample_coordinate`.
+Thus the original/ghost product-pair selected finite-center failure events
+only require the single-sample selected cardinality process and the
+single-sample Nat-indexed selected-center scalar coordinate evaluations.
+The remaining selected-center blocker is the selector/cardinality
+measurability itself, not transport from single samples to the sign-first
+product-pair space.

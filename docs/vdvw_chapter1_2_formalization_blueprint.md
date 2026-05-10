@@ -2311,6 +2311,15 @@ above, so they do not change the theorem-level dashboard counts.
    the remaining selected-center measurability burden is the scalar
    coordinate evaluation of each selected center and the selected cardinality
    process.
+   The sign-first product-pair projection layer has now been discharged by
+   `measurable_vdVWSignProductPair_originalSample`,
+   `measurable_vdVWSignProductPair_ghostSample`,
+   `measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_sample_coordinate`,
+   and
+   `measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_sample_coordinate`:
+   single-sample selected cardinality and selected-center scalar coordinate
+   measurability now imply both original and ghost product-pair failure-event
+   measurability obligations.
    On the product-fiber side, the concrete event now has the fiber interface
    `mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff`
    and the lower-bound transfer
