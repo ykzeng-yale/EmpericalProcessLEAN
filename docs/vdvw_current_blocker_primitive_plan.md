@@ -10038,3 +10038,20 @@ For countable coordinate-measurable classes, the base-product source proof no
 longer has to separately provide centered-bad measurability; it only has to
 prove the actual base-a.e. pure Rademacher bad-fiber lower bound.  The
 probability-side source theorem remains open.
+
+2026-05-10 concrete pair-difference a.e. fiber source adapter:
+`Theorem243.lean` now adds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`.
+These specialize the existing a.e. factor-two original-or-ghost product-fiber
+comparison to the concrete
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent`, and discharge
+the concrete event measurability from the countable selected-center coordinate
+interface.  A future averaged sign/ghost or conditional source proof can now
+feed the pair-difference selected-net comparison with a
+`P^n.restrict centeredBad`-a.e. displayed Chebyshev beta fiber lower bound,
+rather than a pointwise lower bound for every centered-bad original sample.
+This is still interface work: the live blocker remains the actual
+probability theorem proving that a.e. fiber mass, or a coefficient-correct
+product-pair/pair-sub sign-swap substitute.

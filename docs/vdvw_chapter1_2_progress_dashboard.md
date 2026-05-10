@@ -4582,3 +4582,16 @@ itself.  The same Lean update also exposes
 `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_pairSubBad_signSwap_fibers`
 for product-space random-sign finite-net comparisons without a separate
 fixed-sample `hphi_id` premise.
+
+The concrete pair-difference selected-net displayed-beta source layer now
+also accepts restricted-a.e. fibers:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`.
+These wrappers specialize the generic a.e. factor-two product bridge to
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent` and discharge
+event measurability from the countable selected-center coordinate assumptions.
+The dashboard blocker is therefore sharpened: future source work may prove an
+a.e. displayed-beta fiber lower bound directly for the concrete
+pair-difference event; it no longer needs to state a pointwise all-bad-samples
+fiber hypothesis at this layer.

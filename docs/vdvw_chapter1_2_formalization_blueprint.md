@@ -3668,6 +3668,18 @@ premise.  The next blueprint item remains the real probability source:
 prove the base-a.e. pure Rademacher bad-fiber mass, or replace it with the
 coefficient-correct product-pair/sign-swap source theorem.
 
+The concrete pair-difference selected-net source adapter is now also aligned
+with the a.e. product-fiber surface:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`
+specialize the generic factor-two a.e. original-or-ghost comparison to
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent`, with concrete
+event measurability discharged by countability and selected-center coordinate
+measurability.  Blueprint follow-up can now aim at an a.e. displayed-beta
+fiber-mass theorem for this concrete event, without strengthening it to a
+pointwise lower bound for every centered-bad original sample.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
