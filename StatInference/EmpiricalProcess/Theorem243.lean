@@ -45198,6 +45198,40 @@ theorem
       hM_nonneg heta (cover eta heta n z.1) hsign hmaximal hrad_bad
 
 /--
+Canonical Rademacher selected-net event for the displayed-beta source route.
+
+This is the sign-only core of
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`: for a fixed original
+sample and Rademacher sign vector it records sign support, the original
+finite-center Hoeffding side condition, and the Rademacher selected-net bad
+event.  The ghost-coordinate version below is the product-fiber interface used
+by the VdV&W Lemma 2.3.7 route.
+-/
+noncomputable def VdVWTheorem243CanonicalRademacherSelectedNetEvent
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample)) :
+    Set (SampleAt Observation n × SampleAt ℝ n) :=
+  {z |
+    VdVWRademacherSignVector z.2 ∧
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover z.1).center z.2 M ∧
+      epsilon <
+        dist
+          (2 *
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights z.2) z.1)
+          (0 : ℝ)}
+
+/--
 Canonical ghost/Rademacher selected-net event for the displayed-beta source
 route.
 
@@ -45312,6 +45346,134 @@ theorem
   intro eta heta epsilon hepsilon
   exact Eventually.of_forall fun n z hz => by
     simpa [VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent] using hz
+
+/--
+Fiber membership in the canonical ghost/Rademacher selected-net event is exactly
+membership in the sign-only canonical Rademacher selected-net event.
+
+The ghost sample is unused by this canonical event; this lemma makes that
+bookkeeping explicit for product-fiber lower-bound proofs.
+-/
+theorem
+    mem_fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_iff
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sample ghostSample : SampleAt Observation n) (sign : SampleAt ℝ n) :
+    (ghostSample, sign) ∈
+        (Prod.mk sample ⁻¹'
+          VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality)
+            (cover := cover)) ↔
+      (sample, sign) ∈
+        VdVWTheorem243CanonicalRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover) := by
+  rfl
+
+/--
+The canonical ghost/Rademacher selected-net fiber is a product of the full
+ghost-sample space with the sign-only canonical selected-net fiber.
+-/
+theorem
+    fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_eq_univ_prod
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sample : SampleAt Observation n) :
+    (Prod.mk sample ⁻¹'
+        VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover)) =
+      (Set.univ : Set (SampleAt Observation n)) ×ˢ
+        (Prod.mk sample ⁻¹'
+          VdVWTheorem243CanonicalRademacherSelectedNetEvent
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality)
+            (cover := cover)) := by
+  ext z
+  simp [mem_fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_iff
+    (cover := cover) sample z.1 z.2]
+
+/--
+Product-fiber lower bound for the canonical ghost/Rademacher selected-net event
+from the sign-only canonical Rademacher selected-net fiber.
+
+Since the ghost coordinate is unused by the canonical event, the product fiber
+has exactly the same mass as the Rademacher sign fiber.  This reduces the
+remaining displayed-beta source statement to a sign-only probability bound.
+-/
+theorem
+    VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_fiber_lower_bound_of_rademacher_fiber_lower_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {sample : SampleAt Observation n} {beta : ℝ≥0∞}
+    (hsign :
+      beta ≤
+        (vdVWProductMeasure vdVWRademacherLaw n)
+          (Prod.mk sample ⁻¹'
+            VdVWTheorem243CanonicalRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon) (cardinality := cardinality)
+              (cover := cover))) :
+    beta ≤
+      ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n))
+        (Prod.mk sample ⁻¹'
+          VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality)
+            (cover := cover)) := by
+  calc
+    beta ≤
+        (vdVWProductMeasure vdVWRademacherLaw n)
+          (Prod.mk sample ⁻¹'
+            VdVWTheorem243CanonicalRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon) (cardinality := cardinality)
+              (cover := cover)) := hsign
+    _ =
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (Prod.mk sample ⁻¹'
+            VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon) (cardinality := cardinality)
+              (cover := cover)) := by
+      rw [fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_eq_univ_prod
+        (cover := cover) sample]
+      simp [Measure.prod_prod]
 
 /--
 The Rademacher selected-net bad component of the canonical ghost/Rademacher
@@ -45654,6 +45816,97 @@ theorem
         selectedCardinality eta n sample n)
       hcount hclass henvelope_meas (cover eta heta n)
       (hcard eta heta n) (hcoord eta heta n)
+
+/--
+Concrete canonical Rademacher product-event constructor with event
+measurability supplied by scalar selected-center coordinate assumptions.
+
+This is the sign-only probability interface for the canonical
+ghost/Rademacher selected-net lane.  Since the ghost coordinate is unused by
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`, a displayed beta
+lower bound for the Rademacher sign fiber is enough to feed the ghost-product
+constructor.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedNetEvent_sample_coordinate_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_nonneg : 0 ≤ M)
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (hcard :
+      ∀ (eta : ℝ) (_heta : 0 < eta) (n : ℕ),
+        Measurable
+          fun sample : SampleAt Observation n =>
+            selectedCardinality eta n sample n)
+    (hcoord :
+      ∀ (eta : ℝ) (heta : 0 < eta) (n : ℕ), ∀ k : ℕ, ∀ i : Fin n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWTruncatedClassFun classFun envelope M
+            (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+              (Observation := Observation) (Index := Index) (n := n)
+              indexClass classFun envelope M eta
+              (fun sample : SampleAt Observation n =>
+                selectedCardinality eta n sample n)
+              (cover eta heta n) sample k)
+            (sample i))
+    (hfiber :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (_hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          ∀ sample : SampleAt Observation n,
+            sample ∈
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)} ->
+              ENNReal.ofReal
+                  (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                (vdVWProductMeasure vdVWRademacherLaw n)
+                  (Prod.mk sample ⁻¹'
+                    VdVWTheorem243CanonicalRademacherSelectedNetEvent
+                      (indexClass := indexClass) (classFun := classFun)
+                      (envelope := envelope) (M := M) (eta := eta)
+                      (epsilon := epsilon)
+                      (cardinality := fun sample' : SampleAt Observation n =>
+                        selectedCardinality eta n sample' n)
+                      (cover := cover eta heta n))) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 2 1 selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent_sample_coordinate_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M)
+      (selectedCardinality := selectedCardinality)
+      hM_nonneg hcount hclass henvelope_meas cover hcard hcoord ?_
+  intro eta heta epsilon hepsilon
+  filter_upwards [hfiber eta heta epsilon hepsilon] with n hfiber_n
+  intro sample hsample
+  exact
+    VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_fiber_lower_bound_of_rademacher_fiber_lower_bound
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon)
+      (cardinality := fun sample' : SampleAt Observation n =>
+        selectedCardinality eta n sample' n)
+      (cover := cover eta heta n)
+      (sample := sample)
+      (hfiber_n sample hsample)
 
 /--
 Canonical positive-radius selected-cardinality version of the concrete

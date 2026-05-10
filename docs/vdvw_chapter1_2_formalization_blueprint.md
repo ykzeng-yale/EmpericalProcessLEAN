@@ -3344,6 +3344,17 @@ fiber lower bound for
 `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`, or an equivalent
 averaged sign/ghost source theorem strong enough to feed this endpoint.
 
+The canonical ghost/Rademacher product-fiber blocker now has a sign-only
+reduction.  `VdVWTheorem243CanonicalRademacherSelectedNetEvent` names the
+Rademacher selected-net event without the unused ghost coordinate, and
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_fiber_lower_bound_of_rademacher_fiber_lower_bound`
+proves that its sign-fiber lower bound lifts to the ghost/Rademacher product
+fiber.  The constructor
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedNetEvent_sample_coordinate_countable`
+packages that lift with the existing countability-based event measurability.
+Future source work should target the displayed beta lower bound for this
+sign-only event, then feed the already compiled fixed-`M` endpoint.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

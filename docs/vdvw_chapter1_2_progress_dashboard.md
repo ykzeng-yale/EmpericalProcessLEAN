@@ -4257,3 +4257,13 @@ comparison, radius-halved entropy input, and selected-center coordinate
 measurability.  The dashboard frontier for this lane is therefore a single
 source probability input: the displayed Chebyshev beta fiber lower bound for
 `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.
+
+The ghost-coordinate part of that source input is now compiled away.  The
+sign-only canonical event
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent` feeds the ghost event by
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_fiber_lower_bound_of_rademacher_fiber_lower_bound`,
+and the displayed-beta constructor
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedNetEvent_sample_coordinate_countable`
+uses that lift directly.  The remaining probability target on this lane is
+therefore the displayed beta lower bound for the Rademacher sign fiber of the
+sign-only event.

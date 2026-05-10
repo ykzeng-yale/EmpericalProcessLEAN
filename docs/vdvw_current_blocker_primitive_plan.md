@@ -9584,3 +9584,18 @@ samples.  If that direct fiber lower bound blocks, the next valid source work
 is an honest averaged sign/ghost theorem or a stronger tail/UI/cardinality
 assumption package; fixed deterministic sign-section shortcuts remain ruled
 out by the compiled mass obstruction.
+
+2026-05-10 canonical sign-only fiber reduction:
+`Theorem243.lean` now names the sign-only event
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent` and proves
+`mem_fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_iff`,
+`fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_eq_univ_prod`,
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_fiber_lower_bound_of_rademacher_fiber_lower_bound`, and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedNetEvent_sample_coordinate_countable`.
+The unused ghost coordinate is now eliminated from the live canonical source
+obligation: it is enough to prove the displayed Chebyshev beta lower bound for
+the Rademacher sign fiber of
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent`; the compiled bridge lifts
+that bound to the ghost/Rademacher product fiber and then to the displayed-beta
+comparison.  This is still a genuine probability source theorem, not a
+deterministic sign-section shortcut.
