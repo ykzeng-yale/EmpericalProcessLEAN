@@ -10334,3 +10334,14 @@ remaining blocker is now exactly the probability source: prove the a.e.
 displayed-beta lower bound for
 `VdVWTheorem243CenteredPairSubSignSwapBadEvent`, or replace the fixed-original
 transport lane by the averaged product-pair source theorem.
+
+2026-05-10 base-a.e. sign-swap two-tail source surface:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_invSq`.
+This is the Fubini-style companion to the restricted-a.e. two-tail endpoint:
+the future probability source may state the sign-swapped bad-fiber beta lower
+bound as a `P^n`-a.e. implication from membership in the centered bad event,
+with centered-bad measurability converting it to the restricted form.  The
+remaining blocker is still the actual displayed-beta source theorem for
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent`, not another measure-conversion
+wrapper.

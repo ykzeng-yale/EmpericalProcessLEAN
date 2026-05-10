@@ -4804,3 +4804,11 @@ sign-swapped bad-fiber beta mass, and the two-tail finite-center error into
 the convergence theorem with constant `2`.  The dashboard frontier is now only
 the sign-swapped bad-fiber probability source itself, or the averaged
 product-pair replacement that avoids fixed-original sign-swap transport.
+
+The two-tail fixed-original sign-swap endpoint now also accepts the natural
+base-measure implication source form:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_invSq`.
+After eventual centered-bad measurability, a `P^n`-a.e. implication on
+membership in the centered bad event is converted internally to the
+restricted-a.e. hypothesis.  The dashboard blocker remains the probability
+theorem proving that implication.

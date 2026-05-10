@@ -3909,6 +3909,15 @@ target is therefore the probability source theorem for
 `VdVWTheorem243CenteredPairSubSignSwapBadEvent`, or the averaged product-pair
 replacement that avoids fixed-original sign-swap transport.
 
+The same two-tail sign-swap endpoint now has a base-measure a.e. implication
+surface:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_invSq`.
+This is the preferred statement shape for the remaining Fubini-style source
+work: prove `P^n`-a.e. that centered-bad samples have the displayed beta mass
+in `VdVWTheorem243CenteredPairSubSignSwapBadEvent`, while supplying eventual
+measurability of the centered bad event.  No new report is due until that
+source theorem, or the averaged product-pair replacement, is fully proved.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
