@@ -3852,3 +3852,14 @@ selected cardinality is bounded by the book-facing envelope.  Remaining
 half-scale source obligations are now scalar selected-center coordinate
 measurability for the chosen cover and vanishing integrated finite-center
 failure-tail error.
+
+The selected-center scalar-coordinate obligation now has a countable-fiber
+source bridge.  `Theorem243.lean` adds
+`measurable_vdVWTruncatedClassFun_selected_index_of_countable_fibers` and
+`measurable_vdVWTruncatedClassFun_selectedCenterAt_of_countable_fibers`, which
+derive scalar coordinate measurability from measurable fibers of the
+Nat-indexed selected-center selector, plus membership of the out-of-range
+`default` branch in the countable class.  This does not make an arbitrary
+`Classical.choice` cover selector measurable; it narrows the next task to
+constructing measurable fibers for a canonical selected-cover tuple or
+removing the arbitrary default branch.
