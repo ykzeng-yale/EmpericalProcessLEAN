@@ -2469,9 +2469,15 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge`
    and the canonical first-level selected-cover wrapper
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_cardinality_ge`.
+   The same branch now has probability-facing eventual-a.e. variants
+   `vdVW_pair_lintegral_sum_tendsto_zero_of_eventual_ae_ofReal_bound`,
+   `vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_ae_cardinality_ge`,
+   and
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge`.
    This branch is now conditional on proving selected-cover cardinality lower
-   growth for concrete classes; otherwise the displayed-beta/product-fiber
-   source theorem remains the more faithful generic route.
+   growth for concrete classes, pointwise or eventually a.e.; otherwise the
+   displayed-beta/product-fiber source theorem remains the more faithful
+   generic route.
    The first adapted
    countable empirical-supremum bridge is compiled as
    `measurable_vdVWPermutationSymmetricMeasurableSpace_uniformClassSupremum_of_countable`,

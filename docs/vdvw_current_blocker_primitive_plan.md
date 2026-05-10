@@ -8912,11 +8912,18 @@ helpers
 `vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge`.
 It also adds the canonical first-level selected-cover route
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_cardinality_ge`.
-Thus the additive route is honest under an explicit deterministic lower bound
-on the canonical selected-cover cardinality that tends to infinity.  The
-remaining mathematical question is not Mathlib plumbing: prove that lower
-growth for a concrete class, or use the displayed-beta/product-fiber source
-route that avoids the additive finite-center failure-tail obstruction.
+The lower-growth input has also been weakened to its probability-facing form:
+`vdVW_pair_lintegral_sum_tendsto_zero_of_eventual_ae_ofReal_bound`,
+`vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_ae_cardinality_ge`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge`
+only require the selected-cardinality lower bound eventually almost surely on
+the product-pair sample space.  Thus the additive route is honest under an
+explicit deterministic lower bound on the canonical selected-cover cardinality
+that tends to infinity, now either pointwise or eventually a.e.  The remaining
+mathematical question is not Mathlib plumbing: prove that a.e. lower growth
+for a concrete class, or use the displayed-beta/product-fiber source route that
+avoids the additive finite-center failure-tail obstruction.
 
 2026-05-09 sign-first selected-center failure-event measurability:
 `Theorem243.lean` now proves the sign-first product-pair wrappers
