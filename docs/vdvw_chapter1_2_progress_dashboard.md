@@ -3903,3 +3903,17 @@ fiber theorem
 compiled.  The remaining selected-cover fiber task is to lift this
 fixed-cardinality selector through the measurable selected-cardinality level
 sets used by the Theorem 2.4.3 quarter-radius route.
+
+That selected-cardinality level-set lift is now compiled.  `Theorem243.lean`
+adds `vdVWFirstVariableEmpiricalL1CoverCenterTuple`,
+`vdVWFirstVariableEmpiricalL1CoverSelectedCenterAtInClass`,
+`vdVWFirstVariableEmpiricalL1CoverSelectedCenterAtInClass_mem`, and
+`measurableSet_vdVWFirstVariableEmpiricalL1CoverSelectedCenterAtInClass_eq`.
+The fiber theorem splits by the measurable level sets
+`{sample | cardinality sample = m}` and reuses the fixed-cardinality tuple
+selector on each level, with an explicit nonempty-class fallback outside the
+selected range.  The remaining selector work is now narrower: connect this
+canonical variable-cardinality selector to the actual selected-cover object
+used by the quarter-radius route, using a Nat enumeration/surjection of
+in-class finite center tuples and the selected cover existence witness.  The
+separate product-fiber/Chebyshev source probability input remains open.
