@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V205
+## Live In-Thread Goal Prompt V206
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -81,16 +81,26 @@ hypotheses:
 `durrett2019_theorem_4_5_3_reciprocal_comp_nonneg_of_one_le`, and
 `durrett2019_theorem_4_5_3_reciprocal_comp_le_one_of_one_le`.
 
+V206 connects the random-normalizer bridge to the already compiled
+scaled-square-summability transform convergence theorem.  New compiled
+endpoints:
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_scaled_summable`
+and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_scaled_summable`.
+Thus the remaining 4.5.3 source work is not another transform-convergence or
+reciprocal-predictability wrapper: it is the concrete textbook variance /
+integral estimate that proves the displayed scaled summability for
+`H_m = f(A_m)^{-1}`, plus any needed `MemLp` side condition for that transform.
+
 Next aggressive step: finish Durrett Theorem 4.5.3 source packaging.  Prove the
-transform convergence for `H_m = f(A_m)^{-1}` by connecting it to V204/Theorem
-4.5.2 through the finite-variance event side, and package the textbook
-variance/integral estimate
+textbook variance/integral estimate
 `∑ (A_{n+1}-A_n) / f(A_{n+1})^2 < ∞` on `{A∞ = ∞}` so the V205
-random-normalizer bridge yields `X_n / f(A_n) -> 0`.  Do not route back to
-stopped running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
-source packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
-predictability/bounds, Chapter 2.1, or Theorem 2.4.9 unless Theorem 4.5.3
-exposes a strictly stronger missing primitive.
+random-normalizer bridge and V206 reciprocal scaled-summability route yield
+`X_n / f(A_n) -> 0`.  Do not route back to stopped running-maximum boundedness,
+stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
+Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
+scaled-summability-to-transform plumbing, Chapter 2.1, or Theorem 2.4.9 unless
+Theorem 4.5.3 exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and

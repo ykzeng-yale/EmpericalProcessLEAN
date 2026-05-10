@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V205`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V206`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -49,13 +49,18 @@ with
 which applies the Exercise 4.4.11 Kronecker theorem to sample-dependent
 normalizers.  V205 also proves the reciprocal-transform predictability and
 bounds from `IsStronglyPredictable ℱ A`, continuous `f`, and `1 <= f(A_n)`.
-The next theorem-facing target is the transform-convergence and
-variance/integral source package for `b_n = f(A_n)`.  Do not route back to
+V206 proves the scaled-square-summability-to-random-normalizer handoff and the
+reciprocal `b_n = f(A_n)` specialization:
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_scaled_summable`
+and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_scaled_summable`.
+The next theorem-facing target is the variance/integral source package for
+`b_n = f(A_n)`.  Do not route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
-packaging, deterministic Exercise 4.4.11 normalizers, or reciprocal
-predictability/bounds unless a later theorem exposes a precise missing
-primitive.
+packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
+predictability/bounds, or scaled-summability handoff wrappers unless a later
+theorem exposes a precise missing primitive.
 
 Closed Chapter 2 support lives in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled

@@ -18015,6 +18015,43 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_transfor
       (f := fun n : ℕ => X n ω / b n ω) 1).mp hshifted
 
 /--
+Durrett 2019, Theorem 4.5.3 transform-convergence support.
+
+Scaled square summability of a bounded nonnegative predictable transform feeds
+the random-normalizer Kronecker bridge, so later source work can focus on the
+textbook variance/integral estimate that proves this summability.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_scaled_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {H X b : ℕ -> Ω -> ℝ} {R : ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hH_pred : StronglyAdapted ℱ (fun n => H (n + 1)))
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω)
+    (hH_eq : ∀ᵐ ω ∂P, ∀ n : ℕ, H n ω = (b n ω)⁻¹)
+    (hb_nonzero : ∀ᵐ ω ∂P, ∀ k : ℕ, b (k + 1) ω ≠ 0)
+    (hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ b (k + 2) ω - b (k + 1) ω)
+    (hb_atTop :
+      ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => b (n + 1) ω) atTop atTop)
+    (hTransform_memLp_two :
+      ∀ k, MemLp (durrett2019_stochasticTransform H X k) (2 : ℝ≥0∞) P)
+    (hscaled_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (H (k + 1) ω * (X (k + 1) ω - X k ω)) ^ 2 ∂P) :
+    ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => X n ω / b n ω) atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_transform_tendsto
+      (P := P) (H := H) (X := X) (b := b)
+      hX0 hH_eq hb_nonzero hb_increment_nonneg hb_atTop
+      (durrett2019_exercise_4_4_11_stochasticTransform_exists_ae_tendsto_of_scaled_summable
+        (P := P) (ℱ := ℱ) (H := H) (X := X) (R := R)
+        hX hH_pred hH_bdd hH_nonneg hTransform_memLp_two hscaled_summable)
+
+/--
 Durrett 2019, Theorem 4.5.3 predictable reciprocal transform support.
 
 If `A` is predictable and `f` is continuous, then the textbook transform
@@ -18080,6 +18117,60 @@ theorem durrett2019_theorem_4_5_3_reciprocal_comp_le_one_of_one_le
     ∀ n : ℕ, ∀ ω : Ω, (f (A n ω))⁻¹ ≤ 1 := by
   intro n ω
   exact inv_le_one_of_one_le₀ (hf_one_le n ω)
+
+/--
+Durrett 2019, Theorem 4.5.3 reciprocal scaled-summability route.
+
+For the textbook normalizer `b_n = f(A_n)`, the predictable-transform side
+conditions from `f(A_n) >= 1` and predictability of `A` feed the random
+normalizer bridge.  The remaining mathematical input is the summability of the
+reciprocal-scaled martingale increments, supplied here as a hypothesis.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_scaled_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hf_cont : Continuous f)
+    (hf_one_le : ∀ n : ℕ, ∀ ω : Ω, 1 ≤ f (A n ω))
+    (hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ f (A (k + 2) ω) - f (A (k + 1) ω))
+    (hb_atTop :
+      ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop)
+    (hTransform_memLp_two :
+      ∀ k, MemLp
+        (durrett2019_stochasticTransform
+          (fun n : ℕ => fun ω : Ω => (f (A n ω))⁻¹) X k)
+        (2 : ℝ≥0∞) P)
+    (hscaled_summable :
+      Summable fun k : ℕ =>
+        ∫ ω,
+          ((f (A (k + 1) ω))⁻¹ * (X (k + 1) ω - X k ω)) ^ 2 ∂P) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  refine
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_scaled_summable
+      (P := P) (ℱ := ℱ)
+      (H := fun n : ℕ => fun ω : Ω => (f (A n ω))⁻¹)
+      (X := X) (b := fun n : ℕ => fun ω : Ω => f (A n ω)) (R := 1)
+      hX hX0 ?_ ?_ ?_ ?_ ?_ hb_increment_nonneg hb_atTop
+      hTransform_memLp_two ?_
+  · exact
+      durrett2019_theorem_4_5_3_reciprocal_comp_shift_stronglyAdapted
+        (ℱ := ℱ) (A := A) (f := f) hA_predictable hf_cont
+  · exact
+      durrett2019_theorem_4_5_3_reciprocal_comp_le_one_of_one_le
+        (A := A) (f := f) hf_one_le
+  · exact
+      durrett2019_theorem_4_5_3_reciprocal_comp_nonneg_of_one_le
+        (A := A) (f := f) hf_one_le
+  · exact Eventually.of_forall fun ω n => rfl
+  · filter_upwards with ω k
+    exact ne_of_gt (zero_lt_one.trans_le (hf_one_le (k + 1) ω))
+  · simpa using hscaled_summable
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
