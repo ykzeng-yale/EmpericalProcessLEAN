@@ -4383,3 +4383,18 @@ untruncated theorem layer through
 The exposed inputs are now sharply mathematical: the pure Rademacher bad-event
 lower bound and a.e. lower growth of the canonical half-radius selected
 cardinality, both for each positive truncation level.
+
+The lower-growth blocker is now formally separated from the stochastic-entropy
+assumption.  `Theorem243.lean` proves
+`tendsto_log_const_cardinality_div_atTop_nhds_zero`,
+`not_tendsto_const_cardinality_atTop`,
+`VdVWConvergesInOuterProbabilityConst_zero_of_const_terminal_cardinality`, and
+`vdVWTheorem243_const_terminal_cardinality_entropy_zero_not_lowerGrowth`.
+These show that a constant terminal selected cardinality has normalized
+log-cardinality converging to zero in the local outer-probability sense, while
+the same cardinality cannot tend to infinity.  The current blocker is
+therefore not a missing mathlib convenience lemma: mathlib's
+`Filter.not_tendsto_const_atTop` supplies the core obstruction.  What remains
+is a real probabilistic/geometric source theorem giving lower growth under
+additional structure, or a direct Chebyshev/product-fiber route that avoids
+the inverse-square failure-tail lower-growth requirement.

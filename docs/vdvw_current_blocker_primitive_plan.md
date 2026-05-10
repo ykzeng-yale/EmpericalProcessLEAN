@@ -9777,3 +9777,21 @@ lower-growth route with the large-`M` envelope-tail handoff.  The sign-only
 failure-tail branch now reaches untruncated centered convergence from
 per-truncation stochastic entropy, the pure Rademacher bad-event lower bound,
 and a.e. lower growth of the canonical half-radius selected cover cardinality.
+
+2026-05-10 entropy-versus-lower-growth obstruction:
+`Theorem243.lean` now makes the current blocker explicit with
+`tendsto_log_const_cardinality_div_atTop_nhds_zero`,
+`not_tendsto_const_cardinality_atTop`,
+`VdVWConvergesInOuterProbabilityConst_zero_of_const_terminal_cardinality`, and
+`vdVWTheorem243_const_terminal_cardinality_entropy_zero_not_lowerGrowth`.
+Mathlib supplies the key reusable fact through
+`Filter.not_tendsto_const_atTop`: a constant natural-valued cardinality process
+cannot tend to infinity.  Combined with the local normalized-log convergence
+lemma, this proves that the book-style entropy condition
+`log N_n / n -> 0` is compatible with a selected cardinality that never grows.
+Therefore the product-pair and sign-only inverse-square failure-tail lanes
+cannot honestly derive their lower-growth hypotheses from bare stochastic
+entropy alone.  The next theorem-facing source task is either a genuine
+structural nondegenerate-cover lower-growth theorem for the canonical selected
+cardinalities, or a return to the direct product-fiber/Chebyshev comparison
+that avoids inverse-square lower-growth entirely.

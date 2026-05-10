@@ -3466,6 +3466,20 @@ It should be used only after the pure Rademacher bad-event lower bound is
 available; the remaining second input is a.e. lower growth of the canonical
 half-radius selected cover cardinality for each positive truncation level.
 
+The blueprint now records a formal obstruction to treating that lower-growth
+input as a consequence of entropy alone.  The compiled declarations
+`tendsto_log_const_cardinality_div_atTop_nhds_zero`,
+`not_tendsto_const_cardinality_atTop`,
+`VdVWConvergesInOuterProbabilityConst_zero_of_const_terminal_cardinality`, and
+`vdVWTheorem243_const_terminal_cardinality_entropy_zero_not_lowerGrowth` show
+that constant terminal cardinality satisfies the normalized log-cardinality
+outer-probability condition but cannot diverge.  The reusable mathlib input is
+`Filter.not_tendsto_const_atTop`.  Future Theorem 2.4.3 work should therefore
+not attempt to infer inverse-square lower growth from bare
+`log N_n / n -> 0`; it must prove a stronger structural lower-growth/tail
+condition, or close the direct product-fiber/Chebyshev comparison without the
+additive failure-tail route.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
