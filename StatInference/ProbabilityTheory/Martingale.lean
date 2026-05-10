@@ -18484,6 +18484,67 @@ theorem durrett2019_theorem_4_5_3_finite_sum_variance_ratio_le_integral_clock
           (fun k hk => hf_int k hk)
 
 /--
+Durrett 2019, Theorem 4.5.3 deterministic summability package.
+
+If the finite clock integrals from V211 are uniformly bounded, then the
+variance-ratio increments form a summable real series.
+-/
+theorem durrett2019_theorem_4_5_3_variance_ratio_summable_of_integral_clock_bound
+    {f : ℝ -> ℝ} {A : ℕ -> ℝ} {C : ℝ}
+    (hA_mono_step : ∀ k : ℕ, A k ≤ A (k + 1))
+    (hf_mono :
+      ∀ k : ℕ, MonotoneOn f (Set.Icc (A k) (A (k + 1))))
+    (hf_one_le :
+      ∀ k : ℕ, ∀ t ∈ Set.Icc (A k) (A (k + 1)), 1 ≤ f t)
+    (hf_int :
+      ∀ k : ℕ,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume (A k) (A (k + 1)))
+    (hclock_bound : ∀ N : ℕ, ∫ t in A 0..A N, (f t)⁻¹ ^ 2 ≤ C) :
+    Summable fun k : ℕ => (A (k + 1) - A k) / (f (A (k + 1))) ^ 2 := by
+  refine summable_of_sum_range_le (c := C) ?hnonneg ?hbound
+  · intro k
+    exact div_nonneg (sub_nonneg.mpr (hA_mono_step k)) (sq_nonneg _)
+  · intro N
+    exact
+      (durrett2019_theorem_4_5_3_finite_sum_variance_ratio_le_integral_clock
+        (f := f) (A := A) (N := N)
+        (fun k _hk => hA_mono_step k)
+        (fun k _hk => hf_mono k)
+        (fun k _hk => hf_one_le k)
+        (fun k _hk => hf_int k)).trans
+        (hclock_bound N)
+
+/--
+Durrett 2019, Theorem 4.5.3 deterministic total-bound package.
+
+The same finite clock bound also controls the total variance-ratio series.
+-/
+theorem durrett2019_theorem_4_5_3_tsum_variance_ratio_le_of_integral_clock_bound
+    {f : ℝ -> ℝ} {A : ℕ -> ℝ} {C : ℝ}
+    (hA_mono_step : ∀ k : ℕ, A k ≤ A (k + 1))
+    (hf_mono :
+      ∀ k : ℕ, MonotoneOn f (Set.Icc (A k) (A (k + 1))))
+    (hf_one_le :
+      ∀ k : ℕ, ∀ t ∈ Set.Icc (A k) (A (k + 1)), 1 ≤ f t)
+    (hf_int :
+      ∀ k : ℕ,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume (A k) (A (k + 1)))
+    (hclock_bound : ∀ N : ℕ, ∫ t in A 0..A N, (f t)⁻¹ ^ 2 ≤ C) :
+    (∑' k : ℕ, (A (k + 1) - A k) / (f (A (k + 1))) ^ 2) ≤ C := by
+  refine Real.tsum_le_of_sum_range_le ?hnonneg ?hbound
+  · intro k
+    exact div_nonneg (sub_nonneg.mpr (hA_mono_step k)) (sq_nonneg _)
+  · intro N
+    exact
+      (durrett2019_theorem_4_5_3_finite_sum_variance_ratio_le_integral_clock
+        (f := f) (A := A) (N := N)
+        (fun k _hk => hA_mono_step k)
+        (fun k _hk => hf_mono k)
+        (fun k _hk => hf_one_le k)
+        (fun k _hk => hf_int k)).trans
+        (hclock_bound N)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

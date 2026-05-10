@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V211`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V212`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -76,17 +76,25 @@ V211 adds the finite pathwise lift
 `durrett2019_theorem_4_5_3_finite_sum_variance_ratio_le_integral_clock`,
 which telescopes adjacent interval estimates into
 `∑_{k<N} (A_{k+1}-A_k) / f(A_{k+1})^2 ≤ ∫_{A_0}^{A_N} f(t)^{-2} dt`.
-The next theorem-facing target is no longer another finite comparison: package
-the infinite/summability consequence for `b_n = f(A_n)` from the source
-integrability hypothesis `∫_0^∞ f(t)^{-2} dt < ∞`.  Keep reciprocal-transform
-`MemLp` and integrability side conditions explicit if needed.  Do not route
-back to
+V212 packages the deterministic infinite-series consequence:
+`durrett2019_theorem_4_5_3_variance_ratio_summable_of_integral_clock_bound`
+and
+`durrett2019_theorem_4_5_3_tsum_variance_ratio_le_of_integral_clock_bound`
+turn a uniform finite-clock-integral bound into summability and a total
+variance-ratio bound.
+The next theorem-facing target is no longer another deterministic comparison:
+lift V212 to the random and integrated variance-ratio summability required by
+V209, using finite sums of integrals, Fubini/finite-sum integral exchange, and
+a clock-integral bound derived from the source integrability hypothesis
+`∫_0^∞ f(t)^{-2} dt < ∞`.  Keep reciprocal-transform `MemLp` and integrability
+side conditions explicit if needed.  Do not route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
 packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
 predictability/bounds, conditional variance pull-out, scalar interval
-comparison, or scaled-summability handoff wrappers unless a later theorem
-exposes a precise missing primitive.
+comparison, finite clock comparison, deterministic summability packaging, or
+scaled-summability handoff wrappers unless a later theorem exposes a precise
+missing primitive.
 
 Closed Chapter 2 support lives in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled

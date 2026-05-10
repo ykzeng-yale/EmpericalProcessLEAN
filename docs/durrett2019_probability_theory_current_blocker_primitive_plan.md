@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V211
+## Live In-Thread Goal Prompt V212
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -124,17 +124,26 @@ V211 lifts V210 to finite pathwise clock sums.  The theorem
 `∑_{k<N} (A_{k+1}-A_k) / f(A_{k+1})^2 ≤ ∫_{A_0}^{A_N} f(t)^{-2} dt`
 from per-interval monotonicity, positivity, and interval-integrability.
 
-Next aggressive step: package the infinite/summability consequence from V211,
-using the source hypothesis `∫_0^∞ f(t)^{-2} dt < ∞` and monotone/divergent
-clock assumptions.  Then connect that summability package to the V209
-normalized-process endpoint.  Keep the remaining reciprocal-transform `MemLp`
-and integrability side conditions explicit until they can be discharged from
-source hypotheses.  Do not route back to stopped running-maximum boundedness,
-stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
-Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
-scaled-summability-to-transform plumbing, conditional variance pull-out, scalar
-interval comparison, Chapter 2.1, or Theorem 2.4.9 unless Theorem 4.5.3 exposes
-a strictly stronger missing primitive.
+V212 packages the deterministic infinite-series consequence.  The theorem
+`durrett2019_theorem_4_5_3_variance_ratio_summable_of_integral_clock_bound`
+proves summability of the deterministic variance-ratio series from a uniform
+finite-clock-integral bound, and
+`durrett2019_theorem_4_5_3_tsum_variance_ratio_le_of_integral_clock_bound`
+records the corresponding total-series bound.
+
+Next aggressive step: lift V212 from deterministic paths to the random and
+integrated variance-ratio summability required by V209, using finite sums of
+integrals, Fubini/finite-sum integral exchange, and a uniform clock-integral
+bound derived from the source hypothesis `∫_0^∞ f(t)^{-2} dt < ∞`.  Then
+connect that summability package to the V209 normalized-process endpoint.
+Keep the remaining reciprocal-transform `MemLp` and integrability side
+conditions explicit until they can be discharged from source hypotheses.  Do
+not route back to stopped running-maximum boundedness, stopped predictability,
+exact Theorem 4.5.2 source packaging, deterministic Exercise 4.4.11
+normalizers, reciprocal predictability/bounds, scaled-summability-to-transform
+plumbing, conditional variance pull-out, scalar interval comparison, finite
+clock comparison, deterministic summability packaging, Chapter 2.1, or Theorem
+2.4.9 unless Theorem 4.5.3 exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
