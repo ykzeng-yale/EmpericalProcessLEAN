@@ -3054,6 +3054,18 @@ a.e. original and ghost finite-center Hoeffding support for the selected
 cover, or a replacement product-fiber/Chebyshev source theorem that avoids
 those support assumptions.
 
+The first-level selected-cover version of that same route is now compiled.
+The new reusable names are
+`exists_vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoverAtCard`,
+`vdVWSelectedTruncatedPositiveRadiusFirstLevelEmpiricalL1CoverAtCardOfCountable`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+This endpoint chooses the canonical finite cover internally, so the live
+frontier is no longer cover choice or selected-cardinality comparison.  The
+remaining theorem-facing probability inputs are the two eventual a.e.
+finite-center support facts for the canonical first-level selected cover, or
+the product-fiber/Chebyshev replacement that bypasses them.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

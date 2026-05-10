@@ -3975,3 +3975,13 @@ and proves the selected-cardinality comparison internally.  The remaining
 inputs in this branch are exactly the two eventual a.e. finite-center support
 facts for the selected cover; no selected-cardinality comparison or
 selected-center fiber measurability is left in that wrapper.
+
+The same branch now has a first-level canonical selected-cover endpoint:
+`exists_vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoverAtCard`,
+`vdVWSelectedTruncatedPositiveRadiusFirstLevelEmpiricalL1CoverAtCardOfCountable`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+This wrapper chooses the finite empirical cover internally from the selected
+positive-radius cardinality and the countable first-level tuple selector.  The
+only remaining a.e. finite-center inputs are now stated for that canonical
+cover.
