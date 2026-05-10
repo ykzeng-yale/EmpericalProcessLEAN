@@ -9237,3 +9237,17 @@ stronger than the already compiled integrated product-pair symmetry route, so
 it should be proved only if the fixed-fiber statement is mathematically
 valid; otherwise the main proof should stay on the integrated product-pair or
 another honest nonmeasurable source route.
+
+2026-05-10 positive-size outer-probability pair-difference handoff:
+`Theorem243.lean` now proves
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_of_pos`
+and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_of_pos`.
+The first removes the successor-only `n + 1` shape from the
+Chebyshev/pair-sub/sign-swap fiber lower bound.  The second composes that
+positive-size fiber theorem with the concrete event measurability and
+original-or-ghost projection lemma to produce a factor-two outer-probability
+comparison for the `2 * epsilon` centered-bad event.  This closes the
+measure/fiber plumbing under the fixed-fiber sign-swap and a.e.
+finite-center support assumptions; those assumptions remain the genuine
+probability-side blocker.
