@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V199
+## Live In-Thread Goal Prompt V200
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -24,15 +24,17 @@ the real-tail-to-tail-average Cesaro bridge, automatic local integrability of
 the clipped tail profile, exact tail-average endpoint wrappers, truncated
 tail-event domination support, the ordinary-layer-cake-to-tail-average
 comparison bridge, the ordinary square-tail layer-cake support, positive
-square-tail event rewrite, and the radius-layer-cake `(0,∞)` to `(0,n]`
-finite-support bridge.
+square-tail event rewrite, the radius-layer-cake `(0,∞)` to `(0,n]`
+finite-support bridge, the ordinary `p = 2` radius-layer-cake conversion, the
+layer-cake-free tail-average bound, and the final source-facing Theorem 2.2.12
+real-tail endpoint.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V199 compiled support now includes:
+V200 compiled support now includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -130,47 +132,30 @@ plus the square-tail and radius-layer-cake support:
 `durrett2019_theorem_2_2_12_sq_tail_event_eq_abs_tail`,
 `durrett2019_theorem_2_2_12_measureReal_sq_tail_eq_abs_tail`,
 `durrett2019_theorem_2_2_12_truncated_layercake_Ioc_of_Ioi`, and
-`durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake_Ioi`.
+`durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake_Ioi`,
+plus the completed radius-layer-cake and source endpoint:
+`durrett2019_lemma_2_2_13_lintegral_abs_sq_tail_lt`,
+`durrett2019_lemma_2_2_13_integral_abs_sq_tail_lt`,
+`durrett2019_theorem_2_2_12_truncated_sq_layercake_radius_lintegral`,
+`durrett2019_theorem_2_2_12_truncated_sq_layercake_radius`,
+`durrett2019_theorem_2_2_12_truncated_sq_layercake_radius_eventually`,
+`durrett2019_theorem_2_2_12_tail_average_bound_of_layercake`,
+`durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_real_tail`, and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail`.
 
 Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
-Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, or Theorem 2.4.9.  Move toward
-Theorem 2.2.12 and Lemma 2.2.13 support.  The 2.2.11 large-jump replacement,
-truncated-row variance/centering, final assembly from hypotheses (i)/(ii),
-truncation measurability, bounded `L^2`, row-wise independence inheritance,
-original-row source wrapper, and the single-sequence specialization
-`X_{n,k}=X_k`, `b_n=n` through the exact display
-`S_n / n - mu_n -> 0` are compiled.  The two row numeric hypotheses from
-Theorem 2.2.11 are now reduced to the single-variable limits
-`n * P(|X_0| > n) -> 0` and `E[bar X_{n,0}^2] / n -> 0`, and the first of
-these is discharged from the real-tail source hypothesis
-`x * P(|X_0| > x) -> 0`.  Lemma 2.2.13 is now registered in mathlib's
-`lintegral` layer-cake form, and any vanishing upper-bound sequence for
-`E[bar X_{n,0}^2] / n` now feeds the final Theorem 2.2.12 display.  The
-Cesaro/tail-average bridge from the real-tail source assumption to
-`(1/n) * ∫_0^n 2*y*P(|X_0|>y) dy -> 0` is compiled, and the clipped tail profile's
-local integrability is now discharged automatically from antitone tail
-measurability and the probability bound `≤ 1`.  Next prove only the actual
-textbook truncated-square comparison
-`E[bar X_{n,0}^2] / n ≤ (1/n) * ∫_0^n 2*y*P(|X_0|>y) dy` eventually; the
-compiled exact tail-average endpoint will then finish Theorem 2.2.12.  The
-needed event-level facts `|bar X| ≤ |X|`, `|bar X| ≤ n`, tail-probability
-domination, zero tail above the truncation level, ordinary square-tail
-layer-cake display for `bar X_{n,0}^2`, positive square-tail event rewriting,
-and the `(0,∞)` radius-layer-cake to `(0,n]` truncation step are already
-compiled.  Next prove only the radius-form ordinary layer-cake display over
-`(0,∞)`,
-`E[bar X_{n,0}^2] = ∫_0^∞ 2*y*P(|bar X_{n,0}|>y) dy`, likely by converting
-mathlib's `lintegral_rpow_eq_lintegral_meas_lt_mul` at `p = 2` to ordinary
-real integrals using boundedness/finite-measure conversions.  Do not redo the
-square-tail `∫ t, P(t < bar X^2)` layer or the finite-support `(0,n]` cutdown.
-Reuse
-independence/product wrappers, finite-sum
-variance support, Borel-Cantelli, strong-law, empirical-CDF infrastructure, and
-mathlib layer-cake/tail-integral APIs.  Search mathlib/local first for the
-exact primitive and use
-`origin/codex/vdvw-selected-cover-source` only as selective reference via
-`git grep`/`git show` or an isolated worktree; do not merge it wholesale into
-this lane.
+Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, Theorem 2.2.12 layer-cake, or
+Theorem 2.4.9.  The Durrett 2.2.12 real-tail source endpoint now compiles from
+the displayed hypothesis `x * P(|X_0| > x) -> 0`, independence, identical
+distribution, and measurability.  Move to the next unsaturated textbook spine
+already indicated by the dashboard: Chapter 3 weak convergence / characteristic
+functions / CLT wrappers, or a later theorem that explicitly needs a missing
+Chapter 2 primitive.  Reuse the compiled independence/product wrappers,
+finite-sum variance support, Borel-Cantelli, strong-law, empirical-CDF
+infrastructure, and mathlib layer-cake/tail-integral APIs.  Search mathlib and
+local `StatInference` first; use `origin/codex/vdvw-selected-cover-source` only
+as selective reference via `git grep`/`git show` or an isolated worktree; do not
+merge it wholesale into this lane.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including

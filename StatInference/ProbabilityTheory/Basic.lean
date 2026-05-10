@@ -2833,6 +2833,130 @@ theorem durrett2019_lemma_2_2_13_lintegral_rpow_tail_lt
     (μ := P) hY_nonneg hY_meas hp
 
 /--
+Durrett 2019, Lemma 2.2.13, square-radius layer-cake formula.
+
+This is the `p = 2` source display with the substitution already performed:
+`E[Y^2] = ∫_0^∞ 2 y P(|Y| > y) dy`, still expressed as an extended
+nonnegative integral.
+-/
+theorem durrett2019_lemma_2_2_13_lintegral_abs_sq_tail_lt
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : Ω -> ℝ}
+    (hY_meas : AEMeasurable Y P) :
+    (∫⁻ ω, ENNReal.ofReal ((Y ω) ^ 2) ∂P) =
+      ∫⁻ y in Set.Ioi (0 : ℝ),
+        P {ω : Ω | y < |Y ω|} * ENNReal.ofReal (2 * y) := by
+  let A : Ω -> ℝ := fun ω => |Y ω|
+  have hA_nonneg : 0 ≤ᵐ[P] A :=
+    Eventually.of_forall fun ω => abs_nonneg (Y ω)
+  have hA_meas : AEMeasurable A P := hY_meas.abs
+  have hg_intble :
+      ∀ t > 0,
+        IntervalIntegrable (fun y : ℝ => 2 * y) volume 0 t := by
+    intro t _ht
+    exact (continuous_const.mul continuous_id).intervalIntegrable 0 t
+  have hg_nonneg :
+      ∀ᵐ y ∂volume.restrict (Set.Ioi (0 : ℝ)), 0 ≤ 2 * y := by
+    filter_upwards
+      [self_mem_ae_restrict
+        (measurableSet_Ioi : MeasurableSet (Set.Ioi (0 : ℝ)))]
+      with y hy
+    exact mul_nonneg (by norm_num) (le_of_lt hy)
+  have hkey :=
+    MeasureTheory.lintegral_comp_eq_lintegral_meas_lt_mul
+      (μ := P) (f := A) (g := fun y : ℝ => 2 * y)
+      hA_nonneg hA_meas hg_intble hg_nonneg
+  have hleft :
+      (∫⁻ ω, ENNReal.ofReal (∫ y in 0..A ω, 2 * y) ∂P) =
+        ∫⁻ ω, ENNReal.ofReal ((Y ω) ^ 2) ∂P := by
+    refine lintegral_congr fun ω => ?_
+    have hcalc : (∫ y in 0..A ω, 2 * y) = (Y ω) ^ 2 := by
+      calc
+        (∫ y in 0..A ω, 2 * y) = 2 * ∫ y in 0..A ω, y := by
+          rw [intervalIntegral.integral_const_mul]
+        _ = 2 * (((A ω) ^ 2 - 0 ^ 2) / 2) := by
+          rw [integral_id]
+        _ = (Y ω) ^ 2 := by
+          simp [A, sq_abs]
+          ring
+    rw [hcalc]
+  rw [← hleft]
+  exact hkey
+
+/--
+Durrett 2019, Lemma 2.2.13, ordinary square-radius layer-cake formula.
+
+This converts the extended nonnegative `p = 2` radius-layer-cake identity to
+the ordinary real integral form used in the proof of Theorem 2.2.12.
+-/
+theorem durrett2019_lemma_2_2_13_integral_abs_sq_tail_lt
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Y : Ω -> ℝ}
+    (hY_meas : Measurable Y)
+    (hY_sq_int : Integrable (fun ω => (Y ω) ^ 2) P) :
+    (∫ ω, (Y ω) ^ 2 ∂P) =
+      ∫ y in Set.Ioi (0 : ℝ),
+        2 * y * P.real {ω : Ω | y < |Y ω|} := by
+  have hlin :=
+    durrett2019_lemma_2_2_13_lintegral_abs_sq_tail_lt
+      (P := P) (Y := Y) hY_meas.aemeasurable
+  have hsq_nonneg :
+      0 ≤ᵐ[P] fun ω => (Y ω) ^ 2 :=
+    Eventually.of_forall fun ω => sq_nonneg _
+  have hleft_ofReal :
+      ENNReal.ofReal (∫ ω, (Y ω) ^ 2 ∂P) =
+        ∫⁻ ω, ENNReal.ofReal ((Y ω) ^ 2) ∂P :=
+    ofReal_integral_eq_lintegral_ofReal hY_sq_int hsq_nonneg
+  have hleft_nonneg : 0 ≤ ∫ ω, (Y ω) ^ 2 ∂P :=
+    integral_nonneg fun ω => sq_nonneg _
+  have htail_meas :
+      Measurable fun y : ℝ => P {ω : Ω | y < |Y ω|} := by
+    refine Antitone.measurable ?_
+    intro s t hst
+    exact measure_mono fun ω hω => lt_of_le_of_lt hst hω
+  have htail_factor_meas :
+      AEMeasurable
+        (fun y : ℝ => ENNReal.ofReal (2 * y))
+        (volume.restrict (Set.Ioi (0 : ℝ))) :=
+    ((measurable_const.mul measurable_id).ennreal_ofReal).aemeasurable
+  have htail_lintegrand_meas :
+      AEMeasurable
+        (fun y : ℝ =>
+          P {ω : Ω | y < |Y ω|} * ENNReal.ofReal (2 * y))
+        (volume.restrict (Set.Ioi (0 : ℝ))) :=
+    htail_meas.aemeasurable.mul htail_factor_meas
+  have htail_lintegrand_finite :
+      ∀ᵐ y ∂volume.restrict (Set.Ioi (0 : ℝ)),
+        P {ω : Ω | y < |Y ω|} * ENNReal.ofReal (2 * y) < ∞ := by
+    exact Eventually.of_forall fun y =>
+      ENNReal.mul_lt_top (measure_lt_top P _) ENNReal.ofReal_lt_top
+  have hright_toReal :
+      (∫ y,
+        (P {ω : Ω | y < |Y ω|} * ENNReal.ofReal (2 * y)).toReal
+          ∂volume.restrict (Set.Ioi (0 : ℝ))) =
+        (∫⁻ y in Set.Ioi (0 : ℝ),
+          P {ω : Ω | y < |Y ω|} * ENNReal.ofReal (2 * y)).toReal :=
+    integral_toReal htail_lintegrand_meas htail_lintegrand_finite
+  have hright_integrand :
+      (fun y : ℝ =>
+        (P {ω : Ω | y < |Y ω|} * ENNReal.ofReal (2 * y)).toReal) =ᵐ[
+          volume.restrict (Set.Ioi (0 : ℝ))]
+        (fun y : ℝ => 2 * y * P.real {ω : Ω | y < |Y ω|}) := by
+    filter_upwards
+      [self_mem_ae_restrict
+        (measurableSet_Ioi : MeasurableSet (Set.Ioi (0 : ℝ)))]
+      with y hy
+    have hy_nonneg : 0 ≤ 2 * y :=
+      mul_nonneg (by norm_num) (le_of_lt hy)
+    rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hy_nonneg, measureReal_def]
+    ring
+  have heq := congrArg ENNReal.toReal hlin
+  rw [← hleft_ofReal, ENNReal.toReal_ofReal hleft_nonneg] at heq
+  rw [← hright_toReal] at heq
+  rw [integral_congr_ae hright_integrand] at heq
+  exact heq
+
+/--
 Durrett 2019, Theorem 2.2.12 support: a nonnegative upper bound sequence
 which tends to zero proves the remaining single truncated second-moment limit.
 
@@ -3455,6 +3579,82 @@ theorem durrett2019_theorem_2_2_12_truncated_sq_integrable
     (n := n) (k := 0) hX0).integrable_sq
 
 /--
+Durrett 2019, Theorem 2.2.12 support: extended nonnegative radius-layer-cake
+formula for the square of the single truncated variable.
+
+This is the exact `bar X_{n,0}` specialization of
+`durrett2019_lemma_2_2_13_lintegral_abs_sq_tail_lt`.
+-/
+theorem durrett2019_theorem_2_2_12_truncated_sq_layercake_radius_lintegral
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX0 : Measurable (X 0)) (n : ℕ) :
+    (∫⁻ ω,
+      ENNReal.ofReal
+        ((durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2) ∂P) =
+      ∫⁻ y in Set.Ioi (0 : ℝ),
+        P {ω : Ω |
+          y <
+            |durrett2019_theorem_2_2_11_truncated
+              (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|} *
+          ENNReal.ofReal (2 * y) :=
+  durrett2019_lemma_2_2_13_lintegral_abs_sq_tail_lt
+    (P := P)
+    (Y := durrett2019_theorem_2_2_11_truncated
+      (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0)
+    ((durrett2019_theorem_2_2_11_measurable_truncated
+      (X := fun _ k => X k) (b := fun n : ℕ => (n : ℝ))
+      (n := n) (k := 0) hX0).aemeasurable)
+
+/--
+Durrett 2019, Theorem 2.2.12 support: ordinary radius-layer-cake formula for
+the square of the single truncated variable.
+-/
+theorem durrett2019_theorem_2_2_12_truncated_sq_layercake_radius
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX0 : Measurable (X 0)) (n : ℕ) :
+    (∫ ω,
+      (durrett2019_theorem_2_2_11_truncated
+        (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) =
+      ∫ y in Set.Ioi (0 : ℝ),
+        2 * y * P.real {ω : Ω |
+          y <
+            |durrett2019_theorem_2_2_11_truncated
+              (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|} :=
+  durrett2019_lemma_2_2_13_integral_abs_sq_tail_lt
+    (P := P)
+    (Y := durrett2019_theorem_2_2_11_truncated
+      (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0)
+    (durrett2019_theorem_2_2_11_measurable_truncated
+      (X := fun _ k => X k) (b := fun n : ℕ => (n : ℝ))
+      (n := n) (k := 0) hX0)
+    (durrett2019_theorem_2_2_12_truncated_sq_integrable
+      (P := P) (X := X) hX0 n)
+
+/--
+Durrett 2019, Theorem 2.2.12 support: eventual form of the ordinary
+radius-layer-cake formula for the single truncated variable.
+-/
+theorem durrett2019_theorem_2_2_12_truncated_sq_layercake_radius_eventually
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX0 : Measurable (X 0)) :
+    ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) =
+        ∫ y in Set.Ioi (0 : ℝ),
+          2 * y * P.real {ω : Ω |
+            y <
+              |durrett2019_theorem_2_2_11_truncated
+                (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|} :=
+  Eventually.of_forall fun n =>
+    durrett2019_theorem_2_2_12_truncated_sq_layercake_radius
+      (P := P) (X := X) hX0 n
+
+/--
 Durrett 2019, Theorem 2.2.12 support: ordinary real layer-cake for the
 truncated square, still in square-tail coordinates.
 
@@ -3733,6 +3933,75 @@ theorem durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake_Ioi
     (P := P) (X := X)
     (durrett2019_theorem_2_2_12_truncated_layercake_Ioc_of_Ioi
       (P := P) (X := X) hlayercake)
+
+/--
+Durrett 2019, Theorem 2.2.12 support: the proved ordinary radius-layer-cake
+formula gives the textbook tail-average bound with no remaining layer-cake
+assumption.
+-/
+theorem durrett2019_theorem_2_2_12_tail_average_bound_of_layercake
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX0 : Measurable (X 0)) :
+    ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+        (n : ℝ) ≤
+          (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+            2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ) :=
+  durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake_Ioi
+    (P := P) (X := X)
+    (durrett2019_theorem_2_2_12_truncated_sq_layercake_radius_eventually
+      (P := P) (X := X) hX0)
+
+/--
+Durrett 2019, Theorem 2.2.12 support: the displayed real-tail hypothesis
+alone proves the single truncated second-moment limit.
+-/
+theorem durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_real_tail
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX0 : Measurable (X 0))
+    (htail_real : Tendsto
+      (fun x : ℝ => x * P.real {ω : Ω | x < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ))) :
+    Tendsto
+      (fun n : ℕ =>
+        (∫ ω,
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+          (n : ℝ))
+      atTop (𝓝 (0 : ℝ)) :=
+  durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound_auto_integrable
+    (P := P) (X := X) htail_real
+    (durrett2019_theorem_2_2_12_tail_average_bound_of_layercake
+      (P := P) (X := X) hX0)
+
+/--
+Durrett 2019, Theorem 2.2.12 source-facing endpoint from Durrett's displayed
+real-tail hypothesis.
+-/
+theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (htail_real : Tendsto
+      (fun x : ℝ => x * P.real {ω : Ω | x < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hX_meas : ∀ k : ℕ, Measurable (X k)) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (∑ k ∈ Finset.range n, X k ω) / (n : ℝ) -
+          durrett2019_theorem_2_2_12_truncatedMean P X n)
+      atTop (fun _ => 0) :=
+  durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_single_second
+    (P := P) (X := X) htail_real
+    (durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_real_tail
+      (P := P) (X := X) (hX_meas 0) htail_real)
+    hX_indep hX_ident hX_meas
 
 /-! ## Durrett, Section 2.3 -/
 

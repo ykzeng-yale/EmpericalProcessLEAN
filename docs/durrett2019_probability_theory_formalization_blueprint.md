@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V199`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V200`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -117,7 +117,7 @@ supplied ordinary truncated-square layer-cake display to the exact
 tail-average bound.  V199 adds ordinary square-tail layer-cake support, the
 positive square-tail event rewrite, the finite-support conversion from the
 radius-layer-cake display over `(0,∞)` to the textbook display over `(0,n]`,
-and the direct `(0,∞)` radius-layer-cake consumer.  New V188-V199 declarations
+and the direct `(0,∞)` radius-layer-cake consumer.  New V188-V200 declarations
 are
 `durrett2019_theorem_2_2_11_measurable_truncationMap`,
 `durrett2019_theorem_2_2_11_measurable_truncated`,
@@ -179,12 +179,21 @@ and
 `durrett2019_theorem_2_2_12_measureReal_sq_tail_eq_abs_tail`,
 `durrett2019_theorem_2_2_12_truncated_layercake_Ioc_of_Ioi`, and
 `durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake_Ioi`.
-Continue with the remaining Theorem 2.2.12 support: prove the radius-form
-ordinary layer-cake display over `(0,∞)` for `|bar X_{n,0}|^2` by converting
-mathlib's `lintegral_rpow_eq_lintegral_meas_lt_mul` at `p = 2` to ordinary
-real integrals.  Feed that display to the compiled `(0,∞)` consumer.  Do not
-repeat 2.1, 2.2.1, 2.2.3 scalar plumbing, 2.2.6, 2.4.9, the square-tail
-ordinary layer-cake layer, or the finite-support `(0,n]` cutdown.
+V200 closes the remaining Theorem 2.2.12 layer-cake support:
+`durrett2019_lemma_2_2_13_lintegral_abs_sq_tail_lt`,
+`durrett2019_lemma_2_2_13_integral_abs_sq_tail_lt`,
+`durrett2019_theorem_2_2_12_truncated_sq_layercake_radius_lintegral`,
+`durrett2019_theorem_2_2_12_truncated_sq_layercake_radius`,
+`durrett2019_theorem_2_2_12_truncated_sq_layercake_radius_eventually`,
+`durrett2019_theorem_2_2_12_tail_average_bound_of_layercake`,
+`durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_real_tail`, and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail`.
+Do not repeat 2.1, 2.2.1, 2.2.3 scalar plumbing, 2.2.6, 2.2.12 layer-cake,
+2.4.9, the square-tail ordinary layer-cake layer, or the finite-support
+`(0,n]` cutdown.  Continue with the next unsaturated textbook spine; use
+Chapter 3 weak convergence / characteristic functions / CLT wrappers as the
+default unless a later theorem explicitly exposes a missing Chapter 2
+primitive.
 
 For each cycle, route from:
 

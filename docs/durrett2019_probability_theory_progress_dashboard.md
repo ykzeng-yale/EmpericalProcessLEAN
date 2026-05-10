@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V199` in
+Route from `Live In-Thread Goal Prompt V200` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -177,16 +177,20 @@ support and finite-support radius bridge:
 `durrett2019_theorem_2_2_12_measureReal_sq_tail_eq_abs_tail`,
 `durrett2019_theorem_2_2_12_truncated_layercake_Ioc_of_Ioi`, and
 `durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake_Ioi`.
-The active numeric frontier is now sharply the actual textbook upper bound
-from the truncated square moment to the compiled tail integral average
-`(1 / n) * ∫_0^n 2*y*P(|X_0|>y) dy`.  The clipped tail profile's local
-integrability, event-level tail domination facts, square-tail ordinary
-layer-cake display, square-to-absolute-tail event rewrite, and `(0,∞)` to
-`(0,n]` finite-support cutdown are now compiled.  The remaining work is the
-radius-form ordinary layer-cake display over `(0,∞)` for `|bar X_{n,0}|^2`,
-likely by converting mathlib's `lintegral_rpow_eq_lintegral_meas_lt_mul` at
-`p = 2` to ordinary real integrals through boundedness/finite-measure
-conversion.  Do not redo the square-tail layer or the finite-support cutdown.
+V200 closes the layer-cake blocker and packages the source endpoint:
+`durrett2019_lemma_2_2_13_lintegral_abs_sq_tail_lt`,
+`durrett2019_lemma_2_2_13_integral_abs_sq_tail_lt`,
+`durrett2019_theorem_2_2_12_truncated_sq_layercake_radius_lintegral`,
+`durrett2019_theorem_2_2_12_truncated_sq_layercake_radius`,
+`durrett2019_theorem_2_2_12_truncated_sq_layercake_radius_eventually`,
+`durrett2019_theorem_2_2_12_tail_average_bound_of_layercake`,
+`durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_real_tail`, and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail`.
+Do not redo the square-tail layer, the finite-support cutdown, the `p = 2`
+ordinary radius-layer-cake conversion, or the 2.2.12 source endpoint.  The next
+active frontier is the next unsaturated textbook spine, with Chapter 3 weak
+convergence / characteristic functions / CLT wrappers as the dashboard-backed
+default unless a later theorem exposes a missing Chapter 2 primitive.
 Do not route future cycles back to Chapter 4.5.2 or solved 2.1.10 partial-sum,
 2.1.13 product-consumer, 2.2.1 variance-sum, 2.2.3, 2.2.6, 2.4.9, 2.1.12,
 2.1.15, or 2.1.16 plumbing unless the user explicitly pivots.
