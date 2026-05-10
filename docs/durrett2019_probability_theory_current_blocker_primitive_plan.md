@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V208
+## Live In-Thread Goal Prompt V209
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -106,18 +106,24 @@ V208 starts the first real source estimate feeding V207.  The pull-out lemma
 Mathlib-shaped conditional-variance core: if `H` is `ℱ_k`-measurable and
 `E[Y^2 | ℱ_k] ≤ V`, then `∫ H^2 * Y^2 ≤ ∫ H^2 * V`.
 
-Next aggressive step: instantiate the V208 pull-out lemma with
-`H = (f(A_{k+1}))^{-1}`, `Y = X_{k+1}-X_k`, and
-`V = A_{k+1}-A_k` to prove the conditional-variance/pull-out comparison
-consumed by V207.  Then prove the deterministic/integral comparison that makes
+V209 instantiates V208 with the textbook reciprocal normalizer and martingale
+increment.  The per-step comparison
+`durrett2019_theorem_4_5_3_reciprocal_comp_integral_le_variance_increment_of_condExp_square_le`
+proves the V207 `hscaled_le` input from
+`E[(X_{k+1}-X_k)^2 | ℱ_k] ≤ A_{k+1}-A_k`, and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_variance_ratio_summable`
+feeds those comparisons directly into the normalized-process endpoint.
+
+Next aggressive step: prove the deterministic/integral comparison that makes
 `∑ ∫ (A_{k+1}-A_k) / f(A_{k+1})^2` summable from
-`∫_0^∞ f(t)^{-2} dt < ∞` and monotone/divergent `A`.  Keep `MemLp` for the
-reciprocal transform explicit if needed.  Do not route back to stopped
+`∫_0^∞ f(t)^{-2} dt < ∞` and monotone/divergent `A`.  Keep the remaining
+reciprocal-transform `MemLp` and integrability side conditions explicit until
+they can be discharged from source hypotheses.  Do not route back to stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2 source
 packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
-predictability/bounds, scaled-summability-to-transform plumbing, Chapter 2.1,
-or Theorem 2.4.9 unless Theorem 4.5.3 exposes a strictly stronger missing
-primitive.
+predictability/bounds, scaled-summability-to-transform plumbing, conditional
+variance pull-out, Chapter 2.1, or Theorem 2.4.9 unless Theorem 4.5.3 exposes a
+strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and

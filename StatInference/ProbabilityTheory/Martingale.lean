@@ -18215,6 +18215,69 @@ theorem durrett2019_theorem_4_5_3_integral_mul_sq_le_of_condExp_square_le
               mul_le_mul_of_nonneg_left hω (sq_nonneg (H ω)))
 
 /--
+Durrett 2019, Theorem 4.5.3 conditional-variance source comparison.
+
+This instantiates the V208 pull-out core with the textbook reciprocal
+normalizer `H_k = f(A_{k+1})^{-1}` and martingale increment
+`Y_k = X_{k+1} - X_k`.
+-/
+theorem durrett2019_theorem_4_5_3_reciprocal_comp_integral_le_variance_increment_of_condExp_square_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {k : ℕ}
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hf_cont : Continuous f)
+    (hscaled_int :
+      Integrable
+        (fun ω =>
+          ((f (A (k + 1) ω))⁻¹ * (X (k + 1) ω - X k ω)) ^ 2) P)
+    (hdiff_sq_int :
+      Integrable (fun ω => (X (k + 1) ω - X k ω) ^ 2) P)
+    (hratio_int :
+      Integrable
+        (fun ω => (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2) P)
+    (hcond_le :
+      P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+        fun ω => A (k + 1) ω - A k ω) :
+    (∫ ω, ((f (A (k + 1) ω))⁻¹ * (X (k + 1) ω - X k ω)) ^ 2 ∂P) ≤
+      ∫ ω, (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 ∂P := by
+  let H : Ω -> ℝ := fun ω => (f (A (k + 1) ω))⁻¹
+  let Y : Ω -> ℝ := fun ω => X (k + 1) ω - X k ω
+  let V : Ω -> ℝ := fun ω => A (k + 1) ω - A k ω
+  have hH_meas : StronglyMeasurable[ℱ k] H := by
+    dsimp [H]
+    exact
+      (durrett2019_theorem_4_5_3_reciprocal_comp_predictable
+        (ℱ := ℱ) (A := A) (f := f) hA_predictable hf_cont).measurable_add_one k
+  have hscaled_eq :
+      (fun ω => ((f (A (k + 1) ω))⁻¹ * (X (k + 1) ω - X k ω)) ^ 2)
+        =ᵐ[P] fun ω => H ω ^ 2 * Y ω ^ 2 := by
+    refine ae_of_all P fun ω => ?_
+    simp [H, Y, mul_pow]
+  have hratio_eq :
+      (fun ω => H ω ^ 2 * V ω)
+        =ᵐ[P] fun ω =>
+          (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 := by
+    refine ae_of_all P fun ω => ?_
+    simp [H, V, div_eq_mul_inv, mul_comm]
+  have hHY_int : Integrable (fun ω => H ω ^ 2 * Y ω ^ 2) P :=
+    (integrable_congr hscaled_eq).mp hscaled_int
+  have hHV_int : Integrable (fun ω => H ω ^ 2 * V ω) P :=
+    (integrable_congr hratio_eq).mpr hratio_int
+  have hcore :
+      (∫ ω, H ω ^ 2 * Y ω ^ 2 ∂P) ≤ ∫ ω, H ω ^ 2 * V ω ∂P :=
+    durrett2019_theorem_4_5_3_integral_mul_sq_le_of_condExp_square_le
+      (P := P) (ℱ := ℱ) (H := H) (Y := Y) (V := V) (k := k)
+      hH_meas hHY_int hdiff_sq_int hHV_int hcond_le
+  calc
+    (∫ ω, ((f (A (k + 1) ω))⁻¹ * (X (k + 1) ω - X k ω)) ^ 2 ∂P)
+        = ∫ ω, H ω ^ 2 * Y ω ^ 2 ∂P := integral_congr_ae hscaled_eq
+    _ ≤ ∫ ω, H ω ^ 2 * V ω ∂P := hcore
+    _ = ∫ ω, (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 ∂P :=
+        integral_congr_ae hratio_eq
+
+/--
 Durrett 2019, Theorem 4.5.3 variance-ratio summability bridge.
 
 If the reciprocal-scaled martingale increment square integrals are bounded by
@@ -18287,6 +18350,64 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
       (durrett2019_theorem_4_5_3_scaled_summable_of_integral_le_variance_ratio
         (P := P) (A := A) (X := X) (f := f)
         hscaled_le hvariance_ratio_summable)
+
+/--
+Durrett 2019, Theorem 4.5.3 source-facing reciprocal variance-ratio route.
+
+This removes the manual `hscaled_le` input from V207: the needed scaled
+integral comparison is derived from the conditional square estimate
+`E[(X_{k+1}-X_k)^2 | ℱ_k] ≤ A_{k+1}-A_k`.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_variance_ratio_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hf_cont : Continuous f)
+    (hf_one_le : ∀ n : ℕ, ∀ ω : Ω, 1 ≤ f (A n ω))
+    (hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ f (A (k + 2) ω) - f (A (k + 1) ω))
+    (hb_atTop :
+      ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop)
+    (hTransform_memLp_two :
+      ∀ k, MemLp
+        (durrett2019_stochasticTransform
+          (fun n : ℕ => fun ω : Ω => (f (A n ω))⁻¹) X k)
+        (2 : ℝ≥0∞) P)
+    (hscaled_int :
+      ∀ k : ℕ,
+        Integrable
+          (fun ω =>
+            ((f (A (k + 1) ω))⁻¹ * (X (k + 1) ω - X k ω)) ^ 2) P)
+    (hdiff_sq_int :
+      ∀ k : ℕ, Integrable (fun ω => (X (k + 1) ω - X k ω) ^ 2) P)
+    (hratio_int :
+      ∀ k : ℕ,
+        Integrable
+          (fun ω => (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2) P)
+    (hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω)
+    (hvariance_ratio_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 ∂P) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_variance_ratio_summable
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f)
+      hX hX0 hA_predictable hf_cont hf_one_le hb_increment_nonneg hb_atTop
+      hTransform_memLp_two
+      (fun k =>
+        durrett2019_theorem_4_5_3_reciprocal_comp_integral_le_variance_increment_of_condExp_square_le
+          (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (k := k)
+          hA_predictable hf_cont (hscaled_int k) (hdiff_sq_int k)
+          (hratio_int k) (hcond_le k))
+      hvariance_ratio_summable
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
