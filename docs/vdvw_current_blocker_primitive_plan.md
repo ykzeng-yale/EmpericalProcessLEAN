@@ -9948,3 +9948,18 @@ when only an a.e. fiber lower bound is mathematically available.  The live
 probability blocker remains the displayed-beta bad-fiber mass, pair-sub mass
 plus coefficient-correct sign-swap transport, or a stronger structural
 tail/cardinality theorem.
+
+2026-05-10 a.e. original-or-ghost displayed-beta source interface:
+`Theorem243.lean` now also adds
+`VdVWOuterProbability_mul_left_le_two_mul_of_ae_product_fiber_lower_bound_or_ghost`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_ghost_product_fiber_lower_bound_or_selectedNet`.
+This lifts the a.e. product-fiber interface through the exact Lemma 2.3.7
+factor-two original-or-ghost projection.  Future averaged sign/ghost or
+conditional Fubini source proofs can therefore provide the displayed
+Chebyshev beta fiber lower bound only `P.restrict centeredBad`-a.e. and still
+feed the selected finite-net displayed-beta comparison with `A = 2`.  The
+remaining blocker is unchanged at the probability level: prove that a.e.
+displayed-beta fiber lower bound, or prove the pair-sub mass together with a
+coefficient-correct sign-swap transport, or state a stronger structural
+tail/cardinality theorem.

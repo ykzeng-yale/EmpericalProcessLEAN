@@ -3598,6 +3598,18 @@ the centered-bad marginal event.  They should not be counted as the missing
 probability theorem by themselves; they only keep that theorem in its natural
 a.e. form.
 
+The same a.e. source interface now also feeds the exact factor-two
+original-or-ghost selected-net projection through
+`VdVWOuterProbability_mul_left_le_two_mul_of_ae_product_fiber_lower_bound_or_ghost`
+and the displayed-beta constructor
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_ghost_product_fiber_lower_bound_or_selectedNet`.
+The next aggressive blueprint item is therefore not another wrapper at this
+layer.  It is to prove the actual a.e. displayed-beta ghost/Rademacher
+fiber-mass theorem for a measurable joint event, or to prove the pair-sub
+mass plus coefficient-correct sign-swap transport, or to introduce a
+mathematically explicit stronger structural tail/cardinality condition that
+implies one of those source inputs.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

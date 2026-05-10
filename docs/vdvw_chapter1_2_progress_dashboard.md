@@ -4514,3 +4514,15 @@ This lets the next averaged sign/ghost proof state its fiber lower bound
 `P.restrict left`-a.e. instead of pointwise for every centered-bad sample.  It
 does not close the Lemma 2.3.7 probability source, but it removes an avoidable
 over-strengthening from the source interface.
+
+The a.e. product-fiber interface now reaches the exact factor-two
+original-or-ghost selected-net projection as
+`VdVWOuterProbability_mul_left_le_two_mul_of_ae_product_fiber_lower_bound_or_ghost`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_ghost_product_fiber_lower_bound_or_selectedNet`.
+This is the preferred target for the next genuine source proof: construct a
+measurable ghost/Rademacher joint event whose displayed Chebyshev beta fiber
+mass holds almost everywhere on the centered-bad original samples and whose
+points project into the original or ghost selected finite-net bad event.  The
+dashboard blocker remains that probability-mass theorem, not the
+measure-theoretic factor-two plumbing.
