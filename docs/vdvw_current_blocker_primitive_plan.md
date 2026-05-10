@@ -10383,3 +10383,14 @@ eventual `P^n`-a.e. lower-growth hypothesis for the canonical selected
 cardinality to both product-pair projections.  The remaining product-pair
 lower-growth source task is therefore one ordinary sample-law structural
 theorem, not duplicated original/ghost product-pair bookkeeping.
+
+2026-05-10 sign-only base-a.e. implication endpoint:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+These compose the countable centered-bad restriction adapter with the
+canonical sign-only inverse-square route.  The remaining sign-only source
+theorem can now be stated directly as a `P^n`-a.e. implication from membership
+in the centered bad event, plus the already exposed a.e. selected-cardinality
+lower-growth input.

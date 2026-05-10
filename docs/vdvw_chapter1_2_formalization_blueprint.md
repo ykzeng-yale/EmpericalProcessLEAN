@@ -223,6 +223,11 @@ measure-preserving maps.  Thus the remaining lower-growth source theorem, if
 this branch is used, can be stated once under `P^n`; the harder global blocker
 is still either that structural lower-growth theorem or a direct
 product-fiber/Chebyshev source comparison that avoids inverse-square tails.
+The parallel sign-only inverse-square route now also accepts the natural
+base-measure source form all the way through fixed-`M` and untruncated
+convergence: prove the pure Rademacher bad-fiber lower bound for `P^n`-a.e.
+samples, conditional on membership in the centered bad event, and the endpoint
+performs the restricted-measure conversion internally.
 
 The displayed-beta selected-cover lane now has a localized-countability
 measurable-cover discharge:

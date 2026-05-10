@@ -4844,3 +4844,13 @@ feeds the same projected source through the large-`M` envelope-tail handoff.
 The product-pair lower-growth burden is therefore now a single ordinary
 sample-law a.e. structural lower-growth theorem, not separate original and
 ghost product-pair lower bounds.
+
+The sign-only Rademacher inverse-square route now carries the base-measure
+implication source form through the canonical first-level endpoint:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+Its untruncated companion
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`
+packages the same source shape through the large-`M` handoff.  Future
+probability work can now prove the pure Rademacher bad-fiber lower bound as a
+`P^n`-a.e. implication on centered-bad samples; the restricted-measure
+conversion is no longer exposed at the endpoint.
