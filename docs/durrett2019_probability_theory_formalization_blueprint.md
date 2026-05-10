@@ -27,12 +27,12 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V204`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V205`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current active frontier: Durrett Section 4.5.2 in
+Current active frontier: Durrett Section 4.5.3 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the source
 square-minus stopped certificate, finite-terminal threshold cover, countable
 event-cover assembly, and monotone-terminal source wrapper for Theorem 4.5.2.
@@ -43,10 +43,15 @@ the monotone-terminal endpoint.  V203 derives stopped predictability of
 wrappers through the monotone-terminal auto endpoint.  V204 packages the exact
 event-facing finite-variance side of Theorem 4.5.2 on an arbitrary event
 `FiniteVar`, including the threshold cover, terminal-bound source convergence,
-and monotone-terminal source convergence endpoint.  The next theorem-facing
-target is Durrett Theorem 4.5.3.  Do not route back to Chapter 2.1,
-Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped running-maximum
-boundedness, stopped predictability, or exact Theorem 4.5.2 packaging unless a
+and monotone-terminal source convergence endpoint.  V205 starts Theorem 4.5.3
+with
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_transform_tendsto`,
+which applies the Exercise 4.4.11 Kronecker theorem to sample-dependent
+normalizers.  The next theorem-facing target is the predictable
+reciprocal-transform and variance/integral source package for `b_n = f(A_n)`.
+Do not route back to Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3
+wrappers, stopped running-maximum boundedness, stopped predictability, exact
+Theorem 4.5.2 packaging, or deterministic Exercise 4.4.11 normalizers unless a
 later theorem exposes a precise missing primitive.
 
 Closed Chapter 2 support lives in

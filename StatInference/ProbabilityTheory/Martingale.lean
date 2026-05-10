@@ -17955,6 +17955,66 @@ theorem durrett2019_exercise_4_4_11_normalized_process_ae_tendsto_zero_of_recipr
         (P := P) (X := X) (b := b) hX_memLp_two
 
 /--
+Durrett 2019, Theorem 4.5.3 Kronecker support with a random normalizer.
+
+The deterministic Exercise 4.4.11 theorem already proves the pathwise
+Kronecker step for a fixed normalizing sequence.  This wrapper applies it
+outside one null set when the normalizer depends on the sample point, as in
+the textbook choice `b_n = f(A_n)`.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_transform_tendsto
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {H X b : ℕ -> Ω -> ℝ}
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hH_eq : ∀ᵐ ω ∂P, ∀ n : ℕ, H n ω = (b n ω)⁻¹)
+    (hb_nonzero : ∀ᵐ ω ∂P, ∀ k : ℕ, b (k + 1) ω ≠ 0)
+    (hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ b (k + 2) ω - b (k + 1) ω)
+    (hb_atTop :
+      ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => b (n + 1) ω) atTop atTop)
+    (hTransform_tendsto :
+      ∀ᵐ ω ∂P,
+        ∃ Y : ℝ,
+          Tendsto (fun n : ℕ => durrett2019_stochasticTransform H X n ω)
+            atTop (𝓝 Y)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / b n ω) atTop (𝓝 0) := by
+  filter_upwards
+    [hX0, hH_eq, hb_nonzero, hb_increment_nonneg, hb_atTop, hTransform_tendsto]
+    with ω hX0ω hHω hb_nonzeroω hb_increment_nonnegω hb_atTopω hTransformω
+  rcases hTransformω with ⟨Y, hY⟩
+  have hincrement :
+      Tendsto
+        (fun n : ℕ => (X (n + 1) ω - X 0 ω) / b (n + 1) ω)
+        atTop (𝓝 0) := by
+    refine
+      durrett2019_exercise_4_4_11_normalized_increment_sum_tendsto_zero
+        (A := fun n : ℕ => durrett2019_stochasticTransform H X n ω)
+        (X := fun n : ℕ => X n ω) (b := fun n : ℕ => b n ω)
+        ?_ ?_ hb_nonzeroω (L := Y) ?_ hb_increment_nonnegω hb_atTopω
+    · simp [durrett2019_stochasticTransform]
+    · intro k
+      have hinc :=
+        congrFun
+          (durrett2019_exercise_4_4_11_stochasticTransform_increment_eq H X k) ω
+      calc
+        durrett2019_stochasticTransform H X (k + 1) ω -
+            durrett2019_stochasticTransform H X k ω
+            = H (k + 1) ω * (X (k + 1) ω - X k ω) := by
+              simpa [Pi.sub_apply, Pi.mul_apply] using hinc
+        _ = (X (k + 1) ω - X k ω) / b (k + 1) ω := by
+              rw [hHω (k + 1)]
+              ring
+    · exact hY.comp (tendsto_add_atTop_nat 1)
+  have hshifted :
+      Tendsto (fun n : ℕ => X (n + 1) ω / b (n + 1) ω) atTop (𝓝 0) :=
+    durrett2019_exercise_4_4_11_normalized_process_tendsto_zero_of_initial_zero
+      (X := fun n : ℕ => X n ω) (b := fun n : ℕ => b n ω) hX0ω hincrement
+  exact
+    (tendsto_add_atTop_iff_nat
+      (f := fun n : ℕ => X n ω / b n ω) 1).mp hshifted
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

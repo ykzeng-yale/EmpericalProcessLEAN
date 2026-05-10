@@ -4,14 +4,14 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V204
+## Live In-Thread Goal Prompt V205
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane: Durrett Chapter 4 martingales in
-`StatInference/ProbabilityTheory/Martingale.lean`, specifically Section 4.5.2.
+`StatInference/ProbabilityTheory/Martingale.lean`, specifically Section 4.5.3.
 Chapter 2.1 independence/product/convolution support, Theorem 2.4.9
 Glivenko-Cantelli, Theorem 2.2.12 layer-cake/source endpoint, Chapter 3 weak
 convergence/characteristic-function/CLT wrappers, and Section 4.5.1 maximal
@@ -66,13 +66,25 @@ New compiled endpoints:
 and
 `durrett2019_theorem_4_5_2_exists_ae_tendsto_on_of_source_square_minus_martingale_monotone_terminal_auto_bdd_of_predictable`.
 
-Next aggressive step: move directly to Durrett Theorem 4.5.3.  Reuse V204 as
-the finite-variance event side, then prove the predictable transform
-`H_m = f(A_m)^{-1}` route, connect it to Theorem 4.2.8/stopped martingale
-support, and package `X_n / f(A_n) -> 0` on `{A∞ = ∞}`.  Do not route back to
-stopped running-maximum boundedness, stopped predictability, or exact
-Theorem 4.5.2 source packaging unless Theorem 4.5.3 exposes a strictly
-stronger missing primitive.
+V205 starts the exact Theorem 4.5.3 route.  The random-normalizer Kronecker
+bridge
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_transform_tendsto`
+now turns a.e. convergence of the predictable transform plus pathwise
+nonzero/monotone/divergent random normalizer hypotheses into
+`X_n / b_n -> 0` a.s.  It reuses Exercise 4.4.11 pathwise Kronecker support
+with `b_n = b_n(ω)`, so the remaining 4.5.3 work is no longer the final
+Kronecker handoff.
+
+Next aggressive step: finish Durrett Theorem 4.5.3 source packaging.  Prove the
+predictable reciprocal transform route for `H_m = f(A_m)^{-1}`, connect the
+transform convergence to V204/Theorem 4.5.2 through the finite-variance event
+side, and package the textbook variance/integral estimate
+`∑ (A_{n+1}-A_n) / f(A_{n+1})^2 < ∞` on `{A∞ = ∞}` so the V205
+random-normalizer bridge yields `X_n / f(A_n) -> 0`.  Do not route back to
+stopped running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
+source packaging, deterministic Exercise 4.4.11 normalizers, Chapter 2.1, or
+Theorem 2.4.9 unless Theorem 4.5.3 exposes a strictly stronger missing
+primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
