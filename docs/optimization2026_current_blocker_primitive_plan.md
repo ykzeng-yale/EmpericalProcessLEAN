@@ -564,6 +564,13 @@ neighborhood membership, and derives the selector derivative equation from the
 stationary-selector certificate.  Future exact item-4 work should use selector
 stationarity plus a projected-domain neighborhood/open-domain fact, not raw
 `hdselector` or raw eventual inverse assumptions.
+The finite-dimensional stationary follow-up adds
+`BarrierInfProjectionSelectorStationary.schurHessDerivativeOn_of_fullHessianDerivative_symmetric_inverse_mem_nhds_finiteDimHyy`
+and
+`BarrierInfProjectionSelectorStationary.schurHessDerivativeOn_of_fullHessianDerivative_symmetric_inverse_isOpen_finiteDimHyy`.
+It reuses `barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim`
+to derive the `Hyy` left-inverse side from the right-inverse side, so the
+finite-dimensional vertical-block route should now pass only `Hyy * Hyy⁻¹ = I`.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

@@ -443,6 +443,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   Future source-facing inf-projection work should pass selector stationarity
   plus projected-domain neighborhood/open-domain facts rather than raw
   `hdselector` or raw eventual inverse hypotheses.
+- Inf-projection finite-dimensional stationary Schur shrink: the newest packet
+  adds
+  `BarrierInfProjectionSelectorStationary.schurHessDerivativeOn_of_fullHessianDerivative_symmetric_inverse_mem_nhds_finiteDimHyy`
+  and
+  `BarrierInfProjectionSelectorStationary.schurHessDerivativeOn_of_fullHessianDerivative_symmetric_inverse_isOpen_finiteDimHyy`.
+  These variants reuse
+  `barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim`, so the
+  finite-dimensional vertical-block route only carries the `Hyy` right-inverse
+  identity; the left inverse needed by the implicit-selector step is derived
+  internally.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in
