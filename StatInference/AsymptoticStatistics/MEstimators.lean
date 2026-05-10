@@ -5547,6 +5547,154 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hDerivative hDerivativeTaylor hSecondAction
 
 /--
+van der Vaart 1998, Theorem 5.41, finite-coordinate empirical-average source
+handoff from actual estimating-map coordinate paths, with non-circular
+scaled-estimator tightness.
+
+This is the actual estimating-map path version of the absorbing coordinate
+path Taylor endpoint.  It instantiates the abstract path as
+`t ↦ estimatingMap (theta0 + t • delta)` and derives the endpoint identities
+from `theta0 + delta = estimator`, without assuming
+`scaledEstimator = O_P(1)` externally.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapPathTaylor_envelope_absorbing
+    {Ω Ω' Observation Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] (Coord -> ℝ)) (Vinv : (Coord -> ℝ) →L[ℝ] Θ)
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scale : ℕ -> Ω -> ℝ)
+    (estimatingMap : ℕ -> Ω -> Observation -> Θ -> Coord -> ℝ)
+    (pathDerivative pathSecond :
+      ℕ -> Ω -> Observation -> Coord -> ℝ -> ℝ)
+    (scoreAtTheta0 estimatingAtEstimator :
+      ℕ -> Ω -> Observation -> Coord -> ℝ)
+    (derivative : ℕ -> Ω -> Observation -> Θ →L[ℝ] (Coord -> ℝ))
+    (secondDerivative :
+      ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))
+    (envelope : Observation -> ℝ)
+    {theta0 estimator delta scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Coord -> ℝ}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreCLT :
+      TendstoInDistribution
+        (fun n ω => empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω))
+        atTop Z (fun _ => P) Q)
+    (hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω =>
+          ‖empiricalAverageVector (samples n ω) (derivative n ω) - V‖)
+        atTop 0)
+    (hDelta : TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hCurvatureBounded :
+      StochasticBounded P
+        (fun n ω => empiricalAverage (samples n ω) envelope))
+    (hEnvelopeBound : ∀ᶠ n in atTop, ∀ ω x,
+      ‖secondDerivative n ω x‖ ≤ envelope x)
+    (hEmpiricalDerivative_meas : ∀ n,
+      AEMeasurable
+        (fun ω => empiricalAverageVector (samples n ω) (derivative n ω)) P)
+    (hSecondDerivativeAction_meas : ∀ n,
+      AEMeasurable
+        (fun ω =>
+          empiricalAverageVector (samples n ω) (secondDerivative n ω)) P)
+    (hDelta_meas : ∀ n, AEMeasurable (delta n) P)
+    (hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P)
+    (hRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω) (estimatingAtEstimator n ω) = 0)
+    (hScore_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i) (theta0 n ω))
+    (hEstimator_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        estimatingAtEstimator n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i)
+            (estimator n ω))
+    (hScaledEstimator_eq : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, scaledEstimator n ω = scale n ω • delta n ω)
+    (hEstimator_segment : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, theta0 n ω + delta n ω = estimator n ω)
+    (hDerivative0 : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        pathDerivative n ω (samples n ω i) j 0 =
+          derivative n ω (samples n ω i) (delta n ω) j)
+    (hContinuous : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        ContinuousOn
+          (fun t : ℝ =>
+            estimatingMap n ω (samples n ω i)
+              (theta0 n ω + t • delta n ω) j)
+          (Set.Icc (0 : ℝ) 1))
+    (hDerivative : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          HasDerivAt
+            (fun t : ℝ =>
+              estimatingMap n ω (samples n ω i)
+                (theta0 n ω + t • delta n ω) j)
+            (pathDerivative n ω (samples n ω i) j x) x)
+    (hDerivativeTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          pathDerivative n ω (samples n ω i) j x -
+              pathDerivative n ω (samples n ω i) j 0 =
+            pathSecond n ω (samples n ω i) j x * (x - 0))
+    (hSecondAction : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          pathSecond n ω (samples n ω i) j x =
+            secondDerivative n ω (samples n ω i)
+              (delta n ω) (delta n ω) j) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  have hValue0 : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        estimatingMap n ω (samples n ω i)
+            (theta0 n ω + (0 : ℝ) • delta n ω) j =
+          estimatingMap n ω (samples n ω i) (theta0 n ω) j := by
+    intro n
+    exact Filter.Eventually.of_forall fun ω i j => by
+      simp
+  have hValue1 : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        estimatingMap n ω (samples n ω i)
+            (theta0 n ω + (1 : ℝ) • delta n ω) j =
+          estimatingMap n ω (samples n ω i) (estimator n ω) j := by
+    intro n
+    exact (hEstimator_segment n).mono fun ω hω i j => by
+      simp [one_smul, hω]
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinatePathTaylor_envelope_absorbing
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (samples := samples) (scale := scale)
+      (pathValue := fun n ω x j t =>
+        estimatingMap n ω x (theta0 n ω + t • delta n ω) j)
+      (pathDerivative := pathDerivative) (pathSecond := pathSecond)
+      (rawAtTheta0 := fun n ω x =>
+        estimatingMap n ω x (theta0 n ω))
+      (rawAtEstimator := fun n ω x =>
+        estimatingMap n ω x (estimator n ω))
+      (scoreAtTheta0 := scoreAtTheta0)
+      (estimatingAtEstimator := estimatingAtEstimator)
+      (derivative := derivative) (secondDerivative := secondDerivative)
+      (envelope := envelope) (delta := delta)
+      (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hScoreCLT hDerivativeLLN hDelta hEnvelope_nonneg
+      hCurvatureBounded hEnvelopeBound hEmpiricalDerivative_meas
+      hSecondDerivativeAction_meas hDelta_meas hScaledEstimator_meas hRoot
+      hScore_scaled hEstimator_scaled hScaledEstimator_eq hValue0 hValue1
+      hDerivative0 hContinuous hDerivative hDerivativeTaylor hSecondAction
+
+/--
 van der Vaart 1998, Theorem 5.41, coordinate derivative of an actual
 estimating-map path from a Frechet derivative.
 
