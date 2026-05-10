@@ -581,6 +581,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   the scalar source-radius route.  Future exact source work should construct
   the Schur derivative certificate or actual third-order envelope, not pass a
   separate segment-continuity/local-norm side condition.
+- Inf-projection adjoint-square direct Schur consumer: the newest packet adds
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_schurHessDerivativeOn`
+  and rewires the third-order/open-domain compatibility wrappers through it.
+  A packaged adjoint-square model plus a Schur derivative certificate now
+  proves the projected source-radius local-norm sandwich without selected-value
+  `f`, open-domain gradient, or second-order envelope assumptions.  Use this
+  shorter route whenever the goal is only Lemma 13.6-style local-norm
+  transport.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

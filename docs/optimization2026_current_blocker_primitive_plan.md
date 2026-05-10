@@ -701,6 +701,15 @@ the applied-vector continuity, derivative, and lifted-third pairing needed by
 the scalar source-radius route.  The live item-4 source work is now the actual
 construction of the Schur derivative certificate or third-order envelope from
 selector/envelope data, not another continuity/local-norm wrapper.
+The adjoint-square direct Schur-consumer packet now adds
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_schurHessDerivativeOn`
+and routes the third-order/open-domain compatibility wrappers through it.
+Thus a packaged adjoint-square model plus a Schur derivative certificate
+already gives the projected source-radius local-norm sandwich without
+selected-value `f`, open-domain gradient, or second-order envelope assumptions.
+When the next task is only local-norm transport, use this direct theorem; save
+the heavier third-order envelope package for proving the actual selected-value
+third derivative.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
