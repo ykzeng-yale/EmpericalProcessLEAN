@@ -296,6 +296,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   model construction.
 - Inf-projection Schur-third derivative bridge: the newest packet adds
   `BarrierInfProjectionSchurHessDerivativeOn`,
+  `BarrierInfProjectionSchurHessDerivativeOn.mono_projected`,
   `BarrierInfProjectionSchurHessDerivativeOn.continuousOn`,
   `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate`,
   and
@@ -330,6 +331,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierInfProjectionSchurHessDerivativeOn.hessApply_mixed_inner_eq`, so a
   full `BarrierInfProjectionSchurHessDerivativeOn` certificate now directly
   supplies the applied-vector derivative and its lifted-third pairing.
+  The newest source-radius consumer adds
+  `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv_apply`,
+  routing the full Schur derivative certificate through the applied-vector
+  scalar segment path and removing the older strict projected-Hessian
+  positivity and nonzero-displacement side conditions from that route.
   The live inf-projection derivative gate is now even narrower: prove the
   derivative of `t ↦ H_schur(z_t) v` and the paired identity with lifted third;
   the scalar `ψ` derivative follows by the generic inner-product calculus

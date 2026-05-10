@@ -401,6 +401,7 @@ construction of the square-root envelope model.
 
 The Schur-third bridge packet adds
 `BarrierInfProjectionSchurHessDerivativeOn`,
+`BarrierInfProjectionSchurHessDerivativeOn.mono_projected`,
 `BarrierInfProjectionSchurHessDerivativeOn.continuousOn`,
 `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate`,
 and
@@ -437,6 +438,11 @@ The newest Schur-certificate bridge adds
 that feed-through for the actual `BarrierInfProjectionSchurHessDerivativeOn`
 interface and identifying the paired derivative with the canonical lifted
 third derivative.
+The newest source-radius consumer adds
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv_apply`,
+so the preferred full-Schur-derivative route now passes through the
+applied-vector scalar segment certificate and no longer exposes the older
+strict projected-Hessian positivity or nonzero-displacement side conditions.
 Thus the preferred exact source gate can now be proved by differentiating only
 the applied Schur-Hessian vector path `t ↦ H_schur(z_t) v` and pairing the
 result with `v`; a full operator-valued Schur derivative and even a direct

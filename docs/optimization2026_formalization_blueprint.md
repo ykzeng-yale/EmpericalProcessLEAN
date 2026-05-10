@@ -230,9 +230,13 @@ full Frechet Schur-Hessian derivative route produce the same applied-vector
 gate directly.  The Schur-certificate bridge now packages this for
 `BarrierInfProjectionSchurHessDerivativeOn` itself through
 `BarrierInfProjectionSchurHessDerivativeOn.hessApply_hasDerivWithinAt` and
-`BarrierInfProjectionSchurHessDerivativeOn.hessApply_mixed_inner_eq`.  The
-remaining exact envelope task is to construct such a Schur derivative
-certificate from concrete selector and Hessian square-root/envelope models.
+`BarrierInfProjectionSchurHessDerivativeOn.hessApply_mixed_inner_eq`; the
+consumer
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv_apply`
+then removes the older strict positivity and nonzero-displacement side
+conditions from the full-Schur-derivative source-radius route.  The remaining
+exact envelope task is to construct such a Schur derivative certificate from
+concrete selector and Hessian square-root/envelope models.
 The local stationarity source bridge now also compiles through
 `BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero`,
 `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_mem_nhds`,
