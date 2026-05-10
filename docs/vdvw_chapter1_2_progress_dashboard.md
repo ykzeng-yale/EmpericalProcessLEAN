@@ -217,6 +217,12 @@ The sign-first product-pair projection bookkeeping is now also closed by
 failure-event wrappers
 `measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_sample_coordinate` /
 `measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_sample_coordinate`.
+The selected finite-center side condition and the named concrete
+ghost/Rademacher event now also consume those same single-coordinate
+assumptions through
+`measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate`
+and
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_sample_coordinate_countable`.
 The remaining selected-center task is therefore the actual single-sample
 scalar measurability of selected cardinalities and Nat-indexed selected-center
 coordinate evaluations.
