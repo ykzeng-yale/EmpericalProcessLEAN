@@ -200,6 +200,15 @@ selector first-order condition through `barrierInfProjectionGrad`,
 `barrierInfProjectionVerticalGrad`, `BarrierInfProjectionSelectorStationary`,
 `barrierInfProjectionSchurHessFrom`, and
 `chewi1311_infProjection_selfConcordantBarrierOn_of_schur_oracles`.
+The current second-order envelope layer also derives the Schur projected
+gradient derivative from local vertical stationarity: reuse
+`barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after
+proving that the vertical residual is locally zero and providing the relevant
+`Hyy` left inverse.  The remaining exact inf-projection calculus work is no
+longer the selector derivative equation; it is the actual third-derivative
+identity for the selected value/projected Hessian and the construction of the
+packaged adjoint-square-root envelope certificate from concrete selector and
+Hessian square-root models.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers

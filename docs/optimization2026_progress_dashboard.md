@@ -255,10 +255,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   `barrierInfProjectionGrad_hasFDerivAt_schur`.  The projected gradient now has
   Frechet derivative `barrierInfProjectionSchurHessFrom` whenever the original
   gradient derivative is the supplied product Hessian and the selector
-  derivative solves `D selector v = -Hyy^{-1} Hyx v`.  The remaining exact
-  source step is to derive or package this implicit derivative equation from
-  the differentiated vertical stationarity condition, then prove the canonical
-  lifted-third oracle is the actual third derivative of the selected value.
+  derivative solves `D selector v = -Hyy^{-1} Hyx v`.
+- Inf-projection implicit-selector derivative calculus: the newest packet adds
+  `barrierInfProjectionVerticalGrad_hasFDerivAt`,
+  `barrierInfProjection_verticalDerivative_eq_zero_of_eventually_eq_zero`,
+  `barrierInfProjection_selector_deriv_eq_neg_invHyy_of_vertical_eventuallyEq`,
+  and
+  `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq`.  Local
+  vertical stationarity plus an `Hyy` left inverse now discharges the selector
+  derivative equation needed by the Schur-envelope theorem.  Search-first
+  reuse: local graph-map/Schur calculus, mathlib `HasFDerivAt.comp`,
+  `HasFDerivAt.unique`, `hasFDerivAt_const`, `EventuallyEq`, and
+  `add_eq_zero_iff_eq_neg`.  The remaining exact source step is to prove the
+  canonical lifted-third oracle is the actual third derivative of the selected
+  value and to construct the packaged adjoint-square-root envelope certificate
+  from concrete selector/model data.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in
@@ -266,7 +277,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   are: close the exact shared-domain sum inverse-Hessian/inverse-local gate,
   extend affine-preimage beyond equivalences through a principled
   surjective/range/pseudoinverse interface, or attack the inf-projection
-  Schur-complement/envelope certificate.
+  actual-third/envelope-certificate construction.
   The older Theorem 13.8/Definition 13.9 substrate remains reusable, but it is
   no longer the active blocker for this lane.
   Do not return to ASGD unless Chapter 13 stalls or the user explicitly

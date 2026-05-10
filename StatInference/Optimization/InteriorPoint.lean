@@ -23,6 +23,7 @@ namespace StatInference
 namespace Optimization
 
 open scoped intervalIntegral
+open Filter
 
 section ScalarGronwall
 
@@ -3307,6 +3308,146 @@ theorem barrierInfProjectionGrad_hasFDerivAt_schur
       _ = barrierInfProjectionSchurHessFrom selector hess invHyy x v := by
               simp [barrierInfProjectionSchurHessFrom, a]
   exact hfst.congr_fderiv hclm
+
+/--
+Derivative of the vertical first-order residual along a differentiable selector.
+This is the chain-rule half of the implicit-selector equation used in Chewi's
+inf-projection envelope theorem.
+-/
+theorem barrierInfProjectionVerticalGrad_hasFDerivAt
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hgrad :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x) :
+    HasFDerivAt (barrierInfProjectionVerticalGrad selector grad)
+      (withLpProdSndCLM.comp
+        ((hess (barrierInfProjectionPoint selector x)).comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector))) x := by
+  have hpoint :=
+    barrierInfProjectionPoint_hasFDerivAt
+      (E₁ := E₁) (E₂ := E₂) hselector
+  have hcomp :
+      HasFDerivAt (fun y => grad (barrierInfProjectionPoint selector y))
+        ((hess (barrierInfProjectionPoint selector x)).comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector)) x :=
+    hgrad.comp x hpoint
+  simpa [barrierInfProjectionVerticalGrad] using
+    (withLpProdSndCLM (E₁ := E₁) (E₂ := E₂)).hasFDerivAt.comp x hcomp
+
+/--
+If the vertical first-order residual vanishes in a neighborhood, then its
+linearization is the zero map.  Written in block form, this is
+`Hyx v + Hyy (D selector v) = 0`.
+-/
+theorem barrierInfProjection_verticalDerivative_eq_zero_of_eventually_eq_zero
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hgrad :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hvertical_eventually :
+      barrierInfProjectionVerticalGrad selector grad =ᶠ[nhds x]
+        fun _ : E₁ => (0 : E₂)) :
+    ∀ v : E₁,
+      barrierInfProjectionBlockYX selector hess x v +
+        barrierInfProjectionBlockYY selector hess x (dselector v) = 0 := by
+  have hderiv :=
+    barrierInfProjectionVerticalGrad_hasFDerivAt
+      (E₁ := E₁) (E₂ := E₂) hgrad hselector
+  have hzero :
+      HasFDerivAt (fun _ : E₁ => (0 : E₂)) (0 : E₁ →L[ℝ] E₂) x :=
+    hasFDerivAt_const (0 : E₂) x
+  have hderiv_zero :
+      HasFDerivAt (barrierInfProjectionVerticalGrad selector grad)
+        (0 : E₁ →L[ℝ] E₂) x :=
+    hzero.congr_of_eventuallyEq hvertical_eventually
+  have hclm :
+      withLpProdSndCLM.comp
+          ((hess (barrierInfProjectionPoint selector x)).comp
+            (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector)) =
+        (0 : E₁ →L[ℝ] E₂) :=
+    hderiv.unique hderiv_zero
+  intro v
+  have happly := congrArg (fun L : E₁ →L[ℝ] E₂ => L v) hclm
+  simpa [barrierInfProjectionPointFDeriv, barrierInfProjectionBlockYX,
+    barrierInfProjectionBlockYY, map_add] using happly
+
+/--
+Implicit-selector derivative equation obtained by differentiating the vertical
+first-order condition and applying a left inverse for the vertical Hessian
+block.
+-/
+theorem barrierInfProjection_selector_deriv_eq_neg_invHyy_of_vertical_eventuallyEq
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂} {x : E₁}
+    (hgrad :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hvertical_eventually :
+      barrierInfProjectionVerticalGrad selector grad =ᶠ[nhds x]
+        fun _ : E₁ => (0 : E₂))
+    (hyy_left : ∀ w : E₂,
+      invHyy x (barrierInfProjectionBlockYY selector hess x w) = w) :
+    ∀ v : E₁,
+      dselector v =
+        -invHyy x (barrierInfProjectionBlockYX selector hess x v) := by
+  intro v
+  have himpl :=
+    barrierInfProjection_verticalDerivative_eq_zero_of_eventually_eq_zero
+      (E₁ := E₁) (E₂ := E₂) hgrad hselector hvertical_eventually v
+  have hyy_eq :
+      barrierInfProjectionBlockYY selector hess x (dselector v) =
+        -barrierInfProjectionBlockYX selector hess x v := by
+    have hcomm :
+        barrierInfProjectionBlockYY selector hess x (dselector v) +
+          barrierInfProjectionBlockYX selector hess x v = 0 := by
+      simpa [add_comm] using himpl
+    simpa using (add_eq_zero_iff_eq_neg.mp hcomm)
+  calc
+    dselector v =
+        invHyy x (barrierInfProjectionBlockYY selector hess x (dselector v)) := by
+          simpa using (hyy_left (dselector v)).symm
+    _ = invHyy x (-barrierInfProjectionBlockYX selector hess x v) := by
+          rw [hyy_eq]
+    _ = -invHyy x (barrierInfProjectionBlockYX selector hess x v) := by
+          rw [map_neg]
+
+/--
+Second-order Schur-envelope theorem with the implicit-selector equation
+discharged from local vertical stationarity.
+-/
+theorem barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂} {x : E₁}
+    (hgrad :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hvertical_eventually :
+      barrierInfProjectionVerticalGrad selector grad =ᶠ[nhds x]
+        fun _ : E₁ => (0 : E₂))
+    (hyy_left : ∀ w : E₂,
+      invHyy x (barrierInfProjectionBlockYY selector hess x w) = w) :
+    HasFDerivAt (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy x) x :=
+  barrierInfProjectionGrad_hasFDerivAt_schur
+    (E₁ := E₁) (E₂ := E₂) hgrad hselector
+    (barrierInfProjection_selector_deriv_eq_neg_invHyy_of_vertical_eventuallyEq
+      (E₁ := E₁) (E₂ := E₂) hgrad hselector hvertical_eventually hyy_left)
 
 /--
 Projected inverse-Hessian candidate obtained by applying the original full

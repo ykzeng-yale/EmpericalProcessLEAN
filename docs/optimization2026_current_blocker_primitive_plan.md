@@ -356,10 +356,23 @@ The second-order Schur-envelope packet adds
 Frechet derivative `hess` at the selected graph point and the selector
 derivative satisfies the implicit equation
 `D selector v = - Hyy^{-1} Hyx v`, then the projected gradient has derivative
-`barrierInfProjectionSchurHessFrom`.  The next exact envelope step is to obtain
-or package this implicit-selector derivative equation from differentiating the
-vertical first-order condition, then continue to the third-derivative lifted
-oracle identity.
+`barrierInfProjectionSchurHessFrom`.
+The implicit-selector derivative packet adds
+`barrierInfProjectionVerticalGrad_hasFDerivAt`,
+`barrierInfProjection_verticalDerivative_eq_zero_of_eventually_eq_zero`,
+`barrierInfProjection_selector_deriv_eq_neg_invHyy_of_vertical_eventuallyEq`,
+and
+`barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq`.  It
+derives the equation `D selector v = - Hyy^{-1} Hyx v` by differentiating the
+vertical first-order residual when that residual is locally zero and `Hyy` has
+a left inverse.  Search-first result: the proof reuses the local graph-map
+derivative and Schur theorem plus mathlib `HasFDerivAt.comp`,
+`HasFDerivAt.unique`, `hasFDerivAt_const`, `EventuallyEq`, and
+`add_eq_zero_iff_eq_neg`; no new implicit-function primitive is needed for
+this finite supplied-envelope layer.  The next exact envelope step is now the
+actual third-derivative identity for the selected value/projected Hessian and
+the construction of the packaged adjoint-square-root envelope certificate from
+concrete models.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,
@@ -369,7 +382,7 @@ sum, sum component-Cauchy, adjoint-coordinate Cauchy reuse, and
 affine-preimage/equivalence wrappers; the next aggressive choices are the
 exact shared-domain sum inverse-Hessian/inverse-local gate, a
 principled non-invertible affine-preimage/range interface, or the
-inf-projection Schur-complement/envelope certificate.
+inf-projection third-derivative/envelope-certificate construction.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
