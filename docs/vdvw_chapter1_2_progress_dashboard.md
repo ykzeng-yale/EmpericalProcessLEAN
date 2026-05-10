@@ -351,6 +351,10 @@ blocker list.  What remains is probability-side: prove beta mass for the pure
 Rademacher bad fibers and prove the integrated selected finite-center
 failure-tail error is controlled strongly enough to feed the additive-error
 convergence consumer.
+That consumer is now compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_failure_tail_countable`,
+so the dashboard frontier is now exactly those two source inputs, not another
+fixed-`M` endpoint alias.
 The explicit original/ghost finite-center failure probabilities are now split
 through the fixed-sample Rademacher finite-center Hoeffding tail, a
 product-fiber upper-bound lift, and additive-error product-pair comparison

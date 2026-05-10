@@ -3388,6 +3388,15 @@ beta lower bound plus a vanishing/asymptotic control theorem for the integrated
 finite-center failure-tail error, or else a return to the product-pair
 averaged sign/ghost route.
 
+The convergence consumer for that sign-only additive-error lane is now also
+compiled:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_failure_tail_countable`.
+It packages the selected comparison, stochastic entropy, Chebyshev beta
+penalty, selected-cardinality monotonicity, and selected-center coordinate
+measurability.  The remaining blueprint work is exactly to prove the pure
+Rademacher bad-fiber beta lower bound and the integrated failure-tail
+vanishing/control hypothesis.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

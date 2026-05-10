@@ -9656,3 +9656,14 @@ beta lower bound for the pure Rademacher bad fibers and a usable asymptotic
 control theorem for the integrated selected finite-center failure-tail error;
 without such tail control, the product-pair averaged route remains the honest
 alternative.
+
+2026-05-10 canonical sign-only failure-tail convergence consumer:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_failure_tail_countable`.
+This composes the sign-only failure-tail outer comparison with the existing
+additive-error fixed-`M` stochastic-entropy consumer.  The theorem leaves only
+two source assumptions: beta mass for the pure Rademacher bad fibers and
+vanishing of the integrated selected finite-center Hoeffding failure-tail
+error over the centered bad event.  Therefore the next aggressive proof target
+is no longer another endpoint wrapper; it is one of those two probability or
+tail-control inputs.
