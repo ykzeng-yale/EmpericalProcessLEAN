@@ -4812,3 +4812,10 @@ After eventual centered-bad measurability, a `P^n`-a.e. implication on
 membership in the centered bad event is converted internally to the
 restricted-a.e. hypothesis.  The dashboard blocker remains the probability
 theorem proving that implication.
+
+That base-a.e. two-tail sign-swap endpoint now has a deterministic
+lower-growth specialization:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_of_eventually_cardinality_ge`.
+Selected-cardinality growth tending to infinity now supplies the inverse-square
+tail-control input for this source surface.  The dashboard frontier is still
+the sign-swapped bad-fiber beta lower bound.

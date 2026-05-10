@@ -3918,6 +3918,13 @@ in `VdVWTheorem243CenteredPairSubSignSwapBadEvent`, while supplying eventual
 measurability of the centered bad event.  No new report is due until that
 source theorem, or the averaged product-pair replacement, is fully proved.
 
+The base-a.e. two-tail sign-swap surface also now accepts deterministic
+selected-cardinality lower growth via
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_of_eventually_cardinality_ge`.
+This keeps the future source theorem focused on the probability lower bound:
+tail control can be supplied by the same lower-growth condition used elsewhere
+in the selected-cover finite-center lanes.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

@@ -10345,3 +10345,12 @@ with centered-bad measurability converting it to the restricted form.  The
 remaining blocker is still the actual displayed-beta source theorem for
 `VdVWTheorem243CenteredPairSubSignSwapBadEvent`, not another measure-conversion
 wrapper.
+
+2026-05-10 base-a.e. sign-swap two-tail lower-growth wrapper:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_of_eventually_cardinality_ge`.
+This lets the same Fubini-style sign-swap source surface discharge the two-tail
+finite-center error from deterministic selected-cardinality lower growth,
+rather than requiring callers to provide the raw inverse-square lintegral.
+The only live mathematical blocker on this lane remains the displayed-beta
+probability source for the sign-swapped bad fibers.
