@@ -2972,6 +2972,19 @@ now compiled as `vdVWFirstNatCandidate`, with fiber theorem
 measurable-selection step; remaining work is the empirical-cover-specific
 enumeration of finite center tuples and proof that each tuple-success event is
 measurable.
+The fixed-cardinality empirical-cover tuple layer is now also compiled:
+`measurableSet_vdVWFirstNatCandidate_map_eq`,
+`vdVWFiniteEmpiricalL1CoverCenterTuplePredicate`,
+`measurableSet_vdVWFiniteEmpiricalL1CoverCenterTuplePredicate`,
+`exists_vdVWFiniteEmpiricalL1CoverCenterTupleCandidate_of_cover`,
+`vdVWFirstFiniteEmpiricalL1CoverCenterTuple`,
+`vdVWFirstFiniteEmpiricalL1CoverCenterTuple_spec`, and
+`measurableSet_vdVWFirstFiniteEmpiricalL1CoverCenterTuple_center_eq`.
+This supplies measurable fibers for the projected centers of a first
+Nat-enumerated successful fixed-cardinality empirical-cover tuple.  The next
+proof target is the selected-cardinality level-set lift needed to turn this
+fixed-cardinality selector into the canonical sample-dependent selected-cover
+fibers for Theorem 2.4.3.
 
 ## Automation Checklist
 

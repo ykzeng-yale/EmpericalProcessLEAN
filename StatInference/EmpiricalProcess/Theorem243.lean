@@ -16328,6 +16328,264 @@ theorem measurableSet_vdVWFirstNatCandidate_eq
   exact MeasurableSet.iUnion hfirstEvent_meas
 
 /--
+Projected fibers of a first Nat-indexed candidate selector are measurable.
+
+This is the form needed for selected-cover center coordinates: the selected
+object may be an entire finite center tuple, while the downstream
+measurability assumption asks for fibers of one projected center.
+-/
+theorem measurableSet_vdVWFirstNatCandidate_map_eq
+    {Ω : Type x} {α : Type y} {β : Type w} [MeasurableSpace Ω]
+    (candidate : ℕ -> α) (predicate : Ω -> α -> Prop)
+    (hexists : ∀ ω : Ω, ∃ n : ℕ, predicate ω (candidate n))
+    (hmeas : ∀ n : ℕ, MeasurableSet {ω : Ω | predicate ω (candidate n)})
+    (projection : α -> β) (b : β) :
+    MeasurableSet
+      {ω : Ω |
+        projection (vdVWFirstNatCandidate candidate predicate hexists ω) =
+          b} := by
+  classical
+  have hfiber_eq :
+      {ω : Ω |
+        projection (vdVWFirstNatCandidate candidate predicate hexists ω) =
+          b} =
+        ⋃ n : ℕ,
+          if projection (candidate n) = b then
+            {ω : Ω | vdVWFirstNatCandidate candidate predicate hexists ω =
+              candidate n}
+          else
+            (∅ : Set Ω) := by
+    ext ω
+    constructor
+    · intro hω
+      refine Set.mem_iUnion.2 ⟨Nat.find (hexists ω), ?_⟩
+      have hproj :
+          projection (candidate (Nat.find (hexists ω))) = b := by
+        simpa [vdVWFirstNatCandidate] using hω
+      simp [hproj, vdVWFirstNatCandidate]
+    · intro hω
+      rcases Set.mem_iUnion.1 hω with ⟨n, hn⟩
+      by_cases hproj : projection (candidate n) = b
+      · have hselect :
+            vdVWFirstNatCandidate candidate predicate hexists ω =
+              candidate n := by
+          simpa [hproj] using hn
+        simpa [hselect] using hproj
+      · simp [hproj] at hn
+  rw [hfiber_eq]
+  refine MeasurableSet.iUnion fun n => ?_
+  by_cases hproj : projection (candidate n) = b
+  · simp [hproj,
+      measurableSet_vdVWFirstNatCandidate_eq candidate predicate hexists
+        hmeas (candidate n)]
+  · simp [hproj]
+
+/--
+A fixed finite tuple of in-class centers covers the empirical class at a
+sample.
+
+The tuple is typed in the countable theorem-class subtype, so center
+membership is built into the data.  This predicate is the empirical-cover
+specific success condition used by the Nat-enumerated first-candidate
+selector.
+-/
+def vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+    {Observation : Type u} {Index : Type v} {n cardinality : ℕ}
+    {indexClass : Set Index}
+    (classFun : Index -> Observation -> ℝ) (epsilon : ℝ)
+    (sample : SampleAt Observation n)
+    (center : Fin cardinality -> {index : Index // index ∈ indexClass}) :
+    Prop :=
+  ∀ index : {index : Index // index ∈ indexClass},
+    ∃ centerIndex : Fin cardinality,
+      empiricalL1Distance sample (classFun index.1)
+        (classFun (center centerIndex).1) ≤ epsilon
+
+/--
+For a fixed in-class center tuple, the empirical-cover success event is
+measurable under the same pairwise empirical-distance measurability used by
+the covering-number measurability layer.
+-/
+theorem measurableSet_vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n cardinality : ℕ}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hcount : indexClass.Countable)
+    (center : Fin cardinality -> {index : Index // index ∈ indexClass})
+    (hdist :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          Measurable fun sample : SampleAt Observation n =>
+            empiricalL1Distance sample (classFun index) (classFun center)) :
+    MeasurableSet
+      {sample : SampleAt Observation n |
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample center} := by
+  classical
+  let IndexInClass := {index : Index // index ∈ indexClass}
+  haveI : Countable IndexInClass := hcount.to_subtype
+  have hcover_measurable :
+      MeasurableSet
+        (⋂ index : IndexInClass,
+          {sample : SampleAt Observation n |
+            ∃ centerIndex,
+              empiricalL1Distance sample (classFun index.1)
+                (classFun (center centerIndex).1) ≤ epsilon}) := by
+    refine MeasurableSet.iInter fun index => ?_
+    have hset :
+        {sample : SampleAt Observation n |
+          ∃ centerIndex,
+            empiricalL1Distance sample (classFun index.1)
+              (classFun (center centerIndex).1) ≤ epsilon} =
+          ⋃ centerIndex : Fin cardinality,
+            {sample : SampleAt Observation n |
+              empiricalL1Distance sample (classFun index.1)
+                (classFun (center centerIndex).1) ≤ epsilon} := by
+      ext sample
+      simp
+    rw [hset]
+    exact
+      MeasurableSet.iUnion fun centerIndex =>
+        measurableSet_le
+          (hdist index.1 index.2 (center centerIndex).1
+            (center centerIndex).2)
+          measurable_const
+  have htarget_eq :
+      {sample : SampleAt Observation n |
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample center} =
+        ⋂ index : IndexInClass,
+          {sample : SampleAt Observation n |
+            ∃ centerIndex,
+              empiricalL1Distance sample (classFun index.1)
+                (classFun (center centerIndex).1) ≤ epsilon} := by
+    ext sample
+    simp [vdVWFiniteEmpiricalL1CoverCenterTuplePredicate, IndexInClass,
+      Set.mem_iInter]
+  rw [htarget_eq]
+  exact hcover_measurable
+
+/--
+Any existing proof-carrying finite empirical cover yields a successful in-class
+center tuple, and hence a successful index in any surjective Nat enumeration
+of such tuples.
+-/
+theorem exists_vdVWFiniteEmpiricalL1CoverCenterTupleCandidate_of_cover
+    {Observation : Type u} {Index : Type v} {n cardinality : ℕ}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (candidate :
+      ℕ -> Fin cardinality -> {index : Index // index ∈ indexClass})
+    (hsurj : Function.Surjective candidate)
+    {sample : SampleAt Observation n}
+    (hcover :
+      Nonempty
+        (FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+          cardinality)) :
+    ∃ m : ℕ,
+      vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+        (indexClass := indexClass) classFun epsilon sample (candidate m) := by
+  classical
+  rw [nonempty_finiteEmpiricalL1CoverAtCard_iff_exists_centers] at hcover
+  rcases hcover with ⟨center, hcenter_mem, hcovering⟩
+  let centerSubtype : Fin cardinality -> {index : Index // index ∈ indexClass} :=
+    fun centerIndex => ⟨center centerIndex, hcenter_mem centerIndex⟩
+  rcases hsurj centerSubtype with ⟨m, hm⟩
+  refine ⟨m, ?_⟩
+  rw [hm]
+  intro index
+  rcases hcovering index.1 index.2 with ⟨centerIndex, hdist_le⟩
+  exact ⟨centerIndex, by simpa [centerSubtype] using hdist_le⟩
+
+/--
+The first successful finite empirical-cover center tuple in a Nat enumeration.
+-/
+noncomputable def vdVWFirstFiniteEmpiricalL1CoverCenterTuple
+    {Observation : Type u} {Index : Type v} {n cardinality : ℕ}
+    {indexClass : Set Index}
+    (classFun : Index -> Observation -> ℝ) (epsilon : ℝ)
+    (candidate :
+      ℕ -> Fin cardinality -> {index : Index // index ∈ indexClass})
+    (hexists :
+      ∀ sample : SampleAt Observation n, ∃ m : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample (candidate m))
+    (sample : SampleAt Observation n) :
+    Fin cardinality -> {index : Index // index ∈ indexClass} :=
+  vdVWFirstNatCandidate candidate
+    (fun sample center =>
+      vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+        (indexClass := indexClass) classFun epsilon sample center)
+    hexists sample
+
+theorem vdVWFirstFiniteEmpiricalL1CoverCenterTuple_spec
+    {Observation : Type u} {Index : Type v} {n cardinality : ℕ}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {candidate :
+      ℕ -> Fin cardinality -> {index : Index // index ∈ indexClass}}
+    {hexists :
+      ∀ sample : SampleAt Observation n, ∃ m : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample (candidate m)}
+    (sample : SampleAt Observation n) :
+    vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+      (indexClass := indexClass) classFun epsilon sample
+      (vdVWFirstFiniteEmpiricalL1CoverCenterTuple
+        (indexClass := indexClass) classFun epsilon candidate hexists
+        sample) := by
+  classical
+  simpa [vdVWFirstFiniteEmpiricalL1CoverCenterTuple,
+    vdVWFirstNatCandidate] using Nat.find_spec (hexists sample)
+
+/--
+Center-coordinate fibers of the first successful finite empirical-cover tuple
+are measurable.
+
+This is the fixed-cardinality selected-center fiber primitive that the
+sample-dependent selected-cardinality route can use after splitting into
+cardinality level sets.
+-/
+theorem
+    measurableSet_vdVWFirstFiniteEmpiricalL1CoverCenterTuple_center_eq
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {n cardinality : ℕ}
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hcount : indexClass.Countable)
+    (candidate :
+      ℕ -> Fin cardinality -> {index : Index // index ∈ indexClass})
+    (hexists :
+      ∀ sample : SampleAt Observation n, ∃ m : ℕ,
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample (candidate m))
+    (hdist :
+      ∀ index, index ∈ indexClass ->
+        ∀ center, center ∈ indexClass ->
+          Measurable fun sample : SampleAt Observation n =>
+            empiricalL1Distance sample (classFun index) (classFun center))
+    (k : Fin cardinality) (index : Index) :
+    MeasurableSet
+      {sample : SampleAt Observation n |
+        ((vdVWFirstFiniteEmpiricalL1CoverCenterTuple
+          (indexClass := indexClass) classFun epsilon candidate hexists
+          sample k).1 : Index) = index} := by
+  exact
+    measurableSet_vdVWFirstNatCandidate_map_eq
+      (candidate := candidate)
+      (predicate := fun sample center =>
+        vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) classFun epsilon sample center)
+      (hexists := hexists)
+      (hmeas := fun m =>
+        measurableSet_vdVWFiniteEmpiricalL1CoverCenterTuplePredicate
+          (indexClass := indexClass) hcount (candidate m) hdist)
+      (projection := fun center =>
+        ((center k).1 : Index))
+      index
+
+/--
 Scalar selected-index evaluation is measurable from countable measurable
 fibers.
 
