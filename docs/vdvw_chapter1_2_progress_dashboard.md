@@ -4282,3 +4282,13 @@ and the fixed-`M` endpoint
 The dashboard frontier is now: prove displayed beta mass for the pure
 Rademacher bad event over centered-bad samples, and prove the selected
 finite-center Hoeffding side condition a.e. for the first-level cover.
+
+The sign-only lane now has an explicit failure-tail replacement for the
+finite-center a.e. assumption:
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure_tail`.
+It derives the canonical sign-fiber lower bound up to an additive
+finite-center Hoeffding failure-tail term, using the existing fixed-sample
+Rademacher finite-center Hoeffding bound.  The practical frontier is therefore
+sharper: either integrate this tail error and prove it vanishes under stronger
+cardinality/tail assumptions, or use the product-pair averaged sign/ghost
+failure-tail route that is already compiled.

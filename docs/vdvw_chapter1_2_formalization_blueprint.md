@@ -3369,6 +3369,14 @@ feeds those split inputs directly to fixed-`M` convergence.  Future proof work
 should target the pure Rademacher bad-event beta lower bound and the selected
 first-level finite-center support theorem separately.
 
+The same sign-only split now has a failure-tail variant:
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure_tail`.
+This replaces the a.e. finite-center side condition by an explicit additive
+finite-center Hoeffding failure-tail bound.  The next blueprint target should
+not assume finite-center support is automatic; it should either integrate this
+tail error to a vanishing term or continue through the product-pair averaged
+sign/ghost failure-tail route.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

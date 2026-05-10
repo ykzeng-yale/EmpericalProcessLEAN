@@ -9625,3 +9625,17 @@ cover.  Canonical Rademacher sign support and all first-level selected-cover
 bookkeeping are internal.  The remaining blocker on this lane is therefore no
 longer the full canonical selected-net fiber; it is the pure Rademacher
 bad-event beta lower bound plus the selected finite-center support theorem.
+
+2026-05-10 canonical sign-only failure-tail replacement:
+`Theorem243.lean` now also proves
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure_components`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure`, and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure_tail`.
+These keep the selected finite-center Hoeffding failure probability as an
+explicit additive error, then bound it by the existing fixed-sample
+finite-center Hoeffding failure tail.  This is the honest replacement for
+trying to assert the selected finite-center side condition almost surely on
+the canonical sign-only lane.  The remaining theorem-facing work is to either
+build a sign-only comparison with a vanishing integrated failure-tail error, or
+return to the already compiled product-pair averaged sign/ghost failure-tail
+route.
