@@ -1203,6 +1203,122 @@ theorem durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_real_lintegral_densit
     (g := fun x => ENNReal.ofReal (g x))
     hf.ennreal_ofReal hg.ennreal_ofReal hXY hX hY
 
+/-! ## Durrett, Section 2.2 -/
+
+/--
+Durrett 2019, Theorem 2.2.1, uncorrelated-pair covariance bridge.
+
+The textbook definition of uncorrelatedness is
+`E (X * Y) = E X * E Y`; mathlib's variance algebra is organized around
+covariance, so this packages the translation.
+-/
+theorem durrett2019_theorem_2_2_1_uncorrelated_covariance_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X Y : Ω -> ℝ}
+    (hX : MemLp X 2 P) (hY : MemLp Y 2 P)
+    (huncorr : ∫ ω, X ω * Y ω ∂P = (∫ ω, X ω ∂P) * ∫ ω, Y ω ∂P) :
+    _root_.ProbabilityTheory.covariance X Y P = 0 := by
+  rw [_root_.ProbabilityTheory.covariance_eq_sub hX hY]
+  simp [Pi.mul_apply, huncorr]
+
+/--
+Durrett 2019, Theorem 2.2.1, finite-sum variance formula for uncorrelated
+families.
+
+This is the source theorem `var (X_1 + ... + X_n) = sum_i var X_i`,
+written for an arbitrary finite index set.
+-/
+theorem durrett2019_theorem_2_2_1_variance_finsetSum_of_uncorrelated
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {ι : Type v} {X : ι -> Ω -> ℝ} {s : Finset ι}
+    (hX : ∀ i ∈ s, MemLp (X i) 2 P)
+    (huncorr :
+      ∀ ⦃i : ι⦄, i ∈ s -> ∀ ⦃j : ι⦄, j ∈ s -> i ≠ j ->
+        ∫ ω, X i ω * X j ω ∂P =
+          (∫ ω, X i ω ∂P) * ∫ ω, X j ω ∂P) :
+    _root_.ProbabilityTheory.variance (fun ω => ∑ i ∈ s, X i ω) P =
+      ∑ i ∈ s, _root_.ProbabilityTheory.variance (X i) P := by
+  have hsumfun : (fun ω => ∑ i ∈ s, X i ω) = (∑ i ∈ s, X i) := by
+    ext ω
+    simp [Finset.sum_apply]
+  rw [hsumfun]
+  rw [_root_.ProbabilityTheory.variance_sum' hX]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  rw [← _root_.ProbabilityTheory.covariance_self (hX i hi).aemeasurable]
+  refine Finset.sum_eq_single_of_mem i hi fun j hj hji => ?_
+  exact durrett2019_theorem_2_2_1_uncorrelated_covariance_eq_zero
+    (P := P) (X := X i) (Y := X j) (hX i hi) (hX j hj)
+    (huncorr hi hj hji.symm)
+
+/--
+Durrett 2019, Theorem 2.2.1, initial-range variance formula for uncorrelated
+families.
+-/
+theorem durrett2019_theorem_2_2_1_variance_rangeSum_of_uncorrelated
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {n : ℕ}
+    (hX : ∀ i ∈ Finset.range n, MemLp (X i) 2 P)
+    (huncorr :
+      ∀ ⦃i : ℕ⦄, i ∈ Finset.range n -> ∀ ⦃j : ℕ⦄, j ∈ Finset.range n ->
+        i ≠ j ->
+        ∫ ω, X i ω * X j ω ∂P =
+          (∫ ω, X i ω ∂P) * ∫ ω, X j ω ∂P) :
+    _root_.ProbabilityTheory.variance (fun ω => ∑ i ∈ Finset.range n, X i ω) P =
+      ∑ i ∈ Finset.range n, _root_.ProbabilityTheory.variance (X i) P :=
+  durrett2019_theorem_2_2_1_variance_finsetSum_of_uncorrelated
+    (P := P) (X := X) hX huncorr
+
+/--
+Durrett 2019, Theorem 2.2.1 support: independent square-integrable variables
+are uncorrelated.
+-/
+theorem durrett2019_theorem_2_2_1_iIndepFun_integral_mul_eq_mul_integral
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ι : Type v} {X : ι -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, AEStronglyMeasurable (X i) P)
+    {i j : ι} (hij : i ≠ j) :
+    ∫ ω, X i ω * X j ω ∂P =
+      (∫ ω, X i ω ∂P) * ∫ ω, X j ω ∂P :=
+  durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral
+    (P := P) (X := X i) (Y := X j) (hX_indep.indepFun hij)
+    (hX_meas i) (hX_meas j)
+
+/--
+Durrett 2019, Theorem 2.2.1, finite-sum variance formula for independent
+families.
+
+This is the immediate independent-family specialization of the uncorrelated
+variance formula.
+-/
+theorem durrett2019_theorem_2_2_1_variance_finsetSum_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {ι : Type v} {X : ι -> Ω -> ℝ} {s : Finset ι}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX : ∀ i ∈ s, MemLp (X i) 2 P) :
+    _root_.ProbabilityTheory.variance (fun ω => ∑ i ∈ s, X i ω) P =
+      ∑ i ∈ s, _root_.ProbabilityTheory.variance (X i) P := by
+  refine durrett2019_theorem_2_2_1_variance_finsetSum_of_uncorrelated
+    (P := P) (X := X) hX ?_
+  intro i hi j hj hij
+  exact durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral
+    (P := P) (X := X i) (Y := X j) (hX_indep.indepFun hij)
+    (hX i hi).aestronglyMeasurable (hX j hj).aestronglyMeasurable
+
+/--
+Durrett 2019, Theorem 2.2.1, initial-range variance formula for independent
+families.
+-/
+theorem durrett2019_theorem_2_2_1_variance_rangeSum_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {n : ℕ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX : ∀ i ∈ Finset.range n, MemLp (X i) 2 P) :
+    _root_.ProbabilityTheory.variance (fun ω => ∑ i ∈ Finset.range n, X i ω) P =
+      ∑ i ∈ Finset.range n, _root_.ProbabilityTheory.variance (X i) P :=
+  durrett2019_theorem_2_2_1_variance_finsetSum_of_iIndepFun
+    (P := P) (X := X) (s := Finset.range n) hX_indep hX
+
 /-! ## Durrett, Section 2.3 -/
 
 /--

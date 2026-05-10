@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V182`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V183`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -38,6 +38,7 @@ independence/product-law wrappers, including Theorem 2.1.10's partial-sum
 difference versus early-block statistic/indicator wrappers, Theorem 2.1.12's
 source-facing independent-pair expectation formulas, Theorem 2.1.13's
 finite-set/range/interval product-expectation and zero-mean-factor consumers,
+Theorem 2.2.1's covariance and finite/range variance-sum support,
 Theorem 2.1.15's CDF convolution handoff, and Theorem 2.1.16's
 convolution-law, density-existence, Fubini/withDensity formula, and
 two-density support; Theorem 2.4.9 has the full empirical-CDF
@@ -54,6 +55,12 @@ Treat
 `durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_zero_of_integral_eq_zero`,
 `durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_prod_integral`,
 `durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_zero_of_integral_eq_zero`,
+`durrett2019_theorem_2_2_1_uncorrelated_covariance_eq_zero`,
+`durrett2019_theorem_2_2_1_variance_finsetSum_of_uncorrelated`,
+`durrett2019_theorem_2_2_1_variance_rangeSum_of_uncorrelated`,
+`durrett2019_theorem_2_2_1_iIndepFun_integral_mul_eq_mul_integral`,
+`durrett2019_theorem_2_2_1_variance_finsetSum_of_iIndepFun`,
+`durrett2019_theorem_2_2_1_variance_rangeSum_of_iIndepFun`,
 `durrett2019_theorem_2_1_15_product_cdf_convolution`,
 `durrett2019_theorem_2_1_15_indepFun_cdf_convolution`,
 `durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv`,
@@ -71,10 +78,10 @@ Treat
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure` as
-closed support.  Continue by moving to downstream Chapter 2 consumers of this
-support, especially Theorem 2.2.1/2.2.3 uncorrelated and weak-law variance
-algebra, or only then to a new law-level Chapter 2.1 product example such as
-Theorem 2.1.18, after a focused mathlib/local search.
+closed support.  Continue by moving to Theorem 2.2.3 weak-law convergence
+packaging, especially the L2 display, the Chebyshev/Lemma 2.2.2 bridge, or a
+source-facing 2.2.3 assembly from supplied variance bounds, after a focused
+mathlib/local search.
 
 For each cycle, route from:
 
