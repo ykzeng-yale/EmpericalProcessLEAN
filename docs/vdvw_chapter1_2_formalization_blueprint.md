@@ -3321,6 +3321,17 @@ Hoeffding support and `Phi(x)=x` on the first-level selected cover at radius
 a.e. domination adapter automatically.  Remaining work is the real probability
 source proof for those two inputs, not additional cover selection plumbing.
 
+The canonical ghost/Rademacher selected-net event now has its measurability
+side closed under countability and scalar selected-center coordinate
+measurability:
+`measurableSet_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_of_sample_coordinate_countable`
+feeds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_canonicalGhostRademacher_sample_coordinate_countable`.
+This gives a cleaner source target than the older pair-difference event when
+only original-sample finite-center support is needed.  The remaining input is
+precisely the displayed beta fiber lower bound for
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

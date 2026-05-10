@@ -4237,3 +4237,13 @@ It uses the first-level selected cover internally and derives the scaled a.e.
 finite-net domination from the canonical finite-center Hoeffding event plus
 the canonical `Phi(x)=x` comparison.  The remaining source work is therefore
 localized to those two probability inputs for the selected half-radius cover.
+
+2026-05-10 canonical ghost/Rademacher selected-net event:
+The simpler canonical selected-net event now has countability-based
+measurability wrappers through
+`measurableSet_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_of_sample_coordinate_countable`
+and a selected-cardinality displayed-beta constructor
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_canonicalGhostRademacher_sample_coordinate_countable`.
+The remaining input on this lane is no longer event measurability; it is the
+actual displayed beta fiber lower bound for
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.

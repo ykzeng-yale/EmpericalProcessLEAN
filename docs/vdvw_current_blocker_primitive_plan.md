@@ -9543,3 +9543,21 @@ finite-center Hoeffding event for the selected cover and the canonical
 `Phi(x)=x` outer-expectation comparison.  This is not a final textbook theorem
 claim; it sharpens the probability source interface to the natural selected
 cover used by Theorem 2.4.3.
+
+2026-05-10 canonical ghost/Rademacher selected-net measurability:
+`Theorem243.lean` now proves
+`measurableSet_VdVWTheorem243CanonicalGhostRademacher_rademacherBad_of_countable`,
+`measurableSet_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_of_components`,
+`measurableSet_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`,
+`measurableSet_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_of_sample_coordinate_countable`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent_sample_coordinate_countable`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_canonicalGhostRademacher_sample_coordinate_countable`.
+This closes the event-measurability side of the simpler canonical
+ghost/Rademacher selected-net lane from countability, selected-cardinality
+measurability, and scalar selected-center coordinate measurability.  The lane
+now has one explicit remaining source input: prove the displayed Chebyshev
+beta lower bound for the fibers of
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.  This does not
+resolve the older pair-difference/fixed-fiber route and does not justify the
+known-invalid deterministic sign-section shortcut.
