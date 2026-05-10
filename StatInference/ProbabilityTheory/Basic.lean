@@ -3433,6 +3433,105 @@ theorem durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_l
   rw [hempty]
   simp
 
+/--
+Durrett 2019, Theorem 2.2.12 support: a supplied ordinary layer-cake display
+for the truncated square moment gives the exact textbook tail-average upper
+bound.
+
+The remaining proof obligation after this bridge is the ordinary-integral
+layer-cake identity for
+`|bar X_{n,0}|^2`; event domination and local integrability are handled here.
+-/
+theorem durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hlayercake : ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) =
+        ∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+          2 * y * P.real {ω : Ω |
+            y <
+              |durrett2019_theorem_2_2_11_truncated
+                (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|}) :
+    ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+        (n : ℝ) ≤
+          (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+            2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ) := by
+  filter_upwards [hlayercake] with n hlayercake_n
+  let truncTail : ℝ -> ℝ :=
+    fun y =>
+      P.real {ω : Ω |
+        y <
+          |durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|}
+  have htruncTail_meas : Measurable truncTail := by
+    refine Antitone.measurable ?_
+    intro s t hst
+    exact measureReal_mono (fun ω hω => lt_of_le_of_lt hst hω)
+  have hleft_int :
+      IntegrableOn (fun y : ℝ => 2 * y * truncTail y)
+        (Set.Ioc (0 : ℝ) (n : ℝ)) volume := by
+    have hleft_meas : Measurable (fun y : ℝ => 2 * y * truncTail y) :=
+      (measurable_const.mul measurable_id).mul htruncTail_meas
+    let M : ℝ := max 1 (2 * (n : ℝ))
+    have hM_nonneg : 0 ≤ M := le_trans zero_le_one (le_max_left 1 (2 * (n : ℝ)))
+    refine Measure.integrableOn_of_bounded
+      (μ := volume) (s := Set.Ioc (0 : ℝ) (n : ℝ)) (M := M)
+      measure_Ioc_lt_top.ne hleft_meas.aestronglyMeasurable ?_
+    refine (ae_restrict_mem measurableSet_Ioc).mono ?_
+    intro y hy
+    have hy_nonneg : 0 ≤ y := le_of_lt hy.1
+    have htail_nonneg : 0 ≤ truncTail y := measureReal_nonneg
+    have htail_le_one : truncTail y ≤ 1 := measureReal_le_one
+    have hval_nonneg : 0 ≤ 2 * y * truncTail y :=
+      mul_nonneg (mul_nonneg zero_le_two hy_nonneg) htail_nonneg
+    have hval_le : 2 * y * truncTail y ≤ 2 * (n : ℝ) := by
+      calc
+        2 * y * truncTail y ≤ 2 * y * 1 := by
+          exact mul_le_mul_of_nonneg_left htail_le_one
+            (mul_nonneg zero_le_two hy_nonneg)
+        _ = 2 * y := by ring
+        _ ≤ 2 * (n : ℝ) := by nlinarith [hy.2]
+    rw [Real.norm_eq_abs, abs_of_nonneg hval_nonneg]
+    exact hval_le.trans (le_max_right 1 (2 * (n : ℝ)))
+  have hright_int :
+      IntegrableOn (fun y : ℝ => 2 * y * P.real {ω : Ω | y < |X 0 ω|})
+        (Set.Ioc (0 : ℝ) (n : ℝ)) volume := by
+    have hclip :=
+      durrett2019_theorem_2_2_12_tail_profile_integrableOn
+        (P := P) (X := X) (0 : ℝ) (n : ℝ)
+    refine hclip.congr_fun ?_ measurableSet_Ioc
+    intro y hy
+    have hy_nonneg : 0 ≤ y := le_of_lt hy.1
+    simp [hy_nonneg]
+  have hintegral_le :
+      (∫ y in Set.Ioc (0 : ℝ) (n : ℝ), 2 * y * truncTail y) ≤
+        ∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+          2 * y * P.real {ω : Ω | y < |X 0 ω|} := by
+    refine setIntegral_mono_on hleft_int hright_int measurableSet_Ioc ?_
+    intro y hy
+    have hy_nonneg : 0 ≤ y := le_of_lt hy.1
+    have hfactor_nonneg : 0 ≤ 2 * y := mul_nonneg zero_le_two hy_nonneg
+    exact mul_le_mul_of_nonneg_left
+      (durrett2019_theorem_2_2_12_measureReal_truncated_tail_le_original
+        (P := P) (X := X) n y)
+      hfactor_nonneg
+  calc
+    (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+        (n : ℝ) =
+      (∫ y in Set.Ioc (0 : ℝ) (n : ℝ), 2 * y * truncTail y) / (n : ℝ) := by
+        rw [hlayercake_n]
+    _ ≤
+      (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+        2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ) := by
+        exact div_le_div_of_nonneg_right hintegral_le (by positivity)
+
 /-! ## Durrett, Section 2.3 -/
 
 /--

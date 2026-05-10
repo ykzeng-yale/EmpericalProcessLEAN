@@ -112,7 +112,9 @@ from Durrett's real-tail source assumption to
 `(1/n) * ∫_0^n 2*y*P(|X_0|>y) dy -> 0`.  V196 proves automatic local
 integrability of the clipped tail profile and packages the exact tail-average
 endpoint wrappers.  V197 adds the truncated-tail event domination support
-needed for the final layer-cake comparison.  New V188-V197 declarations are
+needed for the final layer-cake comparison.  V198 adds the bridge from a
+supplied ordinary truncated-square layer-cake display to the exact
+tail-average bound.  New V188-V198 declarations are
 `durrett2019_theorem_2_2_11_measurable_truncationMap`,
 `durrett2019_theorem_2_2_11_measurable_truncated`,
 `durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound`,
@@ -164,9 +166,12 @@ and
 `durrett2019_theorem_2_2_12_truncated_tail_subset_original`,
 `durrett2019_theorem_2_2_12_measureReal_truncated_tail_le_original`,
 and
-`durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_le`.
-Continue with the remaining Theorem 2.2.12 support: prove the actual
-truncated-square upper bound into the compiled tail-integral average.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar
+`durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_le`,
+and
+`durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake`.
+Continue with the remaining Theorem 2.2.12 support: prove the ordinary
+layer-cake display for `|bar X_{n,0}|^2` and feed it to the compiled
+tail-average bound bridge.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar
 plumbing, 2.2.6, or 2.4.9.
 
 For each cycle, route from:

@@ -166,12 +166,17 @@ V197 adds the truncated-tail event support:
 `durrett2019_theorem_2_2_12_measureReal_truncated_tail_le_original`,
 and
 `durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_le`.
+V198 adds
+`durrett2019_theorem_2_2_12_tail_average_bound_of_truncated_layercake`, so a
+supplied ordinary layer-cake display for the truncated square moment now feeds
+the exact tail-average bound.
 The active numeric frontier is now sharply the actual textbook upper bound
 from the truncated square moment to the compiled tail integral average
 `(1 / n) * ∫_0^n 2*y*P(|X_0|>y) dy`.  The clipped tail profile's local
 integrability and the event-level tail domination facts are now compiled, so
-the remaining work is the set-integral / layer-cake comparison feeding
-`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable`.
+the remaining work is the ordinary layer-cake display for `|bar X_{n,0}|^2`,
+likely by converting mathlib's `lintegral_rpow_eq_lintegral_meas_lt_mul` at
+`p = 2` to the ordinary set-integral form.
 Do not route future cycles back to Chapter 4.5.2 or solved 2.1.10 partial-sum,
 2.1.13 product-consumer, 2.2.1 variance-sum, 2.2.3, 2.2.6, 2.4.9, 2.1.12,
 2.1.15, or 2.1.16 plumbing unless the user explicitly pivots.
