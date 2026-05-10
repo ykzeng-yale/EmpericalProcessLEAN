@@ -3680,6 +3680,15 @@ measurability.  Blueprint follow-up can now aim at an a.e. displayed-beta
 fiber-mass theorem for this concrete event, without strengthening it to a
 pointwise lower bound for every centered-bad original sample.
 
+The same concrete pair-difference source can now be stated in the more natural
+base-measure implication form:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_imp_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`
+turns eventual `P^n`-a.e. implications on centered-bad samples into the
+restricted-a.e. fiber input for the factor-two selected-net comparison, with
+countability discharging the required measurability.  The next blueprint item
+should prove that base-a.e. pair-difference fiber mass theorem, or replace it
+with a coefficient-correct product-pair/sign-swap source theorem.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

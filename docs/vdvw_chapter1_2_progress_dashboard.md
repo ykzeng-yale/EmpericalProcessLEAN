@@ -4595,3 +4595,12 @@ The dashboard blocker is therefore sharpened: future source work may prove an
 a.e. displayed-beta fiber lower bound directly for the concrete
 pair-difference event; it no longer needs to state a pointwise all-bad-samples
 fiber hypothesis at this layer.
+
+That concrete pair-difference a.e. source layer now also accepts the natural
+base-measure implication form through
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_imp_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`.
+The next source theorem can therefore target
+`P^n`-a.e. samples with `centeredBad sample -> beta <= pairDifferenceFiberMass`
+and let the bridge handle restriction to the centered-bad measure plus
+countable event measurability.  This removes another statement-shape blocker;
+it does not prove the pair-difference fiber mass itself.

@@ -10055,3 +10055,17 @@ rather than a pointwise lower bound for every centered-bad original sample.
 This is still interface work: the live blocker remains the actual
 probability theorem proving that a.e. fiber mass, or a coefficient-correct
 product-pair/pair-sub sign-swap substitute.
+
+2026-05-10 concrete pair-difference base-a.e. source handoff:
+`Theorem243.lean` now adds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_imp_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`.
+This is the base-measure companion to the restricted-a.e. pair-difference
+adapter: a future Fubini or conditioning proof may establish the concrete
+pair-difference displayed-beta fiber lower bound as
+`P^n`-a.e. on samples satisfying the centered-bad predicate, and the theorem
+converts it to the `P^n.restrict centeredBad` input expected by the
+factor-two selected-net comparison.  Countability still discharges both the
+centered-bad measurability and concrete selected-net event measurability.
+The remaining blocker is now the actual base-a.e. probability theorem for the
+pair-difference event, or the coefficient-correct product-pair/sign-swap
+replacement.
