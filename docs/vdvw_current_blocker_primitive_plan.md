@@ -10247,3 +10247,21 @@ from the existing inverse-square selected-cardinality lintegral, or from a
 deterministic selected-cardinality lower-growth hypothesis.  The remaining
 frontier is the actual a.e. product-fiber beta lower bound, not the
 tail-control handoff.
+
+2026-05-10 product-fiber a.e. lower-growth tail-control specialization:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_of_eventually_ae_cardinality_ge`.
+This is the almost-sure selected-cardinality analogue of the deterministic
+lower-growth wrapper: the finite-center failure-tail product-fiber route can
+now discharge inverse-square tail control from eventual `P^n`-a.e. lower
+growth of the selected cover size.  The remaining source frontier is still
+the real a.e. product-fiber beta lower bound; lower-growth may now be supplied
+in the same a.e. form used by the existing sign-only route.
+
+The same pass also adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_add_error`.
+This accepts the displayed beta lower bound as a base `P^n`-a.e. implication
+on membership in the centered bad event, plus eventual measurability of that
+event, and converts it to the restricted-a.e. form consumed downstream.  A
+future product-fiber source proof can therefore state its lower bound in the
+natural `sample ∈ centeredBad -> ...` a.e. form.

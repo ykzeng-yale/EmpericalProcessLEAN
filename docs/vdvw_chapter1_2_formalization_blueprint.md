@@ -3837,6 +3837,21 @@ lower bound with a samplewise finite-center failure-tail error; the remaining
 mathematics is proving that beta lower bound, not closing the tail-control
 or fixed-`M` consumer layer.
 
+The product-fiber finite-center failure-tail consumer now also has the a.e.
+lower-growth wrapper
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_of_eventually_ae_cardinality_ge`.
+It composes the existing a.e. selected-cardinality inverse-square lintegral
+lemma with the product-fiber samplewise-error route, so a future source proof
+may supply eventual `P^n`-a.e. growth of the selected cover size instead of a
+pointwise samplewise growth bound.
+
+The companion base-a.e. implication wrapper
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_add_error`
+converts a `P^n`-a.e. implication on the centered-bad event into the
+restricted-a.e. product-fiber hypothesis after an explicit eventual
+measurability assumption for that event.  This keeps the future source theorem
+closer to the usual conditional-a.e. statement shape.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

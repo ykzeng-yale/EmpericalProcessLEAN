@@ -4742,3 +4742,17 @@ The route can now pay centered-bad `errorSample` mass by the displayed
 finite-center Hoeffding failure tail and close that tail with either an
 inverse-square selected-cardinality lintegral or deterministic lower growth.
 The dashboard blocker is now the a.e. product-fiber beta lower bound itself.
+
+The same product-fiber finite-center failure-tail route now accepts a.e.
+selected-cardinality lower growth through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_of_eventually_ae_cardinality_ge`.
+This matches the a.e. lower-growth source shape already available in the
+sign-only route, so selected-cover growth no longer has to be pointwise in the
+future product-fiber source theorem.
+
+The fixed-`M` product-fiber source surface also now accepts base-measure a.e.
+implications through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_add_error`.
+The source proof may state the fiber lower bound as `P^n`-a.e.
+`sample ∈ centeredBad -> ...`, with centered-bad measurability supplied
+separately.
