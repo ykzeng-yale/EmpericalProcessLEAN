@@ -9795,3 +9795,15 @@ entropy alone.  The next theorem-facing source task is either a genuine
 structural nondegenerate-cover lower-growth theorem for the canonical selected
 cardinalities, or a return to the direct product-fiber/Chebyshev comparison
 that avoids inverse-square lower-growth entirely.
+
+2026-05-10 untruncated fixed-fiber pair-difference endpoint:
+`Theorem243.lean` now adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale`.
+This composes the existing fixed-`M` pair-difference/Chebyshev/sign-swap
+source theorem with the large-`M` envelope-tail handoff.  The fixed-fiber lane
+therefore reaches the untruncated centered convergence conclusion without
+using the inverse-square lower-growth route.  This does not solve the
+probability source: the remaining assumptions are still explicit event
+measurability, the coefficient-correct fixed-original sign-swap transport, and
+original/ghost finite-center a.e. support for the selected quarter-radius
+cover at each truncation level.

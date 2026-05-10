@@ -4398,3 +4398,14 @@ therefore not a missing mathlib convenience lemma: mathlib's
 is a real probabilistic/geometric source theorem giving lower growth under
 additional structure, or a direct Chebyshev/product-fiber route that avoids
 the inverse-square failure-tail lower-growth requirement.
+
+The fixed-fiber pair-difference route now also reaches the untruncated theorem
+layer.  The compiled endpoint
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale`
+packages the fixed-`M`
+`..._of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale` theorem
+through the large-`M` envelope-tail handoff.  This gives a non-lower-growth
+untruncated lane, but the source assumptions are still the hard ones:
+measurability of the concrete pair-difference event, fixed-original sign-swap
+transport with the right coefficient, and original/ghost selected finite-center
+a.e. support.

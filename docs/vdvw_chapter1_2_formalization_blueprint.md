@@ -3480,6 +3480,16 @@ not attempt to infer inverse-square lower growth from bare
 condition, or close the direct product-fiber/Chebyshev comparison without the
 additive failure-tail route.
 
+The direct fixed-fiber pair-difference route now has its large-`M` endpoint:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale`.
+It composes the existing fixed-`M` pair-difference/Chebyshev/sign-swap source
+theorem with the untruncation handoff.  This is the clean non-lower-growth
+endpoint for that lane; it should not be mistaken for a source proof.  The
+remaining blueprint target is still the probability-side source: event
+measurability, coefficient-correct fixed-original sign-swap transport, and
+original/ghost finite-center a.e. support, or a different product-fiber
+comparison that avoids those fixed-fiber assumptions.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
