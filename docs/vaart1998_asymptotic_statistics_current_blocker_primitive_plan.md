@@ -20,7 +20,7 @@ Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Current verified absorbing source endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapFDerivPathTaylor_envelope_absorbing`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapFDerivVectorTaylor_envelope_absorbing`.
 
 Continuation recipe:
 
@@ -33,9 +33,9 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Tightness source: propagate the absorbing Frechet-derivative path endpoint
-   into the vector Taylor and finite-derivative source wrappers, removing the
-   external `hScaledEstimator` field one layer at a time.
+1. Tightness source: propagate the absorbing Frechet vector Taylor endpoint
+   into the vector-continuity and finite-derivative source wrappers, removing
+   the external `hScaledEstimator` field one layer at a time.
 2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
    finite-entry norm/action wrapper stack.
@@ -1154,26 +1154,33 @@ compiling:
    `theta0 + t • delta`, then applies the absorbing actual estimating-map path
    endpoint.  It removes the external `scaledEstimator = O_P(1)` hypothesis
    from the Frechet-derivative path source layer.
+369. Theorem 5.41 absorbing Frechet vector Taylor endpoint:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapFDerivVectorTaylor_envelope_absorbing`
+   derives the coordinate derivative-at-zero and scalar derivative Taylor
+   obligations from vector Frechet-derivative identities, then applies the
+   absorbing Frechet-derivative path endpoint.  It removes the external
+   `scaledEstimator = O_P(1)` hypothesis from the vector Taylor source layer.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 absorbing Frechet path endpoint`).
+(`Add Vaart theorem 5.41 absorbing Frechet vector Taylor endpoint`).
 
 The latest theorem-sized packet turns the model-shaped derivative LLN,
 unscaled consistency, bounded curvature, second-derivative half-bound or
 quadratic Taylor residual, and root/Taylor display into the final
 scaled-estimator asymptotic-normality conclusion, without assuming
-scaled-estimator tightness first.  The newest Frechet-derivative path wrapper
-derives scalar coordinate path derivative hypotheses from `HasFDerivAt` along
-`theta0 + t • delta`.
+scaled-estimator tightness first.  The newest Frechet vector Taylor wrapper
+derives coordinate derivative-at-zero and scalar derivative Taylor obligations
+from vector identities.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to the actual estimating-map vector Taylor wrapper
-and remove its `hScaledEstimator` hypothesis by calling the absorbing
-Frechet-derivative path endpoint, or to a genuinely model-specific Taylor
-display, derivative, or score representation that removes a live hypothesis.
+source handoff.  Move next to the actual estimating-map vector-continuity
+Taylor wrapper and remove its `hScaledEstimator` hypothesis by calling the
+absorbing Frechet vector Taylor endpoint, or to a genuinely model-specific
+Taylor display, derivative, or score representation that removes a live
+hypothesis.
 Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
 derivative-bound, finite-derivative strong-law, action-bound, law-tail,
@@ -1183,7 +1190,8 @@ derivative absorbing-tightness, absorbing-source-endpoint, or
 absorbing-empirical-endpoint, absorbing-raw-Taylor-endpoint, or
 absorbing-coordinate-raw-endpoint, absorbing-coordinate-path-endpoint, or
 absorbing-estimating-map-path-endpoint, or absorbing-Frechet-path-endpoint
-wrappers unless a current proof directly depends on a small local API there.
+or absorbing-Frechet-vector-Taylor-endpoint wrappers unless a current proof
+directly depends on a small local API there.
 
 ## Execution Notes
 
