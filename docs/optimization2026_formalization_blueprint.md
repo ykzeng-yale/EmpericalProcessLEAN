@@ -209,6 +209,13 @@ longer the selector derivative equation; it is the actual third-derivative
 identity for the selected value/projected Hessian and the construction of the
 packaged adjoint-square-root envelope certificate from concrete selector and
 Hessian square-root models.
+The local stationarity source bridge now also compiles through
+`BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero`,
+`BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_mem_nhds`,
+and `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_isOpen`,
+so future envelope layers should discharge local vertical stationarity from
+the selector certificate plus neighborhood/open projected-domain hypotheses
+instead of exposing raw `EventuallyEq` assumptions.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers

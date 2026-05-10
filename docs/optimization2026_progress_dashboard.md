@@ -270,6 +270,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   canonical lifted-third oracle is the actual third derivative of the selected
   value and to construct the packaged adjoint-square-root envelope certificate
   from concrete selector/model data.
+- Inf-projection local-stationarity source bridge: the newest packet adds
+  `BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero`,
+  `BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero_of_isOpen`,
+  `BarrierInfProjectionSelectorStationary.selector_deriv_eq_neg_invHyy_of_mem_nhds`,
+  `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_mem_nhds`,
+  and
+  `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_isOpen`.
+  The Schur projected-gradient derivative can now be obtained directly from
+  selector stationarity plus a projected-domain neighborhood/open-domain fact;
+  future third-derivative/envelope work should not reintroduce raw local
+  `EventuallyEq` stationarity assumptions.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

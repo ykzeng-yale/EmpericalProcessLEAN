@@ -374,6 +374,17 @@ actual third-derivative identity for the selected value/projected Hessian and
 the construction of the packaged adjoint-square-root envelope certificate from
 concrete models.
 
+The local-stationarity source-shaping packet adds
+`BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero`,
+`BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero_of_isOpen`,
+`BarrierInfProjectionSelectorStationary.selector_deriv_eq_neg_invHyy_of_mem_nhds`,
+`BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_mem_nhds`,
+and `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_isOpen`.
+These lemmas derive the raw `EventuallyEq` vertical-residual hypothesis from
+the stationary selector plus neighborhood membership or an open projected
+domain.  Future inf-projection work should reuse these source-facing bridges
+instead of passing `barrierInfProjectionVerticalGrad =ᶠ[nhds x] 0` directly.
+
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,
 Definition 13.9, and the positive-orthant barrier packet are now substrate for

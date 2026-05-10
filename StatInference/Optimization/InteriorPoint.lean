@@ -2832,6 +2832,32 @@ theorem BarrierInfProjectionSelectorStationary.vertical_grad_eq_zero
     barrierInfProjectionVerticalGrad selector grad x = 0 :=
   (hsel hx).2
 
+-- Local form of the vertical stationarity certificate: if a neighborhood of
+-- `x` lies in the projected domain, the vertical residual vanishes near `x`.
+omit [InnerProductSpace ℝ E₁] [InnerProductSpace ℝ E₂] in
+theorem BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    {x : E₁}
+    (hmem_nhds : ∀ᶠ y in nhds x, y ∈ barrierInfProjectionSet s) :
+    barrierInfProjectionVerticalGrad selector grad =ᶠ[nhds x]
+      fun _ : E₁ => (0 : E₂) :=
+  hmem_nhds.mono fun _ hy => hsel.vertical_grad_eq_zero hy
+
+-- Open-domain form of local vertical stationarity for the inf-projection
+-- envelope theorem.
+omit [InnerProductSpace ℝ E₁] [InnerProductSpace ℝ E₂] in
+theorem BarrierInfProjectionSelectorStationary.verticalGrad_eventually_eq_zero_of_isOpen
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    {x : E₁} (hopen : IsOpen (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s) :
+    barrierInfProjectionVerticalGrad selector grad =ᶠ[nhds x]
+      fun _ : E₁ => (0 : E₂) :=
+  hsel.verticalGrad_eventually_eq_zero (hopen.mem_nhds hx)
+
 /-- First coordinate projection from the L2 product model as a CLM. -/
 noncomputable def withLpProdFstCLM : WithLp 2 (E₁ × E₂) →L[ℝ] E₁ :=
   (ContinuousLinearMap.fst ℝ E₁ E₂).comp
@@ -3448,6 +3474,85 @@ theorem barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq
     (E₁ := E₁) (E₂ := E₂) hgrad hselector
     (barrierInfProjection_selector_deriv_eq_neg_invHyy_of_vertical_eventuallyEq
       (E₁ := E₁) (E₂ := E₂) hgrad hselector hvertical_eventually hyy_left)
+
+/--
+Source-facing implicit-selector derivative equation.  The local vertical
+stationarity needed by the raw theorem is supplied by the stationary-selector
+certificate plus a neighborhood-membership fact for the projected domain.
+-/
+theorem BarrierInfProjectionSelectorStationary.selector_deriv_eq_neg_invHyy_of_mem_nhds
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂} {x : E₁}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hmem_nhds : ∀ᶠ y in nhds x, y ∈ barrierInfProjectionSet s)
+    (hgrad :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hyy_left : ∀ w : E₂,
+      invHyy x (barrierInfProjectionBlockYY selector hess x w) = w) :
+    ∀ v : E₁,
+      dselector v =
+        -invHyy x (barrierInfProjectionBlockYX selector hess x v) :=
+  barrierInfProjection_selector_deriv_eq_neg_invHyy_of_vertical_eventuallyEq
+    (E₁ := E₁) (E₂ := E₂) hgrad hselector
+    (hsel.verticalGrad_eventually_eq_zero hmem_nhds) hyy_left
+
+/--
+Source-facing Schur derivative theorem for the projected envelope gradient.
+The stationary-selector certificate supplies the local vertical residual
+vanishing, so callers only provide neighborhood membership and the `Hyy` left
+inverse.
+-/
+theorem BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_mem_nhds
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂} {x : E₁}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hmem_nhds : ∀ᶠ y in nhds x, y ∈ barrierInfProjectionSet s)
+    (hgrad :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hyy_left : ∀ w : E₂,
+      invHyy x (barrierInfProjectionBlockYY selector hess x w) = w) :
+    HasFDerivAt (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy x) x :=
+  barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq
+    (E₁ := E₁) (E₂ := E₂) hgrad hselector
+    (hsel.verticalGrad_eventually_eq_zero hmem_nhds) hyy_left
+
+/--
+Open-domain version of the source-facing Schur derivative theorem for the
+projected envelope gradient.
+-/
+theorem BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_schur_of_isOpen
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂} {x : E₁}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hgrad :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hyy_left : ∀ w : E₂,
+      invHyy x (barrierInfProjectionBlockYY selector hess x w) = w) :
+    HasFDerivAt (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy x) x :=
+  hsel.grad_hasFDerivAt_schur_of_mem_nhds
+    (hopen.mem_nhds hx) hgrad hselector hyy_left
 
 /--
 Projected inverse-Hessian candidate obtained by applying the original full
