@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V189` in
+Route from `Live In-Thread Goal Prompt V190` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -119,9 +119,11 @@ V189 adds source-side truncation inheritance:
 `durrett2019_theorem_2_2_11_iIndepFun_truncated_of_iIndepFun`, and the
 source-facing original-row wrapper
 `durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_iIndepFun`.
-The next active target is Theorem 2.2.12 and Lemma 2.2.13 support: specialize
-2.2.11 to `X_{n,k}=X_k`, `b_n=n`, and package the tail-integral/layer-cake
-inputs needed to prove the two numeric hypotheses from Durrett's
+V190 adds the first Theorem 2.2.12 single-sequence specialization
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_sub_truncatedMean_of_iIndepFun`.
+The next active target is Lemma 2.2.13 and the remaining Theorem 2.2.12
+support: package the tail-integral/layer-cake inputs needed to prove the two
+numeric hypotheses from Durrett's
 `x * P(|X_1| > x) -> 0` assumption.  Do not route future cycles back to
 Chapter 4.5.2 or solved 2.1.10 partial-sum, 2.1.13 product-consumer, 2.2.1
 variance-sum, 2.2.3, 2.2.6, 2.4.9, 2.1.12, 2.1.15, or 2.1.16 plumbing unless

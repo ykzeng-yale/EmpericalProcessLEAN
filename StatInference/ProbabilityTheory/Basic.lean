@@ -2393,6 +2393,40 @@ theorem durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_iIndepFun
         (P := P) (X := X) (b := b) (n := n) (k := k) (hX_meas n k))
     hsecond
 
+/--
+Durrett 2019, Theorem 2.2.12 support: specialize the triangular-array weak law
+to the single-sequence array `X_{n,k} = X_k` with truncation level `b_n = n`.
+
+The remaining theorem-specific work is to prove the two displayed numeric
+hypotheses from Durrett's tail assumption.
+-/
+theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_sub_truncatedMean_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (htail : Tendsto
+      (fun n : ℕ => ∑ k ∈ Finset.range n, P.real {ω : Ω | (n : ℝ) < |X k ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hsecond : Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          ∫ ω,
+            (durrett2019_theorem_2_2_11_truncated
+              (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n k ω) ^ 2 ∂P) /
+            (n : ℝ) ^ 2)
+      atTop (𝓝 (0 : ℝ))) :
+    TendstoInMeasure P
+      (fun n ω =>
+        ((∑ k ∈ Finset.range n, X k ω) -
+          durrett2019_theorem_2_2_11_truncatedMeanRowSum P
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n) / (n : ℝ))
+      atTop (fun _ => 0) := by
+  simpa [durrett2019_theorem_2_2_11_rowSum] using
+    (durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_iIndepFun
+      (P := P) (X := fun _ k => X k) (b := fun n : ℕ => (n : ℝ))
+      htail (fun _ => hX_indep) (fun _ k => hX_meas k) hsecond)
+
 /-! ## Durrett, Section 2.3 -/
 
 /--

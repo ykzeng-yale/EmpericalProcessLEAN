@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V189
+## Live In-Thread Goal Prompt V190
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -15,14 +15,15 @@ synced `main`.  Active lane: Durrett Chapter 2 in
 Theorem 2.2.11 large-jump truncation bridge, truncated-row variance and
 centering bridge, combined centered triangular-row weak-law assembly, and
 source-side truncation independence/`L^2` inheritance plus final original-row
-independence wrapper.
+independence wrapper, plus the first Theorem 2.2.12 single-sequence
+specialization.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V189 compiled support now includes:
+V190 compiled support now includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -70,7 +71,9 @@ plus the truncated-row variance and centering layer:
 and
 `durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncatedSecondMoment`,
 plus the original-row source-facing wrapper
-`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_iIndepFun`.
+`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_iIndepFun`,
+and the first Theorem 2.2.12 specialization
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_sub_truncatedMean_of_iIndepFun`.
 
 Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
 Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, or Theorem 2.4.9.  Move toward
