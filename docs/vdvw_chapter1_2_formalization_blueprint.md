@@ -3789,6 +3789,18 @@ a.e. implication from centered-bad membership.  The next source-facing theorem
 for this lane is that conditional sign-swap transport, not another restriction
 or selected-cover adapter.
 
+That base-measure implication source surface now also composes through
+large-`M` untruncation:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_ae_finiteCenter_halfScale`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+The first theorem keeps the per-`M` selected-cardinality/cardinality and
+finite-center side-condition interface; the second chooses the canonical
+countable first-level selected cover and one sign-only finite-center support
+hypothesis.  Future proof work can now aim the base-a.e. conditional
+sign-swap source directly at an untruncated centered Theorem 2.4.3 endpoint,
+or replace it with the averaged product-pair source route.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

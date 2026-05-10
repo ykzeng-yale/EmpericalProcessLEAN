@@ -10194,3 +10194,16 @@ transport for `P^n`-a.e. samples, conditional on centered-bad membership, and
 the wrappers convert it to the restricted-measure input.  The live blocker is
 now exactly that base-a.e. conditional sign-swap transport theorem, or the
 averaged product-pair replacement.
+
+2026-05-10 untruncated base-a.e. sign-swap handoff:
+`Theorem243.lean` now adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_ae_finiteCenter_halfScale`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+These lift the fixed-`M` base-a.e. conditional sign-swap source surface
+through the large-`M` envelope-tail untruncation handoff.  The first theorem
+accepts per-`M` selected covers and finite-center side conditions; the second
+chooses the canonical countable first-level selected cover with one sign-only
+finite-center support hypothesis.  The remaining source gap is therefore the
+actual base-a.e. conditional fixed-original sign-swap transport on
+centered-bad samples, or the averaged product-pair replacement.

@@ -58310,6 +58310,280 @@ theorem
             (hsignSwapLower M hM_pos) (hmaxSign M hM_pos))
 
 /--
+Untruncated convergence from the base-a.e. fixed-fiber pair-difference
+Chebyshev/sign-swap route.
+
+This is the large-`M` packaging of
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_ae_finiteCenter_halfScale`.
+The remaining source input is stated in the natural conditional form: for each
+truncation level, `P^n`-a.e. centered-bad sample satisfies the fixed-original
+sign-swap transport.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_ae_finiteCenter_halfScale
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {selectedCardinality cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    (htruncIntegrable :
+      ∀ M index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hbdd_truncated :
+      ∀ M n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hlog :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality M eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality M eta n sample n ≤
+            cardinality M eta n sample n)
+    (cover :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        ∀ n (sample : SampleAt Observation n),
+          FiniteEmpiricalL1CoverAtCard sample indexClass
+            (vdVWTruncatedClassFun classFun envelope M) ((eta / 2) / 2)
+            (selectedCardinality M eta n sample n))
+    (hevent_meas :
+      ∀ M (hM_pos : 0 < M), ∀ eta (heta : 0 < eta),
+        ∀ epsilon, 0 < epsilon ->
+          ∀ᶠ n in atTop,
+            MeasurableSet
+              (VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta / 2)
+                (epsilon := epsilon / 2)
+                (cardinality := fun sample : SampleAt Observation n =>
+                  selectedCardinality M eta n sample n)
+                (cover := cover M hM_pos eta heta n)))
+    (hleft_meas :
+      ∀ M (_ : 0 < M), ∀ (eta : ℝ), 0 < eta ->
+        ∀ epsilon, 0 < epsilon ->
+          ∀ᶠ n in atTop,
+            MeasurableSet
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)})
+    (hsignSwapLower :
+      ∀ M, 0 < M -> ∀ (eta : ℝ), 0 < eta ->
+        ∀ (epsilon : ℝ), 0 < epsilon ->
+          ∀ᶠ n in atTop,
+            ∀ᵐ sample ∂(vdVWProductMeasure P n),
+              sample ∈
+                {sample : SampleAt Observation n |
+                  epsilon <
+                    dist
+                      (vdVWWeightedClassSupremum indexClass
+                        (fun index : Index => fun observation : Observation =>
+                          vdVWTruncatedClassFun classFun envelope M index observation -
+                            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                        (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                      (0 : ℝ)} ->
+                (vdVWProductMeasure P n)
+                    (VdVWTheorem243CenteredPairSubBadEvent
+                      P indexClass classFun envelope M (epsilon / 2) sample) ≤
+                  ((vdVWProductMeasure P n).prod
+                      (vdVWProductMeasure vdVWRademacherLaw n))
+                    (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+                      P indexClass classFun envelope M (epsilon / 2) sample))
+    (hmaxOriginal :
+      ∀ M (hM_pos : 0 < M), ∀ (eta : ℝ) (heta : 0 < eta),
+        ∀ᶠ n in atTop,
+          ∀ sample : SampleAt Observation n,
+            ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+                ∂((vdVWProductMeasure P n).prod
+                    (vdVWProductMeasure vdVWRademacherLaw n)),
+              VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+                (vdVWTruncatedClassFun classFun envelope M)
+                (cover M hM_pos eta heta n sample).center z.2 M)
+    (hmaxGhost :
+      ∀ M (hM_pos : 0 < M), ∀ (eta : ℝ) (heta : 0 < eta),
+        ∀ᶠ n in atTop,
+          ∀ _sample : SampleAt Observation n,
+            ∀ᵐ z : SampleAt Observation n × SampleAt ℝ n
+                ∂((vdVWProductMeasure P n).prod
+                    (vdVWProductMeasure vdVWRademacherLaw n)),
+              VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+                (vdVWTruncatedClassFun classFun envelope M)
+                (cover M hM_pos eta heta n z.1).center
+                (fun i : Fin n => -z.2 i) M) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) henvelope hclass henvelope_meas
+      henv_integrable hclassIntegrable htruncIntegrable hbdd_truncated
+      (by
+        intro M hM_pos
+        exact
+          VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_ae_finiteCenter_halfScale
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M)
+            (selectedCardinality := selectedCardinality M)
+            (cardinality := cardinality M) henvelope hM_pos
+            (htruncIntegrable M) (hlog M hM_pos)
+            (hselected_le M hM_pos) (cover M hM_pos)
+            (hevent_meas M hM_pos) (hleft_meas M hM_pos)
+            (hsignSwapLower M hM_pos)
+            (hmaxOriginal M hM_pos) (hmaxGhost M hM_pos))
+
+/--
+Untruncated canonical first-level base-a.e. fixed-fiber pair-difference
+Chebyshev/sign-swap route with one sign-only finite-center support hypothesis.
+
+This packages
+`..._of_pairDifferenceChebyshev_ae_imp_signSwap_countable_firstLevel_of_signSample_finiteCenter`
+through the large-`M` untruncation handoff.  The remaining source input is the
+conditional fixed-original sign-swap transport for each truncation level.
+-/
+theorem
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_countable_firstLevel_of_signSample_finiteCenter
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hcovering_all :
+      ∀ M, 0 < M -> ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality M radius n))
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (henv_integrable : Integrable envelope P)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    (htruncIntegrable :
+      ∀ M index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hbdd_truncated :
+      ∀ M n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hlog :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality M eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hsignSwapLower :
+      ∀ M, 0 < M -> ∀ (eta : ℝ), 0 < eta ->
+        ∀ (epsilon : ℝ), 0 < epsilon ->
+          ∀ᶠ n in atTop,
+            ∀ᵐ sample ∂(vdVWProductMeasure P n),
+              sample ∈
+                {sample : SampleAt Observation n |
+                  epsilon <
+                    dist
+                      (vdVWWeightedClassSupremum indexClass
+                        (fun index : Index => fun observation : Observation =>
+                          vdVWTruncatedClassFun classFun envelope M index observation -
+                            ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                        (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                      (0 : ℝ)} ->
+                (vdVWProductMeasure P n)
+                    (VdVWTheorem243CenteredPairSubBadEvent
+                      P indexClass classFun envelope M (epsilon / 2) sample) ≤
+                  ((vdVWProductMeasure P n).prod
+                      (vdVWProductMeasure vdVWRademacherLaw n))
+                    (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+                      P indexClass classFun envelope M (epsilon / 2) sample))
+    (hmaxSign :
+      ∀ M (hM_pos : 0 < M), ∀ (eta : ℝ) (heta : 0 < eta),
+        ∀ᶠ n in atTop,
+          ∀ sample : SampleAt Observation n,
+            ∀ᵐ signSample : SampleAt ℝ n
+                ∂vdVWProductMeasure vdVWRademacherLaw n,
+              VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWSelectedTruncatedPositiveRadiusFirstLevelEmpiricalL1CoverAtCardOfCountable
+                  (indexClass := indexClass) (classFun := classFun)
+                  (envelope := envelope) (M := M)
+                  (cardinality := cardinality M)
+                  (X M) (hX_samplePath M) (hcovering_all M hM_pos) hcount
+                  hindexClass_nonempty
+                  (by linarith : 0 < (eta / 2) / 2) n sample).center
+                signSample M) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            classFun index observation - ∫ x, classFun index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_centered_truncated
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) henvelope hclass henvelope_meas
+      henv_integrable hclassIntegrable htruncIntegrable hbdd_truncated
+      (by
+        intro M hM_pos
+        exact
+          VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_countable_firstLevel_of_signSample_finiteCenter
+            (P := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (cardinality := cardinality M)
+            (X := X M) (hX_samplePath := hX_samplePath M)
+            (hcovering_all := hcovering_all M hM_pos)
+            hcount hclass henvelope_meas hindexClass_nonempty henvelope
+            hM_pos (htruncIntegrable M) (hlog M hM_pos)
+            (hsignSwapLower M hM_pos) (hmaxSign M hM_pos))
+
+/--
 A scaled selected outer-probability comparison without the displayed beta factor
 implies the displayed-beta source primitive.
 

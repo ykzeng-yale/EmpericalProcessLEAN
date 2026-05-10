@@ -4698,3 +4698,14 @@ They use the existing dependent a.e.-restriction helper to turn
 `P^n.restrict centeredBad` source required downstream.  The dashboard frontier
 is now the actual conditional sign-swap transport proof, or the averaged
 product-pair alternative.
+
+The base-measure implication surface now reaches the untruncated centered
+convergence endpoint:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_ae_finiteCenter_halfScale`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_imp_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+These compose the fixed-`M` base-a.e. sign-swap handoffs with the large-`M`
+untruncation theorem.  The dashboard blocker for this lane is now purely the
+probability source theorem: prove the conditional fixed-original sign-swap
+transport for `P^n`-a.e. centered-bad samples, or use the product-pair route
+that avoids that transport.
