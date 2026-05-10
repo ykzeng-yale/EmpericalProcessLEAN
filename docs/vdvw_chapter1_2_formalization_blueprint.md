@@ -3652,6 +3652,22 @@ Fubini work should aim directly for the base-product statement
 `∀ᵐ sample ∂P^n, centeredBad sample -> beta n <= rademacherBadMass n sample`,
 plus centered-bad measurability.
 
+For countable coordinate-measurable classes, the centered-bad measurability
+part of that source handoff is now compiled:
+`measurableSet_vdVWWeightedClassSupremum_centered_truncated_bad_of_countable`
+and
+`VdVWTheorem243_eventually_measurableSet_centeredBad_truncated_of_countable`
+specialize the existing centered-supremum measurability theorem to the
+fixed-`M` truncated bad event, and
+`VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp_countable`
+feeds it directly into the base-a.e. restricted-source adapter.  The same
+round also exposes
+`VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_pairSubBad_signSwap_fibers`,
+a product-space random-sign comparison that avoids a fixed-sample `hphi_id`
+premise.  The next blueprint item remains the real probability source:
+prove the base-a.e. pure Rademacher bad-fiber mass, or replace it with the
+coefficient-correct product-pair/sign-swap source theorem.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

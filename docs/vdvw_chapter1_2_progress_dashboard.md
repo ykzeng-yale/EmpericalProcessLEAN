@@ -4569,3 +4569,16 @@ This means the next source proof can output the more natural Fubini shape
 measure a.e. statement by hand.  It is plumbing only; the remaining blocker is
 still the pure Rademacher bad-fiber mass theorem or the coefficient-correct
 product-pair/sign-swap replacement.
+
+The countable-class centered-bad measurability side condition for that handoff
+is now discharged by
+`measurableSet_vdVWWeightedClassSupremum_centered_truncated_bad_of_countable`
+and
+`VdVWTheorem243_eventually_measurableSet_centeredBad_truncated_of_countable`.
+The countable adapter
+`VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp_countable`
+therefore reduces the source surface to the base-product a.e. implication
+itself.  The same Lean update also exposes
+`VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_pairSubBad_signSwap_fibers`
+for product-space random-sign finite-net comparisons without a separate
+fixed-sample `hphi_id` premise.

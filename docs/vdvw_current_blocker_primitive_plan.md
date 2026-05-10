@@ -10024,3 +10024,17 @@ already compiled restricted-measure sign-only source route.  This does not
 prove the nontrivial Rademacher bad-fiber mass.  The next aggressive theorem
 target remains the actual a.e. pure Rademacher bad-fiber probability theorem,
 or a coefficient-correct product-pair/pair-sub sign-swap substitute.
+
+2026-05-10 product-space random-sign and centered-bad measurability cleanup:
+`Theorem243.lean` now adds
+`VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_pairSubBad_signSwap_fibers`,
+which exposes the existing product-space random-sign comparison without a
+fixed-sample `hphi_id` premise.  It also adds
+`measurableSet_vdVWWeightedClassSupremum_centered_truncated_bad_of_countable`,
+`VdVWTheorem243_eventually_measurableSet_centeredBad_truncated_of_countable`,
+and
+`VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp_countable`.
+For countable coordinate-measurable classes, the base-product source proof no
+longer has to separately provide centered-bad measurability; it only has to
+prove the actual base-a.e. pure Rademacher bad-fiber lower bound.  The
+probability-side source theorem remains open.

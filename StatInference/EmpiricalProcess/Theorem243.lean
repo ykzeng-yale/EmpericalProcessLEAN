@@ -20850,6 +20850,125 @@ theorem
         (2 : ℝ≥0∞))
 
 /--
+Selector-facing centered comparison from the product-space random-sign route.
+
+This removes the fixed-sample pointwise `hphi_id` dependence by applying the
+product-space comparison lemmas directly on the joint `(ω, sample)` space.
+-/
+theorem
+    VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_pairSubBad_signSwap_fibers
+    {Ω : Type u} [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {Observation : Type v} [MeasurableSpace Observation]
+    {Index : Type w} {n : ℕ}
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {cardinality : ℕ}
+    {cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) epsilon cardinality}
+    {sign : Fin n -> Ω -> ℝ}
+    (_precursor :
+      VdVWTheorem243SymmetrizationPrecursor
+        (μ := μ) (P := P) (sample := sample) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (epsilon := epsilon) (cover := cover) (sign := sign))
+    (hsign_ae : ∀ᵐ ω ∂μ, VdVWRademacherSignVector (fun i : Fin n => sign i ω))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hpairSupIntegrable :
+      ∀ sample : SampleAt Observation n,
+        Integrable
+          (fun ghostSample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (sample i, ghostSample i)))
+          (vdVWProductMeasure P n))
+    (hcenteredSupIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        (vdVWProductMeasure P n))
+    (hghostExpectationIntegrable :
+      Integrable
+        (fun sample : SampleAt Observation n =>
+          ∫ ghostSample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun z : Observation × Observation =>
+                vdVWTruncatedClassFun classFun envelope M index z.1 -
+                  vdVWTruncatedClassFun classFun envelope M index z.2)
+              (fun _ : Fin n => (n : ℝ)⁻¹)
+              (fun i : Fin n => (sample i, ghostSample i))
+              ∂(vdVWProductMeasure P n))
+        (vdVWProductMeasure P n))
+    (hsplitSupIntegrable :
+      Integrable
+        (fun splitSample : SampleAt Observation n × SampleAt Observation n =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun z : Observation × Observation =>
+              vdVWTruncatedClassFun classFun envelope M index z.1 -
+                vdVWTruncatedClassFun classFun envelope M index z.2)
+            (fun _ : Fin n => (n : ℝ)⁻¹)
+            (fun i : Fin n => (splitSample.1 i, splitSample.2 i)))
+        ((vdVWProductMeasure P n).prod (vdVWProductMeasure P n)))
+    (hsampleSupIntegrable :
+      ∀ ω : Ω,
+        Integrable
+          (fun sample : SampleAt Observation n =>
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample)
+          (vdVWProductMeasure P n))
+    (hrandomIntegralIntegrable :
+      Integrable
+        (fun ω : Ω =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWRademacherWeights (fun i : Fin n => sign i ω)) sample
+            ∂(vdVWProductMeasure P n))
+        μ)
+    (U : VdVWMeasurableCover (μ.prod (vdVWProductMeasure P n))
+      (fun z : Ω × SampleAt Observation n => ENNReal.ofReal
+        (vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2)))
+    (hfiniteNet_ae :
+      ∀ᵐ z : Ω × SampleAt Observation n ∂μ.prod (vdVWProductMeasure P n),
+        vdVWWeightedClassSupremum indexClass
+          (vdVWTruncatedClassFun classFun envelope M)
+          (vdVWRademacherWeights (fun i : Fin n => sign i z.1)) z.2 ≤
+            vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M + epsilon) :
+    ENNReal.ofReal
+        (∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n)) ≤
+      (2 : ℝ≥0∞) *
+        ENNReal.ofReal (vdVWTheorem243FiniteNetHoeffdingUpper cardinality n M + epsilon) := by
+  exact
+    integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_finiteNetHoeffdingUpper_add_of_product_randomSign_ae
+      (μ := μ) (P := P) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M) (n := n)
+      (epsilon := epsilon) (cardinality := cardinality) sign hsign_ae
+      henvelope hM_nonneg htruncIntegrable hpairSupIntegrable
+      hcenteredSupIntegrable hghostExpectationIntegrable hsplitSupIntegrable
+      hsampleSupIntegrable hrandomIntegralIntegrable U hfiniteNet_ae
+
+/--
 Real-valued form of
 `VdVWTheorem243SymmetrizationPrecursor.centered_ofReal_le_two_finiteNetHoeffdingUpper_add_of_hphi_id`.
 
@@ -47315,6 +47434,74 @@ theorem
         hM_pos.le heta (cover z.1) hz.1 hz.2.1 hz.2.2
 
 /--
+The centered fixed-`M` truncated bad event is measurable for countable
+coordinate-measurable classes.
+-/
+theorem
+    measurableSet_vdVWWeightedClassSupremum_centered_truncated_bad_of_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope) :
+    MeasurableSet
+      {sample : SampleAt Observation n |
+        epsilon <
+          dist
+            (vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+            (0 : ℝ)} := by
+  have hsup :
+      Measurable fun sample : SampleAt Observation n =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample := by
+    simpa using
+      (measurable_vdVWWeightedClassSupremum_centered_of_countable
+        (P := P) (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        hcount (hclass.truncate henvelope_meas)
+        (fun _ : Fin n => (n : ℝ)⁻¹))
+  exact measurableSet_Ioi.preimage (hsup.dist measurable_const)
+
+/--
+Eventual centered-bad measurability for the fixed-`M` truncated countable
+class.  This is the exact side condition needed by the base-a.e.
+Rademacher-bad source adapter below.
+-/
+theorem VdVWTheorem243_eventually_measurableSet_centeredBad_truncated_of_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope) :
+    ∀ᶠ n : ℕ in atTop,
+      MeasurableSet
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+              (0 : ℝ)} := by
+  exact Eventually.of_forall fun n =>
+    measurableSet_vdVWWeightedClassSupremum_centered_truncated_bad_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+      hcount hclass henvelope_meas
+
+/--
 Base-product a.e. implication form of the pure Rademacher bad-fiber source.
 
 Future Fubini or conditioning arguments naturally prove the Rademacher
@@ -47413,6 +47600,75 @@ theorem
                       (vdVWRademacherWeights signSample) sample)
                   (0 : ℝ)})
       hcenteredBad_meas hbadLower
+
+/--
+Countable-class version of the base-product a.e. Rademacher-bad source
+adapter.  The centered-bad event measurability side condition is discharged
+from countability and coordinate measurability of the original class.
+-/
+theorem
+    VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    (beta : ℕ -> ℝ≥0∞)
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hbadLower :
+      ∀ᶠ n : ℕ in atTop,
+        ∀ᵐ sample ∂(vdVWProductMeasure P n),
+          sample ∈
+            {sample : SampleAt Observation n |
+              epsilon <
+                dist
+                  (vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      vdVWTruncatedClassFun classFun envelope M index observation -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                  (0 : ℝ)} ->
+            beta n ≤
+              (vdVWProductMeasure vdVWRademacherLaw n)
+                {signSample : SampleAt ℝ n |
+                  epsilon <
+                    dist
+                      (2 *
+                        vdVWWeightedClassSupremum indexClass
+                          (vdVWTruncatedClassFun classFun envelope M)
+                          (vdVWRademacherWeights signSample) sample)
+                      (0 : ℝ)}) :
+    ∀ᶠ n : ℕ in atTop,
+      ∀ᵐ sample ∂((vdVWProductMeasure P n).restrict
+          ({sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                (0 : ℝ)})),
+        beta n ≤
+          (vdVWProductMeasure vdVWRademacherLaw n)
+            {signSample : SampleAt ℝ n |
+              epsilon <
+                dist
+                  (2 *
+                    vdVWWeightedClassSupremum indexClass
+                      (vdVWTruncatedClassFun classFun envelope M)
+                      (vdVWRademacherWeights signSample) sample)
+                  (0 : ℝ)} := by
+  exact
+    VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := epsilon) beta
+      (VdVWTheorem243_eventually_measurableSet_centeredBad_truncated_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (epsilon := epsilon)
+        hcount hclass henvelope_meas)
+      hbadLower
 
 /--
 Concrete-event version of the canonical ghost/Rademacher product-event
