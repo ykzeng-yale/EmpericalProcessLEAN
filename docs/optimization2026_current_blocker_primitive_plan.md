@@ -420,6 +420,16 @@ and
 `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi_continuousOn`,
 so callers only need `ContinuousOn H_schur` on the projected domain rather
 than a separate per-vector continuity proof for every segment quadratic form.
+The newest vector-path packet adds
+`hessianSegmentPsi_hasDerivAt_of_hasDerivAt_apply`,
+`hessianSegmentPsi_hasDerivWithinAt_of_hasDerivWithinAt_apply`,
+`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_hessApplyDeriv`,
+and
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv`.
+Thus the preferred exact source gate can now be proved by differentiating only
+the applied Schur-Hessian vector path `t ↦ H_schur(z_t) v` and pairing the
+result with `v`; a full operator-valued Schur derivative and even a direct
+scalar-`ψ` derivative theorem are optional stronger routes.
 This weakens the next exact source gate: future work may prove only the
 source-shaped scalar segment derivative
 `d/dt <v, H_schur(z_t) v> = liftedThird(z_t, y - x, v)` instead of first

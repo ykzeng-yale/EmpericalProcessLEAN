@@ -218,9 +218,14 @@ the Schur Hessian.  Prefer the continuity-on-domain variants
 and
 `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi_continuousOn`
 when `ContinuousOn H_schur` is available, since they discharge all per-vector
-segment continuity obligations automatically.  The remaining exact envelope
-task is to prove that scalar identity and construct the packaged
-adjoint-square-root envelope certificate
+segment continuity obligations automatically.  The newest vector-path
+derivative bridge also provides
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv`,
+so the next exact proof can work at the applied-Hessian level:
+differentiate `t ↦ H_schur(z_t) v`, prove the pairing with `v` is the lifted
+third derivative, and let the generic `ψ` derivative bridge finish the scalar
+calculus.  The remaining exact envelope task is to prove that applied-vector
+identity and construct the packaged adjoint-square-root envelope certificate
 from concrete selector and
 Hessian square-root models.
 The local stationarity source bridge now also compiles through

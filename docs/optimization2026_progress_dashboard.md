@@ -316,6 +316,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   reusing `hessianSegmentPsi_continuousOn_of_convex_continuousOn` so future
   scalar-source work only supplies `ContinuousOn H_schur` on the projected
   domain rather than a per-vector segment-continuity family.
+  The newest vector-path derivative packet adds
+  `hessianSegmentPsi_hasDerivAt_of_hasDerivAt_apply`,
+  `hessianSegmentPsi_hasDerivWithinAt_of_hasDerivWithinAt_apply`,
+  `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_hessApplyDeriv`,
+  and
+  `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv`.
+  The live inf-projection derivative gate is now even narrower: prove the
+  derivative of `t ↦ H_schur(z_t) v` and the paired identity with lifted third;
+  the scalar `ψ` derivative follows by the generic inner-product calculus
+  bridge.
   Search-first reuse: the bridge reuses the already compiled canonical
   lifted-third self-concordance theorem and the generic
   `HessianSegmentMixedThirdLocalNormCertificate` constructors and sandwich
