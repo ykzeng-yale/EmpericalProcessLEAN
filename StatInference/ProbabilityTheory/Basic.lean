@@ -1889,6 +1889,137 @@ theorem durrett2019_theorem_2_2_6_tendstoInMeasure_centered_div_of_variance_div_
   exact durrett2019_lemma_2_2_2_tendstoInMeasure_of_integral_sq_tendsto_zero
     (P := P) (Z := Z) hZ_mem hsq
 
+/--
+Durrett 2019, Theorem 2.2.11, triangular-array truncation notation.
+
+The textbook writes `bar X_{n,k} = X_{n,k} 1_{|X_{n,k}| <= b_n}`.  The Lean
+row index is zero-based, so row `n` contains `k in Finset.range n`.
+-/
+noncomputable def durrett2019_theorem_2_2_11_truncated
+    {Ω : Type u} (X : ℕ -> ℕ -> Ω -> ℝ) (b : ℕ -> ℝ)
+    (n k : ℕ) : Ω -> ℝ :=
+  Set.indicator {ω : Ω | |X n k ω| ≤ b n} (fun ω : Ω => X n k ω)
+
+/--
+Durrett 2019, Theorem 2.2.11, triangular-array row sum `S_n`.
+-/
+noncomputable def durrett2019_theorem_2_2_11_rowSum
+    {Ω : Type u} (X : ℕ -> ℕ -> Ω -> ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  ∑ k ∈ Finset.range n, X n k ω
+
+/--
+Durrett 2019, Theorem 2.2.11, truncated row sum `bar S_n`.
+-/
+noncomputable def durrett2019_theorem_2_2_11_truncatedRowSum
+    {Ω : Type u} (X : ℕ -> ℕ -> Ω -> ℝ) (b : ℕ -> ℝ)
+    (n : ℕ) (ω : Ω) : ℝ :=
+  ∑ k ∈ Finset.range n, durrett2019_theorem_2_2_11_truncated X b n k ω
+
+/--
+Durrett 2019, Theorem 2.2.11 support: if no entry in a row exceeds its
+truncation level, then the original and truncated row sums agree.
+-/
+theorem durrett2019_theorem_2_2_11_rowSum_eq_truncatedRowSum_of_all_small
+    {Ω : Type u} {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    {n : ℕ} {ω : Ω}
+    (hsmall : ∀ k ∈ Finset.range n, |X n k ω| ≤ b n) :
+    durrett2019_theorem_2_2_11_rowSum X n ω =
+      durrett2019_theorem_2_2_11_truncatedRowSum X b n ω := by
+  unfold durrett2019_theorem_2_2_11_rowSum
+    durrett2019_theorem_2_2_11_truncatedRowSum
+  refine Finset.sum_congr rfl ?_
+  intro k hk
+  simp [durrett2019_theorem_2_2_11_truncated, hsmall k hk]
+
+/--
+Durrett 2019, Theorem 2.2.11 support: the event where `S_n` differs from
+`bar S_n` is contained in the union of large-jump events.
+-/
+theorem durrett2019_theorem_2_2_11_rowSum_ne_truncatedRowSum_subset_tailUnion
+    {Ω : Type u} {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {n : ℕ} :
+    {ω : Ω |
+      durrett2019_theorem_2_2_11_rowSum X n ω ≠
+        durrett2019_theorem_2_2_11_truncatedRowSum X b n ω} ⊆
+      ⋃ k ∈ Finset.range n, {ω : Ω | b n < |X n k ω|} := by
+  intro ω hne
+  by_contra hnotmem
+  have hsmall : ∀ k ∈ Finset.range n, |X n k ω| ≤ b n := by
+    intro k hk
+    exact le_of_not_gt (by
+      intro hlt
+      exact hnotmem (by
+        exact Set.mem_iUnion.2 ⟨k, Set.mem_iUnion.2 ⟨hk, hlt⟩⟩))
+  exact hne
+    (durrett2019_theorem_2_2_11_rowSum_eq_truncatedRowSum_of_all_small
+      (X := X) (b := b) hsmall)
+
+/--
+Durrett 2019, Theorem 2.2.11 support: union bound for the probability that
+`S_n` and `bar S_n` differ.
+-/
+theorem durrett2019_theorem_2_2_11_probReal_rowSum_ne_truncatedRowSum_le_tailSum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {n : ℕ} :
+    P.real {ω : Ω |
+      durrett2019_theorem_2_2_11_rowSum X n ω ≠
+        durrett2019_theorem_2_2_11_truncatedRowSum X b n ω} ≤
+      ∑ k ∈ Finset.range n, P.real {ω : Ω | b n < |X n k ω|} := by
+  calc
+    P.real {ω : Ω |
+        durrett2019_theorem_2_2_11_rowSum X n ω ≠
+          durrett2019_theorem_2_2_11_truncatedRowSum X b n ω} ≤
+        P.real (⋃ k ∈ Finset.range n, {ω : Ω | b n < |X n k ω|}) := by
+      exact measureReal_mono
+        (durrett2019_theorem_2_2_11_rowSum_ne_truncatedRowSum_subset_tailUnion
+          (X := X) (b := b) (n := n))
+        (measure_ne_top P _)
+    _ ≤ ∑ k ∈ Finset.range n, P.real {ω : Ω | b n < |X n k ω|} := by
+      simpa using
+        (measureReal_biUnion_finset_le (μ := P) (s := Finset.range n)
+          (f := fun k => {ω : Ω | b n < |X n k ω|}))
+
+/--
+Durrett 2019, Theorem 2.2.11 support: hypothesis (i), the vanishing large-jump
+probability sum, makes the difference `S_n - bar S_n` converge to zero in
+probability.
+-/
+theorem durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_truncatedRowSum_of_tailSum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (htail : Tendsto
+      (fun n : ℕ => ∑ k ∈ Finset.range n, P.real {ω : Ω | b n < |X n k ω|})
+      atTop (𝓝 (0 : ℝ))) :
+    TendstoInMeasure P
+      (fun n ω =>
+        durrett2019_theorem_2_2_11_rowSum X n ω -
+          durrett2019_theorem_2_2_11_truncatedRowSum X b n ω)
+      atTop (fun _ => 0) := by
+  rw [MeasureTheory.tendstoInMeasure_iff_measureReal_norm]
+  intro ε hε
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds htail
+    (fun _ => measureReal_nonneg) ?_
+  intro n
+  calc
+    P.real {ω : Ω |
+        ε ≤ ‖durrett2019_theorem_2_2_11_rowSum X n ω -
+          durrett2019_theorem_2_2_11_truncatedRowSum X b n ω - 0‖} ≤
+        P.real {ω : Ω |
+          durrett2019_theorem_2_2_11_rowSum X n ω ≠
+            durrett2019_theorem_2_2_11_truncatedRowSum X b n ω} := by
+      refine measureReal_mono ?_ (measure_ne_top P _)
+      intro ω hω heq
+      have hnorm :
+          ‖durrett2019_theorem_2_2_11_rowSum X n ω -
+            durrett2019_theorem_2_2_11_truncatedRowSum X b n ω - 0‖ = 0 := by
+        simp [heq]
+      have hle_zero : ε ≤ 0 := by
+        rw [← hnorm]
+        exact hω
+      exact (not_le_of_gt hε) hle_zero
+    _ ≤ ∑ k ∈ Finset.range n, P.real {ω : Ω | b n < |X n k ω|} :=
+      durrett2019_theorem_2_2_11_probReal_rowSum_ne_truncatedRowSum_le_tailSum
+        (P := P) (X := X) (b := b) (n := n)
+
 /-! ## Durrett, Section 2.3 -/
 
 /--

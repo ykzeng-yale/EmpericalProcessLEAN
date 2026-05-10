@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V186
+## Live In-Thread Goal Prompt V187
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -13,14 +13,14 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane: Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, starting from the now-compiled
 Theorem 2.2.3 `L^2` weak-law bridge and Theorem 2.2.6 normalized variance
-weak-law bridge.
+weak-law bridge, plus the first Theorem 2.2.11 large-jump truncation bridge.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V186 compiled support now includes:
+V187 compiled support now includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -43,15 +43,24 @@ Theorem 2.2.6 support:
 `durrett2019_lemma_2_2_2_tendsto_eLpNorm_two_zero_of_integral_sq_tendsto_zero`,
 `durrett2019_lemma_2_2_2_tendstoInMeasure_of_integral_sq_tendsto_zero`,
 `durrett2019_theorem_2_2_6_integral_sq_centered_div_eq_variance_div_sq`, and
-`durrett2019_theorem_2_2_6_tendstoInMeasure_centered_div_of_variance_div_sq`.
+`durrett2019_theorem_2_2_6_tendstoInMeasure_centered_div_of_variance_div_sq`,
+plus Theorem 2.2.11 truncation support:
+`durrett2019_theorem_2_2_11_truncated`,
+`durrett2019_theorem_2_2_11_rowSum`,
+`durrett2019_theorem_2_2_11_truncatedRowSum`,
+`durrett2019_theorem_2_2_11_rowSum_eq_truncatedRowSum_of_all_small`,
+`durrett2019_theorem_2_2_11_rowSum_ne_truncatedRowSum_subset_tailUnion`,
+`durrett2019_theorem_2_2_11_probReal_rowSum_ne_truncatedRowSum_le_tailSum`, and
+`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_truncatedRowSum_of_tailSum`.
 
 Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
 Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, or Theorem 2.4.9.  Move toward
-Durrett Theorem 2.2.11, the triangular-array weak law.  First package only the
-largest directly compiling support step: truncation notation, row-sum
-centering, Chebyshev/variance consumers, or the three source hypotheses
-(`large jump`, `truncated variance`, `truncated centering`) as needed.  Reuse
-the compiled 2.2.6 normalized-variance weak-law bridge, independence/product
+Durrett Theorem 2.2.11, the triangular-array weak law.  The large-jump
+replacement step is compiled, so next package the truncated-row variance and
+centering half: show `a_n = E bar S_n`, derive `Var(bar S_n) / b_n^2 -> 0`
+from hypothesis (ii) using finite-sum variance support and `Var(Y) <= E Y^2`,
+then feed Theorem 2.2.6 for `bar S_n`.  Only after those compile, assemble
+`S_n` from `bar S_n` with the large-jump bridge.  Reuse independence/product
 wrappers, finite-sum variance support, Borel-Cantelli, strong-law, and
 empirical-CDF infrastructure.  Search mathlib/local first for the exact
 primitive and use
