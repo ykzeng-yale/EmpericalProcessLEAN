@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V193` in
+Route from `Live In-Thread Goal Prompt V194` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -142,12 +142,16 @@ V193 adds the real-to-natural large-jump bridge
 `durrett2019_theorem_2_2_12_nat_tail_tendsto_zero_of_real_tail` and the
 source-facing endpoint
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_single_second`.
-The active numeric frontier is now only the single-variable second-moment
-average `E[bar X_{n,0}^2] / n -> 0`.
-The next active target is Lemma 2.2.13 and the remaining Theorem 2.2.12
-support: package the real-to-natural tail limit and the tail-integral/layer-cake
-inputs needed to prove `E[bar X_{n,0}^2] / n -> 0` from Durrett's
-`x * P(|X_1| > x) -> 0` assumption.  Do not route future cycles back to
+V194 adds the first Lemma 2.2.13 / second-bound consumer layer:
+`durrett2019_lemma_2_2_13_lintegral_rpow_tail_lt`,
+`durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_eventual_bound`, and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_second_bound`.
+The active numeric frontier is now sharply the actual textbook proof of a
+vanishing upper bound for `E[bar X_{n,0}^2] / n`.
+The next active target is the remaining Theorem 2.2.12 support: connect the
+truncated square moment to the tail integral
+`(1 / n) * ∫_0^n 2*y*P(|X_0|>y) dy` and prove that average tends to zero from
+Durrett's `x * P(|X_1| > x) -> 0` assumption.  Do not route future cycles back to
 Chapter 4.5.2 or solved 2.1.10 partial-sum, 2.1.13 product-consumer, 2.2.1
 variance-sum, 2.2.3, 2.2.6, 2.4.9, 2.1.12, 2.1.15, or 2.1.16 plumbing unless
 the user explicitly pivots.

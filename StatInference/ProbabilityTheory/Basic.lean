@@ -4,6 +4,7 @@ import StatInference.ProbabilityMeasure.GeneratedSigma
 import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.StrongLaw
 import StatInference.ProbabilityMeasure.WeakConvergence
+import Mathlib.Analysis.SpecialFunctions.Pow.Integral
 import Mathlib.MeasureTheory.Measure.LevyConvergence
 import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
 import Mathlib.Probability.CentralLimitTheorem
@@ -2808,6 +2809,96 @@ theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncated
     (durrett2019_theorem_2_2_12_nat_tail_tendsto_zero_of_real_tail
       (P := P) (X := X) htail_real)
     hsecond_single hX_indep hX_ident hX_meas
+
+/--
+Durrett 2019, Lemma 2.2.13, source-facing layer-cake formula in the
+`lintegral` form supplied by mathlib.
+
+For a nonnegative random variable `Y` and `p > 0`, this is the textbook
+identity `E[Y^p] = p * ∫_0^∞ y^(p-1) P(Y > y) dy`, expressed with extended
+nonnegative integrals.  Later ordinary-integral wrappers can specialize this
+to truncated variables and finite moments.
+-/
+theorem durrett2019_lemma_2_2_13_lintegral_rpow_tail_lt
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : Ω -> ℝ} {p : ℝ}
+    (hY_nonneg : 0 ≤ᵐ[P] Y) (hY_meas : AEMeasurable Y P)
+    (hp : 0 < p) :
+    (∫⁻ ω, ENNReal.ofReal (Y ω ^ p) ∂P) =
+      ENNReal.ofReal p *
+        ∫⁻ y in Set.Ioi (0 : ℝ),
+          P {ω : Ω | y < Y ω} * ENNReal.ofReal (y ^ (p - 1)) :=
+  MeasureTheory.lintegral_rpow_eq_lintegral_meas_lt_mul
+    (μ := P) hY_nonneg hY_meas hp
+
+/--
+Durrett 2019, Theorem 2.2.12 support: a nonnegative upper bound sequence
+which tends to zero proves the remaining single truncated second-moment limit.
+
+This isolates the last analytic task in the textbook proof: produce such a
+bound from Lemma 2.2.13 and the tail average
+`(1 / n) * ∫_0^n 2 * y * P(|X_0| > y) dy`.
+-/
+theorem durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_eventual_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {B : ℕ -> ℝ}
+    (hbound : ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+        (n : ℝ) ≤ B n)
+    (hB : Tendsto B atTop (𝓝 (0 : ℝ))) :
+    Tendsto
+      (fun n : ℕ =>
+        (∫ ω,
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+          (n : ℝ))
+      atTop (𝓝 (0 : ℝ)) := by
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hB ?_ hbound
+  refine eventually_atTop.2 ⟨1, ?_⟩
+  intro n hn
+  have hn_nonneg : (0 : ℝ) ≤ (n : ℝ) := by positivity
+  have hintegral_nonneg :
+      0 ≤
+        ∫ ω,
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P := by
+    exact integral_nonneg fun ω => sq_nonneg _
+  exact div_nonneg hintegral_nonneg hn_nonneg
+
+/--
+Durrett 2019, Theorem 2.2.12 source-facing bound bridge: Durrett's real-tail
+assumption gives the large-jump side, and any verified vanishing upper bound
+for the single truncated second-moment average supplies the remaining
+Theorem 2.2.11 numeric hypothesis.
+-/
+theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_second_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {B : ℕ -> ℝ}
+    (htail_real : Tendsto
+      (fun x : ℝ => x * P.real {ω : Ω | x < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (hsecond_bound : ∀ᶠ n in atTop,
+      (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+        (n : ℝ) ≤ B n)
+    (hB : Tendsto B atTop (𝓝 (0 : ℝ)))
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hX_meas : ∀ k : ℕ, Measurable (X k)) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (∑ k ∈ Finset.range n, X k ω) / (n : ℝ) -
+          durrett2019_theorem_2_2_12_truncatedMean P X n)
+      atTop (fun _ => 0) :=
+  durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_single_second
+    (P := P) (X := X) htail_real
+    (durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_eventual_bound
+      (P := P) (X := X) hsecond_bound hB)
+    hX_indep hX_ident hX_meas
 
 /-! ## Durrett, Section 2.3 -/
 

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V193`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V194`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -104,7 +104,10 @@ the large-jump row sum is reduced to `n * P(|X_0| > n)`, and the row truncated
 second-moment hypothesis is reduced to `E[bar X_{n,0}^2] / n -> 0`.
 V193 discharges the large-jump side from Durrett's real-tail assumption
 `x * P(|X_0| > x) -> 0`, leaving only the truncated second-moment average to
-derive from Lemma 2.2.13.  New V188-V193 declarations are
+derive from Lemma 2.2.13.  V194 registers Lemma 2.2.13 in mathlib's `lintegral`
+layer-cake form and adds a source-facing second-bound consumer, so a verified
+vanishing upper bound for `E[bar X_{n,0}^2] / n` now feeds the final
+Theorem 2.2.12 display directly.  New V188-V194 declarations are
 `durrett2019_theorem_2_2_11_measurable_truncationMap`,
 `durrett2019_theorem_2_2_11_measurable_truncated`,
 `durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound`,
@@ -137,10 +140,13 @@ and
 and
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_single`,
 and
-`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_single_second`.
-Continue with Lemma 2.2.13 and the remaining Theorem 2.2.12 support: package
-the tail-integral/layer-cake inputs for Durrett's
-`x * P(|X_1| > x) -> 0` hypothesis.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_single_second`,
+`durrett2019_lemma_2_2_13_lintegral_rpow_tail_lt`,
+`durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_eventual_bound`, and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_second_bound`.
+Continue with the remaining Theorem 2.2.12 support: prove the actual
+tail-integral upper bound and the Cesaro/tail-average convergence from
+Durrett's `x * P(|X_1| > x) -> 0` hypothesis.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar
 plumbing, 2.2.6, or 2.4.9.
 
 For each cycle, route from:
