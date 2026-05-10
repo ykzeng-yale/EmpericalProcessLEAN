@@ -4430,3 +4430,15 @@ sample-size forms:
 These remove a recurring successor-index adapter gap before the next source
 proof, but they do not solve the probability-side displayed-beta/sign-swap
 blocker.
+
+The fixed-fiber sign-swap route now has the valid coefficient-correct all-one
+slice theorem:
+`VdVWRademacherSignVector_const_one`,
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent_lower_bound_of_pairSubBad_constOne`,
+and
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent_lower_bound_of_chebyshev_constOne_of_pos`.
+This formally transports pair-sub Chebyshev mass to the sign-swapped bad event
+only with the exact `(2⁻¹)^n` Rademacher coefficient.  It confirms the
+unit-coefficient fixed-fiber assumption is not justified by this route; the
+remaining displayed-beta blocker still needs averaged sign/ghost mass or an
+explicit stronger structural hypothesis.

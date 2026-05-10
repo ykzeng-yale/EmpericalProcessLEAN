@@ -9833,3 +9833,19 @@ The live blocker is unchanged: prove a genuine displayed-beta/product-fiber
 lower bound or a coefficient-correct fixed-fiber sign-swap theorem, plus the
 needed original/ghost finite-center support, rather than adding more endpoint
 aliases.
+
+2026-05-10 coefficient-correct all-one fixed-fiber sign-swap source:
+`Theorem243.lean` now proves the valid fixed-sign transport explicitly:
+`VdVWRademacherSignVector_const_one`,
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent_lower_bound_of_pairSubBad_constOne`,
+and
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent_lower_bound_of_chebyshev_constOne_of_pos`.
+The theorem embeds the unswapped pair-sub bad ghost event into the
+sign-swapped bad event using the deterministic all-one sign slice, then
+composes with the positive-size Chebyshev pair-sub source.  The lower bound
+carries the unavoidable factor `(2⁻¹)^n`, so this is not the displayed-beta
+fiber lower bound; it is the formal coefficient-correct replacement for the
+invalid unit-coefficient fixed-original sign-swap shortcut.  The next
+probability source theorem must still obtain non-exponential sign/ghost mass
+by an averaged argument or add an explicit stronger structural
+tail/cardinality hypothesis.

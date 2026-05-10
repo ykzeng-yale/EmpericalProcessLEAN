@@ -44860,6 +44860,59 @@ noncomputable def VdVWTheorem243CenteredPairSubSignSwapBadEvent
         (vdVWRademacherProductSampleSignSwap z.2
           (fun i : Fin n => (sample i, z.1 i)))}
 
+/-- The constant-one sign vector is a supported Rademacher sign vector. -/
+theorem VdVWRademacherSignVector_const_one {n : ℕ} :
+    VdVWRademacherSignVector (fun _ : Fin n => (1 : ℝ)) := by
+  intro _i
+  exact Or.inr rfl
+
+/--
+Coefficient-correct fixed-fiber sign-swap lower bound for the pair-sub bad
+event.
+
+The deterministic all-one sign slice embeds the unswapped pair-sub bad ghost
+event into the sign-swapped bad event, but it contributes only the exact
+Rademacher mass `(1 / 2)^n`.  This is the valid fixed-sign replacement for the
+over-strong unit-coefficient fixed-fiber sign-swap assumption.
+-/
+theorem
+    VdVWTheorem243CenteredPairSubSignSwapBadEvent_lower_bound_of_pairSubBad_constOne
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    {n : ℕ} (sample : SampleAt Observation n) :
+    (vdVWProductMeasure P n)
+        (VdVWTheorem243CenteredPairSubBadEvent
+          P indexClass classFun envelope M epsilon sample) *
+        (2⁻¹ : ℝ≥0∞) ^ n ≤
+      ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n))
+        (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+          P indexClass classFun envelope M epsilon sample) := by
+  refine
+    measure_mul_rademacherSignVector_mass_le_prod_of_signSlice_subset
+      (P := P) (sign := fun _ : Fin n => (1 : ℝ))
+      VdVWRademacherSignVector_const_one ?_
+  intro z hz
+  rcases z with ⟨ghost, sign⟩
+  rcases hz with ⟨hghost, hsign⟩
+  rw [Set.mem_singleton_iff] at hsign
+  have hsign' : sign = fun _ : Fin n => (1 : ℝ) := by
+    simpa using hsign
+  subst sign
+  have hone_ne_neg : (1 : ℝ) ≠ -1 := by norm_num
+  have hswap :
+      vdVWRademacherProductSampleSignSwap
+          (Observation := Observation) (fun _ : Fin n => (1 : ℝ))
+          (fun i : Fin n => (sample i, ghost i)) =
+        (fun i : Fin n => (sample i, ghost i)) := by
+    funext i
+    simp [vdVWRademacherProductSampleSignSwap, hone_ne_neg]
+  simpa [VdVWTheorem243CenteredPairSubBadEvent,
+    VdVWTheorem243CenteredPairSubSignSwapBadEvent,
+    hswap] using hghost
+
 /--
 Source fiber event before the concrete pair-difference event.
 
@@ -48336,6 +48389,68 @@ theorem
           (P := P) (indexClass := indexClass) (classFun := classFun)
           (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
           (sample := sample) henvelope hM htruncIntegrable hepsilon hbad
+
+/--
+Chebyshev source mass transported through the valid fixed all-one sign slice.
+
+This is intentionally coefficient-correct: the lower bound contains the
+unavoidable factor `(1 / 2)^n`, so it cannot by itself discharge the displayed
+Chebyshev beta lower bound.
+-/
+theorem
+    VdVWTheorem243CenteredPairSubSignSwapBadEvent_lower_bound_of_chebyshev_constOne_of_pos
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    {sample : SampleAt Observation n}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon) (hn : 0 < n)
+    (hbad :
+      2 * epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => ((n : ℝ))⁻¹) sample)
+          (0 : ℝ)) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / (((n : ℝ)) * epsilon ^ 2)) *
+        (2⁻¹ : ℝ≥0∞) ^ n ≤
+      ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n))
+        (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+          P indexClass classFun envelope M epsilon sample) := by
+  have hpair :
+      ENNReal.ofReal
+          (1 - (16 * M ^ 2) / (((n : ℝ)) * epsilon ^ 2)) ≤
+        (vdVWProductMeasure P n)
+          (VdVWTheorem243CenteredPairSubBadEvent
+            P indexClass classFun envelope M epsilon sample) :=
+    VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_of_pos
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+      (sample := sample) henvelope hM htruncIntegrable hepsilon hn hbad
+  have hscaled :
+      ENNReal.ofReal
+          (1 - (16 * M ^ 2) / (((n : ℝ)) * epsilon ^ 2)) *
+          (2⁻¹ : ℝ≥0∞) ^ n ≤
+        (vdVWProductMeasure P n)
+          (VdVWTheorem243CenteredPairSubBadEvent
+            P indexClass classFun envelope M epsilon sample) *
+          (2⁻¹ : ℝ≥0∞) ^ n := by
+    simpa [mul_comm, mul_left_comm, mul_assoc] using
+      mul_le_mul_right hpair ((2⁻¹ : ℝ≥0∞) ^ n)
+  exact hscaled.trans
+    (VdVWTheorem243CenteredPairSubSignSwapBadEvent_lower_bound_of_pairSubBad_constOne
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := epsilon)
+      (sample := sample))
 
 /--
 Positive-sample-size version of the averaged product-pair Chebyshev lower

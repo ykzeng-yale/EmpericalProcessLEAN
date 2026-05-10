@@ -2397,6 +2397,14 @@ above, so they do not change the theorem-level dashboard counts.
    These are normalization adapters for positive `n`; the remaining theorem
    work is still the genuine displayed-beta/product-fiber lower bound or a
    coefficient-correct fixed-fiber sign-swap source theorem.
+   The coefficient-correct all-one fixed-sign source is now also compiled as
+   `VdVWRademacherSignVector_const_one`,
+   `VdVWTheorem243CenteredPairSubSignSwapBadEvent_lower_bound_of_pairSubBad_constOne`,
+   and
+   `VdVWTheorem243CenteredPairSubSignSwapBadEvent_lower_bound_of_chebyshev_constOne_of_pos`.
+   It transports pair-sub Chebyshev mass through the sign-swapped bad event
+   only after multiplying by `(2⁻¹)^n`; this formalizes the fixed-fiber
+   coefficient loss and leaves the displayed-beta source theorem open.
    The supporting product-pair bad-event measurability lemmas are
    `measurableSet_vdVWProductPair_centeredPairSubBadEvent_of_countable`
    and
