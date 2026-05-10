@@ -735,10 +735,15 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0FDerivVectorTaylor_envelope_absorbing`,
   and the absorbing second-derivative path endpoint packet adds
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativePath_envelope_absorbing`,
+  and the absorbing smooth-source endpoint packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativeRegularity_envelope_absorbing`,
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapTheta0SecondDerivativeContDiff_envelope_absorbing`,
+  and
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatingMapContDiffTheta0SecondDerivativeContDiff_envelope_absorbing`,
   so the remaining critical path should remove `hScaledEstimator` from the
-  second-derivative regularity and finite-derivative source wrappers by
-  calling this absorbing second-derivative path endpoint, or move to a
-  genuinely model-specific Taylor display, derivative, or score representation.
+  summand-measurable, envelope-tendsto, and derivative-tendsto source wrappers
+  by calling this absorbing smooth source endpoint, or move to a genuinely
+  model-specific Taylor display, derivative, or score representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
