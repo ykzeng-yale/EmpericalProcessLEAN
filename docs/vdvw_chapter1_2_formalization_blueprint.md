@@ -3083,6 +3083,17 @@ selected-cardinality comparison internally.  Closing the canonical
 product-fiber lower bound would therefore close this fixed-`M` theorem-facing
 route without the false additive finite-center failure-tail assumption.
 
+The displayed-beta endpoint now also has the factored sign-swapped source
+interface
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers`.
+It composes the endpoint above with the existing a.e.-component fiber adapter
+for `VdVWTheorem243CenteredPairSubSignSwapBadEvent`.  The remaining source
+work is no longer selected-cover construction, selected-cardinality
+comparison, or selected-center measurability; it is the probability argument
+showing beta-large sign-swapped bad-event fibers together with the original
+and ghost finite-center a.e. support facts for the canonical first-level
+selected cover.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

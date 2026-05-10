@@ -9209,3 +9209,17 @@ against the entropy envelope at radius `eta / 2`.  The theorem-facing source
 frontier is now a single probability statement: the canonical pair-difference
 ghost/Rademacher selected-net event has displayed beta-large fibers over the
 centered bad event.
+
+2026-05-10 sign-swapped bad-fiber factorization endpoint:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers`.
+This does not close the hard probability theorem.  It factors the canonical
+displayed-beta product-fiber source into three exact assumptions already used
+by the local pointwise adapter: beta-large fibers for
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent`, original finite-center
+Hoeffding a.e. support for the canonical first-level selected cover, and the
+matching ghost finite-center a.e. support with negated Rademacher signs.  The
+remaining blocker is therefore probability-side only: prove the sign-swapped
+bad-event fiber lower bound and the two canonical finite-center a.e. support
+facts, or replace them by a stronger honest source theorem that implies the
+same three inputs.
