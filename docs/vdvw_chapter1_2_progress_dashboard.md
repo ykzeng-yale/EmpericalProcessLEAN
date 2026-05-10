@@ -4050,3 +4050,30 @@ finite-center a.e. support facts.  The remaining blocker is now fully
 probability-side: prove those fixed-fiber inputs for the chosen cover, or
 switch the final source theorem to the already compiled integrated
 product-pair symmetry route.
+
+2026-05-10 route audit / corrected active blocker:
+The selected-cover construction, selected-cardinality comparisons, and endpoint
+composition layers are now ahead of the actual probability argument.  The
+compiled honest product-pair route is
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale`,
+with canonical first-level selected-cover wrappers.  The fixed-fiber route
+ending at
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale`
+is only a conditional endpoint until its fixed-original sign-swap transport is
+proved; integrated product-pair symmetry does not by itself justify that
+fiberwise statement.
+
+The finite-center additive-tail workaround is formally blocked by
+`not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ_zero`.
+So the next valid Theorem 2.4.3 step is not another selected-cover wrapper:
+it is a genuine probability/source theorem, either the canonical
+displayed-beta product-fiber lower bound, a proved coefficient-correct
+fixed-fiber transport, or an explicitly stated stronger assumption package.
+
+Lemma 2.4.5 reverse/cofiltration should be removed from the "current blocker"
+slot for the countable/full-subgraph branch.  The compiled route now includes
+`VdVWOrderDualSubmartingaleConvergenceHandoff.proved`,
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`, and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`.
+Those are the declarations to reuse; repeating reverse/cofiltration handoff
+wrappers is now lower priority than closing the selected-entropy/source gap.

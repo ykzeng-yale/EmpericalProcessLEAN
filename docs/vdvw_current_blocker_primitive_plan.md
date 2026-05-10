@@ -9275,3 +9275,35 @@ finite-center a.e. support for the selected cover.  The blocker is therefore
 not endpoint assembly anymore; it is deciding and proving those probability
 inputs, or pivoting to the integrated product-pair route where fixed-fiber
 sign-swap is too strong.
+
+2026-05-10 route audit / blocker correction:
+The current frontier is not missing another endpoint wrapper.  `Theorem243.lean`
+already has the honest integrated product-pair convergence bridge
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale`
+and its canonical first-level selected-cover specialization.  That route is
+mathematically safer because the compiled symmetry is product-pair symmetry,
+not a fixed-original fiber invariance statement.  The fixed-fiber endpoint
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale`
+should therefore be treated only as a conditional handoff: the fixed-sample
+pair-sub sign-swap transport is not currently available and should not be
+silently assumed.
+
+The additive finite-center failure-tail route is also not an acceptable
+shortcut at the displayed scale: the file proves
+`not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ_zero`,
+so a proof relying on that tail vanishing would encode a false asymptotic
+claim.  The next aggressive Theorem 2.4.3 source task should be one of:
+prove the canonical displayed-beta/product-fiber lower bound directly; prove a
+coefficient-correct fixed-fiber transport theorem if such a statement is
+mathematically true; or introduce an explicit stronger theorem-side
+tail/UI/cardinality-growth hypothesis rather than hiding it in the endpoint.
+
+The Lemma 2.4.5 reverse/cofiltration item is no longer the active blocker for
+the current countable/full-subgraph route.  The generic reverse-time handoff
+is compiled as `VdVWOrderDualSubmartingaleConvergenceHandoff.proved`, the
+textbook handoff as
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`, and
+the strong full-subgraph package without a nonempty-class assumption as
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`.
+Future rounds should reuse those declarations rather than adding more
+reverse/cofiltration wrappers.

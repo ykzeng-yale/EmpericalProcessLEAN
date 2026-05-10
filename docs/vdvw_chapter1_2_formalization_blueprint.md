@@ -3137,6 +3137,36 @@ sign-swap transport, and original/ghost finite-center a.e. support.  Do not
 add more endpoint wrappers before making a mathematical decision on those
 inputs or pivoting to the integrated product-pair source route.
 
+2026-05-10 route audit / blocker correction:
+The blueprint frontier is now the source probability theorem, not Lean
+bookkeeping.  The honest integrated product-pair Chebyshev route is already
+compiled through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale`
+and the canonical first-level selected-cover wrappers.  The fixed-fiber
+pair-difference endpoint is useful only as a conditional interface: its
+fixed-original pair-sub sign-swap transport is stronger than the compiled
+product-pair measure-preserving symmetry, and should not be treated as a
+closed theorem unless proved directly or replaced by a weaker
+coefficient-correct statement.
+
+The additive finite-center failure-tail route should not be revived as a
+default shortcut.  `Theorem243.lean` proves
+`not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ_zero`,
+which records the scale mismatch behind that route.  The next aggressive
+formalization step should therefore target the canonical displayed-beta
+product-fiber lower bound, a valid fixed-fiber transport replacement, or an
+explicit stronger theorem-side tail/UI hypothesis.
+
+The old Lemma 2.4.5 reverse/cofiltration blocker is closed for the current
+countable/full-subgraph route and should be reused, not reproved.  The
+relevant compiled declarations are
+`VdVWOrderDualSubmartingaleConvergenceHandoff.proved`,
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`, and
+`VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`.
+The remaining whole-book Chapter 1-2 gap is the selected-entropy/source
+argument for the exact Theorem 2.4.3 route and any still-uncovered named
+textbook statements outside the countable/full-subgraph branch.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
