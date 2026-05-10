@@ -3043,6 +3043,17 @@ prove the product-fiber/Chebyshev lower bound that avoids the additive
 finite-center failure-tail obstruction, or state an honest stronger tail/UI
 input if staying on the additive-error route.
 
+The honest a.e. finite-center product-pair route now has the matching
+selected-cardinality wrapper
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_cover`.
+It uses the canonical positive-radius selected covering number at
+`(eta / 2) / 2`, shifts the entropy hypothesis to that radius, and proves the
+needed selected-cardinality bound from the covering-number envelope.  This
+leaves only the genuine probability assumptions in that branch: eventual
+a.e. original and ghost finite-center Hoeffding support for the selected
+cover, or a replacement product-fiber/Chebyshev source theorem that avoids
+those support assumptions.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

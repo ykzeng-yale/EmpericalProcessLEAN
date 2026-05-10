@@ -9157,3 +9157,18 @@ failure-tail convergence is false at the current displayed scale without an
 extra structural/tail input, so the next aggressive step should be either the
 product-fiber/Chebyshev lower bound route that avoids this additive error, or
 an honest stronger tail/UI/cardinality-growth assumption package.
+
+2026-05-10 selected-cardinality a.e. finite-center route:
+`Theorem243.lean` now also connects the canonical positive-radius selected
+covering cardinality to the honest a.e. finite-center product-pair route via
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_cover`.
+This theorem removes the caller-supplied selected-cardinality comparison for
+the sign-sample/product-pair route: it internally switches the entropy
+comparison to radius `(eta / 2) / 2` and proves the selected-cardinality
+upper bound from the covering-number envelope.  The remaining assumptions in
+that branch are now exactly the two eventual a.e. finite-center support facts
+for the selected cover.  Thus the active probability-side blocker is sharply
+separated from the selector machinery: either prove a product-fiber/Chebyshev
+lower-bound route that bypasses finite-center failure tails, or state and use
+an honest stronger hypothesis that supplies those finite-center support/tail
+facts.
