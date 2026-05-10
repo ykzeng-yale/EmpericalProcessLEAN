@@ -3880,3 +3880,9 @@ the class.  `Theorem243.lean` introduces
 The out-of-range selected-center value is now the nonempty-class witness, so
 the live selected-center blocker is exactly measurable fibers for this
 in-class selector.
+The scalar-coordinate bridge for that same in-class selector is now compiled
+as
+`measurable_vdVWTruncatedClassFun_selectedCenterAtInClass_of_countable_fibers`;
+it removes the last `default ∈ indexClass` artifact from the selected-center
+coordinate interface.  The remaining selector blocker is still the real one:
+construct measurable fibers for a canonical in-class selected-cover tuple.
