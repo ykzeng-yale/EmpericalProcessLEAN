@@ -9054,3 +9054,20 @@ sample has a successful candidate, then the first successful candidate has
 measurable equality fibers.  The next source step is to instantiate this
 generic selector with finite center tuples for
 `FiniteEmpiricalL1CoverAtCard` over the countable subtype of `indexClass`.
+
+2026-05-10 fixed-cardinality empirical-cover tuple selector:
+`Theorem243.lean` now proves the projected selector-fiber theorem
+`measurableSet_vdVWFirstNatCandidate_map_eq` and instantiates the first
+Nat-candidate selector for finite empirical-cover center tuples through
+`vdVWFiniteEmpiricalL1CoverCenterTuplePredicate`,
+`measurableSet_vdVWFiniteEmpiricalL1CoverCenterTuplePredicate`,
+`exists_vdVWFiniteEmpiricalL1CoverCenterTupleCandidate_of_cover`,
+`vdVWFirstFiniteEmpiricalL1CoverCenterTuple`,
+`vdVWFirstFiniteEmpiricalL1CoverCenterTuple_spec`, and
+`measurableSet_vdVWFirstFiniteEmpiricalL1CoverCenterTuple_center_eq`.
+This closes the fixed-cardinality measurable-fiber layer for enumerated
+in-class center tuples.  The remaining source primitive is the
+sample-dependent selected-cardinality lift: split by measurable cardinality
+level sets and use the fixed-cardinality selector to build the
+`VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass` fibers needed by the
+quarter-radius Theorem 2.4.3 route.

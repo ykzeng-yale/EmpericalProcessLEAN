@@ -3892,3 +3892,14 @@ compiled as `vdVWFirstNatCandidate` with fiber measurability theorem
 candidate has measurable fibers whenever each candidate-success event is
 measurable.  The next patch should instantiate this with enumerated finite
 center tuples for the countable theorem class.
+That fixed-cardinality instantiation is now started: the projected-fiber
+selector theorem `measurableSet_vdVWFirstNatCandidate_map_eq`, the empirical
+tuple predicate `vdVWFiniteEmpiricalL1CoverCenterTuplePredicate`, its event
+measurability theorem, the cover-to-candidate existence bridge, the first
+finite empirical-cover center tuple
+`vdVWFirstFiniteEmpiricalL1CoverCenterTuple`, its spec theorem, and the center
+fiber theorem
+`measurableSet_vdVWFirstFiniteEmpiricalL1CoverCenterTuple_center_eq` are
+compiled.  The remaining selected-cover fiber task is to lift this
+fixed-cardinality selector through the measurable selected-cardinality level
+sets used by the Theorem 2.4.3 quarter-radius route.
