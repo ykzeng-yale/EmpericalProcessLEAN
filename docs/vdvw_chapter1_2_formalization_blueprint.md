@@ -2985,6 +2985,18 @@ Nat-enumerated successful fixed-cardinality empirical-cover tuple.  The next
 proof target is the selected-cardinality level-set lift needed to turn this
 fixed-cardinality selector into the canonical sample-dependent selected-cover
 fibers for Theorem 2.4.3.
+The selected-cardinality level-set lift is now compiled as well:
+`vdVWFirstVariableEmpiricalL1CoverCenterTuple`,
+`vdVWFirstVariableEmpiricalL1CoverSelectedCenterAtInClass`,
+`vdVWFirstVariableEmpiricalL1CoverSelectedCenterAtInClass_mem`, and
+`measurableSet_vdVWFirstVariableEmpiricalL1CoverSelectedCenterAtInClass_eq`.
+The proof splits the selected-center fiber by measurable cardinality level
+sets and reuses the fixed-cardinality first-tuple selector on each level.  The
+next theorem-facing selector task is to identify or transport the actual
+selected empirical-cover centers used by the quarter-radius route to this
+canonical variable-cardinality selector, then feed the compiled fiber theorem
+into the in-class selected-center coordinate measurability bridge.  The
+probability-side product-fiber lower bound remains a distinct open input.
 
 ## Automation Checklist
 

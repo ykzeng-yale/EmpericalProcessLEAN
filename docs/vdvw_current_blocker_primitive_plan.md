@@ -9071,3 +9071,23 @@ sample-dependent selected-cardinality lift: split by measurable cardinality
 level sets and use the fixed-cardinality selector to build the
 `VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass` fibers needed by the
 quarter-radius Theorem 2.4.3 route.
+
+2026-05-10 selected-cardinality level-set selector lift:
+`Theorem243.lean` now proves the canonical variable-cardinality selector layer
+through `vdVWFirstVariableEmpiricalL1CoverCenterTuple`,
+`vdVWFirstVariableEmpiricalL1CoverSelectedCenterAtInClass`,
+`vdVWFirstVariableEmpiricalL1CoverSelectedCenterAtInClass_mem`, and
+`measurableSet_vdVWFirstVariableEmpiricalL1CoverSelectedCenterAtInClass_eq`.
+The proof decomposes each selected-center fiber over the measurable cardinality
+levels `{sample | cardinality sample = m}`, uses
+`measurableSet_vdVWFirstFiniteEmpiricalL1CoverCenterTuple_center_eq` on the
+in-range levels, and uses the explicit nonempty-class fallback out of range.
+This closes the abstract variable-cardinality measurable-selector primitive.
+The live selector frontier is no longer the level-set lift itself; it is the
+bridge from the actual selected-cover data used downstream to this canonical
+Nat-enumerated variable-cardinality selector.  Concretely, the next patch
+should supply the tuple enumeration/surjectivity and cover-existence input
+for the selected empirical cover, then feed the resulting fibers into
+`measurable_vdVWTruncatedClassFun_selectedCenterAtInClass_of_countable_fibers`
+and the quarter-radius Theorem 2.4.3 source consumer.  The product-fiber
+Chebyshev lower bound remains the separate probability-side source input.
