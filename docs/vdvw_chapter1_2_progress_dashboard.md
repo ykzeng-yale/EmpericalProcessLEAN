@@ -4103,3 +4103,11 @@ The variable deterministic sign-section form is also compiled:
 `VdVWOuterProbability_mul_rademacherSignVector_mass_le_of_pointwise_sign_section`.
 These close the natural loophole "choose one sign depending on the sample":
 even pointwise deterministic sign choice still contributes only `(1 / 2)^n`.
+
+The route audit now has a compiled asymptotic obstruction:
+`tendsto_rademacherSignVector_singleton_mass_zero`,
+`eventually_rademacherSignVector_singleton_mass_lt_half`, and
+`eventually_rademacherSignVector_singleton_mass_lt_displayedChebyshevBeta`.
+So the fixed-sign/section mass is eventually below the displayed Chebyshev
+beta factor; the next valid source proof must average over a nontrivial
+sign/ghost event or add an explicit stronger probability hypothesis.

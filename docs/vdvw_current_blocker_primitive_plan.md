@@ -9340,3 +9340,13 @@ deterministic sign section.  They show that choosing one supported sign per
 base point still costs `(1 / 2)^n`; a coefficient-correct source theorem must
 therefore use an integrated/random-sign argument or another non-exponential
 lower-bound mechanism.
+
+The asymptotic obstruction is now compiled, not just documented:
+`tendsto_rademacherSignVector_singleton_mass_zero`,
+`eventually_rademacherSignVector_singleton_mass_lt_half`, and
+`eventually_rademacherSignVector_singleton_mass_lt_displayedChebyshevBeta`.
+Together with the existing uniform Chebyshev penalty convergence, these prove
+that the deterministic sign-vector mass tends to zero and is eventually
+strictly smaller than the displayed beta factor.  This rules out a
+deterministic sign/section proof as a replacement for Lemma 2.3.7's beta-large
+ghost/Rademacher fiber.

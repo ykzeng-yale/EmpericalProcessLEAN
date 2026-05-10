@@ -3197,6 +3197,15 @@ base point, so the active source theorem must obtain beta mass by integrating
 over a nontrivial sign/ghost event or by proving an explicit stronger
 probability hypothesis.
 
+This fixed-sign obstruction is now asymptotic as well:
+`tendsto_rademacherSignVector_singleton_mass_zero`,
+`eventually_rademacherSignVector_singleton_mass_lt_half`, and
+`eventually_rademacherSignVector_singleton_mass_lt_displayedChebyshevBeta`
+combine mathlib's `ENNReal` geometric-decay theorem with the existing
+uniform-Chebyshev penalty convergence.  They prove that deterministic
+sign-vector mass is eventually strictly below the displayed beta factor, so it
+cannot close the Lemma 2.3.7 source gap.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

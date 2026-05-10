@@ -40763,6 +40763,59 @@ theorem
   simpa [VdVWOuterProbability, hright_prod] using hsection_measure.trans hproject
 
 /--
+The mass of one deterministic Rademacher sign vector tends to zero as the
+sample size grows.
+
+This is the asymptotic obstruction behind fixed-sign and pointwise
+sign-section routes: their coefficient is exponentially small, while the
+Chebyshev beta factor in Lemma 2.3.7 is eventually bounded below by a positive
+constant.
+-/
+theorem tendsto_rademacherSignVector_singleton_mass_zero :
+    Tendsto (fun n : ℕ => (2⁻¹ : ℝ≥0∞) ^ n) atTop (𝓝 0) := by
+  exact
+    ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one
+      (by norm_num : (2⁻¹ : ℝ≥0∞) < 1)
+
+/--
+The deterministic sign-vector mass is eventually strictly below `1 / 2`.
+-/
+theorem eventually_rademacherSignVector_singleton_mass_lt_half :
+    ∀ᶠ n : ℕ in atTop,
+      (2⁻¹ : ℝ≥0∞) ^ n < ENNReal.ofReal (1 / 2 : ℝ) := by
+  have hhalf_pos : (0 : ℝ≥0∞) < ENNReal.ofReal (1 / 2 : ℝ) := by
+    norm_num
+  exact tendsto_rademacherSignVector_singleton_mass_zero.eventually_lt_const hhalf_pos
+
+/--
+The deterministic sign-vector mass is eventually strictly below the displayed
+uniform Chebyshev beta factor.
+
+This formalizes why a fixed deterministic sign or pointwise deterministic
+sign-section lower bound cannot replace the textbook beta lower bound in
+VdV&W Lemma 2.3.7: the former tends to zero, while the latter is eventually at
+least `1 / 2`.
+-/
+theorem
+    eventually_rademacherSignVector_singleton_mass_lt_displayedChebyshevBeta
+    {M epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ∀ᶠ n : ℕ in atTop,
+      (2⁻¹ : ℝ≥0∞) ^ n <
+        ENNReal.ofReal
+          (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) := by
+  have hbeta_half :
+      ∀ᶠ n : ℕ in atTop,
+        ENNReal.ofReal (1 / 2 : ℝ) ≤
+          ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) :=
+    eventually_ennreal_ofReal_half_le_ofReal_one_sub_of_tendsto_zero
+      (VdVWTheorem243_uniformChebyshevPenalty_tendsto_zero
+        (M := M) epsilon hepsilon)
+  filter_upwards [eventually_rademacherSignVector_singleton_mass_lt_half,
+    hbeta_half] with n hmass hbeta
+  exact hmass.trans_le hbeta
+
+/--
 Product-measure fiber upper bound.
 
 If every right-indexed fiber of a measurable joint event is bounded by a
