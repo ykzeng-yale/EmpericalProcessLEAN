@@ -2913,6 +2913,17 @@ bound.  The current library and pinned mathlib do not supply either primitive
 for an arbitrary choice-based cover selector; use a measurable selector
 construction or the existing half-scale `C = 4`, `A = 2` route next.
 
+2026-05-09 half-scale selected quarter-radius coordinate route:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_coordinate`.
+It is the preferred next source interface for the half-scale route: the
+selected cardinality is fixed to the least empirical cover at radius
+`(eta / 2) / 2`; selected-cardinality measurability, selected-cardinality
+comparison with the book-facing envelope, and entropy-log transport are
+handled internally.  Continue by proving scalar selected-center coordinate
+measurability for the chosen cover or by proving the integrated
+finite-center failure-tail convergence.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

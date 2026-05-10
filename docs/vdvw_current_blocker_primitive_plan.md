@@ -8980,3 +8980,18 @@ scalar selected-center coordinate measurability from a measurable selector
 construction, and an undoubled concrete fiber lower bound with the displayed
 `((n : ℝ) + 1)` Chebyshev beta; otherwise continue through the existing
 half-scale `C = 4`, `A = 2` route.
+
+2026-05-09 canonical quarter-radius half-scale coordinate route:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_coordinate`.
+This is the currently most usable half-scale source route.  It fixes the
+selected cardinality to the least finite empirical-cover cardinality at radius
+`(eta / 2) / 2`, discharges the selected-cardinality measurability needed by
+the original/ghost finite-center failure-event measurability proof, and
+derives the selected-cardinality comparison against the book-facing
+cardinality envelope internally.  The route now asks only for: scalar
+selected-center coordinate measurability for that chosen quarter-radius cover,
+the finite cover itself, and convergence to zero of the integrated
+finite-center failure-tail error.  The direct displayed-beta `C = 2` route
+still needs the undoubled product-fiber primitive; the half-scale route is
+compiled with `C = 4`, `A = 2`.
