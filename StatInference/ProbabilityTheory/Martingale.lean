@@ -18015,6 +18015,73 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_transfor
       (f := fun n : ℕ => X n ω / b n ω) 1).mp hshifted
 
 /--
+Durrett 2019, Theorem 4.5.3 predictable reciprocal transform support.
+
+If `A` is predictable and `f` is continuous, then the textbook transform
+`H_n = f(A_n)^{-1}` is predictable.
+-/
+theorem durrett2019_theorem_4_5_3_reciprocal_comp_predictable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ℱ : Filtration ℕ mΩ}
+    {A : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hA_predictable : IsStronglyPredictable ℱ A) (hf_cont : Continuous f) :
+    IsStronglyPredictable ℱ (fun n : ℕ => fun ω : Ω => (f (A n ω))⁻¹) := by
+  refine IsStronglyPredictable.of_measurable_add_one ?h0 ?hsucc
+  · have hA0 : StronglyMeasurable[ℱ 0] (A 0) :=
+      hA_predictable.stronglyAdapted 0
+    have hfA0 : StronglyMeasurable[ℱ 0] (fun ω : Ω => f (A 0 ω)) :=
+      hf_cont.comp_stronglyMeasurable hA0
+    have hrec :
+        StronglyMeasurable[ℱ 0] (fun ω : Ω => (1 : ℝ) / f (A 0 ω)) :=
+      stronglyMeasurable_const.div hfA0
+    simpa [one_div] using hrec
+  · intro n
+    have hA_succ : StronglyMeasurable[ℱ n] (A (n + 1)) :=
+      hA_predictable.measurable_add_one n
+    have hfA_succ :
+        StronglyMeasurable[ℱ n] (fun ω : Ω => f (A (n + 1) ω)) :=
+      hf_cont.comp_stronglyMeasurable hA_succ
+    have hrec :
+        StronglyMeasurable[ℱ n] (fun ω : Ω => (1 : ℝ) / f (A (n + 1) ω)) :=
+      stronglyMeasurable_const.div hfA_succ
+    simpa [one_div] using hrec
+
+/--
+Durrett 2019, Theorem 4.5.3 shifted predictable-transform support.  This is
+the exact `StronglyAdapted ℱ (fun n => H (n+1))` input used by the local
+martingale-transform convergence wrappers.
+-/
+theorem durrett2019_theorem_4_5_3_reciprocal_comp_shift_stronglyAdapted
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ℱ : Filtration ℕ mΩ}
+    {A : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hA_predictable : IsStronglyPredictable ℱ A) (hf_cont : Continuous f) :
+    StronglyAdapted ℱ
+      (fun n : ℕ => fun ω : Ω => (f (A (n + 1) ω))⁻¹) := by
+  intro n
+  exact
+    (durrett2019_theorem_4_5_3_reciprocal_comp_predictable
+      (ℱ := ℱ) (A := A) (f := f) hA_predictable hf_cont).measurable_add_one n
+
+/--
+Durrett 2019, Theorem 4.5.3 reciprocal-transform lower bound support.
+-/
+theorem durrett2019_theorem_4_5_3_reciprocal_comp_nonneg_of_one_le
+    {Ω : Type*} {A : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hf_one_le : ∀ n : ℕ, ∀ ω : Ω, 1 ≤ f (A n ω)) :
+    ∀ n : ℕ, ∀ ω : Ω, 0 ≤ (f (A n ω))⁻¹ := by
+  intro n ω
+  exact inv_nonneg.mpr (zero_le_one.trans (hf_one_le n ω))
+
+/--
+Durrett 2019, Theorem 4.5.3 reciprocal-transform upper bound support.
+-/
+theorem durrett2019_theorem_4_5_3_reciprocal_comp_le_one_of_one_le
+    {Ω : Type*} {A : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hf_one_le : ∀ n : ℕ, ∀ ω : Ω, 1 ≤ f (A n ω)) :
+    ∀ n : ℕ, ∀ ω : Ω, (f (A n ω))⁻¹ ≤ 1 := by
+  intro n ω
+  exact inv_le_one_of_one_le₀ (hf_one_le n ω)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

@@ -47,12 +47,15 @@ and monotone-terminal source convergence endpoint.  V205 starts Theorem 4.5.3
 with
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_transform_tendsto`,
 which applies the Exercise 4.4.11 Kronecker theorem to sample-dependent
-normalizers.  The next theorem-facing target is the predictable
-reciprocal-transform and variance/integral source package for `b_n = f(A_n)`.
-Do not route back to Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3
-wrappers, stopped running-maximum boundedness, stopped predictability, exact
-Theorem 4.5.2 packaging, or deterministic Exercise 4.4.11 normalizers unless a
-later theorem exposes a precise missing primitive.
+normalizers.  V205 also proves the reciprocal-transform predictability and
+bounds from `IsStronglyPredictable ℱ A`, continuous `f`, and `1 <= f(A_n)`.
+The next theorem-facing target is the transform-convergence and
+variance/integral source package for `b_n = f(A_n)`.  Do not route back to
+Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
+running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
+packaging, deterministic Exercise 4.4.11 normalizers, or reciprocal
+predictability/bounds unless a later theorem exposes a precise missing
+primitive.
 
 Closed Chapter 2 support lives in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled

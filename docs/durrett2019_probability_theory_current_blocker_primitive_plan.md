@@ -73,18 +73,24 @@ now turns a.e. convergence of the predictable transform plus pathwise
 nonzero/monotone/divergent random normalizer hypotheses into
 `X_n / b_n -> 0` a.s.  It reuses Exercise 4.4.11 pathwise Kronecker support
 with `b_n = b_n(ω)`, so the remaining 4.5.3 work is no longer the final
-Kronecker handoff.
+Kronecker handoff.  The same V205 layer also discharges the predictable and
+boundedness side conditions for the textbook reciprocal transform from source
+hypotheses:
+`durrett2019_theorem_4_5_3_reciprocal_comp_predictable`,
+`durrett2019_theorem_4_5_3_reciprocal_comp_shift_stronglyAdapted`,
+`durrett2019_theorem_4_5_3_reciprocal_comp_nonneg_of_one_le`, and
+`durrett2019_theorem_4_5_3_reciprocal_comp_le_one_of_one_le`.
 
 Next aggressive step: finish Durrett Theorem 4.5.3 source packaging.  Prove the
-predictable reciprocal transform route for `H_m = f(A_m)^{-1}`, connect the
-transform convergence to V204/Theorem 4.5.2 through the finite-variance event
-side, and package the textbook variance/integral estimate
+transform convergence for `H_m = f(A_m)^{-1}` by connecting it to V204/Theorem
+4.5.2 through the finite-variance event side, and package the textbook
+variance/integral estimate
 `∑ (A_{n+1}-A_n) / f(A_{n+1})^2 < ∞` on `{A∞ = ∞}` so the V205
 random-normalizer bridge yields `X_n / f(A_n) -> 0`.  Do not route back to
 stopped running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
-source packaging, deterministic Exercise 4.4.11 normalizers, Chapter 2.1, or
-Theorem 2.4.9 unless Theorem 4.5.3 exposes a strictly stronger missing
-primitive.
+source packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
+predictability/bounds, Chapter 2.1, or Theorem 2.4.9 unless Theorem 4.5.3
+exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
