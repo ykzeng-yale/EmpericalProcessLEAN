@@ -355,6 +355,10 @@ That consumer is now compiled as
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_failure_tail_countable`,
 so the dashboard frontier is now exactly those two source inputs, not another
 fixed-`M` endpoint alias.
+The same sign-only lane now has the inverse-square failure-tail specialization
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable`.
+It turns a one-sample inverse-square selected-cardinality lintegral condition
+into the needed integrated finite-center failure-tail convergence.
 The explicit original/ghost finite-center failure probabilities are now split
 through the fixed-sample Rademacher finite-center Hoeffding tail, a
 product-fiber upper-bound lift, and additive-error product-pair comparison

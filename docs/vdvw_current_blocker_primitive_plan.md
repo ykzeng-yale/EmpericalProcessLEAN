@@ -9667,3 +9667,16 @@ vanishing of the integrated selected finite-center Hoeffding failure-tail
 error over the centered bad event.  Therefore the next aggressive proof target
 is no longer another endpoint wrapper; it is one of those two probability or
 tail-control inputs.
+
+2026-05-10 sign-only inverse-square failure-tail consumer:
+`Theorem243.lean` now also proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable`.
+This uses `setLIntegral_le_lintegral` and
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq`
+to replace the raw centered-bad failure-tail convergence assumption by an
+explicit inverse-square selected-cardinality lintegral condition on
+`SampleAt Observation n`.  The sign-only failure-tail route now has an honest
+cardinality-growth input analogous to the product-pair inverse-square route.
+The remaining non-wrapper tasks are to prove the pure Rademacher bad-fiber
+displayed beta lower bound and to obtain the needed inverse-square/growth
+condition from a structural entropy or cover source.

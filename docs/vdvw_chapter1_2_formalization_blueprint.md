@@ -3397,6 +3397,14 @@ measurability.  The remaining blueprint work is exactly to prove the pure
 Rademacher bad-fiber beta lower bound and the integrated failure-tail
 vanishing/control hypothesis.
 
+The raw failure-tail convergence input can now be replaced by an explicit
+inverse-square selected-cardinality lintegral condition via
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable`.
+This mirrors the product-pair inverse-square route on the sign-only branch.
+Future source work should therefore prove either the pure Rademacher bad-fiber
+beta lower bound or the structural cardinality-growth/inverse-square condition
+that feeds this theorem.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
