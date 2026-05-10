@@ -9135,3 +9135,25 @@ and the level-local existence proof from the selected empirical-cover
 cardinality hypotheses in the quarter-radius route, then instantiate the
 `firstLevel` coordinate theorem there.  The product-fiber/Chebyshev lower bound
 remains a separate probability-side source input.
+
+2026-05-10 countable first-level selected-cover route:
+`Theorem243.lean` now supplies that theorem-facing data source.  It adds the
+countable finite-tuple enumeration
+`vdVWFiniteEmpiricalL1CoverCenterTupleCandidateOfCountable`, its surjectivity
+theorem, fixed-cover and level-local candidate-existence theorems, the named
+canonical proof-carrying cover
+`vdVWFirstLevelEmpiricalL1CoverAtCardOfCountable`, and the scalar-coordinate
+consumer
+`measurable_vdVWTruncatedClassFun_firstLevelSelectedCenterAtInClass_of_countable_cover`.
+The half-scale quarter-radius Theorem 2.4.3 route now has the canonical
+selected-cover wrapper
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+This wrapper chooses the finite empirical cover internally from the minimal
+positive-radius selected cardinality and the countable `firstLevel` tuple
+selector.  The selected-center measurability/data-supply blocker is therefore
+closed for this half-scale route.  The remaining source blocker is the
+probability side already identified: the integrated finite-center
+failure-tail convergence is false at the current displayed scale without an
+extra structural/tail input, so the next aggressive step should be either the
+product-fiber/Chebyshev lower bound route that avoids this additive error, or
+an honest stronger tail/UI/cardinality-growth assumption package.

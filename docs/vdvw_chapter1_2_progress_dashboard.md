@@ -3948,3 +3948,20 @@ level-local existence witness from the quarter-radius selected-cover
 hypotheses, then instantiate this `firstLevel` selector in the current
 Theorem 2.4.3 source route.  The product-fiber/Chebyshev lower bound remains
 open separately.
+
+That `firstLevel` selected-cover data-supply step is now compiled.  The new
+declarations are
+`vdVWFiniteEmpiricalL1CoverCenterTupleCandidateOfCountable`,
+`vdVWFiniteEmpiricalL1CoverCenterTupleCandidateOfCountable_surjective`,
+`exists_vdVWFiniteEmpiricalL1CoverCenterTupleCandidateOfCountable_of_cover`,
+`exists_vdVWFiniteEmpiricalL1CoverCenterTupleCandidateOfCountable_level`,
+`vdVWFirstLevelEmpiricalL1CoverAtCardOfCountable`, and
+`measurable_vdVWTruncatedClassFun_firstLevelSelectedCenterAtInClass_of_countable_cover`.
+The current half-scale route now has the canonical selected-cover endpoint
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+It no longer asks callers for an arbitrary finite cover or selected-center
+fiber measurability; both are chosen internally from countability and minimal
+selected empirical-cover existence.  The live blocker has moved back to the
+probability side: avoid or replace the non-vanishing additive finite-center
+failure-tail term, most likely through the product-fiber/Chebyshev lower-bound
+route.
