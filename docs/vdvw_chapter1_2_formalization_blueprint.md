@@ -3443,6 +3443,15 @@ next source task on this route is therefore the mathematical lower-growth input
 for that canonical selected cardinality, together with the still-open pure
 Rademacher bad-fiber beta lower bound.
 
+The product-pair Chebyshev route now has a direct untruncated first-level
+selected-cover endpoint:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+This should be treated as the preferred non-finite-class source lane when the
+fixed-original sign-swap route is too strong: it reuses the averaged
+product-pair sign/ghost comparison and only asks for per-`M` stochastic entropy
+plus original/ghost a.e. finite-center support for the canonical
+quarter-radius first-level selected cover.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

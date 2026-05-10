@@ -4359,3 +4359,12 @@ selected-cardinality comparison, radius change, and selected-center
 measurability.  The remaining dashboard blocker for this lane is no longer
 bookkeeping; it is the pure Rademacher bad-fiber beta lower bound plus a
 structural lower-growth theorem for the canonical selected cardinality.
+
+The honest product-pair Chebyshev lane now also has an untruncated
+first-level endpoint:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+It combines the compiled fixed-`M` product-pair selected-cover theorem with
+the large-`M` envelope-tail handoff.  The current blocker on this lane is not
+GitHub sync or mathlib discovery; it is proving the per-truncation
+original/ghost a.e. finite-center support facts for the canonical
+quarter-radius first-level selected cover.

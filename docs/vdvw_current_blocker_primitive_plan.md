@@ -9746,3 +9746,14 @@ selected-center coordinate measurability.  The sign-only tail branch now exposes
 only two genuine source inputs: the pure Rademacher bad-fiber beta lower bound
 and a structural pointwise/a.e. lower-growth theorem for the canonical selected
 cover cardinality.
+
+2026-05-10 untruncated product-pair first-level endpoint:
+`Theorem243.lean` now adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+This composes the honest fixed-`M` product-pair Chebyshev first-level route
+with the large-`M` envelope-tail handoff.  The product-pair lane therefore now
+reaches the untruncated centered convergence statement without using the
+over-strong fixed-original sign-swap transport.  Its remaining source inputs
+are exactly per-`M` stochastic entropy and the original/ghost a.e.
+finite-center support facts for the canonical quarter-radius first-level
+selected cover.
