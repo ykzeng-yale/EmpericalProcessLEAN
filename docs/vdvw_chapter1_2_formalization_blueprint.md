@@ -2892,6 +2892,16 @@ a.e. replacement of the limiting process for the raw bounded
 and canonical-version routes without claiming the arbitrary-index FDD
 converse.
 
+2026-05-09 selected-cardinality measurability refresh:
+`Theorem243.lean` now adds
+`measurable_vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_at_sampleSize_of_set_countable`.
+This is the canonical positive-radius `Nat.find` selected-cover cardinality
+measurability theorem for countable classes.  Future Theorem 2.4.3 event-route
+work should use it instead of treating selected cardinality measurability as an
+open hypothesis.  The remaining selected-cover selector work is scalar
+selected-center coordinate measurability plus the displayed product-fiber lower
+bound.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

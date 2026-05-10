@@ -8947,3 +8947,17 @@ factor-two displayed-beta product-fiber constructor.  The event route now
 asks for the selector measurability inputs and the actual fiber lower bound;
 it no longer asks callers to separately supply measurability of the named
 ghost/Rademacher selected-net event.
+
+2026-05-09 positive-radius selected-cardinality measurability:
+`Theorem243.lean` now proves
+`measurable_vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_at_sampleSize_of_set_countable`.
+This packages the `Nat.find` selected-cover cardinality proof at terminal
+sample size for every positive radius under countable-class coordinate
+measurability and measurable envelope assumptions.  In the displayed-beta
+event route, the selected-cardinality measurability input is now reusable for
+the canonical positive-radius selected-cover cardinality.  The remaining
+selector measurability blocker is the scalar selected-center coordinate
+process
+`sample ↦ vdVWTruncatedClassFun ... (VdVWFiniteEmpiricalL1CoverSelectedCenterAt ... sample k) (sample i)`;
+the remaining probability blocker is still the product-fiber lower bound
+with the exact textbook constants.
