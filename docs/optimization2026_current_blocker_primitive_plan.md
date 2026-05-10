@@ -340,6 +340,16 @@ selector/envelope differentiability theorem and concrete square-root models,
 rather than restating the selector stationarity, original barrier, vertical
 block square-root, and full Hessian square-root hypotheses at every theorem
 call.
+The first-order envelope packet adds `barrierInfProjectionPointFDeriv`,
+`barrierInfProjectionPoint_hasFDerivAt`, `barrierInfProjectionValue`,
+`barrierInfProjectionPointFDeriv_toDual_comp_of_vertical_grad_eq_zero`,
+`barrierInfProjectionValue_hasGradientAt_of_vertical_grad_eq_zero`, and
+`BarrierInfProjectionSelectorStationary.value_hasGradientAt`.  This proves the
+source calculus fact that, when the selector is differentiable and the vertical
+first-order condition holds, the selected value function has projected gradient
+`barrierInfProjectionGrad`.  The next exact envelope step is the second
+derivative/Schur-Hessian identity; reuse this first-order layer rather than
+re-proving the chain rule or vertical cancellation.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,

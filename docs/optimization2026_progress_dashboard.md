@@ -240,6 +240,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   to construct this certificate from an envelope differentiability theorem and
   concrete square-root models, not to restate the raw assumptions in every
   wrapper.
+- Inf-projection first-order envelope calculus: the newest packet adds
+  `barrierInfProjectionPointFDeriv`,
+  `barrierInfProjectionPoint_hasFDerivAt`, `barrierInfProjectionValue`,
+  `barrierInfProjectionPointFDeriv_toDual_comp_of_vertical_grad_eq_zero`,
+  `barrierInfProjectionValue_hasGradientAt_of_vertical_grad_eq_zero`, and
+  `BarrierInfProjectionSelectorStationary.value_hasGradientAt`.  The selected
+  value function now has projected gradient whenever the original barrier has
+  the supplied gradient at the graph point, the selector is differentiable, and
+  the vertical stationarity condition holds.  The next exact source step is the
+  second-derivative Schur-Hessian identity for the selected value function.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

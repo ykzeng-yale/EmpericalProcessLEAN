@@ -2875,6 +2875,130 @@ theorem withLpProdInl_fst_add_inr_snd (p : WithLp 2 (E₁ × E₂)) :
   apply WithLp.ofLp_injective 2
   exact Prod.ext (by simp) (by simp)
 
+@[simp] theorem withLpProdInl_add_inr (x : E₁) (y : E₂) :
+    withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) x +
+      withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) y =
+        WithLp.toLp 2 (x, y) := by
+  simpa using
+    (withLpProdInl_fst_add_inr_snd
+      (E₁ := E₁) (E₂ := E₂) (WithLp.toLp 2 (x, y)))
+
+/-- Derivative model for the selected graph map `x ↦ (x, selector x)`. -/
+noncomputable def barrierInfProjectionPointFDeriv
+    (dselector : E₁ →L[ℝ] E₂) :
+    E₁ →L[ℝ] WithLp 2 (E₁ × E₂) :=
+  withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) +
+    (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂)).comp dselector
+
+/--
+First derivative of the selected graph map used in the inf-projection envelope
+proof.
+-/
+theorem barrierInfProjectionPoint_hasFDerivAt
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hselector : HasFDerivAt selector dselector x) :
+    HasFDerivAt (barrierInfProjectionPoint selector)
+      (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector) x := by
+  have hinl :
+      HasFDerivAt
+        (fun y : E₁ => withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) y)
+        (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂)) x :=
+    (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂)).hasFDerivAt
+  have hinr :
+      HasFDerivAt
+        (fun y : E₁ =>
+          withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) (selector y))
+        ((withLpProdInrCLM (E₁ := E₁) (E₂ := E₂)).comp dselector) x :=
+    (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂)).hasFDerivAt.comp x hselector
+  exact (hinl.add hinr).congr_of_eventuallyEq <|
+    Filter.Eventually.of_forall fun y => by
+      simpa [barrierInfProjectionPoint] using
+        (withLpProdInl_add_inr (E₁ := E₁) (E₂ := E₂) y (selector y)).symm
+
+/-- Value function for the inf-projection envelope along a selected minimizer. -/
+def barrierInfProjectionValue
+    (f : WithLp 2 (E₁ × E₂) -> ℝ) (selector : E₁ -> E₂) :
+    E₁ -> ℝ :=
+  fun x => f (barrierInfProjectionPoint selector x)
+
+/--
+The graph-map derivative pulls the original gradient covector back to the
+projected gradient whenever the vertical gradient vanishes.
+-/
+theorem barrierInfProjectionPointFDeriv_toDual_comp_of_vertical_grad_eq_zero
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    (selector : E₁ -> E₂) (grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂))
+    (dselector : E₁ →L[ℝ] E₂) (x : E₁)
+    (hvertical : barrierInfProjectionVerticalGrad selector grad x = 0) :
+    ((InnerProductSpace.toDual ℝ (WithLp 2 (E₁ × E₂)))
+        (grad (barrierInfProjectionPoint selector x))).comp
+      (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector) =
+        (InnerProductSpace.toDual ℝ E₁)
+          (barrierInfProjectionGrad selector grad x) := by
+  ext v
+  rw [ContinuousLinearMap.comp_apply]
+  rw [InnerProductSpace.toDual_apply_apply]
+  rw [InnerProductSpace.toDual_apply_apply]
+  rw [barrierInfProjectionPointFDeriv]
+  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_comp',
+    Function.comp_apply, withLpProdInlCLM_apply, withLpProdInrCLM_apply]
+  rw [WithLp.prod_inner_apply]
+  have hsnd : (grad (barrierInfProjectionPoint selector x)).snd = 0 := by
+    simpa [barrierInfProjectionVerticalGrad] using hvertical
+  simp [barrierInfProjectionGrad, hsnd]
+
+/--
+First-order envelope theorem for Chewi Proposition 13.11(4): if the selector is
+differentiable and the vertical first-order condition holds, then the selected
+value function has the projected gradient.
+-/
+theorem barrierInfProjectionValue_hasGradientAt_of_vertical_grad_eq_zero
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hgrad :
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hvertical : barrierInfProjectionVerticalGrad selector grad x = 0) :
+    HasGradientAt (barrierInfProjectionValue f selector)
+      (barrierInfProjectionGrad selector grad x) x := by
+  have hpoint :=
+    barrierInfProjectionPoint_hasFDerivAt
+      (E₁ := E₁) (E₂ := E₂) hselector
+  have hcomp :
+      HasFDerivAt (barrierInfProjectionValue f selector)
+        (((InnerProductSpace.toDual ℝ (WithLp 2 (E₁ × E₂)))
+            (grad (barrierInfProjectionPoint selector x))).comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector)) x := by
+    simpa [barrierInfProjectionValue] using hgrad.hasFDerivAt.comp x hpoint
+  rw [barrierInfProjectionPointFDeriv_toDual_comp_of_vertical_grad_eq_zero
+    (E₁ := E₁) (E₂ := E₂) selector grad dselector x hvertical] at hcomp
+  simpa using hcomp.hasGradientAt
+
+/--
+Source-shaped first-order envelope theorem using the selector-stationarity
+certificate already carried by the inf-projection route.
+-/
+theorem BarrierInfProjectionSelectorStationary.value_hasGradientAt
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hgrad :
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x) :
+    HasGradientAt (barrierInfProjectionValue f selector)
+      (barrierInfProjectionGrad selector grad x) x :=
+  barrierInfProjectionValue_hasGradientAt_of_vertical_grad_eq_zero
+    (E₁ := E₁) (E₂ := E₂) hgrad hselector
+    (hsel.vertical_grad_eq_zero hx)
+
 noncomputable def barrierInfProjectionBlockXX
     (selector : E₁ -> E₂)
     (hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
