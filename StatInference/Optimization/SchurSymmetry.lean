@@ -2250,6 +2250,80 @@ theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwic
       happly_deriv hmixed
 
 /--
+Scalar source-radius projected local-norm sandwich from continuity and
+differentiability of the applied Schur-Hessian vector path.  This is the
+source-facing adjoint-square route that avoids both operator-valued continuity
+and separate quadratic-form continuity.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_apply_continuity
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {schurApplyDeriv : E₁ -> ℝ -> E₁}
+    {x y v : E₁}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    (hMr_lt :
+      M *
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+            x (y - x) < 1)
+    (hs : Convex ℝ (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hy : y ∈ barrierInfProjectionSet s)
+    (happly_cont : ∀ w : E₁,
+      ContinuousOn
+        (fun t : ℝ =>
+          barrierInfProjectionSchurHessFrom selector hess invHyy
+            (hessianSegmentPoint x y t) w)
+        (Set.Icc (0 : ℝ) 1))
+    (happly_deriv : ∀ w : E₁, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasDerivWithinAt
+          (fun τ : ℝ =>
+            barrierInfProjectionSchurHessFrom selector hess invHyy
+              (hessianSegmentPoint x y τ) w)
+          (schurApplyDeriv w t)
+          (interior (Set.Icc (0 : ℝ) 1)) t)
+    (hmixed : ∀ w : E₁, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ w (schurApplyDeriv w t) =
+          hessianSegmentMixedThirdPsiDeriv
+            (barrierInfProjectionSchurLiftedThird selector hess invHyy third)
+            x y w t) :
+    (1 - M *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+          x (y - x)) *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v ≤
+      localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ∧
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ≤
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v /
+            (1 - M *
+              localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+                x (y - x)) := by
+  exact
+    BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_psi_continuity
+      (hmodel := hmodel) hMr_lt hs hx hy
+      (by
+        intro w
+        exact hessianSegmentPsi_continuousOn_of_apply_continuousOn
+          (hess := barrierInfProjectionSchurHessFrom selector hess invHyy)
+          (x := x) (y := y) (v := w) (happly_cont w))
+      happly_deriv hmixed
+
+/--
 Source-radius projected local-norm sandwich from a supplied Schur-Hessian
 derivative certificate.  This is the theorem-facing adapter for the exact
 inf-projection route after the Schur derivative has been built.

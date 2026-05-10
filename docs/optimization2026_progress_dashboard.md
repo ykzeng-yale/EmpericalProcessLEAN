@@ -562,6 +562,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_psi_continuity`.
   The exact source route no longer needs a separate segment local-norm
   continuity hypothesis once per-vector `ψ` continuity is available.
+- Inf-projection applied-vector continuity shrink: the newest packet adds
+  `hessianSegmentPsi_continuousOn_of_apply_continuousOn`,
+  `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hessApplyDeriv_sourceRadius`,
+  `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_apply_continuity`,
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_apply_continuity`.
+  The preferred source route can now stay at the applied-vector path
+  `t ↦ H_schur(z_t) v`: its continuity gives `ψ_v` continuity, and its
+  derivative plus the lifted-third pairing gives the local-norm sandwich.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

@@ -1482,6 +1482,16 @@ theorem hessianSegmentPsi_continuousOn_of_continuousOn
     hz.clm_apply continuousOn_const
   exact continuousOn_const.inner happly
 
+theorem hessianSegmentPsi_continuousOn_of_apply_continuousOn
+    {hess : E -> E →L[ℝ] E} {x y v : E}
+    (happly :
+      ContinuousOn
+        (fun t : ℝ => hess (hessianSegmentPoint x y t) v)
+        (Set.Icc (0 : ℝ) 1)) :
+    ContinuousOn (hessianSegmentPsi hess x y v)
+      (Set.Icc (0 : ℝ) 1) := by
+  exact continuousOn_const.inner happly
+
 theorem hessianSegmentPsi_continuousOn_of_continuous
     {hess : E -> E →L[ℝ] E} (hhess : Continuous hess)
     (x y : E) :
@@ -6706,6 +6716,57 @@ theorem HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfCon
         (hess := hess) (x := x) (y := y) (hpsi_cont (y - x)))
       hpsi_deriv
 
+/--
+Scalar source-radius certificate from continuity and differentiability of the
+applied Hessian vector path.  This keeps the source route at the level of
+`t ↦ Hess(z_t) v` instead of asking for either operator-valued continuity or
+separate quadratic-form continuity.
+-/
+theorem HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hessApplyDeriv_sourceRadius
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {hessApplyDeriv : E -> ℝ -> E}
+    {x y : E} {M : ℝ}
+    (hMr_lt : M * localNorm hess x (y - x) < 1)
+    (hs : Convex ℝ s) (hx : x ∈ s) (hy : y ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hdiff_ne : y - x ≠ 0)
+    (happly_cont : ∀ v : E,
+      ContinuousOn
+        (fun t : ℝ => hess (hessianSegmentPoint x y t) v)
+        (Set.Icc (0 : ℝ) 1))
+    (happly_deriv : ∀ v : E, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasDerivWithinAt
+          (fun τ : ℝ => hess (hessianSegmentPoint x y τ) v)
+          (hessApplyDeriv v t)
+          (interior (Set.Icc (0 : ℝ) 1)) t)
+    (hmixed : ∀ v : E, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v (hessApplyDeriv v t) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x y v t) :
+    HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed x y M
+      (localNorm hess x (y - x)) := by
+  exact
+    HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_scalarPsi_sourceRadius_of_psi_continuity
+      (s := s) (hess := hess) (thirdMixed := thirdMixed)
+      (x := x) (y := y) (M := M)
+      hMr_lt hs hx hy hsc hess_pos hdiff_ne
+      (by
+        intro v
+        exact hessianSegmentPsi_continuousOn_of_apply_continuousOn
+          (hess := hess) (x := x) (y := y) (v := v) (happly_cont v))
+      (by
+        intro v t ht
+        have hpsi :=
+          hessianSegmentPsi_hasDerivWithinAt_of_hasDerivWithinAt_apply
+            (hess := hess) (x := x) (y := y) (v := v)
+            (deriv := hessApplyDeriv v t)
+            (u := interior (Set.Icc (0 : ℝ) 1)) (t := t)
+            (happly_deriv v t ht)
+        simpa [hmixed v t ht] using hpsi)
+
 theorem HessianSegmentConcretePsiCertificate.toHessianSegmentPsiCertificate
     {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
     {psiDeriv : E -> ℝ -> ℝ}
@@ -7788,6 +7849,81 @@ theorem BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sour
       (hessianSegmentLocalNorm_continuousOn_of_psi
         (hess := barrierInfProjectionSchurHessFrom selector hess invHyy)
         (x := x) (y := y) (hpsi_cont (y - x)))
+      happly_deriv hmixed v
+
+/--
+Projected-envelope source-radius route from continuity and differentiability of
+the applied Schur-Hessian vector path.
+-/
+theorem BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_apply_continuity
+    {E₁ E₂ : Type*}
+    [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+    [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {schurApplyDeriv : E₁ -> ℝ -> E₁}
+    {x y : E₁} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess z (invHyy z w) = w)
+    (hMr_lt :
+      M *
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+            x (y - x) < 1)
+    (hs : Convex ℝ (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hy : y ∈ barrierInfProjectionSet s)
+    (hess_pos : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁, v ≠ 0 ->
+        0 < inner ℝ v (barrierInfProjectionSchurHessFrom selector hess invHyy z v))
+    (hdiff_ne : y - x ≠ 0)
+    (happly_cont : ∀ w : E₁,
+      ContinuousOn
+        (fun t : ℝ =>
+          barrierInfProjectionSchurHessFrom selector hess invHyy
+            (hessianSegmentPoint x y t) w)
+        (Set.Icc (0 : ℝ) 1))
+    (happly_deriv : ∀ w : E₁, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasDerivWithinAt
+          (fun τ : ℝ =>
+            barrierInfProjectionSchurHessFrom selector hess invHyy
+              (hessianSegmentPoint x y τ) w)
+          (schurApplyDeriv w t)
+          (interior (Set.Icc (0 : ℝ) 1)) t)
+    (hmixed : ∀ w : E₁, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ w (schurApplyDeriv w t) =
+          hessianSegmentMixedThirdPsiDeriv
+            (barrierInfProjectionSchurLiftedThird selector hess invHyy third)
+            x y w t)
+    (v : E₁) :
+    (1 - M *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+          x (y - x)) *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v ≤
+      localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ∧
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ≤
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v /
+            (1 - M *
+              localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+                x (y - x)) := by
+  exact
+    hsel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_psi_continuity
+      (hbar := hbar) hyy_right hMr_lt hs hx hy hess_pos hdiff_ne
+      (by
+        intro w
+        exact hessianSegmentPsi_continuousOn_of_apply_continuousOn
+          (hess := barrierInfProjectionSchurHessFrom selector hess invHyy)
+          (x := x) (y := y) (v := w) (happly_cont w))
       happly_deriv hmixed v
 
 /--
