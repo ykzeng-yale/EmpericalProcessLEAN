@@ -349,6 +349,10 @@ The quantitative inverse-square tail package is now compiled as
 `vdVWTheorem243FiniteCenterHoeffdingFailureTail_pair_lintegral_tendsto_zero_of_invSq`,
 and
 `vdVWTheorem243_selectedFailureTail_tendsto_zero_of_invSq_lintegral`.
+The inverse-square input now feeds the compiled fixed-`M` route directly through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_invSq_lintegral`
+and the canonical first-level selected-cover wrapper
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_invSq_lintegral`.
 These formalize the route warning: the additive Hoeffding failure-tail term at
 the current display scale does not have automatic sample-size decay, and for a
 one-center selected cover it is a positive constant rather than a

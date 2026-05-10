@@ -2452,6 +2452,10 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWTheorem243FiniteCenterHoeffdingFailureTail_pair_lintegral_tendsto_zero_of_invSq`,
    and
    `vdVWTheorem243_selectedFailureTail_tendsto_zero_of_invSq_lintegral`.
+   The fixed-`M` product-pair route now consumes this inverse-square input via
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_invSq_lintegral`
+   and the canonical first-level selected-cover wrapper
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_invSq_lintegral`.
    These prove that the additive Hoeffding failure-tail term at the current
    display scale has no automatic sample-size decay; the one-center case is a
    positive constant and cannot converge to zero.  The additive route can now

@@ -8889,6 +8889,11 @@ original/ghost finite-center failure-tail error directly.
 `vdVWTheorem243FiniteCenterHoeffdingFailureTail_pair_lintegral_tendsto_zero_of_invSq`,
 and
 `vdVWTheorem243_selectedFailureTail_tendsto_zero_of_invSq_lintegral`.
+The inverse-square hypothesis is now wired into the fixed-`M` product-pair
+route through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_invSq_lintegral`
+and the canonical first-level selected-cover wrapper
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_invSq_lintegral`.
 The displayed finite-center failure tail is now bounded by
 `(2 * exp (-3)) / (cardinality + 1)^2`, and the selected product-pair
 `hfailureTail_tendsto` input can be supplied from convergence to zero of the
