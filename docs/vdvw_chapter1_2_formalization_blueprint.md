@@ -3094,6 +3094,18 @@ showing beta-large sign-swapped bad-event fibers together with the original
 and ghost finite-center a.e. support facts for the canonical first-level
 selected cover.
 
+The source interface now also has the lower pair-sub/sign-swap handoff
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers`.
+This theorem composes the first-level displayed-beta endpoint with an
+unswapped `VdVWTheorem243CenteredPairSubBadEvent` lower bound and a
+fixed-sample transport into
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent`.  The next proof attempt
+should decide this transport honestly: if the fixed-fiber transport cannot be
+proved under the textbook assumptions, the route should use the existing
+integrated product-pair comparison or a different nonmeasurable source
+primitive rather than smuggling in an a.e. finite-center or sign-swap
+assumption.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

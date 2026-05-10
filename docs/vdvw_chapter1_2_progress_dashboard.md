@@ -4011,3 +4011,12 @@ sign-swapped bad-event fiber lower bound plus original and ghost
 finite-center a.e. support for the canonical first-level selected cover.  This
 is progress on the source interface, not a final probability closure; the
 active blocker is now exactly those probability-side three inputs.
+
+The displayed-beta source chain now has one more compiled factorization:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers`.
+It replaces the direct sign-swapped bad-event lower-bound assumption by an
+unswapped pair-sub bad-event lower bound plus fixed-sample sign-swap
+transport.  This aligns the interface with the existing Chebyshev pair-sub
+source theorem, while making clear that the fixed-fiber sign-swap transport is
+still the nontrivial probability point and may be stronger than the integrated
+product-pair symmetry route already compiled elsewhere.

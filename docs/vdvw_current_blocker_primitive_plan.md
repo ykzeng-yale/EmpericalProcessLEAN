@@ -9223,3 +9223,17 @@ remaining blocker is therefore probability-side only: prove the sign-swapped
 bad-event fiber lower bound and the two canonical finite-center a.e. support
 facts, or replace them by a stronger honest source theorem that implies the
 same three inputs.
+
+2026-05-10 pair-sub/sign-swap source factorization endpoint:
+`Theorem243.lean` now also proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers`.
+This pushes the displayed-beta first-level source interface one layer lower:
+instead of assuming beta-large fibers for
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent` directly, callers may provide
+an unswapped `VdVWTheorem243CenteredPairSubBadEvent` lower bound plus the
+fixed-sample sign-swap transport from that event to the sign-swapped bad event.
+The hard open point is now explicit: a fixed-original sign-swap transport is
+stronger than the already compiled integrated product-pair symmetry route, so
+it should be proved only if the fixed-fiber statement is mathematically
+valid; otherwise the main proof should stay on the integrated product-pair or
+another honest nonmeasurable source route.
