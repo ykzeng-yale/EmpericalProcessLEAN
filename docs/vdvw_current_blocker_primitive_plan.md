@@ -9251,3 +9251,14 @@ comparison for the `2 * epsilon` centered-bad event.  This closes the
 measure/fiber plumbing under the fixed-fiber sign-swap and a.e.
 finite-center support assumptions; those assumptions remain the genuine
 probability-side blocker.
+
+2026-05-10 half-scale fixed-fiber outer-probability handoff:
+`Theorem243.lean` now proves
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_halfScale_of_pos`.
+This applies the positive-size outer-probability handoff at `epsilon / 2` and
+cover radius `eta / 2`, converting the left event to the usual
+`epsilon`-bad centered event and the selected-net target to scale `4` with
+radius `eta`.  The fixed-fiber route now matches the scale of the compiled
+product-pair half-scale route; the remaining open inputs are still concrete
+event measurability, fixed-sample sign-swap transport, and original/ghost
+finite-center a.e. support for the chosen cover.
