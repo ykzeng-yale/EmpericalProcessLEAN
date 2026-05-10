@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V181`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V182`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -36,16 +36,24 @@ Current active frontier: Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled
 independence/product-law wrappers, including Theorem 2.1.10's partial-sum
 difference versus early-block statistic/indicator wrappers, Theorem 2.1.12's
-source-facing independent-pair expectation formulas, Theorem 2.1.15's CDF
-convolution handoff, and Theorem 2.1.16's convolution-law, density-existence,
-Fubini/withDensity formula, and two-density support; Theorem 2.4.9 has the full
-empirical-CDF Glivenko-Cantelli route through the arbitrary-law cutpoint-chain
-construction.  Treat
+source-facing independent-pair expectation formulas, Theorem 2.1.13's
+finite-set/range/interval product-expectation and zero-mean-factor consumers,
+Theorem 2.1.15's CDF convolution handoff, and Theorem 2.1.16's
+convolution-law, density-existence, Fubini/withDensity formula, and
+two-density support; Theorem 2.4.9 has the full empirical-CDF
+Glivenko-Cantelli route through the arbitrary-law cutpoint-chain construction.
+Treat
 `durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction`,
 `durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction`,
 `durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator`,
 `durrett2019_theorem_2_1_12_indepFun_lintegral_pair`,
 `durrett2019_theorem_2_1_12_indepFun_integral_pair`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_prod_integral`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_zero_of_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_prod_integral`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_zero_of_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_prod_integral`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_zero_of_integral_eq_zero`,
 `durrett2019_theorem_2_1_15_product_cdf_convolution`,
 `durrett2019_theorem_2_1_15_indepFun_cdf_convolution`,
 `durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv`,
@@ -63,9 +71,10 @@ construction.  Treat
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure` as
-closed support.  Continue by moving to downstream Chapter 2.1 product-law
-examples and finite independent product-law or expectation-factorization
-wrappers, after a focused mathlib/local search.
+closed support.  Continue by moving to downstream Chapter 2 consumers of this
+support, especially Theorem 2.2.1/2.2.3 uncorrelated and weak-law variance
+algebra, or only then to a new law-level Chapter 2.1 product example such as
+Theorem 2.1.18, after a focused mathlib/local search.
 
 For each cycle, route from:
 

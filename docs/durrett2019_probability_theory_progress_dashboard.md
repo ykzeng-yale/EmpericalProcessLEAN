@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V181` in
+Route from `Live In-Thread Goal Prompt V182` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -46,7 +46,15 @@ independence/product-law wrappers through Theorem 2.1.13, including Theorem
 Theorem 2.1.12 source-facing nonnegative and integrable independent-pair
 expectation formulas
 `durrett2019_theorem_2_1_12_indepFun_lintegral_pair` and
-`durrett2019_theorem_2_1_12_indepFun_integral_pair`, Theorem 2.1.15's CDF
+`durrett2019_theorem_2_1_12_indepFun_integral_pair`, Theorem 2.1.13
+finite-set/range/interval product-expectation and zero-mean-factor consumers
+`durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_prod_integral`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_zero_of_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_prod_integral`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_zero_of_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_prod_integral`, and
+`durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_zero_of_integral_eq_zero`,
+Theorem 2.1.15's CDF
 convolution handoffs
 `durrett2019_theorem_2_1_15_product_cdf_convolution` and
 `durrett2019_theorem_2_1_15_indepFun_cdf_convolution`, and the first Theorem
@@ -70,11 +78,12 @@ outer-a.s. empirical-CDF endpoints:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`,
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
-The next target should move forward to downstream Chapter 2.1 product-law
-examples and finite independent product-law or expectation-factorization
-wrappers.  Do not route future cycles back to Chapter 4.5.2 or solved 2.1.10
-partial-sum, 2.4.9, 2.1.12, 2.1.15, or 2.1.16 plumbing unless the user
-explicitly pivots.
+The next target should move forward to downstream Chapter 2 consumers of this
+independence/product support, especially Theorem 2.2.1/2.2.3 uncorrelated and
+weak-law variance algebra, or only then to a new law-level Chapter 2.1 product
+example such as Theorem 2.1.18.  Do not route future cycles back to Chapter
+4.5.2 or solved 2.1.10 partial-sum, 2.1.13 product-consumer, 2.4.9, 2.1.12,
+2.1.15, or 2.1.16 plumbing unless the user explicitly pivots.
 The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,

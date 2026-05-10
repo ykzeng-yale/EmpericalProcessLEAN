@@ -717,6 +717,117 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_integral_prod_eq_prod_integral
     hX mX
 
 /--
+Durrett 2019, Theorem 2.1.13, finite-subfamily expectation factorization.
+
+This is the finite-set consumer form used when products are taken only over a
+selected block of independent random variables.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_prod_integral
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    (s : Finset ι) :
+    ∫ ω, ∏ i ∈ s, X i ω ∂P = ∏ i ∈ s, ∫ ω, X i ω ∂P := by
+  have hrestrict : _root_.ProbabilityTheory.iIndepFun (s.restrict X) P :=
+    hX.restrict s
+  have hmeas : ∀ i : s, AEStronglyMeasurable (s.restrict X i) P := fun i =>
+    mX i
+  have hfactor :=
+    durrett2019_theorem_2_1_13_iIndepFun_integral_prod_eq_prod_integral
+      (P := P) (X := s.restrict X) hrestrict hmeas
+  calc
+    ∫ ω, ∏ i ∈ s, X i ω ∂P =
+        ∫ ω, ∏ i ∈ s.attach, X i ω ∂P := by
+      congr with ω
+      simpa using (Finset.prod_attach s (fun i : ι => X i ω)).symm
+    _ = ∏ i ∈ s.attach, ∫ ω, X i ω ∂P := by
+      simpa [Finset.restrict] using hfactor
+    _ = ∏ i ∈ s, ∫ ω, X i ω ∂P := by
+      simpa using (Finset.prod_attach s (fun i : ι => ∫ ω, X i ω ∂P))
+
+/--
+Durrett 2019, Theorem 2.1.13, zero-mean finite-product corollary.
+
+If one factor in a finite independent product has expectation zero, then the
+expectation of the whole product is zero.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_zero_of_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    {s : Finset ι} {i : ι} (hi : i ∈ s)
+    (hzero : ∫ ω, X i ω ∂P = 0) :
+    ∫ ω, ∏ j ∈ s, X j ω ∂P = 0 := by
+  rw [durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_prod_integral
+    (P := P) (X := X) hX mX s]
+  exact Finset.prod_eq_zero hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, initial-range product expectation
+factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_prod_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    (n : ℕ) :
+    ∫ ω, ∏ i ∈ Finset.range n, X i ω ∂P =
+      ∏ i ∈ Finset.range n, ∫ ω, X i ω ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_prod_integral
+    (P := P) (X := X) hX mX (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13, zero-mean initial-range product corollary.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_zero_of_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hzero : ∫ ω, X i ω ∂P = 0) :
+    ∫ ω, ∏ j ∈ Finset.range n, X j ω ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_zero_of_integral_eq_zero
+    (P := P) (X := X) hX mX hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, interval-block expectation factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_prod_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    (m n : ℕ) :
+    ∫ ω, ∏ i ∈ Finset.Ico m n, X i ω ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫ ω, X i ω ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_prod_integral
+    (P := P) (X := X) hX mX (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13, zero-mean interval-block corollary.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_zero_of_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hzero : ∫ ω, X i ω ∂P = 0) :
+    ∫ ω, ∏ j ∈ Finset.Ico m n, X j ω ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_zero_of_integral_eq_zero
+    (P := P) (X := X) hX mX hi hzero
+
+/--
 Durrett 2019, Theorem 2.1.15, product-space CDF convolution form.
 
 For independent coordinates with laws `μ` and `ν`, the distribution function

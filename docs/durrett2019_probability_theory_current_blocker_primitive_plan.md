@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V181
+## Live In-Thread Goal Prompt V182
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -19,9 +19,10 @@ Treat the following as compiled support and do not redo it: Chapter 2.1
 independence/product-law wrappers, including Theorem 2.1.10's partial-sum
 difference versus early-block statistic/indicator wrappers, Theorem 2.1.12's
 nonnegative and integrable independent-pair expectation formulas, Theorem
-2.1.15's CDF convolution handoff, Theorem 2.1.16 convolution-law,
-density-existence, exact
-Fubini/withDensity formula, and two-density handoffs, Theorem 2.3.1/2.3.7
+2.1.13's finite-set/range/interval product-expectation and zero-mean-factor
+consumers, Theorem 2.1.15's CDF convolution handoff, Theorem 2.1.16
+convolution-law, density-existence, exact Fubini/withDensity formula, and
+two-density handoffs, Theorem 2.3.1/2.3.7
 Borel-Cantelli wrappers, Theorem 2.4.1 strong-law wrappers, and the full
 Durrett Theorem 2.4.9 empirical-CDF route:
 `durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction`,
@@ -29,6 +30,12 @@ Durrett Theorem 2.4.9 empirical-CDF route:
 `durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator`,
 `durrett2019_theorem_2_1_12_indepFun_lintegral_pair`,
 `durrett2019_theorem_2_1_12_indepFun_integral_pair`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_prod_integral`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_zero_of_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_prod_integral`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_zero_of_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_prod_integral`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_zero_of_integral_eq_zero`,
 `durrett2019_theorem_2_1_15_product_cdf_convolution`,
 `durrett2019_theorem_2_1_15_indepFun_cdf_convolution`,
 `durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv`,
@@ -50,17 +57,19 @@ and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
 
 Next aggressive step: move forward from the now-compiled Theorem 2.1.10,
-2.1.12, and 2.1.16 layers to downstream Chapter 2.1 finite product-law and
-expectation-factorization examples that unlock later Chapter 2.  Good
-immediate targets are finite independent product-law or expectation
-factorization shapes for sums/products, or Theorem 2.1.18 gamma-sum source
-scaffolding only if the required calculus is local and cheap.  Search mathlib
-and local wrappers first, especially `HasLaw`, `IndepFun`, `iIndepFun`,
-`Measure.conv`, `Measure.prod`, `Measure.pi`, finite sums,
+2.1.12, 2.1.13, and 2.1.16 layers to downstream Chapter 2 support that
+actually consumes them.  Good immediate targets are Theorem 2.2.1/2.2.3
+uncorrelated and weak-law variance algebra using the new zero-mean
+product-consumers, finite independent product-law examples only if they expose
+a reusable law-level endpoint, or Theorem 2.1.18 gamma-sum source scaffolding
+only if the required calculus is local and cheap.  Search mathlib and local
+wrappers first, especially `HasLaw`, `IndepFun`, `iIndepFun`, `Measure.conv`,
+`Measure.prod`, `Measure.pi`, finite sums, variance/covariance APIs,
 Laplace/characteristic transforms, product integrals, and
 `StatInference.ProbabilityMeasure.ProductMeasure`.  Do not route back to
-Chapter 4.5.2 or any solved 2.1.10 partial-sum, 2.4.9, 2.1.12, 2.1.15, or
-2.1.16 plumbing unless the user explicitly pivots the active goal.
+Chapter 4.5.2 or any solved 2.1.10 partial-sum, 2.1.13 product-consumer,
+2.4.9, 2.1.12, 2.1.15, or 2.1.16 plumbing unless the user explicitly pivots
+the active goal.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including
