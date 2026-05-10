@@ -25,6 +25,11 @@ Immediate predecessor finite Taylor-zero endpoint:
 Immediate root-to-Taylor-zero bridge:
 `vaart1998_theorem_5_41_finiteCoordinateTaylorZero_of_root_taylorExpansion`.
 
+Current verified sampled Taylor source bridges:
+`vaart1998_theorem_5_41_estimatingEquationRoot_of_rawRoot_estimatorScaled`
+and
+`vaart1998_theorem_5_41_finiteCoordinateTaylorExpansion_of_pointwiseTaylor_residual`.
+
 Continuation recipe:
 
 1. Check `git status`, the Vaart diff, and the live hypotheses of the endpoint
@@ -36,12 +41,13 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Taylor source: instantiate the finite-coordinate root-Taylor expansion from
-   sampled per-observation Taylor identities already available earlier in
-   `MEstimators.lean`.
-2. Residual source: instantiate the negligible finite-coordinate residual from
-   derivative LLN plus the second-derivative envelope if that path is shorter
-   than the direct Taylor assembly.
+1. Residual source: instantiate the negligible finite-coordinate residual from
+   derivative LLN plus the second-derivative envelope, using the residual
+   definition consumed by
+   `vaart1998_theorem_5_41_finiteCoordinateTaylorExpansion_of_pointwiseTaylor_residual`.
+2. Packaging source: if it is cheap, add the action endpoint wrapper that calls
+   the current root-Taylor action endpoint after applying the two sampled
+   Taylor source bridges above.
 3. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    finite-root-Taylor endpoint; do not rebuild completed score CLT, display

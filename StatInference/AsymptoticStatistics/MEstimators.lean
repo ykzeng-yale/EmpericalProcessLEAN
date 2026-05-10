@@ -16139,6 +16139,145 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hContDiffDerivativeAt hSecondDerivative_eq_fderiv
 
 /--
+van der Vaart 1998, Theorem 5.41, scaled estimating-equation root from the
+raw estimating-equation root.
+
+The textbook root condition is usually stated for the raw estimating map at
+the estimator.  This bridge records the finite-sample algebra that the scaled
+estimating equation has the same empirical-average root when every summand is
+scaled by the same sample-level rate.
+-/
+theorem vaart1998_theorem_5_41_estimatingEquationRoot_of_rawRoot_estimatorScaled
+    {Ω Observation Score Θ : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Score] [NormedSpace ℝ Score]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scale : ℕ -> Ω -> ℝ)
+    (estimatingMap : ℕ -> Ω -> Observation -> Θ -> Score)
+    (estimatingAtEstimator : ℕ -> Ω -> Observation -> Score)
+    (estimator : ℕ -> Ω -> Θ)
+    (hRawRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω)
+          (fun x => estimatingMap n ω x (estimator n ω)) = 0)
+    (hEstimator_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        estimatingAtEstimator n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i)
+            (estimator n ω)) :
+    ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω) (estimatingAtEstimator n ω) =
+          0 := by
+  intro n
+  filter_upwards [hRawRoot n, hEstimator_scaled n] with ω hRaw hEstimator
+  calc
+    empiricalAverageVector (samples n ω) (estimatingAtEstimator n ω)
+        = empiricalAverageVector (samples n ω)
+            (fun x => scale n ω • estimatingMap n ω x (estimator n ω)) := by
+          simp [empiricalAverageVector, hEstimator]
+    _ = scale n ω • empiricalAverageVector (samples n ω)
+            (fun x => estimatingMap n ω x (estimator n ω)) := by
+          simp [empiricalAverageVector, Finset.smul_sum, smul_smul, mul_comm]
+    _ = 0 := by
+          simp [hRaw]
+
+/--
+van der Vaart 1998, Theorem 5.41, finite-coordinate Taylor expansion from
+sampled pointwise Taylor identities.
+
+This bridge turns the already-compiled per-observation Taylor identity into
+the finite-coordinate source equation
+`score_n + V x_n + residual_n = estimatingEquationAtEstimator_n`, once the
+raw score average has been identified with the centered finite-coordinate
+empirical moment and the residual is defined as the empirical derivative error
+plus the selected quadratic term.
+-/
+theorem vaart1998_theorem_5_41_finiteCoordinateTaylorExpansion_of_pointwiseTaylor_residual
+    {Ω Observation Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (V : Θ →L[ℝ] (Coord -> ℝ))
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scoreAtTheta0 estimatingAtEstimator :
+      ℕ -> Ω -> Observation -> Coord -> ℝ)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> Θ →L[ℝ] (Coord -> ℝ))
+    (secondDerivative :
+      ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))
+    (scoreSummand : Coord -> ℕ -> Ω -> ℝ)
+    {delta scaledEstimator : ℕ -> Ω -> Θ}
+    {residual : ℕ -> Ω -> Coord -> ℝ}
+    (hRawScore_eq_finiteCoordinate : ∀ n : ℕ,
+      (fun ω =>
+        empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω)) =ᵐ[P]
+        fun ω => vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment
+          P scoreSummand n ω)
+    (hResidual_eq : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        residual n ω =
+          (empiricalAverageVector (samples n ω) (derivativeAt n ω) - V)
+              (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              (empiricalAverageVector (samples n ω) (secondDerivative n ω))
+                (delta n ω) (scaledEstimator n ω))
+    (hPointwiseTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) +
+            derivativeAt n ω (samples n ω i) (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              secondDerivative n ω (samples n ω i)
+                (delta n ω) (scaledEstimator n ω) =
+          estimatingAtEstimator n ω (samples n ω i)) :
+    ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment
+            P scoreSummand n ω +
+          V (scaledEstimator n ω) + residual n ω =
+            empiricalAverageVector (samples n ω)
+              (estimatingAtEstimator n ω) := by
+  have hEmpiricalTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω) +
+            (empiricalAverageVector (samples n ω) (derivativeAt n ω))
+              (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              (empiricalAverageVector (samples n ω) (secondDerivative n ω))
+                (delta n ω) (scaledEstimator n ω) =
+          empiricalAverageVector (samples n ω)
+            (estimatingAtEstimator n ω) :=
+    vaart1998_theorem_5_41_empirical_quadraticTaylorExpansion_of_pointwise_ae
+      (P := P) (samples := samples)
+      (scoreAtTheta0 := scoreAtTheta0)
+      (estimatingAtEstimator := estimatingAtEstimator)
+      (derivative := derivativeAt) (secondDerivative := secondDerivative)
+      (delta := delta) (scaledEstimator := scaledEstimator)
+      hPointwiseTaylor
+  intro n
+  filter_upwards [hEmpiricalTaylor n, hRawScore_eq_finiteCoordinate n,
+    hResidual_eq n] with ω hTaylor hRawScore hResidual
+  calc
+    vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment
+          P scoreSummand n ω +
+        V (scaledEstimator n ω) + residual n ω
+        = empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω) +
+            V (scaledEstimator n ω) +
+            ((empiricalAverageVector (samples n ω) (derivativeAt n ω) - V)
+                (scaledEstimator n ω) +
+              (1 / 2 : ℝ) •
+                (empiricalAverageVector (samples n ω) (secondDerivative n ω))
+                  (delta n ω) (scaledEstimator n ω)) := by
+          rw [← hRawScore, hResidual]
+    _ = empiricalAverageVector (samples n ω) (scoreAtTheta0 n ω) +
+            (empiricalAverageVector (samples n ω) (derivativeAt n ω))
+              (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              (empiricalAverageVector (samples n ω) (secondDerivative n ω))
+                (delta n ω) (scaledEstimator n ω) := by
+          simp [sub_eq_add_neg, add_assoc, add_comm, add_left_comm]
+    _ = empiricalAverageVector (samples n ω)
+          (estimatingAtEstimator n ω) := hTaylor
+
+/--
 van der Vaart 1998, Theorem 5.41, finite-coordinate Taylor-zero display from
 the raw root equation and Taylor expansion.
 

@@ -16,12 +16,11 @@ The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
 Latest verified packet: finite-coordinate root-Taylor Theorem 5.41 action
-endpoint in `MEstimators.lean`.
+endpoint plus sampled Taylor source bridges in `MEstimators.lean`.
 
-Current next blocker: instantiate that root-Taylor expansion from sampled
-per-observation Taylor identities, or instantiate the negligible
-finite-coordinate residual from derivative LLN plus the second-derivative
-envelope if that is shorter.
+Current next blocker: instantiate the negligible finite-coordinate residual
+from derivative LLN plus the second-derivative envelope, or cheaply package the
+new sampled Taylor source bridges into the action endpoint wrapper.
 
 ## Verified Frontier
 

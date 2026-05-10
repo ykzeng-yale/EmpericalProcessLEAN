@@ -20,9 +20,11 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    instructions to replay.
 
 Current frontier: Theorem 5.41 now has a compiled finite-coordinate
-root-Taylor action endpoint.  The next proof packet should instantiate the
-root-Taylor expansion or its negligible residual source, not replay display
-weak-convergence, display-tightness, score-CLT, or derivative-action wrappers.
+root-Taylor action endpoint and sampled pointwise-Taylor bridges into its
+root/Taylor-expansion fields.  The next proof packet should instantiate the
+negligible residual source or package these bridges into the action endpoint,
+not replay display weak-convergence, display-tightness, score-CLT, or
+derivative-action wrappers.
 
 ## Chapter Map
 
