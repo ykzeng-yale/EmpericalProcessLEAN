@@ -10306,3 +10306,19 @@ finite-center Hoeffding tail plus the ghost-sample integrated finite-center
 tail.  The remaining frontier is the actual sign-swapped bad-fiber mass
 source, plus tail-control packaging for this two-tail error when using the
 fixed-original product-fiber route.
+
+2026-05-10 two-tail inverse-square source consumer:
+`Theorem243.lean` now adds
+`vdVWTheorem243_selectedFailureTail_centered_setLIntegral_add_ghost_tendsto_zero_of_invSq_lintegral`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tails_invSq`.
+The first theorem squeezes the centered-bad integral of
+`originalTail sample + ghostTail n` by the single centered-bad original tail
+plus the full ghost-tail integral, then discharges both terms from the
+existing inverse-square selected-cardinality lintegral.  The second theorem
+feeds that plural-tail error shape into the fixed-`M` a.e. product-fiber
+additive-error consumer.  The fixed-original two-tail lane therefore no longer
+needs separate tail-control packaging; its remaining source blocker is the
+genuine displayed-beta lower bound for the centered sign-swapped bad fibers,
+or an averaged product-pair replacement that avoids fixed-original sign-swap
+transport.

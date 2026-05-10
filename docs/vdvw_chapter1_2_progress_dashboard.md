@@ -4785,6 +4785,14 @@ and
 These feed the factor-two original-or-ghost selected-net comparison directly
 from sign-swapped bad-fiber mass while preserving the two-tail additive error
 `originalTail sample + ghostTail n`.  The dashboard frontier is now the
-probability source for those sign-swapped bad fibers, or a final two-tail
-vanishing wrapper if this fixed-fiber lane is promoted to a fixed-`M`
-convergence consumer.
+probability source for those sign-swapped bad fibers, or an averaged
+product-pair replacement for fixed-original sign-swap transport.
+
+The two-tail vanishing and fixed-`M` consumer layer is now compiled through
+`vdVWTheorem243_selectedFailureTail_centered_setLIntegral_add_ghost_tendsto_zero_of_invSq_lintegral`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tails_invSq`.
+The first theorem controls the centered-bad integral of
+`originalTail sample + ghostTail n` from the existing inverse-square
+selected-cardinality lintegral; the second feeds that plural-tail error into
+the fixed-`M` a.e. product-fiber additive-error route.

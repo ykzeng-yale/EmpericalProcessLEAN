@@ -3886,6 +3886,18 @@ selected-net outer-probability bound with the explicit two-tail error
 either the real sign-swapped bad-fiber mass theorem or a two-tail convergence
 handoff for this error shape.
 
+That two-tail convergence handoff is now compiled as
+`vdVWTheorem243_selectedFailureTail_centered_setLIntegral_add_ghost_tendsto_zero_of_invSq_lintegral`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tails_invSq`.
+The first theorem proves the centered-bad two-tail error tends to zero from
+the same inverse-square selected-cardinality lintegral used by the single-tail
+route; the second packages that error into the fixed-`M` a.e.
+original-or-ghost product-fiber additive-error consumer.  The blueprint
+frontier for this lane is now the sign-swapped bad-fiber displayed-beta mass
+source itself, or an averaged product-pair source theorem that bypasses the
+fixed-original sign-swap transport.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
