@@ -3886,3 +3886,9 @@ as
 it removes the last `default ∈ indexClass` artifact from the selected-center
 coordinate interface.  The remaining selector blocker is still the real one:
 construct measurable fibers for a canonical in-class selected-cover tuple.
+The first reusable piece of that canonical-selector construction is now
+compiled as `vdVWFirstNatCandidate` with fiber measurability theorem
+`measurableSet_vdVWFirstNatCandidate_eq`: a Nat-enumerated first successful
+candidate has measurable fibers whenever each candidate-success event is
+measurable.  The next patch should instantiate this with enumerated finite
+center tuples for the countable theorem class.

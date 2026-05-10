@@ -2966,6 +2966,12 @@ explicit nonempty-class fallback; no ambient `Inhabited` default is needed.
 The next selected-cover proof target is unchanged mathematically: construct a
 canonical selected cover whose in-class Nat-indexed selector has measurable
 fibers, then feed that into the half-scale Theorem 2.4.3 source route.
+The generic Nat-enumerated first-candidate selector needed for that target is
+now compiled as `vdVWFirstNatCandidate`, with fiber theorem
+`measurableSet_vdVWFirstNatCandidate_eq`.  This isolates the reusable
+measurable-selection step; remaining work is the empirical-cover-specific
+enumeration of finite center tuples and proof that each tuple-success event is
+measurable.
 
 ## Automation Checklist
 

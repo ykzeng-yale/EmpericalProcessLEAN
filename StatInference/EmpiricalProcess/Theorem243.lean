@@ -16222,6 +16222,112 @@ theorem measurable_vdVWWeightedSampleSum_selectedCenterAt_of_coordinate
       (hcoord k)
 
 /--
+First Nat-indexed candidate satisfying a sample-dependent predicate.
+
+This is a small measurable-selection building block for canonical countable
+selected covers: enumerate candidate center tuples by natural numbers, choose
+the first tuple that satisfies the cover predicate, and prove fibers of the
+chosen candidate from measurability of the candidate events.
+-/
+noncomputable def vdVWFirstNatCandidate
+    {Ω : Type x} {α : Type y}
+    (candidate : ℕ -> α) (predicate : Ω -> α -> Prop)
+    (hexists : ∀ ω : Ω, ∃ n : ℕ, predicate ω (candidate n))
+    (ω : Ω) : α := by
+  classical
+  exact candidate (Nat.find (hexists ω))
+
+/--
+Fibers of a first Nat-indexed candidate selector are measurable once every
+candidate event is measurable.
+
+The proof expands the fiber as a countable union over the first successful
+candidate index, with all earlier candidate events excluded.  This is the
+generic `Nat.find` measurability primitive needed before constructing a
+canonical measurable selected-cover tuple.
+-/
+theorem measurableSet_vdVWFirstNatCandidate_eq
+    {Ω : Type x} {α : Type y} [MeasurableSpace Ω]
+    (candidate : ℕ -> α) (predicate : Ω -> α -> Prop)
+    (hexists : ∀ ω : Ω, ∃ n : ℕ, predicate ω (candidate n))
+    (hmeas : ∀ n : ℕ, MeasurableSet {ω : Ω | predicate ω (candidate n)})
+    (a : α) :
+    MeasurableSet
+      {ω : Ω | vdVWFirstNatCandidate candidate predicate hexists ω = a} := by
+  classical
+  let firstEvent : ℕ -> Set Ω :=
+    fun n =>
+      {ω : Ω |
+        candidate n = a ∧ predicate ω (candidate n) ∧
+          ∀ m : ℕ, m < n -> ¬ predicate ω (candidate m)}
+  have hfirstEvent_meas : ∀ n, MeasurableSet (firstEvent n) := by
+    intro n
+    by_cases hcandidate : candidate n = a
+    · have hminimal_meas :
+          MeasurableSet
+            (⋂ m : ℕ,
+              {ω : Ω | m < n -> ¬ predicate ω (candidate m)}) := by
+        refine MeasurableSet.iInter fun m => ?_
+        by_cases hm : m < n
+        · have hset :
+              {ω : Ω | m < n -> ¬ predicate ω (candidate m)} =
+                {ω : Ω | predicate ω (candidate m)}ᶜ := by
+            ext ω
+            simp [hm]
+          rw [hset]
+          exact (hmeas m).compl
+        · have hset :
+              {ω : Ω | m < n -> ¬ predicate ω (candidate m)} =
+                Set.univ := by
+            ext ω
+            simp [hm]
+          rw [hset]
+          exact MeasurableSet.univ
+      have hfirstEvent_eq :
+          firstEvent n =
+            {ω : Ω | predicate ω (candidate n)} ∩
+              ⋂ m : ℕ,
+                {ω : Ω | m < n -> ¬ predicate ω (candidate m)} := by
+        ext ω
+        simp [firstEvent, hcandidate, Set.mem_iInter]
+      rw [hfirstEvent_eq]
+      exact (hmeas n).inter hminimal_meas
+    · have hfirstEvent_eq : firstEvent n = Set.univᶜ := by
+        ext ω
+        simp [firstEvent, hcandidate]
+      rw [hfirstEvent_eq]
+      exact MeasurableSet.univ.compl
+  have hfiber_eq :
+      {ω : Ω | vdVWFirstNatCandidate candidate predicate hexists ω = a} =
+        ⋃ n : ℕ, firstEvent n := by
+    ext ω
+    constructor
+    · intro hω
+      refine Set.mem_iUnion.2 ⟨Nat.find (hexists ω), ?_⟩
+      have hspec :
+          predicate ω (candidate (Nat.find (hexists ω))) :=
+        Nat.find_spec (hexists ω)
+      have hminimal :
+          ∀ m : ℕ, m < Nat.find (hexists ω) ->
+            ¬ predicate ω (candidate m) := by
+        intro m hm
+        exact Nat.find_min (hexists ω) hm
+      exact ⟨by simpa [vdVWFirstNatCandidate] using hω, hspec, hminimal⟩
+    · intro hω
+      rcases Set.mem_iUnion.1 hω with ⟨n, hfirst⟩
+      have hle : Nat.find (hexists ω) ≤ n :=
+        Nat.find_min' (hexists ω) hfirst.2.1
+      have hnot_lt : ¬ Nat.find (hexists ω) < n := by
+        intro hlt
+        exact hfirst.2.2 (Nat.find (hexists ω)) hlt
+          (Nat.find_spec (hexists ω))
+      have hfind_eq : Nat.find (hexists ω) = n :=
+        le_antisymm hle (Nat.le_of_not_gt hnot_lt)
+      simpa [vdVWFirstNatCandidate, hfind_eq] using hfirst.1
+  rw [hfiber_eq]
+  exact MeasurableSet.iUnion hfirstEvent_meas
+
+/--
 Scalar selected-index evaluation is measurable from countable measurable
 fibers.
 
