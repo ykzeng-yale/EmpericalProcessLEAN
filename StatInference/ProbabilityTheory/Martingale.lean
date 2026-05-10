@@ -18173,6 +18173,80 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
   · simpa using hscaled_summable
 
 /--
+Durrett 2019, Theorem 4.5.3 variance-ratio summability bridge.
+
+If the reciprocal-scaled martingale increment square integrals are bounded by
+the textbook variance-ratio terms, then summability of those variance-ratio
+terms gives the scaled-square summability consumed by the transform route.
+-/
+theorem durrett2019_theorem_4_5_3_scaled_summable_of_integral_le_variance_ratio
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hscaled_le :
+      ∀ k : ℕ,
+        (∫ ω,
+          ((f (A (k + 1) ω))⁻¹ * (X (k + 1) ω - X k ω)) ^ 2 ∂P) ≤
+          ∫ ω,
+            (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 ∂P)
+    (hvariance_ratio_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 ∂P) :
+    Summable fun k : ℕ =>
+      ∫ ω,
+        ((f (A (k + 1) ω))⁻¹ * (X (k + 1) ω - X k ω)) ^ 2 ∂P := by
+  exact
+    Summable.of_nonneg_of_le
+      (fun k => integral_nonneg fun ω => sq_nonneg _)
+      hscaled_le hvariance_ratio_summable
+
+/--
+Durrett 2019, Theorem 4.5.3 reciprocal variance-ratio route.
+
+This is the theorem-facing handoff after the textbook conditional-variance
+calculation: once the reciprocal-scaled increment square integrals are bounded
+by the variance-ratio series and that series is summable, the normalized
+process conclusion follows from the V206 reciprocal route.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_variance_ratio_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hf_cont : Continuous f)
+    (hf_one_le : ∀ n : ℕ, ∀ ω : Ω, 1 ≤ f (A n ω))
+    (hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ f (A (k + 2) ω) - f (A (k + 1) ω))
+    (hb_atTop :
+      ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop)
+    (hTransform_memLp_two :
+      ∀ k, MemLp
+        (durrett2019_stochasticTransform
+          (fun n : ℕ => fun ω : Ω => (f (A n ω))⁻¹) X k)
+        (2 : ℝ≥0∞) P)
+    (hscaled_le :
+      ∀ k : ℕ,
+        (∫ ω,
+          ((f (A (k + 1) ω))⁻¹ * (X (k + 1) ω - X k ω)) ^ 2 ∂P) ≤
+          ∫ ω,
+            (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 ∂P)
+    (hvariance_ratio_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 ∂P) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_scaled_summable
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f)
+      hX hX0 hA_predictable hf_cont hf_one_le hb_increment_nonneg hb_atTop
+      hTransform_memLp_two
+      (durrett2019_theorem_4_5_3_scaled_summable_of_integral_le_variance_ratio
+        (P := P) (A := A) (X := X) (f := f)
+        hscaled_le hvariance_ratio_summable)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

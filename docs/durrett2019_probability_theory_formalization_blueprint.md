@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V206`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V207`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -54,8 +54,15 @@ reciprocal `b_n = f(A_n)` specialization:
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_scaled_summable`
 and
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_scaled_summable`.
-The next theorem-facing target is the variance/integral source package for
-`b_n = f(A_n)`.  Do not route back to
+V207 adds the variance-ratio bridge
+`durrett2019_theorem_4_5_3_scaled_summable_of_integral_le_variance_ratio`
+and the endpoint
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_variance_ratio_summable`.
+The next theorem-facing target is no longer another scaled-summability wrapper:
+prove the conditional-variance/pull-out comparison and the deterministic
+integral comparison that make the variance-ratio series summable for
+`b_n = f(A_n)`.  Keep reciprocal-transform `MemLp` explicit if needed.  Do not
+route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
 packaging, deterministic Exercise 4.4.11 normalizers, reciprocal

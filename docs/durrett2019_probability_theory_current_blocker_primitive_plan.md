@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V206
+## Live In-Thread Goal Prompt V207
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -92,15 +92,27 @@ reciprocal-predictability wrapper: it is the concrete textbook variance /
 integral estimate that proves the displayed scaled summability for
 `H_m = f(A_m)^{-1}`, plus any needed `MemLp` side condition for that transform.
 
-Next aggressive step: finish Durrett Theorem 4.5.3 source packaging.  Prove the
-textbook variance/integral estimate
-`∑ (A_{n+1}-A_n) / f(A_{n+1})^2 < ∞` on `{A∞ = ∞}` so the V205
-random-normalizer bridge and V206 reciprocal scaled-summability route yield
-`X_n / f(A_n) -> 0`.  Do not route back to stopped running-maximum boundedness,
-stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
-Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
-scaled-summability-to-transform plumbing, Chapter 2.1, or Theorem 2.4.9 unless
-Theorem 4.5.3 exposes a strictly stronger missing primitive.
+V207 moves one step closer to the textbook variance estimate.  The
+variance-ratio bridge
+`durrett2019_theorem_4_5_3_scaled_summable_of_integral_le_variance_ratio`
+proves that a pointwise integral comparison from reciprocal-scaled martingale
+increments to the variance-ratio terms, plus summability of the variance-ratio
+series, supplies the scaled summability consumed by V206.  The endpoint
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_variance_ratio_summable`
+feeds this directly into `X_n / f(A_n) -> 0`.
+
+Next aggressive step: prove the two source estimates feeding V207.  First,
+prove the conditional-variance/pull-out comparison
+`∫ ((f(A_{k+1}))^{-1} * (X_{k+1}-X_k))^2 ≤ ∫ (A_{k+1}-A_k) / f(A_{k+1})^2`.
+Second, prove the deterministic/integral comparison that makes
+`∑ ∫ (A_{k+1}-A_k) / f(A_{k+1})^2` summable from
+`∫_0^∞ f(t)^{-2} dt < ∞` and monotone/divergent `A`.  Keep `MemLp` for the
+reciprocal transform explicit if needed.  Do not route back to stopped
+running-maximum boundedness, stopped predictability, exact Theorem 4.5.2 source
+packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
+predictability/bounds, scaled-summability-to-transform plumbing, Chapter 2.1,
+or Theorem 2.4.9 unless Theorem 4.5.3 exposes a strictly stronger missing
+primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
