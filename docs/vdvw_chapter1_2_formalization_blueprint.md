@@ -3874,6 +3874,18 @@ finite-center Hoeffding tails charged explicitly.  The next blueprint target
 is the actual sign-swapped bad-event mass theorem, or the averaged product-pair
 source theorem that bypasses fixed-original sign-swap transport.
 
+The fixed-original two-tail source also now reaches the outer-probability
+comparison layer through
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_signSwapBad_finiteCenter_failure_tails`
+and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_ae_signSwapBad_finiteCenter_failure_tails`.
+These are source bridges rather than endpoint wrappers: they take mass for
+`VdVWTheorem243CenteredPairSubSignSwapBadEvent` and produce the factor-two
+selected-net outer-probability bound with the explicit two-tail error
+`originalTail sample + ghostTail n`.  The next blueprint target on this lane is
+either the real sign-swapped bad-fiber mass theorem or a two-tail convergence
+handoff for this error shape.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

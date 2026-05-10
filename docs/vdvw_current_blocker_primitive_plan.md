@@ -10292,3 +10292,17 @@ tail.  The remaining frontier is therefore not the finite-center side-condition
 handoff; it is the genuine probability source, namely a displayed-beta lower
 bound for the centered sign-swapped bad event, or an averaged product-pair
 replacement that supplies the same mass without fixed-original transport.
+
+2026-05-10 pair-difference two-tail outer-probability source bridge:
+`Theorem243.lean` now adds
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_signSwapBad_finiteCenter_failure_tails`
+and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_ae_signSwapBad_finiteCenter_failure_tails`.
+These lift the fixed-fiber sign-swapped-bad finite-tail theorem to the
+original-or-ghost selected-net outer-probability comparison, in both pointwise
+and restricted-a.e. source forms.  The charged error is now explicitly
+`originalTail sample + ghostTail n`, i.e. the original fixed-sample
+finite-center Hoeffding tail plus the ghost-sample integrated finite-center
+tail.  The remaining frontier is the actual sign-swapped bad-fiber mass
+source, plus tail-control packaging for this two-tail error when using the
+fixed-original product-fiber route.

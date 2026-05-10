@@ -4776,3 +4776,15 @@ original fixed-sample Hoeffding tail plus the ghost-sample integrated tail.
 The dashboard blocker is consequently the displayed-beta mass source for that
 sign-swapped bad event, or the product-pair averaged replacement, rather than
 another finite-center support adapter.
+
+The same fixed-original source now has pointwise and restricted-a.e.
+outer-probability consumers:
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_signSwapBad_finiteCenter_failure_tails`
+and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_ae_signSwapBad_finiteCenter_failure_tails`.
+These feed the factor-two original-or-ghost selected-net comparison directly
+from sign-swapped bad-fiber mass while preserving the two-tail additive error
+`originalTail sample + ghostTail n`.  The dashboard frontier is now the
+probability source for those sign-swapped bad fibers, or a final two-tail
+vanishing wrapper if this fixed-fiber lane is promoted to a fixed-`M`
+convergence consumer.
