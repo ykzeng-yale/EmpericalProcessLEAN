@@ -15776,6 +15776,174 @@ theorem vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form
   rw [hExp]
 
 /--
+Inverse-square deterministic bound for the displayed finite-center Hoeffding
+failure tail.
+
+The closed form decays like `cardinality / (cardinality + 1)^3`, so it is
+bounded by a constant multiple of `(cardinality + 1)⁻²`.  This is the
+quantitative replacement needed by stronger product-pair finite-center
+failure-tail routes; the preceding one-center limit theorem shows that no
+sample-size-only argument can make the displayed additive tail vanish.
+-/
+theorem
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail_le_const_div_cardinality_succ_sq
+    (cardinality : ℕ) {n : ℕ} {M : ℝ} (hn : 0 < n) (hM_ne : M ≠ 0) :
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail cardinality n M ≤
+      (2 * Real.exp (-3)) / (((cardinality : ℝ) + 1) ^ 2) := by
+  rw [vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form
+    cardinality hn hM_ne]
+  set c : ℝ := (cardinality : ℝ)
+  set x : ℝ := (cardinality : ℝ) + 1
+  have hx_pos : 0 < x := by
+    dsimp [x]
+    positivity
+  have hc_le_x : c ≤ x := by
+    dsimp [c, x]
+    linarith
+  have hexp :
+      Real.exp (-(3 * (1 + Real.log x))) =
+        Real.exp (-3) * (x ^ 3)⁻¹ := by
+    have harg :
+        -(3 * (1 + Real.log x)) = -3 + -(3 * Real.log x) := by
+      ring
+    have hneg : -(3 * Real.log x) = - Real.log (x ^ 3) := by
+      rw [Real.log_pow]
+      ring
+    have hpow_log : Real.exp (- Real.log (x ^ 3)) = (x ^ 3)⁻¹ := by
+      rw [Real.exp_neg, Real.exp_log (pow_pos hx_pos 3)]
+    rw [harg, Real.exp_add, hneg, hpow_log]
+  rw [hexp]
+  have hcore : c * (x ^ 3)⁻¹ ≤ (x ^ 2)⁻¹ := by
+    have hinv_nonneg : 0 ≤ (x ^ 3)⁻¹ :=
+      inv_nonneg.mpr (pow_nonneg hx_pos.le 3)
+    have hmul : c * (x ^ 3)⁻¹ ≤ x * (x ^ 3)⁻¹ :=
+      mul_le_mul_of_nonneg_right hc_le_x hinv_nonneg
+    have hx_ne : x ≠ 0 := ne_of_gt hx_pos
+    have hright : x * (x ^ 3)⁻¹ = (x ^ 2)⁻¹ := by
+      field_simp [hx_ne]
+    simpa [hright] using hmul
+  have hA_nonneg : 0 ≤ 2 * Real.exp (-3) := by
+    positivity
+  have hmul := mul_le_mul_of_nonneg_left hcore hA_nonneg
+  simpa [div_eq_mul_inv, mul_assoc, mul_left_comm, mul_comm] using hmul
+
+/--
+Lintegral form of the inverse-square finite-center failure-tail bound.
+-/
+theorem
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) (cardinality : Ω -> ℕ)
+    {n : ℕ} {M : ℝ} (hn : 0 < n) (hM_ne : M ≠ 0) :
+    (∫⁻ ω, ENNReal.ofReal
+      (vdVWTheorem243FiniteCenterHoeffdingFailureTail (cardinality ω) n M) ∂μ) ≤
+      ∫⁻ ω, ENNReal.ofReal
+        ((2 * Real.exp (-3)) / (((cardinality ω : ℝ) + 1) ^ 2)) ∂μ := by
+  exact lintegral_mono fun ω =>
+    ENNReal.ofReal_le_ofReal
+      (vdVWTheorem243FiniteCenterHoeffdingFailureTail_le_const_div_cardinality_succ_sq
+        (cardinality ω) hn hM_ne)
+
+/--
+Variable-domain pair-sample consumer for the inverse-square failure-tail bound.
+
+This converts convergence of the explicit inverse-square cardinality integrals
+into convergence of the product-pair finite-center failure-tail error used by
+the additive-error Theorem 2.4.3 route.
+-/
+theorem
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail_pair_lintegral_tendsto_zero_of_invSq
+    {Ω : ℕ -> Type u} [∀ n, MeasurableSpace (Ω n)]
+    (μ : ∀ n, Measure (Ω n))
+    (cardinalityLeft cardinalityRight : (n : ℕ) -> Ω n -> ℕ)
+    {M : ℝ} (hM_ne : M ≠ 0)
+    (hinvSq :
+      Tendsto
+        (fun n : ℕ =>
+          (∫⁻ ω : Ω n, ENNReal.ofReal
+            ((2 * Real.exp (-3)) /
+              (((cardinalityLeft n ω : ℝ) + 1) ^ 2)) ∂(μ n)) +
+          (∫⁻ ω : Ω n, ENNReal.ofReal
+            ((2 * Real.exp (-3)) /
+              (((cardinalityRight n ω : ℝ) + 1) ^ 2)) ∂(μ n)))
+        atTop (𝓝 0)) :
+      Tendsto
+        (fun n : ℕ =>
+          (∫⁻ ω : Ω n, ENNReal.ofReal
+            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+              (cardinalityLeft n ω) n M) ∂(μ n)) +
+          (∫⁻ ω : Ω n, ENNReal.ofReal
+            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+              (cardinalityRight n ω) n M) ∂(μ n)))
+        atTop (𝓝 0) := by
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    tendsto_const_nhds hinvSq ?_ ?_
+  · exact Eventually.of_forall fun _ => by simp
+  · filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hn
+    exact add_le_add
+      (vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq
+        (μ n) (cardinalityLeft n) hn hM_ne)
+      (vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq
+        (μ n) (cardinalityRight n) hn hM_ne)
+
+/--
+Selected-cardinality product-pair failure-tail convergence from explicit
+inverse-square cardinality integrals.
+
+The conclusion is intentionally the same shape as the `hfailureTail_tendsto`
+input in the compiled product-pair finite-center failure-tail route.
+-/
+theorem
+    vdVWTheorem243_selectedFailureTail_tendsto_zero_of_invSq_lintegral
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {M : ℝ} (hM_ne : M ≠ 0)
+    (hinvSq :
+      ∀ eta, 0 < eta ->
+        Tendsto
+          (fun n : ℕ =>
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                ((2 * Real.exp (-3)) /
+                  (((selectedCardinality eta n
+                    (fun i : Fin n => (pairSample i).1) n : ℝ) + 1) ^ 2))
+              ∂(vdVWProductMeasure (P.prod P) n)) +
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                ((2 * Real.exp (-3)) /
+                  (((selectedCardinality eta n
+                    (fun i : Fin n => (pairSample i).2) n : ℝ) + 1) ^ 2))
+              ∂(vdVWProductMeasure (P.prod P) n)))
+          atTop (𝓝 0)) :
+      ∀ eta (_heta : 0 < eta),
+        Tendsto
+          (fun n : ℕ =>
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                  (selectedCardinality eta n
+                    (fun i : Fin n => (pairSample i).1) n) n M)
+              ∂(vdVWProductMeasure (P.prod P) n)) +
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                  (selectedCardinality eta n
+                    (fun i : Fin n => (pairSample i).2) n) n M)
+              ∂(vdVWProductMeasure (P.prod P) n)))
+          atTop (𝓝 0) := by
+  intro eta heta
+  exact
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail_pair_lintegral_tendsto_zero_of_invSq
+      (Ω := fun n => SampleAt (Observation × Observation) n)
+      (μ := fun n => vdVWProductMeasure (P.prod P) n)
+      (cardinalityLeft := fun n pairSample =>
+        selectedCardinality eta n (fun i : Fin n => (pairSample i).1) n)
+      (cardinalityRight := fun n pairSample =>
+        selectedCardinality eta n (fun i : Fin n => (pairSample i).2) n)
+      hM_ne (hinvSq eta heta)
+
+/--
 The one-center displayed failure tail is a nonzero constant along positive
 sample sizes.
 

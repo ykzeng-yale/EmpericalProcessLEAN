@@ -343,14 +343,21 @@ The finite-center failure-tail closed form is now compiled through
 `tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ`, plus the
 direct nonconvergence theorem
 `not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ_zero`.
+The quantitative inverse-square tail package is now compiled as
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_le_const_div_cardinality_succ_sq`,
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq`,
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_pair_lintegral_tendsto_zero_of_invSq`,
+and
+`vdVWTheorem243_selectedFailureTail_tendsto_zero_of_invSq_lintegral`.
 These formalize the route warning: the additive Hoeffding failure-tail term at
 the current display scale does not have automatic sample-size decay, and for a
 one-center selected cover it is a positive constant rather than a
 zero-convergent error.  The next blocker is therefore not to force this
-additive error to vanish from bare stochastic entropy; it is to either supply a
-stronger honest tail/UI/cardinality-growth input, adjust the threshold route,
-or return to an expectation/symmetrization comparison that avoids the
-additive-tail obstruction.  The Nat-indexed in-range
+additive error to vanish from bare stochastic entropy; it is now sharpened to
+proving convergence to zero of the explicit inverse-square original/ghost
+selected-cardinality lintegrals, or else supplying a different
+expectation/symmetrization comparison that avoids the additive-tail
+obstruction.  The Nat-indexed in-range
 selected-center selector measurability assumptions remain a separate concrete
 measurability target.
 Use the selected-log mean route only under honest L1/UI/countability

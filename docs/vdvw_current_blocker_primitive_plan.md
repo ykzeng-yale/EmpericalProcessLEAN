@@ -8882,6 +8882,22 @@ and the concrete product-pair finite-center failure-tail route
 The fixed-`M` convergence consumer now accepts the explicit integrated
 original/ghost finite-center failure-tail error directly.
 
+2026-05-10 inverse-square finite-center failure-tail consumer:
+`Theorem243.lean` now proves
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_le_const_div_cardinality_succ_sq`,
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq`,
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_pair_lintegral_tendsto_zero_of_invSq`,
+and
+`vdVWTheorem243_selectedFailureTail_tendsto_zero_of_invSq_lintegral`.
+The displayed finite-center failure tail is now bounded by
+`(2 * exp (-3)) / (cardinality + 1)^2`, and the selected product-pair
+`hfailureTail_tendsto` input can be supplied from convergence to zero of the
+corresponding original/ghost inverse-square selected-cardinality lintegrals.
+This sharpens the additive-error route blocker: the remaining analytic input is
+not the raw Hoeffding failure tail anymore, but an honest proof that those
+inverse-square random selected-cardinality integrals vanish, or a different
+symmetrization/product-fiber route that avoids the additive failure-tail term.
+
 2026-05-09 sign-first selected-center failure-event measurability:
 `Theorem243.lean` now proves the sign-first product-pair wrappers
 `measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt`

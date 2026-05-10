@@ -2446,15 +2446,21 @@ above, so they do not change the theorem-level dashboard counts.
    `vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form`, and
    `tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ`, with
    `not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ_zero`.
+   The quantitative inverse-square consumer package is also compiled as
+   `vdVWTheorem243FiniteCenterHoeffdingFailureTail_le_const_div_cardinality_succ_sq`,
+   `vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq`,
+   `vdVWTheorem243FiniteCenterHoeffdingFailureTail_pair_lintegral_tendsto_zero_of_invSq`,
+   and
+   `vdVWTheorem243_selectedFailureTail_tendsto_zero_of_invSq_lintegral`.
    These prove that the additive Hoeffding failure-tail term at the current
    display scale has no automatic sample-size decay; the one-center case is a
-   positive constant and cannot converge to zero.  The next source route should
-   therefore not try to derive vanishing of this additive error from bare
-   stochastic entropy.  It should either add a stronger honest
-   tail/UI/cardinality-growth input, adjust the finite-center threshold to
-   include a true vanishing-probability penalty, or return to an
-   expectation/symmetrization comparison that avoids this additive-tail
-   obstruction.  The Nat-indexed in-range selected-center selector
+   positive constant and cannot converge to zero.  The additive route can now
+   be fed by an honest proof that the explicit original/ghost inverse-square
+   selected-cardinality lintegrals vanish; this is stronger than bare
+   stochastic entropy.  Otherwise the next source route should adjust the
+   finite-center threshold to include a true vanishing-probability penalty, or
+   return to an expectation/symmetrization comparison that avoids this
+   additive-tail obstruction.  The Nat-indexed in-range selected-center selector
    measurability assumptions remain a separate concrete target.
    The first adapted
    countable empirical-supremum bridge is compiled as
