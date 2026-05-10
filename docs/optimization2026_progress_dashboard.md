@@ -250,6 +250,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   the supplied gradient at the graph point, the selector is differentiable, and
   the vertical stationarity condition holds.  The next exact source step is the
   second-derivative Schur-Hessian identity for the selected value function.
+- Inf-projection second-order Schur-envelope calculus: the newest packet adds
+  `barrierInfProjectionPointFDeriv_apply` and
+  `barrierInfProjectionGrad_hasFDerivAt_schur`.  The projected gradient now has
+  Frechet derivative `barrierInfProjectionSchurHessFrom` whenever the original
+  gradient derivative is the supplied product Hessian and the selector
+  derivative solves `D selector v = -Hyy^{-1} Hyx v`.  The remaining exact
+  source step is to derive or package this implicit derivative equation from
+  the differentiated vertical stationarity condition, then prove the canonical
+  lifted-third oracle is the actual third derivative of the selected value.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

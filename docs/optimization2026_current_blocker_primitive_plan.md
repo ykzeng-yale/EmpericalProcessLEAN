@@ -350,6 +350,16 @@ first-order condition holds, the selected value function has projected gradient
 `barrierInfProjectionGrad`.  The next exact envelope step is the second
 derivative/Schur-Hessian identity; reuse this first-order layer rather than
 re-proving the chain rule or vertical cancellation.
+The second-order Schur-envelope packet adds
+`barrierInfProjectionPointFDeriv_apply` and
+`barrierInfProjectionGrad_hasFDerivAt_schur`.  If the original gradient has
+Frechet derivative `hess` at the selected graph point and the selector
+derivative satisfies the implicit equation
+`D selector v = - Hyy^{-1} Hyx v`, then the projected gradient has derivative
+`barrierInfProjectionSchurHessFrom`.  The next exact envelope step is to obtain
+or package this implicit-selector derivative equation from differentiating the
+vertical first-order condition, then continue to the third-derivative lifted
+oracle identity.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,

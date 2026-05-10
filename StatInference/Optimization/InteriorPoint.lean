@@ -2890,6 +2890,13 @@ noncomputable def barrierInfProjectionPointFDeriv
   withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) +
     (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂)).comp dselector
 
+@[simp] theorem barrierInfProjectionPointFDeriv_apply
+    (dselector : E₁ →L[ℝ] E₂) (v : E₁) :
+    barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector v =
+      WithLp.toLp 2 (v, dselector v) := by
+  simpa [barrierInfProjectionPointFDeriv] using
+    (withLpProdInl_add_inr (E₁ := E₁) (E₂ := E₂) v (dselector v))
+
 /--
 First derivative of the selected graph map used in the inf-projection envelope
 proof.
@@ -3220,6 +3227,86 @@ noncomputable def barrierInfProjectionSchurHessFrom
         barrierInfProjectionBlockXY selector hess x
           (invHyy x (barrierInfProjectionBlockYX selector hess x v)) := by
   rfl
+
+/--
+Second-order envelope identity for Chewi Proposition 13.11(4).  If the
+selected graph has derivative `(v, D selector v)`, the original gradient has
+derivative `hess` at the graph point, and the selector derivative solves the
+implicit vertical equation `D selector = -Hyy^{-1} Hyx`, then the projected
+gradient has derivative equal to the Schur-complement Hessian.
+-/
+theorem barrierInfProjectionGrad_hasFDerivAt_schur
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂} {x : E₁}
+    (hgrad :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x)
+    (hdselector : ∀ v : E₁,
+      dselector v =
+        -invHyy x (barrierInfProjectionBlockYX selector hess x v)) :
+    HasFDerivAt (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy x) x := by
+  have hpoint :=
+    barrierInfProjectionPoint_hasFDerivAt
+      (E₁ := E₁) (E₂ := E₂) hselector
+  have hcomp :
+      HasFDerivAt (fun y => grad (barrierInfProjectionPoint selector y))
+        ((hess (barrierInfProjectionPoint selector x)).comp
+          (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector)) x :=
+    hgrad.comp x hpoint
+  have hfst :
+      HasFDerivAt (barrierInfProjectionGrad selector grad)
+        (withLpProdFstCLM.comp
+          ((hess (barrierInfProjectionPoint selector x)).comp
+            (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector))) x := by
+    simpa [barrierInfProjectionGrad] using
+      (withLpProdFstCLM (E₁ := E₁) (E₂ := E₂)).hasFDerivAt.comp x hcomp
+  have hclm :
+      withLpProdFstCLM.comp
+          ((hess (barrierInfProjectionPoint selector x)).comp
+            (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector)) =
+        barrierInfProjectionSchurHessFrom selector hess invHyy x := by
+    ext v
+    let z := barrierInfProjectionPoint selector x
+    let a := invHyy x (barrierInfProjectionBlockYX selector hess x v)
+    calc
+      (withLpProdFstCLM.comp
+            ((hess z).comp
+              (barrierInfProjectionPointFDeriv (E₁ := E₁) (E₂ := E₂) dselector))) v
+          = (hess z (WithLp.toLp 2 (v, dselector v))).fst := by
+              simp [z]
+      _ = (hess z (WithLp.toLp 2 (v, -a))).fst := by
+              simp [a, z, hdselector v]
+      _ = (hess z
+              (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v +
+                withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) (-a))).fst := by
+              rw [withLpProdInl_add_inr]
+      _ = (hess z (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).fst +
+            (hess z (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) (-a))).fst := by
+              simp [map_add]
+      _ = (hess z (withLpProdInlCLM (E₁ := E₁) (E₂ := E₂) v)).fst -
+            (hess z (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) a)).fst := by
+              have hneg :
+                  (hess z (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) (-a))).fst =
+                    -(hess z (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) a)).fst := by
+                have hinr_neg :
+                    withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) (-a) =
+                      -withLpProdInrCLM (E₁ := E₁) (E₂ := E₂) a :=
+                  (withLpProdInrCLM (E₁ := E₁) (E₂ := E₂)).map_neg a
+                rw [hinr_neg, map_neg]
+                rfl
+              rw [hneg]
+              abel
+      _ = barrierInfProjectionBlockXX selector hess x v -
+            barrierInfProjectionBlockXY selector hess x a := by
+              simp [barrierInfProjectionBlockXX, barrierInfProjectionBlockXY, a, z]
+      _ = barrierInfProjectionSchurHessFrom selector hess invHyy x v := by
+              simp [barrierInfProjectionSchurHessFrom, a]
+  exact hfst.congr_fderiv hclm
 
 /--
 Projected inverse-Hessian candidate obtained by applying the original full
