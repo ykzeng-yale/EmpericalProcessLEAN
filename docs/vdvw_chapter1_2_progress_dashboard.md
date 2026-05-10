@@ -4325,3 +4325,13 @@ entropy condition while its inverse-square finite-center error remains a
 positive constant under every sample law.  The additive failure-tail lane
 therefore needs explicit lower-growth/tail/UI structure, not another entropy
 wrapper.
+
+The finite-class in-mean upgrade now has a no-global-countability consumer:
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_endpointL1_no_global_countable`
+and
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable_of_endpointL1`.
+They use finite-sum domination of the centered supremum by the absolute
+centered empirical averages and require only fixed-endpoint `L1(P^n)`
+convergence for each member of the finite class.  Remaining finite-class
+work: prove that endpoint `L1` convergence from mathlib strong-law/Lp
+machinery or an equivalent finite-product transport theorem.

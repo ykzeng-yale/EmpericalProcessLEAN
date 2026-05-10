@@ -9712,3 +9712,17 @@ a positive constant under every sample law.  This pins the source gap more
 sharply: bare stochastic entropy cannot supply the required inverse-square
 tail control; a future proof needs explicit lower-growth/tail/UI structure or
 the direct product-fiber/Chebyshev comparison.
+
+2026-05-10 finite-class in-mean no-global-countability consumer:
+`Theorem243.lean` now proves
+`vdVWWeightedSampleSum_const_inv_eq_empiricalAverage`,
+`integrable_abs_empiricalAverage_sub_integral_of_integrable`,
+`vdVWWeightedClassSupremum_centered_const_inv_le_sum_abs_empiricalAverage_sub_integral_of_finite`,
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_endpointL1_no_global_countable`,
+and the package
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable_of_endpointL1`.
+This removes global `Countable Index` from the finite-class in-mean assembly
+once fixed-endpoint finite-product `L1(P^n)` convergence is supplied for each
+class member.  The finite-class blocker is now sharply localized to that
+single-endpoint `L1` primitive; the finite-sum domination, integrability, and
+book-style packaging are compiled.
