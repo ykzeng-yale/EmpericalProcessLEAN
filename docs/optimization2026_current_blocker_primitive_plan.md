@@ -399,6 +399,18 @@ left inverse is derived internally.  The remaining exact inf-projection step is
 therefore the actual third-derivative/lifted-third identity and concrete
 construction of the square-root envelope model.
 
+The Schur-third bridge packet adds
+`BarrierInfProjectionSchurHessDerivativeOn`,
+`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate`,
+and
+`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex`.
+It isolates the real remaining third-derivative blocker as the identity
+`inner v ((D H_schur[x] u) v) = liftedThird x u v`; once supplied, the
+existing Chewi Lemma 13.6 mixed-third segment certificate machinery applies to
+the projected envelope.  Future work should prove this derivative certificate
+from the concrete selector/Schur-Hessian algebra rather than rebuilding the
+segment Gronwall layer.
+
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,
 Definition 13.9, and the positive-orthant barrier packet are now substrate for

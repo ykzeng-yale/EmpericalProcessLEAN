@@ -294,6 +294,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   a right inverse, so the next exact source work should focus on the actual
   third-derivative/lifted-third identity and concrete square-root envelope
   model construction.
+- Inf-projection Schur-third derivative bridge: the newest packet adds
+  `BarrierInfProjectionSchurHessDerivativeOn`,
+  `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate`,
+  and
+  `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex`.
+  Search-first reuse: the bridge reuses the already compiled canonical
+  lifted-third self-concordance theorem and the generic
+  `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`
+  constructors.  The exact remaining proof is now sharply isolated to proving
+  the projected Schur Hessian derivative identity from selector/Schur algebra.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

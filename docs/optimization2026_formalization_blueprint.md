@@ -224,6 +224,14 @@ their finite-dimensional `Hyy` right-inverse variants.  This is the reusable
 entry point for proving the actual third derivative of the selected value:
 start from this certificate rather than recombining the first- and
 second-order envelope identities.
+The actual-third route is further narrowed by
+`BarrierInfProjectionSchurHessDerivativeOn` and the projected Hessian-segment
+bridges
+`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate`
+/
+`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex`.
+They reduce the remaining analytic work to the Schur Hessian derivative
+identity and then reuse the generic mixed-third segment machinery.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers
