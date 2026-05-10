@@ -3075,6 +3075,14 @@ is therefore reduced to one theorem-facing probability statement: the
 canonical `VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent` has
 the displayed beta-large fibers over the centered bad event.
 
+That canonical displayed-beta source now feeds the fixed-`M` stochastic
+entropy endpoint through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel`.
+The endpoint uses the entropy hypothesis at radius `eta / 2` and proves the
+selected-cardinality comparison internally.  Closing the canonical
+product-fiber lower bound would therefore close this fixed-`M` theorem-facing
+route without the false additive finite-center failure-tail assumption.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
