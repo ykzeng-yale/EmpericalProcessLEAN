@@ -10222,3 +10222,13 @@ that error over the centered-bad left event, with the usual original-or-ghost
 factor two.  This does not prove the hard product-fiber lower bound, but it
 keeps finite-center failure costs explicit instead of converting them into
 false a.s. support assumptions.
+
+2026-05-10 fixed-`M` a.e. product-fiber samplewise-error source consumer:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_add_error`.
+It packages the a.e. original-or-ghost product-fiber source with a samplewise
+additive error into the existing Chebyshev-beta/penalty stochastic-entropy
+consumer.  A future source proof now only needs to provide the measurable
+joint event, the a.e. fiber lower bound up to `errorSample`, and a deterministic
+vanishing bound for `∫⁻ sample in centeredBad, errorSample sample`; the
+fixed-`M` convergence handoff is compiled.

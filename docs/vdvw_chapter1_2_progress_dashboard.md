@@ -4721,3 +4721,13 @@ as a samplewise error term rather than as an a.s. support hypothesis.  The
 dashboard frontier remains the actual product-fiber/Chebyshev lower bound or
 tail-control theorem, but that proof can now pay the integrated error over the
 centered-bad left event directly.
+
+The a.e. product-fiber samplewise-error source now feeds the fixed-`M`
+stochastic-entropy convergence consumer directly:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_add_error`.
+This theorem composes the measurable original/ghost/Rademacher joint event,
+the a.e. displayed-beta fiber lower bound up to `errorSample`, and a
+deterministic vanishing integrated-error bound with the Chebyshev penalty
+machinery.  The frontier is therefore no longer a fixed-`M` wrapper; it is the
+honest product-fiber lower bound or tail-control theorem that supplies those
+source hypotheses.

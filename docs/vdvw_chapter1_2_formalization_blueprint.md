@@ -3814,6 +3814,16 @@ Hoeffding side conditions hold almost surely.  The next theorem-facing source
 work is still the product-fiber/Chebyshev lower bound or an honest tail-control
 input for that integrated error.
 
+The same samplewise-error product-fiber surface now has a fixed-`M`
+stochastic-entropy consumer:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_add_error`.
+It takes a measurable original/ghost/Rademacher joint event, an a.e.
+displayed-Chebyshev beta fiber lower bound with `errorSample`, and a vanishing
+deterministic bound on the centered-bad integral of that error, then composes
+the existing Chebyshev penalty and log-cardinality machinery.  This closes the
+fixed-`M` adapter gap for that route; the remaining source work is the actual
+fiber lower bound or tail-control proof.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

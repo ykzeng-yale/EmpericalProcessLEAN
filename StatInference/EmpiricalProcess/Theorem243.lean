@@ -43284,6 +43284,265 @@ theorem
         hjoint_meas hfiber hjoint_subset
 
 /--
+Fixed-`M` convergence from a.e. original-or-ghost product fibers with a
+samplewise additive error.
+
+This is the theorem-facing source adapter for finite-center failure-tail
+routes: a source proof supplies, for each fixed radius and threshold, a
+measurable original/ghost/Rademacher joint event, an a.e. displayed-Chebyshev
+beta lower bound up to a samplewise error, and a deterministic vanishing bound
+on the integral of that error over the centered bad original samples.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_ghost_product_fiber_lower_bound_or_selectedNet_add_error
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ}
+    {error : ℝ -> ℝ -> ℕ -> ℝ≥0∞}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M) (hC_pos : 0 < C)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n)
+    (herror :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        Tendsto (fun n : ℕ => error eta epsilon n) atTop (𝓝 0))
+    (hproduct :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∃ joint : Set (SampleAt Observation n ×
+              (SampleAt Observation n × SampleAt ℝ n)),
+          ∃ errorSample : SampleAt Observation n -> ℝ≥0∞,
+            MeasurableSet joint ∧
+              AEMeasurable errorSample
+                ((vdVWProductMeasure P n).restrict
+                  {sample : SampleAt Observation n |
+                    epsilon <
+                      dist
+                        (vdVWWeightedClassSupremum indexClass
+                          (fun index : Index => fun observation : Observation =>
+                            vdVWTruncatedClassFun classFun envelope M index observation -
+                              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                        (0 : ℝ)}) ∧
+              (∀ᵐ sample ∂((vdVWProductMeasure P n).restrict
+                  ({sample : SampleAt Observation n |
+                    epsilon <
+                      dist
+                        (vdVWWeightedClassSupremum indexClass
+                          (fun index : Index => fun observation : Observation =>
+                            vdVWTruncatedClassFun classFun envelope M index observation -
+                              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                        (0 : ℝ)})),
+                  ENNReal.ofReal
+                      (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                    ((vdVWProductMeasure P n).prod
+                        (vdVWProductMeasure vdVWRademacherLaw n))
+                      (Prod.mk sample ⁻¹' joint) + errorSample sample) ∧
+              (∫⁻ sample in
+                  {sample : SampleAt Observation n |
+                    epsilon <
+                      dist
+                        (vdVWWeightedClassSupremum indexClass
+                          (fun index : Index => fun observation : Observation =>
+                            vdVWTruncatedClassFun classFun envelope M index observation -
+                              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                        (0 : ℝ)},
+                errorSample sample ∂(vdVWProductMeasure P n)) ≤
+                error eta epsilon n ∧
+              (∀ z : SampleAt Observation n ×
+                  (SampleAt Observation n × SampleAt ℝ n),
+                z ∈ joint ->
+                  z.1 ∈
+                    {sample : SampleAt Observation n |
+                      epsilon <
+                        dist
+                          (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                              (selectedCardinality eta n sample n) n M + eta)
+                          (0 : ℝ)} ∨
+                  z.2.1 ∈
+                    {sample : SampleAt Observation n |
+                      epsilon <
+                        dist
+                          (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                              (selectedCardinality eta n sample n) n M + eta)
+                          (0 : ℝ)})) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  let penalty : ℝ -> ℕ -> ℝ :=
+    fun epsilon n => (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)
+  let beta : ℝ -> ℕ -> ℝ≥0∞ :=
+    fun epsilon n => ENNReal.ofReal (1 - penalty epsilon n)
+  have hpenalty_nonneg :
+      ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop, 0 ≤ penalty epsilon n := by
+    intro epsilon hepsilon
+    exact Eventually.of_forall fun n => by
+      dsimp [penalty]
+      positivity
+  have hpenalty_le :
+      ∀ epsilon, 0 < epsilon ->
+        ∃ Cpenalty : ℝ, 0 ≤ Cpenalty ∧
+          ∀ᶠ n in atTop,
+            penalty epsilon n ≤ Cpenalty / ((n : ℝ) + 1) := by
+    intro epsilon hepsilon
+    refine ⟨(16 * M ^ 2) / epsilon ^ 2, by positivity, ?_⟩
+    exact Eventually.of_forall fun n => by
+      dsimp [penalty]
+      have hn_pos : 0 < (n : ℝ) + 1 := by positivity
+      have hn_ne : (n : ℝ) + 1 ≠ 0 := ne_of_gt hn_pos
+      have hepsilon_ne : epsilon ≠ 0 := ne_of_gt hepsilon
+      refine le_of_eq ?_
+      field_simp [hn_ne, hepsilon_ne]
+  have hbeta_eq :
+      ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          beta epsilon n = ENNReal.ofReal (1 - penalty epsilon n) := by
+    intro epsilon hepsilon
+    exact Eventually.of_forall fun n => rfl
+  have hbeta_selected :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          beta epsilon n *
+            VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)}
+            ≤
+          (2 : ℝ≥0∞) *
+            VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                        (selectedCardinality eta n sample n) n M + eta)
+                    (0 : ℝ)} +
+            error eta epsilon n := by
+    intro eta heta epsilon hepsilon
+    filter_upwards [hproduct eta heta epsilon hepsilon] with n hproduct_n
+    rcases hproduct_n with
+      ⟨joint, errorSample, hjoint_meas, herrorSample_aemeas, hfiber,
+        herror_bound, hjoint_subset⟩
+    let left : Set (SampleAt Observation n) :=
+      {sample : SampleAt Observation n |
+        epsilon <
+          dist
+            (vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+            (0 : ℝ)}
+    let right : Set (SampleAt Observation n) :=
+      {sample : SampleAt Observation n |
+        epsilon <
+          dist
+            (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                (selectedCardinality eta n sample n) n M + eta)
+            (0 : ℝ)}
+    have herrorSample_aemeas_left :
+        AEMeasurable errorSample ((vdVWProductMeasure P n).restrict left) := by
+      simpa [left] using herrorSample_aemeas
+    have hfiber_beta :
+        ∀ᵐ sample ∂((vdVWProductMeasure P n).restrict left),
+          beta epsilon n ≤
+            ((vdVWProductMeasure P n).prod
+                (vdVWProductMeasure vdVWRademacherLaw n))
+              (Prod.mk sample ⁻¹' joint) + errorSample sample := by
+      simpa [left, beta, penalty] using hfiber
+    have herror_bound_left :
+        (∫⁻ sample in left, errorSample sample ∂(vdVWProductMeasure P n)) ≤
+          error eta epsilon n := by
+      simpa [left] using herror_bound
+    have hjoint_subset_right :
+        ∀ z : SampleAt Observation n × (SampleAt Observation n × SampleAt ℝ n),
+          z ∈ joint -> z.1 ∈ right ∨ z.2.1 ∈ right := by
+      simpa [right] using hjoint_subset
+    have hraw :
+        beta epsilon n * VdVWOuterProbability (vdVWProductMeasure P n) left ≤
+          (2 : ℝ≥0∞) *
+              VdVWOuterProbability (vdVWProductMeasure P n) right +
+            (∫⁻ sample in left, errorSample sample ∂(vdVWProductMeasure P n)) :=
+      VdVWOuterProbability_mul_left_le_two_mul_of_ae_product_fiber_lower_bound_or_ghost_add_error
+        (μ := vdVWProductMeasure P n)
+        (ν := vdVWProductMeasure vdVWRademacherLaw n)
+        (left := left) (right := right) (joint := joint)
+        (beta := beta epsilon n) (error := errorSample)
+        hjoint_meas herrorSample_aemeas_left hfiber_beta hjoint_subset_right
+    calc
+      beta epsilon n *
+          VdVWOuterProbability (vdVWProductMeasure P n)
+            {sample : SampleAt Observation n |
+              epsilon <
+                dist
+                  (vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      vdVWTruncatedClassFun classFun envelope M index observation -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                  (0 : ℝ)}
+          ≤
+        (2 : ℝ≥0∞) *
+            VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                        (selectedCardinality eta n sample n) n M + eta)
+                    (0 : ℝ)} +
+          (∫⁻ sample in left, errorSample sample ∂(vdVWProductMeasure P n)) := by
+            simpa [left, right] using hraw
+      _ ≤
+        (2 : ℝ≥0∞) *
+            VdVWOuterProbability (vdVWProductMeasure P n)
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                        (selectedCardinality eta n sample n) n M + eta)
+                    (0 : ℝ)} +
+          error eta epsilon n :=
+            add_le_add le_rfl herror_bound_left
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_outerProbability_eventualBeta_of_chebyshevPenalty_invNat_bound_scaledSelectedFiniteNetHoeffdingUpper_add_error
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := C) (A := 2)
+      (beta := beta) (penalty := penalty) (error := error)
+      (selectedCardinality := selectedCardinality) (cardinality := cardinality)
+      (by norm_num) hM_pos hC_pos hlog hselected_le
+      hpenalty_nonneg hpenalty_le hbeta_eq herror hbeta_selected
+
+/--
 Deterministic selected finite-net bad-event handoff.
 
 If a Rademacher weighted supremum is already in the scaled bad event and the
