@@ -3303,6 +3303,16 @@ These make the failed shortcut reusable in Lean: a deterministic sign-section
 proof cannot be promoted to the displayed-beta comparison by claiming the
 displayed beta is eventually bounded by `(1 / 2)^n`.
 
+2026-05-10 selected half-radius a.e. domination adapter:
+The fixed-`M` source route now also has the canonical selected-cover adapter
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_selected_truncated_halfRadius_eventualAe_scaledFiniteNetHoeffdingUpper`.
+Use this before adding new endpoint wrappers: it lets the probability side
+target the selected least covering number at radius `eta / 2`, while the proof
+itself handles selected-cardinality monotonicity and the corresponding entropy
+radius change.  The next aggressive theorem-facing item remains the actual
+eventual a.e. scaled domination for that selected cardinality, or an equivalent
+displayed-beta/product-fiber or averaged sign/ghost source theorem.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

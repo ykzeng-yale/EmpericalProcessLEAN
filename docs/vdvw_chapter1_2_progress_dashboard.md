@@ -4219,3 +4219,13 @@ endpoints:
 `vdVW1111_signedBoundedContinuousVaryingDomains_comp_continuous`.  These reuse
 pinned mathlib continuous mapping and the local signed-outer expectation layer;
 the full varying-map/nonmeasurable VdV&W theorem remains separate.
+
+2026-05-10 selected half-radius a.e. finite-net source bridge:
+`Theorem243.lean` now compiles
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_selected_truncated_halfRadius_eventualAe_scaledFiniteNetHoeffdingUpper`.
+This is a source-interface improvement for Theorem 2.4.3: a future
+ghost/Rademacher proof may state its a.e. scaled finite-net domination directly
+for the canonical selected least cardinality at radius `eta / 2`; the theorem
+then discharges the selected-cardinality comparison and stochastic entropy
+radius change.  The remaining open work is still the probability proof of that
+domination, not another endpoint assembly step.

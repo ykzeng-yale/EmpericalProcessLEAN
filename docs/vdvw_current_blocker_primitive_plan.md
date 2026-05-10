@@ -9518,3 +9518,16 @@ machinery is now compiled and reusable.  The active 2.4.3 blocker remains the
 canonical displayed-beta/product-fiber lower bound, an honest averaged
 sign/ghost source theorem, or an explicit stronger tail/UI/cardinality
 assumption package.
+
+2026-05-10 selected half-radius a.e. domination bridge:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_selected_truncated_halfRadius_eventualAe_scaledFiniteNetHoeffdingUpper`.
+This specializes the source-facing eventual-a.e. scaled finite-net domination
+consumer to the canonical selected truncated positive-radius covering number at
+radius `eta / 2`.  The theorem internalizes the radius change, the comparison
+between the selected least cover cardinality and the external stochastic
+entropy cardinality, and the `eta / 2` log-cardinality input.  The live
+probability target is therefore sharper: prove the actual eventual a.e.
+domination for this selected half-radius cardinality, or supply the equivalent
+displayed-beta/product-fiber or honest averaged sign/ghost source theorem.  No
+fixed-sign deterministic shortcut is reopened.
