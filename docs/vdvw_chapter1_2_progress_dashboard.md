@@ -4832,3 +4832,15 @@ lower-growth packaging:
 This supports callers that already have the lower bound over
 `P^n.restrict centeredBad` and only need to replace the inverse-square
 lintegral by selected-cardinality growth.
+
+The honest product-pair lower-growth branch now accepts the natural
+single-sample a.e. lower-growth source shape.  The new fixed-`M` wrapper
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge`
+uses the original/ghost projection measure-preserving lemmas to convert
+eventual `P^n`-a.e. growth of the canonical selected cardinality into the two
+product-pair coordinate hypotheses.  Its untruncated companion
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge`
+feeds the same projected source through the large-`M` envelope-tail handoff.
+The product-pair lower-growth burden is therefore now a single ordinary
+sample-law a.e. structural lower-growth theorem, not separate original and
+ghost product-pair lower bounds.

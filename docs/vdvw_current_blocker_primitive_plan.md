@@ -10370,3 +10370,16 @@ This is the restricted-measure companion to the base-a.e. lower-growth theorem:
 when the sign-swapped bad-fiber beta source is already stated on
 `P^n.restrict centeredBad`, deterministic selected-cardinality lower growth
 supplies the two-tail finite-center error control directly.
+
+2026-05-10 product-pair single-sample a.e. lower-growth lift:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge`.
+These wrappers use
+`measurePreserving_vdVWProductMeasure_prod_to_original` and
+`measurePreserving_vdVWProductMeasure_prod_to_ghost` to lift a single
+eventual `P^n`-a.e. lower-growth hypothesis for the canonical selected
+cardinality to both product-pair projections.  The remaining product-pair
+lower-growth source task is therefore one ordinary sample-law structural
+theorem, not duplicated original/ghost product-pair bookkeeping.

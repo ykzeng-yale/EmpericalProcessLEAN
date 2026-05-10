@@ -216,6 +216,14 @@ entropy, selected empirical covers, ghost samples, and Rademacher
 symmetrization without adding measurability assumptions that the book does not
 make.
 
+The product-pair inverse-square lower-growth branch has also been sharpened:
+ordinary sample-law a.e. selected-cardinality growth now projects to both
+product-pair coordinates through the compiled original/ghost
+measure-preserving maps.  Thus the remaining lower-growth source theorem, if
+this branch is used, can be stated once under `P^n`; the harder global blocker
+is still either that structural lower-growth theorem or a direct
+product-fiber/Chebyshev source comparison that avoids inverse-square tails.
+
 The displayed-beta selected-cover lane now has a localized-countability
 measurable-cover discharge:
 `VdVWMeasurableCover.truncated_rademacher_sign_of_countable` supplies the
