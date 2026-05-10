@@ -107,7 +107,9 @@ V193 discharges the large-jump side from Durrett's real-tail assumption
 derive from Lemma 2.2.13.  V194 registers Lemma 2.2.13 in mathlib's `lintegral`
 layer-cake form and adds a source-facing second-bound consumer, so a verified
 vanishing upper bound for `E[bar X_{n,0}^2] / n` now feeds the final
-Theorem 2.2.12 display directly.  New V188-V194 declarations are
+Theorem 2.2.12 display directly.  V195 proves the tail-average/Cesaro bridge
+from Durrett's real-tail source assumption to
+`(1/n) * ∫_0^n 2*y*P(|X_0|>y) dy -> 0`.  New V188-V195 declarations are
 `durrett2019_theorem_2_2_11_measurable_truncationMap`,
 `durrett2019_theorem_2_2_11_measurable_truncated`,
 `durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound`,
@@ -143,10 +145,13 @@ and
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_single_second`,
 `durrett2019_lemma_2_2_13_lintegral_rpow_tail_lt`,
 `durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_eventual_bound`, and
-`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_second_bound`.
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_second_bound`,
+`durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_bounded_tendsto_zero`,
+and
+`durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail`.
 Continue with the remaining Theorem 2.2.12 support: prove the actual
-tail-integral upper bound and the Cesaro/tail-average convergence from
-Durrett's `x * P(|X_1| > x) -> 0` hypothesis.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar
+truncated-square upper bound into the compiled tail-integral average, including
+local integrability/measurability handoffs for the clipped tail profile.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar
 plumbing, 2.2.6, or 2.4.9.
 
 For each cycle, route from:

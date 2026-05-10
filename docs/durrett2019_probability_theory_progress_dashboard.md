@@ -146,15 +146,19 @@ V194 adds the first Lemma 2.2.13 / second-bound consumer layer:
 `durrett2019_lemma_2_2_13_lintegral_rpow_tail_lt`,
 `durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_eventual_bound`, and
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_second_bound`.
-The active numeric frontier is now sharply the actual textbook proof of a
-vanishing upper bound for `E[bar X_{n,0}^2] / n`.
-The next active target is the remaining Theorem 2.2.12 support: connect the
-truncated square moment to the tail integral
-`(1 / n) * ∫_0^n 2*y*P(|X_0|>y) dy` and prove that average tends to zero from
-Durrett's `x * P(|X_1| > x) -> 0` assumption.  Do not route future cycles back to
-Chapter 4.5.2 or solved 2.1.10 partial-sum, 2.1.13 product-consumer, 2.2.1
-variance-sum, 2.2.3, 2.2.6, 2.4.9, 2.1.12, 2.1.15, or 2.1.16 plumbing unless
-the user explicitly pivots.
+V195 adds the tail-average/Cesaro bridge:
+`durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_bounded_tendsto_zero`
+and
+`durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail`.
+The active numeric frontier is now sharply the actual textbook upper bound
+from the truncated square moment to the compiled tail integral average
+`(1 / n) * ∫_0^n 2*y*P(|X_0|>y) dy`.  The remaining work is the
+local-integrability/measurability handoff for the clipped tail profile and the
+set-integral comparison feeding
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_second_bound`.
+Do not route future cycles back to Chapter 4.5.2 or solved 2.1.10 partial-sum,
+2.1.13 product-consumer, 2.2.1 variance-sum, 2.2.3, 2.2.6, 2.4.9, 2.1.12,
+2.1.15, or 2.1.16 plumbing unless the user explicitly pivots.
 The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,

@@ -2900,6 +2900,220 @@ theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncated
       (P := P) (X := X) hsecond_bound hB)
     hX_indep hX_ident hX_meas
 
+/--
+Durrett 2019, Theorem 2.2.12 support: deterministic integral averages of a
+bounded nonnegative tail function vanish when the tail function tends to zero.
+
+This packages the textbook step
+`(1 / n) * ∫_0^n g(y) dy -> 0` for bounded `g >= 0` with `g(y) -> 0`.
+The remaining source-specific task is to instantiate
+`g y = 2 * y * P(|X_0| > y)` and prove the truncated-square upper bound.
+-/
+theorem durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_bounded_tendsto_zero
+    {g : ℝ -> ℝ}
+    (hg_int : ∀ a b : ℝ, IntegrableOn g (Set.Ioc a b) volume)
+    (hg_nonneg : ∀ y : ℝ, 0 ≤ g y)
+    (hg_bound : ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ, g y ≤ C)
+    (hg_tendsto : Tendsto g atTop (𝓝 (0 : ℝ))) :
+    Tendsto
+      (fun n : ℕ => (∫ y in Set.Ioc (0 : ℝ) (n : ℝ), g y) / (n : ℝ))
+      atTop (𝓝 (0 : ℝ)) := by
+  rcases hg_bound with ⟨C, hC_nonneg, hC_bound⟩
+  rw [tendsto_order]
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun n => by
+      have hintegral_nonneg :
+          0 ≤ ∫ y in Set.Ioc (0 : ℝ) (n : ℝ), g y := by
+        exact integral_nonneg fun y => hg_nonneg y
+      have hdiv_nonneg :
+          0 ≤ (∫ y in Set.Ioc (0 : ℝ) (n : ℝ), g y) / (n : ℝ) := by
+        exact div_nonneg hintegral_nonneg (by positivity)
+      exact lt_of_lt_of_le ha hdiv_nonneg
+  · intro a ha
+    set ε : ℝ := a / 2 with hε_def
+    have hε_pos : 0 < ε := by
+      rw [hε_def]
+      linarith
+    have htail_event : ∀ᶠ y : ℝ in atTop, g y < ε :=
+      hg_tendsto.eventually (eventually_lt_nhds hε_pos)
+    rcases eventually_atTop.1 htail_event with ⟨R₀, hR₀⟩
+    let R : ℝ := max 0 R₀
+    have hR_nonneg : 0 ≤ R := le_max_left 0 R₀
+    have hR₀_le_R : R₀ ≤ R := le_max_right 0 R₀
+    have htail_small : ∀ y : ℝ, R ≤ y -> g y ≤ ε := by
+      intro y hy
+      exact le_of_lt (hR₀ y (hR₀_le_R.trans hy))
+    have hprefix_tend :
+        Tendsto (fun n : ℕ => C * R / (n : ℝ)) atTop (𝓝 (0 : ℝ)) := by
+      exact tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
+    have hupper_event :
+        ∀ᶠ n : ℕ in atTop, C * R / (n : ℝ) + ε < a := by
+      have hupper_tend :
+          Tendsto (fun n : ℕ => C * R / (n : ℝ) + ε)
+            atTop (𝓝 (0 + ε)) :=
+        hprefix_tend.add tendsto_const_nhds
+      exact hupper_tend.eventually (eventually_lt_nhds (by linarith))
+    have hn_ge_R :
+        ∀ᶠ n : ℕ in atTop, R ≤ (n : ℝ) :=
+      tendsto_natCast_atTop_atTop.eventually (eventually_ge_atTop R)
+    have hn_ge_one :
+        ∀ᶠ n : ℕ in atTop, (1 : ℝ) ≤ (n : ℝ) :=
+      tendsto_natCast_atTop_atTop.eventually (eventually_ge_atTop (1 : ℝ))
+    filter_upwards [hupper_event, hn_ge_R, hn_ge_one] with n hupper hnR hn1
+    have hn_pos : 0 < (n : ℝ) := lt_of_lt_of_le zero_lt_one hn1
+    have hsplit :
+        (∫ y in Set.Ioc (0 : ℝ) (n : ℝ), g y) =
+          (∫ y in Set.Ioc (0 : ℝ) R, g y) +
+            ∫ y in Set.Ioc R (n : ℝ), g y := by
+      have h :=
+        setIntegral_union (μ := volume) (f := g)
+          (s := Set.Ioc (0 : ℝ) R) (t := Set.Ioc R (n : ℝ))
+          (Set.Ioc_disjoint_Ioc_of_le le_rfl) measurableSet_Ioc
+          (hg_int 0 R) (hg_int R (n : ℝ))
+      rwa [Set.Ioc_union_Ioc_eq_Ioc hR_nonneg hnR] at h
+    have hleft_le : (∫ y in Set.Ioc (0 : ℝ) R, g y) ≤ C * R := by
+      calc
+        (∫ y in Set.Ioc (0 : ℝ) R, g y)
+            ≤ ∫ y in Set.Ioc (0 : ℝ) R, (fun _ : ℝ => C) y := by
+              refine setIntegral_mono_on (hg_int 0 R)
+                (integrableOn_const measure_Ioc_lt_top.ne) measurableSet_Ioc ?_
+              intro y _hy
+              exact hC_bound y
+        _ = C * R := by
+              rw [setIntegral_const, smul_eq_mul]
+              rw [Real.volume_real_Ioc_of_le hR_nonneg]
+              ring
+    have hright_le : (∫ y in Set.Ioc R (n : ℝ), g y) ≤ ε * (n : ℝ) := by
+      calc
+        (∫ y in Set.Ioc R (n : ℝ), g y)
+            ≤ ∫ y in Set.Ioc R (n : ℝ), (fun _ : ℝ => ε) y := by
+              refine setIntegral_mono_on (hg_int R (n : ℝ))
+                (integrableOn_const measure_Ioc_lt_top.ne) measurableSet_Ioc ?_
+              intro y hy
+              exact htail_small y (le_of_lt hy.1)
+        _ = ((n : ℝ) - R) * ε := by
+              rw [setIntegral_const, smul_eq_mul]
+              rw [Real.volume_real_Ioc_of_le hnR]
+        _ ≤ ε * (n : ℝ) := by
+              nlinarith [hR_nonneg, hε_pos.le]
+    have htotal_le :
+        (∫ y in Set.Ioc (0 : ℝ) (n : ℝ), g y) ≤
+          C * R + ε * (n : ℝ) := by
+      rw [hsplit]
+      exact add_le_add hleft_le hright_le
+    have hdiv_le :
+        (∫ y in Set.Ioc (0 : ℝ) (n : ℝ), g y) / (n : ℝ) ≤
+          C * R / (n : ℝ) + ε := by
+      calc
+        (∫ y in Set.Ioc (0 : ℝ) (n : ℝ), g y) / (n : ℝ)
+            ≤ (C * R + ε * (n : ℝ)) / (n : ℝ) := by
+              exact div_le_div_of_nonneg_right htotal_le hn_pos.le
+        _ = C * R / (n : ℝ) + ε := by
+              field_simp [hn_pos.ne']
+    exact lt_of_le_of_lt hdiv_le hupper
+
+/--
+Durrett 2019, Theorem 2.2.12 support: Durrett's real-tail hypothesis makes
+the textbook tail-integral average vanish.
+
+The function is clipped to zero on the negative half-line for the deterministic
+bounded-average lemma; on `Ioc 0 n` it agrees with the displayed integrand
+`2 * y * P(|X_0| > y)`.  The remaining side condition is local integrability
+of that clipped tail function, which later follows from measurability and
+boundedness of the one-dimensional tail-probability profile.
+-/
+theorem durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_real_tail
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (htail_integrable :
+      ∀ a b : ℝ,
+        IntegrableOn
+          (fun y : ℝ =>
+            if 0 ≤ y then 2 * y * P.real {ω : Ω | y < |X 0 ω|} else 0)
+          (Set.Ioc a b) volume)
+    (htail_real : Tendsto
+      (fun x : ℝ => x * P.real {ω : Ω | x < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ))) :
+    Tendsto
+      (fun n : ℕ =>
+        (∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+          2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ))
+      atTop (𝓝 (0 : ℝ)) := by
+  let g : ℝ -> ℝ :=
+    fun y => if 0 ≤ y then 2 * y * P.real {ω : Ω | y < |X 0 ω|} else 0
+  have hg_nonneg : ∀ y : ℝ, 0 ≤ g y := by
+    intro y
+    by_cases hy : 0 ≤ y
+    · have hleft : 0 ≤ 2 * y := mul_nonneg zero_le_two hy
+      have htail_nonneg : 0 ≤ P.real {ω : Ω | y < |X 0 ω|} := measureReal_nonneg
+      simp [g, hy, mul_nonneg hleft htail_nonneg]
+    · simp [g, hy]
+  have hg_tendsto : Tendsto g atTop (𝓝 (0 : ℝ)) := by
+    have hscaled :
+        Tendsto
+          (fun x : ℝ => 2 * (x * P.real {ω : Ω | x < |X 0 ω|}))
+          atTop (𝓝 (0 : ℝ)) := by
+      simpa using htail_real.const_mul 2
+    refine hscaled.congr' ?_
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with y hy
+    rw [show g y = 2 * y * P.real {ω : Ω | y < |X 0 ω|} by simp [g, hy]]
+    ring
+  have hg_bound : ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ, g y ≤ C := by
+    have hone_event : ∀ᶠ y : ℝ in atTop, g y < 1 :=
+      hg_tendsto.eventually (eventually_lt_nhds zero_lt_one)
+    rcases eventually_atTop.1 hone_event with ⟨R₀, hR₀⟩
+    let R : ℝ := max 1 R₀
+    have hR_ge_one : 1 ≤ R := le_max_left 1 R₀
+    have hR₀_le_R : R₀ ≤ R := le_max_right 1 R₀
+    refine ⟨max 1 (2 * R), le_trans zero_le_one (le_max_left 1 (2 * R)), ?_⟩
+    intro y
+    by_cases hy_nonneg : 0 ≤ y
+    · by_cases hyR : R ≤ y
+      · have hle_one : g y ≤ 1 :=
+          le_of_lt (hR₀ y (hR₀_le_R.trans hyR))
+        exact hle_one.trans (le_max_left 1 (2 * R))
+      · have hy_lt_R : y < R := lt_of_not_ge hyR
+        have htail_le_one : P.real {ω : Ω | y < |X 0 ω|} ≤ 1 := measureReal_le_one
+        have hleft_nonneg : 0 ≤ 2 * y := mul_nonneg zero_le_two hy_nonneg
+        have hle_twoR :
+            2 * y * P.real {ω : Ω | y < |X 0 ω|} ≤ 2 * R := by
+          calc
+            2 * y * P.real {ω : Ω | y < |X 0 ω|}
+                ≤ 2 * y * 1 := by
+                  exact mul_le_mul_of_nonneg_left htail_le_one hleft_nonneg
+            _ ≤ 2 * R := by nlinarith
+        have hg_eq : g y = 2 * y * P.real {ω : Ω | y < |X 0 ω|} := by
+          simp [g, hy_nonneg]
+        rw [hg_eq]
+        exact hle_twoR.trans (le_max_right 1 (2 * R))
+    · have hg_eq : g y = 0 := by
+        simp [g, hy_nonneg]
+      rw [hg_eq]
+      exact le_trans zero_le_one (le_max_left 1 (2 * R))
+  have havg_g :
+      Tendsto
+        (fun n : ℕ => (∫ y in Set.Ioc (0 : ℝ) (n : ℝ), g y) / (n : ℝ))
+        atTop (𝓝 (0 : ℝ)) :=
+    durrett2019_theorem_2_2_12_tail_average_tendsto_zero_of_bounded_tendsto_zero
+      (g := g) htail_integrable hg_nonneg hg_bound hg_tendsto
+  refine havg_g.congr' ?_
+  refine Eventually.of_forall ?_
+  intro n
+  have hIntegral :
+      (∫ y in Set.Ioc (0 : ℝ) (n : ℝ), g y) =
+        ∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+          2 * y * P.real {ω : Ω | y < |X 0 ω|} := by
+    refine setIntegral_congr_fun measurableSet_Ioc ?_
+    intro y hy
+    have hy_nonneg : 0 ≤ y := le_of_lt hy.1
+    simp [g, hy_nonneg]
+  change
+    ((∫ y in Set.Ioc (0 : ℝ) (n : ℝ), g y) / (n : ℝ)) =
+      ((∫ y in Set.Ioc (0 : ℝ) (n : ℝ),
+        2 * y * P.real {ω : Ω | y < |X 0 ω|}) / (n : ℝ))
+  rw [hIntegral]
+
 /-! ## Durrett, Section 2.3 -/
 
 /--
