@@ -213,8 +213,14 @@ and
 `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi`
 feed that source-shaped derivative directly into the Lemma 13.6 local-norm
 sandwich without first proving a full operator-valued Frechet derivative for
-the Schur Hessian.  The remaining exact envelope task is to prove that scalar
-identity and construct the packaged adjoint-square-root envelope certificate
+the Schur Hessian.  Prefer the continuity-on-domain variants
+`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_scalarPsi_continuousOn`
+and
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi_continuousOn`
+when `ContinuousOn H_schur` is available, since they discharge all per-vector
+segment continuity obligations automatically.  The remaining exact envelope
+task is to prove that scalar identity and construct the packaged
+adjoint-square-root envelope certificate
 from concrete selector and
 Hessian square-root models.
 The local stationarity source bridge now also compiles through

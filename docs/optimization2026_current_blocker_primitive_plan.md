@@ -414,6 +414,12 @@ The scalar-segment packet adds
 `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_segmentCertificate`,
 and
 `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi`.
+The continuity-on-domain follow-up adds
+`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_scalarPsi_continuousOn`
+and
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi_continuousOn`,
+so callers only need `ContinuousOn H_schur` on the projected domain rather
+than a separate per-vector continuity proof for every segment quadratic form.
 This weakens the next exact source gate: future work may prove only the
 source-shaped scalar segment derivative
 `d/dt <v, H_schur(z_t) v> = liftedThird(z_t, y - x, v)` instead of first

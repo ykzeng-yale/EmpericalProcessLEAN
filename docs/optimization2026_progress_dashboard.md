@@ -309,6 +309,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_segmentCertificate`,
   and
   `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi`.
+  The newest continuity-on-domain follow-up adds
+  `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_scalarPsi_continuousOn`
+  and
+  `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi_continuousOn`,
+  reusing `hessianSegmentPsi_continuousOn_of_convex_continuousOn` so future
+  scalar-source work only supplies `ContinuousOn H_schur` on the projected
+  domain rather than a per-vector segment-continuity family.
   Search-first reuse: the bridge reuses the already compiled canonical
   lifted-third self-concordance theorem and the generic
   `HessianSegmentMixedThirdLocalNormCertificate` constructors and sandwich
