@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V185`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V186`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -86,9 +86,13 @@ consumer from supplied centered `eLpNorm` convergence.  V185 also compiles the
 finite-display-to-limit bridge: a `C / n` centered second-moment bound gives
 centered `eLpNorm` convergence, and the uncorrelated and independent source
 hypotheses now feed the final `TendstoInMeasure` weak-law endpoints directly.
-Continue by auditing the exact textbook wording for a compact Theorem 2.2.3
-report/alias if immediate; otherwise move to the next unsolved Chapter 2 source
-anchor rather than repeating 2.1, 2.2.1, 2.2.3 scalar plumbing, or 2.4.9.
+V186 also compiles the Theorem 2.2.6 normalized variance bridge:
+second-moment convergence gives convergence in probability, the normalized
+centered square-moment identity is packaged as `Var(S_n) / b_n^2`, and the
+source-facing weak-law endpoint follows.  Continue toward Theorem 2.2.11, the
+triangular-array weak law, by proving the largest directly compiling support
+wrapper for truncation, Chebyshev/variance control, or centering; do not repeat
+2.1, 2.2.1, 2.2.3 scalar plumbing, 2.2.6, or 2.4.9.
 
 For each cycle, route from:
 

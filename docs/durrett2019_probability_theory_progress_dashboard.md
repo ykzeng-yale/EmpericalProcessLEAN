@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V185` in
+Route from `Live In-Thread Goal Prompt V186` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -92,12 +92,16 @@ specialization, and the average convergence-in-probability consumer from
 supplied centered `eLpNorm` convergence.  V185 closes the remaining
 finite-bound-to-`atTop` bridge: `E (S_n / n - μ)^2 <= C / n` now yields
 centered `eLpNorm` convergence and then `TendstoInMeasure` for both
-uncorrelated and independent source hypotheses.  The next target is either a
-compact exact-source theorem report/alias for Theorem 2.2.3 after checking the
-book wording, or the next unsolved Chapter 2 theorem-sized wrapper.  Do not
-route future cycles back to Chapter 4.5.2 or solved 2.1.10 partial-sum, 2.1.13
-product-consumer, 2.2.1 variance-sum, 2.4.9, 2.1.12, 2.1.15, or 2.1.16
-plumbing unless the user explicitly pivots.
+uncorrelated and independent source hypotheses.  V186 adds Theorem 2.2.6:
+ordinary second moments tending to zero now imply `eLpNorm` convergence and
+convergence in probability, the normalized centered square-moment identity is
+packaged as `Var(S_n) / b_n^2`, and the source-facing normalized variance weak
+law compiles.  The next active target is Theorem 2.2.11, the triangular-array
+weak law, starting with truncation notation and the largest directly compiling
+Chebyshev/variance/centering support wrapper.  Do not route future cycles back
+to Chapter 4.5.2 or solved 2.1.10 partial-sum, 2.1.13 product-consumer, 2.2.1
+variance-sum, 2.2.3, 2.2.6, 2.4.9, 2.1.12, 2.1.15, or 2.1.16 plumbing unless
+the user explicitly pivots.
 The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,

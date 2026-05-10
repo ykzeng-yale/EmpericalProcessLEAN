@@ -1626,6 +1626,50 @@ theorem durrett2019_theorem_2_2_3_tendsto_eLpNorm_two_zero_of_integral_sq_le_con
       (P := P) (Z := Z n) (B := C / n) (hZ n) hn
 
 /--
+Durrett 2019, Lemma 2.2.2 support: ordinary second moments converging to zero
+force the corresponding `L^2` seminorms to converge to zero.
+-/
+theorem durrett2019_lemma_2_2_2_tendsto_eLpNorm_two_zero_of_integral_sq_tendsto_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {Z : ℕ -> Ω -> ℝ}
+    (hZ : ∀ n, MemLp (Z n) (2 : ℝ≥0∞) P)
+    (hsq : Tendsto (fun n => ∫ ω, (Z n ω) ^ 2 ∂P) atTop (𝓝 (0 : ℝ))) :
+    Tendsto (fun n => eLpNorm (Z n) (2 : ℝ≥0∞) P) atTop (𝓝 0) := by
+  have hsqrtReal :
+      Tendsto (fun n : ℕ => Real.sqrt (∫ ω, (Z n ω) ^ 2 ∂P)) atTop
+        (𝓝 (0 : ℝ)) := by
+    simpa only [Function.comp_apply, Real.sqrt_zero] using
+      (Real.continuous_sqrt.continuousAt.tendsto.comp hsq)
+  have hsqrtENN :
+      Tendsto (fun n : ℕ =>
+        ENNReal.ofReal (Real.sqrt (∫ ω, (Z n ω) ^ 2 ∂P))) atTop
+        (𝓝 (0 : ℝ≥0∞)) := by
+    simpa [ENNReal.ofReal_zero] using ENNReal.tendsto_ofReal hsqrtReal
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
+    hsqrtENN ?_ ?_
+  · exact Eventually.of_forall fun n => by
+      change (⊥ : ℝ≥0∞) ≤ eLpNorm (Z n) (2 : ℝ≥0∞) P
+      exact bot_le
+  · exact Eventually.of_forall fun n => by
+      exact durrett2019_theorem_2_2_3_eLpNorm_two_le_sqrt_of_integral_sq_le
+        (P := P) (Z := Z n) (B := ∫ ω, (Z n ω) ^ 2 ∂P) (hZ n) le_rfl
+
+/--
+Durrett 2019, Lemma 2.2.2 support: ordinary second moments converging to zero
+give convergence in probability.
+-/
+theorem durrett2019_lemma_2_2_2_tendstoInMeasure_of_integral_sq_tendsto_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {Z : ℕ -> Ω -> ℝ}
+    (hZ : ∀ n, MemLp (Z n) (2 : ℝ≥0∞) P)
+    (hsq : Tendsto (fun n => ∫ ω, (Z n ω) ^ 2 ∂P) atTop (𝓝 (0 : ℝ))) :
+    TendstoInMeasure P Z atTop (fun _ => 0) :=
+  durrett2019_lemma_2_2_2_tendstoInMeasure_of_tendsto_eLpNorm_two
+    (P := P) (Z := Z) (fun n => (hZ n).aestronglyMeasurable)
+    (durrett2019_lemma_2_2_2_tendsto_eLpNorm_two_zero_of_integral_sq_tendsto_zero
+      (P := P) (Z := Z) hZ hsq)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: finite sample averages of `L^2` variables
 are in `L^2`.
 -/
@@ -1795,6 +1839,55 @@ theorem durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_iIndepFun
       (P := P) (X := X) (n := n) (fun i _ => hX i)).aestronglyMeasurable
   · exact durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_iIndepFun
       (P := P) (X := X) (mu := mu) (C := C) hX_indep hX hmean hvar
+
+/--
+Durrett 2019, Theorem 2.2.6 support: the normalized centered square moment is
+the variance divided by the square normalizer.
+-/
+theorem durrett2019_theorem_2_2_6_integral_sq_centered_div_eq_variance_div_sq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {S : ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (hS : ∀ n, MemLp (S n) (2 : ℝ≥0∞) P) (n : ℕ) :
+    ∫ ω, ((S n ω - ∫ x, S n x ∂P) / b n) ^ 2 ∂P =
+      _root_.ProbabilityTheory.variance (S n) P / (b n) ^ 2 := by
+  have hfun :
+      (fun ω => ((S n ω - ∫ x, S n x ∂P) / b n) ^ 2) =
+        fun ω => ((b n)⁻¹) ^ 2 * (S n ω - ∫ x, S n x ∂P) ^ 2 := by
+    ext ω
+    ring
+  rw [hfun]
+  rw [integral_const_mul]
+  rw [← _root_.ProbabilityTheory.variance_eq_integral (hS n).aemeasurable]
+  by_cases hb : b n = 0
+  · simp [hb]
+  · field_simp [hb]
+
+/--
+Durrett 2019, Theorem 2.2.6: if `Var(S_n) / b_n^2 -> 0`, then the normalized
+centered variables `(S_n - E S_n) / b_n` converge to zero in probability.
+-/
+theorem durrett2019_theorem_2_2_6_tendstoInMeasure_centered_div_of_variance_div_sq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {S : ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (hS : ∀ n, MemLp (S n) (2 : ℝ≥0∞) P)
+    (hvar : Tendsto
+      (fun n : ℕ => _root_.ProbabilityTheory.variance (S n) P / (b n) ^ 2)
+      atTop (𝓝 (0 : ℝ))) :
+    TendstoInMeasure P
+      (fun n ω => (S n ω - ∫ x, S n x ∂P) / b n) atTop (fun _ => 0) := by
+  let Z : ℕ -> Ω -> ℝ := fun n ω => (S n ω - ∫ x, S n x ∂P) / b n
+  have hZ_mem : ∀ n, MemLp (Z n) (2 : ℝ≥0∞) P := by
+    intro n
+    have hcenter : MemLp (fun ω => S n ω - ∫ x, S n x ∂P) (2 : ℝ≥0∞) P :=
+      (hS n).sub (memLp_const _)
+    simpa [Z, div_eq_mul_inv, mul_comm] using hcenter.const_mul ((b n)⁻¹)
+  have hsq : Tendsto (fun n : ℕ => ∫ ω, (Z n ω) ^ 2 ∂P) atTop
+      (𝓝 (0 : ℝ)) := by
+    exact hvar.congr' (Eventually.of_forall fun n =>
+      (durrett2019_theorem_2_2_6_integral_sq_centered_div_eq_variance_div_sq
+        (P := P) (S := S) (b := b) hS n).symm)
+  exact durrett2019_lemma_2_2_2_tendstoInMeasure_of_integral_sq_tendsto_zero
+    (P := P) (Z := Z) hZ_mem hsq
 
 /-! ## Durrett, Section 2.3 -/
 

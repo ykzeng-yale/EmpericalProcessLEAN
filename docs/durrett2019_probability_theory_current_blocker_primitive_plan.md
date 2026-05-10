@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V185
+## Live In-Thread Goal Prompt V186
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -12,14 +12,15 @@ older than the verified route docs:
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane: Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, starting from the now-compiled
-Theorem 2.2.3 `L^2` weak-law bridge.
+Theorem 2.2.3 `L^2` weak-law bridge and Theorem 2.2.6 normalized variance
+weak-law bridge.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V185 compiled support now includes:
+V186 compiled support now includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -37,16 +38,23 @@ plus the final finite-bound-to-limit and source wrappers:
 `durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_tendsto_eLpNorm_centered_average_of_iIndepFun`,
 `durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_uncorrelated`, and
-`durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_iIndepFun`.
+`durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_iIndepFun`, plus
+Theorem 2.2.6 support:
+`durrett2019_lemma_2_2_2_tendsto_eLpNorm_two_zero_of_integral_sq_tendsto_zero`,
+`durrett2019_lemma_2_2_2_tendstoInMeasure_of_integral_sq_tendsto_zero`,
+`durrett2019_theorem_2_2_6_integral_sq_centered_div_eq_variance_div_sq`, and
+`durrett2019_theorem_2_2_6_tendstoInMeasure_centered_div_of_variance_div_sq`.
 
 Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
-Theorem 2.2.3 scalar plumbing, or Theorem 2.4.9.  If immediate, add a compact
-formal theorem report or exact-source alias for Durrett Theorem 2.2.3 after
-checking the book wording.  Otherwise read the next unsolved Chapter 2 source
-anchor and prove the largest source-facing wrapper that can compile in one
-packet, reusing the compiled independence, variance, convergence-in-measure,
-Borel-Cantelli, strong-law, and empirical-CDF infrastructure.  Search
-mathlib/local first for the exact primitive and use
+Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, or Theorem 2.4.9.  Move toward
+Durrett Theorem 2.2.11, the triangular-array weak law.  First package only the
+largest directly compiling support step: truncation notation, row-sum
+centering, Chebyshev/variance consumers, or the three source hypotheses
+(`large jump`, `truncated variance`, `truncated centering`) as needed.  Reuse
+the compiled 2.2.6 normalized-variance weak-law bridge, independence/product
+wrappers, finite-sum variance support, Borel-Cantelli, strong-law, and
+empirical-CDF infrastructure.  Search mathlib/local first for the exact
+primitive and use
 `origin/codex/vdvw-selected-cover-source` only as selective reference via
 `git grep`/`git show` or an isolated worktree; do not merge it wholesale into
 this lane.
