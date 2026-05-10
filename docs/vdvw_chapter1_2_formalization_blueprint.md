@@ -3066,6 +3066,15 @@ remaining theorem-facing probability inputs are the two eventual a.e.
 finite-center support facts for the canonical first-level selected cover, or
 the product-fiber/Chebyshev replacement that bypasses them.
 
+The displayed Chebyshev-beta source constructor now has the same canonical
+first-level cover specialization:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.
+It discharges selected cardinality, finite-cover choice, and scalar
+selected-center coordinate measurability internally.  The product-fiber route
+is therefore reduced to one theorem-facing probability statement: the
+canonical `VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent` has
+the displayed beta-large fibers over the centered bad event.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
