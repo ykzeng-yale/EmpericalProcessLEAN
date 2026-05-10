@@ -9915,3 +9915,20 @@ duplicated support plumbing: it is a genuine probability theorem supplying
 the displayed-beta sign-swapped bad-fiber lower bound, or the pair-sub mass
 plus coefficient-correct sign-swap transport, together with the single
 sign-only selected-cover finite-center support input.
+
+2026-05-10 fixed-fiber first-level support/measurability unification:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_countable_firstLevel_of_signSample_finiteCenter`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+These specialize the fixed-fiber pair-difference Chebyshev/sign-swap route to
+the canonical countable first-level selected cover at radius `(eta / 2) / 2`.
+They derive the concrete event measurability from the selected-center
+coordinate measurability theorem and derive both original and ghost
+finite-center product-space support from one sign-only support input.  The
+fixed-fiber branch therefore no longer exposes event measurability or
+duplicated original/ghost support as separate blockers.  Its remaining source
+blocker is exactly the coefficient-correct fixed-fiber sign-swap transport
+assumption; the earlier all-one-sign theorem shows the deterministic
+single-sign route pays `(2⁻¹)^n`, so this still requires a real averaged or
+stronger-structure probability argument.

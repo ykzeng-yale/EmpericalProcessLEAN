@@ -3574,6 +3574,19 @@ for this canonical route; it should either prove the single sign-only
 selected-cover support theorem and the displayed-beta bad-fiber source, or
 move to a stronger structural tail/cardinality primitive.
 
+The fixed-fiber pair-difference route also now has a canonical countable
+first-level sign-sample endpoint:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_countable_firstLevel_of_signSample_finiteCenter`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+These wrappers choose the selected cover internally, prove the concrete
+selected-net event measurable from the countable selected-center coordinate
+interface, and turn one sign-only finite-center support input into the
+original and ghost product-fiber support facts.  Blueprint follow-up should
+therefore focus on the fixed-fiber sign-swap probability transport itself, or
+on the averaged product-fiber route; event measurability and support transport
+are no longer the exposed fixed-fiber blockers for this canonical route.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

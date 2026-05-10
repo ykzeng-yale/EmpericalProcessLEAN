@@ -4492,3 +4492,14 @@ original/ghost finite-center support surface is now a one-assumption
 sign-only support surface.  What remains is the actual probability source:
 displayed-beta sign-swapped bad-fiber mass, or pair-sub bad-event mass plus a
 coefficient-correct sign-swap transport, not another support wrapper.
+
+The fixed-fiber pair-difference branch now has the corresponding canonical
+first-level endpoint:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_countable_firstLevel_of_signSample_finiteCenter`
+and its untruncated large-`M` packaging
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+This route now internalizes the selected event measurability and the
+original/ghost finite-center support transport from a single sign-only support
+hypothesis.  The remaining dashboard blocker for the fixed-fiber branch is
+therefore the actual coefficient-correct sign-swap probability transport, not
+selected-cover measurability or duplicated support plumbing.
