@@ -18410,6 +18410,42 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
       hvariance_ratio_summable
 
 /--
+Durrett 2019, Theorem 4.5.3 deterministic interval comparison.
+
+For increasing `f >= 1`, the endpoint value `f b` is the largest denominator
+on `[a, b]`, so the variance-ratio increment `(b-a) / f(b)^2` is bounded by
+the integral of `f(t)^{-2}` over that interval.
+-/
+theorem durrett2019_theorem_4_5_3_interval_variance_ratio_le_integral_inv_sq
+    {f : ℝ -> ℝ} {a b : ℝ}
+    (hab : a ≤ b)
+    (hf_mono : MonotoneOn f (Set.Icc a b))
+    (hf_one_le : ∀ t ∈ Set.Icc a b, 1 ≤ f t)
+    (hf_int : IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume a b) :
+    (b - a) / (f b) ^ 2 ≤ ∫ t in a..b, (f t)⁻¹ ^ 2 := by
+  have hconst_int :
+      IntervalIntegrable (fun _t : ℝ => (f b)⁻¹ ^ 2) volume a b := by
+    exact intervalIntegrable_const
+  have hconst_eq :
+      (∫ _t in a..b, (f b)⁻¹ ^ 2) = (b - a) / (f b) ^ 2 := by
+    simp [intervalIntegral.integral_const, smul_eq_mul, div_eq_mul_inv, pow_two,
+      mul_left_comm]
+  have hpoint :
+      ∀ t ∈ Set.Icc a b, (f b)⁻¹ ^ 2 ≤ (f t)⁻¹ ^ 2 := by
+    intro t ht
+    have hb_mem : b ∈ Set.Icc a b := ⟨hab, le_rfl⟩
+    have ht_pos : 0 < f t := zero_lt_one.trans_le (hf_one_le t ht)
+    have hb_pos : 0 < f b := zero_lt_one.trans_le (hf_one_le b hb_mem)
+    have htb : f t ≤ f b := hf_mono ht hb_mem ht.2
+    have hinv : (f b)⁻¹ ≤ (f t)⁻¹ := (inv_le_inv₀ hb_pos ht_pos).2 htb
+    exact pow_le_pow_left₀ (inv_nonneg.mpr hb_pos.le) hinv 2
+  calc
+    (b - a) / (f b) ^ 2
+        = ∫ _t in a..b, (f b)⁻¹ ^ 2 := hconst_eq.symm
+    _ ≤ ∫ t in a..b, (f t)⁻¹ ^ 2 :=
+        intervalIntegral.integral_mono_on hab hconst_int hf_int hpoint
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

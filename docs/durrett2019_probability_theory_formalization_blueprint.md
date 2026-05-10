@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V209`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V210`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -68,10 +68,15 @@ V209 instantiates that pull-out core with `H = (f(A_{k+1}))^{-1}`,
 `durrett2019_theorem_4_5_3_reciprocal_comp_integral_le_variance_increment_of_condExp_square_le`
 and the source-facing endpoint
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_variance_ratio_summable`.
+V210 adds the scalar deterministic interval comparison
+`durrett2019_theorem_4_5_3_interval_variance_ratio_le_integral_inv_sq`:
+for increasing `f >= 1` on `[a,b]`,
+`(b-a) / f(b)^2 ≤ ∫_a^b f(t)^{-2} dt`.
 The next theorem-facing target is no longer another scaled-summability wrapper:
-prove the deterministic integral comparison that makes the variance-ratio
-series summable for `b_n = f(A_n)`.  Keep reciprocal-transform `MemLp` and
-integrability side conditions explicit if needed.  Do not route back to
+lift this scalar interval comparison to pathwise finite sums along the monotone
+clock `A`, then package summability of the variance-ratio series for
+`b_n = f(A_n)`.  Keep reciprocal-transform `MemLp` and integrability side
+conditions explicit if needed.  Do not route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
 packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
