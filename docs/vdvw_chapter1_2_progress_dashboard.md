@@ -205,8 +205,15 @@ component measurability instead of raw selector-event assumptions through
 `measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_measurable_components`,
 `measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_measurable_components`, and
 `measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_measurable_components`.
-The remaining selected-center task is therefore concrete scalar measurability:
-selected cardinalities and Nat-indexed selected-center weighted sums.
+The selected weighted sums themselves are now reduced to coordinate-level
+inputs by `measurable_vdVWWeightedSampleSum_varying_index_of_coordinate`,
+`measurable_vdVWWeightedSampleSum_selectedCenterAt_of_coordinate`, and the
+product-pair wrappers
+`measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_coordinate` /
+`measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_coordinate`.
+The remaining selected-center task is therefore the actual scalar
+measurability of selected cardinalities and Nat-indexed selected-center
+coordinate evaluations.
 The concrete product-fiber side now has the fiber-unpacking and lower-bound
 transfer pair
 `mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff`
