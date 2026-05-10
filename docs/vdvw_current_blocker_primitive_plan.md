@@ -9639,3 +9639,20 @@ the canonical sign-only lane.  The remaining theorem-facing work is to either
 build a sign-only comparison with a vanishing integrated failure-tail error, or
 return to the already compiled product-pair averaged sign/ghost failure-tail
 route.
+
+2026-05-10 canonical sign-only failure-tail outer comparison:
+`Theorem243.lean` now promotes the sign-only failure-tail split to
+outer-probability level through the reusable measure lemmas
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_fiber_lower_bound_add_error`
+and `VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound_add_error`.
+The theorem-facing VdVW bridges are
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail`,
+`measurableSet_VdVWTheorem243CanonicalRademacherSelectedNetEvent_of_sample_coordinate_countable`,
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail_sample_coordinate_countable`.
+Thus the sign-only lane no longer has an event-measurability or projection
+blocker at this layer.  Its remaining source inputs are exactly the displayed
+beta lower bound for the pure Rademacher bad fibers and a usable asymptotic
+control theorem for the integrated selected finite-center failure-tail error;
+without such tail control, the product-pair averaged route remains the honest
+alternative.

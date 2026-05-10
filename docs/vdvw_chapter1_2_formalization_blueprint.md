@@ -3373,9 +3373,20 @@ The same sign-only split now has a failure-tail variant:
 `VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure_tail`.
 This replaces the a.e. finite-center side condition by an explicit additive
 finite-center Hoeffding failure-tail bound.  The next blueprint target should
-not assume finite-center support is automatic; it should either integrate this
-tail error to a vanishing term or continue through the product-pair averaged
-sign/ghost failure-tail route.
+not assume finite-center support is automatic.
+
+The sign-only failure-tail variant now also reaches outer probability.
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_fiber_lower_bound_add_error`
+and `VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound_add_error`
+provide the reusable additive product-fiber accounting, while
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail_sample_coordinate_countable`
+discharges the canonical sign-only event measurability from the same
+countability and scalar selected-center coordinate hypotheses used elsewhere.
+The remaining blueprint target on this lane is therefore not event
+measurability or selected-net projection; it is the pure Rademacher bad-fiber
+beta lower bound plus a vanishing/asymptotic control theorem for the integrated
+finite-center failure-tail error, or else a return to the product-pair
+averaged sign/ghost route.
 
 ## Automation Checklist
 

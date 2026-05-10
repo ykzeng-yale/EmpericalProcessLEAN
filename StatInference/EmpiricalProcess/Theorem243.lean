@@ -41200,6 +41200,53 @@ theorem measure_mul_le_prod_measure_of_fiber_lower_bound
     _ = μ.prod ν joint := (Measure.prod_apply hjoint_meas).symm
 
 /--
+Product-measure fiber lower bound with an additive per-left-point error.
+
+If every `left` fiber has mass at least `beta` up to an error term, then the
+product event dominates `beta * μ left` up to the integral of that error over
+`left`.  This is the reusable measure-theoretic accounting needed for
+selected-cover finite-center failure tails.
+-/
+theorem measure_mul_le_prod_measure_add_setLIntegral_error_of_fiber_lower_bound_add_error
+    {α : Type u} {β : Type v} [MeasurableSpace α] [MeasurableSpace β]
+    {μ : Measure α} {ν : Measure β} [SFinite ν]
+    {left : Set α} {joint : Set (α × β)} {beta : ℝ≥0∞}
+    {error : α -> ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (herror_aemeas : AEMeasurable error (μ.restrict left))
+    (hfiber :
+      ∀ x : α, x ∈ left ->
+        beta ≤ ν (Prod.mk x ⁻¹' joint) + error x) :
+    beta * μ left ≤
+      μ.prod ν joint + (∫⁻ x in left, error x ∂(μ)) := by
+  let fiberMass : α -> ℝ≥0∞ := fun x => ν (Prod.mk x ⁻¹' joint)
+  have hfiberMass_meas : Measurable fiberMass :=
+    measurable_measure_prodMk_left hjoint_meas
+  have hsum_aemeas :
+      AEMeasurable (fun x : α => fiberMass x + error x)
+        (μ.restrict left) :=
+    hfiberMass_meas.aemeasurable.add herror_aemeas
+  have hmono :
+      ∫⁻ _x in left, beta ∂(μ) ≤
+        ∫⁻ x in left, fiberMass x + error x ∂(μ) :=
+    setLIntegral_mono_ae hsum_aemeas (ae_of_all _ hfiber)
+  have hsection_le :
+      ∫⁻ x in left, fiberMass x ∂(μ) ≤ μ.prod ν joint := by
+    calc
+      ∫⁻ x in left, fiberMass x ∂(μ) ≤ ∫⁻ x, fiberMass x ∂(μ) :=
+        lintegral_mono' Measure.restrict_le_self le_rfl
+      _ = μ.prod ν joint := (Measure.prod_apply hjoint_meas).symm
+  calc
+    beta * μ left = ∫⁻ _x in left, beta ∂(μ) := by
+      rw [setLIntegral_const]
+    _ ≤ ∫⁻ x in left, fiberMass x + error x ∂(μ) := hmono
+    _ = (∫⁻ x in left, fiberMass x ∂(μ)) +
+          (∫⁻ x in left, error x ∂(μ)) := by
+      rw [lintegral_add_left hfiberMass_meas]
+    _ ≤ μ.prod ν joint + (∫⁻ x in left, error x ∂(μ)) :=
+      add_le_add hsection_le le_rfl
+
+/--
 Product-measure lower bound from a pointwise deterministic Rademacher sign
 section.
 
@@ -41517,6 +41564,53 @@ theorem
     simp
   simpa [VdVWOuterProbability, hright_prod] using
     hleft_joint.trans hjoint_le_right_prod
+
+/--
+Outer-probability form of the additive-error product-fiber lower bound.
+
+The joint event still only needs to be measurable.  The marginal events may be
+outer-probability events; the finite-center failure cost is carried by the
+explicit set integral of `error` over the left event.
+-/
+theorem
+    VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound_add_error
+    {α : Type u} {β : Type v} [MeasurableSpace α] [MeasurableSpace β]
+    {μ : Measure α} {ν : Measure β} [SFinite ν] [IsProbabilityMeasure ν]
+    {left right : Set α} {joint : Set (α × β)} {beta : ℝ≥0∞}
+    {error : α -> ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (herror_aemeas : AEMeasurable error (μ.restrict left))
+    (hfiber :
+      ∀ x : α, x ∈ left ->
+        beta ≤ ν (Prod.mk x ⁻¹' joint) + error x)
+    (hjoint_subset_right : ∀ z : α × β, z ∈ joint -> z.1 ∈ right) :
+    beta * VdVWOuterProbability μ left ≤
+      VdVWOuterProbability μ right + (∫⁻ x in left, error x ∂(μ)) := by
+  have hleft_joint :
+      beta * μ left ≤
+        μ.prod ν joint + (∫⁻ x in left, error x ∂(μ)) :=
+    measure_mul_le_prod_measure_add_setLIntegral_error_of_fiber_lower_bound_add_error
+      (μ := μ) (ν := ν) hjoint_meas herror_aemeas hfiber
+  have hjoint_le_right_prod :
+      μ.prod ν joint ≤ μ.prod ν (right ×ˢ (Set.univ : Set β)) := by
+    refine measure_mono ?_
+    intro z hz
+    exact ⟨hjoint_subset_right z hz, trivial⟩
+  have hright_prod :
+      μ.prod ν (right ×ˢ (Set.univ : Set β)) = μ right := by
+    rw [Measure.prod_prod, measure_univ]
+    simp
+  calc
+    beta * VdVWOuterProbability μ left
+        = beta * μ left := by
+          rfl
+    _ ≤ μ.prod ν joint + (∫⁻ x in left, error x ∂(μ)) := hleft_joint
+    _ ≤ μ.prod ν (right ×ˢ (Set.univ : Set β)) +
+          (∫⁻ x in left, error x ∂(μ)) :=
+        add_le_add hjoint_le_right_prod le_rfl
+    _ = VdVWOuterProbability μ right + (∫⁻ x in left, error x ∂(μ)) := by
+          rw [hright_prod]
+          rfl
 
 /--
 Product-fiber lower bound with an original-or-ghost projection.
@@ -45609,11 +45703,117 @@ theorem
       μ finiteCenterFailure = ENNReal.ofReal (μ.real finiteCenterFailure) := by
         rw [ofReal_measureReal]
       _ ≤
-          ENNReal.ofReal
-            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
-              (cardinality sample) n M) :=
+        ENNReal.ofReal
+          (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+            (cardinality sample) n M) :=
         ENNReal.ofReal_le_ofReal hreal
   exact hsplit.trans (add_le_add le_rfl hfailure_le)
+
+/--
+Sign-only canonical selected-net outer-probability comparison with an explicit
+finite-center failure-tail error.
+
+This promotes the pointwise sign-fiber failure-tail lemma to the
+outer-probability level: beta-large Rademacher bad fibers over `left` imply
+the selected finite-net bad event, up to the integrated fixed-sample
+finite-center Hoeffding tail.
+-/
+theorem
+    VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M) (heta : 0 < eta)
+    (hevent_meas :
+      MeasurableSet
+        (VdVWTheorem243CanonicalRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover)))
+    {left : Set (SampleAt Observation n)} {beta : ℝ≥0∞}
+    (herror_aemeas :
+      AEMeasurable
+        (fun sample : SampleAt Observation n =>
+          ENNReal.ofReal
+            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+              (cardinality sample) n M))
+        ((vdVWProductMeasure P n).restrict left))
+    (hbadLower :
+      ∀ sample : SampleAt Observation n, sample ∈ left ->
+        beta ≤
+          (vdVWProductMeasure vdVWRademacherLaw n)
+            {signSample : SampleAt ℝ n |
+              epsilon <
+                dist
+                  (2 *
+                    vdVWWeightedClassSupremum indexClass
+                      (vdVWTruncatedClassFun classFun envelope M)
+                      (vdVWRademacherWeights signSample) sample)
+                  (0 : ℝ)}) :
+    beta * VdVWOuterProbability (vdVWProductMeasure P n) left ≤
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (2 * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality sample) n M + eta)
+              (0 : ℝ)} +
+        (∫⁻ sample in left,
+          ENNReal.ofReal
+            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+              (cardinality sample) n M)
+          ∂(vdVWProductMeasure P n)) := by
+  let error : SampleAt Observation n -> ℝ≥0∞ :=
+    fun sample =>
+      ENNReal.ofReal
+        (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+          (cardinality sample) n M)
+  refine
+    VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound_add_error
+      (μ := vdVWProductMeasure P n)
+      (ν := vdVWProductMeasure vdVWRademacherLaw n)
+      (left := left)
+      (right :=
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (2 * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality sample) n M + eta)
+              (0 : ℝ)})
+      (joint :=
+        VdVWTheorem243CanonicalRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover))
+      (beta := beta) (error := error)
+      hevent_meas ?_ ?_ ?_
+  · simpa [error] using herror_aemeas
+  · intro sample hsample
+    exact
+      VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure_tail
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (cover := cover) hindexClass_nonempty henvelope hM_pos
+        (sample := sample) (hbadLower sample hsample)
+  · intro z hz
+    simpa using
+      VdVWTheorem243_selectedFiniteNetHoeffding_bad_of_rademacher_bad
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (sample := z.1) (sign := z.2)
+        hM_pos.le heta (cover z.1) hz.1 hz.2.1 hz.2.2
 
 /--
 Concrete-event version of the canonical ghost/Rademacher product-event
@@ -46082,6 +46282,176 @@ theorem
         (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) (M := M) (epsilon := epsilon)
         (n := n) hcount hclass henvelope_meas)
+
+/--
+Countability-based measurability constructor for the sign-only canonical
+Rademacher selected-net event.
+
+This reuses the already verified ghost/Rademacher measurability theorem by
+embedding a sign-only point as `(sample, sample, sign)`.  The ghost coordinate
+is unused by the canonical event, so the preimage is definitionally the
+sign-only event.
+-/
+theorem
+    measurableSet_VdVWTheorem243CanonicalRademacherSelectedNetEvent_of_sample_coordinate_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hcard : Measurable fun sample : SampleAt Observation n => cardinality sample)
+    (hcoord : ∀ k : ℕ, ∀ i : Fin n,
+      Measurable fun sample : SampleAt Observation n =>
+        vdVWTruncatedClassFun classFun envelope M
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta cardinality cover sample k)
+          (sample i)) :
+    MeasurableSet
+      (VdVWTheorem243CanonicalRademacherSelectedNetEvent
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (cover := cover)) := by
+  let ghostEvent :
+      Set (SampleAt Observation n ×
+        (SampleAt Observation n × SampleAt ℝ n)) :=
+    VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinality := cardinality)
+      (cover := cover)
+  let embed :
+      SampleAt Observation n × SampleAt ℝ n ->
+        SampleAt Observation n ×
+          (SampleAt Observation n × SampleAt ℝ n) :=
+    fun z => (z.1, (z.1, z.2))
+  have hghost_meas : MeasurableSet ghostEvent := by
+    simpa [ghostEvent] using
+      measurableSet_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_of_sample_coordinate_countable
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        hcount hclass henvelope_meas cover hcard hcoord
+  have hembed_meas : Measurable embed :=
+    by
+      simpa [embed] using
+        (Measurable.prodMk measurable_fst measurable_id :
+          Measurable fun z : SampleAt Observation n × SampleAt ℝ n =>
+            (z.1, z))
+  have hpre :
+      embed ⁻¹' ghostEvent =
+        VdVWTheorem243CanonicalRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover) := by
+    ext z
+    rfl
+  rw [← hpre]
+  exact hghost_meas.preimage hembed_meas
+
+/--
+Sign-only canonical selected-net outer-probability comparison with
+finite-center failure-tail error and countability-based event measurability.
+
+This is the directly reusable source bridge for the sign-only lane: the caller
+supplies beta-large Rademacher bad fibers, while selected-center event
+measurability and the failure-tail error measurability are discharged from
+the standard scalar coordinate assumptions.
+-/
+theorem
+    VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail_sample_coordinate_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M) (heta : 0 < eta)
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hcard : Measurable fun sample : SampleAt Observation n => cardinality sample)
+    (hcoord : ∀ k : ℕ, ∀ i : Fin n,
+      Measurable fun sample : SampleAt Observation n =>
+        vdVWTruncatedClassFun classFun envelope M
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta cardinality cover sample k)
+          (sample i))
+    {left : Set (SampleAt Observation n)} {beta : ℝ≥0∞}
+    (hbadLower :
+      ∀ sample : SampleAt Observation n, sample ∈ left ->
+        beta ≤
+          (vdVWProductMeasure vdVWRademacherLaw n)
+            {signSample : SampleAt ℝ n |
+              epsilon <
+                dist
+                  (2 *
+                    vdVWWeightedClassSupremum indexClass
+                      (vdVWTruncatedClassFun classFun envelope M)
+                      (vdVWRademacherWeights signSample) sample)
+                  (0 : ℝ)}) :
+    beta * VdVWOuterProbability (vdVWProductMeasure P n) left ≤
+      VdVWOuterProbability (vdVWProductMeasure P n)
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (2 * vdVWTheorem243FiniteNetHoeffdingUpper
+                  (cardinality sample) n M + eta)
+              (0 : ℝ)} +
+        (∫⁻ sample in left,
+          ENNReal.ofReal
+            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+              (cardinality sample) n M)
+          ∂(vdVWProductMeasure P n)) := by
+  have hevent_meas :
+      MeasurableSet
+        (VdVWTheorem243CanonicalRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover)) :=
+    measurableSet_VdVWTheorem243CanonicalRademacherSelectedNetEvent_of_sample_coordinate_countable
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinality := cardinality)
+      hcount hclass henvelope_meas cover hcard hcoord
+  have herror_aemeas :
+      AEMeasurable
+        (fun sample : SampleAt Observation n =>
+          ENNReal.ofReal
+            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+              (cardinality sample) n M))
+        ((vdVWProductMeasure P n).restrict left) := by
+    have htail_nat :
+        Measurable fun k : ℕ =>
+          vdVWTheorem243FiniteCenterHoeffdingFailureTail k n M :=
+      measurable_of_countable _
+    exact (ENNReal.measurable_ofReal.comp (htail_nat.comp hcard)).aemeasurable
+  exact
+    VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinality := cardinality)
+      (cover := cover) hindexClass_nonempty henvelope hM_pos heta
+      hevent_meas herror_aemeas hbadLower
 
 /--
 Concrete canonical ghost/Rademacher product-event constructor with event

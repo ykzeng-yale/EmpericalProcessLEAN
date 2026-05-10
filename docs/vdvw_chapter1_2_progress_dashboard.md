@@ -338,6 +338,19 @@ and
 They replace the two inverse-square lintegrals by the deterministic error
 `2 * (2 * exp(-3)/(lower+1)^2)` under pointwise or a.e. lower selected
 cardinality bounds.
+
+The canonical sign-only finite-center failure-tail lane now has its
+outer-probability bridge as well.  The reusable additive product-fiber
+accounting is compiled as
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_fiber_lower_bound_add_error`
+and `VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound_add_error`;
+the VdVW sign-only comparison is
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail_sample_coordinate_countable`.
+This removes event measurability and selected-net projection from that lane's
+blocker list.  What remains is probability-side: prove beta mass for the pure
+Rademacher bad fibers and prove the integrated selected finite-center
+failure-tail error is controlled strongly enough to feed the additive-error
+convergence consumer.
 The explicit original/ghost finite-center failure probabilities are now split
 through the fixed-sample Rademacher finite-center Hoeffding tail, a
 product-fiber upper-bound lift, and additive-error product-pair comparison
