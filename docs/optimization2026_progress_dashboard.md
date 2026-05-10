@@ -453,6 +453,23 @@ This dashboard tracks the Chewi optimization formalization lane for
   finite-dimensional vertical-block route only carries the `Hyy` right-inverse
   identity; the left inverse needed by the implicit-selector step is derived
   internally.
+- Inf-projection third-order envelope packaging: the newest packet adds
+  `BarrierInfProjectionThirdOrderEnvelopeOn` plus accessors for the selected
+  value gradient, projected-gradient Schur Hessian derivative, Schur-Hessian
+  derivative, and scalar segment `ψ` derivative.  It also adds
+  `BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_fullHessianDerivative_symmetric_inverse_mem_nhds_finiteDimHyy`
+  and
+  `BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_fullHessianDerivative_symmetric_inverse_isOpen_finiteDimHyy`,
+  then lifts the packaged square-root model through
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_fullHessianDerivative_mem_nhds`,
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_fullHessianDerivative_isOpen`,
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_fullHessianDerivative_isOpen`.
+  Search-first result: mathlib supplies generic `HasFDerivAt`/inner-product
+  calculus and local code supplies the Schur and segment bridges, but there is
+  no direct mathlib inf-projection envelope-third theorem; the remaining exact
+  source gap is constructing the derivative inputs for the model and connecting
+  the lifted Schur oracle to the actual third derivative of the selected value.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

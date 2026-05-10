@@ -571,6 +571,23 @@ and
 It reuses `barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim`
 to derive the `Hyy` left-inverse side from the right-inverse side, so the
 finite-dimensional vertical-block route should now pass only `Hyy * Hyy⁻¹ = I`.
+The third-order envelope packaging follow-up adds
+`BarrierInfProjectionThirdOrderEnvelopeOn`,
+`BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_fullHessianDerivative_symmetric_inverse_mem_nhds_finiteDimHyy`,
+`BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_fullHessianDerivative_symmetric_inverse_isOpen_finiteDimHyy`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_fullHessianDerivative_mem_nhds`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_fullHessianDerivative_isOpen`,
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_fullHessianDerivative_isOpen`.
+It packages the selected-value first derivative, projected-gradient Schur
+Hessian derivative, and Schur-Hessian lifted-third derivative in one reusable
+source-facing object.  Search-first result: mathlib has the generic
+`HasFDerivAt`/inner-product calculus, while the local `InteriorPoint` and
+`SchurSymmetry` files supply the Chewi-specific Schur and segment bridges; no
+direct mathlib inf-projection envelope-third theorem was found.  The next exact
+item-4 step should construct the derivative inputs for this package from a
+concrete selector/envelope theorem and then identify the canonical lifted
+Schur oracle with the actual third derivative of the selected value.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
