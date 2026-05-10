@@ -3610,6 +3610,18 @@ mass plus coefficient-correct sign-swap transport, or to introduce a
 mathematically explicit stronger structural tail/cardinality condition that
 implies one of those source inputs.
 
+The sign-only finite-center failure-tail route now also accepts a.e. pure
+Rademacher bad-fiber lower bounds through
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail`
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail_sample_coordinate_countable`.
+This is the correct local source shape for future Fubini/conditional
+arguments on the pure Rademacher lane.  The next blueprint step should
+propagate this a.e. `hbadLower` surface through the fixed-`M` and selected
+first-level sign-only convergence endpoints, then prove the actual pure
+Rademacher bad-fiber mass or switch to the product-pair/sign-swap source
+theorem.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

@@ -9963,3 +9963,19 @@ remaining blocker is unchanged at the probability level: prove that a.e.
 displayed-beta fiber lower bound, or prove the pair-sub mass together with a
 coefficient-correct sign-swap transport, or state a stronger structural
 tail/cardinality theorem.
+
+2026-05-10 a.e. sign-only finite-center failure-tail source bridge:
+`Theorem243.lean` now adds
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail`
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail_sample_coordinate_countable`.
+These are the a.e. analogues of the sign-only finite-center failure-tail
+outer-probability comparison: the pure Rademacher bad-fiber beta lower bound
+now only has to hold on `P.restrict left`-almost every centered-bad sample,
+while event measurability and the finite-center failure-tail error remain
+discharged by the countability/selected-center coordinate interface.  This
+does not prove the pure Rademacher bad-fiber mass itself; it removes another
+unnecessary pointwise-over-all-bad-samples strengthening from the source
+surface.  The next useful propagation step is to expose the fixed-`M` and
+first-level sign-only convergence consumers with the same a.e. `hbadLower`
+shape, then attack the actual probability theorem.

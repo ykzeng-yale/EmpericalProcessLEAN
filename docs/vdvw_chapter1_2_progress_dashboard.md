@@ -4526,3 +4526,15 @@ mass holds almost everywhere on the centered-bad original samples and whose
 points project into the original or ghost selected finite-net bad event.  The
 dashboard blocker remains that probability-mass theorem, not the
 measure-theoretic factor-two plumbing.
+
+The sign-only Rademacher finite-center failure-tail bridge now has the same
+a.e. source shape:
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail`
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail_sample_coordinate_countable`.
+This lets a future Fubini or conditional argument prove the pure Rademacher
+bad-fiber beta mass only almost everywhere on the centered-bad original
+samples, while still paying the integrated finite-center Hoeffding failure
+tail.  The remaining source blocker is still the probability-mass theorem
+itself; the immediate dashboard follow-up is to propagate this a.e. `hbadLower`
+shape through the fixed-`M`/first-level sign-only convergence consumers.
