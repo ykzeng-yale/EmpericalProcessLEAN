@@ -4,78 +4,40 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V183
+## Live In-Thread Goal Prompt V184
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane: Durrett Chapter 2 in
-`StatInference/ProbabilityTheory/Basic.lean`, with reusable empirical-CDF and
-bracketing infrastructure in `StatInference/EmpiricalProcess/RealHalfLine*.lean`
-and `StatInference/EmpiricalProcess/GlivenkoCantelli.lean`.
+synced `main`.  Active lane only: Durrett Theorem 2.2.3, the `L^2` weak law, in
+`StatInference/ProbabilityTheory/Basic.lean`.
 
-Treat the following as compiled support and do not redo it: Chapter 2.1
-independence/product-law wrappers, including Theorem 2.1.10's partial-sum
-difference versus early-block statistic/indicator wrappers, Theorem 2.1.12's
-nonnegative and integrable independent-pair expectation formulas, Theorem
-2.1.13's finite-set/range/interval product-expectation and zero-mean-factor
-consumers, Theorem 2.1.15's CDF convolution handoff, Theorem 2.1.16
-convolution-law, density-existence, exact Fubini/withDensity formula, and
-two-density handoffs, Theorem 2.3.1/2.3.7
-Borel-Cantelli wrappers, Theorem 2.4.1 strong-law wrappers, and the full
-Durrett Theorem 2.4.9 empirical-CDF route; Theorem 2.2.1 now has covariance
-and finite/range variance-sum support:
-`durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction`,
-`durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction`,
-`durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator`,
-`durrett2019_theorem_2_1_12_indepFun_lintegral_pair`,
-`durrett2019_theorem_2_1_12_indepFun_integral_pair`,
-`durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_prod_integral`,
-`durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_zero_of_integral_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_prod_integral`,
-`durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_zero_of_integral_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_prod_integral`,
-`durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_zero_of_integral_eq_zero`,
-`durrett2019_theorem_2_2_1_uncorrelated_covariance_eq_zero`,
-`durrett2019_theorem_2_2_1_variance_finsetSum_of_uncorrelated`,
-`durrett2019_theorem_2_2_1_variance_rangeSum_of_uncorrelated`,
-`durrett2019_theorem_2_2_1_iIndepFun_integral_mul_eq_mul_integral`,
-`durrett2019_theorem_2_2_1_variance_finsetSum_of_iIndepFun`,
-`durrett2019_theorem_2_2_1_variance_rangeSum_of_iIndepFun`,
-`durrett2019_theorem_2_1_15_product_cdf_convolution`,
-`durrett2019_theorem_2_1_15_indepFun_cdf_convolution`,
-`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv`,
-`durrett2019_theorem_2_1_16_conv_absolutelyContinuous_of_left_density`,
-`durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_density`,
-`durrett2019_theorem_2_1_16_sum_law_absolutelyContinuous_of_left_real_density`,
-`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_of_supplied_density`,
-`durrett2019_theorem_2_1_16_conv_withDensity_left_lintegral`,
-`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_lintegral_density`,
-`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_real_lintegral_density`,
-`durrett2019_theorem_2_1_16_two_density_lintegral_kernel_eq`,
-`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_lintegral_density`,
-`durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_real_lintegral_density`,
-`durrett2019_theorem_2_4_9_cutpointChain`,
-`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
-`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`,
-and
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
+Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
+variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
+the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
+route back to them unless a later theorem explicitly needs a missing primitive.
 
-Next aggressive step: move forward from the now-compiled Theorem 2.1.10,
-2.1.12, 2.1.13, 2.1.16, and 2.2.1 layers to Theorem 2.2.3 weak-law
-convergence packaging.  Good immediate targets are the L2 display
-`E (S_n / n - μ)^2 <= C / n`, the Chebyshev/Lemma 2.2.2 bridge from Lp/L2
-convergence to convergence in probability, or a source-facing 2.2.3 assembly
-from supplied variance bound.  Search mathlib and local wrappers first,
-especially `HasLaw`, `IndepFun`, `iIndepFun`, `Measure.conv`, `Measure.prod`,
-`Measure.pi`, finite sums, variance/covariance APIs, Chebyshev inequalities,
-`Tendsto`/`Filter`, product integrals, and
-`StatInference.ProbabilityMeasure.ProductMeasure`.  Do not route back to
-Chapter 4.5.2 or any solved 2.1.10 partial-sum, 2.1.13 product-consumer,
-2.2.1 variance-sum, 2.4.9, 2.1.12, 2.1.15, or 2.1.16 plumbing unless the
-user explicitly pivots the active goal.
+V184 compiled support now includes:
+`durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
+`durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
+`durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
+`durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_iIndepFun`,
+`durrett2019_theorem_2_2_3_integral_invNatMul_rangeSum_eq`,
+`durrett2019_theorem_2_2_3_integral_sq_centered_average_le_of_uncorrelated`,
+`durrett2019_theorem_2_2_3_integral_sq_centered_average_le_of_iIndepFun`,
+`durrett2019_lemma_2_2_2_tendstoInMeasure_of_tendsto_eLpNorm_two`, and
+`durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_tendsto_eLpNorm_centered`.
+
+Next aggressive step: finish Theorem 2.2.3 by converting the compiled finite
+bound `E (S_n / n - mu)^2 <= C / n` into actual `atTop` `L^2`/`eLpNorm`
+convergence using `C / n -> 0`, then feed the existing
+`TendstoInMeasure` wrapper.  Search mathlib/local first for `eLpNorm`,
+`lpNorm`, `ofReal_integral_eq_lintegral_ofReal`, `Tendsto.squeeze`, `tendsto`
+division-by-`n`, and Chebyshev/Markov APIs.  Use
+`origin/codex/vdvw-selected-cover-source` only as selective reference via
+`git grep`/`git show` or an isolated worktree; do not merge it wholesale into
+this lane.
 
 Current compiled Chapter 4.2 support: Durrett-facing martingale,
 submartingale, and supermartingale wrappers; Examples 4.2.1-4.2.3, including

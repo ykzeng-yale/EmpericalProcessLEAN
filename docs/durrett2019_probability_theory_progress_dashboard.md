@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V183` in
+Route from `Live In-Thread Goal Prompt V184` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -85,12 +85,15 @@ outer-a.s. empirical-CDF endpoints:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`,
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`.
-The next target should move forward to Theorem 2.2.3 weak-law convergence
-packaging: the L2 display `E (S_n / n - μ)^2 <= C / n`, the
-Chebyshev/Lemma 2.2.2 bridge, or a source-facing 2.2.3 assembly from supplied
-variance bounds.  Do not route future cycles back to Chapter 4.5.2 or solved
-2.1.10 partial-sum, 2.1.13 product-consumer, 2.2.1 variance-sum, 2.4.9,
-2.1.12, 2.1.15, or 2.1.16 plumbing unless the user explicitly pivots.
+Theorem 2.2.3 now has finite-block variance scaling, the `C / n` variance
+bound, the source-facing `E (S_n / n - μ)^2 <= C / n` display for uncorrelated
+and independent blocks, the `L^2 -> TendstoInMeasure` Lemma 2.2.2
+specialization, and the average convergence-in-probability consumer from
+supplied centered `eLpNorm` convergence.  The next target is the remaining
+finite-bound-to-`atTop` `L^2`/`eLpNorm` convergence bridge.  Do not route future
+cycles back to Chapter 4.5.2 or solved 2.1.10 partial-sum, 2.1.13
+product-consumer, 2.2.1 variance-sum, 2.4.9, 2.1.12, 2.1.15, or 2.1.16
+plumbing unless the user explicitly pivots.
 The V143-V176 packets added `durrett2019_exercise_4_4_6_varianceClock_succ`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_condExp_succ_eq`,
 `durrett2019_exercise_4_4_6_squareMinusVarianceClock_martingale_of_source`,
@@ -930,22 +933,19 @@ Every Lean packet should pass:
 ## Current Next Goal Cycle Contract
 
 Use the current blocker plan's live prompt as the active `/goal` replacement
-whenever the app-level wording lags.  Active frontier only: Section 3.10
-finite-dimensional limit theory and Chapter 4.1 conditional expectation are
-now closed support; the active frontier is Chapter 4.5.1.
+whenever the app-level wording lags.  Active frontier only: Durrett Theorem
+2.2.3 in `StatInference/ProbabilityTheory/Basic.lean`.
 
-Next proof packet: continue Section 4.5.1 from the compiled Theorem 4.5.1
-endpoint.  Identify the conditional-variance finite-sum display for Durrett's
-increasing process if it is cheap; otherwise move to Theorem 4.5.2 using the
-compiled maximal bound as input.  Do not re-prove the compiled Chapter
-4.3.5/4.3.8 assembly, Theorem 4.4.1 optional stopping, Exercises 4.4.5-4.4.11,
-or the deterministic Abel/Toeplitz/Kronecker/normalized-increment/zero-initial/
-bounded-variance/reciprocal-normalizer/finite Doob `L^2` ordinary-display/iSup
-route or the supplied `A∞` wrapper.
+Next proof packet: convert the compiled finite display
+`E (S_n / n - μ)^2 <= C / n` into actual `atTop` `L^2`/`eLpNorm` convergence,
+then feed `durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_tendsto_eLpNorm_centered`.
+Search mathlib/local APIs first, especially `eLpNorm`, `lpNorm`,
+`ofReal_integral_eq_lintegral_ofReal`, squeeze/tendsto algebra for `C / n`,
+and Chebyshev/Markov bridges.  Do not re-prove the compiled Chapter 2.1,
+2.2.1, 2.4.9, or Chapter 4 support while this frontier is active.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
 one compiled Lean packet, verify focused Lean plus targeted build/scans and root
 build when imports changed, update route docs only if the frontier changes,
-commit, and push.  Closed Chapter 2 through Exercise 4.4.10 material is
-support, not live prompt content, unless the active Exercise 4.4.11 theorem
-requires it.
+commit, and push.  Closed support is not live prompt content unless the active
+Theorem 2.2.3 bridge requires it.

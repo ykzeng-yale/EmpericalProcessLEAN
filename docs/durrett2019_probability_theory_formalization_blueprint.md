@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V183`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V184`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -78,10 +78,13 @@ Treat
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure` as
-closed support.  Continue by moving to Theorem 2.2.3 weak-law convergence
-packaging, especially the L2 display, the Chebyshev/Lemma 2.2.2 bridge, or a
-source-facing 2.2.3 assembly from supplied variance bounds, after a focused
-mathlib/local search.
+closed support.  Theorem 2.2.3 now has finite-block variance scaling, the
+`C / n` variance bound, the source-facing `E (S_n / n - mu)^2 <= C / n`
+display for uncorrelated and independent blocks, the `L^2 -> TendstoInMeasure`
+Lemma 2.2.2 specialization, and the average convergence-in-probability
+consumer from supplied centered `eLpNorm` convergence.  Continue by converting
+the finite display into actual `atTop` `L^2`/`eLpNorm` convergence and feeding
+the compiled `TendstoInMeasure` consumer, after a focused mathlib/local search.
 
 For each cycle, route from:
 

@@ -1319,6 +1319,252 @@ theorem durrett2019_theorem_2_2_1_variance_rangeSum_of_iIndepFun
   durrett2019_theorem_2_2_1_variance_finsetSum_of_iIndepFun
     (P := P) (X := X) (s := Finset.range n) hX_indep hX
 
+/--
+Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
+sample average of an uncorrelated initial block.
+-/
+theorem durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {n : ℕ}
+    (hX : ∀ i ∈ Finset.range n, MemLp (X i) 2 P)
+    (huncorr :
+      ∀ ⦃i : ℕ⦄, i ∈ Finset.range n -> ∀ ⦃j : ℕ⦄, j ∈ Finset.range n ->
+        i ≠ j ->
+        ∫ ω, X i ω * X j ω ∂P =
+          (∫ ω, X i ω ∂P) * ∫ ω, X j ω ∂P) :
+    _root_.ProbabilityTheory.variance
+        (fun ω => (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, X i ω) P =
+      ((n : ℝ)⁻¹) ^ 2 *
+        ∑ i ∈ Finset.range n, _root_.ProbabilityTheory.variance (X i) P := by
+  rw [_root_.ProbabilityTheory.variance_const_mul]
+  rw [durrett2019_theorem_2_2_1_variance_rangeSum_of_uncorrelated
+    (P := P) (X := X) hX huncorr]
+
+/--
+Durrett 2019, Theorem 2.2.3 support: if each variance in an uncorrelated
+initial block is bounded by `C`, then `Var(S_n / n) <= C / n`.
+-/
+theorem durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {n : ℕ} {C : ℝ}
+    (hn : 0 < n)
+    (hX : ∀ i ∈ Finset.range n, MemLp (X i) 2 P)
+    (huncorr :
+      ∀ ⦃i : ℕ⦄, i ∈ Finset.range n -> ∀ ⦃j : ℕ⦄, j ∈ Finset.range n ->
+        i ≠ j ->
+        ∫ ω, X i ω * X j ω ∂P =
+          (∫ ω, X i ω ∂P) * ∫ ω, X j ω ∂P)
+    (hvar : ∀ i ∈ Finset.range n,
+      _root_.ProbabilityTheory.variance (X i) P ≤ C) :
+    _root_.ProbabilityTheory.variance
+        (fun ω => (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, X i ω) P ≤
+      C / n := by
+  rw [durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated
+    (P := P) (X := X) hX huncorr]
+  have hsum :
+      ∑ i ∈ Finset.range n, _root_.ProbabilityTheory.variance (X i) P ≤
+        (n : ℝ) * C := by
+    calc
+      ∑ i ∈ Finset.range n, _root_.ProbabilityTheory.variance (X i) P ≤
+          ∑ i ∈ Finset.range n, C := by
+            exact Finset.sum_le_sum fun i hi => hvar i hi
+      _ = (n : ℝ) * C := by
+            simp [Finset.sum_const, nsmul_eq_mul]
+  calc
+    ((n : ℝ)⁻¹) ^ 2 *
+        ∑ i ∈ Finset.range n, _root_.ProbabilityTheory.variance (X i) P ≤
+        ((n : ℝ)⁻¹) ^ 2 * ((n : ℝ) * C) := by
+          exact mul_le_mul_of_nonneg_left hsum (sq_nonneg _)
+    _ = C / n := by
+          field_simp [Nat.cast_ne_zero.mpr hn.ne']
+
+/--
+Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
+sample average of an independent initial block.
+-/
+theorem durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {n : ℕ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX : ∀ i ∈ Finset.range n, MemLp (X i) 2 P) :
+    _root_.ProbabilityTheory.variance
+        (fun ω => (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, X i ω) P =
+      ((n : ℝ)⁻¹) ^ 2 *
+        ∑ i ∈ Finset.range n, _root_.ProbabilityTheory.variance (X i) P := by
+  rw [_root_.ProbabilityTheory.variance_const_mul]
+  rw [durrett2019_theorem_2_2_1_variance_rangeSum_of_iIndepFun
+    (P := P) (X := X) hX_indep hX]
+
+/--
+Durrett 2019, Theorem 2.2.3 support: independent-family version of the
+variance bound for `S_n / n`.
+-/
+theorem durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {n : ℕ} {C : ℝ}
+    (hn : 0 < n)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX : ∀ i ∈ Finset.range n, MemLp (X i) 2 P)
+    (hvar : ∀ i ∈ Finset.range n,
+      _root_.ProbabilityTheory.variance (X i) P ≤ C) :
+    _root_.ProbabilityTheory.variance
+        (fun ω => (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, X i ω) P ≤
+      C / n := by
+  rw [durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun
+    (P := P) (X := X) hX_indep hX]
+  have hsum :
+      ∑ i ∈ Finset.range n, _root_.ProbabilityTheory.variance (X i) P ≤
+        (n : ℝ) * C := by
+    calc
+      ∑ i ∈ Finset.range n, _root_.ProbabilityTheory.variance (X i) P ≤
+          ∑ i ∈ Finset.range n, C := by
+            exact Finset.sum_le_sum fun i hi => hvar i hi
+      _ = (n : ℝ) * C := by
+            simp [Finset.sum_const, nsmul_eq_mul]
+  calc
+    ((n : ℝ)⁻¹) ^ 2 *
+        ∑ i ∈ Finset.range n, _root_.ProbabilityTheory.variance (X i) P ≤
+        ((n : ℝ)⁻¹) ^ 2 * ((n : ℝ) * C) := by
+          exact mul_le_mul_of_nonneg_left hsum (sq_nonneg _)
+    _ = C / n := by
+          field_simp [Nat.cast_ne_zero.mpr hn.ne']
+
+/--
+Durrett 2019, Theorem 2.2.3 support: if every summand in an initial block has
+mean `mu`, then the sample average has mean `mu`.
+-/
+theorem durrett2019_theorem_2_2_3_integral_invNatMul_rangeSum_eq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {n : ℕ} {mu : ℝ}
+    (hn : 0 < n)
+    (hX_int : ∀ i ∈ Finset.range n, Integrable (X i) P)
+    (hmean : ∀ i ∈ Finset.range n, ∫ ω, X i ω ∂P = mu) :
+    ∫ ω, (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, X i ω ∂P = mu := by
+  rw [integral_const_mul]
+  rw [integral_finsetSum (Finset.range n) hX_int]
+  have hsum :
+      ∑ i ∈ Finset.range n, ∫ ω, X i ω ∂P = (n : ℝ) * mu := by
+    calc
+      ∑ i ∈ Finset.range n, ∫ ω, X i ω ∂P =
+          ∑ i ∈ Finset.range n, mu := by
+            exact Finset.sum_congr rfl fun i hi => hmean i hi
+      _ = (n : ℝ) * mu := by
+            simp [Finset.sum_const, nsmul_eq_mul]
+  rw [hsum]
+  field_simp [Nat.cast_ne_zero.mpr hn.ne']
+
+/--
+Durrett 2019, Theorem 2.2.3, source-facing `L^2` display from the
+uncorrelated variance bound:
+`E (S_n / n - mu)^2 <= C / n`.
+-/
+theorem durrett2019_theorem_2_2_3_integral_sq_centered_average_le_of_uncorrelated
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {n : ℕ} {mu C : ℝ}
+    (hn : 0 < n)
+    (hX : ∀ i ∈ Finset.range n, MemLp (X i) 2 P)
+    (huncorr :
+      ∀ ⦃i : ℕ⦄, i ∈ Finset.range n -> ∀ ⦃j : ℕ⦄, j ∈ Finset.range n ->
+        i ≠ j ->
+        ∫ ω, X i ω * X j ω ∂P =
+          (∫ ω, X i ω ∂P) * ∫ ω, X j ω ∂P)
+    (hmean : ∀ i ∈ Finset.range n, ∫ ω, X i ω ∂P = mu)
+    (hvar : ∀ i ∈ Finset.range n,
+      _root_.ProbabilityTheory.variance (X i) P ≤ C) :
+    ∫ ω, ((n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, X i ω - mu) ^ 2 ∂P ≤
+      C / n := by
+  let Y : Ω -> ℝ := fun ω => (n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, X i ω
+  have hY_mem : MemLp Y 2 P := by
+    have hsum : MemLp (fun ω => ∑ i ∈ Finset.range n, X i ω) 2 P := by
+      have hsumfun :
+          (fun ω => ∑ i ∈ Finset.range n, X i ω) =
+            (∑ i ∈ Finset.range n, X i) := by
+        ext ω
+        simp [Finset.sum_apply]
+      rw [hsumfun]
+      exact memLp_finsetSum' (Finset.range n) hX
+    simpa [Y] using hsum.const_mul ((n : ℝ)⁻¹)
+  have hY_mean : ∫ ω, Y ω ∂P = mu := by
+    simpa [Y] using
+      durrett2019_theorem_2_2_3_integral_invNatMul_rangeSum_eq
+        (P := P) (X := X) (n := n) (mu := mu) hn
+        (fun i hi => (hX i hi).integrable one_le_two) hmean
+  have hY_var :
+      _root_.ProbabilityTheory.variance Y P =
+        ∫ ω, (Y ω - mu) ^ 2 ∂P := by
+    rw [_root_.ProbabilityTheory.variance_eq_integral hY_mem.aemeasurable, hY_mean]
+  have hbound :
+      _root_.ProbabilityTheory.variance Y P ≤ C / n := by
+    simpa [Y] using
+      durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated
+        (P := P) (X := X) (n := n) (C := C) hn hX huncorr hvar
+  simpa [Y] using hY_var.symm.trans_le hbound
+
+/--
+Durrett 2019, Theorem 2.2.3, independent-family specialization of the
+source-facing `L^2` display.
+-/
+theorem durrett2019_theorem_2_2_3_integral_sq_centered_average_le_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {n : ℕ} {mu C : ℝ}
+    (hn : 0 < n)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX : ∀ i ∈ Finset.range n, MemLp (X i) 2 P)
+    (hmean : ∀ i ∈ Finset.range n, ∫ ω, X i ω ∂P = mu)
+    (hvar : ∀ i ∈ Finset.range n,
+      _root_.ProbabilityTheory.variance (X i) P ≤ C) :
+    ∫ ω, ((n : ℝ)⁻¹ * ∑ i ∈ Finset.range n, X i ω - mu) ^ 2 ∂P ≤
+      C / n := by
+  refine durrett2019_theorem_2_2_3_integral_sq_centered_average_le_of_uncorrelated
+    (P := P) (X := X) (n := n) (mu := mu) (C := C) hn hX ?_ hmean hvar
+  intro i hi j hj hij
+  exact durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral
+    (P := P) (X := X i) (Y := X j) (hX_indep.indepFun hij)
+    (hX i hi).aestronglyMeasurable (hX j hj).aestronglyMeasurable
+
+/--
+Durrett 2019, Lemma 2.2.2, `L^2` specialization: convergence in `L^2`
+implies convergence in probability, encoded by mathlib's `TendstoInMeasure`.
+-/
+theorem durrett2019_lemma_2_2_2_tendstoInMeasure_of_tendsto_eLpNorm_two
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {Z : ℕ -> Ω -> ℝ}
+    (hZ_meas : ∀ n, AEStronglyMeasurable (Z n) P)
+    (hZ : Tendsto (fun n => eLpNorm (Z n) 2 P) atTop (𝓝 0)) :
+    TendstoInMeasure P Z atTop (fun _ => 0) := by
+  refine tendstoInMeasure_of_tendsto_eLpNorm (μ := P) (p := 2) (f := Z)
+    (g := fun _ => 0) (by norm_num) hZ_meas ?_ ?_
+  · exact aestronglyMeasurable_const
+  · have hEq : (fun n => eLpNorm (Z n - fun x => 0) 2 P) =
+        fun n => eLpNorm (Z n) 2 P := by
+      ext n
+      congr with x
+      simp
+    rw [hEq]
+    exact hZ
+
+/--
+Durrett 2019, Theorem 2.2.3 support: once the centered averages converge to
+zero in `L^2`, the sample averages converge to `mu` in probability.
+-/
+theorem durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_tendsto_eLpNorm_centered
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {mu : ℝ}
+    (havg_meas : ∀ (n : ℕ), AEStronglyMeasurable
+      (fun ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω) P)
+    (hL2 : Tendsto
+      (fun (n : ℕ) =>
+        eLpNorm (fun ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω - mu) 2 P)
+      atTop (𝓝 0)) :
+    TendstoInMeasure P
+      (fun (n : ℕ) ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω) atTop
+      (fun _ => mu) := by
+  refine tendstoInMeasure_of_tendsto_eLpNorm (μ := P) (p := 2)
+    (f := fun (n : ℕ) ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, X i ω)
+    (g := fun _ => mu) (by norm_num) havg_meas ?_ ?_
+  · exact aestronglyMeasurable_const
+  · simpa [Pi.sub_apply] using hL2
+
 /-! ## Durrett, Section 2.3 -/
 
 /--
