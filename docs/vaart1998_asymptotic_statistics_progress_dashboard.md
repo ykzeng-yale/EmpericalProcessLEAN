@@ -677,13 +677,13 @@ weak convergence field from already compiled score-equation, Taylor-zero, or
 absorbing root/Taylor weak-limit bridges, or prove a genuinely model-specific
 Taylor display, derivative, or score representation that removes a live
 endpoint hypothesis.
-Do not replay solved
-Chapter 2-4
-infrastructure,
-canonical/projected/common-vector/score-representation/derivative-bound/finite
-strong-law/action-bound/law-tail/display-congruence/display-convergence/display-weak-convergence/score-equation-OP/Taylor-zero-OP/absorbing-tightness/derivative-absorbing-tightness/absorbing-source-endpoint/absorbing-empirical-endpoint/absorbing-raw-Taylor-endpoint/absorbing-coordinate-raw-endpoint/absorbing-coordinate-path-endpoint/absorbing-estimating-map-path-endpoint/absorbing-Frechet-path-endpoint/absorbing-Frechet-vector-Taylor-endpoint/absorbing-vector-continuity-Taylor-endpoint/absorbing-theta0-Frechet-endpoint/absorbing-second-derivative-path-endpoint/absorbing-regularity-endpoint/absorbing-ContDiff-source-endpoint/absorbing-summand-measurable-endpoint/absorbing-envelope-tendsto-endpoint/absorbing-derivative-tendsto-endpoint/absorbing-derivative-ae-endpoint/absorbing-raw-score-CLT-endpoint/absorbing-raw-root-endpoint/absorbing-estimator-substitution-endpoint/absorbing-estimator-measurability-endpoint/absorbing-law-tail-compatibility-endpoint/absorbing-derivative-norm-law-tail-endpoint/absorbing-canonical-score-law-tail-endpoint/projected-to-action-law-tail-routing/display-tightness-action-bound-endpoint
-strong-law/action-bound/law-tail/display-congruence/display-convergence/display-weak-convergence/score-equation-OP/Taylor-zero-OP/absorbing-tightness/derivative-absorbing-tightness/absorbing-source-endpoint/absorbing-empirical-endpoint/absorbing-raw-Taylor-endpoint/absorbing-coordinate-raw-endpoint/absorbing-coordinate-path-endpoint/absorbing-estimating-map-path-endpoint/absorbing-Frechet-path-endpoint/absorbing-Frechet-vector-Taylor-endpoint/absorbing-vector-continuity-Taylor-endpoint/absorbing-theta0-Frechet-endpoint/absorbing-second-derivative-path-endpoint/absorbing-regularity-endpoint/absorbing-ContDiff-source-endpoint/absorbing-summand-measurable-endpoint/absorbing-envelope-tendsto-endpoint/absorbing-derivative-tendsto-endpoint/absorbing-derivative-ae-endpoint/absorbing-raw-score-CLT-endpoint/absorbing-raw-root-endpoint/absorbing-estimator-substitution-endpoint/absorbing-estimator-measurability-endpoint/absorbing-law-tail-compatibility-endpoint/absorbing-derivative-norm-law-tail-endpoint/absorbing-canonical-score-law-tail-endpoint/projected-to-action-law-tail-routing/display-tightness-action-bound-endpoint/display-weak-tightness-action-bound-endpoint
-wrappers, earlier Theorem 5.41 wrappers, or historical ledger items.
+Do not replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
+score infrastructure, derivative-bound and finite strong-law infrastructure,
+law-tail routing, display-congruence, display-convergence, display weak
+convergence, score-equation `O_P(1)`, Taylor-zero `O_P(1)`, absorbing
+tightness/source/Taylor/measurability endpoints, projected-to-action law-tail
+routing, display-tightness action-bound, display weak-tightness action-bound,
+earlier Theorem 5.41 wrappers, or historical ledger items.
 
 ## Reuse Dependencies
 
