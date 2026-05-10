@@ -489,6 +489,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   The remaining local-norm sandwich gate is now the standard strict projected
   Hessian positivity on the projected domain plus `y - x ≠ 0`, not a manually
   supplied segment coefficient bound.
+- Inf-projection strict-positivity shrink: the newest packet adds
+  `barrierInfProjectionSchurLift_ne_zero_of_ne`,
+  `barrierInfProjectionSchurHessFrom_quadratic_pos_of_fullHessian_pos`,
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projectedSchurHess_quadratic_pos`,
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_of_ne`.
+  The packaged adjoint-square model now derives strict projected Hessian
+  positivity from the full Hessian square-root factorization and the
+  completed-square Schur lift identity.  The local-norm sandwich wrapper now
+  exposes only the distinct-point side condition `y - x ≠ 0` instead of a
+  manually supplied projected Hessian positivity hypothesis.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

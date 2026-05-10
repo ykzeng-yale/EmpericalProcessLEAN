@@ -607,6 +607,16 @@ adjoint-square route by reusing the existing Riccati source-radius proof
 The remaining source-radius local-norm gate is the standard strict projected
 Hessian positivity on the projected domain plus `y - x ≠ 0`, not a manually
 supplied segment coefficient bound.
+The follow-up positivity shrink adds
+`barrierInfProjectionSchurLift_ne_zero_of_ne`,
+`barrierInfProjectionSchurHessFrom_quadratic_pos_of_fullHessian_pos`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projectedSchurHess_quadratic_pos`,
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_of_ne`.
+Thus the adjoint-square envelope model now derives strict projected Hessian
+positivity internally from the full Hessian factorization `H = S^* S` and the
+Schur lift identity.  The remaining nontrivial source-radius side gate for
+this wrapper is the distinct-point condition `y - x ≠ 0`.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
