@@ -20,7 +20,7 @@ Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Current verified absorbing source endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope_absorbing`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatorSub_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope_absorbing`.
 
 Continuation recipe:
 
@@ -33,9 +33,9 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Tightness source: propagate the absorbing raw-root endpoint into the
-   estimator-substitution wrappers, removing the external `hScaledEstimator`
-   field one layer at a time.
+1. Tightness source: propagate the absorbing estimator-substitution endpoint
+   into estimator-measurability and law-tail wrappers, removing the external
+   `hScaledEstimator` field one layer at a time.
 2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
    finite-entry norm/action wrapper stack.
@@ -1212,25 +1212,32 @@ compiling:
    the absorbing raw-score source endpoint.  The external
    `scaledEstimator = O_P(1)` hypothesis is no longer part of this root source
    layer.
+377. Theorem 5.41 absorbing estimator-substitution source endpoint:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatorSub_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope_absorbing`
+   derives delta consistency, the scaled-estimator display, and the endpoint
+   segment identity from `delta = estimator - theta0` and the direct scaled
+   estimator-increment display, then calls the absorbing raw-root endpoint.
+   The external `scaledEstimator = O_P(1)` hypothesis is no longer part of
+   this estimator-substitution source layer.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 absorbing raw root source endpoint`).
+(`Add Vaart theorem 5.41 absorbing estimator substitution endpoint`).
 
 The latest theorem-sized packet turns the model-shaped derivative LLN,
 unscaled consistency, bounded curvature, second-derivative half-bound or
 quadratic Taylor residual, and root/Taylor display into the final
 scaled-estimator asymptotic-normality conclusion, without assuming
-scaled-estimator tightness first.  The newest raw-root source wrapper carries
-the absorbing raw-score endpoint through the raw empirical estimating equation
-at the estimator.
+scaled-estimator tightness first.  The newest estimator-substitution wrapper
+carries the absorbing raw-root endpoint through the estimator-increment
+identities.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to the estimator-substitution wrapper and remove
-its `hScaledEstimator` hypothesis by calling the absorbing raw-root endpoint,
-then continue upward through estimator-measurability and law-tail wrappers
+source handoff.  Move next to the estimator-measurability wrapper and remove
+its `hScaledEstimator` hypothesis by calling the absorbing
+estimator-substitution endpoint, then continue upward through law-tail wrappers
 only while each packet remains theorem-sized.
 Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
@@ -1247,7 +1254,8 @@ or absorbing-second-derivative-path, absorbing-regularity, or
 absorbing-ContDiff-source, absorbing-summand-measurable,
 absorbing-envelope-tendsto, absorbing-derivative-tendsto,
 absorbing-derivative-a.e., absorbing-raw-score-CLT, or absorbing-raw-root
-wrappers unless a current proof directly depends on a small local API there.
+or absorbing-estimator-substitution wrappers unless a current proof directly
+depends on a small local API there.
 
 ## Execution Notes
 
