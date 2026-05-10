@@ -1600,8 +1600,10 @@ exports the VdV&W 1.3.12(i)-named finite-measure uniqueness wrapper
 mathlib's
 `MeasureTheory.ext_of_forall_integral_eq_of_IsFiniteMeasure`.  This closes the
 finite-Borel-measure bounded-continuous integral determination direction under
-the standard `HasOuterApproxClosed` hypothesis; the vector-lattice/tight
-1.3.12(ii) variant is still pending.
+the standard `HasOuterApproxClosed` hypothesis.  The vector-lattice/tight
+1.3.12(ii) measure-level variant is now compiled as
+`VdVWWeakConvergenceProbabilityMeasures.of_tight_of_separating_starSubalgebra`,
+reusing pinned mathlib's tight separating star-subalgebra convergence theorem.
 
 2026-05-05 bounded-continuous generated-sigma follow-up:
 `WeakConvergence.lean` now exports the VdV&W 1.3.1 generated-sigma wrappers

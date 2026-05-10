@@ -1111,8 +1111,11 @@ adds the VdV&W 1.3.12(i)-named finite-measure uniqueness wrapper
 direct wrapper around pinned mathlib's
 `MeasureTheory.ext_of_forall_integral_eq_of_IsFiniteMeasure` for finite Borel
 measures on `HasOuterApproxClosed` spaces.  This closes the bounded-continuous
-integral uniqueness direction; the VdV&W 1.3.12(ii) vector-lattice/tight
-variant remains pending.
+integral uniqueness direction.  The VdV&W 1.3.12(ii) vector-lattice/tight
+variant is now also available in measure-level form as
+`VdVWWeakConvergenceProbabilityMeasures.of_tight_of_separating_starSubalgebra`,
+wrapping pinned mathlib's tight point-separating star-subalgebra criterion for
+probability measures on Polish Borel spaces.
 
 2026-05-05 bounded-continuous generated-sigma follow-up:
 `WeakConvergence.lean` now adds VdV&W 1.3.1 generated-sigma wrappers:
@@ -1342,7 +1345,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.3.8 | Lemma | `..._1-100.md:678` | blocked-vdvw: Hoffmann-Jørgensen arbitrary-map weak-convergence infrastructure; missing exact local arbitrary-map/asymptotic-measurability primitive |
 | 1.3.9 | Theorem | `..._1-100.md:688` | local-layer/mathlib-foundation: probability-measure tightness wrapper, compact-set characterization, Prokhorov compact-closure wrapper, closed-ball characterization on proper pseudo-metric spaces, norm-tail family characterization, sequence/range limsup norm-tail criterion, and finite-dimensional inner-product tail criteria including unit-vector and real-measure sequence forms proved over mathlib; exact arbitrary-map/asymptotic-tightness extension remains pending |
 | 1.3.10 | Theorem | `..._1-100.md:756` | blocked-vdvw: exact nonmeasurable/arbitrary-map weak-convergence layer missing; measure-level weak-convergence/Portmanteau/tightness wrappers are already local, so the remaining gap is the exact arbitrary-map extension |
-| 1.3.12 | Lemma | `..._1-100.md:768` | local-layer/mathlib-foundation: part (i) finite Borel measure uniqueness from bounded-continuous real integrals wrapped as `vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`; part (ii) vector-lattice/tight variant pending |
+| 1.3.12 | Lemma | `..._1-100.md:768` | local-layer/mathlib-foundation: part (i) finite Borel measure uniqueness from bounded-continuous real integrals wrapped as `vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`; part (ii) tight separating star-subalgebra convergence wrapped as `VdVWWeakConvergenceProbabilityMeasures.of_tight_of_separating_starSubalgebra`; exact arbitrary-map/nonmeasurable variant still pending |
 | 1.3.13 | Lemma | `..._1-100.md:778` | blocked-vdvw: arbitrary-map/asymptotic-measurability infrastructure missing after mathlib search |
 | 1.4.1 | Lemma | `..._1-100.md:848` | local-layer/mathlib-foundation: product Borel equality for separable pseudometric Borel spaces wrapped as `vdVW141_prod_borel_eq_product_borel` |
 | 1.4.2 | Lemma | `..._1-100.md:849` | local-layer/mathlib-foundation: product bounded-continuous test uniqueness wrappers compiled as `vdVW142_prod_measure_ext_of_forall_boundedContinuous_integral_mul` and `vdVW142_prod_measure_eq_prod_of_forall_boundedContinuous_integral_mul`; exact nonnegative-Lipschitz spelling is a source-alignment refinement |

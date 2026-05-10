@@ -1773,7 +1773,11 @@ are finite Borel measures on `HasOuterApproxClosed` spaces.  Search record:
 local ProbabilityMeasure/EmpiricalProcess weak-convergence files did not have
 the VdVW 1.3.12 wrapper, while pinned mathlib had the exact finite-measure
 bounded-continuous integral uniqueness theorem.  The vector-lattice/tight
-variant in VdV&W 1.3.12(ii) remains pending.
+variant in VdV&W 1.3.12(ii) is now compiled as
+`VdVWWeakConvergenceProbabilityMeasures.of_tight_of_separating_starSubalgebra`;
+it reuses pinned mathlib's `ProbabilityMeasure.tendsto_of_tight_of_separatesPoints`
+for Polish Borel probability measures and a point-separating star subalgebra
+of bounded continuous tests.
 
 2026-05-05 bounded-continuous generated-sigma follow-up: the Chapter 1 weak
 convergence file now has VdV&W 1.3.1 local wrappers:

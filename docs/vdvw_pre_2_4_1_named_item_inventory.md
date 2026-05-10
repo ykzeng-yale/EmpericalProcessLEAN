@@ -231,7 +231,7 @@ through 2.4.1 requires accounting for them.
 | 1.3.9 Theorem | `M1:688` | Prohorov theorem | local-layer/mathlib-foundation: probability-measure tightness compact-characterization and compact-closure wrappers proved; VdV&W net/sequence arbitrary-map version pending |
 | 1.3.10 Theorem | `M1:756` | weak convergence in subspaces | later roadmap |
 | 1.3.11 Example | `M1:759` | weak convergence of discrete measures | later roadmap |
-| 1.3.12 Lemma | `M1:768` | finite Borel measure uniqueness | mathlib finite-measure foundations reusable; exact statement pending |
+| 1.3.12 Lemma | `M1:768` | finite Borel measure uniqueness | local-layer/mathlib-foundation: finite-measure bounded-continuous integral uniqueness wrapped as `vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq`, and the measure-level tight separating star-subalgebra convergence variant wrapped as `VdVWWeakConvergenceProbabilityMeasures.of_tight_of_separating_starSubalgebra`; exact arbitrary-map/nonmeasurable variant pending |
 | 1.3.13 Lemma | `M1:778` | asymptotic measurability via separating subalgebra | later roadmap |
 | 1.4.1 Lemma | `M1:848` | product Borel sigma field | mathlib foundation likely reusable |
 | 1.4.2 Lemma | `M1:849` | product measure uniqueness via test functions | mathlib foundation plus local statement pending |

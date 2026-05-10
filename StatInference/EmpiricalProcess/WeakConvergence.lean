@@ -3568,6 +3568,34 @@ theorem vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq
   exact MeasureTheory.ext_of_forall_integral_eq_of_IsFiniteMeasure h
 
 /--
+VdV&W Lemma 1.3.12(ii), measure-level tight separating-class form.
+
+For probability measures on a Polish Borel space, tightness plus convergence of
+integrals over a point-separating star subalgebra of bounded continuous
+`𝕜`-valued functions implies weak convergence.  This is the pinned-mathlib
+vector-lattice/tightness criterion in VdV&W-local weak-convergence notation.
+-/
+theorem
+    VdVWWeakConvergenceProbabilityMeasures.of_tight_of_separating_starSubalgebra
+    {𝕜 : Type x} [RCLike 𝕜]
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S] [PolishSpace S] [BorelSpace S]
+    {ι : Type v} {l : Filter ι}
+    {μs : ι -> ProbabilityMeasure S} {μ : ProbabilityMeasure S}
+    (htight : IsTightMeasureSet {(μs i : Measure S) | i})
+    {A : StarSubalgebra 𝕜 (S →ᵇ 𝕜)}
+    (hA :
+      (A.map (BoundedContinuousFunction.toContinuousMapStarₐ 𝕜)).SeparatesPoints)
+    (hint :
+      ∀ g ∈ A,
+        Tendsto (fun i : ι => ∫ s, g s ∂(μs i : Measure S)) l
+          (𝓝 (∫ s, g s ∂(μ : Measure S)))) :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ := by
+  exact
+    ProbabilityMeasure.tendsto_of_tight_of_separatesPoints
+      𝕜 (by simpa using htight) hA hint
+
+/--
 Portmanteau closed-set implication for the measure-level VdV&W weak convergence
 wrapper.
 
