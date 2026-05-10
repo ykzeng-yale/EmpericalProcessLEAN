@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V203`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V204`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -40,11 +40,14 @@ V202 derives the stopped running-maximum boundedness side condition from the
 stopped terminal square estimates and adds no-`hBdd` source wrappers through
 the monotone-terminal endpoint.  V203 derives stopped predictability of
 `A^N` from `IsStronglyPredictable ℱ A` and adds no-manual-predictability
-wrappers through the monotone-terminal auto endpoint.  The next theorem-facing
-target is exact Theorem 4.5.2 source packaging, then the next Section 4.5
-theorem.  Do not route back to Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12,
-Chapter 3 wrappers, stopped running-maximum boundedness, or stopped
-predictability unless a later theorem exposes a precise missing primitive.
+wrappers through the monotone-terminal auto endpoint.  V204 packages the exact
+event-facing finite-variance side of Theorem 4.5.2 on an arbitrary event
+`FiniteVar`, including the threshold cover, terminal-bound source convergence,
+and monotone-terminal source convergence endpoint.  The next theorem-facing
+target is Durrett Theorem 4.5.3.  Do not route back to Chapter 2.1,
+Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped running-maximum
+boundedness, stopped predictability, or exact Theorem 4.5.2 packaging unless a
+later theorem exposes a precise missing primitive.
 
 Closed Chapter 2 support lives in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled

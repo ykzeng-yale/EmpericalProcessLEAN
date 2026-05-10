@@ -16113,6 +16113,39 @@ theorem durrett2019_theorem_4_5_2_threshold_cover_of_ae_le_terminal
   exact (hle n).trans hk_sq
 
 /--
+Durrett 2019, Theorem 4.5.2 event-local terminal-bound threshold cover.
+
+If the target event carries a finite real terminal upper bound for
+`A_{n+1}`, then almost every path in that event belongs to one of the
+countably many threshold events `∀ n, A_{n+1} <= k^2`.
+-/
+theorem durrett2019_theorem_4_5_2_threshold_cover_on_of_ae_le_terminal
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {FiniteVar : Set Ω}
+    (hA_le_Ainf : ∀ᵐ ω ∂P, ω ∈ FiniteVar -> ∀ n, A (n + 1) ω ≤ Ainf ω) :
+    ∀ᵐ ω ∂P, ω ∈ FiniteVar ->
+      ∃ k : ℕ, ω ∈ {ω : Ω | ∀ n, A (n + 1) ω ≤ (k : ℝ) ^ 2} := by
+  filter_upwards [hA_le_Ainf] with ω hle hFinite
+  obtain ⟨k, hk⟩ := exists_nat_gt (max (1 : ℝ) |Ainf ω|)
+  refine ⟨k, ?_⟩
+  intro n
+  have hk_abs : |Ainf ω| < (k : ℝ) :=
+    lt_of_le_of_lt (le_max_right (1 : ℝ) |Ainf ω|) hk
+  have hk_one : (1 : ℝ) < (k : ℝ) :=
+    lt_of_le_of_lt (le_max_left (1 : ℝ) |Ainf ω|) hk
+  have hk_sq : Ainf ω ≤ (k : ℝ) ^ 2 := by
+    have hAinf_le_abs : Ainf ω ≤ |Ainf ω| := le_abs_self _
+    have hk_ge_sq : (k : ℝ) ≤ (k : ℝ) ^ 2 := by
+      have hk_nonneg : 0 ≤ (k : ℝ) := by positivity
+      have hmul := mul_le_mul_of_nonneg_left (le_of_lt hk_one) hk_nonneg
+      simpa [pow_two] using hmul
+    calc
+      Ainf ω ≤ |Ainf ω| := hAinf_le_abs
+      _ ≤ (k : ℝ) := le_of_lt hk_abs
+      _ ≤ (k : ℝ) ^ 2 := hk_ge_sq
+  exact ((hle hFinite) n).trans hk_sq
+
+/--
 Durrett 2019, Theorem 4.5.2 event-cover convergence from the source
 square-minus-increasing martingale certificates.
 
@@ -16272,6 +16305,67 @@ theorem durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_marti
           (ℱ := ℱ) (A := A) (a := a) hA_predictable)
 
 /--
+Durrett 2019, Theorem 4.5.2 event-local convergence from the source
+square-minus-increasing martingale, with stopped predictability and
+bounded-running-maximum side conditions derived automatically.
+
+This is the source-shaped version of the textbook statement "on
+`{A∞ < ∞}`": the event `FiniteVar` is the event where the supplied finite real
+terminal control for `A_n` is valid.
+-/
+theorem durrett2019_theorem_4_5_2_exists_ae_tendsto_on_of_source_square_minus_martingale_cover_auto_bdd_of_predictable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {FiniteVar : Set Ω}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_le_Ainf : ∀ᵐ ω ∂P, ω ∈ FiniteVar -> ∀ n, A (n + 1) ω ≤ Ainf ω) :
+    ∀ᵐ ω ∂P, ω ∈ FiniteVar ->
+      ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+  let E : ℕ -> Set Ω :=
+    fun k => {ω : Ω | ∀ n, A (n + 1) ω ≤ (k : ℝ) ^ 2}
+  let N : ℕ -> Ω -> ℕ∞ :=
+    fun k => durrett2019_theorem_4_5_2_firstPredictableAbove A (k : ℝ)
+  have hA_shift_predictable :
+      StronglyAdapted ℱ (fun n ω => A (n + 1) ω) := by
+    intro n
+    exact hA_predictable.measurable_add_one n
+  have hcover :
+      ∀ᵐ ω ∂P, ω ∈ FiniteVar -> ∃ k, ω ∈ E k := by
+    simpa [E] using
+      durrett2019_theorem_4_5_2_threshold_cover_on_of_ae_le_terminal
+        (P := P) (A := A) (Ainf := Ainf) (FiniteVar := FiniteVar)
+        hA_le_Ainf
+  have hStopped :
+      ∀ k, ∀ᵐ ω ∂P, ∃ z : ℝ,
+        Tendsto (fun n => stoppedProcess X (N k) n ω) atTop (𝓝 z) := by
+    intro k
+    have hA0_le : ∀ᵐ ω ∂P, A 0 ω ≤ ((k : ℝ) ^ 2) :=
+      Eventually.of_forall fun ω => by
+        rw [congrFun hA0 ω]
+        exact sq_nonneg (k : ℝ)
+    simpa [N] using
+      durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_source_square_minus_martingale_auto_bdd_of_predictable
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (a := (k : ℝ))
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hX0 hA0 hA0_le
+  have hSurvive : ∀ k, ∀ᵐ ω ∂P, ω ∈ E k -> N k ω = ⊤ := by
+    intro k
+    simpa [E, N] using
+      durrett2019_theorem_4_5_2_firstPredictableAbove_survival_of_forall_le_ae
+        (P := P) (A := A) (a := (k : ℝ)) (E := E k)
+        (Eventually.of_forall fun ω hω => hω)
+  exact
+    durrett2019_theorem_4_5_2_exists_ae_tendsto_of_stopped_event_cover
+      (P := P) (X := X) (N := N) (FiniteVar := FiniteVar) (E := E)
+      hcover hStopped hSurvive
+
+/--
 Durrett 2019, Theorem 4.5.2 monotone terminal source wrapper.
 
 The textbook terminal assumption is often given as monotone convergence
@@ -16382,6 +16476,42 @@ theorem durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_marti
       (fun a =>
         durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_predictable_of_predictable
           (ℱ := ℱ) (A := A) (a := a) hA_predictable)
+
+/--
+Durrett 2019, Theorem 4.5.2 event-local monotone terminal source wrapper.
+
+This is the exact event-facing package for the finite-variance side of
+Section 4.5: on any event where `A_n` is monotone and tends to a finite real
+terminal value `A∞`, the martingale has a finite almost-sure path limit on
+that event.
+-/
+theorem durrett2019_theorem_4_5_2_exists_ae_tendsto_on_of_source_square_minus_martingale_monotone_terminal_auto_bdd_of_predictable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {FiniteVar : Set Ω}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, ω ∈ FiniteVar -> Monotone fun n => A n ω)
+    (hA_tendsto :
+      ∀ᵐ ω ∂P, ω ∈ FiniteVar -> Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    ∀ᵐ ω ∂P, ω ∈ FiniteVar ->
+      ∃ z : ℝ, Tendsto (fun n => X n ω) atTop (𝓝 z) := by
+  have hA_le_Ainf :
+      ∀ᵐ ω ∂P, ω ∈ FiniteVar -> ∀ n, A (n + 1) ω ≤ Ainf ω := by
+    filter_upwards [hA_mono, hA_tendsto] with ω hmonoω htendω hFinite n
+    exact ge_of_tendsto (htendω hFinite)
+      ((eventually_ge_atTop (n + 1)).mono fun m hnm => hmonoω hFinite hnm)
+  exact
+    durrett2019_theorem_4_5_2_exists_ae_tendsto_on_of_source_square_minus_martingale_cover_auto_bdd_of_predictable
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+      (FiniteVar := FiniteVar)
+      hX hA_predictable hSquareMinus hX_memLp_two hA_int hX0 hA0 hA_le_Ainf
 
 /--
 Durrett 2019, Exercise 4.4.9, one-step product-integral recurrence for two

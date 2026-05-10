@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V203
+## Live In-Thread Goal Prompt V204
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -56,12 +56,23 @@ The source-facing no-manual-predictability wrappers now compile:
 and
 `durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_martingale_monotone_terminal_auto_bdd_of_predictable`.
 
-Next aggressive step: package the exact textbook-facing Theorem 4.5.2 source
-statement from the V203 monotone-terminal auto endpoint, or, if the exact
-display is already immediate, move directly to the next Section 4.5 theorem.
-Do not route back to stopped running-maximum boundedness or stopped
-predictability; both are closed support unless a later theorem exposes a
-strictly stronger missing primitive.
+V204 packages the exact event-facing finite-variance side of Theorem 4.5.2.
+The threshold cover and source convergence wrappers now work on an arbitrary
+event `FiniteVar`, so the theorem-facing conclusion is
+`∀ᵐ ω, ω ∈ FiniteVar -> ∃ z, Tendsto (fun n => X n ω) atTop (𝓝 z)`.
+New compiled endpoints:
+`durrett2019_theorem_4_5_2_threshold_cover_on_of_ae_le_terminal`,
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_on_of_source_square_minus_martingale_cover_auto_bdd_of_predictable`,
+and
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_on_of_source_square_minus_martingale_monotone_terminal_auto_bdd_of_predictable`.
+
+Next aggressive step: move directly to Durrett Theorem 4.5.3.  Reuse V204 as
+the finite-variance event side, then prove the predictable transform
+`H_m = f(A_m)^{-1}` route, connect it to Theorem 4.2.8/stopped martingale
+support, and package `X_n / f(A_n) -> 0` on `{A∞ = ∞}`.  Do not route back to
+stopped running-maximum boundedness, stopped predictability, or exact
+Theorem 4.5.2 source packaging unless Theorem 4.5.3 exposes a strictly
+stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
