@@ -3545,6 +3545,21 @@ alter the live source target: the missing theorem is still real
 averaged-sign/ghost mass or a stated stronger structural tail/cardinality
 hypothesis.
 
+The product-pair Chebyshev lane now has unnegated-support wrappers that remove
+one duplicated selected-cover assumption:
+`ae_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign`,
+`ae_vdVWProductMeasure_rademacher_prod_productPair_ghostFiniteCenter_neg_of_ae_sign_sample_unneg`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_pos_unneg`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`.
+Future source work on this lane should prove the single unnegated
+sign-sample finite-center support theorem for the canonical quarter-radius
+selected cover, then combine it with stochastic entropy.  This is a cleaner
+input surface, not a displayed-beta mass proof: the averaged sign/ghost or
+stronger structural tail/cardinality source theorem is still the main missing
+mathematical step.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

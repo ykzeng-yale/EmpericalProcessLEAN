@@ -4464,3 +4464,18 @@ symmetry:
 This is support infrastructure for the averaged sign/ghost route.  It does not
 solve the displayed-beta source primitive, but it prevents future work from
 duplicating finite-center side-condition transport when signs are flipped.
+
+The product-pair finite-center support assumptions have now been unified on
+the honest Chebyshev lane.  The compiled wrappers
+`ae_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign`,
+`ae_vdVWProductMeasure_rademacher_prod_productPair_ghostFiniteCenter_neg_of_ae_sign_sample_unneg`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_pos_unneg`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`
+show that the ghost negated-sign finite-center support follows from the same
+unnegated sign-sample support theorem used on the original coordinate.  The
+remaining dashboard blocker on this lane is therefore a single canonical
+selected-cover finite-center support theorem plus the existing stochastic
+entropy/log-cardinality input; the displayed-beta probability-mass source
+blocker remains open.

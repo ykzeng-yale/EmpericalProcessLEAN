@@ -9879,3 +9879,20 @@ structural tail/cardinality hypothesis.  The value of this layer is that the
 finite-center side conditions and canonical selected-net events can now be
 transported across deterministic sign negation without reopening the invalid
 fixed-sign coefficient shortcut.
+
+2026-05-10 product-pair finite-center support unification:
+`Theorem243.lean` now adds
+`ae_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign`,
+`ae_vdVWProductMeasure_rademacher_prod_productPair_ghostFiniteCenter_neg_of_ae_sign_sample_unneg`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_pos_unneg`,
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`.
+These wrappers remove the need to assume separate original and ghost
+finite-center support facts on the honest product-pair Chebyshev lane: one
+unnegated sign-sample support theorem for the selected cover now supplies the
+ghost negated-sign support internally.  The remaining product-pair source
+burden is therefore a single canonical selected-cover finite-center support
+theorem plus the stochastic-entropy/log-cardinality input; the displayed-beta
+probability-mass blocker itself is still not closed by this support
+unification.
