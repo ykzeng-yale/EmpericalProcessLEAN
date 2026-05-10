@@ -1289,22 +1289,27 @@ compiling:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateScoreEquation_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
    assembles the finite-coordinate score-equation displayed weak-convergence
    helper with the display weak-tightness action-bound endpoint.
+388. Theorem 5.41 finite-coordinate Taylor-zero action-bound endpoint:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateTaylorZero_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+   converts the finite-coordinate Taylor-zero display into the centered
+   finite-coordinate score equation, then calls the finite-coordinate
+   score-equation action-bound endpoint.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 finite score-equation action endpoint`).
+(`Add Vaart theorem 5.41 finite Taylor-zero action endpoint`).
 
-The latest theorem-sized packet removes the raw displayed weak-convergence
-hypothesis from the finite-entry action-bound source endpoint when a centered
-finite-coordinate score equation and negligible residual are available.
+The latest theorem-sized packet removes the centered finite-coordinate score
+equation source field when the textbook finite-coordinate Taylor-zero display
+is available.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next only on a genuinely live source hypothesis: either
-derive the centered finite-coordinate score equation from a model-specific
-Taylor/root display, or add the analogous Taylor-zero action-bound assembly if
-it removes a current source field.
+source handoff.  Move next only on a genuinely live source hypothesis: derive
+the finite-coordinate Taylor-zero display from the raw root equation plus a
+model-specific Taylor expansion, or instantiate the negligible residual from
+derivative LLN and the second-derivative envelope.
 Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
 derivative-bound, finite-derivative strong-law, action-bound, law-tail,

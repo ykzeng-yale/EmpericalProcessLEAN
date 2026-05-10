@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart theorem 5.41 finite score-equation action endpoint`).
+(`Add Vaart theorem 5.41 finite Taylor-zero action endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -678,6 +678,10 @@ New verified absorbing source endpoint stack:
 - `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateScoreEquation_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
   assembles that finite-coordinate score-equation display bridge with the
   display weak-tightness action-bound endpoint.
+- `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateTaylorZero_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+  converts the finite-coordinate Taylor-zero display into the centered
+  finite-coordinate score equation and calls the finite-coordinate
+  score-equation action-bound endpoint.
 
 Live continuation prompt: use the efficient prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
@@ -690,10 +694,12 @@ endpoint.  The canonical and projected-to-action law-tail stack now routes
 through the absorbing derivative-norm endpoint, and the current action-bound
 source endpoint now derives displayed `O_P(1)` from displayed weak
 convergence, and the finite-coordinate score-equation action endpoint now
-supplies that displayed weak convergence internally.  Move next only on a live
-source hypothesis: derive the centered finite-coordinate score equation from a
-model-specific Taylor/root display, or add the analogous Taylor-zero
-action-bound assembly if it removes a current source field.
+supplies that displayed weak convergence internally.  The finite-coordinate
+Taylor-zero action endpoint now supplies the centered score equation
+internally.  Move next only on a live source hypothesis: derive that
+finite-coordinate Taylor-zero display from a raw root equation plus a
+model-specific Taylor expansion, or instantiate the negligible residual from
+derivative LLN and the second-derivative envelope.
 Do not replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
 score infrastructure, derivative-bound and finite strong-law infrastructure,
 law-tail routing, display-congruence, display-convergence, display weak
