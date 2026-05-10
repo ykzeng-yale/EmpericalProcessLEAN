@@ -3830,3 +3830,14 @@ sample size.  The current Theorem 2.4.3 event-route blocker is therefore
 sharper: prove scalar selected-center coordinate measurability for
 `VdVWFiniteEmpiricalL1CoverSelectedCenterAt`, and prove the product-fiber lower
 bound with the displayed Chebyshev constants.
+
+That `hcard` closure is now wired directly into the displayed-beta route by
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_sample_coordinate_countable`.
+The wrapper specializes selected cardinality to the canonical positive-radius
+least empirical cover at `eta / 2`, so future callers only supply the
+half-radius selected cover, scalar selected-center coordinate measurability,
+and the product-fiber lower bound.  Local/pinned-mathlib search found no
+general measurable selector theorem for arbitrary `Classical.choice` empirical
+covers and no undoubled concrete-fiber theorem for the displayed constants;
+the available fallback remains the compiled half-scale `C = 4`, `A = 2`
+comparison route.

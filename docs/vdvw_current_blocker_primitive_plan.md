@@ -8961,3 +8961,22 @@ process
 `sample ↦ vdVWTruncatedClassFun ... (VdVWFiniteEmpiricalL1CoverSelectedCenterAt ... sample k) (sample i)`;
 the remaining probability blocker is still the product-fiber lower bound
 with the exact textbook constants.
+
+2026-05-09 selected half-radius displayed-beta constructor:
+`Theorem243.lean` now proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_sample_coordinate_countable`.
+This specializes the displayed-beta concrete-event wrapper to the canonical
+positive-radius selected empirical-cover cardinality at radius `eta / 2` and
+uses
+`measurable_vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_at_sampleSize_of_set_countable`
+internally.  The displayed-beta event route therefore no longer exposes the
+selected-cardinality measurability assumption for the canonical `Nat.find`
+selected cover.  Search over local code and pinned mathlib found no theorem
+that proves scalar selected-center coordinate measurability for an arbitrary
+`Classical.choice` cover selector, and no direct product-fiber bridge replacing
+the successor theorem's `2 * epsilon < dist ...` hypothesis by the displayed
+`epsilon < dist ...` hypothesis.  The exact remaining primitives are:
+scalar selected-center coordinate measurability from a measurable selector
+construction, and an undoubled concrete fiber lower bound with the displayed
+`((n : ℝ) + 1)` Chebyshev beta; otherwise continue through the existing
+half-scale `C = 4`, `A = 2` route.

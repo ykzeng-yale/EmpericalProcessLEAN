@@ -2902,6 +2902,17 @@ open hypothesis.  The remaining selected-cover selector work is scalar
 selected-center coordinate measurability plus the displayed product-fiber lower
 bound.
 
+2026-05-09 selected half-radius displayed-beta route:
+`Theorem243.lean` now adds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_sample_coordinate_countable`,
+which composes the positive-radius selected-cardinality measurability theorem
+with the concrete ghost/Rademacher selected-net event wrapper.  The route is
+now blocked only by scalar selected-center coordinate measurability for the
+chosen empirical-cover centers and by the exact displayed product-fiber lower
+bound.  The current library and pinned mathlib do not supply either primitive
+for an arbitrary choice-based cover selector; use a measurable selector
+construction or the existing half-scale `C = 4`, `A = 2` route next.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
