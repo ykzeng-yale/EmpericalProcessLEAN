@@ -3181,6 +3181,13 @@ coefficient-correct ingredient needed before deciding whether a fixed-fiber
 source theorem can be made useful or whether the final route must stay with
 integrated product-pair symmetry.
 
+The source-facing projection form
+`VdVWOuterProbability_mul_rademacherSignVector_mass_le_of_signSlice_subset`
+now exposes the same accounting at the `VdVWOuterProbability` layer.  Any
+fixed deterministic sign-slice proof that projects `left × {sign}` into a
+right-side event carries the unavoidable factor `(1 / 2)^n`; this is reusable
+bookkeeping, not the displayed-beta lower bound itself.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

@@ -4090,3 +4090,10 @@ fixed-fiber/sign-slice proof attempt: a single deterministic sign contributes
 `(1 / 2)^n`, not unit mass.  Future probability work can use this to build a
 coefficient-correct fixed-fiber route, or to rule it out in favor of the
 already compiled integrated product-pair symmetry.
+
+The same coefficient accounting is now available at the outer-probability
+projection layer through
+`VdVWOuterProbability_mul_rademacherSignVector_mass_le_of_signSlice_subset`.
+It states that a fixed-sign slice proof can only transfer `left` to `right`
+with the factor `(1 / 2)^n`, so it cannot be silently substituted for the
+displayed Chebyshev beta factor required by the textbook route.

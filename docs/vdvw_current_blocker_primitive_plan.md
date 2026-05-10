@@ -9322,3 +9322,12 @@ the coefficient-correct fixed-fiber accounting needed before attempting a
 fixed-sign replacement for the current source gap.  It also reinforces that
 the fixed-fiber route cannot be treated as a cost-free substitute for the
 compiled integrated product-pair symmetry.
+
+The outer-probability projection wrapper
+`VdVWOuterProbability_mul_rademacherSignVector_mass_le_of_signSlice_subset`
+now lifts that slice accounting to the exact marginal/projection shape used
+by the Theorem 2.4.3 probability comparisons: if `left × {sign}` is contained
+in a ghost/sign joint event projecting into `right`, then
+`P^n(left) * (1 / 2)^n <= P^n(right)`.  This is useful for ruling in or ruling
+out fixed-sign arguments, but the exponential coefficient confirms it is not
+the missing textbook displayed-beta lower bound by itself.

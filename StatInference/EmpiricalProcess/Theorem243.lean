@@ -12263,6 +12263,53 @@ theorem measure_mul_rademacherSignVector_mass_le_prod_of_signSlice_subset
           measure_mono hsubset
 
 /--
+Outer-probability projection form of the coefficient-correct fixed-sign slice
+bound.
+
+If a ghost/Rademacher joint event contains the whole slice `left × {sign}` and
+projects into a right event on the original sample coordinate, then the fixed
+sign route pays exactly the finite-product mass `(1 / 2)^n`.
+-/
+theorem
+    VdVWOuterProbability_mul_rademacherSignVector_mass_le_of_signSlice_subset
+    {Observation : Type u} [MeasurableSpace Observation] {P : Measure Observation}
+    {n : ℕ} {sign : SampleAt ℝ n}
+    (hsign : VdVWRademacherSignVector sign)
+    {left right : Set (SampleAt Observation n)}
+    {joint : Set (SampleAt Observation n × SampleAt ℝ n)}
+    (hleft_slice_subset :
+      left ×ˢ ({sign} : Set (SampleAt ℝ n)) ⊆ joint)
+    (hjoint_subset_right :
+      ∀ z : SampleAt Observation n × SampleAt ℝ n,
+        z ∈ joint -> z.1 ∈ right) :
+    VdVWOuterProbability (vdVWProductMeasure P n) left *
+        (2⁻¹ : ℝ≥0∞) ^ n ≤
+      VdVWOuterProbability (vdVWProductMeasure P n) right := by
+  have hslice :
+      (vdVWProductMeasure P n) left * (2⁻¹ : ℝ≥0∞) ^ n ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n)) joint :=
+    measure_mul_rademacherSignVector_mass_le_prod_of_signSlice_subset
+      (P := P) hsign hleft_slice_subset
+  have hproject :
+      ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n)) joint ≤
+        ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n))
+          (right ×ˢ (Set.univ : Set (SampleAt ℝ n))) := by
+    refine measure_mono ?_
+    intro z hz
+    exact ⟨hjoint_subset_right z hz, trivial⟩
+  have hright_prod :
+      ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n))
+          (right ×ˢ (Set.univ : Set (SampleAt ℝ n))) =
+        (vdVWProductMeasure P n) right := by
+    rw [Measure.prod_prod, measure_univ]
+    simp
+  simpa [VdVWOuterProbability, hright_prod] using hslice.trans hproject
+
+/--
 On the ghost/sign product space, the sign coordinate is a Rademacher sign
 vector almost surely.
 -/
