@@ -9932,3 +9932,19 @@ blocker is exactly the coefficient-correct fixed-fiber sign-swap transport
 assumption; the earlier all-one-sign theorem shows the deterministic
 single-sign route pays `(2⁻¹)^n`, so this still requires a real averaged or
 stronger-structure probability argument.
+
+2026-05-10 a.e. product-fiber source interface:
+`Theorem243.lean` now adds
+`measure_mul_le_prod_measure_of_ae_fiber_lower_bound`,
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_ae_fiber_lower_bound_add_error`,
+`VdVWOuterProbability_mul_left_le_of_ae_product_fiber_lower_bound`, and
+`VdVWOuterProbability_mul_left_le_of_ae_product_fiber_lower_bound_add_error`.
+These are not a probability proof of the VdV&W Lemma 2.3.7 source, but they
+weaken the measure-theoretic product-fiber interface from pointwise fibers over
+every bad original sample to `P.restrict left`-a.e. fibers.  This is the
+natural shape for future Fubini/conditional averaged sign/ghost arguments and
+prevents the next source theorem from being over-strengthened to all samples
+when only an a.e. fiber lower bound is mathematically available.  The live
+probability blocker remains the displayed-beta bad-fiber mass, pair-sub mass
+plus coefficient-correct sign-swap transport, or a stronger structural
+tail/cardinality theorem.

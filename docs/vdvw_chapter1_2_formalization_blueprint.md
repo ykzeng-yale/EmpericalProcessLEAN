@@ -3587,6 +3587,17 @@ therefore focus on the fixed-fiber sign-swap probability transport itself, or
 on the averaged product-fiber route; event measurability and support transport
 are no longer the exposed fixed-fiber blockers for this canonical route.
 
+The averaged product-fiber route now has an a.e. source interface:
+`measure_mul_le_prod_measure_of_ae_fiber_lower_bound`,
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_ae_fiber_lower_bound_add_error`,
+`VdVWOuterProbability_mul_left_le_of_ae_product_fiber_lower_bound`, and
+`VdVWOuterProbability_mul_left_le_of_ae_product_fiber_lower_bound_add_error`.
+Use these when the next Fubini/conditional sign/ghost source proof gives the
+displayed-beta or additive-error fiber lower bound only almost everywhere on
+the centered-bad marginal event.  They should not be counted as the missing
+probability theorem by themselves; they only keep that theorem in its natural
+a.e. form.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

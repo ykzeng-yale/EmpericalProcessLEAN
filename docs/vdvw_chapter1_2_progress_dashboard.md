@@ -4503,3 +4503,14 @@ original/ghost finite-center support transport from a single sign-only support
 hypothesis.  The remaining dashboard blocker for the fixed-fiber branch is
 therefore the actual coefficient-correct sign-swap probability transport, not
 selected-cover measurability or duplicated support plumbing.
+
+The generic product-fiber source interface now also has almost-everywhere
+variants:
+`measure_mul_le_prod_measure_of_ae_fiber_lower_bound`,
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_ae_fiber_lower_bound_add_error`,
+`VdVWOuterProbability_mul_left_le_of_ae_product_fiber_lower_bound`, and
+`VdVWOuterProbability_mul_left_le_of_ae_product_fiber_lower_bound_add_error`.
+This lets the next averaged sign/ghost proof state its fiber lower bound
+`P.restrict left`-a.e. instead of pointwise for every centered-bad sample.  It
+does not close the Lemma 2.3.7 probability source, but it removes an avoidable
+over-strengthening from the source interface.

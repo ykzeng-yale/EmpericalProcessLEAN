@@ -41941,6 +41941,34 @@ theorem measure_mul_le_prod_measure_of_fiber_lower_bound
     _ = μ.prod ν joint := (Measure.prod_apply hjoint_meas).symm
 
 /--
+Product-measure fiber lower bound with almost-everywhere fibers.
+
+The pointwise version above is often too strong for source theorems produced by
+Fubini or conditional arguments.  This variant only requires the beta-large
+fiber lower bound on `left` almost everywhere.
+-/
+theorem measure_mul_le_prod_measure_of_ae_fiber_lower_bound
+    {α : Type u} {β : Type v} [MeasurableSpace α] [MeasurableSpace β]
+    {μ : Measure α} {ν : Measure β} [SFinite ν]
+    {left : Set α} {joint : Set (α × β)} {beta : ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (hfiber :
+      ∀ᵐ x ∂(μ.restrict left), beta ≤ ν (Prod.mk x ⁻¹' joint)) :
+    beta * μ left ≤ μ.prod ν joint := by
+  have hsection_meas :
+      Measurable fun x : α => ν (Prod.mk x ⁻¹' joint) :=
+    measurable_measure_prodMk_left hjoint_meas
+  calc
+    beta * μ left = ∫⁻ _x in left, beta ∂μ := by
+      rw [setLIntegral_const]
+    _ ≤ ∫⁻ x in left, ν (Prod.mk x ⁻¹' joint) ∂μ :=
+      setLIntegral_mono_ae hsection_meas.aemeasurable
+        (ae_imp_of_ae_restrict hfiber)
+    _ ≤ ∫⁻ x, ν (Prod.mk x ⁻¹' joint) ∂μ :=
+      lintegral_mono' Measure.restrict_le_self le_rfl
+    _ = μ.prod ν joint := (Measure.prod_apply hjoint_meas).symm
+
+/--
 Product-measure fiber lower bound with an additive per-left-point error.
 
 If every `left` fiber has mass at least `beta` up to an error term, then the
@@ -41971,6 +41999,54 @@ theorem measure_mul_le_prod_measure_add_setLIntegral_error_of_fiber_lower_bound_
       ∫⁻ _x in left, beta ∂(μ) ≤
         ∫⁻ x in left, fiberMass x + error x ∂(μ) :=
     setLIntegral_mono_ae hsum_aemeas (ae_of_all _ hfiber)
+  have hsection_le :
+      ∫⁻ x in left, fiberMass x ∂(μ) ≤ μ.prod ν joint := by
+    calc
+      ∫⁻ x in left, fiberMass x ∂(μ) ≤ ∫⁻ x, fiberMass x ∂(μ) :=
+        lintegral_mono' Measure.restrict_le_self le_rfl
+      _ = μ.prod ν joint := (Measure.prod_apply hjoint_meas).symm
+  calc
+    beta * μ left = ∫⁻ _x in left, beta ∂(μ) := by
+      rw [setLIntegral_const]
+    _ ≤ ∫⁻ x in left, fiberMass x + error x ∂(μ) := hmono
+    _ = (∫⁻ x in left, fiberMass x ∂(μ)) +
+          (∫⁻ x in left, error x ∂(μ)) := by
+      rw [lintegral_add_left hfiberMass_meas]
+    _ ≤ μ.prod ν joint + (∫⁻ x in left, error x ∂(μ)) :=
+      add_le_add hsection_le le_rfl
+
+/--
+Product-measure fiber lower bound with almost-everywhere fibers and an
+additive per-left-point error.
+
+This is the Fubini-ready form of the finite-center failure accounting: the
+source may provide the lower bound only almost everywhere on the marginal bad
+event, while the failure cost remains an explicit set integral.
+-/
+theorem
+    measure_mul_le_prod_measure_add_setLIntegral_error_of_ae_fiber_lower_bound_add_error
+    {α : Type u} {β : Type v} [MeasurableSpace α] [MeasurableSpace β]
+    {μ : Measure α} {ν : Measure β} [SFinite ν]
+    {left : Set α} {joint : Set (α × β)} {beta : ℝ≥0∞}
+    {error : α -> ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (herror_aemeas : AEMeasurable error (μ.restrict left))
+    (hfiber :
+      ∀ᵐ x ∂(μ.restrict left),
+        beta ≤ ν (Prod.mk x ⁻¹' joint) + error x) :
+    beta * μ left ≤
+      μ.prod ν joint + (∫⁻ x in left, error x ∂(μ)) := by
+  let fiberMass : α -> ℝ≥0∞ := fun x => ν (Prod.mk x ⁻¹' joint)
+  have hfiberMass_meas : Measurable fiberMass :=
+    measurable_measure_prodMk_left hjoint_meas
+  have hsum_aemeas :
+      AEMeasurable (fun x : α => fiberMass x + error x)
+        (μ.restrict left) :=
+    hfiberMass_meas.aemeasurable.add herror_aemeas
+  have hmono :
+      ∫⁻ _x in left, beta ∂(μ) ≤
+        ∫⁻ x in left, fiberMass x + error x ∂(μ) :=
+    setLIntegral_mono_ae hsum_aemeas (ae_imp_of_ae_restrict hfiber)
   have hsection_le :
       ∫⁻ x in left, fiberMass x ∂(μ) ≤ μ.prod ν joint := by
     calc
@@ -42393,6 +42469,39 @@ theorem
     hleft_joint.trans hjoint_le_right_prod
 
 /--
+Outer-probability form of the almost-everywhere product-fiber lower bound.
+
+This weakens the source obligation from all points of `left` to
+`μ.restrict left`-almost every point, which is the form naturally produced by
+Fubini/conditional source arguments.
+-/
+theorem
+    VdVWOuterProbability_mul_left_le_of_ae_product_fiber_lower_bound
+    {α : Type u} {β : Type v} [MeasurableSpace α] [MeasurableSpace β]
+    {μ : Measure α} {ν : Measure β} [SFinite ν] [IsProbabilityMeasure ν]
+    {left right : Set α} {joint : Set (α × β)} {beta : ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (hfiber :
+      ∀ᵐ x ∂(μ.restrict left), beta ≤ ν (Prod.mk x ⁻¹' joint))
+    (hjoint_subset_right : ∀ z : α × β, z ∈ joint -> z.1 ∈ right) :
+    beta * VdVWOuterProbability μ left ≤ VdVWOuterProbability μ right := by
+  have hleft_joint :
+      beta * μ left ≤ μ.prod ν joint :=
+    measure_mul_le_prod_measure_of_ae_fiber_lower_bound
+      (μ := μ) (ν := ν) hjoint_meas hfiber
+  have hjoint_le_right_prod :
+      μ.prod ν joint ≤ μ.prod ν (right ×ˢ (Set.univ : Set β)) := by
+    refine measure_mono ?_
+    intro z hz
+    exact ⟨hjoint_subset_right z hz, trivial⟩
+  have hright_prod :
+      μ.prod ν (right ×ˢ (Set.univ : Set β)) = μ right := by
+    rw [Measure.prod_prod, measure_univ]
+    simp
+  simpa [VdVWOuterProbability, hright_prod] using
+    hleft_joint.trans hjoint_le_right_prod
+
+/--
 Outer-probability form of the additive-error product-fiber lower bound.
 
 The joint event still only needs to be measurable.  The marginal events may be
@@ -42417,6 +42526,54 @@ theorem
       beta * μ left ≤
         μ.prod ν joint + (∫⁻ x in left, error x ∂(μ)) :=
     measure_mul_le_prod_measure_add_setLIntegral_error_of_fiber_lower_bound_add_error
+      (μ := μ) (ν := ν) hjoint_meas herror_aemeas hfiber
+  have hjoint_le_right_prod :
+      μ.prod ν joint ≤ μ.prod ν (right ×ˢ (Set.univ : Set β)) := by
+    refine measure_mono ?_
+    intro z hz
+    exact ⟨hjoint_subset_right z hz, trivial⟩
+  have hright_prod :
+      μ.prod ν (right ×ˢ (Set.univ : Set β)) = μ right := by
+    rw [Measure.prod_prod, measure_univ]
+    simp
+  calc
+    beta * VdVWOuterProbability μ left
+        = beta * μ left := by
+          rfl
+    _ ≤ μ.prod ν joint + (∫⁻ x in left, error x ∂(μ)) := hleft_joint
+    _ ≤ μ.prod ν (right ×ˢ (Set.univ : Set β)) +
+          (∫⁻ x in left, error x ∂(μ)) :=
+        add_le_add hjoint_le_right_prod le_rfl
+    _ = VdVWOuterProbability μ right + (∫⁻ x in left, error x ∂(μ)) := by
+          rw [hright_prod]
+          rfl
+
+/--
+Outer-probability form of the almost-everywhere additive-error product-fiber
+lower bound.
+
+This is the source-facing variant for proofs that establish the beta lower
+bound with finite-center failure cost only on an a.e. subset of the marginal
+bad event.
+-/
+theorem
+    VdVWOuterProbability_mul_left_le_of_ae_product_fiber_lower_bound_add_error
+    {α : Type u} {β : Type v} [MeasurableSpace α] [MeasurableSpace β]
+    {μ : Measure α} {ν : Measure β} [SFinite ν] [IsProbabilityMeasure ν]
+    {left right : Set α} {joint : Set (α × β)} {beta : ℝ≥0∞}
+    {error : α -> ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (herror_aemeas : AEMeasurable error (μ.restrict left))
+    (hfiber :
+      ∀ᵐ x ∂(μ.restrict left),
+        beta ≤ ν (Prod.mk x ⁻¹' joint) + error x)
+    (hjoint_subset_right : ∀ z : α × β, z ∈ joint -> z.1 ∈ right) :
+    beta * VdVWOuterProbability μ left ≤
+      VdVWOuterProbability μ right + (∫⁻ x in left, error x ∂(μ)) := by
+  have hleft_joint :
+      beta * μ left ≤
+        μ.prod ν joint + (∫⁻ x in left, error x ∂(μ)) :=
+    measure_mul_le_prod_measure_add_setLIntegral_error_of_ae_fiber_lower_bound_add_error
       (μ := μ) (ν := ν) hjoint_meas herror_aemeas hfiber
   have hjoint_le_right_prod :
       μ.prod ν joint ≤ μ.prod ν (right ×ˢ (Set.univ : Set β)) := by
