@@ -8995,3 +8995,17 @@ the finite cover itself, and convergence to zero of the integrated
 finite-center failure-tail error.  The direct displayed-beta `C = 2` route
 still needs the undoubled product-fiber primitive; the half-scale route is
 compiled with `C = 4`, `A = 2`.
+
+2026-05-09 selected-center fiber measurability bridge:
+`Theorem243.lean` now proves
+`measurable_vdVWTruncatedClassFun_selected_index_of_countable_fibers` and
+`measurable_vdVWTruncatedClassFun_selectedCenterAt_of_countable_fibers`.
+These turn scalar selected-center coordinate measurability into a sharper
+selector-fiber obligation: if the selected center takes values in the countable
+theorem class, every class fiber of the Nat-indexed selected-center selector is
+measurable, and the out-of-range `default` branch is a class member, then
+`sample ↦ vdVWTruncatedClassFun ... (VdVWFiniteEmpiricalL1CoverSelectedCenterAt ... sample k) (sample i)`
+is measurable.  The arbitrary `Classical.choice` cover selector is still not
+proved measurable; the next source task is now to construct measurable fibers
+for a canonical selected-cover tuple, or to replace the fallback/default
+adapter with an in-class measurable selector.

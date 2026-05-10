@@ -2924,6 +2924,19 @@ handled internally.  Continue by proving scalar selected-center coordinate
 measurability for the chosen cover or by proving the integrated
 finite-center failure-tail convergence.
 
+2026-05-09 selected-center countable-fiber bridge:
+`Theorem243.lean` now adds
+`measurable_vdVWTruncatedClassFun_selected_index_of_countable_fibers` and
+`measurable_vdVWTruncatedClassFun_selectedCenterAt_of_countable_fibers`.
+These are the current source-facing scalar-coordinate measurability interface:
+for a countable theorem class, measurable fibers of the Nat-indexed
+selected-center selector imply measurability of
+`sample ↦ vdVWTruncatedClassFun ... (selectedCenter sample k) (sample i)`,
+provided the selected-center fallback `default` is also in the class.  The
+next selected-cover task is therefore to build a canonical selected-cover
+tuple with measurable fibers, or to replace the default fallback with a
+canonical in-class fallback before final Theorem 2.4.3 assembly.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
