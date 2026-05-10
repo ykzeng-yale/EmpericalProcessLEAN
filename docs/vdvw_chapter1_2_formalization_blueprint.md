@@ -3860,6 +3860,20 @@ This closes the bookkeeping layer where the source theorem supplies a
 `P^n`-a.e. conditional fiber lower bound and controls `errorSample` by the
 displayed finite-center failure tail.
 
+The fixed-original pair-difference source bridge now carries finite-center
+failures explicitly:
+`VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_finiteCenter_failures`,
+`VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_finiteCenter_failure_tails`,
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapBadEvent_finiteCenter_failures`,
+and
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapBadEvent_finiteCenter_failure_tails`.
+This is the theorem-facing source layer below the displayed-beta consumer:
+given mass for the centered sign-swapped bad event, it produces the concrete
+pair-difference selected-net fiber lower bound with the original and ghost
+finite-center Hoeffding tails charged explicitly.  The next blueprint target
+is the actual sign-swapped bad-event mass theorem, or the averaged product-pair
+source theorem that bypasses fixed-original sign-swap transport.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

@@ -10276,3 +10276,19 @@ and
 The future product-fiber source theorem may now state both its fiber lower
 bound and selected-cover growth in their natural a.e. forms while using the
 displayed finite-center failure tail for `errorSample` control.
+
+2026-05-10 fixed-fiber pair-difference finite-tail source bridge:
+`Theorem243.lean` now adds
+`VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_finiteCenter_failures`,
+`VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_finiteCenter_failure_tails`,
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapBadEvent_finiteCenter_failures`,
+and
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapBadEvent_finiteCenter_failure_tails`.
+These close the honest fixed-original product-fiber accounting layer for the
+pair-difference source: mass for the centered sign-swapped bad event now feeds
+the concrete selected-net fiber while paying the original fixed-sample
+finite-center Hoeffding tail and the integrated ghost-sample finite-center
+tail.  The remaining frontier is therefore not the finite-center side-condition
+handoff; it is the genuine probability source, namely a displayed-beta lower
+bound for the centered sign-swapped bad event, or an averaged product-pair
+replacement that supplies the same mass without fixed-original transport.

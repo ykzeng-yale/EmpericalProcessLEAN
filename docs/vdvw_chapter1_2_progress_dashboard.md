@@ -4764,3 +4764,15 @@ and its deterministic/a.e. lower-growth wrappers.  This closes the combined
 adapter: base-a.e. fiber lower bounds, finite-center `errorSample` tails, and
 a.e. selected-cardinality growth now feed the fixed-`M` product-fiber route
 without an extra manual restricted-measure conversion.
+
+The fixed-original pair-difference source now has explicit finite-center
+failure-tail accounting at the fiber level:
+`VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_finiteCenter_failure_tails`
+and
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapBadEvent_finiteCenter_failure_tails`.
+A lower bound for the centered sign-swapped bad event can now be promoted to
+the concrete pair-difference selected-net fiber while paying exactly the
+original fixed-sample Hoeffding tail plus the ghost-sample integrated tail.
+The dashboard blocker is consequently the displayed-beta mass source for that
+sign-swapped bad event, or the product-pair averaged replacement, rather than
+another finite-center support adapter.
