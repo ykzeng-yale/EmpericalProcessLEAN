@@ -164,7 +164,7 @@ Targeted search found these reusable foundations.
 | measurable spaces, Borel spaces, measures | `Mathlib/MeasureTheory/MeasurableSpace/*`, `Mathlib/MeasureTheory/Measure/*` | use directly |
 | probability measures | `Mathlib/MeasureTheory/Measure/ProbabilityMeasure.lean` | use `ProbabilityMeasure`, `IsProbabilityMeasure`, coercion to `Measure` |
 | finite measures and weak convergence topology | `Mathlib/MeasureTheory/Measure/FiniteMeasure.lean` | use finite-measure topology and integral characterizations |
-| local VdV&W weak convergence wrappers | `StatInference/EmpiricalProcess/WeakConvergence.lean` | compiled measure-level probability-law weak convergence, bounded-continuous integral characterization, Portmanteau closed/open implications, tightness/Prokhorov wrappers, continuous mapping, product-law weak convergence, finite-coordinate/FDD forward direction, and measurable Slutsky/product wrappers |
+| local VdV&W weak convergence wrappers | `StatInference/EmpiricalProcess/WeakConvergence.lean` | compiled measure-level probability-law weak convergence, bounded-continuous integral characterization, Portmanteau closed/open implications, tightness/Prokhorov wrappers, VdV&W-numbered Lemma 1.10.2(ii) common-domain bridge, VdV&W-numbered Theorem 1.11.1 fixed continuous-map wrappers, product-law weak convergence, finite-coordinate/FDD forward direction, and measurable Slutsky/product wrappers |
 | local VdV&W ball sigma-field wrappers | `StatInference/EmpiricalProcess/BallSigma.lean` | compiled open/closed ball sigma-field definitions, open-ball topological basis, rational open/closed ball bridges, open/closed ball sigma equality, Borel equality, generator measurability, and separable dense-sequence distance-coordinate measurability iff |
 | local VdV&W Hilbert/Gaussian wrappers | `StatInference/EmpiricalProcess/HilbertGaussian.lean` | compiled Hilbert, L2, Frechet-Riesz, Gaussian inner-coordinate, and Gaussian-process coordinate foundation wrappers |
 | Portmanteau style weak convergence | `Mathlib/MeasureTheory/Measure/Portmanteau.lean` | reused directly through local measure-level Portmanteau wrappers; arbitrary-map/outer-expectation version remains pending |
@@ -268,14 +268,14 @@ through 2.4.1 requires accounting for them.
 | 1.9.5 Theorem | `M1:1328` | continuous mapping for convergence in probability | later roadmap |
 | 1.9.6 Theorem | `M1:1354` | equivalent formulations of convergence in probability/distribution context | later roadmap |
 | 1.10.1 Definition | `M1:1406` | convergence in outer probability | generic constant-limit and common-domain primitives formalized; full arbitrary-map API still being expanded |
-| 1.10.2 Lemma | `M1:1409` | outer-probability comparison lemmas | pending weak-convergence/closed-set layer |
+| 1.10.2 Lemma | `M1:1409` | outer-probability comparison lemmas | local-layer/mathlib-foundation: measurable common-domain part (ii) now named as `vdVW1102_ii_tendstoInDistribution_of_vdVWConvergesInOuterProbability`, plus signed bounded-continuous arbitrary-map consequence `vdVW1102_ii_to_signedBoundedContinuousArbitraryMap_aemeasurable`; full arbitrary-map/measurable-cover version remains pending |
 | 1.10.3 Theorem | `M1:1420` | a.s. representations | later roadmap |
 | 1.10.5 Addendum | `M1:1437` | representation refinement | later roadmap |
 | 1.10.6 Example | `M1:1441` | empirical process representation | later roadmap; conceptually relevant |
 | 1.10.10 Example | `M1:1548` | expectation convergence under domination | mathlib integrability foundation reusable; exact outer version pending |
 | 1.10.11 Example | `M1:1551` | weighted measures and weak convergence | later roadmap |
 | 1.10.12 Proposition | `M1:1554` | Borel measurable approximants | later roadmap |
-| 1.11.1 Theorem | `M1:1630` | extended continuous mapping theorem | later roadmap |
+| 1.11.1 Theorem | `M1:1630` | extended continuous mapping theorem | local-layer/mathlib-foundation: fixed continuous-map measurable, signed arbitrary-map, and varying-domain wrappers now named as `vdVW1111_tendstoInDistribution_continuous_comp`, `vdVW1111_signedBoundedContinuousArbitraryMap_comp_continuous`, and `vdVW1111_signedBoundedContinuousVaryingDomains_comp_continuous`; full varying-map/nonmeasurable statement remains pending |
 | 1.11.3 Theorem | `M1:1674` | continuous function expectation convergence | later roadmap |
 | 1.11.4 Example | `M1:1692` | asymptotic uniform integrability and moments | mathlib integrability foundation reusable; exact outer version pending |
 | 1.11.5 Example | `M1:1693` | Gaussian moment convergence | later roadmap |

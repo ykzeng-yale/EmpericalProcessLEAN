@@ -663,6 +663,28 @@ theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.comp_continuous
     asymptoticMeasurability := h.asymptoticMeasurability.comp_continuous hg }
 
 /--
+VdV&W Theorem 1.11.1, fixed continuous-map signed bounded-continuous form.
+
+This is the theorem-facing wrapper around the local proof-carrying
+arbitrary-map continuous-mapping primitive.  It covers the fixed-map part of
+the extended continuous mapping theorem; the full varying-map/nonmeasurable
+book statement remains a separate primitive.
+-/
+theorem vdVW1111_signedBoundedContinuousArbitraryMap_comp_continuous
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h :
+      VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs
+      (fun i ω => g (X i ω)) l (μ.map hg.measurable.aemeasurable) :=
+  h.comp_continuous hg
+
+/--
 The proof-carrying signed bounded-continuous arbitrary-map weak-convergence
 package is stable under passing to a finer index filter.
 -/
@@ -1155,6 +1177,30 @@ theorem
   { weakConvergence := h.weakConvergence.comp_continuous hg
     asymptoticMeasurability :=
       h.asymptoticMeasurability.comp_continuous hg }
+
+/--
+VdV&W Theorem 1.11.1, fixed continuous-map varying-domain form.
+
+This names the sample-size-varying signed bounded-continuous version used by
+empirical-process endpoints.  It reuses the local varying-domain
+continuous-mapping primitive and does not claim the still-missing full
+VdV&W varying-map statement.
+-/
+theorem
+    vdVW1111_signedBoundedContinuousVaryingDomains_comp_continuous
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v} {T : Type x}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι} {μ : ProbabilityMeasure S}
+    (h :
+      VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs
+      (fun i ω => g (X i ω)) l
+      (μ.map hg.measurable.aemeasurable) :=
+  h.comp_continuous hg
 
 /--
 The proof-carrying varying-domain signed bounded-continuous weak-convergence
@@ -5110,6 +5156,47 @@ theorem vdVWTendstoInDistribution_continuous_comp
   h.continuous_comp hg
 
 /--
+VdV&W Theorem 1.11.1, measurable random-variable continuous mapping form.
+
+This is the classical mathlib-backed continuous mapping theorem for
+convergence in distribution, under the fixed continuous map specialization.
+-/
+theorem vdVW1111_tendstoInDistribution_continuous_comp
+    {ι : Type u} {E : Type v} {F : Type w} {Ω : ι -> Type x}
+    {Ω' : Type x} {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    [TopologicalSpace F] [MeasurableSpace F] [BorelSpace F]
+    {X : (i : ι) -> Ω i -> E} {Z : Ω' -> E} {l : Filter ι}
+    {g : E -> F}
+    (h : TendstoInDistribution X l Z μ μ')
+    (hg : Continuous g) :
+    TendstoInDistribution (fun i => g ∘ X i) l (g ∘ Z) μ μ' :=
+  vdVWTendstoInDistribution_continuous_comp h hg
+
+/--
+VdV&W Lemma 1.10.2(ii), measurable common-domain form.
+
+Convergence in the local VdV&W outer-probability predicate implies mathlib
+convergence in distribution when the maps are a.e.-measurable and live on a
+common probability space.
+-/
+theorem vdVW1102_ii_tendstoInDistribution_of_vdVWConvergesInOuterProbability
+    {Ω : Type u} {ι : Type w} {D : Type v}
+    [MeasurableSpace Ω] [MeasurableSpace D]
+    [SeminormedAddCommGroup D] [SecondCountableTopology D] [BorelSpace D]
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {X : ι -> Ω -> D} {l : Filter ι} [l.NeBot] [l.IsCountablyGenerated]
+    {limit : Ω -> D}
+    (h : VdVWConvergesInOuterProbability μ X l limit)
+    (hX : ∀ i, AEMeasurable (X i) μ) :
+    TendstoInDistribution X l limit (fun _ : ι => μ) μ :=
+  tendstoInDistribution_of_vdVWConvergesInOuterProbability h hX
+
+/--
 Measurable common-domain convergence in distribution implies the local
 signed-outer bounded-continuous weak-convergence formulation for the original
 maps.
@@ -5247,6 +5334,32 @@ theorem
       TendstoInDistribution X l limit (fun _ : ι => μ) μ :=
     tendstoInDistribution_of_vdVWConvergesInOuterProbability h hX
   exact vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap_aemeasurable hdist
+
+/--
+VdV&W Lemma 1.10.2(ii), signed bounded-continuous arbitrary-map consequence.
+
+This packages the common-domain outer-probability-to-distribution bridge into
+the local proof-carrying signed bounded-continuous weak-convergence predicate.
+-/
+theorem
+    vdVW1102_ii_to_signedBoundedContinuousArbitraryMap_aemeasurable
+    {ι : Type u} {Ω : Type v} {D : Type w}
+    [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    [MeasurableSpace D] [MeasurableSpace.CountablyGenerated D]
+    [SeminormedAddCommGroup D] [SecondCountableTopology D]
+    [BorelSpace D] [OpensMeasurableSpace D]
+    {X : ι -> Ω -> D} {limit : Ω -> D} {l : Filter ι}
+    [l.NeBot] [l.IsCountablyGenerated]
+    (h : VdVWConvergesInOuterProbability μ X l limit)
+    (hX : ∀ i, AEMeasurable (X i) μ) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap
+      (fun _ : ι => μ) X l
+      ⟨μ.map limit,
+        Measure.isProbabilityMeasure_map
+          (tendstoInDistribution_of_vdVWConvergesInOuterProbability h
+            hX).aemeasurable_limit⟩ :=
+  VdVWConvergesInOuterProbability.to_signedBoundedContinuousArbitraryMap_aemeasurable
+    h hX
 
 /--
 Measurable common-domain Slutsky/product theorem.

@@ -1382,11 +1382,11 @@ quotes; the anchor is the authoritative local source location.
 | 1.9.3 | Lemma | `..._1-100.md:1308` | local-layer; scoped convergence-mode building block |
 | 1.9.5 | Theorem | `..._1-100.md:1328` | mathlib-foundation, pending scoped VdV&W wrapper when active |
 | 1.9.6 | Theorem | `..._1-100.md:1354` | local-layer |
-| 1.10.2 | Lemma | `..._1-100.md:1409` | local-layer for measurable common-domain part |
+| 1.10.2 | Lemma | `..._1-100.md:1409` | local-layer/mathlib-foundation: measurable common-domain part (ii) named as `vdVW1102_ii_tendstoInDistribution_of_vdVWConvergesInOuterProbability`, with signed bounded-continuous arbitrary-map consequence `vdVW1102_ii_to_signedBoundedContinuousArbitraryMap_aemeasurable`; full arbitrary-map/measurable-cover version pending |
 | 1.10.3 | Theorem | `..._1-100.md:1420` | blocked-vdvw: almost-sure representation/Skorokhod route; no exact local or pinned mathlib theorem found yet |
 | 1.10.4 | Theorem | `..._1-100.md:1434` | blocked-vdvw: nonmeasurable almost-sure representation theorem; missing arbitrary-map/perfect-map representation primitive |
 | 1.10.12 | Proposition | `..._1-100.md:1554` | blocked-vdvw: Borel measurable approximants/representation roadmap; exact local measurable-approximation primitive missing |
-| 1.11.1 | Theorem | `..._1-100.md:1630` | foundation-lane/mathlib-foundation: extended continuous-mapping wrapper target over mathlib continuous mapping plus local outer-probability layer |
+| 1.11.1 | Theorem | `..._1-100.md:1630` | local-layer/mathlib-foundation: fixed continuous-map measurable, signed arbitrary-map, and varying-domain wrappers named as `vdVW1111_tendstoInDistribution_continuous_comp`, `vdVW1111_signedBoundedContinuousArbitraryMap_comp_continuous`, and `vdVW1111_signedBoundedContinuousVaryingDomains_comp_continuous`; full varying-map/nonmeasurable theorem pending |
 | 1.11.3 | Theorem | `..._1-100.md:1674` | foundation-lane: refined mapping/integrability theorem target; needs local integrability/tail primitive audit |
 | 1.12.1 | Theorem | `..._1-100.md:1706` | foundation-lane: uniformity over bounded equicontinuous test classes, local test-class primitive needed |
 | 1.12.2 | Theorem | `..._1-100.md:1718` | local-layer/mathlib-foundation: measure-level bounded-Lipschitz determining-class direction and testing consequence wrapped as `vdVW1122_weakConvergenceProbabilityMeasures_of_forall_bounded_lipschitz_integral_tendsto` and `vdVW1122_forall_bounded_lipschitz_integral_tendsto_of_weakConvergenceProbabilityMeasures`; exact arbitrary-map/nonmeasurable version pending |

@@ -9502,3 +9502,19 @@ These reuse pinned mathlib's bounded-Lipschitz Portmanteau criterion and
 Levy-Prokhorov metrization.  They close the ordinary probability-measure core
 for VdV&W 1.12.2 and 1.12.4; the exact arbitrary-map/nonmeasurable textbook
 versions remain separate.
+
+2026-05-10 Chapter 1.10/1.11 fallback closure:
+`WeakConvergence.lean` now also exposes VdV&W-numbered wrappers for the
+measurable common-domain Lemma 1.10.2(ii) and fixed-map continuous-mapping
+Theorem 1.11.1 layers:
+`vdVW1102_ii_tendstoInDistribution_of_vdVWConvergesInOuterProbability`,
+`vdVW1102_ii_to_signedBoundedContinuousArbitraryMap_aemeasurable`,
+`vdVW1111_tendstoInDistribution_continuous_comp`,
+`vdVW1111_signedBoundedContinuousArbitraryMap_comp_continuous`, and
+`vdVW1111_signedBoundedContinuousVaryingDomains_comp_continuous`.
+These are not a replacement for the Theorem 2.4.3 source gap, but they record
+that the relevant Chapter 1 measurable/signed fixed-map weak-convergence
+machinery is now compiled and reusable.  The active 2.4.3 blocker remains the
+canonical displayed-beta/product-fiber lower bound, an honest averaged
+sign/ghost source theorem, or an explicit stronger tail/UI/cardinality
+assumption package.
