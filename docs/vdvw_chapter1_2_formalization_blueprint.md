@@ -3188,6 +3188,15 @@ fixed deterministic sign-slice proof that projects `left × {sign}` into a
 right-side event carries the unavoidable factor `(1 / 2)^n`; this is reusable
 bookkeeping, not the displayed-beta lower bound itself.
 
+The pointwise deterministic sign-section versions
+`measure_mul_rademacherSignVector_mass_le_prod_of_pointwise_sign_section` and
+`VdVWOuterProbability_mul_rademacherSignVector_mass_le_of_pointwise_sign_section`
+now rule out the adjacent shortcut of choosing one sign as a function of the
+base point.  Such a section still has only `(1 / 2)^n` Rademacher mass per
+base point, so the active source theorem must obtain beta mass by integrating
+over a nontrivial sign/ghost event or by proving an explicit stronger
+probability hypothesis.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

@@ -9331,3 +9331,12 @@ in a ghost/sign joint event projecting into `right`, then
 `P^n(left) * (1 / 2)^n <= P^n(right)`.  This is useful for ruling in or ruling
 out fixed-sign arguments, but the exponential coefficient confirms it is not
 the missing textbook displayed-beta lower bound by itself.
+
+The pointwise-sign-section variants
+`measure_mul_rademacherSignVector_mass_le_prod_of_pointwise_sign_section` and
+`VdVWOuterProbability_mul_rademacherSignVector_mass_le_of_pointwise_sign_section`
+extend this accounting from a single deterministic sign to a sample-dependent
+deterministic sign section.  They show that choosing one supported sign per
+base point still costs `(1 / 2)^n`; a coefficient-correct source theorem must
+therefore use an integrated/random-sign argument or another non-exponential
+lower-bound mechanism.

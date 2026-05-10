@@ -4097,3 +4097,9 @@ projection layer through
 It states that a fixed-sign slice proof can only transfer `left` to `right`
 with the factor `(1 / 2)^n`, so it cannot be silently substituted for the
 displayed Chebyshev beta factor required by the textbook route.
+
+The variable deterministic sign-section form is also compiled:
+`measure_mul_rademacherSignVector_mass_le_prod_of_pointwise_sign_section` and
+`VdVWOuterProbability_mul_rademacherSignVector_mass_le_of_pointwise_sign_section`.
+These close the natural loophole "choose one sign depending on the sample":
+even pointwise deterministic sign choice still contributes only `(1 / 2)^n`.

@@ -40678,6 +40678,91 @@ theorem measure_mul_le_prod_measure_of_fiber_lower_bound
     _ = μ.prod ν joint := (Measure.prod_apply hjoint_meas).symm
 
 /--
+Product-measure lower bound from a pointwise deterministic Rademacher sign
+section.
+
+This is the variable-sign analogue of the fixed-slice accounting above.  If
+every point of `left` contributes one supported deterministic sign contained
+in the product event, the proof still pays exactly the singleton
+Rademacher-product mass `(1 / 2)^n`.
+-/
+theorem measure_mul_rademacherSignVector_mass_le_prod_of_pointwise_sign_section
+    {Base : Type u} [MeasurableSpace Base] {μ : Measure Base}
+    {n : ℕ} {sign : Base -> SampleAt ℝ n}
+    {left : Set Base} {joint : Set (Base × SampleAt ℝ n)}
+    (hjoint_meas : MeasurableSet joint)
+    (hsign :
+      ∀ x : Base, x ∈ left -> VdVWRademacherSignVector (sign x))
+    (hsection : ∀ x : Base, x ∈ left -> (x, sign x) ∈ joint) :
+    μ left * (2⁻¹ : ℝ≥0∞) ^ n ≤
+      μ.prod (vdVWProductMeasure vdVWRademacherLaw n) joint := by
+  have hfiber :
+      ∀ x : Base, x ∈ left ->
+        (2⁻¹ : ℝ≥0∞) ^ n ≤
+          (vdVWProductMeasure vdVWRademacherLaw n) (Prod.mk x ⁻¹' joint) := by
+    intro x hx
+    have hsingleton_subset :
+        ({sign x} : Set (SampleAt ℝ n)) ⊆ Prod.mk x ⁻¹' joint := by
+      intro y hy
+      rw [Set.mem_singleton_iff] at hy
+      subst y
+      exact hsection x hx
+    calc
+      (2⁻¹ : ℝ≥0∞) ^ n =
+          (vdVWProductMeasure vdVWRademacherLaw n) {sign x} := by
+            exact
+              (vdVWProductMeasure_vdVWRademacherLaw_singleton_signVector
+                (hsign x hx)).symm
+      _ ≤
+          (vdVWProductMeasure vdVWRademacherLaw n) (Prod.mk x ⁻¹' joint) :=
+            measure_mono hsingleton_subset
+  have h :=
+    measure_mul_le_prod_measure_of_fiber_lower_bound
+      (μ := μ) (ν := vdVWProductMeasure vdVWRademacherLaw n)
+      (left := left) (joint := joint)
+      (beta := (2⁻¹ : ℝ≥0∞) ^ n) hjoint_meas hfiber
+  simpa [mul_comm] using h
+
+/--
+Outer-probability projection from a pointwise deterministic Rademacher sign
+section.
+
+A fixed-sign-section proof can project a left event into a right event only
+after paying the finite-product Rademacher mass `(1 / 2)^n`.
+-/
+theorem
+    VdVWOuterProbability_mul_rademacherSignVector_mass_le_of_pointwise_sign_section
+    {Base : Type u} [MeasurableSpace Base] {μ : Measure Base}
+    {n : ℕ} {sign : Base -> SampleAt ℝ n}
+    {left right : Set Base} {joint : Set (Base × SampleAt ℝ n)}
+    (hjoint_meas : MeasurableSet joint)
+    (hsign :
+      ∀ x : Base, x ∈ left -> VdVWRademacherSignVector (sign x))
+    (hsection : ∀ x : Base, x ∈ left -> (x, sign x) ∈ joint)
+    (hjoint_subset_right : ∀ z : Base × SampleAt ℝ n, z ∈ joint -> z.1 ∈ right) :
+    VdVWOuterProbability μ left * (2⁻¹ : ℝ≥0∞) ^ n ≤
+      VdVWOuterProbability μ right := by
+  have hsection_measure :
+      μ left * (2⁻¹ : ℝ≥0∞) ^ n ≤
+        μ.prod (vdVWProductMeasure vdVWRademacherLaw n) joint :=
+    measure_mul_rademacherSignVector_mass_le_prod_of_pointwise_sign_section
+      (μ := μ) hjoint_meas hsign hsection
+  have hproject :
+      μ.prod (vdVWProductMeasure vdVWRademacherLaw n) joint ≤
+        μ.prod (vdVWProductMeasure vdVWRademacherLaw n)
+          (right ×ˢ (Set.univ : Set (SampleAt ℝ n))) := by
+    refine measure_mono ?_
+    intro z hz
+    exact ⟨hjoint_subset_right z hz, trivial⟩
+  have hright_prod :
+      μ.prod (vdVWProductMeasure vdVWRademacherLaw n)
+          (right ×ˢ (Set.univ : Set (SampleAt ℝ n))) =
+        μ right := by
+    rw [Measure.prod_prod, measure_univ]
+    simp
+  simpa [VdVWOuterProbability, hright_prod] using hsection_measure.trans hproject
+
+/--
 Product-measure fiber upper bound.
 
 If every right-indexed fiber of a measurable joint event is bounded by a
