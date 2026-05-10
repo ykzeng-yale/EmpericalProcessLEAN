@@ -571,6 +571,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   The preferred source route can now stay at the applied-vector path
   `t ↦ H_schur(z_t) v`: its continuity gives `ψ_v` continuity, and its
   derivative plus the lifted-third pairing gives the local-norm sandwich.
+- Inf-projection Schur-derivative applied-continuity shrink: the newest packet
+  adds `BarrierInfProjectionSchurHessDerivativeOn.hessApply_continuousOn`,
+  `BarrierInfProjectionSchurHessDerivativeOn.hessApply_continuousOn_of_convex`,
+  and
+  `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv_apply_sourceRadius`.
+  A full Schur derivative certificate now supplies the applied-vector
+  continuity, applied-vector derivative, and lifted-third pairing needed by
+  the scalar source-radius route.  Future exact source work should construct
+  the Schur derivative certificate or actual third-order envelope, not pass a
+  separate segment-continuity/local-norm side condition.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

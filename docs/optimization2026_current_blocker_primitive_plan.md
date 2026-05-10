@@ -691,6 +691,16 @@ This lets the exact source proof stay at the applied-vector path
 `t ↦ H_schur(z_t) v`: continuity of that path gives `ψ_v` continuity, and its
 derivative plus the lifted-third pairing supplies the scalar source-radius
 local-norm sandwich.
+The Schur-derivative applied-continuity packet now adds
+`BarrierInfProjectionSchurHessDerivativeOn.hessApply_continuousOn`,
+`BarrierInfProjectionSchurHessDerivativeOn.hessApply_continuousOn_of_convex`,
+and
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv_apply_sourceRadius`.
+Thus a full `BarrierInfProjectionSchurHessDerivativeOn` certificate supplies
+the applied-vector continuity, derivative, and lifted-third pairing needed by
+the scalar source-radius route.  The live item-4 source work is now the actual
+construction of the Schur derivative certificate or third-order envelope from
+selector/envelope data, not another continuity/local-norm wrapper.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
