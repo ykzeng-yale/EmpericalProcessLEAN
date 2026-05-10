@@ -150,6 +150,11 @@ The product-pair projection bookkeeping is now also closed by
 single-sample selected cardinality measurability and single-sample
 Nat-indexed selected-center coordinate measurability imply both sign-first
 product-pair failure-event measurability obligations.
+The same single-coordinate assumptions now also feed the selected finite-center
+side condition and the concrete ghost/Rademacher event directly through
+`measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate`
+and
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_sample_coordinate_countable`.
 The next exact target is now sharper: prove the integrated random
 selected-cover finite-center Hoeffding tails vanish only if an additional
 structural tail/large-cardinality input is available, and prove the remaining
@@ -8914,3 +8919,16 @@ single-sample Nat-indexed selected-center scalar coordinate evaluations.
 The remaining selected-center blocker is the selector/cardinality
 measurability itself, not transport from single samples to the sign-first
 product-pair space.
+
+2026-05-09 concrete event from sample-coordinate selectors:
+`Theorem243.lean` now proves
+`measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate`,
+which assembles the selected finite-center Hoeffding side condition from
+selected cardinality measurability, coordinatewise sign measurability, and
+selected-center scalar coordinate measurability.  It then proves
+`measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_sample_coordinate_countable`,
+which gives countability-based measurability of the named concrete
+ghost/Rademacher selected-net event from those single-sample selector inputs.
+The remaining event-measurability work is therefore exactly the
+single-sample selected cardinality and selected-center scalar coordinate
+measurability, not the concrete event assembly.

@@ -16112,6 +16112,60 @@ theorem
       hguard (hSelectedSum k) hupper
 
 /--
+Selected-center finite-center Hoeffding side conditions are measurable from
+single-coordinate sign measurability, selected cardinality measurability, and
+scalar selected-center coordinate evaluations.
+-/
+theorem
+    measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate
+    {Ω : Type x} [MeasurableSpace Ω]
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {n : ℕ} (sample : Ω -> SampleAt Observation n)
+    {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {envelope : Observation -> ℝ}
+    {M eta : ℝ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sign : Ω -> SampleAt ℝ n)
+    (hcard : Measurable fun ω : Ω => cardinality (sample ω))
+    (hsign : ∀ i : Fin n, Measurable fun ω : Ω => sign ω i)
+    (hcoord : ∀ k : ℕ, ∀ i : Fin n,
+      Measurable fun ω : Ω =>
+        vdVWTruncatedClassFun classFun envelope M
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta cardinality cover
+            (sample ω) k)
+          (sample ω i)) :
+    MeasurableSet
+      {ω : Ω |
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound (sample ω)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (sample ω)).center (sign ω) M} := by
+  have hweights : ∀ i : Fin n,
+      Measurable fun ω : Ω => vdVWRademacherWeights (sign ω) i := by
+    intro i
+    simpa [vdVWRademacherWeights] using
+      (hsign i).const_mul ((n : ℝ)⁻¹)
+  refine
+    measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_measurable_components
+      (sample := sample) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M) (eta := eta)
+      (cardinality := cardinality) cover sign hcard ?_
+  exact
+    measurable_vdVWWeightedSampleSum_selectedCenterAt_of_coordinate
+      (sample := sample) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M) (eta := eta)
+      (cardinality := cardinality) cover
+      (weights := fun ω : Ω => vdVWRademacherWeights (sign ω))
+      hweights hcoord
+
+/--
 Rademacher-sign specialization of the finite empirical-net Hoeffding handoff.
 
 This closes the deterministic passage from fixed signs to the current
@@ -40613,6 +40667,88 @@ theorem
         (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) (M := M) (eta := eta)
         (cardinality := cardinality) cover hmaxGhostSelector)
+
+/--
+Countability-based event measurability constructor from single-sample
+selected-center scalar coordinate measurability.
+-/
+theorem
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_sample_coordinate_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hcard : Measurable fun sample : SampleAt Observation n => cardinality sample)
+    (hcoord : ∀ k : ℕ, ∀ i : Fin n,
+      Measurable fun sample : SampleAt Observation n =>
+        vdVWTruncatedClassFun classFun envelope M
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta cardinality cover sample k)
+          (sample i)) :
+    MeasurableSet
+      (VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (cover := cover)) := by
+  let Ωevent : Type _ :=
+    SampleAt Observation n × (SampleAt Observation n × SampleAt ℝ n)
+  have hmaxOriginal :
+      MeasurableSet
+        {z : Ωevent |
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover z.1).center z.2.2 M} := by
+    refine
+      measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate
+        (sample := fun z : Ωevent => z.1)
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (cardinality := cardinality) cover
+        (sign := fun z : Ωevent => z.2.2) ?_ ?_ ?_
+    · simpa [Ωevent] using hcard.comp measurable_fst
+    · intro i
+      simpa [Ωevent] using
+        (measurable_pi_apply i).comp (measurable_snd.comp measurable_snd)
+    · intro k i
+      simpa [Ωevent] using (hcoord k i).comp measurable_fst
+  have hmaxGhost :
+      MeasurableSet
+        {z : Ωevent |
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.2.1
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover z.2.1).center (fun i : Fin n => -z.2.2 i) M} := by
+    refine
+      measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate
+        (sample := fun z : Ωevent => z.2.1)
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (cardinality := cardinality) cover
+        (sign := fun z : Ωevent => fun i : Fin n => -z.2.2 i) ?_ ?_ ?_
+    · simpa [Ωevent] using hcard.comp (measurable_fst.comp measurable_snd)
+    · intro i
+      have hsign : Measurable fun z : Ωevent => z.2.2 i :=
+        (measurable_pi_apply i).comp (measurable_snd.comp measurable_snd)
+      simpa [Ωevent] using hsign.neg
+    · intro k i
+      simpa [Ωevent] using
+        (hcoord k i).comp (measurable_fst.comp measurable_snd)
+  simpa [Ωevent] using
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_maximal_components_countable
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon) (cardinality := cardinality)
+      (cover := cover) hcount hclass henvelope_meas hmaxOriginal hmaxGhost
 
 /--
 Original-sample finite-center failure event in the sign-first product-pair

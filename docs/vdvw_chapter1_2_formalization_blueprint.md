@@ -2320,6 +2320,12 @@ above, so they do not change the theorem-level dashboard counts.
    single-sample selected cardinality and selected-center scalar coordinate
    measurability now imply both original and ghost product-pair failure-event
    measurability obligations.
+   The same single-coordinate selector inputs now also assemble the selected
+   finite-center side condition and the named concrete ghost/Rademacher event
+   through
+   `measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate`
+   and
+   `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_sample_coordinate_countable`.
    On the product-fiber side, the concrete event now has the fiber interface
    `mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff`
    and the lower-bound transfer
