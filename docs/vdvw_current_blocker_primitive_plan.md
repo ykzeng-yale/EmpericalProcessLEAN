@@ -9704,3 +9704,15 @@ once fixed-endpoint finite-product `L1(P^n)` convergence is supplied for each
 class member.  The finite-class blocker is now sharply localized to that
 single-endpoint `L1` primitive; the finite-sum domination, integrability, and
 book-style packaging are compiled.
+
+2026-05-10 finite-class in-mean no-global-countability closure:
+The fixed-endpoint primitive is now also compiled as
+`endpoint_integral_abs_empiricalAverage_sub_integral_tendsto_zero_of_integrable`,
+using mathlib `ProbabilityTheory.strong_law_Lp` at `p = 1`, first-`n`
+sample transport, and the `eLpNorm`/ordinary-integral conversion.  Consequently
+`integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical_no_global_countable`
+and
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable`
+now give the full finite-class textbook-aligned package, including in-mean
+finite-product convergence, from `indexClass.Finite` without `[Countable
+Index]`.  This finite-class lane is no longer blocked by global countability.

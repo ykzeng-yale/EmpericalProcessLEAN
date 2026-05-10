@@ -4324,6 +4324,201 @@ theorem integrable_abs_empiricalAverage_sub_integral_of_integrable
   exact (haverage.sub (integrable_const _)).abs
 
 /--
+Fixed-endpoint finite-product `L1` convergence for centered empirical
+averages.
+
+This is the single-endpoint source theorem needed by the finite-class
+no-global-countability in-mean bridge below.  It is proved from mathlib's
+`strong_law_Lp` at `p = 1`, transported from the infinite iid product to the
+finite product by the first-`n` coordinate projection.
+-/
+theorem
+    endpoint_integral_abs_empiricalAverage_sub_integral_tendsto_zero_of_integrable
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {statistic : Observation -> ℝ}
+    (hstat_integrable : Integrable statistic P) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          |empiricalAverage sample statistic -
+            ∫ observation, statistic observation ∂P|
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  let μ : Measure (ℕ -> Observation) := vdVWInfiniteProductMeasure P
+  let Y : ℕ -> (ℕ -> Observation) -> ℝ :=
+    fun i sequence => statistic (sequence i)
+  have hstat_aemeasurable : AEMeasurable statistic P :=
+    hstat_integrable.aestronglyMeasurable.aemeasurable
+  have hstat_aemeasurable_map :
+      ∀ i, AEMeasurable statistic (Measure.map (fun sequence : ℕ -> Observation => sequence i) μ) := by
+    intro i
+    simpa [μ, (vdVWInfiniteProductMeasure_coordinate_hasLaw P i).map_eq] using
+      hstat_aemeasurable
+  have hY0_integrable : Integrable (Y 0) μ := by
+    have hmap :
+        Integrable statistic
+          (Measure.map (fun sequence : ℕ -> Observation => sequence 0) μ) := by
+      simpa [μ, (vdVWInfiniteProductMeasure_coordinate_hasLaw P 0).map_eq] using
+        hstat_integrable
+    exact
+      hmap.comp_aemeasurable
+        (vdVWInfiniteProductMeasure_coordinate_hasLaw P 0).aemeasurable
+  have hY_memLp : MemLp (Y 0) (1 : ℝ≥0∞) μ :=
+    memLp_one_iff_integrable.2 hY0_integrable
+  have hindepY : Pairwise (fun i j => Y i ⟂ᵢ[μ] Y j) := by
+    intro i j hij
+    exact
+      ((vdVWInfiniteProductMeasure_iIndepFun_coordinates P).indepFun hij).comp₀
+        (vdVWInfiniteProductMeasure_coordinate_hasLaw P i).aemeasurable
+        (vdVWInfiniteProductMeasure_coordinate_hasLaw P j).aemeasurable
+        (hstat_aemeasurable_map i) (hstat_aemeasurable_map j)
+  have hidentY : ∀ i, IdentDistrib (Y i) (Y 0) μ μ := by
+    intro i
+    exact
+      (HasLaw.identDistrib
+        (vdVWInfiniteProductMeasure_coordinate_hasLaw P i)
+        (vdVWInfiniteProductMeasure_coordinate_hasLaw P 0)).comp_of_aemeasurable
+        (hstat_aemeasurable_map i)
+  have hmean :
+      μ[Y 0] = ∫ observation, statistic observation ∂P := by
+    simpa [μ, Y, Function.comp_def] using
+      (vdVWInfiniteProductMeasure_coordinate_hasLaw P 0).integral_comp
+        hstat_integrable.aestronglyMeasurable
+  have hLpInfinite :
+      Tendsto
+        (fun n : ℕ =>
+          eLpNorm
+            (fun sequence : ℕ -> Observation =>
+              empiricalAverage
+                (vdVWFirstNSample (Observation := Observation) n sequence)
+                statistic -
+              ∫ observation, statistic observation ∂P)
+            (1 : ℝ≥0∞) μ)
+        atTop (𝓝 0) := by
+    have hLp :=
+      ProbabilityTheory.strong_law_Lp
+        (p := (1 : ℝ≥0∞)) le_rfl ENNReal.one_ne_top Y hY_memLp
+        hindepY hidentY
+    refine hLp.congr' ?_
+    refine Eventually.of_forall ?_
+    intro n
+    apply eLpNorm_congr_ae
+    refine Eventually.of_forall ?_
+    intro sequence
+    rw [hmean]
+    have hsample :
+        samplePath (fun i sequence => sequence i) sequence n =
+          vdVWFirstNSample (Observation := Observation) n sequence := by
+      funext i
+      rfl
+    have haverage :=
+      empiricalAverage_samplePath_eq_range_sum
+        (fun i sequence => sequence i) sequence n statistic
+    rw [hsample] at haverage
+    dsimp [Y]
+    rw [haverage]
+    ring
+  have hLpFinite :
+      Tendsto
+        (fun n : ℕ =>
+          eLpNorm
+            (fun sample : SampleAt Observation n =>
+              empiricalAverage sample statistic -
+                ∫ observation, statistic observation ∂P)
+            (1 : ℝ≥0∞) (vdVWProductMeasure P n))
+        atTop (𝓝 0) := by
+    refine hLpInfinite.congr' ?_
+    refine Eventually.of_forall ?_
+    intro n
+    let g : SampleAt Observation n -> ℝ :=
+      fun sample =>
+        empiricalAverage sample statistic -
+          ∫ observation, statistic observation ∂P
+    have hg_integrable : Integrable g (vdVWProductMeasure P n) := by
+      have hweighted :
+          Integrable
+            (fun sample : SampleAt Observation n =>
+              vdVWWeightedSampleSum (fun _ : Unit => statistic)
+                (fun _ : Fin n => (n : ℝ)⁻¹) () sample)
+            (vdVWProductMeasure P n) :=
+        integrable_vdVWWeightedSampleSum_of_integrable
+          (P := P) (classFun := fun _ : Unit => statistic)
+          (fun _ : Fin n => (n : ℝ)⁻¹) hstat_integrable
+      have haverage :
+          Integrable
+            (fun sample : SampleAt Observation n =>
+              empiricalAverage sample statistic)
+            (vdVWProductMeasure P n) := by
+        simpa [vdVWWeightedSampleSum_const_inv_eq_empiricalAverage] using
+          hweighted
+      exact haverage.sub (integrable_const _)
+    simpa [μ, g, Function.comp_def] using
+      (eLpNorm_comp_measurePreserving
+        (p := (1 : ℝ≥0∞)) hg_integrable.aestronglyMeasurable
+        (vdVWInfiniteProductMeasure_measurePreserving_firstNSample P n))
+  have hLpFiniteReal :
+      Tendsto
+        (fun n : ℕ =>
+          (eLpNorm
+            (fun sample : SampleAt Observation n =>
+              empiricalAverage sample statistic -
+                ∫ observation, statistic observation ∂P)
+            (1 : ℝ≥0∞) (vdVWProductMeasure P n)).toReal)
+        atTop (𝓝 0) :=
+    (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hLpFinite
+  have hEq :
+      (fun n : ℕ =>
+        (eLpNorm
+          (fun sample : SampleAt Observation n =>
+            empiricalAverage sample statistic -
+              ∫ observation, statistic observation ∂P)
+          (1 : ℝ≥0∞) (vdVWProductMeasure P n)).toReal) =
+        fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            |empiricalAverage sample statistic -
+              ∫ observation, statistic observation ∂P|
+            ∂(vdVWProductMeasure P n) := by
+    funext n
+    let g : SampleAt Observation n -> ℝ :=
+      fun sample =>
+        empiricalAverage sample statistic -
+          ∫ observation, statistic observation ∂P
+    have hg_integrable : Integrable g (vdVWProductMeasure P n) := by
+      have hweighted :
+          Integrable
+            (fun sample : SampleAt Observation n =>
+              vdVWWeightedSampleSum (fun _ : Unit => statistic)
+                (fun _ : Fin n => (n : ℝ)⁻¹) () sample)
+            (vdVWProductMeasure P n) :=
+        integrable_vdVWWeightedSampleSum_of_integrable
+          (P := P) (classFun := fun _ : Unit => statistic)
+          (fun _ : Fin n => (n : ℝ)⁻¹) hstat_integrable
+      have haverage :
+          Integrable
+            (fun sample : SampleAt Observation n =>
+              empiricalAverage sample statistic)
+            (vdVWProductMeasure P n) := by
+        simpa [vdVWWeightedSampleSum_const_inv_eq_empiricalAverage] using
+          hweighted
+      exact haverage.sub (integrable_const _)
+    have h_integral_norm_nonneg :
+        0 ≤ ∫ sample : SampleAt Observation n, ‖g sample‖ ∂(vdVWProductMeasure P n) :=
+      integral_nonneg fun sample => norm_nonneg (g sample)
+    have h_ofReal :
+        ENNReal.ofReal
+            (∫ sample : SampleAt Observation n, ‖g sample‖ ∂(vdVWProductMeasure P n)) =
+          eLpNorm g (1 : ℝ≥0∞) (vdVWProductMeasure P n) := by
+      rw [eLpNorm_one_eq_lintegral_enorm]
+      exact MeasureTheory.ofReal_integral_norm_eq_lintegral_enorm hg_integrable
+    have h_toReal :
+        (eLpNorm g (1 : ℝ≥0∞) (vdVWProductMeasure P n)).toReal =
+          ∫ sample : SampleAt Observation n, ‖g sample‖ ∂(vdVWProductMeasure P n) := by
+      rw [← ENNReal.toReal_ofReal h_integral_norm_nonneg, h_ofReal]
+    simpa [g, Real.norm_eq_abs] using h_toReal
+  simpa [hEq] using hLpFiniteReal
+
+/--
 For a finite class, the weighted supremum is bounded by the sum of the
 absolute weighted sums over the finite `toFinset`.
 -/
@@ -71430,6 +71625,44 @@ theorem
     simpa [upper] using hmono.trans_eq hsum_integral_eq
 
 /--
+Canonical finite-class in-mean convergence without a global `Countable Index`
+assumption.
+
+The endpoint `L1(P^n)` convergence needed by the finite-sum bridge is supplied
+by `endpoint_integral_abs_empiricalAverage_sub_integral_tendsto_zero_of_integrable`
+for each member of the finite class.
+-/
+theorem
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical_no_global_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0) := by
+  exact
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_endpointL1_no_global_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hindex_finite henvelope hclass henv_integrable
+      (fun index hmem =>
+        endpoint_integral_abs_empiricalAverage_sub_integral_tendsto_zero_of_integrable
+          (P := P) (statistic := classFun index)
+          (integrable_classFun_of_integrable_envelope
+            (μ := P) (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) henvelope hclass henv_integrable hmem))
+
+/--
 Canonical finite-class Lemma 2.4.5 a.s. convergence from pointwise SLLN.
 
 For finite index classes, the supremum is bounded by a finite sum of absolute
@@ -72496,6 +72729,74 @@ theorem
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope) hindex_finite henvelope hclass henv_integrable
       hendpointL1
+  exact
+    ⟨hpkg.1, hpkg.2.1, hpkg.2.2.1, hpkg.2.2.2.1,
+      hpkg.2.2.2.2.1, hinmean, hpkg.2.2.2.2.2⟩
+
+/--
+Finite-class textbook-aligned `P`-GC/Lemma 2.4.5 package with in-mean
+convergence, without a global `Countable Index` assumption.
+
+This upgrades
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_no_global_countable`
+by deriving the in-mean finite-product integral conclusion from the
+single-endpoint `L1(P^n)` theorem and finite-sum domination, rather than from
+the older countable supremum tail/UI infrastructure.
+-/
+theorem
+    VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWPMeasurableClass P indexClass classFun ∧
+      VdVWOuterExpectation P (fun observation => ENNReal.ofReal (envelope observation)) < ∞ ∧
+      VdVWOuterProbabilityPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWOuterAlmostSurePGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      VdVWPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) ∧
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) ∧
+      (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0)) := by
+  have hpkg :=
+    VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_no_global_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hindex_finite henvelope hclass henv
+      henv_integrable
+  have hinmean :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) :=
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_canonical_no_global_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hindex_finite henvelope hclass henv_integrable
   exact
     ⟨hpkg.1, hpkg.2.1, hpkg.2.2.1, hpkg.2.2.2.1,
       hpkg.2.2.2.2.1, hinmean, hpkg.2.2.2.2.2⟩

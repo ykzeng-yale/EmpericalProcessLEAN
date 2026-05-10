@@ -3413,6 +3413,15 @@ finite-product `L1(P^n)` convergence theorem for
 `|P_n f - P f|`; finite-sum domination, integrability, and book-facing
 packaging are no longer blockers.
 
+That fixed-endpoint dependency is now proved by
+`endpoint_integral_abs_empiricalAverage_sub_integral_tendsto_zero_of_integrable`,
+and the unconditional finite-class package is
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable`.
+The finite-class Theorem 2.4.3 route no longer needs `[Countable Index]` for
+its in-mean conclusion; future blueprint work should return to the selected
+ghost/Rademacher source probability inputs or other non-finite-class theorem
+dependencies.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

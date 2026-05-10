@@ -4330,3 +4330,13 @@ centered empirical averages and require only fixed-endpoint `L1(P^n)`
 convergence for each member of the finite class.  Remaining finite-class
 work: prove that endpoint `L1` convergence from mathlib strong-law/Lp
 machinery or an equivalent finite-product transport theorem.
+
+That remaining finite-class endpoint work is now closed.  The compiled theorem
+`endpoint_integral_abs_empiricalAverage_sub_integral_tendsto_zero_of_integrable`
+derives fixed-endpoint finite-product `L1(P^n)` convergence from mathlib
+`strong_law_Lp`; the unconditional package
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable`
+therefore gives finite-class `P`-measurability, finite envelope expectation,
+outer-probability `P`-GC, outer-a.s. `P`-GC, local `P`-GC, in-mean centered
+supremum convergence, and canonical Lemma 2.4.5 a.s. convergence without a
+global `Countable Index`.
