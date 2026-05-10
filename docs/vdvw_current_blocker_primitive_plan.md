@@ -10140,3 +10140,17 @@ ghost finite-center side conditions required by the sign-swapped bad-fiber
 factorization.  The remaining blocker is now more tightly localized to the
 sign-swapped pair-sub bad-fiber probability theorem itself, or to a lower
 coefficient-correct pair-sub/sign-swap replacement.
+
+2026-05-10 a.e. lower pair-sub/sign-swap one-sign source split:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_pairSubBad_signSwap_fibers_of_signSample_finiteCenter`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_imp_pairSubBad_signSwap_fibers_of_signSample_finiteCenter`.
+These are the restricted-a.e. and base-a.e. companions of the pointwise
+pair-sub/sign-swap one-sign source theorem.  Future source work may now prove
+the unswapped pair-sub displayed-beta mass and the fixed-original sign-swap
+transport only almost everywhere on centered-bad samples, while keeping the
+single sign-only finite-center support hypothesis.  The remaining
+probability-side frontier is therefore the a.e. pair-sub mass theorem plus a
+coefficient-correct a.e. sign-swap transport, or an averaged product-pair
+replacement that bypasses fixed-original transport.

@@ -3742,6 +3742,18 @@ the restricted-a.e. and base-a.e. source surfaces.  Future proof work can now
 target the sign-swapped pair-sub bad-fiber probability mass directly, with no
 separate one-sign finite-center support propagation needed at this layer.
 
+The lower pair-sub/sign-swap source split now preserves that a.e. one-sign
+surface as well:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_pairSubBad_signSwap_fibers_of_signSample_finiteCenter`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_imp_pairSubBad_signSwap_fibers_of_signSample_finiteCenter`.
+Future proof work may now supply both the unswapped pair-sub displayed-beta
+mass and the fixed-original sign-swap transport only a.e. on the centered-bad
+event, either as restricted-measure facts or base-measure implications.  The
+mathematical blocker is the actual a.e. probability source for those inputs,
+or an averaged product-pair source theorem that replaces fixed-original
+transport.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

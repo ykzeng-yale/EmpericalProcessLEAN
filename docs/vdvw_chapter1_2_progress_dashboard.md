@@ -4656,3 +4656,14 @@ original and sign-negated ghost finite-center hypotheses needed by the
 restricted-a.e. and base-a.e. sign-swapped bad-fiber consumers.  The dashboard
 frontier is therefore the probability theorem for the sign-swapped pair-sub
 bad-fiber mass, not another finite-center side-condition bridge.
+
+The lower pair-sub/sign-swap source split now has the same a.e. one-sign
+surface:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_pairSubBad_signSwap_fibers_of_signSample_finiteCenter`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_imp_pairSubBad_signSwap_fibers_of_signSample_finiteCenter`.
+They combine an a.e. unswapped pair-sub displayed-beta lower bound with an
+a.e. fixed-original sign-swap transport before feeding the a.e. sign-swapped
+bad-fiber consumer.  The dashboard frontier is now the actual a.e.
+probability source for those two inputs, or the averaged product-pair route
+that avoids fixed-original transport.
