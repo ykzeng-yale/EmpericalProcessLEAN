@@ -4645,3 +4645,14 @@ probability source, with original/ghost selected finite-center support kept as
 explicit side conditions.  The dashboard blocker for this lane is now that
 sign-swapped bad-fiber mass theorem, or the coefficient-correct pair-sub
 transport below it.
+
+The a.e. sign-swapped source lane now also has one-sign finite-center support
+wrappers:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_signSwapBad_fibers_of_signSample_finiteCenter`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_imp_signSwapBad_fibers_of_signSample_finiteCenter`.
+They turn the single sign-sample finite-center support hypothesis into the
+original and sign-negated ghost finite-center hypotheses needed by the
+restricted-a.e. and base-a.e. sign-swapped bad-fiber consumers.  The dashboard
+frontier is therefore the probability theorem for the sign-swapped pair-sub
+bad-fiber mass, not another finite-center side-condition bridge.

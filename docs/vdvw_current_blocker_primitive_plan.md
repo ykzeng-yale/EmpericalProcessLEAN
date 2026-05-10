@@ -10127,3 +10127,16 @@ proved either on `P^n.restrict centeredBad`-a.e. samples or in the natural
 base-`P^n` a.e. implication form.  The remaining mathematical source is the
 probability theorem for that sign-swapped bad-fiber mass, or the lower
 pair-sub/sign-swap replacement with correct constants.
+
+2026-05-10 a.e. sign-swapped bad-fiber one-sign finite-center wrappers:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_signSwapBad_fibers_of_signSample_finiteCenter`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_imp_signSwapBad_fibers_of_signSample_finiteCenter`.
+These are the restricted-a.e. and base-a.e. companions of the existing
+pointwise sign-sample finite-center source theorem: they propagate one
+sign-only selected finite-center support hypothesis into both original and
+ghost finite-center side conditions required by the sign-swapped bad-fiber
+factorization.  The remaining blocker is now more tightly localized to the
+sign-swapped pair-sub bad-fiber probability theorem itself, or to a lower
+coefficient-correct pair-sub/sign-swap replacement.

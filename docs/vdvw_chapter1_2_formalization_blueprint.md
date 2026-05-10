@@ -3732,6 +3732,16 @@ for `VdVWTheorem243CenteredPairSubSignSwapBadEvent`, plus the existing
 original/ghost finite-center side conditions for the canonical first-level
 selected cover.
 
+The a.e. sign-swapped bad-fiber lane now also internalizes the original/ghost
+finite-center transport from one sign-only finite-center support hypothesis:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_signSwapBad_fibers_of_signSample_finiteCenter`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_ae_imp_signSwapBad_fibers_of_signSample_finiteCenter`.
+Both wrappers mirror the older pointwise sign-sample theorem while preserving
+the restricted-a.e. and base-a.e. source surfaces.  Future proof work can now
+target the sign-swapped pair-sub bad-fiber probability mass directly, with no
+separate one-sign finite-center support propagation needed at this layer.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
