@@ -506,6 +506,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   and otherwise uses the strict-positivity wrapper.  The source-radius
   projected local-norm sandwich gate now exposes no manual segment coefficient,
   no manual projected Hessian positivity, and no distinct-point hypothesis.
+- Inf-projection third-order-envelope consumer: the newest packet adds
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_thirdOrderEnvelope`.
+  Once the exact selected-value third-order envelope certificate
+  `BarrierInfProjectionThirdOrderEnvelopeOn` is built, this theorem routes it
+  directly through the adjoint-square model to the projected source-radius
+  local-norm sandwich.  Future work should therefore focus on constructing the
+  actual third-order envelope certificate from selector/envelope data, not on
+  re-supplying full-Hessian derivative inputs to the sandwich wrapper.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

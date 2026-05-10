@@ -1806,6 +1806,72 @@ theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwic
       hmodel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_of_ne
         hopen hgrad hhess hselector hinvDeriv hmixed_full hMr_lt hs hx hy hdiff
 
+/--
+Source-radius projected local-norm sandwich from an already-built third-order
+selected-envelope certificate.  This is the direct consumer for the exact
+inf-projection route: once the selected value has its Schur Hessian derivative
+and canonical lifted-third pairing, the adjoint-square envelope model supplies
+the positivity and inverse identities needed for the Lemma 13.6 transport.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_thirdOrderEnvelope
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₁] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    {x y v : E₁}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    (henv :
+      BarrierInfProjectionThirdOrderEnvelopeOn s f selector grad hess invHyy
+        third schurDeriv)
+    (hMr_lt :
+      M *
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+            x (y - x) < 1)
+    (hs : Convex ℝ (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hy : y ∈ barrierInfProjectionSet s) :
+    (1 - M *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+          x (y - x)) *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v ≤
+      localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ∧
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ≤
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v /
+            (1 - M *
+              localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+                x (y - x)) := by
+  by_cases hdiff : y - x = 0
+  · have hyx : y = x := sub_eq_zero.mp hdiff
+    subst y
+    simp [localNorm_zero]
+  · let hyy_right : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+        ∀ w : E₂, barrierInfProjectionBlockYY selector hess z (invHyy z w) = w := by
+      intro z hz w
+      exact continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv
+        (H := barrierInfProjectionBlockYY selector hess z)
+        (invH := invHyy z) (sqrtCoord := sqrtHyy z)
+        (hmodel.hyy_hess_eq (x := z) hz)
+        (hmodel.hyy_inv_eq (x := z) hz) w
+    exact
+      hmodel.selector_stationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv
+        (hbar := hmodel.barrier) hyy_right henv.schur_deriv hMr_lt hs hx hy
+        hmodel.projectedSchurHess_quadratic_pos hdiff v
+
 end InfProjectionSchurSymmetry
 
 end Optimization

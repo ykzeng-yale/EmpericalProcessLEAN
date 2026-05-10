@@ -623,6 +623,14 @@ This wrapper handles `y = x` by simplification with `localNorm_zero` and uses
 the strict-positivity route only for `y - x ≠ 0`.  The local-norm sandwich
 gate is now reduced to concrete derivative inputs, convex projected-domain
 membership, openness, and the scalar source-radius condition.
+The third-order-envelope consumer is now also available as
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_thirdOrderEnvelope`.
+It consumes an already-built `BarrierInfProjectionThirdOrderEnvelopeOn` and
+uses the adjoint-square envelope model to supply the Schur positivity and
+`Hyy` inverse identities internally.  The next exact item-4 source packet
+should construct this third-order envelope from selector/envelope data; do not
+route future work back through raw full-Hessian derivative inputs if the
+third-order envelope certificate is available.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
