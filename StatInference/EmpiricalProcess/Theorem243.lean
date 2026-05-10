@@ -8118,6 +8118,30 @@ theorem VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable
       (Ω := ℕ -> Observation) (μ := vdVWInfiniteProductMeasure P))
 
 /--
+Named leave-one-out reverse/cofiltration handoff under the standard countable
+integrable-envelope assumptions.
+
+This is the `VdVWLemma245ReverseCofiltrationHandoff` form of
+`VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable`, so
+callers using the leave-one-out primitive no longer have to mention the
+textbook-display intermediate.
+-/
+theorem VdVWLemma245ReverseCofiltrationHandoff.of_countable_integrable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    VdVWLemma245ReverseCofiltrationHandoff P indexClass classFun :=
+  VdVWLemma245ReverseCofiltrationHandoff.of_textbook
+    (VdVWLemma245TextbookReverseCofiltrationHandoff.of_countable_integrable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable)
+
+/--
 Sufficient condition for the named reverse/cofiltration handoff: an ordinary
 `ℕ`-indexed submartingale realization of the shifted centered supremum process.
 
@@ -8790,6 +8814,36 @@ theorem
     (envelope := envelope) hcount henvelope hclass henv_integrable hreverse
 
 /--
+Generic countable/integrable-envelope Lemma 2.4.5 finite-limit handoff.
+
+The proved order-dual reverse/cofiltration theorem discharges the named
+reverse primitive internally, so downstream countable-class callers only need
+the usual envelope and coordinate-measurability hypotheses.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_countable_integrable
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      ∃ limit : ℝ,
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 limit) :=
+  vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_of_namedReverseCofiltrationHandoff
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) hcount henvelope hclass henv_integrable
+    (VdVWLemma245ReverseCofiltrationHandoff.of_countable_integrable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable)
+
+/--
 Zero-limit Lemma 2.4.5 consumer after a Borel-Cantelli/subsequence step.
 
 The compiled reverse-comparison handoff gives almost-sure convergence of the
@@ -9176,6 +9230,42 @@ theorem
   vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseComparisonHandoff_of_outerProbability_invNat_geometric
     (P := P) (indexClass := indexClass) (classFun := classFun)
     (envelope := envelope) hcount henvelope hclass henv_integrable hprob hreverse
+
+/--
+Generic countable/integrable-envelope Lemma 2.4.5 zero-limit handoff from
+fixed-space outer-probability convergence.
+
+The reverse/cofiltration primitive is discharged by the proved order-dual
+submartingale convergence theorem, leaving only the fixed-space
+outer-probability zero endpoint.
+-/
+theorem
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_countable_integrable_of_outerProbability_invNat_geometric
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv_integrable : Integrable envelope P)
+    (hprob :
+      VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+        (fun n sequence =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun
+            (n + 1) sequence)
+        atTop (fun _ => (0 : ℝ))) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0) :=
+  vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_reverseCofiltrationHandoff_of_outerProbability_invNat_geometric
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) hcount henvelope hclass henv_integrable hprob
+    (VdVWLemma245ReverseCofiltrationHandoff.of_countable_integrable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable)
 
 /--
 An integrable envelope supplies the varying-domain tail/UI condition for the
