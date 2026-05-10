@@ -2326,6 +2326,10 @@ above, so they do not change the theorem-level dashboard counts.
    `measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate`
    and
    `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_sample_coordinate_countable`.
+   The displayed-beta comparison now consumes those selector inputs through
+   `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`,
+   so the event-route source probability input is the actual fiber lower
+   bound rather than separate named-event measurability.
    On the product-fiber side, the concrete event now has the fiber interface
    `mem_fiber_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_iff`
    and the lower-bound transfer
