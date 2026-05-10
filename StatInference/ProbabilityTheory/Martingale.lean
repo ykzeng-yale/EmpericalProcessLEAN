@@ -18173,6 +18173,48 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
   · simpa using hscaled_summable
 
 /--
+Durrett 2019, Theorem 4.5.3 conditional-variance pull-out support.
+
+If `H` is known at time `k`, then a conditional square bound for `Y` can be
+multiplied by `H^2` and integrated.  This is the reusable measure-theoretic
+core behind the textbook estimate with `H = f(A_{k+1})^{-1}`.
+-/
+theorem durrett2019_theorem_4_5_3_integral_mul_sq_le_of_condExp_square_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {H Y V : Ω -> ℝ} {k : ℕ}
+    (hH_meas : StronglyMeasurable[ℱ k] H)
+    (hHY_int : Integrable (fun ω => H ω ^ 2 * Y ω ^ 2) P)
+    (hY_sq_int : Integrable (fun ω => Y ω ^ 2) P)
+    (hHV_int : Integrable (fun ω => H ω ^ 2 * V ω) P)
+    (hcond_le : P[(fun ω => Y ω ^ 2) | ℱ k] ≤ᵐ[P] V) :
+    (∫ ω, H ω ^ 2 * Y ω ^ 2 ∂P) ≤
+      ∫ ω, H ω ^ 2 * V ω ∂P := by
+  have hpull :
+      P[(fun ω => H ω ^ 2 * Y ω ^ 2) | ℱ k] =ᵐ[P]
+        fun ω => H ω ^ 2 * P[(fun ω => Y ω ^ 2) | ℱ k] ω := by
+    exact
+      condExp_mul_of_stronglyMeasurable_left (μ := P) (m := ℱ k)
+        (hH_meas.pow 2) hHY_int hY_sq_int
+  have hleft_int :
+      Integrable
+        (fun ω => H ω ^ 2 * P[(fun ω => Y ω ^ 2) | ℱ k] ω) P :=
+    (integrable_condExp
+      (μ := P) (m := ℱ k) (f := fun ω => H ω ^ 2 * Y ω ^ 2)).congr hpull
+  calc
+    (∫ ω, H ω ^ 2 * Y ω ^ 2 ∂P)
+        = ∫ ω, P[(fun ω => H ω ^ 2 * Y ω ^ 2) | ℱ k] ω ∂P := by
+          exact (integral_condExp (μ := P) (m := ℱ k) (ℱ.le k)).symm
+    _ = ∫ ω, H ω ^ 2 * P[(fun ω => Y ω ^ 2) | ℱ k] ω ∂P :=
+        integral_congr_ae hpull
+    _ ≤ ∫ ω, H ω ^ 2 * V ω ∂P := by
+        exact
+          integral_mono_ae hleft_int hHV_int
+            (hcond_le.mono fun ω hω =>
+              mul_le_mul_of_nonneg_left hω (sq_nonneg (H ω)))
+
+/--
 Durrett 2019, Theorem 4.5.3 variance-ratio summability bridge.
 
 If the reciprocal-scaled martingale increment square integrals are bounded by

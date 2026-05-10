@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V207
+## Live In-Thread Goal Prompt V208
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -101,10 +101,15 @@ series, supplies the scaled summability consumed by V206.  The endpoint
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_variance_ratio_summable`
 feeds this directly into `X_n / f(A_n) -> 0`.
 
-Next aggressive step: prove the two source estimates feeding V207.  First,
-prove the conditional-variance/pull-out comparison
-`∫ ((f(A_{k+1}))^{-1} * (X_{k+1}-X_k))^2 ≤ ∫ (A_{k+1}-A_k) / f(A_{k+1})^2`.
-Second, prove the deterministic/integral comparison that makes
+V208 starts the first real source estimate feeding V207.  The pull-out lemma
+`durrett2019_theorem_4_5_3_integral_mul_sq_le_of_condExp_square_le` proves the
+Mathlib-shaped conditional-variance core: if `H` is `ℱ_k`-measurable and
+`E[Y^2 | ℱ_k] ≤ V`, then `∫ H^2 * Y^2 ≤ ∫ H^2 * V`.
+
+Next aggressive step: instantiate the V208 pull-out lemma with
+`H = (f(A_{k+1}))^{-1}`, `Y = X_{k+1}-X_k`, and
+`V = A_{k+1}-A_k` to prove the conditional-variance/pull-out comparison
+consumed by V207.  Then prove the deterministic/integral comparison that makes
 `∑ ∫ (A_{k+1}-A_k) / f(A_{k+1})^2` summable from
 `∫_0^∞ f(t)^{-2} dt < ∞` and monotone/divergent `A`.  Keep `MemLp` for the
 reciprocal transform explicit if needed.  Do not route back to stopped

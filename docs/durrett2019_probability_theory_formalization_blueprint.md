@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V207`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V208`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -58,11 +58,16 @@ V207 adds the variance-ratio bridge
 `durrett2019_theorem_4_5_3_scaled_summable_of_integral_le_variance_ratio`
 and the endpoint
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_variance_ratio_summable`.
+V208 adds the first real conditional-variance source primitive:
+`durrett2019_theorem_4_5_3_integral_mul_sq_le_of_condExp_square_le`, which
+turns an `ℱ_k`-measurable weight `H` and a conditional square bound
+`E[Y^2 | ℱ_k] ≤ V` into the weighted integral bound
+`∫ H^2 * Y^2 ≤ ∫ H^2 * V`.
 The next theorem-facing target is no longer another scaled-summability wrapper:
-prove the conditional-variance/pull-out comparison and the deterministic
-integral comparison that make the variance-ratio series summable for
-`b_n = f(A_n)`.  Keep reciprocal-transform `MemLp` explicit if needed.  Do not
-route back to
+instantiate this pull-out lemma with `H = (f(A_{k+1}))^{-1}` and prove the
+deterministic integral comparison that makes the variance-ratio series
+summable for `b_n = f(A_n)`.  Keep reciprocal-transform `MemLp` explicit if
+needed.  Do not route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
 packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
