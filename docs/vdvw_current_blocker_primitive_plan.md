@@ -9045,3 +9045,12 @@ imply measurability of each selected truncated class coordinate.  This does
 not make the arbitrary selected cover measurable; the next source primitive
 remains a canonical selected-cover tuple, or equivalent selector construction,
 with measurable fibers.
+
+The first canonical-selector primitive is now compiled as
+`vdVWFirstNatCandidate` and `measurableSet_vdVWFirstNatCandidate_eq`.  It
+packages the reusable `Nat.find` measurability argument: if candidate objects
+are enumerated by `ℕ`, every candidate-success event is measurable, and every
+sample has a successful candidate, then the first successful candidate has
+measurable equality fibers.  The next source step is to instantiate this
+generic selector with finite center tuples for
+`FiniteEmpiricalL1CoverAtCard` over the countable subtype of `indexClass`.
