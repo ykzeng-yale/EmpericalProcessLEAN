@@ -3863,3 +3863,12 @@ Nat-indexed selected-center selector, plus membership of the out-of-range
 `Classical.choice` cover selector measurable; it narrows the next task to
 constructing measurable fibers for a canonical selected-cover tuple or
 removing the arbitrary default branch.
+
+The current half-scale Theorem 2.4.3 source consumer now uses that fiber
+interface directly through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_fibers`.
+The exposed selected-center input is now measurable fibers of the
+Nat-indexed selector, plus `default ∈ indexClass`, instead of a raw family of
+scalar coordinate measurability assumptions.  Remaining source work is to
+construct those fibers for a canonical selected-cover tuple and to handle the
+integrated finite-center failure-tail convergence.
