@@ -3700,6 +3700,18 @@ and internalize the selected-cardinality measurability proof.  Future proof
 work can therefore aim straight at the canonical selected-cover base-a.e.
 fiber-mass theorem.
 
+The first-level selected-cover version of that source surface is now compiled
+as well:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_ae_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_ae_imp_countable`.
+Both choose the countable first-level selected cover at radius `eta / 2`
+internally and discharge the selected-center coordinate measurability bridge.
+Future proof work can therefore state the pair-difference displayed-beta mass
+directly for the canonical first-level selected cover, either on
+`P^n.restrict centeredBad`-a.e. samples or as a base-`P^n` a.e. centered-bad
+implication.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

@@ -10083,3 +10083,19 @@ the countable selected-cover interface.  The remaining source theorem can now
 be stated directly for the canonical selected half-radius cover: prove the
 base-a.e. pair-difference displayed-beta fiber mass, or replace it with the
 coefficient-correct product-pair/sign-swap source theorem.
+
+2026-05-10 first-level selected half-radius pair-difference a.e. source
+specialization:
+`Theorem243.lean` now adds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_ae_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_ae_imp_countable`.
+These choose the canonical countable first-level selected empirical cover at
+radius `eta / 2` internally, reuse the selected-cardinality and
+selected-center coordinate measurability bridges, and expose the two natural
+source surfaces: restricted-a.e. fibers over `P^n.restrict centeredBad`, or a
+base-`P^n` a.e. implication on centered-bad samples.  The next source theorem
+can now target the canonical first-level selected cover directly; no
+additional first-level selected-cover plumbing is needed before proving the
+pair-difference fiber mass or replacing it with a coefficient-correct
+product-pair/sign-swap source theorem.

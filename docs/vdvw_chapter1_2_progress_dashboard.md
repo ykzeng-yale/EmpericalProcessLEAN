@@ -4614,3 +4614,13 @@ These target the canonical selected truncated cover at radius `eta / 2` and
 derive selected-cardinality measurability internally.  The dashboard blocker
 is now the actual probability theorem for that canonical selected cover, not a
 remaining selected-cardinality plumbing obligation.
+
+The same pair-difference source surface is now specialized all the way to the
+canonical countable first-level selected cover:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_ae_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_ae_imp_countable`.
+These wrappers accept either restricted-a.e. pair-difference fibers or the
+base-`P^n` a.e. centered-bad implication while choosing the first-level cover
+internally.  The remaining dashboard blocker for this lane is therefore the
+probability source theorem for the canonical first-level selected cover.
