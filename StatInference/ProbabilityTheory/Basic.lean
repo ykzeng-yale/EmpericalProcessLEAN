@@ -1901,6 +1901,79 @@ noncomputable def durrett2019_theorem_2_2_11_truncated
   Set.indicator {ω : Ω | |X n k ω| ≤ b n} (fun ω : Ω => X n k ω)
 
 /--
+Durrett 2019, Theorem 2.2.11 support: the truncation map on real values is
+measurable.
+-/
+theorem durrett2019_theorem_2_2_11_measurable_truncationMap
+    {c : ℝ} :
+    Measurable (fun x : ℝ => Set.indicator {y : ℝ | |y| ≤ c} (fun y => y) x) := by
+  exact measurable_id.indicator (measurableSet_le measurable_abs measurable_const)
+
+/--
+Durrett 2019, Theorem 2.2.11 support: each truncated array entry is measurable
+when the original entry is.
+-/
+theorem durrett2019_theorem_2_2_11_measurable_truncated
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {n k : ℕ}
+    (hX : Measurable (X n k)) :
+    Measurable (durrett2019_theorem_2_2_11_truncated X b n k) := by
+  have hcomp :
+      Measurable
+        ((fun x : ℝ => Set.indicator {y : ℝ | |y| ≤ b n} (fun y => y) x) ∘
+          X n k) :=
+    durrett2019_theorem_2_2_11_measurable_truncationMap.comp hX
+  simpa [durrett2019_theorem_2_2_11_truncated, Function.comp_def] using hcomp
+
+/--
+Durrett 2019, Theorem 2.2.11 support: the truncated entry is bounded by the
+absolute value of its truncation level.
+-/
+theorem durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound
+    {Ω : Type u} {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {n k : ℕ}
+    (ω : Ω) :
+    ‖durrett2019_theorem_2_2_11_truncated X b n k ω‖ ≤ |b n| := by
+  by_cases hsmall : |X n k ω| ≤ b n
+  · have hbn_nonneg : 0 ≤ b n := le_trans (abs_nonneg _) hsmall
+    simp [durrett2019_theorem_2_2_11_truncated, hsmall, Real.norm_eq_abs,
+      abs_of_nonneg hbn_nonneg]
+  · simp [durrett2019_theorem_2_2_11_truncated, hsmall]
+
+/--
+Durrett 2019, Theorem 2.2.11 support: measurable truncated entries are in
+`L^2` on finite measure spaces.
+-/
+theorem durrett2019_theorem_2_2_11_truncated_memLp_two_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {n k : ℕ}
+    (hX : Measurable (X n k)) :
+    MemLp (durrett2019_theorem_2_2_11_truncated X b n k) (2 : ℝ≥0∞) P := by
+  exact MemLp.of_bound
+    (durrett2019_theorem_2_2_11_measurable_truncated
+      (X := X) (b := b) (n := n) (k := k) hX).aestronglyMeasurable
+    |b n| (Eventually.of_forall fun ω =>
+      durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound
+        (X := X) (b := b) (n := n) (k := k) ω)
+
+/--
+Durrett 2019, Theorem 2.2.11 support: row-wise independence is preserved by
+the truncation operation.
+-/
+theorem durrett2019_theorem_2_2_11_iIndepFun_truncated_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ} {n : ℕ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (fun k : ℕ => X n k) P) :
+    _root_.ProbabilityTheory.iIndepFun
+      (fun k : ℕ => durrett2019_theorem_2_2_11_truncated X b n k) P := by
+  have hcomp :=
+    durrett2019_theorem_2_1_10_iIndepFun_comp
+      (P := P) (X := fun k : ℕ => X n k) hX_indep
+      (f := fun _ : ℕ =>
+        fun x : ℝ => Set.indicator {y : ℝ | |y| ≤ b n} (fun y => y) x)
+      (fun _ => durrett2019_theorem_2_2_11_measurable_truncationMap)
+  simpa [durrett2019_theorem_2_2_11_truncated, Function.comp_def] using hcomp
+
+/--
 Durrett 2019, Theorem 2.2.11, triangular-array row sum `S_n`.
 -/
 noncomputable def durrett2019_theorem_2_2_11_rowSum
@@ -2284,6 +2357,41 @@ theorem durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_a
     (P := P) (X := X) (b := b) htail
     (durrett2019_theorem_2_2_11_tendstoInMeasure_truncatedRowSum_sub_mean_of_truncatedSecondMoment
       (P := P) (X := X) (b := b) htrunc_indep htrunc_mem hsecond)
+
+/--
+Durrett 2019, Theorem 2.2.11 source-facing bridge: original row-wise
+independence and measurability discharge the truncated-row independence and
+`L^2` side conditions in the compiled triangular-array weak-law assembly.
+-/
+theorem durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> ℕ -> Ω -> ℝ} {b : ℕ -> ℝ}
+    (htail : Tendsto
+      (fun n : ℕ => ∑ k ∈ Finset.range n, P.real {ω : Ω | b n < |X n k ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (hX_indep : ∀ n : ℕ, _root_.ProbabilityTheory.iIndepFun
+      (fun k : ℕ => X n k) P)
+    (hX_meas : ∀ n k : ℕ, Measurable (X n k))
+    (hsecond : Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          ∫ ω, (durrett2019_theorem_2_2_11_truncated X b n k ω) ^ 2 ∂P) /
+            (b n) ^ 2)
+      atTop (𝓝 (0 : ℝ))) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (durrett2019_theorem_2_2_11_rowSum X n ω -
+          durrett2019_theorem_2_2_11_truncatedMeanRowSum P X b n) / b n)
+      atTop (fun _ => 0) :=
+  durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncatedSecondMoment
+    (P := P) (X := X) (b := b) htail
+    (fun n =>
+      durrett2019_theorem_2_2_11_iIndepFun_truncated_of_iIndepFun
+        (P := P) (X := X) (b := b) (n := n) (hX_indep n))
+    (fun n k =>
+      durrett2019_theorem_2_2_11_truncated_memLp_two_of_measurable
+        (P := P) (X := X) (b := b) (n := n) (k := k) (hX_meas n k))
+    hsecond
 
 /-! ## Durrett, Section 2.3 -/
 

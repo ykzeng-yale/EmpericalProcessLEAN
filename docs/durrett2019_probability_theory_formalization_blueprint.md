@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V188`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V189`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -91,9 +91,16 @@ second-moment convergence gives convergence in probability, the normalized
 centered square-moment identity is packaged as `Var(S_n) / b_n^2`, and the
 source-facing weak-law endpoint follows.  Theorem 2.2.11, the triangular-array
 weak law, now has its first source-facing spine: V187 compiles the large-jump
-truncation bridge, and V188 compiles the truncated-row variance/centering
-bridge plus the final assembly from hypotheses (i)/(ii) under supplied
-truncated-row independence and `L^2` hypotheses.  New V188 declarations are
+truncation bridge, V188 compiles the truncated-row variance/centering bridge
+plus the final assembly from hypotheses (i)/(ii), and V189 compiles
+source-side truncation inheritance for measurability, bounded `L^2`, and
+row-wise independence, plus the final original-row source wrapper.  New
+V188/V189 declarations are
+`durrett2019_theorem_2_2_11_measurable_truncationMap`,
+`durrett2019_theorem_2_2_11_measurable_truncated`,
+`durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound`,
+`durrett2019_theorem_2_2_11_truncated_memLp_two_of_measurable`,
+`durrett2019_theorem_2_2_11_iIndepFun_truncated_of_iIndepFun`,
 `durrett2019_theorem_2_2_11_truncatedMeanRowSum`,
 `durrett2019_theorem_2_2_11_integral_truncatedRowSum_eq_truncatedMeanRowSum`,
 `durrett2019_theorem_2_2_11_truncatedRowSum_memLp_two`,
@@ -102,11 +109,13 @@ truncated-row independence and `L^2` hypotheses.  New V188 declarations are
 `durrett2019_theorem_2_2_11_tendstoInMeasure_truncatedRowSum_sub_mean_of_truncatedSecondMoment`,
 `durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncated`,
 and
-`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncatedSecondMoment`.
-Continue by deriving the supplied truncated-row independence and `L^2`
-hypotheses from the book's source assumptions, or by adding the exact wrapper
-that exposes those hypotheses deliberately.  Do not repeat 2.1, 2.2.1, 2.2.3
-scalar plumbing, 2.2.6, or 2.4.9.
+`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncatedSecondMoment`,
+and
+`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_iIndepFun`.
+Continue with Theorem 2.2.12 and Lemma 2.2.13: specialize 2.2.11 to a single
+i.i.d. sequence and package the tail-integral/layer-cake inputs for Durrett's
+`x * P(|X_1| > x) -> 0` hypothesis.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar
+plumbing, 2.2.6, or 2.4.9.
 
 For each cycle, route from:
 

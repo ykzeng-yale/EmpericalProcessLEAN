@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V188
+## Live In-Thread Goal Prompt V189
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -13,14 +13,16 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane: Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, starting from the now-compiled
 Theorem 2.2.11 large-jump truncation bridge, truncated-row variance and
-centering bridge, and combined centered triangular-row weak-law assembly.
+centering bridge, combined centered triangular-row weak-law assembly, and
+source-side truncation independence/`L^2` inheritance plus final original-row
+independence wrapper.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V188 compiled support now includes:
+V189 compiled support now includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -46,6 +48,11 @@ Theorem 2.2.6 support:
 `durrett2019_theorem_2_2_6_tendstoInMeasure_centered_div_of_variance_div_sq`,
 plus Theorem 2.2.11 truncation support:
 `durrett2019_theorem_2_2_11_truncated`,
+`durrett2019_theorem_2_2_11_measurable_truncationMap`,
+`durrett2019_theorem_2_2_11_measurable_truncated`,
+`durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound`,
+`durrett2019_theorem_2_2_11_truncated_memLp_two_of_measurable`,
+`durrett2019_theorem_2_2_11_iIndepFun_truncated_of_iIndepFun`,
 `durrett2019_theorem_2_2_11_rowSum`,
 `durrett2019_theorem_2_2_11_truncatedRowSum`,
 `durrett2019_theorem_2_2_11_rowSum_eq_truncatedRowSum_of_all_small`,
@@ -61,19 +68,21 @@ plus the truncated-row variance and centering layer:
 `durrett2019_theorem_2_2_11_tendstoInMeasure_truncatedRowSum_sub_mean_of_truncatedSecondMoment`,
 `durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncated`,
 and
-`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncatedSecondMoment`.
+`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_tailSum_and_truncatedSecondMoment`,
+plus the original-row source-facing wrapper
+`durrett2019_theorem_2_2_11_tendstoInMeasure_rowSum_sub_mean_of_iIndepFun`.
 
 Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
 Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, or Theorem 2.4.9.  Move toward
-the remaining exact source-shape work for Durrett Theorem 2.2.11.  The
-large-jump replacement, truncated-row variance/centering, and final assembly
-from hypotheses (i)/(ii) are compiled under supplied truncated-row independence
-and `L^2` hypotheses.  Next derive those supplied truncated-row hypotheses from
-the book's source assumptions, or add the narrow exact wrapper that exposes
-them explicitly if mathlib already provides the inheritance bridge.  Reuse
-independence/product wrappers, finite-sum variance support, Borel-Cantelli,
-strong-law, and empirical-CDF infrastructure.  Search mathlib/local first for
-the exact primitive and use
+Theorem 2.2.12 and Lemma 2.2.13 support.  The 2.2.11 large-jump replacement,
+truncated-row variance/centering, final assembly from hypotheses (i)/(ii),
+truncation measurability, bounded `L^2`, row-wise independence inheritance, and
+original-row source wrapper are compiled.  Next package the single-sequence
+specialization `X_{n,k}=X_k`, `b_n=n` and the tail-integral/layer-cake support
+needed for Theorem 2.2.12.  Reuse independence/product wrappers, finite-sum
+variance support, Borel-Cantelli, strong-law, empirical-CDF infrastructure, and
+mathlib layer-cake/tail-integral APIs.  Search mathlib/local first for the
+exact primitive and use
 `origin/codex/vdvw-selected-cover-source` only as selective reference via
 `git grep`/`git show` or an isolated worktree; do not merge it wholesale into
 this lane.
