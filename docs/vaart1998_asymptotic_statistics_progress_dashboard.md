@@ -1,6 +1,6 @@
 # van der Vaart 1998 Progress Dashboard
 
-Status date: 2026-05-09.
+Status date: 2026-05-10.
 
 ## Current Lane
 
@@ -14,6 +14,14 @@ Live `/goal` continuation: use the efficient prompt at the top of
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
+
+Latest verified packet: finite-coordinate root-Taylor Theorem 5.41 action
+endpoint in `MEstimators.lean`.
+
+Current next blocker: instantiate that root-Taylor expansion from sampled
+per-observation Taylor identities, or instantiate the negligible
+finite-coordinate residual from derivative LLN plus the second-derivative
+envelope if that is shorter.
 
 ## Verified Frontier
 

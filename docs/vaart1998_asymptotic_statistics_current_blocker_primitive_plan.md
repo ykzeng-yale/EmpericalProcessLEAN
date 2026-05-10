@@ -17,18 +17,18 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateRootTaylor_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
-Current verified display weak-tightness source endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_displayWeakTightness_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+Immediate predecessor finite Taylor-zero endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateTaylorZero_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
-Immediate predecessor display-tightness source endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_displayStochasticBounded_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+Immediate root-to-Taylor-zero bridge:
+`vaart1998_theorem_5_41_finiteCoordinateTaylorZero_of_root_taylorExpansion`.
 
 Continuation recipe:
 
 1. Check `git status`, the Vaart diff, and the live hypotheses of the endpoint
-   and source bridge above.
+   and finite root-Taylor bridge above.
 2. If an unfinished local Vaart Lean diff exists, either finish and verify it
    immediately, or remove it from the packet before editing route docs.
 3. Choose exactly one source hypothesis feeding the endpoint and discharge it
@@ -36,15 +36,16 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Weak-limit source: assemble the current display weak-tightness action-bound
-   endpoint with a Taylor-zero/root-Taylor displayed weak-convergence helper,
-   or derive the corresponding model-specific Taylor-zero source.
-2. Derivative source: only add an exact model-specific coordinate/matrix
-   representation if it is immediately available; do not rebuild the completed
-   finite-entry norm/action wrapper stack.
-3. Score source: only add another wrapper if it removes a live hypothesis not
-   already handled by the canonical raw-score handoff or the current
-   projected-to-action law-tail route.
+1. Taylor source: instantiate the finite-coordinate root-Taylor expansion from
+   sampled per-observation Taylor identities already available earlier in
+   `MEstimators.lean`.
+2. Residual source: instantiate the negligible finite-coordinate residual from
+   derivative LLN plus the second-derivative envelope if that path is shorter
+   than the direct Taylor assembly.
+3. Derivative or score source: only add a model-specific coordinate/matrix or
+   score representation if it removes a live hypothesis of the current
+   finite-root-Taylor endpoint; do not rebuild completed score CLT, display
+   weak convergence, display tightness, or action-bound wrapper stacks.
 
 Operating rules:
 

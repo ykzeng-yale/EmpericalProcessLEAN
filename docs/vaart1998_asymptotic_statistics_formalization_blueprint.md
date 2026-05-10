@@ -19,6 +19,11 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    the next proof packet; the solved-progress ledgers are evidence, not
    instructions to replay.
 
+Current frontier: Theorem 5.41 now has a compiled finite-coordinate
+root-Taylor action endpoint.  The next proof packet should instantiate the
+root-Taylor expansion or its negligible residual source, not replay display
+weak-convergence, display-tightness, score-CLT, or derivative-action wrappers.
+
 ## Chapter Map
 
 ### Chapters 1-3
