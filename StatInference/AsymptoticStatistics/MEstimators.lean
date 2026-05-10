@@ -11110,6 +11110,107 @@ theorem vaart1998_theorem_5_41_display_tendstoInDistribution_of_taylorZero
       hScaledEstimator_eq_sub hScaledEstimator_tendsto
 
 /--
+van der Vaart 1998, Theorem 5.41, displayed weak convergence from the
+finite-coordinate score equation.
+
+The common-vector-law score source supplies the finite-dimensional CLT for the
+centered empirical score.  If the selected scaled estimator satisfies the
+score equation with that centered finite-coordinate score and a negligible
+residual, the textbook display `scale_n • (estimator_n - theta0_n)` inherits
+the same inverse-derivative weak limit.
+-/
+theorem vaart1998_theorem_5_41_display_tendstoInDistribution_of_finiteCoordinateScoreEquation_commonVectorLawScoreCLT
+    {Ω Ω' Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)] [CompleteSpace (Coord -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ]
+    (V : Θ →L[ℝ] (Coord -> ℝ)) (Vinv : (Coord -> ℝ) →L[ℝ] Θ)
+    (scale : ℕ -> Ω -> ℝ)
+    (scoreSummand : Coord -> ℕ -> Ω -> ℝ)
+    {scoreLaw : Measure (Coord -> ℝ)}
+    {theta0 estimator scaledEstimator : ℕ -> Ω -> Θ}
+    {residual : ℕ -> Ω -> Coord -> ℝ}
+    {Z : Ω' -> Coord -> ℝ}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreSummand_meas : ∀ coordinate i, Measurable (scoreSummand coordinate i))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hScoreSummand_coordinate_memLp :
+      ∀ coordinate, MemLp (scoreSummand coordinate 0) 2 P)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coord -> ℝ),
+      (∫ ω, L (Z ω) ∂Q) = 0)
+    (hZ_covariance : ∀ L : StrongDual ℝ (Coord -> ℝ),
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        _root_.ProbabilityTheory.variance
+          (vaart1998_finiteCoordinateProjectedSample L scoreSummand 0) P)
+    (hScore_vector_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (vaart1998_finiteCoordinateSampleVector scoreSummand i) scoreLaw P)
+    (hScore_sequence_law :
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω i => vaart1998_finiteCoordinateSampleVector scoreSummand i ω)
+        (Measure.infinitePi (fun _ : ℕ => scoreLaw)) P)
+    (hResidual : TendstoInMeasure P residual atTop 0)
+    (hResidual_meas : ∀ n, AEMeasurable (residual n) P)
+    (hScoreEquation : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        V (scaledEstimator n ω) =
+          -(vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment
+              P scoreSummand n ω + residual n ω))
+    (hScaledEstimator_eq_sub : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        scaledEstimator n ω =
+          scale n ω • (estimator n ω - theta0 n ω)) :
+    TendstoInDistribution
+      (fun n ω => scale n ω • (estimator n ω - theta0 n ω))
+      atTop (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] Θ) (Z ω))
+      (fun _ => P) Q := by
+  have hProjectedSummandCLT :
+      vaart1998_finiteCoordinateProjectedSummandCLT
+        (P := P) (Q := Q) scoreSummand Z :=
+    vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_commonVectorLawGaussianSource
+      (P := P) (Q := Q) (X := scoreSummand) (Z := Z)
+      (ν := scoreLaw)
+      (hX_coordinate_memLp := hScoreSummand_coordinate_memLp)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (hZ_mean := hZ_mean) (hZ_covariance := hZ_covariance)
+      (hX_vector_law := hScore_vector_law)
+      (hX_sequence_law := hScore_sequence_law)
+  have hProjectedScalarCLT :
+      vaart1998_finiteCoordinateProjectedScalarCLT
+        (P := P) (Q := Q) scoreSummand Z :=
+    vaart1998_finiteCoordinateProjectedScalarCLT_of_projectedSummandCLT
+      (P := P) (Q := Q) hProjectedSummandCLT
+  let B :=
+    vaart1998_finiteCoordinateCramerWoldCLTBridge_of_projectedScalarCLT_finiteDimensional
+      (P := P) (Q := Q) scoreSummand Z hScoreSummand_meas hZ_aemeas
+      hProjectedScalarCLT
+  have hFiniteScoreCLT :
+      TendstoInDistribution
+        (fun n ω =>
+          vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment
+            P scoreSummand n ω)
+        atTop Z (fun _ => P) Q := by
+    simpa [B, vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment] using
+      B.cramerWold_vector_clt B.projected_clt
+  exact
+    vaart1998_theorem_5_41_display_tendstoInDistribution_of_scoreEquation
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv) (scale := scale)
+      (score := fun n ω =>
+        vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment
+          P scoreSummand n ω)
+      (residual := residual) (theta0 := theta0) (estimator := estimator)
+      (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hFiniteScoreCLT hResidual hResidual_meas hScoreEquation
+      hScaledEstimator_eq_sub
+
+/--
 van der Vaart 1998, Theorem 5.41, scaled-estimator law tails from `O_P(1)`.
 
 The current source-facing Theorem 5.41 wrappers consume law tails for

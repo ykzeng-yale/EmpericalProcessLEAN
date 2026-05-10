@@ -37,9 +37,8 @@ Continuation recipe:
 Priority order for the next packet:
 
 1. Weak-limit source: assemble the current display weak-tightness action-bound
-   endpoint with the compiled score-equation or Taylor-zero displayed
-   weak-convergence helper.  Then move to the root/Taylor source that produces
-   that score-equation or Taylor-zero field.
+   endpoint with the finite-coordinate score-equation displayed weak-convergence
+   helper, or derive the corresponding Taylor-zero/root-Taylor source.
 2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
    finite-entry norm/action wrapper stack.
@@ -1281,24 +1280,30 @@ compiling:
    `vaart1998_theorem_5_41_display_tendstoInDistribution_of_taylorZero`
    derive that displayed weak convergence from the compiled score-equation and
    Taylor-zero weak-limit handoffs.
+386. Theorem 5.41 finite-coordinate score-equation displayed weak convergence:
+   `vaart1998_theorem_5_41_display_tendstoInDistribution_of_finiteCoordinateScoreEquation_commonVectorLawScoreCLT`
+   derives the displayed weak convergence field from the common-vector-law
+   finite-coordinate score CLT, a centered finite-coordinate score equation,
+   and a negligible score residual.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 display weak convergence source bridges`).
+(`Add Vaart theorem 5.41 finite score-equation display bridge`).
 
 The latest theorem-sized packet derives the displayed weak convergence field
-from selected-representative weak convergence, score equations, and Taylor-zero
-displays.  The reusable action-bound endpoint can now be assembled with these
-helpers rather than carrying a raw displayed weak-convergence hypothesis.
+from the common-vector-law finite-coordinate score CLT plus a centered
+finite-coordinate score equation.  The reusable action-bound endpoint can now
+be assembled with this helper instead of carrying a raw displayed
+weak-convergence hypothesis.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
 source handoff.  Move next only on a genuinely live source hypothesis: assemble
-the current display weak-tightness action-bound endpoint with the score-equation
-or Taylor-zero displayed weak-convergence helper, or move one step lower by
-deriving the score-equation/Taylor-zero field from a genuinely model-specific
-Taylor display, derivative, or score representation.
+the current display weak-tightness action-bound endpoint with the
+finite-coordinate score-equation displayed weak-convergence helper, or move one
+step lower by deriving the score-equation/Taylor-zero field from a genuinely
+model-specific Taylor display, derivative, or score representation.
 Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
 derivative-bound, finite-derivative strong-law, action-bound, law-tail,
