@@ -41883,6 +41883,90 @@ theorem
       henvelope hM_nonneg heta (cover eta heta n) hz
 
 /--
+Concrete-event displayed-beta constructor with the event measurability supplied
+by single-sample selected-center scalar coordinate assumptions.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (hcard :
+      ∀ (eta : ℝ) (_heta : 0 < eta) (n : ℕ),
+        Measurable
+          fun sample : SampleAt Observation n =>
+            selectedCardinality eta n sample n)
+    (hcoord :
+      ∀ (eta : ℝ) (heta : 0 < eta) (n : ℕ), ∀ k : ℕ, ∀ i : Fin n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWTruncatedClassFun classFun envelope M
+            (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+              (Observation := Observation) (Index := Index) (n := n)
+              indexClass classFun envelope M eta
+              (fun sample : SampleAt Observation n =>
+                selectedCardinality eta n sample n)
+              (cover eta heta n) sample k)
+            (sample i))
+    (hfiber :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (_hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          ∀ sample : SampleAt Observation n,
+            sample ∈
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)} ->
+              ENNReal.ofReal
+                  (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                ((vdVWProductMeasure P n).prod
+                    (vdVWProductMeasure vdVWRademacherLaw n))
+                  (Prod.mk sample ⁻¹'
+                    VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+                      (indexClass := indexClass) (classFun := classFun)
+                      (envelope := envelope) (M := M) (eta := eta)
+                      (epsilon := epsilon)
+                      (cardinality := fun sample' : SampleAt Observation n =>
+                        selectedCardinality eta n sample' n)
+                      (cover := cover eta heta n))) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 2 (2 : ℝ≥0∞) selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M)
+      (selectedCardinality := selectedCardinality)
+      henvelope hM_nonneg cover ?_ hfiber
+  intro eta heta epsilon _hepsilon
+  exact Eventually.of_forall fun n =>
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_sample_coordinate_countable
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon)
+      (cardinality := fun sample : SampleAt Observation n =>
+        selectedCardinality eta n sample n)
+      hcount hclass henvelope_meas (cover eta heta n)
+      (hcard eta heta n) (hcoord eta heta n)
+
+/--
 Canonical Rademacher selected-finite-net product-event source constructor.
 
 This is the next event-level layer above

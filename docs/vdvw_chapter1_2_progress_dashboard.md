@@ -223,6 +223,8 @@ assumptions through
 `measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate`
 and
 `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_sample_coordinate_countable`.
+The displayed-beta route also now consumes those inputs directly through
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`.
 The remaining selected-center task is therefore the actual single-sample
 scalar measurability of selected cardinalities and Nat-indexed selected-center
 coordinate evaluations.

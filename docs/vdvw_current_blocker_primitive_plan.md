@@ -155,6 +155,11 @@ side condition and the concrete ghost/Rademacher event directly through
 `measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate`
 and
 `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_sample_coordinate_countable`.
+The displayed-beta comparison itself can now consume those same selector
+inputs through
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`,
+leaving the actual displayed Chebyshev product-fiber lower bound as the
+remaining event-route source probability input.
 The next exact target is now sharper: prove the integrated random
 selected-cover finite-center Hoeffding tails vanish only if an additional
 structural tail/large-cardinality input is available, and prove the remaining
@@ -8932,3 +8937,13 @@ ghost/Rademacher selected-net event from those single-sample selector inputs.
 The remaining event-measurability work is therefore exactly the
 single-sample selected cardinality and selected-center scalar coordinate
 measurability, not the concrete event assembly.
+
+2026-05-09 displayed-beta sample-coordinate event wrapper:
+`Theorem243.lean` now proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`.
+This composes the concrete event measurability from single-sample selected
+cardinality/selected-center coordinate assumptions with the existing
+factor-two displayed-beta product-fiber constructor.  The event route now
+asks for the selector measurability inputs and the actual fiber lower bound;
+it no longer asks callers to separately supply measurability of the named
+ghost/Rademacher selected-net event.
