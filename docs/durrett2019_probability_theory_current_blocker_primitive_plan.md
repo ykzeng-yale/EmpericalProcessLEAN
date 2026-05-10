@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V196
+## Live In-Thread Goal Prompt V197
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -21,14 +21,15 @@ numeric reductions for the large-jump and truncated second-moment hypotheses,
 the real-tail-to-natural-tail bridge from Durrett's displayed assumption, and
 the first Lemma 2.2.13 layer-cake / second-moment-bound consumer layer, plus
 the real-tail-to-tail-average Cesaro bridge, automatic local integrability of
-the clipped tail profile, and the exact tail-average endpoint wrappers.
+the clipped tail profile, exact tail-average endpoint wrappers, and truncated
+tail-event domination support.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
 the full Theorem 2.4.9 empirical-CDF route as compiled support.  Do not redo or
 route back to them unless a later theorem explicitly needs a missing primitive.
 
-V196 compiled support now includes:
+V197 compiled support now includes:
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_le_of_uncorrelated`,
 `durrett2019_theorem_2_2_3_variance_invNatMul_rangeSum_eq_of_iIndepFun`,
@@ -110,7 +111,14 @@ plus the automatic local-integrability and exact tail-average endpoint layer:
 `durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound_auto_integrable`,
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound`,
 and
-`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable`.
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable`,
+plus truncated-tail event support:
+`durrett2019_theorem_2_2_12_abs_truncated_le_abs`,
+`durrett2019_theorem_2_2_12_abs_truncated_le_level`,
+`durrett2019_theorem_2_2_12_truncated_tail_subset_original`,
+`durrett2019_theorem_2_2_12_measureReal_truncated_tail_le_original`,
+and
+`durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_le`.
 
 Next aggressive step: do not route back to Chapter 2.1, Theorem 2.2.1,
 Theorem 2.2.3 scalar plumbing, Theorem 2.2.6, or Theorem 2.4.9.  Move toward
@@ -132,7 +140,10 @@ local integrability is now discharged automatically from antitone tail
 measurability and the probability bound `≤ 1`.  Next prove only the actual
 textbook truncated-square comparison
 `E[bar X_{n,0}^2] / n ≤ (1/n) * ∫_0^n 2*y*P(|X_0|>y) dy` eventually; the
-compiled exact tail-average endpoint will then finish Theorem 2.2.12.  Reuse
+compiled exact tail-average endpoint will then finish Theorem 2.2.12.  The
+needed event-level facts `|bar X| ≤ |X|`, `|bar X| ≤ n`, tail-probability
+domination, and zero tail above the truncation level are already compiled.
+Reuse
 independence/product wrappers, finite-sum
 variance support, Borel-Cantelli, strong-law, empirical-CDF infrastructure, and
 mathlib layer-cake/tail-integral APIs.  Search mathlib/local first for the

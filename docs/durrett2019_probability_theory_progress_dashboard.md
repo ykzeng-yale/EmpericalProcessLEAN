@@ -159,11 +159,18 @@ layer:
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound`,
 and
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable`.
+V197 adds the truncated-tail event support:
+`durrett2019_theorem_2_2_12_abs_truncated_le_abs`,
+`durrett2019_theorem_2_2_12_abs_truncated_le_level`,
+`durrett2019_theorem_2_2_12_truncated_tail_subset_original`,
+`durrett2019_theorem_2_2_12_measureReal_truncated_tail_le_original`,
+and
+`durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_le`.
 The active numeric frontier is now sharply the actual textbook upper bound
 from the truncated square moment to the compiled tail integral average
 `(1 / n) * ∫_0^n 2*y*P(|X_0|>y) dy`.  The clipped tail profile's local
-integrability is now compiled, so the remaining work is the set-integral /
-layer-cake comparison feeding
+integrability and the event-level tail domination facts are now compiled, so
+the remaining work is the set-integral / layer-cake comparison feeding
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable`.
 Do not route future cycles back to Chapter 4.5.2 or solved 2.1.10 partial-sum,
 2.1.13 product-consumer, 2.2.1 variance-sum, 2.2.3, 2.2.6, 2.4.9, 2.1.12,

@@ -111,7 +111,8 @@ Theorem 2.2.12 display directly.  V195 proves the tail-average/Cesaro bridge
 from Durrett's real-tail source assumption to
 `(1/n) * ∫_0^n 2*y*P(|X_0|>y) dy -> 0`.  V196 proves automatic local
 integrability of the clipped tail profile and packages the exact tail-average
-endpoint wrappers.  New V188-V196 declarations are
+endpoint wrappers.  V197 adds the truncated-tail event domination support
+needed for the final layer-cake comparison.  New V188-V197 declarations are
 `durrett2019_theorem_2_2_11_measurable_truncationMap`,
 `durrett2019_theorem_2_2_11_measurable_truncated`,
 `durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound`,
@@ -157,7 +158,13 @@ and
 `durrett2019_theorem_2_2_12_single_second_tendsto_zero_of_tail_average_bound_auto_integrable`,
 `durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound`,
 and
-`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable`.
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_real_tail_and_tail_average_bound_auto_integrable`,
+`durrett2019_theorem_2_2_12_abs_truncated_le_abs`,
+`durrett2019_theorem_2_2_12_abs_truncated_le_level`,
+`durrett2019_theorem_2_2_12_truncated_tail_subset_original`,
+`durrett2019_theorem_2_2_12_measureReal_truncated_tail_le_original`,
+and
+`durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_le`.
 Continue with the remaining Theorem 2.2.12 support: prove the actual
 truncated-square upper bound into the compiled tail-integral average.  Do not repeat 2.1, 2.2.1, 2.2.3 scalar
 plumbing, 2.2.6, or 2.4.9.

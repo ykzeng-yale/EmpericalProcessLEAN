@@ -3348,6 +3348,91 @@ theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncated
     (durrett2019_theorem_2_2_12_tail_profile_integrableOn (P := P) (X := X))
     htail_real hsecond_tail_bound hX_indep hX_ident hX_meas
 
+/--
+Durrett 2019, Theorem 2.2.12 support: truncation cannot increase absolute
+value.
+-/
+theorem durrett2019_theorem_2_2_12_abs_truncated_le_abs
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} (n : ℕ) (ω : Ω) :
+    |durrett2019_theorem_2_2_11_truncated
+      (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω| ≤ |X 0 ω| := by
+  by_cases hsmall : |X 0 ω| ≤ (n : ℝ)
+  · simp [durrett2019_theorem_2_2_11_truncated, hsmall]
+  · simp [durrett2019_theorem_2_2_11_truncated, hsmall]
+
+/--
+Durrett 2019, Theorem 2.2.12 support: the absolute value of the truncated
+variable is bounded by the truncation level.
+-/
+theorem durrett2019_theorem_2_2_12_abs_truncated_le_level
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} (n : ℕ) (ω : Ω) :
+    |durrett2019_theorem_2_2_11_truncated
+      (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω| ≤ (n : ℝ) := by
+  simpa [Real.norm_eq_abs] using
+    durrett2019_theorem_2_2_11_norm_truncated_le_abs_bound
+      (X := fun _ k => X k) (b := fun n : ℕ => (n : ℝ)) (n := n) (k := 0) ω
+
+/--
+Durrett 2019, Theorem 2.2.12 support: every positive tail event of the
+truncated variable is contained in the corresponding tail event of the
+original variable.
+-/
+theorem durrett2019_theorem_2_2_12_truncated_tail_subset_original
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} (n : ℕ) (y : ℝ) :
+    {ω : Ω |
+      y <
+        |durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|} ⊆
+      {ω : Ω | y < |X 0 ω|} := by
+  intro ω hω
+  exact lt_of_lt_of_le hω
+    (durrett2019_theorem_2_2_12_abs_truncated_le_abs (X := X) n ω)
+
+/--
+Durrett 2019, Theorem 2.2.12 support: tail probabilities of the truncated
+variable are bounded by the original tail probabilities.
+-/
+theorem durrett2019_theorem_2_2_12_measureReal_truncated_tail_le_original
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} (n : ℕ) (y : ℝ) :
+    P.real {ω : Ω |
+      y <
+        |durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|} ≤
+      P.real {ω : Ω | y < |X 0 ω|} :=
+  measureReal_mono
+    (durrett2019_theorem_2_2_12_truncated_tail_subset_original
+      (X := X) n y)
+
+/--
+Durrett 2019, Theorem 2.2.12 support: above the truncation level the
+truncated variable has zero tail probability.
+-/
+theorem durrett2019_theorem_2_2_12_measureReal_truncated_tail_eq_zero_of_level_le
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {n : ℕ} {y : ℝ}
+    (hny : (n : ℝ) ≤ y) :
+    P.real {ω : Ω |
+      y <
+        |durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|} = 0 := by
+  have hempty :
+      {ω : Ω |
+        y <
+          |durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω|} = ∅ := by
+    ext ω
+    constructor
+    · intro hω
+      exact False.elim
+        ((not_lt.mpr
+          ((durrett2019_theorem_2_2_12_abs_truncated_le_level (X := X) n ω).trans hny))
+          hω)
+    · intro hω
+      exact False.elim hω
+  rw [hempty]
+  simp
+
 /-! ## Durrett, Section 2.3 -/
 
 /--
