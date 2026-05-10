@@ -41014,6 +41014,111 @@ theorem
         vdVWRademacherWeights (fun i : Fin n => -z.1 i))
       hweights hcoord
 
+/-- Original-coordinate sample projection from the sign-first product-pair space. -/
+theorem measurable_vdVWSignProductPair_originalSample
+    {Observation : Type v} [MeasurableSpace Observation] {n : ℕ} :
+    Measurable
+      (fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+        fun i : Fin n => (z.2 i).1) := by
+  exact measurable_pi_lambda _ fun i =>
+    measurable_fst.comp ((measurable_pi_apply i).comp measurable_snd)
+
+/-- Ghost-coordinate sample projection from the sign-first product-pair space. -/
+theorem measurable_vdVWSignProductPair_ghostSample
+    {Observation : Type v} [MeasurableSpace Observation] {n : ℕ} :
+    Measurable
+      (fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+        fun i : Fin n => (z.2 i).2) := by
+  exact measurable_pi_lambda _ fun i =>
+    measurable_snd.comp ((measurable_pi_apply i).comp measurable_snd)
+
+/--
+Original-sample finite-center failure event from single-sample selected-center
+scalar measurability.
+-/
+theorem
+    measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_sample_coordinate
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta : ℝ} {n : ℕ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hcard : Measurable fun sample : SampleAt Observation n => cardinality sample)
+    (hcoord : ∀ k : ℕ, ∀ i : Fin n,
+      Measurable fun sample : SampleAt Observation n =>
+        vdVWTruncatedClassFun classFun envelope M
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta cardinality cover sample k)
+          (sample i)) :
+    MeasurableSet
+      {z : SampleAt ℝ n × SampleAt (Observation × Observation) n |
+        ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin n => (z.2 i).1)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin n => (z.2 i).1)).center z.1 M} := by
+  have hsample :
+      Measurable
+        (fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+          fun i : Fin n => (z.2 i).1) :=
+    measurable_vdVWSignProductPair_originalSample
+  refine
+    measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_coordinate
+      (indexClass := indexClass) (classFun := classFun) (envelope := envelope)
+      (M := M) (eta := eta) (cardinality := cardinality) cover ?_ ?_
+  · simpa using hcard.comp hsample
+  · intro k i
+    simpa using (hcoord k i).comp hsample
+
+/--
+Ghost-sample finite-center failure event from single-sample selected-center
+scalar measurability.
+-/
+theorem
+    measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_sample_coordinate
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta : ℝ} {n : ℕ}
+    {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hcard : Measurable fun sample : SampleAt Observation n => cardinality sample)
+    (hcoord : ∀ k : ℕ, ∀ i : Fin n,
+      Measurable fun sample : SampleAt Observation n =>
+        vdVWTruncatedClassFun classFun envelope M
+          (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+            (Observation := Observation) (Index := Index) (n := n)
+            indexClass classFun envelope M eta cardinality cover sample k)
+          (sample i)) :
+    MeasurableSet
+      {z : SampleAt ℝ n × SampleAt (Observation × Observation) n |
+        ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+          (fun i : Fin n => (z.2 i).2)
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover (fun i : Fin n => (z.2 i).2)).center
+          (fun i : Fin n => -z.1 i) M} := by
+  have hsample :
+      Measurable
+        (fun z : SampleAt ℝ n × SampleAt (Observation × Observation) n =>
+          fun i : Fin n => (z.2 i).2) :=
+    measurable_vdVWSignProductPair_ghostSample
+  refine
+    measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_coordinate
+      (indexClass := indexClass) (classFun := classFun) (envelope := envelope)
+      (M := M) (eta := eta) (cardinality := cardinality) cover ?_ ?_
+  · simpa using hcard.comp hsample
+  · intro k i
+    simpa using (hcoord k i).comp hsample
+
 /--
 The concrete ghost/Rademacher pair-difference event lands in the
 original-or-ghost selected finite-net bad event.

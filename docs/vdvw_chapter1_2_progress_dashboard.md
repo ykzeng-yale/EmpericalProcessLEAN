@@ -211,8 +211,14 @@ inputs by `measurable_vdVWWeightedSampleSum_varying_index_of_coordinate`,
 product-pair wrappers
 `measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_coordinate` /
 `measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_coordinate`.
-The remaining selected-center task is therefore the actual scalar
-measurability of selected cardinalities and Nat-indexed selected-center
+The sign-first product-pair projection bookkeeping is now also closed by
+`measurable_vdVWSignProductPair_originalSample`,
+`measurable_vdVWSignProductPair_ghostSample`, and the sample-coordinate
+failure-event wrappers
+`measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt_of_sample_coordinate` /
+`measurableSet_VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_selectedCenterAt_of_sample_coordinate`.
+The remaining selected-center task is therefore the actual single-sample
+scalar measurability of selected cardinalities and Nat-indexed selected-center
 coordinate evaluations.
 The concrete product-fiber side now has the fiber-unpacking and lower-bound
 transfer pair
