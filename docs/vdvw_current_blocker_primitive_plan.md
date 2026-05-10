@@ -10169,3 +10169,16 @@ bad event with fixed-original sign-swap transport that only holds
 fixed-original sign-swap transport on centered-bad samples, together with the
 pair-sub mass source already supplied by Chebyshev, or an averaged
 product-pair replacement that avoids fixed-original transport.
+
+2026-05-10 fixed-`M` a.e. half-scale sign-swap handoff:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_signSwap_ae_finiteCenter_halfScale`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+These lift the restricted-a.e. half-scale sign-swap outer-probability bridge to
+the fixed-`M` stochastic-entropy endpoint and specialize it to the canonical
+countable first-level selected cover with one sign-only finite-center support
+hypothesis.  Countability now discharges the centered-bad measurability input
+required by the restricted measure.  The remaining source theorem is the
+actual a.e. fixed-original sign-swap transport on centered-bad samples, or the
+averaged product-pair replacement.

@@ -4677,3 +4677,14 @@ They reuse the pointwise Chebyshev pair-sub mass theorem and allow only the
 fixed-original sign-swap transport to be a.e. on the centered-bad left event.
 The dashboard frontier is therefore sharpened to the actual a.e. sign-swap
 transport theorem, or to the averaged product-pair source that replaces it.
+
+That restricted-a.e. half-scale sign-swap bridge now reaches the fixed-`M`
+selected-cover endpoint:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_signSwap_ae_finiteCenter_halfScale`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+The first theorem propagates the a.e. sign-swap source through the
+stochastic-entropy beta/penalty machinery; the second chooses the countable
+first-level selected cover and supplies centered-bad measurability from the
+countable class interface.  The dashboard blocker remains the source
+sign-swap transport itself, not fixed-`M` propagation.

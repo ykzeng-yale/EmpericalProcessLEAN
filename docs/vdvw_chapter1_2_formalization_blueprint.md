@@ -3766,6 +3766,18 @@ factor-two product-fiber bridge; the half-scale theorem rewrites
 the actual a.e. fixed-original sign-swap transport on centered-bad samples, or
 replace that source with an averaged product-pair argument.
 
+The same restricted-a.e. half-scale source now has fixed-`M` selected-cover
+consumers:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_signSwap_ae_finiteCenter_halfScale`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_ae_signSwap_countable_firstLevel_of_signSample_finiteCenter`.
+They reuse the `4 * H + eta` half-scale comparison, the existing
+inverse-`n` Chebyshev penalty convergence, and the first-level selected-cover
+measurability package.  Future proof work can state the remaining
+fixed-original sign-swap transport directly as an a.e. fact under
+`P^n.restrict centeredBad`; no additional fixed-`M` or first-level selected
+cover handoff is needed for that lane.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
