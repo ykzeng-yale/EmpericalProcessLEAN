@@ -21,15 +21,19 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
 
 Current frontier: Theorem 5.41 now has a compiled finite-coordinate
 root-Taylor action endpoint and sampled pointwise-Taylor bridges into its
-root/Taylor-expansion fields, plus an action endpoint consuming a pointwise
-Taylor identity and residual definition directly.  The residual convergence and
+root/Taylor-expansion fields.  The direct `O_P(1)` residual-source wrapper
+defines the literal Taylor residual internally, proves its convergence and
+measurability, and feeds the pointwise-Taylor residual endpoint without
+external `hResidual` or `hResidual_meas` fields.  The residual convergence and
 measurability source package
 `vaart1998_theorem_5_41_residual_tendstoInMeasure_and_aemeasurable_of_derivativeLLN_secondDerivativeBound`
 now converts derivative LLN, consistency, a second-derivative envelope, and
-scaled-estimator tightness into the literal Taylor residual fields.  The next
-proof packet should compose that package into the pointwise-Taylor residual
-endpoint, not replay display weak-convergence, display-tightness, score-CLT,
-derivative-action wrappers, or the now-packaged pointwise Taylor bridge.
+scaled-estimator tightness into those literal Taylor residual fields.  The next
+proof packet should remove the remaining explicit `scaledEstimator = O_P(1)`
+input by composing the residual-source endpoint with the existing absorbing
+non-circular tightness route, not replay display weak-convergence,
+display-tightness, score-CLT, residual convergence, derivative-action wrappers,
+or the now-packaged pointwise Taylor bridge.
 
 ## Chapter Map
 

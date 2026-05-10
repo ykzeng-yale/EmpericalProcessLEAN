@@ -17,6 +17,9 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Immediate predecessor pointwise-Taylor endpoint with explicit residual fields:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidual_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Immediate predecessor finite root-Taylor endpoint:
@@ -36,6 +39,9 @@ The score-average representation bridge is
 `vaart1998_theorem_5_41_scoreAverage_eq_finiteCoordinateScaledCentered_of_summand_eq_scoreScaled`.
 The residual source package is
 `vaart1998_theorem_5_41_residual_tendstoInMeasure_and_aemeasurable_of_derivativeLLN_secondDerivativeBound`.
+The direct `O_P(1)` residual-source wrapper now composes that package into the
+pointwise-Taylor residual endpoint, so explicit `hResidual`, `hResidual_meas`,
+and `hResidual_eq` are no longer live for that route.
 
 Continuation recipe:
 
@@ -48,15 +54,16 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Residual endpoint wrapper: feed
-   `vaart1998_theorem_5_41_residual_tendstoInMeasure_and_aemeasurable_of_derivativeLLN_secondDerivativeBound`
-   into the current pointwise-Taylor residual endpoint, removing the explicit
-   `hResidual` and `hResidual_meas` fields when either direct `O_P(1)` tightness
-   or the absorbing non-circular tightness route is available.
+1. Absorbing residual-source wrapper: compose the new direct `O_P(1)`
+   residual-source endpoint with the existing non-circular scaled-estimator
+   tightness route, removing the explicit `hScaledEstimator :
+   StochasticBounded P scaledEstimator` field when the absorbing hypotheses are
+   already available.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
-   pointwise-Taylor residual endpoint; do not rebuild completed score CLT, display
-   weak convergence, display tightness, or action-bound wrapper stacks.
+   residual-source endpoint; do not rebuild completed score CLT, display weak
+   convergence, display tightness, residual convergence, or action-bound wrapper
+   stacks.
 
 Operating rules:
 

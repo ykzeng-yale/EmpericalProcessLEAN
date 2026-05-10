@@ -16920,6 +16920,329 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hContDiffDerivativeAt hSecondDerivative_eq_fderiv
 
 /--
+van der Vaart 1998, Theorem 5.41, pointwise-Taylor residual source handoff
+with explicit `O_P(1)` tightness.
+
+This wrapper removes the auxiliary residual convergence and residual
+measurability fields from the pointwise-Taylor source endpoint.  The residual is
+defined literally as the empirical-derivative error plus the quadratic Taylor
+term, and the residual source package proves its negligibility and
+a.e.-measurability from the derivative LLN, consistency, the second-derivative
+envelope, and `scaledEstimator = O_P(1)`.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope
+    {Ω Ω' Observation Coord Entry Θ : Type*} [Fintype Coord] [Fintype Entry]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)] [CompleteSpace (Coord -> ℝ)]
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    [MeasurableSpace Θ] [SecondCountableTopology Θ] [BorelSpace Θ]
+    [OpensMeasurableSpace Θ] [CompleteSpace Θ]
+    [MeasurableSub₂ Θ] [MeasurableSMul₂ ℝ Θ]
+    [SecondCountableTopology (Θ →L[ℝ] (Coord -> ℝ))]
+    [OpensMeasurableSpace (Θ →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ (Θ →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ (Θ →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ (Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ (Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))]
+    (V : Θ →L[ℝ] (Coord -> ℝ)) (Vinv : (Coord -> ℝ) →L[ℝ] Θ)
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scale : ℕ -> Ω -> ℝ)
+    (estimatingMap : ℕ -> Ω -> Observation -> Θ -> Coord -> ℝ)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> Θ -> Θ →L[ℝ] (Coord -> ℝ))
+    (scoreAtTheta0 estimatingAtEstimator :
+      ℕ -> Ω -> Observation -> Coord -> ℝ)
+    (secondDerivative :
+      ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))
+    (sourceSet : ℕ -> Ω -> Observation -> Set Θ)
+    (envelope : Observation -> ℝ)
+    (envelopeMean : ℝ)
+    (scoreSummand : Coord -> ℕ -> Ω -> ℝ)
+    (derivativeEntry : Entry -> ℕ -> Ω -> ℝ)
+    {scoreLaw : Measure (Coord -> ℝ)}
+    {theta0 estimator delta scaledEstimator : ℕ -> Ω -> Θ}
+    {Z : Ω' -> Coord -> ℝ}
+    (hLeftInverse : ∀ x : Θ, Vinv (V x) = x)
+    (hScoreSummand_meas : ∀ coordinate i, Measurable (scoreSummand coordinate i))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hScoreSummand_coordinate_memLp :
+      ∀ coordinate, MemLp (scoreSummand coordinate 0) 2 P)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coord -> ℝ),
+      (∫ ω, L (Z ω) ∂Q) = 0)
+    (hZ_covariance : ∀ L : StrongDual ℝ (Coord -> ℝ),
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        _root_.ProbabilityTheory.variance
+          (vaart1998_finiteCoordinateProjectedSample L scoreSummand 0) P)
+    (hScore_vector_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (vaart1998_finiteCoordinateSampleVector scoreSummand i) scoreLaw P)
+    (hScore_sequence_law :
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω i => vaart1998_finiteCoordinateSampleVector scoreSummand i ω)
+        (Measure.infinitePi (fun _ : ℕ => scoreLaw)) P)
+    (hScoreMean_zero : ∀ coordinate : Coord,
+      (∫ ω, scoreSummand coordinate 0 ω ∂P) = 0)
+    (hSummand_eq : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ coordinate : Coord,
+        (scale n ω • estimatingMap n ω (samples n ω i)
+          (theta0 n ω)) coordinate =
+          √(n : ℝ) * scoreSummand coordinate i.val ω)
+    (hDerivativeEntry_integrable :
+      ∀ entry, Integrable (derivativeEntry entry 0) P)
+    (hDerivativeEntry_indep :
+      ∀ entry, Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun
+          (derivativeEntry entry i) (derivativeEntry entry j) P)
+    (hDerivativeEntry_ident :
+      ∀ entry i,
+        _root_.ProbabilityTheory.IdentDistrib
+          (derivativeEntry entry i) (derivativeEntry entry 0) P P)
+    (hDerivativeAverage_action_le :
+      ∀ᵐ ω ∂P,
+        ∀ᶠ n in atTop,
+          ∀ x : Θ, ‖x‖ ≠ 0 ->
+            ‖(empiricalAverageVector (samples n ω)
+                (fun y => derivativeAt n ω y (theta0 n ω)) - V) x‖ ≤
+              (∑ entry : Entry,
+                |(∑ i ∈ Finset.range n, derivativeEntry entry i ω) / (n : ℝ) -
+                  ∫ sample, derivativeEntry entry 0 sample ∂P|) * ‖x‖)
+    (hEstimator_consistency :
+      TendstoInMeasure P
+        (fun n ω => ‖estimator n ω - theta0 n ω‖) atTop 0)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hEnvelopeAverage_tendsto :
+      TendstoInMeasure P
+        (fun n ω => empiricalAverage (samples n ω) envelope)
+        atTop (fun _ : Ω => envelopeMean))
+    (hScaledEstimator : StochasticBounded P scaledEstimator)
+    (hPointwiseTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) +
+            derivativeAt n ω (samples n ω i) (theta0 n ω)
+              (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              secondDerivative n ω (samples n ω i)
+                (delta n ω) (scaledEstimator n ω) =
+          estimatingAtEstimator n ω (samples n ω i))
+    (hEnvelopeBound : ∀ᶠ n in atTop, ∀ ω x,
+      ‖secondDerivative n ω x‖ ≤ envelope x)
+    (hDerivativeAtTheta0_summand_meas : ∀ n : ℕ, ∀ i : Fin n,
+      AEMeasurable
+        (fun ω => derivativeAt n ω (samples n ω i) (theta0 n ω)) P)
+    (hSecondDerivative_summand_meas : ∀ n : ℕ, ∀ i : Fin n,
+      AEMeasurable
+        (fun ω => secondDerivative n ω (samples n ω i)) P)
+    (hTheta0_meas : ∀ n, AEMeasurable (theta0 n) P)
+    (hEstimator_meas : ∀ n, AEMeasurable (estimator n) P)
+    (hScale_meas : ∀ n, AEMeasurable (scale n) P)
+    (hRawRoot : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        empiricalAverageVector (samples n ω)
+          (fun x => estimatingMap n ω x (estimator n ω)) = 0)
+    (hScore_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i) (theta0 n ω))
+    (hEstimator_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        estimatingAtEstimator n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i)
+            (estimator n ω))
+    (hDelta_eq_sub : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, delta n ω = estimator n ω - theta0 n ω)
+    (hScaledEstimator_eq_sub : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        scaledEstimator n ω =
+          scale n ω • (estimator n ω - theta0 n ω))
+    (hOpen : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        IsOpen (sourceSet n ω (samples n ω i)))
+    (hSegmentSubset : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ((fun t : ℝ => theta0 n ω + t • delta n ω) ''
+            Set.Icc (0 : ℝ) 1) ⊆
+          sourceSet n ω (samples n ω i))
+    (hContDiffEstimatingMap : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContDiffOn ℝ 1 (estimatingMap n ω (samples n ω i))
+          (sourceSet n ω (samples n ω i)))
+    (hDerivativeAt_eq_fderiv : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          fderiv ℝ (estimatingMap n ω (samples n ω i))
+              (theta0 n ω + x • delta n ω) =
+            derivativeAt n ω (samples n ω i)
+              (theta0 n ω + x • delta n ω))
+    (hContDiffDerivativeAt : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContDiffOn ℝ 1 (derivativeAt n ω (samples n ω i))
+          (sourceSet n ω (samples n ω i)))
+    (hSecondDerivative_eq_fderiv : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          fderiv ℝ (derivativeAt n ω (samples n ω i))
+              (theta0 n ω + x • delta n ω) =
+            secondDerivative n ω (samples n ω i)) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] Θ) (Z ω)) (fun _ => P) Q := by
+  let empiricalDerivative : ℕ -> Ω -> Θ →L[ℝ] (Coord -> ℝ) :=
+    fun n ω =>
+      empiricalAverageVector (samples n ω)
+        (fun y => derivativeAt n ω y (theta0 n ω))
+  let secondDerivativeAction :
+      ℕ -> Ω -> Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ) :=
+    fun n ω => empiricalAverageVector (samples n ω) (secondDerivative n ω)
+  let curvatureBound : ℕ -> Ω -> ℝ :=
+    fun n ω => empiricalAverage (samples n ω) envelope
+  let residual : ℕ -> Ω -> Coord -> ℝ :=
+    fun n ω =>
+      (empiricalDerivative n ω - V) (scaledEstimator n ω) +
+        (1 / 2 : ℝ) •
+          secondDerivativeAction n ω (delta n ω) (scaledEstimator n ω)
+  have hDerivativeAverage_norm_le :
+      ∀ᵐ ω ∂P,
+        ∀ᶠ n in atTop,
+          ‖empiricalDerivative n ω - V‖ ≤
+            ∑ entry : Entry,
+              |(∑ i ∈ Finset.range n, derivativeEntry entry i ω) / (n : ℝ) -
+                ∫ sample, derivativeEntry entry 0 sample ∂P| :=
+    vaart1998_theorem_5_41_derivativeAverage_norm_le_finiteEntryBound_of_action_bound
+      (P := P) (V := V) (samples := samples)
+      (derivativeAt := derivativeAt) (theta0 := theta0)
+      (derivativeEntry := derivativeEntry) hDerivativeAverage_action_le
+  have hDerivativeErrorBound_ae :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n : ℕ =>
+            ∑ entry : Entry,
+              |(∑ i ∈ Finset.range n, derivativeEntry entry i ω) / (n : ℝ) -
+                ∫ sample, derivativeEntry entry 0 sample ∂P|)
+          atTop (𝓝 0) :=
+    vaart1998_theorem_5_41_derivativeErrorBound_tendsto_ae_of_finiteCenteredStrongLaw
+      derivativeEntry hDerivativeEntry_integrable hDerivativeEntry_indep
+      hDerivativeEntry_ident
+  have hDerivativeAverage_norm_ae :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n : ℕ => ‖empiricalDerivative n ω - V‖)
+          atTop (𝓝 0) :=
+    vaart1998_theorem_5_41_derivativeAverage_norm_tendsto_ae_of_eventual_bound
+      (P := P) (V := V) (samples := samples)
+      (derivativeAt := derivativeAt) (theta0 := theta0)
+      (derivativeErrorBound := fun n ω =>
+        ∑ entry : Entry,
+          |(∑ i ∈ Finset.range n, derivativeEntry entry i ω) / (n : ℝ) -
+            ∫ sample, derivativeEntry entry 0 sample ∂P|)
+      hDerivativeErrorBound_ae hDerivativeAverage_norm_le
+  have hEmpiricalDerivative_meas :
+      ∀ n,
+        AEMeasurable (empiricalDerivative n) P :=
+    vaart1998_theorem_5_41_empiricalDerivative_aemeasurable_of_summands
+      (P := P) (samples := samples) (derivativeAt := derivativeAt)
+      (theta0 := theta0) hDerivativeAtTheta0_summand_meas
+  have hDerivativeNorm_strongMeas :
+      ∀ n : ℕ,
+        AEStronglyMeasurable
+          (fun ω => ‖empiricalDerivative n ω - V‖) P := by
+    intro n
+    have hDerivativeDiff :
+        AEMeasurable (fun ω => empiricalDerivative n ω - V) P :=
+      (continuous_id.sub continuous_const).measurable.comp_aemeasurable
+        (hEmpiricalDerivative_meas n)
+    exact
+      (continuous_norm.measurable.comp_aemeasurable
+        hDerivativeDiff).aestronglyMeasurable
+  have hDerivativeLLN :
+      TendstoInMeasure P
+        (fun n ω => ‖empiricalDerivative n ω - V‖) atTop 0 :=
+    vaart1998_tendstoInMeasure_of_tendsto_ae
+      (P := P)
+      (X := fun n ω => ‖empiricalDerivative n ω - V‖)
+      (Z := fun _ : Ω => (0 : ℝ))
+      hDerivativeNorm_strongMeas hDerivativeAverage_norm_ae
+  have hDelta :
+      TendstoInMeasure P (fun n ω => ‖delta n ω‖) atTop 0 :=
+    hEstimator_consistency.congr (fun n =>
+      (hDelta_eq_sub n).mono fun ω hω => by
+        rw [← hω]) Filter.EventuallyEq.rfl
+  have hCurvatureBounded : StochasticBounded P curvatureBound :=
+    vaart1998_stochasticBounded_of_tendstoInMeasure_const
+      envelopeMean hEnvelopeAverage_tendsto
+  have hCurvatureOpBound : ∀ᶠ n in atTop, ∀ ω,
+      ‖secondDerivativeAction n ω‖ ≤ ‖curvatureBound n ω‖ :=
+    vaart1998_theorem_5_41_curvatureOpBound_of_empiricalSecondDerivative_envelope
+      (samples := samples) (secondDerivative := secondDerivative)
+      (envelope := envelope) hEnvelope_nonneg hEnvelopeBound
+  have hSecondDerivativeAction_meas :
+      ∀ n,
+        AEMeasurable (secondDerivativeAction n) P :=
+    vaart1998_theorem_5_41_empiricalSecondDerivativeAction_aemeasurable_of_summands
+      (P := P) (samples := samples) (secondDerivative := secondDerivative)
+      hSecondDerivative_summand_meas
+  have hDelta_meas : ∀ n, AEMeasurable (delta n) P := by
+    intro n
+    exact ((hEstimator_meas n).sub (hTheta0_meas n)).congr
+      ((hDelta_eq_sub n).mono fun ω hω => hω.symm)
+  have hScaledEstimator_meas : ∀ n, AEMeasurable (scaledEstimator n) P := by
+    intro n
+    exact ((hScale_meas n).smul ((hEstimator_meas n).sub (hTheta0_meas n))).congr
+      ((hScaledEstimator_eq_sub n).mono fun ω hω => hω.symm)
+  have hResidual_source :
+      TendstoInMeasure P residual atTop 0 ∧
+        ∀ n, AEMeasurable (residual n) P :=
+    vaart1998_theorem_5_41_residual_tendstoInMeasure_and_aemeasurable_of_derivativeLLN_secondDerivativeBound
+      (P := P) (empiricalDerivative := empiricalDerivative) V
+      (secondDerivativeAction := secondDerivativeAction)
+      (delta := delta) (scaledEstimator := scaledEstimator)
+      (curvatureBound := curvatureBound) hDerivativeLLN hDelta
+      hCurvatureBounded hScaledEstimator hCurvatureOpBound
+      hEmpiricalDerivative_meas hSecondDerivativeAction_meas hDelta_meas
+      hScaledEstimator_meas
+  have hResidual_eq : ∀ n : ℕ,
+      ∀ᵐ ω ∂P,
+        residual n ω =
+          (empiricalAverageVector (samples n ω)
+              (fun y => derivativeAt n ω y (theta0 n ω)) - V)
+              (scaledEstimator n ω) +
+            (1 / 2 : ℝ) •
+              (empiricalAverageVector (samples n ω) (secondDerivative n ω))
+                (delta n ω) (scaledEstimator n ω) := by
+    intro n
+    exact ae_of_all _ fun ω => by
+      rfl
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidual_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (samples := samples) (scale := scale)
+      (estimatingMap := estimatingMap) (derivativeAt := derivativeAt)
+      (scoreAtTheta0 := scoreAtTheta0)
+      (estimatingAtEstimator := estimatingAtEstimator)
+      (secondDerivative := secondDerivative)
+      (sourceSet := sourceSet)
+      (envelope := envelope) (envelopeMean := envelopeMean)
+      (scoreSummand := scoreSummand) (derivativeEntry := derivativeEntry)
+      (theta0 := theta0) (estimator := estimator)
+      (delta := delta) (scaledEstimator := scaledEstimator)
+      (residual := residual) (Z := Z)
+      hLeftInverse hScoreSummand_meas hZ_aemeas
+      hScoreSummand_coordinate_memLp hZ_gaussian hZ_memLp hZ_mean
+      hZ_covariance hScore_vector_law hScore_sequence_law
+      hScoreMean_zero hSummand_eq hDerivativeEntry_integrable
+      hDerivativeEntry_indep hDerivativeEntry_ident hDerivativeAverage_action_le
+      hEstimator_consistency hEnvelope_nonneg hEnvelopeAverage_tendsto
+      hResidual_source.1 hResidual_source.2 hResidual_eq hPointwiseTaylor
+      hEnvelopeBound hDerivativeAtTheta0_summand_meas
+      hSecondDerivative_summand_meas hTheta0_meas hEstimator_meas
+      hScale_meas hRawRoot hScore_scaled hEstimator_scaled hDelta_eq_sub
+      hScaledEstimator_eq_sub hOpen hSegmentSubset hContDiffEstimatingMap
+      hDerivativeAt_eq_fderiv hContDiffDerivativeAt
+      hSecondDerivative_eq_fderiv
+
+/--
 van der Vaart 1998, Theorem 5.41, finite-entry derivative action-bound handoff
 with explicit `O_P(1)` tightness.
 
