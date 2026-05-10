@@ -3852,6 +3852,14 @@ restricted-a.e. product-fiber hypothesis after an explicit eventual
 measurability assumption for that event.  This keeps the future source theorem
 closer to the usual conditional-a.e. statement shape.
 
+The base-a.e. implication product-fiber lane now also has finite-center
+failure-tail consumers:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_invSq`
+plus deterministic and a.e. selected-cardinality lower-growth specializations.
+This closes the bookkeeping layer where the source theorem supplies a
+`P^n`-a.e. conditional fiber lower bound and controls `errorSample` by the
+displayed finite-center failure tail.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

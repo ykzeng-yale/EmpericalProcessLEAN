@@ -4756,3 +4756,11 @@ implications through
 The source proof may state the fiber lower bound as `P^n`-a.e.
 `sample ∈ centeredBad -> ...`, with centered-bad measurability supplied
 separately.
+
+That base-a.e. implication source surface now also has the finite-center
+failure-tail specializations
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_invSq`
+and its deterministic/a.e. lower-growth wrappers.  This closes the combined
+adapter: base-a.e. fiber lower bounds, finite-center `errorSample` tails, and
+a.e. selected-cardinality growth now feed the fixed-`M` product-fiber route
+without an extra manual restricted-measure conversion.

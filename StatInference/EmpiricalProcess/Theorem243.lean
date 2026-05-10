@@ -44078,6 +44078,345 @@ theorem
       hproduct
 
 /--
+Base-a.e. implication variant of
+`..._finiteCenter_failure_tail_invSq`: the product-fiber beta lower bound is
+stated as a `P^n`-a.e. implication on the centered bad event, while the
+finite-center failure-tail error is still controlled by the inverse-square
+selected-cardinality lintegral.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_invSq
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M) (hC_pos : 0 < C)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n)
+    (hinvSq :
+      ∀ eta, 0 < eta ->
+        Tendsto
+          (fun n : ℕ =>
+            ∫⁻ sample : SampleAt Observation n,
+              ENNReal.ofReal
+                ((2 * Real.exp (-3)) /
+                  (((selectedCardinality eta n sample n : ℝ) + 1) ^ 2))
+              ∂(vdVWProductMeasure P n))
+          atTop (𝓝 0))
+    (hcenteredBad_meas :
+      ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          MeasurableSet
+            (VdVWTheorem243CenteredTruncatedBadSet P indexClass classFun
+              envelope M epsilon n))
+    (hproduct :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∃ joint : Set (SampleAt Observation n ×
+              (SampleAt Observation n × SampleAt ℝ n)),
+          ∃ errorSample : SampleAt Observation n -> ℝ≥0∞,
+            MeasurableSet joint ∧
+              AEMeasurable errorSample
+                ((vdVWProductMeasure P n).restrict
+                  (VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                    classFun envelope M epsilon n)) ∧
+              (∀ᵐ sample ∂(vdVWProductMeasure P n),
+                  sample ∈
+                      VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                        classFun envelope M epsilon n ->
+                    ENNReal.ofReal
+                        (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                      ((vdVWProductMeasure P n).prod
+                          (vdVWProductMeasure vdVWRademacherLaw n))
+                        (Prod.mk sample ⁻¹' joint) + errorSample sample) ∧
+              (∫⁻ sample in
+                  VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                    classFun envelope M epsilon n,
+                errorSample sample ∂(vdVWProductMeasure P n)) ≤
+                (∫⁻ sample in
+                  VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                    classFun envelope M epsilon n,
+                ENNReal.ofReal
+                  (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                    (selectedCardinality eta n sample n) n M)
+                ∂(vdVWProductMeasure P n)) ∧
+              (∀ z : SampleAt Observation n ×
+                  (SampleAt Observation n × SampleAt ℝ n),
+                z ∈ joint ->
+                  z.1 ∈
+                    VdVWTheorem243SelectedFiniteNetBadSet M C eta epsilon
+                      selectedCardinality n ∨
+                  z.2.1 ∈
+                    VdVWTheorem243SelectedFiniteNetBadSet M C eta epsilon
+                      selectedCardinality n)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  let error : ℝ -> ℝ -> ℕ -> ℝ≥0∞ :=
+    fun eta epsilon n =>
+      ∫⁻ sample in
+        VdVWTheorem243CenteredTruncatedBadSet P indexClass classFun
+          envelope M epsilon n,
+        ENNReal.ofReal
+          (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+            (selectedCardinality eta n sample n) n M)
+        ∂(vdVWProductMeasure P n)
+  have herror :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        Tendsto (fun n : ℕ => error eta epsilon n) atTop (𝓝 0) := by
+    intro eta heta epsilon hepsilon
+    simpa [error] using
+      (vdVWTheorem243_selectedFailureTail_centered_setLIntegral_tendsto_zero_of_invSq_lintegral
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M)
+        (selectedCardinality := selectedCardinality)
+        (ne_of_gt hM_pos) hinvSq eta heta epsilon hepsilon)
+  refine
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_add_error
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := C) (error := error)
+      (selectedCardinality := selectedCardinality) (cardinality := cardinality)
+      hM_pos hC_pos hlog hselected_le herror hcenteredBad_meas ?_
+  intro eta heta epsilon hepsilon
+  filter_upwards [hproduct eta heta epsilon hepsilon] with n hproduct_n
+  rcases hproduct_n with
+    ⟨joint, errorSample, hjoint_meas, herrorSample_aemeas, hfiber,
+      herror_bound, hjoint_subset⟩
+  refine ⟨joint, errorSample, hjoint_meas, ?_, ?_, ?_, ?_⟩
+  · simpa [VdVWTheorem243CenteredTruncatedBadSet] using herrorSample_aemeas
+  · simpa [VdVWTheorem243CenteredTruncatedBadSet] using hfiber
+  · simpa [error, VdVWTheorem243CenteredTruncatedBadSet] using herror_bound
+  · simpa [VdVWTheorem243SelectedFiniteNetBadSet] using hjoint_subset
+
+/--
+Base-a.e. lower-growth specialization of
+`..._finiteCenter_failure_tail_invSq`: a deterministic lower bound on the
+selected cardinality supplies the inverse-square tail-control input, while the
+product-fiber beta lower bound is supplied as a base-measure a.e. implication.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_of_eventually_cardinality_ge
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M) (hC_pos : 0 < C)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n)
+    (lower : ℝ -> ℕ -> ℕ)
+    (hlower : ∀ eta, 0 < eta -> Tendsto (lower eta) atTop atTop)
+    (hselected_ge :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          lower eta n ≤ selectedCardinality eta n sample n)
+    (hcenteredBad_meas :
+      ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          MeasurableSet
+            (VdVWTheorem243CenteredTruncatedBadSet P indexClass classFun
+              envelope M epsilon n))
+    (hproduct :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∃ joint : Set (SampleAt Observation n ×
+              (SampleAt Observation n × SampleAt ℝ n)),
+          ∃ errorSample : SampleAt Observation n -> ℝ≥0∞,
+            MeasurableSet joint ∧
+              AEMeasurable errorSample
+                ((vdVWProductMeasure P n).restrict
+                  (VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                    classFun envelope M epsilon n)) ∧
+              (∀ᵐ sample ∂(vdVWProductMeasure P n),
+                  sample ∈
+                      VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                        classFun envelope M epsilon n ->
+                    ENNReal.ofReal
+                        (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                      ((vdVWProductMeasure P n).prod
+                          (vdVWProductMeasure vdVWRademacherLaw n))
+                        (Prod.mk sample ⁻¹' joint) + errorSample sample) ∧
+              (∫⁻ sample in
+                  VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                    classFun envelope M epsilon n,
+                errorSample sample ∂(vdVWProductMeasure P n)) ≤
+                (∫⁻ sample in
+                  VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                    classFun envelope M epsilon n,
+                ENNReal.ofReal
+                  (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                    (selectedCardinality eta n sample n) n M)
+                ∂(vdVWProductMeasure P n)) ∧
+              (∀ z : SampleAt Observation n ×
+                  (SampleAt Observation n × SampleAt ℝ n),
+                z ∈ joint ->
+                  z.1 ∈
+                    VdVWTheorem243SelectedFiniteNetBadSet M C eta epsilon
+                      selectedCardinality n ∨
+                  z.2.1 ∈
+                    VdVWTheorem243SelectedFiniteNetBadSet M C eta epsilon
+                      selectedCardinality n)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_invSq
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := C)
+      (selectedCardinality := selectedCardinality) (cardinality := cardinality)
+      hM_pos hC_pos hlog hselected_le
+      (vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge_single
+        (P := P) (selectedCardinality := selectedCardinality)
+        lower hlower hselected_ge)
+      hcenteredBad_meas hproduct
+
+/--
+Almost-sure base-a.e. lower-growth specialization of
+`..._finiteCenter_failure_tail_invSq`: both the product-fiber source and the
+selected-cardinality lower-growth input may be supplied in a.e. form.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_of_eventually_ae_cardinality_ge
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hM_pos : 0 < M) (hC_pos : 0 < C)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n)
+    (lower : ℝ -> ℕ -> ℕ)
+    (hlower : ∀ eta, 0 < eta -> Tendsto (lower eta) atTop atTop)
+    (hselected_ge :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop,
+          ∀ᵐ sample ∂(vdVWProductMeasure P n),
+            lower eta n ≤ selectedCardinality eta n sample n)
+    (hcenteredBad_meas :
+      ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n in atTop,
+          MeasurableSet
+            (VdVWTheorem243CenteredTruncatedBadSet P indexClass classFun
+              envelope M epsilon n))
+    (hproduct :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∃ joint : Set (SampleAt Observation n ×
+              (SampleAt Observation n × SampleAt ℝ n)),
+          ∃ errorSample : SampleAt Observation n -> ℝ≥0∞,
+            MeasurableSet joint ∧
+              AEMeasurable errorSample
+                ((vdVWProductMeasure P n).restrict
+                  (VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                    classFun envelope M epsilon n)) ∧
+              (∀ᵐ sample ∂(vdVWProductMeasure P n),
+                  sample ∈
+                      VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                        classFun envelope M epsilon n ->
+                    ENNReal.ofReal
+                        (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                      ((vdVWProductMeasure P n).prod
+                          (vdVWProductMeasure vdVWRademacherLaw n))
+                        (Prod.mk sample ⁻¹' joint) + errorSample sample) ∧
+              (∫⁻ sample in
+                  VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                    classFun envelope M epsilon n,
+                errorSample sample ∂(vdVWProductMeasure P n)) ≤
+                (∫⁻ sample in
+                  VdVWTheorem243CenteredTruncatedBadSet P indexClass
+                    classFun envelope M epsilon n,
+                ENNReal.ofReal
+                  (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                    (selectedCardinality eta n sample n) n M)
+                ∂(vdVWProductMeasure P n)) ∧
+              (∀ z : SampleAt Observation n ×
+                  (SampleAt Observation n × SampleAt ℝ n),
+                z ∈ joint ->
+                  z.1 ∈
+                    VdVWTheorem243SelectedFiniteNetBadSet M C eta epsilon
+                      selectedCardinality n ∨
+                  z.2.1 ∈
+                    VdVWTheorem243SelectedFiniteNetBadSet M C eta epsilon
+                      selectedCardinality n)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_invSq
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := C)
+      (selectedCardinality := selectedCardinality) (cardinality := cardinality)
+      hM_pos hC_pos hlog hselected_le
+      (vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_ae_cardinality_ge_single
+        (P := P) (selectedCardinality := selectedCardinality)
+        lower hlower hselected_ge)
+      hcenteredBad_meas hproduct
+
+/--
 Deterministic selected finite-net bad-event handoff.
 
 If a Rademacher weighted supremum is already in the scaled bad event and the

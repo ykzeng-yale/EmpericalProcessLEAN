@@ -10265,3 +10265,14 @@ on membership in the centered bad event, plus eventual measurability of that
 event, and converts it to the restricted-a.e. form consumed downstream.  A
 future product-fiber source proof can therefore state its lower bound in the
 natural `sample ∈ centeredBad -> ...` a.e. form.
+
+2026-05-10 product-fiber base-a.e. implication finite-tail closure:
+`Theorem243.lean` now also composes the base-a.e. implication source surface
+with finite-center failure-tail control through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_invSq`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_of_eventually_cardinality_ge`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_ghost_product_fiber_lower_bound_or_selectedNet_finiteCenter_failure_tail_of_eventually_ae_cardinality_ge`.
+The future product-fiber source theorem may now state both its fiber lower
+bound and selected-cover growth in their natural a.e. forms while using the
+displayed finite-center failure tail for `errorSample` control.
