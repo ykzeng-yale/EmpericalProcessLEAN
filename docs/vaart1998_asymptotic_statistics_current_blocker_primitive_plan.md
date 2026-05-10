@@ -19,8 +19,8 @@ normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
-Current verified absorbing-routed source endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+Current verified display-tightness source endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_displayStochasticBounded_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Continuation recipe:
 
@@ -33,10 +33,10 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Tightness source: remove a live `hScaledEstimator_lawTail` field only by
-   composing already-compiled displayed-stochastic-boundedness or absorbing
-   Taylor-zero tightness bridges with the current action-bound law-tail
-   endpoint.
+1. Tightness source: remove the live displayed `O_P(1)` field only by
+   composing already-compiled displayed convergence, displayed weak
+   convergence, score-equation, or absorbing Taylor-zero tightness bridges with
+   the current display-tightness action-bound endpoint.
 2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
    finite-entry norm/action wrapper stack.
@@ -1256,25 +1256,32 @@ compiling:
    chain through the projected wrapper, the current action-bound law-tail
    endpoint no longer routes through an external `scaledEstimator = O_P(1)`
    construction.
+383. Theorem 5.41 display-tightness action-bound source endpoint:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_displayStochasticBounded_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+   derives the source-facing scaled-estimator law-tail field from displayed
+   `O_P(1)` for `scale_n • (estimator_n - theta0_n)` using
+   `vaart1998_theorem_5_41_scaledEstimator_lawTail_of_displayStochasticBounded_estimatorSubMeas`,
+   then calls the absorbing-routed action-bound law-tail endpoint.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Route Vaart theorem 5.41 law-tail stack through absorbing endpoint`).
+(`Add Vaart theorem 5.41 display-tightness action-bound endpoint`).
 
-The latest theorem-sized packet routes the canonical and projected-to-action
-law-tail stack through the absorbing derivative-norm endpoint.  The reusable
-action-bound law-tail endpoint now turns model-shaped score, derivative,
-root/Taylor, measurability, and source-facing law-tail inputs into the final
-scaled-estimator asymptotic-normality conclusion without first constructing or
-assuming a separate `scaledEstimator = O_P(1)` field.
+The latest theorem-sized packet derives the law-tail field for the chosen
+scaled-estimator representative from the textbook displayed `O_P(1)` statement
+and then calls the absorbing-routed action-bound law-tail endpoint.  The
+reusable action-bound endpoint now turns model-shaped score, derivative,
+root/Taylor, measurability, and displayed tightness inputs into the final
+scaled-estimator asymptotic-normality conclusion.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
 source handoff.  Move next only on a genuinely live source hypothesis: derive
-the current law-tail field from an already compiled displayed stochastic
-boundedness or absorbing Taylor-zero tightness bridge, or prove a genuinely
-model-specific Taylor display, derivative, or score representation.
+the current displayed `O_P(1)` field from already compiled displayed
+convergence, displayed weak convergence, score-equation, or absorbing
+Taylor-zero tightness bridges, or prove a genuinely model-specific Taylor
+display, derivative, or score representation.
 Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
 derivative-bound, finite-derivative strong-law, action-bound, law-tail,
@@ -1292,7 +1299,8 @@ absorbing-envelope-tendsto, absorbing-derivative-tendsto,
 absorbing-derivative-a.e., absorbing-raw-score-CLT, or absorbing-raw-root
 or absorbing-estimator-substitution, absorbing-estimator-measurability, or
 absorbing-law-tail-compatibility, or absorbing-derivative-norm-law-tail
-or absorbing-canonical-score-law-tail, or projected-to-action law-tail routing
+or absorbing-canonical-score-law-tail, projected-to-action law-tail routing,
+or display-tightness action-bound endpoint
 wrappers unless a current proof directly depends on a small local API there.
 
 ## Execution Notes

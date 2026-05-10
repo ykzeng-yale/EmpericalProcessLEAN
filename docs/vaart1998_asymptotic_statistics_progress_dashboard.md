@@ -613,7 +613,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Route Vaart theorem 5.41 law-tail stack through absorbing endpoint`).
+(`Add Vaart theorem 5.41 display-tightness action-bound endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -655,6 +655,9 @@ New verified absorbing source endpoint stack:
 - `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
   now routes through the absorbing derivative-norm law-tail endpoint via the
   projected-summand law-tail wrapper.
+- `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_displayStochasticBounded_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+  derives that law-tail field from displayed `O_P(1)` for
+  `scale_n • (estimator_n - theta0_n)`.
 
 Live continuation prompt: use the efficient prompt in
 `docs/vaart1998_asymptotic_statistics_current_blocker_primitive_plan.md`.
@@ -664,17 +667,18 @@ Live continuation prompt: use the efficient prompt in
 For Vaart Theorem 5.41 in `MEstimators.lean`, finish any existing local Vaart
 Lean packet first, then discharge exactly one live source field for the current
 endpoint.  The canonical and projected-to-action law-tail stack now routes
-through the absorbing derivative-norm endpoint, so do not replay law-tail
-propagation.  Move next only on a live source hypothesis: derive the current
-`hScaledEstimator_lawTail` field from an already compiled displayed
-stochastic-boundedness or absorbing Taylor-zero tightness bridge, or prove a
-genuinely model-specific Taylor display, derivative, or score representation
-that removes a live endpoint hypothesis.
+through the absorbing derivative-norm endpoint, and the current action-bound
+source endpoint derives its law-tail field from displayed `O_P(1)`.  Move next
+only on a live source hypothesis: derive displayed `O_P(1)` from already
+compiled displayed convergence, displayed weak convergence, score-equation, or
+absorbing Taylor-zero tightness bridges, or prove a genuinely model-specific
+Taylor display, derivative, or score representation that removes a live
+endpoint hypothesis.
 Do not replay solved
 Chapter 2-4
 infrastructure,
 canonical/projected/common-vector/score-representation/derivative-bound/finite
-strong-law/action-bound/law-tail/display-congruence/display-convergence/display-weak-convergence/score-equation-OP/Taylor-zero-OP/absorbing-tightness/derivative-absorbing-tightness/absorbing-source-endpoint/absorbing-empirical-endpoint/absorbing-raw-Taylor-endpoint/absorbing-coordinate-raw-endpoint/absorbing-coordinate-path-endpoint/absorbing-estimating-map-path-endpoint/absorbing-Frechet-path-endpoint/absorbing-Frechet-vector-Taylor-endpoint/absorbing-vector-continuity-Taylor-endpoint/absorbing-theta0-Frechet-endpoint/absorbing-second-derivative-path-endpoint/absorbing-regularity-endpoint/absorbing-ContDiff-source-endpoint/absorbing-summand-measurable-endpoint/absorbing-envelope-tendsto-endpoint/absorbing-derivative-tendsto-endpoint/absorbing-derivative-ae-endpoint/absorbing-raw-score-CLT-endpoint/absorbing-raw-root-endpoint/absorbing-estimator-substitution-endpoint/absorbing-estimator-measurability-endpoint/absorbing-law-tail-compatibility-endpoint/absorbing-derivative-norm-law-tail-endpoint/absorbing-canonical-score-law-tail-endpoint/projected-to-action-law-tail-routing
+strong-law/action-bound/law-tail/display-congruence/display-convergence/display-weak-convergence/score-equation-OP/Taylor-zero-OP/absorbing-tightness/derivative-absorbing-tightness/absorbing-source-endpoint/absorbing-empirical-endpoint/absorbing-raw-Taylor-endpoint/absorbing-coordinate-raw-endpoint/absorbing-coordinate-path-endpoint/absorbing-estimating-map-path-endpoint/absorbing-Frechet-path-endpoint/absorbing-Frechet-vector-Taylor-endpoint/absorbing-vector-continuity-Taylor-endpoint/absorbing-theta0-Frechet-endpoint/absorbing-second-derivative-path-endpoint/absorbing-regularity-endpoint/absorbing-ContDiff-source-endpoint/absorbing-summand-measurable-endpoint/absorbing-envelope-tendsto-endpoint/absorbing-derivative-tendsto-endpoint/absorbing-derivative-ae-endpoint/absorbing-raw-score-CLT-endpoint/absorbing-raw-root-endpoint/absorbing-estimator-substitution-endpoint/absorbing-estimator-measurability-endpoint/absorbing-law-tail-compatibility-endpoint/absorbing-derivative-norm-law-tail-endpoint/absorbing-canonical-score-law-tail-endpoint/projected-to-action-law-tail-routing/display-tightness-action-bound-endpoint
 wrappers, earlier Theorem 5.41 wrappers, or historical ledger items.
 
 ## Reuse Dependencies

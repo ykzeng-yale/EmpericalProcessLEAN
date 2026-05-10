@@ -763,11 +763,13 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductRawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope_absorbing`,
   and the law-tail routing packet makes the canonical and projected-to-action
   law-tail stack call the absorbing derivative-norm endpoint.  The remaining
-  critical path should remove a live `hScaledEstimator_lawTail` field by
-  composing already compiled displayed-stochastic-boundedness or absorbing
-  Taylor-zero tightness bridges with the action-bound law-tail endpoint, or
-  move to a genuinely model-specific Taylor display, derivative, or score
-  representation.
+  critical path should use
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_displayStochasticBounded_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`,
+  which derives the law-tail field from displayed `O_P(1)`.  Next remove that
+  displayed `O_P(1)` field by composing already compiled displayed
+  convergence, displayed weak convergence, score-equation, or absorbing
+  Taylor-zero tightness bridges, or move to a genuinely model-specific Taylor
+  display, derivative, or score representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
