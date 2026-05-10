@@ -9466,6 +9466,17 @@ strictly smaller than the displayed beta factor.  This rules out a
 deterministic sign/section proof as a replacement for Lemma 2.3.7's beta-large
 ghost/Rademacher fiber.
 
+The negative route-audit form is now compiled too:
+`eventually_not_displayedChebyshevBeta_le_rademacherSignVector_singleton_mass`
+and
+`not_eventually_displayedChebyshevBeta_le_rademacherSignVector_singleton_mass`.
+These state directly that the displayed Chebyshev beta is eventually not
+bounded by the fixed-sign coefficient `(1 / 2)^n`, and that such a bound is
+not eventually true.  The next source proof must therefore average over a
+nontrivial sign/ghost event or make an explicit stronger probability
+assumption; deterministic sign-section coefficient monotonicity cannot close
+the displayed-beta source gap.
+
 2026-05-10 Chapter 1 fallback closure:
 `WeakConvergence.lean` now proves
 `vdVW1312_measure_ext_of_forall_separating_starSubalgebra_integral_eq`, the

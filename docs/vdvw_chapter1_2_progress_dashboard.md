@@ -4182,3 +4182,11 @@ The route audit now has a compiled asymptotic obstruction:
 So the fixed-sign/section mass is eventually below the displayed Chebyshev
 beta factor; the next valid source proof must average over a nontrivial
 sign/ghost event or add an explicit stronger probability hypothesis.
+
+The obstruction is also available in direct negative form:
+`eventually_not_displayedChebyshevBeta_le_rademacherSignVector_singleton_mass`
+and
+`not_eventually_displayedChebyshevBeta_le_rademacherSignVector_singleton_mass`.
+This rules out any endpoint proof that tries to upgrade a deterministic
+sign-section coefficient `(1 / 2)^n` into the displayed Chebyshev beta by an
+eventual monotonicity argument.

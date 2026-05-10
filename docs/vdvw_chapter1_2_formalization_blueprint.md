@@ -3295,6 +3295,14 @@ uniform-Chebyshev penalty convergence.  They prove that deterministic
 sign-vector mass is eventually strictly below the displayed beta factor, so it
 cannot close the Lemma 2.3.7 source gap.
 
+The route audit now also has the direct negative coefficient statements
+`eventually_not_displayedChebyshevBeta_le_rademacherSignVector_singleton_mass`
+and
+`not_eventually_displayedChebyshevBeta_le_rademacherSignVector_singleton_mass`.
+These make the failed shortcut reusable in Lean: a deterministic sign-section
+proof cannot be promoted to the displayed-beta comparison by claiming the
+displayed beta is eventually bounded by `(1 / 2)^n`.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
