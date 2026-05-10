@@ -9732,3 +9732,17 @@ and
 now give the full finite-class textbook-aligned package, including in-mean
 finite-product convergence, from `indexClass.Finite` without `[Countable
 Index]`.  This finite-class lane is no longer blocked by global countability.
+
+2026-05-10 canonical sign-only lower-growth first-level wrappers:
+`Theorem243.lean` now specializes the sign-only inverse-square lower-growth
+consumers to the canonical countable first-level selected cover at radius
+`eta / 2`:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_cardinality_ge`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+These wrappers internalize the selected-cover object, selected-cardinality
+comparison against `cardinality (eta / 2)`, half-radius stochastic entropy, and
+selected-center coordinate measurability.  The sign-only tail branch now exposes
+only two genuine source inputs: the pure Rademacher bad-fiber beta lower bound
+and a structural pointwise/a.e. lower-growth theorem for the canonical selected
+cover cardinality.

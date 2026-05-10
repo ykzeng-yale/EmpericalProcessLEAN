@@ -4348,3 +4348,14 @@ therefore gives finite-class `P`-measurability, finite envelope expectation,
 outer-probability `P`-GC, outer-a.s. `P`-GC, local `P`-GC, in-mean centered
 supremum convergence, and canonical Lemma 2.4.5 a.s. convergence without a
 global `Countable Index`.
+
+The sign-only lower-growth branch has now been promoted to the canonical
+first-level selected-cover interface.  The compiled endpoints
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_cardinality_ge`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`
+choose the countable first-level selected cover internally and discharge the
+selected-cardinality comparison, radius change, and selected-center
+measurability.  The remaining dashboard blocker for this lane is no longer
+bookkeeping; it is the pure Rademacher bad-fiber beta lower bound plus a
+structural lower-growth theorem for the canonical selected cardinality.

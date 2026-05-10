@@ -3431,6 +3431,18 @@ its in-mean conclusion; future blueprint work should return to the selected
 ghost/Rademacher source probability inputs or other non-finite-class theorem
 dependencies.
 
+The sign-only inverse-square lower-growth route now has canonical first-level
+selected-cover wrappers:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_cardinality_ge`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+They package the selected positive-radius covering number at radius `eta / 2`,
+the countable first-level cover, the comparison to the external entropy
+cardinality at radius `eta / 2`, and scalar selected-center measurability.  The
+next source task on this route is therefore the mathematical lower-growth input
+for that canonical selected cardinality, together with the still-open pure
+Rademacher bad-fiber beta lower bound.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
