@@ -537,6 +537,14 @@ inner-product algebra once the graph derivative is the Schur lift and the full
 Hessian derivative has the source-shaped lifted-third pairing.  The next
 inf-projection source blocker is therefore the actual lifted-third/third-
 derivative identity for the selected value, not the block component algebra.
+The source-facing Schur derivative packet adds
+`BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_symmetric_inverse`.
+It composes the existing Schur symmetry/cancellation/component bridges, so a
+future source proof only supplies the original product-space Hessian derivative,
+Hessian symmetry, `Hyy` inverse identities, selector derivative equation,
+differentiated inverse equation, and the standard full mixed-third identity.
+Do not re-split those scalar obligations unless this combined constructor
+is too strong for a concrete model.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

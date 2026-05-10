@@ -464,6 +464,92 @@ theorem BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_liftP
           selector hess invHyy third (hessDeriv x) (dselector x) x u v
           (hpoint (x := x) hx u) (hthird_pair (x := x) hx u v))
 
+/--
+Source-facing Schur-Hessian derivative certificate from full product-space
+Hessian data.  This wrapper discharges the cross-block pairing, inverse-
+derivative cancellation, and four-term component expansion internally, leaving
+only the standard full mixed-third identity for the original barrier.
+-/
+theorem BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_symmetric_inverse
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {hessDeriv : E₁ -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hhess : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt hess (hessDeriv x) (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hinvDeriv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x)
+    (hsymm : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ((hess (barrierInfProjectionPoint selector x)) :
+        WithLp 2 (E₁ × E₂) →ₗ[ℝ] WithLp 2 (E₁ × E₂)).IsSymmetric)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hyy_left : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, invHyy x (barrierInfProjectionBlockYY selector hess x w) = w)
+    (hdselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u : E₁,
+        dselector x u =
+          -invHyy x (barrierInfProjectionBlockYX selector hess x u))
+    (hderiv_cancel : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ u : E₁, ∀ w : E₂,
+        barrierInfProjectionBlockYY selector hess x (invHyyDeriv x u w) +
+          (barrierInfProjectionBlockYYDeriv (hessDeriv x) (dselector x) u)
+            (invHyy x w) = 0)
+    (hmixed_full : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ a v : WithLp 2 (E₁ × E₂),
+        inner ℝ v ((hessDeriv x a) v) =
+          third (barrierInfProjectionPoint selector x) a v) :
+    BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+      (fun x =>
+        barrierInfProjectionSchurHessDeriv
+          (barrierInfProjectionBlockXY selector hess)
+          (barrierInfProjectionBlockYX selector hess)
+          invHyy
+          (fun x => barrierInfProjectionBlockXXDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockXYDeriv (hessDeriv x) (dselector x))
+          (fun x => barrierInfProjectionBlockYXDeriv (hessDeriv x) (dselector x))
+          invHyyDeriv x) :=
+  BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_liftPairing
+    (s := s) (selector := selector) (hess := hess) (invHyy := invHyy)
+    (third := third) (hessDeriv := hessDeriv) (dselector := dselector)
+    (invHyyDeriv := invHyyDeriv) hhess hselector hinvDeriv
+    (by
+      intro x hx v w
+      exact
+        barrierInfProjectionBlockXY_invHyy_pair_eq_of_hessian_symmetric
+          selector hess invHyy x (hsymm (x := x) hx)
+          (hyy_right (x := x) hx) v w)
+    (by
+      intro x hx u v
+      exact
+        barrierInfProjectionBlockXY_invHyyDeriv_pair_eq_neg_of_hessian_symmetric
+          selector hess invHyy x
+          (barrierInfProjectionBlockYYDeriv (hessDeriv x) (dselector x) u)
+          (invHyyDeriv x u) (hsymm (x := x) hx)
+          (hyy_right (x := x) hx) (hyy_left (x := x) hx)
+          (hderiv_cancel (x := x) hx u) v)
+    (by
+      intro x hx u
+      exact
+        barrierInfProjectionPointFDeriv_eq_schurLift_of_selector_deriv_eq
+          selector hess invHyy (dselector x) x u
+          (hdselector (x := x) hx u))
+    (by
+      intro x hx u v
+      simpa [barrierInfProjectionSchurLiftedThird] using
+        hmixed_full (x := x) hx
+          (barrierInfProjectionSchurLift selector hess invHyy x u)
+          (barrierInfProjectionSchurLift selector hess invHyy x v))
+
 end InfProjectionSchurSymmetry
 
 end Optimization

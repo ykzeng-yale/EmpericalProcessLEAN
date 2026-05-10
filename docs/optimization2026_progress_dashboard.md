@@ -410,6 +410,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   `WithLp.prod_inner_apply`, `map_sub`, and `inner_sub_left/right` were enough;
   future work should prove the lifted-third pairing/actual third-derivative
   identity rather than re-supplying component algebra.
+- Inf-projection source-facing Schur derivative shrink: the newest packet adds
+  `BarrierInfProjectionSchurHessDerivativeOn.of_fullHessianDerivative_symmetric_inverse`.
+  This combines the cross-block symmetry bridge, inverse-derivative
+  cancellation bridge, selector-derivative-to-Schur-lift bridge, and
+  lifted-third component expansion into one constructor.  Downstream envelope
+  work can now supply the original product-space Hessian derivative
+  `HasFDerivAt hess`, Hessian symmetry, `Hyy` two-sided inverse identities,
+  selector derivative equation, differentiated inverse equation, and the
+  standard full mixed-third identity
+  `<b, (D hess(point x)[a]) b> = third(point x,a,b)`.  The next blocker is
+  not Schur component algebra; it is constructing these source hypotheses from
+  local minimizer/envelope data and concrete square-root/inverse models.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in
