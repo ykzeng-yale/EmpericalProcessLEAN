@@ -33,10 +33,15 @@ absorbing-tightness consumer bridge
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingTightness_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 removes the explicit `scaledEstimator = O_P(1)` input once the existing
 non-circular absorbing route has produced weak convergence of the selected
-scaled estimator.  The next proof packet should inline that already compiled
-absorbing source route into this bridge, not replay display weak-convergence,
-display-tightness, score-CLT, residual convergence, derivative-action wrappers,
-or the now-packaged pointwise Taylor bridge.
+scaled estimator.  The fully inlined absorbing-source residual wrapper
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+now derives that weak-convergence input from the raw-score CLT, derivative
+LLN, root, and Taylor source route.  The next proof packet should move toward
+a model-facing finite-dimensional statement by discharging finite derivative
+action bounds or score/Taylor source fields, not replay display
+weak-convergence, display-tightness, score-CLT, residual convergence,
+absorbing tightness, derivative-action wrappers, or the now-packaged pointwise
+Taylor bridge.
 
 ## Chapter Map
 

@@ -17,6 +17,9 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Immediate absorbing-tightness consumer endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingTightness_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Immediate direct `O_P(1)` residual-source endpoint:
@@ -48,7 +51,10 @@ and `hResidual_eq` are no longer live for that route.  The newest
 absorbing-tightness consumer bridge removes the explicit
 `StochasticBounded P scaledEstimator` field whenever the existing
 non-circular absorbing route has already produced weak convergence of the
-selected scaled estimator.
+selected scaled estimator.  The newest absorbing-source wrapper derives that
+weak convergence from the compiled raw-score CLT / derivative LLN / root /
+Taylor source route, so `hAbsorbingTightness` is no longer live for this
+finite-score finite-derivative route.
 
 Continuation recipe:
 
@@ -61,11 +67,11 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Fully inlined absorbing residual-source source wrapper: derive the
-   `hAbsorbingTightness` field used by the newest bridge from the already
-   compiled raw-score CLT / derivative LLN / root / Taylor source route, then
-   call the absorbing-tightness consumer.  Do not rebuild the residual-source
-   package or the absorbing bootstrap proof.
+1. Move one layer closer to a model-facing finite-dimensional statement:
+   discharge the finite derivative action-bound source with the existing
+   matrix-entry representation helper, or package a model-facing score/Taylor
+   statement if it removes a live hypothesis of the current absorbing-source
+   endpoint.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    residual-source endpoint; do not rebuild completed score CLT, display weak

@@ -15,14 +15,22 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: absorbing-tightness consumer for the residual-source
-wrapper
+Latest verified packet: fully inlined absorbing-source residual wrapper
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+in `MEstimators.lean`.  It derives the raw-score CLT from the common-vector-law
+finite-coordinate score source, derives the empirical derivative LLN from the
+finite derivative action bound, obtains selected scaled-estimator weak
+convergence through the existing non-circular absorbing route, and then feeds
+the residual-source bridge.
+
+Immediate predecessor packet: absorbing-tightness consumer for the
+residual-source wrapper
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingTightness_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It consumes the existing non-circular absorbing route's
 weak-convergence output, converts it to `scaledEstimator = O_P(1)`, and feeds
 the direct residual-source endpoint.
 
-Immediate predecessor packet: direct `O_P(1)` residual-source wrapper
+Earlier predecessor packet: direct `O_P(1)` residual-source wrapper
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It defines the literal Taylor residual internally and
 uses
@@ -30,10 +38,11 @@ uses
 to remove the explicit residual convergence and residual measurability fields
 from the pointwise-Taylor Theorem 5.41 action endpoint.
 
-Current next blocker: inline the existing raw-score CLT / derivative LLN /
-root / Taylor absorbing route to produce the `hAbsorbingTightness` input for
-the newest bridge.  If that is not immediate, only discharge a derivative or
-score source hypothesis that is still live in the residual-source endpoint.
+Current next blocker: move one layer closer to a model-facing finite-dimensional
+statement by discharging the finite derivative action-bound source via the
+existing matrix-entry representation helper, or by packaging a model-facing
+score/Taylor statement that removes a live hypothesis of the current
+absorbing-source endpoint.
 
 ## Verified Frontier
 
