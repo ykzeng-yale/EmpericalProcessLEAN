@@ -3622,6 +3622,17 @@ first-level sign-only convergence endpoints, then prove the actual pure
 Rademacher bad-fiber mass or switch to the product-pair/sign-swap source
 theorem.
 
+The fixed-`M` sign-only route now has that a.e. source surface in compiled
+form:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_failure_tail_countable`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable`.
+These consume a.e. pure Rademacher bad-fiber mass together with either the raw
+vanishing integrated finite-center failure tail or the inverse-square
+selected-cardinality lintegral condition.  The next blueprint item is to add
+the selected first-level lower-growth wrappers for this a.e. surface, unless
+the probability source theorem itself is ready to attack directly.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

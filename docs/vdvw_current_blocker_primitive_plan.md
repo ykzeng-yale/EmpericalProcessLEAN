@@ -9979,3 +9979,17 @@ unnecessary pointwise-over-all-bad-samples strengthening from the source
 surface.  The next useful propagation step is to expose the fixed-`M` and
 first-level sign-only convergence consumers with the same a.e. `hbadLower`
 shape, then attack the actual probability theorem.
+
+2026-05-10 fixed-`M` a.e. sign-only source propagation:
+`Theorem243.lean` now propagates the same a.e. pure Rademacher bad-fiber
+source shape through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_failure_tail_countable`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable`.
+Thus the fixed-`M` sign-only route can consume a `P.restrict centeredBad`-a.e.
+Rademacher bad-fiber beta lower bound while retaining the integrated
+finite-center failure-tail and inverse-square selected-cardinality controls.
+The probability blocker is still unchanged: prove the a.e. pure Rademacher
+bad-fiber mass itself, or switch to the product-pair/pair-sub sign-swap source
+theorem.  Remaining wrapper work is only to expose the selected first-level
+lower-growth consumers with this a.e. `hbadLower` surface.

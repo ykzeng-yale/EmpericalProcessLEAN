@@ -4538,3 +4538,14 @@ samples, while still paying the integrated finite-center Hoeffding failure
 tail.  The remaining source blocker is still the probability-mass theorem
 itself; the immediate dashboard follow-up is to propagate this a.e. `hbadLower`
 shape through the fixed-`M`/first-level sign-only convergence consumers.
+
+The a.e. pure Rademacher source shape has now been propagated through the
+fixed-`M` sign-only convergence layer:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_failure_tail_countable`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable`.
+The route now accepts a.e. bad-fiber mass plus either a vanishing integrated
+finite-center failure tail or the inverse-square selected-cardinality
+lintegral condition.  The remaining probability blocker is still the a.e.
+pure Rademacher bad-fiber mass theorem; the remaining propagation work is the
+selected first-level lower-growth wrapper layer.
