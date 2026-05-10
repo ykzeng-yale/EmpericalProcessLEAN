@@ -480,6 +480,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Hyy` right-inverse internally.  Future item-4 work should now supply the
   actual model derivatives and segment coefficient bound to this wrapper
   rather than reopening the Schur derivative/local-norm machinery.
+- Inf-projection source-radius shrink: the newest packet adds
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_of_hessianPositive`.
+  It removes the explicit segment-coefficient hypothesis from the packaged
+  adjoint-square route by reusing the existing Riccati source-radius machinery
+  behind
+  `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv`.
+  The remaining local-norm sandwich gate is now the standard strict projected
+  Hessian positivity on the projected domain plus `y - x ≠ 0`, not a manually
+  supplied segment coefficient bound.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

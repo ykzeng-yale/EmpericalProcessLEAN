@@ -599,6 +599,14 @@ and `Hyy` right-inverse internally.  The next exact item-4 step should now
 construct the concrete model derivative inputs and segment coefficient bound
 against these wrappers, not reopen the Schur derivative/local-norm sandwich
 proofs.
+The source-radius shrink adds
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_of_hessianPositive`.
+It removes the explicit segment-coefficient hypothesis from the packaged
+adjoint-square route by reusing the existing Riccati source-radius proof
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv`.
+The remaining source-radius local-norm gate is the standard strict projected
+Hessian positivity on the projected domain plus `y - x ≠ 0`, not a manually
+supplied segment coefficient bound.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
