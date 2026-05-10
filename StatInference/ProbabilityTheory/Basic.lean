@@ -2570,6 +2570,192 @@ theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncated
         durrett2019_theorem_2_2_12_truncatedMean P X n := by
         field_simp [hn_ne]
 
+/--
+Durrett 2019, Theorem 2.2.12 support: identical distribution reduces the
+large-jump row probability sum to `n * P(|X_0| > n)`.
+-/
+theorem durrett2019_theorem_2_2_12_tailSum_eq_nat_mul_tailProb_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (n : ℕ) :
+    (∑ k ∈ Finset.range n, P.real {ω : Ω | (n : ℝ) < |X k ω|}) =
+      (n : ℝ) * P.real {ω : Ω | (n : ℝ) < |X 0 ω|} := by
+  have htail_eq : ∀ k ∈ Finset.range n,
+      P.real {ω : Ω | (n : ℝ) < |X k ω|} =
+        P.real {ω : Ω | (n : ℝ) < |X 0 ω|} := by
+    intro k _hk
+    let tailSet : Set ℝ := {x : ℝ | (n : ℝ) < |x|}
+    have htail_meas : MeasurableSet tailSet :=
+      measurableSet_lt measurable_const measurable_abs
+    have hmeasure : P ((X k) ⁻¹' tailSet) = P ((X 0) ⁻¹' tailSet) :=
+      (hX_ident k).measure_mem_eq htail_meas
+    simpa [tailSet, measureReal_def] using congrArg ENNReal.toReal hmeasure
+  calc
+    (∑ k ∈ Finset.range n, P.real {ω : Ω | (n : ℝ) < |X k ω|}) =
+      ∑ k ∈ Finset.range n, P.real {ω : Ω | (n : ℝ) < |X 0 ω|} := by
+        exact Finset.sum_congr rfl htail_eq
+    _ = (n : ℝ) * P.real {ω : Ω | (n : ℝ) < |X 0 ω|} := by
+        simp
+
+/--
+Durrett 2019, Theorem 2.2.12 support: the single-variable large-jump limit
+implies Theorem 2.2.11 hypothesis (i) for the single-sequence array.
+-/
+theorem durrett2019_theorem_2_2_12_tailSum_tendsto_zero_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (htail : Tendsto
+      (fun n : ℕ => (n : ℝ) * P.real {ω : Ω | (n : ℝ) < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ))) :
+    Tendsto
+      (fun n : ℕ => ∑ k ∈ Finset.range n,
+        P.real {ω : Ω | (n : ℝ) < |X k ω|})
+      atTop (𝓝 (0 : ℝ)) :=
+  htail.congr' (Eventually.of_forall fun n =>
+    (durrett2019_theorem_2_2_12_tailSum_eq_nat_mul_tailProb_of_identDistrib
+      (P := P) (X := X) hX_ident n).symm)
+
+/--
+Durrett 2019, Theorem 2.2.12 support: identical distribution transfers the
+second moment of the truncated entry at level `n` from `X_k` to `X_0`.
+-/
+theorem durrett2019_theorem_2_2_12_integral_truncated_sq_eq_single_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (n k : ℕ) :
+    (∫ ω,
+      (durrett2019_theorem_2_2_11_truncated
+        (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n k ω) ^ 2 ∂P) =
+      ∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P := by
+  let sqTruncMap : ℝ -> ℝ :=
+    fun x => (Set.indicator {y : ℝ | |y| ≤ (n : ℝ)} (fun y => y) x) ^ 2
+  have htrunc_meas : Measurable
+      (fun x : ℝ => Set.indicator {y : ℝ | |y| ≤ (n : ℝ)} (fun y => y) x) :=
+    durrett2019_theorem_2_2_11_measurable_truncationMap
+      (c := (n : ℝ))
+  have hsq_meas : Measurable sqTruncMap := by
+    simpa [sqTruncMap] using htrunc_meas.pow_const 2
+  have hident_sq :
+      _root_.ProbabilityTheory.IdentDistrib
+        (sqTruncMap ∘ X k) (sqTruncMap ∘ X 0) P P :=
+    (hX_ident k).comp hsq_meas
+  simpa [durrett2019_theorem_2_2_11_truncated, sqTruncMap, Function.comp_def]
+    using hident_sq.integral_eq
+
+/--
+Durrett 2019, Theorem 2.2.12 support: identical distribution reduces
+Theorem 2.2.11 hypothesis (ii) to the single truncated second-moment average
+`E[bar X_{n,0}^2] / n -> 0`.
+-/
+theorem durrett2019_theorem_2_2_12_truncatedSecondMoment_tendsto_zero_of_single
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hsecond_single : Tendsto
+      (fun n : ℕ =>
+        (∫ ω,
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+          (n : ℝ))
+      atTop (𝓝 (0 : ℝ))) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          ∫ ω,
+            (durrett2019_theorem_2_2_11_truncated
+              (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n k ω) ^ 2 ∂P) /
+            (n : ℝ) ^ 2)
+      atTop (𝓝 (0 : ℝ)) := by
+  refine hsecond_single.congr' ?_
+  refine eventually_atTop.2 ⟨1, ?_⟩
+  intro n hn
+  have hn_pos : (0 : ℕ) < n := lt_of_lt_of_le Nat.zero_lt_one hn
+  have hn_ne : (n : ℝ) ≠ 0 := by
+    exact_mod_cast (Nat.ne_of_gt hn_pos)
+  let secondMoment : ℝ :=
+    ∫ ω,
+      (durrett2019_theorem_2_2_11_truncated
+        (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P
+  have hsum :
+      (∑ k ∈ Finset.range n,
+        ∫ ω,
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n k ω) ^ 2 ∂P) =
+        (n : ℝ) * secondMoment := by
+    calc
+      (∑ k ∈ Finset.range n,
+        ∫ ω,
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n k ω) ^ 2 ∂P) =
+        ∑ k ∈ Finset.range n, secondMoment := by
+          refine Finset.sum_congr rfl ?_
+          intro k _hk
+          exact
+            durrett2019_theorem_2_2_12_integral_truncated_sq_eq_single_of_identDistrib
+              (P := P) (X := X) hX_ident n k
+      _ = (n : ℝ) * secondMoment := by
+          simp
+  calc
+    (∫ ω,
+        (durrett2019_theorem_2_2_11_truncated
+          (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+        (n : ℝ) =
+      secondMoment / (n : ℝ) := rfl
+    _ =
+      ((n : ℝ) * secondMoment) / (n : ℝ) ^ 2 := by
+        field_simp [hn_ne]
+    _ =
+      (∑ k ∈ Finset.range n,
+        ∫ ω,
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n k ω) ^ 2 ∂P) /
+          (n : ℝ) ^ 2 := by
+        rw [hsum]
+
+/--
+Durrett 2019, Theorem 2.2.12 source-facing numeric bridge: the textbook display
+follows from the single-variable large-jump limit and single truncated
+second-moment average, leaving only Lemma 2.2.13 and the tail-average argument
+to discharge those two assumptions from `x * P(|X_0| > x) -> 0`.
+-/
+theorem durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_single
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (htail_single : Tendsto
+      (fun n : ℕ => (n : ℝ) * P.real {ω : Ω | (n : ℝ) < |X 0 ω|})
+      atTop (𝓝 (0 : ℝ)))
+    (hsecond_single : Tendsto
+      (fun n : ℕ =>
+        (∫ ω,
+          (durrett2019_theorem_2_2_11_truncated
+            (fun _ k => X k) (fun n : ℕ => (n : ℝ)) n 0 ω) ^ 2 ∂P) /
+          (n : ℝ))
+      atTop (𝓝 (0 : ℝ)))
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hX_meas : ∀ k : ℕ, Measurable (X k)) :
+    TendstoInMeasure P
+      (fun n ω =>
+        (∑ k ∈ Finset.range n, X k ω) / (n : ℝ) -
+          durrett2019_theorem_2_2_12_truncatedMean P X n)
+      atTop (fun _ => 0) :=
+  durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun
+    (P := P) (X := X)
+    (durrett2019_theorem_2_2_12_tailSum_tendsto_zero_of_identDistrib
+      (P := P) (X := X) hX_ident htail_single)
+    hX_indep hX_ident hX_meas
+    (durrett2019_theorem_2_2_12_truncatedSecondMoment_tendsto_zero_of_single
+      (P := P) (X := X) hX_ident hsecond_single)
+
 /-! ## Durrett, Section 2.3 -/
 
 /--

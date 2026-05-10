@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V191` in
+Route from `Live In-Thread Goal Prompt V192` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Chapter 2 in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -131,9 +131,18 @@ and
 The textbook display `S_n / n - mu_n -> 0` now compiles from the already
 compiled Theorem 2.2.11 numeric hypotheses, independence, measurability, and
 identical distribution.
+V192 adds the row-to-single numeric reductions for Theorem 2.2.12:
+`durrett2019_theorem_2_2_12_tailSum_eq_nat_mul_tailProb_of_identDistrib`,
+`durrett2019_theorem_2_2_12_tailSum_tendsto_zero_of_identDistrib`,
+`durrett2019_theorem_2_2_12_integral_truncated_sq_eq_single_of_identDistrib`,
+`durrett2019_theorem_2_2_12_truncatedSecondMoment_tendsto_zero_of_single`,
+and
+`durrett2019_theorem_2_2_12_tendstoInMeasure_partialSum_div_sub_truncatedMean_of_iIndepFun_of_single`.
+The active numeric frontier is now the single-variable second-moment average
+`E[bar X_{n,0}^2] / n -> 0`.
 The next active target is Lemma 2.2.13 and the remaining Theorem 2.2.12
-support: package the tail-integral/layer-cake inputs needed to prove the two
-numeric hypotheses from Durrett's
+support: package the real-to-natural tail limit and the tail-integral/layer-cake
+inputs needed to prove `E[bar X_{n,0}^2] / n -> 0` from Durrett's
 `x * P(|X_1| > x) -> 0` assumption.  Do not route future cycles back to
 Chapter 4.5.2 or solved 2.1.10 partial-sum, 2.1.13 product-consumer, 2.2.1
 variance-sum, 2.2.3, 2.2.6, 2.4.9, 2.1.12, 2.1.15, or 2.1.16 plumbing unless
