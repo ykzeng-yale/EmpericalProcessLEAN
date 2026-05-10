@@ -19,8 +19,8 @@ normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
-Current verified absorbing source endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductRawScoreCLT_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope_absorbing`.
+Current verified absorbing-routed source endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Continuation recipe:
 
@@ -33,15 +33,16 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Tightness source: propagate the absorbing derivative-norm law-tail endpoint
-   into projected, common-vector-law, score-representation, derivative-bound,
-   finite-strong-law, and action-bound wrappers, removing the external
-   `hScaledEstimator` field one layer at a time.
+1. Tightness source: remove a live `hScaledEstimator_lawTail` field only by
+   composing already-compiled displayed-stochastic-boundedness or absorbing
+   Taylor-zero tightness bridges with the current action-bound law-tail
+   endpoint.
 2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
    finite-entry norm/action wrapper stack.
 3. Score source: only add another wrapper if it removes a live hypothesis not
-   already handled by the canonical raw-score handoff.
+   already handled by the canonical raw-score handoff or the current
+   projected-to-action law-tail route.
 
 Operating rules:
 
@@ -1246,26 +1247,34 @@ compiling:
    finite-coordinate score representation, then calls the absorbing
    derivative-norm law-tail endpoint.  The canonical source wrapper no longer
    routes through an external `scaledEstimator = O_P(1)` construction.
+382. Theorem 5.41 absorbing-routed law-tail stack:
+   the canonical law-tail wrapper and projected-summand law-tail wrapper now
+   call
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope_absorbing`
+   directly.  Because the common-vector-law, score-representation,
+   derivative-bound, finite-strong-law, and action-bound law-tail wrappers
+   chain through the projected wrapper, the current action-bound law-tail
+   endpoint no longer routes through an external `scaledEstimator = O_P(1)`
+   construction.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 absorbing canonical score law-tail endpoint`).
+(`Route Vaart theorem 5.41 law-tail stack through absorbing endpoint`).
 
-The latest theorem-sized packet turns canonical product score-law inputs,
-model-shaped derivative-norm LLN, unscaled consistency, bounded curvature,
-second-derivative half-bound or quadratic Taylor residual, root/Taylor display,
-estimator measurability, and the source-facing law-tail field into the final
-scaled-estimator asymptotic-normality conclusion, without assuming
-scaled-estimator tightness first.
+The latest theorem-sized packet routes the canonical and projected-to-action
+law-tail stack through the absorbing derivative-norm endpoint.  The reusable
+action-bound law-tail endpoint now turns model-shaped score, derivative,
+root/Taylor, measurability, and source-facing law-tail inputs into the final
+scaled-estimator asymptotic-normality conclusion without first constructing or
+assuming a separate `scaledEstimator = O_P(1)` field.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next through the projected, common-vector-law,
-score-representation, derivative-bound, finite-strong-law, and action-bound
-law-tail wrappers, replacing calls to non-absorbing law-tail wrappers with
-calls to the closest compiled absorbing endpoint while each packet remains
-theorem-sized.
+source handoff.  Move next only on a genuinely live source hypothesis: derive
+the current law-tail field from an already compiled displayed stochastic
+boundedness or absorbing Taylor-zero tightness bridge, or prove a genuinely
+model-specific Taylor display, derivative, or score representation.
 Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
 derivative-bound, finite-derivative strong-law, action-bound, law-tail,
@@ -1283,7 +1292,7 @@ absorbing-envelope-tendsto, absorbing-derivative-tendsto,
 absorbing-derivative-a.e., absorbing-raw-score-CLT, or absorbing-raw-root
 or absorbing-estimator-substitution, absorbing-estimator-measurability, or
 absorbing-law-tail-compatibility, or absorbing-derivative-norm-law-tail
-or absorbing-canonical-score-law-tail
+or absorbing-canonical-score-law-tail, or projected-to-action law-tail routing
 wrappers unless a current proof directly depends on a small local API there.
 
 ## Execution Notes

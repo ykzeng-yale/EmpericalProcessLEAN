@@ -12184,7 +12184,7 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalPr
       hcoordinate_meas hscoreLaw_coordinate_memLp hZ_aemeas hZ_gaussian
       hZ_memLp hZ_mean hZ_covariance_scoreLaw hRawScore_eq_finiteCoordinate
   exact
-    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope_absorbing
       (P := Measure.infinitePi (fun _ : ℕ => scoreLaw)) (Q := Q)
       (V := V) (Vinv := Vinv)
       (samples := samples) (scale := scale)
@@ -12759,7 +12759,7 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
     intro n
     exact (hRawScore_eq_finiteCoordinate n).symm
   exact
-    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope_absorbing
       (P := P) (Q := Q) (V := V) (Vinv := Vinv)
       (samples := samples) (scale := scale)
       (estimatingMap := estimatingMap) (derivativeAt := derivativeAt)
