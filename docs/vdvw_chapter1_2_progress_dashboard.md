@@ -4020,3 +4020,14 @@ transport.  This aligns the interface with the existing Chebyshev pair-sub
 source theorem, while making clear that the fixed-fiber sign-swap transport is
 still the nontrivial probability point and may be stronger than the integrated
 product-pair symmetry route already compiled elsewhere.
+
+The fixed-fiber sign-swap route now also has the positive-sample-size
+measure-level handoff:
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_of_pos`
+and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_of_pos`.
+These remove the successor-only shape and turn the concrete pair-difference
+fiber lower bound into a factor-two outer-probability comparison for the
+`2 * epsilon` centered-bad event.  The remaining blocker is not this
+measure-theory plumbing; it is still the validity/proof of fixed-sample
+sign-swap transport and the finite-center a.e. support assumptions.

@@ -3106,6 +3106,17 @@ integrated product-pair comparison or a different nonmeasurable source
 primitive rather than smuggling in an a.e. finite-center or sign-swap
 assumption.
 
+The same fixed-fiber source route now has its positive-sample-size
+outer-probability handoff:
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_of_pos`
+and
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_of_pos`.
+These theorems remove the `n + 1` wrapper and compose the concrete fiber lower
+bound with the original-or-ghost selected-net projection.  The open
+mathematical question remains unchanged: prove or reject the fixed-sample
+sign-swap transport and a.e. finite-center support inputs, then choose the
+fixed-fiber or integrated product-pair route accordingly.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
