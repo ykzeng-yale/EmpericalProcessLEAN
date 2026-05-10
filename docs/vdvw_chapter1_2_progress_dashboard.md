@@ -4229,3 +4229,11 @@ for the canonical selected least cardinality at radius `eta / 2`; the theorem
 then discharges the selected-cardinality comparison and stochastic entropy
 radius change.  The remaining open work is still the probability proof of that
 domination, not another endpoint assembly step.
+
+2026-05-10 canonical Rademacher/hphi selected-cover consumer:
+`Theorem243.lean` now also compiles
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_selected_truncated_halfRadius_canonicalRademacher_countable_hphi_id`.
+It uses the first-level selected cover internally and derives the scaled a.e.
+finite-net domination from the canonical finite-center Hoeffding event plus
+the canonical `Phi(x)=x` comparison.  The remaining source work is therefore
+localized to those two probability inputs for the selected half-radius cover.

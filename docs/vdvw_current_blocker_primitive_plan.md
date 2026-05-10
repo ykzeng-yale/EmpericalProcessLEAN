@@ -9531,3 +9531,15 @@ probability target is therefore sharper: prove the actual eventual a.e.
 domination for this selected half-radius cardinality, or supply the equivalent
 displayed-beta/product-fiber or honest averaged sign/ghost source theorem.  No
 fixed-sign deterministic shortcut is reopened.
+
+2026-05-10 canonical hphi selected half-radius consumer:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_selected_truncated_halfRadius_canonicalRademacher_countable_hphi_id`.
+This composes the canonical first-level selected cover at radius `eta / 2`,
+countable sign-side measurability, the finite-sample symmetrization precursor,
+and the selected half-radius a.e. domination bridge.  The remaining inputs on
+this lane are now exactly the canonical finite-product Rademacher
+finite-center Hoeffding event for the selected cover and the canonical
+`Phi(x)=x` outer-expectation comparison.  This is not a final textbook theorem
+claim; it sharpens the probability source interface to the natural selected
+cover used by Theorem 2.4.3.

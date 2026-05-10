@@ -3313,6 +3313,14 @@ radius change.  The next aggressive theorem-facing item remains the actual
 eventual a.e. scaled domination for that selected cardinality, or an equivalent
 displayed-beta/product-fiber or averaged sign/ghost source theorem.
 
+The selected-cover route now also has the canonical Rademacher/`hphi` consumer
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_selected_truncated_halfRadius_canonicalRademacher_countable_hphi_id`.
+It should be the first target when the source proof supplies finite-center
+Hoeffding support and `Phi(x)=x` on the first-level selected cover at radius
+`eta / 2`; the theorem builds the precursor and uses the selected half-radius
+a.e. domination adapter automatically.  Remaining work is the real probability
+source proof for those two inputs, not additional cover selection plumbing.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
