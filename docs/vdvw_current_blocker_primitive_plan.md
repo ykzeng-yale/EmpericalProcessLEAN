@@ -96,6 +96,12 @@ Matching/WDSM edits, so do not use it for VdVW proof commits.  Use this
 paragraph, not older rebase paragraphs below, as the operative continuation
 prompt.
 
+Current operating worktree update, 2026-05-10: the active clean VdVW lane for
+proof commits is `/private/tmp/ep-vdvw-goal-fresh` on branch
+`codex/vdvw-selected-cover-source`.  The Desktop `main` checkout is not the
+verified proof lane and currently has stale/corrupt Git metadata, so do not use
+it for VdVW proof commits until it is repaired or recloned.
+
 Current newest source-side progress: the product-pair selected-cover route now
 has both the finite-center failure tail, its product-fiber upper lift, and the
 additive-error product-pair comparison that consumes them.  The fixed-sample tail is
@@ -9561,3 +9567,20 @@ beta lower bound for the fibers of
 `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.  This does not
 resolve the older pair-difference/fixed-fiber route and does not justify the
 known-invalid deterministic sign-section shortcut.
+
+2026-05-10 canonical ghost/Rademacher first-level fixed-`M` endpoint:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalGhostRademacher_countable_firstLevel`.
+This composes the canonical ghost/Rademacher selected-net displayed-beta
+constructor with the fixed-`M` stochastic-entropy endpoint.  The first-level
+selected cover, selected-cardinality comparison with the external entropy
+cardinality, radius halving, and scalar selected-center coordinate
+measurability are all internalized from countability, coordinate
+measurability, envelope measurability, and nonemptiness.  The remaining blocker
+on this simpler canonical lane is now exactly one probability statement: prove
+the displayed Chebyshev beta lower bound for the fibers of
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent` over centered-bad
+samples.  If that direct fiber lower bound blocks, the next valid source work
+is an honest averaged sign/ghost theorem or a stronger tail/UI/cardinality
+assumption package; fixed deterministic sign-section shortcuts remain ruled
+out by the compiled mass obstruction.

@@ -16,10 +16,11 @@ docs/vdvw_current_blocker_primitive_plan.md
 Authoritative current `/goal` override, refreshed 2026-05-08: the active goal
 object is the whole VdV&W empirical-process textbook formalization, with
 Chapters 1-2 and Theorem 2.4.3 as the current frontier.  The current clean
-VdVW proof lane is `/private/tmp/ep-vdvw-goal-round-B6AplA` on branch
+VdVW proof lane is `/private/tmp/ep-vdvw-goal-fresh` on branch
 `codex/vdvw-selected-cover-source` based at current `origin/main`; the
 Desktop `main` worktree is intentionally avoided for VdVW commits because it
-is far behind `origin/main` and contains unrelated Matching/WDSM work.  The
+is not the verified VdVW proof lane and currently has stale/corrupt Git
+metadata.  The
 registered
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive` now feeds untruncated
 centered convergence directly through
@@ -4246,4 +4247,13 @@ and a selected-cardinality displayed-beta constructor
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_canonicalGhostRademacher_sample_coordinate_countable`.
 The remaining input on this lane is no longer event measurability; it is the
 actual displayed beta fiber lower bound for
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.
+
+The same canonical event now reaches the fixed-`M` stochastic-entropy endpoint
+through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalGhostRademacher_countable_firstLevel`.
+This internalizes the first-level selected cover, selected-cardinality
+comparison, radius-halved entropy input, and selected-center coordinate
+measurability.  The dashboard frontier for this lane is therefore a single
+source probability input: the displayed Chebyshev beta fiber lower bound for
 `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.

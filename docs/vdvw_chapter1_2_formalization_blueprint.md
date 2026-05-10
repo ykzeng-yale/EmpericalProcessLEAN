@@ -3332,6 +3332,18 @@ only original-sample finite-center support is needed.  The remaining input is
 precisely the displayed beta fiber lower bound for
 `VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`.
 
+The canonical ghost/Rademacher selected-net lane now also has its fixed-`M`
+first-level stochastic-entropy endpoint:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalGhostRademacher_countable_firstLevel`.
+This theorem composes the displayed-beta constructor with the fixed-`M`
+convergence endpoint, while discharging the first-level selected-cover
+bookkeeping, selected-cardinality comparison, radius halving, and scalar
+selected-center coordinate measurability internally.  The next aggressive
+Theorem 2.4.3 proof target should therefore be the displayed Chebyshev beta
+fiber lower bound for
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`, or an equivalent
+averaged sign/ghost source theorem strong enough to feed this endpoint.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
