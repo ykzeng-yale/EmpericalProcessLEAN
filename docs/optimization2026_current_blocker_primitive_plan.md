@@ -401,15 +401,21 @@ construction of the square-root envelope model.
 
 The Schur-third bridge packet adds
 `BarrierInfProjectionSchurHessDerivativeOn`,
+`BarrierInfProjectionSchurHessDerivativeOn.continuousOn`,
 `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate`,
 and
-`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex`.
+`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex`,
+plus the derivative-continuity variant
+`BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_deriv`
+and the projected source-radius sandwich
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv`.
 It isolates the real remaining third-derivative blocker as the identity
 `inner v ((D H_schur[x] u) v) = liftedThird x u v`; once supplied, the
 existing Chewi Lemma 13.6 mixed-third segment certificate machinery applies to
-the projected envelope.  Future work should prove this derivative certificate
-from the concrete selector/Schur-Hessian algebra rather than rebuilding the
-segment Gronwall layer.
+the projected envelope, and Schur-Hessian continuity is derived automatically
+from `HasFDerivAt`.  Future work should prove this derivative certificate from
+the concrete selector/Schur-Hessian algebra rather than rebuilding the segment
+Gronwall or continuity/local-norm sandwich layers.
 
 Current active lane: Chewi Proposition 13.11 barrier calculus in
 `StatInference/Optimization/InteriorPoint.lean`.  Lemma 13.6, Theorem 13.8,

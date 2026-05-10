@@ -230,8 +230,13 @@ bridges
 `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate`
 /
 `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex`.
-They reduce the remaining analytic work to the Schur Hessian derivative
-identity and then reuse the generic mixed-third segment machinery.
+The latest strengthening also derives Schur-Hessian continuity from the
+certificate via `BarrierInfProjectionSchurHessDerivativeOn.continuousOn` and
+adds
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv`.
+Thus the remaining analytic work is the Schur Hessian derivative identity; the
+generic mixed-third segment machinery and projected local-norm sandwich are now
+reused after that identity is supplied.
 
 As of the current ASGD source-variance packet, route new characteristic-
 function work through the normalized Taylor product no-factor-bound wrappers

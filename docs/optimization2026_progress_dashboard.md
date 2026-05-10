@@ -296,14 +296,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   model construction.
 - Inf-projection Schur-third derivative bridge: the newest packet adds
   `BarrierInfProjectionSchurHessDerivativeOn`,
+  `BarrierInfProjectionSchurHessDerivativeOn.continuousOn`,
   `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate`,
   and
-  `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex`.
+  `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex`,
+  then strengthens the route with
+  `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_deriv`
+  and
+  `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv`.
   Search-first reuse: the bridge reuses the already compiled canonical
   lifted-third self-concordance theorem and the generic
   `HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn_of_hasFDerivAt`
   constructors.  The exact remaining proof is now sharply isolated to proving
-  the projected Schur Hessian derivative identity from selector/Schur algebra.
+  the projected Schur Hessian derivative identity from selector/Schur algebra;
+  continuity and the projected source-radius local-norm sandwich are no longer
+  separate live blockers once that certificate is available.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

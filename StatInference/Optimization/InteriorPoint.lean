@@ -4214,6 +4214,27 @@ structure BarrierInfProjectionSchurHessDerivativeOn
       inner ℝ v ((schurDeriv x u) v) =
         barrierInfProjectionSchurLiftedThird selector hess invHyy third x u v
 
+/--
+The projected Schur Hessian is continuous on the projected domain whenever its
+Schur derivative certificate is available there.
+-/
+theorem BarrierInfProjectionSchurHessDerivativeOn.continuousOn
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    (hderiv :
+      BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+        schurDeriv) :
+    ContinuousOn (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionSet s) := by
+  intro x hx
+  exact (hderiv.hess_hasFDerivAt hx).continuousAt.continuousWithinAt
+
 theorem BarrierInfProjectionSelectorStationary.projectedInvHess_quadratic_nonneg_of_Hyy_right_inverse
     {s : Set (WithLp 2 (E₁ × E₂))}
     {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
@@ -5172,6 +5193,48 @@ theorem BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThird
         hderiv.mixed_inner_eq hz (y - x) v)
     hsegment_coeff
 
+/--
+Convex projected-domain bridge with Schur-Hessian continuity discharged from
+the Schur derivative certificate itself.
+-/
+theorem BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_deriv
+    {E₁ E₂ : Type*}
+    [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+    [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    {x y : E₁} {M nu r : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess z (invHyy z w) = w)
+    (hderiv :
+      BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+        schurDeriv)
+    (hs : Convex ℝ (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hy : y ∈ barrierInfProjectionSet s)
+    (hsegment_coeff : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        2 * M *
+            localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+              (hessianSegmentPoint x y t) (y - x) ≤
+          2 * M * r / (1 - M * r * t)) :
+    HessianSegmentMixedThirdLocalNormCertificate
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionSchurLiftedThird selector hess invHyy third)
+      x y M r :=
+  hsel.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex
+    hbar hyy_right hderiv hs hx hy hderiv.continuousOn hsegment_coeff
+
 theorem hessianSegmentCoeffBound_of_localNorm_bound
     {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
     (hM_nonneg : 0 ≤ M)
@@ -5884,6 +5947,76 @@ theorem localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_s
   exact localNorm_sandwich_of_hessianSegmentMixedThirdLocalNormCertificate
     hMr_nonneg hMr_lt (fun w => hsc.hess_nonneg hx w)
     (fun w => hsc.hess_nonneg hy w) hpsi v
+
+/--
+Projected-envelope source-radius local-norm sandwich.  Once the Schur Hessian
+derivative certificate and a positive projected Hessian are available, the
+projected Schur Hessian satisfies the standard Chewi Lemma 13.6 local-norm
+comparison.
+-/
+theorem BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_schurDeriv
+    {E₁ E₂ : Type*}
+    [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+    [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂} {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    {x y : E₁} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_right : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess z (invHyy z w) = w)
+    (hderiv :
+      BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+        schurDeriv)
+    (hMr_lt :
+      M *
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+            x (y - x) < 1)
+    (hs : Convex ℝ (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hy : y ∈ barrierInfProjectionSet s)
+    (hess_pos : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁, v ≠ 0 ->
+        0 < inner ℝ v (barrierInfProjectionSchurHessFrom selector hess invHyy z v))
+    (hdiff_ne : y - x ≠ 0)
+    (v : E₁) :
+    (1 - M *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+          x (y - x)) *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v ≤
+      localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ∧
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ≤
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v /
+            (1 - M *
+              localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+                x (y - x)) := by
+  exact localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius
+    (s := barrierInfProjectionSet s)
+    (hess := barrierInfProjectionSchurHessFrom selector hess invHyy)
+    (hessDeriv := schurDeriv)
+    (thirdMixed := barrierInfProjectionSchurLiftedThird selector hess invHyy third)
+    (x := x) (y := y) (M := M)
+    hMr_lt hs hx hy
+    (hsel.schurMixedThirdSelfConcordantOn_liftedThird hbar hyy_right)
+    hess_pos hdiff_ne hderiv.continuousOn
+    (by
+      intro t ht
+      exact hderiv.hess_hasFDerivAt
+        (hessianSegmentPoint_mem_of_convex_interior hs hx hy ht))
+    (by
+      intro w t ht
+      have hz := hessianSegmentPoint_mem_of_convex_interior hs hx hy ht
+      simpa [hessianSegmentMixedThirdPsiDeriv] using
+        hderiv.mixed_inner_eq hz (y - x) w)
+    v
 
 /--
 Chewi Lemma 13.6(4), supplied-Hessian/mixed-third source form.  If the segment
