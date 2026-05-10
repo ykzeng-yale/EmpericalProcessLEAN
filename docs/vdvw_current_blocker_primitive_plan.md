@@ -9757,3 +9757,14 @@ over-strong fixed-original sign-swap transport.  Its remaining source inputs
 are exactly per-`M` stochastic entropy and the original/ghost a.e.
 finite-center support facts for the canonical quarter-radius first-level
 selected cover.
+
+2026-05-10 untruncated product-pair lower-growth endpoint:
+`Theorem243.lean` now also adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+This is the large-`M` packaging of the product-pair inverse-square
+failure-tail route.  For each truncation level it consumes stochastic entropy
+and a.e. lower growth, tending to infinity, of both original and ghost
+canonical quarter-radius selected cover cardinalities.  The remaining source
+burden on this lane is therefore the structural lower-growth theorem for those
+selected cardinalities, not the integrated failure-tail or untruncation
+bookkeeping.

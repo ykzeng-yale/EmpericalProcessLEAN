@@ -3452,6 +3452,13 @@ product-pair sign/ghost comparison and only asks for per-`M` stochastic entropy
 plus original/ghost a.e. finite-center support for the canonical
 quarter-radius first-level selected cover.
 
+The product-pair failure-tail alternative is now also untruncated through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+Use this lane when the finite-center support facts are easier to replace by
+inverse-square tail control: the remaining mathematical input is an a.e.
+lower-growth theorem for the canonical original and ghost selected
+quarter-radius cover cardinalities at every positive truncation level.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

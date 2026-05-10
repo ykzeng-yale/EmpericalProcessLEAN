@@ -4368,3 +4368,11 @@ the large-`M` envelope-tail handoff.  The current blocker on this lane is not
 GitHub sync or mathlib discovery; it is proving the per-truncation
 original/ghost a.e. finite-center support facts for the canonical
 quarter-radius first-level selected cover.
+
+The product-pair inverse-square failure-tail lane now has the corresponding
+untruncated endpoint under a.e. selected-cardinality lower growth:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+This removes the raw integrated failure-tail and large-`M` bookkeeping from
+that route.  Its remaining blocker is an actual structural proof that the
+canonical original and ghost selected quarter-radius cover cardinalities grow
+at a deterministic rate tending to infinity, almost surely.
