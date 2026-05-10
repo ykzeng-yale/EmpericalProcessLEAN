@@ -3560,6 +3560,20 @@ input surface, not a displayed-beta mass proof: the averaged sign/ghost or
 stronger structural tail/cardinality source theorem is still the main missing
 mathematical step.
 
+The displayed-beta first-level route now also has sign-sample finite-center
+support endpoints:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers_of_signSample_finiteCenter`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers_of_signSample_finiteCenter`,
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers_of_signSample_finiteCenter`, and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers_of_signSample_finiteCenter`.
+They derive the original and ghost product-space finite-center support
+conditions from one sign-only support hypothesis using the new product/Fubini
+helpers and the compiled sign-negation invariance.  Future blueprint work
+should therefore not reintroduce separate original/ghost support assumptions
+for this canonical route; it should either prove the single sign-only
+selected-cover support theorem and the displayed-beta bad-fiber source, or
+move to a stronger structural tail/cardinality primitive.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

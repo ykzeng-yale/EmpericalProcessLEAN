@@ -4479,3 +4479,16 @@ remaining dashboard blocker on this lane is therefore a single canonical
 selected-cover finite-center support theorem plus the existing stochastic
 entropy/log-cardinality input; the displayed-beta probability-mass source
 blocker remains open.
+
+The canonical displayed-beta first-level route now has the same support
+unification.  `Theorem243.lean` adds product/Fubini support lifts
+`ae_vdVWProductMeasure_prod_rademacher_finiteCenter_fixed_sample_of_ae_sign`
+and
+`ae_vdVWProductMeasure_prod_rademacher_finiteCenter_neg_of_forall_ae_sign`,
+then packages them in the fixed-`M` and untruncated sign-sample endpoints
+ending in `_of_signSample_finiteCenter` for both `signSwapBad_fibers` and
+`pairSubBad_signSwap_fibers`.  The old two-assumption
+original/ghost finite-center support surface is now a one-assumption
+sign-only support surface.  What remains is the actual probability source:
+displayed-beta sign-swapped bad-fiber mass, or pair-sub bad-event mass plus a
+coefficient-correct sign-swap transport, not another support wrapper.

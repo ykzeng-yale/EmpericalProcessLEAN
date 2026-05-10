@@ -9896,3 +9896,22 @@ burden is therefore a single canonical selected-cover finite-center support
 theorem plus the stochastic-entropy/log-cardinality input; the displayed-beta
 probability-mass blocker itself is still not closed by this support
 unification.
+
+2026-05-10 displayed-beta sign-sample finite-center support unification:
+`Theorem243.lean` now adds
+`ae_vdVWProductMeasure_prod_rademacher_finiteCenter_fixed_sample_of_ae_sign`,
+`ae_vdVWProductMeasure_prod_rademacher_finiteCenter_neg_of_forall_ae_sign`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers_of_signSample_finiteCenter`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers_of_signSample_finiteCenter`,
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers_of_signSample_finiteCenter`, and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers_of_signSample_finiteCenter`.
+These wrappers use product projection, product Fubini, selected-center
+measurability, and deterministic sign-negation invariance to turn one
+sign-only finite-center support theorem for the canonical first-level selected
+cover into both the original and ghost product-space support hypotheses.  The
+displayed-beta branch now has the same cleaner support surface as the
+product-pair Chebyshev branch.  The remaining source blocker is not the
+duplicated support plumbing: it is a genuine probability theorem supplying
+the displayed-beta sign-swapped bad-fiber lower bound, or the pair-sub mass
+plus coefficient-correct sign-swap transport, together with the single
+sign-only selected-cover finite-center support input.
