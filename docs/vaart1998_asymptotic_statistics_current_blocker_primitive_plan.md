@@ -20,7 +20,7 @@ Current verified endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_scoreSummandRepresentation_commonVectorLawScoreCLT_scaledEstimatorOP_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Current verified absorbing source endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_estimatorSubMeas_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope_absorbing`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope_absorbing`.
 
 Continuation recipe:
 
@@ -33,9 +33,10 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Tightness source: propagate the absorbing estimator-measurability endpoint
-   into law-tail and derivative-norm wrappers, removing the external
-   `hScaledEstimator` field one layer at a time.
+1. Tightness source: propagate the absorbing derivative-norm law-tail endpoint
+   into canonical, projected, common-vector-law, score-representation,
+   derivative-bound, finite-strong-law, and action-bound wrappers, removing the
+   external `hScaledEstimator` field one layer at a time.
 2. Derivative source: only add an exact model-specific coordinate/matrix
    representation if it is immediately available; do not rebuild the completed
    finite-entry norm/action wrapper stack.
@@ -1226,26 +1227,39 @@ compiling:
    estimator-increment identities, then calls the absorbing
    estimator-substitution endpoint.  The external `scaledEstimator = O_P(1)`
    hypothesis is no longer part of this source layer.
+379. Theorem 5.41 absorbing law-tail compatibility source endpoint:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope_absorbing`
+   keeps the source-facing scaled-estimator law-tail field for API
+   compatibility, but no longer converts it into an external
+   `scaledEstimator = O_P(1)` assumption.  It calls the absorbing
+   estimator-measurability endpoint directly, so the law-tail wrapper is now
+   non-circular.
+380. Theorem 5.41 absorbing derivative-norm law-tail endpoint:
+   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeNormAE_scaledEstimatorLawTail_estimatorSubMeas_rawRoot_rawScoreCLT_envelopeTendsto_summandMeasurable_envelope_absorbing`
+   converts the almost-sure operator-norm derivative residual into
+   operator-valued convergence and then calls the absorbing law-tail endpoint.
+   The derivative-norm source route no longer constructs or assumes an
+   external `scaledEstimator = O_P(1)` field.
 
 Latest verified Vaart frontier before the next packet: this packet
-(`Add Vaart theorem 5.41 absorbing estimator measurability endpoint`).
+(`Add Vaart theorem 5.41 absorbing derivative-norm law-tail endpoint`).
 
-The latest theorem-sized packet turns the model-shaped derivative LLN,
+The latest theorem-sized packet turns the model-shaped derivative-norm LLN,
 unscaled consistency, bounded curvature, second-derivative half-bound or
-quadratic Taylor residual, and root/Taylor display into the final
-scaled-estimator asymptotic-normality conclusion, without assuming
-scaled-estimator tightness first.  The newest estimator-measurability wrapper
-carries the absorbing estimator-substitution endpoint through the standard
-measurability side conditions.
+quadratic Taylor residual, root/Taylor display, estimator measurability, and
+the source-facing law-tail field into the final scaled-estimator
+asymptotic-normality conclusion, without assuming scaled-estimator tightness
+first.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint, following the priority order in the live `/goal` prompt.
 Do not try to add the oversized finite-parameter statistical endpoint wrapper;
 it is too costly to elaborate and the action-bound theorem is the reusable
-source handoff.  Move next to the law-tail wrapper and remove its
-`hScaledEstimator` hypothesis by using the supplied law-tail criterion and
-calling the absorbing estimator-measurability endpoint, then continue upward
-through derivative-norm wrappers only while each packet remains theorem-sized.
+source handoff.  Move next through the canonical, projected, common-vector-law,
+score-representation, derivative-bound, finite-strong-law, and action-bound
+law-tail wrappers, replacing calls to the non-absorbing derivative-norm wrapper
+with calls to this absorbing derivative-norm endpoint while each packet remains
+theorem-sized.
 Do not repeat solved Chapter
 2-4 infrastructure, canonical, projected, common-vector, score-representation,
 derivative-bound, finite-derivative strong-law, action-bound, law-tail,
@@ -1261,7 +1275,8 @@ or absorbing-second-derivative-path, absorbing-regularity, or
 absorbing-ContDiff-source, absorbing-summand-measurable,
 absorbing-envelope-tendsto, absorbing-derivative-tendsto,
 absorbing-derivative-a.e., absorbing-raw-score-CLT, or absorbing-raw-root
-or absorbing-estimator-substitution, or absorbing-estimator-measurability
+or absorbing-estimator-substitution, absorbing-estimator-measurability, or
+absorbing-law-tail-compatibility, or absorbing-derivative-norm-law-tail
 wrappers unless a current proof directly depends on a small local API there.
 
 ## Execution Notes
