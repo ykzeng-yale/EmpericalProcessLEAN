@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V202
+## Live In-Thread Goal Prompt V203
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -43,11 +43,25 @@ and the no-`hBdd` wrappers:
 and
 `durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_martingale_monotone_terminal_auto_bdd`.
 
-Next aggressive step: finish the remaining source side for Theorem 4.5.2 by
-deriving stopped predictability of the stopped increasing process `A^N` from
-the standard increasing/predictable terminal-variation hypotheses, or, if that
-is already available through mathlib/local APIs, package the exact textbook
-theorem statement and then move to the next Section 4.5 result.
+V203 removes the former manual stopped-predictability side condition.  Stopping
+now preserves discrete predictability through
+`durrett2019_isStronglyPredictable_stoppedProcess_of_predictable`, and the
+threshold-stopped increasing process is automatically predictable via
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_predictable_of_predictable`.
+The source-facing no-manual-predictability wrappers now compile:
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_predictablePart_eq_of_square_minus_increasing_martingale_of_predictable`,
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_square_minus_increasing_martingale_auto_bdd_of_predictable`,
+`durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_exists_ae_tendsto_of_source_square_minus_martingale_auto_bdd_of_predictable`,
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_martingale_cover_auto_bdd_of_predictable`,
+and
+`durrett2019_theorem_4_5_2_exists_ae_tendsto_of_source_square_minus_martingale_monotone_terminal_auto_bdd_of_predictable`.
+
+Next aggressive step: package the exact textbook-facing Theorem 4.5.2 source
+statement from the V203 monotone-terminal auto endpoint, or, if the exact
+display is already immediate, move directly to the next Section 4.5 theorem.
+Do not route back to stopped running-maximum boundedness or stopped
+predictability; both are closed support unless a later theorem exposes a
+strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
@@ -165,9 +179,9 @@ plus the completed radius-layer-cake and source endpoint:
 
 Do not route back to Chapter 2.1, Theorem 2.2.1, Theorem 2.2.3 scalar
 plumbing, Theorem 2.2.6, Theorem 2.2.12 layer-cake, Chapter 3 wrappers, or
-Theorem 2.4.9.  The active theorem-facing frontier is now the remaining source
-instantiation around stopped predictability for Durrett Theorem 4.5.2 in
-`Martingale.lean`.  Search
+Theorem 2.4.9.  The active theorem-facing frontier is now exact
+Theorem 4.5.2 source packaging in `Martingale.lean`, then the next Section 4.5
+theorem.  Search
 mathlib and local `StatInference` first; use
 `origin/codex/vdvw-selected-cover-source` only as selective reference via
 `git grep`/`git show` or an isolated worktree; do not merge it wholesale into
