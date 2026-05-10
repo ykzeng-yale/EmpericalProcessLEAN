@@ -9284,6 +9284,16 @@ first-level selected-center scalar-coordinate theorem.  The additive-error
 branch's remaining primitive is therefore a genuine tail-control/asymptotic
 input for the two lintegral finite-center failure terms.
 
+2026-05-10 countable first-level inverse-square source wrapper:
+`Theorem243.lean` now also proves
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_invSq_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable`.
+This source theorem replaces the displayed finite-center Hoeffding failure-tail
+integrals by the explicit inverse-square selected-cardinality lintegrals.  It
+uses the compiled deterministic bound
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq`.
+The remaining additive-error route input is now exactly inverse-square
+integral convergence or selected-cardinality growth.
+
 2026-05-10 first-level displayed-beta selected-cover route:
 `Theorem243.lean` now also proves
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.

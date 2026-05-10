@@ -3139,6 +3139,14 @@ measurability assumptions using the first-level selected-center coordinate
 measurability bridge, so the additive-error route's source-side blocker is now
 only the size/asymptotics of the two lintegral failure-tail terms.
 
+The inverse-square source relaxation is also compiled:
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_invSq_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable`.
+It combines the countable source wrapper with
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq`,
+so the source comparison is stated directly with the two explicit
+inverse-square selected-cardinality lintegrals.  This aligns the source layer
+with the existing inverse-square and cardinality-growth convergence consumers.
+
 The displayed Chebyshev-beta source constructor now has the same canonical
 first-level cover specialization:
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.

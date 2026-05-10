@@ -322,6 +322,13 @@ now discharges those two failure-event measurability inputs internally from
 the canonical first-level selected-center coordinate bridge.  The branch's
 remaining source burden is therefore only tail control for the displayed
 lintegral failure terms, or the product-fiber replacement.
+The source-level inverse-square relaxation is now compiled as
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_finiteCenter_invSq_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_countable`.
+It replaces the two additive finite-center Hoeffding failure-tail integrals by
+the explicit `(selected cardinality + 1)^(-2)` lintegrals already used by the
+convergence consumers.  Thus this branch's remaining extra input is exactly
+inverse-square selected-cardinality integrability/growth, not another
+measurability or cover-selection bridge.
 The explicit original/ghost finite-center failure probabilities are now split
 through the fixed-sample Rademacher finite-center Hoeffding tail, a
 product-fiber upper-bound lift, and additive-error product-pair comparison
