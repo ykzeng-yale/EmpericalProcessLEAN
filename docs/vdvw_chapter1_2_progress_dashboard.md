@@ -4825,3 +4825,10 @@ variant:
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_of_eventually_ae_cardinality_ge`.
 This matches the natural eventual `P^n`-a.e. selected-cardinality growth shape,
 so both remaining source-side hypotheses can be stated a.e.
+
+The restricted-a.e. sign-swap two-tail endpoint now also has deterministic
+lower-growth packaging:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_signSwapBad_finiteCenter_failure_tails_of_eventually_cardinality_ge`.
+This supports callers that already have the lower bound over
+`P^n.restrict centeredBad` and only need to replace the inverse-square
+lintegral by selected-cardinality growth.

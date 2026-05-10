@@ -3932,6 +3932,12 @@ lane: both the sign-swapped bad-fiber probability statement and the
 selected-cardinality growth condition may be supplied eventually almost
 everywhere.
 
+The restricted-a.e. sign-swap two-tail endpoint now has the deterministic
+lower-growth specialization
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_signSwapBad_finiteCenter_failure_tails_of_eventually_cardinality_ge`.
+This mirrors the base-a.e. wrapper for sources that already produce a
+restricted-measure lower bound.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

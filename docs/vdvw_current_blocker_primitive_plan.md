@@ -10362,3 +10362,11 @@ This is the fully a.e.-shaped tail-control companion: the sign-swapped
 bad-fiber beta source is a `P^n`-a.e. implication, and the selected-cover lower
 growth may also hold only eventually `P^n`-a.e.  The blocker remains the
 probability lower bound itself.
+
+2026-05-10 restricted-a.e. sign-swap two-tail lower-growth wrapper:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_signSwapBad_finiteCenter_failure_tails_of_eventually_cardinality_ge`.
+This is the restricted-measure companion to the base-a.e. lower-growth theorem:
+when the sign-swapped bad-fiber beta source is already stated on
+`P^n.restrict centeredBad`, deterministic selected-cardinality lower growth
+supplies the two-tail finite-center error control directly.
