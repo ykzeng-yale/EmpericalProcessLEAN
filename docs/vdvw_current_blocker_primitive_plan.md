@@ -10069,3 +10069,17 @@ centered-bad measurability and concrete selected-net event measurability.
 The remaining blocker is now the actual base-a.e. probability theorem for the
 pair-difference event, or the coefficient-correct product-pair/sign-swap
 replacement.
+
+2026-05-10 selected half-radius pair-difference a.e. source specialization:
+`Theorem243.lean` now adds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_sample_coordinate_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_imp_sample_coordinate_countable`.
+These specialize the concrete pair-difference restricted-a.e. and base-a.e.
+fiber-source bridges to the canonical selected truncated empirical-cover
+cardinality at radius `eta / 2`; the selected-cardinality measurability and
+selected-center coordinate measurability obligations are handled internally by
+the countable selected-cover interface.  The remaining source theorem can now
+be stated directly for the canonical selected half-radius cover: prove the
+base-a.e. pair-difference displayed-beta fiber mass, or replace it with the
+coefficient-correct product-pair/sign-swap source theorem.

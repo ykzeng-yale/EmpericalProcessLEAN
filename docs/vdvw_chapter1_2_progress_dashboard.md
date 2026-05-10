@@ -4604,3 +4604,13 @@ The next source theorem can therefore target
 and let the bridge handle restriction to the centered-bad measure plus
 countable event measurability.  This removes another statement-shape blocker;
 it does not prove the pair-difference fiber mass itself.
+
+The selected half-radius pair-difference route now has the same a.e. and
+base-a.e. source shape:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_sample_coordinate_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_imp_sample_coordinate_countable`.
+These target the canonical selected truncated cover at radius `eta / 2` and
+derive selected-cardinality measurability internally.  The dashboard blocker
+is now the actual probability theorem for that canonical selected cover, not a
+remaining selected-cardinality plumbing obligation.

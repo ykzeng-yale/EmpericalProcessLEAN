@@ -3689,6 +3689,17 @@ countability discharging the required measurability.  The next blueprint item
 should prove that base-a.e. pair-difference fiber mass theorem, or replace it
 with a coefficient-correct product-pair/sign-swap source theorem.
 
+The canonical selected half-radius cover now has matching pair-difference
+a.e. source adapters:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_sample_coordinate_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_imp_sample_coordinate_countable`.
+They specialize the concrete pair-difference event to
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard ... (eta / 2)`
+and internalize the selected-cardinality measurability proof.  Future proof
+work can therefore aim straight at the canonical selected-cover base-a.e.
+fiber-mass theorem.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
