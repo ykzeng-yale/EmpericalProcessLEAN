@@ -588,6 +588,17 @@ direct mathlib inf-projection envelope-third theorem was found.  The next exact
 item-4 step should construct the derivative inputs for this package from a
 concrete selector/envelope theorem and then identify the canonical lifted
 Schur oracle with the actual third derivative of the selected value.
+The follow-up segment bridge adds
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projectedHessianSegmentMixedThirdLocalNormCertificate_of_fullHessianDerivative_isOpen`
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen`.
+It feeds the packaged adjoint-square envelope model plus source full-Hessian
+derivative data directly into the projected Lemma 13.6 segment certificate and
+source-radius local-norm sandwich, deriving the Schur derivative certificate
+and `Hyy` right-inverse internally.  The next exact item-4 step should now
+construct the concrete model derivative inputs and segment coefficient bound
+against these wrappers, not reopen the Schur derivative/local-norm sandwich
+proofs.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

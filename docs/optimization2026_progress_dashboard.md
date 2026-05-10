@@ -470,6 +470,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   no direct mathlib inf-projection envelope-third theorem; the remaining exact
   source gap is constructing the derivative inputs for the model and connecting
   the lifted Schur oracle to the actual third derivative of the selected value.
+- Inf-projection third-order-to-segment bridge: the newest packet adds
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projectedHessianSegmentMixedThirdLocalNormCertificate_of_fullHessianDerivative_isOpen`
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen`.
+  These route the packaged adjoint-square envelope model plus full Hessian
+  derivative data directly into the projected Lemma 13.6 segment certificate
+  and source-radius local-norm sandwich, deriving the Schur derivative and
+  `Hyy` right-inverse internally.  Future item-4 work should now supply the
+  actual model derivatives and segment coefficient bound to this wrapper
+  rather than reopening the Schur derivative/local-norm machinery.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in
