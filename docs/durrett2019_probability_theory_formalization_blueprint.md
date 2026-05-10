@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V210`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V211`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -72,16 +72,21 @@ V210 adds the scalar deterministic interval comparison
 `durrett2019_theorem_4_5_3_interval_variance_ratio_le_integral_inv_sq`:
 for increasing `f >= 1` on `[a,b]`,
 `(b-a) / f(b)^2 ≤ ∫_a^b f(t)^{-2} dt`.
-The next theorem-facing target is no longer another scaled-summability wrapper:
-lift this scalar interval comparison to pathwise finite sums along the monotone
-clock `A`, then package summability of the variance-ratio series for
-`b_n = f(A_n)`.  Keep reciprocal-transform `MemLp` and integrability side
-conditions explicit if needed.  Do not route back to
+V211 adds the finite pathwise lift
+`durrett2019_theorem_4_5_3_finite_sum_variance_ratio_le_integral_clock`,
+which telescopes adjacent interval estimates into
+`∑_{k<N} (A_{k+1}-A_k) / f(A_{k+1})^2 ≤ ∫_{A_0}^{A_N} f(t)^{-2} dt`.
+The next theorem-facing target is no longer another finite comparison: package
+the infinite/summability consequence for `b_n = f(A_n)` from the source
+integrability hypothesis `∫_0^∞ f(t)^{-2} dt < ∞`.  Keep reciprocal-transform
+`MemLp` and integrability side conditions explicit if needed.  Do not route
+back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
 packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
-predictability/bounds, conditional variance pull-out, or scaled-summability
-handoff wrappers unless a later theorem exposes a precise missing primitive.
+predictability/bounds, conditional variance pull-out, scalar interval
+comparison, or scaled-summability handoff wrappers unless a later theorem
+exposes a precise missing primitive.
 
 Closed Chapter 2 support lives in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled

@@ -18446,6 +18446,44 @@ theorem durrett2019_theorem_4_5_3_interval_variance_ratio_le_integral_inv_sq
         intervalIntegral.integral_mono_on hab hconst_int hf_int hpoint
 
 /--
+Durrett 2019, Theorem 4.5.3 deterministic finite-sum comparison.
+
+This is the finite pathwise version of the displayed textbook estimate before
+taking limits: adjacent interval estimates telescope to the integral over the
+clock interval.
+-/
+theorem durrett2019_theorem_4_5_3_finite_sum_variance_ratio_le_integral_clock
+    {f : ℝ -> ℝ} {A : ℕ -> ℝ} {N : ℕ}
+    (hA_mono_step : ∀ k : ℕ, k < N -> A k ≤ A (k + 1))
+    (hf_mono :
+      ∀ k : ℕ, k < N -> MonotoneOn f (Set.Icc (A k) (A (k + 1))))
+    (hf_one_le :
+      ∀ k : ℕ, k < N -> ∀ t ∈ Set.Icc (A k) (A (k + 1)), 1 ≤ f t)
+    (hf_int :
+      ∀ k : ℕ, k < N ->
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume (A k) (A (k + 1))) :
+    (∑ k ∈ Finset.range N,
+      (A (k + 1) - A k) / (f (A (k + 1))) ^ 2) ≤
+      ∫ t in A 0..A N, (f t)⁻¹ ^ 2 := by
+  calc
+    (∑ k ∈ Finset.range N,
+      (A (k + 1) - A k) / (f (A (k + 1))) ^ 2)
+        ≤ ∑ k ∈ Finset.range N,
+            ∫ t in A k..A (k + 1), (f t)⁻¹ ^ 2 := by
+          exact
+            Finset.sum_le_sum fun k hk =>
+              durrett2019_theorem_4_5_3_interval_variance_ratio_le_integral_inv_sq
+                (f := f) (a := A k) (b := A (k + 1))
+                (hA_mono_step k (Finset.mem_range.mp hk))
+                (hf_mono k (Finset.mem_range.mp hk))
+                (hf_one_le k (Finset.mem_range.mp hk))
+                (hf_int k (Finset.mem_range.mp hk))
+    _ = ∫ t in A 0..A N, (f t)⁻¹ ^ 2 :=
+        intervalIntegral.sum_integral_adjacent_intervals
+          (a := A) (f := fun t => (f t)⁻¹ ^ 2) (μ := volume)
+          (fun k hk => hf_int k hk)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

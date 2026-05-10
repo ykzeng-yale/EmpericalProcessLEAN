@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V210
+## Live In-Thread Goal Prompt V211
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -119,17 +119,22 @@ V210 starts the deterministic/integral comparison.  The scalar interval lemma
 that for increasing `f >= 1` on `[a,b]`,
 `(b-a) / f(b)^2 ≤ ∫_a^b f(t)^{-2} dt`.
 
-Next aggressive step: lift V210 from one deterministic interval to the
-pathwise finite-sum comparison along a monotone clock `A`, then package
-summability of
-`∑ ∫ (A_{k+1}-A_k) / f(A_{k+1})^2` from `∫_0^∞ f(t)^{-2} dt < ∞`.
-Keep the remaining reciprocal-transform `MemLp` and integrability side
-conditions explicit until they can be discharged from source hypotheses.  Do
-not route back to stopped running-maximum boundedness, stopped predictability,
-exact Theorem 4.5.2 source packaging, deterministic Exercise 4.4.11
-normalizers, reciprocal predictability/bounds, scaled-summability-to-transform
-plumbing, conditional variance pull-out, Chapter 2.1, or Theorem 2.4.9 unless
-Theorem 4.5.3 exposes a strictly stronger missing primitive.
+V211 lifts V210 to finite pathwise clock sums.  The theorem
+`durrett2019_theorem_4_5_3_finite_sum_variance_ratio_le_integral_clock` proves
+`∑_{k<N} (A_{k+1}-A_k) / f(A_{k+1})^2 ≤ ∫_{A_0}^{A_N} f(t)^{-2} dt`
+from per-interval monotonicity, positivity, and interval-integrability.
+
+Next aggressive step: package the infinite/summability consequence from V211,
+using the source hypothesis `∫_0^∞ f(t)^{-2} dt < ∞` and monotone/divergent
+clock assumptions.  Then connect that summability package to the V209
+normalized-process endpoint.  Keep the remaining reciprocal-transform `MemLp`
+and integrability side conditions explicit until they can be discharged from
+source hypotheses.  Do not route back to stopped running-maximum boundedness,
+stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
+Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
+scaled-summability-to-transform plumbing, conditional variance pull-out, scalar
+interval comparison, Chapter 2.1, or Theorem 2.4.9 unless Theorem 4.5.3 exposes
+a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
