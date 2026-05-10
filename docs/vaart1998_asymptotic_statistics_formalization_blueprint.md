@@ -749,10 +749,12 @@ Initial modules:
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeAE_envelopeTendsto_summandMeasurable_envelope_absorbing`
   and
   `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope_absorbing`,
+  and the absorbing raw-root source packet adds
+  `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_rawRoot_rawScoreCLT_derivativeAE_envelopeTendsto_summandMeasurable_envelope_absorbing`,
   so the remaining critical path should remove `hScaledEstimator` from the
-  raw-root and estimator-substitution source wrappers by calling this absorbing
-  raw-score-CLT endpoint, or move to a genuinely model-specific Taylor display,
-  derivative, or score representation.
+  estimator-substitution source wrappers by calling this absorbing raw-root
+  endpoint, or move to a genuinely model-specific Taylor display, derivative,
+  or score representation.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
