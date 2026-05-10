@@ -9862,3 +9862,20 @@ Thus the fixed-sign branch is now formally closed as a route to the current
 displayed-beta source primitive; the next aggressive step should be an honest
 averaged sign/ghost source theorem or an explicit stronger structural
 tail/cardinality input.
+
+2026-05-10 selected-net sign-negation symmetry support:
+`Theorem243.lean` now adds
+`vdVWFiniteCenterWeightedSupremum_neg_weights`,
+`VdVWTheorem243FiniteCenterMaximalBound_neg_weights_iff`,
+`vdVWFiniteCenterWeightedSupremum_rademacherWeights_neg_sign`,
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign_iff`,
+`mem_VdVWTheorem243CanonicalRademacherSelectedNetEvent_neg_sign_iff`, and
+`mem_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_neg_sign_iff`.
+These reuse the existing weighted-sum and whole-class supremum negation
+lemmas rather than introducing a new probability assumption.  The live blocker
+is unchanged: the source proof still needs averaged sign/ghost mass, a pure
+Rademacher bad-fiber lower bound with valid mass, or an explicit stronger
+structural tail/cardinality hypothesis.  The value of this layer is that the
+finite-center side conditions and canonical selected-net events can now be
+transported across deterministic sign negation without reopening the invalid
+fixed-sign coefficient shortcut.

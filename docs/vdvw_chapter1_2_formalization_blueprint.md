@@ -3531,6 +3531,20 @@ probability inputs: sign-swapped bad-fiber mass, or pair-sub mass plus
 coefficient-correct fixed-original sign-swap transport, and finite-center
 a.e. support.
 
+The selected-net source layer now also records sign-negation invariance for
+finite-center bounds and canonical sign/ghost selected-net events through
+`vdVWFiniteCenterWeightedSupremum_neg_weights`,
+`VdVWTheorem243FiniteCenterMaximalBound_neg_weights_iff`,
+`vdVWFiniteCenterWeightedSupremum_rademacherWeights_neg_sign`,
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign_iff`,
+`mem_VdVWTheorem243CanonicalRademacherSelectedNetEvent_neg_sign_iff`, and
+`mem_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_neg_sign_iff`.
+Use these lemmas when the next averaged sign/ghost source proof needs to flip
+Rademacher signs while preserving finite-center side conditions.  They do not
+alter the live source target: the missing theorem is still real
+averaged-sign/ghost mass or a stated stronger structural tail/cardinality
+hypothesis.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

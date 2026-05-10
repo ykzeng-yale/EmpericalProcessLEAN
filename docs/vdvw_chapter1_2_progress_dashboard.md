@@ -4452,3 +4452,15 @@ prove that the all-one fixed-sign coefficient is eventually too small even
 after starting from the displayed Chebyshev beta.  Do not reopen the
 deterministic fixed-sign shortcut; the live source target is averaged
 sign/ghost mass or a stated stronger structural tail/cardinality route.
+
+The canonical selected-net layer now has deterministic sign-negation
+symmetry:
+`vdVWFiniteCenterWeightedSupremum_neg_weights`,
+`VdVWTheorem243FiniteCenterMaximalBound_neg_weights_iff`,
+`vdVWFiniteCenterWeightedSupremum_rademacherWeights_neg_sign`,
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign_iff`,
+`mem_VdVWTheorem243CanonicalRademacherSelectedNetEvent_neg_sign_iff`, and
+`mem_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_neg_sign_iff`.
+This is support infrastructure for the averaged sign/ghost route.  It does not
+solve the displayed-beta source primitive, but it prevents future work from
+duplicating finite-center side-condition transport when signs are flipped.

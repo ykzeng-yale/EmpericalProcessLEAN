@@ -11910,6 +11910,19 @@ theorem vdVWFiniteCenterWeightedSupremum_finCoordinatePerm
   simp [vdVWFiniteCenterWeightedSupremum,
     vdVWWeightedSampleSum_finCoordinatePerm]
 
+/--
+The finite-center weighted supremum is invariant under flipping all weights.
+-/
+theorem vdVWFiniteCenterWeightedSupremum_neg_weights
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) {cardinality : ℕ}
+    (center : Fin cardinality -> Index) (weights : Fin n -> ℝ) :
+    vdVWFiniteCenterWeightedSupremum sample classFun center
+        (fun i : Fin n => -weights i) =
+      vdVWFiniteCenterWeightedSupremum sample classFun center weights := by
+  simp [vdVWFiniteCenterWeightedSupremum, vdVWWeightedSampleSum_neg_weights]
+
 /-- Each center sum is bounded by the finite-center weighted supremum. -/
 theorem abs_vdVWWeightedSampleSum_center_le_finiteCenterWeightedSupremum
     {Observation : Type u} {Index : Type v} {n : ℕ}
@@ -12014,6 +12027,49 @@ theorem VdVWTheorem243FiniteCenterMaximalBound_finCoordinatePerm
   intro centerIndex
   simpa [VdVWTheorem243FiniteCenterMaximalBound,
     vdVWWeightedSampleSum_finCoordinatePerm] using hmaximal centerIndex
+
+/--
+Finite-center maximal-bound predicates are invariant under flipping all
+weights.
+-/
+theorem VdVWTheorem243FiniteCenterMaximalBound_neg_weights
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {cardinality : ℕ}
+    {center : Fin cardinality -> Index} {weights : Fin n -> ℝ}
+    {centerScale : ℝ}
+    (hmaximal :
+      VdVWTheorem243FiniteCenterMaximalBound sample classFun center weights
+        centerScale) :
+    VdVWTheorem243FiniteCenterMaximalBound sample classFun center
+      (fun i : Fin n => -weights i) centerScale := by
+  intro centerIndex
+  simpa [VdVWTheorem243FiniteCenterMaximalBound,
+    vdVWWeightedSampleSum_neg_weights] using hmaximal centerIndex
+
+/--
+Finite-center maximal-bound predicates are unchanged by flipping all weights.
+-/
+theorem VdVWTheorem243FiniteCenterMaximalBound_neg_weights_iff
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {cardinality : ℕ}
+    {center : Fin cardinality -> Index} {weights : Fin n -> ℝ}
+    {centerScale : ℝ} :
+    VdVWTheorem243FiniteCenterMaximalBound sample classFun center
+        (fun i : Fin n => -weights i) centerScale ↔
+      VdVWTheorem243FiniteCenterMaximalBound sample classFun center weights
+        centerScale := by
+  constructor
+  · intro hmaximal
+    have hneg :=
+      VdVWTheorem243FiniteCenterMaximalBound_neg_weights
+        (sample := sample) (classFun := classFun) (center := center)
+        (weights := fun i : Fin n => -weights i)
+        (centerScale := centerScale) hmaximal
+    simpa using hneg
+  · intro hmaximal
+    exact VdVWTheorem243FiniteCenterMaximalBound_neg_weights hmaximal
 
 /--
 Fixed finite-center maximal-bound predicates are measurable when the sample and
@@ -12714,6 +12770,24 @@ theorem vdVWFiniteCenterWeightedSupremum_rademacherWeights_finCoordinatePerm
     (vdVWFiniteCenterWeightedSupremum_finCoordinatePerm
       (Observation := Observation) (Index := Index) perm sample classFun center
       (vdVWRademacherWeights sign))
+
+/--
+The finite-center Rademacher supremum is invariant under deterministic sign
+negation.
+-/
+theorem vdVWFiniteCenterWeightedSupremum_rademacherWeights_neg_sign
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) {cardinality : ℕ}
+    (center : Fin cardinality -> Index) (sign : Fin n -> ℝ) :
+    vdVWFiniteCenterWeightedSupremum sample classFun center
+        (vdVWRademacherWeights (fun i : Fin n => -sign i)) =
+      vdVWFiniteCenterWeightedSupremum sample classFun center
+        (vdVWRademacherWeights sign) := by
+  rw [vdVWRademacherWeights_neg_sign sign]
+  exact
+    vdVWFiniteCenterWeightedSupremum_neg_weights sample classFun center
+      (vdVWRademacherWeights sign)
 
 /--
 For finite classes, a fixed-sample Rademacher-weighted truncated supremum is
@@ -16886,6 +16960,50 @@ theorem VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm
     vdVWRademacherWeights_finCoordinatePerm] using
     (VdVWTheorem243FiniteCenterMaximalBound_finCoordinatePerm
       (Observation := Observation) (Index := Index) perm hmaximal)
+
+/--
+The finite-center Hoeffding/maximal predicate is stable under deterministic
+Rademacher sign negation.
+-/
+theorem VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {cardinality : ℕ}
+    {center : Fin cardinality -> Index} {sign : Fin n -> ℝ} {M : ℝ}
+    (hmaximal :
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun
+        center sign M) :
+    VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun center
+      (fun i : Fin n => -sign i) M := by
+  simpa [VdVWTheorem243RademacherFiniteCenterHoeffdingBound,
+    vdVWRademacherWeights_neg_sign] using
+    (VdVWTheorem243FiniteCenterMaximalBound_neg_weights
+      (sample := sample) (classFun := classFun) (center := center)
+      (weights := vdVWRademacherWeights sign)
+      (centerScale := vdVWTheorem243HoeffdingCenterScale n M) hmaximal)
+
+/--
+The finite-center Hoeffding/maximal predicate is unchanged by deterministic
+Rademacher sign negation.
+-/
+theorem VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign_iff
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {cardinality : ℕ}
+    {center : Fin cardinality -> Index} {sign : Fin n -> ℝ} {M : ℝ} :
+    VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun center
+        (fun i : Fin n => -sign i) M ↔
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun center
+        sign M := by
+  constructor
+  · intro hmaximal
+    have hneg :=
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign
+        (sample := sample) (classFun := classFun) (center := center)
+        (sign := fun i : Fin n => -sign i) (M := M) hmaximal
+    simpa using hneg
+  · intro hmaximal
+    exact VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign hmaximal
 
 /--
 Fixed-center Rademacher finite-center Hoeffding predicates are measurable when
@@ -46020,6 +46138,175 @@ noncomputable def VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
               (vdVWTruncatedClassFun classFun envelope M)
               (vdVWRademacherWeights z.2.2) z.1)
           (0 : ℝ)}
+
+/--
+The sign-only canonical selected-net event is invariant under deterministic
+Rademacher sign negation.
+-/
+theorem mem_VdVWTheorem243CanonicalRademacherSelectedNetEvent_neg_sign_iff
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sample : SampleAt Observation n) (sign : SampleAt ℝ n) :
+    (sample, fun i : Fin n => -sign i) ∈
+        VdVWTheorem243CanonicalRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality) cover ↔
+      (sample, sign) ∈
+        VdVWTheorem243CanonicalRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality) cover := by
+  constructor
+  · intro h
+    have h' :
+        VdVWRademacherSignVector (fun i : Fin n => -sign i) ∧
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover sample).center (fun i : Fin n => -sign i) M ∧
+          epsilon <
+            dist
+              (2 *
+                vdVWWeightedClassSupremum indexClass
+                  (vdVWTruncatedClassFun classFun envelope M)
+                  (vdVWRademacherWeights (fun i : Fin n => -sign i)) sample)
+              (0 : ℝ) := by
+      simpa [VdVWTheorem243CanonicalRademacherSelectedNetEvent] using h
+    rcases h' with ⟨hsign, hmaximal, hbad⟩
+    have hsign' : VdVWRademacherSignVector sign := by
+      simpa using VdVWRademacherSignVector.neg hsign
+    have hmaximal' :
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover sample).center sign M :=
+      (VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign_iff
+        (sample := sample)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (center := (cover sample).center) (sign := sign) (M := M)).1
+        hmaximal
+    have hbad' :
+        epsilon <
+          dist
+            (2 *
+              vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights sign) sample)
+            (0 : ℝ) := by
+      have hsup :=
+        vdVWWeightedClassSupremum_rademacherWeights_neg_sign
+          indexClass (vdVWTruncatedClassFun classFun envelope M) sign sample
+      simpa [hsup] using hbad
+    simpa [VdVWTheorem243CanonicalRademacherSelectedNetEvent] using
+      And.intro hsign' (And.intro hmaximal' hbad')
+  · intro h
+    have h' :
+        VdVWRademacherSignVector sign ∧
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover sample).center sign M ∧
+          epsilon <
+            dist
+              (2 *
+                vdVWWeightedClassSupremum indexClass
+                  (vdVWTruncatedClassFun classFun envelope M)
+                  (vdVWRademacherWeights sign) sample)
+              (0 : ℝ) := by
+      simpa [VdVWTheorem243CanonicalRademacherSelectedNetEvent] using h
+    rcases h' with ⟨hsign, hmaximal, hbad⟩
+    have hsign' :
+        VdVWRademacherSignVector (fun i : Fin n => -sign i) :=
+      VdVWRademacherSignVector.neg hsign
+    have hmaximal' :
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover sample).center (fun i : Fin n => -sign i) M :=
+      (VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign_iff
+        (sample := sample)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (center := (cover sample).center) (sign := sign) (M := M)).2
+        hmaximal
+    have hbad' :
+        epsilon <
+          dist
+            (2 *
+              vdVWWeightedClassSupremum indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWRademacherWeights (fun i : Fin n => -sign i)) sample)
+            (0 : ℝ) := by
+      have hsup :=
+        vdVWWeightedClassSupremum_rademacherWeights_neg_sign
+          indexClass (vdVWTruncatedClassFun classFun envelope M) sign sample
+      simpa [hsup] using hbad
+    simpa [VdVWTheorem243CanonicalRademacherSelectedNetEvent] using
+      And.intro hsign' (And.intro hmaximal' hbad')
+
+/--
+The ghost/Rademacher canonical selected-net event is invariant under
+deterministic Rademacher sign negation.
+-/
+theorem mem_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_neg_sign_iff
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sample ghostSample : SampleAt Observation n) (sign : SampleAt ℝ n) :
+    (sample, (ghostSample, fun i : Fin n => -sign i)) ∈
+        VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality) cover ↔
+      (sample, (ghostSample, sign)) ∈
+        VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality) cover := by
+  constructor
+  · intro h
+    have hsignOnly :
+        (sample, fun i : Fin n => -sign i) ∈
+          VdVWTheorem243CanonicalRademacherSelectedNetEvent
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality) cover := by
+      simpa [VdVWTheorem243CanonicalRademacherSelectedNetEvent,
+        VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent] using h
+    have hsignOnly' :=
+      (mem_VdVWTheorem243CanonicalRademacherSelectedNetEvent_neg_sign_iff
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        cover sample sign).1 hsignOnly
+    simpa [VdVWTheorem243CanonicalRademacherSelectedNetEvent,
+      VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent] using hsignOnly'
+  · intro h
+    have hsignOnly :
+        (sample, sign) ∈
+          VdVWTheorem243CanonicalRademacherSelectedNetEvent
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality) cover := by
+      simpa [VdVWTheorem243CanonicalRademacherSelectedNetEvent,
+        VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent] using h
+    have hsignOnly' :=
+      (mem_VdVWTheorem243CanonicalRademacherSelectedNetEvent_neg_sign_iff
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        cover sample sign).2 hsignOnly
+    simpa [VdVWTheorem243CanonicalRademacherSelectedNetEvent,
+      VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent] using hsignOnly'
 
 /--
 Sign-only canonical fiber lower bound from a Rademacher bad-event lower bound
