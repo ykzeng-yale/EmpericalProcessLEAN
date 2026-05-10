@@ -554,6 +554,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `ContinuousOn H_schur` hypothesis.  Future exact source work can provide only
   per-vector `ψ_v` continuity, segment local-norm continuity, the segment
   applied-vector derivative, and the lifted-third pairing identity.
+- Inf-projection local-norm-continuity shrink: the newest packet adds
+  `hessianSegmentLocalNorm_continuousOn_of_psi`,
+  `HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_scalarPsi_sourceRadius_of_psi_continuity`,
+  `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_psi_continuity`,
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_psi_continuity`.
+  The exact source route no longer needs a separate segment local-norm
+  continuity hypothesis once per-vector `ψ` continuity is available.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in

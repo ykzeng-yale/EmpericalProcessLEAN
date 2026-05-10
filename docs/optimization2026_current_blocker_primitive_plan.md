@@ -671,6 +671,16 @@ This removes the operator-valued `ContinuousOn H_schur` gate from the scalar
 source-radius route.  The exact source proof should now supply per-vector
 `ψ_v` continuity, segment local-norm continuity, the segment applied-vector
 derivative, and the lifted-third pairing identity directly.
+The local-norm-continuity shrink now adds
+`hessianSegmentLocalNorm_continuousOn_of_psi`,
+`HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_scalarPsi_sourceRadius_of_psi_continuity`,
+`BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_psi_continuity`,
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_hessApplyDeriv_sourceRadius_of_psi_continuity`.
+Thus the exact source route no longer needs a separate `hlocal_cont` input:
+per-vector `ψ` continuity already gives the segment local-norm continuity by
+`ContinuousOn.sqrt`.  The remaining source obligations are per-vector `ψ`
+continuity, the segment applied-vector derivative, and the lifted-third pairing.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
