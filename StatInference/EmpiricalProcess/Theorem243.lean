@@ -67454,6 +67454,40 @@ theorem of_centered_untruncated_convergesInOuterProbabilityConst_zero_countable_
       lemma245_centeredSupremum_ae_tendsto_zero := hlemma }
 
 /--
+The proof-carrying full-subgraph side-condition record feeds the
+textbook-facing Theorem 2.4.3/Lemma 2.4.5 conclusion bundle.
+
+This keeps the final assembly path short: the side-condition record first
+produces centered untruncated finite-product convergence, and the generic
+constructor above supplies all current final outputs, including the Lemma
+2.4.5 a.s. branch.
+-/
+theorem of_fullSubgraphSideConditions
+    {Ωsign : Type u} [MeasurableSpace Ωsign] {μsign : Measure Ωsign}
+    [IsProbabilityMeasure μsign]
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation}
+    {vcDegree : ℝ -> ℕ}
+    {sign : (n : ℕ) -> Fin n -> Ωsign -> ℝ}
+    (hside :
+      VdVWTheorem243FullSubgraphSideConditions μsign P indexClass classFun
+        envelope X vcDegree sign) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  exact
+    of_centered_untruncated_convergesInOuterProbabilityConst_zero_countable_integrable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope)
+      hside.henvelope hside.hclass hside.henv hside.henv_integrable
+      (VdVWTheorem243FullSubgraphSideConditions.centered_untruncated_convergesInOuterProbabilityConst_zero
+        (μsign := μsign) (P := P) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope)
+        (X := X) (vcDegree := vcDegree) (sign := sign) hside)
+
+/--
 Current full-subgraph countable/integrable-envelope route, repackaged in the
 single textbook-facing conclusion shape.
 -/

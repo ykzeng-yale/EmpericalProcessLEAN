@@ -6276,6 +6276,11 @@ outer-a.s. GC via the proved Lemma 2.4.5 reverse/cofiltration consumer, local
 centered-supremum conclusion.  The next genuine source work should therefore
 prove a new centered convergence input from the book random entropy or a real
 structural cardinality theorem, not expand final conjunctions by hand.
+The proof-carrying full-subgraph side-condition record also now feeds the same
+conclusion bundle through
+`VdVWTheorem243TextbookAlignedConclusion.of_fullSubgraphSideConditions`, so
+the selected entropy/finite-net mean route has a compact final-output
+registration point.
 
 2026-05-05 follow-up: the canonical varying-domain form of the book random
 entropy hypothesis is now named.  The new structure
