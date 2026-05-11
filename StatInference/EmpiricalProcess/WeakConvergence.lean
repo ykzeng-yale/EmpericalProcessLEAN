@@ -3868,6 +3868,73 @@ theorem VdVWProbabilityMeasureSeparable.of_separableSpace
       by simp⟩
 
 /--
+Pre-tight probability measures concentrate on a countable union of measurable
+totally bounded sets.  This is the first construction in the proof of
+VdV&W Lemma 1.3.2.
+-/
+theorem VdVWProbabilityMeasurePreTight.exists_iUnion_totallyBounded_measure_compl_eq_zero
+    {S : Type u} [MeasurableSpace S] [UniformSpace S]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasurePreTight μ) :
+    ∃ A : ℕ -> Set S,
+      (∀ n, MeasurableSet (A n)) ∧
+      (∀ n, TotallyBounded (A n)) ∧
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, A n)ᶜ) = 0 := by
+  classical
+  have hchoose :
+      ∀ n : ℕ, ∃ A : Set S,
+        MeasurableSet A ∧ TotallyBounded A ∧
+          ((μ : ProbabilityMeasure S) : Measure S) (Aᶜ) ≤
+            ((n : ℝ≥0∞)⁻¹) := by
+    intro n
+    exact hμ ((n : ℝ≥0∞)⁻¹)
+      (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top n))
+  choose A hA_meas hA_tbounded hA_measure using hchoose
+  refine ⟨A, hA_meas, hA_tbounded, ?_⟩
+  by_contra hne
+  rcases ENNReal.exists_inv_nat_lt hne with ⟨n, hn⟩
+  have hsubset : (⋃ n, A n)ᶜ ⊆ (A n)ᶜ := by
+    intro x hx hxA
+    exact hx (Set.mem_iUnion.2 ⟨n, hxA⟩)
+  have hle_compl :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, A n)ᶜ) ≤
+        ((μ : ProbabilityMeasure S) : Measure S) ((A n)ᶜ) :=
+    measure_mono hsubset
+  have hle_inv :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, A n)ᶜ) ≤
+        ((n : ℝ≥0∞)⁻¹) :=
+    hle_compl.trans (hA_measure n)
+  exact (not_lt_of_ge hle_inv) hn
+
+/--
+Pre-tight probability measures are VdV&W-separable in uniform spaces whose
+uniformity has a countable basis.
+-/
+theorem VdVWProbabilityMeasurePreTight.separable
+    {S : Type u} [MeasurableSpace S] [UniformSpace S]
+    [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasurePreTight μ) :
+    VdVWProbabilityMeasureSeparable μ := by
+  rcases hμ.exists_iUnion_totallyBounded_measure_compl_eq_zero with
+    ⟨A, hA_meas, hA_tbounded, hA_measure⟩
+  exact
+    ⟨⋃ n, A n, MeasurableSet.iUnion hA_meas,
+      IsSeparable.iUnion (fun n => (hA_tbounded n).isSeparable),
+      hA_measure⟩
+
+/--
+VdV&W Lemma 1.3.2 pre-tight-to-separable direction.
+-/
+theorem vdVW132_probabilityMeasure_separable_of_preTight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S]
+    [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasurePreTight μ) :
+    VdVWProbabilityMeasureSeparable μ :=
+  VdVWProbabilityMeasurePreTight.separable hμ
+
+/--
 Measure-level asymptotic tightness of a family of probability measures along a
 filter: eventually, all measures put arbitrarily small mass outside one compact
 set.

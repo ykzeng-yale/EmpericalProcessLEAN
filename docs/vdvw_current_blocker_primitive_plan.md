@@ -1859,6 +1859,15 @@ pinned mathlib supplied `TopologicalSpace.IsSeparable`,
 `IsTightMeasureSet` compact-set characterizations; no local VdV&W 1.3.2
 separable/pre-tight measure predicates existed before this source layer.
 
+2026-05-11 Lemma 1.3.2 pre-tight-to-separable follow-up:
+`WeakConvergence.lean` now proves the textbook first direction.  The theorem
+`VdVWProbabilityMeasurePreTight.exists_iUnion_totallyBounded_measure_compl_eq_zero`
+constructs a countable union of measurable totally bounded sets with full
+measure from pre-tightness, using the inverse-natural ENNReal bound.  The
+theorem `VdVWProbabilityMeasurePreTight.separable` and the numbered wrapper
+`vdVW132_probabilityMeasure_separable_of_preTight` turn this into
+VdV&W-separability when the uniformity has a countable basis.
+
 2026-05-05 tightness component follow-up: the Chapter 1 weak-convergence file
 now has the VdV&W 1.3.2-named tightness component
 `vdVW132_complete_separable_probabilityMeasure_tight`, reusing the compiled
