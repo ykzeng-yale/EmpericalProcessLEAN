@@ -9405,3 +9405,16 @@ pair-sub sign-swap transport plus original and ghost finite-center a.e.
 support.  The remaining decision is therefore mathematical, not selector
 plumbing: prove those fixed-fiber inputs if valid, or pivot to the integrated
 product-pair route where fixed-original sign-swap is too strong.
+
+2026-05-11 additive-error product-fiber accounting:
+`Theorem243.lean` now proves the generic source bridges
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_fiber_lower_bound_add_error`,
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_ae_fiber_lower_bound_add_error`,
+`VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound_add_error`,
+and
+`VdVWOuterProbability_mul_left_le_of_ae_product_fiber_lower_bound_add_error`.
+These lift beta-large product fibers to an outer-probability comparison while
+retaining an explicit set-integral finite-center failure cost.  This is the
+measure-theory substrate needed by sign-only or finite-center failure-tail
+source routes; the remaining theorem-facing work is still to prove the actual
+Rademacher bad-fiber mass and/or structural tail-control input.

@@ -4151,3 +4151,13 @@ finite-center a.e. support facts.  The remaining blocker is now fully
 probability-side: prove those fixed-fiber inputs for the chosen cover, or
 switch the final source theorem to the already compiled integrated
 product-pair symmetry route.
+
+The generic additive-error product-fiber bridge is now compiled through
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_fiber_lower_bound_add_error`,
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_ae_fiber_lower_bound_add_error`,
+`VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound_add_error`,
+and
+`VdVWOuterProbability_mul_left_le_of_ae_product_fiber_lower_bound_add_error`.
+It carries finite-center failure costs as explicit set integrals while
+projecting beta-large product fibers to the selected-net outer-probability
+side.

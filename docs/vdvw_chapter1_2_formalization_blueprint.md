@@ -3210,6 +3210,17 @@ and leaves only fixed-sample sign-swap transport plus original/ghost
 finite-center a.e. support for the canonical cover.  The fixed-fiber blocker is
 therefore no longer selector or concrete-event plumbing.
 
+The product-fiber source layer now also has additive-error accounting:
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_fiber_lower_bound_add_error`,
+`measure_mul_le_prod_measure_add_setLIntegral_error_of_ae_fiber_lower_bound_add_error`,
+`VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound_add_error`,
+and
+`VdVWOuterProbability_mul_left_le_of_ae_product_fiber_lower_bound_add_error`.
+These lemmas preserve a set-integral finite-center failure term while
+projecting a beta-large product-fiber lower bound to outer probability.  They
+are source infrastructure for the sign-only/failure-tail route, not a
+substitute for the still-open Rademacher bad-fiber and tail-control inputs.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
