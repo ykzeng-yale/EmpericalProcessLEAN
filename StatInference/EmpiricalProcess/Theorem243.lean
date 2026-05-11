@@ -67244,6 +67244,177 @@ theorem
       hvc henvelope hclass henv henv_integrable
 
 /--
+Textbook-facing conclusion bundle for the current Theorem 2.4.3/Lemma 2.4.5
+assembly.
+
+This structure records only the outputs that match the theorem and adjacent
+lemma: `P`-measurability, finite outer envelope expectation, outer-probability
+and outer-a.s. Glivenko-Cantelli conclusions, the local book-style `P`-GC
+predicate, in-mean centered-supremum convergence, and the canonical
+Lemma 2.4.5 a.s. centered-supremum conclusion.  It deliberately carries no
+entropy or countability hypotheses; those belong to constructors showing which
+current theorem routes supply this exact output shape.
+-/
+structure VdVWTheorem243TextbookAlignedConclusion
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ) : Prop where
+  pMeasurable : VdVWPMeasurableClass P indexClass classFun
+  envelope_outerExpectation_lt_top :
+    VdVWOuterExpectation P (fun observation => ENNReal.ofReal (envelope observation)) < ∞
+  outerProbability_pGlivenkoCantelli :
+    VdVWOuterProbabilityPGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i)
+  outerAlmostSure_pGlivenkoCantelli :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i)
+  pGlivenkoCantelli :
+    VdVWPGlivenkoCantelliClass
+      (vdVWInfiniteProductMeasure P) P indexClass classFun
+      (fun i sequence => sequence i)
+  centeredSupremum_inMean_tendsto_zero :
+    Tendsto
+      (fun n : ℕ =>
+        ∫ sample : SampleAt Observation n,
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 0)
+  lemma245_centeredSupremum_ae_tendsto_zero :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (𝓝 0)
+
+namespace VdVWTheorem243TextbookAlignedConclusion
+
+/-- Build the textbook-facing conclusion bundle from the existing seven-part package. -/
+theorem of_conjunction
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (h :
+      VdVWPMeasurableClass P indexClass classFun ∧
+        VdVWOuterExpectation P (fun observation => ENNReal.ofReal (envelope observation)) < ∞ ∧
+        VdVWOuterProbabilityPGlivenkoCantelliClass
+          (vdVWInfiniteProductMeasure P) P indexClass classFun
+          (fun i sequence => sequence i) ∧
+        VdVWOuterAlmostSurePGlivenkoCantelliClass
+          (vdVWInfiniteProductMeasure P) P indexClass classFun
+          (fun i sequence => sequence i) ∧
+        VdVWPGlivenkoCantelliClass
+          (vdVWInfiniteProductMeasure P) P indexClass classFun
+          (fun i sequence => sequence i) ∧
+        Tendsto
+          (fun n : ℕ =>
+            ∫ sample : SampleAt Observation n,
+              vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  classFun index observation - ∫ x, classFun index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample
+              ∂(vdVWProductMeasure P n))
+          atTop (𝓝 0) ∧
+        (∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+          Tendsto
+            (fun n : ℕ =>
+              vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+            atTop (𝓝 0))) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope where
+  pMeasurable := h.1
+  envelope_outerExpectation_lt_top := h.2.1
+  outerProbability_pGlivenkoCantelli := h.2.2.1
+  outerAlmostSure_pGlivenkoCantelli := h.2.2.2.1
+  pGlivenkoCantelli := h.2.2.2.2.1
+  centeredSupremum_inMean_tendsto_zero := h.2.2.2.2.2.1
+  lemma245_centeredSupremum_ae_tendsto_zero := h.2.2.2.2.2.2
+
+/--
+Current full-subgraph countable/integrable-envelope route, repackaged in the
+single textbook-facing conclusion shape.
+-/
+theorem of_fullSubgraph_integrable_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (vcDegree M))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  exact
+    of_conjunction
+      (VdVWTheorem243_fullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc henvelope hclass henv henv_integrable)
+
+/--
+Original-class full-subgraph countable/integrable-envelope route, repackaged
+in the single textbook-facing conclusion shape.
+-/
+theorem of_originalFullSubgraph_integrable_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℝ -> ℕ}
+    (hvc :
+      ∀ M, 0 < M ->
+        VdVWUniformSubgraphVCBound indexClass classFun (vcDegree M))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  exact
+    of_conjunction
+      (VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_countable_integrable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc henvelope hclass henv henv_integrable)
+
+/--
+Fixed-degree original full-subgraph route, matching the usual VC-subgraph input
+more directly, repackaged in the single textbook-facing conclusion shape.
+-/
+theorem of_originalFullSubgraph_integrable_uniformSubgraphVC
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {vcDegree : ℕ}
+    (hvc : VdVWUniformSubgraphVCBound indexClass classFun vcDegree)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  exact
+    of_conjunction
+      (VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_uniformSubgraphVC
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (vcDegree := vcDegree)
+        hvc henvelope hclass henv henv_integrable)
+
+end VdVWTheorem243TextbookAlignedConclusion
+
+/--
 Canonical finite-class almost-sure `P`-Glivenko-Cantelli record from the direct
 finite-class SLLN route.
 
@@ -67500,6 +67671,33 @@ theorem
         (P := P) hindex_finite.countable hclass,
       henvelope.outerExpectation_lt_top_of_measurable_integrable henv henv_integrable,
       hpkg.1, hpkg.2.1, hpkg.2.2.1, hinmean, hpkg.2.2.2⟩
+
+namespace VdVWTheorem243TextbookAlignedConclusion
+
+/--
+Finite-class direct SLLN route, repackaged in the single textbook-facing
+Theorem 2.4.3/Lemma 2.4.5 conclusion shape.
+-/
+theorem of_finite_indexClass_canonical_slln
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Observation] [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  exact
+    of_conjunction
+      (VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope)
+        hindex_finite henvelope hclass henv henv_integrable)
+
+end VdVWTheorem243TextbookAlignedConclusion
 
 /--
 Canonical finite-class Lemma 2.4.5 a.s. zero consumer.

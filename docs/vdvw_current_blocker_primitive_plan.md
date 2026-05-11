@@ -6249,6 +6249,20 @@ for `P`-measurability; it does not close the exact arbitrary
 `P`-measurable/asymptotic-measurable textbook class layer or the book random
 entropy-to-full-subgraph/fixed-radius finite-net bridge.
 
+2026-05-11 follow-up: the final-output side of Theorem 2.4.3/Lemma 2.4.5
+assembly is now named as a reusable Lean proposition.  The new structure
+`VdVWTheorem243TextbookAlignedConclusion` records exactly the currently
+available textbook-facing outputs: `P`-measurability, finite VdV&W outer
+envelope expectation, outer-probability GC, outer-a.s. GC, the local
+book-style `P`-GC predicate, in-mean centered-supremum convergence, and the
+Lemma 2.4.5 a.s. centered-supremum conclusion.  Constructors now package the
+current full-subgraph countable route, original full-subgraph countable route,
+fixed-degree original full-subgraph VC route, and finite-class direct SLLN
+route into this single conclusion shape.  This is still not the exact
+textbook theorem: the remaining source gaps are the arbitrary
+`P`-measurable/asymptotic-measurable class layer and the book random
+entropy-to-current selected finite-net/full-subgraph bridge.
+
 2026-05-05 follow-up: the canonical varying-domain form of the book random
 entropy hypothesis is now named.  The new structure
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM` records, for

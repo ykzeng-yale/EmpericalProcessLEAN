@@ -1934,6 +1934,19 @@ The product-integrated symmetrization route now also has the composed
 random-cover finite-net integral bridge
 `integral_vdVWWeightedClassSupremum_centered_const_ofReal_le_two_integral_finiteNetHoeffdingUpper_add_of_randomEmpiricalCovers_expectedMaximal`.
 
+2026-05-11 follow-up: the Theorem 2.4.3/Lemma 2.4.5 final-output shape is now
+named by `VdVWTheorem243TextbookAlignedConclusion`.  It bundles the exact
+outputs currently available from the theorem-facing routes: Definition 2.3.3
+`P`-measurability, finite outer envelope expectation, outer-probability and
+outer-a.s. GC endpoints, the local book-style `P`-GC predicate, in-mean
+centered-supremum convergence, and the Lemma 2.4.5 a.s. centered-supremum
+endpoint.  Constructors now feed this conclusion from the full-subgraph
+countable route, original full-subgraph countable route, fixed-degree original
+full-subgraph VC route, and finite-class SLLN route.  The exact textbook
+statement remains blocked on the arbitrary `P`-measurable/asymptotic-measurable
+class layer and the book random entropy-to-selected finite-net/full-subgraph
+bridge.
+
 ## Near-Term Frontier
 
 ```text
@@ -1953,6 +1966,10 @@ CURRENT    The active /goal frontier is no longer the reverse/cofiltration
            avoidable nonempty-class assumption is now removed by the compiled
            empty-class split
            `VdVWTheorem243_fullSubgraph_integrable_pGlivenkoCantelli_inMean_and_lemma245_canonical_strong_no_nonempty_of_countable_integrable`.
+           The exact-output proposition is now
+           `VdVWTheorem243TextbookAlignedConclusion`; future source bridges
+           should target constructors into that proposition instead of
+           expanding seven-part conjunctions.
 READY      Definition 2.1.5 covering-number primitive plus fixed-sample/random empirical L1(P_n) entropy, F_M truncation interfaces, countable/measurable-cardinality selectors, product-copy/Fubini/symmetrization bridges, Rademacher finite-net Hoeffding and Mills/log-radius maximal layers, bounded varying-domain real-tail-to-mean wrapper, variable-domain fixed-M centered-truncated convergence handoffs, deterministic log-bound/inverse-radius consumers, selected-cardinality equality-transport arbitrary-radius/inverse-radius consumers, all-radius covering-domination selectors, selected inverse-radius finite-cover constructor, selected side-condition constructor, inverse-radius entropy side-condition package, package-level inverse-radius entropy mean projections, selected finite-cover and selected inverse-radius all-radius finite-net mean projections, explicit variable-domain tail/UI mean bridge and bounded-tail adapters, generic outer-probability perturbation, deterministic untruncation perturbation inequalities, empirical envelope-tail expectation/Markov bridges, untruncation bad-event probability split, large-M untruncation convergence handoff, untruncated selected/non-selected/all-radius-selected inverse-radius consumers, faithful fixed-radius finite-net mean and log-cardinality handoffs, selected fixed-radius cardinality/log-convergence/finite-net mean handoffs, selected fixed-radius fixed-M and untruncated consumers, selected fixed-radius tail/UI fixed-M and untruncated consumers with finite-center Rademacher integrability derived internally, selected fixed-radius tail/UI side-condition package with deterministic-log-bound and terminal-`base^n` constructors plus fixed-M and untruncated packaged consumers, induced empirical `L1(P_n)` pseudometric/internal-cover adapters and sample-path random-cover bridge, fixed-sample trace image/repr empirical-cover bridges, finite-trace random-cover and selected fixed-radius tail-package constructors, deterministic-rate-to-outer-probability entropy bridges, finite-trace selected fixed-radius tail-package constructor from deterministic normalized log-cardinality rates, log-linear/polynomial-rate, shifted-log-linear, and natural-polynomial finite-trace tail-package constructors, local VC/Sauer wrappers with coarse polynomial set-family bound, generic finite-code empirical-trace cardinality bridge, binary empirical-trace-to-Sauer cardinality bridge, fixed-threshold subgraph/indicator trace bridge, finite-threshold signature/product-cardinality bridge plus product-bound, factorwise-bound, common-base, threshold-count, base-growth, uniform-VC polynomial handoffs, pointwise/coordinatewise-threshold separation consumers, exact finite-value-membership threshold consumers, direct finite-value threshold selected fixed-radius tail/UI package constructor, finite-value threshold untruncated convergence consumer, finite realized value-set threshold/cardinality constructor, finite realized value-set untruncated convergence consumer, finite approximate-code and pointwise-code empirical-cover primitives with padded cardinality, finite-class empirical pseudometric cardinality bounds, finite-class selected fixed-radius tail-package constructor with deterministic log-cardinality convergence, finite-class untruncated centered convergence consumer with truncation-integrability, value-set boundedness, finite-center Rademacher integrability, centered measurable-cover, centered-supremum integrability, pair/split-copy supremum integrability, ghost-expectation integrability, sample-side Rademacher supremum integrability, product-space Rademacher supremum integrability, product-space measurable cover, sign-side supremum integrability, sign-side iterated-integral integrability, canonical common iid Rademacher sign instantiation, and canonical terminal sample-path instantiation discharged, untruncated fixed-radius log-bound consumer, and proof-carrying symmetrization precursor package for Theorem 2.4.3 setup.
 NEXT       Do not repeat finite-class geometry/entropy consumers, finite-center
            integrability, untruncation bridges, fixed/selected radius entropy
