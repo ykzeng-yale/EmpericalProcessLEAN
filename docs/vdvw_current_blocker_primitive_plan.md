@@ -299,6 +299,17 @@ selected-cover constructor.  It still deliberately leaves the two real source
 inputs explicit: the canonical finite-center maximal event and the canonical
 `Phi(x)=x` comparison under `vdVWProductMeasure vdVWRademacherLaw n`.
 
+2026-05-11 first-level canonical Rademacher `Phi(x)=x` route:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalRademacher_countable_hphi_id_firstLevel`.
+This chooses the half-radius positive selected covering cardinality and the
+countable first-level proof-carrying cover internally, then feeds the
+displayed-beta fixed-`M` stochastic-entropy consumer.  The canonical
+Rademacher `hphi_id` branch now exposes only the two intended source inputs:
+the finite-center maximal event for that canonical cover and the canonical
+`Phi(x)=x` comparison.  It no longer exposes raw selected-cover construction
+or selected-cardinality comparison.
+
 2026-05-08 product-fiber beta bridge: `Theorem243.lean` now proves the
 measure-theoretic source handoff
 `measure_mul_le_prod_measure_of_fiber_lower_bound`, its outer-probability form

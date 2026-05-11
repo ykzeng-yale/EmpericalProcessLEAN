@@ -2204,6 +2204,9 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_canonicalRademacher_hphi_id`,
    and
    `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`.
+   The canonical Rademacher `Phi(x)=x` lane now also has the first-level
+   selected-cover fixed-`M` source endpoint
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalRademacher_countable_hphi_id_firstLevel`.
    The product/Fubini beta-scaling step is now isolated as
    `measure_mul_le_prod_measure_of_fiber_lower_bound`,
    `VdVWOuterProbability_mul_left_le_of_product_fiber_lower_bound`, and
