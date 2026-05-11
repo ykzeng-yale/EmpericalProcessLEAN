@@ -8893,6 +8893,14 @@ measure of the complement of
 sub-Gaussian union tail at
 `vdVWTheorem243FiniteNetHoeffdingUpper`.  This closes the fixed-sample tail
 piece needed for both original and ghost sign fibers.
+The canonical Rademacher-product specializations are now also available as
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_vdVWRademacher`,
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_vdVWRademacher`,
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_neg_vdVWRademacher`,
+and
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_neg_vdVWRademacher`,
+so later selected-cover failure-tail lifts no longer have to restate the
+canonical independence/sub-Gaussian sign setup.
 
 2026-05-09 product-fiber finite-center failure upper lifts:
 `Theorem243.lean` now proves the reusable upper disintegration lemma

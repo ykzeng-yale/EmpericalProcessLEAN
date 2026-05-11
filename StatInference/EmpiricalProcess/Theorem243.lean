@@ -15827,6 +15827,171 @@ theorem vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le
           rfl
 
 /--
+Canonical Rademacher-product specialization of the fixed-sample finite-center
+Hoeffding failure tail.
+-/
+theorem vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_vdVWRademacher
+    {Observation : Type v} {Index : Type w} {n cardinality : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M coverRadius : ℝ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) coverRadius cardinality)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M) :
+    (vdVWProductMeasure vdVWRademacherLaw n).real
+      {signSample : SampleAt ℝ n |
+        ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M) cover.center
+          signSample M} ≤
+      vdVWTheorem243FiniteCenterHoeffdingFailureTail cardinality n M := by
+  simpa [vdVWTheorem243FiniteCenterHoeffdingFailureTail] using
+    (vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le
+      (μ := vdVWProductMeasure vdVWRademacherLaw n)
+      (sample := sample) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (cover := cover) hindexClass_nonempty henvelope hM_pos
+      (fun i : Fin n => fun signSample : SampleAt ℝ n => signSample i)
+      (iIndepFun_vdVWProductMeasure_vdVWRademacher n)
+      (fun i : Fin n =>
+        hasSubgaussianMGF_vdVWProductMeasure_eval_vdVWRademacher i))
+
+/--
+Measure-valued canonical Rademacher finite-center failure-tail bound.
+-/
+theorem vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_vdVWRademacher
+    {Observation : Type v} {Index : Type w} {n cardinality : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M coverRadius : ℝ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) coverRadius cardinality)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M) :
+    (vdVWProductMeasure vdVWRademacherLaw n)
+      {signSample : SampleAt ℝ n |
+        ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M) cover.center
+          signSample M} ≤
+      ENNReal.ofReal
+        (vdVWTheorem243FiniteCenterHoeffdingFailureTail cardinality n M) := by
+  let μ : Measure (SampleAt ℝ n) := vdVWProductMeasure vdVWRademacherLaw n
+  let failure : Set (SampleAt ℝ n) :=
+    {signSample : SampleAt ℝ n |
+      ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+        (vdVWTruncatedClassFun classFun envelope M) cover.center signSample M}
+  have hreal :
+      μ.real failure ≤
+        vdVWTheorem243FiniteCenterHoeffdingFailureTail cardinality n M := by
+    simpa [μ, failure] using
+      (vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_vdVWRademacher
+        (sample := sample) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (cover := cover) hindexClass_nonempty henvelope hM_pos)
+  calc
+    μ failure = ENNReal.ofReal (μ.real failure) := by
+      rw [ofReal_measureReal]
+    _ ≤ ENNReal.ofReal
+        (vdVWTheorem243FiniteCenterHoeffdingFailureTail cardinality n M) :=
+      ENNReal.ofReal_le_ofReal hreal
+
+/--
+Canonical Rademacher-product specialization for the negated-sign
+finite-center Hoeffding failure tail.
+-/
+theorem vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_neg_vdVWRademacher
+    {Observation : Type v} {Index : Type w} {n cardinality : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M coverRadius : ℝ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) coverRadius cardinality)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M) :
+    (vdVWProductMeasure vdVWRademacherLaw n).real
+      {signSample : SampleAt ℝ n |
+        ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M) cover.center
+          (fun i : Fin n => -signSample i) M} ≤
+      vdVWTheorem243FiniteCenterHoeffdingFailureTail cardinality n M := by
+  let signMeasure : Measure (SampleAt ℝ n) :=
+    vdVWProductMeasure vdVWRademacherLaw n
+  have hindep_neg :
+      iIndepFun
+        (fun i : Fin n => fun signSample : SampleAt ℝ n =>
+          -signSample i) signMeasure := by
+    have h :=
+      (iIndepFun_vdVWProductMeasure_vdVWRademacher n).comp
+        (fun _ : Fin n => fun x : ℝ => -x)
+        (fun _ : Fin n => measurable_id.neg)
+    simpa [signMeasure, Function.comp_def] using h
+  have hsubG_neg :
+      ∀ i : Fin n,
+        HasSubgaussianMGF
+          (fun signSample : SampleAt ℝ n => -signSample i) 1
+          signMeasure := by
+    intro i
+    simpa [signMeasure] using
+      (hasSubgaussianMGF_vdVWProductMeasure_eval_vdVWRademacher i).neg
+  simpa [signMeasure, vdVWTheorem243FiniteCenterHoeffdingFailureTail] using
+    (vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le
+      (μ := signMeasure)
+      (sample := sample) (indexClass := indexClass)
+      (classFun := classFun) (envelope := envelope) (M := M)
+      (cover := cover) hindexClass_nonempty henvelope hM_pos
+      (fun i : Fin n => fun signSample : SampleAt ℝ n => -signSample i)
+      hindep_neg hsubG_neg)
+
+/--
+Measure-valued negated-sign canonical Rademacher finite-center failure-tail
+bound.
+-/
+theorem vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_neg_vdVWRademacher
+    {Observation : Type v} {Index : Type w} {n cardinality : ℕ}
+    {sample : SampleAt Observation n}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M coverRadius : ℝ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass
+        (vdVWTruncatedClassFun classFun envelope M) coverRadius cardinality)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M) :
+    (vdVWProductMeasure vdVWRademacherLaw n)
+      {signSample : SampleAt ℝ n |
+        ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M) cover.center
+          (fun i : Fin n => -signSample i) M} ≤
+      ENNReal.ofReal
+        (vdVWTheorem243FiniteCenterHoeffdingFailureTail cardinality n M) := by
+  let μ : Measure (SampleAt ℝ n) := vdVWProductMeasure vdVWRademacherLaw n
+  let failure : Set (SampleAt ℝ n) :=
+    {signSample : SampleAt ℝ n |
+      ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+        (vdVWTruncatedClassFun classFun envelope M) cover.center
+        (fun i : Fin n => -signSample i) M}
+  have hreal :
+      μ.real failure ≤
+        vdVWTheorem243FiniteCenterHoeffdingFailureTail cardinality n M := by
+    simpa [μ, failure] using
+      (vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_neg_vdVWRademacher
+        (sample := sample) (indexClass := indexClass)
+        (classFun := classFun) (envelope := envelope) (M := M)
+        (cover := cover) hindexClass_nonempty henvelope hM_pos)
+  calc
+    μ failure = ENNReal.ofReal (μ.real failure) := by
+      rw [ofReal_measureReal]
+    _ ≤ ENNReal.ofReal
+        (vdVWTheorem243FiniteCenterHoeffdingFailureTail cardinality n M) :=
+      ENNReal.ofReal_le_ofReal hreal
+
+/--
 The finite-center Hoeffding/maximal predicate is stable under simultaneous
 permutation of sample coordinates and Rademacher signs.
 -/

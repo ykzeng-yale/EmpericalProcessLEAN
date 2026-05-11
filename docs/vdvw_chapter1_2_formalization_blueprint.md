@@ -2416,6 +2416,14 @@ above, so they do not change the theorem-level dashboard counts.
    product-fiber upper-bound lift, and additive-error product-pair comparison
    wrappers.  The fixed-sample tail is
    `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le`; the
+   canonical ordinary and negated-sign product versions are
+   `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_vdVWRademacher`,
+   `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_vdVWRademacher`,
+   `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_neg_vdVWRademacher`,
+   and
+   `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_neg_vdVWRademacher`;
+   these avoid exposing the canonical sign independence/sub-Gaussian setup in
+   later selected-cover source routes.  The
    reusable Fubini upper lemma is `prod_measure_le_lintegral_fiber_bound`; and
    the selected-cover product-pair lifts are
    `VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`

@@ -308,7 +308,15 @@ The explicit original/ghost finite-center failure probabilities are now split
 through the fixed-sample Rademacher finite-center Hoeffding tail, a
 product-fiber upper-bound lift, and additive-error product-pair comparison
 wrappers.  The fixed-sample tail is
-`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le`; the generic
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le`; the
+canonical Rademacher-product wrappers are
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_vdVWRademacher`,
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_vdVWRademacher`,
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_neg_vdVWRademacher`,
+and
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_neg_vdVWRademacher`;
+these cover ordinary and negated signs without reopening the canonical
+independence/sub-Gaussian bookkeeping.  The generic
 upper disintegration lemma is `prod_measure_le_lintegral_fiber_bound`; and the
 random selected-cover failure lifts are
 `VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`
