@@ -1449,6 +1449,60 @@ theorem VdVWOuterExpectation_prod_eq_lintegral_lintegral_of_measurable
     hT.aemeasurable
 
 /--
+VdV&W Lemma 1.2.6, nonnegative measurable Fubini chain.
+
+For a measurable nonnegative product integrand the VdV&W inner expectation,
+repeated inner expectation, repeated outer expectation, and joint outer
+expectation all reduce to the same iterated `lintegral`; this gives the
+textbook inequality chain in this measurable layer.
+-/
+theorem vdVW126_inner_repeatedInner_repeatedOuter_outer_chain_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite ν]
+    {T : Ω × S -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWInnerExpectation (μ.prod ν) T ≤
+        VdVWInnerExpectation μ
+          (fun ω => VdVWInnerExpectation ν (fun s => T (ω, s))) ∧
+      VdVWInnerExpectation μ
+          (fun ω => VdVWInnerExpectation ν (fun s => T (ω, s))) ≤
+        VdVWOuterExpectation μ
+          (fun ω => VdVWOuterExpectation ν (fun s => T (ω, s))) ∧
+      VdVWOuterExpectation μ
+          (fun ω => VdVWOuterExpectation ν (fun s => T (ω, s))) ≤
+        VdVWOuterExpectation (μ.prod ν) T := by
+  let I : ℝ≥0∞ := ∫⁻ ω, ∫⁻ s, T (ω, s) ∂ν ∂μ
+  have hsection : ∀ ω, Measurable fun s => T (ω, s) := by
+    intro ω
+    exact hT.comp (measurable_const.prodMk measurable_id)
+  have hT_uncurry : Measurable (Function.uncurry fun ω s => T (ω, s)) := by
+    simpa [Function.uncurry] using hT
+  have hsection_integral_meas : Measurable fun ω => ∫⁻ s, T (ω, s) ∂ν :=
+    hT_uncurry.lintegral_prod_right
+  have hjoint_inner :
+      VdVWInnerExpectation (μ.prod ν) T = I := by
+    rw [VdVWInnerExpectation_eq_lintegral_of_measurable hT]
+    exact MeasureTheory.lintegral_prod T hT.aemeasurable
+  have hrepeated_inner :
+      VdVWInnerExpectation μ
+          (fun ω => VdVWInnerExpectation ν (fun s => T (ω, s))) = I := by
+    simp_rw [VdVWInnerExpectation_eq_lintegral_of_measurable (hsection _)]
+    exact VdVWInnerExpectation_eq_lintegral_of_measurable hsection_integral_meas
+  have hrepeated_outer :
+      VdVWOuterExpectation μ
+          (fun ω => VdVWOuterExpectation ν (fun s => T (ω, s))) = I := by
+    simp_rw [VdVWOuterExpectation_eq_lintegral_of_measurable (hsection _)]
+    exact VdVWOuterExpectation_eq_lintegral_of_measurable hsection_integral_meas
+  have hjoint_outer :
+      VdVWOuterExpectation (μ.prod ν) T = I :=
+    VdVWOuterExpectation_prod_eq_lintegral_lintegral_of_measurable hT
+  exact
+    ⟨by rw [hjoint_inner, hrepeated_inner],
+      by
+        constructor
+        · rw [hrepeated_inner, hrepeated_outer]
+        · rw [hrepeated_outer, hjoint_outer]⟩
+
+/--
 Symmetric product-space Tonelli bridge for VdV&W nonnegative outer
 expectation.
 -/

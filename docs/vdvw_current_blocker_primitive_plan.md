@@ -1692,6 +1692,15 @@ These close the measure-level Tonelli/Fubini bridge for nonnegative
 a.e.-measurable product integrands; the exact VdV&W arbitrary-map/perfect-map
 product-cover statements remain separate blockers.
 
+2026-05-11 Lemma 1.2.6 measurable Fubini-chain follow-up:
+`vdVW126_inner_repeatedInner_repeatedOuter_outer_chain_of_measurable` now
+states the textbook inner/repeated-inner/repeated-outer/outer inequality chain
+for nonnegative measurable product integrands.  The proof reduces every term
+to the same iterated `lintegral` using the existing VdV&W outer/inner
+expectation interfaces and mathlib Tonelli.  This closes the measurable
+nonnegative source layer for Lemma 1.2.6 while leaving the exact arbitrary-map,
+signed extended-real, and perfect-map variants open.
+
 2026-05-05 dominated common-cover follow-up: search found mathlib absolute
 continuity transport through `Measure.AbsolutelyContinuous.ae_le` and local
 `VdVWMeasurableCover.ofAEMeasurable`, but no VdV&W-named dominated common
