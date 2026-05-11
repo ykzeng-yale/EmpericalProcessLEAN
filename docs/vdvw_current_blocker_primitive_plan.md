@@ -6281,6 +6281,11 @@ conclusion bundle through
 `VdVWTheorem243TextbookAlignedConclusion.of_fullSubgraphSideConditions`, so
 the selected entropy/finite-net mean route has a compact final-output
 registration point.
+The selected entropy-to-finite-net-mean primitive itself now has the direct
+conclusion-bundle constructor
+`VdVWTheorem243TextbookAlignedConclusion.of_selectedEntropyFiniteNetMeanPrimitive`.
+This is the theorem-facing endpoint a future proof of the missing stochastic
+selected-entropy mean step should consume.
 
 2026-05-05 follow-up: the canonical varying-domain form of the book random
 entropy hypothesis is now named.  The new structure
