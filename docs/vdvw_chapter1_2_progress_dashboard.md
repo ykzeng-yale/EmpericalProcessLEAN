@@ -4238,3 +4238,8 @@ and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalRademacher_countable_firstLevel`.
 The active probability-side gap is the sign-only canonical Rademacher
 selected-net beta lower bound for the first-level selected cover.
+
+That sign-only source now splits into primitive probability pieces through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_ae_finiteCenter_countable_firstLevel`.
+The remaining inputs are the Rademacher bad-event lower bound and a.e.
+finite-center Hoeffding support for the canonical first-level selected cover.

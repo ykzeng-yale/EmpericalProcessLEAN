@@ -9556,3 +9556,13 @@ selected-net product-fiber lower bound directly, or consume the sign-only
 canonical Rademacher fiber lower bound through the compiled ghost-fiber
 reduction.  The remaining source input is therefore the genuine sign-only
 canonical Rademacher selected-net beta lower bound for the first-level cover.
+
+2026-05-11 first-level Rademacher bad-event split source:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_ae_finiteCenter_countable_firstLevel`.
+This sharpens the canonical sign-only first-level endpoint: instead of asking
+for the whole canonical Rademacher selected-net fiber lower bound, it consumes
+the raw Rademacher bad-event lower bound together with a.e. finite-center
+Hoeffding support for the canonical first-level selected cover.  The remaining
+probability work is now the Rademacher bad-event mass and finite-center
+support or tail control.

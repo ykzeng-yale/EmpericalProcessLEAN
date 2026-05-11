@@ -3323,6 +3323,13 @@ remove the pair-difference event from this source surface.  The theorem-facing
 probability input can now be stated as the sign-only canonical Rademacher
 selected-net beta lower bound for the countable first-level cover.
 
+The sign-only first-level endpoint now has a split-source form:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_ae_finiteCenter_countable_firstLevel`.
+It reduces the canonical Rademacher selected-net beta lower bound to the raw
+Rademacher bad-event mass plus a.e. finite-center Hoeffding support for the
+canonical first-level selected cover.  This is the current theorem-facing
+probability boundary before switching to failure-tail control.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
