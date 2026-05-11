@@ -9313,3 +9313,17 @@ finite-center a.e. support for the selected cover.  The blocker is therefore
 not endpoint assembly anymore; it is deciding and proving those probability
 inputs, or pivoting to the integrated product-pair route where fixed-fiber
 sign-swap is too strong.
+
+2026-05-11 canonical first-level fixed-fiber selected-cover route:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+This chooses the quarter-radius positive selected covering cardinality and
+the countable first-level proof-carrying cover internally, proves the
+selected-cardinality comparison against the entropy envelope, and discharges
+concrete ghost/Rademacher selected-net event measurability from the compiled
+first-level selector-coordinate theorem.  The fixed-fiber branch now exposes
+only the probability-side assumptions for the canonical cover: fixed-sample
+pair-sub sign-swap transport plus original and ghost finite-center a.e.
+support.  The remaining decision is therefore mathematical, not selector
+plumbing: prove those fixed-fiber inputs if valid, or pivot to the integrated
+product-pair route where fixed-original sign-swap is too strong.

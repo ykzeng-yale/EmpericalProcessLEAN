@@ -3137,6 +3137,15 @@ sign-swap transport, and original/ghost finite-center a.e. support.  Do not
 add more endpoint wrappers before making a mathematical decision on those
 inputs or pivoting to the integrated product-pair source route.
 
+The canonical first-level selected-cover version of this fixed-fiber route is
+now compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel`.
+It chooses the quarter-radius positive selected-cover cardinality and
+countable first-level cover internally, proves event measurability internally,
+and leaves only fixed-sample sign-swap transport plus original/ghost
+finite-center a.e. support for the canonical cover.  The fixed-fiber blocker is
+therefore no longer selector or concrete-event plumbing.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
