@@ -8947,6 +8947,12 @@ The inverse-square replacement is now compiled through
 Thus this branch can use an explicit inverse-square selected-cardinality
 lintegral hypothesis instead of the raw displayed failure-tail convergence
 input.
+The deterministic selected-cardinality lower-growth bridge is also compiled as
+`vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge`
+and the canonical truncated quarter-radius fixed-`M` wrapper
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_cardinality_ge`.
+This supplies the inverse-square selected-cardinality lintegral from an
+eventual deterministic lower bound on the random selected cover cardinalities.
 
 2026-05-09 sign-first selected-center failure-event measurability:
 `Theorem243.lean` now proves the sign-first product-pair wrappers

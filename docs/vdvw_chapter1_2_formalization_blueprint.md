@@ -2453,6 +2453,13 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_invSq_lintegral`,
    replacing raw displayed failure-tail convergence by explicit inverse-square
    selected-cardinality lintegral convergence.
+   The deterministic selected-cardinality lower-growth route is now compiled as
+   `vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge`
+   and
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_cardinality_ge`,
+   deriving that lintegral convergence from an eventual deterministic lower
+   bound on the selected cover cardinalities whose lower bound tends to
+   infinity.
    The sign-first finite-center failure-event measurability layer is compiled
    as
    `measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt`,
