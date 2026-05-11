@@ -3303,6 +3303,16 @@ coordinate measurability bridges.  The next probability-side theorem can now
 be stated directly against the canonical first-level selected cover in either
 restricted-a.e. or base-a.e. conditional form.
 
+Those first-level a.e. source surfaces now feed the fixed-`M`
+stochastic-entropy endpoint through
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae_imp`.
+The shared
+`..._of_displayedBeta_countable_firstLevel_primitive` theorem packages the
+canonical first-level half-radius selected-cardinality comparison, so later
+source constructors can reuse the same fixed-`M` handoff.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

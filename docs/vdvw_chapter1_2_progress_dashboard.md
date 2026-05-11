@@ -4222,3 +4222,10 @@ and
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_ae_imp_countable`.
 The active probability-side gap can therefore be phrased directly for the
 canonical countable first-level selected empirical cover.
+
+The fixed-`M` handoff for that source shape is now compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae_imp`,
+with a shared `..._firstLevel_primitive` helper carrying the selected
+half-radius cardinality comparison.

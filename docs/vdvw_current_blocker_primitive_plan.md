@@ -9533,3 +9533,14 @@ source surfaces.  The remaining source theorem can now target the canonical
 first-level selected cover directly; no additional first-level selected-cover
 plumbing is needed before proving the pair-difference fiber mass or replacing
 it with a coefficient-correct product-pair/sign-swap theorem.
+
+2026-05-11 first-level a.e. displayed-beta fixed-`M` handoff:
+`Theorem243.lean` now also proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_primitive`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae_imp`.
+The canonical first-level restricted-a.e. and base-a.e. pair-difference
+source shapes now feed the fixed-`M` stochastic-entropy endpoint directly,
+while the shared primitive keeps the selected half-radius cardinality
+comparison in one place.
