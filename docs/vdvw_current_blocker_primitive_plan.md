@@ -6263,6 +6263,20 @@ textbook theorem: the remaining source gaps are the arbitrary
 `P`-measurable/asymptotic-measurable class layer and the book random
 entropy-to-current selected finite-net/full-subgraph bridge.
 
+2026-05-11 follow-up: the conclusion bundle now has a generic source-bridge
+constructor,
+`VdVWTheorem243TextbookAlignedConclusion.of_centered_untruncated_convergesInOuterProbabilityConst_zero_countable_integrable`.
+Any future entropy, VC/Sauer, selected finite-net, or structural-cardinality
+argument that proves the centered untruncated finite-product outer-probability
+convergence endpoint can feed this constructor directly.  Under the standard
+countable coordinate-measurable integrable-envelope route it supplies
+`P`-measurability, finite outer envelope expectation, outer-probability GC,
+outer-a.s. GC via the proved Lemma 2.4.5 reverse/cofiltration consumer, local
+`P`-GC, in-mean centered-supremum convergence, and the Lemma 2.4.5 a.s.
+centered-supremum conclusion.  The next genuine source work should therefore
+prove a new centered convergence input from the book random entropy or a real
+structural cardinality theorem, not expand final conjunctions by hand.
+
 2026-05-05 follow-up: the canonical varying-domain form of the book random
 entropy hypothesis is now named.  The new structure
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM` records, for

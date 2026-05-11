@@ -67336,6 +67336,124 @@ theorem of_conjunction
   lemma245_centeredSupremum_ae_tendsto_zero := h.2.2.2.2.2.2
 
 /--
+Centered untruncated outer-probability convergence is enough to build the full
+textbook-facing Theorem 2.4.3/Lemma 2.4.5 conclusion bundle under the standard
+countable coordinate-measurable integrable-envelope route.
+
+This is the source-bridge registration point for future entropy or structural
+cardinality arguments: once they prove the centered finite-product convergence
+endpoint, the `P`-measurability, finite outer envelope expectation,
+outer-probability GC, outer-a.s. GC via Lemma 2.4.5, local `P`-GC, and in-mean
+conclusions follow from existing compiled primitives.
+-/
+theorem of_centered_untruncated_convergesInOuterProbabilityConst_zero_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Countable Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hcentered :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ)) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  have hcount : indexClass.Countable :=
+    Set.Countable.mono (fun index _hindex => Set.mem_univ index) Set.countable_univ
+  have hbdd_centered :
+      ∀ n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample) := by
+    intro n sample
+    exact
+      bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        henvelope hclass henv_integrable
+  have houterProbability :
+      VdVWOuterProbabilityPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) :=
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_uniformDeviationConstOn_canonical
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        hbdd_centered hcentered)
+  have hinMean :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) :=
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_integrable_envelope
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) henvelope hclass henv henv_integrable hcentered
+  have hlemmaProb :
+      VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+        (fun n sequence =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (fun _ => (0 : ℝ)) :=
+    VdVWConvergesInOuterProbability_nat_succ
+      (VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct
+        (P := P) (indexClass := indexClass) (classFun := classFun) hcentered)
+  have hlemma :
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0) :=
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_countable_integrable_of_outerProbability_invNat_geometric
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable hlemmaProb
+  have houterAs :
+      VdVWOuterAlmostSurePGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) := by
+    have hpath :
+        AlmostSureUniformDeviationTendstoZeroOn
+          (vdVWInfiniteProductMeasure P) indexClass
+          (fun index => populationRiskOfFunction P (classFun index))
+          (fun sequence sampleSize index =>
+            empiricalAverage
+              (samplePath (fun i sequence => sequence i) sequence sampleSize)
+              (classFun index)) := by
+      filter_upwards [hlemma] with sequence hsequence
+      exact
+        UniformDeviationTendstoZeroOn_of_vdVWLemma245CenteredEmpiricalSupremum_tendsto_zero_canonical
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) henvelope hclass henv_integrable hsequence
+    simpa [VdVWOuterAlmostSurePGlivenkoCantelliClass] using
+      (vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_almostSure hpath)
+  exact
+    { pMeasurable :=
+        VdVWPMeasurableClass.of_countable_of_measurable (P := P) hcount hclass
+      envelope_outerExpectation_lt_top :=
+        henvelope.outerExpectation_lt_top_of_measurable_integrable henv henv_integrable
+      outerProbability_pGlivenkoCantelli := houterProbability
+      outerAlmostSure_pGlivenkoCantelli := houterAs
+      pGlivenkoCantelli :=
+        vdVWPGlivenkoCantelliClass_of_outerProbability houterProbability
+      centeredSupremum_inMean_tendsto_zero := hinMean
+      lemma245_centeredSupremum_ae_tendsto_zero := hlemma }
+
+/--
 Current full-subgraph countable/integrable-envelope route, repackaged in the
 single textbook-facing conclusion shape.
 -/
