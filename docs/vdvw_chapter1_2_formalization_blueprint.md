@@ -3573,6 +3573,14 @@ input surface, not a displayed-beta mass proof: the averaged sign/ghost or
 stronger structural tail/cardinality source theorem is still the main missing
 mathematical step.
 
+The same one-support product-pair lane is now lifted through untruncation:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`.
+This is a theorem-layer endpoint, not a new probability source.  It says that
+per-truncation stochastic entropy plus one canonical unnegated sign-sample
+finite-center support hypothesis at each `M` is enough for the untruncated
+centered convergence conclusion, because sign-negation invariance supplies
+the ghost support internally.
+
 The displayed-beta first-level route now also has sign-sample finite-center
 support endpoints:
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers_of_signSample_finiteCenter`,

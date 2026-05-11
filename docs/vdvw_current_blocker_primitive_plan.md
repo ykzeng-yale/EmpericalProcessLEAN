@@ -9897,6 +9897,18 @@ theorem plus the stochastic-entropy/log-cardinality input; the displayed-beta
 probability-mass blocker itself is still not closed by this support
 unification.
 
+2026-05-10 untruncated product-pair unnegated support endpoint:
+`Theorem243.lean` now adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`.
+This lifts the fixed-`M` unnegated-support product-pair Chebyshev wrapper
+through the large-`M` envelope-tail handoff.  The honest product-pair lane can
+now state its untruncated centered convergence endpoint with one per-`M`
+unnegated sign-sample finite-center support hypothesis, plus the existing
+per-truncation stochastic entropy inputs.  The next source theorem on this
+lane is correspondingly narrower: prove that single canonical selected-cover
+support fact, and separately close the real averaged sign/ghost probability
+mass step or supply a stronger structural tail/cardinality condition.
+
 2026-05-10 displayed-beta sign-sample finite-center support unification:
 `Theorem243.lean` now adds
 `ae_vdVWProductMeasure_prod_rademacher_finiteCenter_fixed_sample_of_ae_sign`,

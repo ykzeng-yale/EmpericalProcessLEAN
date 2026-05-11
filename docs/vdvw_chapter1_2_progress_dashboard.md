@@ -4480,6 +4480,16 @@ selected-cover finite-center support theorem plus the existing stochastic
 entropy/log-cardinality input; the displayed-beta probability-mass source
 blocker remains open.
 
+The unnegated product-pair support lane now reaches the untruncated centered
+endpoint:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`.
+This packages the fixed-`M` unnegated-support theorem with the existing
+large-`M` handoff.  The active blocker on the honest product-pair lane is no
+longer duplicated original/ghost finite-center support plumbing; it is the
+single unnegated sign-sample support theorem for the canonical quarter-radius
+selected cover, together with the still-open averaged sign/ghost probability
+mass or structural tail/cardinality source.
+
 The canonical displayed-beta first-level route now has the same support
 unification.  `Theorem243.lean` adds product/Fubini support lifts
 `ae_vdVWProductMeasure_prod_rademacher_finiteCenter_fixed_sample_of_ae_sign`
