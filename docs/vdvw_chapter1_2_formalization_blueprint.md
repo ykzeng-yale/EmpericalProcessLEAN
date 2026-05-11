@@ -3082,6 +3082,10 @@ The large-`M` companion theorem
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`
 packages that fixed-`M` route into the untruncated centered convergence target
 under the standard envelope-tail and bounded-truncation assumptions.
+It is now registered at the final conclusion layer as
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_selected_truncated_quarterRadius_firstLevel_unneg`,
+so the same source assumptions directly imply the current
+`VdVWTheorem243TextbookAlignedConclusion` bundle.
 
 The displayed Chebyshev-beta source constructor now has the same canonical
 first-level cover specialization:

@@ -4045,6 +4045,10 @@ versions.
 The corresponding untruncated centered convergence endpoint is also compiled
 as
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`.
+This route now has a direct final-bundle consumer,
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_selected_truncated_quarterRadius_firstLevel_unneg`,
+which packages the product-pair source assumptions into the current
+textbook-aligned conclusion record.
 
 The displayed-beta product-fiber branch now has the analogous canonical
 first-level selected-cover endpoint:
