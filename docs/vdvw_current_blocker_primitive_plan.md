@@ -1890,16 +1890,30 @@ step is the scale-by-scale intersection that makes the finite ball covers
 simultaneously totally bounded while preserving mass up to the target
 tolerance.
 
+2026-05-11 Lemma 1.3.2 separable-to-pre-tight follow-up:
+`WeakConvergence.lean` now closes that scale-by-scale intersection step.  The
+bridge
+`VdVWProbabilityMeasureSeparable.exists_iInter_finitePrefix_ball_cover_measure_compl_le`
+chooses finite high-mass covers at reciprocal radii with geometric ENNReal
+tolerances, intersects those covers, proves total boundedness by
+`Metric.totallyBounded_iff`, and controls the complement by countable
+subadditivity.  This yields
+`VdVWProbabilityMeasureSeparable.preTight` and
+`vdVW132_probabilityMeasure_preTight_of_separable`, and the combined wrapper
+`vdVW132_probabilityMeasure_preTight_iff_separable`, so the local
+pre-tight/separable equivalence is compiled under the current countably
+generated Borel pseudometric hypotheses.
+
 2026-05-05 tightness component follow-up: the Chapter 1 weak-convergence file
 now has the VdV&W 1.3.2-named tightness component
 `vdVW132_complete_separable_probabilityMeasure_tight`, reusing the compiled
 `vdVWProbabilityMeasuresTight_singleton` / mathlib `IsTightMeasureSet`
 foundation.  This proves the complete separable metric-type probability
 measure tightness direction.  The full VdV&W 1.3.2 equivalence between
-pre-tightness and separability, the complete-space equivalence with tightness,
-and the Polish-measure formulation still require local definitions for
-pre-tight/separable/Polish probability measures before an exact theorem can be
-claimed.
+pre-tightness and separability is now available at the local measure level;
+the complete-space equivalence with tightness and the Polish-measure
+formulation still require the remaining exact theorem packaging before an
+exact textbook theorem can be claimed.
 
 2026-05-05 product Borel-space follow-up: the empirical-process
 finite-dimensional file now has the VdV&W 1.4.1 wrapper

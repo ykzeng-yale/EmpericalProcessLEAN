@@ -4037,6 +4037,127 @@ theorem vdVW132_probabilityMeasure_exists_finitePrefix_ball_cover_measure_compl_
   hμ.exists_finitePrefix_ball_cover_measure_compl_le hr hε
 
 /--
+Intersecting finite high-mass ball covers over all reciprocal scales gives a
+measurable totally bounded set whose complement has arbitrarily small mass.
+-/
+theorem VdVWProbabilityMeasureSeparable.exists_iInter_finitePrefix_ball_cover_measure_compl_le
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasureSeparable μ)
+    {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ c : ℕ -> ℕ -> S, ∃ N : ℕ -> ℕ,
+      let G : ℕ -> Set S :=
+        fun m => ⋃ n, ⋃ _ : n ≤ N m,
+          Metric.ball (c m n) (((m : ℝ) + 1)⁻¹)
+      MeasurableSet (⋂ m, G m) ∧
+        TotallyBounded (⋂ m, G m) ∧
+        ((μ : ProbabilityMeasure S) : Measure S) ((⋂ m, G m)ᶜ) ≤ ε := by
+  classical
+  have hchoose :
+      ∀ m : ℕ, ∃ c : ℕ -> S, ∃ N : ℕ,
+        ((μ : ProbabilityMeasure S) : Measure S)
+          ((⋃ n, ⋃ _ : n ≤ N,
+            Metric.ball (c n) (((m : ℝ) + 1)⁻¹))ᶜ) ≤
+          ε * (2 : ℝ≥0∞) ^ (-(m + 1 : ℤ)) := by
+    intro m
+    have hr : 0 < (((m : ℝ) + 1)⁻¹) := by positivity
+    have htol : 0 < ε * (2 : ℝ≥0∞) ^ (-(m + 1 : ℤ)) := by
+      exact ENNReal.mul_pos_iff.2
+        ⟨hε, ENNReal.zpow_pos (by simp) (by simp) (-(m + 1 : ℤ))⟩
+    exact hμ.exists_finitePrefix_ball_cover_measure_compl_le hr htol
+  choose c N hcover using hchoose
+  let G : ℕ -> Set S :=
+    fun m => ⋃ n, ⋃ _ : n ≤ N m,
+      Metric.ball (c m n) (((m : ℝ) + 1)⁻¹)
+  refine ⟨c, N, ?_⟩
+  have hG_meas : ∀ m, MeasurableSet (G m) := by
+    intro m
+    exact
+      MeasurableSet.iUnion fun n =>
+        MeasurableSet.iUnion fun _ => Metric.isOpen_ball.measurableSet
+  have hmeas : MeasurableSet (⋂ m, G m) :=
+    MeasurableSet.iInter hG_meas
+  have htb : TotallyBounded (⋂ m, G m) := by
+    refine Metric.totallyBounded_iff.mpr ?_
+    intro δ hδ
+    rcases Real.exists_nat_pos_inv_lt hδ with ⟨m, hm_pos, hm_lt⟩
+    refine ⟨(c m) '' Set.Iic (N m), (Set.finite_Iic _).image _, ?_⟩
+    intro x hx
+    have hxG : x ∈ G m := Set.mem_iInter.1 hx m
+    rcases Set.mem_iUnion.1 hxG with ⟨n, hn⟩
+    rcases Set.mem_iUnion.1 hn with ⟨hnN, hxball⟩
+    refine Set.mem_iUnion.2 ⟨c m n, ?_⟩
+    refine Set.mem_iUnion.2 ⟨?_, ?_⟩
+    · exact ⟨n, hnN, rfl⟩
+    · have hm_pos_real : 0 < (m : ℝ) := by exact_mod_cast hm_pos
+      have hscale_le : (((m : ℝ) + 1)⁻¹) ≤ (m : ℝ)⁻¹ := by
+        simpa [one_div] using
+          one_div_le_one_div_of_le hm_pos_real
+            (by linarith : (m : ℝ) ≤ (m : ℝ) + 1)
+      exact Metric.ball_subset_ball (hscale_le.trans hm_lt.le) hxball
+  have hsum :
+      (∑' m : ℕ, ε * (2 : ℝ≥0∞) ^ (-(m + 1 : ℤ))) = ε := by
+    rw [ENNReal.tsum_mul_left]
+    nth_rw 2 [← mul_one (a := ε)]
+    congr
+    ring_nf
+    exact ENNReal.tsum_two_zpow_neg_add_one
+  have hmeasure :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋂ m, G m)ᶜ) ≤ ε := by
+    calc
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋂ m, G m)ᶜ)
+          = ((μ : ProbabilityMeasure S) : Measure S) (⋃ m, (G m)ᶜ) := by
+            rw [Set.compl_iInter]
+      _ ≤ ∑' m, ((μ : ProbabilityMeasure S) : Measure S) ((G m)ᶜ) :=
+          measure_iUnion_le _
+      _ ≤ ∑' m : ℕ, ε * (2 : ℝ≥0∞) ^ (-(m + 1 : ℤ)) :=
+          ENNReal.tsum_le_tsum hcover
+      _ = ε := hsum
+  exact ⟨hmeas, htb, hmeasure⟩
+
+/--
+VdV&W Lemma 1.3.2 separable-to-pre-tight direction for probability measures
+on Borel pseudometric spaces.
+-/
+theorem VdVWProbabilityMeasureSeparable.preTight
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasureSeparable μ) :
+    VdVWProbabilityMeasurePreTight μ := by
+  intro ε hε
+  rcases hμ.exists_iInter_finitePrefix_ball_cover_measure_compl_le hε with
+    ⟨c, N, hmeas, htb, hmeasure⟩
+  let G : ℕ -> Set S :=
+    fun m => ⋃ n, ⋃ _ : n ≤ N m,
+      Metric.ball (c m n) (((m : ℝ) + 1)⁻¹)
+  exact ⟨⋂ m, G m, hmeas, htb, hmeasure⟩
+
+/--
+VdV&W Lemma 1.3.2 separable-to-pre-tight direction.
+-/
+theorem vdVW132_probabilityMeasure_preTight_of_separable
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasureSeparable μ) :
+    VdVWProbabilityMeasurePreTight μ :=
+  hμ.preTight
+
+/--
+VdV&W Lemma 1.3.2 measure-level equivalence between pre-tightness and
+separability under the local Borel pseudometric hypotheses.
+-/
+theorem vdVW132_probabilityMeasure_preTight_iff_separable
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S} :
+    VdVWProbabilityMeasurePreTight μ ↔ VdVWProbabilityMeasureSeparable μ := by
+  constructor
+  · intro hμ
+    exact vdVW132_probabilityMeasure_separable_of_preTight hμ
+  · intro hμ
+    exact vdVW132_probabilityMeasure_preTight_of_separable hμ
+
+/--
 Measure-level asymptotic tightness of a family of probability measures along a
 filter: eventually, all measures put arbitrarily small mass outside one compact
 set.
