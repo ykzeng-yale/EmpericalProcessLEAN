@@ -8962,6 +8962,12 @@ Thus the selected-cardinality growth hypothesis may be supplied either almost
 surely on the product-pair space or almost surely under the ordinary sample
 law, with product-pair projections handled by the existing measure-preserving
 maps.
+The single-sample inverse-square lintegral inputs needed by later Rademacher
+finite-center tail routes are now compiled too:
+`vdVW_lintegral_tendsto_zero_of_eventual_ofReal_bound`,
+`vdVW_lintegral_tendsto_zero_of_eventual_ae_ofReal_bound`,
+`vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge_single`, and
+`vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_ae_cardinality_ge_single`.
 
 2026-05-09 sign-first selected-center failure-event measurability:
 `Theorem243.lean` now proves the sign-first product-pair wrappers

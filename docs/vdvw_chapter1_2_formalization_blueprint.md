@@ -2469,6 +2469,13 @@ above, so they do not change the theorem-level dashboard counts.
    The canonical route can therefore consume either product-pair a.e. lower
    growth or ordinary single-sample a.e. lower growth, with the latter lifted
    along the product-pair projection measure-preserving maps.
+   The single-sample inverse-square lintegral inputs for later Rademacher
+   finite-center tail routes are also compiled:
+   `vdVW_lintegral_tendsto_zero_of_eventual_ofReal_bound`,
+   `vdVW_lintegral_tendsto_zero_of_eventual_ae_ofReal_bound`,
+   `vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_cardinality_ge_single`,
+   and
+   `vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_ae_cardinality_ge_single`.
    The sign-first finite-center failure-event measurability layer is compiled
    as
    `measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt`,
