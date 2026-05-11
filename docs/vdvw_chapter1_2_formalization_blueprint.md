@@ -3330,6 +3330,13 @@ Rademacher bad-event mass plus a.e. finite-center Hoeffding support for the
 canonical first-level selected cover.  This is the current theorem-facing
 probability boundary before switching to failure-tail control.
 
+The finite-center side condition now has the failure-tail source version
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_failure_tail_countable`.
+It keeps the same raw Rademacher bad-event mass input but replaces a.e.
+finite-center support by a vanishing set-lintegral of
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail` over the centered bad event.
+This is the current additive-error theorem-facing boundary.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

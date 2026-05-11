@@ -4243,3 +4243,8 @@ That sign-only source now splits into primitive probability pieces through
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_ae_finiteCenter_countable_firstLevel`.
 The remaining inputs are the Rademacher bad-event lower bound and a.e.
 finite-center Hoeffding support for the canonical first-level selected cover.
+
+The finite-center support input now has an additive-error replacement:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_failure_tail_countable`
+uses a vanishing integrated finite-center failure-tail term over the centered
+bad event.

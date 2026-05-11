@@ -9566,3 +9566,13 @@ the raw Rademacher bad-event lower bound together with a.e. finite-center
 Hoeffding support for the canonical first-level selected cover.  The remaining
 probability work is now the Rademacher bad-event mass and finite-center
 support or tail control.
+
+2026-05-11 first-level Rademacher bad-event failure-tail source:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_failure_tail_countable`.
+This is the additive-error version of the first-level sign-only source: it
+keeps the raw Rademacher bad-event lower bound and replaces a.e. finite-center
+support with convergence to zero of the integrated finite-center Hoeffding
+failure-tail term over the centered bad event.  The remaining source work can
+therefore focus on proving the Rademacher bad-event mass and the failure-tail
+vanishing estimate.
