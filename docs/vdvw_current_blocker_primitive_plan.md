@@ -9478,3 +9478,20 @@ ghost-fiber reduction, so a displayed Chebyshev beta lower bound on the
 sign-only canonical Rademacher selected-net fiber is enough to feed the
 displayed-beta comparison.  The open probability input is now exposed in its
 intended sign-only form.
+
+2026-05-11 base-a.e. sign-only bad-fiber source adapter:
+`Theorem243.lean` now proves the generic restricted-measure handoffs
+`eventually_ae_restrict_of_eventually_ae_imp` and
+`eventually_ae_restrict_of_eventually_ae_imp_dep`, the centered-truncated
+bad-event measurability lemmas
+`measurableSet_vdVWWeightedClassSupremum_centered_truncated_bad_of_countable`
+and
+`VdVWTheorem243_eventually_measurableSet_centeredBad_truncated_of_countable`,
+and the Rademacher source adapters
+`VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp`
+and
+`VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp_countable`.
+Thus future Fubini or conditioning work may prove the pure Rademacher
+bad-fiber lower bound `P^n`-a.e. with a centered-bad implication, and this
+compiled bridge converts it to the restricted-a.e. shape consumed by the
+sign-only source lane.

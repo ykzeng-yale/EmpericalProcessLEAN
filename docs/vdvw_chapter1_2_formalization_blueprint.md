@@ -3266,6 +3266,13 @@ and the sign-only theorem applies the ghost-fiber reduction internally.  This
 makes the remaining beta source hypothesis precisely the sign-only canonical
 Rademacher selected-net fiber lower bound.
 
+The sign-only Rademacher bad-fiber source now has a base-measure a.e. adapter:
+`VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp`
+and its countable version turn a `P^n`-a.e. implication on the centered-bad
+event into the restricted-a.e. source shape.  Countable centered-bad
+measurability is discharged internally.  The remaining probability theorem is
+therefore allowed to be proved in the more natural base-a.e. conditional form.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

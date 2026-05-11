@@ -4195,3 +4195,9 @@ The displayed-beta comparison can now consume that sign-only source directly:
 packages countable event measurability plus ghost-fiber reduction.  Future
 probability work should prove the exposed sign-only beta lower bound rather
 than restating ghost-product fiber assumptions.
+
+The exposed sign-only beta lower bound can now be supplied in base-a.e.
+conditional form.  The new
+`VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp_countable`
+bridge converts a `P^n`-a.e. centered-bad implication into the restricted
+source hypothesis and proves centered-bad measurability from countability.

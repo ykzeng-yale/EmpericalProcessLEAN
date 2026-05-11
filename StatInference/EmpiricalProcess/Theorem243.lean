@@ -41544,6 +41544,38 @@ theorem prod_measure_le_lintegral_fiber_bound
   exact lintegral_mono hfiber
 
 /--
+Eventual base-measure a.e. implications can be rewritten as eventual
+restricted-measure a.e. facts.
+
+This is the common handoff shape for Fubini-style source arguments: prove a
+property for `μ i`-almost every point assuming membership in `s i`, then feed
+consumers that expect the property under `(μ i).restrict (s i)`.
+-/
+theorem eventually_ae_restrict_of_eventually_ae_imp
+    {ι : Type u} {α : Type v} [MeasurableSpace α] {l : Filter ι}
+    {μ : ι -> Measure α} {s : ι -> Set α} {p : ι -> α -> Prop}
+    (hs : ∀ᶠ i in l, MeasurableSet (s i))
+    (hp : ∀ᶠ i in l, ∀ᵐ x ∂(μ i), x ∈ s i -> p i x) :
+    ∀ᶠ i in l, ∀ᵐ x ∂((μ i).restrict (s i)), p i x := by
+  filter_upwards [hs, hp] with i hsi hpi
+  exact (ae_restrict_iff' hsi).2 hpi
+
+/--
+Dependent-indexed version of
+`eventually_ae_restrict_of_eventually_ae_imp`, for proof pipelines where the
+underlying sample space varies with the filter index.
+-/
+theorem eventually_ae_restrict_of_eventually_ae_imp_dep
+    {ι : Type u} {α : ι -> Type v} [∀ i, MeasurableSpace (α i)] {l : Filter ι}
+    {μ : (i : ι) -> Measure (α i)} {s : (i : ι) -> Set (α i)}
+    {p : (i : ι) -> α i -> Prop}
+    (hs : ∀ᶠ i in l, MeasurableSet (s i))
+    (hp : ∀ᶠ i in l, ∀ᵐ x ∂(μ i), x ∈ s i -> p i x) :
+    ∀ᶠ i in l, ∀ᵐ x ∂((μ i).restrict (s i)), p i x := by
+  filter_upwards [hs, hp] with i hsi hpi
+  exact (ae_restrict_iff' hsi).2 hpi
+
+/--
 Product-measure fiber lower bound with an additive per-left-point error.
 
 If every `left` fiber has mass at least `beta` up to an error term, then the
@@ -47210,6 +47242,243 @@ theorem
       (cover := cover eta heta n)
       (sample := sample)
       (hfiber_n sample hsample)
+
+/--
+The centered fixed-`M` truncated bad event is measurable for countable
+coordinate-measurable classes.
+-/
+theorem
+    measurableSet_vdVWWeightedClassSupremum_centered_truncated_bad_of_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope) :
+    MeasurableSet
+      {sample : SampleAt Observation n |
+        epsilon <
+          dist
+            (vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+            (0 : ℝ)} := by
+  have hsup :
+      Measurable fun sample : SampleAt Observation n =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample := by
+    simpa using
+      (measurable_vdVWWeightedClassSupremum_centered_of_countable
+        (P := P) (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        hcount (hclass.truncate henvelope_meas)
+        (fun _ : Fin n => (n : ℝ)⁻¹))
+  exact measurableSet_Ioi.preimage (hsup.dist measurable_const)
+
+/--
+Eventual centered-bad measurability for the fixed-`M` truncated countable
+class.  This is the exact side condition needed by the base-a.e.
+Rademacher-bad source adapter below.
+-/
+theorem VdVWTheorem243_eventually_measurableSet_centeredBad_truncated_of_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope) :
+    ∀ᶠ n : ℕ in atTop,
+      MeasurableSet
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+              (0 : ℝ)} := by
+  exact Eventually.of_forall fun n =>
+    measurableSet_vdVWWeightedClassSupremum_centered_truncated_bad_of_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+      hcount hclass henvelope_meas
+
+/--
+Base-product a.e. implication form of the pure Rademacher bad-fiber source.
+
+Future Fubini or conditioning arguments naturally prove the Rademacher
+bad-fiber lower bound for `P^n`-almost every sample, conditional on membership
+in the centered bad set.  Existing source comparisons consume the same lower
+bound under the restricted measure on that bad set; this wrapper performs that
+measure-theoretic conversion uniformly in `n`.
+-/
+theorem
+    VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    (beta : ℕ -> ℝ≥0∞)
+    (hcenteredBad_meas :
+      ∀ᶠ n : ℕ in atTop,
+        MeasurableSet
+          {sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                (0 : ℝ)})
+    (hbadLower :
+      ∀ᶠ n : ℕ in atTop,
+        ∀ᵐ sample ∂(vdVWProductMeasure P n),
+          sample ∈
+            {sample : SampleAt Observation n |
+              epsilon <
+                dist
+                  (vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      vdVWTruncatedClassFun classFun envelope M index observation -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                  (0 : ℝ)} ->
+            beta n ≤
+              (vdVWProductMeasure vdVWRademacherLaw n)
+                {signSample : SampleAt ℝ n |
+                  epsilon <
+                    dist
+                      (2 *
+                        vdVWWeightedClassSupremum indexClass
+                          (vdVWTruncatedClassFun classFun envelope M)
+                          (vdVWRademacherWeights signSample) sample)
+                      (0 : ℝ)}) :
+    ∀ᶠ n : ℕ in atTop,
+      ∀ᵐ sample ∂((vdVWProductMeasure P n).restrict
+          ({sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                (0 : ℝ)})),
+        beta n ≤
+          (vdVWProductMeasure vdVWRademacherLaw n)
+            {signSample : SampleAt ℝ n |
+              epsilon <
+                dist
+                  (2 *
+                    vdVWWeightedClassSupremum indexClass
+                      (vdVWTruncatedClassFun classFun envelope M)
+                      (vdVWRademacherWeights signSample) sample)
+                  (0 : ℝ)} := by
+  exact
+    eventually_ae_restrict_of_eventually_ae_imp_dep
+      (l := atTop)
+      (α := fun n : ℕ => SampleAt Observation n)
+      (μ := fun n : ℕ => vdVWProductMeasure P n)
+      (s := fun n : ℕ =>
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+              (0 : ℝ)})
+      (p := fun n sample =>
+        beta n ≤
+          (vdVWProductMeasure vdVWRademacherLaw n)
+            {signSample : SampleAt ℝ n |
+              epsilon <
+                dist
+                  (2 *
+                    vdVWWeightedClassSupremum indexClass
+                      (vdVWTruncatedClassFun classFun envelope M)
+                      (vdVWRademacherWeights signSample) sample)
+                  (0 : ℝ)})
+      hcenteredBad_meas hbadLower
+
+/--
+Countable-class version of the base-product a.e. Rademacher-bad source
+adapter.  The centered-bad event measurability side condition is discharged
+from countability and coordinate measurability of the original class.
+-/
+theorem
+    VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ}
+    (beta : ℕ -> ℝ≥0∞)
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hbadLower :
+      ∀ᶠ n : ℕ in atTop,
+        ∀ᵐ sample ∂(vdVWProductMeasure P n),
+          sample ∈
+            {sample : SampleAt Observation n |
+              epsilon <
+                dist
+                  (vdVWWeightedClassSupremum indexClass
+                    (fun index : Index => fun observation : Observation =>
+                      vdVWTruncatedClassFun classFun envelope M index observation -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                    (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                  (0 : ℝ)} ->
+            beta n ≤
+              (vdVWProductMeasure vdVWRademacherLaw n)
+                {signSample : SampleAt ℝ n |
+                  epsilon <
+                    dist
+                      (2 *
+                        vdVWWeightedClassSupremum indexClass
+                          (vdVWTruncatedClassFun classFun envelope M)
+                          (vdVWRademacherWeights signSample) sample)
+                      (0 : ℝ)}) :
+    ∀ᶠ n : ℕ in atTop,
+      ∀ᵐ sample ∂((vdVWProductMeasure P n).restrict
+          ({sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                (0 : ℝ)})),
+        beta n ≤
+          (vdVWProductMeasure vdVWRademacherLaw n)
+            {signSample : SampleAt ℝ n |
+              epsilon <
+                dist
+                  (2 *
+                    vdVWWeightedClassSupremum indexClass
+                      (vdVWTruncatedClassFun classFun envelope M)
+                      (vdVWRademacherWeights signSample) sample)
+                  (0 : ℝ)} := by
+  exact
+    VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := epsilon) beta
+      (VdVWTheorem243_eventually_measurableSet_centeredBad_truncated_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (epsilon := epsilon)
+        hcount hclass henvelope_meas)
+      hbadLower
 
 /--
 Real triangle step in the proof of VdV&W Lemma 2.3.7.
