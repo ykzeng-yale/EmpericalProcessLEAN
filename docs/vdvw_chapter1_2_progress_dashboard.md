@@ -4208,3 +4208,9 @@ handoff:
 converts a `P^n`-a.e. centered-bad implication into the a.e. restricted fiber
 input for the factor-two original-or-ghost route, while discharging the
 countable event-measurability side conditions.
+
+The same pair-difference a.e. source surface is now specialized to the
+canonical selected half-radius empirical-cover cardinality via
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_sample_coordinate_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_imp_sample_coordinate_countable`.

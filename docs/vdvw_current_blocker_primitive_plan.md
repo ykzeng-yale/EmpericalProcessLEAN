@@ -9508,3 +9508,15 @@ and
 The concrete pair-difference route can therefore consume a `P^n`-a.e.
 centered-bad implication directly; countable selected-center measurability and
 centered-bad measurability are discharged by the wrapper.
+
+2026-05-11 selected half-radius pair-difference a.e. source specialization:
+`Theorem243.lean` now adds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_sample_coordinate_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_imp_sample_coordinate_countable`.
+These specialize the concrete pair-difference restricted-a.e. and base-a.e.
+fiber-source bridges to the canonical selected truncated empirical-cover
+cardinality at radius `eta / 2`; selected-cardinality measurability and
+selected-center coordinate measurability are handled internally by the
+countable selected-cover interface.  The remaining source theorem can now be
+stated directly for the selected half-radius cover.

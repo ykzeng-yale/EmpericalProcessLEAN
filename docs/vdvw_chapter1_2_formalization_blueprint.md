@@ -3283,6 +3283,15 @@ may prove the concrete pair-difference beta lower bound as a `P^n`-a.e.
 centered-bad implication and pass it directly to the displayed-beta
 comparison.
 
+The selected half-radius empirical-cover cardinality now has matching a.e.
+specializations:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_sample_coordinate_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_ae_imp_sample_coordinate_countable`.
+These remove the arbitrary selected-cardinality parameter from the current
+pair-difference source surface while keeping the probability input as either
+a restricted-a.e. fiber statement or a base-a.e. centered-bad implication.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
