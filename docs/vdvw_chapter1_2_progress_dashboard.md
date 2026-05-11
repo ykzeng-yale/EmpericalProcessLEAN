@@ -4254,3 +4254,10 @@ The same additive-error source is now available in restricted-a.e. form:
 keeps the integrated failure-tail term but requires the Rademacher bad-event
 lower bound only almost everywhere under `P^n` restricted to the centered bad
 event.
+
+The explicit inverse-square selected-cardinality variants are now compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable`,
+so the sign-only source route can use the concrete Hoeffding failure-tail
+lintegral bound directly.

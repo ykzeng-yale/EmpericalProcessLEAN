@@ -3343,6 +3343,14 @@ It preserves the same integrated finite-center failure-tail term while
 requiring the Rademacher bad-event lower bound only almost everywhere under
 `P^n` restricted to the centered bad event.
 
+The finite-center failure-tail condition now also has the explicit
+inverse-square selected-cardinality source forms
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable`.
+These consume the compiled Hoeffding failure-tail inverse-square lintegral
+bound instead of asking callers to prove raw failure-tail convergence.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

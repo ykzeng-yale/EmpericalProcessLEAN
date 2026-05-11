@@ -9584,3 +9584,12 @@ This is the Fubini-ready additive-error source: it keeps the integrated
 finite-center Hoeffding failure-tail term, but accepts the Rademacher bad-event
 lower bound only `P^n.restrict centeredBad`-a.e.  The remaining probability
 inputs can now be stated in the natural restricted-a.e. form.
+
+2026-05-11 sign-only inverse-square failure-tail source:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_invSq_tail_countable`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable`.
+These replace the raw integrated finite-center failure-tail convergence input
+by the explicit selected-cardinality inverse-square lintegral condition, for
+both pointwise and restricted-a.e. Rademacher bad-event lower-bound sources.
