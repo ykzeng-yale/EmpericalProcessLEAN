@@ -1878,6 +1878,18 @@ matches the textbook σ-compact support statement, and
 `vdVW132_probabilityMeasure_separable_of_tight` records tight-to-separable
 under the current local Borel uniform hypotheses.
 
+2026-05-11 Lemma 1.3.2 separable finite-cover follow-up:
+`WeakConvergence.lean` now has the finite high-mass ball-cover bridge needed
+for the separable-to-pre-tight direction.  The helper
+`VdVWProbabilityMeasure_exists_finitePrefix_measure_compl_le_of_iUnion_measure_compl_eq_zero`
+uses continuity from above for finite probability measures to extract a finite
+prefix from a countable full-mass cover.  The separability wrapper
+`vdVW132_probabilityMeasure_exists_finitePrefix_ball_cover_measure_compl_le_of_separable`
+applies it to balls around a countable dense sequence.  The remaining proof
+step is the scale-by-scale intersection that makes the finite ball covers
+simultaneously totally bounded while preserving mass up to the target
+tolerance.
+
 2026-05-05 tightness component follow-up: the Chapter 1 weak-convergence file
 now has the VdV&W 1.3.2-named tightness component
 `vdVW132_complete_separable_probabilityMeasure_tight`, reusing the compiled

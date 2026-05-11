@@ -3935,6 +3935,108 @@ theorem vdVW132_probabilityMeasure_separable_of_preTight
   VdVWProbabilityMeasurePreTight.separable hμ
 
 /--
+If a countable increasing cover has full probability mass, then a finite
+initial segment has complement below any positive tolerance.
+-/
+theorem VdVWProbabilityMeasure_exists_finitePrefix_measure_compl_le_of_iUnion_measure_compl_eq_zero
+    {S : Type u} [MeasurableSpace S] (μ : ProbabilityMeasure S)
+    {U : ℕ -> Set S} (hU_meas : ∀ n, MeasurableSet (U n))
+    (hcover :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, U n)ᶜ) = 0)
+    {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ N : ℕ,
+      ((μ : ProbabilityMeasure S) : Measure S)
+        ((⋃ n, ⋃ _ : n ≤ N, U n)ᶜ) ≤ ε := by
+  let F : ℕ -> Set S := fun N => (⋃ n, ⋃ _ : n ≤ N, U n)ᶜ
+  have hF_null : ∀ N, NullMeasurableSet (F N) ((μ : ProbabilityMeasure S) : Measure S) := by
+    intro N
+    exact
+      (MeasurableSet.iUnion fun n =>
+        MeasurableSet.iUnion fun _ => hU_meas n).compl.nullMeasurableSet
+  have hF_anti : Antitone F := by
+    intro N M hNM
+    exact Set.compl_subset_compl.mpr (by
+      intro x hx
+      rcases Set.mem_iUnion.1 hx with ⟨n, hn⟩
+      rcases Set.mem_iUnion.1 hn with ⟨hnN, hxU⟩
+      exact Set.mem_iUnion.2
+        ⟨n, Set.mem_iUnion.2 ⟨le_trans hnN hNM, hxU⟩⟩)
+  have hF_measure_anti :
+      Antitone (fun N => ((μ : ProbabilityMeasure S) : Measure S) (F N)) := by
+    intro N M hNM
+    exact measure_mono (hF_anti hNM)
+  have hInter : (⋂ N, F N) = (⋃ n, U n)ᶜ := by
+    ext x
+    constructor
+    · intro hx hxU
+      rcases Set.mem_iUnion.1 hxU with ⟨n, hxUn⟩
+      exact (Set.mem_iInter.1 hx n)
+        (Set.mem_iUnion.2 ⟨n, Set.mem_iUnion.2 ⟨le_rfl, hxUn⟩⟩)
+    · intro hx
+      refine Set.mem_iInter.2 ?_
+      intro N hxN
+      rcases Set.mem_iUnion.1 hxN with ⟨n, hn⟩
+      rcases Set.mem_iUnion.1 hn with ⟨_hnN, hxUn⟩
+      exact hx (Set.mem_iUnion.2 ⟨n, hxUn⟩)
+  have htend :
+      Tendsto
+        (fun N => ((μ : ProbabilityMeasure S) : Measure S) (F N))
+        atTop (𝓝 0) := by
+    have htend' :=
+      tendsto_measure_iInter_atTop
+        (μ := ((μ : ProbabilityMeasure S) : Measure S)) (s := F)
+        hF_null hF_anti ⟨0, measure_ne_top _ _⟩
+    rw [hInter, hcover] at htend'
+    exact htend'
+  rw [ENNReal.tendsto_atTop_zero_iff_lt_of_antitone hF_measure_anti] at htend
+  rcases htend ε hε with ⟨N, hN⟩
+  exact ⟨N, le_of_lt hN⟩
+
+/--
+Finite high-mass ball cover obtained from VdV&W measure separability.  This is
+the finite-cover step in the separable-to-pre-tight half of Lemma 1.3.2.
+-/
+theorem VdVWProbabilityMeasureSeparable.exists_finitePrefix_ball_cover_measure_compl_le
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasureSeparable μ)
+    {r : ℝ} (hr : 0 < r) {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ c : ℕ -> S, ∃ N : ℕ,
+      ((μ : ProbabilityMeasure S) : Measure S)
+        ((⋃ n, ⋃ _ : n ≤ N, Metric.ball (c n) r)ᶜ) ≤ ε := by
+  rcases hμ with ⟨A, _hA_meas, hA_separable, hA_compl⟩
+  rcases hA_separable with ⟨D, hD_count, hA_closure⟩
+  rcases Set.countable_iff_exists_subset_range.mp hD_count with ⟨c, hD_range⟩
+  have hA_subset : A ⊆ ⋃ n, Metric.ball (c n) r := by
+    intro x hxA
+    rcases (Metric.mem_closure_iff.mp (hA_closure hxA)) r hr with
+      ⟨y, hyD, hxy⟩
+    rcases hD_range hyD with ⟨n, rfl⟩
+    exact Set.mem_iUnion.2 ⟨n, hxy⟩
+  have hcover :
+      ((μ : ProbabilityMeasure S) : Measure S)
+        ((⋃ n, Metric.ball (c n) r)ᶜ) = 0 :=
+    measure_mono_null (Set.compl_subset_compl.mpr hA_subset) hA_compl
+  rcases
+      VdVWProbabilityMeasure_exists_finitePrefix_measure_compl_le_of_iUnion_measure_compl_eq_zero
+        μ (fun _ => Metric.isOpen_ball.measurableSet) hcover hε with
+    ⟨N, hN⟩
+  exact ⟨c, N, hN⟩
+
+/--
+VdV&W Lemma 1.3.2 finite ball-cover bridge from separability.
+-/
+theorem vdVW132_probabilityMeasure_exists_finitePrefix_ball_cover_measure_compl_le_of_separable
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasureSeparable μ)
+    {r : ℝ} (hr : 0 < r) {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ c : ℕ -> S, ∃ N : ℕ,
+      ((μ : ProbabilityMeasure S) : Measure S)
+        ((⋃ n, ⋃ _ : n ≤ N, Metric.ball (c n) r)ᶜ) ≤ ε :=
+  hμ.exists_finitePrefix_ball_cover_measure_compl_le hr hε
+
+/--
 Measure-level asymptotic tightness of a family of probability measures along a
 filter: eventually, all measures put arbitrarily small mass outside one compact
 set.
