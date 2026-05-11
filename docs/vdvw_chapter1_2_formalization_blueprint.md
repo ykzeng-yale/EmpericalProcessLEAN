@@ -3951,6 +3951,15 @@ lower-growth specialization
 This mirrors the base-a.e. wrapper for sources that already produce a
 restricted-measure lower bound.
 
+The base-a.e. sign-swap two-tail endpoint now also reaches untruncated
+centered convergence through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_of_eventually_ae_cardinality_ge`.
+For each truncation level `M > 0`, it invokes the fixed-`M` source surface with
+eventual `P^n`-a.e. selected-cardinality lower growth, then uses the existing
+large-`M` envelope-tail handoff.  No exact textbook theorem is newly closed;
+the blueprint frontier remains the sign-swapped bad-fiber probability source
+or the averaged product-pair replacement.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

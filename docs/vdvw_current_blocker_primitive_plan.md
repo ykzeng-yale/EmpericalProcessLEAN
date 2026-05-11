@@ -10394,3 +10394,16 @@ canonical sign-only inverse-square route.  The remaining sign-only source
 theorem can now be stated directly as a `P^n`-a.e. implication from membership
 in the centered bad event, plus the already exposed a.e. selected-cardinality
 lower-growth input.
+
+2026-05-10 untruncated base-a.e. sign-swap two-tail endpoint:
+`Theorem243.lean` now adds
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_of_eventually_ae_cardinality_ge`.
+This lifts the preferred fixed-`M` sign-swap two-tail source shape through the
+large-`M` envelope-tail handoff.  For every truncation level, both remaining
+source hypotheses may now be stated in their natural a.e. forms: a
+`P^n`-a.e. implication from centered-bad membership to the sign-swapped
+bad-fiber displayed-beta lower bound, and eventual `P^n`-a.e. lower growth of
+the selected-cover cardinality.  This is still theorem-layer plumbing rather
+than a completed textbook theorem report; the live source blocker remains the
+actual sign-swapped bad-fiber probability theorem or the averaged product-pair
+replacement.

@@ -4854,3 +4854,12 @@ packages the same source shape through the large-`M` handoff.  Future
 probability work can now prove the pure Rademacher bad-fiber lower bound as a
 `P^n`-a.e. implication on centered-bad samples; the restricted-measure
 conversion is no longer exposed at the endpoint.
+
+The fixed-original sign-swap two-tail lane now has the same large-`M`
+packaging for its preferred source surface:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_signSwapBad_finiteCenter_failure_tails_of_eventually_ae_cardinality_ge`.
+It composes the fixed-`M` base-a.e. implication/a.e. lower-growth endpoint
+with the envelope-tail untruncation theorem.  The remaining dashboard blocker
+is not untruncation or tail control; it is the probability source proving the
+sign-swapped bad-fiber displayed-beta lower bound, or an averaged product-pair
+replacement.
