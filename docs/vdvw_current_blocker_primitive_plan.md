@@ -1868,6 +1868,16 @@ theorem `VdVWProbabilityMeasurePreTight.separable` and the numbered wrapper
 `vdVW132_probabilityMeasure_separable_of_preTight` turn this into
 VdV&W-separability when the uniformity has a countable basis.
 
+2026-05-11 Lemma 1.3.2 tight σ-compact support follow-up:
+`WeakConvergence.lean` now proves
+`VdVWProbabilityMeasuresTight.exists_iUnion_isCompact_measure_compl_eq_zero`,
+which extracts a countable union of compact sets carrying each member of a
+tight probability-measure family.  The singleton wrapper
+`vdVW132_probabilityMeasure_exists_iUnion_isCompact_measure_compl_eq_zero_of_tight`
+matches the textbook σ-compact support statement, and
+`vdVW132_probabilityMeasure_separable_of_tight` records tight-to-separable
+under the current local Borel uniform hypotheses.
+
 2026-05-05 tightness component follow-up: the Chapter 1 weak-convergence file
 now has the VdV&W 1.3.2-named tightness component
 `vdVW132_complete_separable_probabilityMeasure_tight`, reusing the compiled

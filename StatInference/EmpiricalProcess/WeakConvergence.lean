@@ -4073,6 +4073,59 @@ theorem vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le
     exact hKμ μ hμA
 
 /--
+Tightness gives a countable union of compact sets carrying each member of the
+tight family.  This is the measure-level σ-compact support direction used in
+the discussion preceding VdV&W Lemma 1.3.2.
+-/
+theorem VdVWProbabilityMeasuresTight.exists_iUnion_isCompact_measure_compl_eq_zero
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    {A : Set (ProbabilityMeasure S)}
+    (hA : VdVWProbabilityMeasuresTight A)
+    {μ : ProbabilityMeasure S} (hμ : μ ∈ A) :
+    ∃ K : ℕ -> Set S,
+      (∀ n, IsCompact (K n)) ∧
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, K n)ᶜ) = 0 := by
+  classical
+  have hchoose :
+      ∀ n : ℕ, ∃ K : Set S, IsCompact K ∧
+        ∀ ν : ProbabilityMeasure S, ν ∈ A ->
+          ((ν : ProbabilityMeasure S) : Measure S) (Kᶜ) ≤
+            ((n : ℝ≥0∞)⁻¹) := by
+    intro n
+    exact
+      (vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le.mp hA)
+        ((n : ℝ≥0∞)⁻¹)
+        (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top n))
+  choose K hK_compact hK_measure using hchoose
+  refine ⟨K, hK_compact, ?_⟩
+  by_contra hne
+  rcases ENNReal.exists_inv_nat_lt hne with ⟨n, hn⟩
+  have hsubset : (⋃ n, K n)ᶜ ⊆ (K n)ᶜ := by
+    intro x hx hxK
+    exact hx (Set.mem_iUnion.2 ⟨n, hxK⟩)
+  have hle_compl :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, K n)ᶜ) ≤
+        ((μ : ProbabilityMeasure S) : Measure S) ((K n)ᶜ) :=
+    measure_mono hsubset
+  have hle_inv :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, K n)ᶜ) ≤
+        ((n : ℝ≥0∞)⁻¹) :=
+    hle_compl.trans (hK_measure n μ hμ)
+  exact (not_lt_of_ge hle_inv) hn
+
+/--
+VdV&W σ-compact full-measure support wrapper for a tight probability measure.
+-/
+theorem vdVW132_probabilityMeasure_exists_iUnion_isCompact_measure_compl_eq_zero_of_tight
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S))) :
+    ∃ K : ℕ -> Set S,
+      (∀ n, IsCompact (K n)) ∧
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, K n)ᶜ) = 0 :=
+  hμ.exists_iUnion_isCompact_measure_compl_eq_zero (by simp)
+
+/--
 Tightness implies VdV&W pre-tightness whenever compact sets are measurable and
 totally bounded in the ambient uniform structure.
 -/
@@ -4087,6 +4140,29 @@ theorem VdVWProbabilityMeasurePreTight.of_tight
         ε hε with
     ⟨K, hK, hKμ⟩
   exact ⟨K, hK.measurableSet, hK.totallyBounded, by simpa using hKμ μ (by simp)⟩
+
+/--
+Tight probability measures are VdV&W-separable in countably generated Hausdorff
+Borel uniform spaces.
+-/
+theorem VdVWProbabilityMeasureSeparable.of_tight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S] [T2Space S] [BorelSpace S]
+    [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S))) :
+    VdVWProbabilityMeasureSeparable μ :=
+  (VdVWProbabilityMeasurePreTight.of_tight hμ).separable
+
+/--
+VdV&W Lemma 1.3.2 tight-to-separable direction.
+-/
+theorem vdVW132_probabilityMeasure_separable_of_tight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S] [T2Space S] [BorelSpace S]
+    [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S))) :
+    VdVWProbabilityMeasureSeparable μ :=
+  VdVWProbabilityMeasureSeparable.of_tight hμ
 
 /--
 VdV&W Lemma 1.3.2 pre-tightness component: in a complete separable

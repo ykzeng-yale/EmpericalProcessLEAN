@@ -1689,11 +1689,18 @@ the measure-level Borel/Polish uniqueness theorem.
 the metric-space distance-to-closed-set proof that Borel is the least
 sigma-field making all bounded-continuous real functions measurable.
 
-2026-05-05 tightness component follow-up: `WeakConvergence.lean` now exports
-`vdVW132_complete_separable_probabilityMeasure_tight`, a VdV&W 1.3.2-named
-wrapper for the complete separable metric-type probability-measure tightness
-direction.  The full pre-tight/separable/tight/Polish-measure equivalence
-still needs local definitions before it can be marked exact.
+2026-05-11 Lemma 1.3.2 measure-level follow-up: `WeakConvergence.lean` now
+exports local pre-tight/separable predicates, pre-tight countable-union support,
+pre-tight-to-separable, tight σ-compact support, tight-to-pre-tight,
+tight-to-separable, and the complete separable metric-type tight/pre-tight
+components through the wrappers
+`vdVW132_probabilityMeasure_separable_of_preTight`,
+`vdVW132_probabilityMeasure_exists_iUnion_isCompact_measure_compl_eq_zero_of_tight`,
+`vdVW132_probabilityMeasure_separable_of_tight`,
+`vdVW132_complete_separable_probabilityMeasure_tight`, and
+`vdVW132_complete_separable_probabilityMeasure_preTight`.  The exact
+separable-to-pre-tight direction, full complete-space equivalence, and
+Polish-measure formulation remain open.
 
 2026-05-05 product Borel-space follow-up: `FiniteDimensional.lean` now exports
 `vdVW141_prod_borel_eq_product_borel`, proving the VdV&W 1.4.1 product
