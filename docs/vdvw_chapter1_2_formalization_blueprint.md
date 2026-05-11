@@ -3078,6 +3078,10 @@ It uses `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign` and
 negated-sign ghost support from the same unnegated support input.  Thus this
 branch now exposes one canonical first-level finite-center support/tail source
 input rather than separate original and ghost sign versions.
+The large-`M` companion theorem
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`
+packages that fixed-`M` route into the untruncated centered convergence target
+under the standard envelope-tail and bounded-truncation assumptions.
 
 The displayed Chebyshev-beta source constructor now has the same canonical
 first-level cover specialization:

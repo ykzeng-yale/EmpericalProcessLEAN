@@ -4042,6 +4042,9 @@ The supporting sign-negation lemmas transport finite-center Hoeffding support
 through Rademacher sign flips, so this route exposes one canonical unnegated
 finite-center support input instead of separate original and ghost sign
 versions.
+The corresponding untruncated centered convergence endpoint is also compiled
+as
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`.
 
 The displayed-beta product-fiber branch now has the analogous canonical
 first-level selected-cover endpoint:
