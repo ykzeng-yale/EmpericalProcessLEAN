@@ -3221,6 +3221,22 @@ projecting a beta-large product-fiber lower bound to outer probability.  They
 are source infrastructure for the sign-only/failure-tail route, not a
 substitute for the still-open Rademacher bad-fiber and tail-control inputs.
 
+The sign-only canonical Rademacher selected-net event is now compiled through
+the failure-tail outer-probability bridge:
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_ae_components`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_ae_finiteCenter`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure_components`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure_tail`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail`,
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail`.
+This is the theorem-facing sign-only source layer over the additive-error
+bridge.  The remaining work is to supply measurability/countable selector
+wrappers and the genuine Rademacher bad-fiber mass plus finite-center
+failure-tail control.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

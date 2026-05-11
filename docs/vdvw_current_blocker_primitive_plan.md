@@ -9418,3 +9418,21 @@ retaining an explicit set-integral finite-center failure cost.  This is the
 measure-theory substrate needed by sign-only or finite-center failure-tail
 source routes; the remaining theorem-facing work is still to prove the actual
 Rademacher bad-fiber mass and/or structural tail-control input.
+
+2026-05-11 sign-only canonical Rademacher selected-net failure-tail bridge:
+`Theorem243.lean` now proves the source-layer declarations
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_ae_components`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_ae_finiteCenter`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure_components`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure_tail`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail`,
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail`.
+This adds the sign-only canonical event and composes the Rademacher bad-fiber
+lower bound with the additive-error product-fiber accounting, preserving the
+finite-center failure tail as an explicit cost.  It feeds the future
+sign-only failure-tail and fixed-`M` route; the remaining open inputs are
+event measurability/countable selector wrappers plus the pure Rademacher
+bad-fiber mass and tail-control estimates.

@@ -4161,3 +4161,14 @@ and
 It carries finite-center failure costs as explicit set integrals while
 projecting beta-large product fibers to the selected-net outer-probability
 side.
+
+The sign-only canonical Rademacher selected-net source layer now reaches the
+failure-tail outer-probability boundary through
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_fiber_lower_bound_of_rademacherBad_finiteCenter_failure_tail`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail`,
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail`.
+It uses the new additive-error bridge to keep finite-center failure-tail costs
+explicit.  The open inputs are still event measurability/countable selector
+wrappers and the actual Rademacher bad-fiber mass/tail-control estimates.
