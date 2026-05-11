@@ -9520,3 +9520,16 @@ cardinality at radius `eta / 2`; selected-cardinality measurability and
 selected-center coordinate measurability are handled internally by the
 countable selected-cover interface.  The remaining source theorem can now be
 stated directly for the selected half-radius cover.
+
+2026-05-11 first-level selected half-radius pair-difference a.e. source
+specialization: `Theorem243.lean` now proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_ae_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_ae_imp_countable`.
+These choose the canonical countable first-level selected empirical cover at
+radius `eta / 2` internally, reuse selected-cardinality and selected-center
+coordinate measurability bridges, and expose restricted-a.e. and base-a.e.
+source surfaces.  The remaining source theorem can now target the canonical
+first-level selected cover directly; no additional first-level selected-cover
+plumbing is needed before proving the pair-difference fiber mass or replacing
+it with a coefficient-correct product-pair/sign-swap theorem.

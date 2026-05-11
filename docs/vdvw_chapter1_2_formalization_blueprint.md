@@ -3292,6 +3292,17 @@ These remove the arbitrary selected-cardinality parameter from the current
 pair-difference source surface while keeping the probability input as either
 a restricted-a.e. fiber statement or a base-a.e. centered-bad implication.
 
+The canonical first-level selected cover now has the same a.e. source
+specializations:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_ae_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_ae_imp_countable`.
+They choose the countable first-level selected empirical cover at radius
+`eta / 2` internally and reuse the selected-cardinality plus selected-center
+coordinate measurability bridges.  The next probability-side theorem can now
+be stated directly against the canonical first-level selected cover in either
+restricted-a.e. or base-a.e. conditional form.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
