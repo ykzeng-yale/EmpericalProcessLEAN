@@ -2460,6 +2460,15 @@ above, so they do not change the theorem-level dashboard counts.
    deriving that lintegral convergence from an eventual deterministic lower
    bound on the selected cover cardinalities whose lower bound tends to
    infinity.
+   The probability-side form is now compiled through
+   `vdVW_pair_lintegral_sum_tendsto_zero_of_eventual_ae_ofReal_bound`,
+   `vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_ae_cardinality_ge`,
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge`,
+   and
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge`.
+   The canonical route can therefore consume either product-pair a.e. lower
+   growth or ordinary single-sample a.e. lower growth, with the latter lifted
+   along the product-pair projection measure-preserving maps.
    The sign-first finite-center failure-event measurability layer is compiled
    as
    `measurableSet_VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_selectedCenterAt`,
