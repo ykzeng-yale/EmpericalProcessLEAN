@@ -1575,6 +1575,40 @@ theorem VdVWOuterExpectation_prod_eq_lintegral_lintegral_symm_of_measurable
     hT.aemeasurable
 
 /--
+VdV&W Lemma 1.2.7, measurable nonnegative repeated-outer equality.
+
+The full textbook lemma treats a Lipschitz-in-one-coordinate nonmeasurable
+integrand.  This source layer records the measurable nonnegative case in the
+same repeated-outer-expectation order: joint VdV&W outer expectation equals
+the outer expectation of the sectionwise VdV&W outer expectations.
+-/
+theorem vdVW127_jointOuter_eq_repeatedOuter_symm_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    {T : Ω × S -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWOuterExpectation (μ.prod ν) T =
+      VdVWOuterExpectation ν
+        (fun s => VdVWOuterExpectation μ (fun ω => T (ω, s))) := by
+  have hsection : ∀ s, Measurable fun ω => T (ω, s) := by
+    intro s
+    exact hT.comp (measurable_id.prodMk measurable_const)
+  have hT_uncurry : Measurable (Function.uncurry fun ω s => T (ω, s)) := by
+    simpa [Function.uncurry] using hT
+  have hsection_integral_meas : Measurable fun s => ∫⁻ ω, T (ω, s) ∂μ :=
+    hT_uncurry.lintegral_prod_left
+  calc
+    VdVWOuterExpectation (μ.prod ν) T =
+        ∫⁻ s, ∫⁻ ω, T (ω, s) ∂μ ∂ν :=
+      VdVWOuterExpectation_prod_eq_lintegral_lintegral_symm_of_measurable hT
+    _ = VdVWOuterExpectation ν (fun s => ∫⁻ ω, T (ω, s) ∂μ) :=
+      (VdVWOuterExpectation_eq_lintegral_of_measurable hsection_integral_meas).symm
+    _ = VdVWOuterExpectation ν
+        (fun s => VdVWOuterExpectation μ (fun ω => T (ω, s))) := by
+      congr 1
+      funext s
+      exact (VdVWOuterExpectation_eq_lintegral_of_measurable (hsection s)).symm
+
+/--
 A.e.-measurable nonnegative maps have equal VdV&W outer and inner
 expectations.
 

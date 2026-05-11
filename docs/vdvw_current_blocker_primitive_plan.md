@@ -1701,6 +1701,15 @@ expectation interfaces and mathlib Tonelli.  This closes the measurable
 nonnegative source layer for Lemma 1.2.6 while leaving the exact arbitrary-map,
 signed extended-real, and perfect-map variants open.
 
+2026-05-11 Lemma 1.2.7 measurable repeated-outer follow-up:
+`vdVW127_jointOuter_eq_repeatedOuter_symm_of_measurable` now packages the
+measurable nonnegative case of the repeated-outer equality used by the
+Lipschitz Fubini lemma: the joint VdV&W outer expectation equals the VdV&W
+outer expectation of the sectionwise VdV&W outer expectations.  This uses
+mathlib symmetric Tonelli plus the sectionwise measurable outer-expectation
+collapse; the exact Lipschitz-in-one-coordinate nonmeasurable theorem remains
+open.
+
 2026-05-05 dominated common-cover follow-up: search found mathlib absolute
 continuity transport through `Measure.AbsolutelyContinuous.ae_le` and local
 `VdVWMeasurableCover.ofAEMeasurable`, but no VdV&W-named dominated common
