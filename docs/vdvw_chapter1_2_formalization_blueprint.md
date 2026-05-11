@@ -3351,6 +3351,13 @@ and
 These consume the compiled Hoeffding failure-tail inverse-square lintegral
 bound instead of asking callers to prove raw failure-tail convergence.
 
+The same sign-only route now has selected-cardinality lower-growth adapters
+for both pointwise and restricted-a.e. Rademacher bad-event lower-bound
+sources.  The new `...of_eventually_cardinality_ge` and
+`...of_eventually_ae_cardinality_ge` variants reduce the inverse-square
+tail-control input to a diverging deterministic lower bound on the selected
+cardinality.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

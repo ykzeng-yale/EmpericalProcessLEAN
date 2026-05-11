@@ -4261,3 +4261,8 @@ and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_invSq_tail_countable`,
 so the sign-only source route can use the concrete Hoeffding failure-tail
 lintegral bound directly.
+
+Pointwise and a.e. selected-cardinality lower-growth variants now feed those
+inverse-square source forms.  Later first-level wrappers can supply a
+deterministic `lower eta n -> infinity` bound, pointwise or almost surely,
+instead of proving the inverse-square lintegral convergence separately.

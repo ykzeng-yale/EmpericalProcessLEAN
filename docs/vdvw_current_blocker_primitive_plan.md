@@ -9593,3 +9593,15 @@ and
 These replace the raw integrated finite-center failure-tail convergence input
 by the explicit selected-cardinality inverse-square lintegral condition, for
 both pointwise and restricted-a.e. Rademacher bad-event lower-bound sources.
+
+2026-05-11 sign-only inverse-square lower-growth source:
+`Theorem243.lean` now proves the pointwise and a.e. selected-cardinality
+lower-growth variants
+`...of_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_cardinality_ge`,
+`...of_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_ae_cardinality_ge`,
+`...of_ae_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_cardinality_ge`,
+and
+`...of_ae_rademacherBad_finiteCenter_invSq_tail_countable_of_eventually_ae_cardinality_ge`.
+These let later first-level source theorems prove divergence of a deterministic
+selected-cover lower bound instead of restating inverse-square lintegral
+convergence.
