@@ -4229,3 +4229,12 @@ and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_ae_imp`,
 with a shared `..._firstLevel_primitive` helper carrying the selected
 half-radius cardinality comparison.
+
+The canonical ghost/sign event route now reaches that first-level endpoint.
+New declarations expose the canonical ghost/Rademacher product-fiber source
+and the sign-only canonical Rademacher source:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalGhostRademacher_countable_firstLevel`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalRademacher_countable_firstLevel`.
+The active probability-side gap is the sign-only canonical Rademacher
+selected-net beta lower bound for the first-level selected cover.

@@ -3313,6 +3313,16 @@ The shared
 canonical first-level half-radius selected-cardinality comparison, so later
 source constructors can reuse the same fixed-`M` handoff.
 
+The canonical ghost/Rademacher selected-net event now reaches the same
+first-level fixed-`M` endpoint.  The declarations
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_canonicalGhostRademacher_sample_coordinate_countable`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalGhostRademacher_countable_firstLevel`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalRademacher_countable_firstLevel`
+remove the pair-difference event from this source surface.  The theorem-facing
+probability input can now be stated as the sign-only canonical Rademacher
+selected-net beta lower bound for the countable first-level cover.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

@@ -9544,3 +9544,15 @@ The canonical first-level restricted-a.e. and base-a.e. pair-difference
 source shapes now feed the fixed-`M` stochastic-entropy endpoint directly,
 while the shared primitive keeps the selected half-radius cardinality
 comparison in one place.
+
+2026-05-11 canonical ghost/Rademacher first-level source handoff:
+`Theorem243.lean` now proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_canonicalGhostRademacher_sample_coordinate_countable`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalGhostRademacher_countable_firstLevel`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_canonicalRademacher_countable_firstLevel`.
+The fixed-`M` first-level route can now consume the canonical ghost/Rademacher
+selected-net product-fiber lower bound directly, or consume the sign-only
+canonical Rademacher fiber lower bound through the compiled ghost-fiber
+reduction.  The remaining source input is therefore the genuine sign-only
+canonical Rademacher selected-net beta lower bound for the first-level cover.
