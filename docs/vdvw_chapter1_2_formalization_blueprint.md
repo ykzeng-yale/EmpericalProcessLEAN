@@ -3249,6 +3249,16 @@ membership iff lemmas.  The sign-only route therefore no longer exposes event
 measurability as the main source gap; the next theorem-facing work is the pure
 Rademacher bad-fiber mass and finite-center tail control.
 
+The canonical ghost/Rademacher product-fiber source now reduces directly to
+the sign-only event through
+`mem_fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_iff`,
+`fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_eq_univ_prod`,
+and
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_fiber_lower_bound_of_rademacher_fiber_lower_bound`.
+This removes the unused ghost-coordinate bookkeeping from the displayed-beta
+source path.  The source blocker is now exactly the sign-only Rademacher
+bad-fiber probability input plus finite-center failure-tail control.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

@@ -9454,3 +9454,16 @@ sign-only source bridge and records the deterministic sign-negation invariance
 needed by later sign-symmetry work.  The remaining genuine source inputs are
 the pure Rademacher bad-fiber beta lower bound and a valid finite-center
 failure-tail/tail-control theorem.
+
+2026-05-11 ghost-fiber reduction to the sign-only selected-net event:
+`Theorem243.lean` now proves
+`mem_fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_iff`,
+`fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_eq_univ_prod`,
+and
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_fiber_lower_bound_of_rademacher_fiber_lower_bound`.
+These show that the canonical ghost/Rademacher product fiber is just the full
+ghost-sample space times the sign-only canonical Rademacher selected-net
+fiber.  The displayed-beta source can therefore consume sign-only fiber mass
+directly; the remaining theorem-facing source task is to prove that sign-only
+Rademacher bad-fiber beta lower bound, together with valid finite-center
+failure-tail control.

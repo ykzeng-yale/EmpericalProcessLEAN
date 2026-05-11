@@ -46391,6 +46391,134 @@ theorem
         hM_pos.le heta (cover z.1) hz.1 hz.2.1 hz.2.2
 
 /--
+Fiber membership in the canonical ghost/Rademacher selected-net event is
+exactly membership in the sign-only canonical Rademacher selected-net event.
+
+The ghost sample is unused by this canonical event; this lemma makes that
+bookkeeping explicit for product-fiber lower-bound proofs.
+-/
+theorem
+    mem_fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_iff
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sample ghostSample : SampleAt Observation n) (sign : SampleAt ℝ n) :
+    (ghostSample, sign) ∈
+        (Prod.mk sample ⁻¹'
+          VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality)
+            (cover := cover)) ↔
+      (sample, sign) ∈
+        VdVWTheorem243CanonicalRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover) := by
+  rfl
+
+/--
+The canonical ghost/Rademacher selected-net fiber is a product of the full
+ghost-sample space with the sign-only canonical selected-net fiber.
+-/
+theorem
+    fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_eq_univ_prod
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (sample : SampleAt Observation n) :
+    (Prod.mk sample ⁻¹'
+        VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta)
+          (epsilon := epsilon) (cardinality := cardinality)
+          (cover := cover)) =
+      (Set.univ : Set (SampleAt Observation n)) ×ˢ
+        (Prod.mk sample ⁻¹'
+          VdVWTheorem243CanonicalRademacherSelectedNetEvent
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality)
+            (cover := cover)) := by
+  ext z
+  simp [mem_fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_iff
+    (cover := cover) sample z.1 z.2]
+
+/--
+Product-fiber lower bound for the canonical ghost/Rademacher selected-net event
+from the sign-only canonical Rademacher selected-net fiber.
+
+Since the ghost coordinate is unused by the canonical event, the product fiber
+has exactly the same mass as the Rademacher sign fiber.  This reduces the
+remaining displayed-beta source statement to a sign-only probability bound.
+-/
+theorem
+    VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_fiber_lower_bound_of_rademacher_fiber_lower_bound
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {sample : SampleAt Observation n} {beta : ℝ≥0∞}
+    (hsign :
+      beta ≤
+        (vdVWProductMeasure vdVWRademacherLaw n)
+          (Prod.mk sample ⁻¹'
+            VdVWTheorem243CanonicalRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon) (cardinality := cardinality)
+              (cover := cover))) :
+    beta ≤
+      ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n))
+        (Prod.mk sample ⁻¹'
+          VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (eta := eta)
+            (epsilon := epsilon) (cardinality := cardinality)
+            (cover := cover)) := by
+  calc
+    beta ≤
+        (vdVWProductMeasure vdVWRademacherLaw n)
+          (Prod.mk sample ⁻¹'
+            VdVWTheorem243CanonicalRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon) (cardinality := cardinality)
+              (cover := cover)) := hsign
+    _ =
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (Prod.mk sample ⁻¹'
+            VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon) (cardinality := cardinality)
+              (cover := cover)) := by
+      rw [fiber_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_eq_univ_prod
+        (cover := cover) sample]
+      simp [Measure.prod_prod]
+
+/--
 The Rademacher selected-net bad component of the canonical ghost/Rademacher
 event is measurable under countability and coordinate measurability.
 -/

@@ -4182,3 +4182,10 @@ and the pointwise/a.e. countable outer-probability bridges ending in
 `..._sample_coordinate_countable`.  The sign-only source lane now exposes the
 pure Rademacher bad-fiber lower bound and finite-center failure-tail control,
 not event measurability, as the active probability-side blocker.
+
+The ghost coordinate has also been compiled away from the canonical product
+fiber.  The new fiber membership/equality lemmas and
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_fiber_lower_bound_of_rademacher_fiber_lower_bound`
+transport sign-only selected-net fiber mass to the ghost/Rademacher product
+fiber.  The active source blocker remains the sign-only Rademacher bad-fiber
+mass theorem plus finite-center tail control.
