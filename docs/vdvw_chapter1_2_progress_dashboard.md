@@ -4248,3 +4248,9 @@ The finite-center support input now has an additive-error replacement:
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_rademacherBad_finiteCenter_failure_tail_countable`
 uses a vanishing integrated finite-center failure-tail term over the centered
 bad event.
+
+The same additive-error source is now available in restricted-a.e. form:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_failure_tail_countable`
+keeps the integrated failure-tail term but requires the Rademacher bad-event
+lower bound only almost everywhere under `P^n` restricted to the centered bad
+event.

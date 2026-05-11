@@ -9576,3 +9576,11 @@ support with convergence to zero of the integrated finite-center Hoeffding
 failure-tail term over the centered bad event.  The remaining source work can
 therefore focus on proving the Rademacher bad-event mass and the failure-tail
 vanishing estimate.
+
+2026-05-11 a.e. first-level Rademacher bad-event failure-tail source:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_failure_tail_countable`.
+This is the Fubini-ready additive-error source: it keeps the integrated
+finite-center Hoeffding failure-tail term, but accepts the Rademacher bad-event
+lower bound only `P^n.restrict centeredBad`-a.e.  The remaining probability
+inputs can now be stated in the natural restricted-a.e. form.

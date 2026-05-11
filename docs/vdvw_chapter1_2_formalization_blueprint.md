@@ -3337,6 +3337,12 @@ finite-center support by a vanishing set-lintegral of
 `vdVWTheorem243FiniteCenterHoeffdingFailureTail` over the centered bad event.
 This is the current additive-error theorem-facing boundary.
 
+The additive-error boundary also has the restricted-a.e. variant
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_rademacherBad_finiteCenter_failure_tail_countable`.
+It preserves the same integrated finite-center failure-tail term while
+requiring the Rademacher bad-event lower bound only almost everywhere under
+`P^n` restricted to the centered bad event.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
