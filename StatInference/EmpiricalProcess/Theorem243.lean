@@ -42991,30 +42991,6 @@ theorem
         (joint := originalFailure) (bound := tail) ?_ ?_
     · simpa [originalFailure] using hfailure_meas
     · intro pairSample
-      have hreal :
-          signMeasure.real
-              {signSample : SampleAt ℝ n |
-                ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound
-                  (fun i : Fin n => (pairSample i).1)
-                  (vdVWTruncatedClassFun classFun envelope M)
-                  (cover (fun i : Fin n => (pairSample i).1)).center
-                  signSample M} ≤
-            vdVWTheorem243FiniteCenterHoeffdingFailureTail
-              (cardinality (fun i : Fin n => (pairSample i).1)) n M := by
-        simpa [signMeasure,
-          vdVWTheorem243FiniteCenterHoeffdingFailureTail] using
-          (vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le
-            (μ := signMeasure)
-            (sample := fun i : Fin n => (pairSample i).1)
-            (indexClass := indexClass) (classFun := classFun)
-            (envelope := envelope) (M := M)
-            (cover := cover (fun i : Fin n => (pairSample i).1))
-            hindexClass_nonempty henvelope hM_pos
-            (fun i : Fin n => fun signSample : SampleAt ℝ n =>
-              signSample i)
-            (iIndepFun_vdVWProductMeasure_vdVWRademacher n)
-            (fun i : Fin n =>
-              hasSubgaussianMGF_vdVWProductMeasure_eval_vdVWRademacher i))
       calc
         signMeasure
             ((fun signSample : SampleAt ℝ n =>
@@ -43028,18 +43004,14 @@ theorem
                 (cover (fun i : Fin n => (pairSample i).1)).center
                 signSample M} := by
             rfl
-        _ =
-          ENNReal.ofReal
-            (signMeasure.real
-              {signSample : SampleAt ℝ n |
-                ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound
-                  (fun i : Fin n => (pairSample i).1)
-                  (vdVWTruncatedClassFun classFun envelope M)
-                  (cover (fun i : Fin n => (pairSample i).1)).center
-                  signSample M}) := by
-            rw [ofReal_measureReal]
         _ ≤ tail pairSample := by
-            exact ENNReal.ofReal_le_ofReal hreal
+            simpa [signMeasure, tail] using
+              (vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_vdVWRademacher
+                (sample := fun i : Fin n => (pairSample i).1)
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M)
+                (cover := cover (fun i : Fin n => (pairSample i).1))
+                hindexClass_nonempty henvelope hM_pos)
   simpa [signMeasure, pairMeasure, originalFailure, tail] using hproduct
 
 /--
@@ -43099,23 +43071,6 @@ theorem
       ENNReal.ofReal
         (vdVWTheorem243FiniteCenterHoeffdingFailureTail
           (cardinality (fun i : Fin n => (pairSample i).2)) n M)
-  have hindep_neg :
-      iIndepFun
-        (fun i : Fin n => fun signSample : SampleAt ℝ n =>
-          -signSample i) signMeasure := by
-    have h :=
-      (iIndepFun_vdVWProductMeasure_vdVWRademacher n).comp
-        (fun _ : Fin n => fun x : ℝ => -x)
-        (fun _ : Fin n => measurable_id.neg)
-    simpa [signMeasure, Function.comp_def] using h
-  have hsubG_neg :
-      ∀ i : Fin n,
-        HasSubgaussianMGF
-          (fun signSample : SampleAt ℝ n => -signSample i) 1
-          signMeasure := by
-    intro i
-    simpa [signMeasure] using
-      (hasSubgaussianMGF_vdVWProductMeasure_eval_vdVWRademacher i).neg
   have hproduct :
       signMeasure.prod pairMeasure ghostFailure ≤
         ∫⁻ pairSample, tail pairSample ∂pairMeasure := by
@@ -43125,28 +43080,6 @@ theorem
         (joint := ghostFailure) (bound := tail) ?_ ?_
     · simpa [ghostFailure] using hfailure_meas
     · intro pairSample
-      have hreal :
-          signMeasure.real
-              {signSample : SampleAt ℝ n |
-                ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound
-                  (fun i : Fin n => (pairSample i).2)
-                  (vdVWTruncatedClassFun classFun envelope M)
-                  (cover (fun i : Fin n => (pairSample i).2)).center
-                  (fun i : Fin n => -signSample i) M} ≤
-            vdVWTheorem243FiniteCenterHoeffdingFailureTail
-              (cardinality (fun i : Fin n => (pairSample i).2)) n M := by
-        simpa [signMeasure,
-          vdVWTheorem243FiniteCenterHoeffdingFailureTail] using
-          (vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le
-            (μ := signMeasure)
-            (sample := fun i : Fin n => (pairSample i).2)
-            (indexClass := indexClass) (classFun := classFun)
-            (envelope := envelope) (M := M)
-            (cover := cover (fun i : Fin n => (pairSample i).2))
-            hindexClass_nonempty henvelope hM_pos
-            (fun i : Fin n => fun signSample : SampleAt ℝ n =>
-              -signSample i)
-            hindep_neg hsubG_neg)
       calc
         signMeasure
             ((fun signSample : SampleAt ℝ n =>
@@ -43160,18 +43093,14 @@ theorem
                 (cover (fun i : Fin n => (pairSample i).2)).center
                 (fun i : Fin n => -signSample i) M} := by
             rfl
-        _ =
-          ENNReal.ofReal
-            (signMeasure.real
-              {signSample : SampleAt ℝ n |
-                ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound
-                  (fun i : Fin n => (pairSample i).2)
-                  (vdVWTruncatedClassFun classFun envelope M)
-                  (cover (fun i : Fin n => (pairSample i).2)).center
-                  (fun i : Fin n => -signSample i) M}) := by
-            rw [ofReal_measureReal]
         _ ≤ tail pairSample := by
-            exact ENNReal.ofReal_le_ofReal hreal
+            simpa [signMeasure, tail] using
+              (vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_neg_vdVWRademacher
+                (sample := fun i : Fin n => (pairSample i).2)
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M)
+                (cover := cover (fun i : Fin n => (pairSample i).2))
+                hindexClass_nonempty henvelope hM_pos)
   simpa [signMeasure, pairMeasure, ghostFailure, tail] using hproduct
 
 /--
@@ -44886,6 +44815,289 @@ theorem
       filter_upwards [hsign, hmaxOriginal, hmaxGhost] with z hsignz hmaxOriginalz
         hmaxGhostz hzbad
       exact ⟨hsignz, hmaxOriginalz, hmaxGhostz, hzbad⟩))
+
+/--
+Lossy fixed-fiber source lower bound from the centered sign-swapped bad event.
+
+This is the finite-center counterpart of the a.e. component theorem above:
+the sign support is discharged under the canonical product law, while the two
+selected finite-center Hoeffding side-condition failures remain as explicit
+additive error probabilities.
+-/
+theorem
+    VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_finiteCenter_failures
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    {sample : SampleAt Observation n} {beta : ℝ≥0∞}
+    (hbadLower :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+            P indexClass classFun envelope M epsilon sample)) :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent
+            P indexClass classFun envelope M eta epsilon cover sample) +
+          (((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n))
+            {z : SampleAt Observation n × SampleAt ℝ n |
+              ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+                (vdVWTruncatedClassFun classFun envelope M)
+                (cover sample).center z.2 M} +
+            ((vdVWProductMeasure P n).prod
+                (vdVWProductMeasure vdVWRademacherLaw n))
+              {z : SampleAt Observation n × SampleAt ℝ n |
+                ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+                  (vdVWTruncatedClassFun classFun envelope M)
+                  (cover z.1).center (fun i : Fin n => -z.2 i) M}) := by
+  let μ : Measure (SampleAt Observation n × SampleAt ℝ n) :=
+    (vdVWProductMeasure P n).prod (vdVWProductMeasure vdVWRademacherLaw n)
+  let sourceEvent : Set (SampleAt Observation n × SampleAt ℝ n) :=
+    VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent
+      P indexClass classFun envelope M eta epsilon cover sample
+  let originalFailure : Set (SampleAt Observation n × SampleAt ℝ n) :=
+    {z |
+      ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover sample).center z.2 M}
+  let ghostFailure : Set (SampleAt Observation n × SampleAt ℝ n) :=
+    {z |
+      ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover z.1).center (fun i : Fin n => -z.2 i) M}
+  let badEvent : Set (SampleAt Observation n × SampleAt ℝ n) :=
+    VdVWTheorem243CenteredPairSubSignSwapBadEvent
+      P indexClass classFun envelope M epsilon sample
+  have hbad_le_union :
+      μ badEvent ≤ μ (sourceEvent ∪ (originalFailure ∪ ghostFailure)) := by
+    refine measure_mono_ae ?_
+    filter_upwards [ae_vdVWProductMeasure_prod_vdVWRademacherSignVector P n]
+      with z hsign hzbad
+    by_cases hmaxOriginal :
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (cover sample).center z.2 M
+    · by_cases hmaxGhost :
+          VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover z.1).center (fun i : Fin n => -z.2 i) M
+      · exact Or.inl (by
+          have hzbad' :
+              epsilon <
+                vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun pair : Observation × Observation =>
+                    (vdVWTruncatedClassFun classFun envelope M index pair.1 -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P) -
+                      (vdVWTruncatedClassFun classFun envelope M index pair.2 -
+                        ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P))
+                  (fun _ : Fin n => (n : ℝ)⁻¹)
+                  (vdVWRademacherProductSampleSignSwap z.2
+                    (fun i : Fin n => (sample i, z.1 i))) := by
+            simpa [badEvent, VdVWTheorem243CenteredPairSubSignSwapBadEvent]
+              using hzbad
+          have hsource : z ∈ sourceEvent := by
+            dsimp [sourceEvent,
+              VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent]
+            exact ⟨hsign, hmaxOriginal, hmaxGhost, hzbad'⟩
+          exact hsource)
+      · exact Or.inr (Or.inr (by
+          simpa [ghostFailure] using hmaxGhost))
+    · exact Or.inr (Or.inl (by
+        simpa [originalFailure] using hmaxOriginal))
+  have hfinal :
+      beta ≤ μ sourceEvent + (μ originalFailure + μ ghostFailure) := by
+    calc
+      beta ≤ μ badEvent := by
+        simpa [μ, badEvent] using hbadLower
+      _ ≤ μ (sourceEvent ∪ (originalFailure ∪ ghostFailure)) :=
+        hbad_le_union
+      _ ≤ μ sourceEvent + μ (originalFailure ∪ ghostFailure) :=
+        measure_union_le sourceEvent (originalFailure ∪ ghostFailure)
+      _ ≤ μ sourceEvent + (μ originalFailure + μ ghostFailure) :=
+        add_le_add le_rfl (measure_union_le originalFailure ghostFailure)
+  simpa [μ, sourceEvent, originalFailure, ghostFailure] using hfinal
+
+/--
+Lossy fixed-fiber source lower bound with finite-center failure probabilities
+bounded by Hoeffding tails.
+
+For a fixed original sample, the original selected-center failure pays the
+fixed-sample tail.  The ghost selected-center failure pays the ghost-sample
+integral of the same tail, with signs negated on the Rademacher coordinate.
+-/
+theorem
+    VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_finiteCenter_failure_tails
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M eta epsilon : ℝ}
+    {n : ℕ} {cardinality : SampleAt Observation n -> ℕ}
+    (cover :
+      ∀ sample : SampleAt Observation n,
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (cardinality sample))
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    {sample : SampleAt Observation n} {beta : ℝ≥0∞}
+    (hbadLower :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+            P indexClass classFun envelope M epsilon sample))
+    (hfailureOriginal_meas :
+      MeasurableSet
+        {z : SampleAt Observation n × SampleAt ℝ n |
+          ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover sample).center z.2 M})
+    (hfailureGhost_meas :
+      MeasurableSet
+        {z : SampleAt Observation n × SampleAt ℝ n |
+          ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+            (vdVWTruncatedClassFun classFun envelope M)
+            (cover z.1).center (fun i : Fin n => -z.2 i) M}) :
+      beta ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent
+            P indexClass classFun envelope M eta epsilon cover sample) +
+          (ENNReal.ofReal
+            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+              (cardinality sample) n M) +
+            ∫⁻ ghostSample : SampleAt Observation n,
+              ENNReal.ofReal
+                (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                  (cardinality ghostSample) n M)
+              ∂(vdVWProductMeasure P n)) := by
+  let ghostMeasure : Measure (SampleAt Observation n) := vdVWProductMeasure P n
+  let signMeasure : Measure (SampleAt ℝ n) :=
+    vdVWProductMeasure vdVWRademacherLaw n
+  let sourceEvent : Set (SampleAt Observation n × SampleAt ℝ n) :=
+    VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent
+      P indexClass classFun envelope M eta epsilon cover sample
+  let originalFailure : Set (SampleAt Observation n × SampleAt ℝ n) :=
+    {z |
+      ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover sample).center z.2 M}
+  let ghostFailure : Set (SampleAt Observation n × SampleAt ℝ n) :=
+    {z |
+      ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+        (vdVWTruncatedClassFun classFun envelope M)
+        (cover z.1).center (fun i : Fin n => -z.2 i) M}
+  let originalTail : ℝ≥0∞ :=
+    ENNReal.ofReal
+      (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+        (cardinality sample) n M)
+  let ghostTail : ℝ≥0∞ :=
+    ∫⁻ ghostSample : SampleAt Observation n,
+      ENNReal.ofReal
+        (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+          (cardinality ghostSample) n M)
+      ∂ghostMeasure
+  have hsplit :
+      beta ≤
+        ghostMeasure.prod signMeasure sourceEvent +
+          (ghostMeasure.prod signMeasure originalFailure +
+            ghostMeasure.prod signMeasure ghostFailure) := by
+    simpa [ghostMeasure, signMeasure, sourceEvent, originalFailure,
+      ghostFailure] using
+      (VdVWTheorem243CenteredPairSubSignSwapFiberSourceEvent_lower_bound_of_badEvent_finiteCenter_failures
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta)
+        (epsilon := epsilon) (cardinality := cardinality)
+        (cover := cover) (sample := sample) hbadLower)
+  have horiginal_fiber :
+      ∀ ghostSample : SampleAt Observation n,
+        signMeasure (Prod.mk ghostSample ⁻¹' originalFailure) ≤
+          originalTail := by
+    intro ghostSample
+    calc
+      signMeasure (Prod.mk ghostSample ⁻¹' originalFailure)
+          =
+        signMeasure
+          {signSample : SampleAt ℝ n |
+            ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+              (vdVWTruncatedClassFun classFun envelope M)
+              (cover sample).center signSample M} := by
+          rfl
+      _ ≤ originalTail := by
+          simpa [signMeasure, originalTail] using
+            (vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_vdVWRademacher
+              (sample := sample) (indexClass := indexClass)
+              (classFun := classFun) (envelope := envelope) (M := M)
+              (cover := cover sample) hindexClass_nonempty henvelope hM_pos)
+  have horiginal :
+      ghostMeasure.prod signMeasure originalFailure ≤ originalTail := by
+    calc
+      ghostMeasure.prod signMeasure originalFailure =
+          ∫⁻ ghostSample, signMeasure (Prod.mk ghostSample ⁻¹' originalFailure)
+            ∂ghostMeasure := Measure.prod_apply (by
+              simpa [originalFailure] using hfailureOriginal_meas)
+      _ ≤ ∫⁻ _ghostSample, originalTail ∂ghostMeasure :=
+          lintegral_mono horiginal_fiber
+      _ = originalTail := by
+          simp [ghostMeasure, originalTail]
+  have hghost_fiber :
+      ∀ ghostSample : SampleAt Observation n,
+        signMeasure (Prod.mk ghostSample ⁻¹' ghostFailure) ≤
+          ENNReal.ofReal
+            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+              (cardinality ghostSample) n M) := by
+    intro ghostSample
+    calc
+      signMeasure (Prod.mk ghostSample ⁻¹' ghostFailure)
+          =
+        signMeasure
+          {signSample : SampleAt ℝ n |
+            ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound ghostSample
+              (vdVWTruncatedClassFun classFun envelope M)
+                (cover ghostSample).center (fun i : Fin n => -signSample i)
+                M} := by
+          rfl
+      _ ≤
+        ENNReal.ofReal
+          (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+            (cardinality ghostSample) n M) := by
+          simpa [signMeasure] using
+            (vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_neg_vdVWRademacher
+              (sample := ghostSample) (indexClass := indexClass)
+              (classFun := classFun) (envelope := envelope) (M := M)
+              (cover := cover ghostSample) hindexClass_nonempty henvelope hM_pos)
+  have hghost :
+      ghostMeasure.prod signMeasure ghostFailure ≤ ghostTail := by
+    calc
+      ghostMeasure.prod signMeasure ghostFailure =
+          ∫⁻ ghostSample, signMeasure (Prod.mk ghostSample ⁻¹' ghostFailure)
+            ∂ghostMeasure := Measure.prod_apply (by
+              simpa [ghostFailure] using hfailureGhost_meas)
+      _ ≤
+          ∫⁻ ghostSample : SampleAt Observation n,
+            ENNReal.ofReal
+              (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                (cardinality ghostSample) n M)
+            ∂ghostMeasure := lintegral_mono hghost_fiber
+      _ = ghostTail := by
+          rfl
+  have htail :
+      ghostMeasure.prod signMeasure originalFailure +
+          ghostMeasure.prod signMeasure ghostFailure ≤
+        originalTail + ghostTail :=
+    add_le_add horiginal hghost
+  exact hsplit.trans (add_le_add le_rfl htail)
 
 /--
 Source-event lower bound from the Chebyshev pair-sub bad event plus a supplied

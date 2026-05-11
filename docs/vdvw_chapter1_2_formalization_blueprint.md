@@ -2429,6 +2429,16 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`
    and
    `VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`.
+   The fixed-sample tail is now also packaged for the canonical Rademacher
+   product and its negated-sign variant by
+   `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_vdVWRademacher`,
+   `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_vdVWRademacher`,
+   `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_neg_vdVWRademacher`,
+   and
+   `vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_neg_vdVWRademacher`.
+   The sign-only and product-pair consumers now cite these source wrappers
+   directly instead of reassembling the canonical coordinate independence and
+   sub-Gaussian facts at every finite-center failure bound.
    The additive comparison layer is compiled as
    `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failure_tails`,
    `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`,

@@ -1,6 +1,6 @@
 # VdV&W Current Blocker Primitive Plan
 
-Status date: 2026-05-10.
+Status date: 2026-05-11.
 
 This file pins down the active blocker and the primitive Lean declarations
 needed to close it.  It is not a theorem report.  A formal report is created
@@ -104,6 +104,15 @@ original/ghost selected-cover failure terms are bounded by
 `VdVWTheorem243ProductPairRademacher_originalFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`
 and
 `VdVWTheorem243ProductPairRademacher_ghostFiniteCenter_failure_le_lintegral_finiteCenterHoeffdingTail`.
+The fixed-sample tail now also has canonical Rademacher-product source wrappers
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_vdVWRademacher`,
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_vdVWRademacher`,
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_real_le_neg_vdVWRademacher`,
+and
+`vdVWTheorem243_rademacherFiniteCenterHoeffding_failure_le_ofReal_tail_neg_vdVWRademacher`.
+The sign-only and product-pair finite-center failure consumers now use these
+canonical measure-valued wrappers instead of rebuilding independence and
+sub-Gaussianity for the Rademacher coordinates at each call site.
 The new chaining lemmas are
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_signedBad_finiteCenter_failure_tails`,
 `VdVWTheorem243ProductPairRademacherSelectedNetEvent_lower_bound_of_chebyshev_countable_finiteCenter_failure_tails_succ`,
