@@ -2469,6 +2469,11 @@ above, so they do not change the theorem-level dashboard counts.
    The canonical route can therefore consume either product-pair a.e. lower
    growth or ordinary single-sample a.e. lower growth, with the latter lifted
    along the product-pair projection measure-preserving maps.
+   The same hypotheses now feed the large-`M` untruncated centered conclusion
+   through
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge`
+   and
+   `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge`.
    The single-sample inverse-square lintegral inputs for later Rademacher
    finite-center tail routes are also compiled:
    `vdVW_lintegral_tendsto_zero_of_eventual_ofReal_bound`,

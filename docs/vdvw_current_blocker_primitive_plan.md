@@ -8962,6 +8962,11 @@ Thus the selected-cardinality growth hypothesis may be supplied either almost
 surely on the product-pair space or almost surely under the ordinary sample
 law, with product-pair projections handled by the existing measure-preserving
 maps.
+The same lower-growth branch now also reaches the large-`M` untruncated
+centered conclusion through
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge`.
 The single-sample inverse-square lintegral inputs needed by later Rademacher
 finite-center tail routes are now compiled too:
 `vdVW_lintegral_tendsto_zero_of_eventual_ofReal_bound`,
