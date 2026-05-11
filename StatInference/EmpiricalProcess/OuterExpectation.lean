@@ -580,6 +580,29 @@ theorem exists_common_measurableCover_of_forall_absolutelyContinuous_aemeasurabl
       VdVWMeasurableCover.ofAEMeasurable_minimal_ae_of_absolutelyContinuous
         (hdom μ hμ) hT V hV h_majorizes
 
+/--
+VdV&W Lemma 1.2.4, nonnegative dominated a.e.-measurable layer.
+
+This numbered wrapper exposes the common-cover statement in the textbook form:
+one measurable majorant dominates `T` pointwise and is minimal against every
+measurable a.e. majorant under each measure dominated by `ν`.
+-/
+theorem vdVW124_exists_common_measurableCover_of_dominated_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {ν : Measure Ω}
+    {measures : Set (Measure Ω)} {T : Ω -> ℝ≥0∞}
+    (hdom : ∀ μ ∈ measures, μ ≪ ν)
+    (hT : AEMeasurable T ν) :
+    ∃ Tstar : Ω -> ℝ≥0∞,
+      Measurable Tstar ∧
+        (∀ ω, T ω ≤ Tstar ω) ∧
+          ∀ μ ∈ measures, ∀ U : Ω -> ℝ≥0∞,
+            Measurable U ->
+            (∀ᵐ ω ∂μ, T ω ≤ U ω) ->
+              ∀ᵐ ω ∂μ, Tstar ω ≤ U ω := by
+  exact
+    exists_common_measurableCover_of_forall_absolutelyContinuous_aemeasurable
+      (ν := ν) (measures := measures) (T := T) hT hdom
+
 /-- Real-valued null-measurable targets give covers after coercion to `ℝ≥0∞`. -/
 noncomputable def ofNullMeasurable_ofReal {Ω : Type u} [MeasurableSpace Ω]
     (μ : Measure Ω) {f : Ω -> ℝ} (hf : NullMeasurable f μ) :
@@ -1130,6 +1153,38 @@ theorem exists_common_boundedERealMeasurableCover_of_forall_absolutelyContinuous
     exact
       VdVWBoundedERealMeasurableCover.ofAEMeasurable_minimal_ae_of_absolutelyContinuous
         (hdom μ hμ) hT hlower hupper V hV h_majorizes
+
+/--
+VdV&W Lemma 1.2.4, bounded extended-real dominated a.e.-measurable layer.
+
+This numbered wrapper packages the existing bounded `EReal` common-cover
+primitive in the textbook-facing form: a single measurable `Tstar` dominates
+`T`, stays under the supplied finite upper bound, and is minimal against all
+measurable a.e. majorants for every measure dominated by `ν`.
+-/
+theorem vdVW124_exists_common_boundedERealMeasurableCover_of_dominated_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {ν : Measure Ω}
+    {measures : Set (Measure Ω)} {T : Ω -> EReal} {lower upper : ℝ}
+    (hdom : ∀ μ ∈ measures, μ ≪ ν)
+    (hT : AEMeasurable T ν)
+    (hlower : ∀ ω, (lower : EReal) ≤ T ω)
+    (hupper : ∀ ω, T ω ≤ (upper : EReal)) :
+    ∃ Tstar : Ω -> EReal,
+      Measurable Tstar ∧
+        (∀ ω, T ω ≤ Tstar ω) ∧
+          (∀ ω, Tstar ω ≤ (upper : EReal)) ∧
+            ∀ μ ∈ measures, ∀ U : Ω -> EReal,
+              Measurable U ->
+              (∀ᵐ ω ∂μ, T ω ≤ U ω) ->
+                ∀ᵐ ω ∂μ, Tstar ω ≤ U ω := by
+  rcases
+    exists_common_boundedERealMeasurableCover_of_forall_absolutelyContinuous_aemeasurable
+      (ν := ν) (measures := measures) (T := T) (lower := lower) (upper := upper)
+      hT hlower hupper hdom with
+    ⟨Tstar, hTstar_meas, hTstar_majorizes, _hT_lower, hTstar_upper,
+      hTstar_minimal⟩
+  exact
+    ⟨Tstar, hTstar_meas, hTstar_majorizes, hTstar_upper, hTstar_minimal⟩
 
 /--
 Nonnegative bounded `EReal` covers descend to the existing nonnegative

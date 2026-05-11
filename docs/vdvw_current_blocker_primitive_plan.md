@@ -1731,6 +1731,16 @@ to maps that are a.e.-measurable under a dominating measure.  This mirrors the
 nonnegative dominated-family theorem and leaves only the genuinely arbitrary
 nonmeasurable extended-real common-cover existence clause open for Lemma 1.2.4.
 
+2026-05-11 numbered Lemma 1.2.4 wrapper follow-up:
+`VdVWMeasurableCover.vdVW124_exists_common_measurableCover_of_dominated_aemeasurable`
+and
+`VdVWBoundedERealMeasurableCover.vdVW124_exists_common_boundedERealMeasurableCover_of_dominated_aemeasurable`
+now expose the nonnegative and bounded extended-real dominated
+a.e.-measurable common-cover layers in a directly numbered VdV&W 1.2.4 shape.
+These are source-facing wrappers over the already proved constructions; the
+remaining exact 1.2.4 gap is still arbitrary/nonmeasurable extended-real
+common-cover existence.
+
 2026-05-05 product projection cover follow-up: search found no existing exact
 VdV&W perfect-map theorem in mathlib or local `StatInference`, but mathlib's
 product-a.e. section APIs (`Measure.ae_prod_iff_ae_ae` and
