@@ -3259,6 +3259,13 @@ This removes the unused ghost-coordinate bookkeeping from the displayed-beta
 source path.  The source blocker is now exactly the sign-only Rademacher
 bad-fiber probability input plus finite-center failure-tail control.
 
+The displayed-beta source comparison now has the matching sign-only consumer:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedNetEvent_sample_coordinate_countable`.
+Its ghost-event companion discharges countable selected-center measurability,
+and the sign-only theorem applies the ghost-fiber reduction internally.  This
+makes the remaining beta source hypothesis precisely the sign-only canonical
+Rademacher selected-net fiber lower bound.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

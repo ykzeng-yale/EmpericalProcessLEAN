@@ -4189,3 +4189,9 @@ fiber.  The new fiber membership/equality lemmas and
 transport sign-only selected-net fiber mass to the ghost/Rademacher product
 fiber.  The active source blocker remains the sign-only Rademacher bad-fiber
 mass theorem plus finite-center tail control.
+
+The displayed-beta comparison can now consume that sign-only source directly:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedNetEvent_sample_coordinate_countable`
+packages countable event measurability plus ghost-fiber reduction.  Future
+probability work should prove the exposed sign-only beta lower bound rather
+than restating ghost-product fiber assumptions.

@@ -9467,3 +9467,14 @@ fiber.  The displayed-beta source can therefore consume sign-only fiber mass
 directly; the remaining theorem-facing source task is to prove that sign-only
 Rademacher bad-fiber beta lower bound, together with valid finite-center
 failure-tail control.
+
+2026-05-11 displayed-beta consumer for sign-only canonical fibers:
+`Theorem243.lean` now proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalGhostRademacher_selectedNetEvent_sample_coordinate_countable`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_canonicalRademacher_selectedNetEvent_sample_coordinate_countable`.
+These combine countable selected-center event measurability with the
+ghost-fiber reduction, so a displayed Chebyshev beta lower bound on the
+sign-only canonical Rademacher selected-net fiber is enough to feed the
+displayed-beta comparison.  The open probability input is now exposed in its
+intended sign-only form.
