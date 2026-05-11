@@ -9805,6 +9805,19 @@ structural nondegenerate-cover lower-growth theorem for the canonical selected
 cardinalities, or a return to the direct product-fiber/Chebyshev comparison
 that avoids inverse-square lower-growth entirely.
 
+2026-05-11 entropy-versus-inverse-square-tail obstruction:
+`Theorem243.lean` now strengthens the constant-cardinality diagnostic with
+`tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral`,
+`not_tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral_zero`, and
+`vdVWTheorem243_constOne_entropy_zero_not_selectedInvSq_lintegral_zero`.
+For the constant one-center selected cardinality, the normalized
+log-cardinality outer-probability condition still holds, but the exact
+inverse-square finite-center error used by the additive failure-tail route is
+a positive constant under every sample law.  This pins the source gap more
+sharply: bare stochastic entropy cannot supply the required inverse-square
+tail control; a future proof needs explicit lower-growth/tail/UI structure or
+the direct product-fiber/Chebyshev comparison.
+
 2026-05-10 untruncated fixed-fiber pair-difference endpoint:
 `Theorem243.lean` now adds
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale`.

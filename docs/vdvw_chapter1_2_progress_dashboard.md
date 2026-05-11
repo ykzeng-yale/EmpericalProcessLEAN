@@ -4409,6 +4409,17 @@ is a real probabilistic/geometric source theorem giving lower growth under
 additional structure, or a direct Chebyshev/product-fiber route that avoids
 the inverse-square failure-tail lower-growth requirement.
 
+The same obstruction is now stated at the actual inverse-square tail-control
+level.  `Theorem243.lean` proves
+`tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral`,
+`not_tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral_zero`, and
+`vdVWTheorem243_constOne_entropy_zero_not_selectedInvSq_lintegral_zero`.
+Thus a constant one-center selected cardinality can satisfy the normalized
+entropy condition while its inverse-square finite-center error remains a
+positive constant under every sample law.  The additive failure-tail lane
+therefore needs explicit lower-growth/tail/UI structure, not another entropy
+wrapper.
+
 The fixed-fiber pair-difference route now also reaches the untruncated theorem
 layer.  The compiled endpoint
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale`

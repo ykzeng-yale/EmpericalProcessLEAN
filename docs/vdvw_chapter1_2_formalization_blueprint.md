@@ -3532,6 +3532,15 @@ not attempt to infer inverse-square lower growth from bare
 condition, or close the direct product-fiber/Chebyshev comparison without the
 additive failure-tail route.
 
+The constant-cardinality diagnostic now also reaches the exact tail-control
+quantity.  `tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral`,
+`not_tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral_zero`, and
+`vdVWTheorem243_constOne_entropy_zero_not_selectedInvSq_lintegral_zero` prove
+that the constant one-center selected cardinality has vanishing normalized
+entropy but a nonvanishing inverse-square finite-center error.  This keeps the
+blueprint frontier on a genuine structural lower-growth/tail/UI theorem or the
+direct product-fiber/Chebyshev source comparison.
+
 The direct fixed-fiber pair-difference route now has its large-`M` endpoint:
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_pairDifferenceChebyshev_signSwap_ae_finiteCenter_halfScale`.
 It composes the existing fixed-`M` pair-difference/Chebyshev/sign-swap source
