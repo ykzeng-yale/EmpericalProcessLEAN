@@ -3069,6 +3069,14 @@ remaining theorem-facing probability inputs are the two eventual a.e.
 finite-center support facts for the canonical first-level selected cover, or
 the product-fiber/Chebyshev replacement that bypasses them.
 
+The product-pair first-level branch now also has an unnegated-support wrapper,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`.
+It uses `VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign` and
+`ae_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign` to derive the
+negated-sign ghost support from the same unnegated support input.  Thus this
+branch now exposes one canonical first-level finite-center support/tail source
+input rather than separate original and ghost sign versions.
+
 The displayed Chebyshev-beta source constructor now has the same canonical
 first-level cover specialization:
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.

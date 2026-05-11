@@ -9238,6 +9238,20 @@ probability-side target is still the product-fiber/Chebyshev source theorem
 that would avoid needing those support facts or the false additive
 failure-tail convergence.
 
+2026-05-11 first-level product-pair unnegated support route:
+`Theorem243.lean` now proves
+`VdVWTheorem243FiniteCenterMaximalBound_neg_weights`,
+`VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign`, and the a.e.
+transport
+`ae_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign`, then uses
+them in
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`.
+The product-pair first-level branch can now take one eventual a.e.
+finite-center support input with unnegated Rademacher signs; the negated-sign
+ghost support is derived internally.  The remaining product-pair source
+blocker is therefore a single canonical finite-center support/tail input, or
+the product-fiber/Chebyshev route that avoids finite-center support entirely.
+
 2026-05-10 first-level displayed-beta selected-cover route:
 `Theorem243.lean` now also proves
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_selected_truncated_halfRadius_cardinality_firstLevel_countable`.

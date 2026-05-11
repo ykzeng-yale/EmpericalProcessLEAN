@@ -11775,6 +11775,49 @@ theorem VdVWTheorem243FiniteCenterMaximalBound_finCoordinatePerm
     vdVWWeightedSampleSum_finCoordinatePerm] using hmaximal centerIndex
 
 /--
+Finite-center maximal-bound predicates are invariant under flipping all
+weights.
+-/
+theorem VdVWTheorem243FiniteCenterMaximalBound_neg_weights
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {cardinality : ℕ}
+    {center : Fin cardinality -> Index} {weights : Fin n -> ℝ}
+    {centerScale : ℝ}
+    (hmaximal :
+      VdVWTheorem243FiniteCenterMaximalBound sample classFun center weights
+        centerScale) :
+    VdVWTheorem243FiniteCenterMaximalBound sample classFun center
+      (fun i : Fin n => -weights i) centerScale := by
+  intro centerIndex
+  simpa [VdVWTheorem243FiniteCenterMaximalBound,
+    vdVWWeightedSampleSum_neg_weights] using hmaximal centerIndex
+
+/--
+Finite-center maximal-bound predicates are unchanged by flipping all weights.
+-/
+theorem VdVWTheorem243FiniteCenterMaximalBound_neg_weights_iff
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {cardinality : ℕ}
+    {center : Fin cardinality -> Index} {weights : Fin n -> ℝ}
+    {centerScale : ℝ} :
+    VdVWTheorem243FiniteCenterMaximalBound sample classFun center
+        (fun i : Fin n => -weights i) centerScale ↔
+      VdVWTheorem243FiniteCenterMaximalBound sample classFun center weights
+        centerScale := by
+  constructor
+  · intro hmaximal
+    have hneg :=
+      VdVWTheorem243FiniteCenterMaximalBound_neg_weights
+        (sample := sample) (classFun := classFun) (center := center)
+        (weights := fun i : Fin n => -weights i)
+        (centerScale := centerScale) hmaximal
+    simpa using hneg
+  · intro hmaximal
+    exact VdVWTheorem243FiniteCenterMaximalBound_neg_weights hmaximal
+
+/--
 Fixed finite-center maximal-bound predicates are measurable when the sample and
 weights vary measurably.
 
@@ -15803,6 +15846,73 @@ theorem VdVWTheorem243RademacherFiniteCenterHoeffdingBound_finCoordinatePerm
     vdVWRademacherWeights_finCoordinatePerm] using
     (VdVWTheorem243FiniteCenterMaximalBound_finCoordinatePerm
       (Observation := Observation) (Index := Index) perm hmaximal)
+
+/--
+The finite-center Hoeffding/maximal predicate is stable under deterministic
+Rademacher sign negation.
+-/
+theorem VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {cardinality : ℕ}
+    {center : Fin cardinality -> Index} {sign : Fin n -> ℝ} {M : ℝ}
+    (hmaximal :
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun
+        center sign M) :
+    VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun center
+      (fun i : Fin n => -sign i) M := by
+  simpa [VdVWTheorem243RademacherFiniteCenterHoeffdingBound,
+    vdVWRademacherWeights_neg_sign] using
+    (VdVWTheorem243FiniteCenterMaximalBound_neg_weights
+      (sample := sample) (classFun := classFun) (center := center)
+      (weights := vdVWRademacherWeights sign)
+      (centerScale := vdVWTheorem243HoeffdingCenterScale n M) hmaximal)
+
+/--
+The finite-center Hoeffding/maximal predicate is unchanged by deterministic
+Rademacher sign negation.
+-/
+theorem VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign_iff
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n}
+    {classFun : Index -> Observation -> ℝ} {cardinality : ℕ}
+    {center : Fin cardinality -> Index} {sign : Fin n -> ℝ} {M : ℝ} :
+    VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun center
+        (fun i : Fin n => -sign i) M ↔
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample classFun center
+        sign M := by
+  constructor
+  · intro hmaximal
+    have hneg :=
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign
+        (sample := sample) (classFun := classFun) (center := center)
+        (sign := fun i : Fin n => -sign i) (M := M) hmaximal
+    simpa using hneg
+  · intro hmaximal
+    exact VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign hmaximal
+
+/--
+Almost-everywhere finite-center Hoeffding support transports through
+deterministic Rademacher sign negation.
+-/
+theorem ae_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign
+    {Ω : Type x} [MeasurableSpace Ω] {μ : Measure Ω}
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : Ω -> SampleAt Observation n)
+    {classFun : Index -> Observation -> ℝ} {cardinality : Ω -> ℕ}
+    (center : ∀ ω : Ω, Fin (cardinality ω) -> Index)
+    (sign : Ω -> SampleAt ℝ n) (M : ℝ)
+    (hmaximal :
+      ∀ᵐ ω ∂μ,
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound (sample ω)
+          classFun (center ω) (sign ω) M) :
+    ∀ᵐ ω ∂μ,
+      VdVWTheorem243RademacherFiniteCenterHoeffdingBound (sample ω)
+        classFun (center ω) (fun i : Fin n => -sign ω i) M :=
+  hmaximal.mono fun ω hω =>
+    (VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign_iff
+      (sample := sample ω) (classFun := classFun)
+      (center := center ω) (sign := sign ω) (M := M)).2 hω
 
 /--
 Fixed-center Rademacher finite-center Hoeffding predicates are measurable when
@@ -48474,6 +48584,94 @@ theorem
     simpa using hmaxOriginal eta heta
   · intro eta heta
     simpa using hmaxGhost eta heta
+
+/--
+Canonical countable first-level product-pair route with one eventual
+unnegated a.e. finite-center support assumption.
+
+The ghost support fact required by the two-sided product-pair source is
+obtained internally by Rademacher sign-negation invariance.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality radius n))
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hmax :
+      ∀ (eta : ℝ) (heta : 0 < eta),
+        ∀ᶠ n in atTop,
+          ∀ᵐ z : SampleAt ℝ n × SampleAt Observation n
+              ∂((vdVWProductMeasure vdVWRademacherLaw n).prod
+                  (vdVWProductMeasure P n)),
+            VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.2
+              (vdVWTruncatedClassFun classFun envelope M)
+              (vdVWSelectedTruncatedPositiveRadiusFirstLevelEmpiricalL1CoverAtCardOfCountable
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (cardinality := cardinality)
+                X hX_samplePath hcovering_all hcount hindexClass_nonempty
+                (by linarith : 0 < (eta / 2) / 2) n z.2).center z.1 M) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  refine
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (cardinality := cardinality)
+      X hX_samplePath hcovering_all hcount hclass henvelope_meas
+      hindexClass_nonempty henvelope hM_pos htruncIntegrable hlog hmax ?_
+  intro eta heta
+  filter_upwards [hmax eta heta] with n hmax_n
+  exact
+    ae_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign
+      (sample := fun z : SampleAt ℝ n × SampleAt Observation n => z.2)
+      (classFun := vdVWTruncatedClassFun classFun envelope M)
+      (center := fun z : SampleAt ℝ n × SampleAt Observation n =>
+        (vdVWSelectedTruncatedPositiveRadiusFirstLevelEmpiricalL1CoverAtCardOfCountable
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (cardinality := cardinality)
+          X hX_samplePath hcovering_all hcount hindexClass_nonempty
+          (by linarith : 0 < (eta / 2) / 2) n z.2).center)
+      (sign := fun z : SampleAt ℝ n × SampleAt Observation n => z.1)
+      (M := M) hmax_n
 
 /--
 Canonical first-level selected-cover version of the displayed Chebyshev-beta
