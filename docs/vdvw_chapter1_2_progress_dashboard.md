@@ -4035,6 +4035,8 @@ positive-radius cardinality and the countable first-level tuple selector.  The
 only remaining a.e. finite-center inputs are now stated for that canonical
 cover.
 That same branch now has the unnegated-support wrapper
+`VdVWTheorem243ProductPairRademacherSelectedNetEvent_outerProbability_bound_of_chebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`
+at the selected-net source layer and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_signSample_ae_finiteCenter_halfScale_of_selected_truncated_quarterRadius_firstLevel_unneg`.
 The supporting sign-negation lemmas transport finite-center Hoeffding support
 through Rademacher sign flips, so this route exposes one canonical unnegated
