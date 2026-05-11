@@ -4172,3 +4172,13 @@ and
 It uses the new additive-error bridge to keep finite-center failure-tail costs
 explicit.  The open inputs are still event measurability/countable selector
 wrappers and the actual Rademacher bad-fiber mass/tail-control estimates.
+
+The sign-only countability wrapper is now compiled.  The new declarations
+include the sign-negation iff lemmas for
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent` and
+`VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent`,
+`measurableSet_VdVWTheorem243CanonicalRademacherSelectedNetEvent_of_sample_coordinate_countable`,
+and the pointwise/a.e. countable outer-probability bridges ending in
+`..._sample_coordinate_countable`.  The sign-only source lane now exposes the
+pure Rademacher bad-fiber lower bound and finite-center failure-tail control,
+not event measurability, as the active probability-side blocker.

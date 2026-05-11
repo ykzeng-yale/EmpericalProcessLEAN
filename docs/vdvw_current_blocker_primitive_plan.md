@@ -9436,3 +9436,21 @@ finite-center failure tail as an explicit cost.  It feeds the future
 sign-only failure-tail and fixed-`M` route; the remaining open inputs are
 event measurability/countable selector wrappers plus the pure Rademacher
 bad-fiber mass and tail-control estimates.
+
+2026-05-11 countable sign-only selected-net measurability bridge:
+`Theorem243.lean` now also proves
+`mem_VdVWTheorem243CanonicalRademacherSelectedNetEvent_neg_sign_iff`,
+`mem_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_neg_sign_iff`,
+`measurableSet_VdVWTheorem243CanonicalGhostRademacher_rademacherBad_of_countable`,
+`measurableSet_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_of_components`,
+`measurableSet_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`,
+`measurableSet_VdVWTheorem243CanonicalGhostRademacherSelectedNetEvent_of_sample_coordinate_countable`,
+`measurableSet_VdVWTheorem243CanonicalRademacherSelectedNetEvent_of_sample_coordinate_countable`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail_sample_coordinate_countable`,
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail_sample_coordinate_countable`.
+This discharges the event-measurability/countable-selector wrapper for the
+sign-only source bridge and records the deterministic sign-negation invariance
+needed by later sign-symmetry work.  The remaining genuine source inputs are
+the pure Rademacher bad-fiber beta lower bound and a valid finite-center
+failure-tail/tail-control theorem.

@@ -3237,6 +3237,18 @@ bridge.  The remaining work is to supply measurability/countable selector
 wrappers and the genuine Rademacher bad-fiber mass plus finite-center
 failure-tail control.
 
+The countability-based sign-only measurability layer is now compiled through
+`measurableSet_VdVWTheorem243CanonicalRademacherSelectedNetEvent_of_sample_coordinate_countable`
+and the corresponding pointwise/a.e. outer-probability bridges
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail_sample_coordinate_countable`
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail_sample_coordinate_countable`.
+The ghost event has matching component and sample-coordinate measurability
+wrappers, and both canonical events now have deterministic sign-negation
+membership iff lemmas.  The sign-only route therefore no longer exposes event
+measurability as the main source gap; the next theorem-facing work is the pure
+Rademacher bad-fiber mass and finite-center tail control.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
