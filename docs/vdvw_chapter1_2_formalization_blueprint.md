@@ -3396,6 +3396,15 @@ cardinality while the a.e. domination is proved for the internally selected
 least cover; the canonical Rademacher/countable wrapper reduces that domination
 to the finite-center event and `Phi(x)=x` comparison.
 
+The constant-cardinality diagnostic now also reaches the exact tail-control
+quantity.  `tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral`,
+`not_tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral_zero`, and
+`vdVWTheorem243_constOne_entropy_zero_not_selectedInvSq_lintegral_zero` prove
+that the constant one-center selected cardinality has vanishing normalized
+entropy but a nonvanishing inverse-square finite-center error.  This keeps the
+blueprint frontier on a genuine structural lower-growth/tail/UI theorem or the
+direct product-fiber/Chebyshev source comparison.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

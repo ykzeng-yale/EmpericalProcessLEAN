@@ -23850,6 +23850,211 @@ theorem vdVWLogEmpiricalL1CoveringCardinality_const_terminal_div_le_log
     nlinarith
 
 /--
+The raw normalized logarithm of a constant finite cardinality tends to zero.
+
+This is the deterministic half of the entropy/lower-growth obstruction: the
+usual normalized entropy condition is compatible with a selected cardinality
+that never grows.
+-/
+theorem tendsto_log_const_cardinality_div_atTop_nhds_zero
+    (cardinality : ℕ) :
+    Tendsto
+      (fun n : ℕ => Real.log ((cardinality : ℝ) + 1) / (n : ℝ))
+      atTop (𝓝 0) :=
+  tendsto_const_div_atTop_nhds_zero_nat
+    (Real.log ((cardinality : ℝ) + 1))
+
+/--
+A constant natural-valued cardinality process cannot tend to infinity.
+
+This is a local spelling of mathlib's `Filter.not_tendsto_const_atTop`, used
+to keep the active Theorem 2.4.3 obstruction close to the selected-cardinality
+entropy lemmas.
+-/
+theorem not_tendsto_const_cardinality_atTop (cardinality : ℕ) :
+    ¬ Tendsto (fun _ : ℕ => cardinality) atTop atTop :=
+  Filter.not_tendsto_const_atTop cardinality atTop
+
+/--
+Constant terminal cardinality satisfies the normalized log-cardinality
+outer-probability condition.
+
+The theorem is intentionally paired with
+`not_tendsto_const_cardinality_atTop`: stochastic entropy of the form
+`log N_n / n -> 0` does not itself imply the selected-cardinality lower growth
+needed by the inverse-square finite-center failure-tail route.
+-/
+theorem
+    VdVWConvergesInOuterProbabilityConst_zero_of_const_terminal_cardinality
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} (cardinality : ℕ) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWLogEmpiricalL1CoveringCardinality
+          (fun _sample : SampleAt Observation n => fun _m : ℕ =>
+            cardinality)
+          sample n / (n : ℝ))
+      atTop (0 : ℝ) := by
+  exact
+    VdVWConvergesInOuterProbabilityConst_zero_of_nonneg_le_tendsto_bound
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        div_nonneg
+          (vdVWLogEmpiricalL1CoveringCardinality_nonneg
+            (fun _sample : SampleAt Observation n => fun _m : ℕ =>
+              cardinality)
+            sample n)
+          (Nat.cast_nonneg n))
+      (Eventually.of_forall fun n => by
+        intro sample
+        simp [vdVWLogEmpiricalL1CoveringCardinality])
+      (tendsto_log_const_cardinality_div_atTop_nhds_zero cardinality)
+
+/--
+Formal obstruction to deriving selected-cardinality lower growth from
+normalized entropy alone.
+
+For a constant terminal cardinality, the normalized log-cardinality process
+converges to zero in the local outer-probability sense, but the cardinality
+process does not diverge.  Product-pair and sign-only failure-tail routes
+therefore need an honest lower-growth/tail input, or a different probabilistic
+source comparison.
+-/
+theorem
+    vdVWTheorem243_const_terminal_cardinality_entropy_zero_not_lowerGrowth
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} (cardinality : ℕ) :
+    VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWLogEmpiricalL1CoveringCardinality
+            (fun _sample : SampleAt Observation n => fun _m : ℕ =>
+              cardinality)
+            sample n / (n : ℝ))
+        atTop (0 : ℝ) ∧
+      ¬ Tendsto (fun _ : ℕ => cardinality) atTop atTop := by
+  exact
+    ⟨VdVWConvergesInOuterProbabilityConst_zero_of_const_terminal_cardinality
+        (P := P) cardinality,
+      not_tendsto_const_cardinality_atTop cardinality⟩
+
+/--
+For a constant one-center selected cardinality, the inverse-square
+finite-center error is a positive constant under every sample law.
+
+This is the tail-control version of
+`vdVWTheorem243_const_terminal_cardinality_entropy_zero_not_lowerGrowth`: even
+though the normalized log-cardinality can vanish for a constant selected
+cardinality, the inverse-square error required by the additive finite-center
+failure-tail route does not vanish.
+-/
+theorem tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] :
+    Tendsto
+      (fun n : ℕ =>
+        ∫⁻ _sample : SampleAt Observation n,
+          ENNReal.ofReal
+            ((2 * Real.exp (-3)) / (((1 : ℝ) + 1) ^ 2))
+          ∂(vdVWProductMeasure P n))
+      atTop
+      (𝓝
+        (ENNReal.ofReal
+          ((2 * Real.exp (-3)) / (((1 : ℝ) + 1) ^ 2)))) := by
+  have hEq :
+      (fun n : ℕ =>
+        ∫⁻ _sample : SampleAt Observation n,
+          ENNReal.ofReal
+            ((2 * Real.exp (-3)) / (((1 : ℝ) + 1) ^ 2))
+          ∂(vdVWProductMeasure P n)) =
+        fun _ : ℕ =>
+          ENNReal.ofReal
+            ((2 * Real.exp (-3)) / (((1 : ℝ) + 1) ^ 2)) := by
+    funext n
+    simp [lintegral_const]
+  rw [hEq]
+  exact tendsto_const_nhds
+
+/--
+The constant one-center selected-cardinality inverse-square finite-center
+error cannot converge to zero.
+-/
+theorem not_tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral_zero
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] :
+    ¬ Tendsto
+      (fun n : ℕ =>
+        ∫⁻ _sample : SampleAt Observation n,
+          ENNReal.ofReal
+            ((2 * Real.exp (-3)) / (((1 : ℝ) + 1) ^ 2))
+          ∂(vdVWProductMeasure P n))
+      atTop (𝓝 (0 : ℝ≥0∞)) := by
+  intro hzero
+  have hconst :
+      Tendsto
+        (fun n : ℕ =>
+          ∫⁻ _sample : SampleAt Observation n,
+            ENNReal.ofReal
+              ((2 * Real.exp (-3)) / (((1 : ℝ) + 1) ^ 2))
+            ∂(vdVWProductMeasure P n))
+        atTop
+        (𝓝
+          (ENNReal.ofReal
+            ((2 * Real.exp (-3)) / (((1 : ℝ) + 1) ^ 2)))) :=
+    tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral (P := P)
+  have hlimit :
+      ENNReal.ofReal
+          ((2 * Real.exp (-3)) / (((1 : ℝ) + 1) ^ 2)) =
+        (0 : ℝ≥0∞) :=
+    tendsto_nhds_unique hconst hzero
+  have hpos_real :
+      0 < (2 * Real.exp (-3)) / (((1 : ℝ) + 1) ^ 2) := by
+    positivity
+  have hpos :
+      0 <
+        ENNReal.ofReal
+          ((2 * Real.exp (-3)) / (((1 : ℝ) + 1) ^ 2)) :=
+    ENNReal.ofReal_pos.mpr hpos_real
+  exact (ne_of_gt hpos) hlimit
+
+/--
+The constant one-center case simultaneously satisfies normalized entropy and
+fails the inverse-square finite-center tail-control convergence.
+-/
+theorem
+    vdVWTheorem243_constOne_entropy_zero_not_selectedInvSq_lintegral_zero
+    {Observation : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P] :
+    VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWLogEmpiricalL1CoveringCardinality
+            (fun _sample : SampleAt Observation n => fun _m : ℕ =>
+              (1 : ℕ))
+            sample n / (n : ℝ))
+        atTop (0 : ℝ) ∧
+      ¬ Tendsto
+        (fun n : ℕ =>
+          ∫⁻ _sample : SampleAt Observation n,
+            ENNReal.ofReal
+              ((2 * Real.exp (-3)) / (((1 : ℝ) + 1) ^ 2))
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 (0 : ℝ≥0∞)) := by
+  exact
+    ⟨VdVWConvergesInOuterProbabilityConst_zero_of_const_terminal_cardinality
+        (P := P) 1,
+      not_tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral_zero
+        (P := P)⟩
+
+/--
 Adapter from the raw real-log spelling of a finite-cardinality entropy bound to
 the local logarithmic-cardinality process used by Theorem 2.4.3 consumers.
 -/

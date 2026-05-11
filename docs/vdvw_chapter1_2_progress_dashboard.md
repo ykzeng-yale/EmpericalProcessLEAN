@@ -4295,3 +4295,14 @@ The selected half-radius finite-net bridge now also exposes the canonical
 Rademacher/countable `hphi_id` route at fixed `M`, with entropy controlled by
 the external half-radius cardinality and domination proved for the selected
 first-level cover.
+
+The same obstruction is now stated at the actual inverse-square tail-control
+level.  `Theorem243.lean` proves
+`tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral`,
+`not_tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral_zero`, and
+`vdVWTheorem243_constOne_entropy_zero_not_selectedInvSq_lintegral_zero`.
+Thus a constant one-center selected cardinality can satisfy the normalized
+entropy condition while its inverse-square finite-center error remains a
+positive constant under every sample law.  The additive failure-tail lane
+therefore needs explicit lower-growth/tail/UI structure, not another entropy
+wrapper.

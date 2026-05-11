@@ -9649,3 +9649,16 @@ and
 These feed the fixed-radius finite-net domination route from the internally
 selected first-level half-radius cover; the remaining source inputs are the
 canonical Rademacher finite-center event and the `Phi(x)=x` comparison.
+
+2026-05-11 entropy-versus-inverse-square-tail obstruction:
+`Theorem243.lean` now strengthens the constant-cardinality diagnostic with
+`tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral`,
+`not_tendsto_vdVWTheorem243_constOne_selectedInvSq_lintegral_zero`, and
+`vdVWTheorem243_constOne_entropy_zero_not_selectedInvSq_lintegral_zero`.
+For the constant one-center selected cardinality, the normalized
+log-cardinality outer-probability condition still holds, but the exact
+inverse-square finite-center error used by the additive failure-tail route is
+a positive constant under every sample law.  This pins the source gap more
+sharply: bare stochastic entropy cannot supply the required inverse-square
+tail control; a future proof needs explicit lower-growth/tail/UI structure or
+the direct product-fiber/Chebyshev comparison.
