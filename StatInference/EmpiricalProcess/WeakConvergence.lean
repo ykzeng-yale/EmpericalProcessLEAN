@@ -3828,6 +3828,46 @@ def VdVWProbabilityMeasuresTight
   IsTightMeasureSet {((μ : ProbabilityMeasure S) : Measure S) | μ ∈ A}
 
 /--
+VdV&W measure-level separability for probability measures: the measure is
+carried by a measurable separable subset.
+
+This is a local predicate for Lemma 1.3.2.  It is intentionally measure-level;
+separability of arbitrary maps remains a separate Chapter 1 primitive.
+-/
+def VdVWProbabilityMeasureSeparable
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    (μ : ProbabilityMeasure S) : Prop :=
+  ∃ A : Set S, MeasurableSet A ∧ IsSeparable A ∧
+    ((μ : ProbabilityMeasure S) : Measure S) (Aᶜ) = 0
+
+/--
+VdV&W measure-level pre-tightness for probability measures: every positive
+tolerance admits a measurable totally bounded set whose complement has mass at
+most that tolerance.
+
+This separates the totally-bounded pre-tight predicate from the compact
+tightness predicate already supplied by `VdVWProbabilityMeasuresTight`.
+-/
+def VdVWProbabilityMeasurePreTight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S]
+    (μ : ProbabilityMeasure S) : Prop :=
+  ∀ ε, 0 < ε ->
+    ∃ A : Set S, MeasurableSet A ∧ TotallyBounded A ∧
+      ((μ : ProbabilityMeasure S) : Measure S) (Aᶜ) ≤ ε
+
+/--
+On a separable ambient topological space, every probability measure is
+VdV&W-separable by taking the whole space as the carrying set.
+-/
+theorem VdVWProbabilityMeasureSeparable.of_separableSpace
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S] [SeparableSpace S]
+    (μ : ProbabilityMeasure S) :
+    VdVWProbabilityMeasureSeparable μ := by
+  exact
+    ⟨Set.univ, MeasurableSet.univ, IsSeparable.of_separableSpace Set.univ,
+      by simp⟩
+
+/--
 Measure-level asymptotic tightness of a family of probability measures along a
 filter: eventually, all measures put arbitrarily small mass outside one compact
 set.
@@ -3922,6 +3962,25 @@ theorem vdVW132_complete_separable_probabilityMeasure_tight
   vdVWProbabilityMeasuresTight_singleton μ
 
 /--
+VdV&W Lemma 1.3.2 separability/tightness package for the measure-level
+complete separable metric-type Borel setting.
+
+This combines the newly named measure-separability predicate with the existing
+mathlib-backed tightness component.  The converse implications and the full
+pre-tight/separable/tight equivalence are kept separate until their local
+definitions and hypotheses are all in place.
+-/
+theorem vdVW132_complete_separable_probabilityMeasure_separable_and_tight
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    [IsCompletelyPseudoMetrizableSpace S] [SecondCountableTopology S] [BorelSpace S]
+    (μ : ProbabilityMeasure S) :
+    VdVWProbabilityMeasureSeparable μ ∧
+      VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) := by
+  exact
+    ⟨VdVWProbabilityMeasureSeparable.of_separableSpace μ,
+      vdVW132_complete_separable_probabilityMeasure_tight μ⟩
+
+/--
 Compact-set characterization of the VdV&W-local probability-measure tightness
 wrapper.
 -/
@@ -3945,6 +4004,36 @@ theorem vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le
     refine ⟨K, hK, ?_⟩
     rintro ν ⟨μ, hμA, rfl⟩
     exact hKμ μ hμA
+
+/--
+Tightness implies VdV&W pre-tightness whenever compact sets are measurable and
+totally bounded in the ambient uniform structure.
+-/
+theorem VdVWProbabilityMeasurePreTight.of_tight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S] [T2Space S] [BorelSpace S]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S))) :
+    VdVWProbabilityMeasurePreTight μ := by
+  intro ε hε
+  rcases
+      (vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le.mp hμ)
+        ε hε with
+    ⟨K, hK, hKμ⟩
+  exact ⟨K, hK.measurableSet, hK.totallyBounded, by simpa using hKμ μ (by simp)⟩
+
+/--
+VdV&W Lemma 1.3.2 pre-tightness component: in a complete separable
+metric-type Borel space whose topology comes from a Hausdorff uniform
+structure, every probability measure is pre-tight.
+-/
+theorem vdVW132_complete_separable_probabilityMeasure_preTight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S] [T2Space S]
+    [IsCompletelyPseudoMetrizableSpace S] [SecondCountableTopology S] [BorelSpace S]
+    (μ : ProbabilityMeasure S) :
+    VdVWProbabilityMeasurePreTight μ := by
+  exact
+    VdVWProbabilityMeasurePreTight.of_tight
+      (vdVW132_complete_separable_probabilityMeasure_tight μ)
 
 /--
 Tightness of an ambient probability-measure family gives asymptotic tightness

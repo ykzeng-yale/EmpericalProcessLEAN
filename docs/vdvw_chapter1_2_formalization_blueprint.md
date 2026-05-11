@@ -1157,6 +1157,17 @@ direction for VdV&W 1.3.2.  The pre-tight/separable equivalence, complete-space
 equivalence with tightness, and Polish-measure tightness clauses remain pending
 until the corresponding local measure-level definitions are introduced.
 
+2026-05-11 Lemma 1.3.2 predicate follow-up: `WeakConvergence.lean` now also
+introduces the local measure-level predicates `VdVWProbabilityMeasureSeparable`
+and `VdVWProbabilityMeasurePreTight`.  The compiled bridges
+`VdVWProbabilityMeasureSeparable.of_separableSpace`,
+`VdVWProbabilityMeasurePreTight.of_tight`,
+`vdVW132_complete_separable_probabilityMeasure_separable_and_tight`, and
+`vdVW132_complete_separable_probabilityMeasure_preTight` record the separable,
+tight, and pre-tight components available from the current mathlib-backed
+source layer.  The reverse implications and full VdV&W equivalence remain
+future work.
+
 2026-05-05 product Borel-space follow-up: `FiniteDimensional.lean` now adds
 `vdVW141_prod_borel_eq_product_borel`, a VdV&W 1.4.1 wrapper stating that the
 product of the Borel sigma-fields equals the Borel sigma-field of the product
@@ -1364,7 +1375,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.2.6 | Lemma | `..._1-100.md:480` | local-layer/mathlib-foundation: product-space Tonelli wrappers for nonnegative VdV&W outer expectation compiled as `VdVWOuterExpectation_prod_eq_lintegral_lintegral_of_aemeasurable` and measurable specialization, plus the nonnegative measurable textbook inequality chain `vdVW126_inner_repeatedInner_repeatedOuter_outer_chain_of_measurable`; exact arbitrary-map/perfect-map variants still pending |
 | 1.2.7 | Lemma | `..._1-100.md:492` | local-layer/mathlib-foundation: symmetric product-space Tonelli wrappers for nonnegative VdV&W outer expectation compiled as `VdVWOuterExpectation_prod_eq_lintegral_lintegral_symm_of_aemeasurable` and measurable specialization, plus measurable nonnegative repeated-outer equality `vdVW127_jointOuter_eq_repeatedOuter_symm_of_measurable`; exact Lipschitz-in-one-coordinate nonmeasurable theorem still pending |
 | 1.3.1 | Lemma | `..._1-100.md:575` | local-layer/mathlib-foundation: Borel sigma-field least for bounded-continuous real tests wrapped as `vdVW131_borel_le_iff_forall_boundedContinuous_measurable`, with closed-set distance proof |
-| 1.3.2 | Lemma | `..._1-100.md:582` | local-layer/mathlib-foundation: complete separable metric-type probability-measure tightness wrapped as `vdVW132_complete_separable_probabilityMeasure_tight`; exact pre-tight/separable/tight/Polish-measure equivalence still pending local definitions |
+| 1.3.2 | Lemma | `..._1-100.md:582` | local-layer/mathlib-foundation: measure-level separability and pre-tightness predicates introduced as `VdVWProbabilityMeasureSeparable` and `VdVWProbabilityMeasurePreTight`; separable-space, tight-to-pre-tight, and complete separable metric-type components compiled as `VdVWProbabilityMeasureSeparable.of_separableSpace`, `VdVWProbabilityMeasurePreTight.of_tight`, `vdVW132_complete_separable_probabilityMeasure_tight`, `vdVW132_complete_separable_probabilityMeasure_separable_and_tight`, and `vdVW132_complete_separable_probabilityMeasure_preTight`; exact pre-tight/separable/tight/Polish-measure equivalence still pending |
 | 1.3.4 | Theorem | `..._1-100.md:606` | local-layer/mathlib-foundation: weak convergence of probability measures via `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto` plus Portmanteau closed/open implications wrapped locally; exact arbitrary-map outer-expectation version remains pending |
 | 1.3.6 | Theorem | `..._1-100.md:650` | local-layer/mathlib-foundation: continuous map pushforward and `TendstoInDistribution` continuous-composition wrappers proved; signed arbitrary-map weak convergence now has continuous-map, filter-refinement, and ignored probability-product coordinate closures under a.e.-measurability in both common-domain and varying-domain forms; full nonmeasurable arbitrary-map cover layer still pending |
 | 1.3.8 | Lemma | `..._1-100.md:678` | blocked-vdvw: Hoffmann-Jørgensen arbitrary-map weak-convergence infrastructure; missing exact local arbitrary-map/asymptotic-measurability primitive |

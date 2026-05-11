@@ -1847,6 +1847,18 @@ pinned mathlib supplied `borel_eq_generateFrom_isClosed`,
 `Metric.continuous_infDist_pt`, and `IsClosed.mem_iff_infDist_zero`, but no
 VdVW-named bounded-continuous generated-sigma wrapper existed locally.
 
+2026-05-11 Lemma 1.3.2 predicate follow-up: `WeakConvergence.lean` now has
+the local measure-level predicates `VdVWProbabilityMeasureSeparable` and
+`VdVWProbabilityMeasurePreTight`, plus the source bridges
+`VdVWProbabilityMeasureSeparable.of_separableSpace`,
+`VdVWProbabilityMeasurePreTight.of_tight`,
+`vdVW132_complete_separable_probabilityMeasure_separable_and_tight`, and
+`vdVW132_complete_separable_probabilityMeasure_preTight`.  Search record:
+pinned mathlib supplied `TopologicalSpace.IsSeparable`,
+`TotallyBounded`, compact measurability, compact total-boundedness, and
+`IsTightMeasureSet` compact-set characterizations; no local VdV&W 1.3.2
+separable/pre-tight measure predicates existed before this source layer.
+
 2026-05-05 tightness component follow-up: the Chapter 1 weak-convergence file
 now has the VdV&W 1.3.2-named tightness component
 `vdVW132_complete_separable_probabilityMeasure_tight`, reusing the compiled
