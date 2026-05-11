@@ -15685,6 +15685,174 @@ theorem vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form
   rw [hExp]
 
 /--
+Inverse-square deterministic bound for the displayed finite-center Hoeffding
+failure tail.
+
+The closed form decays like `cardinality / (cardinality + 1)^3`, so it is
+bounded by a constant multiple of `(cardinality + 1)⁻²`.  This is the
+quantitative replacement needed by stronger product-pair finite-center
+failure-tail routes; the preceding one-center limit theorem shows that no
+sample-size-only argument can make the displayed additive tail vanish.
+-/
+theorem
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail_le_const_div_cardinality_succ_sq
+    (cardinality : ℕ) {n : ℕ} {M : ℝ} (hn : 0 < n) (hM_ne : M ≠ 0) :
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail cardinality n M ≤
+      (2 * Real.exp (-3)) / (((cardinality : ℝ) + 1) ^ 2) := by
+  rw [vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form
+    cardinality hn hM_ne]
+  set c : ℝ := (cardinality : ℝ)
+  set x : ℝ := (cardinality : ℝ) + 1
+  have hx_pos : 0 < x := by
+    dsimp [x]
+    positivity
+  have hc_le_x : c ≤ x := by
+    dsimp [c, x]
+    linarith
+  have hexp :
+      Real.exp (-(3 * (1 + Real.log x))) =
+        Real.exp (-3) * (x ^ 3)⁻¹ := by
+    have harg :
+        -(3 * (1 + Real.log x)) = -3 + -(3 * Real.log x) := by
+      ring
+    have hneg : -(3 * Real.log x) = - Real.log (x ^ 3) := by
+      rw [Real.log_pow]
+      ring
+    have hpow_log : Real.exp (- Real.log (x ^ 3)) = (x ^ 3)⁻¹ := by
+      rw [Real.exp_neg, Real.exp_log (pow_pos hx_pos 3)]
+    rw [harg, Real.exp_add, hneg, hpow_log]
+  rw [hexp]
+  have hcore : c * (x ^ 3)⁻¹ ≤ (x ^ 2)⁻¹ := by
+    have hinv_nonneg : 0 ≤ (x ^ 3)⁻¹ :=
+      inv_nonneg.mpr (pow_nonneg hx_pos.le 3)
+    have hmul : c * (x ^ 3)⁻¹ ≤ x * (x ^ 3)⁻¹ :=
+      mul_le_mul_of_nonneg_right hc_le_x hinv_nonneg
+    have hx_ne : x ≠ 0 := ne_of_gt hx_pos
+    have hright : x * (x ^ 3)⁻¹ = (x ^ 2)⁻¹ := by
+      field_simp [hx_ne]
+    simpa [hright] using hmul
+  have hA_nonneg : 0 ≤ 2 * Real.exp (-3) := by
+    positivity
+  have hmul := mul_le_mul_of_nonneg_left hcore hA_nonneg
+  simpa [div_eq_mul_inv, mul_assoc, mul_left_comm, mul_comm] using hmul
+
+/--
+Lintegral form of the inverse-square finite-center failure-tail bound.
+-/
+theorem
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq
+    {Ω : Type u} [MeasurableSpace Ω] (μ : Measure Ω) (cardinality : Ω -> ℕ)
+    {n : ℕ} {M : ℝ} (hn : 0 < n) (hM_ne : M ≠ 0) :
+    (∫⁻ ω, ENNReal.ofReal
+      (vdVWTheorem243FiniteCenterHoeffdingFailureTail (cardinality ω) n M) ∂μ) ≤
+      ∫⁻ ω, ENNReal.ofReal
+        ((2 * Real.exp (-3)) / (((cardinality ω : ℝ) + 1) ^ 2)) ∂μ := by
+  exact lintegral_mono fun ω =>
+    ENNReal.ofReal_le_ofReal
+      (vdVWTheorem243FiniteCenterHoeffdingFailureTail_le_const_div_cardinality_succ_sq
+        (cardinality ω) hn hM_ne)
+
+/--
+Variable-domain pair-sample consumer for the inverse-square failure-tail bound.
+
+This converts convergence of the explicit inverse-square cardinality integrals
+into convergence of the product-pair finite-center failure-tail error used by
+the additive-error Theorem 2.4.3 route.
+-/
+theorem
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail_pair_lintegral_tendsto_zero_of_invSq
+    {Ω : ℕ -> Type u} [∀ n, MeasurableSpace (Ω n)]
+    (μ : ∀ n, Measure (Ω n))
+    (cardinalityLeft cardinalityRight : (n : ℕ) -> Ω n -> ℕ)
+    {M : ℝ} (hM_ne : M ≠ 0)
+    (hinvSq :
+      Tendsto
+        (fun n : ℕ =>
+          (∫⁻ ω : Ω n, ENNReal.ofReal
+            ((2 * Real.exp (-3)) /
+              (((cardinalityLeft n ω : ℝ) + 1) ^ 2)) ∂(μ n)) +
+          (∫⁻ ω : Ω n, ENNReal.ofReal
+            ((2 * Real.exp (-3)) /
+              (((cardinalityRight n ω : ℝ) + 1) ^ 2)) ∂(μ n)))
+        atTop (𝓝 0)) :
+      Tendsto
+        (fun n : ℕ =>
+          (∫⁻ ω : Ω n, ENNReal.ofReal
+            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+              (cardinalityLeft n ω) n M) ∂(μ n)) +
+          (∫⁻ ω : Ω n, ENNReal.ofReal
+            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+              (cardinalityRight n ω) n M) ∂(μ n)))
+        atTop (𝓝 0) := by
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    tendsto_const_nhds hinvSq ?_ ?_
+  · exact Eventually.of_forall fun _ => by simp
+  · filter_upwards [eventually_gt_atTop (0 : ℕ)] with n hn
+    exact add_le_add
+      (vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq
+        (μ n) (cardinalityLeft n) hn hM_ne)
+      (vdVWTheorem243FiniteCenterHoeffdingFailureTail_lintegral_le_const_div_cardinality_succ_sq
+        (μ n) (cardinalityRight n) hn hM_ne)
+
+/--
+Selected-cardinality product-pair failure-tail convergence from explicit
+inverse-square cardinality integrals.
+
+The conclusion is intentionally the same shape as the `hfailureTail_tendsto`
+input in the compiled product-pair finite-center failure-tail route.
+-/
+theorem
+    vdVWTheorem243_selectedFailureTail_tendsto_zero_of_invSq_lintegral
+    {Observation : Type u} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    {M : ℝ} (hM_ne : M ≠ 0)
+    (hinvSq :
+      ∀ eta, 0 < eta ->
+        Tendsto
+          (fun n : ℕ =>
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                ((2 * Real.exp (-3)) /
+                  (((selectedCardinality eta n
+                    (fun i : Fin n => (pairSample i).1) n : ℝ) + 1) ^ 2))
+              ∂(vdVWProductMeasure (P.prod P) n)) +
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                ((2 * Real.exp (-3)) /
+                  (((selectedCardinality eta n
+                    (fun i : Fin n => (pairSample i).2) n : ℝ) + 1) ^ 2))
+              ∂(vdVWProductMeasure (P.prod P) n)))
+          atTop (𝓝 0)) :
+      ∀ eta (_heta : 0 < eta),
+        Tendsto
+          (fun n : ℕ =>
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                  (selectedCardinality eta n
+                    (fun i : Fin n => (pairSample i).1) n) n M)
+              ∂(vdVWProductMeasure (P.prod P) n)) +
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                  (selectedCardinality eta n
+                    (fun i : Fin n => (pairSample i).2) n) n M)
+              ∂(vdVWProductMeasure (P.prod P) n)))
+          atTop (𝓝 0) := by
+  intro eta heta
+  exact
+    vdVWTheorem243FiniteCenterHoeffdingFailureTail_pair_lintegral_tendsto_zero_of_invSq
+      (Ω := fun n => SampleAt (Observation × Observation) n)
+      (μ := fun n => vdVWProductMeasure (P.prod P) n)
+      (cardinalityLeft := fun n pairSample =>
+        selectedCardinality eta n (fun i : Fin n => (pairSample i).1) n)
+      (cardinalityRight := fun n pairSample =>
+        selectedCardinality eta n (fun i : Fin n => (pairSample i).2) n)
+      hM_ne (hinvSq eta heta)
+
+/--
 The one-center displayed failure tail is a nonzero constant along positive
 sample sizes.
 
@@ -47591,6 +47759,112 @@ theorem
       hpenalty_nonneg hpenalty_le hbeta_eq herror hbeta_selected
 
 /--
+Inverse-square-cardinality version of the product-pair finite-center
+failure-tail half-scale route.
+
+This replaces the raw integrated finite-center failure-tail convergence input
+by the explicit inverse-square selected-cardinality lintegral condition supplied
+by `vdVWTheorem243_selectedFailureTail_tendsto_zero_of_invSq_lintegral`.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_invSq_lintegral
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤ cardinality eta n sample n)
+    (cover :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) ((eta / 2) / 2)
+          (selectedCardinality eta n sample n))
+    (hfailureOriginal_meas :
+      ∀ eta (heta : 0 < eta),
+        ∀ᶠ n in atTop,
+          MeasurableSet
+            {z : SampleAt ℝ n ×
+                SampleAt (Observation × Observation) n |
+              ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+                (fun i : Fin n => (z.2 i).1)
+                (vdVWTruncatedClassFun classFun envelope M)
+                (cover eta heta n
+                  (fun i : Fin n => (z.2 i).1)).center z.1 M})
+    (hfailureGhost_meas :
+      ∀ eta (heta : 0 < eta),
+        ∀ᶠ n in atTop,
+          MeasurableSet
+            {z : SampleAt ℝ n ×
+                SampleAt (Observation × Observation) n |
+              ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound
+                (fun i : Fin n => (z.2 i).2)
+                (vdVWTruncatedClassFun classFun envelope M)
+                (cover eta heta n
+                  (fun i : Fin n => (z.2 i).2)).center
+                (fun i : Fin n => -z.1 i) M})
+    (hinvSq :
+      ∀ eta, 0 < eta ->
+        Tendsto
+          (fun n : ℕ =>
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                ((2 * Real.exp (-3)) /
+                  (((selectedCardinality eta n
+                    (fun i : Fin n => (pairSample i).1) n : ℝ) + 1) ^ 2))
+              ∂(vdVWProductMeasure (P.prod P) n)) +
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                ((2 * Real.exp (-3)) /
+                  (((selectedCardinality eta n
+                    (fun i : Fin n => (pairSample i).2) n : ℝ) + 1) ^ 2))
+              ∂(vdVWProductMeasure (P.prod P) n)))
+          atTop (𝓝 0)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) :=
+  VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) (M := M)
+    (selectedCardinality := selectedCardinality) (cardinality := cardinality)
+    hcount hclass henvelope_meas hindexClass_nonempty henvelope hM_pos
+    htruncIntegrable hlog hselected_le cover hfailureOriginal_meas
+    hfailureGhost_meas
+    (vdVWTheorem243_selectedFailureTail_tendsto_zero_of_invSq_lintegral
+      (P := P) (selectedCardinality := selectedCardinality) (M := M)
+      (ne_of_gt hM_pos) hinvSq)
+
+/--
 Selected-center version of the product-pair finite-center failure-tail
 fixed-`M` convergence route.
 
@@ -48384,6 +48658,102 @@ theorem
   simpa [canonicalCover, selectedCardinality,
     VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass,
     VdVWFiniteEmpiricalL1CoverSelectedCenterAt] using hcoord
+
+/--
+Canonical countable selected-cover half-scale route with inverse-square
+selected-cardinality failure-tail input.
+
+This is the same first-level selected-cover theorem as
+`..._failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel`,
+but callers supply the explicit inverse-square original/ghost selected
+cardinality lintegral convergence instead of the raw displayed finite-center
+failure-tail convergence.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_invSq_lintegral
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality radius n))
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hinvSq :
+      ∀ eta, 0 < eta ->
+        Tendsto
+          (fun n : ℕ =>
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                ((2 * Real.exp (-3)) /
+                  ((((vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M)
+                    (cardinality := cardinality)
+                    X hcovering_all ((eta / 2) / 2)) n
+                    (fun i : Fin n => (pairSample i).1) n : ℝ) + 1) ^ 2))
+              ∂(vdVWProductMeasure (P.prod P) n)) +
+            (∫⁻ pairSample : SampleAt (Observation × Observation) n,
+              ENNReal.ofReal
+                ((2 * Real.exp (-3)) /
+                  ((((vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M)
+                    (cardinality := cardinality)
+                    X hcovering_all ((eta / 2) / 2)) n
+                    (fun i : Fin n => (pairSample i).2) n : ℝ) + 1) ^ 2))
+              ∂(vdVWProductMeasure (P.prod P) n)))
+          atTop (𝓝 0)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) :=
+  VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel
+    (P := P) (indexClass := indexClass) (classFun := classFun)
+    (envelope := envelope) (M := M) (cardinality := cardinality)
+    X hX_samplePath hcovering_all hcount hclass henvelope_meas
+    hindexClass_nonempty henvelope hM_pos htruncIntegrable hlog
+    (vdVWTheorem243_selectedFailureTail_tendsto_zero_of_invSq_lintegral
+      (P := P)
+      (selectedCardinality := fun eta =>
+        vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (cardinality := cardinality)
+          X hcovering_all ((eta / 2) / 2))
+      (M := M) (ne_of_gt hM_pos) hinvSq)
 
 /--
 Canonical selected-cardinality version of the product-pair Chebyshev route with
