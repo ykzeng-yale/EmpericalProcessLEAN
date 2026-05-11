@@ -1340,6 +1340,52 @@ theorem VdVWInnerExpectation_prod_snd_eq_of_measurable
   exact VdVWOuterExpectation_prod_snd_eq_of_measurable U hT
 
 /--
+VdV&W Lemma 1.2.5, first-coordinate measurable nonnegative package.
+
+For a measurable nonnegative target on the first coordinate, the pulled-back
+minimal cover is exactly the original cover composed with the first projection,
+and both VdV&W outer and inner expectations are unchanged when adjoining an
+ignored probability product coordinate.
+-/
+theorem vdVW125_fst_coordinateProjection_cover_outer_inner_package_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure ν]
+    {T : Ω -> ℝ≥0∞} (U : VdVWMeasurableCover μ T) (hT : Measurable T) :
+    (∃ Uprod : VdVWMeasurableCover (μ.prod ν) (fun z : Ω × S => T z.1),
+        ∀ z : Ω × S, Uprod z = U z.1) ∧
+      VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.1) =
+        VdVWOuterExpectation μ T ∧
+      VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.1) =
+        VdVWInnerExpectation μ T := by
+  exact
+    ⟨⟨VdVWMeasurableCover.fstProductOfMeasurable U hT, fun _ => rfl⟩,
+      VdVWOuterExpectation_prod_fst_eq_of_measurable U hT,
+      VdVWInnerExpectation_prod_fst_eq_of_measurable U hT⟩
+
+/--
+VdV&W Lemma 1.2.5, second-coordinate measurable nonnegative package.
+
+This is the symmetric coordinate-projection package for targets depending only
+on the second product coordinate.
+-/
+theorem vdVW125_snd_coordinateProjection_cover_outer_inner_package_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ]
+    {T : S -> ℝ≥0∞} (U : VdVWMeasurableCover ν T) (hT : Measurable T) :
+    (∃ Uprod : VdVWMeasurableCover (μ.prod ν) (fun z : Ω × S => T z.2),
+        ∀ z : Ω × S, Uprod z = U z.2) ∧
+      VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.2) =
+        VdVWOuterExpectation ν T ∧
+      VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.2) =
+        VdVWInnerExpectation ν T := by
+  exact
+    ⟨⟨VdVWMeasurableCover.sndProductOfMeasurable U hT, fun _ => rfl⟩,
+      VdVWOuterExpectation_prod_snd_eq_of_measurable U hT,
+      VdVWInnerExpectation_prod_snd_eq_of_measurable U hT⟩
+
+/--
 A.e.-measurable nonnegative maps have their VdV&W outer expectation equal to
 the ordinary `lintegral`.
 

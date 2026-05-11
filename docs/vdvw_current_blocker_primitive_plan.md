@@ -1788,6 +1788,15 @@ measurable outer-inner collapse, so this is a Chapter 1.2 cleanup rather than
 a new perfect-map primitive.  The remaining 1.2.5 gap is still the full
 arbitrary-map perfect projection theorem.
 
+2026-05-11 numbered Lemma 1.2.5 projection-package follow-up:
+`vdVW125_fst_coordinateProjection_cover_outer_inner_package_of_measurable` and
+`vdVW125_snd_coordinateProjection_cover_outer_inner_package_of_measurable` now
+package the measurable nonnegative coordinate-projection core in the numbered
+textbook shape: the pulled-back cover is the original cover composed with the
+coordinate projection, and both VdV&W outer and inner expectations are
+unchanged after adjoining an ignored probability product coordinate.  This is
+still intentionally below the exact bounded arbitrary-map perfectness theorem.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.
