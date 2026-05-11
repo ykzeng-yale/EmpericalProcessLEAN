@@ -41526,6 +41526,34 @@ theorem measure_mul_le_prod_measure_of_fiber_lower_bound
     _ = μ.prod ν joint := (Measure.prod_apply hjoint_meas).symm
 
 /--
+Product-measure fiber lower bound with almost-everywhere fibers.
+
+The pointwise version above is often too strong for source theorems produced by
+Fubini or conditional arguments.  This variant only requires the beta-large
+fiber lower bound on `left` almost everywhere.
+-/
+theorem measure_mul_le_prod_measure_of_ae_fiber_lower_bound
+    {α : Type u} {β : Type v} [MeasurableSpace α] [MeasurableSpace β]
+    {μ : Measure α} {ν : Measure β} [SFinite ν]
+    {left : Set α} {joint : Set (α × β)} {beta : ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (hfiber :
+      ∀ᵐ x ∂(μ.restrict left), beta ≤ ν (Prod.mk x ⁻¹' joint)) :
+    beta * μ left ≤ μ.prod ν joint := by
+  have hsection_meas :
+      Measurable fun x : α => ν (Prod.mk x ⁻¹' joint) :=
+    measurable_measure_prodMk_left hjoint_meas
+  calc
+    beta * μ left = ∫⁻ _x in left, beta ∂μ := by
+      rw [setLIntegral_const]
+    _ ≤ ∫⁻ x in left, ν (Prod.mk x ⁻¹' joint) ∂μ :=
+      setLIntegral_mono_ae hsection_meas.aemeasurable
+        (ae_imp_of_ae_restrict hfiber)
+    _ ≤ ∫⁻ x, ν (Prod.mk x ⁻¹' joint) ∂μ :=
+      lintegral_mono' Measure.restrict_le_self le_rfl
+    _ = μ.prod ν joint := (Measure.prod_apply hjoint_meas).symm
+
+/--
 Product-measure fiber upper bound.
 
 If every right-indexed fiber of a measurable joint event is bounded by a
@@ -41946,6 +41974,70 @@ theorem
           simp [VdVWOuterProbability, hrightOriginal, hrightGhost, two_mul]
 
 /--
+Product-fiber lower bound with an original-or-ghost projection and a.e.
+fibers.
+
+This is the Fubini-ready version of
+`VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost`.
+The source theorem only has to prove the displayed beta lower bound for
+`μ.restrict left`-almost every original bad sample.
+-/
+theorem
+    VdVWOuterProbability_mul_left_le_two_mul_of_ae_product_fiber_lower_bound_or_ghost
+    {α : Type u} {γ : Type v} [MeasurableSpace α] [MeasurableSpace γ]
+    {μ : Measure α} {ν : Measure γ} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {left right : Set α} {joint : Set (α × (α × γ))}
+    {beta : ℝ≥0∞}
+    (hjoint_meas : MeasurableSet joint)
+    (hfiber :
+      ∀ᵐ x ∂(μ.restrict left),
+        beta ≤ (μ.prod ν) (Prod.mk x ⁻¹' joint))
+    (hjoint_subset :
+      ∀ z : α × (α × γ), z ∈ joint -> z.1 ∈ right ∨ z.2.1 ∈ right) :
+    beta * VdVWOuterProbability μ left ≤
+      (2 : ℝ≥0∞) * VdVWOuterProbability μ right := by
+  let rightOriginal : Set (α × (α × γ)) :=
+    right ×ˢ (Set.univ : Set (α × γ))
+  let rightGhost : Set (α × (α × γ)) :=
+    (Set.univ : Set α) ×ˢ (right ×ˢ (Set.univ : Set γ))
+  have hleft_joint :
+      beta * μ left ≤ μ.prod (μ.prod ν) joint :=
+    measure_mul_le_prod_measure_of_ae_fiber_lower_bound
+      (μ := μ) (ν := μ.prod ν) hjoint_meas hfiber
+  have hjoint_le_union :
+      μ.prod (μ.prod ν) joint ≤
+        μ.prod (μ.prod ν) (rightOriginal ∪ rightGhost) := by
+    refine measure_mono ?_
+    intro z hz
+    rcases hjoint_subset z hz with hright | hghost
+    · exact Or.inl ⟨hright, trivial⟩
+    · exact Or.inr ⟨trivial, hghost, trivial⟩
+  have hunion_le :
+      μ.prod (μ.prod ν) (rightOriginal ∪ rightGhost) ≤
+        μ.prod (μ.prod ν) rightOriginal +
+          μ.prod (μ.prod ν) rightGhost :=
+    measure_union_le rightOriginal rightGhost
+  have hrightOriginal :
+      μ.prod (μ.prod ν) rightOriginal = μ right := by
+    rw [Measure.prod_prod, measure_univ]
+    simp
+  have hrightGhost :
+      μ.prod (μ.prod ν) rightGhost = μ right := by
+    rw [Measure.prod_prod, measure_univ, Measure.prod_prod, measure_univ]
+    simp
+  calc
+    beta * VdVWOuterProbability μ left
+        = beta * μ left := by
+          rfl
+    _ ≤ μ.prod (μ.prod ν) joint := hleft_joint
+    _ ≤ μ.prod (μ.prod ν) (rightOriginal ∪ rightGhost) := hjoint_le_union
+    _ ≤ μ.prod (μ.prod ν) rightOriginal +
+          μ.prod (μ.prod ν) rightGhost := hunion_le
+    _ = (2 : ℝ≥0∞) * VdVWOuterProbability μ right := by
+          simp [VdVWOuterProbability, hrightOriginal, hrightGhost, two_mul]
+
+/--
 Product-event source constructor for the displayed Chebyshev-beta comparison.
 
 This is the event-level interface the remaining ghost/Rademacher proof should
@@ -42096,6 +42188,97 @@ theorem
     rcases hproduct_n with ⟨joint, hjoint_meas, hfiber, hjoint_subset⟩
     simpa using
       VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost
+        (μ := vdVWProductMeasure P n)
+        (ν := vdVWProductMeasure vdVWRademacherLaw n)
+        (left :=
+          {sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (vdVWWeightedClassSupremum indexClass
+                  (fun index : Index => fun observation : Observation =>
+                    vdVWTruncatedClassFun classFun envelope M index observation -
+                      ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                  (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                (0 : ℝ)})
+        (right :=
+          {sample : SampleAt Observation n |
+            epsilon <
+              dist
+                (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                    (selectedCardinality eta n sample n) n M + eta)
+                (0 : ℝ)})
+        (joint := joint)
+        (beta :=
+          ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)))
+        hjoint_meas hfiber hjoint_subset
+
+/--
+A.e. product-event source constructor with the VdV&W Lemma 2.3.7 factor-two
+loss.
+
+This is the source-facing version needed for averaged ghost/Rademacher and
+Fubini arguments: for each fixed radius and threshold, the displayed Chebyshev
+beta lower bound may hold only almost everywhere on the centered bad original
+samples, restricted by the original product law.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_ghost_product_fiber_lower_bound_or_selectedNet
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M C : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (hC_pos : 0 < C)
+    (hproduct :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∃ joint : Set (SampleAt Observation n ×
+              (SampleAt Observation n × SampleAt ℝ n)),
+            MeasurableSet joint ∧
+              (∀ᵐ sample ∂((vdVWProductMeasure P n).restrict
+                  ({sample : SampleAt Observation n |
+                    epsilon <
+                      dist
+                        (vdVWWeightedClassSupremum indexClass
+                          (fun index : Index => fun observation : Observation =>
+                            vdVWTruncatedClassFun classFun envelope M index observation -
+                              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                        (0 : ℝ)})),
+                  ENNReal.ofReal
+                      (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                    ((vdVWProductMeasure P n).prod
+                        (vdVWProductMeasure vdVWRademacherLaw n))
+                      (Prod.mk sample ⁻¹' joint)) ∧
+              (∀ z : SampleAt Observation n ×
+                  (SampleAt Observation n × SampleAt ℝ n),
+                z ∈ joint ->
+                  z.1 ∈
+                    {sample : SampleAt Observation n |
+                      epsilon <
+                        dist
+                          (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                              (selectedCardinality eta n sample n) n M + eta)
+                          (0 : ℝ)} ∨
+                  z.2.1 ∈
+                    {sample : SampleAt Observation n |
+                      epsilon <
+                        dist
+                          (C * vdVWTheorem243FiniteNetHoeffdingUpper
+                              (selectedCardinality eta n sample n) n M + eta)
+                          (0 : ℝ)})) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M C (2 : ℝ≥0∞) selectedCardinality where
+  constant_ne_top := by norm_num
+  scale_pos := hC_pos
+  outerProbability_bound := by
+    intro eta heta epsilon hepsilon
+    filter_upwards [hproduct eta heta epsilon hepsilon] with n hproduct_n
+    rcases hproduct_n with ⟨joint, hjoint_meas, hfiber, hjoint_subset⟩
+    simpa using
+      VdVWOuterProbability_mul_left_le_two_mul_of_ae_product_fiber_lower_bound_or_ghost
         (μ := vdVWProductMeasure P n)
         (ν := vdVWProductMeasure vdVWRademacherLaw n)
         (left :=
@@ -45092,6 +45275,99 @@ theorem
       henvelope hM_nonneg heta (cover eta heta n) hz
 
 /--
+A.e. concrete-event constructor for the factor-two Lemma 2.3.7 source
+comparison.
+
+This is the Fubini-ready companion to
+`of_eventual_pairDifferenceGhostRademacher_selectedNetEvent`: the displayed
+Chebyshev beta lower bound for the concrete pair-difference fibers only has to
+hold almost everywhere on the centered-bad original samples, restricted by the
+original product law.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (hevent_meas :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (_hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          MeasurableSet
+            (VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (eta := eta)
+              (epsilon := epsilon)
+              (cardinality := fun sample : SampleAt Observation n =>
+                selectedCardinality eta n sample n)
+              (cover := cover eta heta n)))
+    (hfiber :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (_hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          ∀ᵐ sample ∂((vdVWProductMeasure P n).restrict
+              ({sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)})),
+            ENNReal.ofReal
+                (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+              ((vdVWProductMeasure P n).prod
+                  (vdVWProductMeasure vdVWRademacherLaw n))
+                (Prod.mk sample ⁻¹'
+                  VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M) (eta := eta)
+                    (epsilon := epsilon)
+                    (cardinality := fun sample' : SampleAt Observation n =>
+                      selectedCardinality eta n sample' n)
+                    (cover := cover eta heta n))) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 2 (2 : ℝ≥0∞) selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_ghost_product_fiber_lower_bound_or_selectedNet
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (C := 2)
+      (selectedCardinality := selectedCardinality)
+      (by norm_num) ?_
+  intro eta heta epsilon hepsilon
+  filter_upwards
+    [hevent_meas eta heta epsilon hepsilon,
+      hfiber eta heta epsilon hepsilon]
+    with n hevent_meas_n hfiber_n
+  refine
+    ⟨VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon)
+      (cardinality := fun sample : SampleAt Observation n =>
+        selectedCardinality eta n sample n)
+      (cover := cover eta heta n),
+      hevent_meas_n, hfiber_n, ?_⟩
+  intro z hz
+  exact
+    VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_original_or_ghost_selectedNet_bad
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon)
+      (cardinality := fun sample : SampleAt Observation n =>
+        selectedCardinality eta n sample n)
+      henvelope hM_nonneg heta (cover eta heta n) hz
+
+/--
 Concrete-event displayed-beta constructor with the event measurability supplied
 by single-sample selected-center scalar coordinate assumptions.
 -/
@@ -45160,6 +45436,89 @@ theorem
       indexClass classFun envelope M 2 (2 : ℝ≥0∞) selectedCardinality := by
   refine
     VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_pairDifferenceGhostRademacher_selectedNetEvent
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M)
+      (selectedCardinality := selectedCardinality)
+      henvelope hM_nonneg cover ?_ hfiber
+  intro eta heta epsilon _hepsilon
+  exact Eventually.of_forall fun n =>
+    measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_sample_coordinate_countable
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (eta := eta)
+      (epsilon := epsilon)
+      (cardinality := fun sample : SampleAt Observation n =>
+        selectedCardinality eta n sample n)
+      hcount hclass henvelope_meas (cover eta heta n)
+      (hcard eta heta n) (hcoord eta heta n)
+
+/--
+A.e. concrete-event displayed-beta constructor with the event measurability
+supplied by single-sample selected-center scalar coordinate assumptions.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (hcard :
+      ∀ (eta : ℝ) (_heta : 0 < eta) (n : ℕ),
+        Measurable
+          fun sample : SampleAt Observation n =>
+            selectedCardinality eta n sample n)
+    (hcoord :
+      ∀ (eta : ℝ) (heta : 0 < eta) (n : ℕ), ∀ k : ℕ, ∀ i : Fin n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWTruncatedClassFun classFun envelope M
+            (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+              (Observation := Observation) (Index := Index) (n := n)
+              indexClass classFun envelope M eta
+              (fun sample : SampleAt Observation n =>
+                selectedCardinality eta n sample n)
+              (cover eta heta n) sample k)
+            (sample i))
+    (hfiber :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (_hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          ∀ᵐ sample ∂((vdVWProductMeasure P n).restrict
+              ({sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)})),
+            ENNReal.ofReal
+                (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+              ((vdVWProductMeasure P n).prod
+                  (vdVWProductMeasure vdVWRademacherLaw n))
+                (Prod.mk sample ⁻¹'
+                  VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M) (eta := eta)
+                    (epsilon := epsilon)
+                    (cardinality := fun sample' : SampleAt Observation n =>
+                      selectedCardinality eta n sample' n)
+                    (cover := cover eta heta n))) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 2 (2 : ℝ≥0∞) selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope) (M := M)
       (selectedCardinality := selectedCardinality)
@@ -47479,6 +47838,121 @@ theorem
         (envelope := envelope) (M := M) (epsilon := epsilon)
         hcount hclass henvelope_meas)
       hbadLower
+
+/--
+Base-product a.e. implication constructor for the concrete pair-difference
+selected-net source.
+
+Future Fubini or conditioning arguments can naturally prove the concrete
+pair-difference fiber lower bound for `P^n`-almost every sample, conditional
+on membership in the centered bad set.  This source bridge converts that
+base-measure implication to the restricted-a.e. fiber shape consumed by the
+factor-two pair-difference selected-net comparison, while countability
+discharges both centered-bad and concrete-event measurability.
+-/
+theorem
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_imp_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    [Inhabited Index]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_nonneg : 0 ≤ M)
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (cover :
+      ∀ (eta : ℝ), 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) (eta / 2)
+          (selectedCardinality eta n sample n))
+    (hcard :
+      ∀ (eta : ℝ) (_heta : 0 < eta) (n : ℕ),
+        Measurable
+          fun sample : SampleAt Observation n =>
+            selectedCardinality eta n sample n)
+    (hcoord :
+      ∀ (eta : ℝ) (heta : 0 < eta) (n : ℕ), ∀ k : ℕ, ∀ i : Fin n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWTruncatedClassFun classFun envelope M
+            (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+              (Observation := Observation) (Index := Index) (n := n)
+              indexClass classFun envelope M eta
+              (fun sample : SampleAt Observation n =>
+                selectedCardinality eta n sample n)
+              (cover eta heta n) sample k)
+            (sample i))
+    (hfiber_base :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (_hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          ∀ᵐ sample ∂(vdVWProductMeasure P n),
+            sample ∈
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)} ->
+              ENNReal.ofReal
+                  (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                ((vdVWProductMeasure P n).prod
+                    (vdVWProductMeasure vdVWRademacherLaw n))
+                  (Prod.mk sample ⁻¹'
+                    VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+                      (indexClass := indexClass) (classFun := classFun)
+                      (envelope := envelope) (M := M) (eta := eta)
+                      (epsilon := epsilon)
+                      (cardinality := fun sample' : SampleAt Observation n =>
+                        selectedCardinality eta n sample' n)
+                      (cover := cover eta heta n))) :
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison P
+      indexClass classFun envelope M 2 (2 : ℝ≥0∞) selectedCardinality := by
+  refine
+    VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M)
+      (selectedCardinality := selectedCardinality)
+      henvelope hM_nonneg hcount hclass henvelope_meas cover hcard hcoord ?_
+  intro eta heta epsilon hepsilon
+  exact
+    eventually_ae_restrict_of_eventually_ae_imp_dep
+      (l := atTop)
+      (α := fun n : ℕ => SampleAt Observation n)
+      (μ := fun n : ℕ => vdVWProductMeasure P n)
+      (s := fun n : ℕ =>
+        {sample : SampleAt Observation n |
+          epsilon <
+            dist
+              (vdVWWeightedClassSupremum indexClass
+                (fun index : Index => fun observation : Observation =>
+                  vdVWTruncatedClassFun classFun envelope M index observation -
+                    ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+              (0 : ℝ)})
+      (p := fun n sample =>
+        ENNReal.ofReal
+            (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+          ((vdVWProductMeasure P n).prod
+              (vdVWProductMeasure vdVWRademacherLaw n))
+            (Prod.mk sample ⁻¹'
+              VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (eta := eta)
+                (epsilon := epsilon)
+                (cardinality := fun sample' : SampleAt Observation n =>
+                  selectedCardinality eta n sample' n)
+                (cover := cover eta heta n)))
+      (VdVWTheorem243_eventually_measurableSet_centeredBad_truncated_of_countable
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (epsilon := epsilon)
+        hcount hclass henvelope_meas)
+      (hfiber_base eta heta epsilon hepsilon)
 
 /--
 Real triangle step in the proof of VdV&W Lemma 2.3.7.

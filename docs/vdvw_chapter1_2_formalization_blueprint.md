@@ -3273,6 +3273,16 @@ event into the restricted-a.e. source shape.  Countable centered-bad
 measurability is discharged internally.  The remaining probability theorem is
 therefore allowed to be proved in the more natural base-a.e. conditional form.
 
+The same base-a.e. source shape now feeds the concrete pair-difference
+selected-net route:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_imp_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`
+combines the new a.e. original-or-ghost product-fiber bound, the a.e.
+pair-difference concrete-event constructors, selected-center countable
+measurability, and centered-bad measurability.  A future probability source
+may prove the concrete pair-difference beta lower bound as a `P^n`-a.e.
+centered-bad implication and pass it directly to the displayed-beta
+comparison.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

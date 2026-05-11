@@ -9495,3 +9495,16 @@ Thus future Fubini or conditioning work may prove the pure Rademacher
 bad-fiber lower bound `P^n`-a.e. with a centered-bad implication, and this
 compiled bridge converts it to the restricted-a.e. shape consumed by the
 sign-only source lane.
+
+2026-05-11 base-a.e. pair-difference selected-net consumer:
+`Theorem243.lean` now also proves
+`measure_mul_le_prod_measure_of_ae_fiber_lower_bound`,
+`VdVWOuterProbability_mul_left_le_two_mul_of_ae_product_fiber_lower_bound_or_ghost`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_ghost_product_fiber_lower_bound_or_selectedNet`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_imp_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`.
+The concrete pair-difference route can therefore consume a `P^n`-a.e.
+centered-bad implication directly; countable selected-center measurability and
+centered-bad measurability are discharged by the wrapper.

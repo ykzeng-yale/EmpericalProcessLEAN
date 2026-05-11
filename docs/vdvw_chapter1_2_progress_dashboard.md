@@ -4201,3 +4201,10 @@ conditional form.  The new
 `VdVWTheorem243_eventually_ae_rademacherBad_restrict_centeredBad_of_eventually_ae_imp_countable`
 bridge converts a `P^n`-a.e. centered-bad implication into the restricted
 source hypothesis and proves centered-bad measurability from countability.
+
+The concrete pair-difference selected-net comparison has the same base-a.e.
+handoff:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_imp_pairDifferenceGhostRademacher_selectedNetEvent_sample_coordinate_countable`
+converts a `P^n`-a.e. centered-bad implication into the a.e. restricted fiber
+input for the factor-two original-or-ghost route, while discharging the
+countable event-measurability side conditions.
