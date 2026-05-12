@@ -103,6 +103,15 @@ The bridge uses mathlib's finite maximal separated set to turn
 raw-index packing witness, so future Definition 2.2.3-style entropy/packing
 estimates can feed selected lower-growth without rebuilding the witness
 enumeration or restating terminal-sample lower bounds on `samplePath`.
+The infinite-packing case is now covered too:
+`nonempty_finiteEmpiricalL1PackingAtCard_of_empiricalL1Index_packingNumber_eq_top`,
+`finiteEmpiricalL1CoveringNumberCard_ge_of_empiricalL1Index_packingNumber_eq_top`,
+`empiricalL1CoveringNumber_ge_of_empiricalL1Index_packingNumber_eq_top`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_empiricalL1Index_packingNumber_eq_top`,
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_empiricalL1Index_packingNumber_eq_top`
+let eventual terminal `Metric.packingNumber = ⊤` provide arbitrary finite
+selected lower bounds.
 The covering-number side now has the analogous lower-growth source path via
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_empiricalL1Index_coveringNumber`,
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_empiricalL1Index_coveringNumber`,
@@ -138,6 +147,10 @@ consumes eventual `P^n`-a.e. terminal empirical-wrapper covering number equal
 to `⊤` and chooses the deterministic lower bound `n`; this is a source surface,
 not a proof that the random-entropy hypothesis forces infinite covering
 number.
+The matching infinite-packing structural variant
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_eq_top_of_set_countable`
+chooses the same deterministic lower bound `n` from eventual terminal
+`Metric.packingNumber = ⊤`.
 The next source work is to derive these covering/packing lower bounds, or an
 equivalent tail/lower-growth input, from the book random-entropy hypotheses.
 The displayed-beta selected-cover route now has

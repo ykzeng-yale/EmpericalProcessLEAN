@@ -166,6 +166,23 @@ bound on `EmpiricalL1Index.liftSet` to the selected lower-growth input.  It
 does not prove such a lower bound from random entropy; that remains the
 mathematical source task.
 
+2026-05-12 infinite empirical-wrapper packing source handoff: the packing lane
+now also covers `Metric.packingNumber = ⊤`.  The covering primitive file proves
+`nonempty_finiteEmpiricalL1PackingAtCard_of_empiricalL1Index_packingNumber_eq_top`,
+`finiteEmpiricalL1CoveringNumberCard_ge_of_empiricalL1Index_packingNumber_eq_top`,
+and `empiricalL1CoveringNumber_ge_of_empiricalL1Index_packingNumber_eq_top`.
+The Theorem 2.4.3 selected-cover layer exposes the pointwise, eventual, and
+`P^n`-a.e. forms, including terminal-sample variants
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_empiricalL1Index_packingNumber_eq_top`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_empiricalL1Index_packingNumber_eq_top`.
+The set-countable textbook-aligned final route now has
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_eq_top_of_set_countable`,
+which chooses the deterministic lower bound `n` from eventual terminal
+`Metric.packingNumber = ⊤`.  This is still only a source surface: the
+mathematical task remains deriving infinite packing, finite lower growth, or a
+replacement tail/UI theorem from honest VdV&W assumptions.
+
 2026-05-12 empirical-wrapper covering-number lower-growth handoff: the
 selected-cover layer now also accepts Definition 2.2.3-style covering-number
 lower bounds directly through
@@ -211,6 +228,9 @@ consumes eventual `P^n`-a.e. terminal empirical-wrapper covering number equal
 to `⊤` and sets the deterministic lower bound to `n`; it is a structural
 source surface, not a derivation of infinite covering number from the
 random-entropy hypotheses.
+The matching infinite-packing source variant
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_eq_top_of_set_countable`
+does the same for eventual terminal `Metric.packingNumber = ⊤`.
 The live theorem-facing source gap is now exactly the construction of those
 finite-packing witnesses, separated-packing, packing-number, or
 covering-number lower bounds, or a replacement lower-growth/tail/UI theorem,
