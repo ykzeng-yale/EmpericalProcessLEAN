@@ -177,6 +177,11 @@ and to the probability source level by
 Thus the half-radius and quarter-radius lower-growth branches can ask directly
 for eventual or `P^n`-a.e. separated packings instead of a pre-composed
 selected-cardinality inequality.
+The final set-countable product-pair Chebyshev conclusion now exposes exactly
+that source form as
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`.
+This keeps the remaining blocker focused on producing separated packings or
+an equivalent honest lower-growth/tail/UI theorem from the book assumptions.
 
 2026-05-06 option-1 route sharpening: direct search found no existing
 mathlib/local/open-checkout theorem for the VdV&W probability-event

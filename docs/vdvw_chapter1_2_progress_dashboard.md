@@ -65,6 +65,11 @@ The same packing input now has eventual and `P^n`-a.e. source lifts,
 and
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_pairwise_empiricalL1Distance_gt_two_mul`,
 so lower-growth routes can consume separated packings directly.
+The strongest set-countable product-pair final route now consumes that source
+shape directly through
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`,
+which asks for eventual `P^n`-a.e. quarter-radius separated packings rather
+than a pre-composed selected-cardinality lower bound.
 The next source work is to derive these packings, or an equivalent
 tail/lower-growth input, from the book random-entropy hypotheses.
 The displayed-beta selected-cover route now has

@@ -114,6 +114,15 @@ is therefore no longer the cover-cardinality comparison; it is to construct
 the required separated packings or an equivalent tail/UI lower-growth input
 from the book hypotheses.
 
+2026-05-12 final packing-source consumer: the set-countable textbook-aligned
+product-pair Chebyshev route now has the direct packing entry point
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`.
+It composes the eventual `P^n`-a.e. quarter-radius packing source with the
+selected-cardinality lower-growth final wrapper, so callers no longer need to
+pre-assemble the selected-cardinality inequality.  The live theorem-facing
+source gap is now exactly the construction of those separated packings, or a
+replacement lower-growth/tail/UI theorem, from honest VdV&W assumptions.
+
 ## Current `/goal` Target
 
 Authoritative `/goal` reset, refreshed 2026-05-12: the active Codex goal
