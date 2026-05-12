@@ -17,10 +17,16 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_envelopeTendsto_summandMeasurable_envelope`.
 
 Immediate predecessor endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Earlier predecessor endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Immediate raw-root source:
+`empiricalAverageVector (samples n omega) (fun x => estimatingMap n omega x (estimator n omega)) = 0`.
 
 Immediate estimator definition source:
 `estimatingAtEstimator n omega x = scale n omega • estimatingMap n omega x (estimator n omega)`,
@@ -162,6 +168,11 @@ derives the previous a.e. estimator/scaled-estimator increment equalities from
 pointwise model definitions.  Thus `hEstimator_scaled`, `hDelta_eq_sub`, and
 `hScaledEstimator_eq_sub` are no longer live opaque a.e. fields for the current
 source route.
+The newest raw-root source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_envelopeTendsto_summandMeasurable_envelope`
+derives the previous a.e. raw estimating-equation field from the pointwise
+model root equation.  Thus `hRawRoot` is no longer a live opaque a.e. field
+for the current source route.
 
 Continuation recipe:
 
@@ -175,9 +186,9 @@ Continuation recipe:
 Priority order for the next packet:
 
 1. Move one layer closer to a model-facing finite-dimensional statement:
-   package the remaining source hypotheses around raw root equations,
-   measurability, or the actual model-specific sampled derivative matrix
-   action and population `V` matrix action.
+   package the remaining source hypotheses around measurability or the actual
+   model-specific sampled derivative matrix action and population `V` matrix
+   action.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    residual-source endpoint; do not rebuild completed score CLT, display weak
@@ -186,7 +197,7 @@ Priority order for the next packet:
    common-law transfers, the derivative-table common-law transfer, or the
    centered derivative-coordinate residual algebra, smooth/raw/scaled pointwise
    Taylor transfer, the score-at-theta0 vector scaling transfer, or the
-   estimator-definition a.e. wrappers.
+   estimator-definition or raw-root a.e. wrappers.
 
 Operating rules:
 

@@ -15,7 +15,14 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: estimator-definition source endpoint for the
+Latest verified packet: raw-root source endpoint for the score-at-theta0/Taylor
+and derivative-table route, including
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_envelopeTendsto_summandMeasurable_envelope`
+in `MEstimators.lean`.  It derives the previous a.e. `hRawRoot` field from
+the pointwise model root equation
+`empiricalAverageVector (samples n omega) (fun x => estimatingMap n omega x (estimator n omega)) = 0`.
+
+Immediate predecessor packet: estimator-definition source endpoint for the
 score-at-theta0/Taylor and derivative-table route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It derives the previous a.e.
@@ -23,7 +30,7 @@ in `MEstimators.lean`.  It derives the previous a.e.
 pointwise model definitions of `estimatingAtEstimator`, `delta`, and
 `scaledEstimator`.
 
-Immediate predecessor packet: derivative matrix-action source bridge for the
+Earlier predecessor packet: derivative matrix-action source bridge for the
 derivative-table and score-at-theta0/Taylor endpoints, including
 `vaart1998_theorem_5_41_derivativeCoordinate_action_eq_of_matrix_action_representation`
 and its endpoint
@@ -125,11 +132,11 @@ to remove the explicit residual convergence and residual measurability fields
 from the pointwise-Taylor Theorem 5.41 action endpoint.
 
 Current next blocker: package the remaining model-facing source hypotheses
-around raw root equations, measurability, or the actual model-specific sampled
-derivative matrix action and population `V` matrix action.  Do not replay the
-centered derivative-coordinate residual algebra, smooth/raw/scaled Taylor
-transfer, score-at-theta0 vector scaling transfer, or estimator-definition
-a.e. wrappers.
+around measurability or the actual model-specific sampled derivative matrix
+action and population `V` matrix action.  Do not replay the centered
+derivative-coordinate residual algebra, smooth/raw/scaled Taylor transfer,
+score-at-theta0 vector scaling transfer, estimator-definition a.e. wrappers,
+or raw-root a.e. wrappers.
 
 ## Verified Frontier
 
@@ -831,7 +838,7 @@ law-tail routing, display-congruence, display-convergence, display weak
 tightness/source/Taylor/measurability endpoints, projected-to-action law-tail
 routing, display-tightness action-bound, display weak-tightness action-bound,
 displayed weak-convergence source helpers, earlier Theorem 5.41 wrappers, or
-estimator-definition a.e. wrappers, or historical ledger items.
+estimator-definition/raw-root a.e. wrappers, or historical ledger items.
 
 ## Reuse Dependencies
 
