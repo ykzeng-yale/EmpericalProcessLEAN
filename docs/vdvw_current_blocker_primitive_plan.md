@@ -9818,3 +9818,15 @@ pair-sub lower-bound plus fixed-original sign-swap transport interface.  The
 remaining source work may now target the textbook Chebyshev pair-sub bad event
 and the fixed-original sign-swap transport while still paying finite-center
 failures through the vanishing integrated Hoeffding tail.
+
+2026-05-12 selected-center measurable failure-tail route:
+`Theorem243.lean` now adds the source-facing wrappers
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_finiteCenter_failure_tails_selectedCenterAt`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_finiteCenter_failure_tails_selectedCenterAt`.
+They discharge the raw original/ghost finite-center failure-event
+measurability assumptions from countability and first-level selected-center
+coordinate measurability.  The active source inputs are now exactly the
+beta-large sign-swapped bad fibers, or pair-sub lower bounds plus
+fixed-original sign-swap transport, together with the integrated Hoeffding
+failure-tail convergence.

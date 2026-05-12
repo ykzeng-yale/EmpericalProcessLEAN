@@ -3528,6 +3528,17 @@ finite-center failures as the same vanishing integrated Hoeffding-tail error.
 The source frontier is therefore the actual pair-sub Chebyshev probability
 step and the fixed-original sign-swap transport.
 
+2026-05-12 selected-center measurable failure-tail route:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_finiteCenter_failure_tails_selectedCenterAt`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_finiteCenter_failure_tails_selectedCenterAt`.
+These wrappers use the countable first-level selected-center coordinate
+measurability layer to prove the original and ghost finite-center failure-event
+measurability inputs internally.  The remaining theorem-facing source work is
+therefore probability and tail control, not additional finite-center
+measurability bookkeeping.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

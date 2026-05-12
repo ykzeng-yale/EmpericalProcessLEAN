@@ -4392,3 +4392,12 @@ pair-sub/source-factorized fixed-`M` wrapper
 This exposes the textbook-facing pair-sub bad event plus the fixed-original
 sign-swap transport as the active probability inputs, without reinstating
 a.e. finite-center support assumptions.
+
+The additive failure-tail source route also now has selected-center
+measurability wrappers:
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_finiteCenter_failure_tails_selectedCenterAt`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_finiteCenter_failure_tails_selectedCenterAt`.
+They remove the raw finite-center failure-event measurability fields for the
+countable first-level selected cover; only the real probability and integrated
+failure-tail convergence inputs remain exposed.
