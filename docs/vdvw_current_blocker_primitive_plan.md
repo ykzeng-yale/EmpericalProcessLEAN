@@ -9785,3 +9785,14 @@ source blocker is therefore not a large-`M` packaging issue: it is the genuine
 per-truncation probability input, namely beta-large sign-swapped fibers or an
 unswapped pair-sub lower bound plus transport, together with the finite-center
 a.e. support facts.
+
+2026-05-12 sign-swap finite-center support reduction:
+`Theorem243.lean` now adds the fixed-`M` source adapters
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers_unneg`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers_unneg`.
+These use finite-center sign-negation invariance to replace the negated ghost
+Hoeffding support assumption by the more natural unnegated ghost support
+assumption.  The probability frontier is now sharper: prove beta-large
+sign-swapped fibers, or unswapped pair-sub lower bounds plus fixed-original
+transport, while supplying original and unnegated ghost finite-center support.

@@ -4370,3 +4370,10 @@ large-`M` envelope-tail handoff.  Remaining Theorem 2.4.3 work is now focused
 on proving the actual per-truncation probability hypotheses: beta-large
 sign-swapped fibers, or unswapped pair-sub lower bounds plus fixed-sample
 transport, along with the selected finite-center support inputs.
+
+The fixed-`M` sign-swap displayed-beta source routes now also have unnegated
+ghost-support variants.  The new wrappers call the existing sign-swapped and
+pair-sub/sign-swap consumers after deriving the negated ghost finite-center
+Hoeffding support from the unnegated version by deterministic Rademacher
+sign-negation invariance.  This removes one artificial finite-center support
+orientation from the active source assumptions.

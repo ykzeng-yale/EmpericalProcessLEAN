@@ -3498,6 +3498,15 @@ large-`M` assembly gap for that branch of the proof.  The live source target
 is still the probability statement feeding each truncation level, not another
 entropy or truncation wrapper.
 
+2026-05-12 sign-swap unnegated finite-center support:
+`Theorem243.lean` now adds fixed-`M` unnegated-support variants of the
+sign-swapped bad-fiber and pair-sub/sign-swap displayed-beta routes.  The
+negated ghost support required by the concrete source event is derived
+internally from the unnegated support statement using
+`ae_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_neg_sign`.  Future
+source work can state ghost finite-center support with unnegated Rademacher
+signs in this branch.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
