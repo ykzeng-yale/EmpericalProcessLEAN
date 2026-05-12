@@ -127,7 +127,11 @@ layer exposes the same interface through
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_finiteEmpiricalL1PackingAtCard`,
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_finiteEmpiricalL1PackingAtCard`,
 and
-`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_finiteEmpiricalL1PackingAtCard`.
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_finiteEmpiricalL1PackingAtCard`,
+with deterministic and `P^n`-a.e. terminal-sample variants
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_finiteEmpiricalL1PackingAtCard`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_finiteEmpiricalL1PackingAtCard`.
 This is a packaging/source bridge, not a final proof of the book entropy
 hypothesis; the live mathematical gap remains constructing those witnesses or
 an equivalent tail/UI lower-growth input from the VdV&W assumptions.
@@ -181,10 +185,9 @@ pre-assemble the selected-cardinality inequality.  It now also has the
 proof-carrying finite-packing witness entry point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_finiteEmpiricalL1PackingAtCard_of_set_countable`,
 which consumes eventual `P^n`-a.e. terminal-sample
-`FiniteEmpiricalL1PackingAtCard` witnesses and transports them through
-`hX_samplePath` and the selected finite-packing adapter internally.  The same
-final route now
-also has the empirical-wrapper packing-number entry point
+`FiniteEmpiricalL1PackingAtCard` witnesses through the terminal selected
+finite-packing adapter internally.  The same final route now also has the
+empirical-wrapper packing-number entry point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_empiricalL1Index_packingNumber_of_set_countable`,
 which composes eventual `P^n`-a.e. lower bounds on
 `Metric.packingNumber` for `EmpiricalL1Index.liftSet` through the selected
