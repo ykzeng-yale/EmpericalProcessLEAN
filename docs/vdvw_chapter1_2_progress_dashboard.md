@@ -65,6 +65,17 @@ The same packing input now has eventual and `P^n`-a.e. source lifts,
 and
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_pairwise_empiricalL1Distance_gt_two_mul`,
 so lower-growth routes can consume separated packings directly.
+The source interface now also has proof-carrying explicit empirical packing
+witnesses through `FiniteEmpiricalL1PackingAtCard`,
+`finiteEmpiricalL1CoveringNumberCard_ge_of_finiteEmpiricalL1PackingAtCard`,
+`empiricalL1CoveringNumber_ge_of_finiteEmpiricalL1PackingAtCard`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_finiteEmpiricalL1PackingAtCard`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_finiteEmpiricalL1PackingAtCard`,
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_finiteEmpiricalL1PackingAtCard`.
+This lets future finite-grid or geometric arguments hand over a `Nonempty`
+packing witness instead of manually unpacking points, membership, and pairwise
+separation hypotheses.
 The strongest set-countable product-pair final route now consumes that source
 shape directly through
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`,

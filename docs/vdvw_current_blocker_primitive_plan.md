@@ -114,6 +114,24 @@ is therefore no longer the cover-cardinality comparison; it is to construct
 the required separated packings or an equivalent tail/UI lower-growth input
 from the book hypotheses.
 
+2026-05-12 explicit empirical packing witness interface: the search-first gate
+found the existing local raw pairwise packing lower bounds and mathlib's
+closed-ball `Metric.packingNumber`/covering-number comparisons, but no
+proof-carrying fixed-sample empirical `L1(P_n)` packing witness over a class
+that can be handed to the selected Theorem 2.4.3 route.  The covering primitive
+layer now defines `FiniteEmpiricalL1PackingAtCard` with point membership and
+pairwise empirical separation, plus
+`finiteEmpiricalL1CoveringNumberCard_ge_of_finiteEmpiricalL1PackingAtCard` and
+`empiricalL1CoveringNumber_ge_of_finiteEmpiricalL1PackingAtCard`.  The theorem
+layer exposes the same interface through
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_finiteEmpiricalL1PackingAtCard`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_finiteEmpiricalL1PackingAtCard`,
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_finiteEmpiricalL1PackingAtCard`.
+This is a packaging/source bridge, not a final proof of the book entropy
+hypothesis; the live mathematical gap remains constructing those witnesses or
+an equivalent tail/UI lower-growth input from the VdV&W assumptions.
+
 2026-05-12 final packing-source consumer: the set-countable textbook-aligned
 product-pair Chebyshev route now has the direct packing entry point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`.
