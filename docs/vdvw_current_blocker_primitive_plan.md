@@ -1942,6 +1942,21 @@ and
 These are textbook-facing entry points for the already compiled dominated
 a.e.-measurable common-cover layers.
 
+2026-05-12 null-measurable common-cover front doors: `OuterExpectation.lean`
+now also exposes `VdVWMeasurableCover.ofNullMeasurable`,
+`VdVWMeasurableCover.ofNullMeasurableDominated`,
+`VdVWMeasurableCover.exists_common_measurableCover_of_forall_absolutelyContinuous_nullMeasurable`,
+and the numbered wrapper
+`VdVWMeasurableCover.vdVW124_exists_common_measurableCover_of_dominated_nullMeasurable`.
+The bounded extended-real lane has the matching
+`VdVWBoundedERealMeasurableCover.ofNullMeasurable`,
+`.ofNullMeasurableDominated`,
+`.exists_common_boundedERealMeasurableCover_of_forall_absolutelyContinuous_nullMeasurable`,
+and
+`.vdVW124_exists_common_boundedERealMeasurableCover_of_dominated_nullMeasurable`.
+This closes the dominated completion-measurable layer while leaving the full
+arbitrary extended-real common-cover existence theorem open.
+
 2026-05-05 product projection cover follow-up: search found no existing exact
 VdV&W perfect-map theorem in mathlib or local `StatInference`, but mathlib's
 product-a.e. section APIs (`Measure.ae_prod_iff_ae_ae` and

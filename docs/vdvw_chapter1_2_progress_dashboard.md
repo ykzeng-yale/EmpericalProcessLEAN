@@ -1576,6 +1576,9 @@ family theorem, so a single cover built under a dominating measure is
 simultaneously minimal for all absolutely continuous measures in the family.
 The same common-cover work now has numbered Lemma 1.2.4 wrappers for the
 nonnegative and bounded extended-real dominated a.e.-measurable forms.
+The dominated common-cover lane now also has null-measurable front doors for
+both nonnegative and bounded extended-real targets, including numbered
+Lemma 1.2.4 wrappers for completion-measurable hypotheses.
 Lemma 1.2.5 now has a compiled measurable-target core: first and second
 coordinate product pullbacks of a nonnegative measurable cover remain minimal
 measurable covers on the product space.
