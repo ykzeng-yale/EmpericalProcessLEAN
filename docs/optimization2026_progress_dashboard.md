@@ -384,9 +384,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   Once the literal third-order package and strict projected-Hessian positivity
   are available, the Chewi Lemma 13.6-style projected source-radius local-norm
   sandwich follows directly, with the zero-displacement case handled inside
-  the wrapper.  Future item-4 source instances should therefore focus on
-  constructing the package and projected Hessian positivity, not rebuilding
-  segment Schur-derivative or local-norm transport arguments.
+  the wrapper.  The newest follow-up adds
+  `BarrierInfProjectionLiteralThirdOrderEnvelopeOn.projected_localNorm_sandwich_sourceRadius_of_adjointSqrtModel`,
+  which discharges that strict positivity from the adjoint-square-root model.
+  The one-call source wrapper
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_of_verticalFirstOrder`
+  now constructs the literal package and immediately derives the projected
+  local-norm sandwich from the same vertical first-order/full-Hessian
+  derivative inputs.
+  Future item-4 source instances should therefore focus on constructing the
+  literal package and concrete square-root/envelope model, not rebuilding
+  segment Schur-derivative, local-norm transport, or projected-Hessian
+  positivity arguments.
 - Inf-projection second-order Schur-envelope calculus: the newest packet adds
   `barrierInfProjectionPointFDeriv_apply` and
   `barrierInfProjectionGrad_hasFDerivAt_schur`.  The projected gradient now has

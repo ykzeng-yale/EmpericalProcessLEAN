@@ -480,6 +480,18 @@ these wrappers derive the Chewi Lemma 13.6-style source-radius local-norm
 sandwich directly, including the zero-displacement case.  The next item-4
 proof should therefore construct the concrete package and positivity data; it
 should not reopen the mixed-third segment or local-norm sandwich machinery.
+The follow-up wrapper
+`BarrierInfProjectionLiteralThirdOrderEnvelopeOn.projected_localNorm_sandwich_sourceRadius_of_adjointSqrtModel`
+derives the required projected-Hessian positivity from the adjoint-square-root
+model.  Thus a source instance only needs to provide the literal package and
+the square-root/envelope model; do not manually thread projected positivity
+unless no square-root model is available.
+The source one-call wrapper
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_of_verticalFirstOrder`
+packages this chain directly from vertical first-order, full-Hessian
+derivative, selector, inverse-block derivative, and mixed-third pairing data.
+Future exact item-4 work should target this theorem before adding any new
+local-norm transport wrapper.
 The second-order Schur-envelope packet adds
 `barrierInfProjectionPointFDeriv_apply` and
 `barrierInfProjectionGrad_hasFDerivAt_schur`.  If the original gradient has

@@ -249,6 +249,18 @@ Chewi Lemma 13.6-style projected source-radius local-norm sandwich, including
 the zero-displacement case.  For future Proposition 13.11(4) source instances,
 the live work is the concrete package/positivity construction rather than
 another Schur-derivative or local-norm transport wrapper.
+The adjoint-square-root consumer
+`BarrierInfProjectionLiteralThirdOrderEnvelopeOn.projected_localNorm_sandwich_sourceRadius_of_adjointSqrtModel`
+now removes the separate positivity obligation whenever the source instance
+has the packaged square-root envelope model.  The preferred exact item-4 route
+is package construction plus the concrete square-root/envelope model, with
+projected positivity discharged by this wrapper.
+The source one-call theorem
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_of_verticalFirstOrder`
+now builds the literal package and obtains the projected local-norm sandwich
+from the source vertical first-order and full-Hessian derivative hypotheses.
+Use it as the first consumer when proving a concrete Proposition 13.11(4)
+instance.
 The current second-order envelope layer also derives the Schur projected
 gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after
