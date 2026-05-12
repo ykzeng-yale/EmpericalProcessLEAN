@@ -432,6 +432,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   Concrete source instances can now state first-order, second-order, and
   full-Hessian derivative data uniformly on `s`; selector stationarity
   internalizes all selected-graph derivative restrictions.
+  The direct local-norm branch now has the matching source-facing endpoints
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_sourceSecondFullHessianDerivative_isOpen_direct`
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_sourceFirstSecondFullHessianDerivative_isOpen_envelope`.
+  Use the former when only projected local-norm transport is needed and no
+  selected-value `f` envelope data should be carried; use the latter when the
+  theorem-facing selected-value envelope is already part of the source route.
   Future item-4 source instances should therefore focus on constructing the
   literal package and concrete square-root/envelope model, not rebuilding
   segment Schur-derivative, local-norm transport, or projected-Hessian

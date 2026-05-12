@@ -299,6 +299,10 @@ and
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`.
 These are the shortest verified routes from original-domain derivative data to
 the literal envelope package and Chewi source-radius local-norm sandwich.
+For local-norm transport without selected-value envelope data, use
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_sourceSecondFullHessianDerivative_isOpen_direct`.
+For the theorem-facing selected-value envelope route, use
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_sourceFirstSecondFullHessianDerivative_isOpen_envelope`.
 The current second-order envelope layer also derives the Schur projected
 gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after

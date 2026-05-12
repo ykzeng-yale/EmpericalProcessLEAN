@@ -560,6 +560,14 @@ when first-, second-, and full-Hessian derivative data are all naturally proved
 on the original barrier domain.  Do not ask future runs to manually restate
 `hfgrad` or `hgrad` on `barrierInfProjectionPoint selector x` unless the source
 model genuinely only has graph-local data.
+For the shorter local-norm route, use
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_sourceSecondFullHessianDerivative_isOpen_direct`.
+It needs no selected-value `f`, no `hfgrad`, and no vertical first-order
+literal-infimum package; it only lifts source-domain `HasFDerivAt grad`,
+source-domain full Hessian differentiability, and the source mixed-third
+pairing before invoking the direct Schur local-norm consumer.  When the
+selected-value third-order envelope is part of the source proof, use
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_sourceFirstSecondFullHessianDerivative_isOpen_envelope`.
 
 The second-order envelope packet adds
 `BarrierInfProjectionSecondOrderEnvelopeAt`,
