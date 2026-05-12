@@ -1342,9 +1342,15 @@ interface.  It also adds
 `chewi1314_affineNegLog_selfConcordantBarrierOn_of_rightInverse` and
 `chewi1314_affineNegLog_selfConcordantBarrierOn_of_surjective`, which turn a
 scalar affine preimage of `ℝ_{>0}` into a `1`-self-concordant barrier for the
-single-halfspace logarithmic barrier.  Future polytope-log-barrier work should
-prove the row-map surjectivity/right-inverse once, then reuse these endpoints
-and the compiled sum-rule packets rather than redoing scalar self-concordance.
+single-halfspace logarithmic barrier.  The newest row-slack packet adds
+`halfspaceSlackCLM`, `halfspaceSlackSet`,
+`mem_barrierAffinePreimageSet_halfspaceSlackCLM_iff`,
+`halfspaceSlackRightInverse`, `halfspaceSlackCLM_rightInverse`, and
+`chewi1314_halfspaceSlackNegLog_selfConcordantBarrierOn`, giving the exact
+source row form `x ↦ -log (b - inner a x)` for nonzero rows.  Future
+polytope-log-barrier work should build the finite row family and summed
+barrier from these row endpoints and the compiled sum-rule packets rather
+than redoing scalar self-concordance or affine right-inverse algebra.
 Do not redo the
 square-root/right-inverse/Hessian-nonnegativity/self-concordance/model-Hessian
 plumbing; use

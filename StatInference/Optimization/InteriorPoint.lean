@@ -14518,5 +14518,74 @@ theorem chewi1314_affineNegLog_selfConcordantBarrierOn_of_surjective
   chewi1311_affinePreimage_selfConcordantBarrierOn_of_surjective
     A b negLogBarrier_selfConcordantBarrierOn_Ioi hA
 
+/--
+The scalar slack map used by Chewi Example 13.14:
+`x ↦ -⟪a, x⟫`, so the affine preimage with offset `b` is
+`x ↦ b - ⟪a, x⟫`.
+-/
+noncomputable def halfspaceSlackCLM
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (a : F) : F →L[ℝ] ℝ :=
+  -innerSL ℝ a
+
+/--
+The open halfspace written in the logarithmic-barrier slack convention
+`b - ⟪a, x⟫ > 0`.
+-/
+def halfspaceSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (a : F) (b : ℝ) : Set F :=
+  {x | 0 < b - inner ℝ a x}
+
+theorem mem_barrierAffinePreimageSet_halfspaceSlackCLM_iff
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (a : F) (b : ℝ) (x : F) :
+    x ∈ barrierAffinePreimageSet (halfspaceSlackCLM a) b (Set.Ioi 0) ↔
+      x ∈ halfspaceSlackSet a b := by
+  simp [barrierAffinePreimageSet, halfspaceSlackCLM, halfspaceSlackSet,
+    sub_eq_add_neg, add_comm]
+
+/--
+Concrete right inverse for the nonzero halfspace slack map, using the row
+direction `a`.
+-/
+noncomputable def halfspaceSlackRightInverse
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (a : F) : ℝ →L[ℝ] F :=
+  ContinuousLinearMap.toSpanSingleton ℝ (-(‖a‖ ^ (2 : ℕ))⁻¹ • a)
+
+theorem halfspaceSlackCLM_rightInverse
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {a : F} (ha : a ≠ 0) :
+    (halfspaceSlackCLM a).comp (halfspaceSlackRightInverse a) =
+      ContinuousLinearMap.id ℝ ℝ := by
+  apply ContinuousLinearMap.ext
+  intro t
+  have hnorm : ‖a‖ ^ (2 : ℕ) ≠ 0 := by
+    exact pow_ne_zero 2 (norm_ne_zero_iff.mpr ha)
+  simp [halfspaceSlackCLM, halfspaceSlackRightInverse, real_inner_smul_right,
+    hnorm]
+
+/--
+Chewi Example 13.14, single-row logarithmic barrier:
+`x ↦ -log (b - ⟪a, x⟫)` is a `1`-self-concordant barrier for the open
+halfspace `b - ⟪a, x⟫ > 0`, when the row vector is nonzero.
+-/
+theorem chewi1314_halfspaceSlackNegLog_selfConcordantBarrierOn
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    (a : F) (b : ℝ) (ha : a ≠ 0) :
+    SelfConcordantBarrierOn (halfspaceSlackSet a b)
+      (barrierAffinePreimageHess (halfspaceSlackCLM a) b negLogHessCLM)
+      (barrierAffinePreimageGrad (halfspaceSlackCLM a) b negLogBarrierGrad)
+      (barrierAffinePreimageInvHessRightInverse (halfspaceSlackCLM a)
+        (halfspaceSlackRightInverse a) b negLogInvHessCLM)
+      (barrierAffinePreimageThirdMixed (halfspaceSlackCLM a) b
+        negLogBarrierThirdMixed) 1 1 := by
+  simpa [halfspaceSlackSet, barrierAffinePreimageSet, halfspaceSlackCLM,
+    sub_eq_add_neg, add_comm] using
+    chewi1314_affineNegLog_selfConcordantBarrierOn_of_rightInverse
+      (halfspaceSlackCLM a) (halfspaceSlackRightInverse a) b
+      (halfspaceSlackCLM_rightInverse ha)
+
 end Optimization
 end StatInference

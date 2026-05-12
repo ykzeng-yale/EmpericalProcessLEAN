@@ -127,9 +127,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `negLogHessCLM_quadratic_nonneg`,
   `negLogInvHessCLM_quadratic_nonneg`,
   `negLogBarrier_mixedThird_bound`,
-  `negLogBarrier_mixedThirdSelfConcordantOn_Ioi`, and
-  `negLogBarrier_selfConcordantBarrierOn_Ioi`.  Example 13.14's single
-  halfspace log-barrier route can now start from
+  `negLogBarrier_mixedThirdSelfConcordantOn_Ioi`,
+  `negLogBarrier_selfConcordantBarrierOn_Ioi`, `halfspaceSlackCLM`,
+  `halfspaceSlackSet`, `halfspaceSlackRightInverse`,
+  `halfspaceSlackCLM_rightInverse`, and
+  `chewi1314_halfspaceSlackNegLog_selfConcordantBarrierOn`.  Example 13.14's
+  single row log-barrier route can now use the source-shaped theorem for
+  `x ↦ -log (b - inner a x)` when `a ≠ 0`, or start from
   `chewi1314_affineNegLog_selfConcordantBarrierOn_of_rightInverse` or
   `chewi1314_affineNegLog_selfConcordantBarrierOn_of_surjective`, then use
   the existing sum-rule packets for finite polytope logarithmic barriers.

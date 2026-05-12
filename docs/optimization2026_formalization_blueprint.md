@@ -117,7 +117,12 @@ scalar `-log` barrier is also now packaged in the supplied-oracle interface by
 `negLogBarrier_selfConcordantBarrierOn_Ioi`; Example 13.14's single-halfspace
 affine-preimage endpoint is available as
 `chewi1314_affineNegLog_selfConcordantBarrierOn_of_rightInverse` and
-`chewi1314_affineNegLog_selfConcordantBarrierOn_of_surjective`.  Next
+`chewi1314_affineNegLog_selfConcordantBarrierOn_of_surjective`.  The
+source-shaped row-slack endpoint
+`chewi1314_halfspaceSlackNegLog_selfConcordantBarrierOn` now packages the
+single row barrier `x ↦ -log (b - inner a x)` on
+`halfspaceSlackSet a b`, using `halfspaceSlackCLM_rightInverse` for
+nonzero rows.  Next
 lift these scalar/orthant models through reusable Proposition 13.11
 barrier-calculus rules,
 starting with the product-separable rule; all segment membership, `ψ`
