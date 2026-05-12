@@ -327,6 +327,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   the supplied gradient at the graph point, the selector is differentiable, and
   the vertical stationarity condition holds.  The next exact source step is the
   second-derivative Schur-Hessian identity for the selected value function.
+- Inf-projection literal-infimum bridge: the newest packet adds
+  `barrierInfProjectionFiberValues`, `barrierInfProjectionInfValue`,
+  `BarrierInfProjectionSelectorMinimizes`,
+  `BarrierInfProjectionSelectorMinimizes.value_eq_infValue`,
+  `BarrierInfProjectionSelectorMinimizes.infValue_eq_value`,
+  `BarrierInfProjectionSelectorStationary.infValue_hasGradientAt`, and
+  `BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt`.  This
+  connects the selected-envelope calculus to Chewi's literal
+  `x ↦ inf_y f(x, y)` value when the selector minimizes each vertical fiber.
+  Search-first reuse: mathlib's `IsLeast.csInf_eq` proves the selected value
+  equals the `sInf` of the fiber, and `HasGradientAt.congr_of_eventuallyEq`
+  transports the gradient theorem to the literal infimum value.  Future
+  item-4 work should assume/prove `BarrierInfProjectionSelectorMinimizes`
+  instead of treating `barrierInfProjectionValue` as the final source value.
 - Inf-projection second-order Schur-envelope calculus: the newest packet adds
   `barrierInfProjectionPointFDeriv_apply` and
   `barrierInfProjectionGrad_hasFDerivAt_schur`.  The projected gradient now has

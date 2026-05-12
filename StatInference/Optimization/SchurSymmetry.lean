@@ -963,6 +963,34 @@ theorem BarrierInfProjectionThirdOrderEnvelopeOn.value_hasGradientAt
       (barrierInfProjectionGrad selector grad x) x :=
   (henv.second_order hx).value_hasGradientAt
 
+/--
+Third-order envelope gradient theorem for Chewi's literal inf-projection value
+`x ↦ inf_y f(x, y)`, obtained by transporting the selected-envelope gradient
+through a selector that realizes every vertical infimum.
+-/
+theorem BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    (henv :
+      BarrierInfProjectionThirdOrderEnvelopeOn s f selector grad hess invHyy
+        third schurDeriv)
+    (hmin : BarrierInfProjectionSelectorMinimizes f selector)
+    {x : E₁} (hx : x ∈ barrierInfProjectionSet s) :
+    HasGradientAt (barrierInfProjectionInfValue (E₂ := E₂) f)
+      (barrierInfProjectionGrad selector grad x) x :=
+  (henv.value_hasGradientAt hx).congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun y =>
+      congrFun hmin.infValue_eq_value y)
+
 theorem BarrierInfProjectionThirdOrderEnvelopeOn.grad_hasFDerivAt
     [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
     {s : Set (WithLp 2 (E₁ × E₂))}

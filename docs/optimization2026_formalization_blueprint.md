@@ -200,6 +200,19 @@ selector first-order condition through `barrierInfProjectionGrad`,
 `barrierInfProjectionVerticalGrad`, `BarrierInfProjectionSelectorStationary`,
 `barrierInfProjectionSchurHessFrom`, and
 `chewi1311_infProjection_selfConcordantBarrierOn_of_schur_oracles`.
+The literal-infimum layer now names Chewi's actual value
+`x ↦ inf_y f(x, y)` via `barrierInfProjectionFiberValues` and
+`barrierInfProjectionInfValue`, packages selector attainment as
+`BarrierInfProjectionSelectorMinimizes`, and proves
+`BarrierInfProjectionSelectorMinimizes.value_eq_infValue`,
+`BarrierInfProjectionSelectorStationary.infValue_hasGradientAt`, and
+`BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt`.  Reuse this
+bridge when stating source-facing item-4 envelope theorems; do not treat the
+selected value `barrierInfProjectionValue` as the literal infimum unless the
+selector-minimizes certificate has been supplied.  Search-first reuse:
+mathlib's `IsLeast.csInf_eq` proves the fiber `sInf` equality, and
+`HasGradientAt.congr_of_eventuallyEq` transfers the selected-envelope
+gradient.
 The current second-order envelope layer also derives the Schur projected
 gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after

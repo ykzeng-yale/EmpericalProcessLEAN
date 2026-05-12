@@ -3632,6 +3632,53 @@ def barrierInfProjectionValue
     E₁ -> ℝ :=
   fun x => f (barrierInfProjectionPoint selector x)
 
+/-- Vertical fiber values used by Chewi Proposition 13.11(4)'s actual infimum. -/
+def barrierInfProjectionFiberValues
+    (f : WithLp 2 (E₁ × E₂) -> ℝ) (x : E₁) : Set ℝ :=
+  Set.range fun y : E₂ => f (WithLp.toLp 2 (x, y))
+
+/-- Chewi Proposition 13.11(4)'s literal value function `x ↦ inf_y f(x, y)`. -/
+noncomputable def barrierInfProjectionInfValue
+    (f : WithLp 2 (E₁ × E₂) -> ℝ) : E₁ -> ℝ :=
+  fun x => sInf (barrierInfProjectionFiberValues (E₂ := E₂) f x)
+
+/--
+A selector realizes the vertical infimum if it minimizes every vertical fiber.
+This is the source bridge from the selected-envelope calculus to Chewi's
+literal `inf_y` statement.
+-/
+def BarrierInfProjectionSelectorMinimizes
+    (f : WithLp 2 (E₁ × E₂) -> ℝ) (selector : E₁ -> E₂) : Prop :=
+  ∀ (x : E₁) (y : E₂), f (barrierInfProjectionPoint selector x) ≤
+    f (WithLp.toLp 2 (x, y))
+
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
+theorem BarrierInfProjectionSelectorMinimizes.value_eq_infValue
+    {f : WithLp 2 (E₁ × E₂) -> ℝ} {selector : E₁ -> E₂}
+    (hmin : BarrierInfProjectionSelectorMinimizes f selector) :
+    barrierInfProjectionValue f selector =
+      barrierInfProjectionInfValue (E₂ := E₂) f := by
+  funext x
+  have hleast :
+      IsLeast (barrierInfProjectionFiberValues (E₂ := E₂) f x)
+        (f (barrierInfProjectionPoint selector x)) := by
+    refine ⟨?_, ?_⟩
+    · exact ⟨selector x, rfl⟩
+    · intro r hr
+      rcases hr with ⟨y, rfl⟩
+      exact hmin x y
+  exact hleast.csInf_eq.symm
+
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
+theorem BarrierInfProjectionSelectorMinimizes.infValue_eq_value
+    {f : WithLp 2 (E₁ × E₂) -> ℝ} {selector : E₁ -> E₂}
+    (hmin : BarrierInfProjectionSelectorMinimizes f selector) :
+    barrierInfProjectionInfValue (E₂ := E₂) f =
+      barrierInfProjectionValue f selector :=
+  (hmin.value_eq_infValue).symm
+
 /--
 The graph-map derivative pulls the original gradient covector back to the
 projected gradient whenever the vertical gradient vanishes.
@@ -3709,6 +3756,34 @@ theorem BarrierInfProjectionSelectorStationary.value_hasGradientAt
   barrierInfProjectionValue_hasGradientAt_of_vertical_grad_eq_zero
     (E₁ := E₁) (E₂ := E₂) hgrad hselector
     (hsel.vertical_grad_eq_zero hx)
+
+/--
+First-order envelope theorem for Chewi's literal `x ↦ inf_y f(x, y)` value:
+if the selector realizes each vertical infimum, the selected-envelope gradient
+transfers to the actual inf-projection value.
+-/
+theorem BarrierInfProjectionSelectorStationary.infValue_hasGradientAt
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hmin : BarrierInfProjectionSelectorMinimizes f selector)
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hgrad :
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x) :
+    HasGradientAt (barrierInfProjectionInfValue (E₂ := E₂) f)
+      (barrierInfProjectionGrad selector grad x) x := by
+  have hvalue :
+      HasGradientAt (barrierInfProjectionValue f selector)
+        (barrierInfProjectionGrad selector grad x) x :=
+    hsel.value_hasGradientAt hx hgrad hselector
+  exact hvalue.congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun y =>
+      congrFun hmin.infValue_eq_value y)
 
 noncomputable def barrierInfProjectionBlockXX
     (selector : E₁ -> E₂)

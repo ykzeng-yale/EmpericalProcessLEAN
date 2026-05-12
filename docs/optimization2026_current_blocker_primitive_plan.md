@@ -422,6 +422,18 @@ first-order condition holds, the selected value function has projected gradient
 `barrierInfProjectionGrad`.  The next exact envelope step is the second
 derivative/Schur-Hessian identity; reuse this first-order layer rather than
 re-proving the chain rule or vertical cancellation.
+The literal-infimum bridge packet adds `barrierInfProjectionFiberValues`,
+`barrierInfProjectionInfValue`, `BarrierInfProjectionSelectorMinimizes`,
+`BarrierInfProjectionSelectorMinimizes.value_eq_infValue`,
+`BarrierInfProjectionSelectorMinimizes.infValue_eq_value`,
+`BarrierInfProjectionSelectorStationary.infValue_hasGradientAt`, and
+`BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt`.  It turns
+the selected envelope into Chewi's source value `x ↦ inf_y f(x, y)` whenever
+the selector minimizes every vertical fiber.  Search-first result: mathlib's
+`IsLeast.csInf_eq` handles the `sInf` equality, and
+`HasGradientAt.congr_of_eventuallyEq` transports the gradient theorem.  Future
+item-4 source wrappers should carry/prove `BarrierInfProjectionSelectorMinimizes`
+rather than silently identifying the selected value with the literal infimum.
 The second-order Schur-envelope packet adds
 `barrierInfProjectionPointFDeriv_apply` and
 `barrierInfProjectionGrad_hasFDerivAt_schur`.  If the original gradient has
