@@ -18015,6 +18015,72 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_transfor
       (f := fun n : ℕ => X n ω / b n ω) 1).mp hshifted
 
 /--
+Durrett 2019, Theorem 4.5.3 event-local Kronecker support with a random
+normalizer.
+
+This is the event-local version of
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_transform_tendsto`.
+It keeps all transform convergence and monotonicity hypotheses global, but only
+requires normalizer divergence on the event where the clock has infinite
+variation.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_transform_tendsto
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {H X b : ℕ -> Ω -> ℝ} {InfiniteVar : Set Ω}
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hH_eq : ∀ᵐ ω ∂P, ∀ n : ℕ, H n ω = (b n ω)⁻¹)
+    (hb_nonzero : ∀ᵐ ω ∂P, ∀ k : ℕ, b (k + 1) ω ≠ 0)
+    (hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ b (k + 2) ω - b (k + 1) ω)
+    (hb_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+        Tendsto (fun n : ℕ => b (n + 1) ω) atTop atTop)
+    (hTransform_tendsto :
+      ∀ᵐ ω ∂P,
+        ∃ Y : ℝ,
+          Tendsto (fun n : ℕ => durrett2019_stochasticTransform H X n ω)
+            atTop (𝓝 Y)) :
+    ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+      Tendsto (fun n : ℕ => X n ω / b n ω) atTop (𝓝 0) := by
+  filter_upwards
+    [hX0, hH_eq, hb_nonzero, hb_increment_nonneg, hb_atTop_on,
+      hTransform_tendsto]
+    with ω hX0ω hHω hb_nonzeroω hb_increment_nonnegω hb_atTopω
+      hTransformω hInfinite
+  rcases hTransformω with ⟨Y, hY⟩
+  have hincrement :
+      Tendsto
+        (fun n : ℕ => (X (n + 1) ω - X 0 ω) / b (n + 1) ω)
+        atTop (𝓝 0) := by
+    refine
+      durrett2019_exercise_4_4_11_normalized_increment_sum_tendsto_zero
+        (A := fun n : ℕ => durrett2019_stochasticTransform H X n ω)
+        (X := fun n : ℕ => X n ω) (b := fun n : ℕ => b n ω)
+        ?_ ?_ hb_nonzeroω (L := Y) ?_ hb_increment_nonnegω
+        (hb_atTopω hInfinite)
+    · simp [durrett2019_stochasticTransform]
+    · intro k
+      have hinc :=
+        congrFun
+          (durrett2019_exercise_4_4_11_stochasticTransform_increment_eq H X k) ω
+      calc
+        durrett2019_stochasticTransform H X (k + 1) ω -
+            durrett2019_stochasticTransform H X k ω
+            = H (k + 1) ω * (X (k + 1) ω - X k ω) := by
+              simpa [Pi.sub_apply, Pi.mul_apply] using hinc
+        _ = (X (k + 1) ω - X k ω) / b (k + 1) ω := by
+              rw [hHω (k + 1)]
+              ring
+    · exact hY.comp (tendsto_add_atTop_nat 1)
+  have hshifted :
+      Tendsto (fun n : ℕ => X (n + 1) ω / b (n + 1) ω) atTop (𝓝 0) :=
+    durrett2019_exercise_4_4_11_normalized_process_tendsto_zero_of_initial_zero
+      (X := fun n : ℕ => X n ω) (b := fun n : ℕ => b n ω) hX0ω hincrement
+  exact
+    (tendsto_add_atTop_iff_nat
+      (f := fun n : ℕ => X n ω / b n ω) 1).mp hshifted
+
+/--
 Durrett 2019, Theorem 4.5.3 transform-convergence support.
 
 Scaled square summability of a bounded nonnegative predictable transform feeds
@@ -18047,6 +18113,44 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_scaled_s
     durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_transform_tendsto
       (P := P) (H := H) (X := X) (b := b)
       hX0 hH_eq hb_nonzero hb_increment_nonneg hb_atTop
+      (durrett2019_exercise_4_4_11_stochasticTransform_exists_ae_tendsto_of_scaled_summable
+        (P := P) (ℱ := ℱ) (H := H) (X := X) (R := R)
+        hX hH_pred hH_bdd hH_nonneg hTransform_memLp_two hscaled_summable)
+
+/--
+Durrett 2019, Theorem 4.5.3 event-local transform-convergence support.
+
+This is the scaled-summability route with the final Kronecker normalization
+localized to an event where the random normalizer diverges.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_scaled_summable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ}
+    {H X b : ℕ -> Ω -> ℝ} {R : ℝ} {InfiniteVar : Set Ω}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hH_pred : StronglyAdapted ℱ (fun n => H (n + 1)))
+    (hH_bdd : ∀ n ω, H n ω ≤ R)
+    (hH_nonneg : ∀ n ω, 0 ≤ H n ω)
+    (hH_eq : ∀ᵐ ω ∂P, ∀ n : ℕ, H n ω = (b n ω)⁻¹)
+    (hb_nonzero : ∀ᵐ ω ∂P, ∀ k : ℕ, b (k + 1) ω ≠ 0)
+    (hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ b (k + 2) ω - b (k + 1) ω)
+    (hb_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+        Tendsto (fun n : ℕ => b (n + 1) ω) atTop atTop)
+    (hTransform_memLp_two :
+      ∀ k, MemLp (durrett2019_stochasticTransform H X k) (2 : ℝ≥0∞) P)
+    (hscaled_summable :
+      Summable fun k : ℕ =>
+        ∫ ω, (H (k + 1) ω * (X (k + 1) ω - X k ω)) ^ 2 ∂P) :
+    ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+      Tendsto (fun n : ℕ => X n ω / b n ω) atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_transform_tendsto
+      (P := P) (H := H) (X := X) (b := b) (InfiniteVar := InfiniteVar)
+      hX0 hH_eq hb_nonzero hb_increment_nonneg hb_atTop_on
       (durrett2019_exercise_4_4_11_stochasticTransform_exists_ae_tendsto_of_scaled_summable
         (P := P) (ℱ := ℱ) (H := H) (X := X) (R := R)
         hX hH_pred hH_bdd hH_nonneg hTransform_memLp_two hscaled_summable)
@@ -19248,6 +19352,24 @@ theorem durrett2019_theorem_4_5_3_reciprocal_comp_atTop_of_clock_atTop
   exact hf_atTop.comp (hAω.comp (tendsto_add_atTop_nat 1))
 
 /--
+Durrett 2019, Theorem 4.5.3 event-local random-normalizer divergence support.
+
+If the deterministic normalizer diverges at infinity, then the shifted random
+normalizer `f(A_{n+1})` diverges on any event where the clock diverges.
+-/
+theorem durrett2019_theorem_4_5_3_reciprocal_comp_atTop_on_of_clock_atTop_on
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {A : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {InfiniteVar : Set Ω}
+    (hf_atTop : Tendsto f atTop atTop)
+    (hA_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+        Tendsto (fun n : ℕ => A n ω) atTop atTop) :
+    ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+      Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop := by
+  filter_upwards [hA_atTop_on] with ω hAω hInfinite
+  exact hf_atTop.comp ((hAω hInfinite).comp (tendsto_add_atTop_nat 1))
+
+/--
 Durrett 2019, Theorem 4.5.3 deterministic normalizer divergence support.
 
 The textbook assumptions `f >= 1`, monotonicity, and integrability of
@@ -19360,6 +19482,102 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
         (P := P) (f := f) (A := A) (C := C)
         hA_mono_step hf_mono hf_interval_one_le hf_int hratio_int hclock_int
         hclock_bound)
+
+/--
+Durrett 2019, Theorem 4.5.3 event-local integrated clock route.
+
+This is the event-local version of
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_integral_clock_bound`.
+The variance/integrated-clock estimates remain global integrability inputs,
+while the final random-normalizer divergence is only required on
+`InfiniteVar`.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_integral_clock_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {C : ℝ} {InfiniteVar : Set Ω}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hf_cont : Continuous f)
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ k : ℕ, ∀ ω : Ω,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)))
+    (hf_interval_one_le :
+      ∀ k : ℕ, ∀ ω : Ω,
+        ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t)
+    (hf_int :
+      ∀ k : ℕ, ∀ ω : Ω,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume
+          (A k ω) (A (k + 1) ω))
+    (hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ f (A (k + 2) ω) - f (A (k + 1) ω))
+    (hb_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+        Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop)
+    (hTransform_memLp_two :
+      ∀ k, MemLp
+        (durrett2019_stochasticTransform
+          (fun n : ℕ => fun ω : Ω => (f (A n ω))⁻¹) X k)
+        (2 : ℝ≥0∞) P)
+    (hscaled_int :
+      ∀ k : ℕ,
+        Integrable
+          (fun ω =>
+            ((f (A (k + 1) ω))⁻¹ * (X (k + 1) ω - X k ω)) ^ 2) P)
+    (hdiff_sq_int :
+      ∀ k : ℕ, Integrable (fun ω => (X (k + 1) ω - X k ω) ^ 2) P)
+    (hratio_int :
+      ∀ k : ℕ,
+        Integrable
+          (fun ω => (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2) P)
+    (hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω)
+    (hclock_int :
+      ∀ N : ℕ, Integrable (fun ω => ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) P)
+    (hclock_bound :
+      ∀ N : ℕ, ∫ ω, (∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) ∂P ≤ C) :
+    ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  have hf_one_le : ∀ n : ℕ, ∀ ω : Ω, 1 ≤ f (A n ω) := by
+    intro n ω
+    exact hf_interval_one_le n ω (A n ω) ⟨le_rfl, hA_mono_step n ω⟩
+  refine
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_scaled_summable
+      (P := P) (ℱ := ℱ)
+      (H := fun n : ℕ => fun ω : Ω => (f (A n ω))⁻¹)
+      (X := X) (b := fun n : ℕ => fun ω : Ω => f (A n ω)) (R := 1)
+      (InfiniteVar := InfiniteVar)
+      hX hX0 ?_ ?_ ?_ ?_ ?_ hb_increment_nonneg hb_atTop_on
+      hTransform_memLp_two ?_
+  · exact
+      durrett2019_theorem_4_5_3_reciprocal_comp_shift_stronglyAdapted
+        (ℱ := ℱ) (A := A) (f := f) hA_predictable hf_cont
+  · exact
+      durrett2019_theorem_4_5_3_reciprocal_comp_le_one_of_one_le
+        (A := A) (f := f) hf_one_le
+  · exact
+      durrett2019_theorem_4_5_3_reciprocal_comp_nonneg_of_one_le
+        (A := A) (f := f) hf_one_le
+  · exact Eventually.of_forall fun ω n => rfl
+  · filter_upwards with ω k
+    exact ne_of_gt (zero_lt_one.trans_le (hf_one_le (k + 1) ω))
+  · exact
+      durrett2019_theorem_4_5_3_scaled_summable_of_integral_le_variance_ratio
+        (P := P) (A := A) (X := X) (f := f)
+        (fun k =>
+          durrett2019_theorem_4_5_3_reciprocal_comp_integral_le_variance_increment_of_condExp_square_le
+            (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (k := k)
+            hA_predictable hf_cont (hscaled_int k) (hdiff_sq_int k)
+            (hratio_int k) (hcond_le k))
+        (durrett2019_theorem_4_5_3_integral_variance_ratio_summable_of_integral_clock_bound
+          (P := P) (f := f) (A := A) (C := C)
+          hA_mono_step hf_mono hf_interval_one_le hf_int hratio_int hclock_int
+          hclock_bound)
 
 /--
 Durrett 2019, Theorem 4.5.3 source-facing integrated clock route with
@@ -19935,6 +20153,155 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
       (durrett2019_theorem_4_5_3_normalizer_atTop_of_integrable_inv_sq
         (f := f) hf_mono hf_one_le htail_int)
       hA0_nonneg hA_mono_step hA_atTop hcond_le htail_int htail_bound
+
+/--
+Durrett 2019, Theorem 4.5.3 event-local source-facing tail-integral route
+with global normalizer hypotheses.
+
+This is the infinite-clock-event analogue of the V221 endpoint: the clock
+divergence hypothesis is localized to `InfiniteVar`, so the normalized
+martingale conclusion is also localized to that event.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono_atTop
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {C : ℝ} {InfiniteVar : Set Ω}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hA_int : ∀ n : ℕ, Integrable (A n) P)
+    (hf_cont : Continuous f)
+    (hf_mono : Monotone f)
+    (hf_one_le : ∀ t : ℝ, 1 ≤ f t)
+    (hf_atTop : Tendsto f atTop atTop)
+    (hA0_nonneg : ∀ ω : Ω, 0 ≤ A 0 ω)
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hA_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+        Tendsto (fun n : ℕ => A n ω) atTop atTop)
+    (hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω)
+    (htail_int :
+      IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (f t)⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  have hf_one_le_A : ∀ n : ℕ, ∀ ω : Ω, 1 ≤ f (A n ω) := by
+    intro n ω
+    exact hf_one_le (A n ω)
+  have hf_ne_zero : ∀ t : ℝ, f t ≠ 0 :=
+    durrett2019_theorem_4_5_3_ne_zero_of_global_one_le
+      (f := f) hf_one_le
+  have hfinvSq_cont :
+      Continuous (fun t : ℝ => (f t)⁻¹ ^ 2) :=
+    durrett2019_theorem_4_5_3_reciprocal_sq_continuous_of_continuous_ne_zero
+      (f := f) hf_cont hf_ne_zero
+  have hf_interval_mono :
+      ∀ k : ℕ, ∀ ω : Ω,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)) :=
+    durrett2019_theorem_4_5_3_interval_mono_of_monotone
+      (A := A) (f := f) hf_mono
+  have hf_interval_one_le :
+      ∀ k : ℕ, ∀ ω : Ω,
+        ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t :=
+    durrett2019_theorem_4_5_3_interval_one_le_of_global_one_le
+      (A := A) (f := f) hf_one_le
+  have hf_int :
+      ∀ k : ℕ, ∀ ω : Ω,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume
+          (A k ω) (A (k + 1) ω) := by
+    intro k ω
+    exact
+      durrett2019_theorem_4_5_3_interval_integrable_of_reciprocal_sq_continuous
+        (f := f) hfinvSq_cont (A k ω) (A (k + 1) ω)
+  have hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ f (A (k + 2) ω) - f (A (k + 1) ω) :=
+    durrett2019_theorem_4_5_3_reciprocal_comp_normalizer_increment_nonneg
+      (P := P) (A := A) (f := f) hA_mono_step hf_interval_mono
+  have hb_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+        Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop :=
+    durrett2019_theorem_4_5_3_reciprocal_comp_atTop_on_of_clock_atTop_on
+      (P := P) (A := A) (f := f) (InfiniteVar := InfiniteVar)
+      hf_atTop hA_atTop_on
+  have hclock_int :
+      ∀ N : ℕ, Integrable (fun ω => ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) P :=
+    durrett2019_theorem_4_5_3_finite_clock_integral_integrable_of_tail_integral_bound
+      (P := P) (ℱ := ℱ) (f := f) (A := A) (C := C)
+      hA_predictable hfinvSq_cont hA0_nonneg hA_mono_step htail_int htail_bound
+  have hclock_bound :
+      ∀ N : ℕ, ∫ ω, (∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) ∂P ≤ C :=
+    durrett2019_theorem_4_5_3_integrated_clock_bound_of_tail_integral_bound
+      (P := P) (f := f) (A := A) (C := C)
+      hA0_nonneg hA_mono_step htail_int hclock_int htail_bound
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_integral_clock_bound
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (C := C)
+      (InfiniteVar := InfiniteVar)
+      hX hX0 hA_predictable hf_cont hA_mono_step hf_interval_mono
+      hf_interval_one_le hf_int hb_increment_nonneg hb_atTop_on
+      (durrett2019_theorem_4_5_3_reciprocal_comp_transform_memLp_two_of_process_memLp
+        (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f)
+        hA_predictable hf_cont hf_one_le_A hX_memLp_two)
+      (durrett2019_theorem_4_5_3_reciprocal_comp_scaled_sq_integrable_of_process_memLp
+        (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f)
+        hA_predictable hf_cont hf_one_le_A hX_memLp_two)
+      (durrett2019_theorem_4_5_3_increment_sq_integrable_of_process_memLp
+        (P := P) (X := X) hX_memLp_two)
+      (durrett2019_theorem_4_5_3_variance_ratio_integrable_of_clock_integrable
+        (P := P) (ℱ := ℱ) (A := A) (f := f)
+        hA_predictable hf_cont hf_one_le_A hA_int)
+      hcond_le hclock_int hclock_bound
+
+/--
+Durrett 2019, Theorem 4.5.3 event-local source-facing tail-integral route
+with deterministic normalizer divergence derived from the textbook integral
+assumption.
+
+This is the theorem-facing infinite-clock-event endpoint: on the event where
+`A_n` diverges, the normalized martingale `X_n / f(A_n)` converges to zero.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {C : ℝ} {InfiniteVar : Set Ω}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hA_int : ∀ n : ℕ, Integrable (A n) P)
+    (hf_cont : Continuous f)
+    (hf_mono : Monotone f)
+    (hf_one_le : ∀ t : ℝ, 1 ≤ f t)
+    (hA0_nonneg : ∀ ω : Ω, 0 ≤ A 0 ω)
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hA_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+        Tendsto (fun n : ℕ => A n ω) atTop atTop)
+    (hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω)
+    (htail_int :
+      IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (f t)⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono_atTop
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (C := C)
+      (InfiniteVar := InfiniteVar)
+      hX hX0 hX_memLp_two hA_predictable hA_int hf_cont hf_mono hf_one_le
+      (durrett2019_theorem_4_5_3_normalizer_atTop_of_integrable_inv_sq
+        (f := f) hf_mono hf_one_le htail_int)
+      hA0_nonneg hA_mono_step hA_atTop_on hcond_le htail_int htail_bound
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

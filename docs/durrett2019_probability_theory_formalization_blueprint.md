@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V222`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V223`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -153,13 +153,21 @@ V222 adds
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono`,
 deriving deterministic normalizer divergence from Durrett's exact assumptions
 `f >= 1`, monotonicity, and finite `∫_0^∞ f(t)^{-2} dt`.
+V223 adds the event-local infinite-clock endpoint:
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_transform_tendsto`,
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_scaled_summable`,
+`durrett2019_theorem_4_5_3_reciprocal_comp_atTop_on_of_clock_atTop_on`,
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_integral_clock_bound`,
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono_atTop`,
+and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono`.
 The next theorem-facing target is no
 longer finite sum/integral exchange, V214-to-V209 wiring, the
 tail-integral-to-clock-bound package, variance-ratio integrability packaging,
-lower-bound/no-zero/divergence plumbing, or deterministic normalizer-divergence
-packaging: either package the event-local `{A∞ = ∞}` conclusion from an a.e.
-clock limit, or move to the next martingale theorem if the current global
-clock-divergence endpoint is the intended source statement.  Do not
+lower-bound/no-zero/divergence plumbing, deterministic normalizer-divergence
+packaging, or event-local random-normalizer packaging: move to the next
+martingale theorem/source wrapper unless a precise terminal-clock event bridge
+is needed to feed the compiled `hA_atTop_on` hypothesis.  Do not
 route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2

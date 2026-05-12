@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V222
+## Live In-Thread Goal Prompt V223
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -237,10 +237,25 @@ Durrett assumptions on `f`.  New compiled declarations:
 The source endpoint now derives `Tendsto f atTop atTop` from `Monotone f`,
 `∀ t, 1 <= f t`, and `IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0)`.
 
-Next aggressive step: either package the event-local conclusion on
-`{A∞ = ∞}` from an a.e. clock limit `A_n -> A∞` plus event membership, or move
-to the next martingale theorem if the current global a.s. clock-divergence
-endpoint is the intended source statement for this lane.  Do not
+V223 packages the infinite-clock event side of Theorem 4.5.3.  New compiled
+declarations:
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_transform_tendsto`,
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_scaled_summable`,
+`durrett2019_theorem_4_5_3_reciprocal_comp_atTop_on_of_clock_atTop_on`,
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_integral_clock_bound`,
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono_atTop`,
+and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono`.
+The final endpoint now proves
+`∀ᵐ ω, ω ∈ InfiniteVar -> Tendsto (fun n => X n ω / f (A n ω)) atTop (𝓝 0)`
+from the exact Durrett `f` assumptions and an event-local clock-divergence
+hypothesis
+`∀ᵐ ω, ω ∈ InfiniteVar -> Tendsto (fun n => A n ω) atTop atTop`.
+
+Next aggressive step: move to the next martingale theorem/source wrapper in
+Durrett Section 4.5 unless the textbook route needs a narrow bridge from a
+named terminal-clock event to the already compiled `hA_atTop_on` hypothesis.
+Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -254,7 +269,8 @@ packaging, finite random clock-integrability packaging,
 interval-integrability packaging, normalizer-increment packaging,
 reciprocal-square continuity packaging, lower-bound/no-zero packaging,
 normalizer-divergence-from-clock packaging, deterministic normalizer-divergence
-packaging, Chapter 2.1, or Theorem 2.4.9 unless
+packaging, event-local random-normalizer packaging, Chapter 2.1, or
+Theorem 2.4.9 unless
 Theorem 4.5.3 exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
@@ -1585,6 +1601,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V142` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V223` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
