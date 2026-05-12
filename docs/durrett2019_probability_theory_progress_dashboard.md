@@ -32,9 +32,9 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V236` in
+Route from `Live In-Thread Goal Prompt V237` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
-The active theorem lane is Durrett Section 4.5.5 in
+The active theorem lane is Durrett Theorem 4.5.7 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the
 source square-minus stopped certificate, finite-terminal threshold cover,
 countable threshold event-cover assembly, and monotone-terminal source wrapper
@@ -241,9 +241,16 @@ V236 starts Theorem 4.5.7 with the finite-horizon maximal-probability layer:
 `durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_of_terminal_sq_le`,
 and
 `durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_of_terminal_sq_le`.
-The next target is the stopped terminal-square estimate
-`E X_{N(a) ∧ n}^2 <= E(A_infty ∧ a^2)` and then the layer-cake/Fubini split;
-do not redo the Doob/Kolmogorov probability conversion.
+V237 adds the stopped terminal-square min-bound layer:
+`durrett2019_theorem_4_5_7_stoppedProcess_le_terminal_of_process_le`,
+`durrett2019_theorem_4_5_7_min_terminal_integrable_of_terminal_integrable`,
+`durrett2019_theorem_4_5_7_stopped_square_integral_le_min_terminal_of_stopped_bounds`,
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal`,
+and
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_terminal_integrable`.
+The next target is to discharge the V237 source side conditions from the
+monotone predictable clock and terminal `A_infty`, then package the
+layer-cake/Fubini split; do not redo the Doob/Kolmogorov probability conversion.
 
 Closed Chapter 2 support remains available in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -1245,15 +1252,16 @@ Every Lean packet should pass:
 
 Use the current blocker plan's live prompt as the active `/goal` replacement
 whenever the app-level wording lags.  Active frontier only: Durrett Theorem
-2.2.3 in `StatInference/ProbabilityTheory/Basic.lean`.
+4.5.7 in `StatInference/ProbabilityTheory/Martingale.lean`.
 
-Next proof packet: convert the compiled finite display
-`E (S_n / n - μ)^2 <= C / n` into actual `atTop` `L^2`/`eLpNorm` convergence,
-then feed `durrett2019_theorem_2_2_3_tendstoInMeasure_average_of_tendsto_eLpNorm_centered`.
-Search mathlib/local APIs first, especially `eLpNorm`, `lpNorm`,
-`ofReal_integral_eq_lintegral_ofReal`, squeeze/tendsto algebra for `C / n`,
-and Chebyshev/Markov bridges.  Do not re-prove the compiled Chapter 2.1,
-2.2.1, 2.4.9, or Chapter 4 support while this frontier is active.
+Next proof packet: discharge the remaining V237 stopped terminal-square source
+side conditions from the monotone predictable clock and terminal `A_infty`,
+then package the layer-cake/Fubini split for
+`E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search mathlib/local APIs first,
+especially `ae_all_iff`, `AEMeasurable.min`, monotone a.e. terminal wrappers,
+Bochner integral monotonicity, and layer-cake/lower-semicontinuity support.
+Do not re-prove compiled Chapter 2/3, Theorem 4.5.2, Theorem 4.5.3, Theorem
+4.5.5, or the V236 probability conversion while this frontier is active.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
 one compiled Lean packet, verify focused Lean plus targeted build/scans and root

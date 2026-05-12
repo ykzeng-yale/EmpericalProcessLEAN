@@ -27,12 +27,12 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V236`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V237`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current active frontier: Durrett Section 4.5.5 in
+Current active frontier: Durrett Theorem 4.5.7 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the source
 square-minus stopped certificate, finite-terminal threshold cover, countable
 event-cover assembly, and monotone-terminal source wrapper for Theorem 4.5.2.
@@ -275,6 +275,13 @@ and
 These wrappers consume the existing Kolmogorov/Doob square maximal inequality
 and expose the stopped `P(max_{m <= n} |X_{N ∧ m}| > a)` estimate used in the
 textbook proof.
+V237 adds the stopped terminal-square min-bound layer:
+`durrett2019_theorem_4_5_7_stoppedProcess_le_terminal_of_process_le`,
+`durrett2019_theorem_4_5_7_min_terminal_integrable_of_terminal_integrable`,
+`durrett2019_theorem_4_5_7_stopped_square_integral_le_min_terminal_of_stopped_bounds`,
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal`,
+and
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_terminal_integrable`.
 The next theorem-facing target is no longer finite sum/integral exchange,
 V214-to-V209 wiring, the tail-integral-to-clock-bound package,
 variance-ratio integrability packaging, lower-bound/no-zero/divergence
@@ -285,8 +292,8 @@ conditional-variance algebra, max-normalizer denominator handoff, or
 finite/infinite event-cover ratio assembly, the max-normalizer 4.5.3 source
 handoff, raw-clock monotonicity, or final Theorem 4.5.5 packaging.  Move next
 to the next Theorem 4.5.7 layer: the stopped terminal-square estimate
-`E X_{N(a) ∧ n}^2 <= E(A_infty ∧ a^2)` and the layer-cake/Fubini integral
-split.  Do not
+source side conditions from the monotone predictable clock and the
+layer-cake/Fubini integral split.  Do not
 route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2

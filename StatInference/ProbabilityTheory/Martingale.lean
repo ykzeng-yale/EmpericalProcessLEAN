@@ -22746,6 +22746,156 @@ theorem
         ((a ^ 2 : ℝ≥0) : ℝ≥0∞))
 
 /--
+Durrett 2019, Theorem 4.5.7 support: if every value of an increasing-process
+candidate `A` is dominated by a terminal envelope `Ainf`, then every stopped
+value is dominated by the same envelope.
+-/
+theorem
+    durrett2019_theorem_4_5_7_stoppedProcess_le_terminal_of_process_le
+    {Ω : Type*} [MeasurableSpace Ω]
+    {P : Measure Ω} {A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    {N : Ω -> ℕ∞}
+    (hA_le_Ainf : ∀ n, A n ≤ᵐ[P] Ainf) :
+    ∀ n, stoppedProcess A N n ≤ᵐ[P] Ainf := by
+  intro n
+  have hAll : ∀ᵐ ω ∂P, ∀ k, A k ω ≤ Ainf ω :=
+    ae_all_iff.2 hA_le_Ainf
+  filter_upwards [hAll] with ω hω
+  simpa [stoppedProcess] using hω ((min (n : ℕ∞) (N ω)).untopA)
+
+/--
+Durrett 2019, Theorem 4.5.7 support: integrability of the terminal envelope
+implies integrability of its truncation `Ainf ∧ C`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_min_terminal_integrable_of_terminal_integrable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ} {C : ℝ}
+    (hAinf_int : Integrable Ainf P) :
+    Integrable (fun ω => min (Ainf ω) C) P := by
+  simpa [Pi.inf_apply] using hAinf_int.inf (integrable_const C)
+
+/--
+Durrett 2019, Theorem 4.5.7 stopped terminal-square support.
+
+If the stopped increasing-process clock is bounded both by a terminal envelope
+`Ainf` and by a deterministic level `C`, then the stopped terminal square is
+bounded by the integral of `min Ainf C`.  This is the finite-horizon estimate
+used before the layer-cake/Fubini split in the textbook proof.
+-/
+theorem
+    durrett2019_theorem_4_5_7_stopped_square_integral_le_min_terminal_of_stopped_bounds
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    {N : Ω -> ℕ∞} {C : ℝ}
+    (hN : IsStoppingTime ℱ N)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hMin_int : Integrable (fun ω => min (Ainf ω) C) P)
+    (hSquare_eq_A :
+      ∀ n,
+        (∫ ω, stoppedProcess X N n ω ^ 2 ∂P) =
+          ∫ ω, stoppedProcess A N n ω ∂P)
+    (hA_le_Ainf : ∀ n, stoppedProcess A N n ≤ᵐ[P] Ainf)
+    (hA_le_C : ∀ n, stoppedProcess A N n ≤ᵐ[P] fun _ => C) :
+    ∀ n,
+      (∫ ω, stoppedProcess X N n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) C ∂P := by
+  intro n
+  have hA_stopped_int : Integrable (stoppedProcess A N n) P :=
+    integrable_stoppedProcess (ι := ℕ) hN hA_int n
+  have hA_le_min :
+      stoppedProcess A N n ≤ᵐ[P] fun ω => min (Ainf ω) C := by
+    filter_upwards [hA_le_Ainf n, hA_le_C n] with ω hterminal hC
+    exact le_min hterminal hC
+  have hA_integral_le :
+      (∫ ω, stoppedProcess A N n ω ∂P) ≤
+        ∫ ω, min (Ainf ω) C ∂P :=
+    integral_mono_ae hA_stopped_int hMin_int hA_le_min
+  calc
+    (∫ ω, stoppedProcess X N n ω ^ 2 ∂P)
+        = ∫ ω, stoppedProcess A N n ω ∂P := hSquare_eq_A n
+    _ ≤ ∫ ω, min (Ainf ω) C ∂P := hA_integral_le
+
+/--
+Durrett 2019, Theorem 4.5.7 threshold-time stopped terminal-square support.
+
+For `N(a) = inf {n : A_{n+1} > a^2}`, the initial bound `A_0 <= a^2`
+supplies the deterministic stopped-clock bound, while domination of `A_n` by
+`Ainf` supplies the terminal-envelope side.  The conclusion is the exact
+`E X_{N(a) ∧ n}^2 <= E (Ainf ∧ a^2)` estimate used in the proof.
+-/
+theorem
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {a : ℝ}
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hMin_int : Integrable (fun ω => min (Ainf ω) (a ^ 2)) P)
+    (hSquare_eq_A :
+      ∀ n,
+        (∫ ω,
+          stoppedProcess X
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) =
+          ∫ ω,
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ∂P)
+    (hA0_le : A 0 ≤ᵐ[P] fun _ => a ^ 2)
+    (hA_le_Ainf : ∀ n, A n ≤ᵐ[P] Ainf) :
+    ∀ n,
+      (∫ ω,
+        stoppedProcess X
+          (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) (a ^ 2) ∂P :=
+  durrett2019_theorem_4_5_7_stopped_square_integral_le_min_terminal_of_stopped_bounds
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+    (N := durrett2019_theorem_4_5_2_firstPredictableAbove A a) (C := a ^ 2)
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
+      (ℱ := ℱ) (A := A) a hA_predictable)
+    hA_int hMin_int hSquare_eq_A
+    (durrett2019_theorem_4_5_7_stoppedProcess_le_terminal_of_process_le
+      (P := P) (A := A) (Ainf := Ainf)
+      (N := durrett2019_theorem_4_5_2_firstPredictableAbove A a)
+      hA_le_Ainf)
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_increasing_ae_le
+      (P := P) (A := A) (a := a) hA0_le)
+
+/--
+Durrett 2019, Theorem 4.5.7 threshold-time stopped terminal-square support
+with the truncation integrability derived from terminal-envelope integrability.
+-/
+theorem
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_terminal_integrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {a : ℝ}
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_int : Integrable Ainf P)
+    (hSquare_eq_A :
+      ∀ n,
+        (∫ ω,
+          stoppedProcess X
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) =
+          ∫ ω,
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ∂P)
+    (hA0_le : A 0 ≤ᵐ[P] fun _ => a ^ 2)
+    (hA_le_Ainf : ∀ n, A n ≤ᵐ[P] Ainf) :
+    ∀ n,
+      (∫ ω,
+        stoppedProcess X
+          (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) (a ^ 2) ∂P :=
+  durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf) (a := a)
+    hA_predictable hA_int
+    (durrett2019_theorem_4_5_7_min_terminal_integrable_of_terminal_integrable
+      (P := P) (Ainf := Ainf) (C := a ^ 2) hAinf_int)
+    hSquare_eq_A hA0_le hA_le_Ainf
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
