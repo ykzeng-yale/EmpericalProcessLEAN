@@ -50245,6 +50245,105 @@ theorem
       (sample := sample) henvelope hM htruncIntegrable hepsilon hbad
 
 /--
+Positive-sample-size named-event version of the threshold-doubled Chebyshev
+lower bound.
+
+The finite-sample source theorem is naturally indexed by `n + 1`; this wrapper
+exposes the same pair-sub bad-event lower bound for any `0 < n`, matching the
+eventual-atTop consumers that work over arbitrary positive sample sizes.
+-/
+theorem
+    VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_of_pos_of_dist_two_mul_bad
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    {sample : SampleAt Observation n}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon) (hn : 0 < n)
+    (hbad :
+      2 * epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => ((n : ℝ))⁻¹) sample)
+          (0 : ℝ)) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / (((n : ℝ)) * epsilon ^ 2)) ≤
+      (vdVWProductMeasure P n)
+        (VdVWTheorem243CenteredPairSubBadEvent P indexClass classFun
+          envelope M epsilon sample) := by
+  cases n with
+  | zero =>
+      cases hn
+  | succ n =>
+      simpa [Nat.succ_eq_add_one] using
+        VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+          (sample := sample) henvelope hM htruncIntegrable hepsilon hbad
+
+/--
+Half-scale positive-size named-event Chebyshev lower bound.
+
+If the original centered supremum is `epsilon`-bad, Chebyshev gives pair-sub
+bad mass at radius `epsilon / 2` with the corresponding half-scale beta
+penalty.  This is the pair-sub source shape used by the half-scale selected-net
+and sign-swap routes.
+-/
+theorem
+    VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    {sample : SampleAt Observation n}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon) (hn : 0 < n)
+    (hbad :
+      epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => ((n : ℝ))⁻¹) sample)
+          (0 : ℝ)) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / (((n : ℝ)) * (epsilon / 2) ^ 2)) ≤
+      (vdVWProductMeasure P n)
+        (VdVWTheorem243CenteredPairSubBadEvent P indexClass classFun
+          envelope M (epsilon / 2) sample) := by
+  have hepsilon_half : 0 < epsilon / 2 := by linarith
+  have hbad_half :
+      2 * (epsilon / 2) <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => ((n : ℝ))⁻¹) sample)
+          (0 : ℝ) := by
+    convert hbad using 1
+    ring
+  exact
+    VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_of_pos_of_dist_two_mul_bad
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := epsilon / 2) (n := n)
+      (sample := sample) henvelope hM htruncIntegrable hepsilon_half hn
+      hbad_half
+
+/--
 Averaged product-pair version of the threshold-doubled Chebyshev lower bound.
 
 This is the source shape needed before applying the already compiled

@@ -9845,3 +9845,16 @@ canonical half-radius selected cover, is supplied.  The active source frontier
 is therefore the pair-sub Chebyshev lower bound and fixed-original sign-swap
 transport, with finite-center measurability and inverse-square tail control
 internal to the selected-cover wrappers.
+
+2026-05-12 positive-size half-scale pair-sub Chebyshev source:
+`Theorem243.lean` now proves
+`VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_of_pos_of_dist_two_mul_bad`
+and
+`VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad`.
+The named pair-sub bad-event lower bound is no longer successor-only, and the
+half-scale source has exactly the beta denominator
+`(n : ℝ) * (epsilon / 2)^2` while consuming the original `epsilon`-bad
+centered supremum event.  This packages the Chebyshev half-radius input needed
+by the selected-net/sign-swap route; the remaining source frontier is the
+fixed-original sign-swap transport and wiring this half-scale beta into the
+selected-center convergence consumer.

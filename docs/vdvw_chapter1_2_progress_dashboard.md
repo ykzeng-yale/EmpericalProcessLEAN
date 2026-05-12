@@ -253,8 +253,14 @@ event wrapper
 and the successor-sample concrete fiber wrapper
 `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_succ`
 now remove Chebyshev mass and Rademacher sign support as separate caller
-inputs in the successor route.  The averaged product-pair route is now also
-compiled through
+inputs in the successor route.  The named Chebyshev pair-sub source now also
+has the positive-size and half-scale wrappers
+`VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_of_pos_of_dist_two_mul_bad`
+and
+`VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad`,
+so the half-radius pair-sub lower bound is packaged in the event shape needed
+by selected-cover/sign-swap consumers.  The averaged product-pair route is now
+also compiled through
 `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
 `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
 `measure_mul_le_vdVWProductMeasure_pairDifference_constWeights_bad_of_split_fiber_lower_bound`,

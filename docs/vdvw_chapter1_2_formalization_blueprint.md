@@ -2358,6 +2358,13 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_succ_of_dist_two_mul_bad`,
    and the direct Chebyshev-to-concrete fiber wrapper
    `VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_chebyshev_pairSub_badEvent_signSwap_lower_bound_succ`.
+   The named pair-sub Chebyshev event source also has arbitrary positive-size
+   and half-scale wrappers
+   `VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_of_pos_of_dist_two_mul_bad`
+   and
+   `VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad`,
+   isolating the exact beta penalty needed when an `epsilon` original bad
+   event feeds an `epsilon / 2` pair-sub bad event.
    The averaged product-pair alternative is now compiled through
    `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
    `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
