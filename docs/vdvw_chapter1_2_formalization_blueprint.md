@@ -3507,6 +3507,18 @@ internally from the unnegated support statement using
 source work can state ghost finite-center support with unnegated Rademacher
 signs in this branch.
 
+2026-05-12 sign-swap finite-center failure-tail route:
+`Theorem243.lean` now adds an additive-error version of the sign-swapped
+bad-fiber first-level route.  The generic factor-two product-fiber projection
+now accepts an integrated error, the centered sign-swapped bad fiber feeds the
+concrete pair-difference event up to original/ghost Hoeffding failure tails,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_finiteCenter_failure_tails`
+packages the result into fixed-`M` convergence under a vanishing integrated
+failure-tail hypothesis.  This advances the source interface beyond a.e.
+finite-center support assumptions; the outstanding theorem-facing input is
+still the beta-large sign-swapped bad-fiber probability statement.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

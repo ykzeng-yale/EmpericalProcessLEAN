@@ -9796,3 +9796,16 @@ Hoeffding support assumption by the more natural unnegated ghost support
 assumption.  The probability frontier is now sharper: prove beta-large
 sign-swapped fibers, or unswapped pair-sub lower bounds plus fixed-original
 transport, while supplying original and unnegated ghost finite-center support.
+
+2026-05-12 sign-swap finite-center failure-tail route:
+`Theorem243.lean` now proves
+`VdVWOuterProbability_mul_left_le_two_mul_of_product_fiber_lower_bound_or_ghost_add_error`,
+`VdVWTheorem243_pairDifferenceGhostRademacherSelectedNetEvent_fiber_lower_bound_of_centeredPairSubSignSwapBadEvent_finiteCenter_failure_tails`,
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_centeredPairSubSignSwapBad_finiteCenter_failure_tails`, and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_finiteCenter_failure_tails`.
+This replaces the sign-swap route's a.e. finite-center support assumptions by
+measurable original/ghost finite-center failure events plus a vanishing
+integrated Hoeffding failure-tail error.  The live probability source is now
+sharper: beta-large sign-swapped bad fibers remain to be proved, but
+finite-center side-condition failures can be paid additively instead of
+assumed away.

@@ -4377,3 +4377,11 @@ pair-sub/sign-swap consumers after deriving the negated ghost finite-center
 Hoeffding support from the unnegated version by deterministic Rademacher
 sign-negation invariance.  This removes one artificial finite-center support
 orientation from the active source assumptions.
+
+The sign-swap route now also has an additive finite-center failure-tail
+fixed-`M` consumer.  New declarations carry a product-fiber error through the
+factor-two original-or-ghost selected-net projection and then into
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_finiteCenter_failure_tails`.
+This keeps beta-large sign-swapped bad fibers as the remaining probability
+input, while finite-center support is replaced by measurable failure events
+and a vanishing integrated Hoeffding tail term.
