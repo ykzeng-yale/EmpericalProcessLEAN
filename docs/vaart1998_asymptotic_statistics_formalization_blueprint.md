@@ -120,9 +120,12 @@ derivative-identification a.e. fields from pointwise model hypotheses.  The
 score-vector display source endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 derives the remaining a.e. score-vector display fields from pointwise model
-identities.  The next proof packet should move to a concrete
-model-specialized Theorem 5.41 instantiation, or package only a still-live
-source field that the current endpoint explicitly exposes, not replay
+identities.  The direct vector-score and derivative-table endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+defines the auxiliary `scoreSummand` and `derivativeEntry` streams internally
+from `scoreVector` and `derivativeTable`.  The next proof packet should move
+to a concrete model-specialized Theorem 5.41 instantiation, or package only a
+still-live source field that the current endpoint explicitly exposes, not replay
 display weak-convergence, display-tightness, score-CLT, residual convergence,
 absorbing tightness, derivative-action wrappers, derivative-entry iid source
 fields, score moment transfer, score-law covariance transfer, vector
@@ -130,8 +133,8 @@ score-representation, vector score common-law transfer, derivative-table
 common-law transfer, centered derivative-coordinate residual algebra,
 smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer, or
 estimator-definition/raw-root/measurability/sampled-derivative-action/
-population-`V` basis-action/pointwise-smoothness/score-vector display source
-wrappers.
+population-`V` basis-action/pointwise-smoothness/score-vector display/direct
+vector-table source wrappers.
 
 ## Chapter Map
 
@@ -910,8 +913,9 @@ Initial modules:
   The current Theorem 5.41 source route has also replaced the estimator
   increment, raw-root, selected measurability, and sampled derivative action
   a.e. fields, and the full population `V` action, by pointwise, ordinary
-  measurable, basis-column, pointwise smoothness, or score-vector display model
-  sources; do not route future packets through those already-closed wrappers.
+  measurable, basis-column, pointwise smoothness, score-vector display, or
+  direct vector/table model sources; do not route future packets through those
+  already-closed wrappers.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.

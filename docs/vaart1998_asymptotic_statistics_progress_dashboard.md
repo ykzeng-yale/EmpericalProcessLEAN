@@ -15,14 +15,21 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: pointwise score-vector display endpoint for the
+Latest verified packet: direct vector-score and derivative-table source
+endpoint for the score-at-theta0/Taylor route, including
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+in `MEstimators.lean`.  It defines the auxiliary `scoreSummand` and
+`derivativeEntry` streams internally as coordinate projections of `scoreVector`
+and `derivativeTable`.
+
+Immediate predecessor packet: pointwise score-vector display endpoint for the
 score-at-theta0/Taylor and derivative-table route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 in `MEstimators.lean`.  It derives the remaining a.e. score-vector display
 fields from pointwise model identities for the scaled estimating map at
 `theta0` and the selected score-at-theta0 map.
 
-Immediate predecessor packet: pointwise smoothness/source-set endpoint for the
+Earlier predecessor packet: pointwise smoothness/source-set endpoint for the
 score-at-theta0/Taylor and derivative-table route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 in `MEstimators.lean`.  It derives the open-set, segment-subset, `ContDiffOn`,
@@ -174,7 +181,8 @@ smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer,
 estimator-definition a.e. wrappers, raw-root a.e. wrappers, selected
 measurability source wrappers, sampled derivative matrix-action source
 wrappers, population `V` basis-action source wrappers, or pointwise
-smoothness/source-set wrappers, or score-vector display wrappers.
+smoothness/source-set wrappers, score-vector display wrappers, or direct
+vector/table wrappers.
 
 ## Verified Frontier
 
@@ -878,7 +886,7 @@ routing, display-tightness action-bound, display weak-tightness action-bound,
 displayed weak-convergence source helpers, earlier Theorem 5.41 wrappers, or
 estimator-definition/raw-root/measurability/sampled-derivative-action/
 population-`V` basis-action/pointwise-smoothness/score-vector display source
-wrappers, or historical ledger items.
+wrappers, direct vector/table wrappers, or historical ledger items.
 
 ## Reuse Dependencies
 

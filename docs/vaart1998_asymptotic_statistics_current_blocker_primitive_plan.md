@@ -17,9 +17,12 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 
 Immediate predecessor endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+
+Earlier predecessor endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 
 Earlier predecessor endpoint:
@@ -74,6 +77,10 @@ pointwise identities for both
 `scale n omega • estimatingMap n omega (samples n omega i) (theta0 n omega)`
 and `scoreAtTheta0 n omega (samples n omega i)` against
 `sqrt n • scoreVector i.val omega`.
+
+Immediate direct vector/table source:
+define the auxiliary `scoreSummand` and `derivativeEntry` streams internally as
+coordinate projections of `scoreVector` and `derivativeTable`.
 
 Immediate smooth Taylor source helper:
 `vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffTheta0SecondDerivativeContDiff`.
@@ -244,6 +251,13 @@ derives the remaining a.e. score-vector display fields from pointwise model
 identities.  Thus `hScaledScore_vector_eq` and
 `hScoreAtTheta0_vector_eq` are no longer live opaque a.e. fields for the
 current source route.
+The newest direct vector/table source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+defines `scoreSummand` and `derivativeEntry` internally from `scoreVector` and
+`derivativeTable`.  Thus `hScoreSummand_eq_vector` and
+`hDerivativeEntry_eq_table` are no longer live model-facing equality fields,
+and model instances can state sampled/population derivative actions directly
+against `derivativeTable`.
 
 Continuation recipe:
 
@@ -269,7 +283,7 @@ Priority order for the next packet:
    Taylor transfer, the score-at-theta0 vector scaling transfer, or the
    estimator-definition, raw-root, selected measurability, or sampled
    derivative matrix-action, population `V` basis-action, or pointwise
-   smoothness/source-set, or score-vector display wrappers.
+   smoothness/source-set, score-vector display, or direct vector/table wrappers.
 
 Operating rules:
 
