@@ -10335,3 +10335,17 @@ pair-difference route reuse the same selected-cardinality and half-radius
 entropy bookkeeping.  The live source obligations remain the finite-center
 maximal input and canonical `Phi(x)=x` comparison, now at the first-level
 endpoint rather than only at the displayed-beta comparison layer.
+
+2026-05-12 first-level selected-cover `hphi_id` displayed-beta primitives:
+`Theorem243.lean` now also exposes the comparison layer directly through
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_canonicalRademacher_countable_hphi_id_firstLevel`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_ae_imp_canonicalRademacher_countable_hphi_id_firstLevel`.
+These are the theorem-facing source bridges behind the fixed-`M` endpoints:
+they package the canonical first-level half-radius selected cover and return
+the displayed-beta comparison with `C = 2` and `A = 1`, without requiring the
+stochastic-entropy hypothesis.  The live source obligations are unchanged but
+now isolated at the comparison layer: prove the canonical finite-center
+maximal event and canonical `Phi(x)=x` comparison either under the centered-bad
+restricted law or as base-measure a.e. implications from centered-bad
+membership.

@@ -4773,3 +4773,14 @@ The shared first-level primitive handoff now carries the comparison's displayed
 constant, allowing the `A = 1` canonical `hphi_id` route to reuse the selected
 cardinality/half-radius entropy plumbing that previously served the `A = 2`
 pair-difference route.
+
+2026-05-12 first-level selected-cover `hphi_id` displayed-beta primitives:
+`Theorem243.lean` now names the source comparison layer behind those endpoints:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_canonicalRademacher_countable_hphi_id_firstLevel`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_ae_imp_canonicalRademacher_countable_hphi_id_firstLevel`.
+They package the canonical first-level half-radius selected cover and produce
+the displayed-beta comparison with `C = 2`, `A = 1`, before any entropy
+handoff.  The remaining proof target is still the actual finite-center
+maximal event plus canonical `Phi(x)=x` comparison in either restricted-law or
+base-a.e. conditional form.

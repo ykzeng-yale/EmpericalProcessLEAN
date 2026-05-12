@@ -3866,6 +3866,18 @@ handoff now accepts the comparison's displayed constant generically, so `A = 1`
 `hphi_id` primitives and `A = 2` pair-difference primitives share the same
 half-radius selected-cardinality bookkeeping.
 
+2026-05-12 first-level selected-cover `hphi_id` displayed-beta primitives:
+`Theorem243.lean` now records the source comparison layer separately via
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_canonicalRademacher_countable_hphi_id_firstLevel`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_ae_imp_canonicalRademacher_countable_hphi_id_firstLevel`.
+These bridges stop before the stochastic-entropy convergence handoff: they
+assemble the canonical first-level half-radius cover and return the
+displayed-beta primitive with `C = 2` and `A = 1`.  This keeps the next proof
+frontier theorem-facing at the comparison layer: finite-center maximal support
+and canonical `Phi(x)=x`, either restricted to the centered bad set or as
+base-measure a.e. implications from centered-bad membership.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
