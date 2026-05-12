@@ -311,12 +311,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierInfProjectionAdjointSqrtEnvelopeModel`,
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.selfConcordantBarrierOn`, and
   `chewi1311_infProjection_selfConcordantBarrierOn_of_adjointSqrtEnvelopeModel`.
-  The current best item-4 route is now packaged as one source-facing
-  certificate carrying selector stationarity, the original barrier, and the
-  vertical/full Hessian square-root equalities.  The next exact source step is
-  to construct this certificate from an envelope differentiability theorem and
-  concrete square-root models, not to restate the raw assumptions in every
-  wrapper.
+  The direct source-domain wrapper
+  `chewi1311_infProjection_selfConcordantBarrierOn_of_sourceFullSqrt` now
+  packages the source full-Hessian/inverse-Hessian square-root route into the
+  exact inf-projection `SelfConcordantBarrierOn` conclusion.  The current best
+  item-4 route is therefore either this theorem or the reusable
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel` certificate when downstream
+  local-norm/envelope consumers are also needed.  The next exact source step is
+  to construct the certificate inputs from an envelope differentiability
+  theorem and concrete square-root models, not to restate the raw assumptions
+  in every wrapper.
 - Inf-projection first-order envelope calculus: the newest packet adds
   `barrierInfProjectionPointFDeriv`,
   `barrierInfProjectionPoint_hasFDerivAt`, `barrierInfProjectionValue`,

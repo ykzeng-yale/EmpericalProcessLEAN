@@ -6642,6 +6642,58 @@ theorem chewi1311_infProjection_selfConcordantBarrierOn_of_adjointSqrtEnvelopeMo
   hmodel.selfConcordantBarrierOn
 
 /--
+Source-domain square-root version of Chewi Proposition 13.11(4).  Concrete
+models can state the full Hessian and inverse-Hessian adjoint-square formulas
+on the original domain `s`; selector stationarity lifts them to the selected
+graph before applying the packaged finite-dimensional Schur-envelope rule.
+-/
+theorem chewi1311_infProjection_selfConcordantBarrierOn_of_sourceFullSqrt
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_hess_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      barrierInfProjectionBlockYY selector hess x =
+        (ContinuousLinearMap.adjoint (sqrtHyy x).toContinuousLinearMap).comp
+          (sqrtHyy x).toContinuousLinearMap)
+    (hyy_inv_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      invHyy x =
+        (sqrtHyy x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtHyy x).symm.toContinuousLinearMap))
+    (hfull_hess_eq_source :
+      ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+        hess z =
+          (ContinuousLinearMap.adjoint (sqrtFull z).toContinuousLinearMap).comp
+            (sqrtFull z).toContinuousLinearMap)
+    (hfull_inv_eq_source :
+      ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+        invHess z =
+          (sqrtFull z).symm.toContinuousLinearMap.comp
+            (ContinuousLinearMap.adjoint
+              (sqrtFull z).symm.toContinuousLinearMap)) :
+    SelfConcordantBarrierOn (barrierInfProjectionSet s)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy)
+      (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionProjInvHessFromFullInv selector invHess)
+      (barrierInfProjectionSchurLiftedThird selector hess invHyy third) M nu :=
+  (BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt
+    hsel hbar hyy_hess_eq hyy_inv_eq hfull_hess_eq_source
+    hfull_inv_eq_source).selfConcordantBarrierOn
+
+/--
 The adjoint-square-root envelope model supplies the right-inverse identity for
 the vertical Hessian block.
 -/

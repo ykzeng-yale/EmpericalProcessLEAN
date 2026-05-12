@@ -421,6 +421,12 @@ full-Hessian and inverse-Hessian adjoint-square equalities from the original
 domain `s` to selected graph points using selector stationarity, so concrete
 instances only need to keep the vertical `Hyy` square-root equalities on the
 projected domain.
+The direct source-domain Proposition 13.11 wrapper
+`chewi1311_infProjection_selfConcordantBarrierOn_of_sourceFullSqrt` now
+composes that constructor with the packaged Schur-envelope barrier theorem,
+so concrete instances can prove the inf-projection `SelfConcordantBarrierOn`
+conclusion without first materializing the model as a separate intermediate
+artifact.
 Future exact inf-projection work should construct this one certificate from a
 selector/envelope differentiability theorem and concrete square-root models,
 rather than restating the selector stationarity, original barrier, vertical
