@@ -2947,6 +2947,131 @@ theorem chewi1311_affinePreimage_selfConcordantBarrierOn_of_oracleModel
       (barrierAffinePreimageThirdMixed A b third) M nu :=
   hmodel.selfConcordantBarrierOn
 
+/--
+Pulled-back inverse-Hessian oracle from a continuous right inverse `B` of the
+linear part `A`: `B (∇²f(Ax+b))⁻¹ B†`.
+-/
+noncomputable def barrierAffinePreimageInvHessRightInverse
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    (invHess : E -> E →L[ℝ] E) : F -> F →L[ℝ] F :=
+  fun x => B.comp ((invHess (A x + b)).comp (ContinuousLinearMap.adjoint B))
+
+theorem barrierAffinePreimageInvHessRightInverse_quadratic_eq
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    (invHess : E -> E →L[ℝ] E) (x v : F) :
+    inner ℝ v (barrierAffinePreimageInvHessRightInverse A B b invHess x v) =
+      inner ℝ (ContinuousLinearMap.adjoint B v)
+        (invHess (A x + b) (ContinuousLinearMap.adjoint B v)) := by
+  let S := ContinuousLinearMap.adjoint B
+  simpa [barrierAffinePreimageInvHessRightInverse, S] using
+    (ContinuousLinearMap.adjoint_inner_left B
+      (invHess (A x + b) (S v)) v).symm
+
+theorem barrierAffinePreimageInvHessRightInverse_quadratic_nonneg
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    (invHess : E -> E →L[ℝ] E) (x v : F)
+    (hinv :
+      ∀ w : E, 0 ≤ inner ℝ w (invHess (A x + b) w)) :
+    0 ≤ inner ℝ v
+      (barrierAffinePreimageInvHessRightInverse A B b invHess x v) := by
+  rw [barrierAffinePreimageInvHessRightInverse_quadratic_eq]
+  exact hinv (ContinuousLinearMap.adjoint B v)
+
+theorem barrierAffinePreimageDualLocalNorm_rightInverse_eq
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    (invHess : E -> E →L[ℝ] E) (x v : F) :
+    dualLocalNorm (barrierAffinePreimageInvHessRightInverse A B b invHess) x v =
+      dualLocalNorm invHess (A x + b) (ContinuousLinearMap.adjoint B v) := by
+  unfold dualLocalNorm
+  rw [barrierAffinePreimageInvHessRightInverse_quadratic_eq]
+
+theorem barrierAffinePreimageGrad_rightInverse_adjoint
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E) (grad : E -> E)
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E) (x : F) :
+    ContinuousLinearMap.adjoint B (barrierAffinePreimageGrad A b grad x) =
+      grad (A x + b) := by
+  have hcomp :
+      (ContinuousLinearMap.adjoint B).comp (ContinuousLinearMap.adjoint A) =
+        ContinuousLinearMap.id ℝ E := by
+    calc
+      (ContinuousLinearMap.adjoint B).comp (ContinuousLinearMap.adjoint A)
+          = ContinuousLinearMap.adjoint (A.comp B) := by
+            exact (ContinuousLinearMap.adjoint_comp A B).symm
+      _ = ContinuousLinearMap.adjoint (ContinuousLinearMap.id ℝ E) := by
+            rw [hAB]
+      _ = ContinuousLinearMap.id ℝ E := by
+            simp
+  calc
+    ContinuousLinearMap.adjoint B (barrierAffinePreimageGrad A b grad x)
+        = ((ContinuousLinearMap.adjoint B).comp (ContinuousLinearMap.adjoint A))
+            (grad (A x + b)) := by
+          simp [barrierAffinePreimageGrad]
+    _ = grad (A x + b) := by
+          rw [hcomp]
+          rfl
+
+theorem barrierAffinePreimageGradientDualLocalNorm_rightInverse_eq
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    (invHess : E -> E →L[ℝ] E) (grad : E -> E)
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E) (x : F) :
+    dualLocalNorm (barrierAffinePreimageInvHessRightInverse A B b invHess) x
+        (barrierAffinePreimageGrad A b grad x) =
+      dualLocalNorm invHess (A x + b) (grad (A x + b)) := by
+  rw [barrierAffinePreimageDualLocalNorm_rightInverse_eq]
+  rw [barrierAffinePreimageGrad_rightInverse_adjoint A B b grad hAB]
+
+theorem BarrierAffinePreimageOracleModel.of_rightInverse
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {third : E -> E -> E -> ℝ}
+    {M nu : ℝ}
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu) :
+    BarrierAffinePreimageOracleModel A b s hess grad invHess
+      (barrierAffinePreimageInvHessRightInverse A B b invHess) third M nu where
+  barrier := hbar
+  invHessPull_nonneg := by
+    intro x hx v
+    exact barrierAffinePreimageInvHessRightInverse_quadratic_nonneg
+      A B b invHess x v (hbar.invHess_nonneg hx)
+  gradient_bound := by
+    intro x hx
+    rw [barrierAffinePreimageGradientDualLocalNorm_rightInverse_eq A B b invHess grad hAB]
+    exact hbar.gradient_bound hx
+
+theorem SelfConcordantBarrierOn.affinePreimage_rightInverse
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {third : E -> E -> E -> ℝ}
+    {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A b s)
+      (barrierAffinePreimageHess A b hess)
+      (barrierAffinePreimageGrad A b grad)
+      (barrierAffinePreimageInvHessRightInverse A B b invHess)
+      (barrierAffinePreimageThirdMixed A b third) M nu :=
+  (BarrierAffinePreimageOracleModel.of_rightInverse A B b hAB hbar).selfConcordantBarrierOn
+
+/--
+Chewi Proposition 13.11, affine-preimage case, with the pulled-back
+inverse-Hessian oracle constructed from a continuous right inverse of the
+linear part.
+-/
+theorem chewi1311_affinePreimage_selfConcordantBarrierOn_of_rightInverse
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {third : E -> E -> E -> ℝ}
+    {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A b s)
+      (barrierAffinePreimageHess A b hess)
+      (barrierAffinePreimageGrad A b grad)
+      (barrierAffinePreimageInvHessRightInverse A B b invHess)
+      (barrierAffinePreimageThirdMixed A b third) M nu :=
+  hbar.affinePreimage_rightInverse A B b hAB
+
 end AffinePreimageBarrier
 
 section InfProjectionBarrier

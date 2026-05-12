@@ -119,8 +119,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   carrying the two component barriers, component square-root models, and the
   summed square-root model, instead of threading the long equality list.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
-  supplied-oracle form, for invertible affine maps, and as a single
-  non-invertible/range certificate object.  Reusable declarations include
+  supplied-oracle form, for invertible affine maps, as a single
+  non-invertible/range certificate object, and for affine maps whose linear
+  part has a continuous right inverse.  Reusable declarations include
   `barrierAffinePreimageSet`, `barrierAffinePreimageHess`,
   `barrierAffinePreimageGrad`, `barrierAffinePreimageThirdMixed`,
   `barrierAffinePreimageLocalNorm_eq`,
@@ -134,12 +135,22 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierAffinePreimageOracleModel.gradient_bound_le`,
   `BarrierAffinePreimageOracleModel.selfConcordantBarrierOn`, and
   `chewi1311_affinePreimage_selfConcordantBarrierOn_of_oracleModel`.
+  The right-inverse packet adds
+  `barrierAffinePreimageInvHessRightInverse`,
+  `barrierAffinePreimageInvHessRightInverse_quadratic_eq`,
+  `barrierAffinePreimageDualLocalNorm_rightInverse_eq`,
+  `barrierAffinePreimageGrad_rightInverse_adjoint`,
+  `barrierAffinePreimageGradientDualLocalNorm_rightInverse_eq`,
+  `BarrierAffinePreimageOracleModel.of_rightInverse`,
+  `SelfConcordantBarrierOn.affinePreimage_rightInverse`, and
+  `chewi1311_affinePreimage_selfConcordantBarrierOn_of_rightInverse`.
   Search-first result: use mathlib adjoint APIs
   `ContinuousLinearMap.adjoint_inner_left/right`,
   `ContinuousLinearMap.adjoint_comp`, and
   `ContinuousLinearEquiv.coe_comp_coe_symm`; no direct Chewi affine barrier
-  rule existed locally.  The remaining exact source work is to instantiate
-  the oracle model from a principled surjective/range/pseudoinverse
+  rule existed locally.  The remaining exact source work is to reduce the
+  source condition `dom f ⊆ range 𝒜` to this right-inverse model, most likely
+  through a range-subtype, surjective restriction, or pseudoinverse
   construction.
 - Latest inf-projection frontier: Proposition 13.11(4) now has a compiled
   supplied-projected-oracle spine.  Reusable declarations include
