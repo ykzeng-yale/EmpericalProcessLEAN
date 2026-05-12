@@ -9809,3 +9809,12 @@ integrated Hoeffding failure-tail error.  The live probability source is now
 sharper: beta-large sign-swapped bad fibers remain to be proved, but
 finite-center side-condition failures can be paid additively instead of
 assumed away.
+
+2026-05-12 pair-sub sign-swap finite-center failure-tail route:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_finiteCenter_failure_tails`.
+It composes the additive sign-swapped bad-fiber route with the unswapped
+pair-sub lower-bound plus fixed-original sign-swap transport interface.  The
+remaining source work may now target the textbook Chebyshev pair-sub bad event
+and the fixed-original sign-swap transport while still paying finite-center
+failures through the vanishing integrated Hoeffding tail.

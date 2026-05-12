@@ -4385,3 +4385,10 @@ factor-two original-or-ghost selected-net projection and then into
 This keeps beta-large sign-swapped bad fibers as the remaining probability
 input, while finite-center support is replaced by measurable failure events
 and a vanishing integrated Hoeffding tail term.
+
+The same additive finite-center failure-tail route now has the unswapped
+pair-sub/source-factorized fixed-`M` wrapper
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_finiteCenter_failure_tails`.
+This exposes the textbook-facing pair-sub bad event plus the fixed-original
+sign-swap transport as the active probability inputs, without reinstating
+a.e. finite-center support assumptions.

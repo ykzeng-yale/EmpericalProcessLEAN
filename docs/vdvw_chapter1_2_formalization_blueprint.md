@@ -3519,6 +3519,15 @@ failure-tail hypothesis.  This advances the source interface beyond a.e.
 finite-center support assumptions; the outstanding theorem-facing input is
 still the beta-large sign-swapped bad-fiber probability statement.
 
+2026-05-12 pair-sub sign-swap finite-center failure-tail route:
+`Theorem243.lean` now adds the pair-sub/source-factorized companion
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_finiteCenter_failure_tails`.
+It reduces the additive sign-swapped bad-fiber hypothesis to an unswapped
+pair-sub lower bound plus fixed-original sign-swap transport, keeping the
+finite-center failures as the same vanishing integrated Hoeffding-tail error.
+The source frontier is therefore the actual pair-sub Chebyshev probability
+step and the fixed-original sign-swap transport.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

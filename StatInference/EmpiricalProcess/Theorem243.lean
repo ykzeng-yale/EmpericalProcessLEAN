@@ -61208,6 +61208,163 @@ theorem
 
 /--
 Canonical first-level displayed-beta convergence from unswapped pair-sub mass,
+sign-swap transport, and finite-center failure tails.
+
+This is the finite-tail companion to
+`...of_pairSubBad_signSwap_fibers`: callers may prove the Chebyshev-style
+lower bound for `VdVWTheorem243CenteredPairSubBadEvent`, keep the fixed-original
+transport to the sign-swapped event explicit, and pay the selected finite-center
+failures by a vanishing integrated Hoeffding tail.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_finiteCenter_failure_tails
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality radius n))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hpairLower :
+      ∀ (eta : ℝ) (heta : 0 < eta) (epsilon : ℝ) (_hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          ∀ sample : SampleAt Observation n,
+            sample ∈
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)} ->
+              ENNReal.ofReal
+                  (1 - (16 * M ^ 2) / (((n : ℝ) + 1) * epsilon ^ 2)) ≤
+                (vdVWProductMeasure P n)
+                  (VdVWTheorem243CenteredPairSubBadEvent
+                    P indexClass classFun envelope M epsilon sample))
+    (hsignSwapLower :
+      ∀ (eta : ℝ) (_heta : 0 < eta) (epsilon : ℝ) (_hepsilon : 0 < epsilon),
+        ∀ᶠ n : ℕ in atTop,
+          ∀ sample : SampleAt Observation n,
+            (vdVWProductMeasure P n)
+                (VdVWTheorem243CenteredPairSubBadEvent
+                  P indexClass classFun envelope M epsilon sample) ≤
+              ((vdVWProductMeasure P n).prod
+                  (vdVWProductMeasure vdVWRademacherLaw n))
+                (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+                  P indexClass classFun envelope M epsilon sample))
+    (hfailureOriginal_meas :
+      ∀ (eta : ℝ) (heta : 0 < eta),
+        ∀ᶠ n : ℕ in atTop,
+          ∀ sample : SampleAt Observation n,
+            MeasurableSet
+              {z : SampleAt Observation n × SampleAt ℝ n |
+                ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+                  (vdVWTruncatedClassFun classFun envelope M)
+                  (vdVWSelectedTruncatedPositiveRadiusFirstLevelEmpiricalL1CoverAtCardOfCountable
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M)
+                    (cardinality := cardinality)
+                    X hX_samplePath hcovering_all hcount hindexClass_nonempty
+                    (by linarith : 0 < eta / 2) n sample).center z.2 M})
+    (hfailureGhost_meas :
+      ∀ (eta : ℝ) (heta : 0 < eta),
+        ∀ᶠ n : ℕ in atTop,
+          MeasurableSet
+            {z : SampleAt Observation n × SampleAt ℝ n |
+              ¬ VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+                (vdVWTruncatedClassFun classFun envelope M)
+                (vdVWSelectedTruncatedPositiveRadiusFirstLevelEmpiricalL1CoverAtCardOfCountable
+                  (indexClass := indexClass) (classFun := classFun)
+                  (envelope := envelope) (M := M)
+                  (cardinality := cardinality)
+                  X hX_samplePath hcovering_all hcount hindexClass_nonempty
+                  (by linarith : 0 < eta / 2) n z.1).center
+                (fun i : Fin n => -z.2 i) M})
+    (hfailureTail_tendsto :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        Tendsto
+          (fun n : ℕ =>
+            ∫⁻ sample in
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)},
+              ENNReal.ofReal
+                (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                  ((vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M)
+                    (cardinality := cardinality)
+                    X hcovering_all (eta / 2)) n sample n) n M) +
+                ∫⁻ ghostSample : SampleAt Observation n,
+                  ENNReal.ofReal
+                    (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                      ((vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                        (indexClass := indexClass) (classFun := classFun)
+                        (envelope := envelope) (M := M)
+                        (cardinality := cardinality)
+                        X hcovering_all (eta / 2)) n ghostSample n) n M)
+                  ∂(vdVWProductMeasure P n)
+              ∂(vdVWProductMeasure P n))
+          atTop (𝓝 0)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  refine
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_finiteCenter_failure_tails
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (cardinality := cardinality)
+      X hX_samplePath hcovering_all henvelope hM_pos hcount hclass
+      henvelope_meas hindexClass_nonempty hlog ?_
+      hfailureOriginal_meas hfailureGhost_meas hfailureTail_tendsto
+  intro eta heta epsilon hepsilon
+  filter_upwards [hpairLower eta heta epsilon hepsilon,
+    hsignSwapLower eta heta epsilon hepsilon] with n hpairLower_n hsignSwapLower_n
+  intro sample hsample
+  exact (hpairLower_n sample hsample).trans (hsignSwapLower_n sample)
+
+/--
+Canonical first-level displayed-beta convergence from unswapped pair-sub mass,
 fixed-original sign-swap transport, and finite-center a.e. support.
 
 This exposes the next source layer below the sign-swapped bad-event endpoint:
