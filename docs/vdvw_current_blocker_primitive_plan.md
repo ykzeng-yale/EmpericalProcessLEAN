@@ -145,6 +145,12 @@ Theorem 2.4.3 layer exposes the selected-cover forms
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_empiricalL1Index_packingNumber`,
 and
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_empiricalL1Index_packingNumber`.
+The deterministic and `P^n`-a.e. terminal-sample variants
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_empiricalL1Index_packingNumber`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_empiricalL1Index_packingNumber`
+transport source lower bounds stated over the actual terminal sample through
+`hX_samplePath`.
 This closes the adapter from a Definition 2.2.3-style packing-number lower
 bound on `EmpiricalL1Index.liftSet` to the selected lower-growth input.  It
 does not prove such a lower bound from random entropy; that remains the
@@ -161,10 +167,12 @@ also has the empirical-wrapper packing-number entry point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_empiricalL1Index_packingNumber_of_set_countable`,
 which composes eventual `P^n`-a.e. lower bounds on
 `Metric.packingNumber` for `EmpiricalL1Index.liftSet` through the selected
-packing-number adapter internally.  The live theorem-facing source gap is now
-exactly the construction of those separated-packing or packing-number lower
-bounds, or a replacement lower-growth/tail/UI theorem, from honest VdV&W
-assumptions.
+packing-number adapter internally.  Its terminal-sample companion
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_of_set_countable`
+removes the caller-facing need to restate an actual-sample packing-number
+lower bound on `samplePath`.  The live theorem-facing source gap is now exactly
+the construction of those separated-packing or packing-number lower bounds, or
+a replacement lower-growth/tail/UI theorem, from honest VdV&W assumptions.
 
 ## Current `/goal` Target
 

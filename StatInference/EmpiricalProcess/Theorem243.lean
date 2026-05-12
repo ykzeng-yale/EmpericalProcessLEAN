@@ -23103,6 +23103,65 @@ theorem
       (hn sample).1 (hn sample).2 (hseparation eta heta)
 
 /--
+Terminal-sample version of
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_empiricalL1Index_packingNumber`.
+
+This lets deterministic source arguments state the empirical-wrapper packing
+number over the actual sample and transports it to the `samplePath` form used
+by the selected-cover cardinality.
+-/
+theorem
+    vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_empiricalL1Index_packingNumber
+    {Observation : Type v} {Index : Type w}
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hcovering_all :
+      ∀ epsilon > 0, ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) epsilon
+          (cardinality epsilon n))
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n), samplePath (X n) sample n = sample)
+    (radius : ℝ -> ℝ)
+    (hradius : ∀ eta, 0 < eta -> 0 < radius eta)
+    (packingRadius : ℝ -> ℝ≥0)
+    (hseparation :
+      ∀ eta, 0 < eta -> 2 * radius eta ≤ (packingRadius eta : ℝ))
+    (lower : ℝ -> ℕ -> ℕ)
+    (hpacking :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          Metric.packingNumber (packingRadius eta)
+            (EmpiricalL1Index.liftSet
+              (sample := sample)
+              (classFun := vdVWTruncatedClassFun classFun envelope M)
+              indexClass) ≠ ⊤ ∧
+          (lower eta n : ℕ∞) ≤
+            Metric.packingNumber (packingRadius eta)
+              (EmpiricalL1Index.liftSet
+                (sample := sample)
+                (classFun := vdVWTruncatedClassFun classFun envelope M)
+                indexClass)) :
+    ∀ eta, 0 < eta ->
+      ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+        lower eta n ≤
+          (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (cardinality := cardinality)
+            X hcovering_all (radius eta)) n sample n := by
+  refine
+    vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_empiricalL1Index_packingNumber
+      (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (cardinality := cardinality)
+      X hcovering_all radius hradius packingRadius hseparation lower ?_
+  intro eta heta
+  filter_upwards [hpacking eta heta] with n hn sample
+  rw [hX_samplePath n sample]
+  exact hn sample
+
+/--
 A.E. finite empirical packings yield a.e. lower bounds on the selected
 positive-radius truncated covering cardinality.
 
@@ -23263,6 +23322,68 @@ theorem
       (packingRadius := packingRadius eta) (cardinality := cardinality)
       X hcovering_all (hradius eta heta) sample
       hsample.1 hsample.2 (hseparation eta heta)
+
+/--
+Terminal-sample version of
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_empiricalL1Index_packingNumber`.
+
+This is the probability source shape for arguments that naturally produce
+packing-number lower bounds over the terminal sample itself.
+-/
+theorem
+    vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_empiricalL1Index_packingNumber
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality : ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hcovering_all :
+      ∀ epsilon > 0, ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) epsilon
+          (cardinality epsilon n))
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n), samplePath (X n) sample n = sample)
+    (radius : ℝ -> ℝ)
+    (hradius : ∀ eta, 0 < eta -> 0 < radius eta)
+    (packingRadius : ℝ -> ℝ≥0)
+    (hseparation :
+      ∀ eta, 0 < eta -> 2 * radius eta ≤ (packingRadius eta : ℝ))
+    (lower : ℝ -> ℕ -> ℕ)
+    (hpacking :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop,
+          ∀ᵐ sample ∂(vdVWProductMeasure P n),
+            Metric.packingNumber (packingRadius eta)
+              (EmpiricalL1Index.liftSet
+                (sample := sample)
+                (classFun := vdVWTruncatedClassFun classFun envelope M)
+                indexClass) ≠ ⊤ ∧
+            (lower eta n : ℕ∞) ≤
+              Metric.packingNumber (packingRadius eta)
+                (EmpiricalL1Index.liftSet
+                  (sample := sample)
+                  (classFun := vdVWTruncatedClassFun classFun envelope M)
+                  indexClass)) :
+    ∀ eta, 0 < eta ->
+      ∀ᶠ n in atTop,
+        ∀ᵐ sample ∂(vdVWProductMeasure P n),
+          lower eta n ≤
+            (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+              (indexClass := indexClass) (classFun := classFun)
+              (envelope := envelope) (M := M) (cardinality := cardinality)
+              X hcovering_all (radius eta)) n sample n := by
+  refine
+    vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_empiricalL1Index_packingNumber
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (cardinality := cardinality)
+      X hcovering_all radius hradius packingRadius hseparation lower ?_
+  intro eta heta
+  filter_upwards [hpacking eta heta] with n hn
+  filter_upwards [hn] with sample hsample
+  rw [hX_samplePath n sample]
+  exact hsample
 
 /--
 At the terminal sample size, the least finite empirical-cover cardinality is
@@ -84096,6 +84217,99 @@ theorem
       radius hradius (packingRadius M)
       (fun eta heta => hpackingRadius M hM_pos eta heta)
       (lower M) (hpacking M hM_pos) eta heta)
+
+/--
+Terminal-sample form of
+`..._of_eventually_singleSample_ae_empiricalL1Index_packingNumber_of_set_countable`.
+
+This version lets callers state the empirical-wrapper packing-number lower
+bound over the actual terminal sample.  The proof transports it to the
+`samplePath (X M n) sample n` form required by the selected-cover wrappers
+using the supplied terminal sample-path equality.
+-/
+theorem
+    of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hcovering_all :
+      ∀ M, 0 < M -> ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality M radius n))
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (henv_integrable : Integrable envelope P)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    (htruncIntegrable :
+      ∀ M index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hbdd_truncated :
+      ∀ M n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hlog :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality M eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (lower : ℝ -> ℝ -> ℕ -> ℕ)
+    (hlower :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        Tendsto (lower M eta) atTop atTop)
+    (packingRadius : ℝ -> ℝ -> ℝ≥0)
+    (hpackingRadius :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        2 * ((eta / 2) / 2) ≤ (packingRadius M eta : ℝ))
+    (hpacking :
+      ∀ M (_hM_pos : 0 < M), ∀ eta : ℝ, (heta : 0 < eta) ->
+        ∀ᶠ n in atTop,
+          ∀ᵐ sample ∂(vdVWProductMeasure P n),
+            Metric.packingNumber (packingRadius M eta)
+              (EmpiricalL1Index.liftSet
+                (sample := sample)
+                (classFun := vdVWTruncatedClassFun classFun envelope M)
+                indexClass) ≠ ⊤ ∧
+            (lower M eta n : ℕ∞) ≤
+              Metric.packingNumber (packingRadius M eta)
+                (EmpiricalL1Index.liftSet
+                  (sample := sample)
+                  (classFun := vdVWTruncatedClassFun classFun envelope M)
+                  indexClass)) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  refine
+    of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_empiricalL1Index_packingNumber_of_set_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (cardinality := cardinality) X hX_samplePath
+      hcovering_all hcount hclass henv hindexClass_nonempty henvelope
+      henv_integrable hclassIntegrable htruncIntegrable hbdd_truncated
+      hlog lower hlower packingRadius hpackingRadius ?_
+  intro M hM_pos eta heta
+  filter_upwards [hpacking M hM_pos eta heta] with n hn
+  filter_upwards [hn] with sample hsample
+  have hsamplePath := hX_samplePath M n sample
+  rw [hsamplePath]
+  exact hsample
 
 /--
 Current full-subgraph countable/integrable-envelope route, repackaged in the
