@@ -703,10 +703,16 @@ construction of the Schur derivative certificate or third-order envelope from
 selector/envelope data, not another continuity/local-norm wrapper.
 The adjoint-square direct Schur-consumer packet now adds
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_schurHessDerivativeOn`
-and routes the third-order/open-domain compatibility wrappers through it.
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_direct`,
+and routes the third-order/open-domain compatibility wrappers through the
+direct consumer.
 Thus a packaged adjoint-square model plus a Schur derivative certificate
 already gives the projected source-radius local-norm sandwich without
 selected-value `f`, open-domain gradient, or second-order envelope assumptions.
+Source full-Hessian derivative data can now build that Schur derivative
+certificate and immediately use the direct consumer, avoiding the older
+positivity/nonzero wrapper path when only local-norm transport is needed.
 When the next task is only local-norm transport, use this direct theorem; save
 the heavier third-order envelope package for proving the actual selected-value
 third derivative.
