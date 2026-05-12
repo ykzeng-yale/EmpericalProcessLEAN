@@ -150,7 +150,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum` and
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_gradient_quadratic`,
   and the square-root-coordinate consumer
-  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_adjointSqrtCoord`.
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_adjointSqrtCoord`,
+  plus the semidefinite-friendly component-Cauchy packet
+  `barrierAffinePreimageCauchy_rightInverse`, `negLogBarrier_cauchy_Ioi`,
+  `chewi1314_halfspaceSlackNegLog_componentCauchy`, and
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy`.
   Example 13.14's single row log-barrier route can now use the source-shaped
   theorem for `x ↦ -log (b - inner a x)` when `a ≠ 0`, and the finite-row
   orthant-preimage route is compiled for any slack map with a supplied right
@@ -158,8 +162,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   slack-map range satisfying nonnegativity and the concrete range-gradient
   quadratic energy bound.  For fully general row families, next construct the
   concrete range oracle/energy bound or instantiate the row-decomposition
-  induction by providing the summed and component adjoint-square coordinate
-  models for the head halfspace plus recursively supplied tail barrier.
+  induction by providing the summed inverse-Hessian nonnegativity /
+  inverse-local identity and the recursive tail component-Cauchy bridge; use
+  the full-space adjoint-square route only for genuinely positive-definite
+  component models.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
   supplied-oracle form, for invertible affine maps, as a single
   non-invertible/range certificate object, and for affine maps whose linear

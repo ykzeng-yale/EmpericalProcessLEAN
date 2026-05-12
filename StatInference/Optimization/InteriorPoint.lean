@@ -3031,6 +3031,30 @@ theorem barrierAffinePreimageGradientDualLocalNorm_rightInverse_eq
   rw [barrierAffinePreimageDualLocalNorm_rightInverse_eq]
   rw [barrierAffinePreimageGrad_rightInverse_adjoint A B b grad hAB]
 
+theorem barrierAffinePreimageCauchy_rightInverse
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E)
+    (hcauchy : ∀ ⦃y : E⦄, y ∈ s -> ∀ w : E,
+      inner ℝ (grad y) w ≤
+        dualLocalNorm invHess y (grad y) * localNorm hess y w) :
+    ∀ ⦃x : F⦄, x ∈ barrierAffinePreimageSet A b s -> ∀ w : F,
+      inner ℝ (barrierAffinePreimageGrad A b grad x) w ≤
+        dualLocalNorm (barrierAffinePreimageInvHessRightInverse A B b invHess)
+          x (barrierAffinePreimageGrad A b grad x) *
+        localNorm (barrierAffinePreimageHess A b hess) x w := by
+  intro x hx w
+  have hinner :
+      inner ℝ (barrierAffinePreimageGrad A b grad x) w =
+        inner ℝ (grad (A x + b)) (A w) := by
+    simpa [barrierAffinePreimageGrad] using
+      (ContinuousLinearMap.adjoint_inner_left A w (grad (A x + b)))
+  rw [hinner]
+  rw [barrierAffinePreimageGradientDualLocalNorm_rightInverse_eq A B b invHess grad hAB]
+  rw [barrierAffinePreimageLocalNorm_eq A b hess x w]
+  exact hcauchy hx (A w)
+
 theorem BarrierAffinePreimageOracleModel.of_rightInverse
     (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
     {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
@@ -14496,6 +14520,29 @@ theorem negLogBarrier_selfConcordantBarrierOn_Ioi :
       simpa [negLogBarrierGrad] using
         negLogBarrier_dualLocalNorm_deriv_eq_one hx)
 
+theorem negLogBarrier_cauchy_Ioi :
+    ∀ ⦃x : ℝ⦄, x ∈ Set.Ioi 0 -> ∀ w : ℝ,
+      inner ℝ (negLogBarrierGrad x) w ≤
+        dualLocalNorm negLogInvHessCLM x (negLogBarrierGrad x) *
+          localNorm negLogHessCLM x w := by
+  intro x hx w
+  have hdual :
+      dualLocalNorm negLogInvHessCLM x (negLogBarrierGrad x) = 1 := by
+    simpa [negLogBarrierGrad] using negLogBarrier_dualLocalNorm_deriv_eq_one hx
+  rw [hdual, one_mul, negLogBarrier_localNorm_eq_abs_div' hx]
+  have hxpos : 0 < x := hx
+  have hbase : -(w / x) ≤ |w| / x := by
+    have h := div_le_div_of_nonneg_right (neg_le_abs w) hxpos.le
+    simpa [neg_div] using h
+  have hinner :
+      inner ℝ (negLogBarrierGrad x) w = -(w / x) := by
+    rw [negLogBarrierGrad, negLogBarrier_deriv]
+    change w * (-x⁻¹) = -(w / x)
+    field_simp [hxpos.ne']
+  calc
+    inner ℝ (negLogBarrierGrad x) w = -(w / x) := hinner
+    _ ≤ |w| / x := hbase
+
 /--
 Chewi Example 13.14, one-halfspace logarithmic barrier in affine-preimage
 form.  A scalar affine map with a continuous right inverse pulls the scalar
@@ -14597,6 +14644,37 @@ theorem chewi1314_halfspaceSlackNegLog_selfConcordantBarrierOn
     chewi1314_affineNegLog_selfConcordantBarrierOn_of_rightInverse
       (halfspaceSlackCLM a) (halfspaceSlackRightInverse a) b
       (halfspaceSlackCLM_rightInverse ha)
+
+/--
+Component Cauchy bridge for the source-shaped halfspace logarithmic barrier.
+This is the semidefinite ingredient needed by finite-row sum induction; unlike
+the adjoint-square-coordinate route, it does not ask the rank-one halfspace
+Hessian to be invertible on the whole ambient space.
+-/
+theorem chewi1314_halfspaceSlackNegLog_componentCauchy
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    (a : F) (b : ℝ) (ha : a ≠ 0) :
+    ∀ ⦃x : F⦄, x ∈ halfspaceSlackSet a b -> ∀ w : F,
+      inner ℝ
+          (barrierAffinePreimageGrad (halfspaceSlackCLM a) b negLogBarrierGrad x)
+          w ≤
+        dualLocalNorm
+            (barrierAffinePreimageInvHessRightInverse (halfspaceSlackCLM a)
+              (halfspaceSlackRightInverse a) b negLogInvHessCLM)
+            x
+            (barrierAffinePreimageGrad (halfspaceSlackCLM a) b negLogBarrierGrad x) *
+          localNorm
+            (barrierAffinePreimageHess (halfspaceSlackCLM a) b negLogHessCLM)
+            x w := by
+  intro x hx w
+  have hx' :
+      x ∈ barrierAffinePreimageSet (halfspaceSlackCLM a) b (Set.Ioi 0) := by
+    exact (mem_barrierAffinePreimageSet_halfspaceSlackCLM_iff a b x).2 hx
+  exact barrierAffinePreimageCauchy_rightInverse
+    (A := halfspaceSlackCLM a) (B := halfspaceSlackRightInverse a) (b := b)
+    (s := Set.Ioi 0) (hess := negLogHessCLM) (grad := negLogBarrierGrad)
+    (invHess := negLogInvHessCLM)
+    (halfspaceSlackCLM_rightInverse ha) negLogBarrier_cauchy_Ioi hx' w
 
 /--
 The vector slack map for Chewi Example 13.14:
@@ -14895,6 +14973,79 @@ theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_g
     (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0) negLogBarrierGrad)
     tailGrad x (by norm_num) htail.parameter_nonneg (hsumInvNonneg hx)
     (hgradient_quadratic hx)
+
+/--
+Induction step for Chewi Example 13.14's finite-row logarithmic barrier, with
+the head component Cauchy bridge discharged by the concrete halfspace barrier.
+The remaining recursive obligations are exactly the summed inverse-Hessian
+nonnegativity/inverse-local identity and the tail component Cauchy bridge.
+-/
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin (m + 1) -> F) (b : EuclideanSpace ℝ (Fin (m + 1)))
+    (ha0 : a 0 ≠ 0)
+    {tailHess : F -> F →L[ℝ] F} {tailGrad : F -> F}
+    {tailInvHess : F -> F →L[ℝ] F} {tailThird : F -> F -> F -> ℝ}
+    {tailNu : ℝ}
+    (htail : SelfConcordantBarrierOn
+      (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b))
+      tailHess tailGrad tailInvHess tailThird 1 tailNu)
+    (sumInvHess : F -> F →L[ℝ] F)
+    (hsumInvNonneg : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      ∀ v : F, 0 ≤ inner ℝ v (sumInvHess x v))
+    (hsumInvLocal : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      ∀ v : F,
+        localNorm
+            (barrierSumHess
+              (barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0)
+                negLogHessCLM)
+              tailHess)
+            x (sumInvHess x v) =
+          dualLocalNorm sumInvHess x v)
+    (htail_cauchy : ∀ ⦃x : F⦄,
+      x ∈ polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b) ->
+      ∀ w : F,
+        inner ℝ (tailGrad x) w ≤
+          dualLocalNorm tailInvHess x (tailGrad x) * localNorm tailHess x w) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierSumHess
+        (barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0) negLogHessCLM)
+        tailHess)
+      (barrierSumGrad
+        (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0) negLogBarrierGrad)
+        tailGrad)
+      sumInvHess
+      (barrierSumThirdMixed
+        (barrierAffinePreimageThirdMixed (halfspaceSlackCLM (a 0)) (b 0)
+          negLogBarrierThirdMixed)
+        tailThird) 1 (1 + tailNu) := by
+  have hhead :=
+    chewi1314_halfspaceSlackNegLog_selfConcordantBarrierOn (a 0) (b 0) ha0
+  have hhead_cauchy :
+      ∀ ⦃x : F⦄, x ∈ halfspaceSlackSet (a 0) (b 0) -> ∀ w : F,
+        inner ℝ
+            (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0)
+              negLogBarrierGrad x)
+            w ≤
+          dualLocalNorm
+              (barrierAffinePreimageInvHessRightInverse (halfspaceSlackCLM (a 0))
+                (halfspaceSlackRightInverse (a 0)) (b 0) negLogInvHessCLM)
+              x
+              (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0)
+                negLogBarrierGrad x) *
+            localNorm
+              (barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0)
+                negLogHessCLM)
+              x w :=
+    chewi1314_halfspaceSlackNegLog_componentCauchy (a 0) (b 0) ha0
+  have hsum :=
+    chewi1311_sum_selfConcordantBarrierOn_of_component_cauchy
+      hhead htail hsumInvNonneg hsumInvLocal hhead_cauchy htail_cauchy
+  simpa [polytopeSlackSet_succ_eq_barrierInterSet a b] using hsum
 
 /--
 Induction step for Chewi Example 13.14's finite-row logarithmic barrier, with

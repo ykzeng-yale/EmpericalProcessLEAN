@@ -1378,7 +1378,14 @@ so a nonzero head row plus a recursively supplied tail barrier now combine via
 the binary sum rule.  The newest square-root-coordinate consumer
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_adjointSqrtCoord`
 further reduces the same induction step to the standard summed Hessian and
-component Hessian adjoint-square models.  Do not redo scalar
+component Hessian adjoint-square models.  The newest semidefinite-friendly
+packet adds `barrierAffinePreimageCauchy_rightInverse`,
+`negLogBarrier_cauchy_Ioi`, `chewi1314_halfspaceSlackNegLog_componentCauchy`,
+and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy`;
+for arbitrary ambient halfspaces, prefer this component-Cauchy induction route
+over full-space square-root equivalence assumptions, since single halfspace
+Hessians are rank-deficient in general.  Do not redo scalar
 self-concordance, affine right-inverse algebra, or binary sum inverse-local /
 Cauchy algebra.
 Do not redo the
@@ -1412,7 +1419,11 @@ The exact blockers are:
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum`
   and
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_adjointSqrtCoord`
-  wrappers, or opening the inf-projection rule.
+  wrappers; for the arbitrary-halfspace induction route, use the compiled
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy`
+  wrapper and prove only the summed inverse-Hessian nonnegativity /
+  inverse-local identity plus the recursive tail Cauchy bridge.  The remaining
+  alternative is opening the inf-projection rule.
   Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi
