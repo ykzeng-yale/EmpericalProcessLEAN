@@ -3380,6 +3380,12 @@ large-`M` envelope-tail theorem.  The remaining source inputs are therefore the
 corresponding bad-event probability lower bounds and selected-cover
 lower-growth hypotheses for each positive truncation level.
 
+The selected half-radius finite-net route now has the matching fixed-`M`
+source bridge.  The stochastic entropy can stay on the external half-radius
+cardinality while the a.e. domination is proved for the internally selected
+least cover; the canonical Rademacher/countable wrapper reduces that domination
+to the finite-center event and `Phi(x)=x` comparison.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

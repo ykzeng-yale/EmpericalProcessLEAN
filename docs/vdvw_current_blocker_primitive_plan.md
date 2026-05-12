@@ -9631,3 +9631,12 @@ first-level inverse-square lower-growth routes through the large-`M`
 envelope-tail handoff as centered untruncated convergence theorems.  These
 expose the same pure Rademacher bad-event source shapes at the untruncated
 Theorem 2.4.3 boundary.
+
+2026-05-11 selected half-radius finite-net source bridge:
+`Theorem243.lean` now proves
+`...of_selected_truncated_halfRadius_eventualAe_scaledFiniteNetHoeffdingUpper`
+and
+`...of_selected_truncated_halfRadius_canonicalRademacher_countable_hphi_id`.
+These feed the fixed-radius finite-net domination route from the internally
+selected first-level half-radius cover; the remaining source inputs are the
+canonical Rademacher finite-center event and the `Phi(x)=x` comparison.

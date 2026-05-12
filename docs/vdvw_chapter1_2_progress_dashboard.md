@@ -4280,3 +4280,8 @@ conditional bad-fiber implications.
 Those three first-level inverse-square source shapes now pass through the
 large-`M` envelope-tail handoff to centered untruncated convergence, leaving
 the probability lower-bound and lower-growth inputs as the active sources.
+
+The selected half-radius finite-net bridge now also exposes the canonical
+Rademacher/countable `hphi_id` route at fixed `M`, with entropy controlled by
+the external half-radius cardinality and domination proved for the selected
+first-level cover.
