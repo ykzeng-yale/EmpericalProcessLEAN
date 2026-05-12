@@ -9806,6 +9806,176 @@ theorem chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtCoord
     hhess₁_eq hinv₁_eq hhess₂_eq hinv₂_eq
 
 /--
+Certificate package for Chewi Proposition 13.11(1)'s shared-domain sum rule in
+the current adjoint-square-coordinate form.  It stores the two component
+barriers, the component square-root coordinate models, and the summed
+square-root coordinate model.
+-/
+structure BarrierSumAdjointSqrtModel
+    [CompleteSpace E]
+    (s₁ s₂ : Set E)
+    (hess₁ hess₂ : E -> E →L[ℝ] E)
+    (grad₁ grad₂ : E -> E)
+    (invHess : E -> E →L[ℝ] E)
+    (invHess₁ invHess₂ : E -> E →L[ℝ] E)
+    (third₁ third₂ : E -> E -> E -> ℝ)
+    (sqrtSum sqrt₁ sqrt₂ : E -> E ≃L[ℝ] E)
+    (M nu₁ nu₂ : ℝ) : Prop where
+  barrier_left :
+    SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁
+  barrier_right :
+    SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂
+  sum_hess_eq : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ ->
+    barrierSumHess hess₁ hess₂ x =
+      (ContinuousLinearMap.adjoint (sqrtSum x).toContinuousLinearMap).comp
+        (sqrtSum x).toContinuousLinearMap
+  sum_inv_eq : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ ->
+    invHess x =
+      (sqrtSum x).symm.toContinuousLinearMap.comp
+        (ContinuousLinearMap.adjoint (sqrtSum x).symm.toContinuousLinearMap)
+  left_hess_eq : ∀ ⦃x : E⦄, x ∈ s₁ ->
+    hess₁ x =
+      (ContinuousLinearMap.adjoint (sqrt₁ x).toContinuousLinearMap).comp
+        (sqrt₁ x).toContinuousLinearMap
+  left_inv_eq : ∀ ⦃x : E⦄, x ∈ s₁ ->
+    invHess₁ x =
+      (sqrt₁ x).symm.toContinuousLinearMap.comp
+        (ContinuousLinearMap.adjoint (sqrt₁ x).symm.toContinuousLinearMap)
+  right_hess_eq : ∀ ⦃x : E⦄, x ∈ s₂ ->
+    hess₂ x =
+      (ContinuousLinearMap.adjoint (sqrt₂ x).toContinuousLinearMap).comp
+        (sqrt₂ x).toContinuousLinearMap
+  right_inv_eq : ∀ ⦃x : E⦄, x ∈ s₂ ->
+    invHess₂ x =
+      (sqrt₂ x).symm.toContinuousLinearMap.comp
+        (ContinuousLinearMap.adjoint (sqrt₂ x).symm.toContinuousLinearMap)
+
+/-- The packaged summed adjoint-square model gives the summed right inverse. -/
+theorem BarrierSumAdjointSqrtModel.sum_right_inverse
+    [CompleteSpace E]
+    {s₁ s₂ : Set E}
+    {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E}
+    {invHess invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ}
+    {sqrtSum sqrt₁ sqrt₂ : E -> E ≃L[ℝ] E}
+    {M nu₁ nu₂ : ℝ}
+    (hmodel :
+      BarrierSumAdjointSqrtModel s₁ s₂ hess₁ hess₂ grad₁ grad₂
+        invHess invHess₁ invHess₂ third₁ third₂ sqrtSum sqrt₁ sqrt₂
+        M nu₁ nu₂) :
+    ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      barrierSumHess hess₁ hess₂ x (invHess x v) = v := by
+  intro x hx
+  exact barrierSumHess_right_inverse_of_adjointSqrtCoord
+    (hess₁ := hess₁) (hess₂ := hess₂) (invHess := invHess)
+    (sqrtSum := sqrtSum) (x := x)
+    (hmodel.sum_hess_eq hx) (hmodel.sum_inv_eq hx)
+
+/--
+The packaged summed adjoint-square model gives nonnegativity of the summed
+inverse-Hessian quadratic form.
+-/
+theorem BarrierSumAdjointSqrtModel.invHess_nonneg
+    [CompleteSpace E]
+    {s₁ s₂ : Set E}
+    {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E}
+    {invHess invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ}
+    {sqrtSum sqrt₁ sqrt₂ : E -> E ≃L[ℝ] E}
+    {M nu₁ nu₂ : ℝ}
+    (hmodel :
+      BarrierSumAdjointSqrtModel s₁ s₂ hess₁ hess₂ grad₁ grad₂
+        invHess invHess₁ invHess₂ third₁ third₂ sqrtSum sqrt₁ sqrt₂
+        M nu₁ nu₂) :
+    ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      0 ≤ inner ℝ v (invHess x v) := by
+  intro x hx v
+  exact barrierSumInvHess_quadratic_nonneg_of_adjointSqrtCoord
+    (hess₁ := hess₁) (hess₂ := hess₂) (invHess := invHess)
+    (sqrtSum := sqrtSum) (x := x)
+    (hmodel.barrier_left.self_concordant.hess_nonneg hx.1)
+    (hmodel.barrier_right.self_concordant.hess_nonneg hx.2)
+    (hmodel.sum_hess_eq hx) (hmodel.sum_inv_eq hx) v
+
+/--
+The packaged summed adjoint-square model gives the exact inverse-local
+identity for the summed Hessian.
+-/
+theorem BarrierSumAdjointSqrtModel.sum_inv_local
+    [CompleteSpace E]
+    {s₁ s₂ : Set E}
+    {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E}
+    {invHess invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ}
+    {sqrtSum sqrt₁ sqrt₂ : E -> E ≃L[ℝ] E}
+    {M nu₁ nu₂ : ℝ}
+    (hmodel :
+      BarrierSumAdjointSqrtModel s₁ s₂ hess₁ hess₂ grad₁ grad₂
+        invHess invHess₁ invHess₂ third₁ third₂ sqrtSum sqrt₁ sqrt₂
+        M nu₁ nu₂) :
+    ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      localNorm (barrierSumHess hess₁ hess₂) x (invHess x v) =
+        dualLocalNorm invHess x v := by
+  intro x hx v
+  exact barrierSumLocalNorm_invHess_eq_dualLocalNorm_of_adjointSqrtCoord
+    (hess₁ := hess₁) (hess₂ := hess₂) (invHess := invHess)
+    (sqrtSum := sqrtSum) (x := x)
+    (hmodel.barrier_left.self_concordant.hess_nonneg hx.1)
+    (hmodel.barrier_right.self_concordant.hess_nonneg hx.2)
+    (hmodel.sum_hess_eq hx) (hmodel.sum_inv_eq hx) v
+
+/--
+The packaged summed adjoint-square model immediately yields Chewi Proposition
+13.11(1)'s shared-domain sum barrier rule.
+-/
+theorem BarrierSumAdjointSqrtModel.selfConcordantBarrierOn
+    [CompleteSpace E]
+    {s₁ s₂ : Set E}
+    {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E}
+    {invHess invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ}
+    {sqrtSum sqrt₁ sqrt₂ : E -> E ≃L[ℝ] E}
+    {M nu₁ nu₂ : ℝ}
+    (hmodel :
+      BarrierSumAdjointSqrtModel s₁ s₂ hess₁ hess₂ grad₁ grad₂
+        invHess invHess₁ invHess₂ third₁ third₂ sqrtSum sqrt₁ sqrt₂
+        M nu₁ nu₂) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) :=
+  hmodel.barrier_left.sum_of_adjointSqrtCoord hmodel.barrier_right
+    hmodel.sum_hess_eq hmodel.sum_inv_eq hmodel.left_hess_eq
+    hmodel.left_inv_eq hmodel.right_hess_eq hmodel.right_inv_eq
+
+/--
+Source-facing Chewi Proposition 13.11(1) wrapper from the packaged
+shared-domain sum adjoint-square model.
+-/
+theorem chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtModel
+    [CompleteSpace E]
+    {s₁ s₂ : Set E}
+    {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E}
+    {invHess invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ}
+    {sqrtSum sqrt₁ sqrt₂ : E -> E ≃L[ℝ] E}
+    {M nu₁ nu₂ : ℝ}
+    (hmodel :
+      BarrierSumAdjointSqrtModel s₁ s₂ hess₁ hess₂ grad₁ grad₂
+        invHess invHess₁ invHess₂ third₁ third₂ sqrtSum sqrt₁ sqrt₂
+        M nu₁ nu₂) :
+    SelfConcordantBarrierOn (barrierInterSet s₁ s₂)
+      (barrierSumHess hess₁ hess₂)
+      (barrierSumGrad grad₁ grad₂) invHess
+      (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) :=
+  hmodel.selfConcordantBarrierOn
+
+/--
 Generic normalized-operator route for Chewi Theorem 13.8.  If a Delta operator
 factors through a square-root coordinate system so that the dual quadratic form
 is `||A sqrtH(step)||^2`, and the Hessian quadratic form is

@@ -108,6 +108,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `H = S†S`, `H⁻¹ = S⁻¹(S⁻¹)†`.  The next exact-sum work should instantiate
   or construct the summed square-root equivalence for the concrete barrier
   model rather than re-proving Cauchy or inverse-local identities.
+- Sum adjoint-square model package: the newest packet adds
+  `BarrierSumAdjointSqrtModel`,
+  `BarrierSumAdjointSqrtModel.sum_right_inverse`,
+  `BarrierSumAdjointSqrtModel.invHess_nonneg`,
+  `BarrierSumAdjointSqrtModel.sum_inv_local`,
+  `BarrierSumAdjointSqrtModel.selfConcordantBarrierOn`, and
+  `chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtModel`.
+  Exact Proposition 13.11(1) work can now instantiate one certificate object
+  carrying the two component barriers, component square-root models, and the
+  summed square-root model, instead of threading the long equality list.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
   supplied-oracle form and for invertible affine maps.  Reusable declarations
   include `barrierAffinePreimageSet`, `barrierAffinePreimageHess`,

@@ -203,6 +203,16 @@ square-root models for the component Hessians and the summed Hessian:
 `H = S†S`, `H⁻¹ = S⁻¹(S⁻¹)†`.  The next exact sum step should construct or
 instantiate the summed square-root equivalence for a concrete model; do not
 re-open the already-compiled Cauchy/right-inverse algebra.
+The newest sum adjoint-square model package adds
+`BarrierSumAdjointSqrtModel`,
+`BarrierSumAdjointSqrtModel.sum_right_inverse`,
+`BarrierSumAdjointSqrtModel.invHess_nonneg`,
+`BarrierSumAdjointSqrtModel.sum_inv_local`,
+`BarrierSumAdjointSqrtModel.selfConcordantBarrierOn`, and
+`chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtModel`.
+Future exact Proposition 13.11(1) work can instantiate one certificate carrying
+the two component barriers, component square-root models, and the summed
+square-root model, instead of threading the long equality list.
 
 Latest affine-preimage update: Proposition 13.11(3) now has a compiled
 supplied-oracle affine-preimage spine and an invertible-affine corollary.
