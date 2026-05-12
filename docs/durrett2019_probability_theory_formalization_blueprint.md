@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V217`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V218`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -112,11 +112,22 @@ and
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp`,
 replacing transform `MemLp`, scaled-square integrability, and increment-square
 integrability hypotheses by the single source assumption `∀ n, X_n ∈ L^2`.
+V218 adds
+`durrett2019_integrable_mul_of_abs_le_one`,
+`durrett2019_theorem_4_5_3_variance_ratio_integrable_of_clock_integrable`,
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_integral_clock_bound_of_process_memLp_clock_integrable`,
+and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable`,
+replacing the explicit variance-ratio integrability hypothesis by the source
+assumption `∀ n, Integrable (A n) P`.  The conditional-square inequality alone
+does not imply this integrability, because it only lower-bounds the clock
+increment.
 The next theorem-facing target is no
-longer finite sum/integral exchange, V214-to-V209 wiring, or the
-tail-integral-to-clock-bound package: discharge finite-clock-integrability and
-ratio integrability side conditions from source measurability, predictability,
-and second-moment hypotheses.  Do not
+longer finite sum/integral exchange, V214-to-V209 wiring, the
+tail-integral-to-clock-bound package, or variance-ratio integrability
+packaging: discharge the remaining finite random clock integral integrability
+side condition by using continuous/parametric interval-integral measurability
+plus the existing tail bound.  Do not
 route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
@@ -126,8 +137,9 @@ comparison, finite clock comparison, deterministic summability packaging,
 random pathwise summability packaging, integrated finite-sum/Fubini
 summability plumbing, V214-to-V209 endpoint wiring,
 tail-integral-to-clock-bound packaging, transform `MemLp` packaging,
-scaled-square/increment-square integrability packaging, or scaled-summability
-handoff wrappers unless a later theorem exposes a precise missing primitive.
+scaled-square/increment-square integrability packaging, variance-ratio
+integrability packaging, or scaled-summability handoff wrappers unless a later
+theorem exposes a precise missing primitive.
 
 Closed Chapter 2 support lives in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled

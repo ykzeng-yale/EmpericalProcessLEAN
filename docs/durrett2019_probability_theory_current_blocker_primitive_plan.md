@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V217
+## Live In-Thread Goal Prompt V218
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -179,9 +179,27 @@ The theorem-facing endpoint now takes the single source assumption
 `∀ n, MemLp (X n) 2 P` instead of three separate transform/increment `L^2`
 obligations.
 
-Next aggressive step: discharge the remaining finite-clock-integrability and
-ratio integrability side conditions from source measurability, predictability,
-and second-moment hypotheses.  Do not
+V218 removes the variance-ratio integrability side condition from the main
+Theorem 4.5.3 source route.  New compiled declarations:
+`durrett2019_integrable_mul_of_abs_le_one`,
+`durrett2019_theorem_4_5_3_variance_ratio_integrable_of_clock_integrable`,
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_integral_clock_bound_of_process_memLp_clock_integrable`,
+and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable`.
+The source-facing endpoint now derives variance-ratio integrability from
+`∀ n, Integrable (A n) P`, predictability of `A`, continuity of `f`, and
+`1 <= f(A_n)`.  Do not try to derive this from
+`E[(X_{k+1}-X_k)^2 | ℱ_k] <= A_{k+1}-A_k` alone: that inequality gives only a
+lower bound on the clock increment and does not imply integrability of the
+increment.
+
+Next aggressive step: discharge the remaining finite random clock integral
+integrability side condition
+`∀ N, Integrable (fun ω => ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) P`.  The most
+promising route is to prove measurability of the random interval integral from
+the continuous primitive/parametric interval-integral APIs and then use the
+existing tail bound to get bounded integrability on the probability space.
+Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -190,7 +208,8 @@ interval comparison, finite clock comparison, deterministic summability
 packaging, random pathwise summability packaging, integrated finite-sum/Fubini
 summability plumbing, V214-to-V209 endpoint wiring, tail-integral-to-clock-bound
 packaging, transform `MemLp` packaging, scaled-square integrability packaging,
-increment-square integrability packaging, Chapter 2.1, or Theorem 2.4.9 unless
+increment-square integrability packaging, variance-ratio integrability
+packaging, Chapter 2.1, or Theorem 2.4.9 unless
 Theorem 4.5.3 exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1

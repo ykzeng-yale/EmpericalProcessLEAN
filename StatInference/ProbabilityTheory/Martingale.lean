@@ -18140,6 +18140,28 @@ theorem durrett2019_memLp_mul_of_abs_le_one
         simpa [Real.norm_eq_abs] using hUω
 
 /--
+Durrett 2019, Theorem 4.5.3 `L^1` support: multiplying an integrable
+function by an a.e. strongly measurable real factor bounded by one in absolute
+value preserves integrability.
+-/
+theorem durrett2019_integrable_mul_of_abs_le_one
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {U Y : Ω -> ℝ}
+    (hY : Integrable Y P)
+    (hU_sm : AEStronglyMeasurable U P)
+    (hU_abs_le : ∀ᵐ ω ∂P, |U ω| ≤ 1) :
+    Integrable (fun ω => U ω * Y ω) P := by
+  refine hY.mono ?hsm ?hbound
+  · exact hU_sm.mul hY.aestronglyMeasurable
+  · filter_upwards [hU_abs_le] with ω hUω
+    calc
+      ‖U ω * Y ω‖ = ‖U ω‖ * ‖Y ω‖ := norm_mul _ _
+      _ ≤ 1 * ‖Y ω‖ := by
+        refine mul_le_mul_of_nonneg_right ?_ (norm_nonneg _)
+        simpa [Real.norm_eq_abs] using hUω
+      _ = ‖Y ω‖ := one_mul _
+
+/--
 Durrett 2019, Theorem 4.5.3 reciprocal-transform `L^2` support.
 
 For the textbook transform `H_n = f(A_n)^{-1}`, the finite partial transform
@@ -18254,6 +18276,73 @@ theorem durrett2019_theorem_4_5_3_reciprocal_comp_scaled_sq_integrable_of_proces
         (P := P) (U := Hk) (Y := fun ω => X (k + 1) ω - X k ω)
         hdiff hH_sm hH_abs_le
   exact durrett2019_integrable_sq_of_memLp_two (P := P) hscaled_mem
+
+/--
+Durrett 2019, Theorem 4.5.3 variance-ratio integrability support.
+
+If the predictable clock is integrable at every time and `1 <= f(A_n)`, then
+the variance-ratio increment is integrable.  This is the honest source-side
+replacement for the formerly explicit `hratio_int` assumption.
+-/
+theorem durrett2019_theorem_4_5_3_variance_ratio_integrable_of_clock_integrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {A : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hf_cont : Continuous f)
+    (hf_one_le : ∀ n : ℕ, ∀ ω : Ω, 1 ≤ f (A n ω))
+    (hA_int : ∀ n : ℕ, Integrable (A n) P) :
+    ∀ k : ℕ,
+      Integrable
+        (fun ω => (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2) P := by
+  intro k
+  let U : Ω -> ℝ := fun ω => (f (A (k + 1) ω))⁻¹ ^ 2
+  let Y : Ω -> ℝ := fun ω => A (k + 1) ω - A k ω
+  have hY_int : Integrable Y P := by
+    dsimp [Y]
+    exact (hA_int (k + 1)).sub (hA_int k)
+  have hU_sm : AEStronglyMeasurable U P := by
+    have hA_sub : StronglyMeasurable[ℱ (k + 1)] (A (k + 1)) :=
+      hA_predictable.stronglyAdapted (k + 1)
+    have hA_sm : StronglyMeasurable (A (k + 1)) :=
+      hA_sub.mono (ℱ.le (k + 1))
+    have hfA_sm : StronglyMeasurable (fun ω : Ω => f (A (k + 1) ω)) :=
+      hf_cont.comp_stronglyMeasurable hA_sm
+    have hrec :
+        StronglyMeasurable (fun ω : Ω => (1 : ℝ) / f (A (k + 1) ω)) :=
+      stronglyMeasurable_const.div hfA_sm
+    have hpow :
+        StronglyMeasurable (fun ω : Ω => ((1 : ℝ) / f (A (k + 1) ω)) ^ 2) :=
+      hrec.pow 2
+    simpa [U, one_div] using hpow.aestronglyMeasurable
+  have hU_abs_le : ∀ᵐ ω ∂P, |U ω| ≤ 1 := by
+    refine ae_of_all P fun ω => ?_
+    have hpos : 0 < f (A (k + 1) ω) :=
+      zero_lt_one.trans_le (hf_one_le (k + 1) ω)
+    have hinv_nonneg : 0 ≤ (f (A (k + 1) ω))⁻¹ :=
+      inv_nonneg.mpr hpos.le
+    have hinv_le : (f (A (k + 1) ω))⁻¹ ≤ 1 :=
+      inv_le_one_of_one_le₀ (hf_one_le (k + 1) ω)
+    have hsquare_le : (f (A (k + 1) ω))⁻¹ ^ 2 ≤ 1 := by
+      calc
+        (f (A (k + 1) ω))⁻¹ ^ 2
+            = (f (A (k + 1) ω))⁻¹ * (f (A (k + 1) ω))⁻¹ := by
+              ring
+        _ ≤ 1 * 1 :=
+            mul_le_mul hinv_le hinv_le hinv_nonneg zero_le_one
+        _ = 1 := by ring
+    have hU_nonneg : 0 ≤ U ω := by
+      simp [U, sq_nonneg]
+    simpa [U, abs_of_nonneg hU_nonneg] using hsquare_le
+  have hbase : Integrable (fun ω => U ω * Y ω) P :=
+    durrett2019_integrable_mul_of_abs_le_one
+      (P := P) (U := U) (Y := Y) hY_int hU_sm hU_abs_le
+  have hratio_eq :
+      (fun ω => U ω * Y ω) =ᵐ[P]
+        fun ω => (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 := by
+    refine ae_of_all P fun ω => ?_
+    simp [U, Y, div_eq_mul_inv, mul_comm]
+  exact (integrable_congr hratio_eq).mp hbase
 
 /--
 Durrett 2019, Theorem 4.5.3 reciprocal scaled-summability route.
@@ -19103,6 +19192,63 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
       hratio_int hcond_le hclock_int hclock_bound
 
 /--
+Durrett 2019, Theorem 4.5.3 source-facing integrated clock route with
+automatic `L^2` and variance-ratio integrability side conditions.
+
+Compared with the preceding wrapper, this removes the explicit
+variance-ratio integrability assumption by deriving it from integrability of
+the predictable clock process.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_integral_clock_bound_of_process_memLp_clock_integrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {C : ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hA_int : ∀ n : ℕ, Integrable (A n) P)
+    (hf_cont : Continuous f)
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ k : ℕ, ∀ ω : Ω,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)))
+    (hf_interval_one_le :
+      ∀ k : ℕ, ∀ ω : Ω,
+        ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t)
+    (hf_int :
+      ∀ k : ℕ, ∀ ω : Ω,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume
+          (A k ω) (A (k + 1) ω))
+    (hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ f (A (k + 2) ω) - f (A (k + 1) ω))
+    (hb_atTop :
+      ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop)
+    (hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω)
+    (hclock_int :
+      ∀ N : ℕ, Integrable (fun ω => ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) P)
+    (hclock_bound :
+      ∀ N : ℕ, ∫ ω, (∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) ∂P ≤ C) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  have hf_one_le : ∀ n : ℕ, ∀ ω : Ω, 1 ≤ f (A n ω) := by
+    intro n ω
+    exact hf_interval_one_le n ω (A n ω) ⟨le_rfl, hA_mono_step n ω⟩
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_integral_clock_bound_of_process_memLp
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (C := C)
+      hX hX0 hX_memLp_two hA_predictable hf_cont hA_mono_step hf_mono
+      hf_interval_one_le hf_int hb_increment_nonneg hb_atTop
+      (durrett2019_theorem_4_5_3_variance_ratio_integrable_of_clock_integrable
+        (P := P) (ℱ := ℱ) (A := A) (f := f)
+        hA_predictable hf_cont hf_one_le hA_int)
+      hcond_le hclock_int hclock_bound
+
+/--
 Durrett 2019, Theorem 4.5.3 source-facing tail-integral route.
 
 This replaces the uniform integrated clock-bound assumption in the V215
@@ -19234,6 +19380,65 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
       (durrett2019_theorem_4_5_3_integrated_clock_bound_of_tail_integral_bound
         (P := P) (f := f) (A := A) (C := C)
         hA0_nonneg hA_mono_step htail_int hclock_int htail_bound)
+
+/--
+Durrett 2019, Theorem 4.5.3 source-facing tail-integral route with automatic
+`L^2` and variance-ratio integrability side conditions.
+
+This is the source-shaped endpoint after V218: the remaining explicit
+integrability side condition is the finite random clock integral.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {C : ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hA_int : ∀ n : ℕ, Integrable (A n) P)
+    (hf_cont : Continuous f)
+    (hA0_nonneg : ∀ ω : Ω, 0 ≤ A 0 ω)
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ k : ℕ, ∀ ω : Ω,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)))
+    (hf_interval_one_le :
+      ∀ k : ℕ, ∀ ω : Ω,
+        ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t)
+    (hf_int :
+      ∀ k : ℕ, ∀ ω : Ω,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume
+          (A k ω) (A (k + 1) ω))
+    (hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ f (A (k + 2) ω) - f (A (k + 1) ω))
+    (hb_atTop :
+      ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop)
+    (hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω)
+    (hclock_int :
+      ∀ N : ℕ, Integrable (fun ω => ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) P)
+    (htail_int :
+      IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (f t)⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  have hf_one_le : ∀ n : ℕ, ∀ ω : Ω, 1 ≤ f (A n ω) := by
+    intro n ω
+    exact hf_interval_one_le n ω (A n ω) ⟨le_rfl, hA_mono_step n ω⟩
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (C := C)
+      hX hX0 hX_memLp_two hA_predictable hf_cont hA0_nonneg hA_mono_step
+      hf_mono hf_interval_one_le hf_int hb_increment_nonneg hb_atTop
+      (durrett2019_theorem_4_5_3_variance_ratio_integrable_of_clock_integrable
+        (P := P) (ℱ := ℱ) (A := A) (f := f)
+        hA_predictable hf_cont hf_one_le hA_int)
+      hcond_le hclock_int htail_int htail_bound
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
