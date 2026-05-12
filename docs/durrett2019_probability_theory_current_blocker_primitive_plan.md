@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V216
+## Live In-Thread Goal Prompt V217
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -165,9 +165,23 @@ These prove that finite clock intervals inside `[0, ∞)` are controlled by the
 global tail integral `∫_0^∞ f(t)^{-2} dt`, integrate that bound over the
 probability space, and feed it into the V215 endpoint.
 
-Next aggressive step: discharge the remaining finite-clock-integrability,
-ratio integrability, and reciprocal-transform `MemLp` side conditions from
-source measurability, predictability, and second-moment hypotheses.  Do not
+V217 removes the transform `MemLp`, scaled-square integrability, and
+increment-square integrability side conditions from the main Theorem 4.5.3
+source route.  New compiled declarations:
+`durrett2019_memLp_mul_of_abs_le_one`,
+`durrett2019_theorem_4_5_3_reciprocal_comp_transform_memLp_two_of_process_memLp`,
+`durrett2019_theorem_4_5_3_increment_sq_integrable_of_process_memLp`,
+`durrett2019_theorem_4_5_3_reciprocal_comp_scaled_sq_integrable_of_process_memLp`,
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_integral_clock_bound_of_process_memLp`,
+and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp`.
+The theorem-facing endpoint now takes the single source assumption
+`∀ n, MemLp (X n) 2 P` instead of three separate transform/increment `L^2`
+obligations.
+
+Next aggressive step: discharge the remaining finite-clock-integrability and
+ratio integrability side conditions from source measurability, predictability,
+and second-moment hypotheses.  Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -175,8 +189,9 @@ scaled-summability-to-transform plumbing, conditional variance pull-out, scalar
 interval comparison, finite clock comparison, deterministic summability
 packaging, random pathwise summability packaging, integrated finite-sum/Fubini
 summability plumbing, V214-to-V209 endpoint wiring, tail-integral-to-clock-bound
-packaging, Chapter 2.1, or Theorem 2.4.9 unless Theorem 4.5.3 exposes a
-strictly stronger missing primitive.
+packaging, transform `MemLp` packaging, scaled-square integrability packaging,
+increment-square integrability packaging, Chapter 2.1, or Theorem 2.4.9 unless
+Theorem 4.5.3 exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
