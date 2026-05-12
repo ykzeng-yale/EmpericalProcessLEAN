@@ -23103,6 +23103,185 @@ theorem
       (B := ∫ ω, min (Ainf ω) ((a : ℝ) ^ 2) ∂P) hterminal_sq_le
 
 /--
+Durrett 2019, Theorem 4.5.7 pathwise survival bridge.
+
+On a path where the threshold time `N(a) = inf {n : A_{n+1} > a^2}` is
+infinite, the finite running maximum of the stopped process is the original
+finite running maximum.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsMax_eq_stopped_of_firstPredictableAbove_eq_top
+    {Ω : Type*} {X A : ℕ -> Ω -> ℝ} {a : ℝ} {n : ℕ} {ω : Ω}
+    (hN_top :
+      durrett2019_theorem_4_5_2_firstPredictableAbove A a ω = ⊤) :
+    durrett2019_runningAbsMax X n ω =
+      durrett2019_runningAbsMax
+        (stoppedProcess X (durrett2019_theorem_4_5_2_firstPredictableAbove A a))
+        n ω := by
+  unfold durrett2019_runningAbsMax
+  apply Finset.sup'_congr Finset.nonempty_range_add_one rfl
+  intro k _hk
+  have hstop :
+      stoppedProcess X
+          (durrett2019_theorem_4_5_2_firstPredictableAbove A a) k ω =
+        X k ω := by
+    exact stoppedProcess_eq_of_le (by rw [hN_top]; exact le_top)
+  rw [hstop]
+
+/--
+Durrett 2019, Theorem 4.5.7 raw/stopped survival split.
+
+If the terminal clock is below `a^2`, terminal domination forces the threshold
+time to survive forever, so the raw maximal event is contained in the stopped
+maximal event.  Otherwise the path belongs to the terminal-clock tail.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsMax_event_subset_terminal_tail_union_stopped
+    {Ω : Type*} {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    {a : ℝ≥0} {n : ℕ}
+    (hA_le_Ainf : ∀ ω k, A k ω ≤ Ainf ω) :
+    {ω |
+        (a : ℝ) < durrett2019_runningAbsMax X n ω} ⊆
+      {ω | ((a : ℝ) ^ 2) < Ainf ω} ∪
+        {ω |
+          (a : ℝ) <
+            durrett2019_runningAbsMax
+              (stoppedProcess X
+                (durrett2019_theorem_4_5_2_firstPredictableAbove A (a : ℝ)))
+              n ω} := by
+  intro ω hraw
+  by_cases htail : ((a : ℝ) ^ 2) < Ainf ω
+  · exact Or.inl htail
+  · right
+    have hA_threshold :
+        ∀ k, A (k + 1) ω ≤ (a : ℝ) ^ 2 := by
+      intro k
+      exact (hA_le_Ainf ω (k + 1)).trans (le_of_not_gt htail)
+    have hN_top :
+        durrett2019_theorem_4_5_2_firstPredictableAbove A (a : ℝ) ω = ⊤ :=
+      durrett2019_theorem_4_5_2_firstPredictableAbove_eq_top_of_forall_le
+        (A := A) (a := (a : ℝ)) (ω := ω) hA_threshold
+    have hmax_eq :
+        durrett2019_runningAbsMax X n ω =
+          durrett2019_runningAbsMax
+            (stoppedProcess X
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A (a : ℝ)))
+            n ω :=
+      durrett2019_theorem_4_5_7_runningAbsMax_eq_stopped_of_firstPredictableAbove_eq_top
+        (X := X) (A := A) (a := (a : ℝ)) (n := n) (ω := ω) hN_top
+    simpa [hmax_eq] using hraw
+
+/--
+Durrett 2019, Theorem 4.5.7 probability-level raw/stopped split.
+
+This is the finite-horizon probability decomposition used before the
+layer-cake/Fubini step:
+`P(max_{m<=n} |X_m| > a) <= P(Ainf > a^2) +
+  P(max_{m<=n} |X_{N(a)∧m}| > a)`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_tail_add_stopped
+    {Ω : Type*} [MeasurableSpace Ω]
+    {P : Measure Ω} {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hA_le_Ainf : ∀ n, A n ≤ᵐ[P] Ainf)
+    {a : ℝ≥0} (n : ℕ) :
+    P {ω |
+        (a : ℝ) < durrett2019_runningAbsMax X n ω} ≤
+      P {ω | ((a : ℝ) ^ 2) < Ainf ω} +
+        P {ω |
+          (a : ℝ) <
+            durrett2019_runningAbsMax
+              (stoppedProcess X
+                (durrett2019_theorem_4_5_2_firstPredictableAbove A (a : ℝ)))
+              n ω} := by
+  let raw : Set Ω := {ω | (a : ℝ) < durrett2019_runningAbsMax X n ω}
+  let tail : Set Ω := {ω | ((a : ℝ) ^ 2) < Ainf ω}
+  let stopped : Set Ω :=
+    {ω |
+      (a : ℝ) <
+        durrett2019_runningAbsMax
+          (stoppedProcess X
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A (a : ℝ)))
+          n ω}
+  have hAll : ∀ᵐ ω ∂P, ∀ k, A k ω ≤ Ainf ω :=
+    ae_all_iff.2 hA_le_Ainf
+  have hsubset_ae : raw ≤ᵐ[P] fun ω => ω ∈ tail ∪ stopped := by
+    filter_upwards [hAll] with ω hω hraw
+    by_cases htail : ((a : ℝ) ^ 2) < Ainf ω
+    · exact Or.inl (by simpa [tail] using htail)
+    · right
+      have hA_threshold :
+          ∀ k, A (k + 1) ω ≤ (a : ℝ) ^ 2 := by
+        intro k
+        exact (hω (k + 1)).trans (le_of_not_gt htail)
+      have hN_top :
+          durrett2019_theorem_4_5_2_firstPredictableAbove A (a : ℝ) ω = ⊤ :=
+        durrett2019_theorem_4_5_2_firstPredictableAbove_eq_top_of_forall_le
+          (A := A) (a := (a : ℝ)) (ω := ω) hA_threshold
+      have hmax_eq :
+          durrett2019_runningAbsMax X n ω =
+            durrett2019_runningAbsMax
+              (stoppedProcess X
+                (durrett2019_theorem_4_5_2_firstPredictableAbove A (a : ℝ)))
+              n ω :=
+        durrett2019_theorem_4_5_7_runningAbsMax_eq_stopped_of_firstPredictableAbove_eq_top
+          (X := X) (A := A) (a := (a : ℝ)) (n := n) (ω := ω) hN_top
+      have hraw' : (a : ℝ) < durrett2019_runningAbsMax X n ω := by
+        simpa [raw] using hraw
+      rw [hmax_eq] at hraw'
+      simpa [stopped] using hraw'
+  have hmeasure : P raw ≤ P tail + P stopped :=
+    (by
+      calc
+        P raw ≤ P (tail ∪ stopped) := by
+          simpa using (measure_mono_ae hsubset_ae)
+        _ ≤ P tail + P stopped := measure_union_le tail stopped)
+  simpa [raw, tail, stopped] using hmeasure
+
+/--
+Durrett 2019, Theorem 4.5.7 source-facing finite-horizon probability bound.
+
+This combines the raw/stopped survival split with the stopped maximal
+probability estimate already derived from the source martingale
+`X_n^2 - A_n`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_tail_add_min_terminal_of_source_square_minus_martingale_monotone_terminal
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_int : Integrable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    {a : ℝ≥0} (ha : a ≠ 0) (n : ℕ) :
+    P {ω |
+        (a : ℝ) < durrett2019_runningAbsMax X n ω} ≤
+      P {ω | ((a : ℝ) ^ 2) < Ainf ω} +
+        ENNReal.ofReal (∫ ω, min (Ainf ω) ((a : ℝ) ^ 2) ∂P) /
+          ((a ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  have hA_le_Ainf : ∀ n, A n ≤ᵐ[P] Ainf :=
+    durrett2019_ae_le_of_ae_monotone_tendsto_atTop
+      (P := P) (A := A) (Ainf := Ainf) hA_mono hA_tendsto
+  have hsplit :=
+    durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_tail_add_stopped
+      (P := P) (X := X) (A := A) (Ainf := Ainf) hA_le_Ainf
+      (a := a) n
+  have hstopped :=
+    durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_min_terminal_of_source_square_minus_martingale_monotone_terminal
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+      hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_int hX0
+      hA0 hA_mono hA_tendsto ha n
+  exact hsplit.trans (add_le_add (le_refl _) hstopped)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V239`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V240`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -289,19 +289,25 @@ and
 `durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
 V239 adds the source-facing stopped maximal-probability wrapper:
 `durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
+V240 adds the raw/stopped survival split and source-facing raw finite-horizon
+probability bound:
+`durrett2019_theorem_4_5_7_runningAbsMax_eq_stopped_of_firstPredictableAbove_eq_top`,
+`durrett2019_theorem_4_5_7_runningAbsMax_event_subset_terminal_tail_union_stopped`,
+`durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_tail_add_stopped`,
+and
+`durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_tail_add_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
 The next theorem-facing target is no longer finite sum/integral exchange,
 V214-to-V209 wiring, the tail-integral-to-clock-bound package,
 variance-ratio integrability packaging, lower-bound/no-zero/divergence
 plumbing, deterministic normalizer-divergence packaging, event-local
 random-normalizer packaging, Theorem 4.5.5 ratio algebra, finite-limit
-denominator bridges, increment/denominator-clock plumbing, or Bernoulli
-conditional-variance algebra, max-normalizer denominator handoff, or
+denominator bridges, increment/denominator-clock plumbing, Bernoulli
+conditional-variance algebra, max-normalizer denominator handoff,
 finite/infinite event-cover ratio assembly, the max-normalizer 4.5.3 source
-handoff, raw-clock monotonicity, or final Theorem 4.5.5 packaging.  Move next
-to the next Theorem 4.5.7 layer: the raw/stopped survival probability split,
-then the layer-cake/Fubini integral split using the compiled stopped
-probability and source stopped-square estimates.  Do not
-route back to
+handoff, raw-clock monotonicity, final Theorem 4.5.5 packaging, stopped
+4.5.7 source packaging, or the V240 raw/stopped split.  Move next to the
+Theorem 4.5.7 layer-cake/Fubini integral split using the compiled V240
+finite-horizon probability bound.  Do not route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
 packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
