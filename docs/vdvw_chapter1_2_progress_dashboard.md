@@ -4695,3 +4695,18 @@ centered-bad restricted law and feed the displayed Chebyshev-beta comparison
 directly, with the beta factor absorbed by `of_scaledOuterProbabilityBound`.
 The remaining probability theorem is still the restricted scaled selected-bad
 membership itself, not another convergence wrapper.
+
+2026-05-12 scaled selected-cardinality displayed-beta source surface:
+`Theorem243.lean` now also proves the named selected-net event monotonicity
+`VdVWTheorem243SelectedFiniteNetBadSet_mono_cardinality`, the displayed-beta
+record transport
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.mono_cardinality`,
+and the restricted selected-cardinality constructors
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet_mono_cardinality`
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet_mono_cardinality_of_countable`.
+Thus a selected-cover source proof can remain stated for the selected
+empirical-cover cardinality under the centered-bad restricted product law,
+while the displayed-beta comparison is recorded for the larger
+entropy-controlled cardinality.  The open theorem is now the restricted scaled
+selected-bad membership for the selected cover itself.

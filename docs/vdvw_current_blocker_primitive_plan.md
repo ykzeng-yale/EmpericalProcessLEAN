@@ -10253,3 +10253,19 @@ input as restricted a.e. membership in the scaled selected finite-net bad set
 uses the existing scaled displayed-beta comparison constructor.  The next
 non-duplicative theorem target is the actual restricted scaled selected-bad
 membership theorem under the centered-bad restricted product law.
+
+2026-05-12 scaled selected-cardinality displayed-beta source surface: the
+search above also found no displayed-beta analogue of
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.mono_cardinality`.
+`Theorem243.lean` now adds
+`VdVWTheorem243SelectedFiniteNetBadSet_mono_cardinality`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.mono_cardinality`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet_mono_cardinality`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet_mono_cardinality_of_countable`.
+The scaled displayed-beta source proof may therefore target the selected
+empirical-cover cardinality only; the constructor composes with the eventual
+selected-to-recorded cardinality inequality before handing off to the
+entropy-controlled comparison record.  The remaining non-wrapper proof target
+is the actual restricted scaled selected-bad membership/event comparison for
+the selected cover.

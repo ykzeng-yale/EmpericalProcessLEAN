@@ -306,6 +306,16 @@ under the named centered-bad restricted product law.  This records the scaled
 source surface for the displayed-beta primitive; the mathematical gap remains
 proving that restricted selected-bad membership from the VdV&W
 ghost/Rademacher selected-cover argument.
+The displayed-beta lane now also has selected-to-recorded cardinality
+transport through
+`VdVWTheorem243SelectedFiniteNetBadSet_mono_cardinality`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.mono_cardinality`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet_mono_cardinality`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet_mono_cardinality_of_countable`.
+This keeps the active proof obligation on the selected empirical-cover
+cardinality while allowing the compiled comparison record to use the larger
+cardinality controlled by the entropy hypothesis.
 
 For the faithful Markov/symmetrization route, the source input has also been
 lowered from finite-net Hoeffding tail/UI to selected normalized-log tail/UI:
