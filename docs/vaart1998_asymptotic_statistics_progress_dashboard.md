@@ -15,7 +15,15 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: common-law matrix-entry derivative endpoint
+Latest verified packet: score-law moment source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawMomentSource_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+in `MEstimators.lean`.  It adds
+`vaart1998_theorem_5_41_scoreSummand_coordinate_memLp_mean_zero_of_commonVectorLaw`
+and composes it into the common-law matrix derivative route, replacing the
+ambient-sample-space score coordinate `L²` and zero-mean fields by the same
+moment assumptions under the common score law.
+
+Immediate predecessor packet: common-law matrix-entry derivative endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It composes the derivative-entry common-vector-law
 source helper into the matrix-entry absorbing-source route, replacing the
@@ -23,7 +31,7 @@ separate scalar derivative-entry integrability, pairwise-independence, and
 identical-distribution fields by a common law for the finite derivative-entry
 table and its infinite-product sequence law.
 
-Immediate predecessor packet: derivative-entry common-vector-law source helper
+Earlier predecessor packet: derivative-entry common-vector-law source helper
 `vaart1998_theorem_5_41_derivativeEntry_integrable_indep_identDistrib_of_matrix_commonVectorLaw`
 in `MEstimators.lean`.  It reuses the existing finite-coordinate
 common-vector-law LLN source to derive derivative-entry integrability,
@@ -60,8 +68,9 @@ uses
 to remove the explicit residual convergence and residual measurability fields
 from the pointwise-Taylor Theorem 5.41 action endpoint.
 
-Current next blocker: package model-facing score/Taylor/source hypotheses
-around the common-law matrix endpoint, especially score-summand representation,
+Current next blocker: package the remaining model-facing score/Taylor/source
+hypotheses around the score-law moment source endpoint, especially
+score-summand representation, score covariance/common-law construction,
 derivative-table common-law construction, or pointwise Taylor fields.
 
 ## Verified Frontier

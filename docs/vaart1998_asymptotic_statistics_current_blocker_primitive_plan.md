@@ -17,6 +17,9 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawMomentSource_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Immediate common-law matrix derivative endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Immediate matrix-entry derivative endpoint:
@@ -72,6 +75,12 @@ infinite-product law of that table sequence.
 The newest common-law matrix endpoint composes that helper into the
 matrix-entry absorbing-source route, so the scalar derivative-entry iid LLN
 fields are no longer live for that route.
+The newest score-law moment source wrapper
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawMomentSource_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+composes
+`vaart1998_theorem_5_41_scoreSummand_coordinate_memLp_mean_zero_of_commonVectorLaw`
+into that route, so coordinate `L²` and zero-mean score assumptions can now be
+stated under the common score law instead of on the ambient sample space.
 
 Continuation recipe:
 
@@ -85,8 +94,9 @@ Continuation recipe:
 Priority order for the next packet:
 
 1. Move one layer closer to a model-facing finite-dimensional statement:
-   package score/Taylor/source hypotheses around the common-law matrix endpoint,
-   especially model-specific score-summand representation, derivative-table
+   package the remaining score/Taylor/source hypotheses around the score-law
+   moment source endpoint, especially model-specific score-summand
+   representation, score covariance/common-law construction, derivative-table
    common-law construction, or pointwise Taylor fields.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
