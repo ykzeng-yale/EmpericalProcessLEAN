@@ -71,13 +71,18 @@ endpoint
 composes
 `vaart1998_theorem_5_41_scoreCommonVectorLaw_of_vectorScoreRepresentation`,
 so model instances can state the common law and infinite-product law directly
-for the vector score process.  The next proof packet
-should package the remaining model-facing score/Taylor/source fields around
-this covariance/moment endpoint, not replay display weak-convergence,
-display-tightness, score-CLT, residual convergence, absorbing tightness,
-derivative-action wrappers, derivative-entry iid source fields, score moment
-transfer, score-law covariance transfer, vector score-representation, or the
-vector score common-law transfer.
+for the vector score process.  The derivative-table common-law endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+composes
+`vaart1998_theorem_5_41_derivativeCommonVectorLaw_of_matrixTableRepresentation`,
+so model instances can state the common law and infinite-product law directly
+for the derivative table process.  The next proof packet should package the
+remaining model-facing score/Taylor/source fields around this covariance/moment
+endpoint, not replay display weak-convergence, display-tightness, score-CLT,
+residual convergence, absorbing tightness, derivative-action wrappers,
+derivative-entry iid source fields, score moment transfer, score-law covariance
+transfer, vector score-representation, vector score common-law transfer, or
+derivative-table common-law transfer.
 
 ## Chapter Map
 

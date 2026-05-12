@@ -15,7 +15,15 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: vector score common-law endpoint
+Latest verified packet: derivative-table common-law endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+in `MEstimators.lean`.  It adds
+`vaart1998_theorem_5_41_derivativeCommonVectorLaw_of_matrixTableRepresentation`
+and composes it into the vector score common-law route, replacing the
+finite-coordinate derivative-entry common-law fields by common-law assumptions
+on the model-facing derivative table process.
+
+Immediate predecessor packet: vector score common-law endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It adds
 `vaart1998_theorem_5_41_scoreCommonVectorLaw_of_vectorScoreRepresentation`
@@ -23,7 +31,7 @@ and composes it into the vector score-representation route, replacing the
 finite-coordinate `scoreSummand` common-law fields by common-law assumptions
 on the model-facing `scoreVector` process.
 
-Immediate predecessor packet: vector score-representation endpoint
+Earlier predecessor packet: vector score-representation endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It adds
 `vaart1998_theorem_5_41_scoreSummandRepresentation_of_vectorScoreRepresentation`
@@ -93,7 +101,7 @@ from the pointwise-Taylor Theorem 5.41 action endpoint.
 
 Current next blocker: package the remaining model-facing score/Taylor/source
 hypotheses around the score-law covariance/moment source endpoint, especially
-derivative-table common-law construction or pointwise Taylor fields.
+pointwise Taylor and model smoothness fields.
 
 ## Verified Frontier
 

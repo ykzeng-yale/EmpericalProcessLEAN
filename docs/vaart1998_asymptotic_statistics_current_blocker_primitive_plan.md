@@ -17,6 +17,9 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Immediate derivative-entry finite-coordinate common-law endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Immediate vector score-representation and finite-coordinate score-law endpoint:
@@ -108,6 +111,12 @@ composes
 `vaart1998_theorem_5_41_scoreCommonVectorLaw_of_vectorScoreRepresentation`,
 so model instances can provide `HasLaw (scoreVector i) scoreLaw P` and the
 infinite-product law of the vector process directly.
+The newest derivative-table common-law endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+composes
+`vaart1998_theorem_5_41_derivativeCommonVectorLaw_of_matrixTableRepresentation`,
+so model instances can provide `HasLaw (derivativeTable i) derivativeLaw P`
+and the infinite-product law of the derivative table process directly.
 
 Continuation recipe:
 
@@ -122,14 +131,14 @@ Priority order for the next packet:
 
 1. Move one layer closer to a model-facing finite-dimensional statement:
    package the remaining score/Taylor/source hypotheses around the score-law
-   covariance/moment source endpoint, especially derivative-table common-law
-   construction or pointwise Taylor fields.
+   covariance/moment source endpoint, especially pointwise Taylor and model
+   smoothness fields.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    residual-source endpoint; do not rebuild completed score CLT, display weak
    convergence, display tightness, residual convergence, or action-bound wrapper
    stacks.  Do not replay the vector score-representation or vector score
-   common-law transfers.
+   common-law transfers, or the derivative-table common-law transfer.
 
 Operating rules:
 
