@@ -450,6 +450,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   gradient derivative is the supplied product Hessian and the selector
   derivative solves `D selector v = -Hyy^{-1} Hyx v`.
 - Inf-projection model inverse/second-order API: the newest packet adds
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt`,
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_right_inverse`,
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_left_inverse`,
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.full_right_inverse`,
@@ -457,7 +458,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   and
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_isOpen`.
   Future source instances with an adjoint-square-root envelope model should
-  use these methods instead of re-proving `Hyy` inverse identities or the
+  state full-space `sqrtFull` equalities once on `s`, lift them through
+  `of_sourceFullSqrt`, and use these methods instead of re-proving
+  selected-graph square-root equalities, `Hyy` inverse identities, or the
   selected-value second-order envelope from raw square-root equalities.
 - Inf-projection implicit-selector derivative calculus: the newest packet adds
   `barrierInfProjectionVerticalGrad_hasFDerivAt`,
@@ -804,6 +807,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   selected-value third-order envelope either from a supplied `Hyy` left inverse
   or from the finite-dimensional `Hyy` right-inverse route.  The adjoint-square
   adapter now reuses the finite-dimensional open-domain constructor.
+  The source-square-root constructor
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt` also lifts
+  full Hessian/inverse-Hessian adjoint-square equalities from the original
+  source domain to the selected graph; future exact source work should spend
+  proof effort on the scalar mixed-third identity and concrete selector model,
+  not on restating graph-point `sqrtFull` equations.
   A packaged adjoint-square model plus a Schur derivative certificate now
   proves the projected source-radius local-norm sandwich without selected-value
   `f`, open-domain gradient, or second-order envelope assumptions; source

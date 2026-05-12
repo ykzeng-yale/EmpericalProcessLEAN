@@ -6526,6 +6526,62 @@ structure BarrierInfProjectionAdjointSqrtEnvelopeModel
           (sqrtFull (barrierInfProjectionPoint selector x)).symm.toContinuousLinearMap)
 
 /--
+Build the adjoint-square-root inf-projection certificate from full-space
+square-root equalities stated on the original source domain.  The selector
+stationarity package supplies the selected-graph membership bridge; the
+vertical-block `Hyy` equalities still naturally live on the projected domain.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hyy_hess_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      barrierInfProjectionBlockYY selector hess x =
+        (ContinuousLinearMap.adjoint (sqrtHyy x).toContinuousLinearMap).comp
+          (sqrtHyy x).toContinuousLinearMap)
+    (hyy_inv_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      invHyy x =
+        (sqrtHyy x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtHyy x).symm.toContinuousLinearMap))
+    (hfull_hess_eq_source :
+      ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+        hess z =
+          (ContinuousLinearMap.adjoint (sqrtFull z).toContinuousLinearMap).comp
+            (sqrtFull z).toContinuousLinearMap)
+    (hfull_inv_eq_source :
+      ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+        invHess z =
+          (sqrtFull z).symm.toContinuousLinearMap.comp
+            (ContinuousLinearMap.adjoint
+              (sqrtFull z).symm.toContinuousLinearMap)) :
+    BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+      third invHyy sqrtFull sqrtHyy M nu where
+  selector_stationary := hsel
+  barrier := hbar
+  hyy_hess_eq := hyy_hess_eq
+  hyy_inv_eq := hyy_inv_eq
+  full_hess_eq := by
+    intro x hx
+    exact hfull_hess_eq_source (hsel.point_mem hx)
+  full_inv_eq := by
+    intro x hx
+    exact hfull_inv_eq_source (hsel.point_mem hx)
+
+/--
 The square-root Schur-envelope certificate immediately yields the current best
 finite-dimensional inf-projection self-concordant barrier rule.
 -/

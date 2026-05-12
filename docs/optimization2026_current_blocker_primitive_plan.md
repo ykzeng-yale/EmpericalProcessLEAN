@@ -415,6 +415,12 @@ The adjoint-sqrt envelope certificate packet adds
 `BarrierInfProjectionAdjointSqrtEnvelopeModel`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.selfConcordantBarrierOn`, and
 `chewi1311_infProjection_selfConcordantBarrierOn_of_adjointSqrtEnvelopeModel`.
+The source square-root constructor
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt` now lifts the
+full-Hessian and inverse-Hessian adjoint-square equalities from the original
+domain `s` to selected graph points using selector stationarity, so concrete
+instances only need to keep the vertical `Hyy` square-root equalities on the
+projected domain.
 Future exact inf-projection work should construct this one certificate from a
 selector/envelope differentiability theorem and concrete square-root models,
 rather than restating the selector stationarity, original barrier, vertical
@@ -508,16 +514,19 @@ derivative satisfies the implicit equation
 `D selector v = - Hyy^{-1} Hyx v`, then the projected gradient has derivative
 `barrierInfProjectionSchurHessFrom`.
 The adjoint-square-root model API now adds
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_right_inverse`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_left_inverse`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.full_right_inverse`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.grad_hasFDerivAt_schur_of_isOpen`,
 and
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_isOpen`.
-These discharge the `Hyy` inverse identities, the selected full-Hessian right
-inverse, and the open-domain second-order envelope directly from the packaged
-square-root model.  The next exact inf-projection proof should consume these
-helpers before adding any new raw inverse or second-order wrapper.
+These lift full-space square-root equations from `s`, discharge the `Hyy`
+inverse identities, the selected full-Hessian right inverse, and the
+open-domain second-order envelope directly from the packaged square-root
+model.  The next exact inf-projection proof should consume these helpers
+before adding any new raw inverse, selected-graph square-root, or
+second-order wrapper.
 The implicit-selector derivative packet adds
 `barrierInfProjectionVerticalGrad_hasFDerivAt`,
 `barrierInfProjection_verticalDerivative_eq_zero_of_eventually_eq_zero`,
