@@ -289,6 +289,16 @@ wrappers
 and
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
 avoid manually restating the selected-graph Hessian derivative certificate.
+If the source model also proves first- and second-order differentiability on
+`s`, use
+`BarrierInfProjectionSelectorStationary.hasGradientAt_of_source`,
+`BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_of_source`, or the
+one-call source endpoints
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`.
+These are the shortest verified routes from original-domain derivative data to
+the literal envelope package and Chewi source-radius local-norm sandwich.
 The current second-order envelope layer also derives the Schur projected
 gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after

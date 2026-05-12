@@ -422,6 +422,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
   are now the preferred route when the source model proves Hessian
   differentiability on the original barrier domain.
+  The newest source-derivative lift also adds
+  `BarrierInfProjectionSelectorStationary.hasGradientAt_of_source` and
+  `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_of_source`, plus the
+  one-call endpoints
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`.
+  Concrete source instances can now state first-order, second-order, and
+  full-Hessian derivative data uniformly on `s`; selector stationarity
+  internalizes all selected-graph derivative restrictions.
   Future item-4 source instances should therefore focus on constructing the
   literal package and concrete square-root/envelope model, not rebuilding
   segment Schur-derivative, local-norm transport, or projected-Hessian

@@ -546,6 +546,21 @@ the stationary selector plus neighborhood membership or an open projected
 domain.  Future inf-projection work should reuse these source-facing bridges
 instead of passing `barrierInfProjectionVerticalGrad =ᶠ[nhds x] 0` directly.
 
+The newest source-derivative packet removes another repeated graph-restriction
+obligation.  Reuse
+`BarrierInfProjectionSelectorStationary.hasGradientAt_of_source` and
+`BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_of_source` to lift
+source-domain `∀ z ∈ s, HasGradientAt f (grad z) z` and
+`∀ z ∈ s, HasFDerivAt grad (hess z) z` to selected graph points.  For
+Proposition 13.11(4) source instances, prefer
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`
+when first-, second-, and full-Hessian derivative data are all naturally proved
+on the original barrier domain.  Do not ask future runs to manually restate
+`hfgrad` or `hgrad` on `barrierInfProjectionPoint selector x` unless the source
+model genuinely only has graph-local data.
+
 The second-order envelope packet adds
 `BarrierInfProjectionSecondOrderEnvelopeAt`,
 `BarrierInfProjectionSelectorStationary.secondOrderEnvelopeAt_of_mem_nhds`,
