@@ -4,14 +4,14 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V223
+## Live In-Thread Goal Prompt V224
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane: Durrett Chapter 4 martingales in
-`StatInference/ProbabilityTheory/Martingale.lean`, specifically Section 4.5.3.
+`StatInference/ProbabilityTheory/Martingale.lean`, specifically Section 4.5.5.
 Chapter 2.1 independence/product/convolution support, Theorem 2.4.9
 Glivenko-Cantelli, Theorem 2.2.12 layer-cake/source endpoint, Chapter 3 weak
 convergence/characteristic-function/CLT wrappers, and Section 4.5.1 maximal
@@ -252,10 +252,28 @@ from the exact Durrett `f` assumptions and an event-local clock-divergence
 hypothesis
 `∀ᵐ ω, ω ∈ InfiniteVar -> Tendsto (fun n => A n ω) atTop atTop`.
 
-Next aggressive step: move to the next martingale theorem/source wrapper in
-Durrett Section 4.5 unless the textbook route needs a narrow bridge from a
-named terminal-clock event to the already compiled `hA_atTop_on` hypothesis.
-Do not
+V224 starts Theorem 4.5.5, Second Borel-Cantelli III.  New compiled
+declarations:
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_of_centered_ratio_tendsto_zero`,
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_centered_ratio_tendsto_zero`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum`,
+`durrett2019_theorem_4_5_5_martingalePart_process_eq_count_sub_conditionalProbabilitySum`,
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_normalized`,
+`durrett2019_theorem_4_5_5_normalized_tendsto_zero_of_exists_tendsto`,
+`durrett2019_theorem_4_5_5_normalized_tendsto_zero_on_of_exists_tendsto`,
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_exists_tendsto`.
+The ratio algebra and finite-variance denominator bridge are now compiled:
+once the Borel-Cantelli martingale part is `o(∑ p_m)`, or has a finite path
+limit while `∑ p_m -> ∞`, the event-count ratio converges to one.
+
+Next aggressive step: prove the normalized Borel-Cantelli martingale-part
+estimate needed by Theorem 4.5.5.  Search first for mathlib/local APIs for
+conditional indicator variance and predictable-part/increasing-process
+identification.  The intended split is: finite increasing-process side via
+Theorem 4.5.2 and the new finite-limit ratio bridge; infinite side via
+Theorem 4.5.3 with `f(t) = t ∨ 1`, plus a proof that the conditional-variance
+clock is dominated by `∑ p_m`.  Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -269,9 +287,10 @@ packaging, finite random clock-integrability packaging,
 interval-integrability packaging, normalizer-increment packaging,
 reciprocal-square continuity packaging, lower-bound/no-zero packaging,
 normalizer-divergence-from-clock packaging, deterministic normalizer-divergence
-packaging, event-local random-normalizer packaging, Chapter 2.1, or
+packaging, event-local random-normalizer packaging, Theorem 4.5.5 ratio
+algebra, finite-limit denominator bridges, Chapter 2.1, or
 Theorem 2.4.9 unless
-Theorem 4.5.3 exposes a strictly stronger missing primitive.
+Theorem 4.5.5 exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
@@ -1601,6 +1620,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V223` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V224` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

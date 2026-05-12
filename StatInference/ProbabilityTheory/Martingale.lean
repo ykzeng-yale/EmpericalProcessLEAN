@@ -20304,6 +20304,229 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_recip
       hA0_nonneg hA_mono_step hA_atTop_on hcond_le htail_int htail_bound
 
 /--
+Durrett 2019, Theorem 4.5.5 deterministic ratio support.
+
+If the centered error divided by a denominator tends to zero and the
+denominator diverges to infinity, then the original numerator divided by the
+denominator tends to one.
+-/
+theorem durrett2019_theorem_4_5_5_ratio_tendsto_one_of_centered_ratio_tendsto_zero
+    {u v : ℕ -> ℝ}
+    (hv_atTop : Tendsto v atTop atTop)
+    (hcenter :
+      Tendsto (fun n : ℕ => (u n - v n) / v n) atTop (𝓝 0)) :
+    Tendsto (fun n : ℕ => u n / v n) atTop (𝓝 1) := by
+  have hv_ne : ∀ᶠ n : ℕ in atTop, v n ≠ 0 :=
+    (hv_atTop.eventually_gt_atTop (0 : ℝ)).mono fun _ hn => ne_of_gt hn
+  have heq :
+      (fun n : ℕ => u n / v n) =ᶠ[atTop]
+        fun n : ℕ => (u n - v n) / v n + 1 := by
+    filter_upwards [hv_ne] with n hn
+    calc
+      u n / v n = (u n - v n + v n) / v n := by rw [sub_add_cancel]
+      _ = (u n - v n) / v n + v n / v n := by rw [add_div]
+      _ = (u n - v n) / v n + 1 := by rw [div_self hn]
+  have hsum :
+      Tendsto (fun n : ℕ => (u n - v n) / v n + 1) atTop (𝓝 1) := by
+    simpa using hcenter.add (tendsto_const_nhds : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (𝓝 1))
+  exact Tendsto.congr' heq.symm hsum
+
+/--
+Durrett 2019, Theorem 4.5.5 event-local deterministic ratio support.
+-/
+theorem durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_centered_ratio_tendsto_zero
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {u v : ℕ -> Ω -> ℝ} {D : Set Ω}
+    (hv_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ D -> Tendsto (fun n : ℕ => v n ω) atTop atTop)
+    (hcenter_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto (fun n : ℕ => (u n ω - v n ω) / v n ω) atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      Tendsto (fun n : ℕ => u n ω / v n ω) atTop (𝓝 1) := by
+  filter_upwards [hv_atTop_on, hcenter_on] with ω hvω hcenterω hD
+  exact
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_of_centered_ratio_tendsto_zero
+      (u := fun n : ℕ => u n ω) (v := fun n : ℕ => v n ω)
+      (hvω hD) (hcenterω hD)
+
+/--
+Durrett 2019, Theorem 4.5.5 notation support: cumulative conditional
+probabilities for the adapted events in the conditional Borel-Cantelli ratio.
+-/
+noncomputable def durrett2019_theorem_4_5_5_conditionalProbabilitySum
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    (P : Measure Ω) (ℱ : Filtration ℕ mΩ) (B : ℕ -> Set Ω) (n : ℕ) : Ω -> ℝ :=
+  ∑ k ∈ Finset.range n, P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k]
+
+/--
+Durrett 2019, Theorem 4.5.5 martingale-part display for the Borel-Cantelli
+counting process.
+
+The centered martingale part is exactly the event count minus the cumulative
+conditional probabilities.
+-/
+theorem durrett2019_theorem_4_5_5_martingalePart_process_eq_count_sub_conditionalProbabilitySum
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω) (n : ℕ) :
+    martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n =
+      fun ω : Ω =>
+        MeasureTheory.BorelCantelli.process B n ω -
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω := by
+  ext ω
+  have hformula :=
+    congrFun
+      (durrett2019_example_4_3_3_borel_cantelli_martingale_formula
+        (μ := P) (ℱ := ℱ) B n) ω
+  calc
+    martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω
+        = ((∑ k ∈ Finset.range n,
+            ((B (k + 1)).indicator (1 : Ω -> ℝ) -
+              P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k])) ω) := hformula
+    _ = ∑ k ∈ Finset.range n,
+          ((B (k + 1)).indicator (1 : Ω -> ℝ) ω -
+            P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] ω) := by
+        simp [Pi.sub_apply]
+    _ = (∑ k ∈ Finset.range n, (B (k + 1)).indicator (1 : Ω -> ℝ) ω) -
+          ∑ k ∈ Finset.range n,
+            P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] ω := by
+        rw [Finset.sum_sub_distrib]
+    _ = MeasureTheory.BorelCantelli.process B n ω -
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω := by
+        simp [MeasureTheory.BorelCantelli.process,
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum]
+
+/--
+Durrett 2019, Theorem 4.5.5 ratio endpoint from a normalized martingale-part
+estimate.
+
+Once the Borel-Cantelli martingale part is `o(∑ p_m)` on an event where
+`∑ p_m` diverges, the event-count ratio converges to one there.  The next
+source step is to prove the normalized martingale-part estimate from Theorems
+4.5.2 and 4.5.3.
+-/
+theorem durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_normalized
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} {B : ℕ -> Set Ω} {D : Set Ω}
+    (hdenom_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop)
+    (hmartingale_ratio_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω /
+              durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.BorelCantelli.process B n ω /
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+        atTop (𝓝 1) := by
+  have hcenter_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            (MeasureTheory.BorelCantelli.process B n ω -
+                durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω) /
+              durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop (𝓝 0) := by
+    filter_upwards [hmartingale_ratio_on] with ω hmartω hD
+    refine Tendsto.congr' ?_ (hmartω hD)
+    exact Eventually.of_forall fun n => by
+      change
+        martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω /
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω =
+          (MeasureTheory.BorelCantelli.process B n ω -
+              durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω) /
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω
+      rw [congrFun
+        (durrett2019_theorem_4_5_5_martingalePart_process_eq_count_sub_conditionalProbabilitySum
+          (P := P) (ℱ := ℱ) B n) ω]
+  exact
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_centered_ratio_tendsto_zero
+      (P := P)
+      (u := fun n : ℕ => MeasureTheory.BorelCantelli.process B n)
+      (v := fun n : ℕ =>
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n)
+      (D := D) hdenom_atTop_on hcenter_on
+
+/--
+Durrett 2019, Theorem 4.5.5 finite-variance deterministic support.
+
+A process with a finite path limit is negligible compared with any denominator
+that diverges to infinity.
+-/
+theorem durrett2019_theorem_4_5_5_normalized_tendsto_zero_of_exists_tendsto
+    {x s : ℕ -> ℝ}
+    (hx : ∃ z : ℝ, Tendsto x atTop (𝓝 z))
+    (hs : Tendsto s atTop atTop) :
+    Tendsto (fun n : ℕ => x n / s n) atTop (𝓝 0) := by
+  rcases hx with ⟨z, hz⟩
+  simpa using hz.div_atTop hs
+
+/--
+Durrett 2019, Theorem 4.5.5 event-local finite-variance support.
+-/
+theorem durrett2019_theorem_4_5_5_normalized_tendsto_zero_on_of_exists_tendsto
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {x s : ℕ -> Ω -> ℝ} {D : Set Ω}
+    (hx_on :
+      ∀ᵐ ω ∂P, ω ∈ D -> ∃ z : ℝ, Tendsto (fun n : ℕ => x n ω) atTop (𝓝 z))
+    (hs_on :
+      ∀ᵐ ω ∂P, ω ∈ D -> Tendsto (fun n : ℕ => s n ω) atTop atTop) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      Tendsto (fun n : ℕ => x n ω / s n ω) atTop (𝓝 0) := by
+  filter_upwards [hx_on, hs_on] with ω hxω hsω hD
+  exact
+    durrett2019_theorem_4_5_5_normalized_tendsto_zero_of_exists_tendsto
+      (x := fun n : ℕ => x n ω) (s := fun n : ℕ => s n ω)
+      (hxω hD) (hsω hD)
+
+/--
+Durrett 2019, Theorem 4.5.5 finite-variance ratio endpoint.
+
+This packages the finite-increasing-process side of the textbook proof: if
+the Borel-Cantelli martingale part has a finite path limit on an event and
+the cumulative conditional probabilities diverge there, then the event-count
+ratio converges to one on that event.
+-/
+theorem durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_exists_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} {B : ℕ -> Set Ω} {D : Set Ω}
+    (hdenom_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop)
+    (hmartingale_exists_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        ∃ z : ℝ,
+          Tendsto
+            (fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω)
+            atTop (𝓝 z)) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.BorelCantelli.process B n ω /
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+        atTop (𝓝 1) := by
+  exact
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_normalized
+      (P := P) (ℱ := ℱ) (B := B) (D := D) hdenom_atTop_on
+      (durrett2019_theorem_4_5_5_normalized_tendsto_zero_on_of_exists_tendsto
+        (P := P)
+        (x := fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n)
+        (s := fun n : ℕ =>
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n)
+        (D := D) hmartingale_exists_on hdenom_atTop_on)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

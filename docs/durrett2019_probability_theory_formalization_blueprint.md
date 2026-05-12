@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V223`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V224`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -161,13 +161,26 @@ V223 adds the event-local infinite-clock endpoint:
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono_atTop`,
 and
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono`.
+V224 starts Theorem 4.5.5, Second Borel-Cantelli III, with the compiled ratio
+and finite-variance endpoint layer:
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_of_centered_ratio_tendsto_zero`,
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_centered_ratio_tendsto_zero`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum`,
+`durrett2019_theorem_4_5_5_martingalePart_process_eq_count_sub_conditionalProbabilitySum`,
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_normalized`,
+`durrett2019_theorem_4_5_5_normalized_tendsto_zero_of_exists_tendsto`,
+`durrett2019_theorem_4_5_5_normalized_tendsto_zero_on_of_exists_tendsto`,
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_exists_tendsto`.
 The next theorem-facing target is no
 longer finite sum/integral exchange, V214-to-V209 wiring, the
 tail-integral-to-clock-bound package, variance-ratio integrability packaging,
 lower-bound/no-zero/divergence plumbing, deterministic normalizer-divergence
-packaging, or event-local random-normalizer packaging: move to the next
-martingale theorem/source wrapper unless a precise terminal-clock event bridge
-is needed to feed the compiled `hA_atTop_on` hypothesis.  Do not
+packaging, event-local random-normalizer packaging, Theorem 4.5.5 ratio
+algebra, or finite-limit denominator bridges: prove the normalized
+Borel-Cantelli martingale-part estimate by identifying/dominating its
+conditional-variance clock, using Theorem 4.5.2 for the finite-clock side and
+Theorem 4.5.3 for the infinite-clock side.  Do not
 route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
