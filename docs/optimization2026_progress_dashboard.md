@@ -365,6 +365,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   envelope theorem was found.  Future item-4 source wrappers should prefer
   the `...MinimizesOn`/open-domain versions, avoiding the stronger global
   vertical-minimizer hypothesis unless the source data genuinely proves it.
+- Inf-projection literal third-order source package: the newest packet adds
+  `BarrierInfProjectionLiteralThirdOrderEnvelopeOn` and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_fullHessianDerivative_isOpen_of_verticalFirstOrder`.
+  This package records, in one source-facing certificate, the projected
+  `SelfConcordantBarrierOn` oracle, `HasGradientAt` for Chewi's literal
+  `x ↦ inf_y f(x, y)` value, `HasFDerivAt` of the projected gradient with the
+  Schur Hessian, and the Schur lifted-third derivative certificate.  The
+  current item-4 route no longer needs separate consumers to reassemble these
+  facts from `selfConcordantBarrierOn`, local minimizer transport, and
+  `thirdOrderEnvelopeOn`; the remaining exact work is to construct the
+  concrete selector/envelope derivative and square-root model data that feed
+  this package.
 - Inf-projection second-order Schur-envelope calculus: the newest packet adds
   `barrierInfProjectionPointFDeriv_apply` and
   `barrierInfProjectionGrad_hasFDerivAt_schur`.  The projected gradient now has

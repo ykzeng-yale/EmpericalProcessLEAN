@@ -233,6 +233,13 @@ data on the projected domain, plus selector stationarity and open-domain
 membership, is enough to transfer the selected-envelope theorem to the literal
 infimum.  Do not require global vertical-fiber minimization unless a later
 concrete source model actually supplies it.
+The literal third-order package now compiles as
+`BarrierInfProjectionLiteralThirdOrderEnvelopeOn`, with constructor
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_fullHessianDerivative_isOpen_of_verticalFirstOrder`.
+It bundles the projected barrier oracle, literal-infimum gradient theorem,
+projected-gradient Schur-Hessian derivative, and lifted-third derivative
+certificate.  This is the intended source-facing target for item 13.11(4)
+while the formalization remains in supplied-oracle form.
 The current second-order envelope layer also derives the Schur projected
 gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after

@@ -459,6 +459,18 @@ Search-first result: the proof reuses mathlib `IsLeast.csInf_eq`,
 `HasGradientAt.congr_of_eventuallyEq`, `IsOpen.mem_nhds`, and the local
 `FirstOrderStrongConvexOn.lower_model`; no direct mathlib inf-projection
 envelope theorem was found.
+The literal third-order source-package packet adds
+`BarrierInfProjectionLiteralThirdOrderEnvelopeOn` and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_fullHessianDerivative_isOpen_of_verticalFirstOrder`.
+This certificate simultaneously exposes the projected
+`SelfConcordantBarrierOn`, the literal-infimum `HasGradientAt` theorem, the
+projected-gradient Schur-Hessian derivative, and the Schur lifted-third
+derivative certificate.  Future item-4 consumers should use this package
+instead of independently threading `selfConcordantBarrierOn`,
+`infValue_hasGradientAt`, `grad_hasFDerivAt`, and `schur_deriv`.  The remaining
+exact blocker is now concrete: provide selector/envelope differentiability,
+vertical lower-model data, full-Hessian derivative pairing, and square-root
+models for a source instance.
 The second-order Schur-envelope packet adds
 `barrierInfProjectionPointFDeriv_apply` and
 `barrierInfProjectionGrad_hasFDerivAt_schur`.  If the original gradient has
