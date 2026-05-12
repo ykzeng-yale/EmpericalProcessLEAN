@@ -3475,6 +3475,20 @@ product-fiber comparison statements.  A declaration comparison against
 is the Chapter 1 finite-dimensional product-measure wrapper pair in
 `FiniteDimensional.lean`.
 
+2026-05-12 Chapter 1.4.2 nonnegative product-test wrappers:
+`FiniteDimensional.lean` now adds the remaining source-branch declarations
+`vdVW142_prod_measure_ext_of_forall_nnreal_boundedContinuous_lintegral_mul`
+and
+`vdVW142_prod_measure_eq_prod_of_forall_nnreal_boundedContinuous_lintegral_mul`.
+They specialize mathlib's finite-family `NNReal` bounded-continuous
+product-test extensionality to the two-space VdV&W 1.4.2 product setting:
+nonnegative bounded-continuous product-test lintegrals determine finite
+measures on `D × E`, and factorization of those lintegrals identifies a
+finite measure as `μ.prod ν`.  A declaration comparison against
+`origin/codex/vdvw-selected-cover-source` is now empty for the inspected VdVW
+modules (`Theorem243`, `FiniteDimensional`, `OuterExpectation`,
+`WeakConvergence`, and `PMeasurable`).
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

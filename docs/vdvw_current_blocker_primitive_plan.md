@@ -9760,3 +9760,16 @@ and the centered/selected bad events in product-fiber source statements.
 The only remaining source-branch declaration difference in the inspected
 VdVW modules is the Chapter 1 finite-dimensional product-measure wrapper pair
 in `FiniteDimensional.lean`.
+
+2026-05-12 Chapter 1.4.2 nonnegative product-test sync:
+`FiniteDimensional.lean` now proves
+`vdVW142_prod_measure_ext_of_forall_nnreal_boundedContinuous_lintegral_mul`
+and
+`vdVW142_prod_measure_eq_prod_of_forall_nnreal_boundedContinuous_lintegral_mul`.
+These wrappers reuse mathlib's finite-family nonnegative
+bounded-continuous product-test extensionality through the `Unit`-indexed
+two-space specialization.  The source-branch declaration comparison is now
+empty for `Theorem243.lean`, `FiniteDimensional.lean`,
+`OuterExpectation.lean`, `WeakConvergence.lean`, and `PMeasurable.lean`;
+remaining work should not replay that branch again unless it receives new
+material.

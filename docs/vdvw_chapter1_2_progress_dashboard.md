@@ -4355,3 +4355,10 @@ The remaining source-branch declaration gap is outside Theorem 2.4.3:
 wrappers `vdVW142_prod_measure_eq_prod_of_forall_nnreal_boundedContinuous_lintegral_mul`
 and
 `vdVW142_prod_measure_ext_of_forall_nnreal_boundedContinuous_lintegral_mul`.
+
+Those two Chapter 1.4.2 product-measure wrappers are now compiled in
+`FiniteDimensional.lean`.  The inspected VdVW modules now have no declaration
+gap against `origin/codex/vdvw-selected-cover-source`; further progress should
+move beyond replaying source-branch declarations and return to the real
+source frontier, such as the selected-cover/product-fiber probability input
+or other Chapter 1 foundations not already present on that branch.
