@@ -4362,3 +4362,11 @@ gap against `origin/codex/vdvw-selected-cover-source`; further progress should
 move beyond replaying source-branch declarations and return to the real
 source frontier, such as the selected-cover/product-fiber probability input
 or other Chapter 1 foundations not already present on that branch.
+
+The sign-swap/product-fiber route now has direct untruncated consumers.
+`Theorem243.lean` lifts both the sign-swapped bad-fiber fixed-`M` route and
+the unswapped pair-sub plus sign-swap-transport fixed-`M` route through the
+large-`M` envelope-tail handoff.  Remaining Theorem 2.4.3 work is now focused
+on proving the actual per-truncation probability hypotheses: beta-large
+sign-swapped fibers, or unswapped pair-sub lower bounds plus fixed-sample
+transport, along with the selected finite-center support inputs.

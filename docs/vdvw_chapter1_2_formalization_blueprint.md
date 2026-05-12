@@ -3489,6 +3489,15 @@ finite measure as `μ.prod ν`.  A declaration comparison against
 modules (`Theorem243`, `FiniteDimensional`, `OuterExpectation`,
 `WeakConvergence`, and `PMeasurable`).
 
+2026-05-12 sign-swap fiber untruncated handoffs:
+`Theorem243.lean` now packages the fixed-`M`
+`...of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers` and
+`...of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers`
+routes into untruncated centered convergence theorems.  This removes the
+large-`M` assembly gap for that branch of the proof.  The live source target
+is still the probability statement feeding each truncation level, not another
+entropy or truncation wrapper.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

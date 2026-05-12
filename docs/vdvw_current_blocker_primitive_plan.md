@@ -9773,3 +9773,15 @@ empty for `Theorem243.lean`, `FiniteDimensional.lean`,
 `OuterExpectation.lean`, `WeakConvergence.lean`, and `PMeasurable.lean`;
 remaining work should not replay that branch again unless it receives new
 material.
+
+2026-05-12 sign-swap fiber large-`M` consumers:
+`Theorem243.lean` now has untruncated centered-process handoffs
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_signSwapBad_fibers`
+and
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_displayedBeta_countable_firstLevel_of_pairSubBad_signSwap_fibers`.
+These compose the fixed-`M` sign-swapped and unswapped pair-sub fiber routes
+with the existing envelope-tail truncation-removal theorem.  The remaining
+source blocker is therefore not a large-`M` packaging issue: it is the genuine
+per-truncation probability input, namely beta-large sign-swapped fibers or an
+unswapped pair-sub lower bound plus transport, together with the finite-center
+a.e. support facts.
