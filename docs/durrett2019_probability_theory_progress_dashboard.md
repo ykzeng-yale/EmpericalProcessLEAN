@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V237` in
+Route from `Live In-Thread Goal Prompt V238` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Theorem 4.5.7 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the
@@ -248,9 +248,13 @@ V237 adds the stopped terminal-square min-bound layer:
 `durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal`,
 and
 `durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_terminal_integrable`.
-The next target is to discharge the V237 source side conditions from the
-monotone predictable clock and terminal `A_infty`, then package the
-layer-cake/Fubini split; do not redo the Doob/Kolmogorov probability conversion.
+V238 adds the source-facing stopped terminal-square wrappers:
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity`,
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_monotone_terminal`,
+and
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
+The next target is the layer-cake/Fubini split; do not redo the
+Doob/Kolmogorov probability conversion or stopped-square source packaging.
 
 Closed Chapter 2 support remains available in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -1254,12 +1258,11 @@ Use the current blocker plan's live prompt as the active `/goal` replacement
 whenever the app-level wording lags.  Active frontier only: Durrett Theorem
 4.5.7 in `StatInference/ProbabilityTheory/Martingale.lean`.
 
-Next proof packet: discharge the remaining V237 stopped terminal-square source
-side conditions from the monotone predictable clock and terminal `A_infty`,
-then package the layer-cake/Fubini split for
+Next proof packet: package the layer-cake/Fubini split for
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search mathlib/local APIs first,
-especially `ae_all_iff`, `AEMeasurable.min`, monotone a.e. terminal wrappers,
-Bochner integral monotonicity, and layer-cake/lower-semicontinuity support.
+especially `lintegral`, `ENNReal.ofReal`, Markov/layer-cake identities,
+monotone running-supremum/lower-semicontinuity support, and interval integral
+split APIs.
 Do not re-prove compiled Chapter 2/3, Theorem 4.5.2, Theorem 4.5.3, Theorem
 4.5.5, or the V236 probability conversion while this frontier is active.
 

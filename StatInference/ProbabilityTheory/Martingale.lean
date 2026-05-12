@@ -22896,6 +22896,148 @@ theorem
     hSquare_eq_A hA0_le hA_le_Ainf
 
 /--
+Durrett 2019, Theorem 4.5.7 threshold-time stopped terminal-square support
+with the stopped square/increasing-process identity supplied by the canonical
+predictable-part identification.
+-/
+theorem
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_int : Integrable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hPredictablePart_eq_A :
+      ∀ n,
+        predictablePart
+            (fun k ω =>
+              stoppedProcess X
+                (durrett2019_theorem_4_5_2_firstPredictableAbove A a) k ω ^ 2)
+            ℱ P n
+          =ᵐ[P]
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n)
+    (hA0_le : A 0 ≤ᵐ[P] fun _ => a ^ 2)
+    (hA_le_Ainf : ∀ n, A n ≤ᵐ[P] Ainf) :
+    ∀ n,
+      (∫ ω,
+        stoppedProcess X
+          (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) (a ^ 2) ∂P :=
+  durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_terminal_integrable
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf) (a := a)
+    hA_predictable hA_int hAinf_int
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_eq_of_predictablePart_ae_eq
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+      hX hA_predictable hX_memLp_two hX0 hPredictablePart_eq_A)
+    hA0_le hA_le_Ainf
+
+/--
+Durrett 2019, Theorem 4.5.7 threshold-time stopped terminal-square support
+with terminal domination derived from monotone convergence `A_n -> Ainf`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_monotone_terminal
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_int : Integrable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hPredictablePart_eq_A :
+      ∀ n,
+        predictablePart
+            (fun k ω =>
+              stoppedProcess X
+                (durrett2019_theorem_4_5_2_firstPredictableAbove A a) k ω ^ 2)
+            ℱ P n
+          =ᵐ[P]
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n)
+    (hA0_le : A 0 ≤ᵐ[P] fun _ => a ^ 2)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    ∀ n,
+      (∫ ω,
+        stoppedProcess X
+          (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) (a ^ 2) ∂P := by
+  have hA_le_Ainf : ∀ n, A n ≤ᵐ[P] Ainf :=
+    durrett2019_ae_le_of_ae_monotone_tendsto_atTop
+      (P := P) (A := A) (Ainf := Ainf) hA_mono hA_tendsto
+  exact
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf) (a := a)
+      hX hA_predictable hX_memLp_two hA_int hAinf_int hX0
+      hPredictablePart_eq_A hA0_le hA_le_Ainf
+
+/--
+Durrett 2019, Theorem 4.5.7 threshold-time stopped terminal-square support
+from the source square-minus-increasing martingale and monotone terminal clock.
+
+This is the source-shaped estimate behind the proof: the stopped
+predictable-part identity is derived from the square-minus martingale
+certificate, and `A_0 = 0` supplies the initial threshold bound.
+-/
+theorem
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_source_square_minus_martingale_monotone_terminal
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_int : Integrable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    ∀ n,
+      (∫ ω,
+        stoppedProcess X
+          (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) (a ^ 2) ∂P := by
+  have hA_shift_predictable :
+      StronglyAdapted ℱ (fun n ω => A (n + 1) ω) := by
+    intro n
+    exact hA_predictable.measurable_add_one n
+  have hA0_le : A 0 ≤ᵐ[P] fun _ => a ^ 2 := by
+    exact ae_of_all P fun ω => by
+      rw [congrFun hA0 ω]
+      exact sq_nonneg a
+  have hStoppedSquareMinus :
+      Martingale
+        (fun n ω =>
+          stoppedProcess X
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 -
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω)
+        ℱ P :=
+    durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_minus_increasing_martingale_of_source
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+      hA_shift_predictable hSquareMinus
+  exact
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_monotone_terminal
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf) (a := a)
+      hX hA_shift_predictable hX_memLp_two hA_int hAinf_int hX0
+      (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_predictablePart_eq_of_square_minus_increasing_martingale_of_predictable
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+        hA_predictable hA_int hStoppedSquareMinus hA0)
+      hA0_le hA_mono hA_tendsto
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

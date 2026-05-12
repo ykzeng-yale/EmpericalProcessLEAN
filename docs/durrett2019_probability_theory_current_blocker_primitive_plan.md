@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V237
+## Live In-Thread Goal Prompt V238
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,8 +19,13 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V237 adds the Theorem 4.5.7 stopped terminal-square
-min-bound layer:
+Latest verified Lean packet V238 adds the Theorem 4.5.7 source-facing stopped
+terminal-square wrappers:
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity`,
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_monotone_terminal`,
+and
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
+V237 supplied the lower-level min-bound layer:
 `durrett2019_theorem_4_5_7_stoppedProcess_le_terminal_of_process_le`,
 `durrett2019_theorem_4_5_7_min_terminal_integrable_of_terminal_integrable`,
 `durrett2019_theorem_4_5_7_stopped_square_integral_le_min_terminal_of_stopped_bounds`,
@@ -30,16 +35,16 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: discharge the source side conditions for
-V237 from the textbook monotone predictable clock, especially deriving stopped
-`A <= A_infty` and the stopped square/increasing-clock identity, then package
-the layer-cake/Fubini split that turns the stopped probability bound into
+Next aggressive theorem-sized packet: package the layer-cake/Fubini split that
+turns the V236 stopped probability bound plus the V238 source square estimate
+into
 Durrett's
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search Mathlib/local APIs first
-(`ae_all_iff`, `AEMeasurable.min`, monotone a.e. terminal wrappers, Bochner
-integral monotonicity, and layer-cake/lower-semicontinuity support).  Do not
-revisit closed Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing or the V236 probability
-conversion unless a compile error exposes a genuinely missing primitive.
+(`lintegral`, `ENNReal.ofReal`, Markov/layer-cake identities, monotone
+running-supremum/lower-semicontinuity support, and interval integral split
+APIs).  Do not revisit closed Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the
+V236 probability conversion, or the V237/V238 stopped square source packaging
+unless a compile error exposes a genuinely missing primitive.
 
 ## Recent Route Notes
 
@@ -447,10 +452,20 @@ These prove the theorem-facing estimate
 `A_infty`, `A_infty` is integrable, the initial threshold bound holds, and the
 stopped square/increasing clock identity is supplied.
 
-Next aggressive step: continue Durrett Theorem 4.5.7 by deriving the V237
-source side conditions from the monotone predictable clock and terminal
-process, then package the layer-cake/Fubini integral split that turns the V236
-probability bound into
+V238 adds the source-facing stopped terminal-square wrappers for Durrett
+Theorem 4.5.7.  New compiled declarations:
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity`,
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_monotone_terminal`,
+and
+`durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
+These derive the stopped square/increasing-clock identity from the canonical
+predictable-part identification, derive terminal domination from monotone
+convergence `A_n -> A_infty`, and derive both from the source
+square-minus-increasing martingale plus predictability of `A`.
+
+Next aggressive step: continue Durrett Theorem 4.5.7 by packaging the
+layer-cake/Fubini integral split that turns the V236 probability bound and V238
+source square estimate into
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Do not start by formalizing the full
 Friedman urn state process unless it directly reuses the compiled 4.5.5 ratio
 package.  Do not revisit raw clock pointwise monotonicity, direct martingale
@@ -1803,6 +1818,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V237` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V238` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
