@@ -973,6 +973,59 @@ theorem empiricalL1CoveringLogEntropy_eq_log_find
     empiricalL1CoveringNumber_eq_find hfinite]
 
 /--
+If the empirical covering number is a supplied finite cardinality, empirical
+log-entropy is the displayed finite logarithm.
+-/
+theorem empiricalL1CoveringLogEntropy_eq_log_of_empiricalL1CoveringNumber_eq_coe
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (hcovering_eq :
+      empiricalL1CoveringNumber sample indexClass classFun epsilon =
+        (cardinality : ℕ∞)) :
+    empiricalL1CoveringLogEntropy sample indexClass classFun epsilon =
+      Real.log ((cardinality : ℝ) + 1) := by
+  simp [empiricalL1CoveringLogEntropy, vdVWLogEntropyOfNat, hcovering_eq]
+
+/--
+Any finite upper bound on the empirical covering number bounds the associated
+empirical log-entropy.
+-/
+theorem empiricalL1CoveringLogEntropy_le_log_of_empiricalL1CoveringNumber_le
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality : ℕ}
+    (hcovering_le :
+      empiricalL1CoveringNumber sample indexClass classFun epsilon ≤
+        (cardinality : ℕ∞)) :
+    empiricalL1CoveringLogEntropy sample indexClass classFun epsilon ≤
+      Real.log ((cardinality : ℝ) + 1) := by
+  unfold empiricalL1CoveringLogEntropy vdVWLogEntropyOfNat
+  have hnat :
+      (empiricalL1CoveringNumber sample indexClass classFun epsilon).toNat ≤
+        cardinality :=
+    ENat.toNat_le_toNat hcovering_le (ENat.coe_ne_top cardinality)
+  have hsucc :
+      (empiricalL1CoveringNumber sample indexClass classFun epsilon).toNat + 1 ≤
+        cardinality + 1 :=
+    Nat.succ_le_succ hnat
+  have hle_real :
+      (((empiricalL1CoveringNumber sample indexClass classFun epsilon).toNat : ℝ)
+          + 1) ≤
+        ((cardinality : ℝ) + 1) := by
+    exact_mod_cast hsucc
+  have hpos :
+      0 <
+        (((empiricalL1CoveringNumber sample indexClass classFun epsilon).toNat : ℝ)
+          + 1) := by
+    exact_mod_cast
+      Nat.succ_pos
+        (empiricalL1CoveringNumber sample indexClass classFun epsilon).toNat
+  exact Real.log_le_log hpos hle_real
+
+/--
 The least finite empirical-cover cardinality is bounded by any supplied finite
 upper bound on the numeric empirical covering number.
 -/
