@@ -69,6 +69,21 @@ reverse-cofiltration, full-subgraph, measurable/null-measurable signed
 weak-convergence, asymptotic-measurability, or Dirac-law endpoint packages
 unless a new exact statement directly consumes them.
 
+2026-05-12 external SLT integration pass: search of the local checkout
+`/private/tmp/lean-stat-learning-theory` found reusable covering/packing,
+sub-Gaussian, Dudley/chaining, and separable-sup material.  The covering and
+packing pieces are already represented locally through pinned mathlib
+`Metric.coveringNumber`/`Metric.packingNumber` plus the VdVW empirical-cover
+adapters below.  The missing reusable foundation was the separable dense
+sequence supremum pattern, now ported as
+`StatInference.EmpiricalProcess.SeparableSup` with
+`vdVW_closure_mem_le_sSup`, `vdVW_sSup_eq_closure_sSup`,
+`vdVW_closure_range_eq_closure_denseSeq`,
+`vdVW_separableSpace_iSup_eq_denseSeq`, and
+`vdVW_separableSpace_iSup_eq_denseSeq_real`.  This is Chapter 1
+separability infrastructure; it does not close the random-entropy/tail-UI
+Theorem 2.4.3 gap.
+
 2026-05-06 selected fixed-`M` source bridge: the fixed-`M` centered-truncated
 route now has
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_eventualAe_scaledSelectedFiniteNetHoeffdingUpper`.
@@ -363,15 +378,17 @@ and
 `measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_selectedCenterAt_countable`.
 The compiled closed-form diagnostics
 `vdVWTheorem243FiniteCenterHoeffdingFailureTail_exponent_eq`,
-`vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form`, and
-`tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ`, with the
-direct negation
+`vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form`,
+`tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_const_succ`, and
+`not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_const_succ_zero`,
+with the one-center specialization
+`tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ` and
 `not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ_zero`,
 show that the displayed additive Hoeffding failure-tail term has no
-sample-size decay at the current scale, even for a one-center selected cover:
-it cannot converge to zero.  Do not spend the next round trying to prove
-vanishing of this additive error from bare stochastic entropy.  Either add an
-honest stronger tail/UI/cardinality-growth hypothesis, increase the
+sample-size decay at the current scale for any fixed nonempty finite selected
+cover.  Do not spend the next round trying to prove vanishing of this additive
+error from bare stochastic entropy.  Either add an honest stronger
+tail/UI/cardinality-growth hypothesis, increase the
 finite-center threshold by a real vanishing-probability penalty, or switch back
 to an expectation/symmetrization route that avoids this additive-error
 obstruction.

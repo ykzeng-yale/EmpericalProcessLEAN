@@ -155,6 +155,20 @@ measurability, nonmeasurable signed outer-cover weak convergence, or full
 arbitrary-map extended-real measurable-cover existence.  Older current-target
 paragraphs below are historical context and should not override this target.
 
+2026-05-12 external SLT integration pass: the local checkout
+`/private/tmp/lean-stat-learning-theory` contains substantial covering,
+packing, sub-Gaussian, Dudley/chaining, and separable-sup material.  The
+covering/packing ideas are already covered by pinned mathlib and the local
+VdVW empirical-cover adapters listed below.  The reusable gap was the
+separable dense-sequence supremum pattern, now integrated in
+`StatInference/EmpiricalProcess/SeparableSup.lean` as
+`vdVW_closure_mem_le_sSup`, `vdVW_sSup_eq_closure_sSup`,
+`vdVW_closure_range_eq_closure_denseSeq`,
+`vdVW_separableSpace_iSup_eq_denseSeq`, and
+`vdVW_separableSpace_iSup_eq_denseSeq_real`.  This strengthens the Chapter 1
+separability foundation without changing the main Theorem 2.4.3
+random-entropy/tail-UI blocker.
+
 2026-05-12 source refinement: deterministic finite packings now feed this
 lower-growth lane directly.  The covering primitives
 `FiniteEmpiricalL1CoverAtCard.cardinality_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
@@ -1523,7 +1537,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.5.9 | Lemma | `..._1-100.md:1044` | foundation-lane: tightness/equicontinuity wrapper target, local semimetric/process primitive needed |
 | 1.6.1 | Theorem | `..._1-100.md:1117` | foundation-lane: stochastic-process tightness target; requires local stochastic-process/l_infty API over mathlib tightness |
 | 1.7.1 | Lemma | `..._1-100.md:1156` | local-layer/mathlib-foundation: open-ball and closed-ball sigma-field wrappers, open-ball topological basis, rational open/closed ball bridges, open-ball/closed-ball sigma equality, Borel equality, generator measurability, and separable dense-sequence distance-coordinate measurability iff proved in `BallSigma.lean`; exact arbitrary-map/asymptotic-measurability clauses pending |
-| 1.7.2 | Theorem | `..._1-100.md:1157` | local-layer/mathlib-foundation: dense-sequence distance-coordinate criterion and Borel/open-ball/closed-ball measurability equivalences compiled; exact VdV&W arbitrary-map separability/asymptotic-measurability statement still needs local wrapper |
+| 1.7.2 | Theorem | `..._1-100.md:1157` | local-layer/mathlib-foundation: dense-sequence distance-coordinate criterion and Borel/open-ball/closed-ball measurability equivalences compiled; separable dense-sequence supremum wrappers compiled in `SeparableSup.lean` as `vdVW_separableSpace_iSup_eq_denseSeq` and `vdVW_separableSpace_iSup_eq_denseSeq_real`; exact VdV&W arbitrary-map separability/asymptotic-measurability statement still needs local wrapper |
 | 1.8.1 | Lemma | `..._1-100.md:1234` | local-layer/mathlib-foundation: `HilbertGaussian.lean` wraps complete inner-product spaces as Hilbert spaces, `L2` Hilbert space, and `L2` inner product |
 | 1.8.2 | Lemma | `..._1-100.md:1245` | local-layer/mathlib-foundation: Frechet-Riesz continuous-dual representative and evaluation identity wrapped in `HilbertGaussian.lean` |
 | 1.8.3 | Lemma | `..._1-100.md:1246` | local-layer/mathlib-foundation: Gaussian inner-coordinate maps and Gaussian-process coordinate laws wrapped in `HilbertGaussian.lean`; no Brownian-bridge/pre-Gaussian full theorem found |
@@ -2734,14 +2748,18 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selectedCenterAt`.
    The finite-center failure-tail closed form is now compiled as
    `vdVWTheorem243FiniteCenterHoeffdingFailureTail_exponent_eq`,
-   `vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form`, and
-   `tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ`, with
+   `vdVWTheorem243FiniteCenterHoeffdingFailureTail_eq_closed_form`,
+   `tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_const_succ`, and
+   `not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_const_succ_zero`,
+   with the one-center specialization
+   `tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ` and
    `not_tendsto_vdVWTheorem243FiniteCenterHoeffdingFailureTail_one_succ_zero`.
    These prove that the additive Hoeffding failure-tail term at the current
-   display scale has no automatic sample-size decay; the one-center case is a
-   positive constant and cannot converge to zero.  The next source route should
-   therefore not try to derive vanishing of this additive error from bare
-   stochastic entropy.  It should either add a stronger honest
+   display scale has no automatic sample-size decay; any fixed nonempty finite
+   selected-cover cardinality gives a positive constant and cannot converge to
+   zero.  The next source route should therefore not try to derive vanishing of
+   this additive error from bare stochastic entropy.  It should either add a
+   stronger honest
    tail/UI/cardinality-growth input, adjust the finite-center threshold to
    include a true vanishing-probability penalty, or return to an
    expectation/symmetrization comparison that avoids this additive-tail
