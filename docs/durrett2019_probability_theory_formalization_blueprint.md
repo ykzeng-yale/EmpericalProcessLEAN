@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V238`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V239`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -287,6 +287,8 @@ V238 adds the source-facing stopped terminal-square wrappers:
 `durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_monotone_terminal`,
 and
 `durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
+V239 adds the source-facing stopped maximal-probability wrapper:
+`durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
 The next theorem-facing target is no longer finite sum/integral exchange,
 V214-to-V209 wiring, the tail-integral-to-clock-bound package,
 variance-ratio integrability packaging, lower-bound/no-zero/divergence
@@ -296,8 +298,9 @@ denominator bridges, increment/denominator-clock plumbing, or Bernoulli
 conditional-variance algebra, max-normalizer denominator handoff, or
 finite/infinite event-cover ratio assembly, the max-normalizer 4.5.3 source
 handoff, raw-clock monotonicity, or final Theorem 4.5.5 packaging.  Move next
-to the next Theorem 4.5.7 layer: the layer-cake/Fubini integral split using the
-compiled stopped probability and source stopped-square estimates.  Do not
+to the next Theorem 4.5.7 layer: the raw/stopped survival probability split,
+then the layer-cake/Fubini integral split using the compiled stopped
+probability and source stopped-square estimates.  Do not
 route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2

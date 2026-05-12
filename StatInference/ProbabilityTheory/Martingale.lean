@@ -23038,6 +23038,71 @@ theorem
       hA0_le hA_mono hA_tendsto
 
 /--
+Durrett 2019, Theorem 4.5.7 stopped maximal-probability support from the
+source square-minus-increasing martingale and monotone terminal clock.
+
+This packages the stopped `P(max_{m <= n} |X_{N(a) ∧ m}| > a)` estimate with
+the source-facing stopped terminal-square estimate, leaving the next step as
+the raw/stopped survival split and layer-cake/Fubini integration.
+-/
+theorem
+    durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_min_terminal_of_source_square_minus_martingale_monotone_terminal
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_int : Integrable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    {a : ℝ≥0} (ha : a ≠ 0) (n : ℕ) :
+    P {ω |
+        (a : ℝ) <
+          durrett2019_runningAbsMax
+            (stoppedProcess X
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A (a : ℝ))) n ω} ≤
+      ENNReal.ofReal (∫ ω, min (Ainf ω) ((a : ℝ) ^ 2) ∂P) /
+        ((a ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  have hA_shift_predictable :
+      StronglyAdapted ℱ (fun n ω => A (n + 1) ω) := by
+    intro n
+    exact hA_predictable.measurable_add_one n
+  let N : Ω -> ℕ∞ :=
+    durrett2019_theorem_4_5_2_firstPredictableAbove A (a : ℝ)
+  have hN : IsStoppingTime ℱ N :=
+    durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
+      (ℱ := ℱ) (A := A) (a : ℝ) hA_shift_predictable
+  have hStopped_memLp_two :
+      ∀ n, MemLp (stoppedProcess X N n) (2 : ℝ≥0∞) P := by
+    intro n
+    exact memLp_stoppedProcess (ι := ℕ) hN hX_memLp_two n
+  have hStopped_sq_int :
+      ∀ n, Integrable (fun ω => stoppedProcess X N n ω ^ 2) P := by
+    intro n
+    exact
+      durrett2019_integrable_sq_of_memLp_two
+        (P := P) (Y := stoppedProcess X N n) (hStopped_memLp_two n)
+  have hterminal_sq_le :
+      (∫ ω, stoppedProcess X N n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) ((a : ℝ) ^ 2) ∂P := by
+    simpa [N] using
+      (durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_source_square_minus_martingale_monotone_terminal
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        (a := (a : ℝ)) hX hA_predictable hSquareMinus hX_memLp_two
+        hA_int hAinf_int hX0 hA0 hA_mono hA_tendsto n)
+  exact
+    durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_of_terminal_sq_le
+      (P := P) (ℱ := ℱ) (X := X) (N := N)
+      hX hN hStopped_sq_int ha (n := n)
+      (B := ∫ ω, min (Ainf ω) ((a : ℝ) ^ 2) ∂P) hterminal_sq_le
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

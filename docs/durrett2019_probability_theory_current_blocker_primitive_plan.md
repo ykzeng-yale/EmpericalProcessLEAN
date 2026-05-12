@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V238
+## Live In-Thread Goal Prompt V239
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,8 +19,10 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V238 adds the Theorem 4.5.7 source-facing stopped
-terminal-square wrappers:
+Latest verified Lean packet V239 adds the Theorem 4.5.7 source-facing stopped
+maximal-probability wrapper:
+`durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
+V238 supplied the source-facing stopped terminal-square wrappers:
 `durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity`,
 `durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_monotone_terminal`,
 and
@@ -35,15 +37,15 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: package the layer-cake/Fubini split that
-turns the V236 stopped probability bound plus the V238 source square estimate
-into
+Next aggressive theorem-sized packet: package the raw/stopped survival split
+`P(max_{m <= n}|X_m| > a) <= P(A_infty > a^2) + stopped_bound(a,n)`, then
+feed V239 into the layer-cake/Fubini split toward
 Durrett's
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search Mathlib/local APIs first
 (`lintegral`, `ENNReal.ofReal`, Markov/layer-cake identities, monotone
 running-supremum/lower-semicontinuity support, and interval integral split
 APIs).  Do not revisit closed Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the
-V236 probability conversion, or the V237/V238 stopped square source packaging
+V236 probability conversion, or the V237/V238/V239 stopped source packaging
 unless a compile error exposes a genuinely missing primitive.
 
 ## Recent Route Notes
@@ -463,9 +465,15 @@ predictable-part identification, derive terminal domination from monotone
 convergence `A_n -> A_infty`, and derive both from the source
 square-minus-increasing martingale plus predictability of `A`.
 
-Next aggressive step: continue Durrett Theorem 4.5.7 by packaging the
-layer-cake/Fubini integral split that turns the V236 probability bound and V238
-source square estimate into
+V239 adds the source-facing stopped maximal-probability wrapper:
+`durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
+This combines the V236 stopped Kolmogorov/Doob probability conversion with the
+V238 stopped terminal-square source estimate, so the stopped probability
+bound now has textbook source assumptions.
+
+Next aggressive step: continue Durrett Theorem 4.5.7 by proving the
+raw/stopped survival probability split, then package the layer-cake/Fubini
+integral split that turns the resulting bound into
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Do not start by formalizing the full
 Friedman urn state process unless it directly reuses the compiled 4.5.5 ratio
 package.  Do not revisit raw clock pointwise monotonicity, direct martingale
@@ -1818,6 +1826,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V238` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V239` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

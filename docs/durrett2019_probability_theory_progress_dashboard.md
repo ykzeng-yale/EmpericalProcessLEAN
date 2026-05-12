@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V238` in
+Route from `Live In-Thread Goal Prompt V239` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Theorem 4.5.7 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the
@@ -253,8 +253,12 @@ V238 adds the source-facing stopped terminal-square wrappers:
 `durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_monotone_terminal`,
 and
 `durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
-The next target is the layer-cake/Fubini split; do not redo the
-Doob/Kolmogorov probability conversion or stopped-square source packaging.
+V239 adds
+`durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_min_terminal_of_source_square_minus_martingale_monotone_terminal`,
+the source-facing stopped maximal-probability bound.  The next target is the
+raw/stopped survival probability split and then the layer-cake/Fubini split;
+do not redo the Doob/Kolmogorov probability conversion or stopped-source
+packaging.
 
 Closed Chapter 2 support remains available in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -1258,7 +1262,8 @@ Use the current blocker plan's live prompt as the active `/goal` replacement
 whenever the app-level wording lags.  Active frontier only: Durrett Theorem
 4.5.7 in `StatInference/ProbabilityTheory/Martingale.lean`.
 
-Next proof packet: package the layer-cake/Fubini split for
+Next proof packet: package the raw/stopped survival probability split, then the
+layer-cake/Fubini split for
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search mathlib/local APIs first,
 especially `lintegral`, `ENNReal.ofReal`, Markov/layer-cake identities,
 monotone running-supremum/lower-semicontinuity support, and interval integral
