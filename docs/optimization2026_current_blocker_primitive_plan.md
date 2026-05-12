@@ -426,14 +426,18 @@ The literal-infimum bridge packet adds `barrierInfProjectionFiberValues`,
 `barrierInfProjectionInfValue`, `BarrierInfProjectionSelectorMinimizes`,
 `BarrierInfProjectionSelectorMinimizes.value_eq_infValue`,
 `BarrierInfProjectionSelectorMinimizes.infValue_eq_value`,
+`BarrierInfProjectionSelectorMinimizes.of_vertical_firstOrder_zero`,
 `BarrierInfProjectionSelectorStationary.infValue_hasGradientAt`, and
 `BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt`.  It turns
 the selected envelope into Chewi's source value `x ↦ inf_y f(x, y)` whenever
 the selector minimizes every vertical fiber.  Search-first result: mathlib's
 `IsLeast.csInf_eq` handles the `sInf` equality, and
-`HasGradientAt.congr_of_eventuallyEq` transports the gradient theorem.  Future
-item-4 source wrappers should carry/prove `BarrierInfProjectionSelectorMinimizes`
-rather than silently identifying the selected value with the literal infimum.
+`HasGradientAt.congr_of_eventuallyEq` transports the gradient theorem; the
+selector-minimizer constructor reuses `FirstOrderStrongConvexOn.lower_model`
+for the vertical fiber lower model, so zero vertical gradient proves the
+fiber minimum.  Future item-4 source wrappers should carry/prove
+`BarrierInfProjectionSelectorMinimizes` rather than silently identifying the
+selected value with the literal infimum.
 The second-order Schur-envelope packet adds
 `barrierInfProjectionPointFDeriv_apply` and
 `barrierInfProjectionGrad_hasFDerivAt_schur`.  If the original gradient has

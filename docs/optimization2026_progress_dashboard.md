@@ -332,15 +332,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierInfProjectionSelectorMinimizes`,
   `BarrierInfProjectionSelectorMinimizes.value_eq_infValue`,
   `BarrierInfProjectionSelectorMinimizes.infValue_eq_value`,
+  `BarrierInfProjectionSelectorMinimizes.of_vertical_firstOrder_zero`,
   `BarrierInfProjectionSelectorStationary.infValue_hasGradientAt`, and
   `BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt`.  This
   connects the selected-envelope calculus to Chewi's literal
   `x ↦ inf_y f(x, y)` value when the selector minimizes each vertical fiber.
   Search-first reuse: mathlib's `IsLeast.csInf_eq` proves the selected value
   equals the `sInf` of the fiber, and `HasGradientAt.congr_of_eventuallyEq`
-  transports the gradient theorem to the literal infimum value.  Future
-  item-4 work should assume/prove `BarrierInfProjectionSelectorMinimizes`
-  instead of treating `barrierInfProjectionValue` as the final source value.
+  transports the gradient theorem to the literal infimum value.  The selector
+  minimization certificate can now also be derived from a vertical
+  `FirstOrderStrongConvexOn Set.univ ... 0` lower model plus zero vertical
+  gradient, reusing `FirstOrderStrongConvexOn.lower_model`.  Future item-4
+  work should assume/prove `BarrierInfProjectionSelectorMinimizes` instead of
+  treating `barrierInfProjectionValue` as the final source value.
 - Inf-projection second-order Schur-envelope calculus: the newest packet adds
   `barrierInfProjectionPointFDeriv_apply` and
   `barrierInfProjectionGrad_hasFDerivAt_schur`.  The projected gradient now has

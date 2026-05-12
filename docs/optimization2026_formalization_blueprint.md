@@ -205,6 +205,7 @@ The literal-infimum layer now names Chewi's actual value
 `barrierInfProjectionInfValue`, packages selector attainment as
 `BarrierInfProjectionSelectorMinimizes`, and proves
 `BarrierInfProjectionSelectorMinimizes.value_eq_infValue`,
+`BarrierInfProjectionSelectorMinimizes.of_vertical_firstOrder_zero`,
 `BarrierInfProjectionSelectorStationary.infValue_hasGradientAt`, and
 `BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt`.  Reuse this
 bridge when stating source-facing item-4 envelope theorems; do not treat the
@@ -212,7 +213,8 @@ selected value `barrierInfProjectionValue` as the literal infimum unless the
 selector-minimizes certificate has been supplied.  Search-first reuse:
 mathlib's `IsLeast.csInf_eq` proves the fiber `sInf` equality, and
 `HasGradientAt.congr_of_eventuallyEq` transfers the selected-envelope
-gradient.
+gradient; the vertical-minimizer constructor reuses
+`FirstOrderStrongConvexOn.lower_model`.
 The current second-order envelope layer also derives the Schur projected
 gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after

@@ -3679,6 +3679,27 @@ theorem BarrierInfProjectionSelectorMinimizes.infValue_eq_value
       barrierInfProjectionValue f selector :=
   (hmin.value_eq_infValue).symm
 
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁] in
+theorem BarrierInfProjectionSelectorMinimizes.of_vertical_firstOrder_zero
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂}
+    (hfirst : ∀ x : E₁,
+      FirstOrderStrongConvexOn Set.univ
+        (fun y : E₂ => f (WithLp.toLp 2 (x, y)))
+        (fun y : E₂ => (grad (WithLp.toLp 2 (x, y))).snd) 0)
+    (hvertical_zero : ∀ x : E₁,
+      barrierInfProjectionVerticalGrad selector grad x = 0) :
+    BarrierInfProjectionSelectorMinimizes f selector := by
+  intro x y
+  have hmodel := (hfirst x).lower_model
+    (x := selector x) (y := y) (by simp) (by simp)
+  have hgrad_zero :
+      (grad (WithLp.toLp 2 (x, selector x))).snd = 0 := by
+    simpa [barrierInfProjectionVerticalGrad, barrierInfProjectionPoint]
+      using hvertical_zero x
+  simpa [barrierInfProjectionPoint, hgrad_zero] using hmodel
+
 /--
 The graph-map derivative pulls the original gradient covector back to the
 projected gradient whenever the vertical gradient vanishes.
