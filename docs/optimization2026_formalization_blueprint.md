@@ -134,7 +134,11 @@ removes that source-level front door once the inverse-Hessian oracle on
 bound.  The consumer
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_gradient_quadratic`
 now reduces that bound to the concrete energy inequality
-`inner grad (invHessRange grad) <= m`.  Next
+`inner grad (invHessRange grad) <= m`.  The row-decomposition lemmas
+`polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
+`mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`, and
+`polytopeSlackSet_eq_iInter_halfspaceSlackSet` now expose the finite-row
+intersection route for sum-rule workers.  Next
 construct that concrete range oracle and energy bound for the fully general
 polytope barrier or use the reusable finite sum-rule machinery,
 starting with the product-separable rule; all segment membership, `ψ`

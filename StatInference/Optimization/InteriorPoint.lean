@@ -14610,6 +14610,19 @@ noncomputable def polytopeSlackCLM
       ((Fin m -> ℝ) ≃L[ℝ] EuclideanSpace ℝ (Fin m))).toContinuousLinearMap.comp
     (ContinuousLinearMap.pi fun i : Fin m => -innerSL ℝ (a i))
 
+@[simp] theorem polytopeSlackCLM_apply
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (x : F) (i : Fin m) :
+    polytopeSlackCLM a x i = - inner ℝ (a i) x := by
+  simp [polytopeSlackCLM]
+
+theorem polytopeSlackCLM_add_offset_apply
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) (x : F)
+    (i : Fin m) :
+    (polytopeSlackCLM a x + b) i = b i - inner ℝ (a i) x := by
+  simp [sub_eq_add_neg, add_comm]
+
 /--
 The open polytope-slack domain in Chewi Example 13.14:
 `b_i - ⟪a_i, x⟫ > 0` for every row.
@@ -14618,6 +14631,20 @@ def polytopeSlackSet
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
     {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) : Set F :=
   {x | ∀ i : Fin m, 0 < b i - inner ℝ (a i) x}
+
+theorem mem_polytopeSlackSet_iff_forall_halfspaceSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) (x : F) :
+    x ∈ polytopeSlackSet a b ↔
+      ∀ i : Fin m, x ∈ halfspaceSlackSet (a i) (b i) := by
+  rfl
+
+theorem polytopeSlackSet_eq_iInter_halfspaceSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :
+    polytopeSlackSet a b = ⋂ i : Fin m, halfspaceSlackSet (a i) (b i) := by
+  ext x
+  simp [polytopeSlackSet, halfspaceSlackSet]
 
 theorem mem_barrierAffinePreimageSet_polytopeSlackCLM_iff
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
