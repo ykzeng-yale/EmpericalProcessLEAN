@@ -189,9 +189,14 @@ plus the final terminal-sample consumer
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_of_set_countable`,
 remove the remaining `samplePath` restatement from packing-number source
 hypotheses.
+The same Definition 2.2.3 lower-growth lane now accepts empirical-wrapper
+covering-number lower bounds through
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_empiricalL1Index_coveringNumber`
+and the final set-countable consumer
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_coveringNumber_of_set_countable`.
 This keeps the remaining blocker focused on producing separated-packing or
-packing-number lower bounds, or an equivalent honest lower-growth/tail/UI
-theorem from the book assumptions.
+packing/covering-number lower bounds, or an equivalent honest lower-growth/
+tail/UI theorem from the book assumptions.
 
 2026-05-06 option-1 route sharpening: direct search found no existing
 mathlib/local/open-checkout theorem for the VdV&W probability-event

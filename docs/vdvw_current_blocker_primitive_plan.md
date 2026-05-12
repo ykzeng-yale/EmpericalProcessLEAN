@@ -156,6 +156,21 @@ bound on `EmpiricalL1Index.liftSet` to the selected lower-growth input.  It
 does not prove such a lower bound from random entropy; that remains the
 mathematical source task.
 
+2026-05-12 empirical-wrapper covering-number lower-growth handoff: the
+selected-cover layer now also accepts Definition 2.2.3-style covering-number
+lower bounds directly through
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_empiricalL1Index_coveringNumber`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_empiricalL1Index_coveringNumber`,
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_empiricalL1Index_coveringNumber`,
+with terminal-sample variants
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_empiricalL1Index_coveringNumber`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_empiricalL1Index_coveringNumber`.
+These wrappers use the compiled equality between the local empirical covering
+number and `Metric.coveringNumber` on `EmpiricalL1Index.liftSet`; they do not
+derive the lower bound from random entropy.
+
 2026-05-12 final packing-source consumers: the set-countable textbook-aligned
 product-pair Chebyshev route now has the direct raw separated-packing entry
 point
@@ -170,9 +185,12 @@ which composes eventual `P^n`-a.e. lower bounds on
 packing-number adapter internally.  Its terminal-sample companion
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_of_set_countable`
 removes the caller-facing need to restate an actual-sample packing-number
-lower bound on `samplePath`.  The live theorem-facing source gap is now exactly
-the construction of those separated-packing or packing-number lower bounds, or
-a replacement lower-growth/tail/UI theorem, from honest VdV&W assumptions.
+lower bound on `samplePath`.  The final route now also has the terminal
+empirical-wrapper covering-number entry point
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_coveringNumber_of_set_countable`.
+The live theorem-facing source gap is now exactly the construction of those
+separated-packing, packing-number, or covering-number lower bounds, or a
+replacement lower-growth/tail/UI theorem, from honest VdV&W assumptions.
 
 ## Current `/goal` Target
 

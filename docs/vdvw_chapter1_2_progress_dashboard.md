@@ -93,6 +93,17 @@ The bridge uses mathlib's finite maximal separated set to turn
 raw-index packing witness, so future Definition 2.2.3-style entropy/packing
 estimates can feed selected lower-growth without rebuilding the witness
 enumeration or restating terminal-sample lower bounds on `samplePath`.
+The covering-number side now has the analogous lower-growth source path via
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_empiricalL1Index_coveringNumber`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_empiricalL1Index_coveringNumber`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_empiricalL1Index_coveringNumber`,
+and terminal-sample variants
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_empiricalL1Index_coveringNumber`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_empiricalL1Index_coveringNumber`.
+These use the compiled equality between local empirical covering numbers and
+mathlib `Metric.coveringNumber` on `EmpiricalL1Index.liftSet`, giving a direct
+Definition 2.2.3 covering-number lower-bound handoff.
 The strongest set-countable product-pair final route now consumes the packing
 source shape directly through
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`,
@@ -107,8 +118,11 @@ companion
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_of_set_countable`
 matches the usual source shape where the empirical pseudometric is built on
 the actual sample rather than on `samplePath (X M n) sample n`.
-The next source work is to derive these packing lower bounds, or an equivalent
-tail/lower-growth input, from the book random-entropy hypotheses.
+The same final route now also has the terminal empirical-wrapper covering-number
+entry point
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_coveringNumber_of_set_countable`.
+The next source work is to derive these covering/packing lower bounds, or an
+equivalent tail/lower-growth input, from the book random-entropy hypotheses.
 The displayed-beta selected-cover route now has
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id`.
 Under localized class countability, the displayed-beta route now also has
