@@ -153,6 +153,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1311_affinePreimage_selfConcordantBarrierOn_of_surjective`,
   reusing mathlib's
   `ContinuousLinearMap.exists_rightInverse_of_surjective`.
+  The range-restriction packet adds
+  `barrierAffinePreimageRangeRestrict_range_eq_top`,
+  `SelfConcordantBarrierOn.affinePreimage_rangeRestrict`, and
+  `chewi1311_affinePreimage_selfConcordantBarrierOn_rangeRestrict`, so future
+  exact source work can move the codomain to `A.range` and reuse the
+  surjective theorem instead of manually constructing a right inverse.
   Search-first result: use mathlib adjoint APIs
   `ContinuousLinearMap.adjoint_inner_left/right`,
   `ContinuousLinearMap.adjoint_comp`, and

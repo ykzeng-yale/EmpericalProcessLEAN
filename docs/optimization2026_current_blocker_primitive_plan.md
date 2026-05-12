@@ -251,6 +251,12 @@ The finite-dimensional surjective packet adds
 `SelfConcordantBarrierOn.affinePreimage_surjective`, and
 `chewi1311_affinePreimage_selfConcordantBarrierOn_of_surjective`, reusing
 mathlib's `ContinuousLinearMap.exists_rightInverse_of_surjective`.
+The range-restriction packet adds
+`barrierAffinePreimageRangeRestrict_range_eq_top`,
+`SelfConcordantBarrierOn.affinePreimage_rangeRestrict`, and
+`chewi1311_affinePreimage_selfConcordantBarrierOn_rangeRestrict`, so the next
+exact source attempt should move the codomain to `A.range` and reuse the
+surjective theorem rather than passing or rebuilding a right inverse.
 Search-first result: mathlib supplies `ContinuousLinearMap.adjoint`,
 `ContinuousLinearMap.adjoint_inner_left/right`,
 `ContinuousLinearMap.adjoint_comp`, and

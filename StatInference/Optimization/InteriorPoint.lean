@@ -3146,6 +3146,53 @@ theorem chewi1311_affinePreimage_selfConcordantBarrierOn_of_surjective
       (barrierAffinePreimageThirdMixed A b third) M nu :=
   hbar.affinePreimage_surjective A b hA
 
+omit [CompleteSpace F] [CompleteSpace E] in
+theorem barrierAffinePreimageRangeRestrict_range_eq_top
+    (A : F →L[ℝ] E) : A.rangeRestrict.range = ⊤ := by
+  exact (A : F →ₗ[ℝ] E).range_rangeRestrict
+
+omit [CompleteSpace E] in
+theorem SelfConcordantBarrierOn.affinePreimage_rangeRestrict
+    (A : F →L[ℝ] E) [FiniteDimensional ℝ A.range]
+    {s : Set A.range}
+    {hess : A.range -> A.range →L[ℝ] A.range}
+    {grad : A.range -> A.range}
+    {invHess : A.range -> A.range →L[ℝ] A.range}
+    {third : A.range -> A.range -> A.range -> ℝ}
+    {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A.rangeRestrict 0 s)
+      (barrierAffinePreimageHess A.rangeRestrict 0 hess)
+      (barrierAffinePreimageGrad A.rangeRestrict 0 grad)
+      (barrierAffinePreimageInvHessSurjective A.rangeRestrict 0 invHess
+        (barrierAffinePreimageRangeRestrict_range_eq_top A))
+      (barrierAffinePreimageThirdMixed A.rangeRestrict 0 third) M nu :=
+  hbar.affinePreimage_surjective A.rangeRestrict 0
+    (barrierAffinePreimageRangeRestrict_range_eq_top A)
+
+omit [CompleteSpace E] in
+/--
+Chewi Proposition 13.11, affine-preimage case after restricting the codomain
+to the actual linear range of `A`.  This is the bridge for reducing the
+source condition `dom f ⊆ range 𝒜` to a surjective map onto its range.
+-/
+theorem chewi1311_affinePreimage_selfConcordantBarrierOn_rangeRestrict
+    (A : F →L[ℝ] E) [FiniteDimensional ℝ A.range]
+    {s : Set A.range}
+    {hess : A.range -> A.range →L[ℝ] A.range}
+    {grad : A.range -> A.range}
+    {invHess : A.range -> A.range →L[ℝ] A.range}
+    {third : A.range -> A.range -> A.range -> ℝ}
+    {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A.rangeRestrict 0 s)
+      (barrierAffinePreimageHess A.rangeRestrict 0 hess)
+      (barrierAffinePreimageGrad A.rangeRestrict 0 grad)
+      (barrierAffinePreimageInvHessSurjective A.rangeRestrict 0 invHess
+        (barrierAffinePreimageRangeRestrict_range_eq_top A))
+      (barrierAffinePreimageThirdMixed A.rangeRestrict 0 third) M nu :=
+  hbar.affinePreimage_rangeRestrict A
+
 end AffinePreimageBarrier
 
 section InfProjectionBarrier
