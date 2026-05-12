@@ -261,6 +261,15 @@ now builds the literal package and obtains the projected local-norm sandwich
 from the source vertical first-order and full-Hessian derivative hypotheses.
 Use it as the first consumer when proving a concrete Proposition 13.11(4)
 instance.
+When the source proof already has the Schur derivative certificate, prefer the
+shorter Schur-certificate route:
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_schurHessDerivativeOn_isOpen_of_verticalFirstOrder`
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_schurHessDerivativeOn_isOpen_of_verticalFirstOrder`.
+These wrappers build the literal `inf_y` package and local-norm sandwich from
+the Schur certificate plus vertical first-order/open-domain gradient data,
+without requiring the caller to supply or rederive the full-Hessian derivative
+package.
 The current second-order envelope layer also derives the Schur projected
 gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after

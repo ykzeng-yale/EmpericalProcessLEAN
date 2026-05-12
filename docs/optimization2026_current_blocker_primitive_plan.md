@@ -885,6 +885,17 @@ positivity/nonzero wrapper path when only local-norm transport is needed.
 When selected-value envelope hypotheses are already in hand, use the
 theorem-facing envelope consumer as the source endpoint.  When the next task is
 only local-norm transport, use the shorter direct theorem.
+The literal Schur-certificate route is now exposed as
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_schurHessDerivativeOn_isOpen_of_verticalFirstOrder`
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_schurHessDerivativeOn_isOpen_of_verticalFirstOrder`.
+Use these after proving an explicit
+`BarrierInfProjectionSchurHessDerivativeOn` certificate: they build Chewi's
+literal `inf_y` third-order package and the projected source-radius local-norm
+sandwich directly from the Schur certificate, vertical first-order data,
+open-domain gradient data, and the adjoint-square-root model.  This is the
+preferred source route when the Schur derivative certificate has already been
+constructed separately from lifted-third/source scalar identities.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

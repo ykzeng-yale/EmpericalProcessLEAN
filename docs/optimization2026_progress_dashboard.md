@@ -392,6 +392,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   now constructs the literal package and immediately derives the projected
   local-norm sandwich from the same vertical first-order/full-Hessian
   derivative inputs.
+  The Schur-certificate route is now also exposed through
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_schurHessDerivativeOn_isOpen_of_verticalFirstOrder`
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_schurHessDerivativeOn_isOpen_of_verticalFirstOrder`.
+  Once a source proof has already built a
+  `BarrierInfProjectionSchurHessDerivativeOn` certificate, these wrappers
+  construct Chewi's literal third-order package and projected source-radius
+  local-norm sandwich without re-threading full product-space Hessian
+  derivative data through the consumer.
   Future item-4 source instances should therefore focus on constructing the
   literal package and concrete square-root/envelope model, not rebuilding
   segment Schur-derivative, local-norm transport, or projected-Hessian
