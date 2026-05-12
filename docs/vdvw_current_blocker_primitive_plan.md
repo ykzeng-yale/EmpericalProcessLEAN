@@ -9737,6 +9737,10 @@ the direct product-fiber/Chebyshev comparison.
 `integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_finite_indexClass_endpointL1_no_global_countable`,
 and the package
 `VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable_of_endpointL1`.
+The final-bundle constructor
+`VdVWTheorem243TextbookAlignedConclusion.of_finite_indexClass_canonical_slln_no_global_countable_of_endpointL1`
+now exposes the same no-global-countability route in the single
+textbook-facing conclusion shape.
 This removes global `Countable Index` from the finite-class in-mean assembly
 once fixed-endpoint finite-product `L1(P^n)` convergence is supplied for each
 class member.  The finite-class blocker is now sharply localized to that

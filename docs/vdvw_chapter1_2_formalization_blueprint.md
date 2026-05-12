@@ -3460,7 +3460,9 @@ direct product-fiber/Chebyshev source comparison.
 
 The finite-class in-mean path now has a no-global-countability assembly
 theorem:
-`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable_of_endpointL1`.
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable_of_endpointL1`,
+and the single-output constructor
+`VdVWTheorem243TextbookAlignedConclusion.of_finite_indexClass_canonical_slln_no_global_countable_of_endpointL1`.
 The blueprint dependency for this lane is reduced to a single fixed-endpoint
 finite-product `L1(P^n)` convergence theorem for
 `|P_n f - P f|`; finite-sum domination, integrability, and book-facing

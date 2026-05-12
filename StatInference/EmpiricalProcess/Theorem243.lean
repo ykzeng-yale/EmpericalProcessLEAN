@@ -83452,6 +83452,46 @@ theorem
 namespace VdVWTheorem243TextbookAlignedConclusion
 
 /--
+Finite-class endpoint-`L1` route, repackaged in the single textbook-facing
+Theorem 2.4.3/Lemma 2.4.5 conclusion shape without a global `Countable Index`
+assumption.
+
+This is the final-bundle form of
+`VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable_of_endpointL1`:
+finiteness of the class supplies the countability needed for the
+outer-probability, outer-a.s., and `P`-measurability branches, while the
+endpoint `L1(P^n)` convergence input supplies the in-mean centered-supremum
+branch.
+-/
+theorem of_finite_indexClass_canonical_slln_no_global_countable_of_endpointL1
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hindex_finite : indexClass.Finite)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hendpointL1 :
+      ∀ index, index ∈ indexClass ->
+        Tendsto
+          (fun n : ℕ =>
+            ∫ sample : SampleAt Observation n,
+              |empiricalAverage sample (classFun index) -
+                ∫ observation, classFun index observation ∂P|
+              ∂(vdVWProductMeasure P n))
+          atTop (𝓝 0)) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  exact
+    of_conjunction
+      (VdVWTheorem243_finite_indexClass_textbookAligned_canonical_slln_and_inMean_no_global_countable_of_endpointL1
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope)
+        hindex_finite henvelope hclass henv henv_integrable
+        hendpointL1)
+
+/--
 Finite-class direct SLLN route, repackaged in the single textbook-facing
 Theorem 2.4.3/Lemma 2.4.5 conclusion shape.
 -/
