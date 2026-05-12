@@ -6585,6 +6585,171 @@ theorem chewi1311_infProjection_selfConcordantBarrierOn_of_adjointSqrtEnvelopeMo
       (barrierInfProjectionSchurLiftedThird selector hess invHyy third) M nu :=
   hmodel.selfConcordantBarrierOn
 
+/--
+The adjoint-square-root envelope model supplies the right-inverse identity for
+the vertical Hessian block.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_right_inverse
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    {x : E₁} (hx : x ∈ barrierInfProjectionSet s) :
+    ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w := by
+  intro w
+  exact continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv
+    (H := barrierInfProjectionBlockYY selector hess x)
+    (invH := invHyy x) (sqrtCoord := sqrtHyy x)
+    (hmodel.hyy_hess_eq (x := x) hx)
+    (hmodel.hyy_inv_eq (x := x) hx) w
+
+/--
+In finite vertical dimension, the right-inverse identity supplied by the
+adjoint-square-root model also gives the left-inverse identity for `Hyy`.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_left_inverse
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    {x : E₁} (hx : x ∈ barrierInfProjectionSet s) :
+    ∀ w : E₂, invHyy x (barrierInfProjectionBlockYY selector hess x w) = w :=
+  barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim
+    selector hess invHyy x (hmodel.hyy_right_inverse hx)
+
+/--
+The adjoint-square-root envelope model supplies the right-inverse identity for
+the full Hessian at selected graph points.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.full_right_inverse
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    {x : E₁} (hx : x ∈ barrierInfProjectionSet s) :
+    ∀ w : WithLp 2 (E₁ × E₂),
+      hess (barrierInfProjectionPoint selector x)
+        (invHess (barrierInfProjectionPoint selector x) w) = w := by
+  intro w
+  exact continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv
+    (H := hess (barrierInfProjectionPoint selector x))
+    (invH := invHess (barrierInfProjectionPoint selector x))
+    (sqrtCoord := sqrtFull (barrierInfProjectionPoint selector x))
+    (hmodel.full_hess_eq (x := x) hx)
+    (hmodel.full_inv_eq (x := x) hx) w
+
+/--
+The adjoint-square-root envelope model turns local vertical stationarity into
+the Schur derivative of the projected gradient, with the `Hyy` inverse identity
+discharged internally.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.grad_hasFDerivAt_schur_of_isOpen
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))} {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hgrad :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x) :
+    HasFDerivAt (barrierInfProjectionGrad selector grad)
+      (barrierInfProjectionSchurHessFrom selector hess invHyy x) x :=
+  hmodel.selector_stationary.grad_hasFDerivAt_schur_of_isOpen
+    hopen hx hgrad hselector (hmodel.hyy_left_inverse hx)
+
+/--
+Open-domain second-order selected-envelope certificate from the adjoint-square-
+root envelope model.  The model supplies selector stationarity and the `Hyy`
+left inverse needed by the generic second-order envelope theorem.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_isOpen
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₁] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))} {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hfgrad :
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hgrad :
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x) :
+    BarrierInfProjectionSecondOrderEnvelopeAt s f selector grad hess invHyy x :=
+  hmodel.selector_stationary.secondOrderEnvelopeAt_of_isOpen
+    hopen hx hfgrad hgrad hselector (hmodel.hyy_left_inverse hx)
+
 end InfProjectionBarrier
 
 theorem hessianSegmentLocalNorm_riccatiDerivBound_of_mixedThirdSelfConcordantOn

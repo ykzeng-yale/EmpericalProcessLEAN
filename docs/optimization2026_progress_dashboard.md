@@ -402,6 +402,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   Frechet derivative `barrierInfProjectionSchurHessFrom` whenever the original
   gradient derivative is the supplied product Hessian and the selector
   derivative solves `D selector v = -Hyy^{-1} Hyx v`.
+- Inf-projection model inverse/second-order API: the newest packet adds
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_right_inverse`,
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_left_inverse`,
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.full_right_inverse`,
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.grad_hasFDerivAt_schur_of_isOpen`,
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_isOpen`.
+  Future source instances with an adjoint-square-root envelope model should
+  use these methods instead of re-proving `Hyy` inverse identities or the
+  selected-value second-order envelope from raw square-root equalities.
 - Inf-projection implicit-selector derivative calculus: the newest packet adds
   `barrierInfProjectionVerticalGrad_hasFDerivAt`,
   `barrierInfProjection_verticalDerivative_eq_zero_of_eventually_eq_zero`,

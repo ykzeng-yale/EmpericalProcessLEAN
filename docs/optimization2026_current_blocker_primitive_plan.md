@@ -499,6 +499,17 @@ Frechet derivative `hess` at the selected graph point and the selector
 derivative satisfies the implicit equation
 `D selector v = - Hyy^{-1} Hyx v`, then the projected gradient has derivative
 `barrierInfProjectionSchurHessFrom`.
+The adjoint-square-root model API now adds
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_right_inverse`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_left_inverse`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.full_right_inverse`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.grad_hasFDerivAt_schur_of_isOpen`,
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_isOpen`.
+These discharge the `Hyy` inverse identities, the selected full-Hessian right
+inverse, and the open-domain second-order envelope directly from the packaged
+square-root model.  The next exact inf-projection proof should consume these
+helpers before adding any new raw inverse or second-order wrapper.
 The implicit-selector derivative packet adds
 `barrierInfProjectionVerticalGrad_hasFDerivAt`,
 `barrierInfProjection_verticalDerivative_eq_zero_of_eventually_eq_zero`,

@@ -268,7 +268,17 @@ proving that the vertical residual is locally zero and providing the relevant
 `Hyy` left inverse.  The remaining exact inf-projection calculus work is no
 longer the selector derivative equation.  The preferred next gate is now the
 scalar segment form of the actual third-derivative identity,
-`d/dt <v, H_schur(z_t) v> = liftedThird(z_t, y - x, v)`, because
+`d/dt <v, H_schur(z_t) v> = liftedThird(z_t, y - x, v)`.
+The adjoint-square-root model now exposes
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_right_inverse`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_left_inverse`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.full_right_inverse`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.grad_hasFDerivAt_schur_of_isOpen`,
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_isOpen`.
+Use these when constructing concrete Proposition 13.11(4) instances; do not
+rebuild `Hyy` inverse identities or selected second-order envelopes from
+square-root equalities by hand.
 `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_scalarPsi`
 and
 `BarrierInfProjectionSelectorStationary.projected_localNorm_sandwich_sourceRadius_of_scalarPsi`
