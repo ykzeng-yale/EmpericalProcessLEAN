@@ -4268,6 +4268,33 @@ theorem vdVWCoveringNumber_le_internalCoveringNumber
   exact Metric.externalCoveringNumber_le_coveringNumber epsilon target
 
 /--
+An external VdV&W cover at radius `epsilon` gives a mathlib internal cover at
+radius `2 * epsilon`.
+
+This is the local VdVW-named form of mathlib's external-to-internal covering
+comparison and avoids introducing a parallel epsilon-net API.
+-/
+theorem internalCoveringNumber_two_mul_le_vdVWCoveringNumber
+    {Space : Type u} [PseudoEMetricSpace Space]
+    (epsilon : ℝ≥0) (target : Set Space) :
+    Metric.coveringNumber (2 * epsilon) target ≤
+      vdVWCoveringNumber epsilon target := by
+  exact Metric.coveringNumber_two_mul_le_externalCoveringNumber epsilon target
+
+/--
+Finiteness of the external VdV&W covering number at radius `epsilon` implies
+finiteness of the internal mathlib covering number at radius `2 * epsilon`.
+-/
+theorem internalCoveringNumber_two_mul_lt_top_of_vdVWCoveringNumber_lt_top
+    {Space : Type u} [PseudoEMetricSpace Space]
+    {epsilon : ℝ≥0} {target : Set Space}
+    (hfinite : vdVWCoveringNumber epsilon target < ⊤) :
+    Metric.coveringNumber (2 * epsilon) target < ⊤ :=
+  lt_of_le_of_lt
+    (internalCoveringNumber_two_mul_le_vdVWCoveringNumber epsilon target)
+    hfinite
+
+/--
 The packing number at doubled radius is bounded by the VdV&W external covering
 number.  This is the first local bridge toward VdV&W Definition 2.2.3.
 -/

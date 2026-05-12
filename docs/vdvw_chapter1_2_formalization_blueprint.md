@@ -1449,7 +1449,7 @@ Therefore the status convention is:
 | 1.3.7 asymptotic measurability | `..._1-100.md:661` | local-layer: nonnegative outer/inner expectation-gap primitive `VdVWAsymptoticallyMeasurableNonnegative`, lower-shifted real-test primitive `VdVWAsymptoticallyMeasurableLowerShiftedReal`, bounded-continuous lower-shifted primitive `VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted`, canonical bounded-continuous shift primitive `VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted`, and measurable-composition constructors proved; full signed bounded-continuous arbitrary-map definition pending |
 | 1.9.1 stochastic convergence notation | `..._1-100.md:1292` | local-layer for common-domain outer-probability convergence |
 | 1.10.1 convergence in outer probability to a constant | `..._1-100.md:1406` | local-layer |
-| 2.1.5 covering numbers | `..._1-100.md:1894` | local-layer: `vdVWCoveringNumber` wraps mathlib `Metric.externalCoveringNumber`, with explicit finite-cover witnesses, `vdVWCoveringLogEntropy`, and closed-ball/open-ball slack documented |
+| 2.1.5 covering numbers | `..._1-100.md:1894` | local-layer: `vdVWCoveringNumber` wraps mathlib `Metric.externalCoveringNumber`, with explicit finite-cover witnesses, `vdVWCoveringLogEntropy`, direct external-to-internal doubled-radius bridges, and closed-ball/open-ball slack documented |
 | 2.1.6 bracketing numbers | `..._1-100.md:1895` | local-layer with primitive `l1BracketingNumber` |
 | 2.2.3 covering and packing numbers for semimetrics | `..._101-200.md:292` | local-layer: `vdVWSemimetricCoveringNumber`, `vdVWSemimetricPackingNumber`, `vdVWSemimetricLogEntropy`, finite-cover handoff, and mathlib covering-packing inequalities |
 | 2.3.3 `P`-measurable class | `..._101-200.md:627` | local-layer: product measure `P^n`, display `(2.3.2)` weighted supremum, completion/null-measurability predicate, countable coordinate-measurable constructor, and deterministic finite-cover supremum bound formalized |
@@ -1854,7 +1854,12 @@ above, so they do not change the theorem-level dashboard counts.
    `nonempty_finiteEmpiricalL1CoverAtCard_of_metric_isCover`,
    `empiricalL1CoveringNumber_le_of_metric_isCover`,
    `nonempty_finiteEmpiricalL1CoverAtCard_of_metric_minimalCover`, and
-   `empiricalL1CoveringNumber_le_of_metric_minimalCover`.  The induced
+   `empiricalL1CoveringNumber_le_of_metric_minimalCover`.  The external
+   VdV&W covering wrapper also now exposes
+   `internalCoveringNumber_two_mul_le_vdVWCoveringNumber` and
+   `internalCoveringNumber_two_mul_lt_top_of_vdVWCoveringNumber_lt_top`, the
+   pinned-mathlib version of the standard finite-net projection move used in
+   the audited statistical-learning-theory covering layer.  The induced
    empirical pseudometric adapter is also compiled through
    `EmpiricalL1Index`, `EmpiricalL1Index.instPseudoEMetricSpace`,
    `EmpiricalL1Index.empiricalL1Distance_le_coe_radius_of_edist_le`,
