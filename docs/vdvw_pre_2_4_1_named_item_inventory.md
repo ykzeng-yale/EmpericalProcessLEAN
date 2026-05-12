@@ -297,7 +297,7 @@ through 2.4.1 requires accounting for them.
 | 2.1.11 Proposition | `M2:169` | Donsker criterion for dual unit ball of `L_p` | later roadmap |
 | 2.2.1 Lemma | `M2:229` | Orlicz tail-to-norm bound | later roadmap; not needed for direct 2.4.1 proof |
 | 2.2.2 Lemma | `M2:246` | Orlicz norm of maximum | later roadmap |
-| 2.2.3 Definition | `M2:292-300` | covering/packing numbers for semimetric spaces | local-layer: semimetric covering/packing wrappers, comparison inequalities, total-boundedness-to-finiteness direction, and proof-carrying empirical packing witnesses for selected-cover lower bounds; entropy/logarithm and open-ball exactness pending |
+| 2.2.3 Definition | `M2:292-300` | covering/packing numbers for semimetric spaces | local-layer: semimetric covering/packing wrappers, comparison inequalities, total-boundedness-to-finiteness direction, proof-carrying empirical packing witnesses, and empirical-wrapper packing-number lower-bound handoff for selected-cover lower bounds; entropy/logarithm and open-ball exactness pending |
 | 2.2.4 Theorem | `M2:301` | chaining/maximal inequality | later roadmap |
 | 2.2.5 Corollary | `M2:314` | maximal inequality corollary | later roadmap |
 | 2.2.7 Lemma | `M2:372` | Hoeffding inequality for Rademacher sums | mathlib sub-Gaussian/Hoeffding foundation exists; exact statement pending |

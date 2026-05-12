@@ -2959,6 +2959,219 @@ theorem empiricalL1CoveringNumber_eq_empiricalL1Index_coveringNumber
   exact le_antisymm hlocal_le hmetric_le
 
 /--
+A finite separated set in the empirical pseudometric wrapper gives an explicit
+raw-index empirical `L1(P_n)` packing witness.
+
+This is the packing analogue of
+`nonempty_finiteEmpiricalL1CoverAtCard_of_empiricalL1Index_isCover`: it turns
+mathlib's set-level `Metric.IsSeparated` data on `EmpiricalL1Index.liftSet`
+into the local `Fin`-indexed witness used by selected-cover lower-growth
+routes.
+-/
+theorem nonempty_finiteEmpiricalL1PackingAtCard_of_empiricalL1Index_isSeparated
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {separation : ℝ≥0}
+    {packingSet :
+      Set (EmpiricalL1Index Observation Index n sample classFun)}
+    (hpacking_finite : packingSet.Finite)
+    (hpacking_subset :
+      packingSet ⊆
+        EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass)
+    (hpacking_sep : Metric.IsSeparated separation packingSet) :
+    Nonempty
+      (FiniteEmpiricalL1PackingAtCard sample indexClass classFun
+        (separation : ℝ) hpacking_finite.toFinset.card) := by
+  classical
+  let wrappedPoint :
+      Fin hpacking_finite.toFinset.card ->
+        EmpiricalL1Index Observation Index n sample classFun :=
+    fun pointIndex =>
+      ((hpacking_finite.toFinset.equivFin).symm pointIndex).1
+  let point : Fin hpacking_finite.toFinset.card -> Index :=
+    fun pointIndex => (wrappedPoint pointIndex).toIndex
+  have hpoint_mem : ∀ pointIndex, point pointIndex ∈ indexClass := by
+    intro pointIndex
+    have hmem_finset :
+        wrappedPoint pointIndex ∈ hpacking_finite.toFinset :=
+      ((hpacking_finite.toFinset.equivFin).symm pointIndex).2
+    exact
+      hpacking_subset ((hpacking_finite.mem_toFinset).1 hmem_finset)
+  have hpoint_sep :
+      Pairwise fun pointIndex pointIndex' =>
+        (separation : ℝ) <
+          empiricalL1Distance sample (classFun (point pointIndex))
+            (classFun (point pointIndex')) := by
+    intro pointIndex pointIndex' hne
+    have hmem_finset :
+        wrappedPoint pointIndex ∈ hpacking_finite.toFinset :=
+      ((hpacking_finite.toFinset.equivFin).symm pointIndex).2
+    have hmem_finset' :
+        wrappedPoint pointIndex' ∈ hpacking_finite.toFinset :=
+      ((hpacking_finite.toFinset.equivFin).symm pointIndex').2
+    have hmem :
+        wrappedPoint pointIndex ∈ packingSet :=
+      (hpacking_finite.mem_toFinset).1 hmem_finset
+    have hmem' :
+        wrappedPoint pointIndex' ∈ packingSet :=
+      (hpacking_finite.mem_toFinset).1 hmem_finset'
+    have hwrapped_ne :
+        wrappedPoint pointIndex ≠ wrappedPoint pointIndex' := by
+      intro hwrapped
+      apply hne
+      have hsub :
+          (hpacking_finite.toFinset.equivFin).symm pointIndex =
+            (hpacking_finite.toFinset.equivFin).symm pointIndex' :=
+        Subtype.ext hwrapped
+      simpa using congrArg hpacking_finite.toFinset.equivFin hsub
+    have hsep_enn :
+        (separation : ℝ≥0∞) <
+          ENNReal.ofReal
+            (empiricalL1Distance sample (classFun (point pointIndex))
+              (classFun (point pointIndex'))) := by
+      simpa [Metric.IsSeparated, EmpiricalL1Index.edist_eq, wrappedPoint,
+        point] using hpacking_sep hmem hmem' hwrapped_ne
+    simpa using (ENNReal.coe_lt_ofReal.mp hsep_enn)
+  exact
+    ⟨{ point := point
+       point_mem := hpoint_mem
+       separated := hpoint_sep }⟩
+
+/-- The empirical wrapper's maximal separated set is finite when the packing number is finite. -/
+theorem finite_empiricalL1Index_maximalSeparatedSet
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {separation : ℝ≥0}
+    (hpacking_finite :
+      Metric.packingNumber separation
+        (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) ≠ ⊤) :
+    (Metric.maximalSeparatedSet separation
+      (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+        indexClass)).Finite := by
+  simpa [Metric.maximalSeparatedSet, hpacking_finite] using
+    (Metric.exists_set_encard_eq_packingNumber
+      (ε := separation)
+      (A :=
+        EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) hpacking_finite).choose_spec.2.1
+
+/--
+The empirical wrapper's maximal separated set gives an explicit raw-index
+empirical packing witness.
+-/
+theorem nonempty_finiteEmpiricalL1PackingAtCard_of_empiricalL1Index_maximalSeparatedSet
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {separation : ℝ≥0}
+    (hpacking_finite :
+      Metric.packingNumber separation
+        (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) ≠ ⊤) :
+    Nonempty
+      (FiniteEmpiricalL1PackingAtCard sample indexClass classFun
+        (separation : ℝ)
+        (finite_empiricalL1Index_maximalSeparatedSet
+          (sample := sample) (indexClass := indexClass) (classFun := classFun)
+          hpacking_finite).toFinset.card) := by
+  exact
+    nonempty_finiteEmpiricalL1PackingAtCard_of_empiricalL1Index_isSeparated
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      (hpacking_finite :=
+        finite_empiricalL1Index_maximalSeparatedSet
+          (sample := sample) (indexClass := indexClass) (classFun := classFun)
+          hpacking_finite)
+      (Metric.maximalSeparatedSet_subset (ε := separation)
+        (A :=
+          EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+            indexClass))
+      (Metric.isSeparated_maximalSeparatedSet (ε := separation)
+        (A :=
+          EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+            indexClass))
+
+/--
+A finite lower bound on the empirical-wrapper packing number gives a lower
+bound on the least local empirical-cover cardinality.
+-/
+theorem finiteEmpiricalL1CoveringNumberCard_ge_of_empiricalL1Index_packingNumber
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {radius separation : ℝ≥0}
+    {lower : ℕ}
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun (radius : ℝ))
+    (hpacking_finite :
+      Metric.packingNumber separation
+        (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) ≠ ⊤)
+    (hlower :
+      (lower : ℕ∞) ≤
+        Metric.packingNumber separation
+          (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+            indexClass))
+    (hseparation : 2 * (radius : ℝ) ≤ (separation : ℝ)) :
+    lower ≤ finiteEmpiricalL1CoveringNumberCard hfinite := by
+  let hmax_finite :=
+    finite_empiricalL1Index_maximalSeparatedSet
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      hpacking_finite
+  have hmax_card_eq :
+      ((hmax_finite.toFinset.card : ℕ∞) =
+        Metric.packingNumber separation
+          (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+            indexClass)) := by
+    rw [← hmax_finite.encard_eq_coe_toFinset_card]
+    exact
+      Metric.encard_maximalSeparatedSet
+        (ε := separation)
+        (A :=
+          EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+            indexClass) hpacking_finite
+  have hlower_card_enat : (lower : ℕ∞) ≤ hmax_finite.toFinset.card := by
+    simpa [hmax_card_eq] using hlower
+  have hlower_card : lower ≤ hmax_finite.toFinset.card := by
+    exact_mod_cast hlower_card_enat
+  rcases
+    nonempty_finiteEmpiricalL1PackingAtCard_of_empiricalL1Index_maximalSeparatedSet
+      (sample := sample) (indexClass := indexClass) (classFun := classFun)
+      hpacking_finite with
+  ⟨packing⟩
+  exact
+    hlower_card.trans
+      (finiteEmpiricalL1CoveringNumberCard_ge_of_finiteEmpiricalL1PackingAtCard
+        hfinite packing hseparation)
+
+/--
+Numeric empirical covering numbers dominate finite lower bounds on the
+empirical-wrapper packing number.
+-/
+theorem empiricalL1CoveringNumber_ge_of_empiricalL1Index_packingNumber
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {radius separation : ℝ≥0}
+    {lower : ℕ}
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun (radius : ℝ))
+    (hpacking_finite :
+      Metric.packingNumber separation
+        (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+          indexClass) ≠ ⊤)
+    (hlower :
+      (lower : ℕ∞) ≤
+        Metric.packingNumber separation
+          (EmpiricalL1Index.liftSet (sample := sample) (classFun := classFun)
+            indexClass))
+    (hseparation : 2 * (radius : ℝ) ≤ (separation : ℝ)) :
+    (lower : ℕ∞) ≤
+      empiricalL1CoveringNumber sample indexClass classFun (radius : ℝ) := by
+  rw [empiricalL1CoveringNumber_eq_find hfinite]
+  exact_mod_cast
+    finiteEmpiricalL1CoveringNumberCard_ge_of_empiricalL1Index_packingNumber
+      hfinite hpacking_finite hlower hseparation
+
+/--
 If the induced empirical internal covering number is bounded by a finite
 cardinality, then the local empirical finite-cover witness can be padded to
 that cardinality.

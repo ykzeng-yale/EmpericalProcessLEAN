@@ -132,6 +132,24 @@ This is a packaging/source bridge, not a final proof of the book entropy
 hypothesis; the live mathematical gap remains constructing those witnesses or
 an equivalent tail/UI lower-growth input from the VdV&W assumptions.
 
+2026-05-12 empirical-wrapper packing-number handoff: mathlib's
+`Metric.maximalSeparatedSet` and `Metric.encard_maximalSeparatedSet` are now
+connected to the local fixed-sample empirical `L1(P_n)` witness layer.  The
+covering primitive file proves
+`nonempty_finiteEmpiricalL1PackingAtCard_of_empiricalL1Index_isSeparated`,
+`nonempty_finiteEmpiricalL1PackingAtCard_of_empiricalL1Index_maximalSeparatedSet`,
+`finiteEmpiricalL1CoveringNumberCard_ge_of_empiricalL1Index_packingNumber`,
+and `empiricalL1CoveringNumber_ge_of_empiricalL1Index_packingNumber`.  The
+Theorem 2.4.3 layer exposes the selected-cover forms
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_empiricalL1Index_packingNumber`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_empiricalL1Index_packingNumber`,
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_empiricalL1Index_packingNumber`.
+This closes the adapter from a Definition 2.2.3-style packing-number lower
+bound on `EmpiricalL1Index.liftSet` to the selected lower-growth input.  It
+does not prove such a lower bound from random entropy; that remains the
+mathematical source task.
+
 2026-05-12 final packing-source consumer: the set-countable textbook-aligned
 product-pair Chebyshev route now has the direct packing entry point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`.
