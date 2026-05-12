@@ -198,6 +198,23 @@ These wrappers use the compiled equality between the local empirical covering
 number and `Metric.coveringNumber` on `EmpiricalL1Index.liftSet`; they do not
 derive the lower bound from random entropy.
 
+2026-05-12 infinite empirical-wrapper covering source handoff: the same
+covering-number lane now has direct `Metric.coveringNumber = ⊤` adapters,
+including
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_empiricalL1Index_coveringNumber_eq_top`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_empiricalL1Index_coveringNumber_eq_top`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_empiricalL1Index_coveringNumber_eq_top`,
+and the terminal-sample variants
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_empiricalL1Index_coveringNumber_eq_top`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_empiricalL1Index_coveringNumber_eq_top`.
+The final set-countable route also has the nonterminal source consumer
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_empiricalL1Index_coveringNumber_eq_top_of_set_countable`,
+which chooses lower bound `n` from eventual `samplePath`-level
+`Metric.coveringNumber = ⊤`.  Like the terminal infinite-covering consumer,
+this records a source surface and does not derive infinite covering from the
+random-entropy hypotheses.
+
 2026-05-12 final packing-source consumers: the set-countable textbook-aligned
 product-pair Chebyshev route now has the direct raw separated-packing entry
 point
@@ -228,6 +245,9 @@ consumes eventual `P^n`-a.e. terminal empirical-wrapper covering number equal
 to `⊤` and sets the deterministic lower bound to `n`; it is a structural
 source surface, not a derivation of infinite covering number from the
 random-entropy hypotheses.
+The nonterminal infinite-covering source variant
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_empiricalL1Index_coveringNumber_eq_top_of_set_countable`
+does the same for eventual `samplePath`-level `Metric.coveringNumber = ⊤`.
 The matching infinite-packing source variant
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_eq_top_of_set_countable`
 does the same for eventual terminal `Metric.packingNumber = ⊤`.

@@ -123,6 +123,14 @@ and
 These use the compiled equality between local empirical covering numbers and
 mathlib `Metric.coveringNumber` on `EmpiricalL1Index.liftSet`, giving a direct
 Definition 2.2.3 covering-number lower-bound handoff.
+The infinite-covering case now also has direct selected-cover adapters:
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_empiricalL1Index_coveringNumber_eq_top`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_empiricalL1Index_coveringNumber_eq_top`,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_empiricalL1Index_coveringNumber_eq_top`,
+and the terminal variants
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_empiricalL1Index_coveringNumber_eq_top`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_empiricalL1Index_coveringNumber_eq_top`.
 The strongest set-countable product-pair final route now consumes the packing
 source shape directly through
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`,
@@ -147,6 +155,10 @@ consumes eventual `P^n`-a.e. terminal empirical-wrapper covering number equal
 to `⊤` and chooses the deterministic lower bound `n`; this is a source surface,
 not a proof that the random-entropy hypothesis forces infinite covering
 number.
+Its nonterminal companion
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_empiricalL1Index_coveringNumber_eq_top_of_set_countable`
+uses the same deterministic lower bound from eventual `samplePath`-level
+`Metric.coveringNumber = ⊤`.
 The matching infinite-packing structural variant
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_eq_top_of_set_countable`
 chooses the same deterministic lower bound `n` from eventual terminal
