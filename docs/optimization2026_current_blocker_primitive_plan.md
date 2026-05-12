@@ -1358,9 +1358,14 @@ inverse or is surjective.  The newest range-slice packet adds
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated`, so the
 source-level surjectivity/right-inverse front door is gone once an inverse-
 Hessian oracle on `(polytopeSlackCLM a).range` is supplied with nonnegativity
-and the barrier-gradient bound.  Future fully general polytope-log-barrier
-work should construct that concrete range inverse-Hessian/gradient-bound
-oracle, or alternatively use the compiled finite sum-rule packets, rather than
+and the barrier-gradient bound.  The newest quadratic-bound packet adds
+`dualLocalNorm_le_sqrt_of_inner_le` and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_gradient_quadratic`,
+so future work can prove the concrete range-gradient energy inequality
+`inner grad (invHessRange grad) <= m` instead of manipulating the dual norm
+and square root directly.  Future fully general polytope-log-barrier work
+should construct that concrete range inverse-Hessian/gradient-energy oracle,
+or alternatively use the compiled finite sum-rule packets, rather than
 redoing scalar self-concordance or affine right-inverse algebra.
 Do not redo the
 square-root/right-inverse/Hessian-nonnegativity/self-concordance/model-Hessian
@@ -1385,9 +1390,10 @@ The exact blockers are:
 - continue Proposition 13.11 from the already-compiled product, shared-domain
   sum, and affine-preimage supplied-oracle layers.  The next aggressive
   targets are either constructing the concrete positive-orthant range-slice
-  inverse-Hessian oracle and barrier-gradient bound for arbitrary finite row
-  families, closing the exact shared-domain sum inverse-Hessian / inverse-local
-  gate for finite row sums, or opening the inf-projection rule.
+  inverse-Hessian oracle and proving the range-gradient quadratic energy bound
+  for arbitrary finite row families, closing the exact shared-domain sum
+  inverse-Hessian / inverse-local gate for finite row sums, or opening the
+  inf-projection rule.
   Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi

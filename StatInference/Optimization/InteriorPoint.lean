@@ -596,6 +596,17 @@ theorem dualLocalNorm_sq_eq_inner
       inner ℝ vStar (invHess x vStar) := by
   simpa [dualLocalNorm] using Real.sq_sqrt hquad
 
+theorem dualLocalNorm_le_sqrt_of_inner_le
+    {invHess : E -> E →L[ℝ] E} {x vStar : E} {c : ℝ}
+    (hc : 0 ≤ c)
+    (hquad_nonneg : 0 ≤ inner ℝ vStar (invHess x vStar))
+    (hquad_le : inner ℝ vStar (invHess x vStar) ≤ c) :
+    dualLocalNorm invHess x vStar ≤ Real.sqrt c := by
+  refine (sq_le_sq₀ (dualLocalNorm_nonneg invHess x vStar)
+    (Real.sqrt_nonneg c)).mp ?_
+  rw [dualLocalNorm_sq_eq_inner hquad_nonneg, Real.sq_sqrt hc]
+  exact hquad_le
+
 theorem localNorm_zero (hess : E -> E →L[ℝ] E) (x : E) :
     localNorm hess x 0 = 0 := by
   simp [localNorm]
@@ -14694,6 +14705,41 @@ theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated
       (polytopeSlackCLM a) b
       (positiveOrthantNegLog_selfConcordantBarrierOn (d := m))
       hinv_nonneg hgradient_bound
+
+/--
+Chewi Example 13.14, finite-row logarithmic barrier in translated-range form,
+with the gradient bound supplied as the more concrete quadratic energy
+inequality `⟪g, H^{-1}g⟫ ≤ m`.
+-/
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_gradient_quadratic
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (invHessRange : (polytopeSlackCLM a).range ->
+      (polytopeSlackCLM a).range →L[ℝ] (polytopeSlackCLM a).range)
+    (hinv_nonneg : ∀ ⦃y : (polytopeSlackCLM a).range⦄,
+      y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b (positiveOrthant (d := m)) ->
+      ∀ v : (polytopeSlackCLM a).range, 0 ≤ inner ℝ v (invHessRange y v))
+    (hgradient_quadratic : ∀ ⦃y : (polytopeSlackCLM a).range⦄,
+      y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b (positiveOrthant (d := m)) ->
+      inner ℝ (barrierAffineRangeGrad (polytopeSlackCLM a) b positiveOrthantNegLogGrad y)
+          (invHessRange y
+            (barrierAffineRangeGrad (polytopeSlackCLM a) b positiveOrthantNegLogGrad y)) ≤
+        (m : ℝ)) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierAffinePreimageHess (polytopeSlackCLM a) b positiveOrthantNegLogHessCLM)
+      (barrierAffinePreimageGrad (polytopeSlackCLM a) b positiveOrthantNegLogGrad)
+      (barrierAffinePreimageInvHessSurjective (polytopeSlackCLM a).rangeRestrict 0
+        invHessRange (barrierAffinePreimageRangeRestrict_range_eq_top (polytopeSlackCLM a)))
+      (barrierAffinePreimageThirdMixed (polytopeSlackCLM a) b
+        positiveOrthantNegLogThirdMixed) 1 (m : ℝ) := by
+  refine chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated
+    a b invHessRange hinv_nonneg ?_
+  intro y hy
+  exact dualLocalNorm_le_sqrt_of_inner_le
+    (Nat.cast_nonneg m)
+    (hinv_nonneg hy (barrierAffineRangeGrad (polytopeSlackCLM a) b
+      positiveOrthantNegLogGrad y))
+    (hgradient_quadratic hy)
 
 end Optimization
 end StatInference

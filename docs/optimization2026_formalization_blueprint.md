@@ -131,9 +131,12 @@ right inverse or is surjective.  The range-slice theorem
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated` now
 removes that source-level front door once the inverse-Hessian oracle on
 `(polytopeSlackCLM a).range` satisfies nonnegativity and the barrier-gradient
-bound.  Next
-construct that concrete range oracle for the fully general polytope barrier or
-use the reusable finite sum-rule machinery,
+bound.  The consumer
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_gradient_quadratic`
+now reduces that bound to the concrete energy inequality
+`inner grad (invHessRange grad) <= m`.  Next
+construct that concrete range oracle and energy bound for the fully general
+polytope barrier or use the reusable finite sum-rule machinery,
 starting with the product-separable rule; all segment membership, `ψ`
 continuity, local-norm continuity/positivity, Riccati comparison, derivative
 inequality, coefficient scaling, final sandwich assembly, first Newton/Dikin
