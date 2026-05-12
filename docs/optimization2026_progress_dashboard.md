@@ -411,6 +411,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   Future source proofs should prove this full-Hessian derivative certificate
   once, then route through the packaged consumers instead of passing separate
   `hhess` and `hmixed_full` hypotheses through every theorem.
+  The source-domain constructor
+  `BarrierInfProjectionFullHessianDerivativeOn.of_source` now builds that
+  certificate from original-domain derivative hypotheses
+  `∀ z ∈ s, HasFDerivAt hess ... z` and the source mixed-third pairing,
+  using selector stationarity to prove selected graph membership.  The
+  endpoint wrappers
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
+  are now the preferred route when the source model proves Hessian
+  differentiability on the original barrier domain.
   Future item-4 source instances should therefore focus on constructing the
   literal package and concrete square-root/envelope model, not rebuilding
   segment Schur-derivative, local-norm transport, or projected-Hessian

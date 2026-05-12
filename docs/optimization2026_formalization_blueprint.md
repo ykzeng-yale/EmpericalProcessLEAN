@@ -281,6 +281,14 @@ and
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivativeOn_isOpen_of_verticalFirstOrder`
 are the preferred route for concrete item-4 source models that naturally prove
 the original Hessian derivative before the projected Schur derivative.
+When that derivative is available on the original barrier domain `s`, use
+`BarrierInfProjectionFullHessianDerivativeOn.of_source`: selector stationarity
+proves the selected graph point belongs to `s`.  The source-domain endpoint
+wrappers
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
+avoid manually restating the selected-graph Hessian derivative certificate.
 The current second-order envelope layer also derives the Schur projected
 gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after

@@ -914,6 +914,16 @@ and
 The live exact inf-projection blocker is now sharply named: prove this
 full-Hessian derivative certificate, or prove a Schur derivative certificate
 directly, then invoke the packaged literal/local-norm consumers.
+If the concrete source model supplies Hessian differentiability on the
+original barrier domain, use
+`BarrierInfProjectionFullHessianDerivativeOn.of_source` instead of proving the
+selected-graph certificate manually.  It converts
+`∀ z ∈ s, HasFDerivAt hess ... z` plus the source mixed-third pairing into
+the selected-graph certificate via `hmodel.selector_stationary.point_mem`.
+Then use
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
+or
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
