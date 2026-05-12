@@ -18605,6 +18605,153 @@ theorem durrett2019_theorem_4_5_3_ae_tsum_variance_ratio_le_of_integral_clock_bo
       hA_mono_stepω hf_monoω hf_one_leω hf_intω hclock_boundω
 
 /--
+Durrett 2019, Theorem 4.5.3 finite integrated clock comparison.
+
+This integrates the finite pathwise clock comparison from V211 after
+exchanging the finite sum and the Bochner integral.
+-/
+theorem durrett2019_theorem_4_5_3_finite_integral_variance_ratio_le_integral_clock
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {A : ℕ -> Ω -> ℝ} {N : ℕ}
+    (hA_mono_step :
+      ∀ k : ℕ, k < N -> ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ k : ℕ, k < N -> ∀ ω : Ω,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)))
+    (hf_one_le :
+      ∀ k : ℕ, k < N -> ∀ ω : Ω,
+        ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t)
+    (hf_int :
+      ∀ k : ℕ, k < N -> ∀ ω : Ω,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume
+          (A k ω) (A (k + 1) ω))
+    (hratio_int :
+      ∀ k ∈ Finset.range N,
+        Integrable
+          (fun ω => (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2) P)
+    (hclock_int :
+      Integrable (fun ω => ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) P) :
+    (∑ k ∈ Finset.range N,
+        ∫ ω, (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 ∂P) ≤
+      ∫ ω, (∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) ∂P := by
+  let ratio : ℕ -> Ω -> ℝ := fun k ω =>
+    (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2
+  have hsum_int :
+      Integrable (fun ω => ∑ k ∈ Finset.range N, ratio k ω) P := by
+    exact integrable_finsetSum (Finset.range N) (fun k hk => hratio_int k hk)
+  calc
+    (∑ k ∈ Finset.range N,
+        ∫ ω, (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 ∂P)
+        = ∫ ω, ∑ k ∈ Finset.range N, ratio k ω ∂P := by
+          simpa [ratio] using
+            (integral_finsetSum (Finset.range N)
+              (f := ratio) (μ := P) (fun k hk => hratio_int k hk)).symm
+    _ ≤ ∫ ω, (∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) ∂P := by
+        refine integral_mono_ae hsum_int hclock_int (ae_of_all P fun ω => ?_)
+        simpa [ratio] using
+          durrett2019_theorem_4_5_3_finite_sum_variance_ratio_le_integral_clock
+            (f := f) (A := fun k => A k ω) (N := N)
+            (fun k hk => hA_mono_step k hk ω)
+            (fun k hk => hf_mono k hk ω)
+            (fun k hk => hf_one_le k hk ω)
+            (fun k hk => hf_int k hk ω)
+
+/--
+Durrett 2019, Theorem 4.5.3 integrated summability package.
+
+This is the expectation-level counterpart of V212: a uniform bound on the
+integrated finite clock estimates proves summability of the variance-ratio
+expectations consumed by the V209 source endpoint.
+-/
+theorem durrett2019_theorem_4_5_3_integral_variance_ratio_summable_of_integral_clock_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {A : ℕ -> Ω -> ℝ} {C : ℝ}
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ k : ℕ, ∀ ω : Ω,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)))
+    (hf_one_le :
+      ∀ k : ℕ, ∀ ω : Ω,
+        ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t)
+    (hf_int :
+      ∀ k : ℕ, ∀ ω : Ω,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume
+          (A k ω) (A (k + 1) ω))
+    (hratio_int :
+      ∀ k : ℕ,
+        Integrable
+          (fun ω => (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2) P)
+    (hclock_int :
+      ∀ N : ℕ, Integrable (fun ω => ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) P)
+    (hclock_bound :
+      ∀ N : ℕ, ∫ ω, (∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) ∂P ≤ C) :
+    Summable fun k : ℕ =>
+      ∫ ω, (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 ∂P := by
+  refine summable_of_sum_range_le (c := C) ?hnonneg ?hbound
+  · intro k
+    exact
+      integral_nonneg fun ω =>
+        div_nonneg (sub_nonneg.mpr (hA_mono_step k ω)) (sq_nonneg _)
+  · intro N
+    exact
+      (durrett2019_theorem_4_5_3_finite_integral_variance_ratio_le_integral_clock
+        (P := P) (f := f) (A := A) (N := N)
+        (fun k _hk ω => hA_mono_step k ω)
+        (fun k _hk ω => hf_mono k ω)
+        (fun k _hk ω => hf_one_le k ω)
+        (fun k _hk ω => hf_int k ω)
+        (fun k _hk => hratio_int k)
+        (hclock_int N)).trans
+        (hclock_bound N)
+
+/--
+Durrett 2019, Theorem 4.5.3 integrated total-bound package.
+
+The same finite integrated clock bound controls the total variance-ratio
+expectation series.
+-/
+theorem durrett2019_theorem_4_5_3_tsum_integral_variance_ratio_le_of_integral_clock_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {A : ℕ -> Ω -> ℝ} {C : ℝ}
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ k : ℕ, ∀ ω : Ω,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)))
+    (hf_one_le :
+      ∀ k : ℕ, ∀ ω : Ω,
+        ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t)
+    (hf_int :
+      ∀ k : ℕ, ∀ ω : Ω,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume
+          (A k ω) (A (k + 1) ω))
+    (hratio_int :
+      ∀ k : ℕ,
+        Integrable
+          (fun ω => (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2) P)
+    (hclock_int :
+      ∀ N : ℕ, Integrable (fun ω => ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) P)
+    (hclock_bound :
+      ∀ N : ℕ, ∫ ω, (∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) ∂P ≤ C) :
+    (∑' k : ℕ,
+      ∫ ω, (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2 ∂P) ≤ C := by
+  refine Real.tsum_le_of_sum_range_le ?hnonneg ?hbound
+  · intro k
+    exact
+      integral_nonneg fun ω =>
+        div_nonneg (sub_nonneg.mpr (hA_mono_step k ω)) (sq_nonneg _)
+  · intro N
+    exact
+      (durrett2019_theorem_4_5_3_finite_integral_variance_ratio_le_integral_clock
+        (P := P) (f := f) (A := A) (N := N)
+        (fun k _hk ω => hA_mono_step k ω)
+        (fun k _hk ω => hf_mono k ω)
+        (fun k _hk ω => hf_one_le k ω)
+        (fun k _hk ω => hf_int k ω)
+        (fun k _hk => hratio_int k)
+        (hclock_int N)).trans
+        (hclock_bound N)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

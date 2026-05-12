@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V213
+## Live In-Thread Goal Prompt V214
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -138,19 +138,31 @@ and
 turn a.e. monotonicity, interval, and finite-clock-bound hypotheses into
 a.e. summability and a.e. total variance-ratio bounds.
 
-Next aggressive step: prove the integrated/Fubini summability layer required
-by V209, using finite sums of integrals, finite-sum integral exchange, and a
-uniform/random clock-integral bound derived from the source hypothesis
-`∫_0^∞ f(t)^{-2} dt < ∞`.  Then connect that summability package to the V209
-normalized-process endpoint.  Keep the remaining reciprocal-transform `MemLp`
-and integrability side conditions explicit until they can be discharged from
+V214 closes the finite integrated/Fubini summability bridge required by V209.
+New compiled declarations:
+`durrett2019_theorem_4_5_3_finite_integral_variance_ratio_le_integral_clock`,
+`durrett2019_theorem_4_5_3_integral_variance_ratio_summable_of_integral_clock_bound`,
+and
+`durrett2019_theorem_4_5_3_tsum_integral_variance_ratio_le_of_integral_clock_bound`.
+These exchange finite sums with Bochner integrals, integrate the V211 pathwise
+clock comparison, and prove the expectation-level variance-ratio summability
+consumed by the V209 normalized-process endpoint.
+
+Next aggressive step: connect the V214 integrated summability package directly
+to
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_variance_ratio_summable`,
+then discharge the remaining source clock-integral bound from
+`∫_0^∞ f(t)^{-2} dt < ∞` plus the monotone/divergent clock hypotheses.  Keep
+the remaining reciprocal-transform `MemLp`, ratio integrability, and clock
+integrability side conditions explicit until they can be discharged from
 source hypotheses.  Do not route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
 scaled-summability-to-transform plumbing, conditional variance pull-out, scalar
 interval comparison, finite clock comparison, deterministic summability
-packaging, random pathwise summability packaging, Chapter 2.1, or Theorem
-2.4.9 unless Theorem 4.5.3 exposes a strictly stronger missing primitive.
+packaging, random pathwise summability packaging, integrated finite-sum/Fubini
+summability plumbing, Chapter 2.1, or Theorem 2.4.9 unless Theorem 4.5.3
+exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and

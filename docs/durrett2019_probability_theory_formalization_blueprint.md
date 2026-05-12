@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V213`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V214`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -88,19 +88,25 @@ and
 `durrett2019_theorem_4_5_3_ae_tsum_variance_ratio_le_of_integral_clock_bound`
 produce a.e. summability and total variance-ratio bounds from a.e. clock
 certificates.
-The next theorem-facing target is no longer another pathwise comparison:
-prove the integrated/Fubini summability layer required by V209, using finite
-sums of integrals, finite-sum integral exchange, and a clock-integral bound
-derived from the source integrability hypothesis
-`∫_0^∞ f(t)^{-2} dt < ∞`.  Keep reciprocal-transform `MemLp` and integrability
-side conditions explicit if needed.  Do not route back to
+V214 adds the finite integrated/Fubini summability bridge:
+`durrett2019_theorem_4_5_3_finite_integral_variance_ratio_le_integral_clock`,
+`durrett2019_theorem_4_5_3_integral_variance_ratio_summable_of_integral_clock_bound`,
+and
+`durrett2019_theorem_4_5_3_tsum_integral_variance_ratio_le_of_integral_clock_bound`.
+The next theorem-facing target is no longer another finite sum/integral
+exchange: connect the V214 package directly to the V209 source endpoint, then
+derive the source clock-integral bound from
+`∫_0^∞ f(t)^{-2} dt < ∞` together with the monotone/divergent clock
+hypotheses.  Keep reciprocal-transform `MemLp`, ratio integrability, and clock
+integrability side conditions explicit if needed.  Do not route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
 packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
 predictability/bounds, conditional variance pull-out, scalar interval
 comparison, finite clock comparison, deterministic summability packaging,
-random pathwise summability packaging, or scaled-summability handoff wrappers
-unless a later theorem exposes a precise missing primitive.
+random pathwise summability packaging, integrated finite-sum/Fubini
+summability plumbing, or scaled-summability handoff wrappers unless a later
+theorem exposes a precise missing primitive.
 
 Closed Chapter 2 support lives in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled
