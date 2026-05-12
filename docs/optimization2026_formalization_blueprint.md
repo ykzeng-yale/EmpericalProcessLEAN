@@ -215,6 +215,24 @@ mathlib's `IsLeast.csInf_eq` proves the fiber `sInf` equality, and
 `HasGradientAt.congr_of_eventuallyEq` transfers the selected-envelope
 gradient; the vertical-minimizer constructor reuses
 `FirstOrderStrongConvexOn.lower_model`.
+The localized literal-infimum layer now also compiles with
+`BarrierInfProjectionSelectorMinimizesOn`,
+`BarrierInfProjectionSelectorMinimizesOn.value_eq_infValue_of_mem`,
+`BarrierInfProjectionSelectorMinimizesOn.infValue_eq_value_of_mem`,
+`BarrierInfProjectionSelectorMinimizesOn.of_vertical_firstOrder_zero`,
+`BarrierInfProjectionSelectorStationary.infValue_hasGradientAt_of_minimizesOn_mem_nhds`,
+`BarrierInfProjectionSelectorStationary.infValue_hasGradientAt_of_minimizesOn_isOpen`,
+`BarrierInfProjectionSelectorStationary.minimizesOn_of_vertical_firstOrder`,
+`BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt_of_minimizesOn_mem_nhds`,
+`BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt_of_minimizesOn_isOpen`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.infValue_hasGradientAt_of_fullHessianDerivative_isOpen`,
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.infValue_hasGradientAt_of_fullHessianDerivative_isOpen_of_verticalFirstOrder`.
+This is the preferred source-facing item-4 route: local vertical lower-model
+data on the projected domain, plus selector stationarity and open-domain
+membership, is enough to transfer the selected-envelope theorem to the literal
+infimum.  Do not require global vertical-fiber minimization unless a later
+concrete source model actually supplies it.
 The current second-order envelope layer also derives the Schur projected
 gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after

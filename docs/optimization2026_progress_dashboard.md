@@ -40,7 +40,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   `lake build StatInference.Optimization.<Module>`; root-build only after
   root-import or broad cross-module changes; batch final docs, scans, rebase,
   commit, and push once per verified packet.
-- Current proof worktree: use `/private/tmp/chewi-smpgd-probability` for the
+- Current proof worktree: use `/private/tmp/chewi-schur-direct` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
 - Latest Chapter 13 frontier: Chewi Proposition 13.11 now has a compiled
@@ -345,6 +345,26 @@ This dashboard tracks the Chewi optimization formalization lane for
   gradient, reusing `FirstOrderStrongConvexOn.lower_model`.  Future item-4
   work should assume/prove `BarrierInfProjectionSelectorMinimizes` instead of
   treating `barrierInfProjectionValue` as the final source value.
+- Inf-projection local literal-infimum bridge: the newest packet localizes the
+  preceding bridge to Chewi's projected domain.  Reusable declarations include
+  `BarrierInfProjectionSelectorMinimizesOn`,
+  `BarrierInfProjectionSelectorMinimizesOn.value_eq_infValue_of_mem`,
+  `BarrierInfProjectionSelectorMinimizesOn.infValue_eq_value_of_mem`,
+  `BarrierInfProjectionSelectorMinimizesOn.of_vertical_firstOrder_zero`,
+  `BarrierInfProjectionSelectorStationary.infValue_hasGradientAt_of_minimizesOn_mem_nhds`,
+  `BarrierInfProjectionSelectorStationary.infValue_hasGradientAt_of_minimizesOn_isOpen`,
+  `BarrierInfProjectionSelectorStationary.minimizesOn_of_vertical_firstOrder`,
+  `BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt_of_minimizesOn_mem_nhds`,
+  `BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt_of_minimizesOn_isOpen`,
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.infValue_hasGradientAt_of_fullHessianDerivative_isOpen`,
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.infValue_hasGradientAt_of_fullHessianDerivative_isOpen_of_verticalFirstOrder`.
+  Search-first reuse: this still uses mathlib's `IsLeast.csInf_eq`,
+  `HasGradientAt.congr_of_eventuallyEq`, and `IsOpen.mem_nhds`, plus the local
+  `FirstOrderStrongConvexOn.lower_model`; no direct mathlib inf-projection
+  envelope theorem was found.  Future item-4 source wrappers should prefer
+  the `...MinimizesOn`/open-domain versions, avoiding the stronger global
+  vertical-minimizer hypothesis unless the source data genuinely proves it.
 - Inf-projection second-order Schur-envelope calculus: the newest packet adds
   `barrierInfProjectionPointFDeriv_apply` and
   `barrierInfProjectionGrad_hasFDerivAt_schur`.  The projected gradient now has

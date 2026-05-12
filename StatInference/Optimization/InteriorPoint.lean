@@ -3652,6 +3652,17 @@ def BarrierInfProjectionSelectorMinimizes
   ∀ (x : E₁) (y : E₂), f (barrierInfProjectionPoint selector x) ≤
     f (WithLp.toLp 2 (x, y))
 
+/--
+A domain-local selector-minimizer certificate for Chewi Proposition 13.11(4):
+only projected-domain points need to realize the vertical infimum.
+-/
+def BarrierInfProjectionSelectorMinimizesOn
+    (s : Set (WithLp 2 (E₁ × E₂)))
+    (f : WithLp 2 (E₁ × E₂) -> ℝ) (selector : E₁ -> E₂) : Prop :=
+  ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+    ∀ y : E₂, f (barrierInfProjectionPoint selector x) ≤
+      f (WithLp.toLp 2 (x, y))
+
 omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
   [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
 theorem BarrierInfProjectionSelectorMinimizes.value_eq_infValue
@@ -3679,6 +3690,36 @@ theorem BarrierInfProjectionSelectorMinimizes.infValue_eq_value
       barrierInfProjectionValue f selector :=
   (hmin.value_eq_infValue).symm
 
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
+theorem BarrierInfProjectionSelectorMinimizesOn.value_eq_infValue_of_mem
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ} {selector : E₁ -> E₂}
+    (hmin : BarrierInfProjectionSelectorMinimizesOn s f selector)
+    {x : E₁} (hx : x ∈ barrierInfProjectionSet s) :
+    barrierInfProjectionValue f selector x =
+      barrierInfProjectionInfValue (E₂ := E₂) f x := by
+  have hleast :
+      IsLeast (barrierInfProjectionFiberValues (E₂ := E₂) f x)
+        (f (barrierInfProjectionPoint selector x)) := by
+    refine ⟨?_, ?_⟩
+    · exact ⟨selector x, rfl⟩
+    · intro r hr
+      rcases hr with ⟨y, rfl⟩
+      exact hmin hx y
+  exact hleast.csInf_eq.symm
+
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁]
+  [NormedAddCommGroup E₂] [InnerProductSpace ℝ E₂] in
+theorem BarrierInfProjectionSelectorMinimizesOn.infValue_eq_value_of_mem
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ} {selector : E₁ -> E₂}
+    (hmin : BarrierInfProjectionSelectorMinimizesOn s f selector)
+    {x : E₁} (hx : x ∈ barrierInfProjectionSet s) :
+    barrierInfProjectionInfValue (E₂ := E₂) f x =
+      barrierInfProjectionValue f selector x :=
+  (hmin.value_eq_infValue_of_mem hx).symm
+
 omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁] in
 theorem BarrierInfProjectionSelectorMinimizes.of_vertical_firstOrder_zero
     {f : WithLp 2 (E₁ × E₂) -> ℝ}
@@ -3698,6 +3739,28 @@ theorem BarrierInfProjectionSelectorMinimizes.of_vertical_firstOrder_zero
       (grad (WithLp.toLp 2 (x, selector x))).snd = 0 := by
     simpa [barrierInfProjectionVerticalGrad, barrierInfProjectionPoint]
       using hvertical_zero x
+  simpa [barrierInfProjectionPoint, hgrad_zero] using hmodel
+
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁] in
+theorem BarrierInfProjectionSelectorMinimizesOn.of_vertical_firstOrder_zero
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂}
+    (hfirst : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      FirstOrderStrongConvexOn Set.univ
+        (fun y : E₂ => f (WithLp.toLp 2 (x, y)))
+        (fun y : E₂ => (grad (WithLp.toLp 2 (x, y))).snd) 0)
+    (hvertical_zero : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      barrierInfProjectionVerticalGrad selector grad x = 0) :
+    BarrierInfProjectionSelectorMinimizesOn s f selector := by
+  intro x hx y
+  have hmodel := (hfirst hx).lower_model
+    (x := selector x) (y := y) (by simp) (by simp)
+  have hgrad_zero :
+      (grad (WithLp.toLp 2 (x, selector x))).snd = 0 := by
+    simpa [barrierInfProjectionVerticalGrad, barrierInfProjectionPoint]
+      using hvertical_zero hx
   simpa [barrierInfProjectionPoint, hgrad_zero] using hmodel
 
 /--
@@ -3805,6 +3868,69 @@ theorem BarrierInfProjectionSelectorStationary.infValue_hasGradientAt
   exact hvalue.congr_of_eventuallyEq
     (Filter.Eventually.of_forall fun y =>
       congrFun hmin.infValue_eq_value y)
+
+/--
+Open/neighborhood form of the literal inf-projection first-order envelope
+theorem.  A selector only needs to minimize vertical fibers locally on the
+projected domain.
+-/
+theorem BarrierInfProjectionSelectorStationary.infValue_hasGradientAt_of_minimizesOn_mem_nhds
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hmin : BarrierInfProjectionSelectorMinimizesOn s f selector)
+    (hmem_nhds : ∀ᶠ y in nhds x, y ∈ barrierInfProjectionSet s)
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hgrad :
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x) :
+    HasGradientAt (barrierInfProjectionInfValue (E₂ := E₂) f)
+      (barrierInfProjectionGrad selector grad x) x := by
+  have hvalue :
+      HasGradientAt (barrierInfProjectionValue f selector)
+        (barrierInfProjectionGrad selector grad x) x :=
+    hsel.value_hasGradientAt hx hgrad hselector
+  exact hvalue.congr_of_eventuallyEq
+    (hmem_nhds.mono fun _ hy =>
+      hmin.infValue_eq_value_of_mem hy)
+
+theorem BarrierInfProjectionSelectorStationary.infValue_hasGradientAt_of_minimizesOn_isOpen
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂} {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hmin : BarrierInfProjectionSelectorMinimizesOn s f selector)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hgrad :
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : HasFDerivAt selector dselector x) :
+    HasGradientAt (barrierInfProjectionInfValue (E₂ := E₂) f)
+      (barrierInfProjectionGrad selector grad x) x :=
+  hsel.infValue_hasGradientAt_of_minimizesOn_mem_nhds hmin
+    (hopen.mem_nhds hx) hx hgrad hselector
+
+omit [NormedAddCommGroup E₁] [InnerProductSpace ℝ E₁] in
+theorem BarrierInfProjectionSelectorStationary.minimizesOn_of_vertical_firstOrder
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {selector : E₁ -> E₂}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hfirst : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      FirstOrderStrongConvexOn Set.univ
+        (fun y : E₂ => f (WithLp.toLp 2 (x, y)))
+        (fun y : E₂ => (grad (WithLp.toLp 2 (x, y))).snd) 0) :
+    BarrierInfProjectionSelectorMinimizesOn s f selector :=
+  BarrierInfProjectionSelectorMinimizesOn.of_vertical_firstOrder_zero
+    hfirst (fun {_} hx => hsel.vertical_grad_eq_zero hx)
 
 noncomputable def barrierInfProjectionBlockXX
     (selector : E₁ -> E₂)

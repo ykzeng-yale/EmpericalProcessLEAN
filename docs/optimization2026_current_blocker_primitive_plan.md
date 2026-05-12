@@ -79,7 +79,7 @@ micro-packet overhead.
    Reuse the cached search results in this document before repeating broad
    `rg` passes.
 4. Worktree discipline.  Broad Optimization proof packets should run in the
-   isolated `/private/tmp/chewi-smpgd-probability` worktree.  Fetch/rebase at
+   isolated `/private/tmp/chewi-schur-direct` worktree.  Fetch/rebase at
    the start and once immediately before push; avoid repeated fetch/rebase
    loops while a focused proof packet is still being developed.
 5. Verification tiers.  During development, use focused
@@ -438,6 +438,27 @@ for the vertical fiber lower model, so zero vertical gradient proves the
 fiber minimum.  Future item-4 source wrappers should carry/prove
 `BarrierInfProjectionSelectorMinimizes` rather than silently identifying the
 selected value with the literal infimum.
+The local literal-infimum bridge packet adds
+`BarrierInfProjectionSelectorMinimizesOn`,
+`BarrierInfProjectionSelectorMinimizesOn.value_eq_infValue_of_mem`,
+`BarrierInfProjectionSelectorMinimizesOn.infValue_eq_value_of_mem`,
+`BarrierInfProjectionSelectorMinimizesOn.of_vertical_firstOrder_zero`,
+`BarrierInfProjectionSelectorStationary.infValue_hasGradientAt_of_minimizesOn_mem_nhds`,
+`BarrierInfProjectionSelectorStationary.infValue_hasGradientAt_of_minimizesOn_isOpen`,
+`BarrierInfProjectionSelectorStationary.minimizesOn_of_vertical_firstOrder`,
+`BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt_of_minimizesOn_mem_nhds`,
+`BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt_of_minimizesOn_isOpen`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.infValue_hasGradientAt_of_fullHessianDerivative_isOpen`,
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.infValue_hasGradientAt_of_fullHessianDerivative_isOpen_of_verticalFirstOrder`.
+This replaces the stronger global fiber-minimizer route with a projected-domain
+open-neighborhood route: prove the vertical lower model only for
+`x ∈ barrierInfProjectionSet s`, then use stationarity and `IsOpen.mem_nhds`
+to transport the selected-envelope gradient to Chewi's literal `inf_y` value.
+Search-first result: the proof reuses mathlib `IsLeast.csInf_eq`,
+`HasGradientAt.congr_of_eventuallyEq`, `IsOpen.mem_nhds`, and the local
+`FirstOrderStrongConvexOn.lower_model`; no direct mathlib inf-projection
+envelope theorem was found.
 The second-order Schur-envelope packet adds
 `barrierInfProjectionPointFDeriv_apply` and
 `barrierInfProjectionGrad_hasFDerivAt_schur`.  If the original gradient has

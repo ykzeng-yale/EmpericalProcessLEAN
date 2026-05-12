@@ -991,6 +991,62 @@ theorem BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt
     (Filter.Eventually.of_forall fun y =>
       congrFun hmin.infValue_eq_value y)
 
+/--
+Local projected-domain version of the third-order envelope gradient theorem
+for Chewi's literal inf-projection value.  The selector only needs to minimize
+vertical fibers on a neighborhood inside the projected domain.
+-/
+theorem BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt_of_minimizesOn_mem_nhds
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    (henv :
+      BarrierInfProjectionThirdOrderEnvelopeOn s f selector grad hess invHyy
+        third schurDeriv)
+    (hmin : BarrierInfProjectionSelectorMinimizesOn s f selector)
+    {x : E₁} (hmem_nhds : ∀ᶠ y in nhds x, y ∈ barrierInfProjectionSet s)
+    (hx : x ∈ barrierInfProjectionSet s) :
+    HasGradientAt (barrierInfProjectionInfValue (E₂ := E₂) f)
+      (barrierInfProjectionGrad selector grad x) x :=
+  (henv.value_hasGradientAt hx).congr_of_eventuallyEq
+    (hmem_nhds.mono fun _ hy =>
+      hmin.infValue_eq_value_of_mem hy)
+
+/--
+Open-projected-domain version of the third-order envelope gradient theorem for
+Chewi's literal inf-projection value.
+-/
+theorem BarrierInfProjectionThirdOrderEnvelopeOn.infValue_hasGradientAt_of_minimizesOn_isOpen
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    (henv :
+      BarrierInfProjectionThirdOrderEnvelopeOn s f selector grad hess invHyy
+        third schurDeriv)
+    (hmin : BarrierInfProjectionSelectorMinimizesOn s f selector)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    {x : E₁} (hx : x ∈ barrierInfProjectionSet s) :
+    HasGradientAt (barrierInfProjectionInfValue (E₂ := E₂) f)
+      (barrierInfProjectionGrad selector grad x) x :=
+  henv.infValue_hasGradientAt_of_minimizesOn_mem_nhds hmin
+    (hopen.mem_nhds hx) hx
+
 theorem BarrierInfProjectionThirdOrderEnvelopeOn.grad_hasFDerivAt
     [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
     {s : Set (WithLp 2 (E₁ × E₂))}
@@ -1537,6 +1593,121 @@ theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_ful
           (hmodel.hyy_hess_eq (x := x) hx)
           (hmodel.hyy_inv_eq (x := x) hx) w)
       hmixed_full
+
+/--
+Literal inf-projection gradient theorem from the packaged adjoint-square
+Schur-envelope model.  This is the open-domain version of Chewi Proposition
+13.11(4)'s first-order conclusion for `x ↦ inf_y f(x, y)`, assuming a local
+vertical-fiber minimizer certificate.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.infValue_hasGradientAt_of_fullHessianDerivative_isOpen
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₁] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {hessDeriv : E₁ -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hmin : BarrierInfProjectionSelectorMinimizesOn s f selector)
+    (hfgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hhess : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt hess (hessDeriv x) (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hinvDeriv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x)
+    (hmixed_full : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ a v : WithLp 2 (E₁ × E₂),
+        inner ℝ v ((hessDeriv x a) v) =
+          third (barrierInfProjectionPoint selector x) a v)
+    {x : E₁} (hx : x ∈ barrierInfProjectionSet s) :
+    HasGradientAt (barrierInfProjectionInfValue (E₂ := E₂) f)
+      (barrierInfProjectionGrad selector grad x) x := by
+  have henv :=
+    hmodel.thirdOrderEnvelopeOn_of_fullHessianDerivative_isOpen
+      hopen hfgrad hgrad hhess hselector hinvDeriv hmixed_full
+  exact henv.infValue_hasGradientAt_of_minimizesOn_isOpen hmin hopen hx
+
+/--
+Source-shaped literal inf-projection gradient theorem from the packaged
+adjoint-square model.  The local vertical minimizer hypothesis is derived from
+the vertical first-order lower-model condition plus selector stationarity.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.infValue_hasGradientAt_of_fullHessianDerivative_isOpen_of_verticalFirstOrder
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₁] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {hessDeriv : E₁ -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hfirst : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      FirstOrderStrongConvexOn Set.univ
+        (fun y : E₂ => f (WithLp.toLp 2 (x, y)))
+        (fun y : E₂ => (grad (WithLp.toLp 2 (x, y))).snd) 0)
+    (hfgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hhess : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt hess (hessDeriv x) (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hinvDeriv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x)
+    (hmixed_full : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ a v : WithLp 2 (E₁ × E₂),
+        inner ℝ v ((hessDeriv x a) v) =
+          third (barrierInfProjectionPoint selector x) a v)
+    {x : E₁} (hx : x ∈ barrierInfProjectionSet s) :
+    HasGradientAt (barrierInfProjectionInfValue (E₂ := E₂) f)
+      (barrierInfProjectionGrad selector grad x) x := by
+  exact
+    hmodel.infValue_hasGradientAt_of_fullHessianDerivative_isOpen
+      hopen
+      (hmodel.selector_stationary.minimizesOn_of_vertical_firstOrder hfirst)
+      hfgrad hgrad hhess hselector hinvDeriv hmixed_full hx
 
 /--
 Third-order selected-envelope certificate from a supplied Schur-Hessian
