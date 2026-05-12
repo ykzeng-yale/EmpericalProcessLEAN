@@ -420,7 +420,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   certificate from original-domain derivative hypotheses
   `∀ z ∈ s, HasFDerivAt hess ... z` and the source mixed-third pairing,
   using selector stationarity to prove selected graph membership.  The
-  endpoint wrappers
+  non-literal third-order envelope wrappers
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_sourceFullHessianDerivative_isOpen`
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_sourceFirstSecondFullHessianDerivative_isOpen`
+  now expose the reusable `BarrierInfProjectionThirdOrderEnvelopeOn`
+  certificate directly from source-domain data, before any vertical minimizer
+  or literal-infimum package is needed.  The endpoint wrappers
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
   and
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`

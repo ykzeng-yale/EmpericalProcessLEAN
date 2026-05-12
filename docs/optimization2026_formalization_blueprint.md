@@ -285,10 +285,14 @@ When that derivative is available on the original barrier domain `s`, use
 `BarrierInfProjectionFullHessianDerivativeOn.of_source`: selector stationarity
 proves the selected graph point belongs to `s`.  The source-domain endpoint
 wrappers
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_sourceFullHessianDerivative_isOpen`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_sourceFirstSecondFullHessianDerivative_isOpen`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
 and
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
 avoid manually restating the selected-graph Hessian derivative certificate.
+Use the non-literal wrappers when the reusable `BarrierInfProjectionThirdOrderEnvelopeOn`
+certificate is needed before the literal vertical-minimizer package.
 If the source model also proves first- and second-order differentiability on
 `s`, use
 `BarrierInfProjectionSelectorStationary.hasGradientAt_of_source`,

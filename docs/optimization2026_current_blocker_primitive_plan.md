@@ -568,7 +568,12 @@ obligation.  Reuse
 `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_of_source` to lift
 source-domain `∀ z ∈ s, HasGradientAt f (grad z) z` and
 `∀ z ∈ s, HasFDerivAt grad (hess z) z` to selected graph points.  For
-Proposition 13.11(4) source instances, prefer
+Proposition 13.11(4) source instances that need the reusable selected-value
+third-order envelope before literal minimization, prefer
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_sourceFullHessianDerivative_isOpen`
+or
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_sourceFirstSecondFullHessianDerivative_isOpen`.
+When the literal `inf_y` package is also needed, prefer
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`
 and
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`
