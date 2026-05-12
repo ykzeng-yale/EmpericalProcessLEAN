@@ -10237,3 +10237,19 @@ bad-event membership for the selected empirical-cover cardinality under the
 centered-bad restricted law, while the constructor composes with the existing
 selected-to-recorded cardinality monotonicity.  The next theorem-facing
 probability target remains that restricted selected-bad membership statement.
+
+2026-05-12 scaled displayed-beta named source surface: search of the active
+source API found `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_scaledOuterProbabilityBound`
+and `...of_eventual_ae_scaled_bound`, but no named scaled bad-set bridge
+parallel to the fixed-radius restricted constructors.  `Theorem243.lean` now
+adds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_namedBadSet_scaledOuterProbability_bound`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet_of_countable`.
+These let the remaining product/Fubini or conditioning proof state its source
+input as restricted a.e. membership in the scaled selected finite-net bad set
+`VdVWTheorem243SelectedFiniteNetBadSet M C eta epsilon ...`; the bridge then
+uses the existing scaled displayed-beta comparison constructor.  The next
+non-duplicative theorem target is the actual restricted scaled selected-bad
+membership theorem under the centered-bad restricted product law.

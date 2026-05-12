@@ -294,6 +294,19 @@ removes that field from the non-common-iid selected-cover constructor.  This
 leaves the real source work as the `hphi_id` comparison and selected
 finite-center maximal event.
 
+The same displayed-beta lane now also accepts named scaled bad-set source
+inputs through
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_namedBadSet_scaledOuterProbability_bound`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet_of_countable`.
+Thus the active event-route target can be stated directly as restricted a.e.
+membership in `VdVWTheorem243SelectedFiniteNetBadSet M C eta epsilon ...`
+under the named centered-bad restricted product law.  This records the scaled
+source surface for the displayed-beta primitive; the mathematical gap remains
+proving that restricted selected-bad membership from the VdV&W
+ghost/Rademacher selected-cover argument.
+
 For the faithful Markov/symmetrization route, the source input has also been
 lowered from finite-net Hoeffding tail/UI to selected normalized-log tail/UI:
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_tailExpectation`.

@@ -4681,3 +4681,17 @@ to the externally recorded entropy cardinality.  The open source theorem is
 now cleaner: prove restricted a.e. membership in
 `VdVWTheorem243SelectedFiniteNetBadSet` for the selected empirical-cover
 cardinality.
+
+2026-05-12 scaled displayed-beta named source surface:
+`Theorem243.lean` now adds the scaled named-event constructors
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_namedBadSet_scaledOuterProbability_bound`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_namedScaledSelectedBadSet_of_countable`.
+These are the scaled counterparts of the fixed-radius restricted named
+bridges: a source proof may now prove restricted a.e. membership in
+`VdVWTheorem243SelectedFiniteNetBadSet M C eta epsilon ...` under the
+centered-bad restricted law and feed the displayed Chebyshev-beta comparison
+directly, with the beta factor absorbed by `of_scaledOuterProbabilityBound`.
+The remaining probability theorem is still the restricted scaled selected-bad
+membership itself, not another convergence wrapper.
