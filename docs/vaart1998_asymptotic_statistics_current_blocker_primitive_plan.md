@@ -17,7 +17,11 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Immediate score-at-theta0 vector source:
+`scoreAtTheta0 n omega (samples n omega i) = sqrt n • scoreVector i.val omega`,
+combined with the existing scaled raw estimating-map vector identity.
 
 Immediate smooth Taylor source helper:
 `vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffTheta0SecondDerivativeContDiff`.
@@ -123,15 +127,17 @@ composes
 `vaart1998_theorem_5_41_derivativeCommonVectorLaw_of_matrixTableRepresentation`,
 so model instances can provide `HasLaw (derivativeTable i) derivativeLaw P`
 and the infinite-product law of the derivative table process directly.
-The newest estimating-map `ContDiffOn` Taylor endpoint
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+The newest score-at-theta0 vector source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 composes
 `vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffTheta0SecondDerivativeContDiff`
 and
 `vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_ae_of_unscaled_selectedTaylor`,
 so model instances no longer provide the raw single-observation Taylor identity
 as an opaque field.  It is derived from open-set `ContDiffOn` smoothness of the
-estimating map and derivative map on the textbook segment.
+estimating map and derivative map on the textbook segment.  The endpoint also
+derives the raw score-scaling identity from the model-facing normalized
+score-vector display, so `hScore_scaled` is no longer live.
 
 Continuation recipe:
 
@@ -145,17 +151,18 @@ Continuation recipe:
 Priority order for the next packet:
 
 1. Move one layer closer to a model-facing finite-dimensional statement:
-   package the remaining score/source hypotheses around the score-law
-   covariance/moment source endpoint, especially root/scaling/measurability
-   fields or the derivative-coordinate action representation if they can be
-   discharged from model definitions.
+   package the remaining source hypotheses around the score-law covariance
+   and moment route, especially root/estimator-scaling/measurability fields or
+   the derivative-coordinate action representation if they can be discharged
+   from model definitions.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    residual-source endpoint; do not rebuild completed score CLT, display weak
    convergence, display tightness, residual convergence, or action-bound wrapper
    stacks.  Do not replay the vector score-representation or vector score
    common-law transfers, the derivative-table common-law transfer, or the
-   smooth/raw/scaled pointwise Taylor transfer.
+   smooth/raw/scaled pointwise Taylor transfer or the score-at-theta0 vector
+   scaling transfer.
 
 Operating rules:
 

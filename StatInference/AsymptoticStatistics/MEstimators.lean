@@ -20116,16 +20116,19 @@ theorem vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffThe
 
 /--
 van der Vaart 1998, Theorem 5.41, finite-dimensional matrix-entry derivative,
-derivative-table common law, score-law moment, score-law covariance, open-set
-estimating-map Taylor source, vector score-representation, and vector score
-common-law source for the absorbing residual route.
+derivative-table common law, score-law moment, score-law covariance,
+score-at-theta0 vector source, open-set estimating-map Taylor source, vector
+score-representation, and vector score common-law source for the absorbing
+residual route.
 
 This wrapper derives the textbook unscaled single-observation Taylor identity
 from `ContDiffOn` smoothness of the estimating map and derivative map on an
-open set containing the textbook segment.  The resulting raw identity is then
-scaled and fed into the compiled residual/common-law route.
+open set containing the textbook segment.  It also derives the score scaling
+identity from the model-facing normalized score-vector display, so the raw
+`scoreAtTheta0 = scale • estimatingMap theta0` field is no longer part of this
+source interface.
 -/
-theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope
     {Ω Ω' Observation Coord Param : Type*} [Fintype Coord] [Fintype Param]
     [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
     [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
@@ -20198,6 +20201,10 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
         scale n ω • estimatingMap n ω (samples n ω i)
           (theta0 n ω) =
           √(n : ℝ) • scoreVector i.val ω)
+    (hScoreAtTheta0_vector_eq : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) =
+          √(n : ℝ) • scoreVector i.val ω)
     (hDerivativeCoordinate_meas : ∀ entry : Coord × Param,
       Measurable (fun sampleVector : Coord × Param -> ℝ =>
         sampleVector entry))
@@ -20250,10 +20257,6 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       ∀ᵐ ω ∂P,
         empiricalAverageVector (samples n ω)
           (fun x => estimatingMap n ω x (estimator n ω)) = 0)
-    (hScore_scaled : ∀ n : ℕ,
-      ∀ᵐ ω ∂P, ∀ i : Fin n,
-        scoreAtTheta0 n ω (samples n ω i) =
-          scale n ω • estimatingMap n ω (samples n ω i) (theta0 n ω))
     (hEstimator_scaled : ∀ n : ℕ,
       ∀ᵐ ω ∂P, ∀ i : Fin n,
         estimatingAtEstimator n ω (samples n ω i) =
@@ -20303,6 +20306,15 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
     exact (hDelta_eq_sub n).mono fun ω hdelta => by
       rw [hdelta]
       simp [sub_eq_add_neg]
+  have hScore_scaled : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        scoreAtTheta0 n ω (samples n ω i) =
+          scale n ω • estimatingMap n ω (samples n ω i) (theta0 n ω) := by
+    intro n
+    filter_upwards [hScoreAtTheta0_vector_eq n, hScaledScore_vector_eq n] with
+      ω hscore hscaled
+    intro i
+    exact (hscore i).trans (hscaled i).symm
   have hRawPointwiseTaylor : ∀ n : ℕ,
       ∀ᵐ ω ∂P, ∀ i : Fin n,
         estimatingMap n ω (samples n ω i) (theta0 n ω) +

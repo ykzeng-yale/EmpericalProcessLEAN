@@ -15,15 +15,17 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: estimating-map `ContDiffOn` Taylor source endpoint
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
-in `MEstimators.lean`.  It adds
+Latest verified packet: score-at-theta0 vector source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+in `MEstimators.lean`.  It keeps
 `vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffTheta0SecondDerivativeContDiff`
 and composes it with
 `vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_ae_of_unscaled_selectedTaylor`.
 The route now derives the raw single-observation Taylor identity from open-set
 smoothness of the estimating map and derivative map before applying the
-normalization scale.
+normalization scale.  It also derives the raw score-scaling field from the
+model-facing normalized score-vector display
+`scoreAtTheta0 = sqrt n • scoreVector`.
 
 Immediate predecessor packet: derivative-table common-law endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
@@ -109,11 +111,12 @@ uses
 to remove the explicit residual convergence and residual measurability fields
 from the pointwise-Taylor Theorem 5.41 action endpoint.
 
-Current next blocker: package the remaining model-facing score/source
-hypotheses around the score-law covariance/moment source endpoint.  Prefer
-root/scaling/measurability fields or the derivative-coordinate action
+Current next blocker: package the remaining model-facing source hypotheses
+around the score-law covariance/moment source endpoint.  Prefer
+root/estimator-scaling/measurability fields or the derivative-coordinate action
 representation if they can be discharged from model definitions; do not replay
-the smooth/raw/scaled Taylor transfer.
+the smooth/raw/scaled Taylor transfer or score-at-theta0 vector scaling
+transfer.
 
 ## Verified Frontier
 
