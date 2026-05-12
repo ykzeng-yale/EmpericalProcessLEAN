@@ -17,9 +17,12 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 
 Immediate predecessor endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+
+Earlier predecessor endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 
 Earlier predecessor endpoint:
@@ -45,6 +48,11 @@ sampled derivative-entry table.
 Immediate population `V` source:
 coordinate-basis column identities for `V`, reconstructed into the full
 population matrix action by linearity.
+
+Immediate pointwise smoothness source:
+pointwise open-set, segment-subset, estimating-map `ContDiffOn`, derivative
+identification, derivative-map `ContDiffOn`, and second-derivative
+identification hypotheses.
 
 Immediate raw-root source:
 `empiricalAverageVector (samples n omega) (fun x => estimatingMap n omega x (estimator n omega)) = 0`.
@@ -214,6 +222,13 @@ uses
 full population `V` matrix action from coordinate-basis column identities.
 Thus `hV_matrix_action` is no longer a live full-action field for the current
 source route.
+The newest pointwise smoothness source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+derives the open-set, segment-subset, `ContDiffOn`, and derivative-identification
+a.e. fields from pointwise model hypotheses.  Thus `hOpen`, `hSegmentSubset`,
+`hContDiffEstimatingMap`, `hDerivativeAt_eq_fderiv`,
+`hContDiffDerivativeAt`, and `hSecondDerivative_eq_fderiv` are no longer live
+opaque a.e. fields for the current source route.
 
 Continuation recipe:
 
@@ -227,7 +242,7 @@ Continuation recipe:
 Priority order for the next packet:
 
 1. Move one layer closer to a model-facing finite-dimensional statement:
-   package the remaining pointwise smoothness/a.e. wrappers only if doing so
+   package the remaining score-vector display a.e. wrappers only if doing so
    removes a still-live hypothesis of the current endpoint; otherwise move to
    a concrete model-specialized Theorem 5.41 instantiation.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
@@ -239,7 +254,8 @@ Priority order for the next packet:
    centered derivative-coordinate residual algebra, smooth/raw/scaled pointwise
    Taylor transfer, the score-at-theta0 vector scaling transfer, or the
    estimator-definition, raw-root, selected measurability, or sampled
-   derivative matrix-action, or population `V` basis-action source wrappers.
+   derivative matrix-action, population `V` basis-action, or pointwise
+   smoothness/source-set wrappers.
 
 Operating rules:
 
