@@ -1822,6 +1822,117 @@ theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn
       schur_deriv := henv.schur_deriv }
 
 /--
+The literal third-order package supplies the Chewi Lemma 13.6 source-radius
+local-norm sandwich once strict projected-Hessian positivity is available.
+-/
+theorem BarrierInfProjectionLiteralThirdOrderEnvelopeOn.projected_localNorm_sandwich_sourceRadius_of_hessianPositive
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    {M nu : ℝ} {x y v : E₁}
+    (hpkg :
+      BarrierInfProjectionLiteralThirdOrderEnvelopeOn s f selector grad hess
+        invHess third invHyy schurDeriv M nu)
+    (hMr_lt :
+      M *
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+            x (y - x) < 1)
+    (hs : Convex ℝ (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hy : y ∈ barrierInfProjectionSet s)
+    (hess_pos : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁, v ≠ 0 ->
+        0 < inner ℝ v (barrierInfProjectionSchurHessFrom selector hess invHyy z v))
+    (hdiff_ne : y - x ≠ 0) :
+    (1 - M *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+          x (y - x)) *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v ≤
+      localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ∧
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ≤
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v /
+            (1 - M *
+              localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+                x (y - x)) :=
+  localNorm_sandwich_of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius
+    (s := barrierInfProjectionSet s)
+    (hess := barrierInfProjectionSchurHessFrom selector hess invHyy)
+    (hessDeriv := schurDeriv)
+    (thirdMixed := barrierInfProjectionSchurLiftedThird selector hess invHyy third)
+    (x := x) (y := y) (M := M)
+    hMr_lt hs hx hy hpkg.barrier.self_concordant hess_pos hdiff_ne
+    hpkg.schur_deriv.continuousOn
+    (by
+      intro t ht
+      exact hpkg.schur_deriv.hess_hasFDerivAt
+        (hessianSegmentPoint_mem_of_convex_interior hs hx hy ht))
+    (by
+      intro w t ht
+      have hz := hessianSegmentPoint_mem_of_convex_interior hs hx hy ht
+      simpa [hessianSegmentMixedThirdPsiDeriv] using
+        hpkg.schur_deriv.mixed_inner_eq hz (y - x) w)
+    v
+
+/--
+Zero-displacement-safe source-radius local-norm sandwich from the literal
+third-order package.
+-/
+theorem BarrierInfProjectionLiteralThirdOrderEnvelopeOn.projected_localNorm_sandwich_sourceRadius
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    {M nu : ℝ} {x y v : E₁}
+    (hpkg :
+      BarrierInfProjectionLiteralThirdOrderEnvelopeOn s f selector grad hess
+        invHess third invHyy schurDeriv M nu)
+    (hMr_lt :
+      M *
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+            x (y - x) < 1)
+    (hs : Convex ℝ (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hy : y ∈ barrierInfProjectionSet s)
+    (hess_pos : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+      ∀ v : E₁, v ≠ 0 ->
+        0 < inner ℝ v (barrierInfProjectionSchurHessFrom selector hess invHyy z v)) :
+    (1 - M *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+          x (y - x)) *
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v ≤
+      localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ∧
+        localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) y v ≤
+          localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy) x v /
+            (1 - M *
+              localNorm (barrierInfProjectionSchurHessFrom selector hess invHyy)
+                x (y - x)) := by
+  by_cases hdiff : y - x = 0
+  · have hyx : y = x := sub_eq_zero.mp hdiff
+    subst y
+    simp [localNorm_zero]
+  · exact hpkg.projected_localNorm_sandwich_sourceRadius_of_hessianPositive
+      hMr_lt hs hx hy hess_pos hdiff
+
+/--
 Third-order selected-envelope certificate from a supplied Schur-Hessian
 derivative certificate.  This separates the easy selected-value
 first/second-order envelope part from the harder Schur derivative construction:

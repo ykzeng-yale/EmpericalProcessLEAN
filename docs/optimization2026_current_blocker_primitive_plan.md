@@ -471,6 +471,15 @@ instead of independently threading `selfConcordantBarrierOn`,
 exact blocker is now concrete: provide selector/envelope differentiability,
 vertical lower-model data, full-Hessian derivative pairing, and square-root
 models for a source instance.
+The literal-package local-norm consumer packet adds
+`BarrierInfProjectionLiteralThirdOrderEnvelopeOn.projected_localNorm_sandwich_sourceRadius_of_hessianPositive`
+and
+`BarrierInfProjectionLiteralThirdOrderEnvelopeOn.projected_localNorm_sandwich_sourceRadius`.
+Given the literal package and strict positivity of the projected Schur Hessian,
+these wrappers derive the Chewi Lemma 13.6-style source-radius local-norm
+sandwich directly, including the zero-displacement case.  The next item-4
+proof should therefore construct the concrete package and positivity data; it
+should not reopen the mixed-third segment or local-norm sandwich machinery.
 The second-order Schur-envelope packet adds
 `barrierInfProjectionPointFDeriv_apply` and
 `barrierInfProjectionGrad_hasFDerivAt_schur`.  If the original gradient has

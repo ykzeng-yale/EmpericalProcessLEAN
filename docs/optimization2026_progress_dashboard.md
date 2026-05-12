@@ -377,6 +377,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `thirdOrderEnvelopeOn`; the remaining exact work is to construct the
   concrete selector/envelope derivative and square-root model data that feed
   this package.
+- Inf-projection literal-package local-norm consumer: the newest packet adds
+  `BarrierInfProjectionLiteralThirdOrderEnvelopeOn.projected_localNorm_sandwich_sourceRadius_of_hessianPositive`
+  and
+  `BarrierInfProjectionLiteralThirdOrderEnvelopeOn.projected_localNorm_sandwich_sourceRadius`.
+  Once the literal third-order package and strict projected-Hessian positivity
+  are available, the Chewi Lemma 13.6-style projected source-radius local-norm
+  sandwich follows directly, with the zero-displacement case handled inside
+  the wrapper.  Future item-4 source instances should therefore focus on
+  constructing the package and projected Hessian positivity, not rebuilding
+  segment Schur-derivative or local-norm transport arguments.
 - Inf-projection second-order Schur-envelope calculus: the newest packet adds
   `barrierInfProjectionPointFDeriv_apply` and
   `barrierInfProjectionGrad_hasFDerivAt_schur`.  The projected gradient now has

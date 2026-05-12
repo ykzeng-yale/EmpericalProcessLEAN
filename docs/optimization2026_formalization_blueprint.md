@@ -240,6 +240,15 @@ It bundles the projected barrier oracle, literal-infimum gradient theorem,
 projected-gradient Schur-Hessian derivative, and lifted-third derivative
 certificate.  This is the intended source-facing target for item 13.11(4)
 while the formalization remains in supplied-oracle form.
+The literal package now also has source-facing local-norm consumers:
+`BarrierInfProjectionLiteralThirdOrderEnvelopeOn.projected_localNorm_sandwich_sourceRadius_of_hessianPositive`
+and
+`BarrierInfProjectionLiteralThirdOrderEnvelopeOn.projected_localNorm_sandwich_sourceRadius`.
+These turn the package plus strict projected-Hessian positivity into the
+Chewi Lemma 13.6-style projected source-radius local-norm sandwich, including
+the zero-displacement case.  For future Proposition 13.11(4) source instances,
+the live work is the concrete package/positivity construction rather than
+another Schur-derivative or local-norm transport wrapper.
 The current second-order envelope layer also derives the Schur projected
 gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after
