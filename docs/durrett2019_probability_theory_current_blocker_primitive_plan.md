@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V241
+## Live In-Thread Goal Prompt V242
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,12 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V241 adds the Theorem 4.5.7 finite-horizon
+Latest verified Lean packet V242 adds the first deterministic RHS
+Fubini/layer-cake bridge:
+`durrett2019_theorem_4_5_7_terminal_tail_sq_lintegral_eq_sqrt_lintegral` and
+`durrett2019_theorem_4_5_7_terminal_tail_sq_lintegral_eq_sqrt_lintegral_of_integrable`.
+It proves `∫_0^∞ P(A_infty > a^2) da = E sqrt(A_infty)` in the extended
+nonnegative form used by the proof.  V241 supplied the finite-horizon
 layer-cake handoff:
 `durrett2019_theorem_4_5_7_lintegral_le_lintegral_tail_bound_lt` and
 `durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_terminal_tail_add_min_terminal_lintegral_of_source_square_minus_martingale_monotone_terminal`.
@@ -49,8 +54,9 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: package the deterministic/Fubini
-calculation of the two V241 right-hand-side integrals toward Durrett's
+Next aggressive theorem-sized packet: package the remaining deterministic/Fubini
+calculation of the second V241 right-hand-side integral,
+`∫_0^∞ a^{-2} E(A_infty ∧ a^2) da = 2 E sqrt(A_infty)`, toward Durrett's
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search Mathlib/local APIs first
 (`lintegral_lintegral_swap`, `lintegral_add`, `lintegral_const_mul`,
 `ENNReal.ofReal`, square-root/rpow layer-cake, interval-integral calculus for
@@ -58,7 +64,7 @@ calculation of the two V241 right-hand-side integrals toward Durrett's
 `Monotone.lintegral_iSup`/monotone convergence APIs).  Do not revisit closed
 Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the V236 probability conversion, the
 V237/V238/V239 stopped source packaging, the V240 raw/stopped survival split,
-or the V241 layer-cake handoff
+the V241 layer-cake handoff, or the V242 first-RHS layer-cake bridge
 unless a compile error exposes a genuinely missing primitive.
 
 ## Recent Route Notes
@@ -502,14 +508,21 @@ This converts the V240 probability inequality into a finite-horizon
 extended-expectation inequality.  The stochastic side is now connected to the
 textbook's Fubini/calculus side.
 
-Next aggressive step: continue Durrett Theorem 4.5.7 by proving the
-deterministic/Fubini integral calculation that turns the V241 RHS into
+V242 adds the first deterministic RHS bridge:
+`durrett2019_theorem_4_5_7_terminal_tail_sq_lintegral_eq_sqrt_lintegral` and
+`durrett2019_theorem_4_5_7_terminal_tail_sq_lintegral_eq_sqrt_lintegral_of_integrable`.
+This formalizes Durrett's line
+`P(A_infty > a^2) = P(sqrt A_infty > a)`, integrated over `a > 0`.
+
+Next aggressive step: continue Durrett Theorem 4.5.7 by proving the remaining
+second-RHS deterministic/Fubini calculation that turns the V241/V242 RHS into
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Do not start by formalizing the full
 Friedman urn state process unless it directly reuses the compiled 4.5.5 ratio
 package.  Do not revisit raw clock pointwise monotonicity, direct martingale
 finite-limit assumptions, denominator divergence on `limsup`, final 4.5.5
 ratio packaging, or the V236 Doob/Kolmogorov probability conversion.  Do not
-route back to the V240 raw/stopped split, the V241 layer-cake handoff,
+route back to the V240 raw/stopped split, the V241 layer-cake handoff, the V242
+first-RHS layer-cake bridge,
 stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1856,6 +1869,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V241` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V242` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

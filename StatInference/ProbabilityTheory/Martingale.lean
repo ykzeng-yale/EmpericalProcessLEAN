@@ -23363,6 +23363,45 @@ theorem
     simpa [Real.toNNReal_of_nonneg ha.le] using hprob
 
 /--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+The first Fubini/layer-cake term in the proof is just the layer-cake formula
+for `sqrt A_infty`: on `a > 0`, the events `a^2 < A_infty` and
+`a < sqrt A_infty` coincide.
+-/
+theorem
+    durrett2019_theorem_4_5_7_terminal_tail_sq_lintegral_eq_sqrt_lintegral
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Ainf : Ω -> ℝ}
+    (hAinf_meas : AEMeasurable Ainf P) :
+    (∫⁻ a in Set.Ioi (0 : ℝ), P {ω : Ω | a ^ 2 < Ainf ω}) =
+      ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P := by
+  rw [StatInference.ProbabilityMeasure.lintegral_eq_lintegral_tail_lt
+    (μ := P) (X := fun ω => Real.sqrt (Ainf ω))
+    (ae_of_all P fun ω => Real.sqrt_nonneg (Ainf ω)) hAinf_meas.sqrt]
+  refine MeasureTheory.lintegral_congr_ae ?_
+  filter_upwards
+    [ae_restrict_mem (μ := volume) (measurableSet_Ioi : MeasurableSet (Set.Ioi (0 : ℝ)))]
+    with a ha
+  apply MeasureTheory.measure_congr
+  filter_upwards [] with ω
+  exact propext (Iff.symm (Real.lt_sqrt ha.le))
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support with integrability
+supplying measurability of the terminal clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_terminal_tail_sq_lintegral_eq_sqrt_lintegral_of_integrable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Ainf : Ω -> ℝ}
+    (hAinf_int : Integrable Ainf P) :
+    (∫⁻ a in Set.Ioi (0 : ℝ), P {ω : Ω | a ^ 2 < Ainf ω}) =
+      ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P :=
+  durrett2019_theorem_4_5_7_terminal_tail_sq_lintegral_eq_sqrt_lintegral
+    (P := P) (Ainf := Ainf) hAinf_int.aestronglyMeasurable.aemeasurable
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
