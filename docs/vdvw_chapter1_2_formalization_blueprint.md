@@ -3891,6 +3891,19 @@ finite-center Hoeffding failure-tail error, before entropy or lower-growth
 assumptions are used.  This makes the failure-tail lane available directly at
 the source layer alongside the `hphi_id` comparison layer.
 
+2026-05-12 proof-carrying failure-tail comparison record:
+`Theorem243.lean` now records the honest additive-error source comparison in
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison`.
+Its method
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison.fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality`
+feeds the existing stochastic-entropy convergence consumer after the
+integrated selected finite-center failure-tail error tends to zero.  The
+first-level constructors
+`...of_ae_rademacherBad_countable_firstLevel`,
+`...of_ae_imp_rademacherBad_countable_firstLevel`, and
+`...of_rademacherBad_countable_firstLevel` now package the canonical
+half-radius selected cover into that record.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

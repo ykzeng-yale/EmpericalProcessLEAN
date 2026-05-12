@@ -4797,3 +4797,16 @@ produce the beta-weighted centered-bad outer-probability inequality plus the
 integrated finite-center Hoeffding failure-tail error.  This keeps the next
 source proof on the honest failure-tail lane, avoiding the stronger
 almost-sure finite-center support assumption.
+
+2026-05-12 proof-carrying failure-tail comparison record:
+`Theorem243.lean` now introduces
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison` and
+its convergence handoff
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison.fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality`.
+The canonical first-level constructors
+`...of_ae_rademacherBad_countable_firstLevel`,
+`...of_ae_imp_rademacherBad_countable_firstLevel`, and
+`...of_rademacherBad_countable_firstLevel` turn the long-form Rademacher
+bad-fiber inequalities into this reusable source record.  The remaining proof
+frontier is still the actual pure Rademacher bad-fiber lower bound and the
+vanishing selected failure-tail integral from honest VdV&W hypotheses.

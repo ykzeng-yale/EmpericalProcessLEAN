@@ -10364,3 +10364,18 @@ lower-growth convergence handoff.  This is the theorem-facing alternative to
 the too-strong almost-sure finite-center maximal input: the remaining source
 input can be stated as a pure Rademacher bad-fiber lower bound, either
 restricted-a.e., base-a.e. conditional on the centered bad event, or pointwise.
+
+2026-05-12 proof-carrying failure-tail comparison record:
+`Theorem243.lean` now packages that additive-error source layer as
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison`,
+with a record-level convergence handoff
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison.fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality`.
+It also adds first-level constructors
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison.of_ae_rademacherBad_countable_firstLevel`,
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison.of_ae_imp_rademacherBad_countable_firstLevel`,
+and
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison.of_rademacherBad_countable_firstLevel`.
+Future source work can now produce one reusable proof object carrying the
+displayed Chebyshev beta, selected finite-net event, and integrated
+finite-center Hoeffding failure-tail error, then feed it to the stochastic
+entropy consumer once the failure-tail integral is shown to vanish.
