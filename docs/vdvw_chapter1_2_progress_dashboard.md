@@ -264,7 +264,13 @@ adapter
 `VdVWChebyshev_betaLower_named_centeredPairSubSignSwapBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad`
 now composes that Chebyshev source with the fixed-original sign-swap transport
 input, leaving only the half-scale beta consumer wiring outside the source
-layer.  The averaged product-pair route is now also compiled through
+layer.  The half-scale finite-center failure-tail consumer is now compiled as
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_centeredPairSubSignSwapBad_finiteCenter_failure_tails_halfScale`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale`,
+so the remaining selected-center work is measurability and inverse-square
+tail discharge for the quarter-radius cover.  The averaged product-pair route
+is now also compiled through
 `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
 `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
 `measure_mul_le_vdVWProductMeasure_pairDifference_constWeights_bad_of_split_fiber_lower_bound`,

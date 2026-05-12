@@ -2370,6 +2370,12 @@ above, so they do not change the theorem-level dashboard counts.
    composes this half-scale Chebyshev lower bound with the explicit
    fixed-original sign-swap transport input, so the remaining selected-center
    work is the half-scale beta consumer rather than the pair-sub source mass.
+   The half-scale finite-tail consumer is now also compiled through
+   `VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_centeredPairSubSignSwapBad_finiteCenter_failure_tails_halfScale`
+   and
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale`;
+   it keeps quarter-radius selected-cover event/error measurability and
+   inverse-square tail convergence as the remaining source-layer obligations.
    The averaged product-pair alternative is now compiled through
    `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
    `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,

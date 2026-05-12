@@ -9867,3 +9867,16 @@ the fixed-original sign-swap transport input, producing the signed bad-event
 lower bound at radius `epsilon / 2` and beta denominator
 `(n : ℝ) * (epsilon / 2)^2`.  The remaining work is to wire this half-scale
 beta source into the selected-center convergence consumer.
+
+2026-05-12 half-scale finite-tail sign-swap consumer:
+`Theorem243.lean` now proves
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_centeredPairSubSignSwapBad_finiteCenter_failure_tails_halfScale`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale`.
+These wire the half-scale beta
+`1 - 16*M^2 / (((n : ℝ)+1) * (epsilon/2)^2)` and finite-center failure-tail
+error into the existing stochastic-entropy consumer, scaling the selected
+finite-net target to `4 * H + eta`.  The next source layer is now to discharge
+the quarter-radius selected-center event/error measurability and inverse-square
+tail hypotheses, then feed it with the compiled half-scale sign-swapped
+Chebyshev source.
