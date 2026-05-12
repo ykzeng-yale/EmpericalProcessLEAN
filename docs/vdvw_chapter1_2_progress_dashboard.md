@@ -4653,3 +4653,18 @@ outer-probability bound or an eventual a.e. event implication between
 Theorem 2.4.3 route without re-expanding the raw set comprehensions.  This is
 a source-interface closure only; the actual VdV&W probability comparison or
 event inclusion still has to be proved from the textbook hypotheses.
+
+2026-05-12 restricted named bad-set source surface:
+`Theorem243.lean` now also proves named-event measurability constructors
+`measurableSet_VdVWTheorem243CenteredTruncatedBadSet_of_countable` and
+`measurableSet_VdVWTheorem243SelectedFiniteNetBadSet_of_measurable_cardinality`,
+plus the restricted-measure comparison constructors
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedBadSet`
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedBadSet_of_countable`.
+The Fubini/conditioning source route can now work directly under
+`(vdVWProductMeasure P n).restrict VdVWTheorem243CenteredTruncatedBadSet` and
+prove selected-bad membership a.e.; the constructor converts that restricted
+a.e. statement into the fixed-radius comparison record.  The remaining
+mathematical gap is still the actual restricted selected-net membership
+theorem from VdV&W symmetrization/random-cover hypotheses.

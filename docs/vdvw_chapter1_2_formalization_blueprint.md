@@ -3742,6 +3742,20 @@ fixed-radius Theorem 2.4.3 route.  The mathematical blocker remains upstream:
 prove the named event implication/comparison from the textbook
 symmetrization/random-cover hypotheses.
 
+2026-05-12 restricted named bad-set source surface:
+`Theorem243.lean` now adds the named event measurability bridge
+`measurableSet_VdVWTheorem243CenteredTruncatedBadSet_of_countable` and
+`measurableSet_VdVWTheorem243SelectedFiniteNetBadSet_of_measurable_cardinality`,
+and the fixed-radius comparison constructors
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedBadSet`
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedBadSet_of_countable`.
+These are the Fubini-ready forms of the named bad-set source target: under
+the centered-bad restricted product law, prove selected finite-net bad-event
+membership a.e., and the existing fixed-radius Theorem 2.4.3 route receives
+the required comparison record.  Future work should attack that restricted
+selected-net membership theorem directly.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

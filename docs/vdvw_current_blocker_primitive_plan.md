@@ -10209,3 +10209,19 @@ builds `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison`.
 The next non-duplicative theorem work is still to prove one of those named
 event comparisons from the VdV&W symmetrization/random-cover hypotheses, not
 to add another downstream convergence wrapper.
+
+2026-05-12 restricted named bad-set source surface:
+`Theorem243.lean` now proves
+`measurableSet_VdVWTheorem243CenteredTruncatedBadSet_of_countable`,
+`measurableSet_VdVWTheorem243SelectedFiniteNetBadSet_of_measurable_cardinality`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedBadSet`,
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedBadSet_of_countable`.
+This moves the fixed-radius source interface to the restricted-measure shape
+used by Fubini arguments: once a source proof shows that almost every sample
+under the centered-bad restricted product law lies in the selected finite-net
+bad event, Lean can now build the comparison record, with centered-bad
+measurability discharged from countability and coordinate measurability.  The
+open point is not measurability or restricted/base a.e. conversion anymore; it
+is proving the selected-bad membership statement itself from the textbook
+probability argument.
