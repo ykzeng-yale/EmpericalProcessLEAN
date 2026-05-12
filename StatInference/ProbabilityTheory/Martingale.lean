@@ -13192,6 +13192,45 @@ theorem durrett2019_theorem_4_5_1_square_integral_eq_predictablePart_square_of_i
     _ = ∫ ω, predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω ∂P := by rfl
 
 /--
+Durrett 2019, Theorem 4.5.1 source support: for a square-integrable
+martingale, the square process minus its canonical predictable part is the
+martingale part of the square submartingale.
+-/
+theorem durrett2019_martingale_square_sub_predictablePart_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P) :
+    Martingale
+      (fun n ω => X n ω ^ 2 -
+        predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω) ℱ P := by
+  let Y : ℕ -> Ω -> ℝ := fun k ω => X k ω ^ 2
+  have hY_int : ∀ n, Integrable (Y n) P := by
+    intro n
+    exact durrett2019_integrable_sq_of_memLp_two
+      (P := P) (Y := X n) (hX_memLp_two n)
+  have hY_adapted : StronglyAdapted ℱ Y := by
+    intro n
+    exact (hX.stronglyMeasurable n).pow 2
+  have hM : Martingale (martingalePart Y ℱ P) ℱ P :=
+    martingale_martingalePart hY_adapted hY_int
+  have hEq :
+      (fun n ω => X n ω ^ 2 - predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω) =
+        martingalePart Y ℱ P := by
+    ext n ω
+    have hdecomp :=
+      congrFun (congrFun (martingalePart_add_predictablePart ℱ P Y) n) ω
+    have hdecomp' :
+        martingalePart Y ℱ P n ω +
+            predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω =
+          X n ω ^ 2 := by
+      simpa [Y] using hdecomp
+    linarith
+  simpa [hEq]
+    using hM
+
+/--
 Durrett 2019, Theorem 4.5.1 source bridge for the canonical square-process
 Doob increasing process: after `E X_n^2 = E A_n` is discharged by the
 canonical predictable part, it remains only to bound `E A_n` by the supplied
@@ -21664,6 +21703,260 @@ theorem durrett2019_theorem_4_5_5_max_one_conditionalProbabilitySum_increment_no
   linarith
 
 /--
+Durrett 2019, Theorem 4.5.5 finite-clock support: the canonical predictable
+part of the Borel-Cantelli martingale square is dominated by the cumulative
+conditional-probability clock.
+-/
+theorem
+    durrett2019_theorem_4_5_5_predictablePart_martingalePart_square_le_conditionalProbabilitySum
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ] {B : ℕ -> Set Ω}
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n)) :
+    ∀ᵐ ω ∂P, ∀ n : ℕ,
+      predictablePart
+          (fun k ω => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k ω ^ 2)
+          ℱ P n ω ≤
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω := by
+  let X : ℕ -> Ω -> ℝ :=
+    martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P
+  let A : ℕ -> Ω -> ℝ :=
+    durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B
+  have hB_meas : ∀ n, MeasurableSet (B n) :=
+    durrett2019_theorem_4_5_5_measurableSet_of_adapted (ℱ := ℱ) hB
+  have hX : Martingale X ℱ P := by
+    simpa [X] using
+      durrett2019_example_4_3_3_borel_cantelli_process_martingale
+        (μ := P) (ℱ := ℱ) hB
+  have hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P := by
+    simpa [X] using
+      durrett2019_theorem_4_5_5_martingalePart_process_memLp_two
+        (P := P) (ℱ := ℱ) (B := B) hB_meas
+  have hpred_eq :
+      ∀ᵐ ω ∂P, ∀ n : ℕ,
+        predictablePart (fun k ω => X k ω ^ 2) ℱ P n ω =
+          ∑ i ∈ Finset.range n,
+            P[(fun ω => (X (i + 1) ω - X i ω) ^ 2) | ℱ i] ω :=
+    ae_all_iff.2
+      (durrett2019_theorem_4_5_1_predictablePart_square_ae_eq_sum_conditional_variance
+        (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two)
+  have hcond_le :
+      ∀ᵐ ω ∂P, ∀ i : ℕ,
+        P[(fun ω => (X (i + 1) ω - X i ω) ^ 2) | ℱ i] ω ≤
+          A (i + 1) ω - A i ω :=
+    ae_all_iff.2 (by
+      intro i
+      simpa [X, A] using
+        durrett2019_theorem_4_5_5_martingalePart_condExp_square_le_conditionalProbabilitySum_increment_auto
+          (P := P) (ℱ := ℱ) (B := B) hB_meas i)
+  filter_upwards [hpred_eq, hcond_le] with ω hpredω hcondω n
+  calc
+    predictablePart
+        (fun k ω => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k ω ^ 2)
+        ℱ P n ω
+        =
+      ∑ i ∈ Finset.range n,
+        P[(fun ω => (X (i + 1) ω - X i ω) ^ 2) | ℱ i] ω := by
+        simpa [X] using hpredω n
+    _ ≤ ∑ i ∈ Finset.range n, (A (i + 1) ω - A i ω) := by
+        exact Finset.sum_le_sum fun i _hi => hcondω i
+    _ = A n ω - A 0 ω := by
+        simpa using Finset.sum_range_sub (fun i : ℕ => A i ω) n
+    _ = A n ω := by
+        simp [A, durrett2019_theorem_4_5_5_conditionalProbabilitySum]
+
+/--
+Durrett 2019, Theorem 4.5.5 finite-clock source wrapper.
+
+If the raw cumulative conditional-probability clock has a finite real terminal
+limit on `FiniteVar`, then the Borel-Cantelli martingale part has a finite
+path limit there.  This is the finite-clock input consumed by the V232
+canonical ratio wrapper.
+-/
+theorem
+    durrett2019_theorem_4_5_5_martingalePart_exists_tendsto_on_of_conditionalProbabilitySum_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {B : ℕ -> Set Ω} {FiniteVar : Set Ω} {Ainf : Ω -> ℝ}
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n))
+    (hA_tendsto :
+      ∀ᵐ ω ∂P, ω ∈ FiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop (𝓝 (Ainf ω))) :
+    ∀ᵐ ω ∂P, ω ∈ FiniteVar ->
+      ∃ z : ℝ,
+        Tendsto
+          (fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω)
+          atTop (𝓝 z) := by
+  let X : ℕ -> Ω -> ℝ :=
+    martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P
+  let SqA : ℕ -> Ω -> ℝ :=
+    predictablePart (fun k ω => X k ω ^ 2) ℱ P
+  have hB_meas : ∀ n, MeasurableSet (B n) :=
+    durrett2019_theorem_4_5_5_measurableSet_of_adapted (ℱ := ℱ) hB
+  have hX : Martingale X ℱ P := by
+    simpa [X] using
+      durrett2019_example_4_3_3_borel_cantelli_process_martingale
+        (μ := P) (ℱ := ℱ) hB
+  have hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P := by
+    simpa [X] using
+      durrett2019_theorem_4_5_5_martingalePart_process_memLp_two
+        (P := P) (ℱ := ℱ) (B := B) hB_meas
+  have hSqA_predictable : IsStronglyPredictable ℱ SqA := by
+    simpa [SqA] using
+      (isPredictable_predictablePart
+        (f := fun k ω => X k ω ^ 2) (ℱ := ℱ) (μ := P))
+  have hSquareMinus :
+      Martingale (fun n ω => X n ω ^ 2 - SqA n ω) ℱ P := by
+    simpa [SqA] using
+      durrett2019_martingale_square_sub_predictablePart_martingale
+        (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two
+  have hSqA_int : ∀ n, Integrable (SqA n) P := by
+    intro n
+    dsimp [SqA]
+    rw [predictablePart]
+    fun_prop
+  have hX0 : X 0 =ᵐ[P] 0 := by
+    simpa [X] using
+      durrett2019_theorem_4_5_5_martingalePart_process_zero
+        (P := P) (ℱ := ℱ) B
+  have hSqA0 : SqA 0 = 0 := by
+    simp [SqA,
+      (predictablePart_zero
+        (f := fun k ω => X k ω ^ 2) (ℱ := ℱ) (μ := P))]
+  have hSqA_le_raw :
+      ∀ᵐ ω ∂P, ∀ n : ℕ,
+        SqA n ω ≤
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω := by
+    simpa [SqA, X] using
+      durrett2019_theorem_4_5_5_predictablePart_martingalePart_square_le_conditionalProbabilitySum
+        (P := P) (ℱ := ℱ) (B := B) hB
+  have hraw_mono :
+      ∀ᵐ ω ∂P, ∀ n : ℕ,
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω ≤
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (n + 1) ω :=
+    durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae
+      (P := P) (ℱ := ℱ) B
+  have hSqA_le_Ainf :
+      ∀ᵐ ω ∂P, ω ∈ FiniteVar -> ∀ n : ℕ, SqA (n + 1) ω ≤ Ainf ω := by
+    filter_upwards [hSqA_le_raw, hraw_mono, hA_tendsto] with
+      ω hSqA_le_rawω hraw_monoω hA_tendstoω hFinite n
+    have hraw_monotone :
+        Monotone
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω) :=
+      monotone_nat_of_le_succ hraw_monoω
+    have hraw_le_Ainf :
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (n + 1) ω ≤
+          Ainf ω :=
+      hraw_monotone.ge_of_tendsto (hA_tendstoω hFinite) (n + 1)
+    exact (hSqA_le_rawω (n + 1)).trans hraw_le_Ainf
+  simpa [X, SqA] using
+    durrett2019_theorem_4_5_2_exists_ae_tendsto_on_of_source_square_minus_martingale_cover_auto_bdd_of_predictable
+      (P := P) (ℱ := ℱ) (X := X) (A := SqA) (Ainf := Ainf)
+      (FiniteVar := FiniteVar)
+      hX hSqA_predictable hSquareMinus hX_memLp_two hSqA_int hX0 hSqA0
+      hSqA_le_Ainf
+
+/--
+Durrett 2019, Theorem 4.5.5 finite square-clock source wrapper.
+
+If the canonical predictable part of the Borel-Cantelli martingale square has a
+finite real terminal limit on `FiniteVar`, then the martingale part converges
+there.  This is the finite-clock input in the exact shape needed by the
+finite/infinite ratio assembly.
+-/
+theorem
+    durrett2019_theorem_4_5_5_martingalePart_exists_tendsto_on_of_predictablePart_square_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {B : ℕ -> Set Ω} {FiniteVar : Set Ω} {Ainf : Ω -> ℝ}
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n))
+    (hSqA_tendsto :
+      ∀ᵐ ω ∂P, ω ∈ FiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            predictablePart
+              (fun k ω => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k ω ^ 2)
+              ℱ P n ω)
+          atTop (𝓝 (Ainf ω))) :
+    ∀ᵐ ω ∂P, ω ∈ FiniteVar ->
+      ∃ z : ℝ,
+        Tendsto
+          (fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω)
+          atTop (𝓝 z) := by
+  let X : ℕ -> Ω -> ℝ :=
+    martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P
+  let SqA : ℕ -> Ω -> ℝ :=
+    predictablePart (fun k ω => X k ω ^ 2) ℱ P
+  have hB_meas : ∀ n, MeasurableSet (B n) :=
+    durrett2019_theorem_4_5_5_measurableSet_of_adapted (ℱ := ℱ) hB
+  have hX : Martingale X ℱ P := by
+    simpa [X] using
+      durrett2019_example_4_3_3_borel_cantelli_process_martingale
+        (μ := P) (ℱ := ℱ) hB
+  have hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P := by
+    simpa [X] using
+      durrett2019_theorem_4_5_5_martingalePart_process_memLp_two
+        (P := P) (ℱ := ℱ) (B := B) hB_meas
+  have hSqA_predictable : IsStronglyPredictable ℱ SqA := by
+    simpa [SqA] using
+      (isPredictable_predictablePart
+        (f := fun k ω => X k ω ^ 2) (ℱ := ℱ) (μ := P))
+  have hSquareMinus :
+      Martingale (fun n ω => X n ω ^ 2 - SqA n ω) ℱ P := by
+    simpa [SqA] using
+      durrett2019_martingale_square_sub_predictablePart_martingale
+        (P := P) (ℱ := ℱ) (X := X) hX hX_memLp_two
+  have hSqA_int : ∀ n, Integrable (SqA n) P := by
+    intro n
+    dsimp [SqA]
+    rw [predictablePart]
+    fun_prop
+  have hX0 : X 0 =ᵐ[P] 0 := by
+    simpa [X] using
+      durrett2019_theorem_4_5_5_martingalePart_process_zero
+        (P := P) (ℱ := ℱ) B
+  have hSqA0 : SqA 0 = 0 := by
+    simp [SqA,
+      (predictablePart_zero
+        (f := fun k ω => X k ω ^ 2) (ℱ := ℱ) (μ := P))]
+  have hsq_sub :
+      Submartingale (fun n ω => X n ω ^ 2) ℱ P := by
+    have hsq_cvx : ConvexOn ℝ Set.univ (fun y : ℝ => y ^ 2) := by
+      simpa using
+        ((show Even (2 : ℕ) by decide).convexOn_pow :
+          ConvexOn ℝ Set.univ fun y : ℝ => y ^ 2)
+    have hsq_int :
+        ∀ n, Integrable ((fun y : ℝ => y ^ 2) ∘ X n) P := by
+      intro n
+      simpa [Function.comp_def] using
+        durrett2019_integrable_sq_of_memLp_two
+          (P := P) (Y := X n) (hX_memLp_two n)
+    simpa [Function.comp_def] using
+      durrett2019_theorem_4_2_6_convex_comp_submartingale
+        (μ := P) (ℱ := ℱ) (X := X) (φ := fun y : ℝ => y ^ 2)
+        hX hsq_cvx hsq_int
+  have hSqA_mono :
+      ∀ᵐ ω ∂P, ω ∈ FiniteVar -> Monotone fun n => SqA n ω := by
+    filter_upwards [hsq_sub.monotone_predictablePart] with ω hmonoω _hFinite
+    simpa [SqA] using hmonoω
+  have hSqA_tendsto' :
+      ∀ᵐ ω ∂P, ω ∈ FiniteVar -> Tendsto (fun n : ℕ => SqA n ω) atTop (𝓝 (Ainf ω)) := by
+    filter_upwards [hSqA_tendsto] with ω hω hFinite
+    simpa [SqA, X] using hω hFinite
+  simpa [X, SqA] using
+    durrett2019_theorem_4_5_2_exists_ae_tendsto_on_of_source_square_minus_martingale_monotone_terminal_auto_bdd_of_predictable
+      (P := P) (ℱ := ℱ) (X := X) (A := SqA) (Ainf := Ainf)
+      (FiniteVar := FiniteVar)
+      hX hSqA_predictable hSquareMinus hX_memLp_two hSqA_int hX0 hSqA0
+      hSqA_mono hSqA_tendsto'
+
+/--
 Durrett 2019, Theorem 4.5.5 source support: the textbook tail integrand
 `(max t 1)^{-2}` is integrable on `[0,∞)`.
 -/
@@ -22093,6 +22386,76 @@ theorem
       (P := P) (ℱ := ℱ) (B := B) (D := D)
       (FiniteVar := FiniteVar) (InfiniteVar := InfiniteVar)
       hcover hdenom_atTop_on hmartingale_exists_on_finite hinfinite_normalized
+
+/--
+Durrett 2019, Theorem 4.5.5 event-cover ratio assembly from adapted events,
+with the finite side supplied by the canonical square-clock convergence route.
+
+The finite branch now asks for convergence of the predictable part of the
+Borel-Cantelli martingale square, instead of directly assuming convergence of
+the martingale part itself.
+-/
+theorem
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_square_clock_finite_or_adapted_conditionalProbabilitySum_clock_canonical_auto_tail
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {B : ℕ -> Set Ω} {D FiniteVar InfiniteVar : Set Ω} {Ainf : Ω -> ℝ}
+    (hcover :
+      ∀ᵐ ω ∂P, ω ∈ D -> ω ∈ FiniteVar ∨ ω ∈ InfiniteVar)
+    (hdenom_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop)
+    (hSqA_tendsto_on_finite :
+      ∀ᵐ ω ∂P, ω ∈ D -> ω ∈ FiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            predictablePart
+              (fun k ω => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k ω ^ 2)
+              ℱ P n ω)
+          atTop (𝓝 (Ainf ω)))
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n)) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.BorelCantelli.process B n ω /
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+        atTop (𝓝 1) := by
+  have hSqA_tendsto_inter :
+      ∀ᵐ ω ∂P, ω ∈ D ∩ FiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            predictablePart
+              (fun k ω => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k ω ^ 2)
+              ℱ P n ω)
+          atTop (𝓝 (Ainf ω)) := by
+    filter_upwards [hSqA_tendsto_on_finite] with ω hω hDFinite
+    exact hω hDFinite.1 hDFinite.2
+  have hmartingale_exists_inter :
+      ∀ᵐ ω ∂P, ω ∈ D ∩ FiniteVar ->
+        ∃ z : ℝ,
+          Tendsto
+            (fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω)
+            atTop (𝓝 z) :=
+    durrett2019_theorem_4_5_5_martingalePart_exists_tendsto_on_of_predictablePart_square_tendsto
+      (P := P) (ℱ := ℱ) (B := B) (FiniteVar := D ∩ FiniteVar) (Ainf := Ainf)
+      hB hSqA_tendsto_inter
+  have hmartingale_exists_on_finite :
+      ∀ᵐ ω ∂P, ω ∈ D -> ω ∈ FiniteVar ->
+        ∃ z : ℝ,
+          Tendsto
+            (fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω)
+            atTop (𝓝 z) := by
+    filter_upwards [hmartingale_exists_inter] with ω hω hD hFinite
+    exact hω ⟨hD, hFinite⟩
+  exact
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_adapted_conditionalProbabilitySum_clock_canonical_auto_tail
+      (P := P) (ℱ := ℱ) (B := B) (D := D)
+      (FiniteVar := FiniteVar) (InfiniteVar := InfiniteVar)
+      hcover hdenom_atTop_on hmartingale_exists_on_finite hB
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

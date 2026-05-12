@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V232
+## Live In-Thread Goal Prompt V233
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -364,11 +364,24 @@ Mathlib conditional-expectation representative; Theorem 4.5.3 is applied to the
 clipped pointwise-monotone clock and transferred back to the textbook raw
 denominator by all-time finite a.e. equality.
 
-Next aggressive step: package the finite-clock martingale convergence input
-from the existing Theorem 4.5.2 finite-variance route so it feeds the V232
-canonical ratio wrapper directly, then close the final textbook event split
-from `∑ P(B_n | F_{n-1}) < ∞` versus `= ∞`.  Do not revisit raw clock
-pointwise monotonicity; use the V232 canonical wrapper.  Do not route back to
+V233 packages the finite square-clock side and feeds it into the V232 canonical
+ratio route.  New compiled declarations:
+`durrett2019_martingale_square_sub_predictablePart_martingale`,
+`durrett2019_theorem_4_5_5_predictablePart_martingalePart_square_le_conditionalProbabilitySum`,
+`durrett2019_theorem_4_5_5_martingalePart_exists_tendsto_on_of_conditionalProbabilitySum_tendsto`,
+`durrett2019_theorem_4_5_5_martingalePart_exists_tendsto_on_of_predictablePart_square_tendsto`,
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_square_clock_finite_or_adapted_conditionalProbabilitySum_clock_canonical_auto_tail`.
+The active ratio wrapper no longer needs a direct
+`hmartingale_exists_on_finite` assumption: convergence of the canonical
+predictable part of the Borel-Cantelli martingale square now supplies the
+finite branch through Theorem 4.5.2.
+
+Next aggressive step: close the final textbook event split around the
+conditional-probability clock, reusing Mathlib/local conditional
+Borel-Cantelli support and the V233 square-clock ratio wrapper.  Do not revisit
+raw clock pointwise monotonicity, direct martingale finite-limit assumptions,
+or already closed Chapter 2/3 support.  Do not route back to
 stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1715,6 +1728,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V232` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V233` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

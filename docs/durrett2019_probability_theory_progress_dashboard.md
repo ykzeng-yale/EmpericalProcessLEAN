@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V232` in
+Route from `Live In-Thread Goal Prompt V233` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Section 4.5.5 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the
@@ -208,9 +208,17 @@ It also adds the canonical infinite-clock and ratio wrappers
 `durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock_canonical_auto_tail`
 and
 `durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_adapted_conditionalProbabilitySum_clock_canonical_auto_tail`,
-removing raw pointwise monotonicity from the active source surface.  The next
-target is finite-clock martingale convergence from the existing Theorem 4.5.2
-route, then the final finite/infinite event split.
+removing raw pointwise monotonicity from the active source surface.  V233 adds
+the finite square-clock route:
+`durrett2019_martingale_square_sub_predictablePart_martingale`,
+`durrett2019_theorem_4_5_5_predictablePart_martingalePart_square_le_conditionalProbabilitySum`,
+`durrett2019_theorem_4_5_5_martingalePart_exists_tendsto_on_of_conditionalProbabilitySum_tendsto`,
+`durrett2019_theorem_4_5_5_martingalePart_exists_tendsto_on_of_predictablePart_square_tendsto`,
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_square_clock_finite_or_adapted_conditionalProbabilitySum_clock_canonical_auto_tail`.
+The next target is the final textbook event split around the
+conditional-probability clock, not another direct martingale finite-limit
+assumption.
 
 Closed Chapter 2 support remains available in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
