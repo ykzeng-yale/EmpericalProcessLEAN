@@ -4345,3 +4345,13 @@ a fixed-sign or pointwise sign-section proof into the selected-cover
 displayed-beta source by coefficient monotonicity; the remaining source work
 must average over a nontrivial sign/ghost event or use a stronger probability
 input.
+
+The `Theorem243.lean` source-branch declaration gap is now closed.  The final
+sync packet added finite-center sign-negation aliases, the all-one
+Rademacher sign-vector witness, and notation for the centered truncated bad
+set and selected finite-net bad set used by product-fiber source interfaces.
+The remaining source-branch declaration gap is outside Theorem 2.4.3:
+`FiniteDimensional.lean` still lacks only the two Chapter 1 product-measure
+wrappers `vdVW142_prod_measure_eq_prod_of_forall_nnreal_boundedContinuous_lintegral_mul`
+and
+`vdVW142_prod_measure_ext_of_forall_nnreal_boundedContinuous_lintegral_mul`.

@@ -3460,6 +3460,21 @@ These make the failed shortcut reusable in Lean: a deterministic sign-section
 proof cannot be promoted to the displayed-beta comparison by claiming the
 displayed beta is eventually bounded by `(1 / 2)^n`.
 
+2026-05-12 source-branch notation/sign-symmetry sync:
+`Theorem243.lean` now also exposes the remaining source-branch declarations
+`vdVWFiniteCenterWeightedSupremum_neg_weights`,
+`vdVWFiniteCenterWeightedSupremum_rademacherWeights_neg_sign`,
+`VdVWRademacherSignVector_const_one`,
+`VdVWTheorem243CenteredTruncatedBadSet`, and
+`VdVWTheorem243SelectedFiniteNetBadSet`.  These are small but useful
+source-facing handles for finite-center sign-negation invariance, the
+all-one fixed-sign slice, and the centered/selected bad events used by
+product-fiber comparison statements.  A declaration comparison against
+`origin/codex/vdvw-selected-cover-source` now has no remaining
+`Theorem243.lean` gap; the only remaining VdVW source-branch declaration gap
+is the Chapter 1 finite-dimensional product-measure wrapper pair in
+`FiniteDimensional.lean`.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

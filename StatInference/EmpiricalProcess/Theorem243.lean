@@ -11715,6 +11715,19 @@ theorem vdVWFiniteCenterWeightedSupremum_finCoordinatePerm
   simp [vdVWFiniteCenterWeightedSupremum,
     vdVWWeightedSampleSum_finCoordinatePerm]
 
+/--
+The finite-center weighted supremum is invariant under flipping all weights.
+-/
+theorem vdVWFiniteCenterWeightedSupremum_neg_weights
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) {cardinality : ℕ}
+    (center : Fin cardinality -> Index) (weights : Fin n -> ℝ) :
+    vdVWFiniteCenterWeightedSupremum sample classFun center
+        (fun i : Fin n => -weights i) =
+      vdVWFiniteCenterWeightedSupremum sample classFun center weights := by
+  simp [vdVWFiniteCenterWeightedSupremum, vdVWWeightedSampleSum_neg_weights]
+
 /-- Each center sum is bounded by the finite-center weighted supremum. -/
 theorem abs_vdVWWeightedSampleSum_center_le_finiteCenterWeightedSupremum
     {Observation : Type u} {Index : Type v} {n : ℕ}
@@ -12496,6 +12509,12 @@ theorem VdVWRademacherSignVector.neg
   · left
     simp [hpos]
 
+/-- The constant-one sign vector is a supported Rademacher sign vector. -/
+theorem VdVWRademacherSignVector_const_one {n : ℕ} :
+    VdVWRademacherSignVector (fun _ : Fin n => (1 : ℝ)) := by
+  intro _i
+  exact Or.inr rfl
+
 /-- Rademacher weights commute with deterministic sign negation. -/
 theorem vdVWRademacherWeights_neg_sign
     {n : ℕ} (sign : Fin n -> ℝ) :
@@ -12562,6 +12581,24 @@ theorem vdVWFiniteCenterWeightedSupremum_rademacherWeights_finCoordinatePerm
     (vdVWFiniteCenterWeightedSupremum_finCoordinatePerm
       (Observation := Observation) (Index := Index) perm sample classFun center
       (vdVWRademacherWeights sign))
+
+/--
+The finite-center Rademacher supremum is invariant under deterministic sign
+negation.
+-/
+theorem vdVWFiniteCenterWeightedSupremum_rademacherWeights_neg_sign
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (classFun : Index -> Observation -> ℝ) {cardinality : ℕ}
+    (center : Fin cardinality -> Index) (sign : Fin n -> ℝ) :
+    vdVWFiniteCenterWeightedSupremum sample classFun center
+        (vdVWRademacherWeights (fun i : Fin n => -sign i)) =
+      vdVWFiniteCenterWeightedSupremum sample classFun center
+        (vdVWRademacherWeights sign) := by
+  rw [vdVWRademacherWeights_neg_sign sign]
+  exact
+    vdVWFiniteCenterWeightedSupremum_neg_weights sample classFun center
+      (vdVWRademacherWeights sign)
 
 /--
 For finite classes, a fixed-sample Rademacher-weighted truncated supremum is
@@ -42139,6 +42176,45 @@ theorem prod_measure_le_lintegral_fiber_bound
     μ.prod ν joint ≤ ∫⁻ y, bound y ∂ν := by
   rw [Measure.prod_apply_symm hjoint_meas]
   exact lintegral_mono hfiber
+
+/--
+Centered truncated bad event for the fixed-`M` Theorem 2.4.3 source
+interfaces.
+
+This is only notation for the event repeatedly appearing in the
+displayed-beta/product-fiber source statements.
+-/
+noncomputable def VdVWTheorem243CenteredTruncatedBadSet
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    (P : Measure Observation)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (envelope : Observation -> ℝ) (M epsilon : ℝ) (n : ℕ) :
+    Set (SampleAt Observation n) :=
+  {sample : SampleAt Observation n |
+    epsilon <
+      dist
+        (vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        (0 : ℝ)}
+
+/--
+Selected finite-net bad event for the fixed-`M` Theorem 2.4.3 source
+interfaces.
+-/
+def VdVWTheorem243SelectedFiniteNetBadSet
+    {Observation : Type v} (M C eta epsilon : ℝ)
+    (selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ)
+    (n : ℕ) : Set (SampleAt Observation n) :=
+  {sample : SampleAt Observation n |
+    epsilon <
+      dist
+        (C * vdVWTheorem243FiniteNetHoeffdingUpper
+            (selectedCardinality eta n sample n) n M + eta)
+        (0 : ℝ)}
 
 /--
 Eventual base-measure a.e. implications can be rewritten as eventual

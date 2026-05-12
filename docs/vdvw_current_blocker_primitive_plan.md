@@ -9745,3 +9745,18 @@ pay only `(1 / 2)^n`, which is eventually below the displayed Chebyshev beta
 factor.  The Lemma 2.3.7 source gap therefore still needs a genuinely
 nontrivial sign/ghost averaged event, a product-pair comparison, or an
 explicit stronger probability source.
+
+2026-05-12 source-branch notation/sign-symmetry sync:
+`Theorem243.lean` now also has
+`vdVWFiniteCenterWeightedSupremum_neg_weights`,
+`vdVWFiniteCenterWeightedSupremum_rademacherWeights_neg_sign`,
+`VdVWRademacherSignVector_const_one`,
+`VdVWTheorem243CenteredTruncatedBadSet`, and
+`VdVWTheorem243SelectedFiniteNetBadSet`.  These close the remaining
+`Theorem243.lean` declaration differences against
+`origin/codex/vdvw-selected-cover-source` and give reusable names for
+finite-center sign-negation invariance, the fixed all-one Rademacher slice,
+and the centered/selected bad events in product-fiber source statements.
+The only remaining source-branch declaration difference in the inspected
+VdVW modules is the Chapter 1 finite-dimensional product-measure wrapper pair
+in `FiniteDimensional.lean`.
