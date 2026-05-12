@@ -152,10 +152,15 @@ component-Cauchy packet
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy`
 now gives the more useful arbitrary-halfspace induction route, using
 `chewi1314_halfspaceSlackNegLog_componentCauchy` for the rank-deficient head
-row.  Next construct the concrete range oracle and energy bound for the fully
-general polytope barrier, or prove the summed inverse-Hessian nonnegativity /
-inverse-local identity plus recursive tail Cauchy bridge for the head/tail
-finite-row induction; all segment membership, `ψ`
+row.  The vector-slack packet
+`chewi1314_polytopeSlackNegLog_componentCauchy_of_rightInverse` /
+`chewi1314_polytopeSlackNegLog_componentCauchy_of_surjective` now supplies the
+tail Cauchy bridge whenever the finite slack map has a supplied right inverse
+or is surjective, reusing `positiveOrthantNegLog_componentCauchy`.  Next
+construct the concrete range oracle and energy bound for the fully general
+polytope barrier, or prove the summed inverse-Hessian nonnegativity /
+inverse-local identity for the head/tail finite-row induction; all segment
+membership, `ψ`
 continuity, local-norm continuity/positivity, Riccati comparison, derivative
 inequality, coefficient scaling, final sandwich assembly, first Newton/Dikin
 membership, and inverse-Hessian transport wrappers are now compiled.  Do not

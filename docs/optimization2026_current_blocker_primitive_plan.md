@@ -1385,7 +1385,13 @@ and
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy`;
 for arbitrary ambient halfspaces, prefer this component-Cauchy induction route
 over full-space square-root equivalence assumptions, since single halfspace
-Hessians are rank-deficient in general.  Do not redo scalar
+Hessians are rank-deficient in general.  The newest vector-slack Cauchy packet
+adds `positiveOrthantNegLog_componentCauchy`,
+`chewi1314_polytopeSlackNegLog_componentCauchy_of_rightInverse`, and
+`chewi1314_polytopeSlackNegLog_componentCauchy_of_surjective`, so full-row-rank
+finite slack systems can now provide the recursive tail Cauchy bridge directly
+from the positive-orthant product barrier and affine right-inverse transport.
+Do not redo scalar
 self-concordance, affine right-inverse algebra, or binary sum inverse-local /
 Cauchy algebra.
 Do not redo the
@@ -1422,8 +1428,12 @@ The exact blockers are:
   wrappers; for the arbitrary-halfspace induction route, use the compiled
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy`
   wrapper and prove only the summed inverse-Hessian nonnegativity /
-  inverse-local identity plus the recursive tail Cauchy bridge.  The remaining
-  alternative is opening the inf-projection rule.
+  inverse-local identity plus the recursive tail Cauchy bridge.  When the
+  tail slack map has a supplied right inverse or is surjective, discharge that
+  tail Cauchy bridge with
+  `chewi1314_polytopeSlackNegLog_componentCauchy_of_rightInverse` or
+  `chewi1314_polytopeSlackNegLog_componentCauchy_of_surjective`.  The
+  remaining alternative is opening the inf-projection rule.
   Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi

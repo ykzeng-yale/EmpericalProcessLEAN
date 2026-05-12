@@ -154,7 +154,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   plus the semidefinite-friendly component-Cauchy packet
   `barrierAffinePreimageCauchy_rightInverse`, `negLogBarrier_cauchy_Ioi`,
   `chewi1314_halfspaceSlackNegLog_componentCauchy`, and
-  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy`.
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy`,
+  plus the positive-orthant/vector-slack Cauchy consumers
+  `positiveOrthantNegLog_componentCauchy`,
+  `chewi1314_polytopeSlackNegLog_componentCauchy_of_rightInverse`, and
+  `chewi1314_polytopeSlackNegLog_componentCauchy_of_surjective`.
   Example 13.14's single row log-barrier route can now use the source-shaped
   theorem for `x ↦ -log (b - inner a x)` when `a ≠ 0`, and the finite-row
   orthant-preimage route is compiled for any slack map with a supplied right
@@ -163,8 +167,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   quadratic energy bound.  For fully general row families, next construct the
   concrete range oracle/energy bound or instantiate the row-decomposition
   induction by providing the summed inverse-Hessian nonnegativity /
-  inverse-local identity and the recursive tail component-Cauchy bridge; use
-  the full-space adjoint-square route only for genuinely positive-definite
+  inverse-local identity and the recursive tail component-Cauchy bridge.  For
+  full-row-rank tail slack systems, the tail Cauchy bridge is now provided by
+  the right-inverse/surjective vector-slack Cauchy consumers; use the
+  full-space adjoint-square route only for genuinely positive-definite
   component models.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
   supplied-oracle form, for invertible affine maps, as a single
