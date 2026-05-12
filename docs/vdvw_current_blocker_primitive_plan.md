@@ -10225,3 +10225,15 @@ measurability discharged from countability and coordinate measurability.  The
 open point is not measurability or restricted/base a.e. conversion anymore; it
 is proving the selected-bad membership statement itself from the textbook
 probability argument.
+
+2026-05-12 selected-cardinality restricted named source surface:
+`Theorem243.lean` now proves
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedSelectedBadSet`
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedSelectedBadSet_of_countable`.
+The selected-cover source proof no longer needs to state its conclusion using
+the larger entropy-controlled cardinality.  It may prove selected finite-net
+bad-event membership for the selected empirical-cover cardinality under the
+centered-bad restricted law, while the constructor composes with the existing
+selected-to-recorded cardinality monotonicity.  The next theorem-facing
+probability target remains that restricted selected-bad membership statement.

@@ -4668,3 +4668,16 @@ prove selected-bad membership a.e.; the constructor converts that restricted
 a.e. statement into the fixed-radius comparison record.  The remaining
 mathematical gap is still the actual restricted selected-net membership
 theorem from VdV&W symmetrization/random-cover hypotheses.
+
+2026-05-12 selected-cardinality restricted named source surface:
+`Theorem243.lean` now adds
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedSelectedBadSet`
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedSelectedBadSet_of_countable`.
+These let the remaining selected-cover proof target the actual selected
+finite-net bad event under the centered-bad restricted product law, then
+transfer automatically through the eventual selected-cardinality lower bound
+to the externally recorded entropy cardinality.  The open source theorem is
+now cleaner: prove restricted a.e. membership in
+`VdVWTheorem243SelectedFiniteNetBadSet` for the selected empirical-cover
+cardinality.

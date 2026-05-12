@@ -3756,6 +3756,16 @@ membership a.e., and the existing fixed-radius Theorem 2.4.3 route receives
 the required comparison record.  Future work should attack that restricted
 selected-net membership theorem directly.
 
+2026-05-12 selected-cardinality restricted named source surface:
+`Theorem243.lean` now registers
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedSelectedBadSet`
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_namedSelectedBadSet_of_countable`.
+These are the preferred source interfaces for the selected-cover route: prove
+membership in the selected finite-net bad event for the selected empirical
+cover under the centered-bad restricted product law, then rely on the compiled
+constructor to transport through the recorded entropy cardinality.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
