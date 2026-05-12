@@ -19909,18 +19909,223 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hSecondDerivative_eq_fderiv
 
 /--
+van der Vaart 1998, Theorem 5.41, raw pointwise Taylor identity from open-set
+smoothness of the estimating map and derivative map.
+
+This source helper derives the unscaled single-observation Taylor identity
+needed by the current matrix-entry/common-law endpoint from the actual
+textbook segment `theta0 + t • delta`.  The proof reuses the existing
+coordinate scalar Taylor and `ContDiffOn` source-regularity bridges instead of
+assuming a raw Taylor identity as an opaque field.
+-/
+theorem vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffTheta0SecondDerivativeContDiff
+    {Ω Observation Coord Θ : Type*} [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω}
+    [NormedAddCommGroup Θ] [NormedSpace ℝ Θ]
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (estimatingMap : ℕ -> Ω -> Observation -> Θ -> Coord -> ℝ)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> Θ -> Θ →L[ℝ] (Coord -> ℝ))
+    (secondDerivative :
+      ℕ -> Ω -> Observation -> Θ →L[ℝ] Θ →L[ℝ] (Coord -> ℝ))
+    (sourceSet : ℕ -> Ω -> Observation -> Set Θ)
+    (theta0 estimator delta : ℕ -> Ω -> Θ)
+    (hEstimator_segment : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, theta0 n ω + delta n ω = estimator n ω)
+    (hOpen : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        IsOpen (sourceSet n ω (samples n ω i)))
+    (hSegmentSubset : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ((fun t : ℝ => theta0 n ω + t • delta n ω) ''
+            Set.Icc (0 : ℝ) 1) ⊆
+          sourceSet n ω (samples n ω i))
+    (hContDiffEstimatingMap : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContDiffOn ℝ 1 (estimatingMap n ω (samples n ω i))
+          (sourceSet n ω (samples n ω i)))
+    (hDerivativeAt_eq_fderiv : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          fderiv ℝ (estimatingMap n ω (samples n ω i))
+              (theta0 n ω + x • delta n ω) =
+            derivativeAt n ω (samples n ω i)
+              (theta0 n ω + x • delta n ω))
+    (hContDiffDerivativeAt : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ContDiffOn ℝ 1 (derivativeAt n ω (samples n ω i))
+          (sourceSet n ω (samples n ω i)))
+    (hSecondDerivative_eq_fderiv : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          fderiv ℝ (derivativeAt n ω (samples n ω i))
+              (theta0 n ω + x • delta n ω) =
+            secondDerivative n ω (samples n ω i)) :
+    ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        estimatingMap n ω (samples n ω i) (theta0 n ω) +
+            derivativeAt n ω (samples n ω i) (theta0 n ω)
+              (delta n ω) +
+            (1 / 2 : ℝ) •
+              secondDerivative n ω (samples n ω i)
+                (delta n ω) (delta n ω) =
+          estimatingMap n ω (samples n ω i) (estimator n ω) := by
+  have hEstimatingSource :=
+    vaart1998_theorem_5_41_estimatingMap_source_regular_ae_of_contDiffOn_open
+      (P := P) (samples := samples) (estimatingMap := estimatingMap)
+      (derivativeAt := derivativeAt) (sourceSet := sourceSet)
+      (theta0 := theta0) (delta := delta)
+      hOpen hSegmentSubset hContDiffEstimatingMap hDerivativeAt_eq_fderiv
+  have hCoordinateDerivative :
+      ∀ n : ℕ,
+        ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+          ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+            HasDerivAt
+              (fun t : ℝ =>
+                estimatingMap n ω (samples n ω i)
+                  (theta0 n ω + t • delta n ω) j)
+              (derivativeAt n ω (samples n ω i)
+                (theta0 n ω + x • delta n ω) (delta n ω) j) x :=
+    vaart1998_theorem_5_41_estimatingMap_coordinate_path_hasDerivAt_ae_of_hasFDerivAt
+      (P := P) (samples := samples) (estimatingMap := estimatingMap)
+      (derivativeAt := derivativeAt) (theta0 := theta0)
+      (delta := delta) hEstimatingSource.2
+  have hDerivativeSource :=
+    vaart1998_theorem_5_41_derivativeAt_source_regular_ae_of_contDiffOn_open
+      (P := P) (samples := samples) (derivativeAt := derivativeAt)
+      (secondDerivative := secondDerivative) (sourceSet := sourceSet)
+      (theta0 := theta0) (delta := delta)
+      hOpen hSegmentSubset hContDiffDerivativeAt hSecondDerivative_eq_fderiv
+  have hDerivativePathSource :=
+    vaart1998_theorem_5_41_derivativeAt_path_regular_ae_of_hasFDerivAt
+      (P := P) (samples := samples) (derivativeAt := derivativeAt)
+      (secondDerivative := secondDerivative) (theta0 := theta0)
+      (delta := delta) hDerivativeSource.1 hDerivativeSource.2
+  have hDerivativeTaylorVector :
+      ∀ n : ℕ,
+        ∀ᵐ ω ∂P, ∀ i : Fin n,
+          ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+            derivativeAt n ω (samples n ω i)
+                  (theta0 n ω + x • delta n ω) (delta n ω) -
+                derivativeAt n ω (samples n ω i)
+                  (theta0 n ω) (delta n ω) =
+              (x - 0 : ℝ) •
+                secondDerivative n ω (samples n ω i)
+                  (delta n ω) (delta n ω) :=
+    vaart1998_theorem_5_41_vector_derivativeTaylor_ae_of_constant_secondDerivativeAction
+      (P := P) (samples := samples) (derivativeAt := derivativeAt)
+      (secondDerivative := secondDerivative) (theta0 := theta0)
+      (delta := delta) hDerivativePathSource.1 hDerivativePathSource.2
+  have hContinuousCoordinate : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        ContinuousOn
+          (fun t : ℝ =>
+            estimatingMap n ω (samples n ω i)
+              (theta0 n ω + t • delta n ω) j)
+          (Set.Icc (0 : ℝ) 1) := by
+    intro n
+    exact (hEstimatingSource.1 n).mono fun ω hω i j => by
+      simpa [Function.comp_def] using
+        (continuous_apply j).comp_continuousOn (hω i)
+  have hValue0 : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        estimatingMap n ω (samples n ω i)
+            (theta0 n ω + (0 : ℝ) • delta n ω) j =
+          estimatingMap n ω (samples n ω i) (theta0 n ω) j := by
+    intro n
+    exact Filter.Eventually.of_forall fun ω i j => by
+      simp
+  have hValue1 : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        estimatingMap n ω (samples n ω i)
+            (theta0 n ω + (1 : ℝ) • delta n ω) j =
+          estimatingMap n ω (samples n ω i) (estimator n ω) j := by
+    intro n
+    exact (hEstimator_segment n).mono fun ω hω i j => by
+      simp [one_smul, hω]
+  have hDerivative0 : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        derivativeAt n ω (samples n ω i)
+            (theta0 n ω + (0 : ℝ) • delta n ω) (delta n ω) j =
+          derivativeAt n ω (samples n ω i) (theta0 n ω)
+            (delta n ω) j := by
+    intro n
+    exact Filter.Eventually.of_forall fun ω i j => by
+      simp
+  have hDerivativeTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          derivativeAt n ω (samples n ω i)
+                (theta0 n ω + x • delta n ω) (delta n ω) j -
+              derivativeAt n ω (samples n ω i)
+                (theta0 n ω + (0 : ℝ) • delta n ω) (delta n ω) j =
+            secondDerivative n ω (samples n ω i)
+                (delta n ω) (delta n ω) j * (x - 0) := by
+    intro n
+    exact (hDerivativeTaylorVector n).mono fun ω hω i j x hx => by
+      have hcoord :=
+        congrArg (fun z : Coord -> ℝ => z j) (hω i x hx)
+      simpa [Pi.sub_apply, Pi.smul_apply, smul_eq_mul, mul_comm] using hcoord
+  have hSecondAction : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+          secondDerivative n ω (samples n ω i)
+              (delta n ω) (delta n ω) j =
+            secondDerivative n ω (samples n ω i)
+              (delta n ω) (delta n ω) j := by
+    intro n
+    exact Filter.Eventually.of_forall fun ω i j x hx => rfl
+  have hCoordinateRawTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n, ∀ j : Coord,
+        estimatingMap n ω (samples n ω i) (theta0 n ω) j +
+            derivativeAt n ω (samples n ω i) (theta0 n ω)
+              (delta n ω) j +
+            (1 / 2 : ℝ) *
+              secondDerivative n ω (samples n ω i)
+                (delta n ω) (delta n ω) j =
+          estimatingMap n ω (samples n ω i) (estimator n ω) j :=
+    vaart1998_theorem_5_41_coordinate_rawTaylor_ae_of_scalarPathDerivativeTaylor_secondDerivativeAction
+      (P := P) (samples := samples)
+      (pathValue := fun n ω x j t =>
+        estimatingMap n ω x (theta0 n ω + t • delta n ω) j)
+      (pathDerivative := fun n ω x j t =>
+        derivativeAt n ω x (theta0 n ω + t • delta n ω)
+          (delta n ω) j)
+      (pathSecond := fun n ω x j _ =>
+        secondDerivative n ω x (delta n ω) (delta n ω) j)
+      (rawAtTheta0 := fun n ω x =>
+        estimatingMap n ω x (theta0 n ω))
+      (rawAtEstimator := fun n ω x =>
+        estimatingMap n ω x (estimator n ω))
+      (derivative := fun n ω x =>
+        derivativeAt n ω x (theta0 n ω))
+      (secondDerivative := secondDerivative) (delta := delta)
+      hValue0 hValue1 hDerivative0 hContinuousCoordinate
+      hCoordinateDerivative hDerivativeTaylor hSecondAction
+  exact
+    vaart1998_theorem_5_41_pi_rawTaylor_ae_of_coordinate_rawTaylor
+      (P := P) (samples := samples)
+      (rawAtTheta0 := fun n ω x =>
+        estimatingMap n ω x (theta0 n ω))
+      (rawAtEstimator := fun n ω x =>
+        estimatingMap n ω x (estimator n ω))
+      (derivative := fun n ω x =>
+        derivativeAt n ω x (theta0 n ω))
+      (secondDerivative := secondDerivative) (delta := delta)
+      hCoordinateRawTaylor
+
+/--
 van der Vaart 1998, Theorem 5.41, finite-dimensional matrix-entry derivative,
-derivative-table common law, score-law moment, score-law covariance, unscaled
-pointwise Taylor source, vector score-representation, and vector score
+derivative-table common law, score-law moment, score-law covariance, open-set
+estimating-map Taylor source, vector score-representation, and vector score
 common-law source for the absorbing residual route.
 
-This wrapper lets model-specific statements provide the textbook unscaled
-single-observation Taylor identity for the raw estimating map.  The scaled
-pointwise Taylor identity consumed by the compiled residual route is recovered
-from the score/estimator scaling equations and the displayed scaled-estimator
-definition.
+This wrapper derives the textbook unscaled single-observation Taylor identity
+from `ContDiffOn` smoothness of the estimating map and derivative map on an
+open set containing the textbook segment.  The resulting raw identity is then
+scaled and fed into the compiled residual/common-law route.
 -/
-theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_unscaledPointwiseTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope
     {Ω Ω' Observation Coord Param : Type*} [Fintype Coord] [Fintype Param]
     [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
     [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
@@ -20030,15 +20235,6 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       TendstoInMeasure P
         (fun n ω => empiricalAverage (samples n ω) envelope)
         atTop (fun _ : Ω => envelopeMean))
-    (hRawPointwiseTaylor : ∀ n : ℕ,
-      ∀ᵐ ω ∂P, ∀ i : Fin n,
-        estimatingMap n ω (samples n ω i) (theta0 n ω) +
-            derivativeAt n ω (samples n ω i) (theta0 n ω)
-              (delta n ω) +
-            (1 / 2 : ℝ) •
-              secondDerivative n ω (samples n ω i)
-                (delta n ω) (delta n ω) =
-          estimatingMap n ω (samples n ω i) (estimator n ω))
     (hEnvelopeBound : ∀ᶠ n in atTop, ∀ ω x,
       ‖secondDerivative n ω x‖ ≤ envelope x)
     (hDerivativeAtTheta0_summand_meas : ∀ n : ℕ, ∀ i : Fin n,
@@ -20101,6 +20297,29 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
     TendstoInDistribution scaledEstimator atTop
       (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ)) (Z ω))
       (fun _ => P) Q := by
+  have hEstimator_segment : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, theta0 n ω + delta n ω = estimator n ω := by
+    intro n
+    exact (hDelta_eq_sub n).mono fun ω hdelta => by
+      rw [hdelta]
+      simp [sub_eq_add_neg]
+  have hRawPointwiseTaylor : ∀ n : ℕ,
+      ∀ᵐ ω ∂P, ∀ i : Fin n,
+        estimatingMap n ω (samples n ω i) (theta0 n ω) +
+            derivativeAt n ω (samples n ω i) (theta0 n ω)
+              (delta n ω) +
+            (1 / 2 : ℝ) •
+              secondDerivative n ω (samples n ω i)
+                (delta n ω) (delta n ω) =
+          estimatingMap n ω (samples n ω i) (estimator n ω) :=
+    vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffTheta0SecondDerivativeContDiff
+      (P := P) (samples := samples) (estimatingMap := estimatingMap)
+      (derivativeAt := derivativeAt) (secondDerivative := secondDerivative)
+      (sourceSet := sourceSet) (theta0 := theta0)
+      (estimator := estimator) (delta := delta)
+      hEstimator_segment hOpen hSegmentSubset hContDiffEstimatingMap
+      hDerivativeAt_eq_fderiv hContDiffDerivativeAt
+      hSecondDerivative_eq_fderiv
   have hScaledEstimator_eq : ∀ n : ℕ,
       ∀ᵐ ω ∂P, scaledEstimator n ω = scale n ω • delta n ω := by
     intro n

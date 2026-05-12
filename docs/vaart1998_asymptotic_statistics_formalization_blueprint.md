@@ -77,17 +77,20 @@ composes
 `vaart1998_theorem_5_41_derivativeCommonVectorLaw_of_matrixTableRepresentation`,
 so model instances can state the common law and infinite-product law directly
 for the derivative table process.  The unscaled pointwise-Taylor endpoint
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_unscaledPointwiseTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 composes
+`vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffTheta0SecondDerivativeContDiff`
+and
 `vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_ae_of_unscaled_selectedTaylor`,
-so model instances can state the raw single-observation Taylor identity for
-`estimatingMap` before applying the normalization scale.  The next proof
-packet should derive that raw Taylor identity from model smoothness fields, not
-replay display weak-convergence, display-tightness, score-CLT, residual
+so model instances state open-set smoothness of the estimating map and
+derivative map rather than an opaque raw single-observation Taylor identity.
+The next proof packet should package remaining model-facing source fields such
+as root/scaling/measurability or derivative-coordinate action representation,
+not replay display weak-convergence, display-tightness, score-CLT, residual
 convergence, absorbing tightness, derivative-action wrappers, derivative-entry
 iid source fields, score moment transfer, score-law covariance transfer,
 vector score-representation, vector score common-law transfer,
-derivative-table common-law transfer, or scaled/unscaled Taylor scaling.
+derivative-table common-law transfer, or smooth/raw/scaled Taylor transfer.
 
 ## Chapter Map
 
