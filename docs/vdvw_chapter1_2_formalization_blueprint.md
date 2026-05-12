@@ -3904,6 +3904,19 @@ first-level constructors
 `...of_rademacherBad_countable_firstLevel` now package the canonical
 half-radius selected cover into that record.
 
+2026-05-12 record-level failure-tail lower-growth handoffs:
+`Theorem243.lean` now adds the comparison-record consumers
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison.failureTail_tendsto_zero_of_invSq_lintegral`,
+`...fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_invSq_lintegral`,
+`..._of_eventually_cardinality_ge`, and
+`..._of_eventually_ae_cardinality_ge`.  These reuse the established
+inverse-square finite-center Hoeffding bound and selected-cardinality
+lower-growth lemmas, so any first-level source record can be discharged by a
+full-law inverse-square tail integral or by pointwise/a.e. deterministic
+selected-cardinality growth.  The remaining source gap is not this squeeze,
+but the actual Rademacher bad-fiber lower bound and the derivation of honest
+selected lower-growth from the textbook entropy/packing assumptions.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

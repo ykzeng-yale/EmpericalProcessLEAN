@@ -4810,3 +4810,14 @@ The canonical first-level constructors
 bad-fiber inequalities into this reusable source record.  The remaining proof
 frontier is still the actual pure Rademacher bad-fiber lower bound and the
 vanishing selected failure-tail integral from honest VdV&W hypotheses.
+
+2026-05-12 record-level failure-tail lower-growth handoffs:
+`Theorem243.lean` now also supplies the comparison-record inverse-square and
+lower-growth consumers:
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison.failureTail_tendsto_zero_of_invSq_lintegral`,
+`...fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_invSq_lintegral`,
+`..._of_eventually_cardinality_ge`, and
+`..._of_eventually_ae_cardinality_ge`.  This removes the record-level
+restricted-tail squeeze as an open bookkeeping step; the live mathematical
+source work is now to prove the Rademacher bad-fiber lower bound and connect
+textbook entropy/packing hypotheses to the selected lower-growth assumption.

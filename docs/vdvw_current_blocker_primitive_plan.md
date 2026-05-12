@@ -10379,3 +10379,18 @@ Future source work can now produce one reusable proof object carrying the
 displayed Chebyshev beta, selected finite-net event, and integrated
 finite-center Hoeffding failure-tail error, then feed it to the stochastic
 entropy consumer once the failure-tail integral is shown to vanish.
+
+2026-05-12 record-level failure-tail lower-growth handoffs:
+`Theorem243.lean` now connects that proof-carrying comparison record to the
+existing quantitative tail machinery through
+`VdVWTheorem243FiniteCenterFailureTailSelectedOuterProbabilityComparison.failureTail_tendsto_zero_of_invSq_lintegral`,
+`...fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_invSq_lintegral`,
+`..._of_eventually_cardinality_ge`, and
+`..._of_eventually_ae_cardinality_ge`.  A source proof that produces the
+record no longer needs to manually reprove the restricted failure-tail squeeze:
+it can supply either the explicit inverse-square selected-cardinality
+lintegral convergence or a deterministic selected-cardinality lower bound
+tending to infinity, pointwise or almost surely.  The frontier therefore
+narrows to the genuine VdV&W source tasks: prove the pure Rademacher bad-fiber
+lower bound and derive the selected lower-growth/integral hypothesis from the
+honest entropy/packing assumptions.
