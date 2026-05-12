@@ -4821,3 +4821,11 @@ lower-growth consumers:
 restricted-tail squeeze as an open bookkeeping step; the live mathematical
 source work is now to prove the Rademacher bad-fiber lower bound and connect
 textbook entropy/packing hypotheses to the selected lower-growth assumption.
+
+2026-05-12 record-level untruncated failure-tail handoffs:
+The comparison record now also has large-`M` consumers:
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_finiteCenterFailureTailSelectedComparison`,
+`..._invSq_lintegral`, `..._eventually_cardinality_ge`, and
+`..._eventually_ae_cardinality_ge`.  These remove the remaining record-level
+wrapper gap between fixed-`M` additive failure-tail source records and the
+untruncated centered empirical-process conclusion.

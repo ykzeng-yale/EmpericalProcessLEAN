@@ -10394,3 +10394,14 @@ tending to infinity, pointwise or almost surely.  The frontier therefore
 narrows to the genuine VdV&W source tasks: prove the pure Rademacher bad-fiber
 lower bound and derive the selected lower-growth/integral hypothesis from the
 honest entropy/packing assumptions.
+
+2026-05-12 record-level untruncated failure-tail handoffs:
+`Theorem243.lean` now lifts the proof-carrying comparison record through the
+large-`M` envelope-tail argument via
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_finiteCenterFailureTailSelectedComparison`
+and its inverse-square, pointwise lower-growth, and a.e. lower-growth
+companions.  This closes the bookkeeping step between fixed-`M` record
+production and untruncated centered convergence: a source route may now supply
+one finite-center failure-tail comparison record for each positive truncation
+level, plus the corresponding entropy/cardinality tail hypotheses, without
+restating the untruncation proof.

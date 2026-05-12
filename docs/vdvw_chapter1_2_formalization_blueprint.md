@@ -3917,6 +3917,17 @@ selected-cardinality growth.  The remaining source gap is not this squeeze,
 but the actual Rademacher bad-fiber lower bound and the derivation of honest
 selected lower-growth from the textbook entropy/packing assumptions.
 
+2026-05-12 record-level untruncated failure-tail handoffs:
+`Theorem243.lean` now adds the all-truncation consumers
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_fixedM_finiteCenterFailureTailSelectedComparison`,
+`..._invSq_lintegral`, `..._eventually_cardinality_ge`, and
+`..._eventually_ae_cardinality_ge`.  These compose the comparison record for
+each positive `M` with the existing fixed-`M` entropy consumers and then apply
+the large-`M` envelope-tail untruncation theorem.  The record lane therefore
+now reaches untruncated centered convergence once the genuine source
+comparison and selected tail-growth hypotheses are supplied at every
+truncation level.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
