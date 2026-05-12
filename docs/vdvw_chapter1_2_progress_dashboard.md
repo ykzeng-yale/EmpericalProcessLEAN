@@ -591,6 +591,11 @@ and
 The selected normalized-log tail/UI route now reaches the same final endpoint
 through
 `VdVWTheorem243_variableEntropy_logCardinality_div_tailExpectation_pGlivenkoCantelli_and_inMean`.
+The L1-strengthened selected normalized-log route now also reaches that final
+endpoint through
+`VdVWTheorem243_variableEntropy_logCardinality_div_integral_tendsto_zero_pGlivenkoCantelli_and_inMean`;
+ordinary mean convergence remains an explicit extra hypothesis and is not
+derived from bare random entropy.
 The central selected fixed-radius route now also has
 `VdVWTheorem243_selectedFixedRadiusTail_pGlivenkoCantelli_and_inMean`, so the
 next proof target is the source theorem for selected side conditions, not more
@@ -1654,10 +1659,12 @@ that remains blocked after search.
 2026-05-05 untruncated L1 follow-up: the same L1 route now reaches the
 untruncated centered Theorem 2.4.3 conclusion through
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_integral_tendsto_zero`.
+The same ordinary-mean source now has the final `P`-GC plus in-mean endpoint
+`VdVWTheorem243_variableEntropy_logCardinality_div_integral_tendsto_zero_pGlivenkoCantelli_and_inMean`.
 The current highest-value target is therefore the structural proof that
 selected normalized empirical entropy converges in ordinary mean or is
-uniformly integrable; adding more endpoint wrappers around these same
-hypotheses would be duplicative.
+uniformly integrable; adding more wrappers around these same hypotheses would
+be duplicative.
 
 2026-05-05 fixed-domain UI follow-up: the common-domain Vitali route is now
 compiled in VdV&W notation as

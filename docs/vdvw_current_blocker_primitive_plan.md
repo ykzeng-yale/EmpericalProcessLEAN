@@ -1316,7 +1316,9 @@ tail/UI consumers; deterministic untruncation and envelope-tail bridges;
 the raw normalized-log tail/UI route, deterministic normalized-log bound route,
 ordinary-mean normalized-log route, selected L1 side-condition package, and
 the untruncated centered L1 consumer
-`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_integral_tendsto_zero`;
+`VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_integral_tendsto_zero`
+plus its final `P`-GC/in-mean endpoint
+`VdVWTheorem243_variableEntropy_logCardinality_div_integral_tendsto_zero_pGlivenkoCantelli_and_inMean`;
 the measurable and null-measurable signed positive/negative outer-expectation
 bridges, signed bounded-continuous arbitrary-map asymptotic-measurability
 including null-measurable constructors, common-domain/varying-domain
@@ -1764,9 +1766,12 @@ This is the theorem-facing endpoint for the L1-strengthened branch.  It
 combines variable-domain book entropy, finite-net upper integrability,
 selected normalized-log measurability/integrability, and selected
 normalized-log mean convergence with the existing selected fixed-radius
-untruncation route.  Future runs should not add another untruncated wrapper
-for the same hypotheses; they should prove the structural mean/UI input or
-continue to the next theorem-critical arbitrary-map primitive.
+untruncation route.  The same ordinary-mean branch now also has the final
+`P`-GC and in-mean endpoint
+`VdVWTheorem243_variableEntropy_logCardinality_div_integral_tendsto_zero_pGlivenkoCantelli_and_inMean`.
+Future runs should not add another wrapper for the same hypotheses; they should
+prove the structural mean/UI input or continue to the next theorem-critical
+arbitrary-map primitive.
 
 2026-05-05 Chapter 1 arbitrary-map follow-up: the varying-domain signed
 bounded-continuous weak-convergence layer now has the same continuous-mapping
