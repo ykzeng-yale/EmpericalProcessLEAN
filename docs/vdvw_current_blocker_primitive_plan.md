@@ -150,14 +150,21 @@ bound on `EmpiricalL1Index.liftSet` to the selected lower-growth input.  It
 does not prove such a lower bound from random entropy; that remains the
 mathematical source task.
 
-2026-05-12 final packing-source consumer: the set-countable textbook-aligned
-product-pair Chebyshev route now has the direct packing entry point
+2026-05-12 final packing-source consumers: the set-countable textbook-aligned
+product-pair Chebyshev route now has the direct raw separated-packing entry
+point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`.
 It composes the eventual `P^n`-a.e. quarter-radius packing source with the
 selected-cardinality lower-growth final wrapper, so callers no longer need to
-pre-assemble the selected-cardinality inequality.  The live theorem-facing
-source gap is now exactly the construction of those separated packings, or a
-replacement lower-growth/tail/UI theorem, from honest VdV&W assumptions.
+pre-assemble the selected-cardinality inequality.  The same final route now
+also has the empirical-wrapper packing-number entry point
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_empiricalL1Index_packingNumber_of_set_countable`,
+which composes eventual `P^n`-a.e. lower bounds on
+`Metric.packingNumber` for `EmpiricalL1Index.liftSet` through the selected
+packing-number adapter internally.  The live theorem-facing source gap is now
+exactly the construction of those separated-packing or packing-number lower
+bounds, or a replacement lower-growth/tail/UI theorem, from honest VdV&W
+assumptions.
 
 ## Current `/goal` Target
 
