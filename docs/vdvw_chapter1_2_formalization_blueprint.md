@@ -165,9 +165,16 @@ separable dense-sequence supremum pattern, now integrated in
 `vdVW_closure_mem_le_sSup`, `vdVW_sSup_eq_closure_sSup`,
 `vdVW_closure_range_eq_closure_denseSeq`,
 `vdVW_separableSpace_iSup_eq_denseSeq`, and
-`vdVW_separableSpace_iSup_eq_denseSeq_real`.  This strengthens the Chapter 1
-separability foundation without changing the main Theorem 2.4.3
-random-entropy/tail-UI blocker.
+`vdVW_separableSpace_iSup_eq_denseSeq_real`.  The same external Dudley
+pattern is now integrated for nonempty totally bounded index sets through
+`vdVWDenseSeqInTotallyBounded`,
+`vdVW_iSup_subtype_eq_denseSeqInTotallyBounded`,
+`vdVW_iSup_subtype_process_eq_denseSeqInTotallyBounded`,
+`vdVW_biSup_eq_iSup_subtype_real`,
+`vdVW_biSup_eq_denseSeqInTotallyBounded_real`, and
+`vdVW_biSup_process_eq_denseSeqInTotallyBounded`.  This strengthens the
+Chapter 1 separability/chaining foundation without changing the main Theorem
+2.4.3 random-entropy/tail-UI blocker.
 
 2026-05-12 source refinement: deterministic finite packings now feed this
 lower-growth lane directly.  The covering primitives
@@ -1537,7 +1544,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.5.9 | Lemma | `..._1-100.md:1044` | foundation-lane: tightness/equicontinuity wrapper target, local semimetric/process primitive needed |
 | 1.6.1 | Theorem | `..._1-100.md:1117` | foundation-lane: stochastic-process tightness target; requires local stochastic-process/l_infty API over mathlib tightness |
 | 1.7.1 | Lemma | `..._1-100.md:1156` | local-layer/mathlib-foundation: open-ball and closed-ball sigma-field wrappers, open-ball topological basis, rational open/closed ball bridges, open-ball/closed-ball sigma equality, Borel equality, generator measurability, and separable dense-sequence distance-coordinate measurability iff proved in `BallSigma.lean`; exact arbitrary-map/asymptotic-measurability clauses pending |
-| 1.7.2 | Theorem | `..._1-100.md:1157` | local-layer/mathlib-foundation: dense-sequence distance-coordinate criterion and Borel/open-ball/closed-ball measurability equivalences compiled; separable dense-sequence supremum wrappers compiled in `SeparableSup.lean` as `vdVW_separableSpace_iSup_eq_denseSeq` and `vdVW_separableSpace_iSup_eq_denseSeq_real`; exact VdV&W arbitrary-map separability/asymptotic-measurability statement still needs local wrapper |
+| 1.7.2 | Theorem | `..._1-100.md:1157` | local-layer/mathlib-foundation: dense-sequence distance-coordinate criterion and Borel/open-ball/closed-ball measurability equivalences compiled; separable and totally bounded dense-sequence supremum wrappers compiled in `SeparableSup.lean` as `vdVW_separableSpace_iSup_eq_denseSeq`, `vdVW_separableSpace_iSup_eq_denseSeq_real`, `vdVW_iSup_subtype_eq_denseSeqInTotallyBounded`, and `vdVW_biSup_process_eq_denseSeqInTotallyBounded`; exact VdV&W arbitrary-map separability/asymptotic-measurability statement still needs local wrapper |
 | 1.8.1 | Lemma | `..._1-100.md:1234` | local-layer/mathlib-foundation: `HilbertGaussian.lean` wraps complete inner-product spaces as Hilbert spaces, `L2` Hilbert space, and `L2` inner product |
 | 1.8.2 | Lemma | `..._1-100.md:1245` | local-layer/mathlib-foundation: Frechet-Riesz continuous-dual representative and evaluation identity wrapped in `HilbertGaussian.lean` |
 | 1.8.3 | Lemma | `..._1-100.md:1246` | local-layer/mathlib-foundation: Gaussian inner-coordinate maps and Gaussian-process coordinate laws wrapped in `HilbertGaussian.lean`; no Brownian-bridge/pre-Gaussian full theorem found |

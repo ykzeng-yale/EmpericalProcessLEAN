@@ -80,9 +80,16 @@ sequence supremum pattern, now ported as
 `vdVW_closure_mem_le_sSup`, `vdVW_sSup_eq_closure_sSup`,
 `vdVW_closure_range_eq_closure_denseSeq`,
 `vdVW_separableSpace_iSup_eq_denseSeq`, and
-`vdVW_separableSpace_iSup_eq_denseSeq_real`.  This is Chapter 1
-separability infrastructure; it does not close the random-entropy/tail-UI
-Theorem 2.4.3 gap.
+`vdVW_separableSpace_iSup_eq_denseSeq_real`.  Follow-up integration of the
+same external Dudley/separability pattern adds
+`vdVWDenseSeqInTotallyBounded`,
+`vdVW_iSup_subtype_eq_denseSeqInTotallyBounded`,
+`vdVW_iSup_subtype_process_eq_denseSeqInTotallyBounded`,
+`vdVW_biSup_eq_iSup_subtype_real`,
+`vdVW_biSup_eq_denseSeqInTotallyBounded_real`, and
+`vdVW_biSup_process_eq_denseSeqInTotallyBounded`.  These are Chapter 1
+separability/chaining infrastructure; they do not close the
+random-entropy/tail-UI Theorem 2.4.3 gap.
 
 2026-05-06 selected fixed-`M` source bridge: the fixed-`M` centered-truncated
 route now has
