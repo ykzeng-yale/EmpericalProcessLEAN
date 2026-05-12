@@ -17,9 +17,12 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 
 Immediate predecessor endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+
+Earlier predecessor endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 
 Earlier predecessor endpoint:
@@ -65,6 +68,12 @@ Immediate estimator definition source:
 Immediate score-at-theta0 vector source:
 `scoreAtTheta0 n omega (samples n omega i) = sqrt n • scoreVector i.val omega`,
 combined with the existing scaled raw estimating-map vector identity.
+
+Immediate pointwise score-vector display source:
+pointwise identities for both
+`scale n omega • estimatingMap n omega (samples n omega i) (theta0 n omega)`
+and `scoreAtTheta0 n omega (samples n omega i)` against
+`sqrt n • scoreVector i.val omega`.
 
 Immediate smooth Taylor source helper:
 `vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffTheta0SecondDerivativeContDiff`.
@@ -229,6 +238,12 @@ a.e. fields from pointwise model hypotheses.  Thus `hOpen`, `hSegmentSubset`,
 `hContDiffEstimatingMap`, `hDerivativeAt_eq_fderiv`,
 `hContDiffDerivativeAt`, and `hSecondDerivative_eq_fderiv` are no longer live
 opaque a.e. fields for the current source route.
+The newest score-vector display source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+derives the remaining a.e. score-vector display fields from pointwise model
+identities.  Thus `hScaledScore_vector_eq` and
+`hScoreAtTheta0_vector_eq` are no longer live opaque a.e. fields for the
+current source route.
 
 Continuation recipe:
 
@@ -242,9 +257,8 @@ Continuation recipe:
 Priority order for the next packet:
 
 1. Move one layer closer to a model-facing finite-dimensional statement:
-   package the remaining score-vector display a.e. wrappers only if doing so
-   removes a still-live hypothesis of the current endpoint; otherwise move to
-   a concrete model-specialized Theorem 5.41 instantiation.
+   move to a concrete model-specialized Theorem 5.41 instantiation, or package
+   only a still-live source field that the current endpoint explicitly exposes.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    residual-source endpoint; do not rebuild completed score CLT, display weak
@@ -255,7 +269,7 @@ Priority order for the next packet:
    Taylor transfer, the score-at-theta0 vector scaling transfer, or the
    estimator-definition, raw-root, selected measurability, or sampled
    derivative matrix-action, population `V` basis-action, or pointwise
-   smoothness/source-set wrappers.
+   smoothness/source-set, or score-vector display wrappers.
 
 Operating rules:
 
