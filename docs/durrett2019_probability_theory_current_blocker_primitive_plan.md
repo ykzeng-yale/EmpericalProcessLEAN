@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V226
+## Live In-Thread Goal Prompt V227
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -288,12 +288,24 @@ The Borel-Cantelli martingale conditional square increment is now automatically
 dominated by the cumulative conditional-probability clock increment for
 measurable events.
 
-Next aggressive step: assemble the finite / infinite Theorem 4.5.5 split from
-the compiled clock domination.  Finite side: use Theorem 4.5.2 to get a finite
-martingale-part path limit on the event where the variance clock is finite,
-then apply the V224 finite-limit ratio bridge.  Infinite side: use Theorem
-4.5.3 with `f(t) = t ∨ 1` and the V226 dominated clock, then apply the V224
-normalized ratio bridge.  Do not
+V227 adds the infinite-clock max-normalizer handoff and the finite/infinite
+event-cover ratio assembly.  New compiled declarations:
+`durrett2019_theorem_4_5_5_normalized_tendsto_zero_of_max_one_normalizer`,
+`durrett2019_theorem_4_5_5_normalized_tendsto_zero_on_of_max_one_normalizer`,
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_max_one_normalized`,
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_max_one_normalized`.
+The split logic is now compiled: finite clock needs a finite martingale path
+limit, infinite clock needs the `max(A_n, 1)` normalized martingale estimate,
+and the two event-local conclusions combine to the full ratio conclusion on
+the covered event.
+
+Next aggressive step: specialize Theorem 4.5.3 to `f(t) = max t 1` and feed it
+the V226 Borel-Cantelli dominated variance-clock endpoint.  Prove only the
+needed normalizer facts now: continuity, monotonicity, `1 <= max t 1`,
+`A_n -> ∞` implies `max(A_n,1) -> ∞`, and the tail-integral certificate for
+`(max t 1)⁻¹ ^ 2` on `[0,∞)`.  Then pass that infinite-clock result into the
+V227 ratio assembly.  Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1640,6 +1652,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V226` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V227` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

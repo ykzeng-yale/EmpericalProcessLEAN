@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V226`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V227`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -186,15 +186,22 @@ automatic dominated variance-clock endpoint:
 `durrett2019_theorem_4_5_5_condExp_centered_borelCantelli_indicator_sq_le_auto`,
 and
 `durrett2019_theorem_4_5_5_martingalePart_condExp_square_le_conditionalProbabilitySum_increment_auto`.
+V227 adds the `max(A_n,1)` normalizer handoff and the finite/infinite event
+cover ratio assembly:
+`durrett2019_theorem_4_5_5_normalized_tendsto_zero_of_max_one_normalizer`,
+`durrett2019_theorem_4_5_5_normalized_tendsto_zero_on_of_max_one_normalizer`,
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_max_one_normalized`,
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_max_one_normalized`.
 The next theorem-facing target is no longer finite sum/integral exchange,
 V214-to-V209 wiring, the tail-integral-to-clock-bound package,
 variance-ratio integrability packaging, lower-bound/no-zero/divergence
 plumbing, deterministic normalizer-divergence packaging, event-local
 random-normalizer packaging, Theorem 4.5.5 ratio algebra, finite-limit
 denominator bridges, increment/denominator-clock plumbing, or Bernoulli
-conditional-variance algebra: assemble the finite/infinite Theorem 4.5.5 split
-using Theorem 4.5.2 for the finite-clock side and Theorem 4.5.3 for the
-infinite-clock side.  Do not
+conditional-variance algebra, max-normalizer denominator handoff, or
+finite/infinite event-cover ratio assembly: specialize Theorem 4.5.3 to
+`f(t)=max t 1` and feed it the V226 dominated variance-clock endpoint.  Do not
 route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2

@@ -20488,6 +20488,46 @@ theorem durrett2019_theorem_4_5_5_normalized_tendsto_zero_on_of_exists_tendsto
       (hxω hD) (hsω hD)
 
 /--
+Durrett 2019, Theorem 4.5.5 deterministic infinite-clock denominator support.
+
+If a process is negligible after normalization by `max s_n 1` and `s_n`
+diverges, then it is also negligible after normalization by `s_n`.
+-/
+theorem durrett2019_theorem_4_5_5_normalized_tendsto_zero_of_max_one_normalizer
+    {x s : ℕ -> ℝ}
+    (hs : Tendsto s atTop atTop)
+    (hx :
+      Tendsto (fun n : ℕ => x n / max (s n) (1 : ℝ)) atTop (𝓝 0)) :
+    Tendsto (fun n : ℕ => x n / s n) atTop (𝓝 0) := by
+  have hs_gt : ∀ᶠ n : ℕ in atTop, (1 : ℝ) < s n :=
+    hs.eventually_gt_atTop (1 : ℝ)
+  have heq :
+      (fun n : ℕ => x n / s n) =ᶠ[atTop]
+        fun n : ℕ => x n / max (s n) (1 : ℝ) := by
+    filter_upwards [hs_gt] with n hn
+    rw [max_eq_left (le_of_lt hn)]
+  exact Tendsto.congr' heq.symm hx
+
+/--
+Durrett 2019, Theorem 4.5.5 event-local infinite-clock denominator support.
+-/
+theorem durrett2019_theorem_4_5_5_normalized_tendsto_zero_on_of_max_one_normalizer
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {x s : ℕ -> Ω -> ℝ} {D : Set Ω}
+    (hs_on :
+      ∀ᵐ ω ∂P, ω ∈ D -> Tendsto (fun n : ℕ => s n ω) atTop atTop)
+    (hx_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto (fun n : ℕ => x n ω / max (s n ω) (1 : ℝ)) atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      Tendsto (fun n : ℕ => x n ω / s n ω) atTop (𝓝 0) := by
+  filter_upwards [hs_on, hx_on] with ω hsω hxω hD
+  exact
+    durrett2019_theorem_4_5_5_normalized_tendsto_zero_of_max_one_normalizer
+      (x := fun n : ℕ => x n ω) (s := fun n : ℕ => s n ω)
+      (hsω hD) (hxω hD)
+
+/--
 Durrett 2019, Theorem 4.5.5 finite-variance ratio endpoint.
 
 This packages the finite-increasing-process side of the textbook proof: if
@@ -20521,10 +20561,149 @@ theorem durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_exists_
       (P := P) (ℱ := ℱ) (B := B) (D := D) hdenom_atTop_on
       (durrett2019_theorem_4_5_5_normalized_tendsto_zero_on_of_exists_tendsto
         (P := P)
+      (x := fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n)
+      (s := fun n : ℕ =>
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n)
+      (D := D) hmartingale_exists_on hdenom_atTop_on)
+
+/--
+Durrett 2019, Theorem 4.5.5 infinite-clock ratio endpoint from the
+`max(A_n, 1)` normalizer produced by Theorem 4.5.3 with `f(t)=t ∨ 1`.
+-/
+theorem durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_max_one_normalized
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} {B : ℕ -> Set Ω} {D : Set Ω}
+    (hdenom_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop)
+    (hmartingale_max_ratio_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω /
+              max
+                (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+                (1 : ℝ))
+          atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.BorelCantelli.process B n ω /
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+        atTop (𝓝 1) := by
+  exact
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_normalized
+      (P := P) (ℱ := ℱ) (B := B) (D := D) hdenom_atTop_on
+      (durrett2019_theorem_4_5_5_normalized_tendsto_zero_on_of_max_one_normalizer
+        (P := P)
         (x := fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n)
         (s := fun n : ℕ =>
           durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n)
-        (D := D) hmartingale_exists_on hdenom_atTop_on)
+        (D := D) hdenom_atTop_on hmartingale_max_ratio_on)
+
+/--
+Durrett 2019, Theorem 4.5.5 finite/infinite event-cover ratio assembly.
+
+This is the theorem-facing split used in the textbook proof: on the finite
+clock side, a finite martingale path limit is enough; on the infinite clock
+side, the `max(A_n, 1)` normalized martingale estimate is enough.
+-/
+theorem durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_max_one_normalized
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} {B : ℕ -> Set Ω}
+    {D FiniteVar InfiniteVar : Set Ω}
+    (hcover :
+      ∀ᵐ ω ∂P, ω ∈ D -> ω ∈ FiniteVar ∨ ω ∈ InfiniteVar)
+    (hdenom_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop)
+    (hmartingale_exists_on_finite :
+      ∀ᵐ ω ∂P, ω ∈ D -> ω ∈ FiniteVar ->
+        ∃ z : ℝ,
+          Tendsto
+            (fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω)
+            atTop (𝓝 z))
+    (hmartingale_max_ratio_on_infinite :
+      ∀ᵐ ω ∂P, ω ∈ D -> ω ∈ InfiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω /
+              max
+                (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+                (1 : ℝ))
+          atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.BorelCantelli.process B n ω /
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+        atTop (𝓝 1) := by
+  have hdenom_finite :
+      ∀ᵐ ω ∂P, ω ∈ D ∩ FiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop := by
+    filter_upwards [hdenom_atTop_on] with ω hdenomω hω
+    exact hdenomω hω.1
+  have hmartingale_finite :
+      ∀ᵐ ω ∂P, ω ∈ D ∩ FiniteVar ->
+        ∃ z : ℝ,
+          Tendsto
+            (fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω)
+            atTop (𝓝 z) := by
+    filter_upwards [hmartingale_exists_on_finite] with ω hmartω hω
+    exact hmartω hω.1 hω.2
+  have hratio_finite :
+      ∀ᵐ ω ∂P, ω ∈ D ∩ FiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            MeasureTheory.BorelCantelli.process B n ω /
+              durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop (𝓝 1) :=
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_exists_tendsto
+      (P := P) (ℱ := ℱ) (B := B) (D := D ∩ FiniteVar)
+      hdenom_finite hmartingale_finite
+  have hdenom_infinite :
+      ∀ᵐ ω ∂P, ω ∈ D ∩ InfiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop := by
+    filter_upwards [hdenom_atTop_on] with ω hdenomω hω
+    exact hdenomω hω.1
+  have hmartingale_infinite :
+      ∀ᵐ ω ∂P, ω ∈ D ∩ InfiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω /
+              max
+                (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+                (1 : ℝ))
+          atTop (𝓝 0) := by
+    filter_upwards [hmartingale_max_ratio_on_infinite] with ω hmartω hω
+    exact hmartω hω.1 hω.2
+  have hratio_infinite :
+      ∀ᵐ ω ∂P, ω ∈ D ∩ InfiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            MeasureTheory.BorelCantelli.process B n ω /
+              durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop (𝓝 1) :=
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_max_one_normalized
+      (P := P) (ℱ := ℱ) (B := B) (D := D ∩ InfiniteVar)
+      hdenom_infinite hmartingale_infinite
+  filter_upwards [hcover, hratio_finite, hratio_infinite] with
+    ω hcoverω hfiniteω hinfiniteω hD
+  rcases hcoverω hD with hFinite | hInfinite
+  · exact hfiniteω ⟨hD, hFinite⟩
+  · exact hinfiniteω ⟨hD, hInfinite⟩
 
 /--
 Durrett 2019, Theorem 4.5.5 martingale-increment display.
