@@ -2863,6 +2863,90 @@ theorem chewi1311_affinePreimage_selfConcordantBarrierOn_equiv
       (barrierAffinePreimageThirdMixed A.toContinuousLinearMap b third) M nu :=
   hbar.affinePreimage_equiv A b
 
+/--
+A compact certificate for the non-invertible affine-preimage route in Chewi
+Proposition 13.11.  It packages the two oracle gates left after the Hessian
+and mixed-third pullback algebra: positivity of the pulled-back inverse
+Hessian, and the pulled-back dual-gradient bound.
+-/
+structure BarrierAffinePreimageOracleModel
+    (A : F →L[ℝ] E) (b : E) (s : Set E)
+    (hess : E -> E →L[ℝ] E) (grad : E -> E)
+    (invHess : E -> E →L[ℝ] E)
+    (invHessPull : F -> F →L[ℝ] F)
+    (third : E -> E -> E -> ℝ) (M nu : ℝ) : Prop where
+  barrier : SelfConcordantBarrierOn s hess grad invHess third M nu
+  invHessPull_nonneg :
+    ∀ ⦃x : F⦄, x ∈ barrierAffinePreimageSet A b s ->
+      ∀ v : F, 0 ≤ inner ℝ v (invHessPull x v)
+  gradient_bound :
+    ∀ ⦃x : F⦄, x ∈ barrierAffinePreimageSet A b s ->
+      dualLocalNorm invHessPull x (barrierAffinePreimageGrad A b grad x) ≤
+        Real.sqrt nu
+
+theorem BarrierAffinePreimageOracleModel.invHess_nonneg
+    {A : F →L[ℝ] E} {b : E} {s : Set E}
+    {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    {invHessPull : F -> F →L[ℝ] F}
+    {third : E -> E -> E -> ℝ} {M nu : ℝ}
+    (hmodel :
+      BarrierAffinePreimageOracleModel A b s hess grad invHess
+        invHessPull third M nu)
+    ⦃x : F⦄ (hx : x ∈ barrierAffinePreimageSet A b s) (v : F) :
+    0 ≤ inner ℝ v (invHessPull x v) :=
+  hmodel.invHessPull_nonneg hx v
+
+theorem BarrierAffinePreimageOracleModel.gradient_bound_le
+    {A : F →L[ℝ] E} {b : E} {s : Set E}
+    {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    {invHessPull : F -> F →L[ℝ] F}
+    {third : E -> E -> E -> ℝ} {M nu : ℝ}
+    (hmodel :
+      BarrierAffinePreimageOracleModel A b s hess grad invHess
+        invHessPull third M nu)
+    ⦃x : F⦄ (hx : x ∈ barrierAffinePreimageSet A b s) :
+    dualLocalNorm invHessPull x (barrierAffinePreimageGrad A b grad x) ≤
+      Real.sqrt nu :=
+  hmodel.gradient_bound hx
+
+theorem BarrierAffinePreimageOracleModel.selfConcordantBarrierOn
+    {A : F →L[ℝ] E} {b : E} {s : Set E}
+    {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    {invHessPull : F -> F →L[ℝ] F}
+    {third : E -> E -> E -> ℝ} {M nu : ℝ}
+    (hmodel :
+      BarrierAffinePreimageOracleModel A b s hess grad invHess
+        invHessPull third M nu) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A b s)
+      (barrierAffinePreimageHess A b hess)
+      (barrierAffinePreimageGrad A b grad) invHessPull
+      (barrierAffinePreimageThirdMixed A b third) M nu :=
+  hmodel.barrier.affinePreimage_of_gradient_bound
+    hmodel.invHessPull_nonneg hmodel.gradient_bound
+
+/--
+Chewi Proposition 13.11, affine-preimage case, packaged as a single oracle
+model.  This is the source-shaped handoff point for the future
+surjective/range/pseudoinverse construction.
+-/
+theorem chewi1311_affinePreimage_selfConcordantBarrierOn_of_oracleModel
+    {A : F →L[ℝ] E} {b : E} {s : Set E}
+    {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    {invHessPull : F -> F →L[ℝ] F}
+    {third : E -> E -> E -> ℝ} {M nu : ℝ}
+    (hmodel :
+      BarrierAffinePreimageOracleModel A b s hess grad invHess
+        invHessPull third M nu) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A b s)
+      (barrierAffinePreimageHess A b hess)
+      (barrierAffinePreimageGrad A b grad) invHessPull
+      (barrierAffinePreimageThirdMixed A b third) M nu :=
+  hmodel.selfConcordantBarrierOn
+
 end AffinePreimageBarrier
 
 section InfProjectionBarrier

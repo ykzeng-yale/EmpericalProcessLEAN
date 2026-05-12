@@ -215,8 +215,9 @@ the two component barriers, component square-root models, and the summed
 square-root model, instead of threading the long equality list.
 
 Latest affine-preimage update: Proposition 13.11(3) now has a compiled
-supplied-oracle affine-preimage spine and an invertible-affine corollary.
-Reusable declarations include `barrierAffinePreimageSet`,
+supplied-oracle affine-preimage spine, an invertible-affine corollary, and a
+single oracle-model package for the non-invertible/range route.  Reusable
+declarations include `barrierAffinePreimageSet`,
 `barrierAffinePreimageHess`, `barrierAffinePreimageGrad`,
 `barrierAffinePreimageThirdMixed`,
 `barrierAffinePreimageHess_quadratic_eq`,
@@ -225,17 +226,23 @@ Reusable declarations include `barrierAffinePreimageSet`,
 `SelfConcordantBarrierOn.affinePreimage_of_gradient_bound`,
 `chewi1311_affinePreimage_selfConcordantBarrierOn_of_gradient_bound`,
 `barrierAffinePreimageInvHessEquiv`,
-`barrierAffinePreimageGradientDualLocalNorm_equiv_eq`, and
-`chewi1311_affinePreimage_selfConcordantBarrierOn_equiv`.  Search-first
-result: mathlib supplies `ContinuousLinearMap.adjoint`,
+`barrierAffinePreimageGradientDualLocalNorm_equiv_eq`,
+`chewi1311_affinePreimage_selfConcordantBarrierOn_equiv`,
+`BarrierAffinePreimageOracleModel`,
+`BarrierAffinePreimageOracleModel.invHess_nonneg`,
+`BarrierAffinePreimageOracleModel.gradient_bound_le`,
+`BarrierAffinePreimageOracleModel.selfConcordantBarrierOn`, and
+`chewi1311_affinePreimage_selfConcordantBarrierOn_of_oracleModel`.
+Search-first result: mathlib supplies `ContinuousLinearMap.adjoint`,
 `ContinuousLinearMap.adjoint_inner_left/right`,
 `ContinuousLinearMap.adjoint_comp`, and
 `ContinuousLinearEquiv.coe_comp_coe_symm`; there is no local Chewi affine
 barrier wrapper.  Because the source statement assumes
-`dom f ⊆ range 𝒜` rather than injectivity, the general non-invertible case
-still needs a supplied inverse-Hessian/dual-gradient gate or a future
-surjective/pseudoinverse development.  Do not redo the adjoint transport
-or invertible-affine proof in the next packet.
+`dom f ⊆ range 𝒜` rather than injectivity, the exact general case now needs an
+instantiation of this oracle model from a principled
+surjective/range/pseudoinverse construction.  Do not redo the adjoint
+transport, invertible-affine proof, or supplied oracle packaging in the next
+packet.
 
 Latest inf-projection update: Proposition 13.11(4) now has a compiled
 supplied-projected-oracle spine through `barrierInfProjectionSet`,

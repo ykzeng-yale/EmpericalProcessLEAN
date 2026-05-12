@@ -119,20 +119,28 @@ This dashboard tracks the Chewi optimization formalization lane for
   carrying the two component barriers, component square-root models, and the
   summed square-root model, instead of threading the long equality list.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
-  supplied-oracle form and for invertible affine maps.  Reusable declarations
-  include `barrierAffinePreimageSet`, `barrierAffinePreimageHess`,
+  supplied-oracle form, for invertible affine maps, and as a single
+  non-invertible/range certificate object.  Reusable declarations include
+  `barrierAffinePreimageSet`, `barrierAffinePreimageHess`,
   `barrierAffinePreimageGrad`, `barrierAffinePreimageThirdMixed`,
   `barrierAffinePreimageLocalNorm_eq`,
   `MixedThirdSelfConcordantOn.affinePreimage`,
   `SelfConcordantBarrierOn.affinePreimage_of_gradient_bound`,
   `chewi1311_affinePreimage_selfConcordantBarrierOn_of_gradient_bound`,
-  `barrierAffinePreimageInvHessEquiv`, and
-  `chewi1311_affinePreimage_selfConcordantBarrierOn_equiv`.  Search-first
-  result: use mathlib adjoint APIs
+  `barrierAffinePreimageInvHessEquiv`,
+  `chewi1311_affinePreimage_selfConcordantBarrierOn_equiv`,
+  `BarrierAffinePreimageOracleModel`,
+  `BarrierAffinePreimageOracleModel.invHess_nonneg`,
+  `BarrierAffinePreimageOracleModel.gradient_bound_le`,
+  `BarrierAffinePreimageOracleModel.selfConcordantBarrierOn`, and
+  `chewi1311_affinePreimage_selfConcordantBarrierOn_of_oracleModel`.
+  Search-first result: use mathlib adjoint APIs
   `ContinuousLinearMap.adjoint_inner_left/right`,
   `ContinuousLinearMap.adjoint_comp`, and
   `ContinuousLinearEquiv.coe_comp_coe_symm`; no direct Chewi affine barrier
-  rule existed locally.
+  rule existed locally.  The remaining exact source work is to instantiate
+  the oracle model from a principled surjective/range/pseudoinverse
+  construction.
 - Latest inf-projection frontier: Proposition 13.11(4) now has a compiled
   supplied-projected-oracle spine.  Reusable declarations include
   `barrierInfProjectionSet`, `barrierInfProjectionPoint`,
