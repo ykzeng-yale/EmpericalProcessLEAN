@@ -269,8 +269,12 @@ layer.  The half-scale finite-center failure-tail consumer is now compiled as
 and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale`,
 so the remaining selected-center work is measurability and inverse-square
-tail discharge for the quarter-radius cover.  The averaged product-pair route
-is now also compiled through
+tail discharge for the quarter-radius cover.  The selected-center
+measurability layer is now compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt`,
+leaving the inverse-square finite-tail discharge and the half-scale signed
+bad source as the active inputs.  The averaged product-pair route is now also
+compiled through
 `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
 `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
 `measure_mul_le_vdVWProductMeasure_pairDifference_constWeights_bad_of_split_fiber_lower_bound`,

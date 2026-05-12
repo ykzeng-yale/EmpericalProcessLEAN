@@ -2376,6 +2376,10 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale`;
    it keeps quarter-radius selected-cover event/error measurability and
    inverse-square tail convergence as the remaining source-layer obligations.
+   The first of those selected-center obligations is now discharged by
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt`,
+   which builds the quarter-radius first-level cover internally and leaves only
+   the half-scale signed bad lower bound plus finite-tail convergence inputs.
    The averaged product-pair alternative is now compiled through
    `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
    `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,

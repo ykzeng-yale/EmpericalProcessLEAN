@@ -9880,3 +9880,15 @@ finite-net target to `4 * H + eta`.  The next source layer is now to discharge
 the quarter-radius selected-center event/error measurability and inverse-square
 tail hypotheses, then feed it with the compiled half-scale sign-swapped
 Chebyshev source.
+
+2026-05-12 quarter-radius selected-center half-scale finite-tail route:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt`.
+This first-level wrapper chooses the quarter-radius selected cover internally
+and discharges the concrete pair-difference event, original finite-center
+failure, ghost finite-center failure, and integrated error measurability
+assumptions from countability and selected-center coordinate measurability.
+The remaining source inputs are the half-scale signed bad lower bound and the
+vanishing restricted/full finite-center failure-tail error, ready for the
+existing inverse-square tail machinery and the half-scale Chebyshev/sign-swap
+source adapter.
