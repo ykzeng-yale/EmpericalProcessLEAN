@@ -121,6 +121,12 @@ the actual sample rather than on `samplePath (X M n) sample n`.
 The same final route now also has the terminal empirical-wrapper covering-number
 entry point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_coveringNumber_of_set_countable`.
+A stronger structural variant
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_coveringNumber_eq_top_of_set_countable`
+consumes eventual `P^n`-a.e. terminal empirical-wrapper covering number equal
+to `⊤` and chooses the deterministic lower bound `n`; this is a source surface,
+not a proof that the random-entropy hypothesis forces infinite covering
+number.
 The next source work is to derive these covering/packing lower bounds, or an
 equivalent tail/lower-growth input, from the book random-entropy hypotheses.
 The displayed-beta selected-cover route now has

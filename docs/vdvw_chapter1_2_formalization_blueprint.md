@@ -194,6 +194,12 @@ covering-number lower bounds through
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_empiricalL1Index_coveringNumber`
 and the final set-countable consumer
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_coveringNumber_of_set_countable`.
+The strong infinite-covering companion
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_coveringNumber_eq_top_of_set_countable`
+feeds the same final route from eventual `P^n`-a.e. terminal
+empirical-wrapper covering number equal to `⊤`, with deterministic lower bound
+`n`; it records a source surface rather than proving random entropy implies
+infinite covering number.
 This keeps the remaining blocker focused on producing separated-packing or
 packing/covering-number lower bounds, or an equivalent honest lower-growth/
 tail/UI theorem from the book assumptions.

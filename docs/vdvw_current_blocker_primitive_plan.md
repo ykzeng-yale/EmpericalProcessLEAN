@@ -188,6 +188,12 @@ removes the caller-facing need to restate an actual-sample packing-number
 lower bound on `samplePath`.  The final route now also has the terminal
 empirical-wrapper covering-number entry point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_coveringNumber_of_set_countable`.
+Its strong infinite-covering source variant
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_coveringNumber_eq_top_of_set_countable`
+consumes eventual `P^n`-a.e. terminal empirical-wrapper covering number equal
+to `⊤` and sets the deterministic lower bound to `n`; it is a structural
+source surface, not a derivation of infinite covering number from the
+random-entropy hypotheses.
 The live theorem-facing source gap is now exactly the construction of those
 separated-packing, packing-number, or covering-number lower bounds, or a
 replacement lower-growth/tail/UI theorem, from honest VdV&W assumptions.
