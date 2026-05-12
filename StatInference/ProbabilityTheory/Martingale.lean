@@ -22458,6 +22458,107 @@ theorem
       hcover hdenom_atTop_on hmartingale_exists_on_finite hB
 
 /--
+Durrett 2019, Theorem 4.5.5 source support: on the limsup event, the raw
+conditional-probability clock diverges.
+
+This is the exact use of the conditional Borel-Cantelli theorem needed to turn
+the theorem-facing ratio wrapper into a statement on `limsup B atTop`.
+-/
+theorem
+    durrett2019_theorem_4_5_5_conditionalProbabilitySum_atTop_on_limsup_of_adapted
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {B : ℕ -> Set Ω}
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n)) :
+    ∀ᵐ ω ∂P, ω ∈ limsup B atTop ->
+      Tendsto
+        (fun n : ℕ =>
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+        atTop atTop := by
+  filter_upwards
+    [durrett2019_theorem_4_3_4_conditional_borel_cantelli
+      (μ := P) (ℱ := ℱ) (B := B) hB] with ω hBC hlimsup
+  simpa [durrett2019_theorem_4_5_5_conditionalProbabilitySum] using
+    hBC.mp hlimsup
+
+/--
+Durrett 2019, Theorem 4.5.5 infinite-clock ratio wrapper from adapted events.
+
+On any event where the raw cumulative conditional-probability clock diverges,
+the Borel-Cantelli event count divided by that clock tends to one.
+-/
+theorem
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_adapted_conditionalProbabilitySum_atTop
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {B : ℕ -> Set Ω} {D : Set Ω}
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n))
+    (hdenom_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.BorelCantelli.process B n ω /
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+        atTop (𝓝 1) := by
+  have hmartingale_max_ratio_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω /
+              max
+                (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+                (1 : ℝ))
+          atTop (𝓝 0) :=
+    durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock_canonical_auto_tail
+      (P := P) (ℱ := ℱ) (B := B) (InfiniteVar := D) hB hdenom_atTop_on
+  exact
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_max_one_normalized
+      (P := P) (ℱ := ℱ) (B := B) (D := D)
+      hdenom_atTop_on hmartingale_max_ratio_on
+
+/--
+Durrett 2019, Theorem 4.5.5 final infinite-clock ratio wrapper on the limsup
+event.
+
+For adapted events, on the event that the events occur infinitely often, the
+event count divided by the cumulative conditional probabilities tends to one.
+The denominator divergence is supplied by conditional Borel-Cantelli, and the
+martingale estimate is supplied by the V233 canonical square-clock route.
+-/
+theorem
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_limsup_of_adapted
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {B : ℕ -> Set Ω}
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n)) :
+    ∀ᵐ ω ∂P, ω ∈ limsup B atTop ->
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.BorelCantelli.process B n ω /
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+        atTop (𝓝 1) := by
+  let D : Set Ω := limsup B atTop
+  have hdenom_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop := by
+    simpa [D] using
+      durrett2019_theorem_4_5_5_conditionalProbabilitySum_atTop_on_limsup_of_adapted
+        (P := P) (ℱ := ℱ) (B := B) hB
+  simpa [D] using
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_adapted_conditionalProbabilitySum_atTop
+      (P := P) (ℱ := ℱ) (B := B) (D := D) hB hdenom_atTop_on
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

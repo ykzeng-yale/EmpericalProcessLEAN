@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V233
+## Live In-Thread Goal Prompt V234
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -377,11 +377,23 @@ The active ratio wrapper no longer needs a direct
 predictable part of the Borel-Cantelli martingale square now supplies the
 finite branch through Theorem 4.5.2.
 
-Next aggressive step: close the final textbook event split around the
-conditional-probability clock, reusing Mathlib/local conditional
-Borel-Cantelli support and the V233 square-clock ratio wrapper.  Do not revisit
-raw clock pointwise monotonicity, direct martingale finite-limit assumptions,
-or already closed Chapter 2/3 support.  Do not route back to
+V234 closes the infinite-clock limsup endpoint from the textbook's conditional
+Borel-Cantelli support.  New compiled declarations:
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_atTop_on_limsup_of_adapted`,
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_adapted_conditionalProbabilitySum_atTop`,
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_limsup_of_adapted`.
+On `limsup B atTop`, the raw conditional-probability denominator now diverges
+by Theorem 4.3.4, and the canonical Theorem 4.5.3 route proves the textbook
+ratio limit directly.  The infinite branch no longer needs another denominator
+divergence, max-normalizer, or raw-clock monotonicity wrapper.
+
+Next aggressive step: finish the final Theorem 4.5.5 statement packaging by
+combining the V234 limsup ratio endpoint with the finite-clock side, or by
+recording the exact finite/no-limsup complement statement needed by Durrett's
+displayed theorem.  Do not revisit raw clock pointwise monotonicity, direct
+martingale finite-limit assumptions, denominator divergence on `limsup`, or
+already closed Chapter 2/3 support.  Do not route back to
 stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1728,6 +1740,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V233` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V234` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

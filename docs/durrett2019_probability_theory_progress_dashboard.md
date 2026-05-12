@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V233` in
+Route from `Live In-Thread Goal Prompt V234` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Section 4.5.5 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the
@@ -219,6 +219,17 @@ and
 The next target is the final textbook event split around the
 conditional-probability clock, not another direct martingale finite-limit
 assumption.
+V234 adds the infinite-clock limsup endpoint:
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_atTop_on_limsup_of_adapted`,
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_adapted_conditionalProbabilitySum_atTop`,
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_limsup_of_adapted`.
+The denominator divergence on `limsup B atTop` now comes from the existing
+conditional Borel-Cantelli theorem, and the canonical Theorem 4.5.3 route
+proves the ratio limit there.  The next target is final theorem packaging or
+the precise finite/no-limsup complement statement; do not spend the next packet
+on raw-clock monotonicity, denominator divergence on `limsup`, or another
+max-normalizer handoff.
 
 Closed Chapter 2 support remains available in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
