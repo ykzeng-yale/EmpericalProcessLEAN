@@ -601,9 +601,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   derivative package and then consumes it for the source-radius local-norm
   sandwich.
   The newest envelope-constructor extraction adds
+  `BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_mem_nhds`,
+  `BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_isOpen`,
   `BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_mem_nhds_finiteDimHyy`,
+  and
+  `BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_isOpen_finiteDimHyy`,
   so a supplied Schur-Hessian derivative certificate can be packaged into the
-  selected-value third-order envelope without the adjoint-square model.
+  selected-value third-order envelope either from a supplied `Hyy` left inverse
+  or from the finite-dimensional `Hyy` right-inverse route.  The adjoint-square
+  adapter now reuses the finite-dimensional open-domain constructor.
   A packaged adjoint-square model plus a Schur derivative certificate now
   proves the projected source-radius local-norm sandwich without selected-value
   `f`, open-domain gradient, or second-order envelope assumptions; source

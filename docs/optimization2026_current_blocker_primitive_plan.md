@@ -722,9 +722,16 @@ It builds the selected-value third-order envelope from the full-Hessian
 derivative package and immediately consumes it for the source-radius
 local-norm sandwich.
 The newest envelope-constructor extraction adds
+`BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_mem_nhds`,
+`BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_isOpen`,
 `BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_mem_nhds_finiteDimHyy`,
-which packages a supplied Schur-Hessian derivative certificate into the
-selected-value third-order envelope without requiring the adjoint-square model.
+and
+`BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_isOpen_finiteDimHyy`.
+These package a supplied Schur-Hessian derivative certificate into the
+selected-value third-order envelope either from a supplied `Hyy` left inverse
+or from the finite-dimensional `Hyy` right-inverse route, without requiring the
+adjoint-square model.  The adjoint-square adapter now reuses the
+finite-dimensional open-domain constructor.
 Thus a packaged adjoint-square model plus a Schur derivative certificate
 already gives the projected source-radius local-norm sandwich without
 selected-value `f`, open-domain gradient, or second-order envelope assumptions.
