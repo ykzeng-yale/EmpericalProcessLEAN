@@ -1383,6 +1383,8 @@ measurable `EReal` map is a common minimal cover for every measure family.
 The same bounded extended-real lane now has the dominated a.e.-measurable
 family theorem, so a single cover built under a dominating measure is
 simultaneously minimal for all absolutely continuous measures in the family.
+The same common-cover work now has numbered Lemma 1.2.4 wrappers for the
+nonnegative and bounded extended-real dominated a.e.-measurable forms.
 Lemma 1.2.5 now has a compiled measurable-target core: first and second
 coordinate product pullbacks of a nonnegative measurable cover remain minimal
 measurable covers on the product space.
@@ -1393,7 +1395,11 @@ null-measurable product-coordinate cases used by outer-expectation arguments.
 The matching inner-expectation invariance is now compiled for measurable and
 a.e.-measurable first/second coordinate pullbacks, so the Chapter 1.2
 product-projection lane has both nonnegative outer and inner expectation
-forms under ordinary measurable/null-measurable hypotheses.
+forms under ordinary measurable/null-measurable hypotheses.  The
+coordinate-projection package now has numbered Lemma 1.2.5 wrappers, and the
+measurable nonnegative Fubini lane now has numbered Lemma 1.2.6 and 1.2.7
+wrappers for the inner/repeated-inner/repeated-outer chain and the symmetric
+repeated-outer equality.
 
 2026-05-05 proof update: the `P`-measurable/null-measurable side of that
 countability mismatch now has a compiled law-convergence bridge.  The new
@@ -1642,6 +1648,19 @@ sigma-field making all bounded-continuous real functions measurable.
 wrapper for the complete separable metric-type probability-measure tightness
 direction.  The full pre-tight/separable/tight/Polish-measure equivalence
 still needs local definitions before it can be marked exact.
+
+2026-05-12 Chapter 1 weak-convergence foundation bundle:
+`WeakConvergence.lean` now adds the measure-level Lemma 1.3.2 predicates and
+bridges `VdVWProbabilityMeasureSeparable`,
+`VdVWProbabilityMeasurePreTight`,
+`vdVW132_probabilityMeasure_preTight_iff_separable`,
+`vdVW132_probabilityMeasure_separable_of_tight`, and
+`vdVW132_complete_separable_probabilityMeasure_preTight`.  It also adds the
+numbered measure-level/common-domain wrappers for Lemma 1.10.2(ii), Theorem
+1.11.1, Theorem 1.12.2, Theorem 1.12.4, and the Lemma 1.3.12(ii)
+separating-class criterion.  The remaining Chapter 1 gaps are the exact
+arbitrary-map/nonmeasurable forms and the full complete-space/Polish-measure
+parts not covered by these local measure-level wrappers.
 
 2026-05-05 product Borel-space follow-up: `FiniteDimensional.lean` now exports
 `vdVW141_prod_borel_eq_product_borel`, proving the VdV&W 1.4.1 product

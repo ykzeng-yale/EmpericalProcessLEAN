@@ -663,6 +663,28 @@ theorem VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap.comp_continuous
     asymptoticMeasurability := h.asymptoticMeasurability.comp_continuous hg }
 
 /--
+VdV&W Theorem 1.11.1, fixed continuous-map signed bounded-continuous form.
+
+This is the theorem-facing wrapper around the local proof-carrying
+arbitrary-map continuous-mapping primitive.  It covers the fixed-map part of
+the extended continuous mapping theorem; the full varying-map/nonmeasurable
+book statement remains a separate primitive.
+-/
+theorem vdVW1111_signedBoundedContinuousArbitraryMap_comp_continuous
+    {Ω : Type u} {S : Type v} {T : Type w} {ι : Type x}
+    [MeasurableSpace Ω]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T]
+    {μs : ι -> Measure Ω} {X : ι -> Ω -> S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h :
+      VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs X l μ)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap μs
+      (fun i ω => g (X i ω)) l (μ.map hg.measurable.aemeasurable) :=
+  h.comp_continuous hg
+
+/--
 The proof-carrying signed bounded-continuous arbitrary-map weak-convergence
 package is stable under passing to a finer index filter.
 -/
@@ -1155,6 +1177,30 @@ theorem
   { weakConvergence := h.weakConvergence.comp_continuous hg
     asymptoticMeasurability :=
       h.asymptoticMeasurability.comp_continuous hg }
+
+/--
+VdV&W Theorem 1.11.1, fixed continuous-map varying-domain form.
+
+This names the sample-size-varying signed bounded-continuous version used by
+empirical-process endpoints.  It reuses the local varying-domain
+continuous-mapping primitive and does not claim the still-missing full
+VdV&W varying-map statement.
+-/
+theorem
+    vdVW1111_signedBoundedContinuousVaryingDomains_comp_continuous
+    {ι : Type w} {Ω : ι -> Type u} {S : Type v} {T : Type x}
+    [∀ i, MeasurableSpace (Ω i)]
+    [MeasurableSpace S] [TopologicalSpace S] [OpensMeasurableSpace S]
+    [MeasurableSpace T] [TopologicalSpace T] [BorelSpace T]
+    {μs : (i : ι) -> Measure (Ω i)} {X : (i : ι) -> Ω i -> S}
+    {l : Filter ι} {μ : ProbabilityMeasure S}
+    (h :
+      VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs X l μ)
+    {g : S -> T} (hg : Continuous g) :
+    VdVWWeakConvergenceSignedBoundedContinuousVaryingDomains Ω μs
+      (fun i ω => g (X i ω)) l
+      (μ.map hg.measurable.aemeasurable) :=
+  h.comp_continuous hg
 
 /--
 The proof-carrying varying-domain signed bounded-continuous weak-convergence
@@ -3469,6 +3515,46 @@ theorem vdVWWeakConvergenceProbabilityMeasures_iff_forall_bounded_lipschitz_inte
   exact MeasureTheory.tendsto_iff_forall_lipschitz_integral_tendsto
 
 /--
+VdV&W Theorem 1.12.2, measure-level bounded-Lipschitz determining direction.
+
+For Borel probability measures on a pseudo-emetric space, convergence of
+integrals against every bounded Lipschitz real-valued test function implies
+weak convergence.  The full arbitrary-map VdV&W statement still needs the
+outer-expectation/asymptotic-measurability layer; this theorem is the
+mathlib-backed probability-measure core.
+-/
+theorem vdVW1122_weakConvergenceProbabilityMeasures_of_forall_bounded_lipschitz_integral_tendsto
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoEMetricSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι} [l.IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (h :
+      ∀ f : S → ℝ, (∃ C : ℝ, ∀ x y, dist (f x) (f y) ≤ C) →
+        (∃ L, LipschitzWith L f) →
+          Tendsto (fun i => ∫ s, f s ∂(μs i : Measure S)) l
+            (𝓝 (∫ s, f s ∂(μ : Measure S)))) :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ :=
+  (vdVWWeakConvergenceProbabilityMeasures_iff_forall_bounded_lipschitz_integral_tendsto).2 h
+
+/--
+VdV&W Theorem 1.12.2, measure-level bounded-Lipschitz testing consequence.
+
+Weak convergence of probability measures gives convergence of integrals
+against every bounded Lipschitz real-valued test function.
+-/
+theorem vdVW1122_forall_bounded_lipschitz_integral_tendsto_of_weakConvergenceProbabilityMeasures
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoEMetricSpace S]
+    [OpensMeasurableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι} [l.IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ) :
+      ∀ f : S → ℝ, (∃ C : ℝ, ∀ x y, dist (f x) (f y) ≤ C) →
+        (∃ L, LipschitzWith L f) →
+          Tendsto (fun i => ∫ s, f s ∂(μs i : Measure S)) l
+            (𝓝 (∫ s, f s ∂(μ : Measure S))) :=
+  (vdVWWeakConvergenceProbabilityMeasures_iff_forall_bounded_lipschitz_integral_tendsto).1 h
+
+/--
 VdV&W Lemma 1.3.1, closed-set step: if every bounded-continuous real test is
 measurable for a sigma-field `m`, then every closed set is `m`-measurable.
 
@@ -3566,6 +3652,54 @@ theorem vdVW1312_measure_ext_of_forall_boundedContinuous_integral_eq
     (h : ∀ f : S →ᵇ ℝ, ∫ s, f s ∂μ = ∫ s, f s ∂ν) :
     μ = ν := by
   exact MeasureTheory.ext_of_forall_integral_eq_of_IsFiniteMeasure h
+
+/--
+VdV&W Lemma 1.3.12(ii), finite-measure separating-class form.
+
+On a Polish Borel space, a point-separating star subalgebra of bounded
+continuous `𝕜`-valued functions determines finite measures through equality of
+integrals.  This is the measure-uniqueness half of the VdV&W
+vector-lattice/separating-class criterion.
+-/
+theorem vdVW1312_measure_ext_of_forall_separating_starSubalgebra_integral_eq
+    {𝕜 : Type x} [RCLike 𝕜]
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    [PolishSpace S] [BorelSpace S]
+    {μ ν : Measure S} [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    {A : StarSubalgebra 𝕜 (S →ᵇ 𝕜)}
+    (hA :
+      (A.map (BoundedContinuousFunction.toContinuousMapStarₐ 𝕜)).SeparatesPoints)
+    (hint : ∀ g ∈ A, ∫ s, g s ∂μ = ∫ s, g s ∂ν) :
+    μ = ν := by
+  exact MeasureTheory.ext_of_forall_mem_subalgebra_integral_eq_of_polish hA hint
+
+/--
+VdV&W Lemma 1.3.12(ii), measure-level tight separating-class form.
+
+For probability measures on a Polish Borel space, tightness plus convergence of
+integrals over a point-separating star subalgebra of bounded continuous
+`𝕜`-valued functions implies weak convergence.  This is the pinned-mathlib
+vector-lattice/tightness criterion in VdV&W-local weak-convergence notation.
+-/
+theorem
+    VdVWWeakConvergenceProbabilityMeasures.of_tight_of_separating_starSubalgebra
+    {𝕜 : Type x} [RCLike 𝕜]
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    [OpensMeasurableSpace S] [PolishSpace S] [BorelSpace S]
+    {ι : Type v} {l : Filter ι}
+    {μs : ι -> ProbabilityMeasure S} {μ : ProbabilityMeasure S}
+    (htight : IsTightMeasureSet {(μs i : Measure S) | i})
+    {A : StarSubalgebra 𝕜 (S →ᵇ 𝕜)}
+    (hA :
+      (A.map (BoundedContinuousFunction.toContinuousMapStarₐ 𝕜)).SeparatesPoints)
+    (hint :
+      ∀ g ∈ A,
+        Tendsto (fun i : ι => ∫ s, g s ∂(μs i : Measure S)) l
+          (𝓝 (∫ s, g s ∂(μ : Measure S)))) :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ := by
+  exact
+    ProbabilityMeasure.tendsto_of_tight_of_separatesPoints
+      𝕜 (by simpa using htight) hA hint
 
 /--
 Portmanteau closed-set implication for the measure-level VdV&W weak convergence
@@ -3694,6 +3828,336 @@ def VdVWProbabilityMeasuresTight
   IsTightMeasureSet {((μ : ProbabilityMeasure S) : Measure S) | μ ∈ A}
 
 /--
+VdV&W measure-level separability for probability measures: the measure is
+carried by a measurable separable subset.
+
+This is a local predicate for Lemma 1.3.2.  It is intentionally measure-level;
+separability of arbitrary maps remains a separate Chapter 1 primitive.
+-/
+def VdVWProbabilityMeasureSeparable
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    (μ : ProbabilityMeasure S) : Prop :=
+  ∃ A : Set S, MeasurableSet A ∧ IsSeparable A ∧
+    ((μ : ProbabilityMeasure S) : Measure S) (Aᶜ) = 0
+
+/--
+VdV&W measure-level pre-tightness for probability measures: every positive
+tolerance admits a measurable totally bounded set whose complement has mass at
+most that tolerance.
+
+This separates the totally-bounded pre-tight predicate from the compact
+tightness predicate already supplied by `VdVWProbabilityMeasuresTight`.
+-/
+def VdVWProbabilityMeasurePreTight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S]
+    (μ : ProbabilityMeasure S) : Prop :=
+  ∀ ε, 0 < ε ->
+    ∃ A : Set S, MeasurableSet A ∧ TotallyBounded A ∧
+      ((μ : ProbabilityMeasure S) : Measure S) (Aᶜ) ≤ ε
+
+/--
+On a separable ambient topological space, every probability measure is
+VdV&W-separable by taking the whole space as the carrying set.
+-/
+theorem VdVWProbabilityMeasureSeparable.of_separableSpace
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S] [SeparableSpace S]
+    (μ : ProbabilityMeasure S) :
+    VdVWProbabilityMeasureSeparable μ := by
+  exact
+    ⟨Set.univ, MeasurableSet.univ, IsSeparable.of_separableSpace Set.univ,
+      by simp⟩
+
+/--
+Pre-tight probability measures concentrate on a countable union of measurable
+totally bounded sets.  This is the first construction in the proof of
+VdV&W Lemma 1.3.2.
+-/
+theorem VdVWProbabilityMeasurePreTight.exists_iUnion_totallyBounded_measure_compl_eq_zero
+    {S : Type u} [MeasurableSpace S] [UniformSpace S]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasurePreTight μ) :
+    ∃ A : ℕ -> Set S,
+      (∀ n, MeasurableSet (A n)) ∧
+      (∀ n, TotallyBounded (A n)) ∧
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, A n)ᶜ) = 0 := by
+  classical
+  have hchoose :
+      ∀ n : ℕ, ∃ A : Set S,
+        MeasurableSet A ∧ TotallyBounded A ∧
+          ((μ : ProbabilityMeasure S) : Measure S) (Aᶜ) ≤
+            ((n : ℝ≥0∞)⁻¹) := by
+    intro n
+    exact hμ ((n : ℝ≥0∞)⁻¹)
+      (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top n))
+  choose A hA_meas hA_tbounded hA_measure using hchoose
+  refine ⟨A, hA_meas, hA_tbounded, ?_⟩
+  by_contra hne
+  rcases ENNReal.exists_inv_nat_lt hne with ⟨n, hn⟩
+  have hsubset : (⋃ n, A n)ᶜ ⊆ (A n)ᶜ := by
+    intro x hx hxA
+    exact hx (Set.mem_iUnion.2 ⟨n, hxA⟩)
+  have hle_compl :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, A n)ᶜ) ≤
+        ((μ : ProbabilityMeasure S) : Measure S) ((A n)ᶜ) :=
+    measure_mono hsubset
+  have hle_inv :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, A n)ᶜ) ≤
+        ((n : ℝ≥0∞)⁻¹) :=
+    hle_compl.trans (hA_measure n)
+  exact (not_lt_of_ge hle_inv) hn
+
+/--
+Pre-tight probability measures are VdV&W-separable in uniform spaces whose
+uniformity has a countable basis.
+-/
+theorem VdVWProbabilityMeasurePreTight.separable
+    {S : Type u} [MeasurableSpace S] [UniformSpace S]
+    [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasurePreTight μ) :
+    VdVWProbabilityMeasureSeparable μ := by
+  rcases hμ.exists_iUnion_totallyBounded_measure_compl_eq_zero with
+    ⟨A, hA_meas, hA_tbounded, hA_measure⟩
+  exact
+    ⟨⋃ n, A n, MeasurableSet.iUnion hA_meas,
+      IsSeparable.iUnion (fun n => (hA_tbounded n).isSeparable),
+      hA_measure⟩
+
+/--
+VdV&W Lemma 1.3.2 pre-tight-to-separable direction.
+-/
+theorem vdVW132_probabilityMeasure_separable_of_preTight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S]
+    [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasurePreTight μ) :
+    VdVWProbabilityMeasureSeparable μ :=
+  VdVWProbabilityMeasurePreTight.separable hμ
+
+/--
+If a countable increasing cover has full probability mass, then a finite
+initial segment has complement below any positive tolerance.
+-/
+theorem VdVWProbabilityMeasure_exists_finitePrefix_measure_compl_le_of_iUnion_measure_compl_eq_zero
+    {S : Type u} [MeasurableSpace S] (μ : ProbabilityMeasure S)
+    {U : ℕ -> Set S} (hU_meas : ∀ n, MeasurableSet (U n))
+    (hcover :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, U n)ᶜ) = 0)
+    {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ N : ℕ,
+      ((μ : ProbabilityMeasure S) : Measure S)
+        ((⋃ n, ⋃ _ : n ≤ N, U n)ᶜ) ≤ ε := by
+  let F : ℕ -> Set S := fun N => (⋃ n, ⋃ _ : n ≤ N, U n)ᶜ
+  have hF_null : ∀ N, NullMeasurableSet (F N) ((μ : ProbabilityMeasure S) : Measure S) := by
+    intro N
+    exact
+      (MeasurableSet.iUnion fun n =>
+        MeasurableSet.iUnion fun _ => hU_meas n).compl.nullMeasurableSet
+  have hF_anti : Antitone F := by
+    intro N M hNM
+    exact Set.compl_subset_compl.mpr (by
+      intro x hx
+      rcases Set.mem_iUnion.1 hx with ⟨n, hn⟩
+      rcases Set.mem_iUnion.1 hn with ⟨hnN, hxU⟩
+      exact Set.mem_iUnion.2
+        ⟨n, Set.mem_iUnion.2 ⟨le_trans hnN hNM, hxU⟩⟩)
+  have hF_measure_anti :
+      Antitone (fun N => ((μ : ProbabilityMeasure S) : Measure S) (F N)) := by
+    intro N M hNM
+    exact measure_mono (hF_anti hNM)
+  have hInter : (⋂ N, F N) = (⋃ n, U n)ᶜ := by
+    ext x
+    constructor
+    · intro hx hxU
+      rcases Set.mem_iUnion.1 hxU with ⟨n, hxUn⟩
+      exact (Set.mem_iInter.1 hx n)
+        (Set.mem_iUnion.2 ⟨n, Set.mem_iUnion.2 ⟨le_rfl, hxUn⟩⟩)
+    · intro hx
+      refine Set.mem_iInter.2 ?_
+      intro N hxN
+      rcases Set.mem_iUnion.1 hxN with ⟨n, hn⟩
+      rcases Set.mem_iUnion.1 hn with ⟨_hnN, hxUn⟩
+      exact hx (Set.mem_iUnion.2 ⟨n, hxUn⟩)
+  have htend :
+      Tendsto
+        (fun N => ((μ : ProbabilityMeasure S) : Measure S) (F N))
+        atTop (𝓝 0) := by
+    have htend' :=
+      tendsto_measure_iInter_atTop
+        (μ := ((μ : ProbabilityMeasure S) : Measure S)) (s := F)
+        hF_null hF_anti ⟨0, measure_ne_top _ _⟩
+    rw [hInter, hcover] at htend'
+    exact htend'
+  rw [ENNReal.tendsto_atTop_zero_iff_lt_of_antitone hF_measure_anti] at htend
+  rcases htend ε hε with ⟨N, hN⟩
+  exact ⟨N, le_of_lt hN⟩
+
+/--
+Finite high-mass ball cover obtained from VdV&W measure separability.  This is
+the finite-cover step in the separable-to-pre-tight half of Lemma 1.3.2.
+-/
+theorem VdVWProbabilityMeasureSeparable.exists_finitePrefix_ball_cover_measure_compl_le
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasureSeparable μ)
+    {r : ℝ} (hr : 0 < r) {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ c : ℕ -> S, ∃ N : ℕ,
+      ((μ : ProbabilityMeasure S) : Measure S)
+        ((⋃ n, ⋃ _ : n ≤ N, Metric.ball (c n) r)ᶜ) ≤ ε := by
+  rcases hμ with ⟨A, _hA_meas, hA_separable, hA_compl⟩
+  rcases hA_separable with ⟨D, hD_count, hA_closure⟩
+  rcases Set.countable_iff_exists_subset_range.mp hD_count with ⟨c, hD_range⟩
+  have hA_subset : A ⊆ ⋃ n, Metric.ball (c n) r := by
+    intro x hxA
+    rcases (Metric.mem_closure_iff.mp (hA_closure hxA)) r hr with
+      ⟨y, hyD, hxy⟩
+    rcases hD_range hyD with ⟨n, rfl⟩
+    exact Set.mem_iUnion.2 ⟨n, hxy⟩
+  have hcover :
+      ((μ : ProbabilityMeasure S) : Measure S)
+        ((⋃ n, Metric.ball (c n) r)ᶜ) = 0 :=
+    measure_mono_null (Set.compl_subset_compl.mpr hA_subset) hA_compl
+  rcases
+      VdVWProbabilityMeasure_exists_finitePrefix_measure_compl_le_of_iUnion_measure_compl_eq_zero
+        μ (fun _ => Metric.isOpen_ball.measurableSet) hcover hε with
+    ⟨N, hN⟩
+  exact ⟨c, N, hN⟩
+
+/--
+VdV&W Lemma 1.3.2 finite ball-cover bridge from separability.
+-/
+theorem vdVW132_probabilityMeasure_exists_finitePrefix_ball_cover_measure_compl_le_of_separable
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasureSeparable μ)
+    {r : ℝ} (hr : 0 < r) {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ c : ℕ -> S, ∃ N : ℕ,
+      ((μ : ProbabilityMeasure S) : Measure S)
+        ((⋃ n, ⋃ _ : n ≤ N, Metric.ball (c n) r)ᶜ) ≤ ε :=
+  hμ.exists_finitePrefix_ball_cover_measure_compl_le hr hε
+
+/--
+Intersecting finite high-mass ball covers over all reciprocal scales gives a
+measurable totally bounded set whose complement has arbitrarily small mass.
+-/
+theorem VdVWProbabilityMeasureSeparable.exists_iInter_finitePrefix_ball_cover_measure_compl_le
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasureSeparable μ)
+    {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ c : ℕ -> ℕ -> S, ∃ N : ℕ -> ℕ,
+      let G : ℕ -> Set S :=
+        fun m => ⋃ n, ⋃ _ : n ≤ N m,
+          Metric.ball (c m n) (((m : ℝ) + 1)⁻¹)
+      MeasurableSet (⋂ m, G m) ∧
+        TotallyBounded (⋂ m, G m) ∧
+        ((μ : ProbabilityMeasure S) : Measure S) ((⋂ m, G m)ᶜ) ≤ ε := by
+  classical
+  have hchoose :
+      ∀ m : ℕ, ∃ c : ℕ -> S, ∃ N : ℕ,
+        ((μ : ProbabilityMeasure S) : Measure S)
+          ((⋃ n, ⋃ _ : n ≤ N,
+            Metric.ball (c n) (((m : ℝ) + 1)⁻¹))ᶜ) ≤
+          ε * (2 : ℝ≥0∞) ^ (-(m + 1 : ℤ)) := by
+    intro m
+    have hr : 0 < (((m : ℝ) + 1)⁻¹) := by positivity
+    have htol : 0 < ε * (2 : ℝ≥0∞) ^ (-(m + 1 : ℤ)) := by
+      exact ENNReal.mul_pos_iff.2
+        ⟨hε, ENNReal.zpow_pos (by simp) (by simp) (-(m + 1 : ℤ))⟩
+    exact hμ.exists_finitePrefix_ball_cover_measure_compl_le hr htol
+  choose c N hcover using hchoose
+  let G : ℕ -> Set S :=
+    fun m => ⋃ n, ⋃ _ : n ≤ N m,
+      Metric.ball (c m n) (((m : ℝ) + 1)⁻¹)
+  refine ⟨c, N, ?_⟩
+  have hG_meas : ∀ m, MeasurableSet (G m) := by
+    intro m
+    exact
+      MeasurableSet.iUnion fun n =>
+        MeasurableSet.iUnion fun _ => Metric.isOpen_ball.measurableSet
+  have hmeas : MeasurableSet (⋂ m, G m) :=
+    MeasurableSet.iInter hG_meas
+  have htb : TotallyBounded (⋂ m, G m) := by
+    refine Metric.totallyBounded_iff.mpr ?_
+    intro δ hδ
+    rcases Real.exists_nat_pos_inv_lt hδ with ⟨m, hm_pos, hm_lt⟩
+    refine ⟨(c m) '' Set.Iic (N m), (Set.finite_Iic _).image _, ?_⟩
+    intro x hx
+    have hxG : x ∈ G m := Set.mem_iInter.1 hx m
+    rcases Set.mem_iUnion.1 hxG with ⟨n, hn⟩
+    rcases Set.mem_iUnion.1 hn with ⟨hnN, hxball⟩
+    refine Set.mem_iUnion.2 ⟨c m n, ?_⟩
+    refine Set.mem_iUnion.2 ⟨?_, ?_⟩
+    · exact ⟨n, hnN, rfl⟩
+    · have hm_pos_real : 0 < (m : ℝ) := by exact_mod_cast hm_pos
+      have hscale_le : (((m : ℝ) + 1)⁻¹) ≤ (m : ℝ)⁻¹ := by
+        simpa [one_div] using
+          one_div_le_one_div_of_le hm_pos_real
+            (by linarith : (m : ℝ) ≤ (m : ℝ) + 1)
+      exact Metric.ball_subset_ball (hscale_le.trans hm_lt.le) hxball
+  have hsum :
+      (∑' m : ℕ, ε * (2 : ℝ≥0∞) ^ (-(m + 1 : ℤ))) = ε := by
+    rw [ENNReal.tsum_mul_left]
+    nth_rw 2 [← mul_one (a := ε)]
+    congr
+    ring_nf
+    exact ENNReal.tsum_two_zpow_neg_add_one
+  have hmeasure :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋂ m, G m)ᶜ) ≤ ε := by
+    calc
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋂ m, G m)ᶜ)
+          = ((μ : ProbabilityMeasure S) : Measure S) (⋃ m, (G m)ᶜ) := by
+            rw [Set.compl_iInter]
+      _ ≤ ∑' m, ((μ : ProbabilityMeasure S) : Measure S) ((G m)ᶜ) :=
+          measure_iUnion_le _
+      _ ≤ ∑' m : ℕ, ε * (2 : ℝ≥0∞) ^ (-(m + 1 : ℤ)) :=
+          ENNReal.tsum_le_tsum hcover
+      _ = ε := hsum
+  exact ⟨hmeas, htb, hmeasure⟩
+
+/--
+VdV&W Lemma 1.3.2 separable-to-pre-tight direction for probability measures
+on Borel pseudometric spaces.
+-/
+theorem VdVWProbabilityMeasureSeparable.preTight
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasureSeparable μ) :
+    VdVWProbabilityMeasurePreTight μ := by
+  intro ε hε
+  rcases hμ.exists_iInter_finitePrefix_ball_cover_measure_compl_le hε with
+    ⟨c, N, hmeas, htb, hmeasure⟩
+  let G : ℕ -> Set S :=
+    fun m => ⋃ n, ⋃ _ : n ≤ N m,
+      Metric.ball (c m n) (((m : ℝ) + 1)⁻¹)
+  exact ⟨⋂ m, G m, hmeas, htb, hmeasure⟩
+
+/--
+VdV&W Lemma 1.3.2 separable-to-pre-tight direction.
+-/
+theorem vdVW132_probabilityMeasure_preTight_of_separable
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasureSeparable μ) :
+    VdVWProbabilityMeasurePreTight μ :=
+  hμ.preTight
+
+/--
+VdV&W Lemma 1.3.2 measure-level equivalence between pre-tightness and
+separability under the local Borel pseudometric hypotheses.
+-/
+theorem vdVW132_probabilityMeasure_preTight_iff_separable
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [BorelSpace S]
+    [Nonempty S] [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S} :
+    VdVWProbabilityMeasurePreTight μ ↔ VdVWProbabilityMeasureSeparable μ := by
+  constructor
+  · intro hμ
+    exact vdVW132_probabilityMeasure_separable_of_preTight hμ
+  · intro hμ
+    exact vdVW132_probabilityMeasure_preTight_of_separable hμ
+
+/--
 Measure-level asymptotic tightness of a family of probability measures along a
 filter: eventually, all measures put arbitrarily small mass outside one compact
 set.
@@ -3788,6 +4252,25 @@ theorem vdVW132_complete_separable_probabilityMeasure_tight
   vdVWProbabilityMeasuresTight_singleton μ
 
 /--
+VdV&W Lemma 1.3.2 separability/tightness package for the measure-level
+complete separable metric-type Borel setting.
+
+This combines the newly named measure-separability predicate with the existing
+mathlib-backed tightness component.  The converse implications and the full
+pre-tight/separable/tight equivalence are kept separate until their local
+definitions and hypotheses are all in place.
+-/
+theorem vdVW132_complete_separable_probabilityMeasure_separable_and_tight
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    [IsCompletelyPseudoMetrizableSpace S] [SecondCountableTopology S] [BorelSpace S]
+    (μ : ProbabilityMeasure S) :
+    VdVWProbabilityMeasureSeparable μ ∧
+      VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) := by
+  exact
+    ⟨VdVWProbabilityMeasureSeparable.of_separableSpace μ,
+      vdVW132_complete_separable_probabilityMeasure_tight μ⟩
+
+/--
 Compact-set characterization of the VdV&W-local probability-measure tightness
 wrapper.
 -/
@@ -3811,6 +4294,112 @@ theorem vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le
     refine ⟨K, hK, ?_⟩
     rintro ν ⟨μ, hμA, rfl⟩
     exact hKμ μ hμA
+
+/--
+Tightness gives a countable union of compact sets carrying each member of the
+tight family.  This is the measure-level σ-compact support direction used in
+the discussion preceding VdV&W Lemma 1.3.2.
+-/
+theorem VdVWProbabilityMeasuresTight.exists_iUnion_isCompact_measure_compl_eq_zero
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    {A : Set (ProbabilityMeasure S)}
+    (hA : VdVWProbabilityMeasuresTight A)
+    {μ : ProbabilityMeasure S} (hμ : μ ∈ A) :
+    ∃ K : ℕ -> Set S,
+      (∀ n, IsCompact (K n)) ∧
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, K n)ᶜ) = 0 := by
+  classical
+  have hchoose :
+      ∀ n : ℕ, ∃ K : Set S, IsCompact K ∧
+        ∀ ν : ProbabilityMeasure S, ν ∈ A ->
+          ((ν : ProbabilityMeasure S) : Measure S) (Kᶜ) ≤
+            ((n : ℝ≥0∞)⁻¹) := by
+    intro n
+    exact
+      (vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le.mp hA)
+        ((n : ℝ≥0∞)⁻¹)
+        (ENNReal.inv_pos.2 (ENNReal.natCast_ne_top n))
+  choose K hK_compact hK_measure using hchoose
+  refine ⟨K, hK_compact, ?_⟩
+  by_contra hne
+  rcases ENNReal.exists_inv_nat_lt hne with ⟨n, hn⟩
+  have hsubset : (⋃ n, K n)ᶜ ⊆ (K n)ᶜ := by
+    intro x hx hxK
+    exact hx (Set.mem_iUnion.2 ⟨n, hxK⟩)
+  have hle_compl :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, K n)ᶜ) ≤
+        ((μ : ProbabilityMeasure S) : Measure S) ((K n)ᶜ) :=
+    measure_mono hsubset
+  have hle_inv :
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, K n)ᶜ) ≤
+        ((n : ℝ≥0∞)⁻¹) :=
+    hle_compl.trans (hK_measure n μ hμ)
+  exact (not_lt_of_ge hle_inv) hn
+
+/--
+VdV&W σ-compact full-measure support wrapper for a tight probability measure.
+-/
+theorem vdVW132_probabilityMeasure_exists_iUnion_isCompact_measure_compl_eq_zero_of_tight
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S))) :
+    ∃ K : ℕ -> Set S,
+      (∀ n, IsCompact (K n)) ∧
+      ((μ : ProbabilityMeasure S) : Measure S) ((⋃ n, K n)ᶜ) = 0 :=
+  hμ.exists_iUnion_isCompact_measure_compl_eq_zero (by simp)
+
+/--
+Tightness implies VdV&W pre-tightness whenever compact sets are measurable and
+totally bounded in the ambient uniform structure.
+-/
+theorem VdVWProbabilityMeasurePreTight.of_tight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S] [T2Space S] [BorelSpace S]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S))) :
+    VdVWProbabilityMeasurePreTight μ := by
+  intro ε hε
+  rcases
+      (vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le.mp hμ)
+        ε hε with
+    ⟨K, hK, hKμ⟩
+  exact ⟨K, hK.measurableSet, hK.totallyBounded, by simpa using hKμ μ (by simp)⟩
+
+/--
+Tight probability measures are VdV&W-separable in countably generated Hausdorff
+Borel uniform spaces.
+-/
+theorem VdVWProbabilityMeasureSeparable.of_tight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S] [T2Space S] [BorelSpace S]
+    [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S))) :
+    VdVWProbabilityMeasureSeparable μ :=
+  (VdVWProbabilityMeasurePreTight.of_tight hμ).separable
+
+/--
+VdV&W Lemma 1.3.2 tight-to-separable direction.
+-/
+theorem vdVW132_probabilityMeasure_separable_of_tight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S] [T2Space S] [BorelSpace S]
+    [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S))) :
+    VdVWProbabilityMeasureSeparable μ :=
+  VdVWProbabilityMeasureSeparable.of_tight hμ
+
+/--
+VdV&W Lemma 1.3.2 pre-tightness component: in a complete separable
+metric-type Borel space whose topology comes from a Hausdorff uniform
+structure, every probability measure is pre-tight.
+-/
+theorem vdVW132_complete_separable_probabilityMeasure_preTight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S] [T2Space S]
+    [IsCompletelyPseudoMetrizableSpace S] [SecondCountableTopology S] [BorelSpace S]
+    (μ : ProbabilityMeasure S) :
+    VdVWProbabilityMeasurePreTight μ := by
+  exact
+    VdVWProbabilityMeasurePreTight.of_tight
+      (vdVW132_complete_separable_probabilityMeasure_tight μ)
 
 /--
 Tightness of an ambient probability-measure family gives asymptotic tightness
@@ -4426,6 +5015,51 @@ theorem vdVWWeakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zer
         (LevyProkhorov.ofMeasure μ)) l (𝓝 0))
 
 /--
+VdV&W Theorem 1.12.4, measure-level Levy-Prokhorov metric criterion.
+
+On separable pseudometric Borel spaces, weak convergence of probability
+measures is equivalent to convergence to zero in Levy-Prokhorov distance.  This
+is the probability-measure metric core of the textbook bounded-Lipschitz metric
+theorem.
+-/
+theorem vdVW1124_weakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoMetricSpace S]
+    [OpensMeasurableSpace S] [SeparableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S} :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ ↔
+      Tendsto (fun i => levyProkhorovDist (μs i : Measure S) (μ : Measure S)) l (𝓝 0) :=
+  vdVWWeakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero
+
+/--
+VdV&W Theorem 1.12.4, Levy-Prokhorov convergence implies weak convergence.
+-/
+theorem vdVW1124_weakConvergenceProbabilityMeasures_of_levyProkhorovDist_tendsto_zero
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoMetricSpace S]
+    [OpensMeasurableSpace S] [SeparableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h :
+      Tendsto (fun i => levyProkhorovDist (μs i : Measure S) (μ : Measure S)) l
+        (𝓝 0)) :
+    VdVWWeakConvergenceProbabilityMeasures μs l μ :=
+  (vdVW1124_weakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero).2 h
+
+/--
+VdV&W Theorem 1.12.4, weak convergence implies Levy-Prokhorov distance
+convergence to zero.
+-/
+theorem vdVW1124_levyProkhorovDist_tendsto_zero_of_weakConvergenceProbabilityMeasures
+    {S : Type u} {ι : Type v} [MeasurableSpace S] [PseudoMetricSpace S]
+    [OpensMeasurableSpace S] [SeparableSpace S]
+    {μs : ι -> ProbabilityMeasure S} {l : Filter ι}
+    {μ : ProbabilityMeasure S}
+    (h : VdVWWeakConvergenceProbabilityMeasures μs l μ) :
+      Tendsto (fun i => levyProkhorovDist (μs i : Measure S) (μ : Measure S)) l
+        (𝓝 0) :=
+  (vdVW1124_weakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero).1 h
+
+/--
 Measure-level continuous mapping theorem.
 
 This is the mathlib-backed probability-measure version of the Chapter 1
@@ -4977,6 +5611,47 @@ theorem vdVWTendstoInDistribution_continuous_comp
   h.continuous_comp hg
 
 /--
+VdV&W Theorem 1.11.1, measurable random-variable continuous mapping form.
+
+This is the classical mathlib-backed continuous mapping theorem for
+convergence in distribution, under the fixed continuous map specialization.
+-/
+theorem vdVW1111_tendstoInDistribution_continuous_comp
+    {ι : Type u} {E : Type v} {F : Type w} {Ω : ι -> Type x}
+    {Ω' : Type x} {mΩ : (i : ι) -> MeasurableSpace (Ω i)}
+    {μ : (i : ι) -> @Measure (Ω i) (mΩ i)}
+    [∀ i, IsProbabilityMeasure (μ i)]
+    {mΩ' : MeasurableSpace Ω'} {μ' : @Measure Ω' mΩ'}
+    [IsProbabilityMeasure μ']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    [TopologicalSpace F] [MeasurableSpace F] [BorelSpace F]
+    {X : (i : ι) -> Ω i -> E} {Z : Ω' -> E} {l : Filter ι}
+    {g : E -> F}
+    (h : TendstoInDistribution X l Z μ μ')
+    (hg : Continuous g) :
+    TendstoInDistribution (fun i => g ∘ X i) l (g ∘ Z) μ μ' :=
+  vdVWTendstoInDistribution_continuous_comp h hg
+
+/--
+VdV&W Lemma 1.10.2(ii), measurable common-domain form.
+
+Convergence in the local VdV&W outer-probability predicate implies mathlib
+convergence in distribution when the maps are a.e.-measurable and live on a
+common probability space.
+-/
+theorem vdVW1102_ii_tendstoInDistribution_of_vdVWConvergesInOuterProbability
+    {Ω : Type u} {ι : Type w} {D : Type v}
+    [MeasurableSpace Ω] [MeasurableSpace D]
+    [SeminormedAddCommGroup D] [SecondCountableTopology D] [BorelSpace D]
+    {μ : Measure Ω} [IsProbabilityMeasure μ]
+    {X : ι -> Ω -> D} {l : Filter ι} [l.NeBot] [l.IsCountablyGenerated]
+    {limit : Ω -> D}
+    (h : VdVWConvergesInOuterProbability μ X l limit)
+    (hX : ∀ i, AEMeasurable (X i) μ) :
+    TendstoInDistribution X l limit (fun _ : ι => μ) μ :=
+  tendstoInDistribution_of_vdVWConvergesInOuterProbability h hX
+
+/--
 Measurable common-domain convergence in distribution implies the local
 signed-outer bounded-continuous weak-convergence formulation for the original
 maps.
@@ -5114,6 +5789,32 @@ theorem
       TendstoInDistribution X l limit (fun _ : ι => μ) μ :=
     tendstoInDistribution_of_vdVWConvergesInOuterProbability h hX
   exact vdVWTendstoInDistribution_to_signedBoundedContinuousArbitraryMap_aemeasurable hdist
+
+/--
+VdV&W Lemma 1.10.2(ii), signed bounded-continuous arbitrary-map consequence.
+
+This packages the common-domain outer-probability-to-distribution bridge into
+the local proof-carrying signed bounded-continuous weak-convergence predicate.
+-/
+theorem
+    vdVW1102_ii_to_signedBoundedContinuousArbitraryMap_aemeasurable
+    {ι : Type u} {Ω : Type v} {D : Type w}
+    [MeasurableSpace Ω] {μ : Measure Ω} [IsProbabilityMeasure μ]
+    [MeasurableSpace D] [MeasurableSpace.CountablyGenerated D]
+    [SeminormedAddCommGroup D] [SecondCountableTopology D]
+    [BorelSpace D] [OpensMeasurableSpace D]
+    {X : ι -> Ω -> D} {limit : Ω -> D} {l : Filter ι}
+    [l.NeBot] [l.IsCountablyGenerated]
+    (h : VdVWConvergesInOuterProbability μ X l limit)
+    (hX : ∀ i, AEMeasurable (X i) μ) :
+    VdVWWeakConvergenceSignedBoundedContinuousArbitraryMap
+      (fun _ : ι => μ) X l
+      ⟨μ.map limit,
+        Measure.isProbabilityMeasure_map
+          (tendstoInDistribution_of_vdVWConvergesInOuterProbability h
+            hX).aemeasurable_limit⟩ :=
+  VdVWConvergesInOuterProbability.to_signedBoundedContinuousArbitraryMap_aemeasurable
+    h hX
 
 /--
 Measurable common-domain Slutsky/product theorem.

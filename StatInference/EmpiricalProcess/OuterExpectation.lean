@@ -580,6 +580,29 @@ theorem exists_common_measurableCover_of_forall_absolutelyContinuous_aemeasurabl
       VdVWMeasurableCover.ofAEMeasurable_minimal_ae_of_absolutelyContinuous
         (hdom μ hμ) hT V hV h_majorizes
 
+/--
+VdV&W Lemma 1.2.4, nonnegative dominated a.e.-measurable layer.
+
+This numbered wrapper exposes the common-cover statement in the textbook form:
+one measurable majorant dominates `T` pointwise and is minimal against every
+measurable a.e. majorant under each measure dominated by `ν`.
+-/
+theorem vdVW124_exists_common_measurableCover_of_dominated_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {ν : Measure Ω}
+    {measures : Set (Measure Ω)} {T : Ω -> ℝ≥0∞}
+    (hdom : ∀ μ ∈ measures, μ ≪ ν)
+    (hT : AEMeasurable T ν) :
+    ∃ Tstar : Ω -> ℝ≥0∞,
+      Measurable Tstar ∧
+        (∀ ω, T ω ≤ Tstar ω) ∧
+          ∀ μ ∈ measures, ∀ U : Ω -> ℝ≥0∞,
+            Measurable U ->
+            (∀ᵐ ω ∂μ, T ω ≤ U ω) ->
+              ∀ᵐ ω ∂μ, Tstar ω ≤ U ω := by
+  exact
+    exists_common_measurableCover_of_forall_absolutelyContinuous_aemeasurable
+      (ν := ν) (measures := measures) (T := T) hT hdom
+
 /-- Real-valued null-measurable targets give covers after coercion to `ℝ≥0∞`. -/
 noncomputable def ofNullMeasurable_ofReal {Ω : Type u} [MeasurableSpace Ω]
     (μ : Measure Ω) {f : Ω -> ℝ} (hf : NullMeasurable f μ) :
@@ -1132,6 +1155,38 @@ theorem exists_common_boundedERealMeasurableCover_of_forall_absolutelyContinuous
         (hdom μ hμ) hT hlower hupper V hV h_majorizes
 
 /--
+VdV&W Lemma 1.2.4, bounded extended-real dominated a.e.-measurable layer.
+
+This numbered wrapper packages the existing bounded `EReal` common-cover
+primitive in the textbook-facing form: a single measurable `Tstar` dominates
+`T`, stays under the supplied finite upper bound, and is minimal against all
+measurable a.e. majorants for every measure dominated by `ν`.
+-/
+theorem vdVW124_exists_common_boundedERealMeasurableCover_of_dominated_aemeasurable
+    {Ω : Type u} [MeasurableSpace Ω] {ν : Measure Ω}
+    {measures : Set (Measure Ω)} {T : Ω -> EReal} {lower upper : ℝ}
+    (hdom : ∀ μ ∈ measures, μ ≪ ν)
+    (hT : AEMeasurable T ν)
+    (hlower : ∀ ω, (lower : EReal) ≤ T ω)
+    (hupper : ∀ ω, T ω ≤ (upper : EReal)) :
+    ∃ Tstar : Ω -> EReal,
+      Measurable Tstar ∧
+        (∀ ω, T ω ≤ Tstar ω) ∧
+          (∀ ω, Tstar ω ≤ (upper : EReal)) ∧
+            ∀ μ ∈ measures, ∀ U : Ω -> EReal,
+              Measurable U ->
+              (∀ᵐ ω ∂μ, T ω ≤ U ω) ->
+                ∀ᵐ ω ∂μ, Tstar ω ≤ U ω := by
+  rcases
+    exists_common_boundedERealMeasurableCover_of_forall_absolutelyContinuous_aemeasurable
+      (ν := ν) (measures := measures) (T := T) (lower := lower) (upper := upper)
+      hT hlower hupper hdom with
+    ⟨Tstar, hTstar_meas, hTstar_majorizes, _hT_lower, hTstar_upper,
+      hTstar_minimal⟩
+  exact
+    ⟨Tstar, hTstar_meas, hTstar_majorizes, hTstar_upper, hTstar_minimal⟩
+
+/--
 Nonnegative bounded `EReal` covers descend to the existing nonnegative
 `ℝ≥0∞` measurable-cover interface.
 
@@ -1285,6 +1340,52 @@ theorem VdVWInnerExpectation_prod_snd_eq_of_measurable
   exact VdVWOuterExpectation_prod_snd_eq_of_measurable U hT
 
 /--
+VdV&W Lemma 1.2.5, first-coordinate measurable nonnegative package.
+
+For a measurable nonnegative target on the first coordinate, the pulled-back
+minimal cover is exactly the original cover composed with the first projection,
+and both VdV&W outer and inner expectations are unchanged when adjoining an
+ignored probability product coordinate.
+-/
+theorem vdVW125_fst_coordinateProjection_cover_outer_inner_package_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure ν]
+    {T : Ω -> ℝ≥0∞} (U : VdVWMeasurableCover μ T) (hT : Measurable T) :
+    (∃ Uprod : VdVWMeasurableCover (μ.prod ν) (fun z : Ω × S => T z.1),
+        ∀ z : Ω × S, Uprod z = U z.1) ∧
+      VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.1) =
+        VdVWOuterExpectation μ T ∧
+      VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.1) =
+        VdVWInnerExpectation μ T := by
+  exact
+    ⟨⟨VdVWMeasurableCover.fstProductOfMeasurable U hT, fun _ => rfl⟩,
+      VdVWOuterExpectation_prod_fst_eq_of_measurable U hT,
+      VdVWInnerExpectation_prod_fst_eq_of_measurable U hT⟩
+
+/--
+VdV&W Lemma 1.2.5, second-coordinate measurable nonnegative package.
+
+This is the symmetric coordinate-projection package for targets depending only
+on the second product coordinate.
+-/
+theorem vdVW125_snd_coordinateProjection_cover_outer_inner_package_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    [IsProbabilityMeasure μ]
+    {T : S -> ℝ≥0∞} (U : VdVWMeasurableCover ν T) (hT : Measurable T) :
+    (∃ Uprod : VdVWMeasurableCover (μ.prod ν) (fun z : Ω × S => T z.2),
+        ∀ z : Ω × S, Uprod z = U z.2) ∧
+      VdVWOuterExpectation (μ.prod ν) (fun z : Ω × S => T z.2) =
+        VdVWOuterExpectation ν T ∧
+      VdVWInnerExpectation (μ.prod ν) (fun z : Ω × S => T z.2) =
+        VdVWInnerExpectation ν T := by
+  exact
+    ⟨⟨VdVWMeasurableCover.sndProductOfMeasurable U hT, fun _ => rfl⟩,
+      VdVWOuterExpectation_prod_snd_eq_of_measurable U hT,
+      VdVWInnerExpectation_prod_snd_eq_of_measurable U hT⟩
+
+/--
 A.e.-measurable nonnegative maps have their VdV&W outer expectation equal to
 the ordinary `lintegral`.
 
@@ -1394,6 +1495,60 @@ theorem VdVWOuterExpectation_prod_eq_lintegral_lintegral_of_measurable
     hT.aemeasurable
 
 /--
+VdV&W Lemma 1.2.6, nonnegative measurable Fubini chain.
+
+For a measurable nonnegative product integrand the VdV&W inner expectation,
+repeated inner expectation, repeated outer expectation, and joint outer
+expectation all reduce to the same iterated `lintegral`; this gives the
+textbook inequality chain in this measurable layer.
+-/
+theorem vdVW126_inner_repeatedInner_repeatedOuter_outer_chain_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite ν]
+    {T : Ω × S -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWInnerExpectation (μ.prod ν) T ≤
+        VdVWInnerExpectation μ
+          (fun ω => VdVWInnerExpectation ν (fun s => T (ω, s))) ∧
+      VdVWInnerExpectation μ
+          (fun ω => VdVWInnerExpectation ν (fun s => T (ω, s))) ≤
+        VdVWOuterExpectation μ
+          (fun ω => VdVWOuterExpectation ν (fun s => T (ω, s))) ∧
+      VdVWOuterExpectation μ
+          (fun ω => VdVWOuterExpectation ν (fun s => T (ω, s))) ≤
+        VdVWOuterExpectation (μ.prod ν) T := by
+  let I : ℝ≥0∞ := ∫⁻ ω, ∫⁻ s, T (ω, s) ∂ν ∂μ
+  have hsection : ∀ ω, Measurable fun s => T (ω, s) := by
+    intro ω
+    exact hT.comp (measurable_const.prodMk measurable_id)
+  have hT_uncurry : Measurable (Function.uncurry fun ω s => T (ω, s)) := by
+    simpa [Function.uncurry] using hT
+  have hsection_integral_meas : Measurable fun ω => ∫⁻ s, T (ω, s) ∂ν :=
+    hT_uncurry.lintegral_prod_right
+  have hjoint_inner :
+      VdVWInnerExpectation (μ.prod ν) T = I := by
+    rw [VdVWInnerExpectation_eq_lintegral_of_measurable hT]
+    exact MeasureTheory.lintegral_prod T hT.aemeasurable
+  have hrepeated_inner :
+      VdVWInnerExpectation μ
+          (fun ω => VdVWInnerExpectation ν (fun s => T (ω, s))) = I := by
+    simp_rw [VdVWInnerExpectation_eq_lintegral_of_measurable (hsection _)]
+    exact VdVWInnerExpectation_eq_lintegral_of_measurable hsection_integral_meas
+  have hrepeated_outer :
+      VdVWOuterExpectation μ
+          (fun ω => VdVWOuterExpectation ν (fun s => T (ω, s))) = I := by
+    simp_rw [VdVWOuterExpectation_eq_lintegral_of_measurable (hsection _)]
+    exact VdVWOuterExpectation_eq_lintegral_of_measurable hsection_integral_meas
+  have hjoint_outer :
+      VdVWOuterExpectation (μ.prod ν) T = I :=
+    VdVWOuterExpectation_prod_eq_lintegral_lintegral_of_measurable hT
+  exact
+    ⟨by rw [hjoint_inner, hrepeated_inner],
+      by
+        constructor
+        · rw [hrepeated_inner, hrepeated_outer]
+        · rw [hrepeated_outer, hjoint_outer]⟩
+
+/--
 Symmetric product-space Tonelli bridge for VdV&W nonnegative outer
 expectation.
 -/
@@ -1418,6 +1573,40 @@ theorem VdVWOuterExpectation_prod_eq_lintegral_lintegral_symm_of_measurable
       ∫⁻ s, ∫⁻ ω, T (ω, s) ∂μ ∂ν :=
   VdVWOuterExpectation_prod_eq_lintegral_lintegral_symm_of_aemeasurable
     hT.aemeasurable
+
+/--
+VdV&W Lemma 1.2.7, measurable nonnegative repeated-outer equality.
+
+The full textbook lemma treats a Lipschitz-in-one-coordinate nonmeasurable
+integrand.  This source layer records the measurable nonnegative case in the
+same repeated-outer-expectation order: joint VdV&W outer expectation equals
+the outer expectation of the sectionwise VdV&W outer expectations.
+-/
+theorem vdVW127_jointOuter_eq_repeatedOuter_symm_of_measurable
+    {Ω : Type u} {S : Type v} [MeasurableSpace Ω] [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [SFinite μ] [SFinite ν]
+    {T : Ω × S -> ℝ≥0∞} (hT : Measurable T) :
+    VdVWOuterExpectation (μ.prod ν) T =
+      VdVWOuterExpectation ν
+        (fun s => VdVWOuterExpectation μ (fun ω => T (ω, s))) := by
+  have hsection : ∀ s, Measurable fun ω => T (ω, s) := by
+    intro s
+    exact hT.comp (measurable_id.prodMk measurable_const)
+  have hT_uncurry : Measurable (Function.uncurry fun ω s => T (ω, s)) := by
+    simpa [Function.uncurry] using hT
+  have hsection_integral_meas : Measurable fun s => ∫⁻ ω, T (ω, s) ∂μ :=
+    hT_uncurry.lintegral_prod_left
+  calc
+    VdVWOuterExpectation (μ.prod ν) T =
+        ∫⁻ s, ∫⁻ ω, T (ω, s) ∂μ ∂ν :=
+      VdVWOuterExpectation_prod_eq_lintegral_lintegral_symm_of_measurable hT
+    _ = VdVWOuterExpectation ν (fun s => ∫⁻ ω, T (ω, s) ∂μ) :=
+      (VdVWOuterExpectation_eq_lintegral_of_measurable hsection_integral_meas).symm
+    _ = VdVWOuterExpectation ν
+        (fun s => VdVWOuterExpectation μ (fun ω => T (ω, s))) := by
+      congr 1
+      funext s
+      exact (VdVWOuterExpectation_eq_lintegral_of_measurable (hsection s)).symm
 
 /--
 A.e.-measurable nonnegative maps have equal VdV&W outer and inner

@@ -1731,6 +1731,14 @@ to maps that are a.e.-measurable under a dominating measure.  This mirrors the
 nonnegative dominated-family theorem and leaves only the genuinely arbitrary
 nonmeasurable extended-real common-cover existence clause open for Lemma 1.2.4.
 
+2026-05-12 numbered Chapter 1.2 common-cover wrappers:
+`OuterExpectation.lean` now exposes the numbered Lemma 1.2.4 wrappers
+`VdVWMeasurableCover.vdVW124_exists_common_measurableCover_of_dominated_aemeasurable`
+and
+`VdVWBoundedERealMeasurableCover.vdVW124_exists_common_boundedERealMeasurableCover_of_dominated_aemeasurable`.
+These are textbook-facing entry points for the already compiled dominated
+a.e.-measurable common-cover layers.
+
 2026-05-05 product projection cover follow-up: search found no existing exact
 VdV&W perfect-map theorem in mathlib or local `StatInference`, but mathlib's
 product-a.e. section APIs (`Measure.ae_prod_iff_ae_ae` and
@@ -1769,6 +1777,16 @@ measurable outer-inner collapse, so this is a Chapter 1.2 cleanup rather than
 a new perfect-map primitive.  The remaining 1.2.5 gap is still the full
 arbitrary-map perfect projection theorem.
 
+2026-05-12 numbered Chapter 1.2 product/Fubini wrappers:
+`OuterExpectation.lean` now adds
+`vdVW125_fst_coordinateProjection_cover_outer_inner_package_of_measurable`,
+`vdVW125_snd_coordinateProjection_cover_outer_inner_package_of_measurable`,
+`vdVW126_inner_repeatedInner_repeatedOuter_outer_chain_of_measurable`, and
+`vdVW127_jointOuter_eq_repeatedOuter_symm_of_measurable`.  These package the
+measurable nonnegative coordinate-projection and Tonelli layers in the
+numbered Lemma 1.2.5-1.2.7 statement shapes; the arbitrary-map/perfect-map and
+Lipschitz nonmeasurable clauses remain exact-statement blockers.
+
 2026-05-05 FDD forward-direction follow-up: the empirical-process namespace now
 has a VdV&W 1.4.8-named forward finite-dimensional weak-convergence wrapper,
 `vdVW148_finiteDimensional_weakConvergence_of_processLaw_weakConvergence`.
@@ -1795,6 +1813,13 @@ the VdVW 1.3.12 wrapper, while pinned mathlib had the exact finite-measure
 bounded-continuous integral uniqueness theorem.  The vector-lattice/tight
 variant in VdV&W 1.3.12(ii) remains pending.
 
+2026-05-12 separating-class weak-convergence follow-up:
+`WeakConvergence.lean` now also exposes
+`vdVW1312_measure_ext_of_forall_separating_starSubalgebra_integral_eq` and
+`VdVWWeakConvergenceProbabilityMeasures.of_tight_of_separating_starSubalgebra`.
+This closes the measure-level tight/separating-class side of Lemma 1.3.12(ii)
+while leaving the arbitrary-map/nonmeasurable variant as the exact blocker.
+
 2026-05-05 bounded-continuous generated-sigma follow-up: the Chapter 1 weak
 convergence file now has VdV&W 1.3.1 local wrappers:
 `vdVW131_measurableSet_isClosed_of_forall_boundedContinuous_measurable`,
@@ -1816,6 +1841,31 @@ pre-tightness and separability, the complete-space equivalence with tightness,
 and the Polish-measure formulation still require local definitions for
 pre-tight/separable/Polish probability measures before an exact theorem can be
 claimed.
+
+2026-05-12 Lemma 1.3.2 measure-level pre-tight/separable bridge:
+`WeakConvergence.lean` now introduces `VdVWProbabilityMeasureSeparable` and
+`VdVWProbabilityMeasurePreTight`, proves pre-tight-to-separable and
+separable-to-pre-tight through
+`vdVW132_probabilityMeasure_preTight_iff_separable`, and adds tight/support
+wrappers including
+`vdVW132_probabilityMeasure_exists_iUnion_isCompact_measure_compl_eq_zero_of_tight`,
+`vdVW132_probabilityMeasure_separable_of_tight`, and
+`vdVW132_complete_separable_probabilityMeasure_preTight`.  The remaining exact
+1.3.2 work is the complete-space/tightness equivalence and Polish-measure
+formulation beyond these measure-level Borel pseudometric clauses.
+
+2026-05-12 later Chapter 1 weak-convergence numbered wrappers:
+`WeakConvergence.lean` now names the reusable measure-level/common-domain
+wrappers for Lemma 1.10.2(ii), Theorem 1.11.1, Theorem 1.12.2, and Theorem
+1.12.4: `vdVW1102_ii_tendstoInDistribution_of_vdVWConvergesInOuterProbability`,
+`vdVW1102_ii_to_signedBoundedContinuousArbitraryMap_aemeasurable`,
+`vdVW1111_tendstoInDistribution_continuous_comp`,
+`vdVW1111_signedBoundedContinuousArbitraryMap_comp_continuous`,
+`vdVW1111_signedBoundedContinuousVaryingDomains_comp_continuous`,
+`vdVW1122_weakConvergenceProbabilityMeasures_of_forall_bounded_lipschitz_integral_tendsto`,
+and `vdVW1124_weakConvergenceProbabilityMeasures_iff_levyProkhorovDist_tendsto_zero`.
+These remain theorem layers, not exact arbitrary-map/nonmeasurable textbook
+closures.
 
 2026-05-05 product Borel-space follow-up: the empirical-process
 finite-dimensional file now has the VdV&W 1.4.1 wrapper
