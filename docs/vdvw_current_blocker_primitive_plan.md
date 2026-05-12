@@ -10349,3 +10349,18 @@ now isolated at the comparison layer: prove the canonical finite-center
 maximal event and canonical `Phi(x)=x` comparison either under the centered-bad
 restricted law or as base-measure a.e. implications from centered-bad
 membership.
+
+2026-05-12 first-level sign-only failure-tail comparison primitives:
+`Theorem243.lean` now also exposes the honest additive-error comparison layer
+for the canonical Rademacher selected-net route:
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail_countable_firstLevel`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_imp_rademacherBad_finiteCenter_failure_tail_countable_firstLevel`,
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail_countable_firstLevel`.
+These bridges package the canonical first-level half-radius selected cover and
+return the beta-weighted centered-bad outer-probability bound with the
+integrated finite-center Hoeffding failure-tail error, before any entropy or
+lower-growth convergence handoff.  This is the theorem-facing alternative to
+the too-strong almost-sure finite-center maximal input: the remaining source
+input can be stated as a pure Rademacher bad-fiber lower bound, either
+restricted-a.e., base-a.e. conditional on the centered bad event, or pointwise.

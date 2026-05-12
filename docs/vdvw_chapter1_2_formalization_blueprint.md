@@ -3878,6 +3878,19 @@ frontier theorem-facing at the comparison layer: finite-center maximal support
 and canonical `Phi(x)=x`, either restricted to the centered bad set or as
 base-measure a.e. implications from centered-bad membership.
 
+2026-05-12 first-level sign-only failure-tail comparison primitives:
+`Theorem243.lean` now exposes the corresponding honest additive-error
+comparison layer for canonical Rademacher selected nets:
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail_countable_firstLevel`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_imp_rademacherBad_finiteCenter_failure_tail_countable_firstLevel`,
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail_countable_firstLevel`.
+They package the canonical first-level half-radius selected cover and prove the
+beta-weighted centered-bad outer-probability comparison with the integrated
+finite-center Hoeffding failure-tail error, before entropy or lower-growth
+assumptions are used.  This makes the failure-tail lane available directly at
+the source layer alongside the `hphi_id` comparison layer.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

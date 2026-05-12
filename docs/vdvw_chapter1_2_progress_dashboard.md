@@ -4784,3 +4784,16 @@ the displayed-beta comparison with `C = 2`, `A = 1`, before any entropy
 handoff.  The remaining proof target is still the actual finite-center
 maximal event plus canonical `Phi(x)=x` comparison in either restricted-law or
 base-a.e. conditional form.
+
+2026-05-12 first-level sign-only failure-tail comparison primitives:
+`Theorem243.lean` now names the pre-entropy additive-error comparison layer for
+the honest finite-center failure-tail route:
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_rademacherBad_finiteCenter_failure_tail_countable_firstLevel`,
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_ae_imp_rademacherBad_finiteCenter_failure_tail_countable_firstLevel`,
+and
+`VdVWTheorem243CanonicalRademacherSelectedNetEvent_outerProbability_bound_of_rademacherBad_finiteCenter_failure_tail_countable_firstLevel`.
+They choose the canonical first-level half-radius selected cover internally and
+produce the beta-weighted centered-bad outer-probability inequality plus the
+integrated finite-center Hoeffding failure-tail error.  This keeps the next
+source proof on the honest failure-tail lane, avoiding the stronger
+almost-sure finite-center support assumption.
