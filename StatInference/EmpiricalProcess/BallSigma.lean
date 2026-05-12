@@ -181,6 +181,32 @@ theorem vdVWBorel_eq_closedBallMeasurableSpace
       vdVWClosedBallMeasurableSpace_eq_openBallMeasurableSpace.symm
 
 /--
+In a separable pseudometric Borel space, the ambient measurable space is
+exactly the VdV&W open-ball sigma-field.
+-/
+theorem vdVWMeasurableSpace_eq_openBallMeasurableSpace_of_separable
+    {S : Type u} [PseudoMetricSpace S] [MeasurableSpace S] [BorelSpace S]
+    [SeparableSpace S] :
+    (inferInstance : MeasurableSpace S) = VdVWOpenBallMeasurableSpace S := by
+  calc
+    (inferInstance : MeasurableSpace S) = borel S := BorelSpace.measurable_eq
+    _ = VdVWOpenBallMeasurableSpace S :=
+      vdVWBorel_eq_openBallMeasurableSpace (S := S)
+
+/--
+In a separable pseudometric Borel space, the ambient measurable space is
+exactly the VdV&W closed-ball sigma-field.
+-/
+theorem vdVWMeasurableSpace_eq_closedBallMeasurableSpace_of_separable
+    {S : Type u} [PseudoMetricSpace S] [MeasurableSpace S] [BorelSpace S]
+    [SeparableSpace S] :
+    (inferInstance : MeasurableSpace S) = VdVWClosedBallMeasurableSpace S := by
+  calc
+    (inferInstance : MeasurableSpace S) = borel S := BorelSpace.measurable_eq
+    _ = VdVWClosedBallMeasurableSpace S :=
+      vdVWBorel_eq_closedBallMeasurableSpace (S := S)
+
+/--
 Distance to a fixed center is measurable for the VdV&W open-ball sigma-field.
 
 This avoids assuming the domain is already Borel-measurable; it is the forward
@@ -443,10 +469,7 @@ theorem vdVWBorelMeasurable_iff_forall_denseSeq_dist_measurable
     have hopen : @Measurable Ω S _ (VdVWOpenBallMeasurableSpace S) X :=
       (vdVWOpenBallMeasurable_iff_forall_denseSeq_dist_measurable (X := X)).2 hcoord
     have hEq : (inferInstance : MeasurableSpace S) = VdVWOpenBallMeasurableSpace S := by
-      calc
-        (inferInstance : MeasurableSpace S) = borel S := BorelSpace.measurable_eq
-        _ = VdVWOpenBallMeasurableSpace S :=
-          vdVWBorel_eq_openBallMeasurableSpace (S := S)
+      exact vdVWMeasurableSpace_eq_openBallMeasurableSpace_of_separable (S := S)
     change @Measurable Ω S _ (inferInstance : MeasurableSpace S) X
     rw [hEq]
     exact hopen

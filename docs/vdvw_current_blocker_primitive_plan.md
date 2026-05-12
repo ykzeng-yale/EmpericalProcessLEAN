@@ -2698,8 +2698,10 @@ Search record for the Chapter 1 ball-sigma/measurability foundation lane:
   measurability.  The compiled local `BallSigma.lean` layer now closes the
   open/closed ball sigma-field part with `VdVWClosedBallSets`,
   `VdVWClosedBallMeasurableSpace`, rational open/closed ball bridge lemmas,
-  open-ball/closed-ball sigma equality, and Borel equality for the closed-ball
-  sigma field.
+  open-ball/closed-ball sigma equality, Borel equality for the closed-ball
+  sigma field, and the separable ambient measurable-space exports
+  `vdVWMeasurableSpace_eq_openBallMeasurableSpace_of_separable` and
+  `vdVWMeasurableSpace_eq_closedBallMeasurableSpace_of_separable`.
 - a follow-up search confirmed that no exact theorem was found for
   `Measurable X ↔ ∀ n, Measurable fun ω => dist (X ω) (denseSeq S n)`.  The
   reusable route is through `measurableSet_lt`, `measurable_of_Iio`,
