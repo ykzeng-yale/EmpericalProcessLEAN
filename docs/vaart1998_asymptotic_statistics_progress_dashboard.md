@@ -15,7 +15,15 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: derivative-table common-law endpoint
+Latest verified packet: unscaled pointwise-Taylor endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_unscaledPointwiseTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+in `MEstimators.lean`.  It composes
+`vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_ae_of_unscaled_selectedTaylor`
+into the derivative-table common-law route, replacing the scaled pointwise
+Taylor field by the raw single-observation Taylor identity for `estimatingMap`
+before applying the normalization scale.
+
+Immediate predecessor packet: derivative-table common-law endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It adds
 `vaart1998_theorem_5_41_derivativeCommonVectorLaw_of_matrixTableRepresentation`
@@ -101,7 +109,8 @@ from the pointwise-Taylor Theorem 5.41 action endpoint.
 
 Current next blocker: package the remaining model-facing score/Taylor/source
 hypotheses around the score-law covariance/moment source endpoint, especially
-pointwise Taylor and model smoothness fields.
+deriving the unscaled raw pointwise Taylor identity from model smoothness
+fields.
 
 ## Verified Frontier
 

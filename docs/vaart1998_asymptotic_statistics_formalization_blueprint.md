@@ -76,13 +76,18 @@ for the vector score process.  The derivative-table common-law endpoint
 composes
 `vaart1998_theorem_5_41_derivativeCommonVectorLaw_of_matrixTableRepresentation`,
 so model instances can state the common law and infinite-product law directly
-for the derivative table process.  The next proof packet should package the
-remaining model-facing score/Taylor/source fields around this covariance/moment
-endpoint, not replay display weak-convergence, display-tightness, score-CLT,
-residual convergence, absorbing tightness, derivative-action wrappers,
-derivative-entry iid source fields, score moment transfer, score-law covariance
-transfer, vector score-representation, vector score common-law transfer, or
-derivative-table common-law transfer.
+for the derivative table process.  The unscaled pointwise-Taylor endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_unscaledPointwiseTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+composes
+`vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_ae_of_unscaled_selectedTaylor`,
+so model instances can state the raw single-observation Taylor identity for
+`estimatingMap` before applying the normalization scale.  The next proof
+packet should derive that raw Taylor identity from model smoothness fields, not
+replay display weak-convergence, display-tightness, score-CLT, residual
+convergence, absorbing tightness, derivative-action wrappers, derivative-entry
+iid source fields, score moment transfer, score-law covariance transfer,
+vector score-representation, vector score common-law transfer,
+derivative-table common-law transfer, or scaled/unscaled Taylor scaling.
 
 ## Chapter Map
 
