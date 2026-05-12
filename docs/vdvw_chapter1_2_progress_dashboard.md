@@ -4401,3 +4401,13 @@ and
 They remove the raw finite-center failure-event measurability fields for the
 countable first-level selected cover; only the real probability and integrated
 failure-tail convergence inputs remain exposed.
+
+The sign-swap additive failure-tail route now also has a single-sample
+inverse-square tail consumer:
+`vdVWTheorem243_selectedFailureTail_restricted_add_full_tendsto_zero_of_invSq_lintegral`.
+The selected-center sign-swap and pair-sub/sign-swap endpoints have both
+`..._selectedCenterAt_of_invSq_lintegral` and
+`..._selectedCenterAt_of_eventually_ae_cardinality_ge` variants, so the
+remaining exposed source work is the pair-sub Chebyshev lower bound plus
+fixed-original sign-swap transport under a.e. lower-growth of the canonical
+half-radius selected-cover cardinality.

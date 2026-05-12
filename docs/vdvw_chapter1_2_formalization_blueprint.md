@@ -3539,6 +3539,18 @@ measurability inputs internally.  The remaining theorem-facing source work is
 therefore probability and tail control, not additional finite-center
 measurability bookkeeping.
 
+2026-05-12 single-sample inverse-square sign-swap failure-tail route:
+`Theorem243.lean` now proves the generic consumer
+`vdVWTheorem243_selectedFailureTail_restricted_add_full_tendsto_zero_of_invSq_lintegral`
+and selected-center sign-swap / pair-sub-sign-swap wrappers with
+`..._selectedCenterAt_of_invSq_lintegral` and
+`..._selectedCenterAt_of_eventually_ae_cardinality_ge` suffixes.  The new
+consumer bounds the centered-bad restricted original failure term plus the
+full-law ghost failure term by one full-law inverse-square selected-cardinality
+integral.  The frontier is now the genuine probability source: pair-sub
+Chebyshev lower bounds and fixed-original sign-swap transport, together with
+a.e. lower-growth of the canonical half-radius selected cover.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
