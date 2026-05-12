@@ -1370,8 +1370,13 @@ so future work can prove the concrete range-gradient energy inequality
 and square root directly.  Future fully general polytope-log-barrier work
 should construct that concrete range inverse-Hessian/gradient-energy oracle,
 or alternatively use the compiled finite sum-rule packets together with the
-row-decomposition and head/tail induction lemmas above, rather than
-redoing scalar self-concordance or affine right-inverse algebra.
+row-decomposition and head/tail induction lemmas above.  The newest induction
+packet adds
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum` and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_gradient_quadratic`,
+so a nonzero head row plus a recursively supplied tail barrier now combine via
+the binary sum rule.  Do not redo scalar self-concordance or affine
+right-inverse algebra.
 Do not redo the
 square-root/right-inverse/Hessian-nonnegativity/self-concordance/model-Hessian
 plumbing; use
@@ -1399,8 +1404,9 @@ The exact blockers are:
   for arbitrary finite row families, closing the exact shared-domain sum
   inverse-Hessian / inverse-local gate for finite row sums using
   `polytopeSlackSet_eq_iInter_halfspaceSlackSet` and
-  `polytopeSlackSet_succ_eq_barrierInterSet`, or opening the inf-projection
-  rule.
+  `polytopeSlackSet_succ_eq_barrierInterSet` plus the compiled
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum`
+  wrappers, or opening the inf-projection rule.
   Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi

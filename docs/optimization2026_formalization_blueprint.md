@@ -140,10 +140,14 @@ now reduces that bound to the concrete energy inequality
 `polytopeSlackSet_eq_iInter_halfspaceSlackSet` now expose the finite-row
 intersection route for sum-rule workers; `polytopeSlackTailOffset` and
 `polytopeSlackSet_succ_eq_barrierInterSet` now provide the head/tail induction
-shape over `Fin (m+1)`.  Next
-construct that concrete range oracle and energy bound for the fully general
-polytope barrier or use the reusable finite sum-rule machinery,
-starting with the product-separable rule; all segment membership, `ψ`
+shape over `Fin (m+1)`.  The induction wrappers
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum` and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_gradient_quadratic`
+now combine a nonzero head row with a recursively supplied tail barrier via
+the compiled binary sum rule.  Next construct the concrete range oracle and
+energy bound for the fully general polytope barrier, or instantiate the
+canonical summed inverse-Hessian/inverse-local identity for the head/tail
+finite-row induction; all segment membership, `ψ`
 continuity, local-norm continuity/positivity, Riccati comparison, derivative
 inequality, coefficient scaling, final sandwich assembly, first Newton/Dikin
 membership, and inverse-Hessian transport wrappers are now compiled.  Do not

@@ -14800,5 +14800,101 @@ theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of
       positiveOrthantNegLogGrad y))
     (hgradient_quadratic hy)
 
+/--
+Induction step for Chewi Example 13.14's finite-row logarithmic barrier.  A
+nonzero head row plus a recursively supplied tail polytope barrier combine via
+the binary shared-domain sum rule.
+-/
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin (m + 1) -> F) (b : EuclideanSpace ℝ (Fin (m + 1)))
+    (ha0 : a 0 ≠ 0)
+    {tailHess : F -> F →L[ℝ] F} {tailGrad : F -> F}
+    {tailInvHess : F -> F →L[ℝ] F} {tailThird : F -> F -> F -> ℝ}
+    {tailNu : ℝ}
+    (htail : SelfConcordantBarrierOn
+      (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b))
+      tailHess tailGrad tailInvHess tailThird 1 tailNu)
+    (sumInvHess : F -> F →L[ℝ] F)
+    (hsumInvNonneg : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      ∀ v : F, 0 ≤ inner ℝ v (sumInvHess x v))
+    (hgradient_bound : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      dualLocalNorm sumInvHess x
+        (barrierSumGrad
+          (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0) negLogBarrierGrad)
+          tailGrad x) ≤ Real.sqrt (1 + tailNu)) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierSumHess
+        (barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0) negLogHessCLM)
+        tailHess)
+      (barrierSumGrad
+        (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0) negLogBarrierGrad)
+        tailGrad)
+      sumInvHess
+      (barrierSumThirdMixed
+        (barrierAffinePreimageThirdMixed (halfspaceSlackCLM (a 0)) (b 0)
+          negLogBarrierThirdMixed)
+        tailThird) 1 (1 + tailNu) := by
+  have hhead :=
+    chewi1314_halfspaceSlackNegLog_selfConcordantBarrierOn (a 0) (b 0) ha0
+  have hsum :=
+    chewi1311_sum_selfConcordantBarrierOn_of_gradient_bound
+      hhead htail hsumInvNonneg hgradient_bound
+  simpa [polytopeSlackSet_succ_eq_barrierInterSet a b] using hsum
+
+/--
+Induction step for Chewi Example 13.14's finite-row logarithmic barrier, with
+the summed-gradient bound supplied as the concrete quadratic energy inequality.
+-/
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_gradient_quadratic
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin (m + 1) -> F) (b : EuclideanSpace ℝ (Fin (m + 1)))
+    (ha0 : a 0 ≠ 0)
+    {tailHess : F -> F →L[ℝ] F} {tailGrad : F -> F}
+    {tailInvHess : F -> F →L[ℝ] F} {tailThird : F -> F -> F -> ℝ}
+    {tailNu : ℝ}
+    (htail : SelfConcordantBarrierOn
+      (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b))
+      tailHess tailGrad tailInvHess tailThird 1 tailNu)
+    (sumInvHess : F -> F →L[ℝ] F)
+    (hsumInvNonneg : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      ∀ v : F, 0 ≤ inner ℝ v (sumInvHess x v))
+    (hgradient_quadratic : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      inner ℝ
+        (barrierSumGrad
+          (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0) negLogBarrierGrad)
+          tailGrad x)
+        (sumInvHess x
+          (barrierSumGrad
+            (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0) negLogBarrierGrad)
+            tailGrad x)) ≤ 1 + tailNu) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierSumHess
+        (barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0) negLogHessCLM)
+        tailHess)
+      (barrierSumGrad
+        (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0) negLogBarrierGrad)
+        tailGrad)
+      sumInvHess
+      (barrierSumThirdMixed
+        (barrierAffinePreimageThirdMixed (halfspaceSlackCLM (a 0)) (b 0)
+          negLogBarrierThirdMixed)
+        tailThird) 1 (1 + tailNu) := by
+  refine chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum
+    a b ha0 htail sumInvHess hsumInvNonneg ?_
+  intro x hx
+  exact barrierSumGradient_bound_of_quadratic_le sumInvHess
+    (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0) negLogBarrierGrad)
+    tailGrad x (by norm_num) htail.parameter_nonneg (hsumInvNonneg hx)
+    (hgradient_quadratic hx)
+
 end Optimization
 end StatInference

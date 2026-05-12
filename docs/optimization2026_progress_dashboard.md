@@ -145,16 +145,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated` and
   the quadratic-energy consumer
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_gradient_quadratic`
-  built from `dualLocalNorm_le_sqrt_of_inner_le`.
+  built from `dualLocalNorm_le_sqrt_of_inner_le`, plus the head/tail induction
+  wrappers
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum` and
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_gradient_quadratic`.
   Example 13.14's single row log-barrier route can now use the source-shaped
   theorem for `x ↦ -log (b - inner a x)` when `a ≠ 0`, and the finite-row
   orthant-preimage route is compiled for any slack map with a supplied right
   inverse, surjective linear part, or a supplied inverse-Hessian oracle on the
   slack-map range satisfying nonnegativity and the concrete range-gradient
-  quadratic energy bound.  For fully general row families, next construct that
-  concrete range oracle or use the row-decomposition/head-tail lemmas with
-  the existing sum-rule packets for
-  finite polytope logarithmic barriers.
+  quadratic energy bound.  For fully general row families, next construct the
+  concrete range oracle/energy bound or instantiate the row-decomposition
+  induction by providing the canonical summed inverse-Hessian/inverse-local
+  identity for the head halfspace plus recursively supplied tail barrier.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
   supplied-oracle form, for invertible affine maps, as a single
   non-invertible/range certificate object, and for affine maps whose linear
