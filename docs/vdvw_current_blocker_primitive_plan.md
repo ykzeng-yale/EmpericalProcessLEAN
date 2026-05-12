@@ -10193,3 +10193,19 @@ localized assumption `indexClass.Countable`, removing the artificial global
 failure-tail final wrappers.  The source frontier itself is unchanged:
 prove the lower-growth/tail structure, or the remaining exact textbook
 random-entropy-to-tail/UI comparison, from honest VdV&W hypotheses.
+
+2026-05-12 named bad-set fixed-radius comparison source surface:
+`Theorem243.lean` now proves
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_namedBadSet_outerProbability_bound`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_namedBadSet_imp`,
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_namedBadSet_imp`.
+These constructors let the remaining product/fiber or Fubini proof state the
+source conclusion using the named events
+`VdVWTheorem243CenteredTruncatedBadSet` and
+`VdVWTheorem243SelectedFiniteNetBadSet`; an eventual a.e. implication, a
+pointwise implication, or a direct named outer-probability comparison now
+builds `VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison`.
+The next non-duplicative theorem work is still to prove one of those named
+event comparisons from the VdV&W symmetrization/random-cover hypotheses, not
+to add another downstream convergence wrapper.

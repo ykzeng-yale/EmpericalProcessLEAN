@@ -4638,3 +4638,18 @@ leaving the half-scale signed bad-event lower bound as the exposed source
 input.  The generic invNat half-scale finite-tail route now composes that
 Chebyshev source with fixed-original sign-swap transport; the remaining wrapper
 work is the selected-center/inverse-square specialization of the invNat route.
+
+2026-05-12 named bad-set fixed-radius comparison source surface:
+`Theorem243.lean` now connects the named centered/selected bad events back to
+the proof-carrying fixed-radius comparison record through
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_namedBadSet_outerProbability_bound`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_namedBadSet_imp`,
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_namedBadSet_imp`.
+Future product-fiber/Fubini source lemmas can now state either a direct
+outer-probability bound or an eventual a.e. event implication between
+`VdVWTheorem243CenteredTruncatedBadSet` and
+`VdVWTheorem243SelectedFiniteNetBadSet`, then feed the existing fixed-radius
+Theorem 2.4.3 route without re-expanding the raw set comprehensions.  This is
+a source-interface closure only; the actual VdV&W probability comparison or
+event inclusion still has to be proved from the textbook hypotheses.

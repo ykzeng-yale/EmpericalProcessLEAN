@@ -3728,6 +3728,20 @@ fixed-original sign-swap transport while retaining the exact positive-size
 `1 / n` beta; selected-center/inverse-square specialization of the invNat route
 is the next local wrapper target.
 
+2026-05-12 named bad-set fixed-radius comparison source surface:
+`Theorem243.lean` now registers
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_namedBadSet_outerProbability_bound`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_namedBadSet_imp`,
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_namedBadSet_imp`.
+These are source-facing constructors from the named bad-event notation to the
+fixed-radius comparison record: product-fiber or Fubini arguments can target
+the named centered bad set and selected finite-net bad set directly, and the
+constructor supplies the outer-probability comparison consumed by the existing
+fixed-radius Theorem 2.4.3 route.  The mathematical blocker remains upstream:
+prove the named event implication/comparison from the textbook
+symmetrization/random-cover hypotheses.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
