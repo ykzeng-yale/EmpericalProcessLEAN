@@ -1844,6 +1844,48 @@ theorem BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_of_source
   exact hgrad (hsel.point_mem hx)
 
 /--
+Source-domain second-order selected-envelope theorem from the packaged
+adjoint-square-root model.  Concrete source instances can state both
+first-order and gradient-derivative data once on the original domain `s`;
+selector stationarity lifts those facts to the selected graph before the
+Schur-envelope theorem is applied.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_sourceFirstSecond_isOpen
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₁] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {dselector : E₁ →L[ℝ] E₂} {x : E₁}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hx : x ∈ barrierInfProjectionSet s)
+    (hfgrad : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      HasGradientAt f (grad z) z)
+    (hgrad : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      HasFDerivAt grad (hess z) z)
+    (hselector : HasFDerivAt selector dselector x) :
+    BarrierInfProjectionSecondOrderEnvelopeAt s f selector grad hess invHyy x :=
+  hmodel.secondOrderEnvelopeAt_of_isOpen
+    hopen hx
+    (hmodel.selector_stationary.hasGradientAt_of_source hfgrad hx)
+    (hmodel.selector_stationary.grad_hasFDerivAt_of_source hgrad hx)
+    hselector
+
+/--
 Schur-Hessian derivative certificate from the packaged actual full-Hessian
 derivative source certificate.  Future concrete source proofs should prove
 `BarrierInfProjectionFullHessianDerivativeOn` once and reuse this method,

@@ -455,6 +455,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   derivative solves `D selector v = -Hyy^{-1} Hyx v`.
 - Inf-projection model inverse/second-order API: the newest packet adds
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt`,
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_sourceFirstSecond_isOpen`,
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_right_inverse`,
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_left_inverse`,
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.full_right_inverse`,
@@ -463,8 +464,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_isOpen`.
   Future source instances with an adjoint-square-root envelope model should
   state full-space `sqrtFull` equalities once on `s`, lift them through
-  `of_sourceFullSqrt`, and use these methods instead of re-proving
-  selected-graph square-root equalities, `Hyy` inverse identities, or the
+  `of_sourceFullSqrt`, state first/second differentiability once on `s`, and
+  use these methods instead of re-proving selected-graph square-root
+  equalities, source derivative restrictions, `Hyy` inverse identities, or the
   selected-value second-order envelope from raw square-root equalities.
 - Inf-projection implicit-selector derivative calculus: the newest packet adds
   `barrierInfProjectionVerticalGrad_hasFDerivAt`,

@@ -314,6 +314,7 @@ scalar segment form of the actual third-derivative identity,
 The adjoint-square-root model now exposes
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt`,
 `chewi1311_infProjection_selfConcordantBarrierOn_of_sourceFullSqrt`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_sourceFirstSecond_isOpen`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_right_inverse`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_left_inverse`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.full_right_inverse`,
@@ -323,8 +324,10 @@ and
 Use these when constructing concrete Proposition 13.11(4) instances; full-space
 `sqrtFull` equalities can now be stated once on `s`, lifted to selected graph
 points, and consumed directly for the inf-projection
-`SelfConcordantBarrierOn` theorem.  Do not rebuild selected-graph
-full-Hessian square-root equalities, `Hyy` inverse identities, or selected
+`SelfConcordantBarrierOn` theorem; source first/second differentiability data
+can likewise be stated once on `s` and consumed for the selected second-order
+envelope.  Do not rebuild selected-graph full-Hessian square-root equalities,
+source derivative restrictions, `Hyy` inverse identities, or selected
 second-order envelopes by hand.
 `BarrierInfProjectionSelectorStationary.projectedHessianSegmentMixedThirdLocalNormCertificate_of_convex_scalarPsi`
 and

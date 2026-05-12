@@ -521,18 +521,19 @@ derivative satisfies the implicit equation
 `barrierInfProjectionSchurHessFrom`.
 The adjoint-square-root model API now adds
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_sourceFirstSecond_isOpen`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_right_inverse`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.hyy_left_inverse`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.full_right_inverse`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.grad_hasFDerivAt_schur_of_isOpen`,
 and
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.secondOrderEnvelopeAt_of_isOpen`.
-These lift full-space square-root equations from `s`, discharge the `Hyy`
-inverse identities, the selected full-Hessian right inverse, and the
-open-domain second-order envelope directly from the packaged square-root
-model.  The next exact inf-projection proof should consume these helpers
-before adding any new raw inverse, selected-graph square-root, or
-second-order wrapper.
+These lift full-space square-root equations from `s`, source first/second
+differentiability data from `s`, discharge the `Hyy` inverse identities, the
+selected full-Hessian right inverse, and the open-domain second-order envelope
+directly from the packaged square-root model.  The next exact inf-projection
+proof should consume these helpers before adding any new raw inverse,
+selected-graph square-root, source first/second-order, or second-order wrapper.
 The implicit-selector derivative packet adds
 `barrierInfProjectionVerticalGrad_hasFDerivAt`,
 `barrierInfProjection_verticalDerivative_eq_zero_of_eventually_eq_zero`,
