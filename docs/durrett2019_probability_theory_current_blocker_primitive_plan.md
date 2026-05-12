@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V229
+## Live In-Thread Goal Prompt V230
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -323,13 +323,25 @@ The adapted-event wrapper now supplies ordinary measurability, the
 Borel-Cantelli martingale, `X_0=0`, finite-time `L^2`, clock predictability,
 clock integrability, and `A_0>=0` to the V228 infinite-clock endpoint.
 
-Next aggressive step: finish the two remaining infinite-clock source inputs
-without repeating solved route plumbing.  First prove the tail-integral
-certificate for `(max t 1)⁻¹ ^ 2` on `[0,∞)`.  Then handle the clock
-monotonicity gap honestly: Mathlib conditional-expectation representatives are
-only ordered a.e., so either build an a.e.-monotone variant of the 4.5.3 route
-or introduce a canonical nonnegative representative before claiming
-pointwise monotonicity.  Do not
+V230 discharges the textbook tail-integral certificate.  New compiled
+declarations:
+`durrett2019_theorem_4_5_5_max_one_inv_sq_integrableOn_Ici`,
+`durrett2019_theorem_4_5_5_integral_max_one_inv_sq_Ici`,
+`durrett2019_theorem_4_5_5_integral_max_one_inv_sq_Ici_le_two`,
+`durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock_auto_tail`,
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_adapted_conditionalProbabilitySum_clock_auto_tail`.
+The infinite-clock and ratio wrappers now use the exact value
+`∫_0^∞ (max t 1)^{-2} dt = 2`, so the tail certificate is no longer a live
+source obligation.
+
+Next aggressive step: handle the clock monotonicity gap honestly without
+repeating solved route plumbing.  Mathlib conditional-expectation
+representatives are only ordered a.e., so either build an a.e.-monotone
+variant of the 4.5.3 route or introduce a canonical nonnegative representative
+before claiming pointwise monotonicity.  In parallel, package the finite-clock
+martingale convergence input from the existing Theorem 4.5.2 finite-variance
+route only if it directly feeds the V230 ratio wrapper.  Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1676,6 +1688,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V229` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V230` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -6,6 +6,7 @@ import Mathlib.Probability.Martingale.Convergence
 import Mathlib.Probability.Martingale.OptionalStopping
 import Mathlib.Probability.Martingale.Upcrossing
 import Mathlib.Algebra.Order.Field.GeomSum
+import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.Analysis.SpecialFunctions.Pow.Integral
 import Mathlib.MeasureTheory.Integral.Lebesgue.DominatedConvergence
 import StatInference.ProbabilityTheory.ConditionalExpectation
@@ -21345,6 +21346,105 @@ theorem durrett2019_theorem_4_5_5_conditionalProbabilitySum_zero_nonneg
   simp [durrett2019_theorem_4_5_5_conditionalProbabilitySum]
 
 /--
+Durrett 2019, Theorem 4.5.5 source support: the textbook tail integrand
+`(max t 1)^{-2}` is integrable on `[0,∞)`.
+-/
+theorem durrett2019_theorem_4_5_5_max_one_inv_sq_integrableOn_Ici :
+    IntegrableOn (fun t : ℝ => (max t (1 : ℝ))⁻¹ ^ 2) (Set.Ici 0) volume := by
+  have hsplit : Set.Ici (0 : ℝ) = Set.Icc 0 1 ∪ Set.Ioi 1 := by
+    exact (Set.Icc_union_Ioi_eq_Ici (show (0 : ℝ) ≤ 1 by norm_num)).symm
+  rw [hsplit, integrableOn_union]
+  constructor
+  · exact
+      ((continuous_id.max continuous_const).inv₀
+        (by
+          intro x
+          exact (zero_lt_one.trans_le (le_max_right x (1 : ℝ))).ne')).pow 2 |>.integrableOn_Icc
+  · refine
+      (integrableOn_Ioi_rpow_of_lt
+        (a := (-2 : ℝ)) (c := (1 : ℝ)) (by norm_num) (by norm_num)).congr_fun
+        ?_ measurableSet_Ioi
+    intro x hx
+    have hx1 : 1 ≤ x := le_of_lt hx
+    change x ^ (-2 : ℝ) = (max x (1 : ℝ))⁻¹ ^ 2
+    rw [max_eq_left hx1]
+    rw [← Real.rpow_natCast]
+    rw [← Real.rpow_neg_one x]
+    rw [← Real.rpow_mul]
+    · norm_num
+    · exact le_trans (by norm_num : (0 : ℝ) ≤ 1) hx1
+
+/--
+Durrett 2019, Theorem 4.5.5 source support: the textbook tail integral
+`∫_0^∞ (max t 1)^{-2} dt` has exact value `2`.
+-/
+theorem durrett2019_theorem_4_5_5_integral_max_one_inv_sq_Ici :
+    ∫ t in Set.Ici (0 : ℝ), (max t (1 : ℝ))⁻¹ ^ 2 ∂volume = 2 := by
+  let g : ℝ -> ℝ := fun t => (max t (1 : ℝ))⁻¹ ^ 2
+  have hIcc_int : IntegrableOn g (Set.Icc (0 : ℝ) 1) volume := by
+    exact
+      ((continuous_id.max continuous_const).inv₀
+        (by
+          intro x
+          exact (zero_lt_one.trans_le (le_max_right x (1 : ℝ))).ne')).pow 2 |>.integrableOn_Icc
+  have hIoi_int : IntegrableOn g (Set.Ioi (1 : ℝ)) volume := by
+    refine
+      (integrableOn_Ioi_rpow_of_lt
+        (a := (-2 : ℝ)) (c := (1 : ℝ)) (by norm_num) (by norm_num)).congr_fun
+        ?_ measurableSet_Ioi
+    intro x hx
+    have hx1 : 1 ≤ x := le_of_lt hx
+    change x ^ (-2 : ℝ) = (max x (1 : ℝ))⁻¹ ^ 2
+    rw [max_eq_left hx1]
+    rw [← Real.rpow_natCast]
+    rw [← Real.rpow_neg_one x]
+    rw [← Real.rpow_mul]
+    · norm_num
+    · exact le_trans (by norm_num : (0 : ℝ) ≤ 1) hx1
+  have hdisj : Disjoint (Set.Icc (0 : ℝ) 1) (Set.Ioi (1 : ℝ)) := by
+    rw [Set.disjoint_left]
+    intro x hx hx'
+    exact (not_lt_of_ge hx.2) hx'
+  rw [← Set.Icc_union_Ioi_eq_Ici (show (0 : ℝ) ≤ 1 by norm_num)]
+  rw [MeasureTheory.setIntegral_union hdisj measurableSet_Ioi hIcc_int hIoi_int]
+  have hIcc_eq : ∫ t in Set.Icc (0 : ℝ) 1, g t ∂volume = 1 := by
+    rw [MeasureTheory.setIntegral_congr_ae
+      (s := Set.Icc (0 : ℝ) 1) (g := fun _ => (1 : ℝ)) measurableSet_Icc]
+    · rw [setIntegral_const]
+      simp [measureReal_def, Real.volume_Icc]
+    · filter_upwards with t ht
+      have ht1 : t ≤ 1 := ht.2
+      simp [g, max_eq_right ht1]
+  have hIoi_eq : ∫ t in Set.Ioi (1 : ℝ), g t ∂volume = 1 := by
+    have hcongr :
+        ∀ᵐ t : ℝ ∂volume, t ∈ Set.Ioi (1 : ℝ) -> g t = t ^ (-2 : ℝ) := by
+      filter_upwards with t ht
+      have ht1 : 1 ≤ t := le_of_lt ht
+      change (max t (1 : ℝ))⁻¹ ^ 2 = t ^ (-2 : ℝ)
+      rw [max_eq_left ht1]
+      rw [← Real.rpow_natCast]
+      rw [← Real.rpow_neg_one t]
+      rw [← Real.rpow_mul]
+      · norm_num
+      · exact le_trans (by norm_num : (0 : ℝ) ≤ 1) ht1
+    rw [MeasureTheory.setIntegral_congr_ae
+      (s := Set.Ioi (1 : ℝ)) (g := fun t : ℝ => t ^ (-2 : ℝ)) measurableSet_Ioi hcongr]
+    rw [integral_Ioi_rpow_of_lt (a := (-2 : ℝ)) (c := (1 : ℝ))]
+    · norm_num
+    · norm_num
+    · norm_num
+  rw [hIcc_eq, hIoi_eq]
+  norm_num
+
+/--
+Durrett 2019, Theorem 4.5.5 source support: the textbook tail integral is
+bounded by `2`, the constant used by the automatic-tail wrappers.
+-/
+theorem durrett2019_theorem_4_5_5_integral_max_one_inv_sq_Ici_le_two :
+    ∫ t in Set.Ici (0 : ℝ), (max t (1 : ℝ))⁻¹ ^ 2 ∂volume ≤ 2 := by
+  rw [durrett2019_theorem_4_5_5_integral_max_one_inv_sq_Ici]
+
+/--
 Durrett 2019, Theorem 4.5.5 infinite-clock source wrapper from adapted events.
 
 This discharges the automatic Borel-Cantelli martingale and clock side
@@ -21399,6 +21499,106 @@ theorem
       (durrett2019_theorem_4_5_5_conditionalProbabilitySum_zero_nonneg
         (P := P) (ℱ := ℱ) B)
       hA_mono_step hA_atTop_on htail_int htail_bound
+
+/--
+Durrett 2019, Theorem 4.5.5 infinite-clock source wrapper from adapted events
+with the textbook `max t 1` tail integral discharged automatically.
+
+After this wrapper, the infinite-clock side only retains the honest pointwise
+clock monotonicity and event-local clock-divergence inputs.
+-/
+theorem
+    durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock_auto_tail
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {B : ℕ -> Set Ω} {InfiniteVar : Set Ω}
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n))
+    (hA_mono_step :
+      ∀ k : ℕ, ∀ ω : Ω,
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B k ω ≤
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω)
+    (hA_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop) :
+    ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+      Tendsto
+        (fun n : ℕ =>
+          martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω /
+            max
+              (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+              (1 : ℝ))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock
+    (P := P) (ℱ := ℱ) (B := B) (C := (2 : ℝ)) (InfiniteVar := InfiniteVar)
+    hB hA_mono_step hA_atTop_on
+    durrett2019_theorem_4_5_5_max_one_inv_sq_integrableOn_Ici
+    durrett2019_theorem_4_5_5_integral_max_one_inv_sq_Ici_le_two
+
+/--
+Durrett 2019, Theorem 4.5.5 event-cover ratio assembly from adapted events
+with the textbook `max t 1` tail integral discharged automatically.
+
+The remaining nontrivial source inputs are the finite/infinite event split,
+clock divergence on the covered event, finite-clock martingale convergence, and
+the pointwise clock monotonicity representative issue.
+-/
+theorem
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_adapted_conditionalProbabilitySum_clock_auto_tail
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {B : ℕ -> Set Ω} {D FiniteVar InfiniteVar : Set Ω}
+    (hcover :
+      ∀ᵐ ω ∂P, ω ∈ D -> ω ∈ FiniteVar ∨ ω ∈ InfiniteVar)
+    (hdenom_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop)
+    (hmartingale_exists_on_finite :
+      ∀ᵐ ω ∂P, ω ∈ D -> ω ∈ FiniteVar ->
+        ∃ z : ℝ,
+          Tendsto
+            (fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω)
+            atTop (𝓝 z))
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n))
+    (hA_mono_step :
+      ∀ k : ℕ, ∀ ω : Ω,
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B k ω ≤
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.BorelCantelli.process B n ω /
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+        atTop (𝓝 1) := by
+  have hB_meas : ∀ n, MeasurableSet (B n) :=
+    durrett2019_theorem_4_5_5_measurableSet_of_adapted (ℱ := ℱ) hB
+  exact
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_conditionalProbabilitySum_clock
+      (P := P) (ℱ := ℱ) (B := B) (C := (2 : ℝ))
+      (D := D) (FiniteVar := FiniteVar) (InfiniteVar := InfiniteVar)
+      hcover hdenom_atTop_on hmartingale_exists_on_finite hB_meas
+      (durrett2019_example_4_3_3_borel_cantelli_process_martingale
+        (μ := P) (ℱ := ℱ) hB)
+      (durrett2019_theorem_4_5_5_martingalePart_process_zero
+        (P := P) (ℱ := ℱ) B)
+      (durrett2019_theorem_4_5_5_martingalePart_process_memLp_two
+        (P := P) (ℱ := ℱ) (B := B) hB_meas)
+      (durrett2019_theorem_4_5_5_conditionalProbabilitySum_predictable
+        (P := P) (ℱ := ℱ) B)
+      (durrett2019_theorem_4_5_5_conditionalProbabilitySum_integrable
+        (P := P) (ℱ := ℱ) (B := B) hB_meas)
+      (durrett2019_theorem_4_5_5_conditionalProbabilitySum_zero_nonneg
+        (P := P) (ℱ := ℱ) B)
+      hA_mono_step
+      durrett2019_theorem_4_5_5_max_one_inv_sq_integrableOn_Ici
+      durrett2019_theorem_4_5_5_integral_max_one_inv_sq_Ici_le_two
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
