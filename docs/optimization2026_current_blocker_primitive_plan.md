@@ -1351,7 +1351,8 @@ source row form `x ↦ -log (b - inner a x)` for nonzero rows.  The newest
 vector-slack packet adds `polytopeSlackCLM`, `polytopeSlackSet`,
 `polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
 `mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`,
-`polytopeSlackSet_eq_iInter_halfspaceSlackSet`,
+`polytopeSlackSet_eq_iInter_halfspaceSlackSet`, `polytopeSlackTailOffset`,
+`polytopeSlackTailOffset_apply`, `polytopeSlackSet_succ_eq_barrierInterSet`,
 `mem_barrierAffinePreimageSet_polytopeSlackCLM_iff`,
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_rightInverse`, and
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_surjective`, pulling
@@ -1369,7 +1370,7 @@ so future work can prove the concrete range-gradient energy inequality
 and square root directly.  Future fully general polytope-log-barrier work
 should construct that concrete range inverse-Hessian/gradient-energy oracle,
 or alternatively use the compiled finite sum-rule packets together with the
-row-decomposition lemmas above, rather than
+row-decomposition and head/tail induction lemmas above, rather than
 redoing scalar self-concordance or affine right-inverse algebra.
 Do not redo the
 square-root/right-inverse/Hessian-nonnegativity/self-concordance/model-Hessian
@@ -1397,7 +1398,8 @@ The exact blockers are:
   inverse-Hessian oracle and proving the range-gradient quadratic energy bound
   for arbitrary finite row families, closing the exact shared-domain sum
   inverse-Hessian / inverse-local gate for finite row sums using
-  `polytopeSlackSet_eq_iInter_halfspaceSlackSet`, or opening the inf-projection
+  `polytopeSlackSet_eq_iInter_halfspaceSlackSet` and
+  `polytopeSlackSet_succ_eq_barrierInterSet`, or opening the inf-projection
   rule.
   Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 

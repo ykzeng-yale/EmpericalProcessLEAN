@@ -14646,6 +14646,38 @@ theorem polytopeSlackSet_eq_iInter_halfspaceSlackSet
   ext x
   simp [polytopeSlackSet, halfspaceSlackSet]
 
+/-- Tail offset vector for splitting a `Fin (m+1)` polytope slack system. -/
+noncomputable def polytopeSlackTailOffset
+    {m : ℕ} (b : EuclideanSpace ℝ (Fin (m + 1))) :
+    EuclideanSpace ℝ (Fin m) :=
+  WithLp.toLp 2 fun i : Fin m => b i.succ
+
+@[simp] theorem polytopeSlackTailOffset_apply
+    {m : ℕ} (b : EuclideanSpace ℝ (Fin (m + 1))) (i : Fin m) :
+    polytopeSlackTailOffset b i = b i.succ := by
+  simp [polytopeSlackTailOffset]
+
+/--
+Head/tail decomposition of a finite-row polytope slack domain.  This is the
+induction hook for assembling finite polytope logarithmic barriers from the
+single-row halfspace barrier and the binary sum rule.
+-/
+theorem polytopeSlackSet_succ_eq_barrierInterSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin (m + 1) -> F) (b : EuclideanSpace ℝ (Fin (m + 1))) :
+    polytopeSlackSet a b =
+      barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ)
+          (polytopeSlackTailOffset b)) := by
+  ext x
+  constructor
+  · intro hx
+    exact ⟨hx 0, fun i => hx i.succ⟩
+  · intro hx i
+    cases i using Fin.cases with
+    | zero => exact hx.1
+    | succ i => exact hx.2 i
+
 theorem mem_barrierAffinePreimageSet_polytopeSlackCLM_iff
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
     {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) (x : F) :

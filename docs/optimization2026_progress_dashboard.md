@@ -136,6 +136,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   `polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
   `mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`,
   `polytopeSlackSet_eq_iInter_halfspaceSlackSet`,
+  `polytopeSlackTailOffset`, `polytopeSlackTailOffset_apply`,
+  `polytopeSlackSet_succ_eq_barrierInterSet`,
   `mem_barrierAffinePreimageSet_polytopeSlackCLM_iff`,
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_rightInverse`, and
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_surjective`, plus
@@ -150,7 +152,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   inverse, surjective linear part, or a supplied inverse-Hessian oracle on the
   slack-map range satisfying nonnegativity and the concrete range-gradient
   quadratic energy bound.  For fully general row families, next construct that
-  concrete range oracle or use the row-decomposition lemmas with
+  concrete range oracle or use the row-decomposition/head-tail lemmas with
   the existing sum-rule packets for
   finite polytope logarithmic barriers.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in

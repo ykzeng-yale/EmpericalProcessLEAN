@@ -138,7 +138,9 @@ now reduces that bound to the concrete energy inequality
 `polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
 `mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`, and
 `polytopeSlackSet_eq_iInter_halfspaceSlackSet` now expose the finite-row
-intersection route for sum-rule workers.  Next
+intersection route for sum-rule workers; `polytopeSlackTailOffset` and
+`polytopeSlackSet_succ_eq_barrierInterSet` now provide the head/tail induction
+shape over `Fin (m+1)`.  Next
 construct that concrete range oracle and energy bound for the fully general
 polytope barrier or use the reusable finite sum-rule machinery,
 starting with the product-separable rule; all segment membership, `ψ`
