@@ -4856,3 +4856,29 @@ reaches the current Theorem 2.4.3/Lemma 2.4.5 conclusion package without an
 extra caller-side final assembly proof; the active source gap is still the
 Rademacher bad-fiber lower bound plus selected lower-growth from entropy or
 packing assumptions.
+
+2026-05-12 selected-center scalar measurability packaging:
+The countable first-level selected-cover layer now has direct scalar
+coordinate wrappers:
+`measurable_vdVWTruncatedClassFun_firstLevelSelectedCenterAt_of_countable_cover`
+for the ordinary selected-center adapter under the nonempty-class fallback
+instance, and
+`measurable_vdVWTruncatedClassFun_selectedTruncatedPositiveRadiusFirstLevelSelectedCenterAt_of_countable`
+for the canonical positive-radius first-level half-radius selected cover.  The
+second wrapper internalizes the selected-cardinality measurability and
+selected-cover existence steps, so future first-level source constructors can
+consume scalar selected-center coordinate measurability without redoing the
+in-class fallback rewrite.  This does not change the active mathematical
+frontier: the remaining source work is still the Rademacher bad-fiber lower
+bound plus selected lower-growth/tail control from entropy or packing
+assumptions.
+
+2026-05-12 external SLT repository audit:
+`docs/external_slt_reuse_audit.md` compares the current VdVW codebase with
+`YuanheZ/lean-stat-learning-theory`.  The external repository has useful SLT
+proof patterns for custom covering/packing numbers, sub-Gaussian finite-maximal
+bounds, chaining, Dudley, and regression, but its older toolchain and custom
+covering-number API should not be imported wholesale into this branch.  The
+integration route is targeted porting into current mathlib
+`Metric.coveringNumber`/`Metric.packingNumber` and the local
+`EmpiricalL1Index` interfaces.

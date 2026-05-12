@@ -10433,3 +10433,28 @@ Lemma 2.4.5/textbook-aligned conclusion bundle in one step.  The source
 frontier is unchanged and correctly isolated: prove the pure Rademacher
 bad-fiber lower bound and derive the selected inverse-square/lower-growth
 input from honest entropy or packing assumptions.
+
+2026-05-12 selected-center scalar measurability packaging:
+`Theorem243.lean` now exposes
+`measurable_vdVWTruncatedClassFun_firstLevelSelectedCenterAt_of_countable_cover`
+for the ordinary `VdVWFiniteEmpiricalL1CoverSelectedCenterAt` adapter when its
+fallback instance is the nonempty class witness, and
+`measurable_vdVWTruncatedClassFun_selectedTruncatedPositiveRadiusFirstLevelSelectedCenterAt_of_countable`
+for the canonical positive-radius first-level half-radius selected cover.  The
+latter packages selected-cardinality measurability and selected-cover
+existence, so later first-level wrappers can request scalar selected-center
+coordinates directly instead of rebuilding the in-class fallback rewrite at
+each call site.  This is a source-interface cleanup; the remaining mathematical
+frontier is still the Rademacher bad-fiber lower bound plus selected
+lower-growth/tail control from entropy or packing assumptions.
+
+2026-05-12 external SLT repository audit:
+`docs/external_slt_reuse_audit.md` records the comparison with
+`YuanheZ/lean-stat-learning-theory`.  The reusable material is real
+empirical-process infrastructure, but the immediate integration decision is
+targeted porting rather than wholesale import: the external project uses a
+custom covering/packing-number API on an older Lean/mathlib stack, while this
+VdVW branch already uses current mathlib `Metric.coveringNumber`/
+`Metric.packingNumber` plus local `EmpiricalL1Index` adapters.  Future Dudley
+or finite-dimensional covering-number source work should port theorem-facing
+patterns from the audit into the local APIs.
