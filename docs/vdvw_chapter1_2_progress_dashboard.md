@@ -163,6 +163,10 @@ The matching infinite-packing structural variant
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_eq_top_of_set_countable`
 chooses the same deterministic lower bound `n` from eventual terminal
 `Metric.packingNumber = ⊤`.
+Its nonterminal companion
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_empiricalL1Index_packingNumber_eq_top_of_set_countable`
+chooses lower bound `n` from eventual `samplePath`-level
+`Metric.packingNumber = ⊤`.
 The next source work is to derive these covering/packing lower bounds, or an
 equivalent tail/lower-growth input, from the book random-entropy hypotheses.
 The displayed-beta selected-cover route now has

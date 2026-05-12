@@ -176,6 +176,9 @@ The Theorem 2.4.3 selected-cover layer exposes the pointwise, eventual, and
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_empiricalL1Index_packingNumber_eq_top`
 and
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_empiricalL1Index_packingNumber_eq_top`.
+The nonterminal selected-cover adapter
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_empiricalL1Index_packingNumber_eq_top`
+keeps the same source surface over `samplePath (X n) sample n`.
 The set-countable textbook-aligned final route now has
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_eq_top_of_set_countable`,
 which chooses the deterministic lower bound `n` from eventual terminal
@@ -251,6 +254,9 @@ does the same for eventual `samplePath`-level `Metric.coveringNumber = ⊤`.
 The matching infinite-packing source variant
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_terminal_empiricalL1Index_packingNumber_eq_top_of_set_countable`
 does the same for eventual terminal `Metric.packingNumber = ⊤`.
+Its nonterminal companion
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_empiricalL1Index_packingNumber_eq_top_of_set_countable`
+does the same for eventual `samplePath`-level `Metric.packingNumber = ⊤`.
 The live theorem-facing source gap is now exactly the construction of those
 finite-packing witnesses, separated-packing, packing-number, or
 covering-number lower bounds, or a replacement lower-growth/tail/UI theorem,
