@@ -159,6 +159,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1311_affinePreimage_selfConcordantBarrierOn_rangeRestrict`, so future
   exact source work can move the codomain to `A.range` and reuse the
   surjective theorem instead of manually constructing a right inverse.
+  The translated-range packet adds `barrierAffineRangeSet`,
+  `barrierAffineRangeHess`, `barrierAffineRangeGrad`,
+  `barrierAffineRangeThirdMixed`,
+  `barrierAffineRangeSet_preimage_rangeRestrict_eq`,
+  `SelfConcordantBarrierOn.affineRange_of_gradient_bound`,
+  `SelfConcordantBarrierOn.affinePreimage_rangeTranslated_of_gradient_bound`,
+  and
+  `chewi1311_affinePreimage_selfConcordantBarrierOn_rangeTranslated`.
+  This handles the affine offset `b` by representing `dom f ∩ (b + range A)`
+  in coordinates on `A.range`; the remaining exact source work is to provide
+  the restricted inverse-Hessian/dual-gradient gates or identify them from a
+  concrete model.
   Search-first result: use mathlib adjoint APIs
   `ContinuousLinearMap.adjoint_inner_left/right`,
   `ContinuousLinearMap.adjoint_comp`, and

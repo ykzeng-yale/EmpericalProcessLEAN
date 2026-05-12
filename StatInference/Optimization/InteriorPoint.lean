@@ -3193,6 +3193,122 @@ theorem chewi1311_affinePreimage_selfConcordantBarrierOn_rangeRestrict
       (barrierAffinePreimageThirdMixed A.rangeRestrict 0 third) M nu :=
   hbar.affinePreimage_rangeRestrict A
 
+/--
+The original domain restricted to the translated linear range `b + range A`,
+represented in coordinates on the subspace `A.range`.
+-/
+def barrierAffineRangeSet
+    (A : F →L[ℝ] E) (b : E) (s : Set E) : Set A.range :=
+  {y | (y : E) + b ∈ s}
+
+noncomputable def barrierAffineRangeHess
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (hess : E -> E →L[ℝ] E) :
+    A.range -> A.range →L[ℝ] A.range :=
+  barrierAffinePreimageHess A.range.subtypeL b hess
+
+noncomputable def barrierAffineRangeGrad
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (grad : E -> E) : A.range -> A.range :=
+  barrierAffinePreimageGrad A.range.subtypeL b grad
+
+def barrierAffineRangeThirdMixed
+    (A : F →L[ℝ] E) (b : E) (third : E -> E -> E -> ℝ) :
+    A.range -> A.range -> A.range -> ℝ :=
+  fun y u v => third ((y : E) + b) (u : E) (v : E)
+
+omit [CompleteSpace F] [CompleteSpace E] in
+theorem barrierAffineRangeSet_preimage_rangeRestrict_eq
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range] (s : Set E) :
+    barrierAffinePreimageSet A.rangeRestrict 0 (barrierAffineRangeSet A b s) =
+      barrierAffinePreimageSet A b s := by
+  ext x
+  simp [barrierAffineRangeSet, barrierAffinePreimageSet]
+
+omit [CompleteSpace F] in
+theorem SelfConcordantBarrierOn.affineRange_of_gradient_bound
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    {invHessRange : A.range -> A.range →L[ℝ] A.range}
+    {third : E -> E -> E -> ℝ} {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hinv_nonneg : ∀ ⦃y : A.range⦄, y ∈ barrierAffineRangeSet A b s ->
+      ∀ v : A.range, 0 ≤ inner ℝ v (invHessRange y v))
+    (hgradient_bound : ∀ ⦃y : A.range⦄, y ∈ barrierAffineRangeSet A b s ->
+      dualLocalNorm invHessRange y (barrierAffineRangeGrad A b grad y) ≤
+        Real.sqrt nu) :
+    SelfConcordantBarrierOn (barrierAffineRangeSet A b s)
+      (barrierAffineRangeHess A b hess)
+      (barrierAffineRangeGrad A b grad) invHessRange
+      (barrierAffineRangeThirdMixed A b third) M nu := by
+  simpa [barrierAffineRangeSet, barrierAffineRangeHess,
+    barrierAffineRangeGrad, barrierAffineRangeThirdMixed,
+    barrierAffinePreimageSet, barrierAffinePreimageThirdMixed] using
+  hbar.affinePreimage_of_gradient_bound
+    (A := A.range.subtypeL) (b := b)
+    (invHessPull := invHessRange)
+    (by
+      intro y hy v
+      exact hinv_nonneg hy v)
+    (by
+      intro y hy
+      simpa [barrierAffineRangeGrad] using hgradient_bound hy)
+
+theorem SelfConcordantBarrierOn.affinePreimage_rangeTranslated_of_gradient_bound
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    {invHessRange : A.range -> A.range →L[ℝ] A.range}
+    {third : E -> E -> E -> ℝ} {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hinv_nonneg : ∀ ⦃y : A.range⦄, y ∈ barrierAffineRangeSet A b s ->
+      ∀ v : A.range, 0 ≤ inner ℝ v (invHessRange y v))
+    (hgradient_bound : ∀ ⦃y : A.range⦄, y ∈ barrierAffineRangeSet A b s ->
+      dualLocalNorm invHessRange y (barrierAffineRangeGrad A b grad y) ≤
+        Real.sqrt nu) :
+    SelfConcordantBarrierOn
+      (barrierAffinePreimageSet A.rangeRestrict 0 (barrierAffineRangeSet A b s))
+      (barrierAffinePreimageHess A.rangeRestrict 0
+        (barrierAffineRangeHess A b hess))
+      (barrierAffinePreimageGrad A.rangeRestrict 0
+        (barrierAffineRangeGrad A b grad))
+      (barrierAffinePreimageInvHessSurjective A.rangeRestrict 0 invHessRange
+        (barrierAffinePreimageRangeRestrict_range_eq_top A))
+      (barrierAffinePreimageThirdMixed A.rangeRestrict 0
+        (barrierAffineRangeThirdMixed A b third)) M nu :=
+  (hbar.affineRange_of_gradient_bound A b hinv_nonneg hgradient_bound).affinePreimage_rangeRestrict A
+
+/--
+Chewi Proposition 13.11, affine-preimage case in translated-range form.  The
+map first restricts the codomain to the affine range coordinates
+`y ∈ A.range`, then uses the already proved surjective range-restriction
+rule.
+-/
+theorem chewi1311_affinePreimage_selfConcordantBarrierOn_rangeTranslated
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E}
+    {invHessRange : A.range -> A.range →L[ℝ] A.range}
+    {third : E -> E -> E -> ℝ} {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hinv_nonneg : ∀ ⦃y : A.range⦄, y ∈ barrierAffineRangeSet A b s ->
+      ∀ v : A.range, 0 ≤ inner ℝ v (invHessRange y v))
+    (hgradient_bound : ∀ ⦃y : A.range⦄, y ∈ barrierAffineRangeSet A b s ->
+      dualLocalNorm invHessRange y (barrierAffineRangeGrad A b grad y) ≤
+        Real.sqrt nu) :
+    SelfConcordantBarrierOn
+      (barrierAffinePreimageSet A.rangeRestrict 0 (barrierAffineRangeSet A b s))
+      (barrierAffinePreimageHess A.rangeRestrict 0
+        (barrierAffineRangeHess A b hess))
+      (barrierAffinePreimageGrad A.rangeRestrict 0
+        (barrierAffineRangeGrad A b grad))
+      (barrierAffinePreimageInvHessSurjective A.rangeRestrict 0 invHessRange
+        (barrierAffinePreimageRangeRestrict_range_eq_top A))
+      (barrierAffinePreimageThirdMixed A.rangeRestrict 0
+        (barrierAffineRangeThirdMixed A b third)) M nu :=
+  hbar.affinePreimage_rangeTranslated_of_gradient_bound A b hinv_nonneg hgradient_bound
+
 end AffinePreimageBarrier
 
 section InfProjectionBarrier

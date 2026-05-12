@@ -257,6 +257,17 @@ The range-restriction packet adds
 `chewi1311_affinePreimage_selfConcordantBarrierOn_rangeRestrict`, so the next
 exact source attempt should move the codomain to `A.range` and reuse the
 surjective theorem rather than passing or rebuilding a right inverse.
+The translated-range packet adds `barrierAffineRangeSet`,
+`barrierAffineRangeHess`, `barrierAffineRangeGrad`,
+`barrierAffineRangeThirdMixed`,
+`barrierAffineRangeSet_preimage_rangeRestrict_eq`,
+`SelfConcordantBarrierOn.affineRange_of_gradient_bound`,
+`SelfConcordantBarrierOn.affinePreimage_rangeTranslated_of_gradient_bound`,
+and `chewi1311_affinePreimage_selfConcordantBarrierOn_rangeTranslated`.
+This handles the affine offset `b` by representing `dom f ∩ (b + range A)` in
+coordinates on `A.range`; the next exact source attempt should provide or
+identify the restricted inverse-Hessian/dual-gradient gates for that
+coordinate barrier.
 Search-first result: mathlib supplies `ContinuousLinearMap.adjoint`,
 `ContinuousLinearMap.adjoint_inner_left/right`,
 `ContinuousLinearMap.adjoint_comp`, and
