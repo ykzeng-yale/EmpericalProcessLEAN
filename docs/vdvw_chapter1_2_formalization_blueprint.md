@@ -3928,6 +3928,17 @@ now reaches untruncated centered convergence once the genuine source
 comparison and selected tail-growth hypotheses are supplied at every
 truncation level.
 
+2026-05-12 record-level final-conclusion handoffs:
+The set-countable textbook conclusion bundle now consumes the finite-center
+failure-tail comparison record directly through
+`VdVWTheorem243TextbookAlignedConclusion.of_finiteCenterFailureTailSelectedComparison_invSq_lintegral_of_set_countable`,
+`..._eventually_cardinality_ge_of_set_countable`, and
+`..._eventually_ae_cardinality_ge_of_set_countable`.  These are final assembly
+bridges, not new entropy theorems: the live source problem remains the
+Rademacher bad-fiber lower bound together with a proof of selected
+inverse-square/lower-growth control from the VdV&W random-entropy or packing
+hypotheses.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

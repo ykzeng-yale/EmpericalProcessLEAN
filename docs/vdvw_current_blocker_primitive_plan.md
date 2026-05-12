@@ -10405,3 +10405,14 @@ production and untruncated centered convergence: a source route may now supply
 one finite-center failure-tail comparison record for each positive truncation
 level, plus the corresponding entropy/cardinality tail hypotheses, without
 restating the untruncation proof.
+
+2026-05-12 record-level final-conclusion handoffs:
+`Theorem243.lean` now also registers the set-countable final consumers
+`VdVWTheorem243TextbookAlignedConclusion.of_finiteCenterFailureTailSelectedComparison_invSq_lintegral_of_set_countable`,
+`..._eventually_cardinality_ge_of_set_countable`, and
+`..._eventually_ae_cardinality_ge_of_set_countable`.  These compose the
+comparison record, selected failure-tail control, large-`M` untruncation, and
+Lemma 2.4.5/textbook-aligned conclusion bundle in one step.  The source
+frontier is unchanged and correctly isolated: prove the pure Rademacher
+bad-fiber lower bound and derive the selected inverse-square/lower-growth
+input from honest entropy or packing assumptions.

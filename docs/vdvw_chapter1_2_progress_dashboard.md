@@ -51,6 +51,12 @@ and
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge_of_set_countable`,
 so the strongest product-pair failure-tail route no longer requires a global
 `[Countable Index]` instance when the actual theorem class is countable.
+The proof-carrying finite-center failure-tail comparison record now also
+feeds the set-countable final bundle directly through
+`VdVWTheorem243TextbookAlignedConclusion.of_finiteCenterFailureTailSelectedComparison_invSq_lintegral_of_set_countable`,
+`..._eventually_cardinality_ge_of_set_countable`, and
+`..._eventually_ae_cardinality_ge_of_set_countable`, so record-producing
+source proofs no longer need a caller-side final assembly wrapper.
 The selected-cover lower-growth source side now has a deterministic packing
 entry point: `FiniteEmpiricalL1CoverAtCard.cardinality_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
 `finiteEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
@@ -4829,3 +4835,14 @@ The comparison record now also has large-`M` consumers:
 `..._eventually_ae_cardinality_ge`.  These remove the remaining record-level
 wrapper gap between fixed-`M` additive failure-tail source records and the
 untruncated centered empirical-process conclusion.
+
+2026-05-12 record-level final-conclusion handoffs:
+The set-countable final bundle now has direct finite-center failure-tail
+record consumers:
+`VdVWTheorem243TextbookAlignedConclusion.of_finiteCenterFailureTailSelectedComparison_invSq_lintegral_of_set_countable`,
+`..._eventually_cardinality_ge_of_set_countable`, and
+`..._eventually_ae_cardinality_ge_of_set_countable`.  The record lane now
+reaches the current Theorem 2.4.3/Lemma 2.4.5 conclusion package without an
+extra caller-side final assembly proof; the active source gap is still the
+Rademacher bad-fiber lower bound plus selected lower-growth from entropy or
+packing assumptions.
