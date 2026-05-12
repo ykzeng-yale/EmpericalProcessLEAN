@@ -123,8 +123,13 @@ derives the remaining a.e. score-vector display fields from pointwise model
 identities.  The direct vector-score and derivative-table endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 defines the auxiliary `scoreSummand` and `derivativeEntry` streams internally
-from `scoreVector` and `derivativeTable`.  The next proof packet should move
-to a concrete model-specialized Theorem 5.41 instantiation, or package only a
+from `scoreVector` and `derivativeTable`.  The coordinate-projection source
+endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+now derives the score-law and derivative-law coordinate projection
+measurability fields internally from the standard finite Pi
+topological/measurable structures.  The next proof packet should move to a
+concrete model-specialized Theorem 5.41 instantiation, or package only a
 still-live source field that the current endpoint explicitly exposes, not replay
 display weak-convergence, display-tightness, score-CLT, residual convergence,
 absorbing tightness, derivative-action wrappers, derivative-entry iid source
@@ -134,7 +139,7 @@ common-law transfer, centered derivative-coordinate residual algebra,
 smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer, or
 estimator-definition/raw-root/measurability/sampled-derivative-action/
 population-`V` basis-action/pointwise-smoothness/score-vector display/direct
-vector-table source wrappers.
+vector-table/coordinate-projection source wrappers.
 
 ## Chapter Map
 

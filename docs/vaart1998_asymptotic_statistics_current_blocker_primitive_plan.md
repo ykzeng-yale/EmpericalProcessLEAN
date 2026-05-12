@@ -17,9 +17,12 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 
 Immediate predecessor endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+
+Earlier predecessor endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 
 Earlier predecessor endpoint:
@@ -81,6 +84,11 @@ and `scoreAtTheta0 n omega (samples n omega i)` against
 Immediate direct vector/table source:
 define the auxiliary `scoreSummand` and `derivativeEntry` streams internally as
 coordinate projections of `scoreVector` and `derivativeTable`.
+
+Immediate coordinate projection source:
+derive score-law and derivative-law coordinate projection measurability from
+the standard finite Pi topological/measurable structures, rather than asking
+model instances for `hScoreCoordinate_meas` and `hDerivativeCoordinate_meas`.
 
 Immediate smooth Taylor source helper:
 `vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffTheta0SecondDerivativeContDiff`.
@@ -258,6 +266,13 @@ defines `scoreSummand` and `derivativeEntry` internally from `scoreVector` and
 `hDerivativeEntry_eq_table` are no longer live model-facing equality fields,
 and model instances can state sampled/population derivative actions directly
 against `derivativeTable`.
+The newest coordinate-projection source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+derives the score-vector coordinate projection measurability by continuity and
+derives the derivative-table coordinate projection measurability from the
+standard open-measurable finite Pi state space.  Thus
+`hScoreCoordinate_meas` and `hDerivativeCoordinate_meas` are no longer live
+model-facing fields for the current endpoint.
 
 Continuation recipe:
 
@@ -281,9 +296,9 @@ Priority order for the next packet:
    common-law transfers, the derivative-table common-law transfer, or the
    centered derivative-coordinate residual algebra, smooth/raw/scaled pointwise
    Taylor transfer, the score-at-theta0 vector scaling transfer, or the
-   estimator-definition, raw-root, selected measurability, or sampled
-   derivative matrix-action, population `V` basis-action, or pointwise
-   smoothness/source-set, score-vector display, or direct vector/table wrappers.
+   estimator-definition, raw-root, selected measurability, sampled derivative
+   matrix-action, population `V` basis-action, pointwise smoothness/source-set,
+   score-vector display, direct vector/table, or coordinate-projection wrappers.
 
 Operating rules:
 

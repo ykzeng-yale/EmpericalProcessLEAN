@@ -15,14 +15,21 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: direct vector-score and derivative-table source
+Latest verified packet: coordinate-projection source endpoint for the
+score-at-theta0/Taylor route, including
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+in `MEstimators.lean`.  It derives the score-law and derivative-law coordinate
+projection measurability fields internally from the standard finite Pi
+topological/measurable structures.
+
+Immediate predecessor packet: direct vector-score and derivative-table source
 endpoint for the score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 in `MEstimators.lean`.  It defines the auxiliary `scoreSummand` and
 `derivativeEntry` streams internally as coordinate projections of `scoreVector`
 and `derivativeTable`.
 
-Immediate predecessor packet: pointwise score-vector display endpoint for the
+Earlier predecessor packet: pointwise score-vector display endpoint for the
 score-at-theta0/Taylor and derivative-table route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 in `MEstimators.lean`.  It derives the remaining a.e. score-vector display
@@ -865,18 +872,11 @@ Live continuation prompt: use the efficient prompt in
 
 For Vaart Theorem 5.41 in `MEstimators.lean`, finish any existing local Vaart
 Lean packet first, then discharge exactly one live source field for the current
-endpoint.  The canonical and projected-to-action law-tail stack now routes
-through the absorbing derivative-norm endpoint, and the current action-bound
-source endpoint now derives displayed `O_P(1)` from displayed weak
-convergence, and the finite-coordinate score-equation action endpoint now
-supplies that displayed weak convergence internally.  The finite-coordinate
-Taylor-zero action endpoint now supplies the centered score equation
-internally.  Move next only on a live source hypothesis: derive that
-finite-coordinate Taylor-zero display from a raw root equation plus a
-model-specific Taylor expansion.  Move next only on a live source hypothesis:
-instantiate that finite-coordinate Taylor expansion from sampled
-per-observation Taylor identities, or instantiate the negligible residual from
-derivative LLN and the second-derivative envelope.
+endpoint.  The current endpoint now derives coordinate projection measurability
+for the score-law and derivative-law state spaces internally.  Move next only
+on a live source hypothesis of that endpoint, preferably a concrete
+model-specialized Theorem 5.41 instantiation or a narrow source package that
+removes another exposed model-facing field.
 Do not replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
 score infrastructure, derivative-bound and finite strong-law infrastructure,
 law-tail routing, display-congruence, display-convergence, display weak
@@ -886,7 +886,8 @@ routing, display-tightness action-bound, display weak-tightness action-bound,
 displayed weak-convergence source helpers, earlier Theorem 5.41 wrappers, or
 estimator-definition/raw-root/measurability/sampled-derivative-action/
 population-`V` basis-action/pointwise-smoothness/score-vector display source
-wrappers, direct vector/table wrappers, or historical ledger items.
+wrappers, direct vector/table wrappers, coordinate-projection wrappers, or
+historical ledger items.
 
 ## Reuse Dependencies
 
