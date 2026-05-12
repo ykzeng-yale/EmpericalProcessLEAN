@@ -4752,3 +4752,13 @@ Thus a Fubini/conditioning proof may state both the finite-center maximal event
 and the canonical `Phi(x)=x` comparison under the centered-bad restricted law;
 Lean then derives the half-radius scaled finite-net domination and the displayed
 Chebyshev-beta comparison.
+
+2026-05-12 base-a.e. selected-cover `hphi_id` source surface:
+`Theorem243.lean` now adds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_ae_imp_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`.
+This is the base-measure conditional version of the restricted selected-cover
+constructor: the source proof may establish the canonical finite-center maximal
+event and `Phi(x)=x` comparison for `P^n`-a.e. original sample assuming
+membership in `VdVWTheorem243CenteredTruncatedBadSet`; Lean converts those
+implications to restricted-a.e. hypotheses and invokes the compiled restricted
+constructor.

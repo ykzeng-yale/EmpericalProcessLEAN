@@ -10314,3 +10314,11 @@ The remaining selected-cover proof can now provide the canonical finite-center
 maximal event and `Phi(x)=x` comparison directly under
 `P^n.restrict VdVWTheorem243CenteredTruncatedBadSet`; the compiled constructor
 does the precursor assembly and the half-radius algebra.
+
+2026-05-12 base-a.e. selected-cover `hphi_id` source surface:
+`Theorem243.lean` now also proves
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_ae_imp_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`.
+This matches the older pair-difference `ae_imp` source style: prove the
+canonical finite-center maximal event and canonical `Phi(x)=x` comparison
+`P^n`-a.e. conditional on the centered bad event, and the bridge converts both
+inputs to the restricted-law form used by the selected-cover constructor.

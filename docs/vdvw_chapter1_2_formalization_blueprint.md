@@ -3846,6 +3846,15 @@ These constructors let the selected-cover proof work under the centered-bad
 restricted law while retaining the native half-radius precursor inequality
 `2 * (finiteNetHoeffdingUpper + eta / 2)`.
 
+2026-05-12 base-a.e. selected-cover `hphi_id` source surface:
+`Theorem243.lean` now adds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_ae_imp_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`.
+This lets the selected-cover proof state the canonical finite-center maximal
+event and canonical `Phi(x)=x` comparison as base-measure a.e. implications from
+membership in the centered bad event; the existing dependent
+`eventually_ae_restrict_of_eventually_ae_imp_dep` bridge supplies the restricted
+inputs.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
