@@ -20527,6 +20527,342 @@ theorem durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_exists_
         (D := D) hmartingale_exists_on hdenom_atTop_on)
 
 /--
+Durrett 2019, Theorem 4.5.5 martingale-increment display.
+
+The Borel-Cantelli martingale part has one-step increment
+`1_{B_{k+1}} - E(1_{B_{k+1}} | F_k)`.
+-/
+theorem durrett2019_theorem_4_5_5_martingalePart_process_increment_eq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω) (k : ℕ) :
+    (fun ω : Ω =>
+      martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P (k + 1) ω -
+        martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k ω) =
+      fun ω : Ω =>
+        (B (k + 1)).indicator (1 : Ω -> ℝ) ω -
+          P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] ω := by
+  ext ω
+  have hsucc :=
+    congrFun
+      (durrett2019_example_4_3_3_borel_cantelli_martingale_formula
+        (μ := P) (ℱ := ℱ) B (k + 1)) ω
+  have hk :=
+    congrFun
+      (durrett2019_example_4_3_3_borel_cantelli_martingale_formula
+        (μ := P) (ℱ := ℱ) B k) ω
+  rw [hsucc, hk]
+  simp [Finset.sum_range_succ, Pi.sub_apply]
+  ring
+
+/--
+Durrett 2019, Theorem 4.5.5 denominator-increment display.
+
+The cumulative conditional-probability denominator has one-step increment
+`E(1_{B_{k+1}} | F_k)`.
+-/
+theorem durrett2019_theorem_4_5_5_conditionalProbabilitySum_increment_eq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω) (k : ℕ) :
+    (fun ω : Ω =>
+      durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω -
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B k ω) =
+      P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] := by
+  ext ω
+  simp [durrett2019_theorem_4_5_5_conditionalProbabilitySum,
+    Finset.sum_range_succ]
+
+/--
+Durrett 2019, Theorem 4.5.5 centered-indicator conditional-variance algebra.
+
+This is the reusable conditional-expectation calculation behind
+`E((1_B - E(1_B | F))^2 | F) <= E(1_B | F)`.  The remaining source work for
+the theorem-specific indicator is to discharge the boundedness/integrability
+side conditions from `0 <= E(1_B | F) <= 1`.
+-/
+theorem durrett2019_theorem_4_5_5_condExp_centered_indicator_sq_le_of_source
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {m : MeasurableSpace Ω} (hm : m ≤ mΩ)
+    [SigmaFinite (P.trim hm)] {I p : Ω -> ℝ}
+    (hI_sq : (fun ω : Ω => I ω ^ 2) =ᵐ[P] I)
+    (hI_int : Integrable I P)
+    (hp_cond : P[I | m] =ᵐ[P] p)
+    (hp_meas : StronglyMeasurable[m] p)
+    (hIp_int : Integrable (fun ω : Ω => p ω * I ω) P)
+    (hp_sq_int : Integrable (fun ω : Ω => p ω ^ 2) P) :
+    P[(fun ω : Ω => (I ω - p ω) ^ 2) | m] ≤ᵐ[P] p := by
+  have hI_sq_int : Integrable (fun ω : Ω => I ω ^ 2) P :=
+    hI_int.congr hI_sq.symm
+  have htwoIp_int : Integrable (fun ω : Ω => 2 * (p ω * I ω)) P :=
+    hIp_int.const_mul 2
+  have hExpand :
+      (fun ω : Ω => (I ω - p ω) ^ 2) =ᵐ[P]
+        ((fun ω : Ω => I ω ^ 2) - (fun ω : Ω => 2 * (p ω * I ω))) +
+          fun ω : Ω => p ω ^ 2 :=
+    ae_of_all P fun ω => by
+      simp only [Pi.add_apply, Pi.sub_apply]
+      ring
+  have hI_sq_cond :
+      P[(fun ω : Ω => I ω ^ 2) | m] =ᵐ[P] P[I | m] :=
+    condExp_congr_ae hI_sq
+  have hPull :
+      P[(fun ω : Ω => p ω * I ω) | m] =ᵐ[P]
+        fun ω : Ω => p ω * P[I | m] ω :=
+    condExp_mul_of_stronglyMeasurable_left
+      (μ := P) (m := m) hp_meas hIp_int hI_int
+  have hTwo :
+      P[(fun ω : Ω => 2 * (p ω * I ω)) | m] =ᵐ[P]
+        fun ω : Ω => 2 * P[(fun ω : Ω => p ω * I ω) | m] ω := by
+    filter_upwards
+      [condExp_ofNat (μ := P) (m := m) 2 (fun ω : Ω => p ω * I ω)] with
+      ω hω
+    simpa using hω
+  have hp_sq_cond :
+      P[(fun ω : Ω => p ω ^ 2) | m] = fun ω : Ω => p ω ^ 2 :=
+    condExp_of_stronglyMeasurable hm (hp_meas.pow 2) hp_sq_int
+  have hcenter_eq :
+      P[(fun ω : Ω => (I ω - p ω) ^ 2) | m] =ᵐ[P]
+        fun ω : Ω => p ω - p ω ^ 2 := by
+    refine (condExp_congr_ae hExpand).trans ?_
+    filter_upwards
+      [condExp_add (hI_sq_int.sub htwoIp_int) hp_sq_int m,
+       condExp_sub hI_sq_int htwoIp_int m,
+       hI_sq_cond,
+       hp_cond,
+       hTwo,
+       hPull,
+       EventuallyEq.of_eq hp_sq_cond] with
+      ω hAdd hSub hI2 hP hTwoω hPullω hPSq
+    rw [hAdd]
+    simp only [Pi.add_apply]
+    rw [hSub]
+    simp only [Pi.sub_apply]
+    rw [hI2, hP, hTwoω, hPullω, hP, hPSq]
+    ring
+  filter_upwards [hcenter_eq] with ω hω
+  rw [hω]
+  nlinarith [sq_nonneg (p ω)]
+
+/--
+Durrett 2019, Theorem 4.5.5 theorem-specific centered-indicator
+conditional-variance estimate, with only the remaining boundedness-derived
+integrability facts left explicit.
+-/
+theorem durrett2019_theorem_4_5_5_condExp_centered_borelCantelli_indicator_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ] {B : ℕ -> Set Ω}
+    (hB_meas : ∀ n, MeasurableSet (B n))
+    (hIp_int :
+      ∀ k : ℕ,
+        Integrable
+          (fun ω : Ω =>
+            P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] ω *
+              (B (k + 1)).indicator (1 : Ω -> ℝ) ω) P)
+    (hp_sq_int :
+      ∀ k : ℕ,
+        Integrable
+          (fun ω : Ω =>
+            P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] ω ^ 2) P) :
+    ∀ k : ℕ,
+      P[(fun ω : Ω =>
+          ((B (k + 1)).indicator (1 : Ω -> ℝ) ω -
+            P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] ω) ^ 2) | ℱ k]
+        ≤ᵐ[P] P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] := by
+  intro k
+  let I : Ω -> ℝ := (B (k + 1)).indicator (1 : Ω -> ℝ)
+  have hI_sq : (fun ω : Ω => I ω ^ 2) =ᵐ[P] I :=
+    ae_of_all P fun ω => by
+      by_cases hω : ω ∈ B (k + 1)
+      · simp [I, hω]
+      · simp [I, hω]
+  have hI_int : Integrable I P :=
+    (integrable_const (c := (1 : ℝ))).indicator (hB_meas (k + 1))
+  exact
+    durrett2019_theorem_4_5_5_condExp_centered_indicator_sq_le_of_source
+      (P := P) (m := ℱ k) (hm := ℱ.le k)
+      (I := I) (p := P[I | ℱ k])
+      hI_sq hI_int EventuallyEq.rfl stronglyMeasurable_condExp
+      (by simpa [I] using hIp_int k)
+      (by simpa [I] using hp_sq_int k)
+
+/--
+Durrett 2019, Theorem 4.5.5 centered-indicator conditional variance with the
+boundedness integrability side conditions discharged from `0 <= p <= 1`.
+-/
+theorem durrett2019_theorem_4_5_5_condExp_centered_borelCantelli_indicator_sq_le_auto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ] {B : ℕ -> Set Ω}
+    (hB_meas : ∀ n, MeasurableSet (B n)) :
+    ∀ k : ℕ,
+      P[(fun ω : Ω =>
+          ((B (k + 1)).indicator (1 : Ω -> ℝ) ω -
+            P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] ω) ^ 2) | ℱ k]
+        ≤ᵐ[P] P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] := by
+  refine
+    durrett2019_theorem_4_5_5_condExp_centered_borelCantelli_indicator_sq_le
+      (P := P) (ℱ := ℱ) (B := B) hB_meas ?_ ?_
+  · intro k
+    let I : Ω -> ℝ := (B (k + 1)).indicator (1 : Ω -> ℝ)
+    let p : Ω -> ℝ := P[I | ℱ k]
+    have hI_int : Integrable I P :=
+      (integrable_const (c := (1 : ℝ))).indicator (hB_meas (k + 1))
+    have hI_nonneg : 0 ≤ᵐ[P] I :=
+      ae_of_all P fun ω => by
+        by_cases hω : ω ∈ B (k + 1) <;> simp [I, hω]
+    have hI_le_one : I ≤ᵐ[P] fun _ : Ω => (1 : ℝ) :=
+      ae_of_all P fun ω => by
+        by_cases hω : ω ∈ B (k + 1) <;> simp [I, hω]
+    have hp_nonneg : 0 ≤ᵐ[P] p := by
+      simpa [p] using condExp_nonneg (μ := P) (m := ℱ k) hI_nonneg
+    have hp_le_one : p ≤ᵐ[P] fun _ : Ω => (1 : ℝ) := by
+      have hmono :
+          P[I | ℱ k] ≤ᵐ[P] P[(fun _ : Ω => (1 : ℝ)) | ℱ k] :=
+        condExp_mono (μ := P) (m := ℱ k) hI_int (integrable_const (1 : ℝ)) hI_le_one
+      have hone :
+          P[(fun _ : Ω => (1 : ℝ)) | ℱ k] = fun _ : Ω => (1 : ℝ) :=
+        condExp_const (μ := P) (ℱ.le k) (1 : ℝ)
+      filter_upwards [hmono, EventuallyEq.of_eq hone] with ω hmonoω honeω
+      change P[I | ℱ k] ω ≤ (1 : ℝ)
+      rw [honeω] at hmonoω
+      exact hmonoω
+    have hI_abs_le_one : ∀ ω : Ω, ‖I ω‖ ≤ (1 : ℝ) := by
+      intro ω
+      by_cases hω : ω ∈ B (k + 1) <;> simp [I, hω]
+    have hmeas :
+        AEStronglyMeasurable (fun ω : Ω => p ω * I ω) P :=
+      ((stronglyMeasurable_condExp.mono (ℱ.le k)).mul
+        ((stronglyMeasurable_const : StronglyMeasurable (fun _ : Ω => (1 : ℝ))).indicator
+          (hB_meas (k + 1)))).aestronglyMeasurable
+    have hbound :
+        ∀ᵐ ω ∂P, ‖p ω * I ω‖ ≤ (1 : ℝ) := by
+      filter_upwards [hp_nonneg, hp_le_one] with ω hp0 hp1
+      rw [norm_mul]
+      have hp_abs : ‖p ω‖ ≤ (1 : ℝ) := by
+        rw [Real.norm_eq_abs]
+        have hp0' : 0 ≤ p ω := by simpa using hp0
+        have hp1' : p ω ≤ (1 : ℝ) := by simpa using hp1
+        exact abs_le.mpr ⟨by linarith, hp1'⟩
+      exact mul_le_one₀ hp_abs (norm_nonneg _) (hI_abs_le_one ω)
+    simpa [p, I] using Integrable.of_bound hmeas 1 hbound
+  · intro k
+    let I : Ω -> ℝ := (B (k + 1)).indicator (1 : Ω -> ℝ)
+    let p : Ω -> ℝ := P[I | ℱ k]
+    have hI_int : Integrable I P :=
+      (integrable_const (c := (1 : ℝ))).indicator (hB_meas (k + 1))
+    have hI_nonneg : 0 ≤ᵐ[P] I :=
+      ae_of_all P fun ω => by
+        by_cases hω : ω ∈ B (k + 1) <;> simp [I, hω]
+    have hI_le_one : I ≤ᵐ[P] fun _ : Ω => (1 : ℝ) :=
+      ae_of_all P fun ω => by
+        by_cases hω : ω ∈ B (k + 1) <;> simp [I, hω]
+    have hp_nonneg : 0 ≤ᵐ[P] p := by
+      simpa [p] using condExp_nonneg (μ := P) (m := ℱ k) hI_nonneg
+    have hp_le_one : p ≤ᵐ[P] fun _ : Ω => (1 : ℝ) := by
+      have hmono :
+          P[I | ℱ k] ≤ᵐ[P] P[(fun _ : Ω => (1 : ℝ)) | ℱ k] :=
+        condExp_mono (μ := P) (m := ℱ k) hI_int (integrable_const (1 : ℝ)) hI_le_one
+      have hone :
+          P[(fun _ : Ω => (1 : ℝ)) | ℱ k] = fun _ : Ω => (1 : ℝ) :=
+        condExp_const (μ := P) (ℱ.le k) (1 : ℝ)
+      filter_upwards [hmono, EventuallyEq.of_eq hone] with ω hmonoω honeω
+      change P[I | ℱ k] ω ≤ (1 : ℝ)
+      rw [honeω] at hmonoω
+      exact hmonoω
+    have hmeas : AEStronglyMeasurable (fun ω : Ω => p ω ^ 2) P :=
+      ((stronglyMeasurable_condExp.mono (ℱ.le k)).pow 2).aestronglyMeasurable
+    have hbound :
+        ∀ᵐ ω ∂P, ‖p ω ^ 2‖ ≤ (1 : ℝ) := by
+      filter_upwards [hp_nonneg, hp_le_one] with ω hp0 hp1
+      have hp0' : 0 ≤ p ω := by simpa using hp0
+      have hp1' : p ω ≤ (1 : ℝ) := by simpa using hp1
+      rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg (p ω))]
+      nlinarith
+    simpa [p, I] using Integrable.of_bound hmeas 1 hbound
+
+/--
+Durrett 2019, Theorem 4.5.5 conditional-variance clock bridge.
+
+After the textbook Bernoulli conditional-variance estimate
+`E((1_B - p)^2 | F) <= p` is known, the martingale-part square increment is
+dominated by the increment of the cumulative conditional-probability clock.
+This is the exact source hypothesis consumed by the Theorem 4.5.3 route.
+-/
+theorem
+    durrett2019_theorem_4_5_5_martingalePart_condExp_square_le_conditionalProbabilitySum_increment
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω)
+    (hcenter :
+      ∀ k : ℕ,
+        P[(fun ω : Ω =>
+            ((B (k + 1)).indicator (1 : Ω -> ℝ) ω -
+              P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] ω) ^ 2) | ℱ k]
+          ≤ᵐ[P] P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k]) :
+    ∀ k : ℕ,
+      P[(fun ω : Ω =>
+          (martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P (k + 1) ω -
+            martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k ω) ^ 2) | ℱ k]
+        ≤ᵐ[P]
+          fun ω : Ω =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω -
+              durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B k ω := by
+  intro k
+  have hincrement :
+      (fun ω : Ω =>
+        (martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P (k + 1) ω -
+          martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k ω) ^ 2)
+        =ᵐ[P]
+        fun ω : Ω =>
+          ((B (k + 1)).indicator (1 : Ω -> ℝ) ω -
+            P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] ω) ^ 2 :=
+    ae_of_all P fun ω => by
+      exact congrArg (fun x : ℝ => x ^ 2) (congrFun
+        (durrett2019_theorem_4_5_5_martingalePart_process_increment_eq
+          (P := P) (ℱ := ℱ) B k) ω)
+  have hcond :
+      P[(fun ω : Ω =>
+          (martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P (k + 1) ω -
+            martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k ω) ^ 2) | ℱ k]
+        =ᵐ[P]
+        P[(fun ω : Ω =>
+            ((B (k + 1)).indicator (1 : Ω -> ℝ) ω -
+              P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k] ω) ^ 2) | ℱ k] :=
+    condExp_congr_ae hincrement
+  have hclock :=
+    durrett2019_theorem_4_5_5_conditionalProbabilitySum_increment_eq
+      (P := P) (ℱ := ℱ) B k
+  filter_upwards [hcond, hcenter k] with ω hcondω hcenterω
+  rw [hcondω, congrFun hclock ω]
+  exact hcenterω
+
+/--
+Durrett 2019, Theorem 4.5.5 automatic conditional-variance clock domination.
+
+For measurable Borel-Cantelli events, the martingale-part conditional square
+increment is dominated by the increment of the cumulative conditional
+probability clock.
+-/
+theorem
+    durrett2019_theorem_4_5_5_martingalePart_condExp_square_le_conditionalProbabilitySum_increment_auto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ] {B : ℕ -> Set Ω}
+    (hB_meas : ∀ n, MeasurableSet (B n)) :
+    ∀ k : ℕ,
+      P[(fun ω : Ω =>
+          (martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P (k + 1) ω -
+            martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k ω) ^ 2) | ℱ k]
+        ≤ᵐ[P]
+          fun ω : Ω =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω -
+              durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B k ω := by
+  exact
+    durrett2019_theorem_4_5_5_martingalePart_condExp_square_le_conditionalProbabilitySum_increment
+      (P := P) (ℱ := ℱ) B
+      (durrett2019_theorem_4_5_5_condExp_centered_borelCantelli_indicator_sq_le_auto
+        (P := P) (ℱ := ℱ) (B := B) hB_meas)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

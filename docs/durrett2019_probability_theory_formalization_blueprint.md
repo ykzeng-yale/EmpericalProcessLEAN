@@ -27,12 +27,12 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V224`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V226`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current active frontier: Durrett Section 4.5.3 in
+Current active frontier: Durrett Section 4.5.5 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the source
 square-minus stopped certificate, finite-terminal threshold cover, countable
 event-cover assembly, and monotone-terminal source wrapper for Theorem 4.5.2.
@@ -172,15 +172,29 @@ and finite-variance endpoint layer:
 `durrett2019_theorem_4_5_5_normalized_tendsto_zero_on_of_exists_tendsto`,
 and
 `durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_martingalePart_exists_tendsto`.
-The next theorem-facing target is no
-longer finite sum/integral exchange, V214-to-V209 wiring, the
-tail-integral-to-clock-bound package, variance-ratio integrability packaging,
-lower-bound/no-zero/divergence plumbing, deterministic normalizer-divergence
-packaging, event-local random-normalizer packaging, Theorem 4.5.5 ratio
-algebra, or finite-limit denominator bridges: prove the normalized
-Borel-Cantelli martingale-part estimate by identifying/dominating its
-conditional-variance clock, using Theorem 4.5.2 for the finite-clock side and
-Theorem 4.5.3 for the infinite-clock side.  Do not
+V225 identifies the exact one-step martingale increment, the denominator-clock
+increment, and the bridge from the Bernoulli conditional-variance estimate to
+the source clock inequality consumed by Theorem 4.5.3:
+`durrett2019_theorem_4_5_5_martingalePart_process_increment_eq`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_increment_eq`, and
+`durrett2019_theorem_4_5_5_martingalePart_condExp_square_le_conditionalProbabilitySum_increment`.
+V226 proves the Bernoulli conditional-variance estimate, automatically
+discharges its boundedness/integrability side conditions, and packages the
+automatic dominated variance-clock endpoint:
+`durrett2019_theorem_4_5_5_condExp_centered_indicator_sq_le_of_source`,
+`durrett2019_theorem_4_5_5_condExp_centered_borelCantelli_indicator_sq_le`,
+`durrett2019_theorem_4_5_5_condExp_centered_borelCantelli_indicator_sq_le_auto`,
+and
+`durrett2019_theorem_4_5_5_martingalePart_condExp_square_le_conditionalProbabilitySum_increment_auto`.
+The next theorem-facing target is no longer finite sum/integral exchange,
+V214-to-V209 wiring, the tail-integral-to-clock-bound package,
+variance-ratio integrability packaging, lower-bound/no-zero/divergence
+plumbing, deterministic normalizer-divergence packaging, event-local
+random-normalizer packaging, Theorem 4.5.5 ratio algebra, finite-limit
+denominator bridges, increment/denominator-clock plumbing, or Bernoulli
+conditional-variance algebra: assemble the finite/infinite Theorem 4.5.5 split
+using Theorem 4.5.2 for the finite-clock side and Theorem 4.5.3 for the
+infinite-clock side.  Do not
 route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
