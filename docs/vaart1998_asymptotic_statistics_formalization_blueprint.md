@@ -107,17 +107,23 @@ summands, `theta0`, `estimator`, and `scale`.  The pointwise sampled derivative
 matrix-action source endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 derives the previous a.e.-eventual sampled derivative action from a pointwise
-all-`n` finite-coordinate matrix-action law.  The next proof packet should
-package remaining model-facing source fields such as the actual population `V`
-matrix-action source, not replay
+all-`n` finite-coordinate matrix-action law.  The population-basis
+matrix-action source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+uses
+`vaart1998_theorem_5_41_population_matrix_action_of_basis_action` to derive
+the full population `V` action from coordinate-basis column identities.  The
+next proof packet should package remaining pointwise smoothness/a.e. wrappers
+only when they remove a still-live hypothesis, or move to a concrete
+model-specialized Theorem 5.41 instantiation, not replay
 display weak-convergence, display-tightness, score-CLT, residual convergence,
 absorbing tightness, derivative-action wrappers, derivative-entry iid source
 fields, score moment transfer, score-law covariance transfer, vector
 score-representation, vector score common-law transfer, derivative-table
 common-law transfer, centered derivative-coordinate residual algebra,
 smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer, or
-estimator-definition/raw-root/measurability/sampled-derivative-action source
-wrappers.
+estimator-definition/raw-root/measurability/sampled-derivative-action/
+population-`V` basis-action source wrappers.
 
 ## Chapter Map
 
@@ -895,8 +901,9 @@ Initial modules:
   from derivative LLN and the second-derivative envelope.
   The current Theorem 5.41 source route has also replaced the estimator
   increment, raw-root, selected measurability, and sampled derivative action
-  a.e. fields by pointwise or ordinary measurable model sources; do not route
-  future packets through those already-closed wrappers.
+  a.e. fields, and the full population `V` action, by pointwise, ordinary
+  measurable, or basis-column model sources; do not route future packets
+  through those already-closed wrappers.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
