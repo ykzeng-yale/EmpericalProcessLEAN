@@ -19248,6 +19248,49 @@ theorem durrett2019_theorem_4_5_3_reciprocal_comp_atTop_of_clock_atTop
   exact hf_atTop.comp (hAω.comp (tendsto_add_atTop_nat 1))
 
 /--
+Durrett 2019, Theorem 4.5.3 deterministic normalizer divergence support.
+
+The textbook assumptions `f >= 1`, monotonicity, and integrability of
+`f(t)^{-2}` over `[0, ∞)` force the normalizer itself to diverge at infinity.
+-/
+theorem durrett2019_theorem_4_5_3_normalizer_atTop_of_integrable_inv_sq
+    {f : ℝ -> ℝ}
+    (hf_mono : Monotone f)
+    (hf_one_le : ∀ t : ℝ, 1 ≤ f t)
+    (htail_int : IntegrableOn (fun t : ℝ => (f t)⁻¹ ^ 2) (Set.Ici 0) volume) :
+    Tendsto f atTop atTop := by
+  rcases tendsto_atTop_of_monotone hf_mono with hf_atTop | ⟨l, hl⟩
+  · exact hf_atTop
+  · have hl_one : 1 ≤ l := ge_of_tendsto' hl hf_one_le
+    let c : ℝ := (l + 1)⁻¹ ^ 2
+    have hlp_pos : 0 < l + 1 := by linarith
+    have hc_nonneg : 0 ≤ c := sq_nonneg _
+    have hc_pos : 0 < c := by
+      exact pow_pos (inv_pos.mpr hlp_pos) 2
+    have hpoint :
+        ∀ t : ℝ, c ≤ (f t)⁻¹ ^ 2 := by
+      intro t
+      have hft_le_l : f t ≤ l := hf_mono.ge_of_tendsto hl t
+      have hft_le_lplus : f t ≤ l + 1 := hft_le_l.trans (by linarith)
+      have hft_pos : 0 < f t := zero_lt_one.trans_le (hf_one_le t)
+      have hinv : (l + 1)⁻¹ ≤ (f t)⁻¹ :=
+        (inv_le_inv₀ hlp_pos hft_pos).2 hft_le_lplus
+      exact pow_le_pow_left₀ (inv_nonneg.mpr hlp_pos.le) hinv 2
+    have hconst_int : IntegrableOn (fun _t : ℝ => c) (Set.Ici 0) volume := by
+      change Integrable (fun _t : ℝ => c) (volume.restrict (Set.Ici (0 : ℝ)))
+      refine htail_int.mono' aestronglyMeasurable_const ?_
+      exact ae_of_all _ fun t => by
+        simpa [Real.norm_of_nonneg hc_nonneg] using hpoint t
+    have hconst_not_int :
+        ¬ IntegrableOn (fun _t : ℝ => c) (Set.Ici 0) volume := by
+      intro h
+      rcases (integrableOn_const_iff (s := Set.Ici (0 : ℝ)) (μ := volume)
+          (C := c)).1 h with hzero | hfinite
+      · exact hc_pos.ne' (enorm_eq_zero.mp hzero)
+      · simp at hfinite
+    exact (hconst_not_int hconst_int).elim
+
+/--
 Durrett 2019, Theorem 4.5.3 source-facing integrated clock route.
 
 This connects the V214 integrated summability package directly to the V209
@@ -19849,6 +19892,49 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
       (durrett2019_theorem_4_5_3_reciprocal_comp_atTop_of_clock_atTop
         (P := P) (A := A) (f := f) hf_atTop hA_atTop)
       hcond_le htail_int htail_bound
+
+/--
+Durrett 2019, Theorem 4.5.3 source-facing tail-integral route with the
+deterministic normalizer divergence derived from the textbook integral
+assumption.
+
+Compared with the V221 global-normalizer endpoint, this removes the explicit
+`Tendsto f atTop atTop` hypothesis.  It is forced by the assumptions that
+`f >= 1`, `f` is increasing, and `∫_0^∞ f(t)^{-2} dt` is finite.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {C : ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hA_int : ∀ n : ℕ, Integrable (A n) P)
+    (hf_cont : Continuous f)
+    (hf_mono : Monotone f)
+    (hf_one_le : ∀ t : ℝ, 1 ≤ f t)
+    (hA0_nonneg : ∀ ω : Ω, 0 ≤ A 0 ω)
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hA_atTop : ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => A n ω) atTop atTop)
+    (hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω)
+    (htail_int :
+      IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (f t)⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono_atTop
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (C := C)
+      hX hX0 hX_memLp_two hA_predictable hA_int hf_cont hf_mono hf_one_le
+      (durrett2019_theorem_4_5_3_normalizer_atTop_of_integrable_inv_sq
+        (f := f) hf_mono hf_one_le htail_int)
+      hA0_nonneg hA_mono_step hA_atTop hcond_le htail_int htail_bound
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

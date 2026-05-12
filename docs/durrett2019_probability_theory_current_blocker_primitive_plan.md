@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V221
+## Live In-Thread Goal Prompt V222
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -230,11 +230,17 @@ The main endpoint now takes global textbook-style assumptions
 `A_n -> ∞` a.s. instead of per-interval lower bounds, explicit no-zero facts,
 per-interval monotonicity, and the shifted random normalizer divergence.
 
-Next aggressive step: decide whether to close the last deterministic
-normalizer source gap by proving `Tendsto f atTop atTop` from the exact Durrett
-conditions on `f` and `∫_0^∞ f(t)^{-2} dt < ∞`, or treat this as the
-textbook's supplied divergence hypothesis and move to the next martingale
-theorem.  Do not
+V222 closes the deterministic normalizer-divergence source gap from the exact
+Durrett assumptions on `f`.  New compiled declarations:
+`durrett2019_theorem_4_5_3_normalizer_atTop_of_integrable_inv_sq` and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono`.
+The source endpoint now derives `Tendsto f atTop atTop` from `Monotone f`,
+`∀ t, 1 <= f t`, and `IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0)`.
+
+Next aggressive step: either package the event-local conclusion on
+`{A∞ = ∞}` from an a.e. clock limit `A_n -> A∞` plus event membership, or move
+to the next martingale theorem if the current global a.s. clock-divergence
+endpoint is the intended source statement for this lane.  Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -247,7 +253,8 @@ increment-square integrability packaging, variance-ratio integrability
 packaging, finite random clock-integrability packaging,
 interval-integrability packaging, normalizer-increment packaging,
 reciprocal-square continuity packaging, lower-bound/no-zero packaging,
-normalizer-divergence-from-clock packaging, Chapter 2.1, or Theorem 2.4.9 unless
+normalizer-divergence-from-clock packaging, deterministic normalizer-divergence
+packaging, Chapter 2.1, or Theorem 2.4.9 unless
 Theorem 4.5.3 exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1

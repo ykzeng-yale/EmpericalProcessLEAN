@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V221`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V222`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -148,13 +148,18 @@ V221 adds
 replacing per-interval lower bounds, explicit no-zero facts, per-interval
 monotonicity, and the shifted random normalizer divergence with global
 source-style assumptions on `f` plus a.s. clock divergence.
+V222 adds
+`durrett2019_theorem_4_5_3_normalizer_atTop_of_integrable_inv_sq` and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono`,
+deriving deterministic normalizer divergence from Durrett's exact assumptions
+`f >= 1`, monotonicity, and finite `∫_0^∞ f(t)^{-2} dt`.
 The next theorem-facing target is no
 longer finite sum/integral exchange, V214-to-V209 wiring, the
 tail-integral-to-clock-bound package, variance-ratio integrability packaging,
-or lower-bound/no-zero/divergence plumbing: either prove the last deterministic
-normalizer divergence source lemma from Durrett's exact `f` hypotheses, or
-move to the next martingale theorem if `Tendsto f atTop atTop` is already the
-natural statement.  Do not
+lower-bound/no-zero/divergence plumbing, or deterministic normalizer-divergence
+packaging: either package the event-local `{A∞ = ∞}` conclusion from an a.e.
+clock limit, or move to the next martingale theorem if the current global
+clock-divergence endpoint is the intended source statement.  Do not
 route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
@@ -168,8 +173,8 @@ scaled-square/increment-square integrability packaging, variance-ratio
 integrability packaging, finite random clock-integrability packaging, or
 interval-integrability/normalizer-increment/reciprocal-square-continuity
 packaging, lower-bound/no-zero packaging, normalizer-divergence-from-clock
-packaging, or scaled-summability handoff wrappers unless a later theorem
-exposes a precise missing primitive.
+packaging, deterministic normalizer-divergence packaging, or scaled-summability
+handoff wrappers unless a later theorem exposes a precise missing primitive.
 
 Closed Chapter 2 support lives in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled
