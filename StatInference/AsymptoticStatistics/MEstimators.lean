@@ -18030,6 +18030,164 @@ theorem vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_m
       hCoordinate_action_le
 
 /--
+van der Vaart 1998, Theorem 5.41, centered derivative-coordinate source from
+matrix actions.
+
+For finite-dimensional parameter spaces, the centered empirical derivative
+coordinate formula used by the finite-entry strong-law handoff follows from two
+more model-facing facts: each selected derivative operator has the stated matrix
+action, and the limiting derivative `V` has the corresponding population matrix
+action.
+-/
+theorem vaart1998_theorem_5_41_derivativeCoordinate_action_eq_of_matrix_action_representation
+    {Param Ω Observation Coord : Type*} [Fintype Param] [Fintype Coord]
+    [MeasurableSpace Ω] {P : Measure Ω}
+    (V : (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> (Param -> ℝ) ->
+        (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (theta0 : ℕ -> Ω -> Param -> ℝ)
+    (derivativeEntry : Coord -> Param -> ℕ -> Ω -> ℝ)
+    (hDerivativeAtTheta0_matrix_action :
+      ∀ᵐ ω ∂P,
+        ∀ᶠ n in atTop,
+          ∀ i : Fin n, ∀ x : Param -> ℝ, ∀ coordinate : Coord,
+            derivativeAt n ω (samples n ω i) (theta0 n ω) x coordinate =
+              ∑ param : Param,
+                x param * derivativeEntry coordinate param i.val ω)
+    (hV_matrix_action : ∀ x : Param -> ℝ, ∀ coordinate : Coord,
+      V x coordinate =
+        ∑ param : Param,
+          x param * ∫ sample, derivativeEntry coordinate param 0 sample ∂P) :
+    ∀ᵐ ω ∂P,
+      ∀ᶠ n in atTop,
+        ∀ x : Param -> ℝ, ∀ coordinate : Coord,
+          ((empiricalAverageVector (samples n ω)
+              (fun y => derivativeAt n ω y (theta0 n ω)) - V) x)
+                coordinate =
+            ∑ param : Param,
+              x param *
+                ((∑ i ∈ Finset.range n,
+                      derivativeEntry coordinate param i ω) / (n : ℝ) -
+                  ∫ sample, derivativeEntry coordinate param 0 sample ∂P) := by
+  filter_upwards [hDerivativeAtTheta0_matrix_action] with ω hω
+  filter_upwards [hω] with n hn
+  intro x coordinate
+  have hsum_derivative :
+      (∑ i : Fin n,
+        (derivativeAt n ω (samples n ω i) (theta0 n ω) x) coordinate) =
+        ∑ i : Fin n,
+          ∑ param : Param,
+            x param * derivativeEntry coordinate param i.val ω := by
+    exact Finset.sum_congr rfl fun i _hi => hn i x coordinate
+  have hsum_range : ∀ param : Param,
+      (∑ i : Fin n, derivativeEntry coordinate param i.val ω) =
+        ∑ i ∈ Finset.range n, derivativeEntry coordinate param i ω := by
+    intro param
+    simpa using
+      (Fin.sum_univ_eq_sum_range
+        (fun i : ℕ => derivativeEntry coordinate param i ω) n)
+  let populationEntry : Param -> ℝ := fun param =>
+    ∫ sample, derivativeEntry coordinate param 0 sample ∂P
+  have hV_matrix_action' :
+      V x coordinate =
+        ∑ param : Param, x param * populationEntry param := by
+    simpa [populationEntry] using hV_matrix_action x coordinate
+  have hmatrix :
+      ((n : ℝ)⁻¹) *
+            (∑ i : Fin n,
+              ∑ param : Param,
+                x param * derivativeEntry coordinate param i.val ω) -
+          ∑ param : Param, x param * populationEntry param =
+        Finset.univ.sum (fun param : Param =>
+          x param *
+            ((∑ i ∈ Finset.range n,
+                  derivativeEntry coordinate param i ω) / (n : ℝ) -
+              populationEntry param)) := by
+    calc
+      ((n : ℝ)⁻¹) *
+            (∑ i : Fin n,
+              ∑ param : Param,
+                x param * derivativeEntry coordinate param i.val ω) -
+          ∑ param : Param, x param * populationEntry param
+          =
+        ((n : ℝ)⁻¹) *
+            (∑ param : Param,
+              ∑ i : Fin n,
+                x param * derivativeEntry coordinate param i.val ω) -
+          ∑ param : Param, x param * populationEntry param := by
+          rw [Finset.sum_comm]
+      _ =
+        (∑ param : Param,
+            ((n : ℝ)⁻¹) *
+              (∑ i : Fin n,
+                x param * derivativeEntry coordinate param i.val ω)) -
+          ∑ param : Param, x param * populationEntry param := by
+          rw [Finset.mul_sum]
+      _ =
+        Finset.univ.sum (fun param : Param =>
+          ((n : ℝ)⁻¹) *
+              (∑ i : Fin n,
+                x param * derivativeEntry coordinate param i.val ω) -
+            x param * populationEntry param) := by
+          rw [← Finset.sum_sub_distrib]
+      _ =
+        Finset.univ.sum (fun param : Param =>
+          x param *
+            ((∑ i ∈ Finset.range n,
+                  derivativeEntry coordinate param i ω) / (n : ℝ) -
+              populationEntry param)) := by
+          refine Finset.sum_congr rfl ?_
+          intro param _hparam
+          rw [← Finset.mul_sum, hsum_range param]
+          ring
+  calc
+    ((empiricalAverageVector (samples n ω)
+        (fun y => derivativeAt n ω y (theta0 n ω)) - V) x) coordinate
+        =
+      (empiricalAverageVector (samples n ω)
+          (fun y => derivativeAt n ω y (theta0 n ω)) x) coordinate -
+        V x coordinate := by
+          simp only [ContinuousLinearMap.sub_apply, Pi.sub_apply]
+    _ =
+      (empiricalAverageVector (samples n ω)
+          (fun y => derivativeAt n ω y (theta0 n ω) x)) coordinate -
+        V x coordinate := by
+          rw [vaart1998_empiricalAverageVector_clm_apply
+            (sample := samples n ω)
+            (statistic := fun y => derivativeAt n ω y (theta0 n ω))
+            (x := x)]
+    _ =
+      ((n : ℝ)⁻¹) *
+          (∑ i : Fin n,
+            (derivativeAt n ω (samples n ω i) (theta0 n ω) x)
+              coordinate) -
+        V x coordinate := by
+          simp only [empiricalAverageVector, Pi.smul_apply,
+            Finset.sum_apply, smul_eq_mul]
+    _ =
+      ((n : ℝ)⁻¹) *
+          (∑ i : Fin n,
+            ∑ param : Param,
+              x param * derivativeEntry coordinate param i.val ω) -
+        ∑ param : Param, x param * populationEntry param := by
+          rw [hsum_derivative, hV_matrix_action']
+    _ =
+      ∑ param : Param,
+        x param *
+          ((∑ i ∈ Finset.range n,
+                derivativeEntry coordinate param i ω) / (n : ℝ) -
+            populationEntry param) := hmatrix
+    _ =
+      ∑ param : Param,
+        x param *
+          ((∑ i ∈ Finset.range n,
+                derivativeEntry coordinate param i ω) / (n : ℝ) -
+            ∫ sample, derivativeEntry coordinate param 0 sample ∂P) := by
+          simp [populationEntry]
+
+/--
 van der Vaart 1998, Theorem 5.41, derivative-entry iid source from a common
 finite matrix-entry vector law.
 
@@ -19780,19 +19938,18 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
     (hDerivativeEntry_eq_table : ∀ coordinate param i ω,
       derivativeEntry coordinate param i ω =
         derivativeTable i ω (coordinate, param))
-    (hDerivativeCoordinate_action_eq :
+    (hDerivativeAtTheta0_matrix_action :
       ∀ᵐ ω ∂P,
         ∀ᶠ n in atTop,
-          ∀ x : Param -> ℝ, ∀ coordinate : Coord,
-            ((empiricalAverageVector (samples n ω)
-                (fun y => derivativeAt n ω y (theta0 n ω)) - V) x)
-                  coordinate =
+          ∀ i : Fin n, ∀ x : Param -> ℝ, ∀ coordinate : Coord,
+            derivativeAt n ω (samples n ω i) (theta0 n ω) x coordinate =
               ∑ param : Param,
-                x param *
-                  ((∑ i ∈ Finset.range n,
-                        derivativeEntry coordinate param i ω) / (n : ℝ) -
-                    ∫ sample,
-                      derivativeEntry coordinate param 0 sample ∂P))
+                x param * derivativeEntry coordinate param i.val ω)
+    (hV_matrix_action : ∀ x : Param -> ℝ, ∀ coordinate : Coord,
+      V x coordinate =
+        ∑ param : Param,
+          x param * ∫ sample,
+            derivativeEntry coordinate param 0 sample ∂P)
     (hEstimator_consistency :
       TendstoInMeasure P
         (fun n ω => ‖estimator n ω - theta0 n ω‖) atTop 0)
@@ -19872,6 +20029,24 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
     TendstoInDistribution scaledEstimator atTop
       (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ)) (Z ω))
       (fun _ => P) Q := by
+  have hDerivativeCoordinate_action_eq :
+      ∀ᵐ ω ∂P,
+        ∀ᶠ n in atTop,
+          ∀ x : Param -> ℝ, ∀ coordinate : Coord,
+            ((empiricalAverageVector (samples n ω)
+                (fun y => derivativeAt n ω y (theta0 n ω)) - V) x)
+                  coordinate =
+              ∑ param : Param,
+                x param *
+                  ((∑ i ∈ Finset.range n,
+                        derivativeEntry coordinate param i ω) / (n : ℝ) -
+                    ∫ sample,
+                      derivativeEntry coordinate param 0 sample ∂P) :=
+    vaart1998_theorem_5_41_derivativeCoordinate_action_eq_of_matrix_action_representation
+      (P := P) (V := V) (samples := samples)
+      (derivativeAt := derivativeAt) (theta0 := theta0)
+      (derivativeEntry := derivativeEntry)
+      hDerivativeAtTheta0_matrix_action hV_matrix_action
   have hDerivativeCommonLaw :=
     vaart1998_theorem_5_41_derivativeCommonVectorLaw_of_matrixTableRepresentation
       (P := P) (derivativeEntry := derivativeEntry)
@@ -20221,19 +20396,18 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
     (hDerivativeEntry_eq_table : ∀ coordinate param i ω,
       derivativeEntry coordinate param i ω =
         derivativeTable i ω (coordinate, param))
-    (hDerivativeCoordinate_action_eq :
+    (hDerivativeAtTheta0_matrix_action :
       ∀ᵐ ω ∂P,
         ∀ᶠ n in atTop,
-          ∀ x : Param -> ℝ, ∀ coordinate : Coord,
-            ((empiricalAverageVector (samples n ω)
-                (fun y => derivativeAt n ω y (theta0 n ω)) - V) x)
-                  coordinate =
+          ∀ i : Fin n, ∀ x : Param -> ℝ, ∀ coordinate : Coord,
+            derivativeAt n ω (samples n ω i) (theta0 n ω) x coordinate =
               ∑ param : Param,
-                x param *
-                  ((∑ i ∈ Finset.range n,
-                        derivativeEntry coordinate param i ω) / (n : ℝ) -
-                    ∫ sample,
-                      derivativeEntry coordinate param 0 sample ∂P))
+                x param * derivativeEntry coordinate param i.val ω)
+    (hV_matrix_action : ∀ x : Param -> ℝ, ∀ coordinate : Coord,
+      V x coordinate =
+        ∑ param : Param,
+          x param * ∫ sample,
+            derivativeEntry coordinate param 0 sample ∂P)
     (hEstimator_consistency :
       TendstoInMeasure P
         (fun n ω => ‖estimator n ω - theta0 n ω‖) atTop 0)
@@ -20380,7 +20554,8 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hScaledScore_vector_eq hDerivativeCoordinate_meas
       hDerivativeLaw_integrable hDerivativeTable_law
       hDerivativeTable_sequence_law hDerivativeEntry_eq_table
-      hDerivativeCoordinate_action_eq hEstimator_consistency
+      hDerivativeAtTheta0_matrix_action hV_matrix_action
+      hEstimator_consistency
       hEnvelope_nonneg hEnvelopeAverage_tendsto hPointwiseTaylor
       hEnvelopeBound hDerivativeAtTheta0_summand_meas
       hSecondDerivative_summand_meas hTheta0_meas hEstimator_meas

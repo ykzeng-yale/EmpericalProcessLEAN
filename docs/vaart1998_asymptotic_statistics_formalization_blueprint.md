@@ -85,15 +85,22 @@ and
 so model instances state open-set smoothness of the estimating map and
 derivative map rather than an opaque raw single-observation Taylor identity.
 It also derives the raw score-scaling field from the normalized score-vector
-display `scoreAtTheta0 = sqrt n • scoreVector`.  The next proof packet should
+display `scoreAtTheta0 = sqrt n • scoreVector`.  The derivative matrix-action
+source helper
+`vaart1998_theorem_5_41_derivativeCoordinate_action_eq_of_matrix_action_representation`
+now derives the centered empirical derivative-coordinate residual from the
+sampled derivative matrix action and the population `V` matrix action.  The
+current endpoint and the derivative-table common-law endpoint therefore consume
+`hDerivativeAtTheta0_matrix_action` and `hV_matrix_action` rather than the
+opaque `hDerivativeCoordinate_action_eq` formula.  The next proof packet should
 package remaining model-facing source fields such as root/estimator-scaling/
-measurability or derivative-coordinate action representation, not replay
+measurability or the actual model-specific matrix-action sources, not replay
 display weak-convergence, display-tightness, score-CLT, residual convergence,
 absorbing tightness, derivative-action wrappers, derivative-entry iid source
 fields, score moment transfer, score-law covariance transfer, vector
 score-representation, vector score common-law transfer, derivative-table
-common-law transfer, smooth/raw/scaled Taylor transfer, or score-at-theta0
-vector scaling transfer.
+common-law transfer, centered derivative-coordinate residual algebra,
+smooth/raw/scaled Taylor transfer, or score-at-theta0 vector scaling transfer.
 
 ## Chapter Map
 

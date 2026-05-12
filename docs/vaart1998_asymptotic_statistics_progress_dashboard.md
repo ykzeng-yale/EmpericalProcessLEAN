@@ -15,9 +15,14 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: score-at-theta0 vector source endpoint
+Latest verified packet: derivative matrix-action source bridge for the
+derivative-table and score-at-theta0/Taylor endpoints, including
+`vaart1998_theorem_5_41_derivativeCoordinate_action_eq_of_matrix_action_representation`
+and the current endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
-in `MEstimators.lean`.  It keeps
+in `MEstimators.lean`.  The route now derives the old centered
+`hDerivativeCoordinate_action_eq` field from sampled derivative matrix actions
+and the population `V` matrix action.  It keeps
 `vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffTheta0SecondDerivativeContDiff`
 and composes it with
 `vaart1998_theorem_5_41_pointwise_scaledTaylorIdentity_ae_of_unscaled_selectedTaylor`.
@@ -113,10 +118,10 @@ from the pointwise-Taylor Theorem 5.41 action endpoint.
 
 Current next blocker: package the remaining model-facing source hypotheses
 around the score-law covariance/moment source endpoint.  Prefer
-root/estimator-scaling/measurability fields or the derivative-coordinate action
-representation if they can be discharged from model definitions; do not replay
-the smooth/raw/scaled Taylor transfer or score-at-theta0 vector scaling
-transfer.
+root/estimator-scaling/measurability fields or the actual model-specific
+sampled derivative matrix action and population `V` matrix action; do not
+replay the centered derivative-coordinate residual algebra, smooth/raw/scaled
+Taylor transfer, or score-at-theta0 vector scaling transfer.
 
 ## Verified Frontier
 

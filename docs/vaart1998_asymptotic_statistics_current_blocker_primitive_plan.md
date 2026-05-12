@@ -26,6 +26,9 @@ combined with the existing scaled raw estimating-map vector identity.
 Immediate smooth Taylor source helper:
 `vaart1998_theorem_5_41_rawPointwiseTaylor_ae_of_estimatingMapContDiffTheta0SecondDerivativeContDiff`.
 
+Immediate derivative matrix-action source helper:
+`vaart1998_theorem_5_41_derivativeCoordinate_action_eq_of_matrix_action_representation`.
+
 Immediate scaled pointwise-Taylor endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
@@ -137,7 +140,14 @@ so model instances no longer provide the raw single-observation Taylor identity
 as an opaque field.  It is derived from open-set `ContDiffOn` smoothness of the
 estimating map and derivative map on the textbook segment.  The endpoint also
 derives the raw score-scaling identity from the model-facing normalized
-score-vector display, so `hScore_scaled` is no longer live.
+score-vector display, so `hScore_scaled` is no longer live.  The newest
+derivative matrix-action helper
+`vaart1998_theorem_5_41_derivativeCoordinate_action_eq_of_matrix_action_representation`
+derives the centered empirical derivative-coordinate residual from the sampled
+derivative matrix action and the population `V` matrix action.  The
+derivative-table common-law endpoint and this current endpoint now consume
+`hDerivativeAtTheta0_matrix_action` and `hV_matrix_action` instead of the
+opaque centered `hDerivativeCoordinate_action_eq` formula.
 
 Continuation recipe:
 
@@ -153,16 +163,16 @@ Priority order for the next packet:
 1. Move one layer closer to a model-facing finite-dimensional statement:
    package the remaining source hypotheses around the score-law covariance
    and moment route, especially root/estimator-scaling/measurability fields or
-   the derivative-coordinate action representation if they can be discharged
-   from model definitions.
+   the actual model-specific sampled derivative matrix action and population
+   `V` matrix action.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    residual-source endpoint; do not rebuild completed score CLT, display weak
    convergence, display tightness, residual convergence, or action-bound wrapper
    stacks.  Do not replay the vector score-representation or vector score
    common-law transfers, the derivative-table common-law transfer, or the
-   smooth/raw/scaled pointwise Taylor transfer or the score-at-theta0 vector
-   scaling transfer.
+   centered derivative-coordinate residual algebra, smooth/raw/scaled pointwise
+   Taylor transfer, or the score-at-theta0 vector scaling transfer.
 
 Operating rules:
 
