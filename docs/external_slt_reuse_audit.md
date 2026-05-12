@@ -56,6 +56,11 @@ interfaces, using current mathlib names.
   `EmpiricalL1Index`, proof-carrying finite empirical covers, finite empirical
   packings, and adapters between local empirical cover cardinalities and
   mathlib `Metric.coveringNumber`/`Metric.packingNumber`.
+- The external `SLT/MetricEntropy.lean` idea is now integrated locally as
+  `vdVWLogEntropyOfNat`, `vdVWCoveringLogEntropy`,
+  `empiricalL1CoveringLogEntropy`, and `vdVWSemimetricLogEntropy`, with
+  nonnegativity, finite-cardinality display, radius antitonicity, and
+  subset-monotonicity wrappers over the existing VdV&W/mathlib covering API.
 - `StatInference/EmpiricalProcess/Theorem243.lean` already has the finite-center
   Rademacher/Hoeffding sub-Gaussian bridge, finite-center expected supremum
   bounds, selected-cover cardinality plumbing, and source-facing
@@ -74,6 +79,9 @@ empirical wrappers.
 
 Do reuse external proof patterns in targeted ports:
 
+- the metric-entropy naming pattern has been ported as local log-entropy
+  wrappers over `vdVWCoveringNumber` and `empiricalL1CoveringNumber`, avoiding
+  the external custom `coveringNumber` API;
 - dyadic-net/chaining structures can inform a future Dudley or entropy-integral
   module, but they are downstream of the current VdVW Theorem 2.4.3
   finite-cover source gap;
@@ -89,7 +97,10 @@ Do reuse external proof patterns in targeted ports:
 ## Immediate Integration Target
 
 For the active VdV&W branch, the highest-value integration is not a wholesale
-SLT import.  It is to keep using current mathlib covering/packing numbers and
+SLT import.  The first targeted port is complete for the metric-entropy surface:
+local code now exposes `log (N + 1)` wrappers for VdV&W external covering
+numbers, empirical `L1(P_n)` covering numbers, and semimetric whole-space
+covering numbers.  Keep using current mathlib covering/packing numbers and
 local `EmpiricalL1Index` adapters, then port only the external dyadic/Dudley
 layer when the Chapter 2 dependency order reaches entropy-integral bounds.
 The current source frontier remains the selected-cover Rademacher bad-fiber

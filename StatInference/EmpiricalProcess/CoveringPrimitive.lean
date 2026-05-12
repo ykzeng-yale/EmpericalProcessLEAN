@@ -1,5 +1,6 @@
 import Mathlib.Data.Fintype.Pi
 import Mathlib.Algebra.Order.Round
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import Mathlib.Topology.MetricSpace.CoveringNumbers
 import StatInference.EmpiricalProcess.Average
 
@@ -141,6 +142,129 @@ theorem vdVWCoveringNumber_mono_set
     (hsubset : target ⊆ larger) :
     vdVWCoveringNumber epsilon target ≤ vdVWCoveringNumber epsilon larger := by
   exact Metric.externalCoveringNumber_mono_set hsubset
+
+/-!
+## Log-entropy wrappers
+
+These definitions are lightweight adapters from the `ℕ∞`-valued covering
+numbers used in this file to the real logarithmic cardinalities used in the
+VdV&W entropy hypotheses.  They intentionally keep the current mathlib
+covering-number API instead of introducing a parallel custom covering-number
+definition.
+-/
+
+/-- Real logarithmic entropy associated to a finite natural cardinality. -/
+noncomputable def vdVWLogEntropyOfNat (cardinality : ℕ) : ℝ :=
+  Real.log ((cardinality : ℝ) + 1)
+
+/--
+VdV&W-style real log-entropy `log (N(epsilon, target) + 1)`.
+
+If the `ℕ∞` covering number is infinite, `ENat.toNat` returns `0`; theorem
+callers that use monotonicity should therefore supply the displayed finite
+covering-number hypothesis, as the lemmas below do.
+-/
+noncomputable def vdVWCoveringLogEntropy
+    {Space : Type u} [PseudoEMetricSpace Space]
+    (epsilon : ℝ≥0) (target : Set Space) : ℝ :=
+  vdVWLogEntropyOfNat (vdVWCoveringNumber epsilon target).toNat
+
+/-- The natural-cardinality log-entropy wrapper is nonnegative. -/
+theorem vdVWLogEntropyOfNat_nonneg (cardinality : ℕ) :
+    0 ≤ vdVWLogEntropyOfNat cardinality := by
+  unfold vdVWLogEntropyOfNat
+  have hle_nat : 1 ≤ cardinality + 1 :=
+    Nat.succ_le_succ (Nat.zero_le cardinality)
+  have hle_real : (1 : ℝ) ≤ (cardinality : ℝ) + 1 := by
+    exact_mod_cast hle_nat
+  exact Real.log_nonneg hle_real
+
+/-- The VdV&W covering log-entropy wrapper is nonnegative. -/
+theorem vdVWCoveringLogEntropy_nonneg
+    {Space : Type u} [PseudoEMetricSpace Space]
+    (epsilon : ℝ≥0) (target : Set Space) :
+    0 ≤ vdVWCoveringLogEntropy epsilon target :=
+  vdVWLogEntropyOfNat_nonneg _
+
+/-- If the covering number is a finite cardinality, the entropy wrapper is the displayed log. -/
+theorem vdVWCoveringLogEntropy_eq_of_vdVWCoveringNumber_eq_coe
+    {Space : Type u} [PseudoEMetricSpace Space]
+    {epsilon : ℝ≥0} {target : Set Space} {cardinality : ℕ}
+    (hcover :
+      vdVWCoveringNumber epsilon target = (cardinality : ℕ∞)) :
+    vdVWCoveringLogEntropy epsilon target =
+      Real.log ((cardinality : ℝ) + 1) := by
+  simp [vdVWCoveringLogEntropy, vdVWLogEntropyOfNat, hcover]
+
+/--
+Larger radii cannot increase finite VdV&W log-entropy.
+
+The small-radius finiteness assumption is necessary because the real wrapper
+maps `⊤` to `0` through `ENat.toNat`.
+-/
+theorem vdVWCoveringLogEntropy_anti
+    {Space : Type u} [PseudoEMetricSpace Space]
+    {target : Set Space} {epsilon delta : ℝ≥0}
+    (h : epsilon ≤ delta)
+    (hfinite : vdVWCoveringNumber epsilon target < ⊤) :
+    vdVWCoveringLogEntropy delta target ≤
+      vdVWCoveringLogEntropy epsilon target := by
+  unfold vdVWCoveringLogEntropy vdVWLogEntropyOfNat
+  have hcover :
+      vdVWCoveringNumber delta target ≤
+        vdVWCoveringNumber epsilon target :=
+    vdVWCoveringNumber_anti h
+  have hnat :
+      (vdVWCoveringNumber delta target).toNat ≤
+        (vdVWCoveringNumber epsilon target).toNat :=
+    ENat.toNat_le_toNat hcover (ne_top_of_lt hfinite)
+  have hsucc :
+      (vdVWCoveringNumber delta target).toNat + 1 ≤
+        (vdVWCoveringNumber epsilon target).toNat + 1 :=
+    Nat.succ_le_succ hnat
+  have hle_real :
+      (((vdVWCoveringNumber delta target).toNat : ℝ) + 1) ≤
+        (((vdVWCoveringNumber epsilon target).toNat : ℝ) + 1) := by
+    exact_mod_cast hsucc
+  have hpos :
+      0 < (((vdVWCoveringNumber delta target).toNat : ℝ) + 1) := by
+    exact_mod_cast Nat.succ_pos (vdVWCoveringNumber delta target).toNat
+  exact Real.log_le_log hpos hle_real
+
+/--
+Passing to a subset cannot increase finite VdV&W log-entropy.
+
+The larger-set finiteness assumption is necessary because the real wrapper maps
+`⊤` to `0` through `ENat.toNat`.
+-/
+theorem vdVWCoveringLogEntropy_mono_set
+    {Space : Type u} [PseudoEMetricSpace Space]
+    {target larger : Set Space} {epsilon : ℝ≥0}
+    (hsubset : target ⊆ larger)
+    (hfinite : vdVWCoveringNumber epsilon larger < ⊤) :
+    vdVWCoveringLogEntropy epsilon target ≤
+      vdVWCoveringLogEntropy epsilon larger := by
+  unfold vdVWCoveringLogEntropy vdVWLogEntropyOfNat
+  have hcover :
+      vdVWCoveringNumber epsilon target ≤
+        vdVWCoveringNumber epsilon larger :=
+    vdVWCoveringNumber_mono_set hsubset
+  have hnat :
+      (vdVWCoveringNumber epsilon target).toNat ≤
+        (vdVWCoveringNumber epsilon larger).toNat :=
+    ENat.toNat_le_toNat hcover (ne_top_of_lt hfinite)
+  have hsucc :
+      (vdVWCoveringNumber epsilon target).toNat + 1 ≤
+        (vdVWCoveringNumber epsilon larger).toNat + 1 :=
+    Nat.succ_le_succ hnat
+  have hle_real :
+      (((vdVWCoveringNumber epsilon target).toNat : ℝ) + 1) ≤
+        (((vdVWCoveringNumber epsilon larger).toNat : ℝ) + 1) := by
+    exact_mod_cast hsucc
+  have hpos :
+      0 < (((vdVWCoveringNumber epsilon target).toNat : ℝ) + 1) := by
+    exact_mod_cast Nat.succ_pos (vdVWCoveringNumber epsilon target).toNat
+  exact Real.log_le_log hpos hle_real
 
 /-!
 ## Deterministic empirical `L1(P_n)` covering numbers
@@ -808,6 +932,45 @@ theorem empiricalL1CoveringNumber_eq_find
       (finiteEmpiricalL1CoveringNumberCard hfinite : ℕ∞) := by
   classical
   simp [empiricalL1CoveringNumber, hfinite]
+
+/--
+Real logarithmic entropy associated to the empirical `L1(P_n)` covering
+number: `log (N(epsilon, F, L1(P_n)) + 1)`.
+
+This mirrors the external SLT metric-entropy layer while staying on the local
+VdV&W empirical-covering API.
+-/
+noncomputable def empiricalL1CoveringLogEntropy
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (epsilon : ℝ) : ℝ :=
+  vdVWLogEntropyOfNat
+    (empiricalL1CoveringNumber sample indexClass classFun epsilon).toNat
+
+/-- The empirical covering log-entropy wrapper is nonnegative. -/
+theorem empiricalL1CoveringLogEntropy_nonneg
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    (sample : SampleAt Observation n)
+    (indexClass : Set Index) (classFun : Index -> Observation -> ℝ)
+    (epsilon : ℝ) :
+    0 ≤ empiricalL1CoveringLogEntropy sample indexClass classFun epsilon :=
+  vdVWLogEntropyOfNat_nonneg _
+
+/--
+For a finite empirical cover, empirical log-entropy is the log of the least
+proof-carrying cover cardinality plus one.
+-/
+theorem empiricalL1CoveringLogEntropy_eq_log_find
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon) :
+    empiricalL1CoveringLogEntropy sample indexClass classFun epsilon =
+      Real.log ((finiteEmpiricalL1CoveringNumberCard hfinite : ℝ) + 1) := by
+  simp [empiricalL1CoveringLogEntropy, vdVWLogEntropyOfNat,
+    empiricalL1CoveringNumber_eq_find hfinite]
 
 /--
 The least finite empirical-cover cardinality is bounded by any supplied finite
@@ -4080,6 +4243,34 @@ noncomputable def vdVWSemimetricCoveringNumber
 noncomputable def vdVWSemimetricPackingNumber
     (Space : Type u) [PseudoEMetricSpace Space] (epsilon : ℝ≥0) : ℕ∞ :=
   Metric.packingNumber epsilon (Set.univ : Set Space)
+
+/-- VdV&W semimetric log-entropy `log (N(epsilon, d) + 1)`. -/
+noncomputable def vdVWSemimetricLogEntropy
+    (Space : Type u) [PseudoEMetricSpace Space] (epsilon : ℝ≥0) : ℝ :=
+  vdVWCoveringLogEntropy epsilon (Set.univ : Set Space)
+
+/-- The semimetric log-entropy wrapper is nonnegative. -/
+theorem vdVWSemimetricLogEntropy_nonneg
+    (Space : Type u) [PseudoEMetricSpace Space] (epsilon : ℝ≥0) :
+    0 ≤ vdVWSemimetricLogEntropy Space epsilon :=
+  vdVWCoveringLogEntropy_nonneg epsilon (Set.univ : Set Space)
+
+/--
+Larger radii cannot increase finite semimetric log-entropy.
+
+The small-radius finiteness assumption mirrors
+`vdVWCoveringLogEntropy_anti`.
+-/
+theorem vdVWSemimetricLogEntropy_anti
+    (Space : Type u) [PseudoEMetricSpace Space]
+    {epsilon delta : ℝ≥0}
+    (h : epsilon ≤ delta)
+    (hfinite : vdVWSemimetricCoveringNumber Space epsilon < ⊤) :
+    vdVWSemimetricLogEntropy Space delta ≤
+      vdVWSemimetricLogEntropy Space epsilon := by
+  simpa [vdVWSemimetricLogEntropy, vdVWSemimetricCoveringNumber] using
+    vdVWCoveringLogEntropy_anti
+      (target := (Set.univ : Set Space)) h hfinite
 
 /-- A finite cover of the whole semimetric space at a fixed radius. -/
 abbrev HasFiniteSemimetricCover

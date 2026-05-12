@@ -10458,3 +10458,15 @@ VdVW branch already uses current mathlib `Metric.coveringNumber`/
 `Metric.packingNumber` plus local `EmpiricalL1Index` adapters.  Future Dudley
 or finite-dimensional covering-number source work should port theorem-facing
 patterns from the audit into the local APIs.
+
+2026-05-12 external SLT metric-entropy adapter:
+`CoveringPrimitive.lean` now ports the external `SLT/MetricEntropy.lean`
+naming pattern into the local VdV&W/mathlib API through
+`vdVWLogEntropyOfNat`, `vdVWCoveringLogEntropy`,
+`empiricalL1CoveringLogEntropy`, and `vdVWSemimetricLogEntropy`.  The compiled
+lemmas expose nonnegativity, finite-cardinality display
+`empiricalL1CoveringLogEntropy_eq_log_find`, finite-radius antitonicity, and
+finite subset monotonicity without importing the external custom
+`coveringNumber` definition.  This closes the lightweight logarithmic-entropy
+surface; the remaining SLT-style ports are genuine downstream dyadic/chaining,
+Dudley, and finite-dimensional covering-number theorems.
