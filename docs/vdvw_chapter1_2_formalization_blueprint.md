@@ -2390,8 +2390,14 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat`.
    This route keeps the positive-size Chebyshev beta in its natural `1 / n`
    form and handles the `C / (n + 1)` convergence comparison internally, so the
-   next wrapper target is the quarter-radius selected-center/inverse-square
-   specialization of this invNat route.
+   quarter-radius selected-center/inverse-square specialization is now compiled
+   as
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt`,
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt_of_invSq_lintegral`,
+   and
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt_of_eventually_ae_cardinality_ge`.
+   The exposed probability input is now the fixed-original
+   pair-sub-to-sign-swap transport.
    The averaged product-pair alternative is now compiled through
    `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
    `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,

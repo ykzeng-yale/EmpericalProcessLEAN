@@ -63482,6 +63482,528 @@ theorem
         lower hlower hselected_ge)
 
 /--
+Canonical first-level half-scale Chebyshev/sign-swap invNat route with
+selected-center measurability discharged.
+
+This is the selected-cover version of
+`..._chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat`: the
+canonical cover is chosen at radius `(eta / 2) / 2`, while the source beta
+stays in the positive-size Chebyshev form with denominator `(n : ℝ)`.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality radius n))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hsignSwapLower :
+      ∀ eta : ℝ, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∀ sample : SampleAt Observation n,
+            (vdVWProductMeasure P n)
+                (VdVWTheorem243CenteredPairSubBadEvent
+                  P indexClass classFun envelope M (epsilon / 2) sample) ≤
+              ((vdVWProductMeasure P n).prod
+                  (vdVWProductMeasure vdVWRademacherLaw n))
+                (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+                  P indexClass classFun envelope M (epsilon / 2) sample))
+    (hfailureTail_tendsto :
+      ∀ eta, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        Tendsto
+          (fun n : ℕ =>
+            ∫⁻ sample in
+              {sample : SampleAt Observation n |
+                epsilon <
+                  dist
+                    (vdVWWeightedClassSupremum indexClass
+                      (fun index : Index => fun observation : Observation =>
+                        vdVWTruncatedClassFun classFun envelope M index observation -
+                          ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+                      (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+                    (0 : ℝ)},
+              ENNReal.ofReal
+                (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                  ((vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M)
+                    (cardinality := cardinality)
+                    X hcovering_all ((eta / 2) / 2)) n sample n) n M) +
+                ∫⁻ ghostSample : SampleAt Observation n,
+                  ENNReal.ofReal
+                    (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+                      ((vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                        (indexClass := indexClass) (classFun := classFun)
+                        (envelope := envelope) (M := M)
+                        (cardinality := cardinality)
+                        X hcovering_all ((eta / 2) / 2)) n ghostSample n) n M)
+                  ∂(vdVWProductMeasure P n)
+              ∂(vdVWProductMeasure P n))
+          atTop (𝓝 0)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  classical
+  let selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun eta =>
+      vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (cardinality := cardinality)
+        X hcovering_all ((eta / 2) / 2)
+  let comparisonCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun eta => cardinality ((eta / 2) / 2)
+  let canonicalCover :
+      ∀ eta, 0 < eta -> ∀ n (sample : SampleAt Observation n),
+        FiniteEmpiricalL1CoverAtCard sample indexClass
+          (vdVWTruncatedClassFun classFun envelope M) ((eta / 2) / 2)
+          (selectedCardinality eta n sample n) :=
+    fun eta heta n sample =>
+      vdVWSelectedTruncatedPositiveRadiusFirstLevelEmpiricalL1CoverAtCardOfCountable
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (cardinality := cardinality)
+        X hX_samplePath hcovering_all hcount hindexClass_nonempty
+        (by linarith : 0 < (eta / 2) / 2) n sample
+  letI : Inhabited Index := ⟨hindexClass_nonempty.choose⟩
+  have hselected_le :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop, ∀ sample : SampleAt Observation n,
+          selectedCardinality eta n sample n ≤
+            comparisonCardinality eta n sample n := by
+    intro eta heta
+    let q : ℝ := (eta / 2) / 2
+    have hq : 0 < q := by
+      dsimp [q]
+      linarith
+    refine Eventually.of_forall ?_
+    intro n sample
+    let hfinite :
+        ∀ n (sample : SampleAt Observation n) m,
+          HasFiniteEmpiricalL1Cover (samplePath (X n) sample m) indexClass
+            (vdVWTruncatedClassFun classFun envelope M) q :=
+      hasFiniteEmpiricalL1Cover_coverRadius_of_forAllRadius_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (coverRadius := fun _ : ℕ => q)
+        (cardinality := cardinality) X hcovering_all
+        (by intro _; exact hq)
+    have hle :
+        finiteEmpiricalL1CoveringNumberCard (hfinite n sample n) ≤
+          cardinality q n sample n :=
+      finiteEmpiricalL1CoveringNumberCard_terminal_le_of_covering_le_samplePath
+        (indexClass := indexClass)
+        (classFun := vdVWTruncatedClassFun classFun envelope M)
+        (coverRadius := fun _ : ℕ => q)
+        (cardinality := fun n => cardinality q n)
+        X (hcovering_all q hq) hfinite n sample
+    have hselected_eq :
+        selectedCardinality eta n sample n =
+          finiteEmpiricalL1CoveringNumberCard (hfinite n sample n) := by
+      dsimp [selectedCardinality,
+        vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard]
+      simp [show 0 < (eta / 2) / 2 by simpa [q] using hq,
+        vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard, q]
+    rw [hselected_eq]
+    simpa [comparisonCardinality, q] using hle
+  have hlog_quarter :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality
+                (comparisonCardinality eta n) sample n / (n : ℝ))
+          atTop (0 : ℝ) := by
+    intro eta heta
+    have heta_quarter : 0 < (eta / 2) / 2 := by linarith
+    simpa [comparisonCardinality] using hlog ((eta / 2) / 2) heta_quarter
+  have hcard :
+      ∀ eta (_heta : 0 < eta) n,
+        Measurable
+          fun sample : SampleAt Observation n =>
+            selectedCardinality eta n sample n := by
+    intro eta heta n
+    have heta_quarter : 0 < (eta / 2) / 2 := by linarith
+    simpa [selectedCardinality] using
+      (measurable_vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_at_sampleSize_of_set_countable
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (cardinality := cardinality)
+        hcount X hX_samplePath hcovering_all hclass henvelope_meas
+        (eta := (eta / 2) / 2) heta_quarter n)
+  have hcoord :
+      ∀ eta (heta : 0 < eta) n, ∀ k : ℕ, ∀ i : Fin n,
+        Measurable fun sample : SampleAt Observation n =>
+          vdVWTruncatedClassFun classFun envelope M
+            (VdVWFiniteEmpiricalL1CoverSelectedCenterAt
+              (Observation := Observation) (Index := Index) (n := n)
+              indexClass classFun envelope M (eta / 2)
+              (fun sample : SampleAt Observation n =>
+                selectedCardinality eta n sample n)
+              (canonicalCover eta heta n) sample k)
+            (sample i) := by
+    intro eta heta n k i
+    have hcoverExists :
+        ∀ sample : SampleAt Observation n,
+          Nonempty
+            (FiniteEmpiricalL1CoverAtCard sample indexClass
+              (vdVWTruncatedClassFun classFun envelope M) ((eta / 2) / 2)
+              (selectedCardinality eta n sample n)) := by
+      intro sample
+      exact ⟨canonicalCover eta heta n sample⟩
+    have hcoord' :=
+      measurable_vdVWTruncatedClassFun_firstLevelSelectedCenterAtInClass_of_countable_cover
+        (Observation := Observation) (Index := Index) (n := n)
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta / 2)
+        hcount hindexClass_nonempty
+        (cardinality := fun sample : SampleAt Observation n =>
+          selectedCardinality eta n sample n)
+        (hcard eta heta n) hcoverExists hclass henvelope_meas k i
+    simpa [canonicalCover, selectedCardinality,
+      VdVWFiniteEmpiricalL1CoverSelectedCenterAtInClass,
+      VdVWFiniteEmpiricalL1CoverSelectedCenterAt] using hcoord'
+  refine
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M)
+      (selectedCardinality := selectedCardinality)
+      (cardinality := comparisonCardinality)
+      hindexClass_nonempty henvelope hM_pos htruncIntegrable
+      hlog_quarter hselected_le canonicalCover ?_ hsignSwapLower ?_ ?_ ?_ ?_
+  · intro eta heta epsilon hepsilon
+    refine Eventually.of_forall ?_
+    intro n
+    exact
+      measurableSet_VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_of_sample_coordinate_countable
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (eta := eta / 2)
+        (epsilon := epsilon / 2)
+        (cardinality := fun sample : SampleAt Observation n =>
+          selectedCardinality eta n sample n)
+        hcount hclass henvelope_meas (canonicalCover eta heta n)
+        (hcard eta heta n) (hcoord eta heta n)
+  · intro eta heta
+    refine Eventually.of_forall ?_
+    intro n sample
+    have hpos :
+        MeasurableSet
+          {z : SampleAt Observation n × SampleAt ℝ n |
+            VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+              (vdVWTruncatedClassFun classFun envelope M)
+              (canonicalCover eta heta n sample).center z.2 M} := by
+      refine
+        measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate
+          (sample := fun _z : SampleAt Observation n × SampleAt ℝ n => sample)
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta / 2)
+          (cardinality := fun sample : SampleAt Observation n =>
+            selectedCardinality eta n sample n)
+          (canonicalCover eta heta n)
+          (sign := fun z : SampleAt Observation n × SampleAt ℝ n => z.2)
+          ?_ ?_ ?_
+      · exact measurable_const
+      · intro i
+        exact (measurable_pi_apply i).comp measurable_snd
+      · intro k i
+        exact measurable_const
+    change MeasurableSet
+      ({z : SampleAt Observation n × SampleAt ℝ n |
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound sample
+          (vdVWTruncatedClassFun classFun envelope M)
+          (canonicalCover eta heta n sample).center z.2 M}ᶜ)
+    simpa using hpos.compl
+  · intro eta heta
+    refine Eventually.of_forall ?_
+    intro n
+    have hpos :
+        MeasurableSet
+          {z : SampleAt Observation n × SampleAt ℝ n |
+            VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+              (vdVWTruncatedClassFun classFun envelope M)
+              (canonicalCover eta heta n z.1).center
+              (fun i : Fin n => -z.2 i) M} := by
+      refine
+        measurableSet_VdVWTheorem243RademacherFiniteCenterHoeffdingBound_selectedCenterAt_of_coordinate
+          (sample := fun z : SampleAt Observation n × SampleAt ℝ n => z.1)
+          (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) (M := M) (eta := eta / 2)
+          (cardinality := fun sample : SampleAt Observation n =>
+            selectedCardinality eta n sample n)
+          (canonicalCover eta heta n)
+          (sign := fun z : SampleAt Observation n × SampleAt ℝ n =>
+            fun i : Fin n => -z.2 i) ?_ ?_ ?_
+      · simpa using (hcard eta heta n).comp measurable_fst
+      · intro i
+        exact ((measurable_pi_apply i).comp measurable_snd).neg
+      · intro k i
+        simpa using (hcoord eta heta n k i).comp measurable_fst
+    change MeasurableSet
+      ({z : SampleAt Observation n × SampleAt ℝ n |
+        VdVWTheorem243RademacherFiniteCenterHoeffdingBound z.1
+          (vdVWTruncatedClassFun classFun envelope M)
+          (canonicalCover eta heta n z.1).center
+          (fun i : Fin n => -z.2 i) M}ᶜ)
+    simpa using hpos.compl
+  · intro eta heta epsilon hepsilon
+    refine Eventually.of_forall ?_
+    intro n
+    have htail_nat :
+        Measurable fun k : ℕ =>
+          vdVWTheorem243FiniteCenterHoeffdingFailureTail k n M :=
+      measurable_of_countable _
+    have htail_meas :
+        Measurable fun sample : SampleAt Observation n =>
+          ENNReal.ofReal
+            (vdVWTheorem243FiniteCenterHoeffdingFailureTail
+              (selectedCardinality eta n sample n) n M) :=
+      ENNReal.measurable_ofReal.comp
+        (htail_nat.comp (hcard eta heta n))
+    exact (htail_meas.add measurable_const).aemeasurable
+  · intro eta heta epsilon hepsilon
+    simpa [selectedCardinality] using
+      hfailureTail_tendsto eta heta epsilon hepsilon
+
+/--
+Canonical first-level half-scale Chebyshev/sign-swap invNat route with the
+integrated failure-tail input discharged by the quarter-radius inverse-square
+selected-cardinality condition.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt_of_invSq_lintegral
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality radius n))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hsignSwapLower :
+      ∀ eta : ℝ, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∀ sample : SampleAt Observation n,
+            (vdVWProductMeasure P n)
+                (VdVWTheorem243CenteredPairSubBadEvent
+                  P indexClass classFun envelope M (epsilon / 2) sample) ≤
+              ((vdVWProductMeasure P n).prod
+                  (vdVWProductMeasure vdVWRademacherLaw n))
+                (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+                  P indexClass classFun envelope M (epsilon / 2) sample))
+    (hinvSq :
+      ∀ eta, 0 < eta ->
+        Tendsto
+          (fun n : ℕ =>
+            ∫⁻ sample : SampleAt Observation n,
+              ENNReal.ofReal
+                ((2 * Real.exp (-3)) /
+                  ((((vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                    (indexClass := indexClass) (classFun := classFun)
+                    (envelope := envelope) (M := M)
+                    (cardinality := cardinality)
+                    X hcovering_all ((eta / 2) / 2)) n sample n : ℝ) + 1) ^ 2))
+              ∂(vdVWProductMeasure P n))
+          atTop (𝓝 0)) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  refine
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (cardinality := cardinality)
+      X hX_samplePath hcovering_all henvelope hM_pos htruncIntegrable
+      hcount hclass henvelope_meas hindexClass_nonempty hlog
+      hsignSwapLower ?_
+  intro eta heta epsilon hepsilon
+  let selectedCardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ :=
+    fun eta' n sample k =>
+      (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+        (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (M := M) (cardinality := cardinality)
+        X hcovering_all ((eta' / 2) / 2)) n sample k
+  let left : (n : ℕ) -> Set (SampleAt Observation n) :=
+    fun n =>
+      {sample : SampleAt Observation n |
+        epsilon <
+          dist
+            (vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                vdVWTruncatedClassFun classFun envelope M index observation -
+                  ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+            (0 : ℝ)}
+  simpa [selectedCardinality, left] using
+    (vdVWTheorem243_selectedFailureTail_restricted_add_full_tendsto_zero_of_invSq_lintegral
+      (P := P) (selectedCardinality := selectedCardinality)
+      (M := M) (ne_of_gt hM_pos)
+      (by
+        intro eta' heta'
+        simpa [selectedCardinality] using hinvSq eta' heta')
+      eta heta left)
+
+/--
+Canonical first-level half-scale Chebyshev/sign-swap invNat route from an a.e.
+selected-cardinality lower-growth hypothesis.
+-/
+theorem
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt_of_eventually_ae_cardinality_ge
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M : ℝ}
+    {cardinality :
+      ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ n (sample : SampleAt Observation n),
+        samplePath (X n) sample n = sample)
+    (hcovering_all :
+      ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality radius n))
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM_pos : 0 < M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henvelope_meas : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (hlog :
+      ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (hsignSwapLower :
+      ∀ eta : ℝ, 0 < eta -> ∀ epsilon, 0 < epsilon ->
+        ∀ᶠ n : ℕ in atTop,
+          ∀ sample : SampleAt Observation n,
+            (vdVWProductMeasure P n)
+                (VdVWTheorem243CenteredPairSubBadEvent
+                  P indexClass classFun envelope M (epsilon / 2) sample) ≤
+              ((vdVWProductMeasure P n).prod
+                  (vdVWProductMeasure vdVWRademacherLaw n))
+                (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+                  P indexClass classFun envelope M (epsilon / 2) sample))
+    (lower : ℝ -> ℕ -> ℕ)
+    (hlower : ∀ eta, 0 < eta -> Tendsto (lower eta) atTop atTop)
+    (hselected_ge :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop,
+          ∀ᵐ sample ∂(vdVWProductMeasure P n),
+            lower eta n ≤
+              (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M) (cardinality := cardinality)
+                X hcovering_all ((eta / 2) / 2)) n sample n) :
+    VdVWConvergesInOuterProbabilityConst
+      (fun n : ℕ => SampleAt Observation n)
+      (fun _ : ℕ => inferInstance)
+      (fun n : ℕ => vdVWProductMeasure P n)
+      (fun n sample =>
+        vdVWWeightedClassSupremum indexClass
+          (fun index : Index => fun observation : Observation =>
+            vdVWTruncatedClassFun classFun envelope M index observation -
+              ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+          (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+      atTop (0 : ℝ) := by
+  exact
+    VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt_of_invSq_lintegral
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (cardinality := cardinality)
+      X hX_samplePath hcovering_all henvelope hM_pos htruncIntegrable
+      hcount hclass henvelope_meas hindexClass_nonempty hlog
+      hsignSwapLower
+      (vdVWTheorem243_selectedInvSq_lintegral_tendsto_zero_of_eventually_ae_cardinality_ge_single
+        (P := P)
+        (selectedCardinality := fun eta n sample k =>
+          (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+            (indexClass := indexClass) (classFun := classFun)
+            (envelope := envelope) (M := M) (cardinality := cardinality)
+            X hcovering_all ((eta / 2) / 2)) n sample k)
+        lower hlower hselected_ge)
+
+/--
 Canonical first-level pair-sub/sign-swap failure-tail route with
 finite-center failure-event measurability discharged from selected-center
 coordinates.

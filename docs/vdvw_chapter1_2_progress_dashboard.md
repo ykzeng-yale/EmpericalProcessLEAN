@@ -282,9 +282,14 @@ The half-scale source side now also has an invNat additive finite-tail route:
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat`.
 This lets the positive-size half-scale Chebyshev/sign-swap source use its
 natural `1 / n` beta and defers the `C / (n + 1)` comparison to the convergence
-proof.  The next active source input is either selected-center/inverse-square
-plumbing for this invNat route or the fixed-original sign-swap transport
-itself.  The averaged product-pair route is now also
+proof.  The selected-center/inverse-square plumbing for this route is now
+compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt_of_invSq_lintegral`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt_of_eventually_ae_cardinality_ge`.
+The remaining active source-side probability input is the fixed-original
+pair-sub-to-sign-swap transport itself.  The averaged product-pair route is now also
 compiled through
 `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
 `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,

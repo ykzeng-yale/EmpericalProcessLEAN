@@ -9913,6 +9913,16 @@ These keep the beta in the exact positive-size Chebyshev form
 `1 - 16*M^2 / ((n : ℝ) * (epsilon/2)^2)` and only convert `1 / n` to a
 `C / (n + 1)` convergence bound after excluding `n = 0`.  The half-scale
 Chebyshev source can therefore feed the additive finite-tail route without
-requiring the stronger `(n + 1)` beta.  The next useful closure is the
-quarter-radius selected-center/inverse-square wrapper for this invNat route,
-or the fixed-original sign-swap transport itself.
+requiring the stronger `(n + 1)` beta.
+
+2026-05-12 quarter-radius selected-center invNat Chebyshev/sign-swap route:
+`Theorem243.lean` now proves
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt_of_invSq_lintegral`,
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt_of_eventually_ae_cardinality_ge`.
+These discharge the selected-center event/error measurability and the
+quarter-radius inverse-square finite-tail control for the exact `1 / n`
+Chebyshev beta route.  The active exposed probability input is now the
+fixed-original pair-sub-to-sign-swap transport, together with the existing
+truncated integrability and entropy/growth hypotheses.
