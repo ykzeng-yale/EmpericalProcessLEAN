@@ -3367,6 +3367,13 @@ They choose the countable first-level selected cover internally, prove the
 selected-cardinality and selected-center measurability inputs, and leave only
 the deterministic selected-cover lower-growth hypothesis exposed.
 
+The restricted-a.e. Rademacher bad-event source has the same first-level
+inverse-square surface, including pointwise and a.e. selected-cover
+lower-growth variants.  A base-a.e. implication wrapper now composes the
+countable centered-bad restriction adapter with that endpoint, so probability
+sources can be stated either on `P^n.restrict centeredBad` or as `P^n`-a.e.
+conditional implications.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

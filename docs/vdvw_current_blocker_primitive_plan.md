@@ -9614,3 +9614,13 @@ and
 These instantiate the selected cardinality and measurable selected centers from
 the countable first-level half-radius cover, so the pointwise Rademacher
 bad-event route only needs a deterministic selected-cover lower-growth input.
+
+2026-05-11 first-level restricted-a.e. inverse-square lower-growth source:
+`Theorem243.lean` now proves the matching
+`...of_ae_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`,
+`...of_ae_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_cardinality_ge`,
+and
+`...of_ae_imp_rademacherBad_finiteCenter_invSq_tail_countable_of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`
+wrappers.  The restricted-a.e. and base-a.e. Rademacher bad-event routes now
+use the canonical first-level half-radius selected cover with only
+selected-cover lower-growth left exposed.

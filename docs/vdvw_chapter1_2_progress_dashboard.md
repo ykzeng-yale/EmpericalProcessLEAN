@@ -4271,3 +4271,8 @@ The pointwise route now has those first-level wrappers: the selected
 cardinality and selected-center measurability are instantiated from the
 countable first-level half-radius cover, with only the deterministic
 selected-cover lower-growth hypothesis left as an external source.
+
+The restricted-a.e. and base-a.e. sign-only inverse-square routes now have the
+same canonical first-level selected-cover source wrappers, so the remaining
+probability work can target either restricted-a.e. bad fibers or base-a.e.
+conditional bad-fiber implications.
