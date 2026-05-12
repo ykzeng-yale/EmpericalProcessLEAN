@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V214
+## Live In-Thread Goal Prompt V215
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -148,10 +148,14 @@ These exchange finite sums with Bochner integrals, integrate the V211 pathwise
 clock comparison, and prove the expectation-level variance-ratio summability
 consumed by the V209 normalized-process endpoint.
 
-Next aggressive step: connect the V214 integrated summability package directly
-to
+V215 connects the V214 integrated summability package directly to
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_variance_ratio_summable`,
-then discharge the remaining source clock-integral bound from
+through the new source-facing endpoint
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_integral_clock_bound`.
+This also derives the pointwise endpoint condition `1 <= f(A_n)` from the
+per-interval source lower bound and clock monotonicity.
+
+Next aggressive step: discharge the remaining source clock-integral bound from
 `∫_0^∞ f(t)^{-2} dt < ∞` plus the monotone/divergent clock hypotheses.  Keep
 the remaining reciprocal-transform `MemLp`, ratio integrability, and clock
 integrability side conditions explicit until they can be discharged from
@@ -161,8 +165,8 @@ Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
 scaled-summability-to-transform plumbing, conditional variance pull-out, scalar
 interval comparison, finite clock comparison, deterministic summability
 packaging, random pathwise summability packaging, integrated finite-sum/Fubini
-summability plumbing, Chapter 2.1, or Theorem 2.4.9 unless Theorem 4.5.3
-exposes a strictly stronger missing primitive.
+summability plumbing, V214-to-V209 endpoint wiring, Chapter 2.1, or Theorem
+2.4.9 unless Theorem 4.5.3 exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
 variance-sum support, Borel-Cantelli, Theorem 2.4.1 strong-law wrappers, and
