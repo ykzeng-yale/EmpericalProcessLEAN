@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V230`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V231`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -216,6 +216,11 @@ wrappers:
 `durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock_auto_tail`,
 and
 `durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_adapted_conditionalProbabilitySum_clock_auto_tail`.
+V231 proves the source clock monotonicity in the form Mathlib can honestly
+provide:
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae_on`, and
+`durrett2019_theorem_4_5_5_max_one_conditionalProbabilitySum_increment_nonneg_ae`.
 The next theorem-facing target is no longer finite sum/integral exchange,
 V214-to-V209 wiring, the tail-integral-to-clock-bound package,
 variance-ratio integrability packaging, lower-bound/no-zero/divergence
@@ -225,10 +230,10 @@ denominator bridges, increment/denominator-clock plumbing, or Bernoulli
 conditional-variance algebra, max-normalizer denominator handoff, or
 finite/infinite event-cover ratio assembly, or the max-normalizer 4.5.3 source
 handoff: finish only the remaining Theorem 4.5.5 source surface.  Prioritize
-the pointwise monotone clock condition by either building an a.e.-monotone
-4.5.3 variant or introducing a canonical nonnegative representative; package
-finite-clock martingale convergence from the existing Theorem 4.5.2 route only
-if it directly feeds the V230 ratio wrapper.  Do not
+consuming the a.e. monotonicity certificate in a 4.5.3/V230 route or
+introducing a canonical nonnegative representative; package finite-clock
+martingale convergence from the existing Theorem 4.5.2 route only if it
+directly feeds the V230 ratio wrapper.  Do not
 route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2

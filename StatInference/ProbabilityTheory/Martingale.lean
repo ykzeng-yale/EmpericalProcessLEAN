@@ -21346,6 +21346,87 @@ theorem durrett2019_theorem_4_5_5_conditionalProbabilitySum_zero_nonneg
   simp [durrett2019_theorem_4_5_5_conditionalProbabilitySum]
 
 /--
+Durrett 2019, Theorem 4.5.5 source support: the cumulative conditional
+probability clock is monotone almost everywhere.
+
+This is the honest Mathlib form of the monotonicity fact: conditional
+expectation preserves nonnegativity only up to a.e. equality for its chosen
+representative.
+-/
+theorem durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω) :
+    ∀ᵐ ω ∂P, ∀ k : ℕ,
+      durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B k ω ≤
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω := by
+  rw [ae_all_iff]
+  intro k
+  let I : Ω -> ℝ := (B (k + 1)).indicator (1 : Ω -> ℝ)
+  have hI_nonneg : 0 ≤ᵐ[P] I :=
+    ae_of_all P fun ω => by
+      by_cases hω : ω ∈ B (k + 1) <;> simp [I, hω]
+  have hp_nonneg : 0 ≤ᵐ[P] P[I | ℱ k] :=
+    condExp_nonneg (μ := P) (m := ℱ k) hI_nonneg
+  filter_upwards [hp_nonneg] with ω hp_nonnegω
+  have hinc :=
+    congrFun
+      (durrett2019_theorem_4_5_5_conditionalProbabilitySum_increment_eq
+        (P := P) (ℱ := ℱ) B k) ω
+  have hdiff_nonneg :
+      0 ≤
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω -
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B k ω := by
+    rw [hinc]
+    simpa [I] using hp_nonnegω
+  linarith
+
+/--
+Durrett 2019, Theorem 4.5.5 source support: on a chosen event, the cumulative
+conditional probability clock inherits the a.e. monotonicity certificate.
+-/
+theorem durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae_on
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω)
+    (D : Set Ω) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      ∀ k : ℕ,
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B k ω ≤
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω := by
+  filter_upwards
+    [durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae
+      (P := P) (ℱ := ℱ) B] with ω hmono _hD
+  exact hmono
+
+/--
+Durrett 2019, Theorem 4.5.5 source support: the `max(A_n,1)` normalizer has
+nonnegative increments almost everywhere for the cumulative conditional
+probability clock.
+-/
+theorem durrett2019_theorem_4_5_5_max_one_conditionalProbabilitySum_increment_nonneg_ae
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω) :
+    ∀ᵐ ω ∂P, ∀ k : ℕ,
+      0 ≤
+        max
+            (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 2) ω)
+            (1 : ℝ) -
+          max
+            (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω)
+            (1 : ℝ) := by
+  filter_upwards
+    [durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae
+      (P := P) (ℱ := ℱ) B] with ω hmono k
+  have hmax :
+      max
+          (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω)
+          (1 : ℝ) ≤
+        max
+          (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 2) ω)
+          (1 : ℝ) :=
+    max_le_max (hmono (k + 1)) le_rfl
+  linarith
+
+/--
 Durrett 2019, Theorem 4.5.5 source support: the textbook tail integrand
 `(max t 1)^{-2}` is integrable on `[0,∞)`.
 -/

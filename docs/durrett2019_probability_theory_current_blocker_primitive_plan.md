@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V230
+## Live In-Thread Goal Prompt V231
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -335,13 +335,20 @@ The infinite-clock and ratio wrappers now use the exact value
 `∫_0^∞ (max t 1)^{-2} dt = 2`, so the tail certificate is no longer a live
 source obligation.
 
-Next aggressive step: handle the clock monotonicity gap honestly without
-repeating solved route plumbing.  Mathlib conditional-expectation
-representatives are only ordered a.e., so either build an a.e.-monotone
-variant of the 4.5.3 route or introduce a canonical nonnegative representative
-before claiming pointwise monotonicity.  In parallel, package the finite-clock
-martingale convergence input from the existing Theorem 4.5.2 finite-variance
-route only if it directly feeds the V230 ratio wrapper.  Do not
+V231 proves the conditional-probability clock monotonicity in its honest
+Mathlib form.  New compiled declarations:
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae_on`, and
+`durrett2019_theorem_4_5_5_max_one_conditionalProbabilitySum_increment_nonneg_ae`.
+The source monotonicity is now available a.e.; what remains is consuming this
+a.e. certificate in the infinite-clock route or replacing the clock by a
+canonical pointwise-monotone representative.
+
+Next aggressive step: build the a.e.-monotone 4.5.3/V230 consumer or introduce
+the canonical nonnegative representative.  Do not claim pointwise monotonicity
+for raw Mathlib conditional-expectation representatives.  In parallel, package
+the finite-clock martingale convergence input from the existing Theorem 4.5.2
+finite-variance route only if it directly feeds the V230 ratio wrapper.  Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1688,6 +1695,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V230` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V231` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V230` in
+Route from `Live In-Thread Goal Prompt V231` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Section 4.5.5 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the
@@ -185,9 +185,15 @@ wrappers:
 `durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock_auto_tail`,
 and
 `durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_adapted_conditionalProbabilitySum_clock_auto_tail`.
-The next target is now the pointwise-versus-a.e. clock monotonicity issue,
-plus finite-clock martingale convergence packaging only if it directly feeds
-the V230 ratio wrapper.
+V231 proves the source clock monotonicity in the form Mathlib can honestly
+provide:
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae_on`, and
+`durrett2019_theorem_4_5_5_max_one_conditionalProbabilitySum_increment_nonneg_ae`.
+The next target is now to consume this a.e. monotonicity certificate in the
+4.5.3/V230 route or replace the raw clock by a canonical pointwise-monotone
+representative; finite-clock martingale convergence packaging should be added
+only if it directly feeds the V230 ratio wrapper.
 
 Closed Chapter 2 support remains available in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
