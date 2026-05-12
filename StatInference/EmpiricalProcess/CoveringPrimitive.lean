@@ -144,6 +144,83 @@ theorem vdVWCoveringNumber_mono_set
   exact Metric.externalCoveringNumber_mono_set hsubset
 
 /-!
+## Covering numbers under Lipschitz images
+
+These are local VdV&W-named adapters for the standard entropy-transfer pattern
+used throughout empirical-process arguments: a finite cover of a domain pushes
+forward to a finite cover of a Lipschitz image, with the radius scaled by the
+Lipschitz constant.
+-/
+
+/--
+The external VdV&W covering number of a Lipschitz image is bounded by the
+covering number of the original set at the correspondingly smaller radius.
+-/
+theorem vdVWCoveringNumber_image_le_of_lipschitz
+    {Domain : Type u} {Codomain : Type v}
+    [PseudoEMetricSpace Domain] [PseudoEMetricSpace Codomain]
+    {target : Set Domain} {epsilon L : ℝ≥0} {map : Domain -> Codomain}
+    (hmap : LipschitzWith L map) :
+    vdVWCoveringNumber (L * epsilon) (map '' target) ≤
+      vdVWCoveringNumber epsilon target := by
+  unfold vdVWCoveringNumber Metric.externalCoveringNumber
+  refine le_iInf ?_
+  intro centers
+  refine le_iInf ?_
+  intro hcover
+  exact
+    (iInf₂_le (map '' centers)
+      (Metric.IsCover.image_lipschitz hcover hmap)).trans
+      (encard_image_le map centers)
+
+/--
+A nonexpansive image cannot increase the external VdV&W covering number at the
+same radius.
+-/
+theorem vdVWCoveringNumber_image_le_of_nonexpansive
+    {Domain : Type u} {Codomain : Type v}
+    [PseudoEMetricSpace Domain] [PseudoEMetricSpace Codomain]
+    {target : Set Domain} {epsilon : ℝ≥0} {map : Domain -> Codomain}
+    (hmap : LipschitzWith 1 map) :
+    vdVWCoveringNumber epsilon (map '' target) ≤
+      vdVWCoveringNumber epsilon target := by
+  simpa using
+    (vdVWCoveringNumber_image_le_of_lipschitz
+      (target := target) (epsilon := epsilon) (L := 1) hmap)
+
+/--
+Finiteness of a VdV&W covering number transfers across a Lipschitz image after
+scaling the radius.
+-/
+theorem vdVWCoveringNumber_image_lt_top_of_lipschitz
+    {Domain : Type u} {Codomain : Type v}
+    [PseudoEMetricSpace Domain] [PseudoEMetricSpace Codomain]
+    {target : Set Domain} {epsilon L : ℝ≥0} {map : Domain -> Codomain}
+    (hmap : LipschitzWith L map)
+    (hfinite : vdVWCoveringNumber epsilon target < ⊤) :
+    vdVWCoveringNumber (L * epsilon) (map '' target) < ⊤ :=
+  lt_of_le_of_lt
+    (vdVWCoveringNumber_image_le_of_lipschitz
+      (target := target) (epsilon := epsilon) (L := L) hmap)
+    hfinite
+
+/--
+Finiteness of a VdV&W covering number transfers across a nonexpansive image at
+the same radius.
+-/
+theorem vdVWCoveringNumber_image_lt_top_of_nonexpansive
+    {Domain : Type u} {Codomain : Type v}
+    [PseudoEMetricSpace Domain] [PseudoEMetricSpace Codomain]
+    {target : Set Domain} {epsilon : ℝ≥0} {map : Domain -> Codomain}
+    (hmap : LipschitzWith 1 map)
+    (hfinite : vdVWCoveringNumber epsilon target < ⊤) :
+    vdVWCoveringNumber epsilon (map '' target) < ⊤ :=
+  lt_of_le_of_lt
+    (vdVWCoveringNumber_image_le_of_nonexpansive
+      (target := target) (epsilon := epsilon) hmap)
+    hfinite
+
+/-!
 ## Log-entropy wrappers
 
 These definitions are lightweight adapters from the `ℕ∞`-valued covering
@@ -265,6 +342,58 @@ theorem vdVWCoveringLogEntropy_mono_set
       0 < (((vdVWCoveringNumber epsilon target).toNat : ℝ) + 1) := by
     exact_mod_cast Nat.succ_pos (vdVWCoveringNumber epsilon target).toNat
   exact Real.log_le_log hpos hle_real
+
+/--
+Finite VdV&W log-entropy transfers across Lipschitz images after scaling the
+radius by the Lipschitz constant.
+-/
+theorem vdVWCoveringLogEntropy_image_le_of_lipschitz
+    {Domain : Type u} {Codomain : Type v}
+    [PseudoEMetricSpace Domain] [PseudoEMetricSpace Codomain]
+    {target : Set Domain} {epsilon L : ℝ≥0} {map : Domain -> Codomain}
+    (hmap : LipschitzWith L map)
+    (hfinite : vdVWCoveringNumber epsilon target < ⊤) :
+    vdVWCoveringLogEntropy (L * epsilon) (map '' target) ≤
+      vdVWCoveringLogEntropy epsilon target := by
+  unfold vdVWCoveringLogEntropy vdVWLogEntropyOfNat
+  have hcover :
+      vdVWCoveringNumber (L * epsilon) (map '' target) ≤
+        vdVWCoveringNumber epsilon target :=
+    vdVWCoveringNumber_image_le_of_lipschitz
+      (target := target) (epsilon := epsilon) (L := L) hmap
+  have hnat :
+      (vdVWCoveringNumber (L * epsilon) (map '' target)).toNat ≤
+        (vdVWCoveringNumber epsilon target).toNat :=
+    ENat.toNat_le_toNat hcover (ne_top_of_lt hfinite)
+  have hsucc :
+      (vdVWCoveringNumber (L * epsilon) (map '' target)).toNat + 1 ≤
+        (vdVWCoveringNumber epsilon target).toNat + 1 :=
+    Nat.succ_le_succ hnat
+  have hle_real :
+      (((vdVWCoveringNumber (L * epsilon) (map '' target)).toNat : ℝ) + 1) ≤
+        (((vdVWCoveringNumber epsilon target).toNat : ℝ) + 1) := by
+    exact_mod_cast hsucc
+  have hpos :
+      0 < (((vdVWCoveringNumber (L * epsilon) (map '' target)).toNat : ℝ) + 1) := by
+    exact_mod_cast
+      Nat.succ_pos (vdVWCoveringNumber (L * epsilon) (map '' target)).toNat
+  exact Real.log_le_log hpos hle_real
+
+/--
+Finite VdV&W log-entropy transfers across nonexpansive images at the same
+radius.
+-/
+theorem vdVWCoveringLogEntropy_image_le_of_nonexpansive
+    {Domain : Type u} {Codomain : Type v}
+    [PseudoEMetricSpace Domain] [PseudoEMetricSpace Codomain]
+    {target : Set Domain} {epsilon : ℝ≥0} {map : Domain -> Codomain}
+    (hmap : LipschitzWith 1 map)
+    (hfinite : vdVWCoveringNumber epsilon target < ⊤) :
+    vdVWCoveringLogEntropy epsilon (map '' target) ≤
+      vdVWCoveringLogEntropy epsilon target := by
+  simpa using
+    (vdVWCoveringLogEntropy_image_le_of_lipschitz
+      (target := target) (epsilon := epsilon) (L := 1) hmap hfinite)
 
 /-!
 ## Deterministic empirical `L1(P_n)` covering numbers

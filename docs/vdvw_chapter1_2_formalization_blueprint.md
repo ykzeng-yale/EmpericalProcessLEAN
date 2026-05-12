@@ -1449,7 +1449,7 @@ Therefore the status convention is:
 | 1.3.7 asymptotic measurability | `..._1-100.md:661` | local-layer: nonnegative outer/inner expectation-gap primitive `VdVWAsymptoticallyMeasurableNonnegative`, lower-shifted real-test primitive `VdVWAsymptoticallyMeasurableLowerShiftedReal`, bounded-continuous lower-shifted primitive `VdVWAsymptoticallyMeasurableBoundedContinuousLowerShifted`, canonical bounded-continuous shift primitive `VdVWAsymptoticallyMeasurableBoundedContinuousCanonicalShifted`, and measurable-composition constructors proved; full signed bounded-continuous arbitrary-map definition pending |
 | 1.9.1 stochastic convergence notation | `..._1-100.md:1292` | local-layer for common-domain outer-probability convergence |
 | 1.10.1 convergence in outer probability to a constant | `..._1-100.md:1406` | local-layer |
-| 2.1.5 covering numbers | `..._1-100.md:1894` | local-layer: `vdVWCoveringNumber` wraps mathlib `Metric.externalCoveringNumber`, with explicit finite-cover witnesses, `vdVWCoveringLogEntropy`, direct external-to-internal doubled-radius bridges, and closed-ball/open-ball slack documented |
+| 2.1.5 covering numbers | `..._1-100.md:1894` | local-layer: `vdVWCoveringNumber` wraps mathlib `Metric.externalCoveringNumber`, with explicit finite-cover witnesses, `vdVWCoveringLogEntropy`, direct external-to-internal doubled-radius bridges, Lipschitz/nonexpansive image covering and log-entropy transfers, and closed-ball/open-ball slack documented |
 | 2.1.6 bracketing numbers | `..._1-100.md:1895` | local-layer with primitive `l1BracketingNumber` |
 | 2.2.3 covering and packing numbers for semimetrics | `..._101-200.md:292` | local-layer: `vdVWSemimetricCoveringNumber`, `vdVWSemimetricPackingNumber`, `vdVWSemimetricLogEntropy`, finite-cover handoff, and mathlib covering-packing inequalities |
 | 2.3.3 `P`-measurable class | `..._101-200.md:627` | local-layer: product measure `P^n`, display `(2.3.2)` weighted supremum, completion/null-measurability predicate, countable coordinate-measurable constructor, and deterministic finite-cover supremum bound formalized |
@@ -1859,7 +1859,15 @@ above, so they do not change the theorem-level dashboard counts.
    `internalCoveringNumber_two_mul_le_vdVWCoveringNumber` and
    `internalCoveringNumber_two_mul_lt_top_of_vdVWCoveringNumber_lt_top`, the
    pinned-mathlib version of the standard finite-net projection move used in
-   the audited statistical-learning-theory covering layer.  The induced
+   the audited statistical-learning-theory covering layer.  It also now
+   exposes the audited covering-image transfer pattern via
+   `vdVWCoveringNumber_image_le_of_lipschitz`,
+   `vdVWCoveringNumber_image_le_of_nonexpansive`,
+   `vdVWCoveringNumber_image_lt_top_of_lipschitz`,
+   `vdVWCoveringNumber_image_lt_top_of_nonexpansive`,
+   `vdVWCoveringLogEntropy_image_le_of_lipschitz`, and
+   `vdVWCoveringLogEntropy_image_le_of_nonexpansive`, implemented against
+   pinned mathlib's `Metric.IsCover.image_lipschitz`.  The induced
    empirical pseudometric adapter is also compiled through
    `EmpiricalL1Index`, `EmpiricalL1Index.instPseudoEMetricSpace`,
    `EmpiricalL1Index.empiricalL1Distance_le_coe_radius_of_edist_le`,
@@ -3839,6 +3847,17 @@ real-domination bridge: prove the restricted a.e. inequality
 centered bad event, and Lean derives membership in
 `VdVWTheorem243SelectedFiniteNetBadSet` plus any selected-to-recorded
 cardinality transport.
+
+2026-05-12 fixed-radius comparison final bundle:
+`Theorem243.lean` now adds
+`VdVWTheorem243TextbookAlignedConclusion.of_forall_pos_radius_logCardinality_outerProbabilityComparison_of_set_countable`.
+This is the final-output consumer for the direct fixed-radius comparison
+record: stochastic entropy for every positive truncation level plus
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison` at every
+positive `M` now yields the full textbook-facing Theorem 2.4.3/Lemma 2.4.5
+bundle under the set-countable integrable-envelope route.  The open work is
+therefore upstream probability/cardinality construction of the comparison
+record, not another final packaging layer.
 
 2026-05-12 restricted selected-cover `hphi_id` displayed-beta source surface:
 `Theorem243.lean` now adds
