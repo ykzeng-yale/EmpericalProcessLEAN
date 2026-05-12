@@ -21231,6 +21231,176 @@ theorem
       hinfinite_normalized_source
 
 /--
+Durrett 2019, Theorem 4.5.5 source support: adapted events are ordinary
+measurable events.
+-/
+theorem durrett2019_theorem_4_5_5_measurableSet_of_adapted
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {ℱ : Filtration ℕ mΩ} {B : ℕ -> Set Ω}
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n)) :
+    ∀ n, MeasurableSet (B n) := by
+  intro n
+  exact ℱ.le n _ (hB n)
+
+/--
+Durrett 2019, Theorem 4.5.5 source support: the Borel-Cantelli martingale part
+starts from zero.
+-/
+theorem durrett2019_theorem_4_5_5_martingalePart_process_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω) :
+    martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P 0 =ᵐ[P] 0 := by
+  refine ae_of_all P fun ω => ?_
+  have hformula :=
+    congrFun
+      (durrett2019_example_4_3_3_borel_cantelli_martingale_formula
+        (μ := P) (ℱ := ℱ) B 0) ω
+  simpa using hformula
+
+/--
+Durrett 2019, Theorem 4.5.5 source support: finite-time `L²` membership for
+the Borel-Cantelli martingale part.
+-/
+theorem durrett2019_theorem_4_5_5_martingalePart_process_memLp_two
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {B : ℕ -> Set Ω}
+    (hB_meas : ∀ n, MeasurableSet (B n)) :
+    ∀ n,
+      MemLp (martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n)
+        (2 : ℝ≥0∞) P := by
+  intro n
+  have hsum :
+      MemLp
+        (∑ k ∈ Finset.range n,
+          ((B (k + 1)).indicator (1 : Ω -> ℝ) -
+            P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k]))
+        (2 : ℝ≥0∞) P := by
+    refine memLp_finsetSum' (Finset.range n) ?_
+    intro k _hk
+    have hI :
+        MemLp ((B (k + 1)).indicator (1 : Ω -> ℝ)) (2 : ℝ≥0∞) P :=
+      (memLp_const (μ := P) (p := (2 : ℝ≥0∞)) (1 : ℝ)).indicator
+        (hB_meas (k + 1))
+    exact hI.sub (hI.condExp (m := ℱ k))
+  exact
+    MemLp.ae_eq
+      (ae_of_all P fun ω =>
+        (congrFun
+          (durrett2019_example_4_3_3_borel_cantelli_martingale_formula
+            (μ := P) (ℱ := ℱ) B n) ω).symm)
+      hsum
+
+/--
+Durrett 2019, Theorem 4.5.5 source support: the cumulative conditional
+probability clock is predictable.
+-/
+theorem durrett2019_theorem_4_5_5_conditionalProbabilitySum_predictable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω) :
+    IsStronglyPredictable ℱ
+      (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B) := by
+  refine IsStronglyPredictable.of_measurable_add_one ?h0 ?hsucc
+  · simpa [durrett2019_theorem_4_5_5_conditionalProbabilitySum] using
+      (stronglyMeasurable_zero : StronglyMeasurable[ℱ 0] (0 : Ω -> ℝ))
+  · intro n
+    refine Finset.stronglyMeasurable_sum _ fun k hk => ?_
+    have hkn : k ≤ n := Finset.mem_range_succ_iff.mp hk
+    exact stronglyMeasurable_condExp.mono (ℱ.mono hkn)
+
+/--
+Durrett 2019, Theorem 4.5.5 source support: finite-time integrability of the
+cumulative conditional probability clock.
+-/
+theorem durrett2019_theorem_4_5_5_conditionalProbabilitySum_integrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {B : ℕ -> Set Ω}
+    (hB_meas : ∀ n, MeasurableSet (B n)) :
+    ∀ n,
+      Integrable (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n) P := by
+  intro n
+  dsimp [durrett2019_theorem_4_5_5_conditionalProbabilitySum]
+  exact
+    integrable_finsetSum' (μ := P) (Finset.range n)
+      (f := fun k : ℕ =>
+        P[(B (k + 1)).indicator (1 : Ω -> ℝ) | ℱ k])
+      fun k _hk => by
+        have _hI : Integrable ((B (k + 1)).indicator (1 : Ω -> ℝ)) P :=
+          (integrable_const (μ := P) (1 : ℝ)).indicator (hB_meas (k + 1))
+        exact
+          integrable_condExp
+            (μ := P) (m := ℱ k)
+            (f := (B (k + 1)).indicator (1 : Ω -> ℝ))
+
+/--
+Durrett 2019, Theorem 4.5.5 source support: the cumulative conditional
+probability clock starts nonnegative.
+-/
+theorem durrett2019_theorem_4_5_5_conditionalProbabilitySum_zero_nonneg
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ} (B : ℕ -> Set Ω) :
+    ∀ ω : Ω, 0 ≤ durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B 0 ω := by
+  intro ω
+  simp [durrett2019_theorem_4_5_5_conditionalProbabilitySum]
+
+/--
+Durrett 2019, Theorem 4.5.5 infinite-clock source wrapper from adapted events.
+
+This discharges the automatic Borel-Cantelli martingale and clock side
+conditions in the V228 max-normalizer endpoint.  The pointwise clock monotonicity
+and the tail-integral certificate remain explicit.
+-/
+theorem
+    durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {B : ℕ -> Set Ω} {C : ℝ} {InfiniteVar : Set Ω}
+    (hB : ∀ n, MeasurableSet[ℱ n] (B n))
+    (hA_mono_step :
+      ∀ k : ℕ, ∀ ω : Ω,
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B k ω ≤
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω)
+    (hA_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop)
+    (htail_int :
+      IntegrableOn (fun t : ℝ => (max t (1 : ℝ))⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (max t (1 : ℝ))⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+      Tendsto
+        (fun n : ℕ =>
+          martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω /
+            max
+              (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+              (1 : ℝ))
+        atTop (𝓝 0) := by
+  have hB_meas : ∀ n, MeasurableSet (B n) :=
+    durrett2019_theorem_4_5_5_measurableSet_of_adapted (ℱ := ℱ) hB
+  exact
+    durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_conditionalProbabilitySum_clock
+      (P := P) (ℱ := ℱ) (B := B) (C := C) (InfiniteVar := InfiniteVar)
+      hB_meas
+      (durrett2019_example_4_3_3_borel_cantelli_process_martingale
+        (μ := P) (ℱ := ℱ) hB)
+      (durrett2019_theorem_4_5_5_martingalePart_process_zero
+        (P := P) (ℱ := ℱ) B)
+      (durrett2019_theorem_4_5_5_martingalePart_process_memLp_two
+        (P := P) (ℱ := ℱ) (B := B) hB_meas)
+      (durrett2019_theorem_4_5_5_conditionalProbabilitySum_predictable
+        (P := P) (ℱ := ℱ) B)
+      (durrett2019_theorem_4_5_5_conditionalProbabilitySum_integrable
+        (P := P) (ℱ := ℱ) (B := B) hB_meas)
+      (durrett2019_theorem_4_5_5_conditionalProbabilitySum_zero_nonneg
+        (P := P) (ℱ := ℱ) B)
+      hA_mono_step hA_atTop_on htail_int htail_bound
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

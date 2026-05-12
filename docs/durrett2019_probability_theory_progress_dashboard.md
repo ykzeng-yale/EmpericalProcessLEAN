@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V228` in
+Route from `Live In-Thread Goal Prompt V229` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Section 4.5.5 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the
@@ -169,11 +169,18 @@ V228 adds the Theorem 4.5.3 infinite-clock specialization wrapper for
 `durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_conditionalProbabilitySum_clock`
 and
 `durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_conditionalProbabilitySum_clock`.
-The next target is to discharge the remaining explicit source side conditions:
-Borel-Cantelli martingale `X_0`, martingale and finite-time `L^2`, clock
-integrability/predictability, the tail-integral certificate, and either an
-a.e.-monotone 4.5.3 route or a canonical pointwise nonnegative clock
-representative.
+V229 adds the adapted-event source wrapper for the infinite-clock side:
+`durrett2019_theorem_4_5_5_measurableSet_of_adapted`,
+`durrett2019_theorem_4_5_5_martingalePart_process_zero`,
+`durrett2019_theorem_4_5_5_martingalePart_process_memLp_two`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_predictable`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_integrable`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_zero_nonneg`, and
+`durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock`.
+The next target is now only the remaining infinite-clock source surface:
+prove the tail-integral certificate for `(max t 1)⁻¹ ^ 2` on `[0,∞)`, then
+handle the pointwise-versus-a.e. clock monotonicity issue either by an
+a.e.-monotone 4.5.3 route or by a canonical nonnegative clock representative.
 
 Closed Chapter 2 support remains available in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in

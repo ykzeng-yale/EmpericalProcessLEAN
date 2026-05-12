@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V228
+## Live In-Thread Goal Prompt V229
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -310,15 +310,26 @@ The proof now derives the `max t 1` continuity, monotonicity, and lower-bound
 facts inside the wrapper.  The remaining explicit source obligations are the
 conditional-probability clock regularity and the tail-integral certificate.
 
-Next aggressive step: discharge the explicit source side conditions in the
-V228 wrapper.  First target the cheap ones: `X_0=0` for the Borel-Cantelli
-martingale part, martingale part from adapted events, finite-time `L^2` for
-the martingale part, `A_0>=0`, integrability/predictability of
-`conditionalProbabilitySum`, and the tail-integral certificate for
-`(max t 1)⁻¹ ^ 2` on `[0,∞)`.  The pointwise monotone clock condition is subtle
-because Mathlib's conditional-expectation representative is only ordered a.e.;
-either build an a.e.-monotone variant of the 4.5.3 route or introduce a
-canonical nonnegative representative before claiming it automatic.  Do not
+V229 discharges the cheap source side conditions for the infinite-clock
+Theorem 4.5.5 endpoint from adapted events.  New compiled declarations:
+`durrett2019_theorem_4_5_5_measurableSet_of_adapted`,
+`durrett2019_theorem_4_5_5_martingalePart_process_zero`,
+`durrett2019_theorem_4_5_5_martingalePart_process_memLp_two`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_predictable`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_integrable`,
+`durrett2019_theorem_4_5_5_conditionalProbabilitySum_zero_nonneg`, and
+`durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock`.
+The adapted-event wrapper now supplies ordinary measurability, the
+Borel-Cantelli martingale, `X_0=0`, finite-time `L^2`, clock predictability,
+clock integrability, and `A_0>=0` to the V228 infinite-clock endpoint.
+
+Next aggressive step: finish the two remaining infinite-clock source inputs
+without repeating solved route plumbing.  First prove the tail-integral
+certificate for `(max t 1)⁻¹ ^ 2` on `[0,∞)`.  Then handle the clock
+monotonicity gap honestly: Mathlib conditional-expectation representatives are
+only ordered a.e., so either build an a.e.-monotone variant of the 4.5.3 route
+or introduce a canonical nonnegative representative before claiming
+pointwise monotonicity.  Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1665,6 +1676,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V228` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V229` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
