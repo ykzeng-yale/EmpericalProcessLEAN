@@ -18752,6 +18752,82 @@ theorem durrett2019_theorem_4_5_3_tsum_integral_variance_ratio_le_of_integral_cl
         (hclock_bound N)
 
 /--
+Durrett 2019, Theorem 4.5.3 clock-tail comparison.
+
+If a finite clock interval lies in `[0, ∞)`, then its clock integral is bounded
+by any supplied bound on the global tail integral of `f(t)^{-2}`.
+-/
+theorem durrett2019_theorem_4_5_3_clock_interval_le_tail_integral_bound
+    {f : ℝ -> ℝ} {a b C : ℝ}
+    (ha_nonneg : 0 ≤ a)
+    (hab : a ≤ b)
+    (htail_int :
+      IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (f t)⁻¹ ^ 2 ∂volume ≤ C) :
+    ∫ t in a..b, (f t)⁻¹ ^ 2 ≤ C := by
+  let g : ℝ -> ℝ := fun t => (f t)⁻¹ ^ 2
+  have hsubset : Set.Ioc a b ⊆ Set.Ici (0 : ℝ) := by
+    intro t ht
+    exact ha_nonneg.trans (le_of_lt ht.1)
+  have hnonneg : 0 ≤ᵐ[volume.restrict (Set.Ici (0 : ℝ))] g := by
+    exact Eventually.of_forall fun t => sq_nonneg ((f t)⁻¹)
+  have hset_le :
+      ∫ t in Set.Ioc a b, g t ∂volume ≤
+        ∫ t in Set.Ici (0 : ℝ), g t ∂volume := by
+    exact setIntegral_mono_set htail_int hnonneg hsubset.eventuallyLE
+  calc
+    ∫ t in a..b, (f t)⁻¹ ^ 2
+        = ∫ t in Set.Ioc a b, g t ∂volume := by
+          simp [g, intervalIntegral.integral_of_le hab]
+    _ ≤ ∫ t in Set.Ici (0 : ℝ), g t ∂volume := hset_le
+    _ = ∫ t in Set.Ici (0 : ℝ), (f t)⁻¹ ^ 2 ∂volume := by
+          rfl
+    _ ≤ C := htail_bound
+
+/--
+Durrett 2019, Theorem 4.5.3 integrated clock-tail comparison.
+
+This derives the uniform integrated clock bound used by V214/V215 from a
+global tail-integral bound.  Measurability/integrability of the random finite
+clock integrals remains explicit; the theorem removes only the source bound
+obligation.
+-/
+theorem durrett2019_theorem_4_5_3_integrated_clock_bound_of_tail_integral_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {f : ℝ -> ℝ} {A : ℕ -> Ω -> ℝ} {C : ℝ}
+    (hA0_nonneg : ∀ ω : Ω, 0 ≤ A 0 ω)
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (htail_int :
+      IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0) volume)
+    (hclock_int :
+      ∀ N : ℕ, Integrable (fun ω => ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) P)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (f t)⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ N : ℕ, ∫ ω, (∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) ∂P ≤ C := by
+  intro N
+  have hA0N : ∀ ω : Ω, A 0 ω ≤ A N ω := by
+    intro ω
+    induction N with
+    | zero =>
+        exact le_rfl
+    | succ N ih =>
+        exact ih.trans (hA_mono_step N ω)
+  have hpoint :
+      (fun ω => ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) ≤ fun _ω => C := by
+    intro ω
+    exact
+      durrett2019_theorem_4_5_3_clock_interval_le_tail_integral_bound
+        (f := f) (a := A 0 ω) (b := A N ω) (C := C)
+        (hA0_nonneg ω) (hA0N ω) htail_int htail_bound
+  calc
+    ∫ ω, (∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) ∂P
+        ≤ ∫ _ω : Ω, C ∂P :=
+          integral_mono (hclock_int N) (integrable_const C) hpoint
+    _ = C := by simp
+
+/--
 Durrett 2019, Theorem 4.5.3 source-facing integrated clock route.
 
 This connects the V214 integrated summability package directly to the V209
@@ -18821,6 +18897,77 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
         (P := P) (f := f) (A := A) (C := C)
         hA_mono_step hf_mono hf_interval_one_le hf_int hratio_int hclock_int
         hclock_bound)
+
+/--
+Durrett 2019, Theorem 4.5.3 source-facing tail-integral route.
+
+This replaces the uniform integrated clock-bound assumption in the V215
+endpoint by the textbook-style global tail-integral bound
+`∫_0^∞ f(t)^{-2} dt ≤ C`, plus the source clock range condition `0 ≤ A_0`.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {C : ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hf_cont : Continuous f)
+    (hA0_nonneg : ∀ ω : Ω, 0 ≤ A 0 ω)
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ k : ℕ, ∀ ω : Ω,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)))
+    (hf_interval_one_le :
+      ∀ k : ℕ, ∀ ω : Ω,
+        ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t)
+    (hf_int :
+      ∀ k : ℕ, ∀ ω : Ω,
+        IntervalIntegrable (fun t => (f t)⁻¹ ^ 2) volume
+          (A k ω) (A (k + 1) ω))
+    (hb_increment_nonneg :
+      ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ f (A (k + 2) ω) - f (A (k + 1) ω))
+    (hb_atTop :
+      ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop)
+    (hTransform_memLp_two :
+      ∀ k, MemLp
+        (durrett2019_stochasticTransform
+          (fun n : ℕ => fun ω : Ω => (f (A n ω))⁻¹) X k)
+        (2 : ℝ≥0∞) P)
+    (hscaled_int :
+      ∀ k : ℕ,
+        Integrable
+          (fun ω =>
+            ((f (A (k + 1) ω))⁻¹ * (X (k + 1) ω - X k ω)) ^ 2) P)
+    (hdiff_sq_int :
+      ∀ k : ℕ, Integrable (fun ω => (X (k + 1) ω - X k ω) ^ 2) P)
+    (hratio_int :
+      ∀ k : ℕ,
+        Integrable
+          (fun ω => (A (k + 1) ω - A k ω) / (f (A (k + 1) ω)) ^ 2) P)
+    (hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω)
+    (hclock_int :
+      ∀ N : ℕ, Integrable (fun ω => ∫ t in A 0 ω..A N ω, (f t)⁻¹ ^ 2) P)
+    (htail_int :
+      IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (f t)⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_integral_clock_bound
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (C := C)
+      hX hX0 hA_predictable hf_cont hA_mono_step hf_mono
+      hf_interval_one_le hf_int hb_increment_nonneg hb_atTop
+      hTransform_memLp_two hscaled_int hdiff_sq_int hratio_int hcond_le
+      hclock_int
+      (durrett2019_theorem_4_5_3_integrated_clock_bound_of_tail_integral_bound
+        (P := P) (f := f) (A := A) (C := C)
+        hA0_nonneg hA_mono_step htail_int hclock_int htail_bound)
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

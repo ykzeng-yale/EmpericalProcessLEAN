@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V215`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V216`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -96,20 +96,27 @@ and
 V215 adds
 `durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_integral_clock_bound`,
 the source-facing endpoint that feeds V214 into V209 and derives the endpoint
-lower bound `1 <= f(A_n)` from interval lower bounds.  The next theorem-facing
-target is no longer finite sum/integral exchange or V214-to-V209 wiring:
-derive the source clock-integral bound from
-`∫_0^∞ f(t)^{-2} dt < ∞` together with the monotone/divergent clock
-hypotheses.  Keep reciprocal-transform `MemLp`, ratio integrability, and clock
-integrability side conditions explicit if needed.  Do not route back to
+lower bound `1 <= f(A_n)` from interval lower bounds.  V216 adds
+`durrett2019_theorem_4_5_3_clock_interval_le_tail_integral_bound`,
+`durrett2019_theorem_4_5_3_integrated_clock_bound_of_tail_integral_bound`,
+and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound`,
+removing the manual uniform integrated clock-bound input by using the global
+tail-integral bound over `[0, ∞)`.  The next theorem-facing target is no
+longer finite sum/integral exchange, V214-to-V209 wiring, or the
+tail-integral-to-clock-bound package: discharge finite-clock-integrability,
+ratio integrability, and reciprocal-transform `MemLp` side conditions from
+source measurability, predictability, and second-moment hypotheses.  Do not
+route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
 packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
 predictability/bounds, conditional variance pull-out, scalar interval
 comparison, finite clock comparison, deterministic summability packaging,
 random pathwise summability packaging, integrated finite-sum/Fubini
-summability plumbing, V214-to-V209 endpoint wiring, or scaled-summability
-handoff wrappers unless a later theorem exposes a precise missing primitive.
+summability plumbing, V214-to-V209 endpoint wiring,
+tail-integral-to-clock-bound packaging, or scaled-summability handoff wrappers
+unless a later theorem exposes a precise missing primitive.
 
 Closed Chapter 2 support lives in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled
