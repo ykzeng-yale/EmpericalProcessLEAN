@@ -1354,9 +1354,13 @@ vector-slack packet adds `polytopeSlackCLM`, `polytopeSlackSet`,
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_surjective`, pulling
 the finite positive-orthant log barrier back to the source domain
 `∀ i, 0 < b i - inner (a i) x` whenever the slack map has a supplied right
-inverse or is surjective.  Future fully general polytope-log-barrier work
-should remove the surjectivity/right-inverse front door by using the compiled
-sum-rule packets or range-translated affine-preimage packet, rather than
+inverse or is surjective.  The newest range-slice packet adds
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated`, so the
+source-level surjectivity/right-inverse front door is gone once an inverse-
+Hessian oracle on `(polytopeSlackCLM a).range` is supplied with nonnegativity
+and the barrier-gradient bound.  Future fully general polytope-log-barrier
+work should construct that concrete range inverse-Hessian/gradient-bound
+oracle, or alternatively use the compiled finite sum-rule packets, rather than
 redoing scalar self-concordance or affine right-inverse algebra.
 Do not redo the
 square-root/right-inverse/Hessian-nonnegativity/self-concordance/model-Hessian
@@ -1380,10 +1384,10 @@ The exact blockers are:
   `y - x ≠ 0`; do not add more generic Gronwall/`ψ` plumbing.
 - continue Proposition 13.11 from the already-compiled product, shared-domain
   sum, and affine-preimage supplied-oracle layers.  The next aggressive
-  targets are either closing the exact shared-domain sum inverse-Hessian /
-  inverse-local gate for finite row sums, deriving the general Example 13.14
-  polytope log barrier without a surjective slack-map assumption via the
-  range-translated affine-preimage route, or opening the inf-projection rule.
+  targets are either constructing the concrete positive-orthant range-slice
+  inverse-Hessian oracle and barrier-gradient bound for arbitrary finite row
+  families, closing the exact shared-domain sum inverse-Hessian / inverse-local
+  gate for finite row sums, or opening the inf-projection rule.
   Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi

@@ -135,14 +135,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `polytopeSlackCLM`, `polytopeSlackSet`,
   `mem_barrierAffinePreimageSet_polytopeSlackCLM_iff`,
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_rightInverse`, and
-  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_surjective`.
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_surjective`, plus
+  the range-slice wrapper
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated`.
   Example 13.14's single row log-barrier route can now use the source-shaped
   theorem for `x ↦ -log (b - inner a x)` when `a ≠ 0`, and the finite-row
   orthant-preimage route is compiled for any slack map with a supplied right
-  inverse or surjective linear part.  For more general row families, start from
-  `chewi1314_affineNegLog_selfConcordantBarrierOn_of_rightInverse` or
-  `chewi1314_affineNegLog_selfConcordantBarrierOn_of_surjective`, the
-  range-translated affine-preimage packet, or the existing sum-rule packets for
+  inverse, surjective linear part, or a supplied inverse-Hessian oracle on the
+  slack-map range satisfying nonnegativity and the barrier-gradient bound.  For
+  fully general row families, next construct that concrete range oracle or use
+  the existing sum-rule packets for
   finite polytope logarithmic barriers.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
   supplied-oracle form, for invertible affine maps, as a single

@@ -14662,5 +14662,38 @@ theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_surjective
       (polytopeSlackCLM a) b
       (positiveOrthantNegLog_selfConcordantBarrierOn (d := m)) hA
 
+/--
+Chewi Example 13.14, finite-row logarithmic barrier in translated-range form.
+This removes the source-level surjectivity requirement on the slack map: the
+only remaining oracle is the inverse-Hessian model on the finite-dimensional
+range slice, together with its nonnegativity and barrier-gradient bound.
+-/
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (invHessRange : (polytopeSlackCLM a).range ->
+      (polytopeSlackCLM a).range →L[ℝ] (polytopeSlackCLM a).range)
+    (hinv_nonneg : ∀ ⦃y : (polytopeSlackCLM a).range⦄,
+      y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b (positiveOrthant (d := m)) ->
+      ∀ v : (polytopeSlackCLM a).range, 0 ≤ inner ℝ v (invHessRange y v))
+    (hgradient_bound : ∀ ⦃y : (polytopeSlackCLM a).range⦄,
+      y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b (positiveOrthant (d := m)) ->
+      dualLocalNorm invHessRange y
+          (barrierAffineRangeGrad (polytopeSlackCLM a) b positiveOrthantNegLogGrad y) ≤
+        Real.sqrt (m : ℝ)) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierAffinePreimageHess (polytopeSlackCLM a) b positiveOrthantNegLogHessCLM)
+      (barrierAffinePreimageGrad (polytopeSlackCLM a) b positiveOrthantNegLogGrad)
+      (barrierAffinePreimageInvHessSurjective (polytopeSlackCLM a).rangeRestrict 0
+        invHessRange (barrierAffinePreimageRangeRestrict_range_eq_top (polytopeSlackCLM a)))
+      (barrierAffinePreimageThirdMixed (polytopeSlackCLM a) b
+        positiveOrthantNegLogThirdMixed) 1 (m : ℝ) := by
+  simpa [polytopeSlackSet, barrierAffinePreimageSet, polytopeSlackCLM,
+    positiveOrthant, sub_eq_add_neg, add_comm] using
+    chewi1311_affinePreimage_selfConcordantBarrierOn_rangeTranslated_source
+      (polytopeSlackCLM a) b
+      (positiveOrthantNegLog_selfConcordantBarrierOn (d := m))
+      hinv_nonneg hgradient_bound
+
 end Optimization
 end StatInference
