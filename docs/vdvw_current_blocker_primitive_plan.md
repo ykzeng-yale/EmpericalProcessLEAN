@@ -9624,3 +9624,10 @@ and
 wrappers.  The restricted-a.e. and base-a.e. Rademacher bad-event routes now
 use the canonical first-level half-radius selected cover with only
 selected-cover lower-growth left exposed.
+
+2026-05-11 untruncated first-level inverse-square source handoff:
+`Theorem243.lean` now packages the pointwise, restricted-a.e., and base-a.e.
+first-level inverse-square lower-growth routes through the large-`M`
+envelope-tail handoff as centered untruncated convergence theorems.  These
+expose the same pure Rademacher bad-event source shapes at the untruncated
+Theorem 2.4.3 boundary.

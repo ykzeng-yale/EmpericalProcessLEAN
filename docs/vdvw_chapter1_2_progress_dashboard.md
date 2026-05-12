@@ -4276,3 +4276,7 @@ The restricted-a.e. and base-a.e. sign-only inverse-square routes now have the
 same canonical first-level selected-cover source wrappers, so the remaining
 probability work can target either restricted-a.e. bad fibers or base-a.e.
 conditional bad-fiber implications.
+
+Those three first-level inverse-square source shapes now pass through the
+large-`M` envelope-tail handoff to centered untruncated convergence, leaving
+the probability lower-bound and lower-growth inputs as the active sources.

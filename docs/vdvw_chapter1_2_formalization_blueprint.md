@@ -3374,6 +3374,12 @@ countable centered-bad restriction adapter with that endpoint, so probability
 sources can be stated either on `P^n.restrict centeredBad` or as `P^n`-a.e.
 conditional implications.
 
+The pointwise, restricted-a.e., and base-a.e. first-level inverse-square source
+interfaces now also have centered untruncated handoffs through the existing
+large-`M` envelope-tail theorem.  The remaining source inputs are therefore the
+corresponding bad-event probability lower bounds and selected-cover
+lower-growth hypotheses for each positive truncation level.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
