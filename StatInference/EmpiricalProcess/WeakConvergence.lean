@@ -3889,6 +3889,86 @@ theorem VdVWProbabilityMeasurePolish.of_polishSpace
   exact isClosed_univ.polishSpace
 
 /--
+The law of an a.e.-measurable random element as a probability measure.
+-/
+noncomputable def VdVWProbabilityLaw
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    (P : ProbabilityMeasure Ω) (X : Ω -> S) (hX : AEMeasurable X P) :
+    ProbabilityMeasure S :=
+  P.map hX
+
+/--
+VdV&W tightness for an a.e.-measurable random element, defined as tightness of
+its law.
+-/
+def VdVWRandomElementTight
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [TopologicalSpace S]
+    (P : ProbabilityMeasure Ω) (X : Ω -> S) (hX : AEMeasurable X P) :
+    Prop :=
+  VdVWProbabilityMeasuresTight
+    ({VdVWProbabilityLaw P X hX} : Set (ProbabilityMeasure S))
+
+/--
+VdV&W separability for an a.e.-measurable random element, defined as
+separability of its law.
+-/
+def VdVWRandomElementSeparable
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [TopologicalSpace S]
+    (P : ProbabilityMeasure Ω) (X : Ω -> S) (hX : AEMeasurable X P) :
+    Prop :=
+  VdVWProbabilityMeasureSeparable (VdVWProbabilityLaw P X hX)
+
+/--
+VdV&W pre-tightness for an a.e.-measurable random element, defined as
+pre-tightness of its law.
+-/
+def VdVWRandomElementPreTight
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [UniformSpace S]
+    (P : ProbabilityMeasure Ω) (X : Ω -> S) (hX : AEMeasurable X P) :
+    Prop :=
+  VdVWProbabilityMeasurePreTight (VdVWProbabilityLaw P X hX)
+
+/--
+VdV&W Polishness for an a.e.-measurable random element, defined as Polishness
+of its law.
+-/
+def VdVWRandomElementPolish
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [TopologicalSpace S]
+    (P : ProbabilityMeasure Ω) (X : Ω -> S) (hX : AEMeasurable X P) :
+    Prop :=
+  VdVWProbabilityMeasurePolish (VdVWProbabilityLaw P X hX)
+
+/--
+On a separable ambient topological space, every a.e.-measurable random element
+is VdV&W-separable through its law.
+-/
+theorem VdVWRandomElementSeparable.of_separableSpace
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [TopologicalSpace S] [SeparableSpace S]
+    (P : ProbabilityMeasure Ω) (X : Ω -> S) (hX : AEMeasurable X P) :
+    VdVWRandomElementSeparable P X hX := by
+  simpa [VdVWRandomElementSeparable, VdVWProbabilityLaw] using
+    (VdVWProbabilityMeasureSeparable.of_separableSpace
+      (VdVWProbabilityLaw P X hX))
+
+/--
+On a Polish ambient topological space, every a.e.-measurable random element is
+VdV&W-Polish through its law.
+-/
+theorem VdVWRandomElementPolish.of_polishSpace
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [TopologicalSpace S] [PolishSpace S]
+    (P : ProbabilityMeasure Ω) (X : Ω -> S) (hX : AEMeasurable X P) :
+    VdVWRandomElementPolish P X hX := by
+  simpa [VdVWRandomElementPolish, VdVWProbabilityLaw] using
+    (VdVWProbabilityMeasurePolish.of_polishSpace
+      (VdVWProbabilityLaw P X hX))
+
+/--
 Pre-tight probability measures concentrate on a countable union of measurable
 totally bounded sets.  This is the first construction in the proof of
 VdV&W Lemma 1.3.2.
@@ -4574,6 +4654,125 @@ theorem vdVW132_polishSpace_probabilityMeasure_tight
     (μ : ProbabilityMeasure S) :
     VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) :=
   (vdVW132_polishSpace_probabilityMeasure_polish_and_tight μ).2
+
+/--
+VdV&W Lemma 1.3.2 random-element equivalence between pre-tightness and
+separability, obtained by applying the measure-level theorem to the law.
+-/
+theorem vdVW132_randomElement_preTight_iff_separable
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [PseudoMetricSpace S] [BorelSpace S] [Nonempty S]
+    [(uniformity S).IsCountablyGenerated]
+    {P : ProbabilityMeasure Ω} {X : Ω -> S} {hX : AEMeasurable X P} :
+    VdVWRandomElementPreTight P X hX ↔
+      VdVWRandomElementSeparable P X hX := by
+  simpa [VdVWRandomElementPreTight, VdVWRandomElementSeparable,
+      VdVWProbabilityLaw] using
+    (vdVW132_probabilityMeasure_preTight_iff_separable
+      (μ := VdVWProbabilityLaw P X hX))
+
+/--
+VdV&W Lemma 1.3.2 random-element complete-space equivalence between tightness
+and pre-tightness, obtained by applying the measure-level theorem to the law.
+-/
+theorem vdVW132_complete_randomElement_tight_iff_preTight
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [UniformSpace S] [CompleteSpace S] [T2Space S] [BorelSpace S]
+    {P : ProbabilityMeasure Ω} {X : Ω -> S} {hX : AEMeasurable X P} :
+    VdVWRandomElementTight P X hX ↔
+      VdVWRandomElementPreTight P X hX := by
+  simpa [VdVWRandomElementTight, VdVWRandomElementPreTight,
+      VdVWProbabilityLaw] using
+    (vdVW132_complete_probabilityMeasure_tight_iff_preTight
+      (μ := VdVWProbabilityLaw P X hX))
+
+/--
+VdV&W Lemma 1.3.2 random-element complete-space equivalence between tightness
+and separability, obtained by applying the measure-level theorem to the law.
+-/
+theorem vdVW132_complete_randomElement_tight_iff_separable
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [PseudoMetricSpace S] [CompleteSpace S] [T2Space S] [BorelSpace S]
+    [Nonempty S] [(uniformity S).IsCountablyGenerated]
+    {P : ProbabilityMeasure Ω} {X : Ω -> S} {hX : AEMeasurable X P} :
+    VdVWRandomElementTight P X hX ↔
+      VdVWRandomElementSeparable P X hX := by
+  simpa [VdVWRandomElementTight, VdVWRandomElementSeparable,
+      VdVWProbabilityLaw] using
+    (vdVW132_complete_probabilityMeasure_tight_iff_separable
+      (μ := VdVWProbabilityLaw P X hX))
+
+/--
+VdV&W Lemma 1.3.2 random-element package: tightness, pre-tightness, and
+separability are equivalent on complete Borel pseudometric spaces after
+passing to the law.
+-/
+theorem vdVW132_complete_randomElement_tight_preTight_separable_equiv
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [PseudoMetricSpace S] [CompleteSpace S] [T2Space S] [BorelSpace S]
+    [Nonempty S] [(uniformity S).IsCountablyGenerated]
+    {P : ProbabilityMeasure Ω} {X : Ω -> S} {hX : AEMeasurable X P} :
+    (VdVWRandomElementTight P X hX ↔
+        VdVWRandomElementPreTight P X hX) ∧
+      (VdVWRandomElementPreTight P X hX ↔
+        VdVWRandomElementSeparable P X hX) ∧
+        (VdVWRandomElementTight P X hX ↔
+          VdVWRandomElementSeparable P X hX) := by
+  simpa [VdVWRandomElementTight, VdVWRandomElementPreTight,
+      VdVWRandomElementSeparable, VdVWProbabilityLaw] using
+    (vdVW132_complete_probabilityMeasure_tight_preTight_separable_equiv
+      (μ := VdVWProbabilityLaw P X hX))
+
+/--
+Polish a.e.-measurable random elements are tight because their laws are Polish
+probability measures.
+-/
+theorem VdVWRandomElementPolish.tight
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [TopologicalSpace S] [BorelSpace S]
+    {P : ProbabilityMeasure Ω} {X : Ω -> S} {hX : AEMeasurable X P}
+    (hX_polish : VdVWRandomElementPolish P X hX) :
+    VdVWRandomElementTight P X hX := by
+  simpa [VdVWRandomElementPolish, VdVWRandomElementTight,
+      VdVWProbabilityLaw] using
+    (VdVWProbabilityMeasurePolish.tight
+      (μ := VdVWProbabilityLaw P X hX) hX_polish)
+
+/--
+VdV&W Lemma 1.3.2 Polish random-element clause.
+-/
+theorem vdVW132_randomElement_tight_of_polish
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [TopologicalSpace S] [BorelSpace S]
+    {P : ProbabilityMeasure Ω} {X : Ω -> S} {hX : AEMeasurable X P}
+    (hX_polish : VdVWRandomElementPolish P X hX) :
+    VdVWRandomElementTight P X hX :=
+  hX_polish.tight
+
+/--
+Every a.e.-measurable random element taking values in an ambient Polish space
+is VdV&W-Polish and tight through its law.
+-/
+theorem vdVW132_polishSpace_randomElement_polish_and_tight
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [TopologicalSpace S] [PolishSpace S] [BorelSpace S]
+    (P : ProbabilityMeasure Ω) (X : Ω -> S) (hX : AEMeasurable X P) :
+    VdVWRandomElementPolish P X hX ∧
+      VdVWRandomElementTight P X hX := by
+  simpa [VdVWRandomElementPolish, VdVWRandomElementTight,
+      VdVWProbabilityLaw] using
+    (vdVW132_polishSpace_probabilityMeasure_polish_and_tight
+      (VdVWProbabilityLaw P X hX))
+
+/--
+Ambient Polish-space tightness wrapper for VdV&W Lemma 1.3.2 random elements.
+-/
+theorem vdVW132_polishSpace_randomElement_tight
+    {Ω : Type v} {S : Type u} [MeasurableSpace Ω] [MeasurableSpace S]
+    [TopologicalSpace S] [PolishSpace S] [BorelSpace S]
+    (P : ProbabilityMeasure Ω) (X : Ω -> S) (hX : AEMeasurable X P) :
+    VdVWRandomElementTight P X hX :=
+  (vdVW132_polishSpace_randomElement_polish_and_tight P X hX).2
 
 /--
 VdV&W Lemma 1.3.2 pre-tightness component: in a complete separable

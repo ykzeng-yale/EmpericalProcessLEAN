@@ -1720,8 +1720,21 @@ gaps are the exact arbitrary-map/nonmeasurable forms and law-facing packaging.
 `vdVW132_probabilityMeasure_tight_of_polish`, and
 `vdVW132_polishSpace_probabilityMeasure_tight`.  This closes the
 measure-level complete-space tight/pre-tight/separable equivalence and the
-Polish-measure tightness clause; the remaining 1.3.2 work is random-map/law
-packaging and exact theorem reporting.
+Polish-measure tightness clause.
+
+2026-05-12 Lemma 1.3.2 law/random-element closure:
+`WeakConvergence.lean` now adds `VdVWProbabilityLaw` for the law of an
+a.e.-measurable map and the law-backed random-element predicates
+`VdVWRandomElementTight`, `VdVWRandomElementSeparable`,
+`VdVWRandomElementPreTight`, and `VdVWRandomElementPolish`.  The compiled
+law-facing wrappers include `vdVW132_randomElement_preTight_iff_separable`,
+`vdVW132_complete_randomElement_tight_iff_preTight`,
+`vdVW132_complete_randomElement_tight_iff_separable`,
+`vdVW132_complete_randomElement_tight_preTight_separable_equiv`,
+`vdVW132_randomElement_tight_of_polish`, and
+`vdVW132_polishSpace_randomElement_tight`.  The remaining 1.3.2 work is exact
+report-level consolidation and any nonmeasurable/arbitrary-map variant beyond
+the a.e.-measurable law interface.
 
 2026-05-05 product Borel-space follow-up: `FiniteDimensional.lean` now exports
 `vdVW141_prod_borel_eq_product_borel`, proving the VdV&W 1.4.1 product

@@ -1,6 +1,6 @@
 # VdV&W Current Blocker Primitive Plan
 
-Status date: 2026-05-11.
+Status date: 2026-05-12.
 
 This file pins down the active blocker and the primitive Lean declarations
 needed to close it.  It is not a theorem report.  A formal report is created
@@ -49,7 +49,8 @@ converse and measurability primitives.
 
 Current main-line target: finish VdV&W Chapters 1-2 by dependency order, using
 the already compiled Theorem 2.4.3 endpoint infrastructure and Chapter 1
-measure-level wrappers instead of rebuilding them.  The finite-index
+measure-level plus law/random-element wrappers instead of rebuilding them.  The
+finite-index
 `ell_infty(T)`/FDD converse, Portmanteau converse, norm-tail tightness,
 π-system convergence-determining, VdV&W 1.4.2 product-test uniqueness, and
 measurable independent-product law convergence layers are now compiled, and
@@ -1866,8 +1867,23 @@ complete uniform spaces;
 the complete-space tight/pre-tight/separable equivalence; and
 `vdVW132_probabilityMeasure_tight_of_polish` plus
 `vdVW132_polishSpace_probabilityMeasure_tight` cover the Polish-measure
-tightness clause.  The remaining 1.3.2 frontier is random-map/law packaging
-and exact theorem reporting, not the measure-level equivalence itself.
+tightness clause.
+
+2026-05-12 Lemma 1.3.2 law/random-element closure:
+`WeakConvergence.lean` now exposes the law of an a.e.-measurable map as
+`VdVWProbabilityLaw` and defines the random-element predicates
+`VdVWRandomElementTight`, `VdVWRandomElementSeparable`,
+`VdVWRandomElementPreTight`, and `VdVWRandomElementPolish` by applying the
+measure-level predicates to that law.  The law-facing Lemma 1.3.2 wrappers are
+compiled as `vdVW132_randomElement_preTight_iff_separable`,
+`vdVW132_complete_randomElement_tight_iff_preTight`,
+`vdVW132_complete_randomElement_tight_iff_separable`,
+`vdVW132_complete_randomElement_tight_preTight_separable_equiv`,
+`vdVW132_randomElement_tight_of_polish`, and
+`vdVW132_polishSpace_randomElement_tight`.  The remaining exact 1.3.2 frontier
+is report-level theorem consolidation and any nonmeasurable/arbitrary-map
+variant not expressible through an a.e.-measurable law, not the measure-level
+or law-facing equivalence itself.
 
 2026-05-12 later Chapter 1 weak-convergence numbered wrappers:
 `WeakConvergence.lean` now names the reusable measure-level/common-domain
