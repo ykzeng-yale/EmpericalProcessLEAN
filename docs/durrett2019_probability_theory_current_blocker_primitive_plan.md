@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V235
+## Live In-Thread Goal Prompt V236
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -398,16 +398,28 @@ raw cumulative conditional-probability clock diverges, then the
 Borel-Cantelli event-count ratio tends to one.  The package also records the
 Theorem 4.3.4 identification of that divergence event with `limsup B atTop`.
 
-Next aggressive step: start the next reusable martingale theorem after the
-Friedman urn application, Durrett Theorem 4.5.7
-`E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  First target a theorem-sized packet:
-the stopped maximal-probability estimate and the layer-cake/integral split
-that reduces the result to the existing Lemma 2.2.13 tail-integral machinery.
-Do not start by formalizing the full Friedman urn state process unless it
-directly reuses the compiled 4.5.5 ratio package.  Do not revisit raw clock
-pointwise monotonicity, direct martingale finite-limit assumptions, denominator
-divergence on `limsup`, final 4.5.5 ratio packaging, or already closed
-Chapter 2/3 support.  Do not route back to
+V236 starts Durrett Theorem 4.5.7.  New compiled declarations:
+`durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_sq`,
+`durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_terminal_sq`,
+`durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_of_terminal_sq_le`,
+and
+`durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_of_terminal_sq_le`.
+These convert the existing Kolmogorov/Doob square maximal inequality into the
+finite-horizon `P(max_{m <= n} |X_m| > a)` form used in Durrett's proof, with
+raw and stopped-process variants plus a supplied terminal second-moment bound
+consumer.
+
+Next aggressive step: continue Durrett Theorem 4.5.7 by proving the stopped
+terminal square estimate
+`E X_{N(a) ∧ n}^2 <= E(A_infty ∧ a^2)` for
+`N(a) = inf {n : A_{n+1} > a^2}`, then package the layer-cake/Fubini integral
+split that turns the V236 probability bound into
+`E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Do not start by formalizing the full
+Friedman urn state process unless it directly reuses the compiled 4.5.5 ratio
+package.  Do not revisit raw clock pointwise monotonicity, direct martingale
+finite-limit assumptions, denominator divergence on `limsup`, final 4.5.5
+ratio packaging, or the V236 Doob/Kolmogorov probability conversion.  Do not
+route back to
 stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1754,6 +1766,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V235` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V236` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -22638,6 +22638,114 @@ theorem
   exact ⟨by simpa [durrett2019_theorem_4_5_5_conditionalProbabilitySum] using hBC, hratio⟩
 
 /--
+Durrett 2019, Theorem 4.5.7 finite-horizon maximal-probability support.
+
+This is the `P(max_{m <= n} |X_m| > a)` form of the Kolmogorov/Doob square
+maximal inequality, obtained from the existing square-threshold statement.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_sq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_sq_int : ∀ n, Integrable (fun ω => X n ω ^ 2) P)
+    {a : ℝ≥0} (ha : a ≠ 0) (n : ℕ) :
+    P {ω | (a : ℝ) < durrett2019_runningAbsMax X n ω} ≤
+      ENNReal.ofReal (∫ ω, X n ω ^ 2 ∂P) /
+        ((a ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  have hsquare :=
+    durrett2019_example_4_4_3_kolmogorov_maximal_inequality_square_div
+      (P := P) (ℱ := ℱ) (S := X) hX hX_sq_int (x := a) ha n
+  refine (measure_mono ?_).trans hsquare
+  intro ω hω
+  change
+    (a : ℝ) <
+      (Finset.range (n + 1)).sup' Finset.nonempty_range_add_one
+        (fun k => |X k ω|) at hω
+  rw [Finset.lt_sup'_iff] at hω
+  rcases hω with ⟨k, hk, hak⟩
+  have ha_nonneg : 0 ≤ (a : ℝ) := by positivity
+  have habs_nonneg : 0 ≤ |X k ω| := abs_nonneg _
+  have hsquare_lt : (a : ℝ) ^ 2 < |X k ω| ^ 2 := by
+    nlinarith
+  have hsquare_le : ((a ^ 2 : ℝ≥0) : ℝ) ≤ X k ω ^ 2 := by
+    rw [sq_abs] at hsquare_lt
+    simpa using le_of_lt hsquare_lt
+  exact hsquare_le.trans (Finset.le_sup' (fun k => X k ω ^ 2) hk)
+
+/--
+Durrett 2019, Theorem 4.5.7 stopped finite-horizon maximal-probability
+support.
+
+Applied with the threshold time `N = inf {n : A_{n+1} > a^2}`, this is the
+Doob/Kolmogorov estimate for the stopped martingale appearing in the proof of
+Theorem 4.5.7.
+-/
+theorem
+    durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_terminal_sq
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> WithTop ℕ}
+    (hX : Martingale X ℱ P) (hN : IsStoppingTime ℱ N)
+    (hStopped_sq_int :
+      ∀ n, Integrable (fun ω => stoppedProcess X N n ω ^ 2) P)
+    {a : ℝ≥0} (ha : a ≠ 0) (n : ℕ) :
+    P {ω | (a : ℝ) < durrett2019_runningAbsMax (stoppedProcess X N) n ω} ≤
+      ENNReal.ofReal (∫ ω, stoppedProcess X N n ω ^ 2 ∂P) /
+        ((a ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  exact
+    durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_sq
+      (P := P) (ℱ := ℱ) (X := stoppedProcess X N)
+      (durrett2019_theorem_4_2_9_martingale_stoppedProcess hX hN)
+      hStopped_sq_int ha n
+
+/--
+Durrett 2019, Theorem 4.5.7 finite-horizon maximal-probability support with a
+supplied terminal second-moment upper bound.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_of_terminal_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hX_sq_int : ∀ n, Integrable (fun ω => X n ω ^ 2) P)
+    {a : ℝ≥0} (ha : a ≠ 0) {n : ℕ} {B : ℝ}
+    (hterminal_sq_le : (∫ ω, X n ω ^ 2 ∂P) ≤ B) :
+    P {ω | (a : ℝ) < durrett2019_runningAbsMax X n ω} ≤
+      ENNReal.ofReal B / ((a ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  exact
+    (durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_sq
+      (P := P) (ℱ := ℱ) (X := X) hX hX_sq_int ha n).trans
+      (ENNReal.div_le_div_right
+        (ENNReal.ofReal_le_ofReal hterminal_sq_le)
+        ((a ^ 2 : ℝ≥0) : ℝ≥0∞))
+
+/--
+Durrett 2019, Theorem 4.5.7 stopped finite-horizon maximal-probability support
+with a supplied stopped terminal second-moment upper bound.
+-/
+theorem
+    durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_of_terminal_sq_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} {N : Ω -> WithTop ℕ}
+    (hX : Martingale X ℱ P) (hN : IsStoppingTime ℱ N)
+    (hStopped_sq_int :
+      ∀ n, Integrable (fun ω => stoppedProcess X N n ω ^ 2) P)
+    {a : ℝ≥0} (ha : a ≠ 0) {n : ℕ} {B : ℝ}
+    (hterminal_sq_le :
+      (∫ ω, stoppedProcess X N n ω ^ 2 ∂P) ≤ B) :
+    P {ω | (a : ℝ) < durrett2019_runningAbsMax (stoppedProcess X N) n ω} ≤
+      ENNReal.ofReal B / ((a ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  exact
+    (durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_terminal_sq
+      (P := P) (ℱ := ℱ) (X := X) (N := N)
+      hX hN hStopped_sq_int ha n).trans
+      (ENNReal.div_le_div_right
+        (ENNReal.ofReal_le_ofReal hterminal_sq_le)
+        ((a ^ 2 : ℝ≥0) : ℝ≥0∞))
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

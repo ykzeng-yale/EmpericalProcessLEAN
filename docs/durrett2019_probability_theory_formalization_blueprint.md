@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V235`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V236`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -265,6 +265,16 @@ and
 The displayed ratio conclusion is now stated almost surely on the raw
 conditional-probability divergence event, with Theorem 4.3.4 packaged beside
 it as the `limsup B atTop` event identification.
+V236 starts Durrett Theorem 4.5.7 with the finite-horizon maximal-probability
+layer:
+`durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_sq`,
+`durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_terminal_sq`,
+`durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_of_terminal_sq_le`,
+and
+`durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_of_terminal_sq_le`.
+These wrappers consume the existing Kolmogorov/Doob square maximal inequality
+and expose the stopped `P(max_{m <= n} |X_{N ∧ m}| > a)` estimate used in the
+textbook proof.
 The next theorem-facing target is no longer finite sum/integral exchange,
 V214-to-V209 wiring, the tail-integral-to-clock-bound package,
 variance-ratio integrability packaging, lower-bound/no-zero/divergence
@@ -274,9 +284,9 @@ denominator bridges, increment/denominator-clock plumbing, or Bernoulli
 conditional-variance algebra, max-normalizer denominator handoff, or
 finite/infinite event-cover ratio assembly, the max-normalizer 4.5.3 source
 handoff, raw-clock monotonicity, or final Theorem 4.5.5 packaging.  Move next
-to Durrett Theorem 4.5.7 reusable martingale
-maximal `L^1` square-root bound, starting with the stopped maximal-probability
-estimate and layer-cake/integral split.  Do not
+to the next Theorem 4.5.7 layer: the stopped terminal-square estimate
+`E X_{N(a) ∧ n}^2 <= E(A_infty ∧ a^2)` and the layer-cake/Fubini integral
+split.  Do not
 route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2

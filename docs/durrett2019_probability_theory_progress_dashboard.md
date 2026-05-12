@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V235` in
+Route from `Live In-Thread Goal Prompt V236` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Section 4.5.5 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the
@@ -235,6 +235,15 @@ The active target now moves to Durrett Theorem 4.5.7, beginning with the
 stopped maximal-probability estimate and layer-cake/integral split for
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`; do not route back to final 4.5.5
 packaging.
+V236 starts Theorem 4.5.7 with the finite-horizon maximal-probability layer:
+`durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_sq`,
+`durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_terminal_sq`,
+`durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_of_terminal_sq_le`,
+and
+`durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_of_terminal_sq_le`.
+The next target is the stopped terminal-square estimate
+`E X_{N(a) ∧ n}^2 <= E(A_infty ∧ a^2)` and then the layer-cake/Fubini split;
+do not redo the Doob/Kolmogorov probability conversion.
 
 Closed Chapter 2 support remains available in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
