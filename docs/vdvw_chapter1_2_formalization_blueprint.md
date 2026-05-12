@@ -2384,6 +2384,14 @@ above, so they do not change the theorem-level dashboard counts.
    and the source-facing a.e. lower-growth variant
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt_of_eventually_ae_cardinality_ge`,
    leaving the half-scale signed bad lower bound as the exposed source input.
+   The source side now also has an invNat additive finite-tail bridge through
+   `VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_centeredPairSubSignSwapBad_finiteCenter_failure_tails_halfScale_invNat`,
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_invNat`, and
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat`.
+   This route keeps the positive-size Chebyshev beta in its natural `1 / n`
+   form and handles the `C / (n + 1)` convergence comparison internally, so the
+   next wrapper target is the quarter-radius selected-center/inverse-square
+   specialization of this invNat route.
    The averaged product-pair alternative is now compiled through
    `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
    `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
@@ -3579,7 +3587,11 @@ a.e. lower-growth of the canonical half-radius selected cover.  The half-scale
 selected-center route now has matching quarter-radius
 `..._halfScale_selectedCenterAt_of_invSq_lintegral` and
 `..._halfScale_selectedCenterAt_of_eventually_ae_cardinality_ge` endpoints, so
-its exposed source input is the half-scale signed bad-event lower bound.
+its exposed source input is the half-scale signed bad-event lower bound.  The
+generic invNat finite-tail route now composes that Chebyshev lower bound with
+fixed-original sign-swap transport while retaining the exact positive-size
+`1 / n` beta; selected-center/inverse-square specialization of the invNat route
+is the next local wrapper target.
 
 ## Automation Checklist
 

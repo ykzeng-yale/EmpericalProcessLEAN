@@ -276,8 +276,15 @@ and the quarter-radius inverse-square discharge is compiled as
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt_of_invSq_lintegral`
 with the a.e. lower-growth variant
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt_of_eventually_ae_cardinality_ge`.
-The active input is now the half-scale signed bad source.  The averaged
-product-pair route is now also
+The half-scale source side now also has an invNat additive finite-tail route:
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_centeredPairSubSignSwapBad_finiteCenter_failure_tails_halfScale_invNat`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_invNat`, and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat`.
+This lets the positive-size half-scale Chebyshev/sign-swap source use its
+natural `1 / n` beta and defers the `C / (n + 1)` comparison to the convergence
+proof.  The next active source input is either selected-center/inverse-square
+plumbing for this invNat route or the fixed-original sign-swap transport
+itself.  The averaged product-pair route is now also
 compiled through
 `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
 `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
@@ -4439,4 +4446,6 @@ now has the analogous quarter-radius
 `..._halfScale_selectedCenterAt_of_invSq_lintegral` and
 `..._halfScale_selectedCenterAt_of_eventually_ae_cardinality_ge` endpoints,
 leaving the half-scale signed bad-event lower bound as the exposed source
-input.
+input.  The generic invNat half-scale finite-tail route now composes that
+Chebyshev source with fixed-original sign-swap transport; the remaining wrapper
+work is the selected-center/inverse-square specialization of the invNat route.

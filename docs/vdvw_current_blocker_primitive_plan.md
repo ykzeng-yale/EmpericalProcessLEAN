@@ -9903,3 +9903,16 @@ quarter-radius selected cover, or by an a.e. deterministic lower cardinality
 bound tending to infinity.  The active source frontier is now the half-scale
 signed bad-event lower bound, with finite-center measurability and tail
 control internal to the selected-cover wrappers.
+
+2026-05-12 half-scale invNat finite-tail Chebyshev/sign-swap route:
+`Theorem243.lean` now also proves
+`VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_centeredPairSubSignSwapBad_finiteCenter_failure_tails_halfScale_invNat`,
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_invNat`, and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat`.
+These keep the beta in the exact positive-size Chebyshev form
+`1 - 16*M^2 / ((n : ℝ) * (epsilon/2)^2)` and only convert `1 / n` to a
+`C / (n + 1)` convergence bound after excluding `n = 0`.  The half-scale
+Chebyshev source can therefore feed the additive finite-tail route without
+requiring the stronger `(n + 1)` beta.  The next useful closure is the
+quarter-radius selected-center/inverse-square wrapper for this invNat route,
+or the fixed-original sign-swap transport itself.
