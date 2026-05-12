@@ -1074,6 +1074,15 @@ wrappers for weak convergence and asymptotic tightness are compiled as
 `VdVWWeakConvergenceProbabilityMeasures.finiteDimensionalRestrict_comp_tendsto`
 and
 `VdVWProbabilityMeasuresAsymptoticallyTight.finiteDimensionalRestrict_comp_tendsto`.
+The FDD law-extensionality layer now also removes the common-source-space
+restriction:
+`processLaw_eq_iff_forall_finiteDimensional_eq_twoMeasure` and
+`identDistrib_iff_forall_finiteDimensional_identDistrib_twoMeasure` in
+`StatInference.ProbabilityMeasure`, with the VdV&W-facing wrappers
+`vdVW148_processLaw_ext_of_forall_finiteDimensional_eq_twoMeasure` and
+`vdVW148_identDistrib_of_forall_finiteDimensional_identDistrib_twoMeasure`.
+This is a projective-limit uniqueness step for arbitrary-map/net support, not
+the full arbitrary-index FDD weak-convergence converse.
 The remaining Chapter 1 process blockers are still the arbitrary-index FDD
 converse, separability/tightness/asymptotic measurability, and full
 nonmeasurable outer-cover signed weak convergence.  The finite-trace

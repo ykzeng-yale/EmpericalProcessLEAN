@@ -168,6 +168,54 @@ theorem vdVW148_identDistrib_of_forall_finiteDimensional_identDistrib
       hX hY).2 hFDD
 
 /--
+VdV&W 1.4.8 cross-source law-extensionality layer: process laws on different
+probability spaces are determined by matching all finite-dimensional
+distributions.
+
+This is still only the projective-limit uniqueness component of the full
+FDD weak-convergence criterion.  It removes the same-source restriction from
+the existing local wrapper, which is necessary for arbitrary nets of random
+maps.
+-/
+theorem vdVW148_processLaw_ext_of_forall_finiteDimensional_eq_twoMeasure
+    {ΩX ΩY : Type*} [MeasurableSpace ΩX] [MeasurableSpace ΩY]
+    {X : (t : T) -> ΩX -> 𝓧 t} {Y : (t : T) -> ΩY -> 𝓧 t}
+    {P : Measure ΩX} {Q : Measure ΩY} [IsFiniteMeasure P]
+    (hX : AEMeasurable (fun ω => fun t => X t ω) P)
+    (hY : AEMeasurable (fun ω => fun t => Y t ω) Q)
+    (hFDD : ∀ I : Finset T,
+      P.map (fun ω => I.restrict (fun t => X t ω)) =
+        Q.map (fun ω => I.restrict (fun t => Y t ω))) :
+    P.map (fun ω => fun t => X t ω) =
+      Q.map (fun ω => fun t => Y t ω) := by
+  exact
+    (StatInference.ProbabilityMeasure.processLaw_eq_iff_forall_finiteDimensional_eq_twoMeasure
+      hX hY).2 hFDD
+
+/--
+VdV&W 1.4.8 cross-source `IdentDistrib` layer: process-level identical
+distribution across different probability spaces follows from identical
+distribution of every finite-dimensional restriction.
+
+This is a law-extensionality bridge only, not the full arbitrary-index
+weak-convergence/FDD converse.
+-/
+theorem vdVW148_identDistrib_of_forall_finiteDimensional_identDistrib_twoMeasure
+    {ΩX ΩY : Type*} [MeasurableSpace ΩX] [MeasurableSpace ΩY]
+    {X : (t : T) -> ΩX -> 𝓧 t} {Y : (t : T) -> ΩY -> 𝓧 t}
+    {P : Measure ΩX} {Q : Measure ΩY} [IsFiniteMeasure P]
+    (hX : AEMeasurable (fun ω => fun t => X t ω) P)
+    (hY : AEMeasurable (fun ω => fun t => Y t ω) Q)
+    (hFDD : ∀ I : Finset T,
+      IdentDistrib
+        (fun ω => I.restrict (fun t => X t ω))
+        (fun ω => I.restrict (fun t => Y t ω)) P Q) :
+    IdentDistrib (fun ω => fun t => X t ω) (fun ω => fun t => Y t ω) P Q := by
+  exact
+    (StatInference.ProbabilityMeasure.identDistrib_iff_forall_finiteDimensional_identDistrib_twoMeasure
+      hX hY).2 hFDD
+
+/--
 VdV&W 1.4.8 forward finite-dimensional weak-convergence layer: weak
 convergence of process laws implies weak convergence of every
 finite-dimensional restriction.

@@ -240,7 +240,7 @@ through 2.4.1 requires accounting for them.
 | 1.4.5 Corollary | `M1:878` | product weak convergence criterion | local-layer/mathlib-foundation: measurable common-domain Slutsky/product convergence wrapper compiled; exact product/arbitrary-map criterion pending |
 | 1.4.6 Example | `M1:883` | asymptotic independence | later roadmap |
 | 1.4.7 Example | `M1:892` | Slutsky lemma | mathlib/topology foundations reusable; VdV&W statement pending |
-| 1.4.8 Theorem | `M1:910` | finite-dimensional projections | local-layer/mathlib-foundation: FDD forward direction compiled via finite-coordinate restriction; exact weak-convergence iff-over-FDD converse pending |
+| 1.4.8 Theorem | `M1:910` | finite-dimensional projections | local-layer/mathlib-foundation: FDD forward direction compiled via finite-coordinate restriction; projective-limit process-law and `IdentDistrib` uniqueness now includes cross-source wrappers `vdVW148_processLaw_ext_of_forall_finiteDimensional_eq_twoMeasure` and `vdVW148_identDistrib_of_forall_finiteDimensional_identDistrib_twoMeasure`; exact weak-convergence iff-over-FDD converse pending |
 | 1.5.1 Example | `M1:927` | continuous functions as subspace of `l_infty` | later roadmap |
 | 1.5.2 Lemma | `M1:932` | asymptotic measurability by coordinates | later roadmap |
 | 1.5.3 Lemma | `M1:933` | law equality from marginals | later roadmap |

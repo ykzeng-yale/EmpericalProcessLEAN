@@ -1164,6 +1164,21 @@ gap only; the arbitrary-index VdV&W 1.4.8 converse, process separability,
 asymptotic tightness/measurability, and nonmeasurable outer-cover signed weak
 convergence remain the Chapter 1 process blockers.
 
+2026-05-12 cross-source FDD law-extensionality:
+`StatInference.ProbabilityMeasure.FiniteDimensional` now proves
+`processLaw_eq_iff_forall_finiteDimensional_eq_twoMeasure` and
+`identDistrib_iff_forall_finiteDimensional_identDistrib_twoMeasure`, allowing
+process law equality/identical distribution to be recovered from all FDDs even
+when the two processes live on different source probability spaces.  The
+VdV&W-facing wrappers
+`vdVW148_processLaw_ext_of_forall_finiteDimensional_eq_twoMeasure` and
+`vdVW148_identDistrib_of_forall_finiteDimensional_identDistrib_twoMeasure`
+remove the same-domain restriction from the projective-limit uniqueness layer
+of Theorem 1.4.8.  This is still not the weak-convergence/FDD converse: the
+remaining Chapter 1 blocker is the tightness, separability, and asymptotic
+measurability proof that upgrades FDD convergence of arbitrary nets to full
+process convergence.
+
 2026-05-06 finite-index boundedness cleanup: local search found mathlib
 `Finite.bddAbove_range`, which proves boundedness of finite real coordinate
 ranges without an empirical-process primitive.  `EllInfty.lean` now adds
