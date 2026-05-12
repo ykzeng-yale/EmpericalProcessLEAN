@@ -19191,6 +19191,63 @@ theorem durrett2019_theorem_4_5_3_reciprocal_comp_normalizer_increment_nonneg
       (hf_mono (k + 1) ω hleft hright (hA_mono_step (k + 1) ω))
 
 /--
+Durrett 2019, Theorem 4.5.3 interval lower-bound support.
+
+A global lower bound on the deterministic normalizer discharges every
+clock-interval lower-bound side condition used by the integral comparison.
+-/
+theorem durrett2019_theorem_4_5_3_interval_one_le_of_global_one_le
+    {Ω : Type*} {A : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hf_one_le : ∀ t : ℝ, 1 ≤ f t) :
+    ∀ k : ℕ, ∀ ω : Ω,
+      ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t := by
+  intro k ω t _ht
+  exact hf_one_le t
+
+/--
+Durrett 2019, Theorem 4.5.3 nonzero-normalizer support.
+
+The same global lower bound also rules out zeros of the deterministic
+normalizer, which is exactly what the reciprocal-square continuity wrapper
+needs.
+-/
+theorem durrett2019_theorem_4_5_3_ne_zero_of_global_one_le
+    {f : ℝ -> ℝ} (hf_one_le : ∀ t : ℝ, 1 ≤ f t) :
+    ∀ t : ℝ, f t ≠ 0 := by
+  intro t
+  exact ne_of_gt (zero_lt_one.trans_le (hf_one_le t))
+
+/--
+Durrett 2019, Theorem 4.5.3 interval monotonicity support.
+
+A globally monotone deterministic normalizer is monotone on each random clock
+interval.
+-/
+theorem durrett2019_theorem_4_5_3_interval_mono_of_monotone
+    {Ω : Type*} {A : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hf_mono : Monotone f) :
+    ∀ k : ℕ, ∀ ω : Ω,
+      MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)) := by
+  intro k ω x _hx y _hy hxy
+  exact hf_mono hxy
+
+/--
+Durrett 2019, Theorem 4.5.3 random-normalizer divergence support.
+
+If the clock diverges almost surely and the deterministic normalizer diverges
+at infinity, then the shifted random normalizer `f(A_{n+1})` diverges almost
+surely.
+-/
+theorem durrett2019_theorem_4_5_3_reciprocal_comp_atTop_of_clock_atTop
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {A : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hf_atTop : Tendsto f atTop atTop)
+    (hA_atTop : ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => A n ω) atTop atTop) :
+    ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop := by
+  filter_upwards [hA_atTop] with ω hAω
+  exact hf_atTop.comp (hAω.comp (tendsto_add_atTop_nat 1))
+
+/--
 Durrett 2019, Theorem 4.5.3 source-facing integrated clock route.
 
 This connects the V214 integrated summability package directly to the V209
@@ -19740,6 +19797,57 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
       (durrett2019_theorem_4_5_3_reciprocal_sq_continuous_of_continuous_ne_zero
         (f := f) hf_cont hf_ne_zero)
       hA0_nonneg hA_mono_step hf_mono hf_interval_one_le hb_atTop
+      hcond_le htail_int htail_bound
+
+/--
+Durrett 2019, Theorem 4.5.3 source-facing tail-integral route with global
+normalizer hypotheses.
+
+Compared with the V220 endpoint, this wrapper replaces the remaining
+interval/no-zero/divergence side conditions by global textbook-style
+assumptions on the deterministic normalizer `f` and the a.s. divergence of the
+clock process.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono_atTop
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {C : ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hA_int : ∀ n : ℕ, Integrable (A n) P)
+    (hf_cont : Continuous f)
+    (hf_mono : Monotone f)
+    (hf_one_le : ∀ t : ℝ, 1 ≤ f t)
+    (hf_atTop : Tendsto f atTop atTop)
+    (hA0_nonneg : ∀ ω : Ω, 0 ≤ A 0 ω)
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hA_atTop : ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => A n ω) atTop atTop)
+    (hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω)
+    (htail_int :
+      IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (f t)⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_interval_mono_ne_zero
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (C := C)
+      hX hX0 hX_memLp_two hA_predictable hA_int hf_cont
+      (durrett2019_theorem_4_5_3_ne_zero_of_global_one_le
+        (f := f) hf_one_le)
+      hA0_nonneg hA_mono_step
+      (durrett2019_theorem_4_5_3_interval_mono_of_monotone
+        (A := A) (f := f) hf_mono)
+      (durrett2019_theorem_4_5_3_interval_one_le_of_global_one_le
+        (A := A) (f := f) hf_one_le)
+      (durrett2019_theorem_4_5_3_reciprocal_comp_atTop_of_clock_atTop
+        (P := P) (A := A) (f := f) hf_atTop hA_atTop)
       hcond_le htail_int htail_bound
 
 /--

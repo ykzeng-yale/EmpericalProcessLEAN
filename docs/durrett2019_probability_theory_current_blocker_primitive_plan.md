@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V220
+## Live In-Thread Goal Prompt V221
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -218,12 +218,23 @@ The current source-shaped endpoint no longer asks for `hf_int`,
 clock-integrability, variance-ratio integrability, transform `MemLp`,
 scaled-square integrability, or increment-square integrability.
 
-Next aggressive step: remove remaining theorem-facing side conditions in the
-V220 endpoint.  Best first targets: derive `hf_interval_one_le` and global
-no-zero/positivity from a single lower-bound assumption on `f`, package
-`hb_atTop` from `A_n -> ∞` plus monotone/divergent `f`, or move to the next
-Durrett martingale theorem if those source assumptions are already the natural
-textbook hypotheses.  Do not
+V221 packages those remaining normalizer source assumptions.  New compiled
+declarations:
+`durrett2019_theorem_4_5_3_interval_one_le_of_global_one_le`,
+`durrett2019_theorem_4_5_3_ne_zero_of_global_one_le`,
+`durrett2019_theorem_4_5_3_interval_mono_of_monotone`,
+`durrett2019_theorem_4_5_3_reciprocal_comp_atTop_of_clock_atTop`, and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono_atTop`.
+The main endpoint now takes global textbook-style assumptions
+`Continuous f`, `Monotone f`, `∀ t, 1 <= f t`, `Tendsto f atTop atTop`, and
+`A_n -> ∞` a.s. instead of per-interval lower bounds, explicit no-zero facts,
+per-interval monotonicity, and the shifted random normalizer divergence.
+
+Next aggressive step: decide whether to close the last deterministic
+normalizer source gap by proving `Tendsto f atTop atTop` from the exact Durrett
+conditions on `f` and `∫_0^∞ f(t)^{-2} dt < ∞`, or treat this as the
+textbook's supplied divergence hypothesis and move to the next martingale
+theorem.  Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -235,7 +246,8 @@ packaging, transform `MemLp` packaging, scaled-square integrability packaging,
 increment-square integrability packaging, variance-ratio integrability
 packaging, finite random clock-integrability packaging,
 interval-integrability packaging, normalizer-increment packaging,
-reciprocal-square continuity packaging, Chapter 2.1, or Theorem 2.4.9 unless
+reciprocal-square continuity packaging, lower-bound/no-zero packaging,
+normalizer-divergence-from-clock packaging, Chapter 2.1, or Theorem 2.4.9 unless
 Theorem 4.5.3 exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1
