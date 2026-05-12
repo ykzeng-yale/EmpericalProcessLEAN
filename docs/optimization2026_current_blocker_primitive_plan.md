@@ -707,15 +707,20 @@ and
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_direct`,
 and routes the third-order/open-domain compatibility wrappers through the
 direct consumer.
+The theorem-facing envelope consumer is now also available as
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_envelope`.
+It builds the selected-value third-order envelope from the full-Hessian
+derivative package and immediately consumes it for the source-radius
+local-norm sandwich.
 Thus a packaged adjoint-square model plus a Schur derivative certificate
 already gives the projected source-radius local-norm sandwich without
 selected-value `f`, open-domain gradient, or second-order envelope assumptions.
 Source full-Hessian derivative data can now build that Schur derivative
 certificate and immediately use the direct consumer, avoiding the older
 positivity/nonzero wrapper path when only local-norm transport is needed.
-When the next task is only local-norm transport, use this direct theorem; save
-the heavier third-order envelope package for proving the actual selected-value
-third derivative.
+When selected-value envelope hypotheses are already in hand, use the
+theorem-facing envelope consumer as the source endpoint.  When the next task is
+only local-norm transport, use the shorter direct theorem.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

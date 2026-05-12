@@ -586,13 +586,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   and
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_direct`,
   and rewires the third-order/open-domain compatibility wrappers through it.
+  The newest theorem-facing envelope consumer also adds
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivative_isOpen_envelope`,
+  which builds the selected-value third-order envelope from the full-Hessian
+  derivative package and then consumes it for the source-radius local-norm
+  sandwich.
   A packaged adjoint-square model plus a Schur derivative certificate now
   proves the projected source-radius local-norm sandwich without selected-value
   `f`, open-domain gradient, or second-order envelope assumptions; source
   full-Hessian derivative data can now first build the Schur certificate and
   use the same direct transport theorem without the older positivity/nonzero
-  wrapper route.  Use this shorter route whenever the goal is only Lemma
-  13.6-style local-norm transport.
+  wrapper route.  When selected-value envelope hypotheses are already in hand,
+  use the theorem-facing envelope consumer as the source endpoint.  Use the
+  shorter direct route whenever the goal is only Lemma 13.6-style local-norm
+  transport.
 - Current priority sequence: continue Chewi Proposition 13.11 from the
   compiled product, shared-domain sum, affine-preimage, and inf-projection
   supplied-oracle layers in
