@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V219
+## Live In-Thread Goal Prompt V220
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -205,12 +205,25 @@ global tail integral.  This correctly needs continuity of the reciprocal-square
 clock integrand `fun t => (f t)⁻¹ ^ 2`; plain `Continuous f` is not enough
 unless a no-zero/positivity hypothesis for `f` is also supplied.
 
-Next aggressive step: remove remaining non-integrability side conditions in
-the V219 endpoint.  Best first targets: derive `hf_int` from reciprocal-square
-continuity, derive `hb_increment_nonneg` from clock monotonicity plus
-per-interval monotonicity of `f`, and optionally add a wrapper deriving
-reciprocal-square continuity from `Continuous f` plus a global no-zero or
-positivity hypothesis.  Do not
+V220 removes more non-integrability side conditions from the main Theorem
+4.5.3 source route.  New compiled declarations:
+`durrett2019_theorem_4_5_3_interval_integrable_of_reciprocal_sq_continuous`,
+`durrett2019_theorem_4_5_3_reciprocal_sq_continuous_of_continuous_ne_zero`,
+`durrett2019_theorem_4_5_3_reciprocal_comp_normalizer_increment_nonneg`,
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_interval_mono`,
+and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_interval_mono_ne_zero`.
+The current source-shaped endpoint no longer asks for `hf_int`,
+`hb_increment_nonneg`, explicit reciprocal-square continuity, finite random
+clock-integrability, variance-ratio integrability, transform `MemLp`,
+scaled-square integrability, or increment-square integrability.
+
+Next aggressive step: remove remaining theorem-facing side conditions in the
+V220 endpoint.  Best first targets: derive `hf_interval_one_le` and global
+no-zero/positivity from a single lower-bound assumption on `f`, package
+`hb_atTop` from `A_n -> ∞` plus monotone/divergent `f`, or move to the next
+Durrett martingale theorem if those source assumptions are already the natural
+textbook hypotheses.  Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -220,8 +233,9 @@ packaging, random pathwise summability packaging, integrated finite-sum/Fubini
 summability plumbing, V214-to-V209 endpoint wiring, tail-integral-to-clock-bound
 packaging, transform `MemLp` packaging, scaled-square integrability packaging,
 increment-square integrability packaging, variance-ratio integrability
-packaging, finite random clock-integrability packaging, Chapter 2.1, or
-Theorem 2.4.9 unless
+packaging, finite random clock-integrability packaging,
+interval-integrability packaging, normalizer-increment packaging,
+reciprocal-square continuity packaging, Chapter 2.1, or Theorem 2.4.9 unless
 Theorem 4.5.3 exposes a strictly stronger missing primitive.
 
 Treat Chapter 2.1 independence/product/convolution support, Theorem 2.2.1

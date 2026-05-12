@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V219`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V220`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -130,13 +130,21 @@ replacing the explicit finite random clock-integrability hypothesis by
 measurability through the continuous primitive of `fun t => (f t)⁻¹ ^ 2` and
 boundedness from the global tail integral.  The reciprocal-square continuity
 hypothesis is intentional: `Continuous f` alone does not rule out zeros of `f`.
+V220 adds
+`durrett2019_theorem_4_5_3_interval_integrable_of_reciprocal_sq_continuous`,
+`durrett2019_theorem_4_5_3_reciprocal_sq_continuous_of_continuous_ne_zero`,
+`durrett2019_theorem_4_5_3_reciprocal_comp_normalizer_increment_nonneg`,
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_interval_mono`,
+and
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_interval_mono_ne_zero`,
+removing the explicit `hf_int`, `hb_increment_nonneg`, and reciprocal-square
+continuity assumptions from the source-shaped endpoint.
 The next theorem-facing target is no
 longer finite sum/integral exchange, V214-to-V209 wiring, the
 tail-integral-to-clock-bound package, or variance-ratio integrability
-packaging: remove remaining non-integrability side conditions, especially
-derive interval integrability from reciprocal-square continuity and derive
-normalizer increment monotonicity from clock monotonicity plus per-interval
-monotonicity of `f`.  Do not
+packaging: remove remaining theorem-facing side conditions, especially package
+the lower-bound/no-zero assumptions on `f` and the `hb_atTop` normalizer
+divergence condition from cleaner source hypotheses.  Do not
 route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
@@ -148,8 +156,9 @@ summability plumbing, V214-to-V209 endpoint wiring,
 tail-integral-to-clock-bound packaging, transform `MemLp` packaging,
 scaled-square/increment-square integrability packaging, variance-ratio
 integrability packaging, finite random clock-integrability packaging, or
-scaled-summability handoff wrappers unless a later theorem exposes a precise
-missing primitive.
+interval-integrability/normalizer-increment/reciprocal-square-continuity
+packaging, or scaled-summability handoff wrappers unless a later theorem
+exposes a precise missing primitive.
 
 Closed Chapter 2 support lives in
 `StatInference/ProbabilityTheory/Basic.lean`.  Chapter 2.1 has compiled

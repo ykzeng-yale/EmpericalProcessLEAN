@@ -19138,6 +19138,59 @@ theorem durrett2019_theorem_4_5_3_finite_clock_integral_integrable_of_tail_integ
   exact ⟨hclock_sm, HasFiniteIntegral.of_bounded hbounded⟩
 
 /--
+Durrett 2019, Theorem 4.5.3 interval-integrability support.
+
+Continuity of the reciprocal-square clock integrand gives every finite
+interval-integrability hypothesis used by the deterministic clock comparison.
+-/
+theorem durrett2019_theorem_4_5_3_interval_integrable_of_reciprocal_sq_continuous
+    {f : ℝ -> ℝ}
+    (hfinvSq_cont : Continuous (fun t : ℝ => (f t)⁻¹ ^ 2)) :
+    ∀ a b : ℝ, IntervalIntegrable (fun t : ℝ => (f t)⁻¹ ^ 2) volume a b := by
+  intro a b
+  exact hfinvSq_cont.intervalIntegrable a b
+
+/--
+Durrett 2019, Theorem 4.5.3 reciprocal-square continuity support.
+
+If `f` is continuous and has no zeros, then the reciprocal-square clock
+integrand is continuous.
+-/
+theorem durrett2019_theorem_4_5_3_reciprocal_sq_continuous_of_continuous_ne_zero
+    {f : ℝ -> ℝ}
+    (hf_cont : Continuous f) (hf_ne_zero : ∀ t : ℝ, f t ≠ 0) :
+    Continuous (fun t : ℝ => (f t)⁻¹ ^ 2) := by
+  have hinv : Continuous (fun t : ℝ => (f t)⁻¹) :=
+    hf_cont.inv₀ hf_ne_zero
+  simpa using hinv.pow 2
+
+/--
+Durrett 2019, Theorem 4.5.3 normalizer-monotonicity support.
+
+If the clock process is increasing and `f` is monotone on each clock interval,
+then the random normalizer `f(A_n)` has nonnegative increments along the
+shifted sequence used by the Kronecker handoff.
+-/
+theorem durrett2019_theorem_4_5_3_reciprocal_comp_normalizer_increment_nonneg
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {A : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ}
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ k : ℕ, ∀ ω : Ω,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω))) :
+    ∀ᵐ ω ∂P, ∀ k : ℕ, 0 ≤ f (A (k + 2) ω) - f (A (k + 1) ω) := by
+  refine ae_of_all P fun ω k => ?_
+  have hleft :
+      A (k + 1) ω ∈ Set.Icc (A (k + 1) ω) (A (k + 2) ω) :=
+    ⟨le_rfl, hA_mono_step (k + 1) ω⟩
+  have hright :
+      A (k + 2) ω ∈ Set.Icc (A (k + 1) ω) (A (k + 2) ω) :=
+    ⟨hA_mono_step (k + 1) ω, le_rfl⟩
+  exact
+    sub_nonneg.mpr
+      (hf_mono (k + 1) ω hleft hright (hA_mono_step (k + 1) ω))
+
+/--
 Durrett 2019, Theorem 4.5.3 source-facing integrated clock route.
 
 This connects the V214 integrated summability package directly to the V209
@@ -19583,6 +19636,111 @@ theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciproc
         (P := P) (ℱ := ℱ) (f := f) (A := A) (C := C)
         hA_predictable hfinvSq_cont hA0_nonneg hA_mono_step htail_int htail_bound)
       htail_int htail_bound
+
+/--
+Durrett 2019, Theorem 4.5.3 source-facing tail-integral route with automatic
+interval-integrability, normalizer monotonicity, `L^2`, variance-ratio
+integrability, and finite random clock-integrability side conditions.
+
+Compared with the V219 endpoint, this wrapper removes the explicit `hf_int`
+and `hb_increment_nonneg` assumptions.  Interval integrability comes from
+continuity of the reciprocal-square clock integrand, and nonnegative
+increments of `f(A_n)` come from the clock monotonicity plus per-interval
+monotonicity of `f`.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_interval_mono
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {C : ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hA_int : ∀ n : ℕ, Integrable (A n) P)
+    (hf_cont : Continuous f)
+    (hfinvSq_cont : Continuous (fun t : ℝ => (f t)⁻¹ ^ 2))
+    (hA0_nonneg : ∀ ω : Ω, 0 ≤ A 0 ω)
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ k : ℕ, ∀ ω : Ω,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)))
+    (hf_interval_one_le :
+      ∀ k : ℕ, ∀ ω : Ω,
+        ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t)
+    (hb_atTop :
+      ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop)
+    (hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω)
+    (htail_int :
+      IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (f t)⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (C := C)
+      hX hX0 hX_memLp_two hA_predictable hA_int hf_cont hfinvSq_cont
+      hA0_nonneg hA_mono_step hf_mono hf_interval_one_le
+      (fun k ω =>
+        durrett2019_theorem_4_5_3_interval_integrable_of_reciprocal_sq_continuous
+          (f := f) hfinvSq_cont (A k ω) (A (k + 1) ω))
+      (durrett2019_theorem_4_5_3_reciprocal_comp_normalizer_increment_nonneg
+        (P := P) (A := A) (f := f) hA_mono_step hf_mono)
+      hb_atTop hcond_le htail_int htail_bound
+
+/--
+Durrett 2019, Theorem 4.5.3 source-facing tail-integral route with automatic
+reciprocal-square continuity from `Continuous f` and a no-zero hypothesis.
+
+This is the same endpoint as
+`durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_interval_mono`,
+but replaces explicit continuity of `fun t => (f t)⁻¹ ^ 2` by the more
+source-shaped assumption that `f` is continuous and never zero.
+-/
+theorem durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_interval_mono_ne_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {A X : ℕ -> Ω -> ℝ} {f : ℝ -> ℝ} {C : ℝ}
+    (hX : Martingale X ℱ P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hX_memLp_two : ∀ k, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hA_int : ∀ n : ℕ, Integrable (A n) P)
+    (hf_cont : Continuous f)
+    (hf_ne_zero : ∀ t : ℝ, f t ≠ 0)
+    (hA0_nonneg : ∀ ω : Ω, 0 ≤ A 0 ω)
+    (hA_mono_step : ∀ k : ℕ, ∀ ω : Ω, A k ω ≤ A (k + 1) ω)
+    (hf_mono :
+      ∀ k : ℕ, ∀ ω : Ω,
+        MonotoneOn f (Set.Icc (A k ω) (A (k + 1) ω)))
+    (hf_interval_one_le :
+      ∀ k : ℕ, ∀ ω : Ω,
+        ∀ t ∈ Set.Icc (A k ω) (A (k + 1) ω), 1 ≤ f t)
+    (hb_atTop :
+      ∀ᵐ ω ∂P, Tendsto (fun n : ℕ => f (A (n + 1) ω)) atTop atTop)
+    (hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω)
+    (htail_int :
+      IntegrableOn (fun t => (f t)⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (f t)⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n : ℕ => X n ω / f (A n ω)) atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_interval_mono
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (C := C)
+      hX hX0 hX_memLp_two hA_predictable hA_int hf_cont
+      (durrett2019_theorem_4_5_3_reciprocal_sq_continuous_of_continuous_ne_zero
+        (f := f) hf_cont hf_ne_zero)
+      hA0_nonneg hA_mono_step hf_mono hf_interval_one_le hb_atTop
+      hcond_le htail_int htail_bound
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
