@@ -2365,6 +2365,11 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad`,
    isolating the exact beta penalty needed when an `epsilon` original bad
    event feeds an `epsilon / 2` pair-sub bad event.
+   The companion signed source adapter
+   `VdVWChebyshev_betaLower_named_centeredPairSubSignSwapBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad`
+   composes this half-scale Chebyshev lower bound with the explicit
+   fixed-original sign-swap transport input, so the remaining selected-center
+   work is the half-scale beta consumer rather than the pair-sub source mass.
    The averaged product-pair alternative is now compiled through
    `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
    `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,

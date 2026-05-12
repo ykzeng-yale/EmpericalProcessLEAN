@@ -259,8 +259,12 @@ has the positive-size and half-scale wrappers
 and
 `VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad`,
 so the half-radius pair-sub lower bound is packaged in the event shape needed
-by selected-cover/sign-swap consumers.  The averaged product-pair route is now
-also compiled through
+by selected-cover/sign-swap consumers.  The sign-swapped half-scale source
+adapter
+`VdVWChebyshev_betaLower_named_centeredPairSubSignSwapBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad`
+now composes that Chebyshev source with the fixed-original sign-swap transport
+input, leaving only the half-scale beta consumer wiring outside the source
+layer.  The averaged product-pair route is now also compiled through
 `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
 `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
 `measure_mul_le_vdVWProductMeasure_pairDifference_constWeights_bad_of_split_fiber_lower_bound`,

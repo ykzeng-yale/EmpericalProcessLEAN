@@ -9858,3 +9858,12 @@ centered supremum event.  This packages the Chebyshev half-radius input needed
 by the selected-net/sign-swap route; the remaining source frontier is the
 fixed-original sign-swap transport and wiring this half-scale beta into the
 selected-center convergence consumer.
+
+2026-05-12 half-scale sign-swapped source adapter:
+`Theorem243.lean` now also proves
+`VdVWChebyshev_betaLower_named_centeredPairSubSignSwapBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad`.
+This composes the positive-size half-scale pair-sub Chebyshev lower bound with
+the fixed-original sign-swap transport input, producing the signed bad-event
+lower bound at radius `epsilon / 2` and beta denominator
+`(n : ℝ) * (epsilon / 2)^2`.  The remaining work is to wire this half-scale
+beta source into the selected-center convergence consumer.

@@ -50344,6 +50344,57 @@ theorem
       hbad_half
 
 /--
+Half-scale positive-size sign-swapped bad-event lower bound.
+
+This composes the half-scale pair-sub Chebyshev source with the remaining
+fixed-original sign-swap transport.  The result is the beta-large signed bad
+fiber source expected by the selected finite-net comparison, still leaving the
+transport theorem itself explicit.
+-/
+theorem
+    VdVWChebyshev_betaLower_named_centeredPairSubSignSwapBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad
+    {Observation : Type u} {Index : Type v} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ} {M epsilon : ℝ} {n : ℕ}
+    {sample : SampleAt Observation n}
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hM : 0 ≤ M)
+    (htruncIntegrable :
+      ∀ index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hepsilon : 0 < epsilon) (hn : 0 < n)
+    (hbad :
+      epsilon <
+        dist
+          (vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => ((n : ℝ))⁻¹) sample)
+          (0 : ℝ))
+    (hsignSwapLower :
+      (vdVWProductMeasure P n)
+          (VdVWTheorem243CenteredPairSubBadEvent
+            P indexClass classFun envelope M (epsilon / 2) sample) ≤
+        ((vdVWProductMeasure P n).prod
+            (vdVWProductMeasure vdVWRademacherLaw n))
+          (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+            P indexClass classFun envelope M (epsilon / 2) sample)) :
+    ENNReal.ofReal
+        (1 - (16 * M ^ 2) / (((n : ℝ)) * (epsilon / 2) ^ 2)) ≤
+      ((vdVWProductMeasure P n).prod
+          (vdVWProductMeasure vdVWRademacherLaw n))
+        (VdVWTheorem243CenteredPairSubSignSwapBadEvent
+          P indexClass classFun envelope M (epsilon / 2) sample) := by
+  exact
+    (VdVWChebyshev_betaLower_named_centeredPairSubBadEvent_centeredTruncated_uniformWeights_halfScale_of_pos_of_dist_bad
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (epsilon := epsilon) (n := n)
+      (sample := sample) henvelope hM htruncIntegrable hepsilon hn hbad).trans
+        hsignSwapLower
+
+/--
 Averaged product-pair version of the threshold-doubled Chebyshev lower bound.
 
 This is the source shape needed before applying the already compiled
