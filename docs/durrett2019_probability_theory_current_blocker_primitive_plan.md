@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V227
+## Live In-Thread Goal Prompt V228
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -300,12 +300,25 @@ limit, infinite clock needs the `max(A_n, 1)` normalized martingale estimate,
 and the two event-local conclusions combine to the full ratio conclusion on
 the covered event.
 
-Next aggressive step: specialize Theorem 4.5.3 to `f(t) = max t 1` and feed it
-the V226 Borel-Cantelli dominated variance-clock endpoint.  Prove only the
-needed normalizer facts now: continuity, monotonicity, `1 <= max t 1`,
-`A_n -> ∞` implies `max(A_n,1) -> ∞`, and the tail-integral certificate for
-`(max t 1)⁻¹ ^ 2` on `[0,∞)`.  Then pass that infinite-clock result into the
-V227 ratio assembly.  Do not
+V228 specializes the infinite-clock side of Theorem 4.5.5 to the textbook
+normalizer `f(t)=max t 1` and feeds in the V226 Borel-Cantelli dominated
+variance-clock endpoint.  New compiled declarations:
+`durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_conditionalProbabilitySum_clock`
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_conditionalProbabilitySum_clock`.
+The proof now derives the `max t 1` continuity, monotonicity, and lower-bound
+facts inside the wrapper.  The remaining explicit source obligations are the
+conditional-probability clock regularity and the tail-integral certificate.
+
+Next aggressive step: discharge the explicit source side conditions in the
+V228 wrapper.  First target the cheap ones: `X_0=0` for the Borel-Cantelli
+martingale part, martingale part from adapted events, finite-time `L^2` for
+the martingale part, `A_0>=0`, integrability/predictability of
+`conditionalProbabilitySum`, and the tail-integral certificate for
+`(max t 1)⁻¹ ^ 2` on `[0,∞)`.  The pointwise monotone clock condition is subtle
+because Mathlib's conditional-expectation representative is only ordered a.e.;
+either build an a.e.-monotone variant of the 4.5.3 route or introduce a
+canonical nonnegative representative before claiming it automatic.  Do not
 route back to stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1652,6 +1665,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V227` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V228` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

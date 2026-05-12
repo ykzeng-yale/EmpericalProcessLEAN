@@ -21042,6 +21042,195 @@ theorem
         (P := P) (ℱ := ℱ) (B := B) hB_meas)
 
 /--
+Durrett 2019, Theorem 4.5.5 infinite-clock martingale estimate from Theorem
+4.5.3 with the textbook normalizer `f(t)=max t 1`.
+
+The Borel-Cantelli conditional-variance clock domination is supplied
+automatically by the V226 Bernoulli conditional-variance package.  The remaining
+clock regularity hypotheses are kept explicit here because Mathlib's
+conditional-expectation representative is only ordered a.e. without further
+canonicalization.
+-/
+theorem
+    durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_conditionalProbabilitySum_clock
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {B : ℕ -> Set Ω} {C : ℝ} {InfiniteVar : Set Ω}
+    (hB_meas : ∀ n, MeasurableSet (B n))
+    (hX :
+      Martingale (martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P) ℱ P)
+    (hX0 :
+      martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P 0 =ᵐ[P] 0)
+    (hX_memLp_two :
+      ∀ k, MemLp (martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k)
+        (2 : ℝ≥0∞) P)
+    (hA_predictable :
+      IsStronglyPredictable ℱ
+        (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B))
+    (hA_int :
+      ∀ n : ℕ,
+        Integrable (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n) P)
+    (hA0_nonneg :
+      ∀ ω : Ω,
+        0 ≤ durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B 0 ω)
+    (hA_mono_step :
+      ∀ k : ℕ, ∀ ω : Ω,
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B k ω ≤
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω)
+    (hA_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop)
+    (htail_int :
+      IntegrableOn (fun t : ℝ => (max t (1 : ℝ))⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (max t (1 : ℝ))⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ᵐ ω ∂P, ω ∈ InfiniteVar ->
+      Tendsto
+        (fun n : ℕ =>
+          martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω /
+            max
+              (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+              (1 : ℝ))
+        atTop (𝓝 0) := by
+  let A : ℕ -> Ω -> ℝ :=
+    durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B
+  let X : ℕ -> Ω -> ℝ :=
+    martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P
+  let f : ℝ -> ℝ := fun t : ℝ => max t (1 : ℝ)
+  have hf_cont : Continuous f := by
+    simpa [f] using (continuous_id.max continuous_const : Continuous fun t : ℝ => max t (1 : ℝ))
+  have hf_mono : Monotone f := by
+    intro a b hab
+    exact max_le_max hab le_rfl
+  have hf_one_le : ∀ t : ℝ, 1 ≤ f t := by
+    intro t
+    exact le_max_right t (1 : ℝ)
+  have hcond_le :
+      ∀ k : ℕ,
+        P[(fun ω => (X (k + 1) ω - X k ω) ^ 2) | ℱ k] ≤ᵐ[P]
+          fun ω => A (k + 1) ω - A k ω := by
+    simpa [A, X] using
+      durrett2019_theorem_4_5_5_martingalePart_condExp_square_le_conditionalProbabilitySum_increment_auto
+        (P := P) (ℱ := ℱ) (B := B) hB_meas
+  have hnormalized :=
+    durrett2019_theorem_4_5_3_normalized_process_ae_tendsto_zero_on_of_reciprocal_comp_condExp_tail_integral_bound_of_process_memLp_clock_integrable_auto_clock_global_mono
+      (P := P) (ℱ := ℱ) (A := A) (X := X) (f := f) (C := C)
+      (InfiniteVar := InfiniteVar)
+      (by simpa [X] using hX)
+      (by simpa [X] using hX0)
+      (by simpa [X] using hX_memLp_two)
+      (by simpa [A] using hA_predictable)
+      (by simpa [A] using hA_int)
+      hf_cont hf_mono hf_one_le
+      (by simpa [A] using hA0_nonneg)
+      (by simpa [A] using hA_mono_step)
+      (by simpa [A] using hA_atTop_on)
+      hcond_le
+      (by simpa [f] using htail_int)
+      (by simpa [f] using htail_bound)
+  filter_upwards [hnormalized] with ω hω hInfinite
+  simpa [A, X, f] using hω hInfinite
+
+/--
+Durrett 2019, Theorem 4.5.5 event-cover ratio assembly with the infinite-clock
+side supplied by the `f(t)=max t 1` specialization of Theorem 4.5.3.
+-/
+theorem
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_conditionalProbabilitySum_clock
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {B : ℕ -> Set Ω} {C : ℝ} {D FiniteVar InfiniteVar : Set Ω}
+    (hcover :
+      ∀ᵐ ω ∂P, ω ∈ D -> ω ∈ FiniteVar ∨ ω ∈ InfiniteVar)
+    (hdenom_atTop_on :
+      ∀ᵐ ω ∂P, ω ∈ D ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop)
+    (hmartingale_exists_on_finite :
+      ∀ᵐ ω ∂P, ω ∈ D -> ω ∈ FiniteVar ->
+        ∃ z : ℝ,
+          Tendsto
+            (fun n : ℕ => martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω)
+            atTop (𝓝 z))
+    (hB_meas : ∀ n, MeasurableSet (B n))
+    (hX :
+      Martingale (martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P) ℱ P)
+    (hX0 :
+      martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P 0 =ᵐ[P] 0)
+    (hX_memLp_two :
+      ∀ k, MemLp (martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P k)
+        (2 : ℝ≥0∞) P)
+    (hA_predictable :
+      IsStronglyPredictable ℱ
+        (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B))
+    (hA_int :
+      ∀ n : ℕ,
+        Integrable (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n) P)
+    (hA0_nonneg :
+      ∀ ω : Ω,
+        0 ≤ durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B 0 ω)
+    (hA_mono_step :
+      ∀ k : ℕ, ∀ ω : Ω,
+        durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B k ω ≤
+          durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B (k + 1) ω)
+    (htail_int :
+      IntegrableOn (fun t : ℝ => (max t (1 : ℝ))⁻¹ ^ 2) (Set.Ici 0) volume)
+    (htail_bound :
+      ∫ t in Set.Ici (0 : ℝ), (max t (1 : ℝ))⁻¹ ^ 2 ∂volume ≤ C) :
+    ∀ᵐ ω ∂P, ω ∈ D ->
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.BorelCantelli.process B n ω /
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+        atTop (𝓝 1) := by
+  have hinfinite_atTop :
+      ∀ᵐ ω ∂P, ω ∈ D ∩ InfiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+          atTop atTop := by
+    filter_upwards [hdenom_atTop_on] with ω hdenomω hω
+    exact hdenomω hω.1
+  have hinfinite_normalized :
+      ∀ᵐ ω ∂P, ω ∈ D ∩ InfiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω /
+              max
+                (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+                (1 : ℝ))
+          atTop (𝓝 0) :=
+    durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_conditionalProbabilitySum_clock
+      (P := P) (ℱ := ℱ) (B := B) (C := C)
+      (InfiniteVar := D ∩ InfiniteVar)
+      hB_meas hX hX0 hX_memLp_two hA_predictable hA_int hA0_nonneg
+      hA_mono_step hinfinite_atTop htail_int htail_bound
+  have hinfinite_normalized_source :
+      ∀ᵐ ω ∂P, ω ∈ D -> ω ∈ InfiniteVar ->
+        Tendsto
+          (fun n : ℕ =>
+            martingalePart (MeasureTheory.BorelCantelli.process B) ℱ P n ω /
+              max
+                (durrett2019_theorem_4_5_5_conditionalProbabilitySum P ℱ B n ω)
+                (1 : ℝ))
+          atTop (𝓝 0) := by
+    filter_upwards [hinfinite_normalized] with ω hω hD hInfinite
+    exact hω ⟨hD, hInfinite⟩
+  exact
+    durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_max_one_normalized
+      (P := P) (ℱ := ℱ) (B := B) (D := D)
+      (FiniteVar := FiniteVar) (InfiniteVar := InfiniteVar)
+      hcover hdenom_atTop_on hmartingale_exists_on_finite
+      hinfinite_normalized_source
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
