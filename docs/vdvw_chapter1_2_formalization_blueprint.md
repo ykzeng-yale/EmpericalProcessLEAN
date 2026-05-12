@@ -155,6 +155,22 @@ measurability, nonmeasurable signed outer-cover weak convergence, or full
 arbitrary-map extended-real measurable-cover existence.  Older current-target
 paragraphs below are historical context and should not override this target.
 
+2026-05-12 source refinement: deterministic finite packings now feed this
+lower-growth lane directly.  The covering primitives
+`FiniteEmpiricalL1CoverAtCard.cardinality_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
+`finiteEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
+and `empiricalL1CoveringNumber_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
+together with the selected-cardinality wrappers
+`vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
+prove that a finite `2 * eta`-separated packing of the realized truncated
+sample path forces the selected empirical-cover cardinality to be at least the
+packing size.  This is theorem-facing infrastructure, not a theorem closure:
+the remaining exact source problem is to construct such packings, or an
+equivalent lower-growth/tail condition, from the VdV&W random-entropy
+hypotheses.
+
 2026-05-06 option-1 route sharpening: direct search found no existing
 mathlib/local/open-checkout theorem for the VdV&W probability-event
 symmetrization comparison.  Therefore the immediate source-side Theorem 2.4.3

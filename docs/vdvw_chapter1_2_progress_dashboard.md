@@ -51,6 +51,17 @@ and
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge_of_set_countable`,
 so the strongest product-pair failure-tail route no longer requires a global
 `[Countable Index]` instance when the actual theorem class is countable.
+The selected-cover lower-growth source side now has a deterministic packing
+entry point: `FiniteEmpiricalL1CoverAtCard.cardinality_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
+`finiteEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
+`empiricalL1CoveringNumber_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
+`vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul`
+turn a finite `2 * eta`-separated packing of the realized truncated empirical
+sample path into a lower bound on the selected empirical-cover cardinality.
+The next source work is to derive these packings, or an equivalent
+tail/lower-growth input, from the book random-entropy hypotheses.
 The displayed-beta selected-cover route now has
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id`.
 Under localized class countability, the displayed-beta route now also has

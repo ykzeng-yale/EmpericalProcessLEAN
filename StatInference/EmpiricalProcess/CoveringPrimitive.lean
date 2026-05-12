@@ -571,6 +571,73 @@ theorem cardinality_pos_of_nonempty {Observation : Type u} {Index : Type v} {n :
   exact lt_of_le_of_lt (Nat.zero_le _) (cover.centerOf index hindex).isLt
 
 /--
+A `2 * epsilon`-separated finite packing inside the target class gives a lower
+bound on every empirical `epsilon`-cover cardinality.
+
+This is the deterministic packing-to-covering lower bound used by
+Theorem 2.4.3 source routes that need honest selected-cardinality growth.
+-/
+theorem cardinality_ge_of_pairwise_empiricalL1Distance_gt_two_mul
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {cardinality lower : ℕ}
+    (cover :
+      FiniteEmpiricalL1CoverAtCard sample indexClass classFun epsilon
+        cardinality)
+    (packing : Fin lower -> Index)
+    (hpacking_mem : ∀ packingIndex, packing packingIndex ∈ indexClass)
+    (hpacking_sep :
+      Pairwise fun packingIndex packingIndex' =>
+        2 * epsilon <
+          empiricalL1Distance sample (classFun (packing packingIndex))
+            (classFun (packing packingIndex'))) :
+    lower ≤ cardinality := by
+  classical
+  let assignedCenter : Fin lower -> Fin cardinality :=
+    fun packingIndex =>
+      cover.centerOf (packing packingIndex) (hpacking_mem packingIndex)
+  have hassigned_injective : Function.Injective assignedCenter := by
+    intro i j hij
+    by_contra hne
+    have hsep := hpacking_sep hne
+    have hcenter_eq :
+        cover.center (assignedCenter i) = cover.center (assignedCenter j) := by
+      simp [assignedCenter, hij]
+    have hdist_left :
+        empiricalL1Distance sample (classFun (packing i))
+            (classFun (cover.center (assignedCenter i))) ≤
+          epsilon := by
+      simpa [assignedCenter] using
+        cover.dist_le (packing i) (hpacking_mem i)
+    have hdist_right :
+        empiricalL1Distance sample (classFun (cover.center (assignedCenter i)))
+            (classFun (packing j)) ≤
+          epsilon := by
+      have hdist_j :
+          empiricalL1Distance sample (classFun (packing j))
+              (classFun (cover.center (assignedCenter j))) ≤
+            epsilon := by
+        simpa [assignedCenter] using
+          cover.dist_le (packing j) (hpacking_mem j)
+      simpa [hcenter_eq, empiricalL1Distance_comm] using hdist_j
+    have hdist_le :
+        empiricalL1Distance sample (classFun (packing i))
+            (classFun (packing j)) ≤
+          2 * epsilon := by
+      have htriangle :
+          empiricalL1Distance sample (classFun (packing i))
+              (classFun (packing j)) ≤
+            empiricalL1Distance sample (classFun (packing i))
+              (classFun (cover.center (assignedCenter i))) +
+            empiricalL1Distance sample (classFun (cover.center (assignedCenter i)))
+              (classFun (packing j)) :=
+        empiricalL1Distance_triangle sample _ _ _
+      nlinarith [htriangle, hdist_left, hdist_right]
+    exact (not_lt_of_ge hdist_le) hsep
+  simpa using Fintype.card_le_of_injective assignedCenter hassigned_injective
+
+/--
 Pad a supplied empirical cover to any larger cardinality.
 
 The extra slots are filled with an arbitrary class member, so this is only
@@ -713,6 +780,57 @@ theorem empiricalL1CoveringNumber_find_spec
   by
     classical
     simpa [finiteEmpiricalL1CoveringNumberCard] using Nat.find_spec hfinite
+
+/--
+The least finite empirical-cover cardinality dominates every finite
+`2 * epsilon`-separated packing inside the target class.
+
+This is the selected-cardinality form of
+`FiniteEmpiricalL1CoverAtCard.cardinality_ge_of_pairwise_empiricalL1Distance_gt_two_mul`.
+-/
+theorem finiteEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {lower : ℕ}
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon)
+    (packing : Fin lower -> Index)
+    (hpacking_mem : ∀ packingIndex, packing packingIndex ∈ indexClass)
+    (hpacking_sep :
+      Pairwise fun packingIndex packingIndex' =>
+        2 * epsilon <
+          empiricalL1Distance sample (classFun (packing packingIndex))
+            (classFun (packing packingIndex'))) :
+    lower ≤ finiteEmpiricalL1CoveringNumberCard hfinite :=
+  (empiricalL1CoveringNumber_find_spec hfinite).elim fun cover =>
+    cover.cardinality_ge_of_pairwise_empiricalL1Distance_gt_two_mul
+      packing hpacking_mem hpacking_sep
+
+/--
+Numeric empirical covering numbers dominate finite separated packings whenever
+a finite empirical cover exists.
+-/
+theorem empiricalL1CoveringNumber_ge_of_pairwise_empiricalL1Distance_gt_two_mul
+    {Observation : Type u} {Index : Type v} {n : ℕ}
+    {sample : SampleAt Observation n} {indexClass : Set Index}
+    {classFun : Index -> Observation -> ℝ} {epsilon : ℝ}
+    {lower : ℕ}
+    (hfinite :
+      HasFiniteEmpiricalL1Cover sample indexClass classFun epsilon)
+    (packing : Fin lower -> Index)
+    (hpacking_mem : ∀ packingIndex, packing packingIndex ∈ indexClass)
+    (hpacking_sep :
+      Pairwise fun packingIndex packingIndex' =>
+        2 * epsilon <
+          empiricalL1Distance sample (classFun (packing packingIndex))
+            (classFun (packing packingIndex'))) :
+    (lower : ℕ∞) ≤
+      empiricalL1CoveringNumber sample indexClass classFun epsilon := by
+  rw [empiricalL1CoveringNumber_eq_find hfinite]
+  exact_mod_cast
+    finiteEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul
+      hfinite packing hpacking_mem hpacking_sep
 
 /--
 Any explicit fixed-cardinality empirical cover bounds the numeric empirical

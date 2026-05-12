@@ -84,6 +84,23 @@ blocker is sharper: prove the selected eventual a.e. scaled finite-net
 domination, or an exact outer-probability comparison primitive, from the
 textbook random empirical-cover/symmetrization argument.
 
+2026-05-12 empirical packing lower-bound bridge: the covering primitive layer
+now proves the deterministic packing-to-covering lower bounds
+`FiniteEmpiricalL1CoverAtCard.cardinality_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
+`finiteEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul`,
+and `empiricalL1CoveringNumber_ge_of_pairwise_empiricalL1Distance_gt_two_mul`.
+The Theorem 2.4.3 selected-cover interface exposes the same source input
+through
+`vdVWSelectedTruncatedFixedRadiusEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul`.
+This closes the deterministic step from a finite `2 * eta`-separated packing
+of the realized truncated sample path to a lower bound on the selected
+empirical-cover cardinality.  It does not close the textbook random-entropy
+gap: the active source problem is now to prove such packings, or an equivalent
+tail/lower-growth hypothesis, from the VdV&W assumptions and feed the existing
+selected-cardinality lower-growth consumers.
+
 ## Current `/goal` Target
 
 Authoritative `/goal` reset, refreshed 2026-05-12: the active Codex goal
