@@ -144,10 +144,14 @@ shape over `Fin (m+1)`.  The induction wrappers
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum` and
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_gradient_quadratic`
 now combine a nonzero head row with a recursively supplied tail barrier via
-the compiled binary sum rule.  Next construct the concrete range oracle and
-energy bound for the fully general polytope barrier, or instantiate the
-canonical summed inverse-Hessian/inverse-local identity for the head/tail
-finite-row induction; all segment membership, `ψ`
+the compiled binary sum rule.  The square-root-coordinate wrapper
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_adjointSqrtCoord`
+now routes the same induction step through the existing
+`chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtCoord` API.  Next
+construct the concrete range oracle and energy bound for the fully general
+polytope barrier, or instantiate the summed and component adjoint-square
+coordinate models for the head/tail finite-row induction; all segment
+membership, `ψ`
 continuity, local-norm continuity/positivity, Riccati comparison, derivative
 inequality, coefficient scaling, final sandwich assembly, first Newton/Dikin
 membership, and inverse-Hessian transport wrappers are now compiled.  Do not

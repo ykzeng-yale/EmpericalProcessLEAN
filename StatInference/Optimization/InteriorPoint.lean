@@ -14896,5 +14896,77 @@ theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_g
     tailGrad x (by norm_num) htail.parameter_nonneg (hsumInvNonneg hx)
     (hgradient_quadratic hx)
 
+/--
+Induction step for Chewi Example 13.14's finite-row logarithmic barrier, with
+the head/tail sum gate supplied by adjoint square-root coordinate models.
+Future concrete polytope work can instantiate the three square-root models
+instead of reproving the binary sum rule's inverse-local and Cauchy algebra.
+-/
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_adjointSqrtCoord
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin (m + 1) -> F) (b : EuclideanSpace ℝ (Fin (m + 1)))
+    (ha0 : a 0 ≠ 0)
+    {tailHess : F -> F →L[ℝ] F} {tailGrad : F -> F}
+    {tailInvHess : F -> F →L[ℝ] F} {tailThird : F -> F -> F -> ℝ}
+    {tailNu : ℝ}
+    (htail : SelfConcordantBarrierOn
+      (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b))
+      tailHess tailGrad tailInvHess tailThird 1 tailNu)
+    {sumInvHess : F -> F →L[ℝ] F}
+    {sqrtSum sqrtHead sqrtTail : F -> F ≃L[ℝ] F}
+    (hsum_hess_eq : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      barrierSumHess
+        (barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0) negLogHessCLM)
+        tailHess x =
+        (ContinuousLinearMap.adjoint (sqrtSum x).toContinuousLinearMap).comp
+          (sqrtSum x).toContinuousLinearMap)
+    (hsum_inv_eq : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      sumInvHess x =
+        (sqrtSum x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrtSum x).symm.toContinuousLinearMap))
+    (hhead_hess_eq : ∀ ⦃x : F⦄, x ∈ halfspaceSlackSet (a 0) (b 0) ->
+      barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0) negLogHessCLM x =
+        (ContinuousLinearMap.adjoint (sqrtHead x).toContinuousLinearMap).comp
+          (sqrtHead x).toContinuousLinearMap)
+    (hhead_inv_eq : ∀ ⦃x : F⦄, x ∈ halfspaceSlackSet (a 0) (b 0) ->
+      barrierAffinePreimageInvHessRightInverse (halfspaceSlackCLM (a 0))
+        (halfspaceSlackRightInverse (a 0)) (b 0) negLogInvHessCLM x =
+        (sqrtHead x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrtHead x).symm.toContinuousLinearMap))
+    (htail_hess_eq : ∀ ⦃x : F⦄,
+      x ∈ polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b) ->
+      tailHess x =
+        (ContinuousLinearMap.adjoint (sqrtTail x).toContinuousLinearMap).comp
+          (sqrtTail x).toContinuousLinearMap)
+    (htail_inv_eq : ∀ ⦃x : F⦄,
+      x ∈ polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b) ->
+      tailInvHess x =
+        (sqrtTail x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrtTail x).symm.toContinuousLinearMap)) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierSumHess
+        (barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0) negLogHessCLM)
+        tailHess)
+      (barrierSumGrad
+        (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0) negLogBarrierGrad)
+        tailGrad)
+      sumInvHess
+      (barrierSumThirdMixed
+        (barrierAffinePreimageThirdMixed (halfspaceSlackCLM (a 0)) (b 0)
+          negLogBarrierThirdMixed)
+        tailThird) 1 (1 + tailNu) := by
+  have hhead :=
+    chewi1314_halfspaceSlackNegLog_selfConcordantBarrierOn (a 0) (b 0) ha0
+  have hsum :=
+    chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtCoord
+      (sqrtSum := sqrtSum) (sqrt₁ := sqrtHead) (sqrt₂ := sqrtTail)
+      hhead htail hsum_hess_eq hsum_inv_eq
+      hhead_hess_eq hhead_inv_eq htail_hess_eq htail_inv_eq
+  simpa [polytopeSlackSet_succ_eq_barrierInterSet a b] using hsum
+
 end Optimization
 end StatInference

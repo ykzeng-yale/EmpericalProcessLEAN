@@ -1375,8 +1375,12 @@ packet adds
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum` and
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_gradient_quadratic`,
 so a nonzero head row plus a recursively supplied tail barrier now combine via
-the binary sum rule.  Do not redo scalar self-concordance or affine
-right-inverse algebra.
+the binary sum rule.  The newest square-root-coordinate consumer
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_adjointSqrtCoord`
+further reduces the same induction step to the standard summed Hessian and
+component Hessian adjoint-square models.  Do not redo scalar
+self-concordance, affine right-inverse algebra, or binary sum inverse-local /
+Cauchy algebra.
 Do not redo the
 square-root/right-inverse/Hessian-nonnegativity/self-concordance/model-Hessian
 plumbing; use
@@ -1406,6 +1410,8 @@ The exact blockers are:
   `polytopeSlackSet_eq_iInter_halfspaceSlackSet` and
   `polytopeSlackSet_succ_eq_barrierInterSet` plus the compiled
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum`
+  and
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_adjointSqrtCoord`
   wrappers, or opening the inf-projection rule.
   Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 
