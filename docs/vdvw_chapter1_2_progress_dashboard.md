@@ -4762,3 +4762,14 @@ event and `Phi(x)=x` comparison for `P^n`-a.e. original sample assuming
 membership in `VdVWTheorem243CenteredTruncatedBadSet`; Lean converts those
 implications to restricted-a.e. hypotheses and invokes the compiled restricted
 constructor.
+
+2026-05-12 first-level selected-cover `hphi_id` endpoints:
+`Theorem243.lean` now promotes those two selected-cover source surfaces to the
+fixed-`M` centered-truncated convergence endpoint with
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_restrict_canonicalRademacher_countable_hphi_id_firstLevel`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_canonicalRademacher_countable_hphi_id_firstLevel`.
+The shared first-level primitive handoff now carries the comparison's displayed
+constant, allowing the `A = 1` canonical `hphi_id` route to reuse the selected
+cardinality/half-radius entropy plumbing that previously served the `A = 2`
+pair-difference route.

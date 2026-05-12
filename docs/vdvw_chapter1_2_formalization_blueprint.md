@@ -3855,6 +3855,17 @@ membership in the centered bad event; the existing dependent
 `eventually_ae_restrict_of_eventually_ae_imp_dep` bridge supplies the restricted
 inputs.
 
+2026-05-12 first-level selected-cover `hphi_id` endpoints:
+`Theorem243.lean` now adds
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_restrict_canonicalRademacher_countable_hphi_id_firstLevel`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_canonicalRademacher_countable_hphi_id_firstLevel`.
+These are the canonical first-level convergence consumers for the restricted
+and base-a.e. selected-cover `hphi_id` source shapes.  The first-level primitive
+handoff now accepts the comparison's displayed constant generically, so `A = 1`
+`hphi_id` primitives and `A = 2` pair-difference primitives share the same
+half-radius selected-cardinality bookkeeping.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:

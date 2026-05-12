@@ -10322,3 +10322,16 @@ This matches the older pair-difference `ae_imp` source style: prove the
 canonical finite-center maximal event and canonical `Phi(x)=x` comparison
 `P^n`-a.e. conditional on the centered bad event, and the bridge converts both
 inputs to the restricted-law form used by the selected-cover constructor.
+
+2026-05-12 first-level selected-cover `hphi_id` endpoints:
+`Theorem243.lean` now promotes the restricted/base-a.e. selected-cover
+`hphi_id` source surfaces to fixed-`M` centered-truncated convergence via
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_restrict_canonicalRademacher_countable_hphi_id_firstLevel`
+and
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_ae_imp_canonicalRademacher_countable_hphi_id_firstLevel`.
+The shared first-level primitive handoff is now generic in the displayed
+constant, so the `A = 1` `hphi_id` route and the existing `A = 2`
+pair-difference route reuse the same selected-cardinality and half-radius
+entropy bookkeeping.  The live source obligations remain the finite-center
+maximal input and canonical `Phi(x)=x` comparison, now at the first-level
+endpoint rather than only at the displayed-beta comparison layer.
