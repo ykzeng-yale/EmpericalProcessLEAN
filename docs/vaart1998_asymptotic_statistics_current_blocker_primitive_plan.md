@@ -17,6 +17,9 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Immediate score-law covariance, moment, and coordinate score-summand endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Immediate score-law moment endpoint:
@@ -90,6 +93,12 @@ also composes
 `vaart1998_theorem_5_41_scoreLaw_projectedVariance_eq_of_commonVectorLaw`,
 so Gaussian covariance matching can be stated as
 `covarianceBilinDual (Q.map Z) L L = variance L scoreLaw`.
+The newest vector score-representation endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+composes
+`vaart1998_theorem_5_41_scoreSummandRepresentation_of_vectorScoreRepresentation`,
+so model instances can state the score linearization as a vector equality
+instead of supplying the coordinatewise `hSummand_eq` field.
 
 Continuation recipe:
 
@@ -104,9 +113,9 @@ Priority order for the next packet:
 
 1. Move one layer closer to a model-facing finite-dimensional statement:
    package the remaining score/Taylor/source hypotheses around the score-law
-   covariance/moment source endpoint, especially model-specific score-summand
-   representation, score common-law construction, derivative-table common-law
-   construction, or pointwise Taylor fields.
+   covariance/moment source endpoint, especially score common-law
+   construction, derivative-table common-law construction, or pointwise Taylor
+   fields.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    residual-source endpoint; do not rebuild completed score CLT, display weak
