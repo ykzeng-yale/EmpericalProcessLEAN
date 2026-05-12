@@ -9368,6 +9368,74 @@ theorem chewi1311_sum_selfConcordantBarrierOn_of_adjointCoord_cauchy
     hcoord₂_sqrtH₂ hinv₂_factor hhess₂_eq
 
 /--
+Summed inverse-Hessian nonnegativity and the inverse-local identity from a
+right-inverse identity for the summed Hessian.  This isolates the exact
+remaining algebraic gate in Chewi Proposition 13.11(1).
+-/
+theorem barrierSum_invHess_nonneg_and_invLocal_of_right_inverse
+    {hess₁ hess₂ invHess : E -> E →L[ℝ] E} {x : E}
+    (hhess₁_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess₁ x w))
+    (hhess₂_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess₂ x w))
+    (hsum_right : ∀ v : E,
+      barrierSumHess hess₁ hess₂ x (invHess x v) = v) :
+    (∀ v : E, 0 ≤ inner ℝ v (invHess x v)) ∧
+      (∀ v : E,
+        localNorm (barrierSumHess hess₁ hess₂) x (invHess x v) =
+          dualLocalNorm invHess x v) := by
+  constructor
+  · intro v
+    exact inverseHessianQuadratic_nonneg_of_hessian_right_inverse
+      (hess := barrierSumHess hess₁ hess₂) (invHess := invHess) (x := x)
+      (by
+        intro w
+        exact barrierSumHess_quadratic_nonneg hess₁ hess₂ x w
+          hhess₁_nonneg hhess₂_nonneg)
+      hsum_right v
+  · intro v
+    exact localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse
+      (hess := barrierSumHess hess₁ hess₂) (invHess := invHess) (x := x)
+      (by
+        intro w
+        exact barrierSumHess_quadratic_nonneg hess₁ hess₂ x w
+          hhess₁_nonneg hhess₂_nonneg)
+      hsum_right v
+
+/--
+Domain-uniform form of
+`barrierSum_invHess_nonneg_and_invLocal_of_right_inverse` using the component
+barrier Hessian nonnegativity fields.
+-/
+theorem barrierSum_invHess_nonneg_and_invLocal_of_right_inverse_on
+    {s₁ s₂ : Set E} {hess₁ hess₂ : E -> E →L[ℝ] E}
+    {grad₁ grad₂ : E -> E} {invHess : E -> E →L[ℝ] E}
+    {invHess₁ invHess₂ : E -> E →L[ℝ] E}
+    {third₁ third₂ : E -> E -> E -> ℝ} {M nu₁ nu₂ : ℝ}
+    (hbar₁ : SelfConcordantBarrierOn s₁ hess₁ grad₁ invHess₁ third₁ M nu₁)
+    (hbar₂ : SelfConcordantBarrierOn s₂ hess₂ grad₂ invHess₂ third₂ M nu₂)
+    (hsum_right : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      barrierSumHess hess₁ hess₂ x (invHess x v) = v) :
+    (∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+      0 ≤ inner ℝ v (invHess x v)) ∧
+      (∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
+        localNorm (barrierSumHess hess₁ hess₂) x (invHess x v) =
+          dualLocalNorm invHess x v) := by
+  constructor
+  · intro x hx
+    exact
+      (barrierSum_invHess_nonneg_and_invLocal_of_right_inverse
+        (hess₁ := hess₁) (hess₂ := hess₂) (invHess := invHess) (x := x)
+        (hbar₁.self_concordant.hess_nonneg hx.1)
+        (hbar₂.self_concordant.hess_nonneg hx.2)
+        (hsum_right hx)).1
+  · intro x hx
+    exact
+      (barrierSum_invHess_nonneg_and_invLocal_of_right_inverse
+        (hess₁ := hess₁) (hess₂ := hess₂) (invHess := invHess) (x := x)
+        (hbar₁.self_concordant.hess_nonneg hx.1)
+        (hbar₂.self_concordant.hess_nonneg hx.2)
+        (hsum_right hx)).2
+
+/--
 The dual inverse-Hessian factorization follows from a square-root Hessian
 factorization, a right-inverse identity for the inverse-Hessian oracle, and a
 coordinate map inverse to the square-root map.
@@ -9449,29 +9517,16 @@ theorem SelfConcordantBarrierOn.sum_of_adjointCoord_right_inverse
       (barrierSumHess hess₁ hess₂)
       (barrierSumGrad grad₁ grad₂) invHess
       (barrierSumThirdMixed third₁ third₂) M (nu₁ + nu₂) := by
+  let hsum_inv :=
+    barrierSum_invHess_nonneg_and_invLocal_of_right_inverse_on
+      hbar₁ hbar₂ hsum_right
   have hinv_nonneg : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
-      0 ≤ inner ℝ v (invHess x v) := by
-    intro x hx v
-    exact inverseHessianQuadratic_nonneg_of_hessian_right_inverse
-      (hess := barrierSumHess hess₁ hess₂) (invHess := invHess) (x := x)
-      (by
-        intro w
-        exact barrierSumHess_quadratic_nonneg hess₁ hess₂ x w
-          (hbar₁.self_concordant.hess_nonneg hx.1)
-          (hbar₂.self_concordant.hess_nonneg hx.2))
-      (hsum_right hx) v
+      0 ≤ inner ℝ v (invHess x v) :=
+    hsum_inv.1
   have hsum_inv_local : ∀ ⦃x : E⦄, x ∈ barrierInterSet s₁ s₂ -> ∀ v : E,
       localNorm (barrierSumHess hess₁ hess₂) x (invHess x v) =
-        dualLocalNorm invHess x v := by
-    intro x hx v
-    exact localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse
-      (hess := barrierSumHess hess₁ hess₂) (invHess := invHess) (x := x)
-      (by
-        intro w
-        exact barrierSumHess_quadratic_nonneg hess₁ hess₂ x w
-          (hbar₁.self_concordant.hess_nonneg hx.1)
-          (hbar₂.self_concordant.hess_nonneg hx.2))
-      (hsum_right hx) v
+        dualLocalNorm invHess x v :=
+    hsum_inv.2
   have hinv₁_factor : ∀ ⦃x : E⦄, x ∈ s₁ -> ∀ v : E,
       inner ℝ v (invHess₁ x v) =
         ‖(ContinuousLinearMap.adjoint (coord₁ x)) v‖ ^ (2 : ℕ) := by
@@ -9531,6 +9586,92 @@ theorem chewi1311_sum_selfConcordantBarrierOn_of_adjointCoord_right_inverse
   hbar₁.sum_of_adjointCoord_right_inverse hbar₂ hsum_right
     hcoord₁_sqrtH₁ hsqrtH₁_coord₁ hright₁ hhess₁_eq
     hcoord₂_sqrtH₂ hsqrtH₂_coord₂ hright₂ hhess₂_eq
+
+/--
+The summed adjoint-square model gives the canonical right inverse for the
+summed Hessian.  This factors out the exact inverse-Hessian gate in Chewi
+Proposition 13.11(1).
+-/
+theorem barrierSumHess_right_inverse_of_adjointSqrtCoord
+    [CompleteSpace E]
+    {hess₁ hess₂ : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {sqrtSum : E -> E ≃L[ℝ] E} {x : E}
+    (hsum_hess_eq :
+      barrierSumHess hess₁ hess₂ x =
+        (ContinuousLinearMap.adjoint (sqrtSum x).toContinuousLinearMap).comp
+          (sqrtSum x).toContinuousLinearMap)
+    (hsum_inv_eq :
+      invHess x =
+        (sqrtSum x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrtSum x).symm.toContinuousLinearMap)) :
+    ∀ v : E, barrierSumHess hess₁ hess₂ x (invHess x v) = v :=
+  hessianRightInverse_of_adjointSqrtCoord_invHess
+    (H := barrierSumHess hess₁ hess₂ x) (invH := invHess x)
+    (sqrtCoord := sqrtSum x) hsum_hess_eq hsum_inv_eq
+
+/--
+The summed adjoint-square model also gives nonnegativity of the supplied
+summed inverse-Hessian quadratic form once the two component Hessians are
+nonnegative.
+-/
+theorem barrierSumInvHess_quadratic_nonneg_of_adjointSqrtCoord
+    [CompleteSpace E]
+    {hess₁ hess₂ : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {sqrtSum : E -> E ≃L[ℝ] E} {x : E}
+    (hhess₁_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess₁ x w))
+    (hhess₂_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess₂ x w))
+    (hsum_hess_eq :
+      barrierSumHess hess₁ hess₂ x =
+        (ContinuousLinearMap.adjoint (sqrtSum x).toContinuousLinearMap).comp
+          (sqrtSum x).toContinuousLinearMap)
+    (hsum_inv_eq :
+      invHess x =
+        (sqrtSum x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrtSum x).symm.toContinuousLinearMap))
+    (v : E) :
+    0 ≤ inner ℝ v (invHess x v) :=
+  inverseHessianQuadratic_nonneg_of_hessian_right_inverse
+    (hess := barrierSumHess hess₁ hess₂) (invHess := invHess) (x := x)
+    (by
+      intro w
+      exact barrierSumHess_quadratic_nonneg hess₁ hess₂ x w
+        hhess₁_nonneg hhess₂_nonneg)
+    (barrierSumHess_right_inverse_of_adjointSqrtCoord
+      (hess₁ := hess₁) (hess₂ := hess₂) (invHess := invHess)
+      (sqrtSum := sqrtSum) (x := x) hsum_hess_eq hsum_inv_eq)
+    v
+
+/--
+The exact inverse-local identity for the summed Hessian follows directly from
+the summed adjoint-square model.
+-/
+theorem barrierSumLocalNorm_invHess_eq_dualLocalNorm_of_adjointSqrtCoord
+    [CompleteSpace E]
+    {hess₁ hess₂ : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {sqrtSum : E -> E ≃L[ℝ] E} {x : E}
+    (hhess₁_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess₁ x w))
+    (hhess₂_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess₂ x w))
+    (hsum_hess_eq :
+      barrierSumHess hess₁ hess₂ x =
+        (ContinuousLinearMap.adjoint (sqrtSum x).toContinuousLinearMap).comp
+          (sqrtSum x).toContinuousLinearMap)
+    (hsum_inv_eq :
+      invHess x =
+        (sqrtSum x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrtSum x).symm.toContinuousLinearMap))
+    (v : E) :
+    localNorm (barrierSumHess hess₁ hess₂) x (invHess x v) =
+      dualLocalNorm invHess x v :=
+  localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse
+    (hess := barrierSumHess hess₁ hess₂) (invHess := invHess) (x := x)
+    (by
+      intro w
+      exact barrierSumHess_quadratic_nonneg hess₁ hess₂ x w
+        hhess₁_nonneg hhess₂_nonneg)
+    (barrierSumHess_right_inverse_of_adjointSqrtCoord
+      (hess₁ := hess₁) (hess₂ := hess₂) (invHess := invHess)
+      (sqrtSum := sqrtSum) (x := x) hsum_hess_eq hsum_inv_eq)
+    v
 
 /--
 Chewi Proposition 13.11, shared-domain sum case, specialized to explicit

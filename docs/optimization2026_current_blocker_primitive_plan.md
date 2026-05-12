@@ -186,6 +186,15 @@ derives the summed inverse-local identity from a right-inverse identity for
 component Hessian right-inverses plus square-root coordinate models.  The
 remaining exact Proposition 13.11(1) blocker is to instantiate the canonical
 summed inverse-Hessian oracle and prove that right-inverse identity.
+The newest sum inverse-local extraction factors that internal right-inverse
+algebra into
+`barrierSum_invHess_nonneg_and_invLocal_of_right_inverse`,
+`barrierSum_invHess_nonneg_and_invLocal_of_right_inverse_on`,
+`barrierSumHess_right_inverse_of_adjointSqrtCoord`,
+`barrierSumInvHess_quadratic_nonneg_of_adjointSqrtCoord`, and
+`barrierSumLocalNorm_invHess_eq_dualLocalNorm_of_adjointSqrtCoord`.
+Future exact sum work should prove only the canonical summed right-inverse or
+summed adjoint-square equalities, then reuse these extracted gates.
 The square-root-equivalence packet adds
 `SelfConcordantBarrierOn.sum_of_adjointSqrtCoord` and
 `chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtCoord`.  It derives the
@@ -712,6 +721,10 @@ The theorem-facing envelope consumer is now also available as
 It builds the selected-value third-order envelope from the full-Hessian
 derivative package and immediately consumes it for the source-radius
 local-norm sandwich.
+The newest envelope-constructor extraction adds
+`BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_mem_nhds_finiteDimHyy`,
+which packages a supplied Schur-Hessian derivative certificate into the
+selected-value third-order envelope without requiring the adjoint-square model.
 Thus a packaged adjoint-square model plus a Schur derivative certificate
 already gives the projected source-radius local-norm sandwich without
 selected-value `f`, open-domain gradient, or second-order envelope assumptions.

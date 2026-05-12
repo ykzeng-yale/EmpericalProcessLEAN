@@ -91,6 +91,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   models.  The exact Proposition 13.11(1) blocker is now the model-specific
   construction/proof that the canonical summed inverse-Hessian oracle is a
   right inverse of the summed Hessian.
+- Sum inverse-local extraction: the newest packet factors the internal
+  right-inverse algebra into
+  `barrierSum_invHess_nonneg_and_invLocal_of_right_inverse`,
+  `barrierSum_invHess_nonneg_and_invLocal_of_right_inverse_on`,
+  `barrierSumHess_right_inverse_of_adjointSqrtCoord`,
+  `barrierSumInvHess_quadratic_nonneg_of_adjointSqrtCoord`, and
+  `barrierSumLocalNorm_invHess_eq_dualLocalNorm_of_adjointSqrtCoord`.
+  Future exact sum work should prove only the canonical summed right-inverse
+  or summed adjoint-square equalities, then reuse these extracted gates.
 - Sum square-root-equivalence shrink: the newest packet adds
   `SelfConcordantBarrierOn.sum_of_adjointSqrtCoord` and
   `chewi1311_sum_selfConcordantBarrierOn_of_adjointSqrtCoord`.  These derive
@@ -591,6 +600,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   which builds the selected-value third-order envelope from the full-Hessian
   derivative package and then consumes it for the source-radius local-norm
   sandwich.
+  The newest envelope-constructor extraction adds
+  `BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_mem_nhds_finiteDimHyy`,
+  so a supplied Schur-Hessian derivative certificate can be packaged into the
+  selected-value third-order envelope without the adjoint-square model.
   A packaged adjoint-square model plus a Schur derivative certificate now
   proves the projected source-radius local-norm sandwich without selected-value
   `f`, open-domain gradient, or second-order envelope assumptions; source

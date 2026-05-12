@@ -1095,6 +1095,52 @@ theorem BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_fullHessi
       hmem_nhds hgrad hhess hselector hinvDeriv hsymm hyy_right hmixed_full
 
 /--
+Finite-dimensional stationary-selector constructor for a third-order
+selected-envelope certificate from an already-built Schur-Hessian derivative
+certificate.  This factors the selected-value first/second-order envelope
+part away from the Schur derivative construction.
+-/
+theorem BarrierInfProjectionSelectorStationary.thirdOrderEnvelopeOn_of_schurHessDerivativeOn_mem_nhds_finiteDimHyy
+    [FiniteDimensional ℝ E₂]
+    [CompleteSpace E₁] [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {schurDeriv : E₁ -> E₁ →L[ℝ] (E₁ →L[ℝ] E₁)}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hmem_nhds : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ᶠ y in nhds x, y ∈ barrierInfProjectionSet s)
+    (hfgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasGradientAt f (grad (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hgrad : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt grad (hess (barrierInfProjectionPoint selector x))
+        (barrierInfProjectionPoint selector x))
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hyy_right : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      ∀ w : E₂, barrierInfProjectionBlockYY selector hess x (invHyy x w) = w)
+    (hschur :
+      BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+        schurDeriv) :
+    BarrierInfProjectionThirdOrderEnvelopeOn s f selector grad hess invHyy third
+      schurDeriv where
+  second_order := by
+    intro x hx
+    exact hsel.secondOrderEnvelopeAt_of_mem_nhds_finiteDimHyy
+      hx (hmem_nhds (x := x) hx) (hfgrad (x := x) hx)
+      (hgrad (x := x) hx) (hselector (x := x) hx)
+      (hyy_right (x := x) hx)
+  schur_deriv := hschur
+
+/--
 Open-projected-domain version of the finite-dimensional third-order
 selected-envelope constructor.
 -/
