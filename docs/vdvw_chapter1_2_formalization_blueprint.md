@@ -753,6 +753,14 @@ which composes the first-sample bounded-entropy route with the selected
 tail/UI package.  Future VC/Sauer, finite-trace, and quantizer/grid arguments
 should feed this constructor rather than restating the intermediate
 first-sample `nnnorm` side condition.
+The shifted log-succ-linear structural route also now has the final conclusion
+consumer
+`VdVWTheorem243TextbookAlignedConclusion.of_variableEntropy_logCardinality_log_succ_linear_bound_auto`.
+It composes the variable-domain entropy condition, the auto selected finite-net
+mean primitive
+`VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_log_succ_linear_bound_auto_of_set_countable`,
+and the generic centered-untruncated bridge into the current textbook-facing
+Theorem 2.4.3/Lemma 2.4.5 bundle.
 The matching variable-domain book-entropy constructor is also compiled:
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_nat_poly_bound`
 turns the same pointwise natural-polynomial cardinality growth into the

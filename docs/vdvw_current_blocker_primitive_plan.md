@@ -8522,6 +8522,17 @@ interfaces; the next mathematical task is still proving such counting growth
 for the target class or closing the displayed-beta selected-cover event
 comparison.
 
+2026-05-12 shifted log-succ-linear final-bundle wrapper:
+`Theorem243.lean` now proves
+`VdVWTheorem243TextbookAlignedConclusion.of_variableEntropy_logCardinality_log_succ_linear_bound_auto`.
+The shifted log-linear variable-domain entropy route now reaches the full
+textbook-facing Theorem 2.4.3/Lemma 2.4.5 conclusion bundle directly: it builds
+the selected finite-net mean primitive internally, then uses the existing
+centered-untruncated conclusion bridge.  The remaining source task is unchanged:
+prove the actual VC/Sauer, finite-trace, or finite-code log-succ-linear
+cardinality estimate, or replace the route with the displayed-beta
+selected-cover comparison.
+
 2026-05-08 finite-trace shifted log-succ-linear source route:
 `Theorem243.lean` now proves
 `VdVWTheorem243VariableTruncatedEntropyConditionForAllEpsilonM.of_logCardinality_log_succ_linear_bound`,

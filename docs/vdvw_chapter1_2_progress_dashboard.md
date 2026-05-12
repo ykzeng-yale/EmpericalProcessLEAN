@@ -5,7 +5,7 @@ van der Vaart and Wellner Chapters 1 and 2.  The authoritative detailed
 inventory is `docs/vdvw_chapter1_2_formalization_blueprint.md`; this file is a
 human-facing monitor for what is proved, what is in progress, and what remains.
 
-Status snapshot date: 2026-05-10.
+Status snapshot date: 2026-05-12.
 
 Active blocker/primitives register:
 
@@ -13,11 +13,11 @@ Active blocker/primitives register:
 docs/vdvw_current_blocker_primitive_plan.md
 ```
 
-Authoritative current `/goal` override, refreshed 2026-05-08: the active goal
+Authoritative current `/goal` override, refreshed 2026-05-12: the active goal
 object is the whole VdV&W empirical-process textbook formalization, with
 Chapters 1-2 and Theorem 2.4.3 as the current frontier.  The current clean
 VdVW proof lane is `/private/tmp/ep-vdvw-goal-round-B6AplA` on branch
-`codex/vdvw-selected-cover-source` based at current `origin/main`; the
+`codex/vdvw-signswap-unneg-support`; the
 Desktop `main` worktree is intentionally avoided for VdVW commits because it
 is far behind `origin/main` and contains unrelated Matching/WDSM work.  The
 registered
@@ -3936,6 +3936,12 @@ and first-sample boundedness handoff for bounds shaped like
 `offset M eta + degree M eta * log (n + 1)`.  The next high-leverage source
 target is to prove a finite-trace/VC counting theorem that supplies this bound,
 or to close the displayed-beta selected-cover event comparison directly.
+That same shifted log-succ-linear source now also feeds the final
+`VdVWTheorem243TextbookAlignedConclusion` bundle through
+`VdVWTheorem243TextbookAlignedConclusion.of_variableEntropy_logCardinality_log_succ_linear_bound_auto`,
+so concrete counting routes no longer need a separate call to the selected
+finite-net mean primitive before obtaining the current Theorem 2.4.3/Lemma 2.4.5
+outputs.
 
 The finite-trace source route now reaches that same selected entropy primitive
 directly.  `Theorem243.lean` adds
