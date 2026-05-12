@@ -65,13 +65,19 @@ score-representation endpoint
 composes
 `vaart1998_theorem_5_41_scoreSummandRepresentation_of_vectorScoreRepresentation`,
 so model instances can now state the score linearization as a vector equality
-instead of the coordinatewise `hSummand_eq` field.  The next proof packet
+instead of the coordinatewise `hSummand_eq` field.  The vector score common-law
+endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+composes
+`vaart1998_theorem_5_41_scoreCommonVectorLaw_of_vectorScoreRepresentation`,
+so model instances can state the common law and infinite-product law directly
+for the vector score process.  The next proof packet
 should package the remaining model-facing score/Taylor/source fields around
 this covariance/moment endpoint, not replay display weak-convergence,
 display-tightness, score-CLT, residual convergence, absorbing tightness,
 derivative-action wrappers, derivative-entry iid source fields, score moment
 transfer, score-law covariance transfer, vector score-representation, or the
-now-packaged pointwise Taylor bridge.
+vector score common-law transfer.
 
 ## Chapter Map
 
