@@ -9605,3 +9605,12 @@ and
 These let later first-level source theorems prove divergence of a deterministic
 selected-cover lower bound instead of restating inverse-square lintegral
 convergence.
+
+2026-05-11 first-level sign-only inverse-square lower-growth source:
+`Theorem243.lean` now proves
+`...of_selected_truncated_halfRadius_firstLevel_of_eventually_cardinality_ge`
+and
+`...of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+These instantiate the selected cardinality and measurable selected centers from
+the countable first-level half-radius cover, so the pointwise Rademacher
+bad-event route only needs a deterministic selected-cover lower-growth input.

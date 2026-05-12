@@ -4266,3 +4266,8 @@ Pointwise and a.e. selected-cardinality lower-growth variants now feed those
 inverse-square source forms.  Later first-level wrappers can supply a
 deterministic `lower eta n -> infinity` bound, pointwise or almost surely,
 instead of proving the inverse-square lintegral convergence separately.
+
+The pointwise route now has those first-level wrappers: the selected
+cardinality and selected-center measurability are instantiated from the
+countable first-level half-radius cover, with only the deterministic
+selected-cover lower-growth hypothesis left as an external source.

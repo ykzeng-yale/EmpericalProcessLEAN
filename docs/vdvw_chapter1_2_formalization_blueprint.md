@@ -3358,6 +3358,15 @@ sources.  The new `...of_eventually_cardinality_ge` and
 tail-control input to a diverging deterministic lower bound on the selected
 cardinality.
 
+The pointwise Rademacher bad-event route now also has canonical first-level
+selected half-radius wrappers
+`...of_selected_truncated_halfRadius_firstLevel_of_eventually_cardinality_ge`
+and
+`...of_selected_truncated_halfRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+They choose the countable first-level selected cover internally, prove the
+selected-cardinality and selected-center measurability inputs, and leave only
+the deterministic selected-cover lower-growth hypothesis exposed.
+
 ## Automation Checklist
 
 Every heartbeat or continuation run for this blueprint should:
