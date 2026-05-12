@@ -64,7 +64,13 @@ The same packing input now has eventual and `P^n`-a.e. source lifts,
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_pairwise_empiricalL1Distance_gt_two_mul`
 and
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_pairwise_empiricalL1Distance_gt_two_mul`,
-so lower-growth routes can consume separated packings directly.
+so lower-growth routes can consume separated packings directly.  The raw
+separated-packing path now also has terminal-sample variants
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_pairwise_empiricalL1Distance_gt_two_mul`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_pairwise_empiricalL1Distance_gt_two_mul`,
+removing the need for callers to restate actual-sample separation on
+`samplePath`.
 The source interface now also has proof-carrying explicit empirical packing
 witnesses through `FiniteEmpiricalL1PackingAtCard`,
 `finiteEmpiricalL1CoveringNumberCard_ge_of_finiteEmpiricalL1PackingAtCard`,
@@ -112,8 +118,9 @@ The strongest set-countable product-pair final route now consumes the packing
 source shape directly through
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`,
 which asks for eventual `P^n`-a.e. quarter-radius separated packings rather
-than a pre-composed selected-cardinality lower bound.  The same final route now
-also has the empirical-wrapper packing-number entry point
+than a pre-composed selected-cardinality lower bound; it now routes that
+terminal-sample source through the terminal raw separated-packing adapter.  The
+same final route now also has the empirical-wrapper packing-number entry point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_empiricalL1Index_packingNumber_of_set_countable`,
 so eventual `P^n`-a.e. lower bounds on `Metric.packingNumber` for
 `EmpiricalL1Index.liftSet` can feed the textbook-aligned conclusion without

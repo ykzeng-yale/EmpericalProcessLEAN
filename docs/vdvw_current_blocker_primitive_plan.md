@@ -109,10 +109,16 @@ and
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_pairwise_empiricalL1Distance_gt_two_mul`.
 These turn eventual deterministic or `P^n`-a.e. finite separated packings into
 the selected-cardinality lower bounds consumed by the half-radius and
-quarter-radius Theorem 2.4.3 routes.  The remaining mathematical source task
-is therefore no longer the cover-cardinality comparison; it is to construct
-the required separated packings or an equivalent tail/UI lower-growth input
-from the book hypotheses.
+quarter-radius Theorem 2.4.3 routes.  The raw separated-packing source surface
+now also has deterministic and `P^n`-a.e. terminal-sample variants
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_terminal_pairwise_empiricalL1Distance_gt_two_mul`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_terminal_pairwise_empiricalL1Distance_gt_two_mul`,
+so source arguments can state pairwise empirical separation on the realized
+sample without manually transporting it through `samplePath`.  The remaining
+mathematical source task is therefore no longer the cover-cardinality
+comparison; it is to construct the required separated packings or an equivalent
+tail/UI lower-growth input from the book hypotheses.
 
 2026-05-12 explicit empirical packing witness interface: the search-first gate
 found the existing local raw pairwise packing lower bounds and mathlib's
@@ -179,9 +185,11 @@ derive the lower bound from random entropy.
 product-pair Chebyshev route now has the direct raw separated-packing entry
 point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`.
-It composes the eventual `P^n`-a.e. quarter-radius packing source with the
-selected-cardinality lower-growth final wrapper, so callers no longer need to
-pre-assemble the selected-cardinality inequality.  It now also has the
+It composes the eventual `P^n`-a.e. terminal-sample quarter-radius packing
+source with the selected-cardinality lower-growth final wrapper through the
+terminal raw separated-packing adapter, so callers no longer need to
+pre-assemble the selected-cardinality inequality or restate the packing source
+on `samplePath`.  It now also has the
 proof-carrying finite-packing witness entry point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_finiteEmpiricalL1PackingAtCard_of_set_countable`,
 which consumes eventual `P^n`-a.e. terminal-sample
