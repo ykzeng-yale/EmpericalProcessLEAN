@@ -99,8 +99,12 @@ derives the previous a.e. estimator/scaled-estimator increment equalities from
 pointwise model definitions.  The raw-root source endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_envelopeTendsto_summandMeasurable_envelope`
 derives the previous a.e. raw estimating-equation field from the pointwise
-model root equation.  The next proof packet should package remaining
-model-facing source fields such as measurability or the actual model-specific
+model root equation.  The measurable-source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+derives the selected a.e. measurability fields from ordinary `Measurable`
+hypotheses for `Z`, the derivative-at-theta0 summands, the second-derivative
+summands, `theta0`, `estimator`, and `scale`.  The next proof packet should
+package remaining model-facing source fields such as the actual model-specific
 matrix-action sources, not replay
 display weak-convergence, display-tightness, score-CLT, residual convergence,
 absorbing tightness, derivative-action wrappers, derivative-entry iid source
@@ -108,7 +112,7 @@ fields, score moment transfer, score-law covariance transfer, vector
 score-representation, vector score common-law transfer, derivative-table
 common-law transfer, centered derivative-coordinate residual algebra,
 smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer, or
-estimator-definition/raw-root a.e. wrappers.
+estimator-definition/raw-root/measurability source wrappers.
 
 ## Chapter Map
 
@@ -885,8 +889,9 @@ Initial modules:
   per-observation Taylor identities, or instantiate the negligible residual
   from derivative LLN and the second-derivative envelope.
   The current Theorem 5.41 source route has also replaced the estimator
-  increment and raw-root a.e. equalities by pointwise model-definition sources;
-  do not route future packets through those already-closed wrappers.
+  increment, raw-root, and selected measurability a.e. fields by pointwise or
+  ordinary measurable model sources; do not route future packets through those
+  already-closed wrappers.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
