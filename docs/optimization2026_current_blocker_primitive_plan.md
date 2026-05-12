@@ -1347,10 +1347,17 @@ single-halfspace logarithmic barrier.  The newest row-slack packet adds
 `mem_barrierAffinePreimageSet_halfspaceSlackCLM_iff`,
 `halfspaceSlackRightInverse`, `halfspaceSlackCLM_rightInverse`, and
 `chewi1314_halfspaceSlackNegLog_selfConcordantBarrierOn`, giving the exact
-source row form `x ↦ -log (b - inner a x)` for nonzero rows.  Future
-polytope-log-barrier work should build the finite row family and summed
-barrier from these row endpoints and the compiled sum-rule packets rather
-than redoing scalar self-concordance or affine right-inverse algebra.
+source row form `x ↦ -log (b - inner a x)` for nonzero rows.  The newest
+vector-slack packet adds `polytopeSlackCLM`, `polytopeSlackSet`,
+`mem_barrierAffinePreimageSet_polytopeSlackCLM_iff`,
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_rightInverse`, and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_surjective`, pulling
+the finite positive-orthant log barrier back to the source domain
+`∀ i, 0 < b i - inner (a i) x` whenever the slack map has a supplied right
+inverse or is surjective.  Future fully general polytope-log-barrier work
+should remove the surjectivity/right-inverse front door by using the compiled
+sum-rule packets or range-translated affine-preimage packet, rather than
+redoing scalar self-concordance or affine right-inverse algebra.
 Do not redo the
 square-root/right-inverse/Hessian-nonnegativity/self-concordance/model-Hessian
 plumbing; use
@@ -1374,8 +1381,9 @@ The exact blockers are:
 - continue Proposition 13.11 from the already-compiled product, shared-domain
   sum, and affine-preimage supplied-oracle layers.  The next aggressive
   targets are either closing the exact shared-domain sum inverse-Hessian /
-  inverse-local gate, extending affine-preimage from equivalences to a well-scoped surjective
-  linear-map/pseudoinverse interface, or opening the inf-projection rule.
+  inverse-local gate for finite row sums, deriving the general Example 13.14
+  polytope log barrier without a surjective slack-map assumption via the
+  range-translated affine-preimage route, or opening the inf-projection rule.
   Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi

@@ -122,9 +122,15 @@ source-shaped row-slack endpoint
 `chewi1314_halfspaceSlackNegLog_selfConcordantBarrierOn` now packages the
 single row barrier `x ↦ -log (b - inner a x)` on
 `halfspaceSlackSet a b`, using `halfspaceSlackCLM_rightInverse` for
-nonzero rows.  Next
-lift these scalar/orthant models through reusable Proposition 13.11
-barrier-calculus rules,
+nonzero rows.  The finite-row slack map `polytopeSlackCLM` and domain
+`polytopeSlackSet` now compile, with
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_rightInverse` and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_surjective` proving
+the positive-orthant preimage barrier whenever the slack map has a supplied
+right inverse or is surjective.  Next
+remove that front-door assumption for the fully general polytope barrier using
+the reusable Proposition 13.11 range-translated affine-preimage or finite
+sum-rule machinery,
 starting with the product-separable rule; all segment membership, `ψ`
 continuity, local-norm continuity/positivity, Riccati comparison, derivative
 inequality, coefficient scaling, final sandwich assembly, first Newton/Dikin

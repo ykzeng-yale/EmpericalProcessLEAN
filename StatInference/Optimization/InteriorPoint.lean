@@ -14587,5 +14587,80 @@ theorem chewi1314_halfspaceSlackNegLog_selfConcordantBarrierOn
       (halfspaceSlackCLM a) (halfspaceSlackRightInverse a) b
       (halfspaceSlackCLM_rightInverse ha)
 
+/--
+The vector slack map for Chewi Example 13.14:
+`x ↦ (-⟪a_i, x⟫)_i`, so the affine preimage with offset `b` is
+`x ↦ (b_i - ⟪a_i, x⟫)_i`.
+-/
+noncomputable def polytopeSlackCLM
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) : F →L[ℝ] EuclideanSpace ℝ (Fin m) :=
+  ((PiLp.continuousLinearEquiv 2 ℝ (fun _ : Fin m => ℝ)).symm :
+      ((Fin m -> ℝ) ≃L[ℝ] EuclideanSpace ℝ (Fin m))).toContinuousLinearMap.comp
+    (ContinuousLinearMap.pi fun i : Fin m => -innerSL ℝ (a i))
+
+/--
+The open polytope-slack domain in Chewi Example 13.14:
+`b_i - ⟪a_i, x⟫ > 0` for every row.
+-/
+def polytopeSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) : Set F :=
+  {x | ∀ i : Fin m, 0 < b i - inner ℝ (a i) x}
+
+theorem mem_barrierAffinePreimageSet_polytopeSlackCLM_iff
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) (x : F) :
+    x ∈ barrierAffinePreimageSet (polytopeSlackCLM a) b (positiveOrthant (d := m)) ↔
+      x ∈ polytopeSlackSet a b := by
+  simp [barrierAffinePreimageSet, polytopeSlackCLM, polytopeSlackSet,
+    positiveOrthant, sub_eq_add_neg, add_comm]
+
+/--
+Chewi Example 13.14, finite-row logarithmic barrier in supplied right-inverse
+form.  Pulling the positive-orthant log barrier back along the slack map gives
+a `(m : ℝ)`-self-concordant barrier for the polytope slack domain.
+-/
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_rightInverse
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (B : EuclideanSpace ℝ (Fin m) →L[ℝ] F)
+    (hAB : (polytopeSlackCLM a).comp B =
+      ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin m))) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierAffinePreimageHess (polytopeSlackCLM a) b positiveOrthantNegLogHessCLM)
+      (barrierAffinePreimageGrad (polytopeSlackCLM a) b positiveOrthantNegLogGrad)
+      (barrierAffinePreimageInvHessRightInverse (polytopeSlackCLM a) B b
+        positiveOrthantNegLogInvHessCLM)
+      (barrierAffinePreimageThirdMixed (polytopeSlackCLM a) b
+        positiveOrthantNegLogThirdMixed) 1 (m : ℝ) := by
+  simpa [polytopeSlackSet, barrierAffinePreimageSet, polytopeSlackCLM,
+    positiveOrthant, sub_eq_add_neg, add_comm] using
+    chewi1311_affinePreimage_selfConcordantBarrierOn_of_rightInverse
+      (polytopeSlackCLM a) B b
+      (positiveOrthantNegLog_selfConcordantBarrierOn (d := m)) hAB
+
+/--
+Chewi Example 13.14, finite-row logarithmic barrier for a surjective slack
+linear part.  The right inverse is chosen from mathlib's finite-dimensional
+continuous-linear-map API through Proposition 13.11.
+-/
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_surjective
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (hA : (polytopeSlackCLM a).range = ⊤) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierAffinePreimageHess (polytopeSlackCLM a) b positiveOrthantNegLogHessCLM)
+      (barrierAffinePreimageGrad (polytopeSlackCLM a) b positiveOrthantNegLogGrad)
+      (barrierAffinePreimageInvHessSurjective (polytopeSlackCLM a) b
+        positiveOrthantNegLogInvHessCLM hA)
+      (barrierAffinePreimageThirdMixed (polytopeSlackCLM a) b
+        positiveOrthantNegLogThirdMixed) 1 (m : ℝ) := by
+  simpa [polytopeSlackSet, barrierAffinePreimageSet, polytopeSlackCLM,
+    positiveOrthant, sub_eq_add_neg, add_comm] using
+    chewi1311_affinePreimage_selfConcordantBarrierOn_of_surjective
+      (polytopeSlackCLM a) b
+      (positiveOrthantNegLog_selfConcordantBarrierOn (d := m)) hA
+
 end Optimization
 end StatInference
