@@ -268,6 +268,17 @@ This handles the affine offset `b` by representing `dom f ∩ (b + range A)` in
 coordinates on `A.range`; the next exact source attempt should provide or
 identify the restricted inverse-Hessian/dual-gradient gates for that
 coordinate barrier.
+The translated-range collapse packet adds
+`barrierAffineRange_subtype_comp_rangeRestrict`,
+`barrierAffineRange_adjoint_rangeRestrict_subtype`,
+`barrierAffineRange_preimageHess_eq`,
+`barrierAffineRange_preimageGrad_eq`,
+`barrierAffineRange_preimageThirdMixed_eq`,
+`SelfConcordantBarrierOn.affinePreimage_rangeTranslated_source_of_gradient_bound`,
+and `chewi1311_affinePreimage_selfConcordantBarrierOn_rangeTranslated_source`.
+The outer domain/Hessian/gradient/third are now exactly the original affine
+preimage oracles; only the transported range-coordinate inverse Hessian remains
+exposed.
 Search-first result: mathlib supplies `ContinuousLinearMap.adjoint`,
 `ContinuousLinearMap.adjoint_inner_left/right`,
 `ContinuousLinearMap.adjoint_comp`, and
