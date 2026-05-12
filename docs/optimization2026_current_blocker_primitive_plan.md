@@ -1331,6 +1331,20 @@ The newest Definition 13.9 packet adds `SelfConcordantBarrierOn`,
 `positiveOrthantNegLog_selfConcordantBarrierOn`, packaging the finite
 positive-orthant logarithmic barrier as a `d`-self-concordant barrier from the
 compiled mixed-third certificate and exact dual-local-norm identity.
+The newest scalar/Example 13.14 packet adds `negLogBarrierGrad`,
+`negLogBarrierThirdMixed`, `negLogBarrier_localNorm_eq_oneDimLocalNorm`,
+`negLogBarrier_localNorm_eq_abs_div'`, `negLogHessCLM_quadratic_nonneg`,
+`negLogInvHessCLM_quadratic_nonneg`, `negLogBarrier_mixedThird_bound`,
+`negLogBarrier_mixedThirdSelfConcordantOn_Ioi`, and
+`negLogBarrier_selfConcordantBarrierOn_Ioi`, so the one-dimensional `-log`
+barrier is now available in the same supplied-oracle `SelfConcordantBarrierOn`
+interface.  It also adds
+`chewi1314_affineNegLog_selfConcordantBarrierOn_of_rightInverse` and
+`chewi1314_affineNegLog_selfConcordantBarrierOn_of_surjective`, which turn a
+scalar affine preimage of `ℝ_{>0}` into a `1`-self-concordant barrier for the
+single-halfspace logarithmic barrier.  Future polytope-log-barrier work should
+prove the row-map surjectivity/right-inverse once, then reuse these endpoints
+and the compiled sum-rule packets rather than redoing scalar self-concordance.
 Do not redo the
 square-root/right-inverse/Hessian-nonnegativity/self-concordance/model-Hessian
 plumbing; use

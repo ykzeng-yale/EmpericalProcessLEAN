@@ -118,6 +118,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   Exact Proposition 13.11(1) work can now instantiate one certificate object
   carrying the two component barriers, component square-root models, and the
   summed square-root model, instead of threading the long equality list.
+- Latest scalar/Example 13.14 frontier: the scalar logarithmic barrier now
+  compiles in the same Definition 13.9 supplied-oracle interface as the
+  positive-orthant model.  Reusable declarations include
+  `negLogBarrierGrad`, `negLogBarrierThirdMixed`,
+  `negLogBarrier_localNorm_eq_oneDimLocalNorm`,
+  `negLogBarrier_localNorm_eq_abs_div'`,
+  `negLogHessCLM_quadratic_nonneg`,
+  `negLogInvHessCLM_quadratic_nonneg`,
+  `negLogBarrier_mixedThird_bound`,
+  `negLogBarrier_mixedThirdSelfConcordantOn_Ioi`, and
+  `negLogBarrier_selfConcordantBarrierOn_Ioi`.  Example 13.14's single
+  halfspace log-barrier route can now start from
+  `chewi1314_affineNegLog_selfConcordantBarrierOn_of_rightInverse` or
+  `chewi1314_affineNegLog_selfConcordantBarrierOn_of_surjective`, then use
+  the existing sum-rule packets for finite polytope logarithmic barriers.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
   supplied-oracle form, for invertible affine maps, as a single
   non-invertible/range certificate object, and for affine maps whose linear

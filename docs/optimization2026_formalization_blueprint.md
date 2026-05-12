@@ -111,8 +111,15 @@ the positive-orthant Hessian differentiability, gradient differentiability,
 Newton-step feasibility, and Newton linearization hypotheses.  Definition 13.9
 is represented by the supplied-oracle interface `SelfConcordantBarrierOn`, and
 `positiveOrthantNegLog_selfConcordantBarrierOn` packages the finite
-positive-orthant logarithmic barrier as a `d`-self-concordant barrier.  Next
-lift this model through reusable Proposition 13.11 barrier-calculus rules,
+positive-orthant logarithmic barrier as a `d`-self-concordant barrier.  The
+scalar `-log` barrier is also now packaged in the supplied-oracle interface by
+`negLogBarrier_mixedThirdSelfConcordantOn_Ioi` and
+`negLogBarrier_selfConcordantBarrierOn_Ioi`; Example 13.14's single-halfspace
+affine-preimage endpoint is available as
+`chewi1314_affineNegLog_selfConcordantBarrierOn_of_rightInverse` and
+`chewi1314_affineNegLog_selfConcordantBarrierOn_of_surjective`.  Next
+lift these scalar/orthant models through reusable Proposition 13.11
+barrier-calculus rules,
 starting with the product-separable rule; all segment membership, `ψ`
 continuity, local-norm continuity/positivity, Riccati comparison, derivative
 inequality, coefficient scaling, final sandwich assembly, first Newton/Dikin

@@ -14378,5 +14378,145 @@ theorem negLogBarrier_oneDimSelfConcordantOn_Ioi :
       negLogBarrier_selfConcordance_ineq (x := x) (v := v) hx
     simpa [oneDimLocalNorm] using hineq
 
+/-- The supplied one-dimensional gradient oracle for `x ↦ -log x`. -/
+noncomputable def negLogBarrierGrad (x : ℝ) : ℝ :=
+  deriv negLogBarrier x
+
+/--
+The supplied one-dimensional mixed-third oracle for `x ↦ -log x`, written in
+the source convention `f'''(x) u v^2`.
+-/
+noncomputable def negLogBarrierThirdMixed (x u v : ℝ) : ℝ :=
+  negLogBarrierThird x * u * v ^ (2 : ℕ)
+
+theorem negLogBarrier_localNorm_eq_oneDimLocalNorm (x v : ℝ) :
+    localNorm negLogHessCLM x v = oneDimLocalNorm negLogBarrierSecond x v := by
+  unfold localNorm oneDimLocalNorm
+  congr 1
+  simp [negLogHessCLM, realScaleCLM, pow_two]
+  ring
+
+theorem negLogBarrier_localNorm_eq_abs_div'
+    {x v : ℝ} (hx : 0 < x) :
+    localNorm negLogHessCLM x v = |v| / x := by
+  rw [negLogBarrier_localNorm_eq_oneDimLocalNorm]
+  exact negLogBarrier_localNorm_eq_abs_div hx
+
+theorem negLogHessCLM_quadratic_nonneg
+    {x : ℝ} (hx : 0 < x) (v : ℝ) :
+    0 ≤ inner ℝ v (negLogHessCLM x v) := by
+  have hsq : 0 ≤ v ^ (2 : ℕ) := sq_nonneg v
+  have hsec : 0 ≤ negLogBarrierSecond x := by
+    simp [negLogBarrierSecond]
+    positivity
+  calc
+    0 ≤ negLogBarrierSecond x * v ^ (2 : ℕ) := mul_nonneg hsec hsq
+    _ = inner ℝ v (negLogHessCLM x v) := by
+      simp [negLogHessCLM, realScaleCLM, pow_two]
+      ring
+
+theorem negLogInvHessCLM_quadratic_nonneg
+    (x v : ℝ) :
+    0 ≤ inner ℝ v (negLogInvHessCLM x v) := by
+  have hsqx : 0 ≤ x ^ (2 : ℕ) := sq_nonneg x
+  have hsqv : 0 ≤ v ^ (2 : ℕ) := sq_nonneg v
+  calc
+    0 ≤ x ^ (2 : ℕ) * v ^ (2 : ℕ) := mul_nonneg hsqx hsqv
+    _ = inner ℝ v (negLogInvHessCLM x v) := by
+      simp [negLogInvHessCLM, realScaleCLM, pow_two]
+      ring
+
+theorem negLogBarrier_mixedThird_bound
+    {x : ℝ} (hx : 0 < x) (u v : ℝ) :
+    |negLogBarrierThirdMixed x u v| ≤
+      2 * (1 : ℝ) * localNorm negLogHessCLM x u *
+        (localNorm negLogHessCLM x v) ^ (2 : ℕ) := by
+  rw [negLogBarrier_localNorm_eq_abs_div' (x := x) (v := u) hx,
+    negLogBarrier_localNorm_eq_abs_div' (x := x) (v := v) hx]
+  have hx_ne : x ≠ 0 := hx.ne'
+  have hxzpos : 0 < x ^ (-3 : ℤ) := zpow_pos hx _
+  have hcoeff : |-2 * x ^ (-3 : ℤ)| = 2 * x ^ (-3 : ℤ) := by
+    rw [abs_of_neg]
+    · ring
+    · nlinarith
+  calc
+    |negLogBarrierThirdMixed x u v|
+        = (2 * x ^ (-3 : ℤ)) * |u| * |v| ^ (2 : ℕ) := by
+          simp only [negLogBarrierThirdMixed, negLogBarrierThird]
+          change |(-2 * x ^ (-3 : ℤ)) * u * v ^ (2 : ℕ)| =
+            (2 * x ^ (-3 : ℤ)) * |u| * |v| ^ (2 : ℕ)
+          rw [abs_mul, abs_mul, hcoeff, abs_pow]
+    _ = 2 * (1 : ℝ) * (|u| / x) * (|v| / x) ^ (2 : ℕ) := by
+          field_simp [hx_ne]
+    _ ≤ 2 * (1 : ℝ) * (|u| / x) * (|v| / x) ^ (2 : ℕ) := le_rfl
+
+/--
+Chewi Example 13.4 in the supplied-oracle vector interface: the scalar
+logarithmic barrier is mixed-third self-concordant on the positive half-line.
+-/
+theorem negLogBarrier_mixedThirdSelfConcordantOn_Ioi :
+    MixedThirdSelfConcordantOn (Set.Ioi 0)
+      negLogHessCLM negLogBarrierThirdMixed 1 where
+  parameter_pos := by norm_num
+  hess_nonneg := by
+    intro x hx v
+    exact negLogHessCLM_quadratic_nonneg hx v
+  mixed_third_bound := by
+    intro x hx u v
+    exact negLogBarrier_mixedThird_bound hx u v
+
+/--
+Chewi Example 13.10/Definition 13.9 for the scalar logarithmic barrier:
+`x ↦ -log x` is a `1`-self-concordant barrier on `ℝ_{>0}`.
+-/
+theorem negLogBarrier_selfConcordantBarrierOn_Ioi :
+    SelfConcordantBarrierOn (Set.Ioi 0)
+      negLogHessCLM negLogBarrierGrad negLogInvHessCLM
+      negLogBarrierThirdMixed 1 1 where
+  parameter_nonneg := by norm_num
+  self_concordant := negLogBarrier_mixedThirdSelfConcordantOn_Ioi
+  invHess_nonneg := by
+    intro x _hx v
+    exact negLogInvHessCLM_quadratic_nonneg x v
+  gradient_bound := by
+    intro x hx
+    rw [Real.sqrt_one]
+    exact le_of_eq (by
+      simpa [negLogBarrierGrad] using
+        negLogBarrier_dualLocalNorm_deriv_eq_one hx)
+
+/--
+Chewi Example 13.14, one-halfspace logarithmic barrier in affine-preimage
+form.  A scalar affine map with a continuous right inverse pulls the scalar
+`-log` barrier back to a `1`-self-concordant barrier.
+-/
+theorem chewi1314_affineNegLog_selfConcordantBarrierOn_of_rightInverse
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    (A : F →L[ℝ] ℝ) (B : ℝ →L[ℝ] F) (b : ℝ)
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ ℝ) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A b (Set.Ioi 0))
+      (barrierAffinePreimageHess A b negLogHessCLM)
+      (barrierAffinePreimageGrad A b negLogBarrierGrad)
+      (barrierAffinePreimageInvHessRightInverse A B b negLogInvHessCLM)
+      (barrierAffinePreimageThirdMixed A b negLogBarrierThirdMixed) 1 1 :=
+  chewi1311_affinePreimage_selfConcordantBarrierOn_of_rightInverse
+    A B b negLogBarrier_selfConcordantBarrierOn_Ioi hAB
+
+/--
+Chewi Example 13.14, source-shaped halfspace logarithmic barrier for a
+surjective scalar affine linear part.  The right inverse is chosen from
+mathlib's finite-dimensional continuous-linear-map API.
+-/
+theorem chewi1314_affineNegLog_selfConcordantBarrierOn_of_surjective
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    (A : F →L[ℝ] ℝ) (b : ℝ) (hA : A.range = ⊤) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A b (Set.Ioi 0))
+      (barrierAffinePreimageHess A b negLogHessCLM)
+      (barrierAffinePreimageGrad A b negLogBarrierGrad)
+      (barrierAffinePreimageInvHessSurjective A b negLogInvHessCLM hA)
+      (barrierAffinePreimageThirdMixed A b negLogBarrierThirdMixed) 1 1 :=
+  chewi1311_affinePreimage_selfConcordantBarrierOn_of_surjective
+    A b negLogBarrier_selfConcordantBarrierOn_Ioi hA
+
 end Optimization
 end StatInference
