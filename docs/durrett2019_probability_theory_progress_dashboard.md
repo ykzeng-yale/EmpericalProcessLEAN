@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V231` in
+Route from `Live In-Thread Goal Prompt V232` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Section 4.5.5 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the
@@ -190,10 +190,27 @@ provide:
 `durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae`,
 `durrett2019_theorem_4_5_5_conditionalProbabilitySum_mono_step_ae_on`, and
 `durrett2019_theorem_4_5_5_max_one_conditionalProbabilitySum_increment_nonneg_ae`.
-The next target is now to consume this a.e. monotonicity certificate in the
-4.5.3/V230 route or replace the raw clock by a canonical pointwise-monotone
-representative; finite-clock martingale convergence packaging should be added
-only if it directly feeds the V230 ratio wrapper.
+V232 introduces the clipped canonical conditional-probability clock, proves its
+predictability, integrability, pointwise monotonicity, finite/all-time a.e.
+equality with the raw textbook clock, and its conditional-variance domination:
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_increment_eq`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_predictable`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_integrable`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_zero_nonneg`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_mono_step`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_ae_eq_conditionalProbabilitySum`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_ae_eq_conditionalProbabilitySum_all`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_atTop_on_of_conditionalProbabilitySum`,
+and
+`durrett2019_theorem_4_5_5_martingalePart_condExp_square_le_nonnegativeConditionalProbabilitySum_increment_auto`.
+It also adds the canonical infinite-clock and ratio wrappers
+`durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock_canonical_auto_tail`
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_adapted_conditionalProbabilitySum_clock_canonical_auto_tail`,
+removing raw pointwise monotonicity from the active source surface.  The next
+target is finite-clock martingale convergence from the existing Theorem 4.5.2
+route, then the final finite/infinite event split.
 
 Closed Chapter 2 support remains available in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V231
+## Live In-Thread Goal Prompt V232
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -344,12 +344,32 @@ The source monotonicity is now available a.e.; what remains is consuming this
 a.e. certificate in the infinite-clock route or replacing the clock by a
 canonical pointwise-monotone representative.
 
-Next aggressive step: build the a.e.-monotone 4.5.3/V230 consumer or introduce
-the canonical nonnegative representative.  Do not claim pointwise monotonicity
-for raw Mathlib conditional-expectation representatives.  In parallel, package
-the finite-clock martingale convergence input from the existing Theorem 4.5.2
-finite-variance route only if it directly feeds the V230 ratio wrapper.  Do not
-route back to stopped running-maximum boundedness,
+V232 introduces and consumes the canonical nonnegative representative of the
+conditional-probability clock.  New compiled declarations:
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_increment_eq`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_predictable`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_integrable`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_zero_nonneg`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_mono_step`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_ae_eq_conditionalProbabilitySum`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_ae_eq_conditionalProbabilitySum_all`,
+`durrett2019_theorem_4_5_5_nonnegativeConditionalProbabilitySum_atTop_on_of_conditionalProbabilitySum`,
+`durrett2019_theorem_4_5_5_martingalePart_condExp_square_le_nonnegativeConditionalProbabilitySum_increment_auto`,
+`durrett2019_theorem_4_5_5_martingalePart_max_one_normalized_on_of_adapted_conditionalProbabilitySum_clock_canonical_auto_tail`,
+and
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_finite_or_adapted_conditionalProbabilitySum_clock_canonical_auto_tail`.
+The infinite-clock side no longer requires pointwise monotonicity of the raw
+Mathlib conditional-expectation representative; Theorem 4.5.3 is applied to the
+clipped pointwise-monotone clock and transferred back to the textbook raw
+denominator by all-time finite a.e. equality.
+
+Next aggressive step: package the finite-clock martingale convergence input
+from the existing Theorem 4.5.2 finite-variance route so it feeds the V232
+canonical ratio wrapper directly, then close the final textbook event split
+from `∑ P(B_n | F_{n-1}) < ∞` versus `= ∞`.  Do not revisit raw clock
+pointwise monotonicity; use the V232 canonical wrapper.  Do not route back to
+stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
 scaled-summability-to-transform plumbing, conditional variance pull-out, scalar
@@ -1695,6 +1715,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V231` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V232` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
