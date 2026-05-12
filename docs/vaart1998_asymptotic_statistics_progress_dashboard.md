@@ -15,10 +15,18 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: derivative matrix-action source bridge for the
+Latest verified packet: estimator-definition source endpoint for the
+score-at-theta0/Taylor and derivative-table route, including
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+in `MEstimators.lean`.  It derives the previous a.e.
+`hEstimator_scaled`, `hDelta_eq_sub`, and `hScaledEstimator_eq_sub` fields from
+pointwise model definitions of `estimatingAtEstimator`, `delta`, and
+`scaledEstimator`.
+
+Immediate predecessor packet: derivative matrix-action source bridge for the
 derivative-table and score-at-theta0/Taylor endpoints, including
 `vaart1998_theorem_5_41_derivativeCoordinate_action_eq_of_matrix_action_representation`
-and the current endpoint
+and its endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  The route now derives the old centered
 `hDerivativeCoordinate_action_eq` field from sampled derivative matrix actions
@@ -32,7 +40,7 @@ normalization scale.  It also derives the raw score-scaling field from the
 model-facing normalized score-vector display
 `scoreAtTheta0 = sqrt n • scoreVector`.
 
-Immediate predecessor packet: derivative-table common-law endpoint
+Earlier predecessor packet: derivative-table common-law endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It adds
 `vaart1998_theorem_5_41_derivativeCommonVectorLaw_of_matrixTableRepresentation`
@@ -117,11 +125,11 @@ to remove the explicit residual convergence and residual measurability fields
 from the pointwise-Taylor Theorem 5.41 action endpoint.
 
 Current next blocker: package the remaining model-facing source hypotheses
-around the score-law covariance/moment source endpoint.  Prefer
-root/estimator-scaling/measurability fields or the actual model-specific
-sampled derivative matrix action and population `V` matrix action; do not
-replay the centered derivative-coordinate residual algebra, smooth/raw/scaled
-Taylor transfer, or score-at-theta0 vector scaling transfer.
+around raw root equations, measurability, or the actual model-specific sampled
+derivative matrix action and population `V` matrix action.  Do not replay the
+centered derivative-coordinate residual algebra, smooth/raw/scaled Taylor
+transfer, score-at-theta0 vector scaling transfer, or estimator-definition
+a.e. wrappers.
 
 ## Verified Frontier
 
@@ -819,11 +827,11 @@ derivative LLN and the second-derivative envelope.
 Do not replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
 score infrastructure, derivative-bound and finite strong-law infrastructure,
 law-tail routing, display-congruence, display-convergence, display weak
-convergence, score-equation `O_P(1)`, Taylor-zero `O_P(1)`, absorbing
+ convergence, score-equation `O_P(1)`, Taylor-zero `O_P(1)`, absorbing
 tightness/source/Taylor/measurability endpoints, projected-to-action law-tail
 routing, display-tightness action-bound, display weak-tightness action-bound,
 displayed weak-convergence source helpers, earlier Theorem 5.41 wrappers, or
-historical ledger items.
+estimator-definition a.e. wrappers, or historical ledger items.
 
 ## Reuse Dependencies
 

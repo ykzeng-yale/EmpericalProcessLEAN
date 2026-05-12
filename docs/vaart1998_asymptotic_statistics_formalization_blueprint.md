@@ -92,15 +92,20 @@ now derives the centered empirical derivative-coordinate residual from the
 sampled derivative matrix action and the population `V` matrix action.  The
 current endpoint and the derivative-table common-law endpoint therefore consume
 `hDerivativeAtTheta0_matrix_action` and `hV_matrix_action` rather than the
-opaque `hDerivativeCoordinate_action_eq` formula.  The next proof packet should
-package remaining model-facing source fields such as root/estimator-scaling/
-measurability or the actual model-specific matrix-action sources, not replay
+opaque `hDerivativeCoordinate_action_eq` formula.  The estimator-definition
+source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+derives the previous a.e. estimator/scaled-estimator increment equalities from
+pointwise model definitions.  The next proof packet should package remaining
+model-facing source fields such as raw root equations, measurability, or the
+actual model-specific matrix-action sources, not replay
 display weak-convergence, display-tightness, score-CLT, residual convergence,
 absorbing tightness, derivative-action wrappers, derivative-entry iid source
 fields, score moment transfer, score-law covariance transfer, vector
 score-representation, vector score common-law transfer, derivative-table
 common-law transfer, centered derivative-coordinate residual algebra,
-smooth/raw/scaled Taylor transfer, or score-at-theta0 vector scaling transfer.
+smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer, or
+estimator-definition a.e. wrappers.
 
 ## Chapter Map
 
@@ -876,6 +881,9 @@ Initial modules:
   Next instantiate the finite-coordinate Taylor expansion from sampled
   per-observation Taylor identities, or instantiate the negligible residual
   from derivative LLN and the second-derivative envelope.
+  The current Theorem 5.41 source route has also replaced the estimator
+  increment a.e. equalities by pointwise estimator-definition sources; do not
+  route future packets through those already-closed wrappers.
   Earlier wrappers are closed infrastructure and should not be replayed except
   for direct local API reuse.
 - `Contiguity.lean`: Chapter 6 definitions and Le Cam lemmas.
