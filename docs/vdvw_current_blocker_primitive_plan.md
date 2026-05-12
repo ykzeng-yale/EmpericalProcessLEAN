@@ -1850,9 +1850,24 @@ separable-to-pre-tight through
 wrappers including
 `vdVW132_probabilityMeasure_exists_iUnion_isCompact_measure_compl_eq_zero_of_tight`,
 `vdVW132_probabilityMeasure_separable_of_tight`, and
-`vdVW132_complete_separable_probabilityMeasure_preTight`.  The remaining exact
-1.3.2 work is the complete-space/tightness equivalence and Polish-measure
-formulation beyond these measure-level Borel pseudometric clauses.
+`vdVW132_complete_separable_probabilityMeasure_preTight`.  A later 2026-05-12
+follow-up closes the measure-level complete-space/tightness equivalence and
+Polish-measure formulation; the remaining exact 1.3.2 work is random-map/law
+packaging and report-level theorem consolidation.
+
+2026-05-12 Lemma 1.3.2 complete/Polish measure-level closure:
+`WeakConvergence.lean` now adds `VdVWProbabilityMeasurePolish` and proves the
+remaining measure-level clauses:
+`VdVWProbabilityMeasuresTight.of_preTight` closes pre-tight-to-tight in
+complete uniform spaces;
+`vdVW132_complete_probabilityMeasure_tight_iff_preTight`,
+`vdVW132_complete_probabilityMeasure_tight_iff_separable`, and
+`vdVW132_complete_probabilityMeasure_tight_preTight_separable_equiv` package
+the complete-space tight/pre-tight/separable equivalence; and
+`vdVW132_probabilityMeasure_tight_of_polish` plus
+`vdVW132_polishSpace_probabilityMeasure_tight` cover the Polish-measure
+tightness clause.  The remaining 1.3.2 frontier is random-map/law packaging
+and exact theorem reporting, not the measure-level equivalence itself.
 
 2026-05-12 later Chapter 1 weak-convergence numbered wrappers:
 `WeakConvergence.lean` now names the reusable measure-level/common-domain

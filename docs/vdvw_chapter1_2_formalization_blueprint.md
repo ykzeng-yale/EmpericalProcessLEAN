@@ -1137,6 +1137,18 @@ direction for VdV&W 1.3.2.  The pre-tight/separable equivalence, complete-space
 equivalence with tightness, and Polish-measure tightness clauses remain pending
 until the corresponding local measure-level definitions are introduced.
 
+2026-05-12 Lemma 1.3.2 complete/Polish measure-level closure:
+`WeakConvergence.lean` now introduces `VdVWProbabilityMeasurePolish`, proves
+pre-tight-to-tight in complete uniform spaces as
+`VdVWProbabilityMeasuresTight.of_preTight`, packages the complete-space
+tight/pre-tight/separable equivalences as
+`vdVW132_complete_probabilityMeasure_tight_iff_preTight`,
+`vdVW132_complete_probabilityMeasure_tight_iff_separable`, and
+`vdVW132_complete_probabilityMeasure_tight_preTight_separable_equiv`, and proves
+the Polish-measure tightness clause as
+`vdVW132_probabilityMeasure_tight_of_polish` plus the ambient Polish-space
+wrapper `vdVW132_polishSpace_probabilityMeasure_tight`.
+
 2026-05-05 product Borel-space follow-up: `FiniteDimensional.lean` now adds
 `vdVW141_prod_borel_eq_product_borel`, a VdV&W 1.4.1 wrapper stating that the
 product of the Borel sigma-fields equals the Borel sigma-field of the product
@@ -1344,7 +1356,7 @@ quotes; the anchor is the authoritative local source location.
 | 1.2.6 | Lemma | `..._1-100.md:480` | local-layer/mathlib-foundation: nonnegative measurable Fubini inequality chain compiled as `vdVW126_inner_repeatedInner_repeatedOuter_outer_chain_of_measurable`, plus Tonelli outer-expectation wrappers; exact arbitrary-map/perfect-map extended-real variants still pending |
 | 1.2.7 | Lemma | `..._1-100.md:492` | local-layer/mathlib-foundation: measurable nonnegative repeated-outer equality compiled as `vdVW127_jointOuter_eq_repeatedOuter_symm_of_measurable`, plus symmetric Tonelli wrappers; exact Lipschitz-in-one-coordinate nonmeasurable theorem still pending |
 | 1.3.1 | Lemma | `..._1-100.md:575` | local-layer/mathlib-foundation: Borel sigma-field least for bounded-continuous real tests wrapped as `vdVW131_borel_le_iff_forall_boundedContinuous_measurable`, with closed-set distance proof |
-| 1.3.2 | Lemma | `..._1-100.md:582` | local-layer/mathlib-foundation: measure-level separability and pre-tightness predicates plus both pre-tight-to-separable and separable-to-pre-tight directions compiled through `vdVW132_probabilityMeasure_preTight_iff_separable`; tight-to-separable, tight-to-pre-tight, and complete-separable packages now compiled; full complete-space equivalence and Polish-measure clauses still pending |
+| 1.3.2 | Lemma | `..._1-100.md:582` | local-layer/mathlib-foundation: measure-level separability, pre-tightness, and Polishness predicates compiled; pre-tight/separable equivalence, tight-to-pre-tight/separable, complete-space tight/pre-tight/separable equivalences, and Polish-measure tightness now compiled through `vdVW132_complete_probabilityMeasure_tight_preTight_separable_equiv` and `vdVW132_probabilityMeasure_tight_of_polish`; exact random-map/law-facing wrappers still pending |
 | 1.3.4 | Theorem | `..._1-100.md:606` | local-layer/mathlib-foundation: weak convergence of probability measures via `ProbabilityMeasure.tendsto_iff_forall_integral_tendsto` plus Portmanteau closed/open implications wrapped locally; exact arbitrary-map outer-expectation version remains pending |
 | 1.3.6 | Theorem | `..._1-100.md:650` | local-layer/mathlib-foundation: continuous map pushforward and `TendstoInDistribution` continuous-composition wrappers proved; signed arbitrary-map weak convergence now has continuous-map, filter-refinement, and ignored probability-product coordinate closures under a.e.-measurability in both common-domain and varying-domain forms; full nonmeasurable arbitrary-map cover layer still pending |
 | 1.3.8 | Lemma | `..._1-100.md:678` | blocked-vdvw: Hoffmann-Jørgensen arbitrary-map weak-convergence infrastructure; missing exact local arbitrary-map/asymptotic-measurability primitive |

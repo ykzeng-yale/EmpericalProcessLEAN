@@ -3856,6 +3856,16 @@ def VdVWProbabilityMeasurePreTight
       ((μ : ProbabilityMeasure S) : Measure S) (Aᶜ) ≤ ε
 
 /--
+VdV&W measure-level Polishness for probability measures: the measure is
+carried by a measurable subset whose relative topology is Polish.
+-/
+def VdVWProbabilityMeasurePolish
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S]
+    (μ : ProbabilityMeasure S) : Prop :=
+  ∃ A : Set S, MeasurableSet A ∧ PolishSpace A ∧
+    ((μ : ProbabilityMeasure S) : Measure S) (Aᶜ) = 0
+
+/--
 On a separable ambient topological space, every probability measure is
 VdV&W-separable by taking the whole space as the carrying set.
 -/
@@ -3866,6 +3876,17 @@ theorem VdVWProbabilityMeasureSeparable.of_separableSpace
   exact
     ⟨Set.univ, MeasurableSet.univ, IsSeparable.of_separableSpace Set.univ,
       by simp⟩
+
+/--
+On a Polish ambient topological space, every probability measure is
+VdV&W-Polish by taking the whole space as the carrying set.
+-/
+theorem VdVWProbabilityMeasurePolish.of_polishSpace
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S] [PolishSpace S]
+    (μ : ProbabilityMeasure S) :
+    VdVWProbabilityMeasurePolish μ := by
+  refine ⟨Set.univ, MeasurableSet.univ, ?_, by simp⟩
+  exact isClosed_univ.polishSpace
 
 /--
 Pre-tight probability measures concentrate on a countable union of measurable
@@ -4365,6 +4386,48 @@ theorem VdVWProbabilityMeasurePreTight.of_tight
   exact ⟨K, hK.measurableSet, hK.totallyBounded, by simpa using hKμ μ (by simp)⟩
 
 /--
+Pre-tightness implies tightness in a complete uniform space: replace the
+totally bounded high-mass set by its compact closure.
+-/
+theorem VdVWProbabilityMeasuresTight.of_preTight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S] [CompleteSpace S]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasurePreTight μ) :
+    VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) := by
+  refine (vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le).2 ?_
+  intro ε hε
+  rcases hμ ε hε with ⟨A, _hA_meas, hA_tbounded, hA_measure⟩
+  refine ⟨closure A, hA_tbounded.closure.isCompact_of_isClosed isClosed_closure, ?_⟩
+  intro ν hν
+  have hν_eq : ν = μ := by simpa using hν
+  subst ν
+  exact
+    (measure_mono (Set.compl_subset_compl.mpr subset_closure)).trans hA_measure
+
+/--
+VdV&W Lemma 1.3.2 complete-space direction: a pre-tight probability measure is
+tight.
+-/
+theorem vdVW132_probabilityMeasure_tight_of_preTight_complete
+    {S : Type u} [MeasurableSpace S] [UniformSpace S] [CompleteSpace S]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasurePreTight μ) :
+    VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) :=
+  VdVWProbabilityMeasuresTight.of_preTight hμ
+
+/--
+VdV&W Lemma 1.3.2 complete-space equivalence between tightness and
+pre-tightness.
+-/
+theorem vdVW132_complete_probabilityMeasure_tight_iff_preTight
+    {S : Type u} [MeasurableSpace S] [UniformSpace S] [CompleteSpace S]
+    [T2Space S] [BorelSpace S] {μ : ProbabilityMeasure S} :
+    VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) ↔
+      VdVWProbabilityMeasurePreTight μ :=
+  ⟨fun hμ => VdVWProbabilityMeasurePreTight.of_tight hμ,
+    fun hμ => VdVWProbabilityMeasuresTight.of_preTight hμ⟩
+
+/--
 Tight probability measures are VdV&W-separable in countably generated Hausdorff
 Borel uniform spaces.
 -/
@@ -4386,6 +4449,131 @@ theorem vdVW132_probabilityMeasure_separable_of_tight
     (hμ : VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S))) :
     VdVWProbabilityMeasureSeparable μ :=
   VdVWProbabilityMeasureSeparable.of_tight hμ
+
+/--
+VdV&W Lemma 1.3.2 complete-space direction: a separable probability measure on
+a Borel pseudometric space is tight.
+-/
+theorem vdVW132_probabilityMeasure_tight_of_separable_complete
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [CompleteSpace S]
+    [BorelSpace S] [Nonempty S] {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasureSeparable μ) :
+    VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) :=
+  VdVWProbabilityMeasuresTight.of_preTight
+    (vdVW132_probabilityMeasure_preTight_of_separable hμ)
+
+/--
+VdV&W Lemma 1.3.2 complete-space equivalence between tightness and
+separability.
+-/
+theorem vdVW132_complete_probabilityMeasure_tight_iff_separable
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [CompleteSpace S]
+    [T2Space S] [BorelSpace S] [Nonempty S] [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S} :
+    VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) ↔
+      VdVWProbabilityMeasureSeparable μ :=
+  ⟨fun hμ => vdVW132_probabilityMeasure_separable_of_tight hμ,
+    fun hμ => vdVW132_probabilityMeasure_tight_of_separable_complete hμ⟩
+
+/--
+VdV&W Lemma 1.3.2 complete-space package: tightness, pre-tightness, and
+separability are equivalent under the local Borel pseudometric hypotheses.
+-/
+theorem vdVW132_complete_probabilityMeasure_tight_preTight_separable_equiv
+    {S : Type u} [MeasurableSpace S] [PseudoMetricSpace S] [CompleteSpace S]
+    [T2Space S] [BorelSpace S] [Nonempty S] [(uniformity S).IsCountablyGenerated]
+    {μ : ProbabilityMeasure S} :
+    (VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) ↔
+        VdVWProbabilityMeasurePreTight μ) ∧
+      (VdVWProbabilityMeasurePreTight μ ↔ VdVWProbabilityMeasureSeparable μ) ∧
+        (VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) ↔
+          VdVWProbabilityMeasureSeparable μ) := by
+  exact
+    ⟨vdVW132_complete_probabilityMeasure_tight_iff_preTight (μ := μ),
+      vdVW132_probabilityMeasure_preTight_iff_separable (μ := μ),
+      vdVW132_complete_probabilityMeasure_tight_iff_separable (μ := μ)⟩
+
+/--
+Polish probability measures are tight.  The proof tightens the induced measure
+on the full-measure Polish support, then pushes the compact set back into the
+ambient space.
+-/
+theorem VdVWProbabilityMeasurePolish.tight
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S] [BorelSpace S]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasurePolish μ) :
+    VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) := by
+  rcases hμ with ⟨A, hA_meas, hA_polish, hA_null⟩
+  haveI : PolishSpace A := hA_polish
+  let μA : Measure A := ((μ : ProbabilityMeasure S) : Measure S).comap ((↑) : A -> S)
+  refine (vdVWProbabilityMeasuresTight_iff_exists_compact_measure_compl_le).2 ?_
+  intro ε hε
+  have hA_tight : IsTightMeasureSet ({μA} : Set (Measure A)) := by
+    exact isTightMeasureSet_singleton (μ := μA)
+  rcases
+      (isTightMeasureSet_iff_exists_isCompact_measure_compl_le.mp hA_tight)
+        ε hε with
+    ⟨C, hC_compact, hC_measure⟩
+  refine ⟨((↑) : A -> S) '' C, hC_compact.image continuous_subtype_val, ?_⟩
+  intro ν hν
+  have hν_eq : ν = μ := by simpa using hν
+  subst ν
+  have hCμA : μA (Cᶜ) ≤ ε := hC_measure μA (by simp)
+  have hsubset :
+      (((↑) : A -> S) '' C)ᶜ ⊆
+        Aᶜ ∪ ((↑) : A -> S) '' (Cᶜ) := by
+    intro x hx
+    by_cases hxA : x ∈ A
+    · right
+      refine ⟨⟨x, hxA⟩, ?_, rfl⟩
+      intro hxC
+      exact hx ⟨⟨x, hxA⟩, hxC, rfl⟩
+    · exact Or.inl hxA
+  calc
+    ((μ : ProbabilityMeasure S) : Measure S) ((((↑) : A -> S) '' C)ᶜ)
+        ≤ ((μ : ProbabilityMeasure S) : Measure S)
+            (Aᶜ ∪ ((↑) : A -> S) '' (Cᶜ)) :=
+          measure_mono hsubset
+    _ ≤ ((μ : ProbabilityMeasure S) : Measure S) (Aᶜ) +
+          ((μ : ProbabilityMeasure S) : Measure S) (((↑) : A -> S) '' (Cᶜ)) :=
+          measure_union_le _ _
+    _ ≤ 0 + μA (Cᶜ) :=
+          add_le_add (le_of_eq hA_null)
+            (Measure.measure_subtype_coe_le_comap hA_meas.nullMeasurableSet (Cᶜ))
+    _ ≤ 0 + ε := add_le_add le_rfl hCμA
+    _ = ε := zero_add ε
+
+/--
+VdV&W Lemma 1.3.2 Polish-measure clause.
+-/
+theorem vdVW132_probabilityMeasure_tight_of_polish
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S] [BorelSpace S]
+    {μ : ProbabilityMeasure S}
+    (hμ : VdVWProbabilityMeasurePolish μ) :
+    VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) :=
+  hμ.tight
+
+/--
+Every Borel probability measure on an ambient Polish space is VdV&W-Polish and
+tight.
+-/
+theorem vdVW132_polishSpace_probabilityMeasure_polish_and_tight
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S] [PolishSpace S] [BorelSpace S]
+    (μ : ProbabilityMeasure S) :
+    VdVWProbabilityMeasurePolish μ ∧
+      VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) := by
+  have hμ_polish : VdVWProbabilityMeasurePolish μ :=
+    VdVWProbabilityMeasurePolish.of_polishSpace μ
+  exact ⟨hμ_polish, hμ_polish.tight⟩
+
+/--
+Ambient Polish-space tightness wrapper for VdV&W Lemma 1.3.2.
+-/
+theorem vdVW132_polishSpace_probabilityMeasure_tight
+    {S : Type u} [MeasurableSpace S] [TopologicalSpace S] [PolishSpace S] [BorelSpace S]
+    (μ : ProbabilityMeasure S) :
+    VdVWProbabilityMeasuresTight ({μ} : Set (ProbabilityMeasure S)) :=
+  (vdVW132_polishSpace_probabilityMeasure_polish_and_tight μ).2
 
 /--
 VdV&W Lemma 1.3.2 pre-tightness component: in a complete separable

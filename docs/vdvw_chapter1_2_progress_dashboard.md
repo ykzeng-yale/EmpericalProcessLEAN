@@ -1707,9 +1707,21 @@ bridges `VdVWProbabilityMeasureSeparable`,
 `vdVW132_complete_separable_probabilityMeasure_preTight`.  It also adds the
 numbered measure-level/common-domain wrappers for Lemma 1.10.2(ii), Theorem
 1.11.1, Theorem 1.12.2, Theorem 1.12.4, and the Lemma 1.3.12(ii)
-separating-class criterion.  The remaining Chapter 1 gaps are the exact
-arbitrary-map/nonmeasurable forms and the full complete-space/Polish-measure
-parts not covered by these local measure-level wrappers.
+separating-class criterion.  A later 2026-05-12 follow-up closes the
+measure-level complete-space/Polish-measure parts; the remaining Chapter 1
+gaps are the exact arbitrary-map/nonmeasurable forms and law-facing packaging.
+
+2026-05-12 Lemma 1.3.2 complete/Polish measure-level closure:
+`WeakConvergence.lean` now adds `VdVWProbabilityMeasurePolish`,
+`VdVWProbabilityMeasuresTight.of_preTight`,
+`vdVW132_complete_probabilityMeasure_tight_iff_preTight`,
+`vdVW132_complete_probabilityMeasure_tight_iff_separable`,
+`vdVW132_complete_probabilityMeasure_tight_preTight_separable_equiv`,
+`vdVW132_probabilityMeasure_tight_of_polish`, and
+`vdVW132_polishSpace_probabilityMeasure_tight`.  This closes the
+measure-level complete-space tight/pre-tight/separable equivalence and the
+Polish-measure tightness clause; the remaining 1.3.2 work is random-map/law
+packaging and exact theorem reporting.
 
 2026-05-05 product Borel-space follow-up: `FiniteDimensional.lean` now exports
 `vdVW141_prod_borel_eq_product_borel`, proving the VdV&W 1.4.1 product
