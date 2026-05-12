@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V234
+## Live In-Thread Goal Prompt V235
 
 Use this prompt as the live Durrett `/goal` whenever the app-level goal text is
 older than the verified route docs:
@@ -388,12 +388,26 @@ by Theorem 4.3.4, and the canonical Theorem 4.5.3 route proves the textbook
 ratio limit directly.  The infinite branch no longer needs another denominator
 divergence, max-normalizer, or raw-clock monotonicity wrapper.
 
-Next aggressive step: finish the final Theorem 4.5.5 statement packaging by
-combining the V234 limsup ratio endpoint with the finite-clock side, or by
-recording the exact finite/no-limsup complement statement needed by Durrett's
-displayed theorem.  Do not revisit raw clock pointwise monotonicity, direct
-martingale finite-limit assumptions, denominator divergence on `limsup`, or
-already closed Chapter 2/3 support.  Do not route back to
+V235 closes the final textbook-facing Theorem 4.5.5 package.  New compiled
+declarations:
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_of_adapted_conditionalProbabilitySum_atTop`
+and
+`durrett2019_theorem_4_5_5_conditional_borel_cantelli_ratio_package_of_adapted`.
+The displayed conclusion now has the exact source shape: almost surely, if the
+raw cumulative conditional-probability clock diverges, then the
+Borel-Cantelli event-count ratio tends to one.  The package also records the
+Theorem 4.3.4 identification of that divergence event with `limsup B atTop`.
+
+Next aggressive step: start the next reusable martingale theorem after the
+Friedman urn application, Durrett Theorem 4.5.7
+`E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  First target a theorem-sized packet:
+the stopped maximal-probability estimate and the layer-cake/integral split
+that reduces the result to the existing Lemma 2.2.13 tail-integral machinery.
+Do not start by formalizing the full Friedman urn state process unless it
+directly reuses the compiled 4.5.5 ratio package.  Do not revisit raw clock
+pointwise monotonicity, direct martingale finite-limit assumptions, denominator
+divergence on `limsup`, final 4.5.5 ratio packaging, or already closed
+Chapter 2/3 support.  Do not route back to
 stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1740,6 +1754,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V234` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V235` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V234` in
+Route from `Live In-Thread Goal Prompt V235` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Section 4.5.5 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the
@@ -216,9 +216,6 @@ the finite square-clock route:
 `durrett2019_theorem_4_5_5_martingalePart_exists_tendsto_on_of_predictablePart_square_tendsto`,
 and
 `durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_square_clock_finite_or_adapted_conditionalProbabilitySum_clock_canonical_auto_tail`.
-The next target is the final textbook event split around the
-conditional-probability clock, not another direct martingale finite-limit
-assumption.
 V234 adds the infinite-clock limsup endpoint:
 `durrett2019_theorem_4_5_5_conditionalProbabilitySum_atTop_on_limsup_of_adapted`,
 `durrett2019_theorem_4_5_5_ratio_tendsto_one_on_of_adapted_conditionalProbabilitySum_atTop`,
@@ -230,6 +227,14 @@ proves the ratio limit there.  The next target is final theorem packaging or
 the precise finite/no-limsup complement statement; do not spend the next packet
 on raw-clock monotonicity, denominator divergence on `limsup`, or another
 max-normalizer handoff.
+V235 adds the final textbook-facing Theorem 4.5.5 package:
+`durrett2019_theorem_4_5_5_ratio_tendsto_one_of_adapted_conditionalProbabilitySum_atTop`
+and
+`durrett2019_theorem_4_5_5_conditional_borel_cantelli_ratio_package_of_adapted`.
+The active target now moves to Durrett Theorem 4.5.7, beginning with the
+stopped maximal-probability estimate and layer-cake/integral split for
+`E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`; do not route back to final 4.5.5
+packaging.
 
 Closed Chapter 2 support remains available in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
