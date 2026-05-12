@@ -41,10 +41,16 @@ derivative wrapper
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 specializes the parameter space to `Param -> ℝ` and discharges the finite
 derivative action-bound from row-wise derivative-entry representation.  The
-next proof packet should package model-facing score/Taylor/source fields
-around this matrix-entry endpoint, not replay display weak-convergence,
-display-tightness, score-CLT, residual convergence, absorbing tightness,
-derivative-action wrappers, or the now-packaged pointwise Taylor bridge.
+derivative-entry common-vector-law source helper
+`vaart1998_theorem_5_41_derivativeEntry_integrable_indep_identDistrib_of_matrix_commonVectorLaw`
+now derives derivative-entry integrability, pairwise independence, and
+identical distribution from a common law for the finite derivative-entry table
+and the infinite-product law of that table sequence.  The next proof packet
+should compose this helper into the matrix-entry endpoint or package
+model-facing score/Taylor/source fields around that endpoint, not replay
+display weak-convergence, display-tightness, score-CLT, residual convergence,
+absorbing tightness, derivative-action wrappers, or the now-packaged pointwise
+Taylor bridge.
 
 ## Chapter Map
 

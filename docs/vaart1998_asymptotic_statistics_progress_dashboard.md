@@ -15,13 +15,21 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: finite-dimensional matrix-entry derivative wrapper
+Latest verified packet: derivative-entry common-vector-law source helper
+`vaart1998_theorem_5_41_derivativeEntry_integrable_indep_identDistrib_of_matrix_commonVectorLaw`
+in `MEstimators.lean`.  It reuses the existing finite-coordinate
+common-vector-law LLN source to derive derivative-entry integrability,
+pairwise independence, and identical distribution from a common law for the
+finite derivative-entry table and the infinite-product law of that table
+sequence.
+
+Immediate predecessor packet: finite-dimensional matrix-entry derivative wrapper
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It specializes the current absorbing-source residual
 route to `Param -> ℝ` and derives the finite derivative action-bound from the
 row-wise matrix-entry representation of the empirical derivative residual.
 
-Immediate predecessor packet: fully inlined absorbing-source residual wrapper
+Earlier predecessor packet: fully inlined absorbing-source residual wrapper
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It derives the raw-score CLT from the common-vector-law
 finite-coordinate score source, derives the empirical derivative LLN from the
@@ -44,9 +52,9 @@ uses
 to remove the explicit residual convergence and residual measurability fields
 from the pointwise-Taylor Theorem 5.41 action endpoint.
 
-Current next blocker: package model-facing score/Taylor/source hypotheses
-around the matrix-entry endpoint, especially score-summand representation,
-derivative-entry integrability/independence/identical-distribution, or
+Current next blocker: compose the derivative-entry common-vector-law helper
+into the matrix-entry endpoint, or package model-facing score/Taylor/source
+hypotheses around that endpoint, especially score-summand representation or
 pointwise Taylor fields.
 
 ## Verified Frontier

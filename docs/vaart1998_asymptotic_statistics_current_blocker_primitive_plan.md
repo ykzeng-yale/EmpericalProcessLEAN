@@ -61,6 +61,11 @@ finite-score finite-derivative route.
 The newest finite-dimensional matrix-entry wrapper specializes the parameter
 space to `Param -> ℝ` and derives the finite derivative action-bound from the
 row-wise derivative-entry representation.
+The newest derivative-entry common-vector-law helper
+`vaart1998_theorem_5_41_derivativeEntry_integrable_indep_identDistrib_of_matrix_commonVectorLaw`
+derives derivative-entry integrability, pairwise independence, and identical
+distribution from a common law for the finite derivative-entry table and the
+infinite-product law of that table sequence.
 
 Continuation recipe:
 
@@ -74,9 +79,9 @@ Continuation recipe:
 Priority order for the next packet:
 
 1. Move one layer closer to a model-facing finite-dimensional statement:
-   package score/Taylor/source hypotheses around the matrix-entry endpoint,
-   especially model-specific score-summand representation, derivative-entry
-   integrability/independence/identical-distribution, or pointwise Taylor
+   compose the derivative-entry common-vector-law helper into the matrix-entry
+   endpoint, or package score/Taylor/source hypotheses around that endpoint,
+   especially model-specific score-summand representation or pointwise Taylor
    fields.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current

@@ -18030,6 +18030,81 @@ theorem vaart1998_theorem_5_41_derivativeAverage_action_le_finiteEntryBound_of_m
       hCoordinate_action_le
 
 /--
+van der Vaart 1998, Theorem 5.41, derivative-entry iid source from a common
+finite matrix-entry vector law.
+
+For finite-dimensional parameter spaces, a common law for the derivative-entry
+table `Coord × Param -> ℝ`, together with the infinite-product law of the
+table sequence, supplies the scalar integrability, pairwise independence, and
+identical-distribution fields consumed by the finite derivative strong-law
+source.
+-/
+theorem vaart1998_theorem_5_41_derivativeEntry_integrable_indep_identDistrib_of_matrix_commonVectorLaw
+    {Ω Coord Param : Type*} [Fintype Coord] [Fintype Param]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace (Coord × Param -> ℝ)]
+    (derivativeEntry : Coord -> Param -> ℕ -> Ω -> ℝ)
+    {derivativeLaw : Measure (Coord × Param -> ℝ)}
+    (hDerivativeCoordinate_meas : ∀ entry : Coord × Param,
+      Measurable (fun sampleVector : Coord × Param -> ℝ =>
+        sampleVector entry))
+    (hDerivativeLaw_integrable : ∀ coordinate param,
+      Integrable
+        (fun sampleVector : Coord × Param -> ℝ =>
+          sampleVector (coordinate, param)) derivativeLaw)
+    (hDerivative_vector_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (vaart1998_finiteCoordinateSampleVector
+          (fun entry i ω => derivativeEntry entry.1 entry.2 i ω) i)
+        derivativeLaw P)
+    (hDerivative_sequence_law :
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω i =>
+          vaart1998_finiteCoordinateSampleVector
+            (fun entry i ω => derivativeEntry entry.1 entry.2 i ω) i ω)
+        (Measure.infinitePi (fun _ : ℕ => derivativeLaw)) P) :
+    (∀ coordinate param,
+      Integrable (derivativeEntry coordinate param 0) P) ∧
+    (∀ coordinate param, Pairwise fun i j =>
+      _root_.ProbabilityTheory.IndepFun
+        (derivativeEntry coordinate param i)
+        (derivativeEntry coordinate param j) P) ∧
+    (∀ coordinate param i,
+      _root_.ProbabilityTheory.IdentDistrib
+        (derivativeEntry coordinate param i)
+        (derivativeEntry coordinate param 0) P P) := by
+  let derivativeVector : Coord × Param -> ℕ -> Ω -> ℝ :=
+    fun entry i ω => derivativeEntry entry.1 entry.2 i ω
+  have hLLNSource :=
+    vaart1998_finiteCoordinateCoordinateLLNSource_of_commonVectorLaw
+      (P := P) (X := derivativeVector) (ν := derivativeLaw)
+      hDerivativeCoordinate_meas hDerivative_vector_law
+      hDerivative_sequence_law
+  refine ⟨?_, ?_, ?_⟩
+  · intro coordinate param
+    let sampleVector0 : Ω -> Coord × Param -> ℝ :=
+      vaart1998_finiteCoordinateSampleVector derivativeVector 0
+    have hmap : P.map sampleVector0 = derivativeLaw :=
+      (hDerivative_vector_law 0).map_eq
+    have hintegrable_map :
+        Integrable
+          (fun sampleVector : Coord × Param -> ℝ =>
+            sampleVector (coordinate, param))
+          (P.map sampleVector0) := by
+      rw [hmap]
+      exact hDerivativeLaw_integrable coordinate param
+    have hintegrable_comp :=
+      hintegrable_map.comp_aemeasurable
+        (hDerivative_vector_law 0).aemeasurable
+    simpa [sampleVector0, derivativeVector,
+      vaart1998_finiteCoordinateSampleVector, Function.comp_def] using
+      hintegrable_comp
+  · intro coordinate param
+    simpa [derivativeVector] using hLLNSource.1 (coordinate, param)
+  · intro coordinate param i
+    simpa [derivativeVector] using hLLNSource.2 (coordinate, param) i
+
+/--
 van der Vaart 1998, Theorem 5.41, finite-dimensional matrix-entry derivative
 source for the absorbing residual route.
 
