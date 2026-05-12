@@ -15,7 +15,15 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: score-law moment source endpoint
+Latest verified packet: score-law covariance and moment source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+in `MEstimators.lean`.  It adds
+`vaart1998_theorem_5_41_scoreLaw_projectedVariance_eq_of_commonVectorLaw` and
+composes it into the score-law moment route, replacing the sample-space
+projected-score variance covariance field by the score-law statement
+`covarianceBilinDual (Q.map Z) L L = variance L scoreLaw`.
+
+Immediate predecessor packet: score-law moment source endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawMomentSource_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It adds
 `vaart1998_theorem_5_41_scoreSummand_coordinate_memLp_mean_zero_of_commonVectorLaw`
@@ -23,7 +31,7 @@ and composes it into the common-law matrix derivative route, replacing the
 ambient-sample-space score coordinate `L²` and zero-mean fields by the same
 moment assumptions under the common score law.
 
-Immediate predecessor packet: common-law matrix-entry derivative endpoint
+Earlier predecessor packet: common-law matrix-entry derivative endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It composes the derivative-entry common-vector-law
 source helper into the matrix-entry absorbing-source route, replacing the
@@ -69,9 +77,9 @@ to remove the explicit residual convergence and residual measurability fields
 from the pointwise-Taylor Theorem 5.41 action endpoint.
 
 Current next blocker: package the remaining model-facing score/Taylor/source
-hypotheses around the score-law moment source endpoint, especially
-score-summand representation, score covariance/common-law construction,
-derivative-table common-law construction, or pointwise Taylor fields.
+hypotheses around the score-law covariance/moment source endpoint, especially
+score-summand representation, score common-law construction, derivative-table
+common-law construction, or pointwise Taylor fields.
 
 ## Verified Frontier
 

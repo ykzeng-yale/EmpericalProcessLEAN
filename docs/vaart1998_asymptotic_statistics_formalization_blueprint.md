@@ -54,12 +54,18 @@ score-law moment source endpoint
 composes
 `vaart1998_theorem_5_41_scoreSummand_coordinate_memLp_mean_zero_of_commonVectorLaw`
 into the same route, so coordinate `L²` and zero-mean score assumptions can be
-stated under the common score law.  The next proof packet should package the
-remaining model-facing score/Taylor/source fields around this score-law moment
-endpoint, not replay display weak-convergence, display-tightness, score-CLT,
-residual convergence, absorbing tightness, derivative-action wrappers,
-derivative-entry iid source fields, score moment transfer, or the now-packaged
-pointwise Taylor bridge.
+stated under the common score law.  The score-law covariance source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_scoreLawCovarianceMomentSource_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+also composes
+`vaart1998_theorem_5_41_scoreLaw_projectedVariance_eq_of_commonVectorLaw`, so
+Gaussian covariance matching can be stated as
+`covarianceBilinDual (Q.map Z) L L = variance L scoreLaw`.  The next proof
+packet should package the remaining model-facing score/Taylor/source fields
+around this covariance/moment endpoint, not replay display weak-convergence,
+display-tightness, score-CLT, residual convergence, absorbing tightness,
+derivative-action wrappers, derivative-entry iid source fields, score moment
+transfer, score-law covariance transfer, or the now-packaged pointwise Taylor
+bridge.
 
 ## Chapter Map
 
