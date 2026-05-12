@@ -17,9 +17,12 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 
 Immediate predecessor endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+
+Earlier predecessor endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_estimatorSubMeas_envelopeTendsto_summandMeasurable_envelope`.
 
 Earlier predecessor endpoint:
@@ -31,6 +34,10 @@ Earlier predecessor endpoint:
 Immediate measurable source:
 ordinary `Measurable` hypotheses for `Z`, the derivative-at-theta0 summands,
 the second-derivative summands, `theta0`, `estimator`, and `scale`.
+
+Immediate sampled derivative matrix-action source:
+pointwise finite-coordinate action of `derivativeAt n omega ...` against the
+sampled derivative-entry table.
 
 Immediate raw-root source:
 `empiricalAverageVector (samples n omega) (fun x => estimatingMap n omega x (estimator n omega)) = 0`.
@@ -187,6 +194,12 @@ assumptions.  Thus `hZ_aemeas`,
 `hDerivativeAtTheta0_summand_meas`, `hSecondDerivative_summand_meas`,
 `hTheta0_meas`, `hEstimator_meas`, and `hScale_meas` are no longer live opaque
 `AEMeasurable` fields for the current source route.
+The newest pointwise derivative matrix-action source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeTableCommonVectorLaw_scoreLawCovarianceMomentSource_scoreAtTheta0VectorSource_estimatingMapContDiffTaylorSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreRepresentation_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+derives the previous a.e.-eventual sampled derivative matrix action from a
+pointwise all-`n` finite-coordinate matrix-action law.  Thus
+`hDerivativeAtTheta0_matrix_action` is no longer a live opaque a.e.-eventual
+field for the current source route.
 
 Continuation recipe:
 
@@ -200,10 +213,9 @@ Continuation recipe:
 Priority order for the next packet:
 
 1. Move one layer closer to a model-facing finite-dimensional statement:
-   package the remaining source hypotheses around the actual model-specific
-   sampled derivative matrix action and population `V` matrix action.  Only
-   package remaining pointwise smoothness/a.e. wrappers if doing so removes a
-   still-live hypothesis of the current endpoint.
+   package the remaining source hypotheses around the actual population `V`
+   matrix action.  Only package remaining pointwise smoothness/a.e. wrappers if
+   doing so removes a still-live hypothesis of the current endpoint.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    residual-source endpoint; do not rebuild completed score CLT, display weak
@@ -212,7 +224,8 @@ Priority order for the next packet:
    common-law transfers, the derivative-table common-law transfer, or the
    centered derivative-coordinate residual algebra, smooth/raw/scaled pointwise
    Taylor transfer, the score-at-theta0 vector scaling transfer, or the
-   estimator-definition, raw-root, or selected measurability source wrappers.
+   estimator-definition, raw-root, selected measurability, or sampled
+   derivative matrix-action source wrappers.
 
 Operating rules:
 
