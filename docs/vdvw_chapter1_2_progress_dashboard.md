@@ -4335,3 +4335,13 @@ centered empirical averages and require only fixed-endpoint `L1(P^n)`
 convergence for each member of the finite class.  Remaining finite-class
 work: prove that endpoint `L1` convergence from mathlib strong-law/Lp
 machinery or an equivalent finite-product transport theorem.
+
+The fixed-sign Rademacher route now has compiled coefficient accounting and
+an explicit obstruction.  The new declarations show that a deterministic
+Rademacher sign vector, even chosen pointwise as a section, contributes only
+`(1 / 2)^n` mass, and that this mass is eventually strictly below the
+displayed Chebyshev beta factor used by Lemma 2.3.7.  This rules out promoting
+a fixed-sign or pointwise sign-section proof into the selected-cover
+displayed-beta source by coefficient monotonicity; the remaining source work
+must average over a nontrivial sign/ghost event or use a stronger probability
+input.

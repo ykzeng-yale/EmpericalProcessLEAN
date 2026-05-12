@@ -9726,3 +9726,22 @@ once fixed-endpoint finite-product `L1(P^n)` convergence is supplied for each
 class member.  The finite-class blocker is now sharply localized to that
 single-endpoint `L1` primitive; the finite-sum domination, integrability, and
 book-style packaging are compiled.
+
+2026-05-10 fixed-sign beta obstruction replay:
+`Theorem243.lean` now has exact deterministic Rademacher sign-mass accounting
+and its asymptotic obstruction:
+`vdVWRademacherLaw_singleton_of_eq_neg_one_or_one`,
+`vdVWProductMeasure_vdVWRademacherLaw_singleton_signVector`,
+`measure_vdVWProductMeasure_prod_vdVWRademacherLaw_signSlice`,
+`measure_mul_rademacherSignVector_mass_le_prod_of_signSlice_subset`,
+`VdVWOuterProbability_mul_rademacherSignVector_mass_le_of_signSlice_subset`,
+`measure_mul_rademacherSignVector_mass_le_prod_of_pointwise_sign_section`,
+`VdVWOuterProbability_mul_rademacherSignVector_mass_le_of_pointwise_sign_section`,
+`eventually_rademacherSignVector_singleton_mass_lt_displayedChebyshevBeta`,
+and
+`not_eventually_displayedChebyshevBeta_le_rademacherSignVector_singleton_mass`.
+This closes the fixed-sign and pointwise sign-section shortcut: such routes
+pay only `(1 / 2)^n`, which is eventually below the displayed Chebyshev beta
+factor.  The Lemma 2.3.7 source gap therefore still needs a genuinely
+nontrivial sign/ghost averaged event, a product-pair comparison, or an
+explicit stronger probability source.
