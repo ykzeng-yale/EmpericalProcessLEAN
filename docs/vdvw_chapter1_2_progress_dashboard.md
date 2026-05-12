@@ -60,6 +60,11 @@ and
 `vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_ge_of_pairwise_empiricalL1Distance_gt_two_mul`
 turn a finite `2 * eta`-separated packing of the realized truncated empirical
 sample path into a lower bound on the selected empirical-cover cardinality.
+The same packing input now has eventual and `P^n`-a.e. source lifts,
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_pairwise_empiricalL1Distance_gt_two_mul`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_pairwise_empiricalL1Distance_gt_two_mul`,
+so lower-growth routes can consume separated packings directly.
 The next source work is to derive these packings, or an equivalent
 tail/lower-growth input, from the book random-entropy hypotheses.
 The displayed-beta selected-cover route now has

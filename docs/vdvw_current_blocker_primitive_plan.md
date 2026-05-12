@@ -101,6 +101,19 @@ gap: the active source problem is now to prove such packings, or an equivalent
 tail/lower-growth hypothesis, from the VdV&W assumptions and feed the existing
 selected-cardinality lower-growth consumers.
 
+2026-05-12 eventual/a.e. packing source lift: `Theorem243.lean` now also
+packages the preceding pointwise packing lower bound in the source shape used
+by the inverse-square lower-growth branch:
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_pairwise_empiricalL1Distance_gt_two_mul`
+and
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_pairwise_empiricalL1Distance_gt_two_mul`.
+These turn eventual deterministic or `P^n`-a.e. finite separated packings into
+the selected-cardinality lower bounds consumed by the half-radius and
+quarter-radius Theorem 2.4.3 routes.  The remaining mathematical source task
+is therefore no longer the cover-cardinality comparison; it is to construct
+the required separated packings or an equivalent tail/UI lower-growth input
+from the book hypotheses.
+
 ## Current `/goal` Target
 
 Authoritative `/goal` reset, refreshed 2026-05-12: the active Codex goal

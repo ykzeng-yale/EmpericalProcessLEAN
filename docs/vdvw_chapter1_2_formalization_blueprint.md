@@ -170,6 +170,13 @@ packing size.  This is theorem-facing infrastructure, not a theorem closure:
 the remaining exact source problem is to construct such packings, or an
 equivalent lower-growth/tail condition, from the VdV&W random-entropy
 hypotheses.
+The packing comparison is now lifted to the eventual source level by
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ge_of_eventually_pairwise_empiricalL1Distance_gt_two_mul`
+and to the probability source level by
+`vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_pairwise_empiricalL1Distance_gt_two_mul`.
+Thus the half-radius and quarter-radius lower-growth branches can ask directly
+for eventual or `P^n`-a.e. separated packings instead of a pre-composed
+selected-cardinality inequality.
 
 2026-05-06 option-1 route sharpening: direct search found no existing
 mathlib/local/open-checkout theorem for the VdV&W probability-event
