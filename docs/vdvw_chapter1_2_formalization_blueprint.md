@@ -2406,6 +2406,18 @@ above, so they do not change the theorem-level dashboard counts.
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_chebyshev_signSwap_finiteCenter_failure_tails_halfScale_invNat_selectedCenterAt_of_eventually_ae_cardinality_ge`.
    The exposed probability input is now the fixed-original
    pair-sub-to-sign-swap transport.
+   The final conclusion bundle now also has the localized class-countability
+   bridge
+   `VdVWTheorem243TextbookAlignedConclusion.of_centered_untruncated_convergesInOuterProbabilityConst_zero_of_set_countable_integrable`.
+   The product-pair Chebyshev lower-growth final routes are exposed without a
+   global `[Countable Index]` through
+   `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge_of_set_countable`
+   and
+   `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge_of_set_countable`.
+   Thus the current strongest product-pair finite-tail conclusion now assumes
+   only `indexClass.Countable` at the final layer; the remaining source gap is
+   the honest lower-growth/tail or random-entropy comparison, not ambient index
+   countability.
    The averaged product-pair alternative is now compiled through
    `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
    `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,

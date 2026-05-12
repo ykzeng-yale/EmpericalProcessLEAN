@@ -42,7 +42,16 @@ fixed-degree entry point
 `VdVWTheorem243_originalFullSubgraph_integrable_textbookAligned_no_nonempty_of_uniformSubgraphVC`.
 The selected-log mean route now has the localized countability constructor
 `VdVWTheorem243SelectedEntropyFiniteNetMeanPrimitive.of_logCardinality_div_integral_tendsto_zero_of_set_countable`,
-and the displayed-beta selected-cover route now has
+and the final conclusion layer now has the localized bridge
+`VdVWTheorem243TextbookAlignedConclusion.of_centered_untruncated_convergesInOuterProbabilityConst_zero_of_set_countable_integrable`.
+The current product-pair Chebyshev lower-growth final wrappers also have
+localized class-countability versions,
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge_of_set_countable`
+and
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge_of_set_countable`,
+so the strongest product-pair failure-tail route no longer requires a global
+`[Countable Index]` instance when the actual theorem class is countable.
+The displayed-beta selected-cover route now has
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_finiteEmpiricalCover_common_iidRademacher_hphi_id`.
 Under localized class countability, the displayed-beta route now also has
 the canonical fixed-sample sign-side cover

@@ -82313,9 +82313,147 @@ theorem of_centered_untruncated_convergesInOuterProbabilityConst_zero_countable_
               (fun _ : Fin n => (n : ℝ)⁻¹) sample
             ∂(vdVWProductMeasure P n))
         atTop (𝓝 0) :=
-    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_integrable_envelope
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation
       (P := P) (indexClass := indexClass) (classFun := classFun)
-      (envelope := envelope) henvelope hclass henv henv_integrable hcentered
+      hcentered
+      (fun n =>
+        measurable_vdVWWeightedClassSupremum_centered_of_countable
+          (P := P) hcount hclass (fun _ : Fin n => (n : ℝ)⁻¹))
+      (fun n =>
+        integrable_vdVWWeightedClassSupremum_centered_of_countable
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) hcount henvelope hclass henv_integrable
+          (fun _ : Fin n => (n : ℝ)⁻¹))
+      (centered_vdVWWeightedClassSupremum_tailExpectation_condition_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hcount henvelope hclass henv henv_integrable)
+  have hlemmaProb :
+      VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
+        (fun n sequence =>
+          vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+        atTop (fun _ => (0 : ℝ)) :=
+    VdVWConvergesInOuterProbability_nat_succ
+      (VdVWConvergesInOuterProbability_vdVWLemma245CenteredEmpiricalSupremum_zero_of_finiteProduct
+        (P := P) (indexClass := indexClass) (classFun := classFun) hcentered)
+  have hlemma :
+      ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+        Tendsto
+          (fun n : ℕ =>
+            vdVWLemma245CenteredEmpiricalSupremum P indexClass classFun (n + 1) sequence)
+          atTop (𝓝 0) :=
+    vdVW_lemma245_centeredEmpiricalSupremum_ae_tendsto_zero_of_countable_integrable_of_outerProbability_invNat_geometric
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv_integrable hlemmaProb
+  have houterAs :
+      VdVWOuterAlmostSurePGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) := by
+    have hpath :
+        AlmostSureUniformDeviationTendstoZeroOn
+          (vdVWInfiniteProductMeasure P) indexClass
+          (fun index => populationRiskOfFunction P (classFun index))
+          (fun sequence sampleSize index =>
+            empiricalAverage
+              (samplePath (fun i sequence => sequence i) sequence sampleSize)
+              (classFun index)) := by
+      filter_upwards [hlemma] with sequence hsequence
+      exact
+        UniformDeviationTendstoZeroOn_of_vdVWLemma245CenteredEmpiricalSupremum_tendsto_zero_canonical
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) henvelope hclass henv_integrable hsequence
+    simpa [VdVWOuterAlmostSurePGlivenkoCantelliClass] using
+      (vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_almostSure hpath)
+  exact
+    { pMeasurable :=
+        VdVWPMeasurableClass.of_countable_of_measurable (P := P) hcount hclass
+      envelope_outerExpectation_lt_top :=
+        henvelope.outerExpectation_lt_top_of_measurable_integrable henv henv_integrable
+      outerProbability_pGlivenkoCantelli := houterProbability
+      outerAlmostSure_pGlivenkoCantelli := houterAs
+      pGlivenkoCantelli :=
+        vdVWPGlivenkoCantelliClass_of_outerProbability houterProbability
+      centeredSupremum_inMean_tendsto_zero := hinMean
+      lemma245_centeredSupremum_ae_tendsto_zero := hlemma }
+
+/--
+Centered untruncated outer-probability convergence is enough to build the full
+textbook-facing Theorem 2.4.3/Lemma 2.4.5 conclusion bundle under a localized
+countability assumption on the theorem class.
+
+This is the set-countable variant of
+`of_centered_untruncated_convergesInOuterProbabilityConst_zero_countable_integrable`.
+It avoids requiring the ambient index type itself to be countable when the
+actual class `indexClass` is countable.
+-/
+theorem
+    of_centered_untruncated_convergesInOuterProbabilityConst_zero_of_set_countable_integrable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    (hcount : indexClass.Countable)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (henv_integrable : Integrable envelope P)
+    (hcentered :
+      VdVWConvergesInOuterProbabilityConst
+        (fun n : ℕ => SampleAt Observation n)
+        (fun _ : ℕ => inferInstance)
+        (fun n : ℕ => vdVWProductMeasure P n)
+        (fun n sample =>
+          vdVWWeightedClassSupremum indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample)
+        atTop (0 : ℝ)) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  have hbdd_centered :
+      ∀ n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              classFun index observation - ∫ x, classFun index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample) := by
+    intro n sample
+    exact
+      bddAbove_vdVWWeightedClassValueSet_centered_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (fun _ : Fin n => (n : ℝ)⁻¹) sample
+        henvelope hclass henv_integrable
+  have houterProbability :
+      VdVWOuterProbabilityPGlivenkoCantelliClass
+        (vdVWInfiniteProductMeasure P) P indexClass classFun
+        (fun i sequence => sequence i) :=
+    VdVWOuterProbabilityPGlivenkoCantelliClass_of_uniformDeviationConstOn_canonical
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (VdVWOuterProbabilityUniformDeviationConstOn_of_centered_weightedSupremum
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        hbdd_centered hcentered)
+  have hinMean :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ sample : SampleAt Observation n,
+            vdVWWeightedClassSupremum indexClass
+              (fun index : Index => fun observation : Observation =>
+                classFun index observation - ∫ x, classFun index x ∂P)
+              (fun _ : Fin n => (n : ℝ)⁻¹) sample
+            ∂(vdVWProductMeasure P n))
+        atTop (𝓝 0) :=
+    integral_vdVWWeightedClassSupremum_centered_tendsto_zero_of_tailExpectation
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      hcentered
+      (fun n =>
+        measurable_vdVWWeightedClassSupremum_centered_of_countable
+          (P := P) hcount hclass (fun _ : Fin n => (n : ℝ)⁻¹))
+      (fun n =>
+        integrable_vdVWWeightedClassSupremum_centered_of_countable
+          (P := P) (indexClass := indexClass) (classFun := classFun)
+          (envelope := envelope) hcount henvelope hclass henv_integrable
+          (fun _ : Fin n => (n : ℝ)⁻¹))
+      (centered_vdVWWeightedClassSupremum_tailExpectation_condition_of_integrable_envelope
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) hcount henvelope hclass henv henv_integrable)
   have hlemmaProb :
       VdVWConvergesInOuterProbability (vdVWInfiniteProductMeasure P)
         (fun n sequence =>
@@ -82985,6 +83123,181 @@ theorem
     of_centered_untruncated_convergesInOuterProbabilityConst_zero_countable_integrable
       (P := P) (indexClass := indexClass) (classFun := classFun)
       (envelope := envelope) henvelope hclass henv henv_integrable
+      (VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (cardinality := cardinality) X hX_samplePath
+        hcovering_all hcount hclass henv hindexClass_nonempty henvelope
+        henv_integrable hclassIntegrable htruncIntegrable hbdd_truncated
+        hlog lower hlower hsample_ge)
+
+/--
+The product-pair Chebyshev lower-growth route, repackaged in the single
+textbook-facing conclusion shape under localized class countability.
+
+This is the set-countable variant of
+`of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge`.
+It keeps the product-pair a.e. lower-growth hypotheses but removes the global
+`[Countable Index]` requirement.
+-/
+theorem
+    of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hcovering_all :
+      ∀ M, 0 < M -> ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality M radius n))
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (henv_integrable : Integrable envelope P)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    (htruncIntegrable :
+      ∀ M index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hbdd_truncated :
+      ∀ M n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hlog :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality M eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (lower : ℝ -> ℝ -> ℕ -> ℕ)
+    (hlower :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        Tendsto (lower M eta) atTop atTop)
+    (hleft_ge :
+      ∀ M (hM_pos : 0 < M), ∀ eta : ℝ, (heta : 0 < eta) ->
+        ∀ᶠ n in atTop,
+          ∀ᵐ pairSample ∂(vdVWProductMeasure (P.prod P) n),
+            lower M eta n ≤
+              (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M)
+                (cardinality := cardinality M) (X M)
+                (hcovering_all M hM_pos) ((eta / 2) / 2)) n
+                (fun i : Fin n => (pairSample i).1) n)
+    (hright_ge :
+      ∀ M (hM_pos : 0 < M), ∀ eta : ℝ, (heta : 0 < eta) ->
+        ∀ᶠ n in atTop,
+          ∀ᵐ pairSample ∂(vdVWProductMeasure (P.prod P) n),
+            lower M eta n ≤
+              (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M)
+                (cardinality := cardinality M) (X M)
+                (hcovering_all M hM_pos) ((eta / 2) / 2)) n
+                (fun i : Fin n => (pairSample i).2) n) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  exact
+    of_centered_untruncated_convergesInOuterProbabilityConst_zero_of_set_countable_integrable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv henv_integrable
+      (VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge
+        (P := P) (indexClass := indexClass) (classFun := classFun)
+        (envelope := envelope) (cardinality := cardinality) X hX_samplePath
+        hcovering_all hcount hclass henv hindexClass_nonempty henvelope
+        henv_integrable hclassIntegrable htruncIntegrable hbdd_truncated
+        hlog lower hlower hleft_ge hright_ge)
+
+/--
+The single-sample lower-growth version of the product-pair Chebyshev route,
+repackaged in the single textbook-facing conclusion shape under localized
+class countability.
+
+This is the set-countable variant of
+`of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge`.
+An ordinary `P^n` a.e. selected-cardinality lower bound is still transported
+internally to both product-pair coordinates.
+-/
+theorem
+    of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hcovering_all :
+      ∀ M, 0 < M -> ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality M radius n))
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (henv_integrable : Integrable envelope P)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    (htruncIntegrable :
+      ∀ M index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hbdd_truncated :
+      ∀ M n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hlog :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality M eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (lower : ℝ -> ℝ -> ℕ -> ℕ)
+    (hlower :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        Tendsto (lower M eta) atTop atTop)
+    (hsample_ge :
+      ∀ M (hM_pos : 0 < M), ∀ eta : ℝ, (heta : 0 < eta) ->
+        ∀ᶠ n in atTop,
+          ∀ᵐ sample ∂(vdVWProductMeasure P n),
+            lower M eta n ≤
+              (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard
+                (indexClass := indexClass) (classFun := classFun)
+                (envelope := envelope) (M := M)
+                (cardinality := cardinality M) (X M)
+                (hcovering_all M hM_pos) ((eta / 2) / 2)) n sample n) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  exact
+    of_centered_untruncated_convergesInOuterProbabilityConst_zero_of_set_countable_integrable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) hcount henvelope hclass henv henv_integrable
       (VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_of_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge
         (P := P) (indexClass := indexClass) (classFun := classFun)
         (envelope := envelope) (cardinality := cardinality) X hX_samplePath

@@ -85,15 +85,15 @@ textbook random empirical-cover/symmetrization argument.
 
 ## Current `/goal` Target
 
-Authoritative `/goal` reset, refreshed 2026-05-08: the active Codex goal
+Authoritative `/goal` reset, refreshed 2026-05-12: the active Codex goal
 object is the whole VdV&W empirical-process textbook formalization, with
 Chapters 1-2 and Theorem 2.4.3 as the current frontier.  The current clean
 VdVW lane is `/private/tmp/ep-vdvw-goal-round-B6AplA` on branch
-`codex/vdvw-selected-cover-source` based at current `origin/main`; the Desktop
-`main` worktree is far behind `origin/main` and contains unrelated
-Matching/WDSM edits, so do not use it for VdVW proof commits.  Use this
-paragraph, not older rebase paragraphs below, as the operative continuation
-prompt.
+`codex/vdvw-signswap-unneg-support`, tracking
+`origin/codex/vdvw-signswap-unneg-support`; the Desktop `main` worktree is
+far behind `origin/main` and contains unrelated Matching/WDSM edits, so do not
+use it for VdVW proof commits.  Use this paragraph, not older rebase
+paragraphs below, as the operative continuation prompt.
 
 Current newest source-side progress: the product-pair selected-cover route now
 has both the finite-center failure tail, its product-fiber upper lift, and the
@@ -9946,3 +9946,17 @@ quarter-radius inverse-square finite-tail control for the exact `1 / n`
 Chebyshev beta route.  The active exposed probability input is now the
 fixed-original pair-sub-to-sign-swap transport, together with the existing
 truncated integrability and entropy/growth hypotheses.
+
+2026-05-12 localized final product-pair lower-growth bridges:
+`Theorem243.lean` now exposes
+`VdVWTheorem243TextbookAlignedConclusion.of_centered_untruncated_convergesInOuterProbabilityConst_zero_of_set_countable_integrable`,
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_ae_cardinality_ge_of_set_countable`,
+and
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge_of_set_countable`.
+These route the already compiled product-pair Chebyshev lower-growth
+untruncation into the final textbook-aligned conclusion bundle under the
+localized assumption `indexClass.Countable`, removing the artificial global
+`[Countable Index]` requirement from the current strongest product-pair
+failure-tail final wrappers.  The source frontier itself is unchanged:
+prove the lower-growth/tail structure, or the remaining exact textbook
+random-entropy-to-tail/UI comparison, from honest VdV&W hypotheses.
