@@ -4739,3 +4739,16 @@ displayed-beta comparison.  The next source theorem can therefore target the
 natural inequality
 `centeredSup <= C * finiteNetHoeffdingUpper(selectedCardinality) + eta`
 under the centered-bad restricted product law.
+
+2026-05-12 restricted selected-cover `hphi_id` displayed-beta source surface:
+`Theorem243.lean` now connects the restricted centered-bad source shape to the
+selected-cover symmetrization precursor through
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_two_finiteNetHoeffdingUpper_add_halfRadius_bound`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_symmetrizationPrecursor_hphi_id`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_symmetrizationPrecursor_canonicalRademacher_hphi_id`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`.
+Thus a Fubini/conditioning proof may state both the finite-center maximal event
+and the canonical `Phi(x)=x` comparison under the centered-bad restricted law;
+Lean then derives the half-radius scaled finite-net domination and the displayed
+Chebyshev-beta comparison.

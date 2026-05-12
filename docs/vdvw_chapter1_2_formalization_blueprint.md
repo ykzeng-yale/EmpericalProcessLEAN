@@ -339,6 +339,16 @@ domination by `finiteNetHoeffdingUpper(selectedCardinality) + eta`; Lean
 derives the selected bad-event membership and transports to the recorded
 cardinality.
 
+The restricted displayed-beta lane now reaches the selected-cover
+symmetrization precursor directly through
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_two_finiteNetHoeffdingUpper_add_halfRadius_bound`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_symmetrizationPrecursor_hphi_id`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_symmetrizationPrecursor_canonicalRademacher_hphi_id`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`.
+This leaves the canonical restricted finite-center maximal event and restricted
+canonical `Phi(x)=x` comparison as the real selected-cover probability inputs.
+
 For the faithful Markov/symmetrization route, the source input has also been
 lowered from finite-net Hoeffding tail/UI to selected normalized-log tail/UI:
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_tailExpectation`.
@@ -3824,6 +3834,17 @@ real-domination bridge: prove the restricted a.e. inequality
 centered bad event, and Lean derives membership in
 `VdVWTheorem243SelectedFiniteNetBadSet` plus any selected-to-recorded
 cardinality transport.
+
+2026-05-12 restricted selected-cover `hphi_id` displayed-beta source surface:
+`Theorem243.lean` now adds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_two_finiteNetHoeffdingUpper_add_halfRadius_bound`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_symmetrizationPrecursor_hphi_id`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_symmetrizationPrecursor_canonicalRademacher_hphi_id`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`.
+These constructors let the selected-cover proof work under the centered-bad
+restricted law while retaining the native half-radius precursor inequality
+`2 * (finiteNetHoeffdingUpper + eta / 2)`.
 
 ## Automation Checklist
 

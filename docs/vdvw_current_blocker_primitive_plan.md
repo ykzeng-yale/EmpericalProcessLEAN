@@ -10301,3 +10301,16 @@ nonnegativity of the supremum and finite-net upper to turn
 `VdVWTheorem243SelectedFiniteNetBadSet`.  The remaining theorem-facing work is
 now precisely proving that restricted real domination inequality from the
 ghost/Rademacher selected-cover argument.
+
+2026-05-12 restricted selected-cover `hphi_id` displayed-beta source surface:
+`Theorem243.lean` now adds the restricted-law counterparts of the selected-cover
+symmetrization-precursor displayed-beta route:
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_two_finiteNetHoeffdingUpper_add_halfRadius_bound`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_symmetrizationPrecursor_hphi_id`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_symmetrizationPrecursor_canonicalRademacher_hphi_id`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_restrict_finiteEmpiricalCover_canonicalRademacher_countable_hphi_id`.
+The remaining selected-cover proof can now provide the canonical finite-center
+maximal event and `Phi(x)=x` comparison directly under
+`P^n.restrict VdVWTheorem243CenteredTruncatedBadSet`; the compiled constructor
+does the precursor assembly and the half-radius algebra.
