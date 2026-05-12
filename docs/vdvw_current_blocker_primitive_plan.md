@@ -10238,6 +10238,22 @@ centered-bad restricted law, while the constructor composes with the existing
 selected-to-recorded cardinality monotonicity.  The next theorem-facing
 probability target remains that restricted selected-bad membership statement.
 
+2026-05-12 restricted fixed-radius domination source surface:
+`Theorem243.lean` now further lowers the fixed-radius source target from
+selected-bad event membership to the real domination inequality under the
+centered-bad restricted law.  The new constructors are
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_bound`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_bound_of_countable`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_selected_bound_mono_cardinality`,
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_selected_bound_mono_cardinality_of_countable`.
+They use `ae_restrict_mem` plus nonnegativity of the centered supremum and
+finite-net Hoeffding upper to turn
+`centeredSup <= H_selected + eta` into membership in
+`VdVWTheorem243SelectedFiniteNetBadSet`, with optional selected-cardinality
+transport.  The remaining theorem-facing work is the restricted real
+domination proof from the ghost/Rademacher selected-cover argument.
+
 2026-05-12 scaled displayed-beta named source surface: search of the active
 source API found `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_scaledOuterProbabilityBound`
 and `...of_eventual_ae_scaled_bound`, but no named scaled bad-set bridge

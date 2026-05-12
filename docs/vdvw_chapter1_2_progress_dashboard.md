@@ -4682,6 +4682,21 @@ now cleaner: prove restricted a.e. membership in
 `VdVWTheorem243SelectedFiniteNetBadSet` for the selected empirical-cover
 cardinality.
 
+2026-05-12 restricted fixed-radius domination source surface:
+`Theorem243.lean` now also lowers the fixed-radius source input from selected
+bad-event membership to the real domination inequality through
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_bound`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_bound_of_countable`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_selected_bound_mono_cardinality`,
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_selected_bound_mono_cardinality_of_countable`.
+Thus the fixed-radius lane can now target the natural restricted a.e. inequality
+`centeredSup <= finiteNetHoeffdingUpper(selectedCardinality) + eta` under the
+centered-bad restricted product law, with Lean deriving named selected-bad
+membership and optional selected-to-recorded cardinality transport.  The
+remaining theorem-facing work is proving that restricted real domination
+inequality from the ghost/Rademacher selected-cover argument.
+
 2026-05-12 scaled displayed-beta named source surface:
 `Theorem243.lean` now adds the scaled named-event constructors
 `VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_namedBadSet_scaledOuterProbability_bound`,

@@ -327,6 +327,18 @@ inequality on the centered bad set; Lean now converts that inequality into the
 named scaled selected-bad membership and then into the displayed-beta
 comparison record.
 
+The fixed-radius lane now has the same restricted real-domination source
+surface without the displayed-beta scaling:
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_bound`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_bound_of_countable`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_selected_bound_mono_cardinality`,
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_selected_bound_mono_cardinality_of_countable`.
+The active fixed-radius proof target can now be stated as restricted a.e. real
+domination by `finiteNetHoeffdingUpper(selectedCardinality) + eta`; Lean
+derives the selected bad-event membership and transports to the recorded
+cardinality.
+
 For the faithful Markov/symmetrization route, the source input has also been
 lowered from finite-net Hoeffding tail/UI to selected normalized-log tail/UI:
 `VdVWTheorem243_centered_untruncated_convergesInOuterProbabilityConst_zero_of_variableEntropy_logCardinality_div_tailExpectation`.
@@ -3798,6 +3810,20 @@ These are the preferred source interfaces for the selected-cover route: prove
 membership in the selected finite-net bad event for the selected empirical
 cover under the centered-bad restricted product law, then rely on the compiled
 constructor to transport through the recorded entropy cardinality.
+
+2026-05-12 restricted fixed-radius domination source surface:
+`Theorem243.lean` now also adds
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_bound`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_bound_of_countable`,
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_selected_bound_mono_cardinality`,
+and
+`VdVWTheorem243FixedRadiusFiniteNetOuterProbabilityComparison.of_eventual_ae_restrict_selected_bound_mono_cardinality_of_countable`.
+These are the direct fixed-radius counterparts of the restricted displayed-beta
+real-domination bridge: prove the restricted a.e. inequality
+`centeredSup <= finiteNetHoeffdingUpper(selectedCardinality) + eta` on the
+centered bad event, and Lean derives membership in
+`VdVWTheorem243SelectedFiniteNetBadSet` plus any selected-to-recorded
+cardinality transport.
 
 ## Automation Checklist
 
