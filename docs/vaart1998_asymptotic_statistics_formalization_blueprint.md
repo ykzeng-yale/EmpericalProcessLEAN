@@ -45,12 +45,15 @@ derivative-entry common-vector-law source helper
 `vaart1998_theorem_5_41_derivativeEntry_integrable_indep_identDistrib_of_matrix_commonVectorLaw`
 now derives derivative-entry integrability, pairwise independence, and
 identical distribution from a common law for the finite derivative-entry table
-and the infinite-product law of that table sequence.  The next proof packet
-should compose this helper into the matrix-entry endpoint or package
-model-facing score/Taylor/source fields around that endpoint, not replay
-display weak-convergence, display-tightness, score-CLT, residual convergence,
-absorbing tightness, derivative-action wrappers, or the now-packaged pointwise
-Taylor bridge.
+and the infinite-product law of that table sequence.  The common-law
+matrix-entry endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+now composes that helper into the matrix-entry absorbing-source route.  The
+next proof packet should package model-facing score/Taylor/source fields
+around this common-law matrix endpoint, not replay display weak-convergence,
+display-tightness, score-CLT, residual convergence, absorbing tightness,
+derivative-action wrappers, derivative-entry iid source fields, or the
+now-packaged pointwise Taylor bridge.
 
 ## Chapter Map
 

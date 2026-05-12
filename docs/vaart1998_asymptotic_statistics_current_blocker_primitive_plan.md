@@ -17,6 +17,9 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeCommonVectorLaw_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Immediate matrix-entry derivative endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Immediate finite derivative action-bound endpoint:
@@ -66,6 +69,9 @@ The newest derivative-entry common-vector-law helper
 derives derivative-entry integrability, pairwise independence, and identical
 distribution from a common law for the finite derivative-entry table and the
 infinite-product law of that table sequence.
+The newest common-law matrix endpoint composes that helper into the
+matrix-entry absorbing-source route, so the scalar derivative-entry iid LLN
+fields are no longer live for that route.
 
 Continuation recipe:
 
@@ -79,10 +85,9 @@ Continuation recipe:
 Priority order for the next packet:
 
 1. Move one layer closer to a model-facing finite-dimensional statement:
-   compose the derivative-entry common-vector-law helper into the matrix-entry
-   endpoint, or package score/Taylor/source hypotheses around that endpoint,
-   especially model-specific score-summand representation or pointwise Taylor
-   fields.
+   package score/Taylor/source hypotheses around the common-law matrix endpoint,
+   especially model-specific score-summand representation, derivative-table
+   common-law construction, or pointwise Taylor fields.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    residual-source endpoint; do not rebuild completed score CLT, display weak
