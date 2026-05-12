@@ -84308,6 +84308,113 @@ theorem
 
 /--
 Textbook-aligned product-pair Chebyshev route from eventual a.e. finite
+empirical packing witnesses.
+
+This is the proof-carrying packing source form of
+`..._of_eventually_singleSample_ae_cardinality_ge_of_set_countable`: a
+`FiniteEmpiricalL1PackingAtCard` over the realized terminal sample supplies the
+selected-cardinality lower-growth hypothesis internally.
+-/
+theorem
+    of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_finiteEmpiricalL1PackingAtCard_of_set_countable
+    {Observation : Type v} {Index : Type w} [MeasurableSpace Observation]
+    {P : Measure Observation} [IsProbabilityMeasure P]
+    {indexClass : Set Index} {classFun : Index -> Observation -> ℝ}
+    {envelope : Observation -> ℝ}
+    {cardinality :
+      ℝ -> ℝ -> (n : ℕ) -> SampleAt Observation n -> ℕ -> ℕ}
+    (X : ℝ -> (n : ℕ) -> ℕ -> SampleAt Observation n -> Observation)
+    (hX_samplePath :
+      ∀ M n (sample : SampleAt Observation n),
+        samplePath (X M n) sample n = sample)
+    (hcovering_all :
+      ∀ M, 0 < M -> ∀ radius, 0 < radius -> ∀ n,
+        VdVWRandomEmpiricalL1CoveringNumberLeCardinality (X M n) indexClass
+          (vdVWTruncatedClassFun classFun envelope M) radius
+          (cardinality M radius n))
+    (hcount : indexClass.Countable)
+    (hclass : VdVWClassCoordinateMeasurable indexClass classFun)
+    (henv : Measurable envelope)
+    (hindexClass_nonempty : ∃ index, index ∈ indexClass)
+    (henvelope : VdVWClassEnvelope indexClass classFun envelope)
+    (henv_integrable : Integrable envelope P)
+    (hclassIntegrable :
+      ∀ index, index ∈ indexClass -> Integrable (classFun index) P)
+    (htruncIntegrable :
+      ∀ M index, index ∈ indexClass ->
+        Integrable (vdVWTruncatedClassFun classFun envelope M index) P)
+    (hbdd_truncated :
+      ∀ M n (sample : SampleAt Observation n),
+        BddAbove
+          (vdVWWeightedClassValueSet indexClass
+            (fun index : Index => fun observation : Observation =>
+              vdVWTruncatedClassFun classFun envelope M index observation -
+                ∫ x, vdVWTruncatedClassFun classFun envelope M index x ∂P)
+            (fun _ : Fin n => (n : ℝ)⁻¹) sample))
+    (hlog :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        VdVWConvergesInOuterProbabilityConst
+          (fun n : ℕ => SampleAt Observation n)
+          (fun _ : ℕ => inferInstance)
+          (fun n : ℕ => vdVWProductMeasure P n)
+          (fun n sample =>
+            vdVWLogEmpiricalL1CoveringCardinality (cardinality M eta n)
+                sample n / (n : ℝ))
+          atTop (0 : ℝ))
+    (lower : ℝ -> ℝ -> ℕ -> ℕ)
+    (hlower :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        Tendsto (lower M eta) atTop atTop)
+    (packingSeparation : ℝ -> ℝ -> ℝ)
+    (hpackingSeparation :
+      ∀ M, 0 < M -> ∀ eta, 0 < eta ->
+        2 * ((eta / 2) / 2) ≤ packingSeparation M eta)
+    (hpacking :
+      ∀ M (_hM_pos : 0 < M), ∀ eta : ℝ, (heta : 0 < eta) ->
+        ∀ᶠ n in atTop,
+          ∀ᵐ sample ∂(vdVWProductMeasure P n),
+            Nonempty
+              (FiniteEmpiricalL1PackingAtCard sample indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (packingSeparation M eta) (lower M eta n))) :
+    VdVWTheorem243TextbookAlignedConclusion P indexClass classFun envelope := by
+  refine
+    of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_cardinality_ge_of_set_countable
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (cardinality := cardinality) X hX_samplePath
+      hcovering_all hcount hclass henv hindexClass_nonempty henvelope
+      henv_integrable hclassIntegrable htruncIntegrable hbdd_truncated
+      hlog lower hlower ?_
+  intro M hM_pos eta heta
+  let radius : ℝ -> ℝ := fun eta => (eta / 2) / 2
+  have hradius : ∀ eta, 0 < eta -> 0 < radius eta := by
+    intro eta heta
+    dsimp [radius]
+    linarith
+  have hpacking_samplePath :
+      ∀ eta, 0 < eta ->
+        ∀ᶠ n in atTop,
+          ∀ᵐ sample ∂(vdVWProductMeasure P n),
+            Nonempty
+              (FiniteEmpiricalL1PackingAtCard
+                (samplePath (X M n) sample n) indexClass
+                (vdVWTruncatedClassFun classFun envelope M)
+                (packingSeparation M eta) (lower M eta n)) := by
+    intro eta heta
+    filter_upwards [hpacking M hM_pos eta heta] with n hn
+    filter_upwards [hn] with sample hsample
+    simpa [hX_samplePath M n sample] using hsample
+  simpa [radius] using
+    (vdVWSelectedTruncatedPositiveRadiusEmpiricalL1CoveringNumberCard_eventually_ae_ge_of_eventually_ae_finiteEmpiricalL1PackingAtCard
+      (P := P) (indexClass := indexClass) (classFun := classFun)
+      (envelope := envelope) (M := M) (cardinality := cardinality M)
+      (X := X M) (hcovering_all := hcovering_all M hM_pos)
+      radius (packingSeparation M) hradius
+      (fun eta heta => hpackingSeparation M hM_pos eta heta)
+      (lower M) hpacking_samplePath eta heta)
+
+/--
+Textbook-aligned product-pair Chebyshev route from eventual a.e. finite
 quarter-radius packings.
 
 This is the source-facing packing form of

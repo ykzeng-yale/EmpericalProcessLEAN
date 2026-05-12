@@ -177,7 +177,13 @@ point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_pairwise_empiricalL1Distance_gt_two_mul_of_set_countable`.
 It composes the eventual `P^n`-a.e. quarter-radius packing source with the
 selected-cardinality lower-growth final wrapper, so callers no longer need to
-pre-assemble the selected-cardinality inequality.  The same final route now
+pre-assemble the selected-cardinality inequality.  It now also has the
+proof-carrying finite-packing witness entry point
+`VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_finiteEmpiricalL1PackingAtCard_of_set_countable`,
+which consumes eventual `P^n`-a.e. terminal-sample
+`FiniteEmpiricalL1PackingAtCard` witnesses and transports them through
+`hX_samplePath` and the selected finite-packing adapter internally.  The same
+final route now
 also has the empirical-wrapper packing-number entry point
 `VdVWTheorem243TextbookAlignedConclusion.of_productPairChebyshev_countable_finiteCenter_failure_tails_halfScale_selected_truncated_quarterRadius_firstLevel_of_eventually_singleSample_ae_empiricalL1Index_packingNumber_of_set_countable`,
 which composes eventual `P^n`-a.e. lower bounds on
@@ -195,8 +201,9 @@ to `⊤` and sets the deterministic lower bound to `n`; it is a structural
 source surface, not a derivation of infinite covering number from the
 random-entropy hypotheses.
 The live theorem-facing source gap is now exactly the construction of those
-separated-packing, packing-number, or covering-number lower bounds, or a
-replacement lower-growth/tail/UI theorem, from honest VdV&W assumptions.
+finite-packing witnesses, separated-packing, packing-number, or
+covering-number lower bounds, or a replacement lower-growth/tail/UI theorem,
+from honest VdV&W assumptions.
 
 ## Current `/goal` Target
 
