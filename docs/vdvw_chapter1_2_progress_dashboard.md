@@ -268,12 +268,16 @@ layer.  The half-scale finite-center failure-tail consumer is now compiled as
 `VdVWTheorem243PairDifferenceGhostRademacherSelectedNetEvent_outerProbability_bound_of_centeredPairSubSignSwapBad_finiteCenter_failure_tails_halfScale`
 and
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale`,
-so the remaining selected-center work is measurability and inverse-square
-tail discharge for the quarter-radius cover.  The selected-center
-measurability layer is now compiled as
+so the selected-center work is now the quarter-radius cover layer rather than
+the raw finite-tail route.  The selected-center measurability layer is compiled
+as
 `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt`,
-leaving the inverse-square finite-tail discharge and the half-scale signed
-bad source as the active inputs.  The averaged product-pair route is now also
+and the quarter-radius inverse-square discharge is compiled as
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt_of_invSq_lintegral`
+with the a.e. lower-growth variant
+`VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt_of_eventually_ae_cardinality_ge`.
+The active input is now the half-scale signed bad source.  The averaged
+product-pair route is now also
 compiled through
 `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
 `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
@@ -4430,4 +4434,9 @@ The selected-center sign-swap and pair-sub/sign-swap endpoints have both
 `..._selectedCenterAt_of_eventually_ae_cardinality_ge` variants, so the
 remaining exposed source work is the pair-sub Chebyshev lower bound plus
 fixed-original sign-swap transport under a.e. lower-growth of the canonical
-half-radius selected-cover cardinality.
+half-radius selected-cover cardinality.  The half-scale selected-center route
+now has the analogous quarter-radius
+`..._halfScale_selectedCenterAt_of_invSq_lintegral` and
+`..._halfScale_selectedCenterAt_of_eventually_ae_cardinality_ge` endpoints,
+leaving the half-scale signed bad-event lower bound as the exposed source
+input.

@@ -2375,11 +2375,15 @@ above, so they do not change the theorem-level dashboard counts.
    and
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale`;
    it keeps quarter-radius selected-cover event/error measurability and
-   inverse-square tail convergence as the remaining source-layer obligations.
-   The first of those selected-center obligations is now discharged by
+   inverse-square tail convergence as explicit source-layer obligations.
+   The selected-center measurability obligation is now discharged by
    `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt`,
-   which builds the quarter-radius first-level cover internally and leaves only
-   the half-scale signed bad lower bound plus finite-tail convergence inputs.
+   which builds the quarter-radius first-level cover internally.  The
+   finite-tail convergence input is now discharged by
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt_of_invSq_lintegral`
+   and the source-facing a.e. lower-growth variant
+   `VdVWTheorem243_fixedM_centered_truncated_convergesInOuterProbabilityConst_zero_of_forall_pos_radius_logCardinality_of_signSwapBad_finiteCenter_failure_tails_halfScale_selectedCenterAt_of_eventually_ae_cardinality_ge`,
+   leaving the half-scale signed bad lower bound as the exposed source input.
    The averaged product-pair alternative is now compiled through
    `measurePreserving_vdVWProductMeasure_original_ghost_to_prod`,
    `measure_vdVWProductMeasure_original_ghost_pairDifference_constWeights_bad_eq_productPair_bad`,
@@ -3571,7 +3575,11 @@ consumer bounds the centered-bad restricted original failure term plus the
 full-law ghost failure term by one full-law inverse-square selected-cardinality
 integral.  The frontier is now the genuine probability source: pair-sub
 Chebyshev lower bounds and fixed-original sign-swap transport, together with
-a.e. lower-growth of the canonical half-radius selected cover.
+a.e. lower-growth of the canonical half-radius selected cover.  The half-scale
+selected-center route now has matching quarter-radius
+`..._halfScale_selectedCenterAt_of_invSq_lintegral` and
+`..._halfScale_selectedCenterAt_of_eventually_ae_cardinality_ge` endpoints, so
+its exposed source input is the half-scale signed bad-event lower bound.
 
 ## Automation Checklist
 
