@@ -3072,6 +3072,80 @@ theorem chewi1311_affinePreimage_selfConcordantBarrierOn_of_rightInverse
       (barrierAffinePreimageThirdMixed A b third) M nu :=
   hbar.affinePreimage_rightInverse A B b hAB
 
+/--
+Chosen continuous right inverse for a finite-dimensional surjective linear
+part.  This is a thin wrapper around mathlib's
+`ContinuousLinearMap.exists_rightInverse_of_surjective`.
+-/
+noncomputable def barrierAffinePreimageRightInverseOfSurjective
+    (A : F →L[ℝ] E) [FiniteDimensional ℝ E] (hA : A.range = ⊤) :
+    E →L[ℝ] F :=
+  Classical.choose (A.exists_rightInverse_of_surjective hA)
+
+omit [CompleteSpace F] [CompleteSpace E] in
+theorem barrierAffinePreimageRightInverseOfSurjective_spec
+    (A : F →L[ℝ] E) [FiniteDimensional ℝ E] (hA : A.range = ⊤) :
+    A.comp (barrierAffinePreimageRightInverseOfSurjective A hA) =
+      ContinuousLinearMap.id ℝ E :=
+  Classical.choose_spec (A.exists_rightInverse_of_surjective hA)
+
+/--
+Pulled-back inverse-Hessian oracle for a finite-dimensional surjective affine
+linear part, using the chosen continuous right inverse above.
+-/
+noncomputable def barrierAffinePreimageInvHessSurjective
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ E]
+    (invHess : E -> E →L[ℝ] E) (hA : A.range = ⊤) :
+    F -> F →L[ℝ] F :=
+  barrierAffinePreimageInvHessRightInverse A
+    (barrierAffinePreimageRightInverseOfSurjective A hA) b invHess
+
+theorem BarrierAffinePreimageOracleModel.of_surjective
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ E]
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {third : E -> E -> E -> ℝ}
+    {M nu : ℝ}
+    (hA : A.range = ⊤)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu) :
+    BarrierAffinePreimageOracleModel A b s hess grad invHess
+      (barrierAffinePreimageInvHessSurjective A b invHess hA) third M nu :=
+  BarrierAffinePreimageOracleModel.of_rightInverse A
+    (barrierAffinePreimageRightInverseOfSurjective A hA) b
+    (barrierAffinePreimageRightInverseOfSurjective_spec A hA) hbar
+
+theorem SelfConcordantBarrierOn.affinePreimage_surjective
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ E]
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {third : E -> E -> E -> ℝ}
+    {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hA : A.range = ⊤) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A b s)
+      (barrierAffinePreimageHess A b hess)
+      (barrierAffinePreimageGrad A b grad)
+      (barrierAffinePreimageInvHessSurjective A b invHess hA)
+      (barrierAffinePreimageThirdMixed A b third) M nu :=
+  (BarrierAffinePreimageOracleModel.of_surjective A b hA hbar).selfConcordantBarrierOn
+
+/--
+Chewi Proposition 13.11, affine-preimage case for a finite-dimensional
+surjective linear part.  The right inverse is chosen from mathlib, so callers
+only provide the source-facing surjectivity/range-top hypothesis.
+-/
+theorem chewi1311_affinePreimage_selfConcordantBarrierOn_of_surjective
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ E]
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {third : E -> E -> E -> ℝ}
+    {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hA : A.range = ⊤) :
+    SelfConcordantBarrierOn (barrierAffinePreimageSet A b s)
+      (barrierAffinePreimageHess A b hess)
+      (barrierAffinePreimageGrad A b grad)
+      (barrierAffinePreimageInvHessSurjective A b invHess hA)
+      (barrierAffinePreimageThirdMixed A b third) M nu :=
+  hbar.affinePreimage_surjective A b hA
+
 end AffinePreimageBarrier
 
 section InfProjectionBarrier

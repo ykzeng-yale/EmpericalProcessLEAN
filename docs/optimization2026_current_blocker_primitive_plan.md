@@ -243,6 +243,14 @@ The right-inverse packet adds
 `BarrierAffinePreimageOracleModel.of_rightInverse`,
 `SelfConcordantBarrierOn.affinePreimage_rightInverse`, and
 `chewi1311_affinePreimage_selfConcordantBarrierOn_of_rightInverse`.
+The finite-dimensional surjective packet adds
+`barrierAffinePreimageRightInverseOfSurjective`,
+`barrierAffinePreimageRightInverseOfSurjective_spec`,
+`barrierAffinePreimageInvHessSurjective`,
+`BarrierAffinePreimageOracleModel.of_surjective`,
+`SelfConcordantBarrierOn.affinePreimage_surjective`, and
+`chewi1311_affinePreimage_selfConcordantBarrierOn_of_surjective`, reusing
+mathlib's `ContinuousLinearMap.exists_rightInverse_of_surjective`.
 Search-first result: mathlib supplies `ContinuousLinearMap.adjoint`,
 `ContinuousLinearMap.adjoint_inner_left/right`,
 `ContinuousLinearMap.adjoint_comp`, and
