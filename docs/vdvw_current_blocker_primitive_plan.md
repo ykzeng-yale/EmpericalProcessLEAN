@@ -10269,3 +10269,19 @@ selected-to-recorded cardinality inequality before handing off to the
 entropy-controlled comparison record.  The remaining non-wrapper proof target
 is the actual restricted scaled selected-bad membership/event comparison for
 the selected cover.
+
+2026-05-12 restricted scaled domination displayed-beta source surface:
+`Theorem243.lean` now further lowers the source input from selected-bad event
+membership to the real domination inequality under the centered-bad restricted
+law.  The new constructors are
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_bound`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_bound_of_countable`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_selected_bound_mono_cardinality`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_selected_bound_mono_cardinality_of_countable`.
+They use `ae_restrict_mem` for the centered-bad hypothesis and the
+nonnegativity of the supremum and finite-net upper to turn
+`centeredSup <= C * H_selected + eta` into membership in
+`VdVWTheorem243SelectedFiniteNetBadSet`.  The remaining theorem-facing work is
+now precisely proving that restricted real domination inequality from the
+ghost/Rademacher selected-cover argument.

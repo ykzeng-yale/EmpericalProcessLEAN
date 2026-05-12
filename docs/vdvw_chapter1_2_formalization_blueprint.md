@@ -316,6 +316,16 @@ and
 This keeps the active proof obligation on the selected empirical-cover
 cardinality while allowing the compiled comparison record to use the larger
 cardinality controlled by the entropy hypothesis.
+The source input has now been lowered one step further by
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_bound`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_bound_of_countable`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_selected_bound_mono_cardinality`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_selected_bound_mono_cardinality_of_countable`.
+The next proof target can therefore be the restricted a.e. real domination
+inequality on the centered bad set; Lean now converts that inequality into the
+named scaled selected-bad membership and then into the displayed-beta
+comparison record.
 
 For the faithful Markov/symmetrization route, the source input has also been
 lowered from finite-net Hoeffding tail/UI to selected normalized-log tail/UI:

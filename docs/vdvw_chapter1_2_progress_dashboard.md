@@ -4710,3 +4710,17 @@ empirical-cover cardinality under the centered-bad restricted product law,
 while the displayed-beta comparison is recorded for the larger
 entropy-controlled cardinality.  The open theorem is now the restricted scaled
 selected-bad membership for the selected cover itself.
+
+2026-05-12 restricted scaled domination displayed-beta source surface:
+`Theorem243.lean` now adds
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_bound`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_bound_of_countable`,
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_selected_bound_mono_cardinality`,
+and
+`VdVWTheorem243DisplayedChebyshevBetaSelectedOuterProbabilityComparison.of_eventual_ae_restrict_scaled_selected_bound_mono_cardinality_of_countable`.
+These convert a restricted a.e. real finite-net domination inequality on the
+centered bad event into the scaled selected-bad event membership needed by the
+displayed-beta comparison.  The next source theorem can therefore target the
+natural inequality
+`centeredSup <= C * finiteNetHoeffdingUpper(selectedCardinality) + eta`
+under the centered-bad restricted product law.
