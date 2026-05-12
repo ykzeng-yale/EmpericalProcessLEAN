@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V240`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V241`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -296,6 +296,9 @@ probability bound:
 `durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_tail_add_stopped`,
 and
 `durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_tail_add_min_terminal_of_source_square_minus_martingale_monotone_terminal`.
+V241 adds the finite-horizon layer-cake handoff:
+`durrett2019_theorem_4_5_7_lintegral_le_lintegral_tail_bound_lt` and
+`durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_terminal_tail_add_min_terminal_lintegral_of_source_square_minus_martingale_monotone_terminal`.
 The next theorem-facing target is no longer finite sum/integral exchange,
 V214-to-V209 wiring, the tail-integral-to-clock-bound package,
 variance-ratio integrability packaging, lower-bound/no-zero/divergence
@@ -305,9 +308,10 @@ denominator bridges, increment/denominator-clock plumbing, Bernoulli
 conditional-variance algebra, max-normalizer denominator handoff,
 finite/infinite event-cover ratio assembly, the max-normalizer 4.5.3 source
 handoff, raw-clock monotonicity, final Theorem 4.5.5 packaging, stopped
-4.5.7 source packaging, or the V240 raw/stopped split.  Move next to the
-Theorem 4.5.7 layer-cake/Fubini integral split using the compiled V240
-finite-horizon probability bound.  Do not route back to
+4.5.7 source packaging, the V240 raw/stopped split, or the V241 layer-cake
+handoff.  Move next to the Theorem 4.5.7 deterministic/Fubini calculation of
+the V241 right-hand side, then the finite-horizon-to-supremum monotone limit.
+Do not route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
 packaging, deterministic Exercise 4.4.11 normalizers, reciprocal

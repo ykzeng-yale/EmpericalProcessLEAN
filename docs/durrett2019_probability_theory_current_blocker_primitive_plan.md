@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V240
+## Live In-Thread Goal Prompt V241
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,12 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V240 adds the Theorem 4.5.7 raw/stopped survival
+Latest verified Lean packet V241 adds the Theorem 4.5.7 finite-horizon
+layer-cake handoff:
+`durrett2019_theorem_4_5_7_lintegral_le_lintegral_tail_bound_lt` and
+`durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_terminal_tail_add_min_terminal_lintegral_of_source_square_minus_martingale_monotone_terminal`.
+It integrates the V240 probability inequality into an extended-expectation
+bound for each finite running maximum.  V240 supplied the raw/stopped survival
 probability split and source-facing raw finite-horizon bound:
 `durrett2019_theorem_4_5_7_runningAbsMax_eq_stopped_of_firstPredictableAbove_eq_top`,
 `durrett2019_theorem_4_5_7_runningAbsMax_event_subset_terminal_tail_union_stopped`,
@@ -44,14 +49,16 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: package the layer-cake/Fubini split from
-V240's finite-horizon probability bound toward Durrett's
+Next aggressive theorem-sized packet: package the deterministic/Fubini
+calculation of the two V241 right-hand-side integrals toward Durrett's
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search Mathlib/local APIs first
-(`lintegral`, `ENNReal.ofReal`, Markov/layer-cake identities, monotone
-running-supremum/lower-semicontinuity support, and interval integral split
-APIs).  Do not revisit closed Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the
-V236 probability conversion, the V237/V238/V239 stopped source packaging, or
-the V240 raw/stopped survival split
+(`lintegral_lintegral_swap`, `lintegral_add`, `lintegral_const_mul`,
+`ENNReal.ofReal`, square-root/rpow layer-cake, interval-integral calculus for
+`∫_{sqrt b}^∞ a^{-2} da`, monotone running-supremum support, and
+`Monotone.lintegral_iSup`/monotone convergence APIs).  Do not revisit closed
+Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the V236 probability conversion, the
+V237/V238/V239 stopped source packaging, the V240 raw/stopped survival split,
+or the V241 layer-cake handoff
 unless a compile error exposes a genuinely missing primitive.
 
 ## Recent Route Notes
@@ -488,14 +495,21 @@ The theorem-facing probability inequality now has the textbook split
 `P(max_{m <= n}|X_m| > a) <= P(A_infty > a^2) +
   a^{-2} E(A_infty ∧ a^2)` under the source hypotheses.
 
-Next aggressive step: continue Durrett Theorem 4.5.7 by packaging the
-layer-cake/Fubini integral split that turns the V240 finite-horizon bound into
+V241 adds the finite-horizon layer-cake handoff:
+`durrett2019_theorem_4_5_7_lintegral_le_lintegral_tail_bound_lt` and
+`durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_terminal_tail_add_min_terminal_lintegral_of_source_square_minus_martingale_monotone_terminal`.
+This converts the V240 probability inequality into a finite-horizon
+extended-expectation inequality.  The stochastic side is now connected to the
+textbook's Fubini/calculus side.
+
+Next aggressive step: continue Durrett Theorem 4.5.7 by proving the
+deterministic/Fubini integral calculation that turns the V241 RHS into
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Do not start by formalizing the full
 Friedman urn state process unless it directly reuses the compiled 4.5.5 ratio
 package.  Do not revisit raw clock pointwise monotonicity, direct martingale
 finite-limit assumptions, denominator divergence on `limsup`, final 4.5.5
 ratio packaging, or the V236 Doob/Kolmogorov probability conversion.  Do not
-route back to the V240 raw/stopped split,
+route back to the V240 raw/stopped split, the V241 layer-cake handoff,
 stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1842,6 +1856,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V240` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V241` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

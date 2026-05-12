@@ -23282,6 +23282,87 @@ theorem
   exact hsplit.trans (add_le_add (le_refl _) hstopped)
 
 /--
+Durrett 2019, Theorem 4.5.7 layer-cake support.
+
+For a nonnegative random variable, a pointwise upper bound on all strict tail
+probabilities integrates to an upper bound on the extended expectation.  This
+is the exact handoff from the finite-horizon probability estimate to the
+Fubini/calculus side of the proof.
+-/
+theorem
+    durrett2019_theorem_4_5_7_lintegral_le_lintegral_tail_bound_lt
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : Ω -> ℝ} {tailBound : ℝ -> ℝ≥0∞}
+    (hY_nonneg : 0 ≤ᵐ[P] Y)
+    (hY_meas : AEMeasurable Y P)
+    (hbound :
+      ∀ a, 0 < a -> P {ω : Ω | a < Y ω} ≤ tailBound a) :
+    (∫⁻ ω, ENNReal.ofReal (Y ω) ∂P) ≤
+      ∫⁻ a in Set.Ioi (0 : ℝ), tailBound a := by
+  rw [StatInference.ProbabilityMeasure.lintegral_eq_lintegral_tail_lt
+    (μ := P) (X := Y) hY_nonneg hY_meas]
+  refine MeasureTheory.lintegral_mono_ae ?_
+  filter_upwards
+    [ae_restrict_mem (μ := volume) (measurableSet_Ioi : MeasurableSet (Set.Ioi (0 : ℝ)))]
+    with a ha
+  exact hbound a ha
+
+/--
+Durrett 2019, Theorem 4.5.7 finite-horizon layer-cake handoff from the source
+probability estimate.
+
+This integrates the V240 finite-horizon bound
+`P(max_{m<=n}|X_m| > a) <= P(A_infty > a^2) +
+  a^{-2} E(A_infty ∧ a^2)`.
+The remaining proof work is the deterministic/Fubini calculation showing that
+the right-hand side is at most `3 E(A_infty^(1/2))`, followed by the monotone
+limit from finite horizons to `sup_n`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_terminal_tail_add_min_terminal_lintegral_of_source_square_minus_martingale_monotone_terminal
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_int : Integrable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (n : ℕ) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≤
+      ∫⁻ a in Set.Ioi (0 : ℝ),
+        P {ω : Ω | a ^ 2 < Ainf ω} +
+          ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  refine
+    durrett2019_theorem_4_5_7_lintegral_le_lintegral_tail_bound_lt
+      (P := P) (Y := durrett2019_runningAbsMax X n)
+      (tailBound := fun a =>
+        P {ω : Ω | a ^ 2 < Ainf ω} +
+          ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞))
+      ?_ ?_ ?_
+  · exact ae_of_all P fun ω => durrett2019_runningAbsMax_nonneg (X := X) n ω
+  · exact (durrett2019_runningAbsMax_measurable
+      (P := P) (ℱ := ℱ) (X := X) hX n).aemeasurable
+  · intro a ha
+    have htoNNReal_ne : Real.toNNReal a ≠ 0 := by
+      rw [← NNReal.coe_ne_zero]
+      simpa [Real.toNNReal_of_nonneg ha.le] using (ne_of_gt ha : a ≠ 0)
+    have hprob :=
+      durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_tail_add_min_terminal_of_source_square_minus_martingale_monotone_terminal
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_int hX0
+        hA0 hA_mono hA_tendsto htoNNReal_ne n
+    simpa [Real.toNNReal_of_nonneg ha.le] using hprob
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
