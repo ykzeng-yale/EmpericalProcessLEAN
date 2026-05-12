@@ -17,6 +17,9 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
+
+Immediate finite derivative action-bound endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`.
 
 Immediate absorbing-tightness consumer endpoint:
@@ -55,6 +58,9 @@ selected scaled estimator.  The newest absorbing-source wrapper derives that
 weak convergence from the compiled raw-score CLT / derivative LLN / root /
 Taylor source route, so `hAbsorbingTightness` is no longer live for this
 finite-score finite-derivative route.
+The newest finite-dimensional matrix-entry wrapper specializes the parameter
+space to `Param -> ℝ` and derives the finite derivative action-bound from the
+row-wise derivative-entry representation.
 
 Continuation recipe:
 
@@ -68,10 +74,10 @@ Continuation recipe:
 Priority order for the next packet:
 
 1. Move one layer closer to a model-facing finite-dimensional statement:
-   discharge the finite derivative action-bound source with the existing
-   matrix-entry representation helper, or package a model-facing score/Taylor
-   statement if it removes a live hypothesis of the current absorbing-source
-   endpoint.
+   package score/Taylor/source hypotheses around the matrix-entry endpoint,
+   especially model-specific score-summand representation, derivative-entry
+   integrability/independence/identical-distribution, or pointwise Taylor
+   fields.
 2. Derivative or score source: only add a model-specific coordinate/matrix or
    score representation if it removes a live hypothesis of the current
    residual-source endpoint; do not rebuild completed score CLT, display weak

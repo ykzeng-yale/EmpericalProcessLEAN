@@ -36,12 +36,15 @@ non-circular absorbing route has produced weak convergence of the selected
 scaled estimator.  The fully inlined absorbing-source residual wrapper
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 now derives that weak-convergence input from the raw-score CLT, derivative
-LLN, root, and Taylor source route.  The next proof packet should move toward
-a model-facing finite-dimensional statement by discharging finite derivative
-action bounds or score/Taylor source fields, not replay display
-weak-convergence, display-tightness, score-CLT, residual convergence,
-absorbing tightness, derivative-action wrappers, or the now-packaged pointwise
-Taylor bridge.
+LLN, root, and Taylor source route.  The finite-dimensional matrix-entry
+derivative wrapper
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+specializes the parameter space to `Param -> ℝ` and discharges the finite
+derivative action-bound from row-wise derivative-entry representation.  The
+next proof packet should package model-facing score/Taylor/source fields
+around this matrix-entry endpoint, not replay display weak-convergence,
+display-tightness, score-CLT, residual convergence, absorbing tightness,
+derivative-action wrappers, or the now-packaged pointwise Taylor bridge.
 
 ## Chapter Map
 

@@ -15,7 +15,13 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: fully inlined absorbing-source residual wrapper
+Latest verified packet: finite-dimensional matrix-entry derivative wrapper
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_matrixEntryDerivativeBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
+in `MEstimators.lean`.  It specializes the current absorbing-source residual
+route to `Param -> ℝ` and derives the finite derivative action-bound from the
+row-wise matrix-entry representation of the empirical derivative residual.
+
+Immediate predecessor packet: fully inlined absorbing-source residual wrapper
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingSource_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It derives the raw-score CLT from the common-vector-law
 finite-coordinate score source, derives the empirical derivative LLN from the
@@ -23,7 +29,7 @@ finite derivative action bound, obtains selected scaled-estimator weak
 convergence through the existing non-circular absorbing route, and then feeds
 the residual-source bridge.
 
-Immediate predecessor packet: absorbing-tightness consumer for the
+Earlier predecessor packet: absorbing-tightness consumer for the
 residual-source wrapper
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_pointwiseTaylorResidualSource_scoreSummandRepresentation_commonVectorLawScoreCLT_absorbingTightness_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
 in `MEstimators.lean`.  It consumes the existing non-circular absorbing route's
@@ -38,11 +44,10 @@ uses
 to remove the explicit residual convergence and residual measurability fields
 from the pointwise-Taylor Theorem 5.41 action endpoint.
 
-Current next blocker: move one layer closer to a model-facing finite-dimensional
-statement by discharging the finite derivative action-bound source via the
-existing matrix-entry representation helper, or by packaging a model-facing
-score/Taylor statement that removes a live hypothesis of the current
-absorbing-source endpoint.
+Current next blocker: package model-facing score/Taylor/source hypotheses
+around the matrix-entry endpoint, especially score-summand representation,
+derivative-entry integrability/independence/identical-distribution, or
+pointwise Taylor fields.
 
 ## Verified Frontier
 
