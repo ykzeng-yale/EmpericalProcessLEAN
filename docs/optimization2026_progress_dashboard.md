@@ -401,6 +401,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   construct Chewi's literal third-order package and projected source-radius
   local-norm sandwich without re-threading full product-space Hessian
   derivative data through the consumer.
+  The actual full-Hessian derivative obligations are now packaged as
+  `BarrierInfProjectionFullHessianDerivativeOn`, with consumers
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_fullHessianDerivativeOn_isOpen`,
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_fullHessianDerivativeOn_isOpen`,
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_fullHessianDerivativeOn_isOpen_of_verticalFirstOrder`,
+  and
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivativeOn_isOpen_of_verticalFirstOrder`.
+  Future source proofs should prove this full-Hessian derivative certificate
+  once, then route through the packaged consumers instead of passing separate
+  `hhess` and `hmixed_full` hypotheses through every theorem.
   Future item-4 source instances should therefore focus on constructing the
   literal package and concrete square-root/envelope model, not rebuilding
   segment Schur-derivative, local-norm transport, or projected-Hessian

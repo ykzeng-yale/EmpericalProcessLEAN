@@ -213,6 +213,14 @@ The newest sum adjoint-square model package adds
 Future exact Proposition 13.11(1) work can instantiate one certificate carrying
 the two component barriers, component square-root models, and the summed
 square-root model, instead of threading the long equality list.
+Bounded search result for the exact sum gate: pinned mathlib has matrix
+positive-semidefinite/spectral/CFC square-root APIs
+(`Mathlib.Analysis.Matrix.Spectrum`, `Mathlib.Analysis.Matrix.Order`, and
+`Matrix.PosSemidef.add`), but no ready generic
+`ContinuousLinearMap`/Hilbert-space square-root equivalence constructor that
+turns a positive summed Hessian oracle into the `BarrierSumAdjointSqrtModel`
+fields.  Do not spend the next packet rebuilding spectral theory unless the
+route explicitly moves to a finite-dimensional matrix-coordinate model.
 
 Latest affine-preimage update: Proposition 13.11(3) now has a compiled
 supplied-oracle affine-preimage spine, an invertible-affine corollary, a
@@ -896,6 +904,16 @@ sandwich directly from the Schur certificate, vertical first-order data,
 open-domain gradient data, and the adjoint-square-root model.  This is the
 preferred source route when the Schur derivative certificate has already been
 constructed separately from lifted-third/source scalar identities.
+The actual full-Hessian derivative source obligations are now packaged as
+`BarrierInfProjectionFullHessianDerivativeOn`.  Reuse its consumers
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_fullHessianDerivativeOn_isOpen`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_fullHessianDerivativeOn_isOpen`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_fullHessianDerivativeOn_isOpen_of_verticalFirstOrder`,
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivativeOn_isOpen_of_verticalFirstOrder`.
+The live exact inf-projection blocker is now sharply named: prove this
+full-Hessian derivative certificate, or prove a Schur derivative certificate
+directly, then invoke the packaged literal/local-norm consumers.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

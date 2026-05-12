@@ -270,6 +270,17 @@ These wrappers build the literal `inf_y` package and local-norm sandwich from
 the Schur certificate plus vertical first-order/open-domain gradient data,
 without requiring the caller to supply or rederive the full-Hessian derivative
 package.
+The full-Hessian derivative source side is now represented by
+`BarrierInfProjectionFullHessianDerivativeOn`, which bundles Frechet
+differentiability of the product-space Hessian along the selected graph with
+the scalar mixed-third pairing identity.  Its consumers
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_fullHessianDerivativeOn_isOpen`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_fullHessianDerivativeOn_isOpen`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_fullHessianDerivativeOn_isOpen_of_verticalFirstOrder`,
+and
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_fullHessianDerivativeOn_isOpen_of_verticalFirstOrder`
+are the preferred route for concrete item-4 source models that naturally prove
+the original Hessian derivative before the projected Schur derivative.
 The current second-order envelope layer also derives the Schur projected
 gradient derivative from local vertical stationarity: reuse
 `barrierInfProjectionGrad_hasFDerivAt_schur_of_vertical_eventuallyEq` after
