@@ -322,10 +322,18 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  and
 	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_globalDeriv_and_inverseIdentity`,
 	  deriving all per-successor segment derivative oracles from a single
-	  domain-wide Hessian derivative and mixed-third identity package.  The live
+	  domain-wide Hessian derivative and mixed-third identity package.  The
+	  barrier-interface packet adds
+	  `chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	  `chewi1316_uniformTailBound_of_sourceRadius_successor_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	  These consume `SelfConcordantBarrierOn` directly and expose the common
+	  unit-radius-half scalar budget as `2 * sqrt(nu) <= tailBound`.  The live
 	  exact-source gate is now successor membership, a global derivative package,
-	  a uniform radius bound, and
-	  `sourceBound / (1 - M*radiusBound) <= tailBound`.
+	  a uniform radius/radius-half bound, and the corresponding scalar tail
+	  budget.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

@@ -450,6 +450,17 @@ packet adds
 	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_globalDeriv_and_inverseIdentity`,
 	so exact-source callers can provide a single domain-wide Hessian derivative
 	and mixed-third identity package instead of per-successor segment oracles.
+	The barrier-interface packet adds
+	`chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	`chewi1316_uniformTailBound_of_sourceRadius_successor_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	These consume `SelfConcordantBarrierOn` directly, deriving
+	self-concordance, inverse-Hessian nonnegativity, and the source gradient
+	bound `||grad phi(xbar0)||* <= sqrt(nu)` from the barrier record.  In the
+	common unit-parameter/radius-half shape, the scalar source budget is exposed
+	as `2 * sqrt(nu) <= tailBound`.
 	Together these formalize the reverse
 	path-following setup with vector
 	`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
@@ -457,9 +468,10 @@ packet adds
 	`lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
 	is now narrower: prove the concrete Chewi/Nesterov analytical-center successor
 	source-radius data: successor membership, a global Hessian derivative/mixed-third
-	package on the domain, a
-	uniform source-radius bound with `M*radiusBound < 1`, and the scalar source budget
-	`sourceBound / (1 - M*radiusBound) <= tailBound`.  Equivalent exponential/local-norm,
+	package on the domain, and either a
+	uniform source-radius bound with `M*radiusBound < 1` plus
+	`sqrt(nu) / (1 - M*radiusBound) <= tailBound`, or the unit
+	radius-half specialization with `2 * sqrt(nu) <= tailBound`.  Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has
 	an unscaled tail bound.
