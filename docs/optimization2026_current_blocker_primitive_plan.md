@@ -1423,6 +1423,7 @@ constructed separately from lifted-third/source scalar identities.
 The actual full-Hessian derivative source obligations are now packaged as
 `BarrierInfProjectionFullHessianDerivativeOn`.  Reuse its consumers
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_fullHessianDerivativeOn_isOpen`,
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_sourceFullHessianDerivative_isOpen`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_fullHessianDerivativeOn_isOpen`,
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_fullHessianDerivativeOn_isOpen_of_verticalFirstOrder`,
 and
@@ -1436,7 +1437,10 @@ original barrier domain, use
 selected-graph certificate manually.  It converts
 `∀ z ∈ s, HasFDerivAt hess ... z` plus the source mixed-third pairing into
 the selected-graph certificate via `hmodel.selector_stationary.point_mem`.
-Then use
+If the immediate target is the Schur derivative certificate itself, call
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_sourceFullHessianDerivative_isOpen`
+to consume source-domain `grad`, `hess`, `hessDeriv`, and mixed-third data
+directly.  Then use
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
 or
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`.

@@ -1940,6 +1940,76 @@ theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_fu
     hfull.mixed_inner_eq
 
 /--
+Source-domain Schur-Hessian derivative certificate.  Concrete
+inf-projection source instances can state the gradient derivative, Hessian
+derivative, and mixed-third pairing once on the original product domain `s`;
+selector stationarity transports those hypotheses to the selected graph before
+the packaged Schur derivative route is applied.
+-/
+theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_sourceFullHessianDerivative_isOpen
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {hessDeriv : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) →L[ℝ]
+        ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hgrad : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      HasFDerivAt grad (hess z) z)
+    (hhess : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      ∀ a v : WithLp 2 (E₁ × E₂),
+        inner ℝ v ((hessDeriv z a) v) = third z a v)
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hinvDeriv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x) :
+    BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+      (fun x =>
+        barrierInfProjectionSchurHessDeriv
+          (barrierInfProjectionBlockXY selector hess)
+          (barrierInfProjectionBlockYX selector hess)
+          invHyy
+          (fun x =>
+            barrierInfProjectionBlockXXDeriv
+              (hessDeriv (barrierInfProjectionPoint selector x)) (dselector x))
+          (fun x =>
+            barrierInfProjectionBlockXYDeriv
+              (hessDeriv (barrierInfProjectionPoint selector x)) (dselector x))
+          (fun x =>
+            barrierInfProjectionBlockYXDeriv
+              (hessDeriv (barrierInfProjectionPoint selector x)) (dselector x))
+          invHyyDeriv x) := by
+  let hfull :
+      BarrierInfProjectionFullHessianDerivativeOn s selector hess third
+        (fun x => hessDeriv (barrierInfProjectionPoint selector x)) :=
+    BarrierInfProjectionFullHessianDerivativeOn.of_source
+      hmodel.selector_stationary hhess hmixed
+  exact
+    hmodel.schurHessDerivativeOn_of_fullHessianDerivativeOn_isOpen
+      hopen hfull
+      (hmodel.selector_stationary.grad_hasFDerivAt_of_source hgrad)
+      hselector hinvDeriv
+
+/--
 Third-order selected-envelope certificate from the packaged actual
 full-Hessian derivative source certificate.
 -/

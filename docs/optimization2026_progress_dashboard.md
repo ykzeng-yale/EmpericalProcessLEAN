@@ -892,6 +892,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   The actual full-Hessian derivative obligations are now packaged as
   `BarrierInfProjectionFullHessianDerivativeOn`, with consumers
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_fullHessianDerivativeOn_isOpen`,
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_sourceFullHessianDerivative_isOpen`,
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.thirdOrderEnvelopeOn_of_fullHessianDerivativeOn_isOpen`,
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_fullHessianDerivativeOn_isOpen_of_verticalFirstOrder`,
   and
@@ -920,12 +921,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `BarrierInfProjectionSelectorStationary.hasGradientAt_of_source` and
   `BarrierInfProjectionSelectorStationary.grad_hasFDerivAt_of_source`, plus the
   one-call endpoints
+  `BarrierInfProjectionAdjointSqrtEnvelopeModel.schurHessDerivativeOn_of_sourceFullHessianDerivative_isOpen`,
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`
   and
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`.
-  Concrete source instances can now state first-order, second-order, and
-  full-Hessian derivative data uniformly on `s`; selector stationarity
-  internalizes all selected-graph derivative restrictions.
+  Concrete source instances can now state first-order, second-order,
+  Schur-derivative, and full-Hessian derivative data uniformly on `s`;
+  selector stationarity internalizes all selected-graph derivative
+  restrictions.
   The direct local-norm branch now has the matching source-facing endpoints
   `BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwich_sourceRadius_of_sourceSecondFullHessianDerivative_isOpen_direct`
   and
