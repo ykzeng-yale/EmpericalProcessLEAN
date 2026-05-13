@@ -1549,6 +1549,28 @@ theorem durrett2019_example_4_7_4_eval_reverseAverageTail_le_permutationSymmetri
     durrett2019_example_4_7_4_eval_reverseAverageSigma_le_permutationSymmetric n
 
 /--
+Durrett 2019, Example 4.7.4 product-space zero-one transport.  Once the VdVW
+permutation-symmetric tail is zero-one, the reverse-average tail is zero-one
+by V298's sigma-field containment.
+-/
+theorem durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permutationSymmetric_tail
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    (hzeroOne :
+      ∀ B : Set (ℕ -> ℝ),
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] B ->
+          vdVWInfiniteProductMeasure P B = 0 ∨ vdVWInfiniteProductMeasure P B = 1) :
+    ∀ B : Set (ℕ -> ℝ),
+      MeasurableSet[
+        ⨅ n : ℕ,
+          durrett2019_example_4_7_4_reverseAverageSigma
+            (fun k (sequence : ℕ -> ℝ) => sequence k) n] B ->
+        vdVWInfiniteProductMeasure P B = 0 ∨ vdVWInfiniteProductMeasure P B = 1 := by
+  intro B hB
+  exact hzeroOne B
+    (durrett2019_example_4_7_4_eval_reverseAverageTail_le_permutationSymmetricTail
+      B hB)
+
+/--
 Durrett 2019, Example 4.7.4 product-space source algebra: the finite swap of
 prefix coordinate `i` and coordinate `0` transports `xi_i` to `xi_0`.
 -/
@@ -1799,6 +1821,29 @@ theorem durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id
       (vdVWInfiniteProductMeasure_coordinate_hasLaw (P := P) 0).integral_eq
   filter_upwards [hroute] with sequence hseq
   simpa [A, μ, hmean] using hseq
+
+/--
+Durrett 2019, Example 4.7.4 product-space backwards-martingale route with the
+tail zero-one side stated on the VdVW permutation-symmetric tail.  V298
+transports that zero-one theorem to Durrett's reverse-average tail, then V297
+supplies the backwards Levy endpoint.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_permutationSymmetric_tail_zero_or_one
+    {P : Measure ℝ} [IsProbabilityMeasure P] (hid : Integrable id P)
+    (hzeroOne :
+      ∀ B : Set (ℕ -> ℝ),
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] B ->
+          vdVWInfiniteProductMeasure P B = 0 ∨ vdVWInfiniteProductMeasure P B = 1) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ => (∑ i ∈ Finset.range n, sequence i) / (n : ℝ))
+        atTop
+        (𝓝 (∫ x : ℝ, x ∂P)) := by
+  exact
+    durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_tail_zero_or_one
+      (P := P) hid
+      (durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permutationSymmetric_tail
+        (P := P) hzeroOne)
 
 /--
 Durrett 2019, Example 4.7.4, final strong-law endpoint using the compiled

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V298`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V299`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -152,9 +152,12 @@ V298 adds
 `durrett2019_example_4_7_4_eval_reverseAverageSigma_le_permutationSymmetric`,
 and
 `durrett2019_example_4_7_4_eval_reverseAverageTail_le_permutationSymmetricTail`.
+V299 adds
+`durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permutationSymmetric_tail`
+and
+`durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_permutationSymmetric_tail_zero_or_one`.
 The next proof packet should prove zero-one for the VdVW
-permutation-symmetric tail and transport it back to the Durrett
-reverse-average tail via V298.
+permutation-symmetric tail itself and feed it into V299.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:

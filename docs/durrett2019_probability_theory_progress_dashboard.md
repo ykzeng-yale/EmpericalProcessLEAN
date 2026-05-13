@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V298` in
+Route from `Live In-Thread Goal Prompt V299` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -219,8 +219,12 @@ V298 adds
 `durrett2019_example_4_7_4_eval_reverseAverageSigma_le_permutationSymmetric`,
 and
 `durrett2019_example_4_7_4_eval_reverseAverageTail_le_permutationSymmetricTail`.
-The next target is zero-one for the VdVW permutation-symmetric tail, transported
-back to Durrett's reverse-average tail through V298.
+V299 adds
+`durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permutationSymmetric_tail`
+and
+`durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_permutationSymmetric_tail_zero_or_one`.
+The next target is zero-one for the VdVW permutation-symmetric tail itself,
+then applying V299.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now
