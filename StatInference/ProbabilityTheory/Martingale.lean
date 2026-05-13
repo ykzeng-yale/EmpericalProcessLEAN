@@ -27644,6 +27644,91 @@ theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_bddAbove_of_pairwise_bou
     exact hBoundω n m hn hm⟩
 
 /--
+Durrett 2019, Theorem 4.6.10, pairwise domination from a common envelope.
+
+If every `Y_n` is pointwise bounded in norm by `Z`, then every pairwise tail
+difference is bounded by `2Z`.
+-/
+theorem durrett2019_theorem_4_6_10_pairwise_bound_two_mul_of_norm_le
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : ℕ -> Ω -> ℝ} {Z : Ω -> ℝ}
+    (hY_dom : ∀ n, ∀ᵐ ω ∂P, ‖Y n ω‖ ≤ Z ω) :
+    ∀ N,
+      ∀ᵐ ω ∂P,
+        ∀ n m, N ≤ n -> N ≤ m -> ‖Y n ω - Y m ω‖ ≤ 2 * Z ω := by
+  have hY_dom_all : ∀ᵐ ω ∂P, ∀ n, ‖Y n ω‖ ≤ Z ω := ae_all_iff.2 hY_dom
+  intro N
+  filter_upwards [hY_dom_all] with ω hY_domω
+  intro n m _ _
+  have htri : ‖Y n ω - Y m ω‖ ≤ ‖Y n ω‖ + ‖Y m ω‖ := norm_sub_le _ _
+  have hn : ‖Y n ω‖ ≤ Z ω := hY_domω n
+  have hm : ‖Y m ω‖ ≤ Z ω := hY_domω m
+  linarith
+
+/--
+Durrett 2019, Theorem 4.6.10, upper bound for the concrete pairwise tail
+envelope from a common pointwise envelope.
+-/
+theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_le_two_mul_of_norm_le
+    {Ω : Type*} {Y : ℕ -> Ω -> ℝ} {Z : Ω -> ℝ} {N : ℕ} {ω : Ω}
+    (hY_dom : ∀ n, ‖Y n ω‖ ≤ Z ω) :
+    durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω ≤ 2 * Z ω := by
+  refine csSup_le ?_ ?_
+  · exact ⟨0, ⟨N, N, le_rfl, le_rfl, by simp⟩⟩
+  · intro r hr
+    rcases hr with ⟨n, m, _hn, _hm, rfl⟩
+    have htri : ‖Y n ω - Y m ω‖ ≤ ‖Y n ω‖ + ‖Y m ω‖ := norm_sub_le _ _
+    have hn : ‖Y n ω‖ ≤ Z ω := hY_dom n
+    have hm : ‖Y m ω‖ ≤ Z ω := hY_dom m
+    linarith
+
+/--
+Durrett 2019, Theorem 4.6.10, nonnegativity of the concrete pairwise tail
+envelope under the standard bounded-above side condition.
+-/
+theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_nonneg
+    {Ω : Type*} {Y : ℕ -> Ω -> ℝ} {N : ℕ} {ω : Ω}
+    (hBdd :
+      BddAbove {r : ℝ | ∃ n m, N ≤ n ∧ N ≤ m ∧ r = ‖Y n ω - Y m ω‖}) :
+    0 ≤ durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω := by
+  exact le_csSup hBdd ⟨N, N, le_rfl, le_rfl, by simp⟩
+
+/--
+Durrett 2019, Theorem 4.6.10, domination of the concrete pairwise tail
+envelope by `2Z`.
+
+This packages the textbook estimate `W_N <= 2Z` in the norm form required by
+the downstream integrability bridge.
+-/
+theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_norm_le_two_mul_of_norm_le
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : ℕ -> Ω -> ℝ} {Z : Ω -> ℝ}
+    (hY_dom : ∀ n, ∀ᵐ ω ∂P, ‖Y n ω‖ ≤ Z ω) :
+    ∀ N,
+      ∀ᵐ ω ∂P,
+        ‖durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω‖ ≤ 2 * Z ω := by
+  have hY_dom_all : ∀ᵐ ω ∂P, ∀ n, ‖Y n ω‖ ≤ Z ω := ae_all_iff.2 hY_dom
+  intro N
+  filter_upwards [hY_dom_all] with ω hY_domω
+  have hBdd :
+      BddAbove {r : ℝ | ∃ n m, N ≤ n ∧ N ≤ m ∧ r = ‖Y n ω - Y m ω‖} := by
+    exact ⟨2 * Z ω, fun r hr => by
+      rcases hr with ⟨n, m, _hn, _hm, rfl⟩
+      have htri : ‖Y n ω - Y m ω‖ ≤ ‖Y n ω‖ + ‖Y m ω‖ := norm_sub_le _ _
+      have hn : ‖Y n ω‖ ≤ Z ω := hY_domω n
+      have hm : ‖Y m ω‖ ≤ Z ω := hY_domω m
+      linarith⟩
+  have hnonneg :
+      0 ≤ durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω :=
+    durrett2019_theorem_4_6_10_pairwiseTailEnvelope_nonneg
+      (Y := Y) (N := N) (ω := ω) hBdd
+  have hupper :
+      durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω ≤ 2 * Z ω :=
+    durrett2019_theorem_4_6_10_pairwiseTailEnvelope_le_two_mul_of_norm_le
+      (Y := Y) (Z := Z) (N := N) (ω := ω) hY_domω
+  simpa [Real.norm_of_nonneg hnonneg] using hupper
+
+/--
 Durrett 2019, Theorem 4.6.10, final bridge using the concrete `sSup` pairwise
 tail envelope.
 
@@ -27766,6 +27851,48 @@ theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_pairw
       hY_int hYlim_int hW_meas hZ_int hW_dom hW_tendsto_zero hY_tendsto
       (durrett2019_theorem_4_6_10_pairwiseTailEnvelope_bddAbove_of_pairwise_bound
         (P := P) (Y := Y) (B := B) hBound)
+
+/--
+Durrett 2019, Theorem 4.6.10, final concrete-envelope bridge with domination
+by `2Z` discharged from `|Y_n| <= Z`.
+
+After this wrapper, the remaining source obligations for the concrete
+textbook envelope are its limiting-sigma-field measurability and
+`W_N -> 0` a.s.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_dominated
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {Z : Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hW_meas :
+      ∀ N,
+        StronglyMeasurable[⨆ k, ℱ k]
+          (durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N))
+    (hZ_int : Integrable Z P)
+    (hY_dom : ∀ n, ∀ᵐ ω ∂P, ‖Y n ω‖ ≤ Z ω)
+    (hW_tendsto_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun N => durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω)
+          atTop (𝓝 0))
+    (hY_tendsto :
+      ∀ᵐ ω ∂P, Tendsto (fun m => Y m ω) atTop (𝓝 (Ylim ω))) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  have hTwoZ_int : Integrable (fun ω : Ω => 2 * Z ω) P :=
+    hZ_int.const_mul 2
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_pairwise_bound
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim)
+      (Z := fun ω : Ω => 2 * Z ω) (B := fun _ ω => 2 * Z ω)
+      hY_int hYlim_int hW_meas hTwoZ_int
+      (durrett2019_theorem_4_6_10_pairwiseTailEnvelope_norm_le_two_mul_of_norm_le
+        (P := P) (Y := Y) (Z := Z) hY_dom)
+      hW_tendsto_zero hY_tendsto
+      (durrett2019_theorem_4_6_10_pairwise_bound_two_mul_of_norm_le
+        (P := P) (Y := Y) (Z := Z) hY_dom)
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

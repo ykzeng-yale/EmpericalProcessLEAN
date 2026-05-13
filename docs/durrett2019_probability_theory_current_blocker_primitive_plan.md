@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V277
+## Live In-Thread Goal Prompt V278
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,7 @@ Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V277 continues Section 4.6.  V260 packages Durrett
+Latest verified target V278 continues Section 4.6.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -106,15 +106,22 @@ and adds final consumers
 `durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_ae_bdd`,
 and
 `durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_pairwise_bound`.
+V278 discharges the textbook `2Z` domination layer for the concrete `sSup`
+envelope.  It adds
+`durrett2019_theorem_4_6_10_pairwise_bound_two_mul_of_norm_le`,
+`durrett2019_theorem_4_6_10_pairwiseTailEnvelope_le_two_mul_of_norm_le`,
+`durrett2019_theorem_4_6_10_pairwiseTailEnvelope_nonneg`,
+`durrett2019_theorem_4_6_10_pairwiseTailEnvelope_norm_le_two_mul_of_norm_le`,
+and the final dominated wrapper
+`durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_dominated`.
 
 Next aggressive theorem packet: prove source properties for the concrete
-`sSup` envelope: limiting-sigma-field strong measurability, domination by the
-integrable `2Z` envelope from `|Y_n| <= Z`, and `W_N -> 0` a.s. from
-`Y_n -> Y` a.s. plus domination.  Do not re-prove the concrete envelope
-definition, pairwise-bound extraction, `m -> infinity` limit passage,
-conditional monotonicity, fixed-tail upward convergence, envelope
-integrability, or limiting conditional tail-zero; V277-V273 already supply
-those bridges.
+`sSup` envelope: limiting-sigma-field strong measurability and
+`W_N -> 0` a.s. from `Y_n -> Y` a.s. plus domination.  Do not re-prove
+the concrete envelope definition, pairwise-bound extraction, `2Z` domination,
+the `m -> infinity` limit passage, conditional monotonicity, fixed-tail upward
+convergence, envelope integrability, or limiting conditional tail-zero;
+V278-V273 already supply those bridges.
 
 ## Deprecated V255 Prompt Notes
 
