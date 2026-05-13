@@ -293,12 +293,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   so the source-radius `HessianSegmentMixedThirdLocalNormCertificate` sequence
   can now feed preliminary initialization directly.  The source-start successor
   layer adds
-  `chewi1316_sourceTailBound_of_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity`,
-  `chewi1316_uniformTailBound_of_sourceRadius_successor_and_inverseIdentity`,
-  and
-  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_and_inverseIdentity`,
-  handling `xseq 0 = xbar0` separately and using source-radius segment
-  certificates only on successor indices.
+	  `chewi1316_sourceTailBound_of_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity`,
+	  `chewi1316_uniformTailBound_of_sourceRadius_successor_and_inverseIdentity`,
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_and_inverseIdentity`,
+	  handling `xseq 0 = xbar0` separately and using source-radius segment
+	  certificates only on successor indices.  The newest uniform-radius successor
+	  bridge adds
+	  `chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_and_inverseIdentity`
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_and_inverseIdentity`,
+	  replacing per-successor denominator work by one global radius bound,
+	  `M*radiusBound < 1`, and `den <= 1 - M*radiusBound`.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

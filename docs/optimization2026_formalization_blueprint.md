@@ -242,11 +242,17 @@ and
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity`,
 so the source-radius `HessianSegmentMixedThirdLocalNormCertificate` sequence can
 now feed the same pipeline directly.  The source-start successor layer adds
-`chewi1316_sourceTailBound_of_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity`,
-`chewi1316_uniformTailBound_of_sourceRadius_successor_and_inverseIdentity`, and
-`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_and_inverseIdentity`,
-so the actual preliminary shape `xseq 0 = xbar0` can be handled without asking
-for a nonzero source-radius certificate at the zeroth index.
+	`chewi1316_sourceTailBound_of_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity`,
+	`chewi1316_uniformTailBound_of_sourceRadius_successor_and_inverseIdentity`, and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_and_inverseIdentity`,
+	so the actual preliminary shape `xseq 0 = xbar0` can be handled without asking
+	for a nonzero source-radius certificate at the zeroth index.  The latest
+	uniform-radius successor packet adds
+	`chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_and_inverseIdentity`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_and_inverseIdentity`,
+	so future exact-source work should target a single successor radius bound and
+	scalar denominator budget rather than repeated per-index denominator proofs.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
