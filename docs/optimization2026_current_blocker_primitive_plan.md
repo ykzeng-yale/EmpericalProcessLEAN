@@ -524,6 +524,15 @@ packet adds
 	combined `1/4 <= lambdaSeq 0` with a global `lambdaSeq N <= 1/8` premise,
 	which is inconsistent at `N = 0`; the new wrappers always select a
 	successor preliminary index and only require `lambdaSeq (N+1) <= 1/8`.
+	The sharper preliminary-stage invariant packet adds
+	`real_mainStage_newton_fraction_le_eighth`,
+	`chewi1316_mainStage_newtonDecrement_le_eighth`,
+	`chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_gradientDecrease_and_newtonBound`,
+	`chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_sqrtCoordFamilyModel_sourceNewtonSegment`,
+	and
+	`chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
+	These show the successor `1/8` budget follows from the same Theorem 13.8
+	Newton-step route when the source update constant satisfies `c0 <= 1/200`.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

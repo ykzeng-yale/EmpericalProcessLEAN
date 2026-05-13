@@ -337,7 +337,16 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
 	This fixes the route issue that the older existential wrappers require both
 	`1/4 <= lambdaSeq 0` and global `lambdaSeq N <= 1/8`; the new route chooses
-	a successor final index and only asks for `lambdaSeq (N+1) <= 1/8`.
+	a successor final index and only asks for `lambdaSeq (N+1) <= 1/8`.  The
+	sharper preliminary-stage invariant packet adds
+	`real_mainStage_newton_fraction_le_eighth`,
+	`chewi1316_mainStage_newtonDecrement_le_eighth`,
+	`chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_gradientDecrease_and_newtonBound`,
+	`chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_sqrtCoordFamilyModel_sourceNewtonSegment`,
+	and
+	`chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`,
+	so the successor `1/8` budget can be proved from the existing Theorem 13.8
+	Newton-step route under `c0 <= 1/200`.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

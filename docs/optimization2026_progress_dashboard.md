@@ -393,7 +393,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  This records and fixes a route issue in the older existential wrappers:
 	  `1/4 <= lambdaSeq 0` plus global `lambdaSeq N <= 1/8` is inconsistent at
 	  `N = 0`; the new wrappers select a successor final index and require only
-	  `lambdaSeq (N+1) <= 1/8`.  Search-first reuse:
+	  `lambdaSeq (N+1) <= 1/8`.  The sharper preliminary-stage invariant packet
+	  adds `real_mainStage_newton_fraction_le_eighth`,
+	  `chewi1316_mainStage_newtonDecrement_le_eighth`,
+	  `chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_gradientDecrease_and_newtonBound`,
+	  `chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_sqrtCoordFamilyModel_sourceNewtonSegment`,
+	  and
+	  `chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`,
+	  deriving the successor `1/8` budget from the existing Theorem 13.8
+	  Newton-step pipeline when `c0 <= 1/200`.  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
 	  `hessianPrimalFactor_of_adjointSqrt`,
