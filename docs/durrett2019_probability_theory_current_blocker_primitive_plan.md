@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V268
+## Live In-Thread Goal Prompt V269
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,7 @@ Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V268 continues Section 4.6.  V260 packages Durrett
+Latest verified target V269 continues Section 4.6.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -51,13 +51,19 @@ V268 adds Lemma 4.6.6 and Theorem 4.6.7 route wrappers:
 `durrett2019_theorem_4_6_7_martingale_ae_tendsto_and_eLpNorm_one_tendsto_of_uniformIntegrable`,
 `durrett2019_theorem_4_6_7_exists_integrable_condExp_of_eLpNorm_one_tendsto_zero`,
 and `durrett2019_theorem_4_6_7_uniformIntegrable_of_condExp_representation`.
+V269 adds the compact Theorem 4.6.7 display wrappers
+`durrett2019_theorem_4_6_7_uniformIntegrable_iff_exists_integrable_eLpNorm_one_tendsto_zero`
+and
+`durrett2019_theorem_4_6_7_uniformIntegrable_iff_exists_integrable_condExp`.
 
-Next aggressive theorem packet: if immediate, package the V268 implications
-into a compact Theorem 4.6.7 display wrapper; otherwise move directly to
-Theorem 4.6.8, the increasing-filtration conditional-expectation convergence
-theorem.  Search Mathlib/local conditional-expectation tower, generated
-sigma-field, and martingale convergence APIs first, and keep the proof packet
-theorem-sized.
+Next aggressive theorem packet: move directly to Theorem 4.6.8, the
+increasing-filtration conditional-expectation convergence theorem.  First
+search Mathlib/local APIs for conditional-expectation tower laws,
+`SigmaFiniteFiltration`, martingale convergence from uniform integrability,
+generated sigma-fields, and limit-process identification.  A good first packet
+is the conditional-expectation martingale/UI convergence wrapper to
+`ℱ.limitProcess`, leaving generated-sigma-field identification as the next
+hard source step if it does not discharge immediately.
 
 ## Deprecated V255 Prompt Notes
 

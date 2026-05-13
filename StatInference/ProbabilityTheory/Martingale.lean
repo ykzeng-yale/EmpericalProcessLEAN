@@ -26971,6 +26971,61 @@ theorem durrett2019_theorem_4_6_7_uniformIntegrable_of_condExp_representation
     (P := P) (X := Y) hY_int ℱ).ae_eq fun n => (hrep n).symm
 
 /--
+Durrett 2019, Theorem 4.6.7, compact `(i) <-> (iii)` display.
+
+For a martingale, uniform integrability is equivalent to convergence in `L¹`
+to some integrable random variable.
+-/
+theorem durrett2019_theorem_4_6_7_uniformIntegrable_iff_exists_integrable_eLpNorm_one_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P) :
+    UniformIntegrable X 1 P ↔
+      ∃ Y : Ω -> ℝ,
+        Integrable Y P ∧
+          Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0) := by
+  constructor
+  · intro hUI
+    obtain ⟨hAe, hL1⟩ :=
+      durrett2019_theorem_4_6_7_martingale_ae_tendsto_and_eLpNorm_one_tendsto_of_uniformIntegrable
+        (P := P) (ℱ := ℱ) (X := X) hX hUI
+    have hprob : TendstoInMeasure P X atTop (ℱ.limitProcess X P) :=
+      tendstoInMeasure_of_tendsto_ae
+        (μ := P) (f := X) (g := ℱ.limitProcess X P)
+        (fun n => hUI.aestronglyMeasurable n) hAe
+    exact ⟨ℱ.limitProcess X P, hUI.integrable_of_tendstoInMeasure hprob, hL1⟩
+  · rintro ⟨Y, hY_int, hL1⟩
+    exact
+      durrett2019_theorem_4_6_4_submartingale_uniformIntegrable_of_eLpNorm_one_tendsto_zero
+        (P := P) (ℱ := ℱ) (X := X) (Y := Y) hX.submartingale hY_int hL1
+
+/--
+Durrett 2019, Theorem 4.6.7, compact `(i) <-> (iv)` display.
+
+For a martingale, uniform integrability is equivalent to being represented as
+conditional expectations of one integrable random variable.
+-/
+theorem durrett2019_theorem_4_6_7_uniformIntegrable_iff_exists_integrable_condExp
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P) :
+    UniformIntegrable X 1 P ↔
+      ∃ Y : Ω -> ℝ, Integrable Y P ∧ ∀ n, X n =ᵐ[P] P[Y | ℱ n] := by
+  constructor
+  · intro hUI
+    obtain ⟨Y, hY_int, hL1⟩ :=
+      (durrett2019_theorem_4_6_7_uniformIntegrable_iff_exists_integrable_eLpNorm_one_tendsto_zero
+        (P := P) (ℱ := ℱ) (X := X) hX).1 hUI
+    exact
+      durrett2019_theorem_4_6_7_exists_integrable_condExp_of_eLpNorm_one_tendsto_zero
+        (P := P) (ℱ := ℱ) (X := X) (Y := Y) hX hY_int hL1
+  · rintro ⟨Y, hY_int, hrep⟩
+    exact
+      durrett2019_theorem_4_6_7_uniformIntegrable_of_condExp_representation
+        (P := P) (ℱ := ℱ) (X := X) (Y := Y) hY_int hrep
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

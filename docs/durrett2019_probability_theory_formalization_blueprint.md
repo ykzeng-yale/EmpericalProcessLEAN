@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V268`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V269`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -50,9 +50,13 @@ reverse `L¹`-to-`UnifIntegrable` bridge.  V266 upgrades the reverse implication
 to full probability `UniformIntegrable` using the finite-prefix boundedness
 package from `L¹` convergence.  V267 adds Lemma 4.6.5 as a thin Mathlib
 `tendsto_setIntegral_of_L1'` wrapper.  V268 adds Lemma 4.6.6 and Theorem 4.6.7
-route wrappers for the martingale conditional-expectation representation.  The
-next proof packet should either package Theorem 4.6.7 in display form or move
-to Theorem 4.6.8.  V259 closes the concrete Example 4.5.8
+route wrappers for the martingale conditional-expectation representation.  V269
+adds the compact Theorem 4.6.7 display forms for equivalence with an integrable
+`L¹` limit and equivalence with representation as conditional expectations of
+one integrable random variable.  The next proof packet should move to Theorem
+4.6.8, beginning with the conditional-expectation martingale/UI convergence
+wrapper and then the generated-sigma-field limit identification.  V259 closes
+the concrete Example 4.5.8
 random-walk terminal-condition packet:
 the unit-variance, Rademacher, and canonical Rademacher endpoints now use
 finite `∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P` rather than
