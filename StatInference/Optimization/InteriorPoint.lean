@@ -10468,6 +10468,95 @@ theorem chewi1316_objective_gap_le
       ring
 
 /--
+Main-stage pre-Newton decrement update bound.  This is the norm-algebra line
+in §13.4:
+`lambda_{t+}(x) <= (1 + c0 / sqrt(nu)) lambda_t(x) + c0`, with the two
+scalar inequalities on `delta = c0 / sqrt(nu)` exposed as reusable inputs.
+-/
+theorem chewi1316_preNewtonDecrement_le_update_bound
+    {invHess : E -> E →L[ℝ] E} {x oldGrad phiGrad : E}
+    {delta c0 lambdaOld nu : ℝ}
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_le_c0 : delta * Real.sqrt nu ≤ c0)
+    (hlambda_old : dualLocalNorm invHess x oldGrad ≤ lambdaOld)
+    (hlambda_old_le : lambdaOld ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x phiGrad ≤ Real.sqrt nu)
+    (hdual_add : ∀ u v : E,
+      dualLocalNorm invHess x (u + v) ≤
+        dualLocalNorm invHess x u + dualLocalNorm invHess x v)
+    (hdual_smul : ∀ (c : ℝ) (v : E),
+      dualLocalNorm invHess x (c • v) = |c| * dualLocalNorm invHess x v) :
+    dualLocalNorm invHess x
+        ((1 + delta) • oldGrad + (-delta) • phiGrad) ≤
+      (1 + c0) / 4 + c0 := by
+  have hdelta_abs : |delta| = delta := abs_of_nonneg hdelta_nonneg
+  have hone_delta_nonneg : 0 ≤ 1 + delta := by nlinarith
+  have hone_delta_abs : |1 + delta| = 1 + delta :=
+    abs_of_nonneg hone_delta_nonneg
+  have hnorm_step :
+      dualLocalNorm invHess x
+          ((1 + delta) • oldGrad + (-delta) • phiGrad) ≤
+        (1 + delta) * lambdaOld + delta * Real.sqrt nu := by
+    calc
+      dualLocalNorm invHess x
+          ((1 + delta) • oldGrad + (-delta) • phiGrad)
+          ≤ dualLocalNorm invHess x ((1 + delta) • oldGrad) +
+              dualLocalNorm invHess x ((-delta) • phiGrad) := hdual_add _ _
+      _ = (1 + delta) * dualLocalNorm invHess x oldGrad +
+            delta * dualLocalNorm invHess x phiGrad := by
+          rw [hdual_smul, hdual_smul, hone_delta_abs]
+          simp [hdelta_abs]
+      _ ≤ (1 + delta) * lambdaOld + delta * Real.sqrt nu := by
+          exact add_le_add
+            (mul_le_mul_of_nonneg_left hlambda_old hone_delta_nonneg)
+            (mul_le_mul_of_nonneg_left hphi_bound hdelta_nonneg)
+  have hfirst :
+      (1 + delta) * lambdaOld ≤ (1 + c0) / 4 := by
+    have hdelta_quarter : delta / 4 ≤ c0 / 4 := by
+      exact div_le_div_of_nonneg_right hdelta_le_c0 (by norm_num : (0 : ℝ) ≤ 4)
+    calc
+      (1 + delta) * lambdaOld ≤ (1 + delta) * (1 / 4) :=
+        mul_le_mul_of_nonneg_left hlambda_old_le hone_delta_nonneg
+      _ = (1 + delta) / 4 := by ring
+      _ ≤ (1 + c0) / 4 := by
+        nlinarith
+  exact hnorm_step.trans (by nlinarith)
+
+theorem real_mainStage_newton_fraction_le_quarter
+    {lambdaPre c0 : ℝ}
+    (hlambda_nonneg : 0 ≤ lambdaPre)
+    (hc0_le : c0 ≤ 1 / 16)
+    (hlambda_pre : lambdaPre ≤ (1 + c0) / 4 + c0) :
+    lambdaPre ^ (2 : ℕ) / (1 - lambdaPre) ^ (2 : ℕ) ≤ 1 / 4 := by
+  have hbound_le_third : (1 + c0) / 4 + c0 ≤ 1 / 3 := by
+    nlinarith
+  have hlambda_le_third : lambdaPre ≤ 1 / 3 :=
+    hlambda_pre.trans hbound_le_third
+  have hden_pos : 0 < 1 - lambdaPre := by
+    nlinarith
+  have hden_sq_pos : 0 < (1 - lambdaPre) ^ (2 : ℕ) := sq_pos_of_pos hden_pos
+  rw [div_le_iff₀ hden_sq_pos]
+  nlinarith
+
+/--
+Main-stage post-Newton decrement algebra.  Once Theorem 13.8 supplies
+`lambdaAfter <= lambdaPre^2/(1-lambdaPre)^2`, the source constants
+`c0 <= 1/16` and the pre-Newton bound imply `lambdaAfter <= 1/4`.
+-/
+theorem chewi1316_mainStage_newtonDecrement_le_quarter
+    {lambdaPre lambdaAfter c0 : ℝ}
+    (hlambda_pre_nonneg : 0 ≤ lambdaPre)
+    (hc0_le : c0 ≤ 1 / 16)
+    (hlambda_pre : lambdaPre ≤ (1 + c0) / 4 + c0)
+    (hnewton :
+      lambdaAfter ≤ lambdaPre ^ (2 : ℕ) / (1 - lambdaPre) ^ (2 : ℕ)) :
+    lambdaAfter ≤ 1 / 4 :=
+  hnewton.trans
+    (real_mainStage_newton_fraction_le_quarter
+      hlambda_pre_nonneg hc0_le hlambda_pre)
+
+/--
 Chewi Theorem 13.8 gradient fundamental-theorem identity along the segment:
 `∫_0^1 Hess(z_t) (y - x) dt = grad y - grad x`.
 -/

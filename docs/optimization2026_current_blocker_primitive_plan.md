@@ -187,10 +187,19 @@ invariant: with `lambda_{t_n}(x_n) <= 1/4`,
 `t_{n+1} = (1 + c0 / sqrt nu) * t_n`, `0 <= c0 <= 1/16`, and `1 <= nu`,
 the pre-Newton decrement for `f_{t_{n+1}}` is small enough that the compiled
 Theorem 13.8 Newton-step wrapper returns
-`lambda_{t_{n+1}}(x_{n+1}) <= 1/4`.  Do not route the next run back to product,
+`lambda_{t_{n+1}}(x_{n+1}) <= 1/4`.  The newest main-stage algebra packet adds
+`chewi1316_preNewtonDecrement_le_update_bound`,
+`real_mainStage_newton_fraction_le_quarter`, and
+`chewi1316_mainStage_newtonDecrement_le_quarter`.  This closes the scalar
+`c0 <= 1/16` post-Newton algebra and the supplied dual-norm-interface
+pre-Newton update bound.  The next theorem-sized packet should discharge or
+instantiate the currently supplied dual-local-norm triangle/homogeneity
+interface, preferably from the existing inverse-Hessian right-inverse or
+square-root-coordinate model, then package the full main-stage invariant with
+the compiled Theorem 13.8 wrapper.  Do not route the next run back to product,
 sum, affine/range, positive-orthant barrier setup, or the already-compiled
-Lemma 13.16 algebra unless a new downstream proof directly needs one of those
-verified declarations.
+Lemma 13.16/main-stage algebra unless a new downstream proof directly needs
+one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

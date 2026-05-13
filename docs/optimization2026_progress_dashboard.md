@@ -82,7 +82,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   affine/range gradient-continuity/differentiability transport, and Lemma
   13.16 algebra are no longer blockers.  Next target: the main-stage update
   invariant for `lambda <= 1/4` under
-  `t_{n+1} = (1 + c0 / sqrt nu) * t_n` and one Newton step.
+  `t_{n+1} = (1 + c0 / sqrt nu) * t_n` and one Newton step.  The newest
+  main-stage algebra packet adds
+  `chewi1316_preNewtonDecrement_le_update_bound`,
+  `real_mainStage_newton_fraction_le_quarter`, and
+  `chewi1316_mainStage_newtonDecrement_le_quarter`, closing the scalar
+  `c0 <= 1/16` post-Newton algebra and the supplied dual-norm-interface
+  pre-Newton update bound.  The remaining gate for the full invariant is to
+  discharge the dual-local-norm triangle/homogeneity interface from a
+  right-inverse or square-root-coordinate model, then feed the pre-bound into
+  the compiled Theorem 13.8 Newton-step wrapper.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

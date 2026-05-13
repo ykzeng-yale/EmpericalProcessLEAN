@@ -53,6 +53,15 @@ supplied central-path optimality and Lemma 13.6/13.15 inputs.  The next live
 route is the main-stage update invariant: prove the pre-Newton decrement after
 the multiplicative `t` update and then feed it to the compiled Theorem 13.8
 Newton-step wrapper to preserve `lambda <= 1/4`.
+The newest main-stage algebra layer adds
+`chewi1316_preNewtonDecrement_le_update_bound`,
+`real_mainStage_newton_fraction_le_quarter`, and
+`chewi1316_mainStage_newtonDecrement_le_quarter`.  It proves the source
+`c0 <= 1/16` post-Newton algebra and the pre-Newton update bound from a
+supplied dual-local-norm triangle/homogeneity interface.  The next live route
+is to discharge that interface from the existing inverse-Hessian
+right-inverse or square-root-coordinate models and then package the full
+main-stage invariant.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
