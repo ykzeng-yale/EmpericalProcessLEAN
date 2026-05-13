@@ -163,7 +163,9 @@ The count-discharge layer adds `chewi1316_factorLog_le_halfLog_of_count`,
 `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorCountTail`,
 and
 `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTail`.
-The next live route is the concrete Chewi/Nesterov tail-base log-budget choice
+The tail-base layer adds `chewi1316_tailBase_log_budget_of_le_pow` and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBound`.
+The next live route is the concrete Chewi/Nesterov tail-base power-bound choice
 matching the reverse path-following argument cited to Nesterov §5.3.5, then the
 strictly-feasible-start discussion.
 

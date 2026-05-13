@@ -12549,6 +12549,33 @@ theorem chewi1316_count_condition_of_sqrt_mul_log_le
   simpa [mul_div_assoc] using hdiv
 
 /--
+Power upper bound sufficient for the preliminary tail-base logarithmic budget.
+-/
+theorem chewi1316_tailBase_log_budget_of_le_pow
+    {tailBase : ℝ} {M : ℕ}
+    (htailBase_pos : 0 < tailBase)
+    (htailBase_le : tailBase ≤ (1 / 16 : ℝ) * (2 : ℝ) ^ M) :
+    Real.log (tailBase / (1 / 16 : ℝ)) ≤
+      (M : ℝ) * Real.log (2 : ℝ) := by
+  have hden_pos : 0 < (1 / 16 : ℝ) := by norm_num
+  have htwo_pos : 0 < (2 : ℝ) := by norm_num
+  have hpow_pos : 0 < (2 : ℝ) ^ M := pow_pos htwo_pos M
+  have hratio_pos : 0 < tailBase / (1 / 16 : ℝ) :=
+    div_pos htailBase_pos hden_pos
+  have hratio_le : tailBase / (1 / 16 : ℝ) ≤ (2 : ℝ) ^ M := by
+    rw [div_le_iff₀ hden_pos]
+    simpa [mul_comm, mul_left_comm, mul_assoc] using htailBase_le
+  have hlog_le :
+      Real.log (tailBase / (1 / 16 : ℝ)) ≤
+        Real.log ((2 : ℝ) ^ M) :=
+    (Real.log_le_log_iff hratio_pos hpow_pos).2 hratio_le
+  calc
+    Real.log (tailBase / (1 / 16 : ℝ)) ≤
+        Real.log ((2 : ℝ) ^ M) := hlog_le
+    _ = (M : ℝ) * Real.log (2 : ℝ) := by
+        rw [Real.log_pow]
+
+/--
 Closed-form preliminary-stage initialization bridge whose preliminary barrier
 tail is supplied by a scalar bound on the absolute contraction factor
 `|1 - c0 / sqrt nu|^N`.
@@ -12808,6 +12835,57 @@ theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequ
       (sqrtNu := Real.sqrt nu) (c0 := c0) (N := N) (M := M)
       hsqrt_pos hcount)
     htailBase_pos hM_log
+
+/--
+Textbook-shaped preliminary initialization bridge with the remaining tail-base
+log budget discharged from the plain power upper bound
+`tailBase <= (1 / 16) * 2^M`.
+-/
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBound
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {tMain tStart c0 nu : ℝ} {N M : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (ht0 : tseq 0 = tStart)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hmainBudget : |tMain| * dualLocalNorm invHess (xseq N) a ≤ 1 / 16)
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0)
+    (htailBase_pos :
+      0 <
+        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+    (htailBase_le :
+      |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        (1 / 16 : ℝ) * (2 : ℝ) ^ M) :
+    newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+      1 / 4 :=
+  chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTail
+    (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+    (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+    (coord := coord) (tMain := tMain) (tStart := tStart)
+    (c0 := c0) (nu := nu) (N := N) (M := M)
+    hinv_factor ht0 htstep hinit hstep hmainBudget hlambdaBudget
+    hsqrt_pos hdelta_lt_one hcount htailBase_pos
+    (chewi1316_tailBase_log_budget_of_le_pow
+      (tailBase :=
+        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+      (M := M) htailBase_pos htailBase_le)
 
 theorem chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse
     [CompleteSpace E]

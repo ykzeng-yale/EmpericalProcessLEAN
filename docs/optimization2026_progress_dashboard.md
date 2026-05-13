@@ -200,10 +200,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   These reduce the preliminary tail gate to source-shaped scalar inequalities
   on `1 - c0 / sqrt nu`: positivity, the textbook-shaped count
   `M log 2 * sqrt nu <= N c0`, and the remaining
-  `tailBase = |tStart| * ||grad phi(xbar0)||*` log budget.  Remaining gate:
-  prove the concrete Chewi/Nesterov choice of `M`, `tPre`, and `tMain`
-  satisfies that tail-base log budget, then finish the strictly-feasible-start
-  discussion.
+  `tailBase = |tStart| * ||grad phi(xbar0)||*` log budget.  The tail-base
+  packet adds `chewi1316_tailBase_log_budget_of_le_pow` and
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBound`,
+  discharging the log budget from the plain power bound
+  `|tStart| * ||grad phi(xbar0)||* <= (1/16) * 2^M`.  Remaining gate: prove the
+  concrete Chewi/Nesterov choice of `M`, `tPre`, and `tMain` satisfies this
+  power bound and the main/tail budget hypotheses, then finish the
+  strictly-feasible-start discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
