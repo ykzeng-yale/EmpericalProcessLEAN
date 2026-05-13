@@ -13429,6 +13429,67 @@ theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_prel
       hsqrt_pos hdelta_lt_one hcount htailBound_pos htailBase_le'
       htailBoundLog
 
+/--
+Measured-tail source-start version: use
+`||grad phi(xbar0)||*_{x_N} + 1` as an automatic positive upper bound on the
+preliminary tail base.  This is a fallback wrapper until the sharper
+Chewi/Nesterov analytical-center distance bound is connected.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredTailLogBound
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {c0 nu : ℝ} {N M : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0)
+    (hmeasuredTailLog :
+      Real.log
+          ((16 : ℝ) *
+            (dualLocalNorm invHess (xseq N) (phiGrad xbar0) + 1)) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    ∃ tMain : ℝ,
+      0 < tMain ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  have htail_nonneg :
+      0 ≤ dualLocalNorm invHess (xseq N) (phiGrad xbar0) :=
+    dualLocalNorm_nonneg invHess (xseq N) (phiGrad xbar0)
+  have htailBound_pos :
+      0 < dualLocalNorm invHess (xseq N) (phiGrad xbar0) + 1 := by
+    linarith
+  have htailBase_le :
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        dualLocalNorm invHess (xseq N) (phiGrad xbar0) + 1 := by
+    linarith
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_factorSqrtCountTailBoundLogBound_nonneg
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord) (c0 := c0) (nu := nu)
+      (tailBound :=
+        dualLocalNorm invHess (xseq N) (phiGrad xbar0) + 1)
+      (N := N) (M := M)
+      hinv_factor hx0 ht0 htstep hlambda0 hstep hlambdaBudget
+      hsqrt_pos hdelta_lt_one hcount htailBound_pos htailBase_le
+      hmeasuredTailLog
+
 theorem chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse
     [CompleteSpace E]
     {hess invHess : E -> E →L[ℝ] E} {grad : E -> E}

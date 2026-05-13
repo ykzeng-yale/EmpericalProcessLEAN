@@ -233,10 +233,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `preliminaryPath_initial_decrement_le_of_start_one_self` and
   `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_factorSqrtCountTailBoundLogBound_nonneg`,
   discharging the preliminary initial decrement from the canonical start
-  `tseq 0 = 1`, `xseq 0 = xbar0`.  Remaining gate: prove the concrete
-  Chewi/Nesterov bound on `||grad phi(xbar0)||*` by a source quantity such as the
-  analytical-center distance measure, then finish the strictly-feasible-start
-  discussion.
+  `tseq 0 = 1`, `xseq 0 = xbar0`.  The measured-tail fallback packet adds
+  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredTailLogBound`,
+  using the automatic positive upper bound
+  `||grad phi(xbar0)||*_{x_N} + 1` for the preliminary tail base.  Remaining
+  gate: replace this measured fallback with the concrete Chewi/Nesterov bound
+  on `||grad phi(xbar0)||*` by a source quantity such as the analytical-center
+  distance measure, then finish the strictly-feasible-start discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

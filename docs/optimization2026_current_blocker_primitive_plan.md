@@ -361,15 +361,20 @@ explicit positive choice of `tMain`.  The source-start packet adds
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_factorSqrtCountTailBoundLogBound_nonneg`,
 so the canonical preliminary start `tseq 0 = 1`, `xseq 0 = xbar0` discharges
 the initial decrement from endpoint stationarity.
+The measured-tail fallback packet adds
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredTailLogBound`,
+which uses the automatic positive upper bound
+`||grad phi(xbar0)||*_{x_N} + 1` on the preliminary tail base.
 Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
-is now narrower: prove a concrete source upper bound on
-`||grad phi(xbar0)||*` plus the concrete preliminary `tPre` scalar budget
-hypotheses feeding the source-start positive-`tMain` wrapper; the
-already-compiled wrapper then gives the `1/4` main-stage initialization budget.
+is now narrower: replace the measured-tail fallback with a concrete
+Chewi/Nesterov source upper bound on `||grad phi(xbar0)||*` plus the concrete
+preliminary `tPre` scalar budget hypotheses feeding the source-start
+positive-`tMain` wrapper; the already-compiled wrapper then gives the `1/4`
+main-stage initialization budget.
 Do not route the next run back to product,
 sum,
 affine/range, positive-orthant barrier setup, the already-compiled Lemma
