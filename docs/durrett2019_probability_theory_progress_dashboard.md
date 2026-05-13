@@ -32,10 +32,21 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V251` in
+Route from `Live In-Thread Goal Prompt V252` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Theorem 4.5.7 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V251 adds the
+`StatInference/ProbabilityTheory/Martingale.lean`.  V252 removes the remaining
+manual boundedness/finiteness side inputs from the canonical infinite-horizon
+source endpoint.  It adds
+`durrett2019_runningAbsMax_ae_bddAbove_of_iSup_lintegral_ne_top`,
+`durrett2019_integrable_sqrt_of_integrable_nonneg`,
+`durrett2019_lintegral_sqrt_ne_top_of_integrable_nonneg`,
+`durrett2019_theorem_4_5_7_sqrt_lintegral_ne_top_of_source_monotone_terminal`,
+`durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top`,
+and the clean source-facing
+`durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`.
+The next Durrett route should stop recursing on this endpoint and move to the
+next Chapter 4 source target or a compact theorem-report note for 4.5.7.  V251 adds the
 infinite-horizon monotone-convergence endpoint for Theorem 4.5.7:
 `durrett2019_runningAbsMax_lintegral_iSup_le_of_lintegral_le`,
 `durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`,
@@ -43,10 +54,7 @@ infinite-horizon monotone-convergence endpoint for Theorem 4.5.7:
 `durrett2019_lintegral_iSup_runningAbsMax_eq_lintegral_runningAbsSup_of_ae_bddAbove`,
 and
 `durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_ae_bddAbove`.
-The remaining blocker is to derive or remove the explicit `ae_bddAbove`
-side-condition for the canonical real `runningAbsSup` endpoint, or keep the
-stable no-extra-side-condition endpoint in `ENNReal` `iSup` form for downstream
-Durrett consumers.  V201 compiles the
+V201 compiles the
 source square-minus stopped certificate, finite-terminal threshold cover,
 countable threshold event-cover assembly, and monotone-terminal source wrapper
 for Theorem 4.5.2.  V202 removes the manual stopped running-maximum

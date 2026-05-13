@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V251
+## Live In-Thread Goal Prompt V252
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,20 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V251 adds the infinite-horizon monotone endpoint:
+Latest verified Lean packet V252 removes the remaining manual boundedness and
+square-root-finiteness side conditions from the canonical infinite-horizon
+Durrett 4.5.7 endpoint.  New reusable support:
+`durrett2019_runningAbsMax_ae_bddAbove_of_iSup_lintegral_ne_top`,
+`durrett2019_integrable_sqrt_of_integrable_nonneg`,
+`durrett2019_lintegral_sqrt_ne_top_of_integrable_nonneg`,
+`durrett2019_theorem_4_5_7_sqrt_lintegral_ne_top_of_source_monotone_terminal`,
+`durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top`,
+and the clean source-facing endpoint
+`durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`.
+The proof derives a.e. boundedness from the finite `ENNReal` `iSup`
+expectation via Mathlib's `ae_lt_top`, and derives
+`E sqrt(A_infty) < ∞` from `Integrable A_infty` plus the monotone-terminal
+nonnegativity of `A_infty`.  V251 adds the infinite-horizon monotone endpoint:
 `durrett2019_runningAbsMax_lintegral_iSup_le_of_lintegral_le`,
 `durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`,
 `durrett2019_iSup_ofReal_runningAbsMax_eq_ofReal_runningAbsSup_of_bddAbove`,
@@ -133,14 +146,13 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: remove the remaining manual
-`ae_bddAbove` input from the canonical `runningAbsSup` endpoint if it can be
-derived cheaply from the V251 `iSup`-lintegral bound plus finiteness of
-`E sqrt(A_infty)`; otherwise package the no-manual-boundedness endpoint in the
-stable `ENNReal` `iSup` form and move to the next Durrett 4.5.7 consumer.  Search
-Mathlib/local APIs first for finite-a.e. consequences of finite nonnegative
-`lintegral`, monotone real sequence boundedness from finite `ENNReal` supremum,
-and existing 4.5.1/4.5.2 boundedness wrappers.  Do not
+Next aggressive theorem-sized packet: do not keep looping on the Durrett 4.5.7
+endpoint.  The source-facing `runningAbsSup` `3 * E sqrt(A_infty)` theorem now
+compiles with no manual boundedness or square-root finiteness input.  Move to
+the next downstream Durrett Chapter 4 consumer only after checking the source
+Markdown/PDF anchor for the next theorem-sized target; otherwise package a
+short theorem-report note for 4.5.7 and then advance.  Search Mathlib/local APIs
+first for any new target.  Do not
 revisit closed
 Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the V236 probability conversion, the
 V237/V238/V239 stopped source packaging, the V240 raw/stopped survival split,
@@ -149,8 +161,9 @@ truncated-terminal layer-cake bridge, the V244 weighted double-integral
 handoff, the V245 Tonelli/measurability swap layer, the V246 square-root
 weighted-tail endpoint, the V247 inverse-square denominator calculus, or the
 V248 fixed-`b` inner integral, the V249 second-RHS assembly, the V250
-finite-horizon aggregation, or the V251 monotone `iSup` endpoint unless a
-compile error exposes a genuinely missing primitive.
+finite-horizon aggregation, the V251 monotone `iSup` endpoint, or the V252
+no-manual-boundedness/finiteness cleanup unless a compile error exposes a
+genuinely missing primitive.
 
 ## Recent Route Notes
 
@@ -2027,6 +2040,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V251` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V252` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
