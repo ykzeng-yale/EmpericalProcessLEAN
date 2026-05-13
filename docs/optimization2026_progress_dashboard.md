@@ -304,7 +304,16 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  and
 	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_and_inverseIdentity`,
 	  replacing per-successor denominator work by one global radius bound,
-	  `M*radiusBound < 1`, and `den <= 1 - M*radiusBound`.
+	  `M*radiusBound < 1`, and `den <= 1 - M*radiusBound`.  The newest
+	  scalar-budget shrink adds the budget/canonical-denominator consumers
+	  `sourceBound_le_tailBound_of_div_budget`,
+	  `chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_budget_and_inverseIdentity`,
+	  `chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_canonicalDen_and_inverseIdentity`,
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_budget_and_inverseIdentity`,
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_and_inverseIdentity`.
+	  The live exact-source gate is now the real successor geometry plus
+	  `sourceBound / (1 - M*radiusBound) <= tailBound`.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

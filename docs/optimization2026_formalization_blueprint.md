@@ -253,6 +253,16 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_and_inverseIdentity`,
 	so future exact-source work should target a single successor radius bound and
 	scalar denominator budget rather than repeated per-index denominator proofs.
+	The latest budget/canonical-denominator packet adds
+	`sourceBound_le_tailBound_of_div_budget`,
+	`chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_budget_and_inverseIdentity`,
+	`chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_canonicalDen_and_inverseIdentity`,
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_budget_and_inverseIdentity`,
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_and_inverseIdentity`.
+	This removes the separate source-point tail side condition; the preferred
+	exact-source target is now a global radius estimate and the single scalar
+	budget `sourceBound / (1 - M*radiusBound) <= tailBound`.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

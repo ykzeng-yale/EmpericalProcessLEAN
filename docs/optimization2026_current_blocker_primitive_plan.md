@@ -429,7 +429,15 @@ packet adds
 	so one global bound
 	`||x_{N+1}-xbar0||_{xbar0} <= radiusBound`, together with
 	`M*radiusBound < 1` and `den <= 1 - M*radiusBound`, now discharges all
-	successor denominator obligations.
+	successor denominator obligations.  The latest scalar-budget shrink adds
+	`sourceBound_le_tailBound_of_div_budget`,
+	`chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_budget_and_inverseIdentity`,
+	`chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_canonicalDen_and_inverseIdentity`,
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_budget_and_inverseIdentity`,
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_and_inverseIdentity`.
+	These derive the degenerate source-index tail bound from the denominator
+	budget and expose the canonical denominator `1 - M*radiusBound`.
 	Together these formalize the reverse
 	path-following setup with vector
 	`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
@@ -437,9 +445,9 @@ packet adds
 	`lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
 	is now narrower: prove the concrete Chewi/Nesterov analytical-center successor
 	source-radius data: membership, nonzero successor displacements, segment
-	derivative/mixed-third identities, a uniform source-radius bound plus the
-	scalar budget `den <= 1 - M*radiusBound`, and the source-point tail budget
-	for the degenerate zeroth index.  Equivalent exponential/local-norm,
+	derivative/mixed-third identities, a uniform source-radius bound with
+	`M*radiusBound < 1`, and the scalar source budget
+	`sourceBound / (1 - M*radiusBound) <= tailBound`.  Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has
 	an unscaled tail bound.
