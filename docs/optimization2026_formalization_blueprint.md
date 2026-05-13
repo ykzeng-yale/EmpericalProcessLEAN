@@ -134,7 +134,12 @@ removes that source-level front door once the inverse-Hessian oracle on
 bound.  The consumer
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_gradient_quadratic`
 now reduces that bound to the concrete energy inequality
-`inner grad (invHessRange grad) <= m`.  The row-decomposition lemmas
+`inner grad (invHessRange grad) <= m`.  The newest range-right-inverse
+consumer
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_hessianRightInverse_and_gradient_quadratic`
+also discharges inverse-Hessian nonnegativity from the single identity that
+`invHessRange` is a right inverse of `barrierAffineRangeHess`.  The
+row-decomposition lemmas
 `polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
 `mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`, and
 `polytopeSlackSet_eq_iInter_halfspaceSlackSet` now expose the finite-row
@@ -166,8 +171,8 @@ full-row-rank/surjective tail slack maps.  The `_of_sumRightInverse` wrappers
 for the same component-Cauchy induction route now reduce the remaining
 head/tail finite-row induction gate to the single summed Hessian right-inverse
 identity `barrierSumHess headHess tailHess x (sumInvHess x v) = v`.  Next
-construct the concrete range oracle and energy bound for the fully general
-polytope barrier, or provide that summed right-inverse identity for the
+construct the concrete range oracle/right-inverse/energy bound for the fully
+general polytope barrier, or provide that summed right-inverse identity for the
 head/tail finite-row induction; all segment
 membership, `ψ`
 continuity, local-norm continuity/positivity, Riccati comparison, derivative

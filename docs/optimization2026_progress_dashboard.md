@@ -145,7 +145,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated` and
   the quadratic-energy consumer
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_gradient_quadratic`
-  built from `dualLocalNorm_le_sqrt_of_inner_le`, plus the head/tail induction
+  built from `dualLocalNorm_le_sqrt_of_inner_le`, plus the range-Hessian
+  right-inverse consumer
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_hessianRightInverse_and_gradient_quadratic`,
+  built from `barrierAffineRangeHess_quadratic_nonneg`, plus the head/tail induction
   wrappers
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum` and
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_gradient_quadratic`,
@@ -172,9 +175,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   theorem for `x ↦ -log (b - inner a x)` when `a ≠ 0`, and the finite-row
   orthant-preimage route is compiled for any slack map with a supplied right
   inverse, surjective linear part, or a supplied inverse-Hessian oracle on the
-  slack-map range satisfying nonnegativity and the concrete range-gradient
-  quadratic energy bound.  For fully general row families, next construct the
-  concrete range oracle/energy bound or instantiate the row-decomposition
+  slack-map range satisfying a range Hessian right-inverse identity and the
+  concrete range-gradient quadratic energy bound.  For fully general row
+  families, next construct the concrete range oracle/right-inverse/energy bound
+  or instantiate the row-decomposition
   induction by providing the summed inverse-Hessian nonnegativity /
   inverse-local identity and the recursive tail component-Cauchy bridge.  For
   full-row-rank tail slack systems, the tail Cauchy bridge is now provided by

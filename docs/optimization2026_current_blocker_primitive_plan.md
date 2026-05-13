@@ -1367,8 +1367,13 @@ and the barrier-gradient bound.  The newest quadratic-bound packet adds
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_gradient_quadratic`,
 so future work can prove the concrete range-gradient energy inequality
 `inner grad (invHessRange grad) <= m` instead of manipulating the dual norm
-and square root directly.  Future fully general polytope-log-barrier work
-should construct that concrete range inverse-Hessian/gradient-energy oracle,
+and square root directly.  The newest range-right-inverse packet adds
+`barrierAffineRangeHess_quadratic_nonneg` and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_hessianRightInverse_and_gradient_quadratic`,
+so the translated-range route no longer needs inverse-Hessian nonnegativity as
+an oracle once `invHessRange` is proved to be a right inverse of the range
+Hessian.  Future fully general polytope-log-barrier work should construct that
+concrete range inverse-Hessian/right-inverse plus gradient-energy oracle,
 or alternatively use the compiled finite sum-rule packets together with the
 row-decomposition and head/tail induction lemmas above.  The newest induction
 packet adds
@@ -1436,7 +1441,8 @@ The exact blockers are:
 - continue Proposition 13.11 from the already-compiled product, shared-domain
   sum, and affine-preimage supplied-oracle layers.  The next aggressive
   targets are either constructing the concrete positive-orthant range-slice
-  inverse-Hessian oracle and proving the range-gradient quadratic energy bound
+  inverse-Hessian oracle, proving its range Hessian right-inverse identity, and
+  proving the range-gradient quadratic energy bound
   for arbitrary finite row families, closing the exact shared-domain sum
   inverse-Hessian / inverse-local gate for finite row sums using
   `polytopeSlackSet_eq_iInter_halfspaceSlackSet` and

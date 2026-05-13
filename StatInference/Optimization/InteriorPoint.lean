@@ -3252,6 +3252,15 @@ def barrierAffineRangeThirdMixed
     A.range -> A.range -> A.range -> ℝ :=
   fun y u v => third ((y : E) + b) (u : E) (v : E)
 
+omit [CompleteSpace F] in
+theorem barrierAffineRangeHess_quadratic_nonneg
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (hess : E -> E →L[ℝ] E) (y v : A.range)
+    (hhess : ∀ w : E, 0 ≤ inner ℝ w (hess ((y : E) + b) w)) :
+    0 ≤ inner ℝ v (barrierAffineRangeHess A b hess y v) := by
+  simpa [barrierAffineRangeHess] using
+    barrierAffinePreimageHess_quadratic_nonneg A.range.subtypeL b hess y v hhess
+
 omit [CompleteSpace F] [CompleteSpace E] in
 theorem barrierAffineRangeSet_preimage_rangeRestrict_eq
     (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range] (s : Set E) :
@@ -14990,6 +14999,53 @@ theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of
     (hinv_nonneg hy (barrierAffineRangeGrad (polytopeSlackCLM a) b
       positiveOrthantNegLogGrad y))
     (hgradient_quadratic hy)
+
+/--
+Chewi Example 13.14, translated-range finite-row logarithmic barrier, with
+inverse-Hessian nonnegativity discharged from a range Hessian right-inverse
+identity.  The remaining range-slice gate is the concrete gradient quadratic
+energy bound.
+-/
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_hessianRightInverse_and_gradient_quadratic
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (invHessRange : (polytopeSlackCLM a).range ->
+      (polytopeSlackCLM a).range →L[ℝ] (polytopeSlackCLM a).range)
+    (hright : ∀ ⦃y : (polytopeSlackCLM a).range⦄,
+      y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b (positiveOrthant (d := m)) ->
+      ∀ v : (polytopeSlackCLM a).range,
+        barrierAffineRangeHess (polytopeSlackCLM a) b
+          positiveOrthantNegLogHessCLM y (invHessRange y v) = v)
+    (hgradient_quadratic : ∀ ⦃y : (polytopeSlackCLM a).range⦄,
+      y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b (positiveOrthant (d := m)) ->
+      inner ℝ (barrierAffineRangeGrad (polytopeSlackCLM a) b
+          positiveOrthantNegLogGrad y)
+          (invHessRange y
+            (barrierAffineRangeGrad (polytopeSlackCLM a) b
+              positiveOrthantNegLogGrad y)) ≤
+        (m : ℝ)) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierAffinePreimageHess (polytopeSlackCLM a) b positiveOrthantNegLogHessCLM)
+      (barrierAffinePreimageGrad (polytopeSlackCLM a) b positiveOrthantNegLogGrad)
+      (barrierAffinePreimageInvHessSurjective (polytopeSlackCLM a).rangeRestrict 0
+        invHessRange (barrierAffinePreimageRangeRestrict_range_eq_top (polytopeSlackCLM a)))
+      (barrierAffinePreimageThirdMixed (polytopeSlackCLM a) b
+        positiveOrthantNegLogThirdMixed) 1 (m : ℝ) := by
+  refine
+    chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_gradient_quadratic
+      a b invHessRange ?_ hgradient_quadratic
+  intro y hy v
+  exact inverseHessianQuadratic_nonneg_of_hessian_right_inverse
+    (hess := barrierAffineRangeHess (polytopeSlackCLM a) b
+      positiveOrthantNegLogHessCLM)
+    (invHess := invHessRange) (x := y)
+    (by
+      intro w
+      exact barrierAffineRangeHess_quadratic_nonneg (polytopeSlackCLM a) b
+        positiveOrthantNegLogHessCLM y w
+        ((positiveOrthantNegLog_selfConcordantBarrierOn (d := m)).self_concordant.hess_nonneg
+          hy))
+    (hright hy) v
 
 /--
 Induction step for Chewi Example 13.14's finite-row logarithmic barrier.  A
