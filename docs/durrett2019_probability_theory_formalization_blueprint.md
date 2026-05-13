@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V303`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V304`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -185,9 +185,13 @@ V303 adds the transported-prefix Hewitt-Savage support:
 `durrett2019_example_4_7_4_eval_prefix_inter_permuted_prefix_measure_eq_mul`,
 and
 `durrett2019_example_4_7_4_eval_permutationSymmetricTail_inter_prefix_eq_inter_permuted_prefix`.
-The next proof packet should prove the finite-prefix approximation-to-product
-limit for VdVW permutation-symmetric-tail events, then feed the resulting
-self-independence into V301.
+V304 adds the prefix-limit self-independence bridge:
+`durrett2019_example_4_7_4_eval_tail_prefix_product_of_permuted_prefix_limit`
+and
+`durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_limit`.
+The next proof packet should prove the actual finite-prefix approximation
+existence/basis step for VdVW permutation-symmetric-tail events, then feed the
+resulting self-independence into V301.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:

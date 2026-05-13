@@ -1885,6 +1885,127 @@ theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_inter_prefix_eq_
       rw [hpre_A]
 
 /--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  If a tail event
+has prefix approximants whose intersections with a transported prefix event
+converge to the target intersection, then V303's transported-prefix
+independence gives the product formula for that target intersection.
+
+This isolates the limit algebra from the remaining measurable-approximation
+argument.
+-/
+theorem durrett2019_example_4_7_4_eval_tail_prefix_product_of_permuted_prefix_limit
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {A D : Set (ℕ -> ℝ)}
+    (C : ℕ -> Set (ℕ -> ℝ)) (cutoff future : ℕ -> ℕ)
+    (perm : ℕ -> Equiv.Perm ℕ)
+    (hfuture : ∀ k, cutoff k ≤ future k)
+    (hmove : ∀ k i : ℕ, i < cutoff k -> future k ≤ (perm k).symm i)
+    (hC :
+      ∀ k, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ (cutoff k)] (C k))
+    (hD :
+      ∀ k, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ (cutoff k)] D)
+    (hinter :
+      Tendsto
+        (fun k =>
+          vdVWInfiniteProductMeasure P
+            (C k ∩ (vdVWPermuteNatSequence (Observation := ℝ) (perm k) ⁻¹' D)))
+        atTop (𝓝 (vdVWInfiniteProductMeasure P (A ∩ D))))
+    (hmeasure :
+      Tendsto (fun k => vdVWInfiniteProductMeasure P (C k)) atTop
+        (𝓝 (vdVWInfiniteProductMeasure P A))) :
+    vdVWInfiniteProductMeasure P (A ∩ D) =
+      vdVWInfiniteProductMeasure P A * vdVWInfiniteProductMeasure P D := by
+  let μ : Measure (ℕ -> ℝ) := vdVWInfiniteProductMeasure P
+  have hproduct_tendsto :
+      Tendsto
+        (fun k =>
+          μ (C k ∩ (vdVWPermuteNatSequence (Observation := ℝ) (perm k) ⁻¹' D)))
+        atTop (𝓝 (μ A * μ D)) := by
+    have hseq_eq :
+        (fun k =>
+          μ (C k ∩ (vdVWPermuteNatSequence (Observation := ℝ) (perm k) ⁻¹' D))) =
+          fun k => μ (C k) * μ D := by
+      funext k
+      simpa [μ] using
+        (durrett2019_example_4_7_4_eval_prefix_inter_permuted_prefix_measure_eq_mul
+          (P := P) (n := cutoff k) (m := future k) (hfuture k) (perm k)
+          (hmove k) (hC k) (hD k))
+    rw [hseq_eq]
+    exact
+      ENNReal.Tendsto.mul_const (by simpa [μ] using hmeasure)
+        (Or.inr (measure_ne_top μ D))
+  exact tendsto_nhds_unique (by simpa [μ] using hinter) hproduct_tendsto
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  Once every
+permutation-symmetric-tail event has the product formula against every finite
+prefix event, and tail events are limits of finite-prefix events in the two
+measure coordinates needed below, the VdVW permutation-symmetric tail is
+independent of itself.
+-/
+theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_limit
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    (hprefixProduct :
+      ∀ {A D : Set (ℕ -> ℝ)} {n : ℕ},
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] A ->
+        MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ n] D ->
+          vdVWInfiniteProductMeasure P (A ∩ D) =
+            vdVWInfiniteProductMeasure P A * vdVWInfiniteProductMeasure P D)
+    (hprefixLimit :
+      ∀ {A B : Set (ℕ -> ℝ)},
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] A ->
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] B ->
+          ∃ D : ℕ -> Set (ℕ -> ℝ), ∃ cutoff : ℕ -> ℕ,
+            (∀ k,
+              MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ (cutoff k)]
+                (D k)) ∧
+            Tendsto (fun k => vdVWInfiniteProductMeasure P (A ∩ D k)) atTop
+              (𝓝 (vdVWInfiniteProductMeasure P (A ∩ B))) ∧
+            Tendsto (fun k => vdVWInfiniteProductMeasure P (D k)) atTop
+              (𝓝 (vdVWInfiniteProductMeasure P B))) :
+    Indep
+      (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+      (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+      (vdVWInfiniteProductMeasure P) := by
+  let tailSigma : MeasurableSpace (ℕ -> ℝ) :=
+    ⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n
+  let μ : @Measure (ℕ -> ℝ) MeasurableSpace.pi :=
+    vdVWInfiniteProductMeasure P
+  change @_root_.ProbabilityTheory.Indep (ℕ -> ℝ) tailSigma tailSigma MeasurableSpace.pi μ
+  refine
+    (_root_.ProbabilityTheory.indep_iff_forall_indepSet
+      (m₁ := tailSigma) (m₂ := tailSigma) (μ := μ)).mpr ?_
+  intro A B hA hB
+  have htail_le :
+      tailSigma ≤ MeasurableSpace.pi := by
+    refine (iInf_le (fun n : ℕ => vdVWPermutationSymmetricMeasurableSpace ℝ n) 0).trans ?_
+    refine MeasurableSpace.generateFrom_le ?_
+    intro s hs
+    rcases hs with ⟨statistic, hmeas, _hsymm, target, htarget, rfl⟩
+    exact hmeas htarget
+  have hA_ambient : @MeasurableSet (ℕ -> ℝ) MeasurableSpace.pi A := htail_le A hA
+  have hB_ambient : @MeasurableSet (ℕ -> ℝ) MeasurableSpace.pi B := htail_le B hB
+  refine
+    (_root_.ProbabilityTheory.indepSet_iff_measure_inter_eq_mul
+      (μ := μ) hA_ambient hB_ambient).mpr ?_
+  rcases hprefixLimit (A := A) (B := B) (by simpa [tailSigma] using hA)
+      (by simpa [tailSigma] using hB) with
+    ⟨D, cutoff, hD_prefix, hinter, hmeasure⟩
+  have hproduct_tendsto :
+      Tendsto (fun k => μ (A ∩ D k)) atTop (𝓝 (μ A * μ B)) := by
+    have hseq_eq :
+        (fun k => μ (A ∩ D k)) = fun k => μ A * μ (D k) := by
+      funext k
+      simpa [μ, tailSigma] using
+        (hprefixProduct (A := A) (D := D k) (n := cutoff k)
+          (by simpa [tailSigma] using hA) (hD_prefix k))
+    rw [hseq_eq]
+    exact
+      ENNReal.Tendsto.const_mul (by simpa [μ] using hmeasure)
+        (Or.inr (measure_ne_top μ A))
+  exact tendsto_nhds_unique (by simpa [μ] using hinter) hproduct_tendsto
+
+/--
 Durrett 2019, Example 4.7.4 product-space source algebra: the finite swap of
 prefix coordinate `i` and coordinate `0` transports `xi_i` to `xi_0`.
 -/
