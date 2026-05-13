@@ -126,10 +126,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `positiveOrthantCentralPathGrad_newtonStep_mem_of_decrement_lt_one`.  It
   proves that positive-orthant Dikin radius-one membership, and hence a
   positive-orthant Newton step with decrement `< 1`, stays feasible.  The
-  remaining gate is the final positive-orthant main-stage assembly: turn the
-  compiled `lambda <= 1/4` next-decrement bound into the feasible-step input,
-  then package the selected central-path Newton update as the source-facing
-  invariant.
+  newest positive-orthant main-stage assembly packet adds
+  `chewi1316_positiveOrthant_preNewtonDecrement_le_update_bound`,
+  `chewi1316_positiveOrthant_preNewtonDecrement_lt_one`,
+  `chewi1316_positiveOrthant_mainStage_step_mem`,
+  `chewi1316_positiveOrthant_mainStage_decrement_le_quarter`, and
+  `chewi1316_positiveOrthant_mainStage_step_mem_and_decrement_le_quarter`.
+  This closes the selected central-path one-step invariant for the finite
+  positive orthant.  Remaining gate: formalize the main-stage iteration
+  recurrence and objective-gap stopping rule, then move to the preliminary
+  stage/strictly-feasible-start discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

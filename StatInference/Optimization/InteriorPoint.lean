@@ -15783,6 +15783,243 @@ theorem positiveOrthantNegLog_dualLocalNorm_grad_le_sqrt_card {d : ℕ}
       Real.sqrt (d : ℝ) := by
   rw [positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card hx]
 
+set_option maxHeartbeats 2000000 in
+/--
+Positive-orthant specialization of the §13.4 pre-Newton update bound.  This
+discharges the square-root-coordinate, inverse-Hessian, and barrier-gradient
+norm inputs for the central-path objective on the finite positive orthant.
+-/
+theorem chewi1316_positiveOrthant_preNewtonDecrement_le_update_bound
+    {d : ℕ} {x a : EuclideanSpace ℝ (Fin d)}
+    {t tNext delta c0 lambdaOld : ℝ}
+    (hx : x ∈ positiveOrthant (d := d))
+    (htNext : tNext = (1 + delta) * t)
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_card_le_c0 : delta * Real.sqrt (d : ℝ) ≤ c0)
+    (hlambda_old :
+      dualLocalNorm positiveOrthantNegLogInvHessCLM x
+          (t • a + positiveOrthantNegLogGrad x) ≤ lambdaOld)
+    (hlambda_old_le : lambdaOld ≤ 1 / 4) :
+    newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+        positiveOrthantNegLogInvHessCLM x ≤
+      (1 + c0) / 4 + c0 := by
+  let coord : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+    (positiveOrthantNegLogSqrtCoord x).symm.toContinuousLinearMap
+  let sqrtH : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+    (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap
+  have hsqrtH_coord : ∀ z : EuclideanSpace ℝ (Fin d),
+      sqrtH (coord z) = z := by
+    intro z
+    simp [sqrtH, coord]
+  have hhess_eq :
+      positiveOrthantNegLogHessCLM x =
+        (ContinuousLinearMap.adjoint sqrtH).comp sqrtH := by
+    simpa [sqrtH] using positiveOrthantNegLogHessCLM_sqrtCoord_model hx
+  have hright : ∀ v : EuclideanSpace ℝ (Fin d),
+      positiveOrthantNegLogHessCLM x (positiveOrthantNegLogInvHessCLM x v) = v :=
+    positiveOrthantNegLogHessCLM_invHess_right_inverse hx
+  have hupdate :
+      tNext • a + positiveOrthantNegLogGrad x =
+        (1 + delta) • (t • a + positiveOrthantNegLogGrad x) +
+          (-delta) • positiveOrthantNegLogGrad x :=
+    centralPathGradient_update_eq_of_tNext htNext a (positiveOrthantNegLogGrad x)
+  have hbound :
+      dualLocalNorm positiveOrthantNegLogInvHessCLM x
+          ((1 + delta) • (t • a + positiveOrthantNegLogGrad x) +
+            (-delta) • positiveOrthantNegLogGrad x) ≤
+        (1 + c0) / 4 + c0 :=
+    chewi1316_preNewtonDecrement_le_update_bound_of_adjointSqrt_right_inverse
+      (hess := positiveOrthantNegLogHessCLM)
+      (invHess := positiveOrthantNegLogInvHessCLM)
+      (x := x) (oldGrad := t • a + positiveOrthantNegLogGrad x)
+      (phiGrad := positiveOrthantNegLogGrad x)
+      (coord := coord) (sqrtH := sqrtH)
+      (delta := delta) (c0 := c0) (lambdaOld := lambdaOld) (nu := (d : ℝ))
+      hsqrtH_coord hhess_eq hright hdelta_nonneg hdelta_le_c0
+      hdelta_sqrt_card_le_c0 hlambda_old hlambda_old_le
+      (positiveOrthantNegLog_dualLocalNorm_grad_le_sqrt_card hx)
+  have htarget :
+      dualLocalNorm positiveOrthantNegLogInvHessCLM x
+          (tNext • a + positiveOrthantNegLogGrad x) ≤
+        (1 + c0) / 4 + c0 := by
+    simpa [hupdate] using hbound
+  simpa [newtonDecrement, centralPathGrad] using htarget
+
+theorem chewi1316_positiveOrthant_preNewtonDecrement_lt_one
+    {d : ℕ} {x a : EuclideanSpace ℝ (Fin d)}
+    {t tNext delta c0 lambdaOld : ℝ}
+    (hx : x ∈ positiveOrthant (d := d))
+    (htNext : tNext = (1 + delta) * t)
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_card_le_c0 : delta * Real.sqrt (d : ℝ) ≤ c0)
+    (hlambda_old :
+      dualLocalNorm positiveOrthantNegLogInvHessCLM x
+          (t • a + positiveOrthantNegLogGrad x) ≤ lambdaOld)
+    (hlambda_old_le : lambdaOld ≤ 1 / 4)
+    (hc0_le : c0 ≤ 1 / 16) :
+    newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+        positiveOrthantNegLogInvHessCLM x < 1 := by
+  have hpre :
+      newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM x ≤
+        (1 + c0) / 4 + c0 :=
+    chewi1316_positiveOrthant_preNewtonDecrement_le_update_bound
+      (x := x) (a := a) (t := t) (tNext := tNext)
+      (delta := delta) (c0 := c0) (lambdaOld := lambdaOld)
+      hx htNext hdelta_nonneg hdelta_le_c0 hdelta_sqrt_card_le_c0
+      hlambda_old hlambda_old_le
+  have hbound_le_third : (1 + c0) / 4 + c0 ≤ 1 / 3 := by
+    nlinarith
+  have hpre_le_third :
+      newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM x ≤ 1 / 3 :=
+    hpre.trans hbound_le_third
+  nlinarith
+
+theorem chewi1316_positiveOrthant_mainStage_step_mem
+    {d : ℕ} {x a : EuclideanSpace ℝ (Fin d)}
+    {t tNext delta c0 lambdaOld : ℝ}
+    (hx : x ∈ positiveOrthant (d := d))
+    (htNext : tNext = (1 + delta) * t)
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_card_le_c0 : delta * Real.sqrt (d : ℝ) ≤ c0)
+    (hlambda_old :
+      dualLocalNorm positiveOrthantNegLogInvHessCLM x
+          (t • a + positiveOrthantNegLogGrad x) ≤ lambdaOld)
+    (hlambda_old_le : lambdaOld ≤ 1 / 4)
+    (hc0_le : c0 ≤ 1 / 16) :
+    newtonStep (centralPathGrad tNext a positiveOrthantNegLogGrad)
+        positiveOrthantNegLogInvHessCLM x ∈ positiveOrthant (d := d) :=
+  positiveOrthantCentralPathGrad_newtonStep_mem_of_decrement_lt_one
+    (x := x) (a := a) (t := tNext) hx
+    (chewi1316_positiveOrthant_preNewtonDecrement_lt_one
+      (x := x) (a := a) (t := t) (tNext := tNext)
+      (delta := delta) (c0 := c0) (lambdaOld := lambdaOld)
+      hx htNext hdelta_nonneg hdelta_le_c0 hdelta_sqrt_card_le_c0
+      hlambda_old hlambda_old_le hc0_le)
+
+set_option maxHeartbeats 4000000 in
+/--
+Positive-orthant main-stage decrement invariant for Chewi §13.4.  The
+feasibility input to the compiled Theorem 13.8 wrapper is supplied by the
+specialized Dikin-radius-one lemma above.
+-/
+theorem chewi1316_positiveOrthant_mainStage_decrement_le_quarter
+    {d : ℕ} {x a : EuclideanSpace ℝ (Fin d)}
+    {t tNext delta c0 lambdaOld : ℝ}
+    (hx : x ∈ positiveOrthant (d := d))
+    (htNext : tNext = (1 + delta) * t)
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_card_le_c0 : delta * Real.sqrt (d : ℝ) ≤ c0)
+    (hlambda_old :
+      dualLocalNorm positiveOrthantNegLogInvHessCLM x
+          (t • a + positiveOrthantNegLogGrad x) ≤ lambdaOld)
+    (hlambda_old_le : lambdaOld ≤ 1 / 4)
+    (hc0_le : c0 ≤ 1 / 16) :
+    newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+        positiveOrthantNegLogInvHessCLM
+        (newtonStep (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM x) ≤ 1 / 4 := by
+  have hstep_mem :
+      newtonStep (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM x ∈ positiveOrthant (d := d) :=
+    chewi1316_positiveOrthant_mainStage_step_mem
+      (x := x) (a := a) (t := t) (tNext := tNext)
+      (delta := delta) (c0 := c0) (lambdaOld := lambdaOld)
+      hx htNext hdelta_nonneg hdelta_le_c0 hdelta_sqrt_card_le_c0
+      hlambda_old hlambda_old_le hc0_le
+  have hpre :
+      newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM x ≤
+        (1 + c0) / 4 + c0 :=
+    chewi1316_positiveOrthant_preNewtonDecrement_le_update_bound
+      (x := x) (a := a) (t := t) (tNext := tNext)
+      (delta := delta) (c0 := c0) (lambdaOld := lambdaOld)
+      hx htNext hdelta_nonneg hdelta_le_c0 hdelta_sqrt_card_le_c0
+      hlambda_old hlambda_old_le
+  have hpre_lt_one :
+      newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM x < 1 :=
+    chewi1316_positiveOrthant_preNewtonDecrement_lt_one
+      (x := x) (a := a) (t := t) (tNext := tNext)
+      (delta := delta) (c0 := c0) (lambdaOld := lambdaOld)
+      hx htNext hdelta_nonneg hdelta_le_c0 hdelta_sqrt_card_le_c0
+      hlambda_old hlambda_old_le hc0_le
+  have hnewton :
+      newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM
+          (newtonStep (centralPathGrad tNext a positiveOrthantNegLogGrad)
+            positiveOrthantNegLogInvHessCLM x) ≤
+        (newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM x) ^ (2 : ℕ) /
+          (1 - newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+            positiveOrthantNegLogInvHessCLM x) ^ (2 : ℕ) :=
+    chewi138_positiveOrthant_newtonDecrement_step_le_of_logBarrier_sourceNewtonSegment_finalHessian
+      (grad := centralPathGrad tNext a positiveOrthantNegLogGrad)
+      hpre_lt_one hx hstep_mem
+      (positiveOrthantCentralPathGrad_segment_hasFDerivAt
+        (x := x)
+        (y := newtonStep (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM x)
+        (a := a) (t := tNext) hx hstep_mem)
+      (positiveOrthantCentralPathGrad_newton_linear (x := x) (a := a)
+        (t := tNext) hx)
+  exact
+    chewi1316_mainStage_newtonDecrement_le_quarter
+      (lambdaPre :=
+        newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM x)
+      (lambdaAfter :=
+        newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM
+          (newtonStep (centralPathGrad tNext a positiveOrthantNegLogGrad)
+            positiveOrthantNegLogInvHessCLM x))
+      (c0 := c0)
+      (by
+        simpa [newtonDecrement] using
+          (dualLocalNorm_nonneg positiveOrthantNegLogInvHessCLM x
+            ((centralPathGrad tNext a positiveOrthantNegLogGrad) x)))
+      hc0_le hpre hnewton
+
+/--
+Positive-orthant main-stage path-following invariant for Chewi §13.4, bundled
+with both the next-step feasibility and the post-Newton decrement bound.
+-/
+theorem chewi1316_positiveOrthant_mainStage_step_mem_and_decrement_le_quarter
+    {d : ℕ} {x a : EuclideanSpace ℝ (Fin d)}
+    {t tNext delta c0 lambdaOld : ℝ}
+    (hx : x ∈ positiveOrthant (d := d))
+    (htNext : tNext = (1 + delta) * t)
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_card_le_c0 : delta * Real.sqrt (d : ℝ) ≤ c0)
+    (hlambda_old :
+      dualLocalNorm positiveOrthantNegLogInvHessCLM x
+          (t • a + positiveOrthantNegLogGrad x) ≤ lambdaOld)
+    (hlambda_old_le : lambdaOld ≤ 1 / 4)
+    (hc0_le : c0 ≤ 1 / 16) :
+    newtonStep (centralPathGrad tNext a positiveOrthantNegLogGrad)
+        positiveOrthantNegLogInvHessCLM x ∈ positiveOrthant (d := d) ∧
+      newtonDecrement (centralPathGrad tNext a positiveOrthantNegLogGrad)
+        positiveOrthantNegLogInvHessCLM
+        (newtonStep (centralPathGrad tNext a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM x) ≤ 1 / 4 := by
+  exact
+    ⟨chewi1316_positiveOrthant_mainStage_step_mem
+        (x := x) (a := a) (t := t) (tNext := tNext)
+        (delta := delta) (c0 := c0) (lambdaOld := lambdaOld)
+        hx htNext hdelta_nonneg hdelta_le_c0 hdelta_sqrt_card_le_c0
+        hlambda_old hlambda_old_le hc0_le,
+      chewi1316_positiveOrthant_mainStage_decrement_le_quarter
+        (x := x) (a := a) (t := t) (tNext := tNext)
+        (delta := delta) (c0 := c0) (lambdaOld := lambdaOld)
+        hx htNext hdelta_nonneg hdelta_le_c0 hdelta_sqrt_card_le_c0
+        hlambda_old hlambda_old_le hc0_le⟩
+
 /--
 Finite-product version of Chewi Example 13.10 and Definition 13.9: the
 coordinatewise logarithmic barrier on the positive orthant is a

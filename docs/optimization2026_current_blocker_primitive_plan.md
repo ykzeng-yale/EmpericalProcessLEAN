@@ -230,15 +230,27 @@ by the main-stage wrapper.  The newest feasible-step packet adds
 `positiveOrthantCentralPathGrad_newtonStep_mem_of_decrement_lt_one`.  This
 closes the Dikin-radius-one feasibility gate for positive-orthant Newton
 steps by reusing the compiled square-root-coordinate local norm identity and
-Newton decrement/Dikin membership wrappers.  The next live gate is now the
-final lightweight positive-orthant main-stage assembly: derive the needed
-`lambda < 1` feasible-step input from the compiled `lambda <= 1/4`/main-stage
-bound, feed the selected central-path Newton step through the feasible-step
-lemma, and package the source-facing invariant.  Do not route the next run
-back to product, sum, affine/range, positive-orthant barrier setup, the
-already-compiled Lemma 13.16/main-stage algebra, the dual-norm interface, the
-generic main-stage wrappers, or feasible-step membership unless a new
-downstream proof directly needs one of those verified declarations.
+Newton decrement/Dikin membership wrappers.  The newest positive-orthant
+main-stage assembly packet adds
+`chewi1316_positiveOrthant_preNewtonDecrement_le_update_bound`,
+`chewi1316_positiveOrthant_preNewtonDecrement_lt_one`,
+`chewi1316_positiveOrthant_mainStage_step_mem`,
+`chewi1316_positiveOrthant_mainStage_decrement_le_quarter`, and
+`chewi1316_positiveOrthant_mainStage_step_mem_and_decrement_le_quarter`.  This
+packages the source update `tNext = (1 + delta) * t`, the pre-Newton bound,
+the Dikin feasibility step, and the post-Newton `lambda <= 1/4` invariant for
+the finite positive-orthant central path.  The next live gate is the main-stage
+iteration/complexity layer: formalize the recurrence
+`t_{n+1} = (1 + c0 / sqrt nu) * t_n`, prove
+`t_N = (1 + c0 / sqrt nu)^N * t_0`, and combine it with the compiled objective
+gap lemma `chewi1316_objective_gap_le` and the invariant `lambda <= 1/4` to
+obtain the source stopping rule `t_N` large enough implies an
+`epsilon`-approximate solution.  Do not route the next run back to product,
+sum, affine/range, positive-orthant barrier setup, the already-compiled Lemma
+13.16/main-stage algebra, the dual-norm interface, the generic main-stage
+wrappers, feasible-step membership, or the positive-orthant main-stage
+one-step invariant unless a new downstream proof directly needs one of those
+verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

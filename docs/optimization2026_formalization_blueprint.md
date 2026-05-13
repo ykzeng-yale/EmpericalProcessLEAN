@@ -92,10 +92,18 @@ newest feasible-step layer adds
 `positiveOrthant_mem_of_mem_dikinEllipsoid_one`,
 `positiveOrthant_newtonStep_mem_of_newtonDecrement_lt_one`, and
 `positiveOrthantCentralPathGrad_newtonStep_mem_of_decrement_lt_one`, proving
-that Dikin radius-one positive-orthant Newton steps stay feasible.  The next
-live route is the final lightweight positive-orthant main-stage assembly:
-derive the feasible-step input from the compiled `lambda <= 1/4` bound and
-package the source-facing selected central-path update invariant.
+that Dikin radius-one positive-orthant Newton steps stay feasible.  The newest
+positive-orthant main-stage assembly layer adds
+`chewi1316_positiveOrthant_preNewtonDecrement_le_update_bound`,
+`chewi1316_positiveOrthant_preNewtonDecrement_lt_one`,
+`chewi1316_positiveOrthant_mainStage_step_mem`,
+`chewi1316_positiveOrthant_mainStage_decrement_le_quarter`, and
+`chewi1316_positiveOrthant_mainStage_step_mem_and_decrement_le_quarter`,
+closing the selected central-path one-step invariant for the finite positive
+orthant.  The next live route is the main-stage iteration/complexity layer:
+prove the closed form for `t_n`, combine it with the compiled objective-gap
+bound, and then address the preliminary stage for producing an initial
+`lambda <= 1/4` point.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
