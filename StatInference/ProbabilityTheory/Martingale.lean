@@ -27432,6 +27432,75 @@ theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_eventual_ae_tail_bound_of_
       hPointwise hTail_limit_zero
 
 /--
+Durrett 2019, Theorem 4.6.10, limiting tail conditional expectations from
+limit-field measurability.
+
+If each tail envelope `W_N` is measurable with respect to the limiting
+sigma-field and `W_N -> 0` a.s., then
+`E(W_N | sup_n F_n) -> 0` a.s.  This uses only the identity
+`E(W_N | sup_n F_n) = W_N`.
+-/
+theorem durrett2019_theorem_4_6_10_tail_condExp_tendsto_zero_of_iSup_stronglyMeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {W : ℕ -> Ω -> ℝ}
+    (hW_int : ∀ N, Integrable (W N) P)
+    (hW_meas : ∀ N, StronglyMeasurable[⨆ k, ℱ k] (W N))
+    (hW_tendsto_zero :
+      ∀ᵐ ω ∂P, Tendsto (fun N => W N ω) atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun N => P[W N | ⨆ k, ℱ k] ω) atTop (𝓝 0) := by
+  have hLimit_le : (⨆ k, ℱ k) ≤ mΩ := iSup_le fun k => ℱ.le k
+  have hCondEq : ∀ N, P[W N | ⨆ k, ℱ k] = W N := by
+    intro N
+    exact condExp_of_stronglyMeasurable (μ := P) hLimit_le
+      (hW_meas N) (hW_int N)
+  filter_upwards [hW_tendsto_zero] with ω hW_tendsto_zeroω
+  simpa [hCondEq] using hW_tendsto_zeroω
+
+/--
+Durrett 2019, Theorem 4.6.10, final pointwise-tail bridge with the limiting
+conditional tail-zero side discharged from `W_N -> 0`.
+
+This is the current most concrete interface before building the textbook
+supremum envelope: prove `W_N` is measurable in the limiting sigma-field,
+dominated by one integrable random variable, tends to zero a.s., and eventually
+bounds `|Y_n - Y|` pointwise.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_iSup_tail_ae_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {W : ℕ -> Ω -> ℝ} {Z : Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hW_meas : ∀ N, StronglyMeasurable[⨆ k, ℱ k] (W N))
+    (hZ_int : Integrable Z P)
+    (hW_dom : ∀ N, ∀ᵐ ω ∂P, ‖W N ω‖ ≤ Z ω)
+    (hW_tendsto_zero :
+      ∀ᵐ ω ∂P, Tendsto (fun N => W N ω) atTop (𝓝 0))
+    (hPointwise :
+      ∀ N,
+        ∀ᶠ n in atTop, (fun x => ‖Y n x - Ylim x‖) ≤ᵐ[P] W N) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  have hLimit_le : (⨆ k, ℱ k) ≤ mΩ := iSup_le fun k => ℱ.le k
+  have hW_ambient_meas : ∀ N, AEStronglyMeasurable (W N) P :=
+    fun N => ((hW_meas N).mono hLimit_le).aestronglyMeasurable
+  have hW_int : ∀ N, Integrable (W N) P :=
+    fun N => hZ_int.mono' (hW_ambient_meas N) (hW_dom N)
+  have hTail_limit_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun N => P[W N | ⨆ k, ℱ k] ω) atTop (𝓝 0) :=
+    durrett2019_theorem_4_6_10_tail_condExp_tendsto_zero_of_iSup_stronglyMeasurable
+      (P := P) (ℱ := ℱ) (W := W) hW_int hW_meas hW_tendsto_zero
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_eventual_ae_tail_bound_of_integrable_dominated
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (W := W) (Z := Z)
+      hY_int hYlim_int
+      hW_ambient_meas
+      hZ_int hW_dom hPointwise hTail_limit_zero
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

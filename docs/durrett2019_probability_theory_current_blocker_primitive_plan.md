@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V274
+## Live In-Thread Goal Prompt V275
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,7 @@ Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V273 continues Section 4.6.  V260 packages Durrett
+Latest verified target V275 continues Section 4.6.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -85,13 +85,19 @@ domination by one integrable random variable:
 `durrett2019_theorem_4_6_10_abs_error_condExp_tendsto_zero_of_eventual_ae_tail_bound`,
 `durrett2019_theorem_4_6_10_condExp_tendsto_of_eventual_ae_tail_bound`, and
 `durrett2019_theorem_4_6_10_condExp_tendsto_of_eventual_ae_tail_bound_of_integrable_dominated`.
+V275 discharges the limiting conditional tail-zero side when the envelopes are
+measurable in the limiting sigma-field and tend to zero a.s.:
+`durrett2019_theorem_4_6_10_tail_condExp_tendsto_zero_of_iSup_stronglyMeasurable`
+and
+`durrett2019_theorem_4_6_10_condExp_tendsto_of_iSup_tail_ae_tendsto_zero`.
 
 Next aggressive theorem packet: construct or package the concrete textbook
 tail envelope `W_N = sup { |Y_n - Y_m| : n,m >= N }` in the most Lean-friendly
-form, prove its a.e. measurability, prove domination by the integrable `2Z`
-envelope, prove the eventual pointwise bound `|Y_n - Y| <= W_N`, and prove
-`E(W_N | ⨆ n, ℱ n) -> 0` a.s.  Do not re-prove conditional monotonicity or
-fixed-tail upward convergence; V274 and V273 already supply those bridges.
+form, prove its limiting-sigma-field strong measurability, prove domination by
+the integrable `2Z` envelope, prove `W_N -> 0` a.s., and prove the eventual
+pointwise bound `|Y_n - Y| <= W_N`.  Do not re-prove conditional monotonicity,
+fixed-tail upward convergence, envelope integrability, or limiting conditional
+tail-zero; V275, V274, and V273 already supply those bridges.
 
 ## Deprecated V255 Prompt Notes
 
