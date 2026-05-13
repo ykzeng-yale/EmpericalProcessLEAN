@@ -4862,6 +4862,25 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure
     realHalfLineIndicator_integral_eq_cdf] using hhalf
 
 /--
+Durrett 2019, Theorem 2.4.9, exact outer-a.s. empirical-CDF display in the
+range-sum notation `F_n(c) = n^{-1} * sum_{i < n} 1{X_i <= c}`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) /
+          (sampleSize : ℝ)) := by
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure
+      X hLaw hindep
+
+/--
 Durrett 2019, Theorem 2.4.9, canonical iid product-space empirical
 distribution-function form.
 
@@ -4915,6 +4934,21 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       (μ := Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))
       (P := (P : Measure ℝ))
       (fun i => fun sample : ℕ -> ℝ => sample i) hCoord.1 hPairwise
+
+/--
+Durrett 2019, Theorem 2.4.9, canonical iid product-space empirical-CDF display
+in the textbook range-sum notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_range_sum
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn
+      (Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ))) Set.univ
+      (fun c => ProbabilityTheory.cdf (P : Measure ℝ) c)
+      (fun sample sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (sample i)) /
+          (sampleSize : ℝ)) := by
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid P
 
 /--
 Durrett 2019, Theorem 2.4.9, non-atomic half-line

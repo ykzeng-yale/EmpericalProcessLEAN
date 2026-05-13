@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V307
+## Live In-Thread Goal Prompt V308
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -23,19 +23,24 @@ finite disjoint-block independence, finite and pair product-law, finite iid
 product-law, product/Fubini expectation, Theorem 2.1.13 product-expectation,
 Theorem 2.4.9 cutpoint-chain, arbitrary-law half-line GC, empirical-CDF
 book-style endpoint, exact outer-a.s. empirical-CDF endpoint, or the V307
-canonical iid infinite-product coordinate and empirical-CDF wrappers.
+canonical iid infinite-product coordinate and empirical-CDF wrappers, or the
+V308 textbook range-sum empirical-CDF display wrappers.
 
-Latest verified target V307 adds:
+Latest verified target V308 adds the V307 canonical iid product-space bridge:
 `durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_canonical_iid`,
 and
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid`.
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid`,
+plus the exact Durrett range-sum displays
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum`
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_range_sum`.
 The next aggressive packet in this lane should only add a missing
 source-facing display if it directly improves Durrett 2.4.9 or Chapter 2.1
-reuse, such as notation/endpoint equality for the canonical empirical CDF or a
-later theorem consumer that requires these product-law facts.  Otherwise move
-to the next Durrett textbook frontier; do not loop back through the already
-compiled 2.4.9 cutpoint-chain or 4.7 V282-V306 support.
+reuse, such as a later theorem consumer that requires these product-law facts.
+Otherwise move to the next Durrett textbook frontier; do not loop back through
+the already compiled 2.4.9 cutpoint-chain, empirical-CDF source displays, or
+4.7 V282-V306 support.
 
 ## Historical V306 Prompt Notes
 
@@ -1976,6 +1981,8 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure`
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_canonical_iid`
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid`
+- `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum`
+- `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_range_sum`
 - `durrett2019_theorem_3_2_9_tendstoInDistribution_iff_forall_boundedContinuous_integral`
 - `durrett2019_theorem_3_2_10_continuous_mapping`
 - `durrett2019_theorem_3_2_10_continuous_mapping_common_probability_space`
