@@ -437,16 +437,21 @@ packet adds
 	and
 	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_and_inverseIdentity`.
 	These derive the degenerate source-index tail bound from the denominator
-	budget and expose the canonical denominator `1 - M*radiusBound`.
+	budget and expose the canonical denominator `1 - M*radiusBound`.  The
+	zero-displacement-safe packet adds
+	`chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_and_inverseIdentity`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_and_inverseIdentity`,
+	so successor points equal to `xbar0` are discharged by the source tail and
+	only genuinely nonzero successors use the source-radius segment certificate.
 	Together these formalize the reverse
 	path-following setup with vector
 	`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 	zero Newton decrement at the source endpoints, and the one-step post-Newton
 	`lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
 	is now narrower: prove the concrete Chewi/Nesterov analytical-center successor
-	source-radius data: membership, nonzero successor displacements, segment
-	derivative/mixed-third identities, a uniform source-radius bound with
-	`M*radiusBound < 1`, and the scalar source budget
+	source-radius data: membership, segment derivative/mixed-third identities, a
+	uniform source-radius bound with `M*radiusBound < 1`, and the scalar source budget
 	`sourceBound / (1 - M*radiusBound) <= tailBound`.  Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has

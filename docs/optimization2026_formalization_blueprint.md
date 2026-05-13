@@ -262,7 +262,13 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_and_inverseIdentity`.
 	This removes the separate source-point tail side condition; the preferred
 	exact-source target is now a global radius estimate and the single scalar
-	budget `sourceBound / (1 - M*radiusBound) <= tailBound`.
+	budget `sourceBound / (1 - M*radiusBound) <= tailBound`.  The newest
+	zero-safe packet adds
+	`chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_and_inverseIdentity`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_and_inverseIdentity`,
+	so exact-source callers no longer need a nonzero-displacement proof for
+	successors that are exactly `xbar0`.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
