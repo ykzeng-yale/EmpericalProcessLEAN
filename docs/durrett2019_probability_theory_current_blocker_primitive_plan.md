@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V296
+## Live In-Thread Goal Prompt V297
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -31,10 +31,11 @@ average consumer, the V293 exchangeability-transport-to-conditional-symmetry
 handoff, the V294 reverse-average generator/prefix-tail invariance bridge, or
 the V295 iid-product coordinate-swap conditional-average layer, or the
 V296 product integrability/source-moment strong-law endpoint, or the
+V297 eventual-prefix backwards-route product endpoint, or the
 V281-V273 Section 4.6 tail-envelope /
 conditional-expectation layers.
 
-Latest verified target V296 advances Section 4.7.  V260 packages Durrett
+Latest verified target V297 advances Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -246,16 +247,24 @@ the one-dimensional source moment and adds
 `durrett2019_example_4_7_4_eval_integrable_of_integrable_id`,
 `durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product_of_integrable_id`,
 and `durrett2019_example_4_7_4_eval_strongLaw_ae_real_of_integrable_id`.
+V297 assembles the genuine backwards-martingale product proof route up to the
+reverse-tail zero-one side.  It adds
+`durrett2019_example_4_7_4_ae_tendsto_of_eventually_ae_eq_condExp_nat_and_tail_const`,
+`durrett2019_example_4_7_4_ae_tendsto_of_eventually_ae_eq_condExp_nat_and_tail_zero_or_one`,
+and
+`durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_tail_zero_or_one`.
 
-Next aggressive theorem packet: assemble the genuine backwards-martingale
-product proof route for Example 4.7.4.  Combine the V296 source-moment
-conditional-average display with the compiled backwards convergence and
-tail-constant handoffs, avoiding the direct strong-law shortcut except as a
-reference endpoint.  If the reverse-tail constant side is still too general,
-connect it through V289's independent tail-block zero-one wrapper or a
-Hewitt-Savage-specific wrapper.  Do not rewrap the already compiled direct
-strong law, V286/V287/V288/V289/V290/V291/V292/V293/V294/V295/V296 handoffs,
-or V285 backwards Lévy endpoint.
+Next aggressive theorem packet: discharge the reverse-tail zero-one side for
+the reverse-average sigma-fields on the iid product space.  Search mathlib,
+`StatInference/ProbabilityMeasure`, `StatInference/ProbabilityTheory`, and the
+VdV&W empirical-process product-measure files for a Hewitt-Savage or
+exchangeable-tail zero-one primitive first.  If no direct primitive exists,
+build a source-shaped wrapper proving zero-one for
+`⨅ n, reverseAverageSigma (fun k sequence => sequence k) n` from finite
+coordinate-permutation invariance and product exchangeability, then feed it
+into the V297 endpoint.  Do not rewrap the already compiled direct strong law,
+V286/V287/V288/V289/V290/V291/V292/V293/V294/V295/V296/V297 handoffs, or V285
+backwards Lévy endpoint.
 
 ## Deprecated V255 Prompt Notes
 

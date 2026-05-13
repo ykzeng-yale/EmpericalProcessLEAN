@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V296` in
+Route from `Live In-Thread Goal Prompt V297` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -208,9 +208,13 @@ V296 adds
 `durrett2019_example_4_7_4_eval_integrable_of_integrable_id`,
 `durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product_of_integrable_id`,
 and `durrett2019_example_4_7_4_eval_strongLaw_ae_real_of_integrable_id`.
-The next target is to assemble the backwards-martingale product proof route
-using the compiled tail-constant handoffs, rather than the direct strong-law
-shortcut.
+V297 adds
+`durrett2019_example_4_7_4_ae_tendsto_of_eventually_ae_eq_condExp_nat_and_tail_const`,
+`durrett2019_example_4_7_4_ae_tendsto_of_eventually_ae_eq_condExp_nat_and_tail_zero_or_one`,
+and
+`durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_tail_zero_or_one`.
+The next target is to discharge reverse-tail zero-one for the reverse-average
+product sigma-fields, then feed that into the V297 endpoint.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

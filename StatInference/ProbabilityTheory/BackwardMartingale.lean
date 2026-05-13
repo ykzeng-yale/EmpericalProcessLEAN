@@ -720,6 +720,45 @@ theorem durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_const
     (Eventually.of_forall (fun n : ℕ => (hAω n).symm)) hlim
 
 /--
+Durrett 2019, Example 4.7.4 route bridge with the initial finite prefix
+ignored.  This is the form needed for averages whose conditional-expectation
+display starts at positive `n`.
+-/
+theorem durrett2019_example_4_7_4_ae_tendsto_of_eventually_ae_eq_condExp_nat_and_tail_const
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {𝒢 : ℕ -> MeasurableSpace Ω}
+    (h𝒢_mono : Antitone 𝒢) (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (A : ℕ -> Ω -> ℝ) (f : Ω -> ℝ) (c : ℝ) (N : ℕ)
+    (hA :
+      ∀ n, N ≤ n -> A n =ᵐ[P] P[f | 𝒢 n])
+    (hTail : P[f | ⨅ n : ℕ, 𝒢 n] =ᵐ[P] fun _ => c) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => A n ω)
+        atTop
+        (𝓝 c) := by
+  have hCond :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n : ℕ => P[f | 𝒢 n] ω)
+          atTop
+          (𝓝 c) :=
+    durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_const_of_tail_condExp_ae_eq_const
+      (P := P) (𝒢 := 𝒢) h𝒢_mono h𝒢_le f c hTail
+  have hA_all :
+      ∀ᵐ ω ∂P, ∀ n : ℕ, N ≤ n -> A n ω = P[f | 𝒢 n] ω := by
+    refine ae_all_iff.2 ?_
+    intro n
+    by_cases hn : N ≤ n
+    · filter_upwards [hA n hn] with ω hω
+      intro _hn
+      exact hω
+    · exact Eventually.of_forall fun _ω hNn => False.elim (hn hNn)
+  filter_upwards [hCond, hA_all] with ω hlim hAω
+  exact Tendsto.congr'
+    (eventually_atTop.2 ⟨N, fun n hn => (hAω n hn).symm⟩) hlim
+
+/--
 Durrett 2019, Example 4.7.4 route bridge with the tail-constant side
 discharged from a zero-one law for the reverse tail sigma-field.
 -/
@@ -742,6 +781,34 @@ theorem durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_zero_
     durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_const
       (Ω := Ω) (mΩ := mΩ) (P := P) (𝒢 := 𝒢)
       h𝒢_mono h𝒢_le A f (∫ ω, f ω ∂P) hA
+      (durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_tail_zero_or_one
+        (Ω := Ω) (mΩ := mΩ) (P := P) (𝒢 := 𝒢) (f := f)
+        h𝒢_le hf_int hzeroOne)
+
+/--
+Durrett 2019, Example 4.7.4 route bridge with an ignored finite prefix and the
+tail-constant side discharged from a zero-one law for the reverse tail
+sigma-field.
+-/
+theorem durrett2019_example_4_7_4_ae_tendsto_of_eventually_ae_eq_condExp_nat_and_tail_zero_or_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {𝒢 : ℕ -> MeasurableSpace Ω}
+    (h𝒢_mono : Antitone 𝒢) (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (A : ℕ -> Ω -> ℝ) (f : Ω -> ℝ)
+    (hf_int : Integrable f P) (N : ℕ)
+    (hA : ∀ n, N ≤ n -> A n =ᵐ[P] P[f | 𝒢 n])
+    (hzeroOne :
+      ∀ B : Set Ω, MeasurableSet[⨅ n : ℕ, 𝒢 n] B -> P B = 0 ∨ P B = 1) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => A n ω)
+        atTop
+        (𝓝 (∫ ω, f ω ∂P)) := by
+  exact
+    durrett2019_example_4_7_4_ae_tendsto_of_eventually_ae_eq_condExp_nat_and_tail_const
+      (Ω := Ω) (mΩ := mΩ) (P := P) (𝒢 := 𝒢)
+      h𝒢_mono h𝒢_le A f (∫ ω, f ω ∂P) N hA
       (durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_tail_zero_or_one
         (Ω := Ω) (mΩ := mΩ) (P := P) (𝒢 := 𝒢) (f := f)
         h𝒢_le hf_int hzeroOne)
@@ -1525,6 +1592,64 @@ theorem durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_produc
       (fun i _hi =>
         durrett2019_example_4_7_4_eval_integrable_of_integrable_id
           (P := P) hid i)
+
+/--
+Durrett 2019, Example 4.7.4 product-space backwards-martingale route under
+reverse-tail zero-one triviality.  The proof uses the conditional-average
+display from V296 and the backwards Levy/tail-constant handoff, rather than
+the direct strong-law primitive.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_tail_zero_or_one
+    {P : Measure ℝ} [IsProbabilityMeasure P] (hid : Integrable id P)
+    (hzeroOne :
+      ∀ B : Set (ℕ -> ℝ),
+        MeasurableSet[
+          ⨅ n : ℕ,
+            durrett2019_example_4_7_4_reverseAverageSigma
+              (fun k (sequence : ℕ -> ℝ) => sequence k) n] B ->
+          vdVWInfiniteProductMeasure P B = 0 ∨ vdVWInfiniteProductMeasure P B = 1) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ => (∑ i ∈ Finset.range n, sequence i) / (n : ℝ))
+        atTop
+        (𝓝 (∫ x : ℝ, x ∂P)) := by
+  let μ : Measure (ℕ -> ℝ) := vdVWInfiniteProductMeasure P
+  let ξ : ℕ -> (ℕ -> ℝ) -> ℝ := fun k sequence => sequence k
+  let 𝒢 : ℕ -> MeasurableSpace (ℕ -> ℝ) :=
+    fun n => durrett2019_example_4_7_4_reverseAverageSigma ξ n
+  let A : ℕ -> (ℕ -> ℝ) -> ℝ :=
+    fun n sequence => (∑ i ∈ Finset.range n, sequence i) / (n : ℝ)
+  have hroute :
+      ∀ᵐ sequence ∂μ,
+        Tendsto
+          (fun n : ℕ => A n sequence)
+          atTop
+          (𝓝 (∫ sequence, sequence 0 ∂μ)) := by
+    refine
+      durrett2019_example_4_7_4_ae_tendsto_of_eventually_ae_eq_condExp_nat_and_tail_zero_or_one
+        (P := μ) (𝒢 := 𝒢) (A := A)
+        (f := fun sequence : ℕ -> ℝ => sequence 0)
+        (durrett2019_example_4_7_4_reverseAverageSigma_antitone ξ)
+        ?h𝒢_le ?hf_int 1 ?hA ?hzeroOne
+    · intro n
+      exact
+        durrett2019_example_4_7_4_reverseAverageSigma_le
+          (ξ := ξ) (n := n) (fun i => measurable_pi_apply i)
+    · exact
+        durrett2019_example_4_7_4_eval_integrable_of_integrable_id
+          (P := P) hid 0
+    · intro n hn
+      have hn_pos : 0 < n := Nat.succ_le_iff.mp hn
+      exact
+        (durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product_of_integrable_id
+          (P := P) (n := n) hn_pos hid).symm
+    · simpa [𝒢, ξ, μ] using hzeroOne
+  have hmean :
+      (∫ sequence, sequence 0 ∂μ) = ∫ x : ℝ, x ∂P := by
+    simpa [μ, id] using
+      (vdVWInfiniteProductMeasure_coordinate_hasLaw (P := P) 0).integral_eq
+  filter_upwards [hroute] with sequence hseq
+  simpa [A, μ, hmean] using hseq
 
 /--
 Durrett 2019, Example 4.7.4, final strong-law endpoint using the compiled
