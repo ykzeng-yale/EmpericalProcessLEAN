@@ -596,6 +596,48 @@ theorem durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_independent
     (f := f) hmX htail_le hf_meas hindep
 
 /--
+Durrett 2019, Example 4.7.4 tail-triviality bridge.  If every event in the
+reverse tail sigma-field has probability zero or one, then conditioning any
+integrable real random variable on that reverse tail gives its expectation.
+-/
+theorem durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_tail_zero_or_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {𝒢 : ℕ -> MeasurableSpace Ω} {f : Ω -> ℝ}
+    (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (hf_int : Integrable f P)
+    (hzeroOne :
+      ∀ A : Set Ω, MeasurableSet[⨅ n : ℕ, 𝒢 n] A -> P A = 0 ∨ P A = 1) :
+    P[f | ⨅ n : ℕ, 𝒢 n] =ᵐ[P] fun _ => ∫ ω, f ω ∂P := by
+  let 𝒯 : MeasurableSpace Ω := ⨅ n : ℕ, 𝒢 n
+  have htail_le : 𝒯 ≤ mΩ :=
+    (iInf_le (fun n : ℕ => 𝒢 n) 0).trans (h𝒢_le 0)
+  have hconst :
+      (fun _ : Ω => ∫ ω, f ω ∂P) =ᵐ[P] P[f | 𝒯] := by
+    refine
+      ae_eq_condExp_of_forall_setIntegral_eq
+        (μ := P) (m := 𝒯) (m₀ := mΩ)
+        (f := f) (g := fun _ : Ω => ∫ ω, f ω ∂P)
+        htail_le hf_int ?_ ?_ ?_
+    · intro _A _hA hμA
+      exact integrableOn_const hμA.ne
+    · intro A hA _hμA
+      have hA_ambient : @MeasurableSet Ω mΩ A := htail_le A hA
+      rcases hzeroOne A hA with hA_zero | hA_one
+      · rw [setIntegral_measure_zero (fun _ : Ω => ∫ ω, f ω ∂P) hA_zero,
+          setIntegral_measure_zero f hA_zero]
+      · have hA_ae : ∀ᵐ ω ∂P, ω ∈ A :=
+          (mem_ae_iff_prob_eq_one (μ := P) hA_ambient).2 hA_one
+        have hcompl_zero :
+            ∀ᵐ ω ∂P, ω ∉ A -> f ω = 0 := by
+          filter_upwards [hA_ae] with ω hω hω_not
+          exact False.elim (hω_not hω)
+        rw [setIntegral_const, measureReal_def, hA_one, ENNReal.toReal_one,
+          one_smul, setIntegral_eq_integral_of_ae_compl_eq_zero hcompl_zero]
+    · exact stronglyMeasurable_const.aestronglyMeasurable
+  exact hconst.symm
+
+/--
 Durrett 2019, Example 4.7.4 route bridge.  A process that is a.e. equal to
 reverse-time conditional expectations converges once the reverse tail
 conditional expectation is a.e. constant.
@@ -627,6 +669,33 @@ theorem durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_const
   filter_upwards [hCond, hA_all] with ω hlim hAω
   exact Tendsto.congr'
     (Eventually.of_forall (fun n : ℕ => (hAω n).symm)) hlim
+
+/--
+Durrett 2019, Example 4.7.4 route bridge with the tail-constant side
+discharged from a zero-one law for the reverse tail sigma-field.
+-/
+theorem durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_zero_or_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {𝒢 : ℕ -> MeasurableSpace Ω}
+    (h𝒢_mono : Antitone 𝒢) (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (A : ℕ -> Ω -> ℝ) (f : Ω -> ℝ)
+    (hf_int : Integrable f P)
+    (hA : ∀ n, A n =ᵐ[P] P[f | 𝒢 n])
+    (hzeroOne :
+      ∀ B : Set Ω, MeasurableSet[⨅ n : ℕ, 𝒢 n] B -> P B = 0 ∨ P B = 1) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => A n ω)
+        atTop
+        (𝓝 (∫ ω, f ω ∂P)) := by
+  exact
+    durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_const
+      (Ω := Ω) (mΩ := mΩ) (P := P) (𝒢 := 𝒢)
+      h𝒢_mono h𝒢_le A f (∫ ω, f ω ∂P) hA
+      (durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_tail_zero_or_one
+        (Ω := Ω) (mΩ := mΩ) (P := P) (𝒢 := 𝒢) (f := f)
+        h𝒢_le hf_int hzeroOne)
 
 /--
 Durrett 2019, Example 4.7.4 route bridge with the tail-constant side
