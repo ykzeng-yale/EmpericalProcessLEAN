@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V250
+## Live In-Thread Goal Prompt V251
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,19 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V250 adds the finite-horizon endpoint:
+Latest verified Lean packet V251 adds the infinite-horizon monotone endpoint:
+`durrett2019_runningAbsMax_lintegral_iSup_le_of_lintegral_le`,
+`durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`,
+`durrett2019_iSup_ofReal_runningAbsMax_eq_ofReal_runningAbsSup_of_bddAbove`,
+`durrett2019_lintegral_iSup_runningAbsMax_eq_lintegral_runningAbsSup_of_ae_bddAbove`,
+and
+`durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_ae_bddAbove`.
+It uses Mathlib's `lintegral_iSup` plus the compiled
+`durrett2019_runningAbsMax_mono`/`durrett2019_runningAbsSup` support to pass
+the V250 finite-horizon estimate to
+`∫ iSup_n ofReal(max_{m <= n} |X_m|) <= 3 * E sqrt(A_infty)`, and then to the
+canonical real `runningAbsSup` form under the explicit a.e. boundedness side
+condition needed for real `ciSup`.  V250 adds the finite-horizon endpoint:
 `durrett2019_theorem_4_5_7_terminal_tail_sq_measure_aemeasurable` and
 `durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`.
 It combines the V241 finite running-maximum layer-cake bound, the V242 first
@@ -121,12 +133,14 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: prove the monotone
-finite-horizon-to-`sup_n` endpoint for Durrett Theorem 4.5.7, using the
-compiled monotonicity of `durrett2019_runningAbsMax` and V250 finite-horizon
-bound.  Search Mathlib/local APIs first (`Monotone.lintegral_iSup`,
-`iSup`/running maximum monotonicity, `durrett2019_runningAbsSup`, `iSup`
-measurability support, and existing runningAbsMax monotone support).  Do not
+Next aggressive theorem-sized packet: remove the remaining manual
+`ae_bddAbove` input from the canonical `runningAbsSup` endpoint if it can be
+derived cheaply from the V251 `iSup`-lintegral bound plus finiteness of
+`E sqrt(A_infty)`; otherwise package the no-manual-boundedness endpoint in the
+stable `ENNReal` `iSup` form and move to the next Durrett 4.5.7 consumer.  Search
+Mathlib/local APIs first for finite-a.e. consequences of finite nonnegative
+`lintegral`, monotone real sequence boundedness from finite `ENNReal` supremum,
+and existing 4.5.1/4.5.2 boundedness wrappers.  Do not
 revisit closed
 Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the V236 probability conversion, the
 V237/V238/V239 stopped source packaging, the V240 raw/stopped survival split,
@@ -134,9 +148,9 @@ the V241 layer-cake handoff, the V242 first-RHS bridge, the V243
 truncated-terminal layer-cake bridge, the V244 weighted double-integral
 handoff, the V245 Tonelli/measurability swap layer, the V246 square-root
 weighted-tail endpoint, the V247 inverse-square denominator calculus, or the
-V248 fixed-`b` inner integral, or the V249 second-RHS assembly unless a compile
-error exposes a genuinely missing primitive.  Do not redo the V250
-finite-horizon aggregation.
+V248 fixed-`b` inner integral, the V249 second-RHS assembly, the V250
+finite-horizon aggregation, or the V251 monotone `iSup` endpoint unless a
+compile error exposes a genuinely missing primitive.
 
 ## Recent Route Notes
 
@@ -2013,6 +2027,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V250` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V251` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -27,13 +27,23 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V250`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V251`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier: Durrett Theorem 4.5.7 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the source
+`StatInference/ProbabilityTheory/Martingale.lean`.  V251 pushes Theorem 4.5.7
+from the V250 finite-horizon estimate to the infinite-horizon monotone
+endpoint:
+`durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`
+and the canonical real `runningAbsSup` wrapper
+`durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_ae_bddAbove`.
+The real-supremum wrapper keeps the a.e. boundedness side condition explicit;
+the no-extra-side-condition endpoint is the `ENNReal` `iSup` statement.  The
+next route step is to derive that boundedness side condition from the finite
+`iSup` expectation bound if this is cheap in Mathlib/local APIs, or otherwise
+use the `ENNReal` endpoint as the stable downstream theorem shape.  V201 compiles the source
 square-minus stopped certificate, finite-terminal threshold cover, countable
 event-cover assembly, and monotone-terminal source wrapper for Theorem 4.5.2.
 V202 derives the stopped running-maximum boundedness side condition from the
