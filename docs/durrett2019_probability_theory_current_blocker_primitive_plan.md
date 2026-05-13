@@ -4,22 +4,23 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V281
+## Live In-Thread Goal Prompt V282
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
 below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane: Durrett Section 4.6 uniform integrability and
-`L^1` martingale convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
-Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
-4.2-4.5 martingale infrastructure, Mathlib
-`MeasureTheory.Function.UniformIntegrable`, and Mathlib
-`Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
-Theorem 4.5.7 or Example 4.5.8 bridge layers.
+synced `main`.  Active lane: Durrett Section 4.7 backwards martingales in
+`StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing
+`StatInference.EmpiricalProcess.Theorem243`'s compiled `ℕᵒᵈ` order-dual
+submartingale convergence primitive, the Chapter 4.1 conditional-expectation
+wrappers, and the Section 4.6 uniform-integrability/Vitali endpoints.  Do not
+re-prove the V282 order-dual a.s. convergence bridge, terminal
+conditional-expectation representation, backwards-martingale UI bridge, or the
+V281-V273 Section 4.6 tail-envelope/conditional-expectation layers.
 
-Latest verified target V281 continues Section 4.6.  V260 packages Durrett
+Latest verified target V282 starts Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -130,16 +131,24 @@ V281 adds Exercise 4.6.7, the `L¹` conditional-expectation convergence
 wrapper, via
 `durrett2019_exercise_4_6_7_condExp_diff_eLpNorm_one_le` and
 `durrett2019_exercise_4_6_7_condExp_eLpNorm_one_tendsto_iSup_of_eLpNorm_one_tendsto`.
+V282 adds `StatInference/ProbabilityTheory/BackwardMartingale.lean` and starts
+Section 4.7 by reusing the existing VdV&W order-dual convergence primitive.  It
+adds `durrett2019_backwardsFiltration`,
+`durrett2019_backwards_martingale_of_condExp_nat`,
+`durrett2019_theorem_4_7_1_backwards_martingale_ae_eq_condExp_terminal`,
+`durrett2019_theorem_4_7_1_uniformIntegrable_of_backwards_martingale`,
+`durrett2019_theorem_4_7_1_ae_exists_limit_of_eLpNorm_one_bdd`,
+`durrett2019_theorem_4_7_1_ae_exists_limit_of_backwards_martingale`,
+`durrett2019_theorem_4_7_1_eLpNorm_one_tendsto_of_ae_tendsto_uniformIntegrable`,
+and
+`durrett2019_theorem_4_7_1_eLpNorm_one_tendsto_of_ae_tendsto_backwards_martingale`.
 
-Next aggressive theorem packet: move to Section 4.7 backwards martingales.
-Start with a reusable backwards-index route for Theorem 4.7.1/4.7.2, or a
-thin wrapper around existing Mathlib backwards/submartingale convergence APIs
-if available.  Do not re-prove Theorem 4.6.10, Exercise 4.6.7, the concrete
-`sSup` envelope definition, pairwise-bound extraction, `2Z` domination,
-`W_N -> 0` from a.s. convergence, limiting-sigma-field measurability, the
-`m -> infinity` limit passage, conditional monotonicity, fixed-tail upward
-convergence, envelope integrability, or limiting conditional tail-zero;
-V281-V273 already supply those bridges.
+Next aggressive theorem packet: finish the Theorem 4.7.2 identification layer.
+Prove the reverse-limit measurability in the tail/intersection sigma-field
+`⨅ n : ℕ, ℱ (OrderDual.toDual n)` and package the set-integral characterization
+showing the a.s. limit is `P[X_0 | ℱ_{-∞}]`.  Then derive the Theorem 4.7.3
+backwards Lévy a.s./`L¹` convergence wrapper.  Do not rebuild the order-dual
+upcrossing convergence theorem; V282 imports that result from the VdV&W lane.
 
 ## Deprecated V255 Prompt Notes
 

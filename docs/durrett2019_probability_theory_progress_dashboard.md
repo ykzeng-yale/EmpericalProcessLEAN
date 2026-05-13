@@ -32,10 +32,12 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V281` in
+Route from `Live In-Thread Goal Prompt V282` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
-The active theorem lane is now Durrett Section 4.6 uniform integrability and
-`L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
+The active theorem lane is now Durrett Section 4.7 backwards martingales in
+`StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
+compiled `ℕᵒᵈ` order-dual submartingale convergence primitive from
+`StatInference.EmpiricalProcess.Theorem243`.
 V260-V262 close Theorem 4.6.1 and Theorem 4.6.2 support: conditional
 expectation uniform integrability, dominated families, tail criteria,
 deterministic tail envelopes, the scalar small-set modulus, and the clean
@@ -120,7 +122,15 @@ and
 V281 adds Exercise 4.6.7 `L¹` conditional-expectation convergence:
 `durrett2019_exercise_4_6_7_condExp_diff_eLpNorm_one_le` and
 `durrett2019_exercise_4_6_7_condExp_eLpNorm_one_tendsto_iSup_of_eLpNorm_one_tendsto`.
-The next target is Section 4.7 backwards martingales.
+V282 starts Section 4.7 in `BackwardMartingale.lean`: it converts decreasing
+natural sigma-fields into an `ℕᵒᵈ` filtration, packages textbook backwards
+martingale data as a mathlib martingale, proves the terminal conditional
+expectation representation, derives uniform integrability from that terminal
+representation, exposes the shared order-dual a.s. convergence theorem as
+Durrett Theorem 4.7.1, and adds the `L¹` convergence consumer for any
+identified reverse-time limit.  The next target is Theorem 4.7.2: measurability
+in the reverse tail sigma-field and the conditional-expectation identification
+of the limit.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

@@ -32,6 +32,7 @@ import StatInference.EmpiricalProcess.BallSigma
 import StatInference.EmpiricalProcess.EllInfty
 import StatInference.EmpiricalProcess.GlivenkoCantelli
 import StatInference.EmpiricalProcess.Theorem243
+import StatInference.ProbabilityTheory.BackwardMartingale
 import StatInference.EmpiricalProcess.OuterProbabilityExpectation
 import StatInference.EmpiricalProcess.RealHalfLine
 import StatInference.EmpiricalProcess.RealHalfLineGC

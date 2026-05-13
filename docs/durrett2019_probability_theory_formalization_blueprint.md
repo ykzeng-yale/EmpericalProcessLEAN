@@ -27,13 +27,15 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V281`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V282`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current active frontier: Durrett Section 4.6 uniform integrability and `L^1`
-martingale convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
+Current active frontier: Durrett Section 4.7 backwards martingales in
+`StatInference/ProbabilityTheory/BackwardMartingale.lean`, with the
+reverse-time convergence theorem imported from the compiled VdV&W `ℕᵒᵈ`
+submartingale primitive in `StatInference.EmpiricalProcess.Theorem243`.
 V260-V262 close the Theorem 4.6.1/4.6.2 support layer: conditional-expectation
 uniform integrability, dominated-family support, tail criteria, deterministic
 tail envelopes, the scalar small-set modulus, and the clean uniform-`L^p`,
@@ -75,8 +77,15 @@ discharges the textbook `2Z` domination layer for this concrete envelope. V279
 discharges a.s. convergence `W_N -> 0` from `Y_n -> Y` a.s.  V280 discharges
 limiting-sigma-field measurability of the concrete `sSup` envelope and adds
 the adapted final Theorem 4.6.10 endpoint.  V281 adds Exercise 4.6.7 `L¹`
-conditional-expectation convergence.  The next proof packet should move to
-Section 4.7 backwards martingales.  V259 closes the
+conditional-expectation convergence.  V282 starts Section 4.7 by adding
+`BackwardMartingale.lean`, the decreasing-sigma-field to `ℕᵒᵈ` filtration
+bridge, the terminal conditional-expectation representation for backwards
+martingales, uniform integrability from the terminal representation, Durrett
+Theorem 4.7.1 a.s. convergence via the reused VdV&W order-dual primitive, and
+the `L¹` convergence consumer for an identified reverse-time limit.  The next
+proof packet should identify the 4.7.1 limit as
+`E[X_0 | ℱ_{-∞}]` for Theorem 4.7.2 and then package backwards Lévy Theorem
+4.7.3.  V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:
 the unit-variance, Rademacher, and canonical Rademacher endpoints now use
