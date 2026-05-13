@@ -11737,6 +11737,31 @@ theorem sourceRadius_successor_half_of_add_steps_of_adjointSqrt
     hhess_eq hx0 hstep hstep_bound hsum_bound
 
 /--
+Radius-half specialization from the additive update recurrence, stated
+directly in terms of the cumulative source-local norm of the steps.
+-/
+theorem sourceRadius_successor_half_of_add_steps_sumLocalNorm_of_adjointSqrt
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {xbar0 : E} {xseq steps : ℕ -> E}
+    {sqrtH : E →L[ℝ] E}
+    (hhess_eq : hess xbar0 = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hx0 : xseq 0 = xbar0)
+    (hstep : ∀ n : ℕ, xseq (n + 1) = xseq n + steps n)
+    (hsum_local : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), localNorm hess xbar0 (steps n)) ≤
+        1 / 2) :
+    ∀ N : ℕ, localNorm hess xbar0 (xseq (N + 1) - xbar0) ≤ 1 / 2 :=
+  sourceRadius_successor_half_of_add_steps_of_adjointSqrt
+    (hess := hess) (xbar0 := xbar0) (xseq := xseq) (steps := steps)
+    (sqrtH := sqrtH)
+    (stepBound := fun n => localNorm hess xbar0 (steps n))
+    hhess_eq hx0 hstep
+    (by
+      intro _N _n _hn
+      rfl)
+    hsum_local
+
+/--
 An adjoint-square Hessian factorization is symmetric.
 -/
 theorem hessianSymmetric_of_adjointSqrt
@@ -14792,6 +14817,55 @@ theorem chewi1316_uniformTailBound_of_add_steps_radiusHalf_zeroSafe_barrier_glob
     hxseq_inv_local hxbar0_cauchy hbudget
 
 /--
+Unit-parameter source-tail bridge with the radius-half hypothesis derived
+directly from a cumulative source-local norm budget on additive path steps.
+-/
+theorem chewi1316_uniformTailBound_of_add_steps_sumLocalNorm_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {invHess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {xbar0 : E} {xseq steps : ℕ -> E} {sqrtH : E →L[ℝ] E}
+    {nu tailBound : ℝ}
+    (hhess_source :
+      hess xbar0 = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hs : Convex ℝ s)
+    (hxbar0 : xbar0 ∈ s)
+    (hx0 : xseq 0 = xbar0)
+    (hxseq_succ : ∀ N : ℕ, xseq (N + 1) ∈ s)
+    (hbar : SelfConcordantBarrierOn s hess phiGrad invHess thirdMixed (1 : ℝ) nu)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess_global : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed_global : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hstep : ∀ n : ℕ, xseq (n + 1) = xseq n + steps n)
+    (hsum_local : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), localNorm hess xbar0 (steps n)) ≤
+        1 / 2)
+    (hxseq_inv_local : ∀ N v,
+      localNorm hess (xseq N) (invHess (xseq N) v) =
+        dualLocalNorm invHess (xseq N) v)
+    (hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w)
+    (hbudget : 2 * Real.sqrt nu ≤ tailBound) :
+    ∀ N,
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound :=
+  chewi1316_uniformTailBound_of_sourceRadius_successor_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity
+    (s := s) (hess := hess) (hessDeriv := hessDeriv)
+    (invHess := invHess) (thirdMixed := thirdMixed) (phiGrad := phiGrad)
+    (xbar0 := xbar0) (xseq := xseq) (nu := nu) (tailBound := tailBound)
+    hs hxbar0 hx0 hxseq_succ hbar hess_pos hhess_cont hhess_global
+    hmixed_global
+    (sourceRadius_successor_half_of_add_steps_sumLocalNorm_of_adjointSqrt
+      (hess := hess) (xbar0 := xbar0) (xseq := xseq) (steps := steps)
+      (sqrtH := sqrtH) hhess_source hx0 hstep hsum_local)
+    hxseq_inv_local hxbar0_cauchy hbudget
+
+/--
 Existential positive-`tMain` version of the bounded-tail preliminary
 initialization bridge.  This discharges the source scalar budget
 `|tMain| * ||a||* <= 1/16` by choosing `tMain` small and positive.
@@ -16078,6 +16152,82 @@ theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_prel
       (hess := hess) (xbar0 := xbar0) (xseq := xseq) (steps := steps)
       (sqrtH := sqrtH) (stepBound := stepBound)
       hhess_source hx0 hupdate hstep_bound hsum_bound)
+    hxseq_inv_local hxbar0_cauchy hbudget
+
+/--
+Additive-step, radius-half source-start initialization bridge stated directly
+with the natural cumulative source-local step budget.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_addSteps_sumLocalNorm_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {invHess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {xbar0 a : E} {xseq steps : ℕ -> E} {sqrtH : E →L[ℝ] E}
+    {tseq lambdaSeq : ℕ -> ℝ} {coord : ℕ -> E →L[ℝ] E}
+    {c0 nu tailBound : ℝ}
+    (hinv_factor : ∀ N v,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint (coord N)) v‖ ^ (2 : ℕ))
+    (hhess_source :
+      hess xbar0 = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hs : Convex ℝ s)
+    (hxbar0 : xbar0 ∈ s)
+    (hx0 : xseq 0 = xbar0)
+    (hxseq_succ : ∀ N : ℕ, xseq (N + 1) ∈ s)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hdecrement_step : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget : ∀ N, lambdaSeq N ≤ 1 / 8)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hbar : SelfConcordantBarrierOn s hess phiGrad invHess thirdMixed (1 : ℝ) nu)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess_global : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed_global : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hupdate : ∀ n : ℕ, xseq (n + 1) = xseq n + steps n)
+    (hsum_local : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), localNorm hess xbar0 (steps n)) ≤
+        1 / 2)
+    (hxseq_inv_local : ∀ N v,
+      localNorm hess (xseq N) (invHess (xseq N) v) =
+        dualLocalNorm invHess (xseq N) v)
+    (hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w)
+    (hbudget : 2 * Real.sqrt nu ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 :=
+  chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity
+    (s := s) (hess := hess) (hessDeriv := hessDeriv)
+    (invHess := invHess) (thirdMixed := thirdMixed)
+    (phiGrad := phiGrad) (xbar0 := xbar0) (a := a) (xseq := xseq)
+    (tseq := tseq) (lambdaSeq := lambdaSeq) (coord := coord)
+    (c0 := c0) (nu := nu) (tailBound := tailBound) hinv_factor hs
+    hxbar0 hx0 hxseq_succ ht0 htstep hlambda0 hdecrement_step
+    hlambdaBudget htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one hbar
+    hess_pos hhess_cont hhess_global hmixed_global
+    (sourceRadius_successor_half_of_add_steps_sumLocalNorm_of_adjointSqrt
+      (hess := hess) (xbar0 := xbar0) (xseq := xseq) (steps := steps)
+      (sqrtH := sqrtH) hhess_source hx0 hupdate hsum_local)
     hxseq_inv_local hxbar0_cauchy hbudget
 
 /--

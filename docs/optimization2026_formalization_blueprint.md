@@ -294,11 +294,18 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_addSteps_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`
 	now consumes the same additive-step radius-half data and returns the
 	positive main-stage initialization conclusion.
+	The direct local-step-sum packet adds
+	`sourceRadius_successor_half_of_add_steps_sumLocalNorm_of_adjointSqrt`,
+	`chewi1316_uniformTailBound_of_add_steps_sumLocalNorm_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_addSteps_sumLocalNorm_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	so callers can use the natural cumulative source-local budget
+	`sum_{n<=N} ||steps n||_{xbar0} <= 1/2` directly.
 	Search-first reuse: local `hessianPrimalFactor_of_adjointSqrt` and mathlib
 	`norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The next
 	exact-source §13.16 gate is no longer a raw `hradius_half`; it is the
-	concrete additive update recurrence, per-step source-local norm bounds,
-	cumulative half-radius budget, successor membership, global derivative
+	concrete additive update recurrence, cumulative source-local step-norm
+	budget, successor membership, global derivative
 	package, and the scalar tail budget `2 * sqrt(nu) <= tailBound`.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
