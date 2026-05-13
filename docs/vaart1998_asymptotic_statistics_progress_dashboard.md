@@ -15,13 +15,19 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: score-vector sequence-law source endpoint for the
+Latest verified packet: derivative-table sequence-law source endpoint for the
+score-at-theta0/Taylor route, including
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTableLawSequenceSource_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+in `MEstimators.lean`.  It derives every marginal derivative-table law from
+the joint infinite-product law of the derivative-table sequence.
+
+Immediate predecessor packet: score-vector sequence-law source endpoint for the
 score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 in `MEstimators.lean`.  It derives every marginal score-vector law from the
 joint infinite-product law of the score-vector sequence.
 
-Immediate predecessor packet: score-law mean source endpoint for the
+Earlier predecessor packet: score-law mean source endpoint for the
 score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 in `MEstimators.lean`.  It derives all-dual score-law mean-zero fields from
@@ -935,9 +941,10 @@ integrability from `Integrable id derivativeLaw`; it derives projected limit
 mean fields from vector-law mean zero and derives diagonal limit covariance
 fields from law-level covariance bilinear equality; it derives Gaussian limit
 `L²` from the Gaussian law; it derives dual score-law mean fields from
-vector-law score mean zero; and it derives marginal score-vector laws from the
-joint infinite-product score-vector law.  Move next only on a live source
-hypothesis of that
+vector-law score mean zero; it derives marginal score-vector laws from the
+joint infinite-product score-vector law; and it derives marginal
+derivative-table laws from the joint infinite-product derivative-table law.
+Move next only on a live source hypothesis of that
 endpoint, preferably a concrete model-specialized Theorem 5.41 instantiation
 or a narrow source package that removes another exposed model-facing field.
 Do not replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
@@ -953,9 +960,9 @@ wrappers, direct vector/table wrappers, coordinate-projection wrappers,
 score-vector measurability wrappers, score-law vector moment wrappers,
 derivative-law vector integrability wrappers, limit-law mean source wrappers,
 limit-law covariance source wrappers, or historical ledger items.
-Gaussian limit moment wrappers, score-law mean source wrappers, and
-score-vector sequence-law source wrappers are also complete and should not be
-replayed.
+Gaussian limit moment wrappers, score-law mean source wrappers,
+score-vector sequence-law source wrappers, and derivative-table sequence-law
+source wrappers are also complete and should not be replayed.
 
 ## Reuse Dependencies
 
