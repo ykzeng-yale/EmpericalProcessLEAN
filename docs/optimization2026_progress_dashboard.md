@@ -274,7 +274,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_inverseHessianQuadraticUpper`,
   so a source-point dual-norm budget and one uniform quadratic upper comparison
   now produce the uniform source tail bound needed by the initialization
-  wrapper.
+  wrapper.  The local-norm duality layer adds
+  `chewi1316_uniformTailBound_of_dualLocalNormUpper`,
+  `chewi1316_uniformTailBound_of_localNormLower_and_inverseIdentity`, and
+  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_localNormLower_and_inverseIdentity`,
+  so the same source-start initialization can now be driven by the
+  self-concordant local-norm lower comparison shape plus inverse-local and
+  Cauchy identities.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

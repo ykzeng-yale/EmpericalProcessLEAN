@@ -13693,6 +13693,66 @@ theorem chewi1316_uniformTailBound_of_inverseHessianQuadraticUpper
       hbudget)
 
 /--
+Transport the preliminary source tail uniformly from a supplied dual-local-norm
+upper comparison.  This is the exact shape produced by the dual half of Chewi
+Lemma 13.6.
+-/
+theorem chewi1316_uniformTailBound_of_dualLocalNormUpper
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 : E}
+    {xseq : ℕ -> E} {sourceBound den tailBound : ℝ}
+    (hden_pos : 0 < den)
+    (hdual_upper : ∀ N v,
+      dualLocalNorm invHess (xseq N) v ≤
+        dualLocalNorm invHess xbar0 v / den)
+    (hsource :
+      dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤ sourceBound)
+    (hbudget : sourceBound / den ≤ tailBound) :
+    ∀ N,
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound := by
+  intro N
+  exact (hdual_upper N (phiGrad xbar0)).trans
+    ((div_le_div_of_nonneg_right hsource hden_pos.le).trans hbudget)
+
+/--
+Transport the preliminary source tail uniformly from a primal local-norm lower
+comparison and inverse-local/Cauchy identities.  This packages the reusable
+duality step that converts self-concordant Hessian stability into the
+source-tail hypothesis needed by the preliminary initialization wrapper.
+-/
+theorem chewi1316_uniformTailBound_of_localNormLower_and_inverseIdentity
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {xbar0 : E} {xseq : ℕ -> E}
+    {sourceBound den tailBound : ℝ}
+    (hden_pos : 0 < den)
+    (hxseq_inv_nonneg : ∀ N v,
+      0 ≤ inner ℝ v (invHess (xseq N) v))
+    (hlower : ∀ N w,
+      den * localNorm hess xbar0 w ≤ localNorm hess (xseq N) w)
+    (hxseq_inv_local : ∀ N v,
+      localNorm hess (xseq N) (invHess (xseq N) v) =
+        dualLocalNorm invHess (xseq N) v)
+    (hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w)
+    (hsource :
+      dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤ sourceBound)
+    (hbudget : sourceBound / den ≤ tailBound) :
+    ∀ N,
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound :=
+  chewi1316_uniformTailBound_of_dualLocalNormUpper
+    (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+    (xseq := xseq) (sourceBound := sourceBound) (den := den)
+    (tailBound := tailBound) hden_pos
+    (by
+      intro N v
+      exact
+        dualLocalNorm_le_div_of_localNorm_lower_and_inverseIdentity
+          (hess := hess) (invHess := invHess) (x := xbar0)
+          (y := xseq N) (den := den) hden_pos (hxseq_inv_nonneg N)
+          (hlower N) (hxseq_inv_local N) hxbar0_cauchy v)
+    hsource hbudget
+
+/--
 Existential positive-`tMain` version of the bounded-tail preliminary
 initialization bridge.  This discharges the source scalar budget
 `|tMain| * ||a||* <= 1/16` by choosing `tMain` small and positive.
@@ -13988,6 +14048,71 @@ theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_prel
         (xseq := xseq) (sourceBound := sourceBound) (upper := upper)
         (tailBound := tailBound)
         hupper_nonneg hxbar0_nonneg hxseq_nonneg hupper hsource hbudget)
+
+/--
+Source-start initialization from a primal local-norm lower comparison and
+inverse-local/Cauchy identities.  This is the source-tail consumer shaped for
+the self-concordant Hessian-comparison estimate in the preliminary stage.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_localNormLower_and_inverseIdentity
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : ℕ -> E →L[ℝ] E} {c0 nu sourceBound den tailBound : ℝ}
+    (hinv_factor : ∀ N v,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint (coord N)) v‖ ^ (2 : ℕ))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget : ∀ N, lambdaSeq N ≤ 1 / 8)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hden_pos : 0 < den)
+    (hxseq_inv_nonneg : ∀ N v,
+      0 ≤ inner ℝ v (invHess (xseq N) v))
+    (hlower : ∀ N w,
+      den * localNorm hess xbar0 w ≤ localNorm hess (xseq N) w)
+    (hxseq_inv_local : ∀ N v,
+      localNorm hess (xseq N) (invHess (xseq N) v) =
+        dualLocalNorm invHess (xseq N) v)
+    (hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w)
+    (hsource :
+      dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤ sourceBound)
+    (hbudget : sourceBound / den ≤ tailBound) :
+    ∃ M N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (M : ℝ) * Real.log (2 : ℝ) ∧
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord) (c0 := c0) (nu := nu) (tailBound := tailBound)
+      hinv_factor hx0 ht0 htstep hlambda0 hstep hlambdaBudget
+      htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one
+      (chewi1316_uniformTailBound_of_localNormLower_and_inverseIdentity
+        (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+        (xbar0 := xbar0) (xseq := xseq) (sourceBound := sourceBound)
+        (den := den) (tailBound := tailBound) hden_pos
+        hxseq_inv_nonneg hlower hxseq_inv_local hxbar0_cauchy hsource
+        hbudget)
 
 /--
 Measured-tail source-start version: use

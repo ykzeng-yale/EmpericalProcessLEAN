@@ -398,7 +398,13 @@ inverse-Hessian transport packet adds
 so a single quadratic-form upper comparison between `invHess (xseq N)` and
 `invHess xbar0`, plus a source-point dual-norm budget, now supplies the uniform
 tail bound and triggers the same index-choice/main-stage initialization
-pipeline.
+pipeline.  The local-norm duality packet adds
+`chewi1316_uniformTailBound_of_dualLocalNormUpper`,
+`chewi1316_uniformTailBound_of_localNormLower_and_inverseIdentity`, and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_localNormLower_and_inverseIdentity`,
+so a primal local-norm lower comparison plus inverse-local and Cauchy
+identities now also supplies the same uniform source-tail/main-stage
+initialization result.
 Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
@@ -406,9 +412,10 @@ zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
 is now narrower: prove the concrete Chewi/Nesterov analytical-center or
 self-concordant Hessian-comparison estimate that supplies the above
-inverse-Hessian quadratic upper comparison (or directly supplies the scaled
-final preliminary tail budget); the measured unscaled-tail fallback should be
-used only when a caller genuinely has an unscaled tail bound.
+local-norm lower comparison/inverse-local identities (or equivalently the
+inverse-Hessian quadratic upper comparison, or directly the scaled final
+preliminary tail budget); the measured unscaled-tail fallback should be used
+only when a caller genuinely has an unscaled tail bound.
 Do not route the next run back to product,
 sum,
 affine/range, positive-orthant barrier setup, the already-compiled Lemma
