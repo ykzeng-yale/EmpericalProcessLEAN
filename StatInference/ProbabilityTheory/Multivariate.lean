@@ -205,6 +205,30 @@ theorem durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProduct
   ring
 
 /--
+Durrett 2019, Theorem 3.10.7, coordinate covariance from the source centered
+product around a supplied mean vector.
+
+This is the textbook covariance definition
+`Gamma_ij = E[(X_i - mu_i) (X_j - mu_j)]`.
+-/
+theorem durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProductSubMean
+    {Coordinate Ω : Type*} [MeasurableSpace Ω]
+    {μ : Measure Ω} {Y : Ω -> Coordinate -> ℝ}
+    (mean : Coordinate -> ℝ)
+    (hY_coordinate_mean : ∀ coordinate, (∫ ω, Y ω coordinate ∂μ) = mean coordinate)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hY_centered_product : ∀ i j,
+      (∫ ω, (Y ω i - mean i) * (Y ω j - mean j) ∂μ) = Gamma i j) :
+    ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Y ω i) (fun ω => Y ω j) μ =
+        Gamma i j := by
+  intro i j
+  rw [_root_.ProbabilityTheory.covariance, hY_coordinate_mean i,
+    hY_coordinate_mean j]
+  exact hY_centered_product i j
+
+/--
 The coordinate covariance of the canonical infinite-product sample at any
 fixed index is the coordinate covariance of the common vector law.
 -/
@@ -2011,6 +2035,69 @@ theorem durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCo
   exact Filter.Eventually.of_forall fun sample =>
     durrett2019_theorem_3_10_7_canonicalProduct_explicitMean_normalization_eq_sum
       (Coordinate := Coordinate) mu n sample
+
+/--
+Durrett 2019, Theorem 3.10.7, canonical i.i.d. product-sample endpoint from the
+textbook nonzero-mean covariance definition.
+
+This combines the literal normalized-sum display with Durrett's source
+assumption `Gamma_ij = E[(X_i - mu_i) (X_j - mu_j)]`.
+-/
+theorem durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCenteredProduct_explicitMean_sum
+    {Coordinate Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ} {mu : Coordinate -> ℝ}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hν_coordinate_memLp : ∀ coordinate,
+      MemLp (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate) 2 ν)
+    (hν_coordinate_mean : ∀ coordinate,
+      (∫ sampleVector, sampleVector coordinate ∂ν) = mu coordinate)
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 Q)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_centered_product : ∀ i j,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hν_centered_product : ∀ i j,
+      (∫ sampleVector,
+        (sampleVector i - mu i) * (sampleVector j - mu j) ∂ν) =
+        Gamma i j) :
+    TendstoInDistribution
+      (fun (n : ℕ) sample =>
+        fun coordinate : Coordinate =>
+          (√(n : ℝ))⁻¹ *
+            ((∑ i ∈ Finset.range n, sample i coordinate) -
+              (n : ℝ) * mu coordinate))
+      atTop Z (fun _ => Measure.infinitePi (fun _ : ℕ => ν)) Q :=
+  durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum
+    (ν := ν) (Q := Q) (Z := Z) (mu := mu)
+    (hcoordinate_meas := hcoordinate_meas)
+    (hν_coordinate_memLp := hν_coordinate_memLp)
+    (hν_coordinate_mean := hν_coordinate_mean)
+    (hZ_aemeas := hZ_aemeas)
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (hZ_coordinate_integrable := fun coordinate =>
+      (hZ_coordinate_memLp coordinate).integrable (by simp))
+    (hZ_coordinate_mean := hZ_coordinate_mean)
+    (Gamma := Gamma)
+    (hZ_covariance :=
+      durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProduct
+        (μ := Q) (Y := Z) hZ_coordinate_memLp hZ_coordinate_mean Gamma
+        hZ_centered_product)
+    (hν_covariance :=
+      durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProductSubMean
+        (μ := ν) (Y := fun sampleVector coordinate => sampleVector coordinate)
+        mu hν_coordinate_mean Gamma hν_centered_product)
 
 /--
 Durrett 2019, Theorem 3.10.7, canonical i.i.d. product-sample endpoint from

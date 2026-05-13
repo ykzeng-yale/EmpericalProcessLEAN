@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V323
+## Live In-Thread Goal Prompt V324
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,14 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V323 adds the Durrett Theorem 3.10.7 Gaussian
+Latest verified target V324 adds the nonzero-mean covariance-definition
+source bridge and literal normalized-sum CLT endpoint:
+`durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProductSubMean`
+and
+`durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCenteredProduct_explicitMean_sum`.
+This packages the textbook hypothesis
+`Gamma_ij = E[(X_i - mu_i) (X_j - mu_j)]`.  V323 adds the Durrett Theorem
+3.10.7 Gaussian
 characteristic-function display from scalar coordinate covariance and centered
 product source hypotheses:
 `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_coordinateCovariance`
@@ -58,7 +65,8 @@ analytic certificate stack, or the V320 positive-variance `sigma * chi`
 Lindeberg-Feller endpoint, or the V321 explicit-mean canonical multivariate CLT
 endpoint, the V322 literal normalized-sum multivariate CLT endpoint, or the
 V323 scalar-covariance/centered-product Gaussian characteristic-function
-display.  Next aggressive packet: continue Chapter 3 by closing a concrete
+display, or the V324 nonzero-mean covariance-definition normalized-sum CLT
+endpoint.  Next aggressive packet: continue Chapter 3 by closing a concrete
 source-facing gap around remaining Section 3.10 Gaussian-law wrappers,
 remaining Lindeberg-Feller side conditions, or characteristic-function
 transport into later source statements; touch Chapter 2 only if a Chapter 3
@@ -2203,6 +2211,8 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum`
 - `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_coordinateCovariance`
 - `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_centeredProduct`
+- `durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProductSubMean`
+- `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCenteredProduct_explicitMean_sum`
 - `durrett2019_section_4_1_IsConditionalExpectationVersion`
 - `durrett2019_section_4_1_condExp_isConditionalExpectationVersion`
 - `durrett2019_example_4_1_3_self_isConditionalExpectationVersion`
