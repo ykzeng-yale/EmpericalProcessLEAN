@@ -139,7 +139,11 @@ consumer
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_hessianRightInverse_and_gradient_quadratic`
 also discharges inverse-Hessian nonnegativity from the single identity that
 `invHessRange` is a right inverse of `barrierAffineRangeHess`.  The
-row-decomposition lemmas
+positive-orthant base identities
+`positiveOrthantNegLogHessCLM_invHess_right_inverse` and
+`positiveOrthantNegLog_gradient_invHess_inner_eq_card` now expose the exact
+full-space right-inverse and gradient-energy facts for later range-restriction
+work.  The row-decomposition lemmas
 `polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
 `mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`, and
 `polytopeSlackSet_eq_iInter_halfspaceSlackSet` now expose the finite-row

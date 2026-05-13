@@ -13740,6 +13740,18 @@ theorem positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant {d : ℕ
   intro x hx
   exact positiveOrthantNegLogInvHessCLM_sqrtCoord_model hx
 
+theorem positiveOrthantNegLogHessCLM_invHess_right_inverse {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    ∀ v : EuclideanSpace ℝ (Fin d),
+      positiveOrthantNegLogHessCLM x
+          (positiveOrthantNegLogInvHessCLM x v) = v := by
+  exact hessianRightInverse_of_adjointSqrtCoord_invHess
+    (H := positiveOrthantNegLogHessCLM x)
+    (invH := positiveOrthantNegLogInvHessCLM x)
+    (sqrtCoord := positiveOrthantNegLogSqrtCoord x)
+    (positiveOrthantNegLogHessCLM_sqrtCoord_model hx)
+    (positiveOrthantNegLogInvHessCLM_sqrtCoord_model hx)
+
 /--
 The coordinatewise mixed third derivative for the finite positive-orthant
 logarithmic barrier:
@@ -14300,25 +14312,29 @@ Finite-product version of Chewi Example 13.10: the coordinatewise logarithmic
 barrier on the positive orthant has exact dual local norm `sqrt d`, i.e. barrier
 parameter `d`.
 -/
+theorem positiveOrthantNegLog_gradient_invHess_inner_eq_card {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    inner ℝ (positiveOrthantNegLogGrad x)
+        (positiveOrthantNegLogInvHessCLM x (positiveOrthantNegLogGrad x)) =
+      (d : ℝ) := by
+  rw [PiLp.inner_apply]
+  simp only [RCLike.inner_apply, positiveOrthantNegLogGrad_apply,
+    positiveOrthantNegLogInvHessCLM_apply]
+  trans ∑ i : Fin d, (1 : ℝ)
+  · refine Finset.sum_congr rfl ?_
+    intro i _hi
+    rw [negLogBarrier_deriv]
+    have hxi : x i ≠ 0 := (hx i).ne'
+    simp
+    field_simp [hxi]
+  · simp
+
 theorem positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card {d : ℕ}
     {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
     dualLocalNorm positiveOrthantNegLogInvHessCLM x (positiveOrthantNegLogGrad x) =
       Real.sqrt (d : ℝ) := by
-  have hquad :
-      inner ℝ (positiveOrthantNegLogGrad x)
-          (positiveOrthantNegLogInvHessCLM x (positiveOrthantNegLogGrad x)) =
-        (d : ℝ) := by
-    rw [PiLp.inner_apply]
-    simp only [RCLike.inner_apply, positiveOrthantNegLogGrad_apply,
-      positiveOrthantNegLogInvHessCLM_apply]
-    trans ∑ i : Fin d, (1 : ℝ)
-    · refine Finset.sum_congr rfl ?_
-      intro i _hi
-      rw [negLogBarrier_deriv]
-      have hxi : x i ≠ 0 := (hx i).ne'
-      simp
-      field_simp [hxi]
-    · simp
+  have hquad :=
+    positiveOrthantNegLog_gradient_invHess_inner_eq_card hx
   dsimp [dualLocalNorm]
   rw [hquad]
 

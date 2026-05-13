@@ -1372,8 +1372,12 @@ and square root directly.  The newest range-right-inverse packet adds
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_hessianRightInverse_and_gradient_quadratic`,
 so the translated-range route no longer needs inverse-Hessian nonnegativity as
 an oracle once `invHessRange` is proved to be a right inverse of the range
-Hessian.  Future fully general polytope-log-barrier work should construct that
-concrete range inverse-Hessian/right-inverse plus gradient-energy oracle,
+Hessian.  The newest positive-orthant base-identity packet adds
+`positiveOrthantNegLogHessCLM_invHess_right_inverse` and
+`positiveOrthantNegLog_gradient_invHess_inner_eq_card`, giving the exact
+full-space Hessian inverse identity and gradient energy for the orthant model.
+Future fully general polytope-log-barrier work should construct that concrete
+range inverse-Hessian/right-inverse plus gradient-energy oracle,
 or alternatively use the compiled finite sum-rule packets together with the
 row-decomposition and head/tail induction lemmas above.  The newest induction
 packet adds

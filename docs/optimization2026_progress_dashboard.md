@@ -148,7 +148,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   built from `dualLocalNorm_le_sqrt_of_inner_le`, plus the range-Hessian
   right-inverse consumer
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of_hessianRightInverse_and_gradient_quadratic`,
-  built from `barrierAffineRangeHess_quadratic_nonneg`, plus the head/tail induction
+  built from `barrierAffineRangeHess_quadratic_nonneg`, plus the
+  positive-orthant base identities
+  `positiveOrthantNegLogHessCLM_invHess_right_inverse` and
+  `positiveOrthantNegLog_gradient_invHess_inner_eq_card`, plus the head/tail induction
   wrappers
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum` and
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_gradient_quadratic`,
