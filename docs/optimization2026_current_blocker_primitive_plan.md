@@ -491,8 +491,19 @@ packet adds
 	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_sumLocalNorm_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
 	These replace the additive-update premise by the algorithmic recurrence
 	`x_{n+1} = NewtonStep(preliminaryPathGrad(t_n), x_n)`.
-	Search-first reuse: local `hessianPrimalFactor_of_adjointSqrt` and
-	mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.
+	The current-local budget packet adds
+	`localNorm_source_le_two_current_of_sourceRadius_half`,
+	`sourceLocalNorm_sum_newtonSteps_le_half_of_currentLocalNorm_budget`,
+	`chewi1316_uniformTailBound_of_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	These use Chewi Lemma 13.6 to transport each current-local Newton
+	displacement into the source metric and replace the raw source-local
+	cumulative budget by the scalar budget `sum_{n<=N} 2 * lambda_n <= 1/2`
+	together with current-local/Newton-decrement identities.
+	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
+	`hessianPrimalFactor_of_adjointSqrt` and mathlib `norm_add_le`,
+	`norm_sum_le`, and `Finset.sum_range_sub`.
 	Together these formalize the reverse
 	path-following setup with vector
 	`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
@@ -500,9 +511,10 @@ packet adds
 	`lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
 	is now narrower: prove the concrete Chewi/Nesterov analytical-center successor
 	source-radius data: successor membership, a global Hessian derivative/mixed-third
-	package on the domain, the preliminary Newton recurrence, the cumulative
-	source-local Newton-displacement budget, and
-	`2 * sqrt(nu) <= tailBound`.  Equivalent exponential/local-norm,
+	package on the domain, the preliminary Newton recurrence, current-local
+	Newton-step/decrement identities, the scalar summability budget
+	`sum 2*lambda_n <= 1/2`, and `2 * sqrt(nu) <= tailBound`.
+	Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has
 	an unscaled tail bound.

@@ -362,13 +362,23 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_sumLocalNorm_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
 	  so callers can provide the algorithmic recurrence
 	  `x_{n+1} = NewtonStep(preliminaryPathGrad(t_n), x_n)` directly.
-	  Search-first reuse: local
+	  The current-local budget packet now also compiles:
+	  `localNorm_source_le_two_current_of_sourceRadius_half`,
+	  `sourceLocalNorm_sum_newtonSteps_le_half_of_currentLocalNorm_budget`,
+	  `chewi1316_uniformTailBound_of_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	  This inductively transports each current-local Newton displacement to the
+	  source metric using Chewi Lemma 13.6 and replaces the raw source-local
+	  cumulative hypothesis by `sum_{n<=N} 2 * lambda_n <= 1/2` plus the
+	  current-local/Newton-decrement identities.  Search-first reuse: local
+	  `chewi136_localNorm_sandwich_sourceRadius`,
 	  `hessianPrimalFactor_of_adjointSqrt`, mathlib `norm_add_le`,
 	  `norm_sum_le`, and `Finset.sum_range_sub`.  The live exact-source gate is
 	  now the concrete Chewi/Nesterov analytical-center data: successor
 	  membership, a global derivative package, the preliminary Newton recurrence,
-	  the cumulative source-local step-norm budget, and
-	  `2 * sqrt(nu) <= tailBound`.
+	  current-local Newton-step/decrement identities, the scalar summability
+	  budget `sum 2*lambda_n <= 1/2`, and `2 * sqrt(nu) <= tailBound`.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
