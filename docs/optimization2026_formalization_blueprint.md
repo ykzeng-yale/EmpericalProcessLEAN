@@ -162,9 +162,12 @@ source-shaped tail-induction consumers
 and
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy`
 now discharge both the recursive tail barrier and tail Cauchy bridge for
-full-row-rank/surjective tail slack maps.  Next construct the concrete range
-oracle and energy bound for the fully general polytope barrier, or prove the
-summed inverse-Hessian nonnegativity / inverse-local identity for the
+full-row-rank/surjective tail slack maps.  The `_of_sumRightInverse` wrappers
+for the same component-Cauchy induction route now reduce the remaining
+head/tail finite-row induction gate to the single summed Hessian right-inverse
+identity `barrierSumHess headHess tailHess x (sumInvHess x v) = v`.  Next
+construct the concrete range oracle and energy bound for the fully general
+polytope barrier, or provide that summed right-inverse identity for the
 head/tail finite-row induction; all segment
 membership, `ψ`
 continuity, local-norm continuity/positivity, Riccati comparison, derivative

@@ -1401,6 +1401,15 @@ Cauchy bridge from the existing vector-slack right-inverse/surjective APIs.
 The remaining hypotheses in that source-shaped route are only the summed
 inverse-Hessian nonnegativity and inverse-local identity for the head-plus-tail
 barrier Hessian.
+The newest sum-right-inverse packet adds
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy_of_sumRightInverse`,
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_rightInverse_componentCauchy_of_sumRightInverse`,
+and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy_of_sumRightInverse`,
+reusing `barrierSum_invHess_nonneg_and_invLocal_of_right_inverse_on`.  For
+full-row-rank/surjective tail slack maps, the remaining source-shaped induction
+gate is now a single identity:
+`barrierSumHess headHess tailHess x (sumInvHess x v) = v`.
 Do not redo scalar
 self-concordance, affine right-inverse algebra, or binary sum inverse-local /
 Cauchy algebra.
@@ -1445,6 +1454,10 @@ The exact blockers are:
   or
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy`,
   leaving only the summed inverse-Hessian nonnegativity/inverse-local gate.
+  Prefer the newer `_of_sumRightInverse` wrappers when a candidate
+  `sumInvHess` is available; then prove only the single summed Hessian
+  right-inverse identity
+  `barrierSumHess headHess tailHess x (sumInvHess x v) = v`.
   The remaining alternative is opening the inf-projection rule.
   Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 

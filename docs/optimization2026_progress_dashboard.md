@@ -162,7 +162,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   full-row-rank/surjective tail-induction consumers
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_rightInverse_componentCauchy`
   and
-  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy`.
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy`,
+  plus the summed-right-inverse gate wrappers
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy_of_sumRightInverse`,
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_rightInverse_componentCauchy_of_sumRightInverse`,
+  and
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy_of_sumRightInverse`.
   Example 13.14's single row log-barrier route can now use the source-shaped
   theorem for `x ↦ -log (b - inner a x)` when `a ≠ 0`, and the finite-row
   orthant-preimage route is compiled for any slack map with a supplied right
@@ -174,9 +179,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   inverse-local identity and the recursive tail component-Cauchy bridge.  For
   full-row-rank tail slack systems, the tail Cauchy bridge is now provided by
   the right-inverse/surjective tail-induction consumers, so the remaining
-  source-shaped gate is the summed inverse-Hessian nonnegativity/inverse-local
-  identity for the head-plus-tail barrier Hessian; use the full-space
-  adjoint-square route only for genuinely positive-definite component models.
+  source-shaped gate is now the single summed Hessian right-inverse identity
+  `barrierSumHess headHess tailHess x (sumInvHess x v) = v`; use the
+  full-space adjoint-square route only for genuinely positive-definite
+  component models.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
   supplied-oracle form, for invertible affine maps, as a single
   non-invertible/range certificate object, and for affine maps whose linear
