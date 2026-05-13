@@ -32,11 +32,13 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V316` in
+Route from `Live In-Thread Goal Prompt V317` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
-`StatInference/ProbabilityTheory/Basic.lean`.  V316 adds
+`StatInference/ProbabilityTheory/Basic.lean`.  V317 adds
+`durrett2019_theorem_3_4_1_centralLimitTheorem_standardNormal`, the
+textbook-normalized positive-variance i.i.d. CLT endpoint.  V316 adds
 `durrett2019_theorem_3_4_10_lindebergFeller_unitVariance_of_integrableSq`, the
 standard `N(0,1)` source endpoint for Theorem 3.4.10 from row-wise
 independence, mean-zero square-integrable rows, variance-sum convergence to
@@ -1413,7 +1415,8 @@ support.  Compiled declarations:
 - `durrett2019_theorem_3_3_17_tendstoInDistribution_of_characteristicFunction_tendsto`;
 - `durrett2019_theorem_3_3_20_characteristicFunction_secondOrder_centered_unitVariance`;
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_centered_unitVariance`;
-- `durrett2019_theorem_3_4_1_centralLimitTheorem_varianceGaussian`.
+- `durrett2019_theorem_3_4_1_centralLimitTheorem_varianceGaussian`;
+- `durrett2019_theorem_3_4_1_centralLimitTheorem_standardNormal`.
 
 The current aggressive theorem frontier is Chapter 3.  The old large Chapter
 2 targets are closed as reusable source wrappers:
