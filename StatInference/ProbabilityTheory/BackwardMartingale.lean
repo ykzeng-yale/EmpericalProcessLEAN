@@ -163,6 +163,50 @@ theorem durrett2019_theorem_4_7_1_eLpNorm_one_tendsto_of_ae_tendsto_uniformInteg
       hprob hUI
 
 /--
+Durrett 2019, Theorem 4.7.1, read a backwards martingale along ordinary
+natural time.  The reverse-time process is uniformly integrable.
+-/
+theorem durrett2019_theorem_4_7_1_read_uniformIntegrable_of_backwards_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕᵒᵈ mΩ}
+    {X : ℕᵒᵈ -> Ω -> ℝ} (hX : Martingale X ℱ P) :
+    UniformIntegrable (fun n : ℕ => X (OrderDual.toDual n)) 1 P := by
+  have hterminal_int : Integrable (X (OrderDual.toDual 0)) P :=
+    hX.integrable (OrderDual.toDual 0)
+  have hcond_ui :
+      UniformIntegrable
+        (fun n : ℕ => P[X (OrderDual.toDual 0) | ℱ (OrderDual.toDual n)])
+        1 P :=
+    hterminal_int.uniformIntegrable_condExp (fun n => ℱ.le (OrderDual.toDual n))
+  refine hcond_ui.ae_eq ?_
+  intro n
+  exact
+    hX.condExp_ae_eq
+      (show OrderDual.toDual n ≤ OrderDual.toDual 0 by
+        change (0 : ℕ) ≤ n
+        exact Nat.zero_le n)
+
+/--
+Durrett 2019, Theorem 4.7.1, integrability of an identified reverse-time
+limit.  This is the integrability input needed for the tail conditional
+expectation identification in Theorem 4.7.2.
+-/
+theorem durrett2019_theorem_4_7_1_integrable_limit_of_ae_tendsto_backwards_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕᵒᵈ mΩ}
+    {X : ℕᵒᵈ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hAe :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n : ℕ => X (OrderDual.toDual n) ω) atTop (𝓝 (Y ω))) :
+    Integrable Y P := by
+  have hread_ui :
+      UniformIntegrable (fun n : ℕ => X (OrderDual.toDual n)) 1 P :=
+    durrett2019_theorem_4_7_1_read_uniformIntegrable_of_backwards_martingale
+      (P := P) (ℱ := ℱ) (X := X) hX
+  exact hread_ui.integrable_of_ae_tendsto hAe
+
+/--
 Durrett 2019, Theorem 4.7.1, `L¹` convergence for a backwards martingale once
 the reverse-time a.s. limit has been identified.
 -/
@@ -177,25 +221,115 @@ theorem durrett2019_theorem_4_7_1_eLpNorm_one_tendsto_of_ae_tendsto_backwards_ma
     Tendsto
       (fun n : ℕ => eLpNorm (X (OrderDual.toDual n) - Y) 1 P)
       atTop (𝓝 0) := by
-  have hterminal_int : Integrable (X (OrderDual.toDual 0)) P :=
-    hX.integrable (OrderDual.toDual 0)
-  have hcond_ui :
-      UniformIntegrable
-        (fun n : ℕ => P[X (OrderDual.toDual 0) | ℱ (OrderDual.toDual n)])
-        1 P :=
-    hterminal_int.uniformIntegrable_condExp (fun n => ℱ.le (OrderDual.toDual n))
   have hread_ui :
       UniformIntegrable (fun n : ℕ => X (OrderDual.toDual n)) 1 P := by
-    refine hcond_ui.ae_eq ?_
-    intro n
     exact
-      hX.condExp_ae_eq
-        (show OrderDual.toDual n ≤ OrderDual.toDual 0 by
-          change (0 : ℕ) ≤ n
-          exact Nat.zero_le n)
+      durrett2019_theorem_4_7_1_read_uniformIntegrable_of_backwards_martingale
+        (P := P) (ℱ := ℱ) (X := X) hX
   exact
     durrett2019_theorem_4_7_1_eLpNorm_one_tendsto_of_ae_tendsto_uniformIntegrable
       (P := P) (X := X) (Y := Y) hAe hread_ui
+
+/--
+Durrett 2019, Theorem 4.7.2, conditional-expectation identification of a
+reverse-time `L¹` limit.  If the limit is measurable with respect to the tail
+sigma-field, then the martingale set-integral identities identify it as
+`E[X_0 | F_{-\infty}]`.
+-/
+theorem durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_L1_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕᵒᵈ mΩ}
+    {X : ℕᵒᵈ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hY_int : Integrable Y P)
+    (hY_tail :
+      AEStronglyMeasurable[⨅ n : ℕ, ℱ (OrderDual.toDual n)] Y P)
+    (hL1 :
+      Tendsto
+        (fun n : ℕ => eLpNorm (X (OrderDual.toDual n) - Y) 1 P)
+        atTop (𝓝 0)) :
+    Y =ᵐ[P] P[X (OrderDual.toDual 0) |
+      ⨅ n : ℕ, ℱ (OrderDual.toDual n)] := by
+  let ℱtail : MeasurableSpace Ω := ⨅ n : ℕ, ℱ (OrderDual.toDual n)
+  have htail_le : ℱtail ≤ mΩ := by
+    exact
+      (iInf_le (fun n : ℕ => ℱ (OrderDual.toDual n)) 0).trans
+        (ℱ.le (OrderDual.toDual 0))
+  haveI : SigmaFinite (P.trim htail_le) := inferInstance
+  refine
+    ae_eq_condExp_of_forall_setIntegral_eq
+      (μ := P) (m := ℱtail) (m₀ := mΩ)
+      (f := X (OrderDual.toDual 0)) (g := Y)
+      htail_le (hX.integrable (OrderDual.toDual 0)) ?_ ?_ ?_
+  · intro _s _hs _hμs
+    exact hY_int.integrableOn
+  · intro s hs _hμs
+    have hs_each :
+        ∀ n : ℕ, MeasurableSet[ℱ (OrderDual.toDual n)] s := by
+      simpa [ℱtail] using (MeasurableSpace.measurableSet_iInf.mp hs)
+    have htend :
+        Tendsto
+          (fun n : ℕ => ∫ ω in s, X (OrderDual.toDual n) ω ∂P)
+          atTop (𝓝 (∫ ω in s, Y ω ∂P)) :=
+      durrett2019_lemma_4_6_5_tendsto_setIntegral_of_eLpNorm_one_tendsto_zero
+        (mΩ := mΩ) (P := P)
+        (X := fun n : ℕ => X (OrderDual.toDual n)) (Y := Y)
+        (fun n => hX.integrable (OrderDual.toDual n)) hY_int hL1 s
+    have hsame :
+        ∀ n : ℕ,
+          ∫ ω in s, X (OrderDual.toDual n) ω ∂P =
+            ∫ ω in s, X (OrderDual.toDual 0) ω ∂P := by
+      intro n
+      exact
+        hX.setIntegral_eq
+          (show OrderDual.toDual n ≤ OrderDual.toDual 0 by
+            change (0 : ℕ) ≤ n
+            exact Nat.zero_le n)
+          (hs_each n)
+    have hconst :
+        Tendsto
+          (fun n : ℕ => ∫ ω in s, X (OrderDual.toDual n) ω ∂P)
+          atTop (𝓝 (∫ ω in s, X (OrderDual.toDual 0) ω ∂P)) := by
+      have hevent :
+          ∀ᶠ n in atTop,
+            ∫ ω in s, X (OrderDual.toDual 0) ω ∂P =
+              ∫ ω in s, X (OrderDual.toDual n) ω ∂P :=
+        Eventually.of_forall fun n => (hsame n).symm
+      exact tendsto_const_nhds.congr' hevent
+    exact tendsto_nhds_unique htend hconst
+  · simpa [ℱtail] using hY_tail
+
+/--
+Durrett 2019, Theorem 4.7.2, source-shaped conditional-expectation
+identification.  Once a backwards martingale has an a.s. reverse-time limit
+which is tail measurable, the limit is the conditional expectation of the
+terminal value with respect to the tail sigma-field.
+-/
+theorem durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕᵒᵈ mΩ}
+    {X : ℕᵒᵈ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hY_tail :
+      AEStronglyMeasurable[⨅ n : ℕ, ℱ (OrderDual.toDual n)] Y P)
+    (hAe :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n : ℕ => X (OrderDual.toDual n) ω) atTop (𝓝 (Y ω))) :
+    Y =ᵐ[P] P[X (OrderDual.toDual 0) |
+      ⨅ n : ℕ, ℱ (OrderDual.toDual n)] := by
+  have hY_int :
+      Integrable Y P :=
+    durrett2019_theorem_4_7_1_integrable_limit_of_ae_tendsto_backwards_martingale
+      (P := P) (ℱ := ℱ) (X := X) (Y := Y) hX hAe
+  have hL1 :
+      Tendsto
+        (fun n : ℕ => eLpNorm (X (OrderDual.toDual n) - Y) 1 P)
+        atTop (𝓝 0) :=
+    durrett2019_theorem_4_7_1_eLpNorm_one_tendsto_of_ae_tendsto_backwards_martingale
+      (P := P) (ℱ := ℱ) (X := X) (Y := Y) hX hAe
+  exact
+    durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_L1_tendsto
+      (P := P) (ℱ := ℱ) (X := X) (Y := Y) hX hY_int hY_tail hL1
 
 end ProbabilityTheory
 end StatInference

@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V282` in
+Route from `Live In-Thread Goal Prompt V283` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -128,9 +128,15 @@ martingale data as a mathlib martingale, proves the terminal conditional
 expectation representation, derives uniform integrability from that terminal
 representation, exposes the shared order-dual a.s. convergence theorem as
 Durrett Theorem 4.7.1, and adds the `L¹` convergence consumer for any
-identified reverse-time limit.  The next target is Theorem 4.7.2: measurability
-in the reverse tail sigma-field and the conditional-expectation identification
-of the limit.
+identified reverse-time limit.  V283 factors out the reverse-time read
+uniform-integrability theorem, proves integrability of any identified a.s.
+limit, and adds the Theorem 4.7.2 conditional-expectation identification from
+`L¹` convergence and tail measurability:
+`durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_L1_tendsto` and
+`durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto`.
+The next target is the remaining Theorem 4.7.2 measurability step: prove that
+the reverse-time a.s. limit is `AEStronglyMeasurable` with respect to
+`⨅ n : ℕ, ℱ (OrderDual.toDual n)`, then package backwards Lévy Theorem 4.7.3.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

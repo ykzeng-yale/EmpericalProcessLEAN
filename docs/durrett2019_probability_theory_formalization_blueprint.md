@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V282`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V283`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -82,10 +82,15 @@ conditional-expectation convergence.  V282 starts Section 4.7 by adding
 bridge, the terminal conditional-expectation representation for backwards
 martingales, uniform integrability from the terminal representation, Durrett
 Theorem 4.7.1 a.s. convergence via the reused VdV&W order-dual primitive, and
-the `L¹` convergence consumer for an identified reverse-time limit.  The next
-proof packet should identify the 4.7.1 limit as
-`E[X_0 | ℱ_{-∞}]` for Theorem 4.7.2 and then package backwards Lévy Theorem
-4.7.3.  V259 closes the
+the `L¹` convergence consumer for an identified reverse-time limit.  V283 adds
+the reverse-time read uniform-integrability theorem, integrability of any
+identified a.s. limit, and the main Theorem 4.7.2
+conditional-expectation/set-integral identification assuming tail
+measurability.  The next proof packet should prove the missing tail
+measurability
+`AEStronglyMeasurable[⨅ n : ℕ, ℱ (OrderDual.toDual n)] Y P` for the
+reverse-time a.s. limit, close the fully source-shaped Theorem 4.7.2 endpoint,
+and then package backwards Lévy Theorem 4.7.3.  V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:
 the unit-variance, Rademacher, and canonical Rademacher endpoints now use
