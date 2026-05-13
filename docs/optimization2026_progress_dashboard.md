@@ -257,7 +257,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   These are the direct source-start wrappers for the actual scaled preliminary
   tail budget `|t_N| * ||grad phi(xbar0)||*_{x_N} <= 1/16`, avoiding the older
   measured unscaled-tail fallback when a Chewi/Nesterov estimate controls the
-  final scaled tail directly.
+  final scaled tail directly.  The extracted final-tail packet adds
+  `chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBound_nonneg`,
+  `chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBoundLogBound_nonneg`,
+  and
+  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBoundLogBound`,
+  factoring the count/log scalar algebra into a reusable final-tail budget and
+  routing the source-start initialization through the direct final-tail wrapper.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

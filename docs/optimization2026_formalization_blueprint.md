@@ -208,7 +208,13 @@ The final-tail initialization layer adds
 and
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBudget`,
 which directly consume the scaled final preliminary tail budget and choose a
-positive main-stage parameter.
+positive main-stage parameter.  The extracted final-tail layer adds
+`chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBound_nonneg`,
+`chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBoundLogBound_nonneg`,
+and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBoundLogBound`,
+separating the count/log scalar tail budget from the source-start
+initialization wrapper.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

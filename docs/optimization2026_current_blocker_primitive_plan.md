@@ -380,15 +380,21 @@ and
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBudget`,
 which consume the actual scaled preliminary tail budget
 `|t_N| * ||grad phi(xbar0)||*_{x_N} <= 1/16` directly and then choose a positive
-main-stage parameter.
+main-stage parameter.  The extracted final-tail packet adds
+`chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBound_nonneg`,
+`chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBoundLogBound_nonneg`,
+and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBoundLogBound`,
+so log/count tail algebra now produces the direct scaled final-tail budget as
+a reusable standalone theorem.
 Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
 is now narrower: prove the concrete Chewi/Nesterov analytical-center estimate
-that supplies the scaled final preliminary tail budget for the new direct
-source-start wrappers; the measured unscaled-tail fallback should be used only
+that supplies a source-shaped tail bound or directly supplies the scaled final
+preliminary tail budget; the measured unscaled-tail fallback should be used only
 when a caller genuinely has an unscaled tail bound.
 Do not route the next run back to product,
 sum,

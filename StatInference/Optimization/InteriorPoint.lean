@@ -13332,6 +13332,61 @@ theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequ
       (M := M) htailBase_pos htailBase_le)
 
 /--
+Standalone final-tail budget extracted from the preliminary count and tail-base
+power hypotheses.  This is the scalar input needed by the direct source-start
+initialization wrappers.
+-/
+theorem chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBound_nonneg
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 : E}
+    {xseq : ℕ -> E} {tStart c0 nu : ℝ} {N M : ℕ}
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0)
+    (htailBase_le :
+      |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        (1 / 16 : ℝ) * (2 : ℝ) ^ M) :
+    |(1 - c0 / Real.sqrt nu) ^ N * tStart| *
+        dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+      1 / 16 := by
+  have hcount_div :
+      (M : ℝ) * Real.log (2 : ℝ) ≤
+        (N : ℝ) * (c0 / Real.sqrt nu) :=
+    chewi1316_count_condition_of_sqrt_mul_log_le
+      (sqrtNu := Real.sqrt nu) (c0 := c0) (N := N) (M := M)
+      hsqrt_pos hcount
+  have hfactor :
+      (1 - c0 / Real.sqrt nu) ^ N ≤ (1 / 2 : ℝ) ^ M :=
+    chewi1316_factor_pow_le_half_pow_of_count
+      (delta := c0 / Real.sqrt nu) (N := N) (M := M)
+      hdelta_lt_one hcount_div
+  have hhalf :
+      |(1 - c0 / Real.sqrt nu) ^ N * tStart| *
+          dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        (1 / 2 : ℝ) ^ M *
+          (|tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0)) :=
+    chewi1316_preliminary_tail_half_power_bound_of_nonneg_factor_pow
+      (r := 1 - c0 / Real.sqrt nu)
+      (tStart := tStart)
+      (tailNorm := dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+      (tailBase :=
+        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+      (N := N) (M := M)
+      (sub_pos.mpr hdelta_lt_one).le
+      hfactor
+      (dualLocalNorm_nonneg invHess (xseq N) (phiGrad xbar0))
+      rfl
+  exact
+    chewi1316_preliminary_tail_le_of_half_power_tailBase_bound
+      (tail :=
+        |(1 - c0 / Real.sqrt nu) ^ N * tStart| *
+          dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+      (tailBase :=
+        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+      (M := M) hhalf htailBase_le
+
+/--
 Power-bound preliminary initialization bridge without requiring the actual
 tail base to be strictly positive.  The zero-tail case is handled directly by
 the power algebra instead of passing through logarithms of the actual base.
@@ -13374,41 +13429,11 @@ theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequ
       (coord := coord) (tMain := tMain) (tStart := tStart)
       (c0 := c0) (nu := nu) (N := N)
       hinv_factor ht0 htstep hinit hstep hmainBudget hlambdaBudget ?_
-  have hcount_div :
-      (M : ℝ) * Real.log (2 : ℝ) ≤
-        (N : ℝ) * (c0 / Real.sqrt nu) :=
-    chewi1316_count_condition_of_sqrt_mul_log_le
-      (sqrtNu := Real.sqrt nu) (c0 := c0) (N := N) (M := M)
-      hsqrt_pos hcount
-  have hfactor :
-      (1 - c0 / Real.sqrt nu) ^ N ≤ (1 / 2 : ℝ) ^ M :=
-    chewi1316_factor_pow_le_half_pow_of_count
-      (delta := c0 / Real.sqrt nu) (N := N) (M := M)
-      hdelta_lt_one hcount_div
-  have hhalf :
-      |(1 - c0 / Real.sqrt nu) ^ N * tStart| *
-          dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
-        (1 / 2 : ℝ) ^ M *
-          (|tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0)) :=
-    chewi1316_preliminary_tail_half_power_bound_of_nonneg_factor_pow
-      (r := 1 - c0 / Real.sqrt nu)
-      (tStart := tStart)
-      (tailNorm := dualLocalNorm invHess (xseq N) (phiGrad xbar0))
-      (tailBase :=
-        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
-      (N := N) (M := M)
-      (sub_pos.mpr hdelta_lt_one).le
-      hfactor
-      (dualLocalNorm_nonneg invHess (xseq N) (phiGrad xbar0))
-      rfl
   exact
-    chewi1316_preliminary_tail_le_of_half_power_tailBase_bound
-      (tail :=
-        |(1 - c0 / Real.sqrt nu) ^ N * tStart| *
-          dualLocalNorm invHess (xseq N) (phiGrad xbar0))
-      (tailBase :=
-        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
-      (M := M) hhalf htailBase_le
+    chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBound_nonneg
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (xseq := xseq) (tStart := tStart) (c0 := c0) (nu := nu)
+      (N := N) (M := M) hsqrt_pos hdelta_lt_one hcount htailBase_le
 
 /--
 Textbook-shaped preliminary initialization bridge where the tail-base power
@@ -13570,6 +13595,38 @@ theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequ
       htailBound_pos htailBase_le htailBoundLog)
 
 /--
+Standalone final-tail budget with the tail-base power bound supplied by a
+positive external tail bound and its logarithmic `M` choice.
+-/
+theorem chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBoundLogBound_nonneg
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 : E}
+    {xseq : ℕ -> E} {tStart c0 nu tailBound : ℝ} {N M : ℕ}
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0)
+    (htailBound_pos : 0 < tailBound)
+    (htailBase_le :
+      |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        tailBound)
+    (htailBoundLog :
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    |(1 - c0 / Real.sqrt nu) ^ N * tStart| *
+        dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+      1 / 16 :=
+  chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBound_nonneg
+    (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+    (xseq := xseq) (tStart := tStart) (c0 := c0) (nu := nu)
+    (N := N) (M := M) hsqrt_pos hdelta_lt_one hcount
+    (chewi1316_tailBase_le_sixteenth_mul_two_pow_of_bound_log_le
+      (tailBase :=
+        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+      (tailBound := tailBound) (M := M)
+      htailBound_pos htailBase_le htailBoundLog)
+
+/--
 Existential positive-`tMain` version of the bounded-tail preliminary
 initialization bridge.  This discharges the source scalar budget
 `|tMain| * ||a||* <= 1/16` by choosing `tMain` small and positive.
@@ -13684,6 +13741,68 @@ theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_prel
       hinv_factor ht0 htstep hinit hstep hlambdaBudget
       hsqrt_pos hdelta_lt_one hcount htailBound_pos htailBase_le'
       htailBoundLog
+
+/--
+Source-start version routed through the direct final-tail initialization
+wrapper.  The log/count hypotheses are used only to prove the scaled final
+preliminary tail budget, and the main-stage parameter is then chosen positive.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBoundLogBound
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {c0 nu tailBound : ℝ} {N M : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0)
+    (htailBound_pos : 0 < tailBound)
+    (htailBase_le :
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound)
+    (htailBoundLog :
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    ∃ tMain : ℝ,
+      0 < tMain ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  have htailBase_le' :
+      |(1 : ℝ)| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        tailBound := by
+    simpa using htailBase_le
+  have htail :
+      |(1 - c0 / Real.sqrt nu) ^ N| *
+          dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        1 / 16 := by
+    have htail' :=
+      chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBoundLogBound_nonneg
+        (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+        (xseq := xseq) (tStart := 1) (c0 := c0) (nu := nu)
+        (tailBound := tailBound) (N := N) (M := M)
+        hsqrt_pos hdelta_lt_one hcount htailBound_pos htailBase_le'
+        htailBoundLog
+    simpa using htail'
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBudget
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord) (c0 := c0) (nu := nu) (N := N)
+      hinv_factor hx0 ht0 htstep hlambda0 hstep hlambdaBudget htail
 
 /--
 Measured-tail source-start version: use
