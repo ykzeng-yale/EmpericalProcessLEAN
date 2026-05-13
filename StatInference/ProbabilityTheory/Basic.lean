@@ -637,6 +637,36 @@ theorem durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates
   · exact _root_.ProbabilityTheory.HasLaw.id
 
 /--
+Durrett 2019, Theorem 2.1.11, infinite iid product-law source criterion.
+
+If a sequence-valued random variable has joint law `ν^ℕ`, then its coordinate
+variables have common law `ν` and are independent.  This is the infinite
+sequence source shape consumed by empirical-distribution and strong-law
+endpoints.
+-/
+theorem durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ) :
+    (∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν μ) ∧
+      _root_.ProbabilityTheory.iIndepFun (μ := μ) X := by
+  haveI : IsProbabilityMeasure μ := hJoint.isProbabilityMeasure
+  have hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν μ := by
+    intro i
+    have hEval : _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> S => sample i) ν
+        (Measure.infinitePi fun _ : ℕ => ν) :=
+      (measurePreserving_eval_infinitePi (μ := fun _ : ℕ => ν) i).hasLaw
+    simpa [Function.comp_def] using hEval.comp hJoint
+  refine ⟨hLaw, ?_⟩
+  exact (_root_.ProbabilityTheory.iIndepFun_iff_hasLaw_Pi_infinitePi
+    (P := μ) (X := X) (μ := fun _ : ℕ => ν) hLaw hJoint.aemeasurable).2 hJoint
+
+/--
 Durrett 2019, Theorem 2.1.12 product-measure/Fubini form.
 
 This is the reusable product-measure integral identity behind the independent
@@ -4995,6 +5025,127 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
           ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) :=
   durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum
     X hLaw (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem from a full
+infinite-product joint law for the observation sequence.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun
+      X hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9, outer-a.s. half-line Glivenko-Cantelli theorem
+from a full infinite-product joint law for the observation sequence.
+-/
+theorem durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass μ P Set.univ
+      realHalfLineIndicator X := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun
+      X hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9, empirical-CDF Glivenko-Cantelli form from a full
+infinite-product joint law for the observation sequence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    _root_.StatInference.RealEmpiricalCDFGlivenkoCantelliClass μ P X := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun
+      X hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9, exact outer-a.s. empirical-CDF form from a full
+infinite-product joint law for the observation sequence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun
+      X hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9, exact outer-a.s. empirical-CDF range-sum display
+from a full infinite-product joint law for the observation sequence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) /
+          (sampleSize : ℝ)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun
+      X hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9, exact outer-a.s. empirical-CDF display in
+textbook notation from a full infinite-product joint law for the observation
+sequence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun
+      X hSource.1 hSource.2
 
 /--
 Durrett 2019, Theorem 2.4.9, canonical iid product-space empirical
