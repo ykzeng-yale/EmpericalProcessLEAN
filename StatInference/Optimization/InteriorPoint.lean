@@ -371,6 +371,92 @@ theorem scalar_riccati_upper_bound_on_unit_interval
     (by simpa [mul_comm, mul_left_comm, mul_assoc] using htarget_mul)
 
 /--
+Reverse Riccati blow-up exclusion on `[0,1]`.  If
+`g(t)^2 <= nu * g'(t)` throughout the open interval, then the initial value
+cannot exceed `nu`: otherwise `1 / g(t) + t / nu` is decreasing while staying
+positive at `t = 1`, which contradicts `g(0) > nu`.
+-/
+theorem scalar_initial_le_of_sq_le_mul_deriv_on_unit_interval
+    {g g' : ℝ -> ℝ} {nu : ℝ}
+    (hnu_pos : 0 < nu)
+    (hgcont : ContinuousOn g (Set.Icc (0 : ℝ) 1))
+    (hgderiv : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      HasDerivWithinAt g (g' s) (interior (Set.Icc (0 : ℝ) 1)) s)
+    (hsq_deriv : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      (g s) ^ (2 : ℕ) ≤ nu * g' s) :
+    g 0 ≤ nu := by
+  let D := Set.Icc (0 : ℝ) 1
+  by_contra hnot
+  have hg0_gt : nu < g 0 := lt_of_not_ge hnot
+  have hg0_pos : 0 < g 0 := hnu_pos.trans hg0_gt
+  have hg_deriv_nonneg : ∀ s, s ∈ interior D -> 0 ≤ g' s := by
+    intro s hs
+    have hsq_nonneg : 0 ≤ (g s) ^ (2 : ℕ) := sq_nonneg (g s)
+    have hbound : (g s) ^ (2 : ℕ) ≤ nu * g' s := hsq_deriv s hs
+    nlinarith
+  have hgmono : MonotoneOn g D :=
+    monotoneOn_of_hasDerivWithinAt_nonneg (convex_Icc (0 : ℝ) 1)
+      hgcont hgderiv hg_deriv_nonneg
+  have hzero_mem : (0 : ℝ) ∈ D := ⟨le_rfl, zero_le_one⟩
+  have hone_mem : (1 : ℝ) ∈ D := ⟨zero_le_one, le_rfl⟩
+  have hg_pos : ∀ s, s ∈ D -> 0 < g s := by
+    intro s hs
+    exact lt_of_lt_of_le hg0_pos (hgmono hzero_mem hs hs.1)
+  let w : ℝ -> ℝ := fun s => (g s)⁻¹ + s / nu
+  have hg_ne : ∀ s, s ∈ D -> g s ≠ 0 := by
+    intro s hs
+    exact (hg_pos s hs).ne'
+  have hwcont : ContinuousOn w D := by
+    have hinv : ContinuousOn (fun s : ℝ => (g s)⁻¹) D :=
+      hgcont.inv₀ hg_ne
+    have hlin : ContinuousOn (fun s : ℝ => s / nu) D :=
+      (continuous_id.div_const nu).continuousOn
+    simpa [w] using hinv.add hlin
+  have hwderiv : ∀ s, s ∈ interior D ->
+      HasDerivWithinAt w
+        (-g' s / (g s) ^ (2 : ℕ) + 1 / nu) (interior D) s := by
+    intro s hs
+    have hginv :
+        HasDerivWithinAt (fun u : ℝ => (g u)⁻¹)
+          (-g' s / (g s) ^ (2 : ℕ)) (interior D) s := by
+      exact (hgderiv s hs).inv ((hg_pos s (interior_subset hs)).ne')
+    have hlin :
+        HasDerivWithinAt (fun u : ℝ => u / nu) (1 / nu)
+          (interior D) s := by
+      simpa using ((hasDerivAt_id s).div_const nu).hasDerivWithinAt
+    simpa [w] using hginv.add hlin
+  have hwderiv_nonpos : ∀ s, s ∈ interior D ->
+      -g' s / (g s) ^ (2 : ℕ) + 1 / nu ≤ 0 := by
+    intro s hs
+    have hg_s_pos : 0 < g s := hg_pos s (interior_subset hs)
+    have hg_sq_pos : 0 < (g s) ^ (2 : ℕ) := sq_pos_of_pos hg_s_pos
+    have hnu_div : (g s) ^ (2 : ℕ) / nu ≤ g' s := by
+      exact (div_le_iff₀ hnu_pos).2 (by simpa [mul_comm] using hsq_deriv s hs)
+    have hrecip : 1 / nu ≤ g' s / (g s) ^ (2 : ℕ) := by
+      exact (le_div_iff₀ hg_sq_pos).2 (by simpa [div_eq_mul_inv, mul_comm,
+        mul_left_comm, mul_assoc] using hnu_div)
+    have hneg :
+        -g' s / (g s) ^ (2 : ℕ) =
+          -(g' s / (g s) ^ (2 : ℕ)) := by
+      ring
+    rw [hneg]
+    linarith
+  have hwanti : AntitoneOn w D :=
+    antitoneOn_of_hasDerivWithinAt_nonpos (convex_Icc (0 : ℝ) 1)
+      hwcont hwderiv hwderiv_nonpos
+  have hw10 : w 1 ≤ w 0 := hwanti hzero_mem hone_mem zero_le_one
+  have hg1_pos : 0 < g 1 := hg_pos 1 hone_mem
+  have hleft_gt : nu⁻¹ < (g 1)⁻¹ + 1 / nu := by
+    have hginv_pos : 0 < (g 1)⁻¹ := inv_pos.mpr hg1_pos
+    rw [one_div]
+    linarith
+  have hright_lt : (g 0)⁻¹ < nu⁻¹ := by
+    exact (inv_lt_inv₀ hg0_pos hnu_pos).2 hg0_gt
+  have hw10' : (g 1)⁻¹ + 1 / nu ≤ (g 0)⁻¹ := by
+    simpa [w, one_div] using hw10
+  linarith
+
+/--
 Antiderivative for the scalar coefficient in Chewi Theorem 13.8:
 `d/dt (t / (1 - a t) - t) = (1 - a t)^{-2} - 1`.
 -/
@@ -9955,6 +10041,136 @@ theorem hessianSegmentGradient_hasDerivAt_of_hasFDerivAt
     HasDerivAt (fun s : ℝ => grad (hessianSegmentPoint x y s))
       (hess (hessianSegmentPoint x y t) (y - x)) t :=
   hgrad.comp_hasDerivAt t (hessianSegmentPoint_hasDerivAt x y t)
+
+/--
+Derivative of the scalar path in Chewi Lemma 13.15(2):
+`t ↦ <grad f(z_t), y - x>`.
+-/
+theorem hessianSegmentGradientInner_hasDerivWithinAt_of_hasFDerivAt
+    {grad : E -> E} {hess : E -> E →L[ℝ] E} {x y : E} {t : ℝ}
+    {u : Set ℝ}
+    (hgrad :
+      HasFDerivAt grad (hess (hessianSegmentPoint x y t))
+        (hessianSegmentPoint x y t)) :
+    HasDerivWithinAt
+      (fun s : ℝ => inner ℝ (grad (hessianSegmentPoint x y s)) (y - x))
+      (inner ℝ (y - x) (hess (hessianSegmentPoint x y t) (y - x)))
+      u t := by
+  have hgrad_path :
+      HasDerivAt (fun s : ℝ => grad (hessianSegmentPoint x y s))
+        (hess (hessianSegmentPoint x y t) (y - x)) t :=
+    hessianSegmentGradient_hasDerivAt_of_hasFDerivAt
+      (grad := grad) (hess := hess) (x := x) (y := y) (t := t) hgrad
+  have hconst : HasDerivAt (fun _ : ℝ => y - x) 0 t :=
+    hasDerivAt_const t (y - x)
+  have hinner := HasDerivAt.inner (𝕜 := ℝ) hgrad_path hconst
+  simpa [real_inner_comm] using hinner.hasDerivWithinAt
+
+/--
+Continuity of the scalar gradient-pairing path along a convex segment.
+-/
+theorem hessianSegmentGradientInner_continuousOn_of_convex
+    {s : Set E} {grad : E -> E} {x y : E}
+    (hs : Convex ℝ s) (hx : x ∈ s) (hy : y ∈ s)
+    (hgrad_cont : ContinuousOn grad s) :
+    ContinuousOn
+      (fun t : ℝ => inner ℝ (grad (hessianSegmentPoint x y t)) (y - x))
+      (Set.Icc (0 : ℝ) 1) := by
+  have hpath : ContinuousOn (fun t : ℝ => grad (hessianSegmentPoint x y t))
+      (Set.Icc (0 : ℝ) 1) :=
+    hgrad_cont.comp (hessianSegmentPoint_continuous x y).continuousOn
+      (by
+        intro t ht
+        exact hessianSegmentPoint_mem_of_convex hs hx hy ht)
+  exact hpath.inner continuousOn_const
+
+/--
+Chewi Lemma 13.15(2), scalar segment form.  The source proof reduces to the
+reverse Riccati inequality for
+`g(t) = <grad f((1-t)x+t y), y-x>`.
+-/
+theorem chewi1315_segment_inner_le_of_sq_deriv
+    {grad : E -> E} {hess : E -> E →L[ℝ] E}
+    {x y : E} {nu : ℝ}
+    (hnu_pos : 0 < nu)
+    (hgcont : ContinuousOn
+      (fun t : ℝ => inner ℝ (grad (hessianSegmentPoint x y t)) (y - x))
+      (Set.Icc (0 : ℝ) 1))
+    (hgrad : ∀ t, t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      HasFDerivAt grad (hess (hessianSegmentPoint x y t))
+        (hessianSegmentPoint x y t))
+    (hsq_deriv : ∀ t, t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      (inner ℝ (grad (hessianSegmentPoint x y t)) (y - x)) ^ (2 : ℕ) ≤
+        nu * inner ℝ (y - x)
+          (hess (hessianSegmentPoint x y t) (y - x))) :
+    inner ℝ (grad x) (y - x) ≤ nu := by
+  have hscalar := scalar_initial_le_of_sq_le_mul_deriv_on_unit_interval
+    (g := fun t : ℝ => inner ℝ (grad (hessianSegmentPoint x y t)) (y - x))
+    (g' := fun t : ℝ => inner ℝ (y - x)
+      (hess (hessianSegmentPoint x y t) (y - x)))
+    (nu := nu) hnu_pos hgcont ?_ hsq_deriv
+  · simpa [hessianSegmentPoint_zero] using hscalar
+  · intro t ht
+    exact hessianSegmentGradientInner_hasDerivWithinAt_of_hasFDerivAt
+      (grad := grad) (hess := hess) (x := x) (y := y) (t := t)
+      (u := interior (Set.Icc (0 : ℝ) 1)) (hgrad t ht)
+
+/--
+Chewi Lemma 13.15(2), supplied-oracle barrier form.  A segment continuity
+certificate, differentiability of the gradient with Hessian derivative, and a
+Cauchy bridge at segment points discharge the source inequality
+`<grad f(x), y-x> <= nu`.
+-/
+theorem chewi1315_gradient_segment_inner_le_of_cauchy
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {thirdMixed : E -> E -> E -> ℝ}
+    {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess thirdMixed M nu)
+    (hnu_pos : 0 < nu)
+    (hs : Convex ℝ s) {x y : E} (hx : x ∈ s) (hy : y ∈ s)
+    (hgcont : ContinuousOn
+      (fun t : ℝ => inner ℝ (grad (hessianSegmentPoint x y t)) (y - x))
+      (Set.Icc (0 : ℝ) 1))
+    (hgrad : ∀ t, t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      HasFDerivAt grad (hess (hessianSegmentPoint x y t))
+        (hessianSegmentPoint x y t))
+    (hcauchy : ∀ ⦃z : E⦄, z ∈ s -> ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess z v * localNorm hess z w) :
+    inner ℝ (grad x) (y - x) ≤ nu := by
+  refine chewi1315_segment_inner_le_of_sq_deriv
+    (grad := grad) (hess := hess) (x := x) (y := y) (nu := nu)
+    hnu_pos hgcont hgrad ?_
+  intro t ht
+  have hz : hessianSegmentPoint x y t ∈ s :=
+    hessianSegmentPoint_mem_of_convex_interior hs hx hy ht
+  exact chewi1315_gradient_inner_sq_le_of_cauchy
+    (hess := hess) (grad := grad) (invHess := invHess)
+    (thirdMixed := thirdMixed) (M := M) (nu := nu)
+    hbar hz (hcauchy hz) (y - x)
+
+/--
+Chewi Lemma 13.15(2) with the scalar segment continuity discharged from
+continuity of the supplied gradient oracle on the convex domain.
+-/
+theorem chewi1315_gradient_segment_inner_le_of_cauchy_continuousOn
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {thirdMixed : E -> E -> E -> ℝ}
+    {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess thirdMixed M nu)
+    (hnu_pos : 0 < nu)
+    (hs : Convex ℝ s) {x y : E} (hx : x ∈ s) (hy : y ∈ s)
+    (hgrad_cont : ContinuousOn grad s)
+    (hgrad : ∀ t, t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      HasFDerivAt grad (hess (hessianSegmentPoint x y t))
+        (hessianSegmentPoint x y t))
+    (hcauchy : ∀ ⦃z : E⦄, z ∈ s -> ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess z v * localNorm hess z w) :
+    inner ℝ (grad x) (y - x) ≤ nu :=
+  chewi1315_gradient_segment_inner_le_of_cauchy
+    (hess := hess) (grad := grad) (invHess := invHess)
+    (thirdMixed := thirdMixed) (M := M) hbar hnu_pos hs hx hy
+    (hessianSegmentGradientInner_continuousOn_of_convex hs hx hy hgrad_cont)
+    hgrad hcauchy
 
 /--
 Chewi Theorem 13.8 gradient fundamental-theorem identity along the segment:

@@ -139,7 +139,7 @@ stale and cannot be edited until the whole textbook goal is complete.
 
 Current superseding update: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma
-13.15.  The newest verified local packet adds `localNorm_neg`,
+13.15.  The latest verified local packets add `localNorm_neg`,
 `abs_inner_le_dualLocalNorm_mul_localNorm_of_cauchy`,
 `inner_sq_le_dualLocalNorm_sq_mul_localNorm_sq_of_cauchy`,
 `abs_inner_le_sqrt_mul_localNorm_of_one_sided_cauchy`,
@@ -148,14 +148,23 @@ Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma
 consumer `chewi1315_polytopeSlackNegLog_range_gradient_inner_sq_le` in
 `StatInference/Optimization/InteriorPoint.lean`.  This closes Lemma 13.15(1)
 in supplied-oracle form and for the arbitrary finite-row log barrier range
-model using the already-compiled Example 13.14 Cauchy bridge.  The next
-theorem-sized packet should attack Lemma 13.15(2): prove the segment
-reciprocal/ODE inequality from the part-(1) quadratic bound and the Hessian
-derivative identity along `z_t = (1-t)x+t*y`, or record the precise missing
-calculus/sign API if the source's inverse-derivative argument requires a
-stronger positivity/crossing hypothesis.  Do not route the next run back to
-product/sum/affine/range barrier setup unless a new downstream proof directly
-needs one of those already-verified declarations.
+model using the already-compiled Example 13.14 Cauchy bridge.  The latest
+Lemma 13.15(2) packet adds
+`scalar_initial_le_of_sq_le_mul_deriv_on_unit_interval`,
+`hessianSegmentGradientInner_hasDerivWithinAt_of_hasFDerivAt`,
+`hessianSegmentGradientInner_continuousOn_of_convex`,
+`chewi1315_segment_inner_le_of_sq_deriv`,
+`chewi1315_gradient_segment_inner_le_of_cauchy`, and
+`chewi1315_gradient_segment_inner_le_of_cauchy_continuousOn`.  This discharges
+the source reciprocal/sign/zero-crossing argument in Lean and proves the
+source inequality from convex-domain segment membership, gradient continuity,
+gradient/Hessian differentiability, and the local Cauchy bridge.  The next
+theorem-sized packet should either instantiate these gates for a concrete
+barrier family such as the arbitrary finite-row log barrier, or move directly
+into the path-following decrement recurrence after recording which
+continuity/differentiability certificates are still supplied.  Do not route the
+next run back to product/sum/affine/range barrier setup unless a new downstream
+proof directly needs one of those already-verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

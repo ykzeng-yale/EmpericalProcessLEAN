@@ -176,9 +176,18 @@ oracle.  The Chewi Lemma 13.15(1) packet
 `chewi1315_polytopeSlackNegLog_range_gradient_inner_sq_le` now turns the
 compiled Cauchy bridges into the source squared gradient inequality, both in
 supplied-oracle form and for the concrete finite-row range log barrier.  The
-next Chapter 13 theorem-sized target should be Lemma 13.15(2)'s
-segment/reciprocal inequality; audit the sign/zero-crossing step in Chewi's
-informal proof before committing to an exact Lean statement.  The
+Lemma 13.15(2) packet
+`scalar_initial_le_of_sq_le_mul_deriv_on_unit_interval`,
+`hessianSegmentGradientInner_hasDerivWithinAt_of_hasFDerivAt`,
+`hessianSegmentGradientInner_continuousOn_of_convex`,
+`chewi1315_segment_inner_le_of_sq_deriv`,
+`chewi1315_gradient_segment_inner_le_of_cauchy`, and
+`chewi1315_gradient_segment_inner_le_of_cauchy_continuousOn` now formalizes
+Chewi's reciprocal-derivative/sign argument and turns the squared gradient
+inequality plus the segment gradient derivative into
+`<grad f(x), y-x> <= nu`.  The next Chapter 13 theorem-sized target should
+instantiate these supplied gates for a concrete barrier family or use them in
+the path-following decrement recurrence.  The
 row-decomposition lemmas
 `polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
 `mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`, and

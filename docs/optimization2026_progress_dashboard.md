@@ -46,20 +46,25 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Latest Chapter 13 frontier: Chewi Example 13.14's arbitrary finite-row
   logarithmic barrier route is compiled via the concrete range inverse
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess`, and
-  Chewi Lemma 13.15(1) now has compiled Cauchy-to-square wrappers.  Reusable
-  declarations include `localNorm_neg`,
+  Chewi Lemma 13.15 now has compiled Cauchy-to-square and segment reciprocal
+  wrappers.  Reusable declarations include `localNorm_neg`,
   `abs_inner_le_dualLocalNorm_mul_localNorm_of_cauchy`,
   `inner_sq_le_dualLocalNorm_sq_mul_localNorm_sq_of_cauchy`,
   `abs_inner_le_sqrt_mul_localNorm_of_one_sided_cauchy`,
   `inner_sq_le_mul_hessian_of_one_sided_cauchy`,
   `chewi1315_gradient_inner_sq_le_of_cauchy`, and
-  `chewi1315_polytopeSlackNegLog_range_gradient_inner_sq_le`.
-- Next Chapter 13 target: Chewi Lemma 13.15(2), using the segment
-  `z_t = (1-t)x+t*y`, the part-(1) quadratic bound, and the derivative identity
-  for `t ↦ <grad f(z_t), y-x>`.  The first proof risk is the source's
-  reciprocal-derivative/sign step; if it needs an additional positivity or
-  zero-crossing split, record that exact blocker instead of falling back to
-  already-finished Proposition 13.11 product/sum/affine/range setup.
+  `chewi1315_polytopeSlackNegLog_range_gradient_inner_sq_le`, plus
+  `scalar_initial_le_of_sq_le_mul_deriv_on_unit_interval`,
+  `hessianSegmentGradientInner_hasDerivWithinAt_of_hasFDerivAt`,
+  `hessianSegmentGradientInner_continuousOn_of_convex`,
+  `chewi1315_segment_inner_le_of_sq_deriv`,
+  `chewi1315_gradient_segment_inner_le_of_cauchy`, and
+  `chewi1315_gradient_segment_inner_le_of_cauchy_continuousOn`.
+- Next Chapter 13 target: instantiate Lemma 13.15(2)'s supplied gates for a
+  concrete barrier family, or use the compiled Lemma 13.15 wrappers in the
+  path-following decrement recurrence.  The reciprocal-derivative/sign step is
+  no longer a blocker; remaining gates are concrete continuity,
+  gradient/Hessian differentiability, and local Cauchy bridge certificates.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
