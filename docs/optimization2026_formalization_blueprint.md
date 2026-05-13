@@ -214,7 +214,12 @@ positive main-stage parameter.  The extracted final-tail layer adds
 and
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBoundLogBound`,
 separating the count/log scalar tail budget from the source-start
-initialization wrapper.
+initialization wrapper.  The uniform-tail layer adds
+`chewi1316_exists_preliminary_final_tail_budget_indices_of_uniformTailBound`
+and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound`,
+choosing the preliminary log/count indices internally from a positive uniform
+tail bound.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

@@ -264,6 +264,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBoundLogBound`,
   factoring the count/log scalar algebra into a reusable final-tail budget and
   routing the source-start initialization through the direct final-tail wrapper.
+  The uniform-tail packet adds
+  `chewi1316_exists_preliminary_final_tail_budget_indices_of_uniformTailBound`
+  and
+  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound`,
+  choosing the preliminary log/count indices internally from any positive
+  uniform source tail bound and positive `c0`.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
