@@ -291,23 +291,30 @@ and
 `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound_adjointCoordFactor`.
 It converts a final preliminary-path decrement at `tPre` plus small budgets
 `|tPre| * ||grad phi(xbar0)||*` and `|tMain| * ||a||*` into the main-stage
-initial condition `lambda <= 1/4`.  Together these formalize the reverse
+initial condition `lambda <= 1/4`.  The finite sequence layer adds
+`preliminaryPath_decrement_bound_of_step`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm`.
+It carries an arbitrary preliminary decrement budget sequence by induction,
+then rewrites the source decreasing parameter as
+`t_N = (1 - c0 / sqrt nu)^N * tStart` before applying the budget bridge.
+Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
-is a sequence-level preliminary convergence/iteration-count wrapper matching
-the Nesterov §5.3.5 citation: carry the decreasing `t_n` recurrence and
-one-step invariant until a supplied log/count condition reaches an `x0,t0`
-suitable for the main stage, using the preliminary-to-main budget bridge as the
-target interface.  Do not route the next run back to product, sum,
+is the logarithmic/count-side scalar comparison matching the Nesterov §5.3.5
+citation: choose `N`, `tPre`, and `tMain` so the closed-form sequence budget
+fits the `1/4` initialization budget.  Do not route the next run back to product,
+sum,
 affine/range, positive-orthant barrier setup, the already-compiled Lemma
 13.16/main-stage algebra, the dual-norm interface, the generic main-stage
 wrappers, feasible-step membership, the positive-orthant main-stage one-step
 invariant, the closed-form parameter recurrence, the objective-gap stopping
-rule, exact-center/main-stage budget initialization, or preliminary
-endpoint/decreasing-gradient/decreasing-invariant algebra unless a new downstream
-proof directly needs one of those verified declarations.
+rule, exact-center/main-stage budget initialization, preliminary-to-main bridge,
+or finite preliminary sequence induction unless a new downstream proof directly
+needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

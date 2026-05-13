@@ -136,10 +136,15 @@ newest preliminary-to-main bridge adds
 and
 `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound_adjointCoordFactor`,
 turning a final preliminary decrement plus small preliminary/main scaled
-dual-norm budgets into the main-stage `lambda <= 1/4` initialization.  The next
-live route is a sequence-level preliminary convergence/count wrapper matching
-the reverse path-following argument cited to Nesterov §5.3.5 and targeting this
-budget interface, then the strictly-feasible-start discussion.
+dual-norm budgets into the main-stage `lambda <= 1/4` initialization.  The
+finite sequence layer adds `preliminaryPath_decrement_bound_of_step`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm`,
+carrying a preliminary decrement budget sequence by induction and rewriting
+`t_N = (1 - c0 / sqrt nu)^N * tStart`.  The next live route is the
+logarithmic/count-side scalar comparison matching the reverse path-following
+argument cited to Nesterov §5.3.5, then the strictly-feasible-start discussion.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

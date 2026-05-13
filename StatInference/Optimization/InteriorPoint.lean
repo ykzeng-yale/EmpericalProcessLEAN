@@ -12213,6 +12213,103 @@ theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_boun
       (dualLocalNorm_add_le_of_adjointCoordFactor hinv_factor)
       (dualLocalNorm_smul_of_adjointCoordFactor hinv_factor)
 
+theorem preliminaryPath_decrement_bound_of_step
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1)) :
+    ∀ N,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq N))
+          invHess (xseq N) ≤ lambdaSeq N := by
+  intro N
+  induction N with
+  | zero =>
+      simpa using hinit
+  | succ n ih =>
+      exact hstep n ih
+
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {tMain : ℝ} {N : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hbudget :
+      |tMain| * dualLocalNorm invHess (xseq N) a +
+          (lambdaSeq N +
+            |tseq N| * dualLocalNorm invHess (xseq N) (phiGrad xbar0)) ≤
+        1 / 4) :
+    newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+      1 / 4 := by
+  have hpre :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq N))
+          invHess (xseq N) ≤ lambdaSeq N :=
+    preliminaryPath_decrement_bound_of_step
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      hinit hstep N
+  exact
+    chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound_adjointCoordFactor
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (x := xseq N) (a := a) (coord := coord) (tPre := tseq N)
+      (tMain := tMain) (lambdaPre := lambdaSeq N)
+      hinv_factor hpre hbudget
+
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {tMain tStart c0 nu : ℝ} {N : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (ht0 : tseq 0 = tStart)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hbudget :
+      |tMain| * dualLocalNorm invHess (xseq N) a +
+          (lambdaSeq N +
+            |(1 - c0 / Real.sqrt nu) ^ N * tStart| *
+              dualLocalNorm invHess (xseq N) (phiGrad xbar0)) ≤
+        1 / 4) :
+    newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+      1 / 4 := by
+  have htclosed :=
+    chewi1316_preliminaryStageParameter_eq_pow_mul_of_delta
+      (tseq := tseq) (tStart := tStart) (c0 := c0) (nu := nu)
+      ht0 htstep N
+  exact
+    chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord) (tMain := tMain) (N := N)
+      hinv_factor hinit hstep
+      (by simpa [htclosed] using hbudget)
+
 theorem chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse
     [CompleteSpace E]
     {hess invHess : E -> E →L[ℝ] E} {grad : E -> E}

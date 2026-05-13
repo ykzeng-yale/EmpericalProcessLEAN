@@ -169,8 +169,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound_adjointCoordFactor`,
   converting a final preliminary decrement plus small preliminary/main scaled
   dual-norm budgets into the main-stage `lambda <= 1/4` initialization.
-  Remaining gate: sequence-level preliminary convergence/iteration-count
-  wrapper using this budget interface, then strictly-feasible-start discussion.
+  The finite sequence layer adds `preliminaryPath_decrement_bound_of_step`,
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence`,
+  and
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm`,
+  carrying a preliminary decrement budget sequence by induction and rewriting
+  `t_N = (1 - c0 / sqrt nu)^N * tStart`.  Remaining gate:
+  logarithmic/count-side scalar comparison for the Nesterov §5.3.5 initialization
+  budget, then strictly-feasible-start discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
