@@ -149,9 +149,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   `centralPathGradient_decrease_eq_of_tNext`, `preliminaryPathDirection`,
   `preliminaryPathGrad`, endpoint identities and zero-decrement wrappers for
   `t = 1` and `t = 0`, `preliminaryPathGrad_hasFDerivAt`, and
-  `preliminaryPathGradient_decrease_eq_of_tNext`.  Remaining gate: supplied
-  preliminary convergence/iteration-count wrapper, then
-  strictly-feasible-start discussion.
+  `preliminaryPathGradient_decrease_eq_of_tNext`.  The latest verified
+  preliminary invariant packet adds the decreasing-update pre-Newton bounds and
+  source-shaped post-Newton wrappers:
+  `chewi1316_preNewtonDecrement_le_decrease_bound`,
+  `chewi1316_preNewtonDecrement_le_decrease_bound_of_preliminaryPathGradient_adjointSqrt_right_inverse`,
+  `chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_gradientDecrease_and_newtonBound`,
+  `chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment`,
+  and
+  `chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
+  Remaining gate: sequence-level preliminary convergence/iteration-count
+  wrapper, then strictly-feasible-start discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

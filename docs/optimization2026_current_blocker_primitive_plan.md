@@ -261,19 +261,31 @@ preliminary-stage packet adds
 `preliminaryPath_newtonDecrement_one_self_le_quarter`,
 `preliminaryPath_newtonDecrement_zero_of_analyticalCenter`,
 `preliminaryPathGrad_hasFDerivAt`, and
-`preliminaryPathGradient_decrease_eq_of_tNext`.  This formalizes the reverse
-path-following setup with vector `-grad phi(xbar0)`, decreasing `t`, endpoint
-stationarity at `t = 1` and `t = 0`, and zero Newton decrement at the source
-endpoints.  The next live gate is to add a supplied-interface preliminary
-convergence wrapper matching the Nesterov §5.3.5 citation: from the decreasing
-path update plus a supplied iteration-count/log bound, produce an `x0,t0` with
-`lambda <= 1/4` for the main stage.  Do not route the next run back to product,
-sum, affine/range, positive-orthant barrier setup, the already-compiled Lemma
+`preliminaryPathGradient_decrease_eq_of_tNext`.  The newest preliminary
+invariant packet then adds
+`chewi1316_preNewtonDecrement_le_decrease_bound`,
+`chewi1316_preNewtonDecrement_le_decrease_bound_of_adjointCoordFactor`,
+`chewi1316_preNewtonDecrement_le_decrease_bound_of_adjointSqrt_right_inverse`,
+`chewi1316_preNewtonDecrement_le_decrease_bound_of_gradientUpdate_adjointSqrt_right_inverse`,
+`chewi1316_preNewtonDecrement_le_decrease_bound_of_preliminaryPathGradient_adjointSqrt_right_inverse`,
+`chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_gradientDecrease_and_newtonBound`,
+`chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment`,
+and
+`chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
+Together these formalize the reverse path-following setup with vector
+`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
+zero Newton decrement at the source endpoints, and the one-step post-Newton
+`lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
+is a sequence-level preliminary convergence/iteration-count wrapper matching
+the Nesterov §5.3.5 citation: carry the decreasing `t_n` recurrence and
+one-step invariant until a supplied log/count condition reaches an `x0,t0`
+suitable for the main stage.  Do not route the next run back to product, sum,
+affine/range, positive-orthant barrier setup, the already-compiled Lemma
 13.16/main-stage algebra, the dual-norm interface, the generic main-stage
 wrappers, feasible-step membership, the positive-orthant main-stage one-step
 invariant, the closed-form parameter recurrence, the objective-gap stopping
-rule, or preliminary endpoint/decreasing-gradient algebra unless a new
-downstream proof directly needs one of those verified declarations.
+rule, or preliminary endpoint/decreasing-gradient/decreasing-invariant algebra
+unless a new downstream proof directly needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

@@ -116,9 +116,17 @@ preliminary-stage layer adds
 `centralPathGradient_decrease_eq_of_tNext`, `preliminaryPathDirection`,
 `preliminaryPathGrad`, endpoint identities and zero-decrement wrappers for
 `t = 1` and `t = 0`, `preliminaryPathGrad_hasFDerivAt`, and
-`preliminaryPathGradient_decrease_eq_of_tNext`.  The next live route is a
-supplied-interface preliminary convergence wrapper matching the reverse
-path-following argument cited to Nesterov §5.3.5, then the
+`preliminaryPathGradient_decrease_eq_of_tNext`.  The newest verified
+preliminary invariant layer adds the decreasing-update pre-Newton bounds and
+post-Newton wrappers
+`chewi1316_preNewtonDecrement_le_decrease_bound`,
+`chewi1316_preNewtonDecrement_le_decrease_bound_of_preliminaryPathGradient_adjointSqrt_right_inverse`,
+`chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_gradientDecrease_and_newtonBound`,
+`chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment`,
+and
+`chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
+The next live route is a sequence-level preliminary convergence/count wrapper
+matching the reverse path-following argument cited to Nesterov §5.3.5, then the
 strictly-feasible-start discussion.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
