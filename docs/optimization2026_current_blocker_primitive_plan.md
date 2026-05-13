@@ -551,6 +551,14 @@ packet adds
 	pre-Newton displacements, avoiding the incorrect shortcut that the old
 	residual sequence `lambdaSeq n` controls the next-parameter Newton step
 	norm.
+	The pre-decrement-budget cleanup adds
+	`chewi1316_uniformTailBound_of_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
+	These derive the local step norm from
+	`lambda_{f_{t_{n+1}}}(x_n)` using
+	`localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse`, so
+	callers no longer need to provide raw local-norm step bounds.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
@@ -565,11 +573,11 @@ packet adds
 	`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 	zero Newton decrement at the source endpoints, and the one-step post-Newton
 	`lambda <= 1/4` and successor `lambda <= 1/8` invariants for the supplied
-	preliminary path.  The next live gate is now sharper: discharge or replace
-	the separate next-parameter `stepBudget` source-displacement control for
-	the concrete Chewi/Nesterov preliminary path, while supplying successor
-	membership, global Hessian derivative/mixed-third data, and
-	square-root-coordinate data.
+	preliminary path.  The next live gate is now sharper: prove a summable
+	next-parameter pre-Newton decrement budget for the concrete Chewi/Nesterov
+	preliminary path, or replace it with a stronger analytical-center radius
+	argument, while supplying successor membership, global Hessian
+	derivative/mixed-third data, and square-root-coordinate data.
 	Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has

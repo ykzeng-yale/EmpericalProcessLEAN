@@ -365,6 +365,14 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`gradSeq n = grad f_{t_{n+1}}` and keeps a separate `stepBudget` for the
 	pre-Newton displacement norms, so downstream work must prove that budget
 	or use a sharper analytical-center radius argument.
+	The pre-decrement-budget cleanup adds
+	`chewi1316_uniformTailBound_of_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
+	It derives the step local-norm bound from
+	`lambda_{f_{t_{n+1}}}(x_n)` using the right-inverse Newton
+	local-norm/decrement identity, leaving the summed pre-Newton decrement
+	budget as the sharper downstream scalar gate.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

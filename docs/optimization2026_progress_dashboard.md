@@ -417,6 +417,14 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `gradSeq n = grad f_{t_{n+1}}` and separates the pre-Newton displacement
 	  `stepBudget` from the residual budget sequence `lambdaSeq`, avoiding the
 	  old wrong-index shortcut.
+	  The pre-decrement-budget cleanup adds
+	  `chewi1316_uniformTailBound_of_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily`
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
+	  These derive the local step norm from
+	  `lambda_{f_{t_{n+1}}}(x_n)` via the compiled right-inverse
+	  local-norm/decrement identity, so raw local-norm bounds are no longer the
+	  live interface.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
@@ -430,8 +438,8 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  now the concrete Chewi/Nesterov analytical-center data for the
 	  next-parameter preliminary Newton recurrence: successor membership, a
 	  global derivative package, square-root-coordinate data, and either a
-	  proved next-parameter `stepBudget` source-displacement estimate or an
-	  alternative analytical-center radius route.
+	  summable next-parameter pre-Newton decrement budget or an alternative
+	  analytical-center radius route.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
