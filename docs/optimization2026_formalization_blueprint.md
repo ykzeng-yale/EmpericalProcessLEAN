@@ -155,7 +155,19 @@ pullbacks.  The affine pulled-gradient packet
 `chewi1314_polytopeSlackNegLog_hess_invHessSurjective_grad` now transfers the
 matching Hessian right-inverse identity on the pulled barrier gradient.  This
 should be used as the concrete gradient-local inverse gate for full-row-rank
-or surjective slack-map pullbacks.  The row-decomposition lemmas
+or surjective slack-map pullbacks.  The range-slice inverse packet
+`dualLocalNorm_le_sqrt_of_cauchy_and_hessian_right_inverse`,
+`continuousLinearMap_range_eq_top_of_quadratic_pos`,
+`barrierAffineRangeInvHessOfPos`,
+`positiveOrthantNegLogHessCLM_quadratic_pos`,
+`chewi1314_polytopeSlackNegLog_rangeInvHess`,
+`chewi1314_polytopeSlackNegLog_range_componentCauchy`, and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess` now
+closes the arbitrary finite-row Example 13.14 route without a surjectivity
+hypothesis.  The proof inverts the positive-definite Hessian on the finite
+slack-map range and obtains the barrier-gradient bound from Cauchy plus the
+right-inverse identity, avoiding the previously exposed range-gradient energy
+oracle.  The row-decomposition lemmas
 `polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
 `mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`, and
 `polytopeSlackSet_eq_iInter_halfspaceSlackSet` now expose the finite-row

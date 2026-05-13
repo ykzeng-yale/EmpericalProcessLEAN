@@ -160,6 +160,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `barrierAffinePreimageHess_invHessRightInverse_grad`,
   `chewi1314_polytopeSlackNegLog_hess_invHessRightInverse_grad`, and
   `chewi1314_polytopeSlackNegLog_hess_invHessSurjective_grad`,
+  plus the concrete range-slice inverse closure
+  `barrierAffineRangeInvHessOfPos`,
+  `chewi1314_polytopeSlackNegLog_rangeInvHess`,
+  `chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse`,
+  `chewi1314_polytopeSlackNegLog_range_componentCauchy`, and
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess`,
   plus the head/tail induction
   wrappers
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum` and
@@ -188,11 +194,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   orthant-preimage route is compiled for any slack map with a supplied right
   inverse, surjective linear part, or a supplied inverse-Hessian oracle on the
   slack-map range satisfying a range Hessian right-inverse identity and the
-  concrete range-gradient quadratic energy bound.  For fully general row
-  families, next construct the concrete range oracle/right-inverse/energy bound
-  using the new pulled-gradient Hessian identity when the slack map is
-  full-row-rank/surjective,
-  or instantiate the row-decomposition
+  concrete range-gradient quadratic energy bound.  The fully general row-family
+  route is now closed by the concrete range-slice inverse theorem
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess`, which
+  constructs the finite-dimensional range inverse from strict Hessian
+  positivity and derives the gradient bound from the positive-orthant Cauchy
+  bridge.  Next Chapter 13 work should package/report Example 13.14 or use it
+  as a downstream barrier-calculus input, or instantiate the row-decomposition
   induction by providing the summed inverse-Hessian nonnegativity /
   inverse-local identity and the recursive tail component-Cauchy bridge.  For
   full-row-rank tail slack systems, the tail Cauchy bridge is now provided by

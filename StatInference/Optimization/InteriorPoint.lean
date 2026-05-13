@@ -674,6 +674,44 @@ theorem localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse
     _ = (dualLocalNorm invHess x v) ^ (2 : ℕ) :=
       (dualLocalNorm_sq_eq_inner hinv_nonneg).symm
 
+theorem dualLocalNorm_le_sqrt_of_cauchy_and_hessian_right_inverse
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {x g : E} {nu : ℝ}
+    (hhess_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w))
+    (hright : ∀ v : E, hess x (invHess x v) = v)
+    (hcauchy : ∀ w : E,
+      inner ℝ g w ≤ Real.sqrt nu * localNorm hess x w) :
+    dualLocalNorm invHess x g ≤ Real.sqrt nu := by
+  let D := dualLocalNorm invHess x g
+  have hD_nonneg : 0 ≤ D := by
+    dsimp [D]
+    exact dualLocalNorm_nonneg invHess x g
+  by_cases hD_zero : D = 0
+  · simp [D, hD_zero]
+  have hD_pos : 0 < D := lt_of_le_of_ne hD_nonneg (Ne.symm hD_zero)
+  have hinv_nonneg : 0 ≤ inner ℝ g (invHess x g) :=
+    inverseHessianQuadratic_nonneg_of_hessian_right_inverse
+      (hess := hess) (invHess := invHess) (x := x)
+      hhess_nonneg hright g
+  have hD_sq : D ^ (2 : ℕ) = inner ℝ g (invHess x g) := by
+    dsimp [D]
+    exact dualLocalNorm_sq_eq_inner hinv_nonneg
+  have hlocal :
+      localNorm hess x (invHess x g) = D := by
+    dsimp [D]
+    exact localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse
+      (hess := hess) (invHess := invHess) (x := x)
+      hhess_nonneg hright g
+  have hD_sq_bound : D ^ (2 : ℕ) ≤ Real.sqrt nu * D := by
+    calc
+      D ^ (2 : ℕ) = inner ℝ g (invHess x g) := hD_sq
+      _ ≤ Real.sqrt nu * localNorm hess x (invHess x g) :=
+        hcauchy (invHess x g)
+      _ = Real.sqrt nu * D := by rw [hlocal]
+  have hmul : D * D ≤ Real.sqrt nu * D := by
+    simpa [pow_two] using hD_sq_bound
+  exact le_of_mul_le_mul_right hmul hD_pos
+
 /--
 Nonnegativity of the supplied inverse-Hessian quadratic form from the
 adjoint-coordinate factorization used in the Theorem 13.8 Rayleigh route.
@@ -3326,6 +3364,76 @@ theorem barrierAffineRangeHess_quadratic_nonneg
     0 ≤ inner ℝ v (barrierAffineRangeHess A b hess y v) := by
   simpa [barrierAffineRangeHess] using
     barrierAffinePreimageHess_quadratic_nonneg A.range.subtypeL b hess y v hhess
+
+omit [CompleteSpace F] in
+theorem barrierAffineRangeHess_quadratic_pos
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (hess : E -> E →L[ℝ] E) (y : A.range) {v : A.range}
+    (hhess : ∀ w : E, w ≠ 0 ->
+      0 < inner ℝ w (hess ((y : E) + b) w))
+    (hv : v ≠ 0) :
+    0 < inner ℝ v (barrierAffineRangeHess A b hess y v) := by
+  have hv_coe : (v : E) ≠ 0 := by
+    intro h
+    exact hv (Subtype.ext h)
+  rw [barrierAffineRangeHess, barrierAffinePreimageHess_quadratic_eq]
+  exact hhess (v : E) hv_coe
+
+omit [CompleteSpace E] in
+theorem continuousLinearMap_range_eq_top_of_quadratic_pos
+    (T : E →L[ℝ] E) [FiniteDimensional ℝ E]
+    (hpos : ∀ v : E, v ≠ 0 -> 0 < inner ℝ v (T v)) :
+    T.range = ⊤ := by
+  rw [← LinearMap.ker_eq_bot_iff_range_eq_top]
+  rw [LinearMap.ker_eq_bot]
+  intro v w hvw
+  by_contra hvw_ne
+  have hdiff_ne : v - w ≠ 0 := sub_ne_zero.mpr hvw_ne
+  have hTdiff : T (v - w) = 0 := by
+    rw [map_sub]
+    exact sub_eq_zero.mpr hvw
+  have hquad_pos := hpos (v - w) hdiff_ne
+  have hquad_zero : inner ℝ (v - w) (T (v - w)) = 0 := by
+    rw [hTdiff]
+    simp
+  linarith
+
+noncomputable def barrierAffineRangeInvHessOfPos
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (s : Set E) (hess : E -> E →L[ℝ] E)
+    (hpos : ∀ ⦃y : A.range⦄, y ∈ barrierAffineRangeSet A b s ->
+      ∀ v : A.range, v ≠ 0 ->
+        0 < inner ℝ v (barrierAffineRangeHess A b hess y v)) :
+    A.range -> A.range →L[ℝ] A.range := by
+  classical
+  intro y
+  exact
+    if hy : y ∈ barrierAffineRangeSet A b s then
+      barrierAffinePreimageRightInverseOfSurjective
+        (barrierAffineRangeHess A b hess y)
+        (continuousLinearMap_range_eq_top_of_quadratic_pos
+          (barrierAffineRangeHess A b hess y) (hpos hy))
+    else 0
+
+omit [CompleteSpace F] in
+theorem barrierAffineRangeInvHessOfPos_right_inverse
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (s : Set E) (hess : E -> E →L[ℝ] E)
+    (hpos : ∀ ⦃y : A.range⦄, y ∈ barrierAffineRangeSet A b s ->
+      ∀ v : A.range, v ≠ 0 ->
+        0 < inner ℝ v (barrierAffineRangeHess A b hess y v))
+    {y : A.range} (hy : y ∈ barrierAffineRangeSet A b s)
+    (v : A.range) :
+    barrierAffineRangeHess A b hess y
+        (barrierAffineRangeInvHessOfPos A b s hess hpos y v) = v := by
+  classical
+  have hspec :=
+    barrierAffinePreimageRightInverseOfSurjective_spec
+      (barrierAffineRangeHess A b hess y)
+      (continuousLinearMap_range_eq_top_of_quadratic_pos
+        (barrierAffineRangeHess A b hess y) (hpos hy))
+  have happ := congrArg (fun L : A.range →L[ℝ] A.range => L v) hspec
+  simpa [barrierAffineRangeInvHessOfPos, hy, ContinuousLinearMap.comp_apply] using happ
 
 omit [CompleteSpace F] [CompleteSpace E] in
 theorem barrierAffineRangeSet_preimage_rangeRestrict_eq
@@ -13981,6 +14089,28 @@ theorem positiveOrthantNegLogHessCLM_quadratic_nonneg {d : ℕ}
   rw [hfactor]
   exact sq_nonneg _
 
+theorem positiveOrthantNegLogHessCLM_quadratic_pos {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
+    {v : EuclideanSpace ℝ (Fin d)} (hv : v ≠ 0) :
+    0 < inner ℝ v (positiveOrthantNegLogHessCLM x v) := by
+  let S : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+    (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap
+  have hmodel :
+      positiveOrthantNegLogHessCLM x = (ContinuousLinearMap.adjoint S).comp S := by
+    simpa [S] using positiveOrthantNegLogHessCLM_sqrtCoord_model hx
+  have hquad :
+      inner ℝ v (positiveOrthantNegLogHessCLM x v) = ‖S v‖ ^ (2 : ℕ) := by
+    rw [hmodel]
+    simpa using (ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right S v).symm
+  have hSv_ne : S v ≠ 0 := by
+    intro hSv
+    apply hv
+    have hback := congrArg (fun z =>
+      (positiveOrthantNegLogSqrtCoord x).symm z) hSv
+    simpa [S] using hback
+  rw [hquad]
+  exact sq_pos_of_ne_zero (norm_ne_zero_iff.mpr hSv_ne)
+
 theorem positiveOrthantNegLog_localNorm_sq_eq_sum {d : ℕ}
     {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
     (v : EuclideanSpace ℝ (Fin d)) :
@@ -15217,6 +15347,177 @@ theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated_of
         ((positiveOrthantNegLog_selfConcordantBarrierOn (d := m)).self_concordant.hess_nonneg
           hy))
     (hright hy) v
+
+theorem chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {y : (polytopeSlackCLM a).range}
+    (hy : y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m)))
+    {v : (polytopeSlackCLM a).range} (hv : v ≠ 0) :
+    0 < inner ℝ v
+      (barrierAffineRangeHess (polytopeSlackCLM a) b
+        positiveOrthantNegLogHessCLM y v) := by
+  exact barrierAffineRangeHess_quadratic_pos (polytopeSlackCLM a) b
+    positiveOrthantNegLogHessCLM y
+    (by
+      intro w hw
+      exact positiveOrthantNegLogHessCLM_quadratic_pos hy hw)
+    hv
+
+noncomputable def chewi1314_polytopeSlackNegLog_rangeInvHess
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :
+    (polytopeSlackCLM a).range ->
+      (polytopeSlackCLM a).range →L[ℝ] (polytopeSlackCLM a).range :=
+  barrierAffineRangeInvHessOfPos (polytopeSlackCLM a) b
+    (positiveOrthant (d := m)) positiveOrthantNegLogHessCLM
+    (by
+      intro y hy v hv
+      exact chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos a b hy hv)
+
+theorem chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {y : (polytopeSlackCLM a).range}
+    (hy : y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m)))
+    (v : (polytopeSlackCLM a).range) :
+    barrierAffineRangeHess (polytopeSlackCLM a) b
+        positiveOrthantNegLogHessCLM y
+        (chewi1314_polytopeSlackNegLog_rangeInvHess a b y v) = v := by
+  exact barrierAffineRangeInvHessOfPos_right_inverse (polytopeSlackCLM a) b
+    (positiveOrthant (d := m)) positiveOrthantNegLogHessCLM
+    (by
+      intro y hy v hv
+      exact chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos a b hy hv)
+    hy v
+
+set_option maxHeartbeats 800000 in
+theorem chewi1314_polytopeSlackNegLog_range_componentCauchy
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {y : (polytopeSlackCLM a).range}
+    (hy : y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m)))
+    (w : (polytopeSlackCLM a).range) :
+    inner ℝ
+        (barrierAffineRangeGrad (polytopeSlackCLM a) b
+          positiveOrthantNegLogGrad y) w ≤
+      Real.sqrt (m : ℝ) *
+        localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM a) b
+            positiveOrthantNegLogHessCLM) y w := by
+  have hinner :
+      inner ℝ
+          (barrierAffineRangeGrad (polytopeSlackCLM a) b
+            positiveOrthantNegLogGrad y) w =
+        inner ℝ (positiveOrthantNegLogGrad ((y : EuclideanSpace ℝ (Fin m)) + b))
+          (w : EuclideanSpace ℝ (Fin m)) := by
+    simpa [barrierAffineRangeGrad, barrierAffinePreimageGrad] using
+      (ContinuousLinearMap.adjoint_inner_left
+        (polytopeSlackCLM a).range.subtypeL w
+        (positiveOrthantNegLogGrad ((y : EuclideanSpace ℝ (Fin m)) + b)))
+  have hlocal :
+      localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM a) b
+            positiveOrthantNegLogHessCLM) y w =
+        localNorm positiveOrthantNegLogHessCLM
+          ((y : EuclideanSpace ℝ (Fin m)) + b)
+          (w : EuclideanSpace ℝ (Fin m)) := by
+    simpa [barrierAffineRangeHess] using
+      barrierAffinePreimageLocalNorm_eq
+        (polytopeSlackCLM a).range.subtypeL b
+        positiveOrthantNegLogHessCLM y w
+  have hcauchy := positiveOrthantNegLog_componentCauchy hy
+    (w : EuclideanSpace ℝ (Fin m))
+  have hgrad :=
+    (positiveOrthantNegLog_selfConcordantBarrierOn (d := m)).gradient_bound hy
+  have hlocal_nonneg :
+      0 ≤ localNorm positiveOrthantNegLogHessCLM
+        ((y : EuclideanSpace ℝ (Fin m)) + b)
+        (w : EuclideanSpace ℝ (Fin m)) :=
+    localNorm_nonneg positiveOrthantNegLogHessCLM
+      ((y : EuclideanSpace ℝ (Fin m)) + b)
+      (w : EuclideanSpace ℝ (Fin m))
+  have hgrad_mul :
+      dualLocalNorm positiveOrthantNegLogInvHessCLM
+          ((y : EuclideanSpace ℝ (Fin m)) + b)
+          (positiveOrthantNegLogGrad ((y : EuclideanSpace ℝ (Fin m)) + b)) *
+        localNorm positiveOrthantNegLogHessCLM
+          ((y : EuclideanSpace ℝ (Fin m)) + b)
+          (w : EuclideanSpace ℝ (Fin m)) ≤
+      Real.sqrt (m : ℝ) *
+        localNorm positiveOrthantNegLogHessCLM
+          ((y : EuclideanSpace ℝ (Fin m)) + b)
+          (w : EuclideanSpace ℝ (Fin m)) :=
+    mul_le_mul_of_nonneg_right hgrad hlocal_nonneg
+  calc
+    inner ℝ
+        (barrierAffineRangeGrad (polytopeSlackCLM a) b
+          positiveOrthantNegLogGrad y) w
+        = inner ℝ (positiveOrthantNegLogGrad ((y : EuclideanSpace ℝ (Fin m)) + b))
+            (w : EuclideanSpace ℝ (Fin m)) := hinner
+    _ ≤ dualLocalNorm positiveOrthantNegLogInvHessCLM
+          ((y : EuclideanSpace ℝ (Fin m)) + b)
+          (positiveOrthantNegLogGrad ((y : EuclideanSpace ℝ (Fin m)) + b)) *
+        localNorm positiveOrthantNegLogHessCLM
+          ((y : EuclideanSpace ℝ (Fin m)) + b)
+          (w : EuclideanSpace ℝ (Fin m)) := hcauchy
+    _ ≤ Real.sqrt (m : ℝ) *
+        localNorm positiveOrthantNegLogHessCLM
+          ((y : EuclideanSpace ℝ (Fin m)) + b)
+          (w : EuclideanSpace ℝ (Fin m)) := hgrad_mul
+    _ = Real.sqrt (m : ℝ) *
+        localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM a) b
+            positiveOrthantNegLogHessCLM) y w := by
+        rw [← hlocal]
+
+set_option maxHeartbeats 800000 in
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierAffinePreimageHess (polytopeSlackCLM a) b positiveOrthantNegLogHessCLM)
+      (barrierAffinePreimageGrad (polytopeSlackCLM a) b positiveOrthantNegLogGrad)
+      (barrierAffinePreimageInvHessSurjective (polytopeSlackCLM a).rangeRestrict 0
+        (chewi1314_polytopeSlackNegLog_rangeInvHess a b)
+        (barrierAffinePreimageRangeRestrict_range_eq_top (polytopeSlackCLM a)))
+      (barrierAffinePreimageThirdMixed (polytopeSlackCLM a) b
+        positiveOrthantNegLogThirdMixed) 1 (m : ℝ) := by
+  refine chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeTranslated
+    a b (chewi1314_polytopeSlackNegLog_rangeInvHess a b) ?_ ?_
+  · intro y hy v
+    exact inverseHessianQuadratic_nonneg_of_hessian_right_inverse
+      (hess := barrierAffineRangeHess (polytopeSlackCLM a) b
+        positiveOrthantNegLogHessCLM)
+      (invHess := chewi1314_polytopeSlackNegLog_rangeInvHess a b) (x := y)
+      (by
+        intro w
+        exact barrierAffineRangeHess_quadratic_nonneg (polytopeSlackCLM a) b
+          positiveOrthantNegLogHessCLM y w
+          (by
+            intro z
+            exact positiveOrthantNegLogHessCLM_quadratic_nonneg hy z))
+      (chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse a b hy) v
+  · intro y hy
+    exact dualLocalNorm_le_sqrt_of_cauchy_and_hessian_right_inverse
+      (hess := barrierAffineRangeHess (polytopeSlackCLM a) b
+        positiveOrthantNegLogHessCLM)
+      (invHess := chewi1314_polytopeSlackNegLog_rangeInvHess a b)
+      (x := y)
+      (g := barrierAffineRangeGrad (polytopeSlackCLM a) b
+        positiveOrthantNegLogGrad y)
+      (by
+        intro w
+        exact barrierAffineRangeHess_quadratic_nonneg (polytopeSlackCLM a) b
+          positiveOrthantNegLogHessCLM y w
+          (by
+            intro z
+            exact positiveOrthantNegLogHessCLM_quadratic_nonneg hy z))
+      (chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse a b hy)
+      (chewi1314_polytopeSlackNegLog_range_componentCauchy a b hy)
 
 /--
 Induction step for Chewi Example 13.14's finite-row logarithmic barrier.  A

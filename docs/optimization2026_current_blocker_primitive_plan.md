@@ -1392,10 +1392,27 @@ full-row-rank/surjective slack-map pullbacks now have both the exact gradient
 energy and the Hessian right-inverse identity on the pulled barrier gradient;
 future work should feed these facts into the range/oracle barrier wrapper
 instead of asking for a false global inverse on rank-deficient pullbacks.
-Future fully general polytope-log-barrier work should construct that concrete
-range inverse-Hessian/right-inverse plus gradient-energy oracle,
-or alternatively use the compiled finite sum-rule packets together with the
-row-decomposition and head/tail induction lemmas above.  The newest induction
+The newest range-slice inverse packet closes the concrete fully general
+finite-row oracle route.  It adds
+`dualLocalNorm_le_sqrt_of_cauchy_and_hessian_right_inverse`,
+`continuousLinearMap_range_eq_top_of_quadratic_pos`,
+`barrierAffineRangeInvHessOfPos`,
+`positiveOrthantNegLogHessCLM_quadratic_pos`,
+`chewi1314_polytopeSlackNegLog_rangeInvHess`,
+`chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse`,
+`chewi1314_polytopeSlackNegLog_range_componentCauchy`, and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess`.
+Thus Example 13.14's finite-row logarithmic barrier now compiles for arbitrary
+row families, without a surjectivity/full-row-rank hypothesis: the
+finite-dimensional range Hessian is inverted on its range slice using
+positive definiteness, and the gradient bound is obtained from the
+positive-orthant Cauchy bridge plus the Hessian right-inverse identity.
+Future work should now package/report Example 13.14 or use it downstream; do
+not reopen the old range oracle construction unless a cleaner exported
+interface is needed.
+The row-decomposition alternative remains available through the compiled
+finite sum-rule packets together with the row-decomposition and head/tail
+induction lemmas above.  The newest induction
 packet adds
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum` and
 `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum_gradient_quadratic`,
