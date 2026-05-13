@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V309`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V310`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -50,7 +50,9 @@ V309 adds the exact `n^{-1} * sum` display wrappers:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum`
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_inv_mul_range_sum`.
-Do not redo the compiled 2.4.9 cutpoint-chain or Section 4.7 V282-V306 support
+V310 adds direct `iIndepFun` source wrappers for the half-line, empirical-CDF,
+range-sum, and `n^{-1} * sum` Durrett 2.4.9 endpoints.  Do not redo the
+compiled 2.4.9 cutpoint-chain, source displays, or canonical iid wrappers
 unless a later theorem exposes a precise dependency gap.
 
 Historical Section 4.7 frontier:
@@ -671,6 +673,14 @@ V309 additionally closes the exact `n^{-1} * sum` display wrappers:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum`
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_inv_mul_range_sum`.
+V310 additionally closes the direct `iIndepFun` source wrappers:
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun`,
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun`.
 Theorem 2.2.3 now has finite-block variance scaling, the
 `C / n` variance bound, the source-facing `E (S_n / n - mu)^2 <= C / n`
 display for uncorrelated and independent blocks, the `L^2 -> TendstoInMeasure`

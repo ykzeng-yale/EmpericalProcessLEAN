@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V309` in
+Route from `Live In-Thread Goal Prompt V310` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Theorem 2.4.9 Glivenko-Cantelli and Chapter
 2.1 independence/product-law support in
@@ -54,7 +54,9 @@ V309 adds the exact `n^{-1} * sum` display wrappers:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum`
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_inv_mul_range_sum`.
-Do not redo the compiled 2.4.9 cutpoint-chain or Section 4.7 V282-V306 support
+V310 adds direct `iIndepFun` source wrappers for the half-line, empirical-CDF,
+range-sum, and `n^{-1} * sum` Durrett 2.4.9 endpoints.  Do not redo the
+compiled 2.4.9 cutpoint-chain, source displays, or canonical iid wrappers
 unless a later theorem exposes a precise dependency gap.
 
 ## Historical Section 4.7 Snapshot
@@ -705,6 +707,14 @@ V309 adds the exact `n^{-1} * sum` display wrappers:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum`
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_inv_mul_range_sum`.
+V310 adds the direct `iIndepFun` source wrappers:
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun`,
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun`.
 Theorem 2.2.3 now has finite-block variance scaling, the `C / n` variance
 bound, the source-facing `E (S_n / n - μ)^2 <= C / n` display for uncorrelated
 and independent blocks, the `L^2 -> TendstoInMeasure` Lemma 2.2.2
@@ -1653,26 +1663,17 @@ Every Lean packet should pass:
 ## Current Next Goal Cycle Contract
 
 Use the current blocker plan's live prompt as the active `/goal` replacement
-whenever the app-level wording lags.  Active frontier only: Durrett Theorem
-4.5.7 in `StatInference/ProbabilityTheory/Martingale.lean`.
+whenever the app-level wording lags.  Active frontier only: Durrett 2.4.9 and
+Chapter 2.1 source-shape support in `StatInference/ProbabilityTheory/Basic.lean`.
 
-Next proof packet: pass from the V250 finite-horizon
-`3 * E sqrt(A_infty)` bound to
-`E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search mathlib/local APIs first,
-especially `Monotone.lintegral_iSup`, `durrett2019_runningAbsSup`,
-`durrett2019_runningAbsMax_mono`, and monotone convergence APIs for the finite
-running maxima.
-Do not re-prove compiled Chapter 2/3, Theorem 4.5.2, Theorem 4.5.3, Theorem
-4.5.5, the V236 probability conversion, V237/V238/V239 stopped-source
-packaging, the V240 raw/stopped survival split, the V241 layer-cake handoff,
-the V242 first-RHS bridge, or the V243 truncation layer-cake bridge while this
-frontier is active.  Do not redo the V244 weighted double-integral handoff,
-the V245 Tonelli swap, the V246 square-root weighted-tail endpoint, or the V247
-inverse-square denominator calculus, the V248 fixed-`b` inner integral, or the
-V249 second-RHS assembly, or the V250 finite-horizon aggregation.
+Next proof packet: only add another 2.4.9/2.1 wrapper if it removes a concrete
+source-shape gap for a later theorem.  Otherwise move forward to the next
+Durrett textbook frontier.  Do not route back to the compiled 2.4.9
+cutpoint-chain, empirical-CDF display wrappers, canonical iid wrappers, or old
+Chapter 4 prompt text.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
 one compiled Lean packet, verify focused Lean plus targeted build/scans and root
 build when imports changed, update route docs only if the frontier changes,
 commit, and push.  Closed support is not live prompt content unless the active
-Theorem 2.2.3 bridge requires it.
+source-shape gap requires it.
