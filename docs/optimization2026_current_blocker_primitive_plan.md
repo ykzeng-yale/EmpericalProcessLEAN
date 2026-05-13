@@ -244,15 +244,21 @@ adds `chewi1316_mainStageParameter_eq_pow_mul`,
 `chewi1316_mainStageParameter_eq_pow_mul_of_delta`, and
 `chewi1316_mainStageParameter_pos_of_pos`, proving the source closed form
 `t_N = (1 + c0 / sqrt nu)^N * t_0` from the multiplicative update recurrence.
-The next live gate is the objective-gap stopping rule: combine the closed-form
-parameter growth with the compiled objective gap lemma
-`chewi1316_objective_gap_le` and the invariant `lambda <= 1/4` to prove that
-`t_N` large enough implies an `epsilon`-approximate solution.  Do not route
-the next run back to product, sum, affine/range, positive-orthant barrier
-setup, the already-compiled Lemma 13.16/main-stage algebra, the dual-norm
-interface, the generic main-stage wrappers, feasible-step membership, the
-positive-orthant main-stage one-step invariant, or the closed-form parameter
-recurrence unless a new downstream proof directly needs one of those verified
+The newest objective-gap stopping packet adds
+`chewi1316_objectiveGapNumerator_le_two_mul`,
+`chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t`, and
+`chewi1316_objective_gap_le_eps_of_mainStageParameter_large`, combining the
+closed-form parameter growth with the compiled Lemma 13.16 objective-gap bound
+to prove the source stopping rule when `t_N` is large enough.  The next live
+gate is the preliminary-stage initialization paragraph: formalize the reverse
+path-following setup with vector `-grad phi(xbar0)`, decreasing `t`, and the
+target `lambda <= 1/4`, initially as supplied-interface wrappers matching the
+Nesterov §5.3.5 citation.  Do not route the next run back to product, sum,
+affine/range, positive-orthant barrier setup, the already-compiled Lemma
+13.16/main-stage algebra, the dual-norm interface, the generic main-stage
+wrappers, feasible-step membership, the positive-orthant main-stage one-step
+invariant, the closed-form parameter recurrence, or the objective-gap stopping
+rule unless a new downstream proof directly needs one of those verified
 declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has

@@ -104,10 +104,14 @@ orthant.  The newest scalar iteration layer adds
 `chewi1316_mainStageParameter_eq_pow_mul`,
 `chewi1316_mainStageParameter_eq_pow_mul_of_delta`, and
 `chewi1316_mainStageParameter_pos_of_pos`, proving the source closed form for
-the multiplicative `t_n` update.  The next live route is the objective-gap
-stopping rule: combine this closed form with the compiled objective-gap bound,
-then address the preliminary stage for producing an initial `lambda <= 1/4`
-point.
+the multiplicative `t_n` update.  The newest objective-gap stopping layer adds
+`chewi1316_objectiveGapNumerator_le_two_mul`,
+`chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t`, and
+`chewi1316_objective_gap_le_eps_of_mainStageParameter_large`, combining the
+closed-form `t_n` growth with the compiled objective-gap bound.  The next live
+route is the preliminary stage for producing an initial `lambda <= 1/4` point,
+starting from source-shaped supplied-interface wrappers for the reverse
+path-following argument cited to Nesterov §5.3.5.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

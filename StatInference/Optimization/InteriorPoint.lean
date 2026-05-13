@@ -10518,6 +10518,85 @@ theorem chewi1316_objective_gap_le
         (nu + (((lambda + Real.sqrt nu) * lambda) / (1 - lambda))) := by
       ring
 
+theorem chewi1316_objectiveGapNumerator_le_two_mul
+    {nu lambda : ℝ}
+    (hnu_one : 1 ≤ nu)
+    (hlambda_nonneg : 0 ≤ lambda)
+    (hlambda_le_quarter : lambda ≤ 1 / 4) :
+    nu + (((lambda + Real.sqrt nu) * lambda) / (1 - lambda)) ≤ 2 * nu := by
+  have hnu_nonneg : 0 ≤ nu := by nlinarith
+  have hsqrt_le_nu : Real.sqrt nu ≤ nu := by
+    rw [Real.sqrt_le_iff]
+    constructor
+    · exact hnu_nonneg
+    · nlinarith
+  have hden_pos : 0 < 1 - lambda := by nlinarith
+  have hratio :
+      lambda / (1 - lambda) ≤ (1 : ℝ) / 3 := by
+    rw [div_le_iff₀ hden_pos]
+    nlinarith
+  have hratio_nonneg : 0 ≤ lambda / (1 - lambda) :=
+    div_nonneg hlambda_nonneg hden_pos.le
+  have hcoef_nonneg : 0 ≤ lambda + Real.sqrt nu :=
+    add_nonneg hlambda_nonneg (Real.sqrt_nonneg nu)
+  have hcoef_le : lambda + Real.sqrt nu ≤ 2 * nu := by
+    nlinarith
+  have htwo_nu_nonneg : 0 ≤ 2 * nu := by nlinarith
+  have hterm_le :
+      ((lambda + Real.sqrt nu) * lambda) / (1 - lambda) ≤
+        (2 * nu) * ((1 : ℝ) / 3) := by
+    have hmul :=
+      mul_le_mul hcoef_le hratio hratio_nonneg htwo_nu_nonneg
+    have hrewrite :
+        ((lambda + Real.sqrt nu) * lambda) / (1 - lambda) =
+          (lambda + Real.sqrt nu) * (lambda / (1 - lambda)) := by
+      ring
+    simpa [hrewrite] using hmul
+  nlinarith
+
+theorem chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {a x center optimum : E} {t nu eps : ℝ}
+    (ht_pos : 0 < t)
+    (heps_pos : 0 < eps)
+    (hnu_one : 1 ≤ nu)
+    (hcentral : t • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement :
+      dualLocalNorm invHess x (t • a + phiGrad x) ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (t • a + phiGrad x) (x - center))
+    (ht_large : 2 * nu ≤ eps * t) :
+    inner ℝ a x - inner ℝ a optimum ≤ eps := by
+  have heps_nonneg : 0 ≤ eps := heps_pos.le
+  have hgap :=
+    chewi1316_objective_gap_le
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (t := t) (nu := nu) (lambda := (1 : ℝ) / 4)
+      ht_pos (by norm_num) hcentral hbarrier_step hdecrement hphi_bound
+      hcauchy hlower
+  have hnumer :
+      nu + (((((1 : ℝ) / 4) + Real.sqrt nu) * ((1 : ℝ) / 4)) /
+          (1 - ((1 : ℝ) / 4))) ≤
+        2 * nu :=
+    chewi1316_objectiveGapNumerator_le_two_mul hnu_one (by norm_num) (by norm_num)
+  have hscaled :
+      (1 / t) *
+          (nu + (((((1 : ℝ) / 4) + Real.sqrt nu) * ((1 : ℝ) / 4)) /
+            (1 - ((1 : ℝ) / 4)))) ≤
+        (1 / t) * (2 * nu) := by
+    exact mul_le_mul_of_nonneg_left hnumer (by positivity : 0 ≤ 1 / t)
+  have hstop : (1 / t) * (2 * nu) ≤ eps := by
+    rw [one_div, inv_mul_le_iff₀ ht_pos]
+    nlinarith [ht_large, heps_nonneg]
+  exact hgap.trans (hscaled.trans hstop)
+
 /--
 Main-stage pre-Newton decrement update bound.  This is the norm-algebra line
 in §13.4:
@@ -10667,6 +10746,51 @@ theorem chewi1316_mainStageParameter_pos_of_pos
   intro n
   rw [chewi1316_mainStageParameter_eq_pow_mul h0 hstep n]
   exact mul_pos (pow_pos hr_pos n) ht0_pos
+
+/--
+Main-stage objective-gap stopping rule with the multiplicative parameter
+recurrence expanded into the source closed form.
+-/
+theorem chewi1316_objective_gap_le_eps_of_mainStageParameter_large
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {a x center optimum : E}
+    {tseq : ℕ -> ℝ} {N : ℕ} {t0 c0 nu eps : ℝ}
+    (h0 : tseq 0 = t0)
+    (hstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 + c0 / Real.sqrt nu) * tseq n)
+    (hr_pos : 0 < 1 + c0 / Real.sqrt nu)
+    (ht0_pos : 0 < t0)
+    (heps_pos : 0 < eps)
+    (hnu_one : 1 ≤ nu)
+    (hcentral : tseq N • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement :
+      dualLocalNorm invHess x (tseq N • a + phiGrad x) ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (tseq N • a + phiGrad x) (x - center))
+    (hlarge :
+      2 * nu ≤
+        eps * ((1 + c0 / Real.sqrt nu) ^ N * t0)) :
+    inner ℝ a x - inner ℝ a optimum ≤ eps := by
+  have ht_pos : 0 < tseq N :=
+    chewi1316_mainStageParameter_pos_of_pos h0 hstep hr_pos ht0_pos N
+  have hclosed :=
+    chewi1316_mainStageParameter_eq_pow_mul_of_delta
+      (tseq := tseq) (t0 := t0) (c0 := c0) (nu := nu) h0 hstep N
+  have ht_large : 2 * nu ≤ eps * tseq N := by
+    simpa [hclosed] using hlarge
+  exact
+    chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (t := tseq N) (nu := nu) (eps := eps)
+      ht_pos heps_pos hnu_one hcentral hbarrier_step hdecrement
+      hphi_bound hcauchy hlower ht_large
 
 /--
 Chewi Theorem 13.8 gradient fundamental-theorem identity along the segment:
