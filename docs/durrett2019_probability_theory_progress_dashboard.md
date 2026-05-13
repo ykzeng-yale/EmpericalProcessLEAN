@@ -32,11 +32,13 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V318` in
+Route from `Live In-Thread Goal Prompt V319` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
-`StatInference/ProbabilityTheory/Basic.lean`.  V318 adds
+`StatInference/ProbabilityTheory/Basic.lean`.  V319 adds
+`durrett2019_theorem_3_4_1_centralLimitTheorem_muSigmaSqrt`, the literal
+Durrett `mu, sigma` display for Theorem 3.4.1.  V318 adds
 `durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt`, the exact Durrett
 `sigma * sqrt n` denominator display.  V317 adds
 `durrett2019_theorem_3_4_1_centralLimitTheorem_standardNormal`, the
@@ -1419,7 +1421,8 @@ support.  Compiled declarations:
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_centered_unitVariance`;
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_varianceGaussian`;
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_standardNormal`;
-- `durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt`.
+- `durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt`;
+- `durrett2019_theorem_3_4_1_centralLimitTheorem_muSigmaSqrt`.
 
 The current aggressive theorem frontier is Chapter 3.  The old large Chapter
 2 targets are closed as reusable source wrappers:

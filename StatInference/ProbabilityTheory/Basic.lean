@@ -6275,6 +6275,34 @@ theorem durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt
         (u := fun x => (x - ∫ ω, X 0 ω ∂P) / sigma) (by fun_prop)
 
 /--
+Durrett 2019, Theorem 3.4.1, source-facing `mu, sigma` display.
+
+This is the literal textbook normalization
+`(S_n - n * mu) / (sigma * sqrt n) => N(0,1)`.
+-/
+theorem durrett2019_theorem_3_4_1_centralLimitTheorem_muSigmaSqrt
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> Ω -> ℝ} {Y : Ω' -> ℝ} {mu sigma : ℝ}
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 1) P')
+    (hmean : (∫ ω, X 0 ω ∂P) = mu)
+    (hsigma_pos : 0 < sigma)
+    (hvariance : _root_.ProbabilityTheory.variance (X 0) P = sigma ^ 2)
+    (hindep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hident : ∀ i : ℕ, _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        (sigma * √(n : ℝ))⁻¹ *
+          (∑ k ∈ Finset.range n, X k ω - (n : ℝ) * mu))
+      atTop Y (fun _ => P) P' := by
+  simpa [hmean] using
+    durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt
+      (P := P) (P' := P') (X := X) (Y := Y) (sigma := sigma)
+      hY hsigma_pos hvariance hindep hident
+
+/--
 Durrett 2019, Theorem 3.4.10, triangular-array row sum notation.
 
 The textbook indexes row `n` by `1 <= m <= n`; this Lean wrapper uses the
