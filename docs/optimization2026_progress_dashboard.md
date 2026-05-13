@@ -269,7 +269,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   and
   `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound`,
   choosing the preliminary log/count indices internally from any positive
-  uniform source tail bound and positive `c0`.
+  uniform source tail bound and positive `c0`.  The inverse-Hessian transport
+  layer adds `chewi1316_uniformTailBound_of_inverseHessianQuadraticUpper` and
+  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_inverseHessianQuadraticUpper`,
+  so a source-point dual-norm budget and one uniform quadratic upper comparison
+  now produce the uniform source tail bound needed by the initialization
+  wrapper.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

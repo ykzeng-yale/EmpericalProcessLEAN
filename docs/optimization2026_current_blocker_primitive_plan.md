@@ -391,17 +391,24 @@ a reusable standalone theorem.  The uniform-tail packet adds
 and
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound`,
 which choose `M,N` internally from a positive uniform source tail bound and
-positive `c0`, then feed the direct final-tail initialization wrapper.
+positive `c0`, then feed the direct final-tail initialization wrapper.  The
+inverse-Hessian transport packet adds
+`chewi1316_uniformTailBound_of_inverseHessianQuadraticUpper` and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_inverseHessianQuadraticUpper`,
+so a single quadratic-form upper comparison between `invHess (xseq N)` and
+`invHess xbar0`, plus a source-point dual-norm budget, now supplies the uniform
+tail bound and triggers the same index-choice/main-stage initialization
+pipeline.
 Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
-is now narrower: prove the concrete Chewi/Nesterov analytical-center estimate
-that supplies the positive uniform source tail bound required by the
-uniform-tail source-start wrapper, or directly supplies the scaled final
-preliminary tail budget; the measured unscaled-tail fallback should be used
-only when a caller genuinely has an unscaled tail bound.
+is now narrower: prove the concrete Chewi/Nesterov analytical-center or
+self-concordant Hessian-comparison estimate that supplies the above
+inverse-Hessian quadratic upper comparison (or directly supplies the scaled
+final preliminary tail budget); the measured unscaled-tail fallback should be
+used only when a caller genuinely has an unscaled tail bound.
 Do not route the next run back to product,
 sum,
 affine/range, positive-orthant barrier setup, the already-compiled Lemma

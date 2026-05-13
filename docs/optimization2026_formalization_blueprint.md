@@ -219,7 +219,12 @@ initialization wrapper.  The uniform-tail layer adds
 and
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound`,
 choosing the preliminary log/count indices internally from a positive uniform
-tail bound.
+tail bound.  The inverse-Hessian transport layer adds
+`chewi1316_uniformTailBound_of_inverseHessianQuadraticUpper` and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_inverseHessianQuadraticUpper`,
+reducing the live analytical-center/source-tail gate to a source-point
+dual-norm budget plus a uniform quadratic upper comparison between
+`invHess (xseq N)` and `invHess xbar0`.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

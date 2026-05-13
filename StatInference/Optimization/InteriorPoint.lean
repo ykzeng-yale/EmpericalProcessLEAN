@@ -13661,6 +13661,38 @@ theorem chewi1316_exists_preliminary_final_tail_budget_indices_of_uniformTailBou
       hsqrt_pos hdelta_lt_one hN htailBound_pos (htailBase_le N) hM
 
 /--
+Transport the preliminary source tail uniformly along a sequence from a
+single inverse-Hessian quadratic upper comparison against the source point.
+This is the local-norm bridge needed before the concrete Chewi/Nesterov
+analytical-center estimate is connected.
+-/
+theorem chewi1316_uniformTailBound_of_inverseHessianQuadraticUpper
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 : E}
+    {xseq : ℕ -> E} {sourceBound upper tailBound : ℝ}
+    (hupper_nonneg : 0 ≤ upper)
+    (hxbar0_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess xbar0 v))
+    (hxseq_nonneg : ∀ N v, 0 ≤ inner ℝ v (invHess (xseq N) v))
+    (hupper : ∀ N v,
+      inner ℝ v (invHess (xseq N) v) ≤
+        upper * inner ℝ v (invHess xbar0 v))
+    (hsource :
+      dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤ sourceBound)
+    (hbudget : Real.sqrt upper * sourceBound ≤ tailBound) :
+    ∀ N,
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound := by
+  intro N
+  have htransport :
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        Real.sqrt upper * dualLocalNorm invHess xbar0 (phiGrad xbar0) :=
+    dualLocalNorm_le_sqrt_mul_dualLocalNorm_of_inverseHessianQuadraticUpper
+      (invHess := invHess) (x := xbar0) (y := xseq N)
+      (upper := upper) hupper_nonneg hxbar0_nonneg (hxseq_nonneg N)
+      (hupper N) (phiGrad xbar0)
+  exact htransport.trans
+    ((mul_le_mul_of_nonneg_left hsource (Real.sqrt_nonneg upper)).trans
+      hbudget)
+
+/--
 Existential positive-`tMain` version of the bounded-tail preliminary
 initialization bridge.  This discharges the source scalar budget
 `|tMain| * ||a||* <= 1/16` by choosing `tMain` small and positive.
@@ -13898,6 +13930,64 @@ theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_prel
       (hinv_factor N) hx0 ht0 htstep hlambda0 hstep (hlambdaBudget N)
       htail'
   exact ⟨M, N, tMain, htMain_pos, hM, hN, hmain⟩
+
+/--
+Source-start initialization from a single inverse-Hessian quadratic upper
+comparison to the source point.  This packages the local-norm transport bridge
+with the uniform-tail initialization wrapper.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_inverseHessianQuadraticUpper
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : ℕ -> E →L[ℝ] E} {c0 nu sourceBound upper tailBound : ℝ}
+    (hinv_factor : ∀ N v,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint (coord N)) v‖ ^ (2 : ℕ))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget : ∀ N, lambdaSeq N ≤ 1 / 8)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hupper_nonneg : 0 ≤ upper)
+    (hxbar0_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess xbar0 v))
+    (hxseq_nonneg : ∀ N v, 0 ≤ inner ℝ v (invHess (xseq N) v))
+    (hupper : ∀ N v,
+      inner ℝ v (invHess (xseq N) v) ≤
+        upper * inner ℝ v (invHess xbar0 v))
+    (hsource :
+      dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤ sourceBound)
+    (hbudget : Real.sqrt upper * sourceBound ≤ tailBound) :
+    ∃ M N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (M : ℝ) * Real.log (2 : ℝ) ∧
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord) (c0 := c0) (nu := nu) (tailBound := tailBound)
+      hinv_factor hx0 ht0 htstep hlambda0 hstep hlambdaBudget
+      htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one
+      (chewi1316_uniformTailBound_of_inverseHessianQuadraticUpper
+        (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+        (xseq := xseq) (sourceBound := sourceBound) (upper := upper)
+        (tailBound := tailBound)
+        hupper_nonneg hxbar0_nonneg hxseq_nonneg hupper hsource hbudget)
 
 /--
 Measured-tail source-start version: use
