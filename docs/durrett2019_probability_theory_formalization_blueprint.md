@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V279`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V280`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -72,9 +72,11 @@ tail-zero side from limiting-sigma-field measurability and a.s. convergence
 introduces the concrete `sSup` tail envelope and final consumers that use it,
 including a.e. boundedness and supplied pairwise-bound variants.  V278
 discharges the textbook `2Z` domination layer for this concrete envelope. V279
-discharges a.s. convergence `W_N -> 0` from `Y_n -> Y` a.s.  The next proof
-packet should prove the remaining source property for this concrete envelope:
-limiting-sigma-field strong measurability.  V259 closes the
+discharges a.s. convergence `W_N -> 0` from `Y_n -> Y` a.s.  V280 discharges
+limiting-sigma-field measurability of the concrete `sSup` envelope and adds
+the adapted final Theorem 4.6.10 endpoint.  The next proof packet should move
+to Exercise 4.6.7 `L¹` conditional-expectation convergence, then Section 4.7
+backwards martingales.  V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:
 the unit-variance, Rademacher, and canonical Rademacher endpoints now use

@@ -27804,6 +27804,50 @@ theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_ae_tendsto_zero_of_ae_te
       (Y := Y) (Ylim := Ylim) (ω := ω) hY_tendstoω
 
 /--
+Durrett 2019, Theorem 4.6.10, limiting-sigma-field measurability of the
+concrete pairwise tail envelope.
+
+The concrete `sSup` envelope is the supremum of a countable family of
+measurable pairwise differences.
+-/
+theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_stronglyMeasurable
+    {Ω : Type*} {m : MeasurableSpace Ω} {Y : ℕ -> Ω -> ℝ} (N : ℕ)
+    (hY_meas : ∀ n, StronglyMeasurable[m] (Y n)) :
+    StronglyMeasurable[m] (durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N) := by
+  let tailPairs : Set (ℕ × ℕ) := {p | N ≤ p.1 ∧ N ≤ p.2}
+  let tailValue : ℕ × ℕ -> Ω -> ℝ :=
+    fun p ω => ‖Y p.1 ω - Y p.2 ω‖
+  have htail_count : tailPairs.Countable := Set.to_countable tailPairs
+  have htail_meas :
+      Measurable[m] fun ω => sSup ((fun p => tailValue p ω) '' tailPairs) := by
+    exact Measurable.sSup htail_count fun p _hp =>
+      (((hY_meas p.1).sub (hY_meas p.2)).norm.measurable)
+  convert htail_meas.stronglyMeasurable using 1
+  ext ω
+  unfold durrett2019_theorem_4_6_10_pairwiseTailEnvelope tailPairs tailValue
+  congr 1
+  ext r
+  constructor
+  · rintro ⟨n, m, hn, hm, rfl⟩
+    exact ⟨(n, m), ⟨hn, hm⟩, rfl⟩
+  · rintro ⟨p, hp, rfl⟩
+    exact ⟨p.1, p.2, hp.1, hp.2, rfl⟩
+
+/--
+Durrett 2019, Theorem 4.6.10, limiting-sigma-field measurability of the
+concrete pairwise tail envelope from adaptedness.
+-/
+theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_stronglyMeasurable_of_stronglyAdapted
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} (N : ℕ) (hY_adapted : StronglyAdapted ℱ Y) :
+    StronglyMeasurable[⨆ k, ℱ k]
+      (durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N) := by
+  exact
+    durrett2019_theorem_4_6_10_pairwiseTailEnvelope_stronglyMeasurable
+      (Y := Y) (N := N) fun n =>
+        (hY_adapted n).mono (le_iSup (fun k => ℱ k) n)
+
+/--
 Durrett 2019, Theorem 4.6.10, final bridge using the concrete `sSup` pairwise
 tail envelope.
 
@@ -27999,6 +28043,60 @@ theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_
       (durrett2019_theorem_4_6_10_pairwiseTailEnvelope_ae_tendsto_zero_of_ae_tendsto
         (P := P) (Y := Y) (Ylim := Ylim) hY_tendsto)
       hY_tendsto
+
+/--
+Durrett 2019, Theorem 4.6.10, final concrete-envelope bridge with envelope
+measurability discharged from limiting-sigma-field measurability of each
+`Y_n`.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_dominated_of_iSup_stronglyMeasurable_ae_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {Z : Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hY_meas : ∀ n, StronglyMeasurable[⨆ k, ℱ k] (Y n))
+    (hZ_int : Integrable Z P)
+    (hY_dom : ∀ n, ∀ᵐ ω ∂P, ‖Y n ω‖ ≤ Z ω)
+    (hY_tendsto :
+      ∀ᵐ ω ∂P, Tendsto (fun n => Y n ω) atTop (𝓝 (Ylim ω))) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_dominated_of_ae_tendsto
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (Z := Z)
+      hY_int hYlim_int
+      (fun N =>
+        durrett2019_theorem_4_6_10_pairwiseTailEnvelope_stronglyMeasurable
+          (Y := Y) (N := N) hY_meas)
+      hZ_int hY_dom hY_tendsto
+
+/--
+Durrett 2019, Theorem 4.6.10, final adapted dominated convergence form.
+
+This packages the textbook route: adaptedness supplies limiting-sigma-field
+measurability of the concrete `sSup` envelope, domination supplies `2Z`, and
+a.s. convergence supplies `W_N -> 0`.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_stronglyAdapted_dominated_ae_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {Z : Ω -> ℝ}
+    (hY_adapted : StronglyAdapted ℱ Y)
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hZ_int : Integrable Z P)
+    (hY_dom : ∀ n, ∀ᵐ ω ∂P, ‖Y n ω‖ ≤ Z ω)
+    (hY_tendsto :
+      ∀ᵐ ω ∂P, Tendsto (fun n => Y n ω) atTop (𝓝 (Ylim ω))) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_dominated_of_iSup_stronglyMeasurable_ae_tendsto
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (Z := Z)
+      hY_int hYlim_int
+      (fun n => (hY_adapted n).mono (le_iSup (fun k => ℱ k) n))
+      hZ_int hY_dom hY_tendsto
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

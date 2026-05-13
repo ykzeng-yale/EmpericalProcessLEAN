@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V279` in
+Route from `Live In-Thread Goal Prompt V280` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.6 uniform integrability and
 `L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
@@ -111,8 +111,14 @@ V279 discharges `W_N -> 0` a.s. from `Y_n -> Y` a.s. through
 `durrett2019_theorem_4_6_10_pairwiseTailEnvelope_ae_tendsto_zero_of_ae_tendsto`,
 and
 `durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_dominated_of_ae_tendsto`.
-The next target is proving limiting-sigma-field strong measurability of this
-`sSup` envelope.
+V280 discharges limiting-sigma-field measurability of this `sSup` envelope and
+adds the adapted final theorem endpoint:
+`durrett2019_theorem_4_6_10_pairwiseTailEnvelope_stronglyMeasurable`,
+`durrett2019_theorem_4_6_10_pairwiseTailEnvelope_stronglyMeasurable_of_stronglyAdapted`,
+and
+`durrett2019_theorem_4_6_10_condExp_tendsto_of_stronglyAdapted_dominated_ae_tendsto`.
+The next target is Exercise 4.6.7 `L¹` conditional-expectation convergence,
+then Section 4.7 backwards martingales.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now
