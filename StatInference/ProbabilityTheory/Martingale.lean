@@ -27729,6 +27729,81 @@ theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_norm_le_two_mul_of_norm_
   simpa [Real.norm_of_nonneg hnonneg] using hupper
 
 /--
+Durrett 2019, Theorem 4.6.10, concrete pairwise tail envelope tends to zero
+along each convergent sample path.
+
+This is the source-level Cauchy step for the textbook envelope
+`W_N = sup {|Y_n - Y_m| : n,m >= N}`.
+-/
+theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_tendsto_zero_of_tendsto
+    {Ω : Type*} {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {ω : Ω}
+    (hY_tendsto : Tendsto (fun n => Y n ω) atTop (𝓝 (Ylim ω))) :
+    Tendsto
+      (fun N => durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω)
+      atTop (𝓝 0) := by
+  refine Metric.tendsto_atTop.2 ?_
+  intro ε hε
+  have hε_fourth : 0 < ε / 4 := by positivity
+  rcases Metric.tendsto_atTop.1 hY_tendsto (ε / 4) hε_fourth with ⟨K, hK⟩
+  refine ⟨K, ?_⟩
+  intro N hKN
+  have hSet_le :
+      ∀ r ∈ {r : ℝ | ∃ n m, N ≤ n ∧ N ≤ m ∧ r = ‖Y n ω - Y m ω‖},
+        r ≤ ε / 2 := by
+    intro r hr
+    rcases hr with ⟨n, m, hn, hm, rfl⟩
+    have hnK : K ≤ n := le_trans hKN hn
+    have hmK : K ≤ m := le_trans hKN hm
+    have hn_small : ‖Y n ω - Ylim ω‖ < ε / 4 := by
+      simpa [dist_eq_norm] using hK n hnK
+    have hm_small : ‖Y m ω - Ylim ω‖ < ε / 4 := by
+      simpa [dist_eq_norm] using hK m hmK
+    have htri :
+        ‖Y n ω - Y m ω‖ ≤
+          ‖Y n ω - Ylim ω‖ + ‖Y m ω - Ylim ω‖ := by
+      have hsub :
+          (Y n ω - Ylim ω) - (Y m ω - Ylim ω) = Y n ω - Y m ω := by
+        ring
+      simpa [hsub] using norm_sub_le (Y n ω - Ylim ω) (Y m ω - Ylim ω)
+    linarith
+  have hBdd :
+      BddAbove {r : ℝ | ∃ n m, N ≤ n ∧ N ≤ m ∧ r = ‖Y n ω - Y m ω‖} :=
+    ⟨ε / 2, hSet_le⟩
+  have hnonneg :
+      0 ≤ durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω :=
+    durrett2019_theorem_4_6_10_pairwiseTailEnvelope_nonneg
+      (Y := Y) (N := N) (ω := ω) hBdd
+  have hupper :
+      durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω ≤ ε / 2 := by
+    refine csSup_le ?_ ?_
+    · exact ⟨0, ⟨N, N, le_rfl, le_rfl, by simp⟩⟩
+    · intro r hr
+      exact hSet_le r hr
+  have hnorm :
+      ‖durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω - 0‖ < ε := by
+    rw [sub_zero, Real.norm_of_nonneg hnonneg]
+    linarith
+  simpa [dist_eq_norm] using hnorm
+
+/--
+Durrett 2019, Theorem 4.6.10, a.e. source form of the concrete pairwise tail
+envelope convergence.
+-/
+theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_ae_tendsto_zero_of_ae_tendsto
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ}
+    (hY_tendsto :
+      ∀ᵐ ω ∂P, Tendsto (fun n => Y n ω) atTop (𝓝 (Ylim ω))) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun N => durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω)
+        atTop (𝓝 0) := by
+  filter_upwards [hY_tendsto] with ω hY_tendstoω
+  exact
+    durrett2019_theorem_4_6_10_pairwiseTailEnvelope_tendsto_zero_of_tendsto
+      (Y := Y) (Ylim := Ylim) (ω := ω) hY_tendstoω
+
+/--
 Durrett 2019, Theorem 4.6.10, final bridge using the concrete `sSup` pairwise
 tail envelope.
 
@@ -27893,6 +27968,37 @@ theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_
       hW_tendsto_zero hY_tendsto
       (durrett2019_theorem_4_6_10_pairwise_bound_two_mul_of_norm_le
         (P := P) (Y := Y) (Z := Z) hY_dom)
+
+/--
+Durrett 2019, Theorem 4.6.10, final concrete-envelope bridge with the
+`W_N -> 0` source obligation discharged from a.s. convergence of `Y_n`.
+
+After this wrapper, the remaining concrete source obligation is
+limiting-sigma-field measurability of the `sSup` envelope.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_dominated_of_ae_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {Z : Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hW_meas :
+      ∀ N,
+        StronglyMeasurable[⨆ k, ℱ k]
+          (durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N))
+    (hZ_int : Integrable Z P)
+    (hY_dom : ∀ n, ∀ᵐ ω ∂P, ‖Y n ω‖ ≤ Z ω)
+    (hY_tendsto :
+      ∀ᵐ ω ∂P, Tendsto (fun n => Y n ω) atTop (𝓝 (Ylim ω))) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_dominated
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (Z := Z)
+      hY_int hYlim_int hW_meas hZ_int hY_dom
+      (durrett2019_theorem_4_6_10_pairwiseTailEnvelope_ae_tendsto_zero_of_ae_tendsto
+        (P := P) (Y := Y) (Ylim := Ylim) hY_tendsto)
+      hY_tendsto
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

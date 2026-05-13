@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V278` in
+Route from `Live In-Thread Goal Prompt V279` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.6 uniform integrability and
 `L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
@@ -100,14 +100,19 @@ which pass from pairwise tail bounds and `Y_n -> Y` a.s. to the eventual
 pointwise limit-error bound.  V277 introduces the concrete `sSup` tail envelope
 `durrett2019_theorem_4_6_10_pairwiseTailEnvelope`, proves pairwise-bound
 extraction from boundedness, adds a.e. boundedness and supplied-pairwise-bound
-variants, and adds final consumers for the concrete envelope.  The next target
-V278 discharges the textbook `2Z` domination layer with
+variants, and adds final consumers for the concrete envelope.  V278 discharges
+the textbook `2Z` domination layer with
 `durrett2019_theorem_4_6_10_pairwise_bound_two_mul_of_norm_le`,
 `durrett2019_theorem_4_6_10_pairwiseTailEnvelope_norm_le_two_mul_of_norm_le`,
 and
 `durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_dominated`.
+V279 discharges `W_N -> 0` a.s. from `Y_n -> Y` a.s. through
+`durrett2019_theorem_4_6_10_pairwiseTailEnvelope_tendsto_zero_of_tendsto`,
+`durrett2019_theorem_4_6_10_pairwiseTailEnvelope_ae_tendsto_zero_of_ae_tendsto`,
+and
+`durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_norm_dominated_of_ae_tendsto`.
 The next target is proving limiting-sigma-field strong measurability of this
-`sSup` envelope and `W_N -> 0` a.s.
+`sSup` envelope.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now
