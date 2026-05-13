@@ -235,6 +235,12 @@ uses `vaart1998_marginal_law_of_common_sequence_law` and
 `vaart1998_iIndepFun_of_common_sequence_law` to derive the common observation
 marginal laws and independence from one infinite-product observation sequence
 law.
+The random observation-sequence source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceSource_scoreLawCoordinateMeanSource_scoreLawMemLpSource_zLawCoordinateMeanSource_zLawCoordinateCovarianceSource_derivativeLawCoordinateIntegrableSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+uses `vaart1998_family_measurable_of_random_sequence_measurable` and
+`vaart1998_family_sequence_law_of_random_sequence_law` to derive the indexed
+observation-family measurability and sequence law from one measurable random
+observation sequence and its infinite-product law.
 The next proof packet should move to a concrete model-specialized Theorem 5.41
 instantiation, or package only a still-live source field that the current
 endpoint explicitly exposes, not replay display weak-convergence,
@@ -258,7 +264,8 @@ Do not replay law-side limit coordinate-mean wrappers or law-side scalar
 coordinate-covariance wrappers, or derivative-law coordinate-integrability
 wrappers, iid infinite-product sequence-law wrappers, or
 observation-transform measurability/law/independence wrappers, or
-observation-sequence-law marginal/independence wrappers.
+observation-sequence-law marginal/independence wrappers, or random
+observation-sequence measurability/law wrappers.
 
 ## Chapter Map
 
