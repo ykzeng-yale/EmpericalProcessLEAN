@@ -345,7 +345,13 @@ integer-choice packet adds `chewi1316_exists_nat_mul_log_two_ge`,
 `chewi1316_exists_preliminary_tail_log_count_indices`, so the preliminary stage
 now has verified natural `M,N` choices for the log-tail and
 `M log 2 * sqrt nu <= N c0` count budgets whenever `tailBound > 0` and
-`c0 > 0`.
+`c0 > 0`.  The nonnegative-tail packet adds
+`chewi1316_preliminary_tail_le_of_half_power_tailBase_bound`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBound_nonneg`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound_nonneg`,
+so downstream source bounds no longer need to prove the actual tail base is
+strictly positive.
 Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
@@ -364,9 +370,9 @@ invariant, the closed-form parameter recurrence, the objective-gap stopping
 rule, exact-center/main-stage budget initialization, preliminary-to-main bridge,
 finite preliminary sequence bridge, generic log-halving lemma, factor-tail
 algebra, log-to-power comparison, count-discharge algebra, tail-base log-budget
-algebra, tail-base log-choice algebra, integer budget existence, or finite
-preliminary sequence induction unless a new downstream proof directly needs one
-of those verified declarations.
+algebra, tail-base log-choice algebra, integer budget existence, nonnegative
+tail-base discharge, or finite preliminary sequence induction unless a new
+downstream proof directly needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

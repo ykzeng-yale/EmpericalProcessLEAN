@@ -218,10 +218,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_exists_preliminary_count_index`, and
   `chewi1316_exists_preliminary_tail_log_count_indices`, proving that natural
   indices `M,N` exist for the log-tail and `M log 2 * sqrt nu <= N c0` count
-  budgets whenever `tailBound > 0` and `c0 > 0`.  Remaining gate: prove the
-  concrete Chewi/Nesterov bound on `|tStart| * ||grad phi(xbar0)||*` by a
-  source quantity such as the analytical-center distance measure, then finish
-  the strictly-feasible-start discussion.
+  budgets whenever `tailBound > 0` and `c0 > 0`.  The nonnegative-tail packet
+  adds `chewi1316_preliminary_tail_le_of_half_power_tailBase_bound`,
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBound_nonneg`,
+  and
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound_nonneg`,
+  removing the need to prove the actual preliminary tail base is strictly
+  positive.  Remaining gate: prove the concrete Chewi/Nesterov bound on
+  `|tStart| * ||grad phi(xbar0)||*` by a source quantity such as the
+  analytical-center distance measure, then finish the strictly-feasible-start
+  discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
