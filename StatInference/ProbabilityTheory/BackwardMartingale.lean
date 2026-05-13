@@ -2,6 +2,7 @@ import StatInference.EmpiricalProcess.PMeasurable
 import StatInference.EmpiricalProcess.Theorem243
 import StatInference.ProbabilityMeasure.StrongLaw
 import StatInference.ProbabilityTheory.Martingale
+import Mathlib.MeasureTheory.Measure.MeasuredSets
 
 /-!
 # Durrett 2019 backwards martingale wrappers
@@ -16,7 +17,7 @@ namespace ProbabilityTheory
 
 open Filter MeasureTheory _root_.ProbabilityTheory
 
-open scoped BigOperators ENNReal Function NNReal ProbabilityTheory Topology
+open scoped BigOperators ENNReal Function NNReal ProbabilityTheory symmDiff Topology
 
 /-! ## Durrett, Section 4.7 -/
 
@@ -1937,6 +1938,110 @@ theorem durrett2019_example_4_7_4_eval_tail_prefix_product_of_permuted_prefix_li
   exact tendsto_nhds_unique (by simpa [μ] using hinter) hproduct_tendsto
 
 /--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage approximation support.  If a
+sequence of measurable sets converges to a target in the symmetric-difference
+measure metric, then their measures converge.
+
+This is the `MeasuredSets` continuity primitive in the exact source shape used
+by the prefix-approximation route.
+-/
+theorem durrett2019_example_4_7_4_tendsto_measure_of_symmDiff_tendsto_zero
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {B : Set Ω} {D : ℕ -> Set Ω}
+    (hB : MeasurableSet B) (hD : ∀ k, MeasurableSet (D k))
+    (hsymm : Tendsto (fun k => μ (D k ∆ B)) atTop (𝓝 0)) :
+    Tendsto (fun k => μ (D k)) atTop (𝓝 (μ B)) := by
+  let target : MeasuredSets μ := ⟨B, hB⟩
+  let approx : ℕ -> MeasuredSets μ := fun k => ⟨D k, hD k⟩
+  have happrox : Tendsto approx atTop (𝓝 target) := by
+    rw [tendsto_iff_edist_tendsto_0]
+    simpa [approx, target, MeasuredSets.edist_def] using hsymm
+  exact MeasuredSets.continuous_measure.tendsto target |>.comp happrox
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage approximation support.  Symmetric
+difference convergence of finite-prefix approximants is stable after
+intersecting with a fixed measurable event.
+-/
+theorem durrett2019_example_4_7_4_tendsto_measure_inter_of_symmDiff_tendsto_zero
+    {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω}
+    {A B : Set Ω} {D : ℕ -> Set Ω}
+    (hA : MeasurableSet A) (hB : MeasurableSet B)
+    (hD : ∀ k, MeasurableSet (D k))
+    (hsymm : Tendsto (fun k => μ (D k ∆ B)) atTop (𝓝 0)) :
+    Tendsto (fun k => μ (A ∩ D k)) atTop (𝓝 (μ (A ∩ B))) := by
+  refine
+    durrett2019_example_4_7_4_tendsto_measure_of_symmDiff_tendsto_zero
+      (μ := μ) (B := A ∩ B) (D := fun k => A ∩ D k)
+      (hA.inter hB) (fun k => hA.inter (hD k)) ?_
+  rw [ENNReal.tendsto_nhds_zero] at hsymm ⊢
+  intro ε hε
+  filter_upwards [hsymm ε hε] with k hk
+  have hsubset : (A ∩ D k) ∆ (A ∩ B) ⊆ D k ∆ B := by
+    rw [← Set.inter_symmDiff_distrib_left A (D k) B]
+    exact Set.inter_subset_right
+  exact (measure_mono hsubset).trans hk
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  A
+prefix-approximation theorem stated in the natural symmetric-difference metric
+implies exactly the two measure-coordinate limits consumed by the V304
+self-independence bridge.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixLimit_of_symmDiff_prefix_approx
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    (hprefixApprox :
+      ∀ {B : Set (ℕ -> ℝ)},
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] B ->
+          ∃ D : ℕ -> Set (ℕ -> ℝ), ∃ cutoff : ℕ -> ℕ,
+            (∀ k,
+              MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ (cutoff k)]
+                (D k)) ∧
+            Tendsto (fun k => vdVWInfiniteProductMeasure P (D k ∆ B)) atTop (𝓝 0)) :
+      ∀ {A B : Set (ℕ -> ℝ)},
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] A ->
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] B ->
+          ∃ D : ℕ -> Set (ℕ -> ℝ), ∃ cutoff : ℕ -> ℕ,
+            (∀ k,
+              MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ (cutoff k)]
+                (D k)) ∧
+            Tendsto (fun k => vdVWInfiniteProductMeasure P (A ∩ D k)) atTop
+              (𝓝 (vdVWInfiniteProductMeasure P (A ∩ B))) ∧
+            Tendsto (fun k => vdVWInfiniteProductMeasure P (D k)) atTop
+              (𝓝 (vdVWInfiniteProductMeasure P B)) := by
+  intro A B hA hB
+  let μ : Measure (ℕ -> ℝ) := vdVWInfiniteProductMeasure P
+  have htail_le :
+      (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n) ≤
+        (inferInstance : MeasurableSpace (ℕ -> ℝ)) := by
+    refine (iInf_le (fun n : ℕ => vdVWPermutationSymmetricMeasurableSpace ℝ n) 0).trans ?_
+    refine MeasurableSpace.generateFrom_le ?_
+    intro s hs
+    rcases hs with ⟨statistic, hmeas, _hsymm, target, htarget, rfl⟩
+    exact hmeas htarget
+  rcases hprefixApprox hB with ⟨D, cutoff, hD_prefix, hsymm⟩
+  refine ⟨D, cutoff, hD_prefix, ?_, ?_⟩
+  · have hA_ambient : MeasurableSet A := htail_le A hA
+    have hB_ambient : MeasurableSet B := htail_le B hB
+    have hD_ambient : ∀ k, MeasurableSet (D k) := by
+      intro k
+      exact (durrett2019_theorem_4_3_8_prefixFiltration ℝ).le (cutoff k) (D k)
+        (hD_prefix k)
+    simpa [μ] using
+      (durrett2019_example_4_7_4_tendsto_measure_inter_of_symmDiff_tendsto_zero
+        (μ := μ) (A := A) (B := B) (D := D)
+        hA_ambient hB_ambient hD_ambient (by simpa [μ] using hsymm))
+  · have hB_ambient : MeasurableSet B := htail_le B hB
+    have hD_ambient : ∀ k, MeasurableSet (D k) := by
+      intro k
+      exact (durrett2019_theorem_4_3_8_prefixFiltration ℝ).le (cutoff k) (D k)
+        (hD_prefix k)
+    simpa [μ] using
+      (durrett2019_example_4_7_4_tendsto_measure_of_symmDiff_tendsto_zero
+        (μ := μ) (B := B) (D := D)
+        hB_ambient hD_ambient (by simpa [μ] using hsymm))
+
+/--
 Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  Once every
 permutation-symmetric-tail event has the product formula against every finite
 prefix event, and tail events are limits of finite-prefix events in the two
@@ -2004,6 +2109,37 @@ theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_pr
       ENNReal.Tendsto.const_mul (by simpa [μ] using hmeasure)
         (Or.inr (measure_ne_top μ A))
   exact tendsto_nhds_unique (by simpa [μ] using hinter) hproduct_tendsto
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  This is the
+source-shaped self-independence consumer after V305: product formulas against
+finite-prefix events plus symmetric-difference prefix approximation of each
+tail event imply self-independence of the VdVW permutation-symmetric tail.
+-/
+theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_symmDiff_approx
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    (hprefixProduct :
+      ∀ {A D : Set (ℕ -> ℝ)} {n : ℕ},
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] A ->
+        MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ n] D ->
+          vdVWInfiniteProductMeasure P (A ∩ D) =
+            vdVWInfiniteProductMeasure P A * vdVWInfiniteProductMeasure P D)
+    (hprefixApprox :
+      ∀ {B : Set (ℕ -> ℝ)},
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] B ->
+          ∃ D : ℕ -> Set (ℕ -> ℝ), ∃ cutoff : ℕ -> ℕ,
+            (∀ k,
+              MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ (cutoff k)]
+                (D k)) ∧
+            Tendsto (fun k => vdVWInfiniteProductMeasure P (D k ∆ B)) atTop (𝓝 0)) :
+    Indep
+      (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+      (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+      (vdVWInfiniteProductMeasure P) :=
+  durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_limit
+    (P := P) hprefixProduct
+    (durrett2019_example_4_7_4_eval_prefixLimit_of_symmDiff_prefix_approx
+      (P := P) hprefixApprox)
 
 /--
 Durrett 2019, Example 4.7.4 product-space source algebra: the finite swap of

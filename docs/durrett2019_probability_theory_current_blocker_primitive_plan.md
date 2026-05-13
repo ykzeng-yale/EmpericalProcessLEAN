@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V304
+## Live In-Thread Goal Prompt V305
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -37,11 +37,12 @@ V299 permutation-symmetric tail zero-one transport endpoint, or the
 V300 permutation-symmetric tail finite-permutation invariance support, the
 V301 self-independence-to-zero-one consumer bridges, the V302 finite-prefix /
 future-coordinate-tail independence support, the V303 transported-prefix
-Hewitt-Savage support, the V304 prefix-limit self-independence bridge, or the
+Hewitt-Savage support, the V304 prefix-limit self-independence bridge, the V305
+prefix symmetric-difference approximation-to-limit bridge, or the
 V281-V273 Section 4.6 tail-envelope /
 conditional-expectation layers.
 
-Latest verified target V304 advances Section 4.7.  V260 packages Durrett
+Latest verified target V305 advances Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -314,6 +315,14 @@ prefix event, and
 `durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_limit`
 turns prefix-product formulas plus prefix approximation of tail events into
 `Indep tail tail`.
+V305 adds the compiled prefix-approximation metric bridge using Mathlib's
+`MeasureTheory.Measure.MeasuredSets` primitives:
+`durrett2019_example_4_7_4_tendsto_measure_of_symmDiff_tendsto_zero`,
+`durrett2019_example_4_7_4_tendsto_measure_inter_of_symmDiff_tendsto_zero`,
+`durrett2019_example_4_7_4_eval_prefixLimit_of_symmDiff_prefix_approx`, and
+`durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_symmDiff_approx`.
+Thus future work should not reprove the two measure-coordinate limits from
+`μ (D_k ∆ B) -> 0`.
 
 Next aggressive theorem packet: prove self-independence of the VdVW
 permutation-symmetric tail
@@ -321,14 +330,16 @@ permutation-symmetric tail
 measure.  Search mathlib/local first for Hewitt-Savage, exchangeable-tail, or
 permutation-invariant self-independence support.  If no direct primitive
 exists, use V300's finite-permutation invariance and set-integral invariance
-plus V302/V303/V304 as the source hooks for a VdVW/Hewitt-Savage
+plus V302/V303/V304/V305 as the source hooks for a VdVW/Hewitt-Savage
 self-independence wrapper.  The next theorem should prove the actual
-finite-prefix approximation existence/basis step for
-permutation-symmetric-tail events in the iid product space, producing the two
-`Tendsto` approximation fields consumed by V304.  Feed the resulting
-`Indep tail tail (vdVWInfiniteProductMeasure P)` directly into V301.  Do not
+finite-prefix symmetric-difference approximation existence/basis step for
+permutation-symmetric-tail events in the iid product space, ideally by applying
+Mathlib's `exists_measure_symmDiff_lt_of_generateFrom_isSetRing` to the ring of
+finite-prefix events after proving that this ring generates the ambient product
+sigma-field.  Feed the resulting `hprefixApprox` into V305, then
+`Indep tail tail (vdVWInfiniteProductMeasure P)` into V301.  Do not
 rewrap the already compiled direct strong law,
-V286/V287/V288/V289/V290/V291/V292/V293/V294/V295/V296/V297/V298/V299/V300/V301/V302/V303/V304
+V286/V287/V288/V289/V290/V291/V292/V293/V294/V295/V296/V297/V298/V299/V300/V301/V302/V303/V304/V305
 handoffs, or V285 backwards Lévy endpoint.
 
 ## Deprecated V255 Prompt Notes

@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V304` in
+Route from `Live In-Thread Goal Prompt V305` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -256,8 +256,14 @@ V304 adds the prefix-limit self-independence bridge:
 `durrett2019_example_4_7_4_eval_tail_prefix_product_of_permuted_prefix_limit`
 and
 `durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_limit`.
-The next target is the actual finite-prefix approximation existence/basis
-step for VdVW permutation-symmetric-tail events, then applying V304 and V301.
+V305 adds the prefix symmetric-difference approximation-to-limit bridge:
+`durrett2019_example_4_7_4_tendsto_measure_of_symmDiff_tendsto_zero`,
+`durrett2019_example_4_7_4_tendsto_measure_inter_of_symmDiff_tendsto_zero`,
+`durrett2019_example_4_7_4_eval_prefixLimit_of_symmDiff_prefix_approx`, and
+`durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_symmDiff_approx`.
+The next target is the actual finite-prefix symmetric-difference approximation
+existence/basis step for VdVW permutation-symmetric-tail events, then applying
+V305, V304, and V301.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

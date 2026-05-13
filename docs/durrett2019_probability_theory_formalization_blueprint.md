@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V304`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V305`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -189,9 +189,17 @@ V304 adds the prefix-limit self-independence bridge:
 `durrett2019_example_4_7_4_eval_tail_prefix_product_of_permuted_prefix_limit`
 and
 `durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_limit`.
-The next proof packet should prove the actual finite-prefix approximation
-existence/basis step for VdVW permutation-symmetric-tail events, then feed the
-resulting self-independence into V301.
+V305 adds the prefix symmetric-difference approximation-to-limit bridge:
+`durrett2019_example_4_7_4_tendsto_measure_of_symmDiff_tendsto_zero`,
+`durrett2019_example_4_7_4_tendsto_measure_inter_of_symmDiff_tendsto_zero`,
+`durrett2019_example_4_7_4_eval_prefixLimit_of_symmDiff_prefix_approx`, and
+`durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_symmDiff_approx`.
+The next proof packet should prove the actual finite-prefix
+symmetric-difference approximation existence/basis step for VdVW
+permutation-symmetric-tail events, preferably using Mathlib's
+`exists_measure_symmDiff_lt_of_generateFrom_isSetRing` after packaging the
+finite-prefix event ring and its ambient product-sigma-field generation, then
+feed the resulting self-independence into V301.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:
