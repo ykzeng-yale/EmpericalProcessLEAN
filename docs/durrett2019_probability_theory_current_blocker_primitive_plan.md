@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V244
+## Live In-Thread Goal Prompt V245
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,8 +19,18 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V244 adds the weighted second-RHS double-integral
-handoff:
+Latest verified Lean packet V245 adds the source-level Tonelli swap layer:
+`durrett2019_theorem_4_5_7_tail_cut_weighted_kernel_measurable`,
+`durrett2019_theorem_4_5_7_tail_cut_weighted_kernel_measurable_of_aemeasurable`,
+`durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap`,
+`durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap_of_aemeasurable`,
+and
+`durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap_of_integrable`.
+It proves the weighted tail-cut kernel is measurable even from the source
+`Integrable A_infty` hypothesis and swaps the `a,b` integrals.  The remaining
+second-RHS deterministic step is now the one-dimensional calculus evaluation
+of the swapped inner `a` integral.  V244 adds the weighted second-RHS
+double-integral handoff:
 `durrett2019_theorem_4_5_7_set_lintegral_div_toNNReal_sq`,
 `durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_tail_cut_double_lintegral`,
 and
@@ -28,9 +38,8 @@ and
 It rewrites
 `∫_0^∞ a^{-2} E(A_infty ∧ a^2) da`
 as the iterated nonnegative integral
-`∫_0^∞ ∫_0^∞ a^{-2} P(b < A_infty, b < a^2) db da`, so the
-remaining deterministic step is a clean Tonelli swap plus one-dimensional
-calculus evaluation.  V243 adds the second-RHS truncation layer-cake
+`∫_0^∞ ∫_0^∞ a^{-2} P(b < A_infty, b < a^2) db da`.  V243 adds the
+second-RHS truncation layer-cake
 bridge:
 `durrett2019_theorem_4_5_7_min_terminal_lintegral_eq_tail_cut_lintegral`,
 `durrett2019_theorem_4_5_7_terminal_nonneg_of_initial_zero_monotone_tendsto`,
@@ -74,18 +83,19 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: use V244 to swap the two nonnegative
-integrals and package the remaining deterministic/calculus calculation
+Next aggressive theorem-sized packet: use V245 to package the remaining
+deterministic/calculus calculation
 `∫_0^∞ a^{-2} E(A_infty ∧ a^2) da = 2 E sqrt(A_infty)`, toward Durrett's
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search Mathlib/local APIs first
-(`lintegral_lintegral_swap`, `lintegral_add`, `lintegral_const_mul`,
-`ENNReal.ofReal`, square-root/rpow layer-cake, interval-integral calculus for
+(`lintegral_add`, `lintegral_const_mul`, `ENNReal.ofReal`,
+square-root/rpow layer-cake, interval-integral calculus for
 `∫_{sqrt b}^∞ a^{-2} da`, monotone running-supremum support, and
 `Monotone.lintegral_iSup`/monotone convergence APIs).  Do not revisit closed
 Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the V236 probability conversion, the
 V237/V238/V239 stopped source packaging, the V240 raw/stopped survival split,
 the V241 layer-cake handoff, the V242 first-RHS layer-cake bridge, or the V243
-truncated-terminal layer-cake bridge, or the V244 weighted double-integral handoff
+truncated-terminal layer-cake bridge, the V244 weighted double-integral handoff,
+or the V245 Tonelli/measurability swap layer
 unless a compile error exposes a genuinely missing primitive.
 
 ## Recent Route Notes
@@ -552,8 +562,18 @@ This moves the `a^{-2}` factor inside the layer-cake integral and leaves the
 remaining second-RHS work as Tonelli plus the calculus identity
 `∫_{sqrt b}^∞ a^{-2} da = 1 / sqrt b`.
 
-Next aggressive step: continue Durrett Theorem 4.5.7 by using V244 to prove
-the remaining second-RHS Fubini/calculus calculation that turns the V241/V242
+V245 adds the source-level Tonelli swap layer:
+`durrett2019_theorem_4_5_7_tail_cut_weighted_kernel_measurable`,
+`durrett2019_theorem_4_5_7_tail_cut_weighted_kernel_measurable_of_aemeasurable`,
+`durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap`,
+`durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap_of_aemeasurable`,
+and
+`durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap_of_integrable`.
+This discharges the product-measurability and Tonelli-order swap from the
+source `Integrable A_infty` hypothesis.
+
+Next aggressive step: continue Durrett Theorem 4.5.7 by using V245 to prove
+the remaining second-RHS calculus calculation that turns the V241/V242
 RHS into
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Do not start by formalizing the full
 Friedman urn state process unless it directly reuses the compiled 4.5.5 ratio
@@ -563,6 +583,7 @@ ratio packaging, or the V236 Doob/Kolmogorov probability conversion.  Do not
 route back to the V240 raw/stopped split, the V241 layer-cake handoff, the V242
 first-RHS layer-cake bridge, the V243 truncated-terminal layer-cake bridge,
 the V244 weighted double-integral handoff,
+the V245 Tonelli/measurability swap layer,
 stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1909,6 +1930,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V244` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V245` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -23583,6 +23583,158 @@ theorem
     hAinf_int
 
 /--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+Measurability of the weighted tail-cut kernel used in the second RHS
+Tonelli swap.  This isolates the product-measurability obligation from the
+calculus evaluation of the swapped integral.
+-/
+theorem
+    durrett2019_theorem_4_5_7_tail_cut_weighted_kernel_measurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [SFinite P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_meas : Measurable Ainf) :
+    Measurable (Function.uncurry fun a b : ℝ =>
+      P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+        (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) := by
+  let s : Set ((ℝ × ℝ) × Ω) :=
+    {z | z.1.2 < Ainf z.2 ∧ z.1.2 < z.1.1 ^ 2}
+  have hs : MeasurableSet s := by
+    exact
+      (measurableSet_lt (measurable_snd.comp measurable_fst)
+        (hAinf_meas.comp measurable_snd)).inter
+        (measurableSet_lt (measurable_snd.comp measurable_fst)
+          ((measurable_fst.comp measurable_fst).pow_const 2))
+  have hmeasure :
+      Measurable fun p : ℝ × ℝ =>
+        P {ω : Ω | p.2 < Ainf ω ∧ p.2 < p.1 ^ 2} := by
+    simpa [s] using (measurable_measure_prodMk_left (ν := P) hs)
+  have hden :
+      Measurable fun p : ℝ × ℝ =>
+        (((Real.toNNReal p.1) ^ 2 : ℝ≥0) : ℝ≥0∞) :=
+    ((measurable_fst.real_toNNReal).pow_const 2).coe_nnreal_ennreal
+  simpa [Function.uncurry, div_eq_mul_inv] using hmeasure.mul hden.inv
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+The same weighted tail-cut kernel is measurable when the terminal clock is
+only a.e. measurable.  This is the source-facing form: an integrable terminal
+clock supplies `AEMeasurable`, and the tail-cut measures are unchanged after
+replacing the clock by its measurable a.e. representative.
+-/
+theorem
+    durrett2019_theorem_4_5_7_tail_cut_weighted_kernel_measurable_of_aemeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [SFinite P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_meas : AEMeasurable Ainf P) :
+    Measurable (Function.uncurry fun a b : ℝ =>
+      P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+        (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) := by
+  have hmk :=
+    durrett2019_theorem_4_5_7_tail_cut_weighted_kernel_measurable
+      (P := P) (Ainf := hAinf_meas.mk Ainf) hAinf_meas.measurable_mk
+  have hkernel_eq :
+      (Function.uncurry fun a b : ℝ =>
+        P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+        (Function.uncurry fun a b : ℝ =>
+          P {ω : Ω | b < hAinf_meas.mk Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) := by
+    funext p
+    rcases p with ⟨a, b⟩
+    simp only [Function.uncurry_apply_pair]
+    congr 1
+    apply MeasureTheory.measure_congr
+    filter_upwards [hAinf_meas.ae_eq_mk] with ω hω
+    change (b < Ainf ω ∧ b < a ^ 2) =
+      (b < hAinf_meas.mk Ainf ω ∧ b < a ^ 2)
+    rw [hω]
+  rw [hkernel_eq]
+  exact hmk
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+Tonelli swap for the weighted tail-cut double integral, under a measurable
+terminal clock.  The remaining work after this lemma is the one-dimensional
+calculus identity for the inner `a` integral.
+-/
+theorem
+    durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_meas : Measurable Ainf) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      ∫⁻ b in Set.Ioi (0 : ℝ),
+        ∫⁻ a in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  exact
+    lintegral_lintegral_swap
+      (μ := volume.restrict (Set.Ioi (0 : ℝ)))
+      (ν := volume.restrict (Set.Ioi (0 : ℝ)))
+      (f := fun a b : ℝ =>
+        P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞))
+      (durrett2019_theorem_4_5_7_tail_cut_weighted_kernel_measurable
+        (P := P) (Ainf := Ainf) hAinf_meas).aemeasurable
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+Source-facing Tonelli swap for the weighted tail-cut double integral, requiring
+only a.e. measurability of the terminal clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap_of_aemeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_meas : AEMeasurable Ainf P) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      ∫⁻ b in Set.Ioi (0 : ℝ),
+        ∫⁻ a in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  exact
+    lintegral_lintegral_swap
+      (μ := volume.restrict (Set.Ioi (0 : ℝ)))
+      (ν := volume.restrict (Set.Ioi (0 : ℝ)))
+      (f := fun a b : ℝ =>
+        P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞))
+      (durrett2019_theorem_4_5_7_tail_cut_weighted_kernel_measurable_of_aemeasurable
+        (P := P) (Ainf := Ainf) hAinf_meas).aemeasurable
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+Integrability of the terminal clock supplies the a.e. measurability needed for
+the source-facing Tonelli swap.
+-/
+theorem
+    durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap_of_integrable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_int : Integrable Ainf P) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      ∫⁻ b in Set.Ioi (0 : ℝ),
+        ∫⁻ a in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) :=
+  durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap_of_aemeasurable
+    (P := P) (Ainf := Ainf) hAinf_int.aestronglyMeasurable.aemeasurable
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
