@@ -284,6 +284,18 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	These route exact-source initialization through `SelfConcordantBarrierOn`,
 	so the source gradient bound becomes `sqrt(nu)` and the common
 	unit-parameter/radius-half scalar budget becomes `2 * sqrt(nu) <= tailBound`.
+	The source-radius telescope packet adds the square-root-coordinate local-norm
+	identity/triangle/finite-sum lemmas, the vector telescopes
+	`sequence_sub_initial_eq_sum_steps_of_succ_sub` and
+	`sequence_sub_initial_eq_sum_steps_of_succ_eq_add`, the source-radius
+	sum-step wrappers, their radius-half specializations, and
+	`chewi1316_uniformTailBound_of_add_steps_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	Search-first reuse: local `hessianPrimalFactor_of_adjointSqrt` and mathlib
+	`norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The next
+	exact-source §13.16 gate is no longer a raw `hradius_half`; it is the
+	concrete additive update recurrence, per-step source-local norm bounds,
+	cumulative half-radius budget, successor membership, global derivative
+	package, and the scalar tail budget `2 * sqrt(nu) <= tailBound`.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

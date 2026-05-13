@@ -460,7 +460,20 @@ packet adds
 	self-concordance, inverse-Hessian nonnegativity, and the source gradient
 	bound `||grad phi(xbar0)||* <= sqrt(nu)` from the barrier record.  In the
 	common unit-parameter/radius-half shape, the scalar source budget is exposed
-	as `2 * sqrt(nu) <= tailBound`.
+	as `2 * sqrt(nu) <= tailBound`.  The latest source-radius telescope packet
+	adds `localNorm_eq_norm_of_adjointSqrt`,
+	`localNorm_add_le_of_adjointSqrt`,
+	`localNorm_sum_le_sum_localNorm_of_adjointSqrt`,
+	`sequence_sub_initial_eq_sum_steps_of_succ_sub`,
+	`sequence_sub_initial_eq_sum_steps_of_succ_eq_add`,
+	`sourceRadius_le_of_sum_steps_of_adjointSqrt`,
+	`sourceRadius_successor_bound_of_sum_steps_of_adjointSqrt`,
+	`sourceRadius_successor_bound_of_succ_sub_steps_of_adjointSqrt`,
+	`sourceRadius_successor_bound_of_add_steps_of_adjointSqrt`,
+	the corresponding radius-half wrappers, and
+	`chewi1316_uniformTailBound_of_add_steps_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	Search-first reuse: local `hessianPrimalFactor_of_adjointSqrt` and
+	mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.
 	Together these formalize the reverse
 	path-following setup with vector
 	`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
@@ -468,10 +481,9 @@ packet adds
 	`lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
 	is now narrower: prove the concrete Chewi/Nesterov analytical-center successor
 	source-radius data: successor membership, a global Hessian derivative/mixed-third
-	package on the domain, and either a
-	uniform source-radius bound with `M*radiusBound < 1` plus
-	`sqrt(nu) / (1 - M*radiusBound) <= tailBound`, or the unit
-	radius-half specialization with `2 * sqrt(nu) <= tailBound`.  Equivalent exponential/local-norm,
+	package on the domain, the additive update recurrence, per-step source-local
+	norm bounds, the cumulative half-radius scalar budget, and
+	`2 * sqrt(nu) <= tailBound`.  Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has
 	an unscaled tail bound.

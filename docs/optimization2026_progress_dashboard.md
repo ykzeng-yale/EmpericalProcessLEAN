@@ -330,10 +330,26 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  and
 	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
 	  These consume `SelfConcordantBarrierOn` directly and expose the common
-	  unit-radius-half scalar budget as `2 * sqrt(nu) <= tailBound`.  The live
-	  exact-source gate is now successor membership, a global derivative package,
-	  a uniform radius/radius-half bound, and the corresponding scalar tail
-	  budget.
+	  unit-radius-half scalar budget as `2 * sqrt(nu) <= tailBound`.  The
+	  source-radius telescope packet adds
+	  `localNorm_eq_norm_of_adjointSqrt`,
+	  `localNorm_add_le_of_adjointSqrt`,
+	  `localNorm_sum_le_sum_localNorm_of_adjointSqrt`,
+	  `sequence_sub_initial_eq_sum_steps_of_succ_sub`,
+	  `sequence_sub_initial_eq_sum_steps_of_succ_eq_add`,
+	  `sourceRadius_le_of_sum_steps_of_adjointSqrt`,
+	  `sourceRadius_successor_bound_of_sum_steps_of_adjointSqrt`,
+	  `sourceRadius_successor_bound_of_succ_sub_steps_of_adjointSqrt`,
+	  `sourceRadius_successor_bound_of_add_steps_of_adjointSqrt`,
+	  the corresponding radius-half specializations, and
+	  `chewi1316_uniformTailBound_of_add_steps_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	  Search-first reuse: local
+	  `hessianPrimalFactor_of_adjointSqrt`, mathlib `norm_add_le`,
+	  `norm_sum_le`, and `Finset.sum_range_sub`.  The live exact-source gate is
+	  now the concrete Chewi/Nesterov analytical-center data: successor
+	  membership, a global derivative package, the additive step recurrence,
+	  per-step source-local norm bounds, the cumulative half-radius scalar
+	  budget, and `2 * sqrt(nu) <= tailBound`.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

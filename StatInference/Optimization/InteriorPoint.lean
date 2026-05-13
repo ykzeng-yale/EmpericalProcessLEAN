@@ -23,7 +23,7 @@ local-norm/Newton substrate, and the Lemma 13.6 Hessian-stability spine.
 namespace StatInference
 namespace Optimization
 
-open scoped intervalIntegral
+open scoped intervalIntegral BigOperators
 open Filter
 
 section ScalarGronwall
@@ -11477,6 +11477,266 @@ theorem hessianPrimalFactor_of_adjointSqrt
     (ContinuousLinearMap.apply_norm_sq_eq_inner_adjoint_right sqrtH step).symm
 
 /--
+At a point where the supplied Hessian factors as `S†S`, the supplied local
+norm is exactly the norm of the square-root coordinate `S v`.
+-/
+theorem localNorm_eq_norm_of_adjointSqrt
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {x : E} {sqrtH : E →L[ℝ] E}
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (v : E) :
+    localNorm hess x v = ‖sqrtH v‖ := by
+  have hfactor :
+      inner ℝ v (hess x v) = ‖sqrtH v‖ ^ (2 : ℕ) :=
+    hessianPrimalFactor_of_adjointSqrt
+      (hess := hess) (x := x) (sqrtH := sqrtH) hhess_eq v
+  have hquad_nonneg : 0 ≤ inner ℝ v (hess x v) := by
+    rw [hfactor]
+    exact sq_nonneg _
+  refine (sq_eq_sq₀
+    (localNorm_nonneg hess x v)
+    (norm_nonneg (sqrtH v))).mp ?_
+  calc
+    (localNorm hess x v) ^ (2 : ℕ) =
+        inner ℝ v (hess x v) :=
+      localNorm_sq_eq_inner hquad_nonneg
+    _ = ‖sqrtH v‖ ^ (2 : ℕ) :=
+      hfactor
+
+/--
+Triangle inequality for the supplied local norm under an adjoint-square
+Hessian factorization.
+-/
+theorem localNorm_add_le_of_adjointSqrt
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {x : E} {sqrtH : E →L[ℝ] E}
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (u v : E) :
+    localNorm hess x (u + v) ≤ localNorm hess x u + localNorm hess x v := by
+  rw [localNorm_eq_norm_of_adjointSqrt hhess_eq (u + v)]
+  rw [localNorm_eq_norm_of_adjointSqrt hhess_eq u]
+  rw [localNorm_eq_norm_of_adjointSqrt hhess_eq v]
+  simpa [map_add] using norm_add_le (sqrtH u) (sqrtH v)
+
+/--
+Finite-sum triangle inequality for the supplied local norm under an
+adjoint-square Hessian factorization.
+-/
+theorem localNorm_sum_le_sum_localNorm_of_adjointSqrt
+    [CompleteSpace E]
+    {ι : Type*} (s : Finset ι)
+    {hess : E -> E →L[ℝ] E} {x : E} {sqrtH : E →L[ℝ] E}
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (step : ι -> E) :
+    localNorm hess x (∑ i ∈ s, step i) ≤
+      ∑ i ∈ s, localNorm hess x (step i) := by
+  rw [localNorm_eq_norm_of_adjointSqrt hhess_eq]
+  calc
+    ‖sqrtH (∑ i ∈ s, step i)‖ =
+        ‖∑ i ∈ s, sqrtH (step i)‖ := by
+      simp [map_sum]
+    _ ≤ ∑ i ∈ s, ‖sqrtH (step i)‖ :=
+      norm_sum_le _ _
+    _ = ∑ i ∈ s, localNorm hess x (step i) := by
+      refine Finset.sum_congr rfl ?_
+      intro i _hi
+      exact (localNorm_eq_norm_of_adjointSqrt hhess_eq (step i)).symm
+
+/--
+Source-radius bound from a supplied telescoping identity and cumulative
+step-local-norm budget.
+-/
+theorem sourceRadius_le_of_sum_steps_of_adjointSqrt
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {xbar0 xN : E} {sqrtH : E →L[ℝ] E}
+    {steps : ℕ -> E} {stepBound : ℕ -> ℝ} {N : ℕ} {radiusBound : ℝ}
+    (hhess_eq : hess xbar0 = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (htelescope : xN - xbar0 = ∑ n ∈ Finset.range (N + 1), steps n)
+    (hstep_bound : ∀ n, n ∈ Finset.range (N + 1) ->
+      localNorm hess xbar0 (steps n) ≤ stepBound n)
+    (hsum_bound : (∑ n ∈ Finset.range (N + 1), stepBound n) ≤ radiusBound) :
+    localNorm hess xbar0 (xN - xbar0) ≤ radiusBound := by
+  calc
+    localNorm hess xbar0 (xN - xbar0) =
+        localNorm hess xbar0 (∑ n ∈ Finset.range (N + 1), steps n) := by
+      rw [htelescope]
+    _ ≤ ∑ n ∈ Finset.range (N + 1), localNorm hess xbar0 (steps n) :=
+      localNorm_sum_le_sum_localNorm_of_adjointSqrt
+        (s := Finset.range (N + 1)) hhess_eq steps
+    _ ≤ ∑ n ∈ Finset.range (N + 1), stepBound n :=
+      Finset.sum_le_sum hstep_bound
+    _ ≤ radiusBound :=
+      hsum_bound
+
+omit [InnerProductSpace ℝ E] in
+/--
+Vector-valued forward telescope: if `steps n = x_{n+1} - x_n`, then the
+displacement from the initial point is the finite sum of the steps.
+-/
+theorem sequence_sub_initial_eq_sum_steps_of_succ_sub
+    {xbar0 : E} {xseq steps : ℕ -> E}
+    (hx0 : xseq 0 = xbar0)
+    (hstep : ∀ n : ℕ, xseq (n + 1) - xseq n = steps n)
+    (N : ℕ) :
+    xseq (N + 1) - xbar0 = ∑ n ∈ Finset.range (N + 1), steps n := by
+  calc
+    xseq (N + 1) - xbar0 = xseq (N + 1) - xseq 0 := by
+      rw [hx0]
+    _ = ∑ n ∈ Finset.range (N + 1), (xseq (n + 1) - xseq n) :=
+      (Finset.sum_range_sub xseq (N + 1)).symm
+    _ = ∑ n ∈ Finset.range (N + 1), steps n := by
+      refine Finset.sum_congr rfl ?_
+      intro n _hn
+      exact hstep n
+
+omit [InnerProductSpace ℝ E] in
+/--
+Additive-update version of the vector forward telescope.
+-/
+theorem sequence_sub_initial_eq_sum_steps_of_succ_eq_add
+    {xbar0 : E} {xseq steps : ℕ -> E}
+    (hx0 : xseq 0 = xbar0)
+    (hstep : ∀ n : ℕ, xseq (n + 1) = xseq n + steps n)
+    (N : ℕ) :
+    xseq (N + 1) - xbar0 = ∑ n ∈ Finset.range (N + 1), steps n := by
+  refine sequence_sub_initial_eq_sum_steps_of_succ_sub
+    (xbar0 := xbar0) (xseq := xseq) (steps := steps) hx0 ?_ N
+  intro n
+  rw [hstep n]
+  simp
+
+/--
+Successor source-radius bound from supplied telescoping identities and
+cumulative step-local-norm budgets.
+-/
+theorem sourceRadius_successor_bound_of_sum_steps_of_adjointSqrt
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {xbar0 : E} {xseq steps : ℕ -> E}
+    {sqrtH : E →L[ℝ] E} {stepBound : ℕ -> ℝ} {radiusBound : ℝ}
+    (hhess_eq : hess xbar0 = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (htelescope : ∀ N : ℕ,
+      xseq (N + 1) - xbar0 = ∑ n ∈ Finset.range (N + 1), steps n)
+    (hstep_bound : ∀ N n, n ∈ Finset.range (N + 1) ->
+      localNorm hess xbar0 (steps n) ≤ stepBound n)
+    (hsum_bound : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), stepBound n) ≤ radiusBound) :
+    ∀ N : ℕ, localNorm hess xbar0 (xseq (N + 1) - xbar0) ≤ radiusBound := by
+  intro N
+  exact
+    sourceRadius_le_of_sum_steps_of_adjointSqrt
+      (hess := hess) (xbar0 := xbar0) (xN := xseq (N + 1))
+      (sqrtH := sqrtH) (steps := steps) (stepBound := stepBound)
+      (N := N) (radiusBound := radiusBound) hhess_eq (htelescope N)
+      (hstep_bound N) (hsum_bound N)
+
+/--
+Successor source-radius bound from the step-difference recurrence
+`x_{n+1} - x_n = step_n`.
+-/
+theorem sourceRadius_successor_bound_of_succ_sub_steps_of_adjointSqrt
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {xbar0 : E} {xseq steps : ℕ -> E}
+    {sqrtH : E →L[ℝ] E} {stepBound : ℕ -> ℝ} {radiusBound : ℝ}
+    (hhess_eq : hess xbar0 = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hx0 : xseq 0 = xbar0)
+    (hstep : ∀ n : ℕ, xseq (n + 1) - xseq n = steps n)
+    (hstep_bound : ∀ N n, n ∈ Finset.range (N + 1) ->
+      localNorm hess xbar0 (steps n) ≤ stepBound n)
+    (hsum_bound : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), stepBound n) ≤ radiusBound) :
+    ∀ N : ℕ, localNorm hess xbar0 (xseq (N + 1) - xbar0) ≤ radiusBound :=
+  sourceRadius_successor_bound_of_sum_steps_of_adjointSqrt
+    (hess := hess) (xbar0 := xbar0) (xseq := xseq) (steps := steps)
+    (sqrtH := sqrtH) (stepBound := stepBound) (radiusBound := radiusBound)
+    hhess_eq
+    (fun N => sequence_sub_initial_eq_sum_steps_of_succ_sub hx0 hstep N)
+    hstep_bound hsum_bound
+
+/--
+Successor source-radius bound from the additive update
+`x_{n+1} = x_n + step_n`.
+-/
+theorem sourceRadius_successor_bound_of_add_steps_of_adjointSqrt
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {xbar0 : E} {xseq steps : ℕ -> E}
+    {sqrtH : E →L[ℝ] E} {stepBound : ℕ -> ℝ} {radiusBound : ℝ}
+    (hhess_eq : hess xbar0 = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hx0 : xseq 0 = xbar0)
+    (hstep : ∀ n : ℕ, xseq (n + 1) = xseq n + steps n)
+    (hstep_bound : ∀ N n, n ∈ Finset.range (N + 1) ->
+      localNorm hess xbar0 (steps n) ≤ stepBound n)
+    (hsum_bound : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), stepBound n) ≤ radiusBound) :
+    ∀ N : ℕ, localNorm hess xbar0 (xseq (N + 1) - xbar0) ≤ radiusBound :=
+  sourceRadius_successor_bound_of_sum_steps_of_adjointSqrt
+    (hess := hess) (xbar0 := xbar0) (xseq := xseq) (steps := steps)
+    (sqrtH := sqrtH) (stepBound := stepBound) (radiusBound := radiusBound)
+    hhess_eq
+    (fun N => sequence_sub_initial_eq_sum_steps_of_succ_eq_add hx0 hstep N)
+    hstep_bound hsum_bound
+
+/--
+Radius-half specialization of the successor source-radius telescoping
+wrapper used by the Chewi §13.16 unit-barrier preliminary path.
+-/
+theorem sourceRadius_successor_half_of_sum_steps_of_adjointSqrt
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {xbar0 : E} {xseq steps : ℕ -> E}
+    {sqrtH : E →L[ℝ] E} {stepBound : ℕ -> ℝ}
+    (hhess_eq : hess xbar0 = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (htelescope : ∀ N : ℕ,
+      xseq (N + 1) - xbar0 = ∑ n ∈ Finset.range (N + 1), steps n)
+    (hstep_bound : ∀ N n, n ∈ Finset.range (N + 1) ->
+      localNorm hess xbar0 (steps n) ≤ stepBound n)
+    (hsum_bound : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), stepBound n) ≤ 1 / 2) :
+    ∀ N : ℕ, localNorm hess xbar0 (xseq (N + 1) - xbar0) ≤ 1 / 2 :=
+  sourceRadius_successor_bound_of_sum_steps_of_adjointSqrt
+    (hess := hess) (xbar0 := xbar0) (xseq := xseq) (steps := steps)
+    (sqrtH := sqrtH) (stepBound := stepBound) (radiusBound := (1 / 2 : ℝ))
+    hhess_eq htelescope hstep_bound hsum_bound
+
+/--
+Radius-half specialization from the step-difference recurrence.
+-/
+theorem sourceRadius_successor_half_of_succ_sub_steps_of_adjointSqrt
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {xbar0 : E} {xseq steps : ℕ -> E}
+    {sqrtH : E →L[ℝ] E} {stepBound : ℕ -> ℝ}
+    (hhess_eq : hess xbar0 = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hx0 : xseq 0 = xbar0)
+    (hstep : ∀ n : ℕ, xseq (n + 1) - xseq n = steps n)
+    (hstep_bound : ∀ N n, n ∈ Finset.range (N + 1) ->
+      localNorm hess xbar0 (steps n) ≤ stepBound n)
+    (hsum_bound : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), stepBound n) ≤ 1 / 2) :
+    ∀ N : ℕ, localNorm hess xbar0 (xseq (N + 1) - xbar0) ≤ 1 / 2 :=
+  sourceRadius_successor_bound_of_succ_sub_steps_of_adjointSqrt
+    (hess := hess) (xbar0 := xbar0) (xseq := xseq) (steps := steps)
+    (sqrtH := sqrtH) (stepBound := stepBound) (radiusBound := (1 / 2 : ℝ))
+    hhess_eq hx0 hstep hstep_bound hsum_bound
+
+/--
+Radius-half specialization from the additive update recurrence.
+-/
+theorem sourceRadius_successor_half_of_add_steps_of_adjointSqrt
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {xbar0 : E} {xseq steps : ℕ -> E}
+    {sqrtH : E →L[ℝ] E} {stepBound : ℕ -> ℝ}
+    (hhess_eq : hess xbar0 = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hx0 : xseq 0 = xbar0)
+    (hstep : ∀ n : ℕ, xseq (n + 1) = xseq n + steps n)
+    (hstep_bound : ∀ N n, n ∈ Finset.range (N + 1) ->
+      localNorm hess xbar0 (steps n) ≤ stepBound n)
+    (hsum_bound : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), stepBound n) ≤ 1 / 2) :
+    ∀ N : ℕ, localNorm hess xbar0 (xseq (N + 1) - xbar0) ≤ 1 / 2 :=
+  sourceRadius_successor_bound_of_add_steps_of_adjointSqrt
+    (hess := hess) (xbar0 := xbar0) (xseq := xseq) (steps := steps)
+    (sqrtH := sqrtH) (stepBound := stepBound) (radiusBound := (1 / 2 : ℝ))
+    hhess_eq hx0 hstep hstep_bound hsum_bound
+
+/--
 An adjoint-square Hessian factorization is symmetric.
 -/
 theorem hessianSymmetric_of_adjointSqrt
@@ -14478,6 +14738,58 @@ theorem chewi1316_uniformTailBound_of_sourceRadius_successor_radiusHalf_zeroSafe
     (by
       norm_num [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc]
       exact hbudget)
+
+/--
+Unit-parameter source-tail bridge where the radius-half hypothesis is derived
+from a source Hessian square-root factorization, an additive step recurrence,
+and a cumulative source-local step budget.
+-/
+theorem chewi1316_uniformTailBound_of_add_steps_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {invHess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {xbar0 : E} {xseq steps : ℕ -> E} {sqrtH : E →L[ℝ] E}
+    {stepBound : ℕ -> ℝ} {nu tailBound : ℝ}
+    (hhess_source :
+      hess xbar0 = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hs : Convex ℝ s)
+    (hxbar0 : xbar0 ∈ s)
+    (hx0 : xseq 0 = xbar0)
+    (hxseq_succ : ∀ N : ℕ, xseq (N + 1) ∈ s)
+    (hbar : SelfConcordantBarrierOn s hess phiGrad invHess thirdMixed (1 : ℝ) nu)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess_global : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed_global : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hstep : ∀ n : ℕ, xseq (n + 1) = xseq n + steps n)
+    (hstep_bound : ∀ N n, n ∈ Finset.range (N + 1) ->
+      localNorm hess xbar0 (steps n) ≤ stepBound n)
+    (hsum_bound : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), stepBound n) ≤ 1 / 2)
+    (hxseq_inv_local : ∀ N v,
+      localNorm hess (xseq N) (invHess (xseq N) v) =
+        dualLocalNorm invHess (xseq N) v)
+    (hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w)
+    (hbudget : 2 * Real.sqrt nu ≤ tailBound) :
+    ∀ N,
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound :=
+  chewi1316_uniformTailBound_of_sourceRadius_successor_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity
+    (s := s) (hess := hess) (hessDeriv := hessDeriv)
+    (invHess := invHess) (thirdMixed := thirdMixed) (phiGrad := phiGrad)
+    (xbar0 := xbar0) (xseq := xseq) (nu := nu) (tailBound := tailBound)
+    hs hxbar0 hx0 hxseq_succ hbar hess_pos hhess_cont hhess_global
+    hmixed_global
+    (sourceRadius_successor_half_of_add_steps_of_adjointSqrt
+      (hess := hess) (xbar0 := xbar0) (xseq := xseq) (steps := steps)
+      (sqrtH := sqrtH) (stepBound := stepBound)
+      hhess_source hx0 hstep hstep_bound hsum_bound)
+    hxseq_inv_local hxbar0_cauchy hbudget
 
 /--
 Existential positive-`tMain` version of the bounded-tail preliminary
