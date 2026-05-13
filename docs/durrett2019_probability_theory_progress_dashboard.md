@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V312` in
+Route from `Live In-Thread Goal Prompt V313` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Theorem 2.4.9 Glivenko-Cantelli and Chapter
 2.1 independence/product-law support in
@@ -59,9 +59,11 @@ range-sum, and `n^{-1} * sum` Durrett 2.4.9 endpoints.  V311 adds the
 infinite-product-law source criterion and the matching Durrett 2.4.9 product-law
 consumers from a full sequence joint law `P^ℕ`.  V312 adds the
 `IdentDistrib` iid-source bridge and the matching Durrett 2.4.9 consumers from
-one base marginal law, identical distributions, and `iIndepFun`.  Do not redo
-the compiled 2.4.9 cutpoint-chain, source displays, canonical iid wrappers,
-`iIndepFun`, product-law, or `IdentDistrib` wrappers unless a later theorem
+one base marginal law, identical distributions, and `iIndepFun`.  V313 adds
+the weaker pairwise-iid consumers from one base marginal law, identical
+distributions, and pairwise coordinate independence.  Do not redo the compiled
+2.4.9 cutpoint-chain, source displays, canonical iid wrappers, `iIndepFun`,
+product-law, `IdentDistrib`, or pairwise-iid wrappers unless a later theorem
 exposes a precise dependency gap.
 
 ## Historical Section 4.7 Snapshot
@@ -738,6 +740,14 @@ V312 adds the identical-distribution source bridge and consumers:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun_identDistrib`,
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun_identDistrib`.
+V313 adds the pairwise-iid source consumers:
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_pairwise_identDistrib`,
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_pairwise_identDistrib`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_pairwise_identDistrib`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_pairwise_identDistrib`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_pairwise_identDistrib`,
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_pairwise_identDistrib`.
 Theorem 2.2.3 now has finite-block variance scaling, the `C / n` variance
 bound, the source-facing `E (S_n / n - μ)^2 <= C / n` display for uncorrelated
 and independent blocks, the `L^2 -> TendstoInMeasure` Lemma 2.2.2
