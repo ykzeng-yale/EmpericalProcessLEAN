@@ -272,20 +272,31 @@ invariant packet then adds
 `chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment`,
 and
 `chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
-Together these formalize the reverse path-following setup with vector
+The exact-center main-stage initialization bridge also adds
+`centralPathGrad_at_analyticalCenter`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter_of_nonneg`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter_of_adjointCoordFactor`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter_of_adjointCoordFactor_nonneg`,
+showing that at `grad phi(center) = 0`, the main-stage decrement is controlled by
+the scaled dual norm `|t| * ||a||*_center`.  Together these formalize the reverse
+path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
 is a sequence-level preliminary convergence/iteration-count wrapper matching
 the Nesterov §5.3.5 citation: carry the decreasing `t_n` recurrence and
 one-step invariant until a supplied log/count condition reaches an `x0,t0`
-suitable for the main stage.  Do not route the next run back to product, sum,
+suitable for the main stage, using the exact-center bridge as the target
+interface.  Do not route the next run back to product, sum,
 affine/range, positive-orthant barrier setup, the already-compiled Lemma
 13.16/main-stage algebra, the dual-norm interface, the generic main-stage
 wrappers, feasible-step membership, the positive-orthant main-stage one-step
 invariant, the closed-form parameter recurrence, the objective-gap stopping
-rule, or preliminary endpoint/decreasing-gradient/decreasing-invariant algebra
-unless a new downstream proof directly needs one of those verified declarations.
+rule, exact-center main-stage initialization, or preliminary
+endpoint/decreasing-gradient/decreasing-invariant algebra unless a new
+downstream proof directly needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

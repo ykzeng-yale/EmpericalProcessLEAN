@@ -125,9 +125,13 @@ post-Newton wrappers
 `chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment`,
 and
 `chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
-The next live route is a sequence-level preliminary convergence/count wrapper
-matching the reverse path-following argument cited to Nesterov §5.3.5, then the
-strictly-feasible-start discussion.
+The exact-center main-stage bridge adds `centralPathGrad_at_analyticalCenter`
+and the four
+`chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter*` wrappers,
+reducing exact-center initialization to `|t| * ||a||*_center <= 1/4`.  The next
+live route is a sequence-level preliminary convergence/count wrapper matching
+the reverse path-following argument cited to Nesterov §5.3.5 and targeting this
+center interface, then the strictly-feasible-start discussion.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

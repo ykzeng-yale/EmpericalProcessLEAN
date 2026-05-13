@@ -11896,6 +11896,72 @@ theorem centralPathGrad_hasFDerivAt
     hasFDerivAt_const (t • a) x
   simpa [centralPathGrad] using hconst.add hphi
 
+theorem centralPathGrad_at_analyticalCenter
+    {phiGrad : E -> E} {center a : E} {t : ℝ}
+    (hcenter : phiGrad center = 0) :
+    centralPathGrad t a phiGrad center = t • a := by
+  simp [centralPathGrad, hcenter]
+
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {center a : E}
+    {t : ℝ}
+    (hcenter : phiGrad center = 0)
+    (hdual_smul : ∀ (c : ℝ) (v : E),
+      dualLocalNorm invHess center (c • v) =
+        |c| * dualLocalNorm invHess center v)
+    (hscaled : |t| * dualLocalNorm invHess center a ≤ 1 / 4) :
+    newtonDecrement (centralPathGrad t a phiGrad) invHess center ≤ 1 / 4 := by
+  change dualLocalNorm invHess center
+      (centralPathGrad t a phiGrad center) ≤ 1 / 4
+  rw [centralPathGrad_at_analyticalCenter hcenter, hdual_smul]
+  exact hscaled
+
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter_of_nonneg
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {center a : E}
+    {t : ℝ}
+    (hcenter : phiGrad center = 0)
+    (hdual_smul : ∀ (c : ℝ) (v : E),
+      dualLocalNorm invHess center (c • v) =
+        |c| * dualLocalNorm invHess center v)
+    (ht_nonneg : 0 ≤ t)
+    (hscaled : t * dualLocalNorm invHess center a ≤ 1 / 4) :
+    newtonDecrement (centralPathGrad t a phiGrad) invHess center ≤ 1 / 4 :=
+  chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter
+    (invHess := invHess) (phiGrad := phiGrad) (center := center)
+    (a := a) (t := t) hcenter hdual_smul
+    (by simpa [abs_of_nonneg ht_nonneg] using hscaled)
+
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter_of_adjointCoordFactor
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {center a : E}
+    {coord : E →L[ℝ] E} {t : ℝ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess center v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hcenter : phiGrad center = 0)
+    (hscaled : |t| * dualLocalNorm invHess center a ≤ 1 / 4) :
+    newtonDecrement (centralPathGrad t a phiGrad) invHess center ≤ 1 / 4 :=
+  chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter
+    (invHess := invHess) (phiGrad := phiGrad) (center := center)
+    (a := a) (t := t) hcenter
+    (dualLocalNorm_smul_of_adjointCoordFactor hinv_factor) hscaled
+
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter_of_adjointCoordFactor_nonneg
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {center a : E}
+    {coord : E →L[ℝ] E} {t : ℝ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess center v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hcenter : phiGrad center = 0)
+    (ht_nonneg : 0 ≤ t)
+    (hscaled : t * dualLocalNorm invHess center a ≤ 1 / 4) :
+    newtonDecrement (centralPathGrad t a phiGrad) invHess center ≤ 1 / 4 :=
+  chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter_of_nonneg
+    (invHess := invHess) (phiGrad := phiGrad) (center := center)
+    (a := a) (t := t) hcenter
+    (dualLocalNorm_smul_of_adjointCoordFactor hinv_factor) ht_nonneg hscaled
+
 theorem newton_linear_of_hessian_right_inverse
     {hess invHess : E -> E →L[ℝ] E} {grad : E -> E} {x : E}
     (hright : ∀ v : E, hess x (invHess x v) = v) :

@@ -158,8 +158,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment`,
   and
   `chewi1316_preliminaryStage_newtonDecrement_le_quarter_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
+  The exact-center main-stage bridge adds `centralPathGrad_at_analyticalCenter`
+  and the four `chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter*`
+  wrappers, reducing exact-center initialization to the scaled dual-norm bound
+  `|t| * ||a||*_center <= 1/4`.
   Remaining gate: sequence-level preliminary convergence/iteration-count
-  wrapper, then strictly-feasible-start discussion.
+  wrapper using this center interface, then strictly-feasible-start discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
