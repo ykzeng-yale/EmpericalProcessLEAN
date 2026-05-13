@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V249
+## Live In-Thread Goal Prompt V250
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,13 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V249 adds the outer second-RHS assembly:
+Latest verified Lean packet V250 adds the finite-horizon endpoint:
+`durrett2019_theorem_4_5_7_terminal_tail_sq_measure_aemeasurable` and
+`durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`.
+It combines the V241 finite running-maximum layer-cake bound, the V242 first
+RHS calculation, and the V249 second RHS calculation into
+`E(max_{m <= n} |X_m|) <= 3 * E sqrt(A_infty)` for every finite horizon.
+V249 adds the outer second-RHS assembly:
 `durrett2019_theorem_4_5_7_tail_cut_double_lintegral_eq_weighted_tail_lintegral`,
 `durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_weighted_tail_lintegral`,
 `durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral`,
@@ -115,14 +121,13 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: combine the V241 finite running-maximum
-bound with V242 first RHS `E sqrt(A_infty)` and V249 second RHS
-`2 * E sqrt(A_infty)` to prove the finite-horizon
-`E(max_{m <= n} |X_m|) <= 3 * E sqrt(A_infty)` extended-expectation bound.
-Then move to the monotone finite-horizon-to-`sup_n` limit.  Search
-Mathlib/local APIs first (`lintegral_add`, `add_mul`, `lintegral_const_mul'`,
-`Monotone.lintegral_iSup`, `iSup`/running maximum monotonicity, and existing
-runningAbsMax monotone support).  Do not revisit closed
+Next aggressive theorem-sized packet: prove the monotone
+finite-horizon-to-`sup_n` endpoint for Durrett Theorem 4.5.7, using the
+compiled monotonicity of `durrett2019_runningAbsMax` and V250 finite-horizon
+bound.  Search Mathlib/local APIs first (`Monotone.lintegral_iSup`,
+`iSup`/running maximum monotonicity, `durrett2019_runningAbsSup`, `iSup`
+measurability support, and existing runningAbsMax monotone support).  Do not
+revisit closed
 Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the V236 probability conversion, the
 V237/V238/V239 stopped source packaging, the V240 raw/stopped survival split,
 the V241 layer-cake handoff, the V242 first-RHS bridge, the V243
@@ -130,7 +135,8 @@ truncated-terminal layer-cake bridge, the V244 weighted double-integral
 handoff, the V245 Tonelli/measurability swap layer, the V246 square-root
 weighted-tail endpoint, the V247 inverse-square denominator calculus, or the
 V248 fixed-`b` inner integral, or the V249 second-RHS assembly unless a compile
-error exposes a genuinely missing primitive.
+error exposes a genuinely missing primitive.  Do not redo the V250
+finite-horizon aggregation.
 
 ## Recent Route Notes
 
@@ -640,10 +646,14 @@ and
 `durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral_of_source_monotone_terminal`.
 This proves the full second deterministic RHS term is `2 * E sqrt(A_infty)`.
 
-Next aggressive step: continue Durrett Theorem 4.5.7 by combining the V241
-finite running-maximum bound with V242 and V249 so the finite-horizon RHS
-turns into
-`E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Do not start by formalizing the full
+V250 adds the finite-horizon endpoint:
+`durrett2019_theorem_4_5_7_terminal_tail_sq_measure_aemeasurable` and
+`durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`.
+This proves the textbook constant `3` bound for every finite running maximum.
+
+Next aggressive step: continue Durrett Theorem 4.5.7 by proving the monotone
+finite-horizon-to-`sup_n` endpoint from V250 and `durrett2019_runningAbsMax`
+monotonicity.  Do not start by formalizing the full
 Friedman urn state process unless it directly reuses the compiled 4.5.5 ratio
 package.  Do not revisit raw clock pointwise monotonicity, direct martingale
 finite-limit assumptions, denominator divergence on `limsup`, final 4.5.5
@@ -656,6 +666,7 @@ the V246 square-root weighted-tail endpoint,
 the V247 inverse-square denominator calculus,
 the V248 fixed-`b` inner integral,
 the V249 second-RHS assembly,
+the V250 finite-horizon aggregation,
 stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -2002,6 +2013,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V249` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V250` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

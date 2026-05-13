@@ -23404,6 +23404,38 @@ theorem
 /--
 Durrett 2019, Theorem 4.5.7 deterministic RHS support.
 
+The terminal square-tail function in the outer `a` integral is a.e.
+measurable, with integrability supplying the measurable representative for
+`A_infty`.
+-/
+theorem durrett2019_theorem_4_5_7_terminal_tail_sq_measure_aemeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_int : Integrable Ainf P) :
+    AEMeasurable (fun a : ℝ => P {ω : Ω | a ^ 2 < Ainf ω})
+      (volume.restrict (Set.Ioi (0 : ℝ))) := by
+  let AinfMeas := hAinf_int.aestronglyMeasurable.aemeasurable
+  let AinfMk : Ω -> ℝ := AinfMeas.mk Ainf
+  have hmk_meas : Measurable fun a : ℝ => P {ω : Ω | a ^ 2 < AinfMk ω} := by
+    let s : Set (ℝ × Ω) := {z | z.1 ^ 2 < AinfMk z.2}
+    have hs : MeasurableSet s := by
+      exact measurableSet_lt (measurable_fst.pow_const 2)
+        (AinfMeas.measurable_mk.comp measurable_snd)
+    simpa [s] using (measurable_measure_prodMk_left (ν := P) hs)
+  have heq :
+      (fun a : ℝ => P {ω : Ω | a ^ 2 < Ainf ω}) =
+        fun a : ℝ => P {ω : Ω | a ^ 2 < AinfMk ω} := by
+    funext a
+    apply MeasureTheory.measure_congr
+    filter_upwards [AinfMeas.ae_eq_mk] with ω hω
+    change (a ^ 2 < Ainf ω) = (a ^ 2 < AinfMk ω)
+    rw [hω]
+  rw [heq]
+  exact hmk_meas.aemeasurable
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
 Layer-cake form of the truncated terminal clock:
 `E(A_infty ∧ a^2) = ∫_0^∞ P(b < A_infty, b < a^2) db`.
 This is the first line of the second Fubini/calculus computation in the
@@ -24132,6 +24164,72 @@ theorem
     (durrett2019_theorem_4_5_7_terminal_nonneg_of_initial_zero_monotone_tendsto
       (P := P) (A := A) (Ainf := Ainf) hA0 hA_mono hA_tendsto)
     hAinf_int
+
+/--
+Durrett 2019, Theorem 4.5.7 finite-horizon endpoint.
+
+Combining the finite-horizon layer-cake handoff with the first and second
+deterministic RHS calculations gives the textbook constant `3` bound for each
+finite running maximum.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_int : Integrable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (n : ℕ) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≤
+      (3 : ℝ≥0∞) * ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P := by
+  let S : ℝ≥0∞ := ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P
+  let second : ℝ -> ℝ≥0∞ := fun a =>
+    ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+      (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)
+  have hbase :=
+    durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_terminal_tail_add_min_terminal_lintegral_of_source_square_minus_martingale_monotone_terminal
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+      hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_int hX0
+      hA0 hA_mono hA_tendsto n
+  have hsplit :
+      (∫⁻ a in Set.Ioi (0 : ℝ),
+        P {ω : Ω | a ^ 2 < Ainf ω} + second a ∂volume) =
+        (∫⁻ a in Set.Ioi (0 : ℝ), P {ω : Ω | a ^ 2 < Ainf ω} ∂volume) +
+          ∫⁻ a in Set.Ioi (0 : ℝ), second a ∂volume := by
+    exact lintegral_add_left'
+      (μ := volume.restrict (Set.Ioi (0 : ℝ)))
+      (durrett2019_theorem_4_5_7_terminal_tail_sq_measure_aemeasurable
+        (P := P) (Ainf := Ainf) hAinf_int)
+      second
+  have hfirst :
+      (∫⁻ a in Set.Ioi (0 : ℝ), P {ω : Ω | a ^ 2 < Ainf ω} ∂volume) = S := by
+    simpa [S] using
+      durrett2019_theorem_4_5_7_terminal_tail_sq_lintegral_eq_sqrt_lintegral_of_integrable
+        (P := P) (Ainf := Ainf) hAinf_int
+  have hsecond :
+      (∫⁻ a in Set.Ioi (0 : ℝ), second a ∂volume) = (2 : ℝ≥0∞) * S := by
+    simpa [second, S] using
+      durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral_of_source_monotone_terminal
+        (P := P) (A := A) (Ainf := Ainf) hAinf_int hA0 hA_mono hA_tendsto
+  calc
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P)
+        ≤ ∫⁻ a in Set.Ioi (0 : ℝ),
+            P {ω : Ω | a ^ 2 < Ainf ω} + second a ∂volume := by
+          simpa [second] using hbase
+    _ = S + (2 : ℝ≥0∞) * S := by rw [hsplit, hfirst, hsecond]
+    _ = (3 : ℝ≥0∞) * S := by
+      nth_rewrite 1 [← one_mul S]
+      rw [← add_mul]
+      norm_num
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

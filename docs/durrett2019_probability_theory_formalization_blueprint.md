@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V249`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V250`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -341,6 +341,9 @@ V249 adds the outer second-RHS assembly:
 `durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral`,
 and
 `durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral_of_source_monotone_terminal`.
+V250 adds the finite-horizon endpoint:
+`durrett2019_theorem_4_5_7_terminal_tail_sq_measure_aemeasurable` and
+`durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`.
 The next theorem-facing target is no longer finite sum/integral exchange,
 V214-to-V209 wiring, the tail-integral-to-clock-bound package,
 variance-ratio integrability packaging, lower-bound/no-zero/divergence
@@ -355,9 +358,9 @@ handoff, the V242 first-RHS bridge, or the V243 truncation layer-cake bridge.
 Do not redo the V244 weighted double-integral handoff, the V245
 Tonelli/measurability swap layer, the V246 square-root weighted-tail endpoint,
 the V247 inverse-square denominator calculus, or the V248 fixed-`b` inner
-integral, or the V249 second-RHS assembly.  Move next to the Theorem 4.5.7
-finite-horizon RHS aggregation, then the
-finite-horizon-to-supremum monotone limit.  Do not route back to
+integral, the V249 second-RHS assembly, or the V250 finite-horizon aggregation.
+Move next to the Theorem 4.5.7 finite-horizon-to-supremum monotone limit.  Do
+not route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
 packaging, deterministic Exercise 4.4.11 normalizers, reciprocal
