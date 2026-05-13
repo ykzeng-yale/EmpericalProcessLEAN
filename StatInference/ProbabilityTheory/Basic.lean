@@ -759,6 +759,49 @@ theorem durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero
   exact (hident i).symm.hasLaw hBase
 
 /--
+Durrett 2019, Theorem 2.1.11, countable iid product-law form from the
+standard identical-distribution source shape.
+
+A base law for `X_0`, identical distribution of all coordinates with `X_0`,
+and independence give the sequence-valued joint law `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ :=
+  durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.1.11, countable iid product-law criterion from the
+standard identical-distribution source shape.
+
+Given the base marginal law and identical-distribution hypotheses, independence
+is equivalent to the full sequence-valued joint law `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} [IsProbabilityMeasure μ] {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ) :
+    _root_.ProbabilityTheory.iIndepFun (μ := μ) X ↔
+      _root_.ProbabilityTheory.HasLaw (fun ω => fun i : ℕ => X i ω)
+        (Measure.infinitePi fun _ : ℕ => ν) μ :=
+  durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+
+/--
 Durrett 2019, Theorem 2.1.12 product-measure/Fubini form.
 
 This is the reusable product-measure integral identity behind the independent

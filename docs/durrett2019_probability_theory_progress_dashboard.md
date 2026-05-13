@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V314` in
+Route from `Live In-Thread Goal Prompt V315` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Theorem 2.4.9 Glivenko-Cantelli and Chapter
 2.1 independence/product-law support in
@@ -62,10 +62,12 @@ consumers from a full sequence joint law `P^ℕ`.  V312 adds the
 one base marginal law, identical distributions, and `iIndepFun`.  V313 adds
 the weaker pairwise-iid consumers from one base marginal law, identical
 distributions, and pairwise coordinate independence.  V314 adds the countable
-product-law forward direction and iff criteria for Chapter 2.1.  Do not redo
+product-law forward direction and iff criteria for Chapter 2.1.  V315 adds the
+standard identical-distribution source-shape product-law wrappers.  Do not redo
 the compiled 2.4.9 cutpoint-chain, source displays, canonical iid wrappers,
-`iIndepFun`, product-law, `IdentDistrib`, pairwise-iid, or countable
-product-law wrappers unless a later theorem exposes a precise dependency gap.
+`iIndepFun`, product-law, `IdentDistrib`, pairwise-iid, countable product-law,
+or identical-distribution product-law wrappers unless a later theorem exposes a
+precise dependency gap.
 
 ## Historical Section 4.7 Snapshot
 
@@ -754,6 +756,9 @@ V314 adds the countable product-law wrappers:
 `durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi`,
 `durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_infinitePi`, and
 `durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi`.
+V315 adds the standard iid source-shape product-law wrappers:
+`durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_of_identDistrib` and
+`durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi_of_identDistrib`.
 Theorem 2.2.3 now has finite-block variance scaling, the `C / n` variance
 bound, the source-facing `E (S_n / n - μ)^2 <= C / n` display for uncorrelated
 and independent blocks, the `L^2 -> TendstoInMeasure` Lemma 2.2.2

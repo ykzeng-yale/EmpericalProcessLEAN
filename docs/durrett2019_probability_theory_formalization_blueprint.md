@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V314`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V315`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -58,10 +58,12 @@ consumers from a full sequence joint law `P^ℕ`.  V312 adds the
 one base marginal law, identical distributions, and `iIndepFun`.  V313 adds
 the weaker pairwise-iid consumers from one base marginal law, identical
 distributions, and pairwise coordinate independence.  V314 adds the countable
-product-law forward direction and iff criteria for Chapter 2.1.  Do not redo
+product-law forward direction and iff criteria for Chapter 2.1.  V315 adds the
+standard identical-distribution source-shape product-law wrappers.  Do not redo
 the compiled 2.4.9 cutpoint-chain, source displays, canonical iid wrappers,
-`iIndepFun`, product-law, `IdentDistrib`, pairwise-iid, or countable
-product-law wrappers unless a later theorem exposes a precise dependency gap.
+`iIndepFun`, product-law, `IdentDistrib`, pairwise-iid, countable product-law,
+or identical-distribution product-law wrappers unless a later theorem exposes a
+precise dependency gap.
 
 Historical Section 4.7 frontier:
 Durrett Section 4.7 backwards martingales in
@@ -722,6 +724,9 @@ V314 additionally closes the countable product-law wrappers:
 `durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi`,
 `durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_infinitePi`, and
 `durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi`.
+V315 additionally closes the standard iid source-shape product-law wrappers:
+`durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_of_identDistrib` and
+`durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi_of_identDistrib`.
 Theorem 2.2.3 now has finite-block variance scaling, the
 `C / n` variance bound, the source-facing `E (S_n / n - mu)^2 <= C / n`
 display for uncorrelated and independent blocks, the `L^2 -> TendstoInMeasure`

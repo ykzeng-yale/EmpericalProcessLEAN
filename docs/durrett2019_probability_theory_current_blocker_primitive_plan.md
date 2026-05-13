@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V314
+## Live In-Thread Goal Prompt V315
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -29,9 +29,17 @@ V308 textbook range-sum empirical-CDF display wrappers, or the V309 textbook
 source-assumption wrappers for Durrett 2.4.9, or the V311 product-law source
 wrappers, or the V312 `IdentDistrib` plus `iIndepFun` iid-source wrappers, or
 the V313 pairwise-iid source wrappers, or the V314 countable product-law
-forward/criterion wrappers.
+forward/criterion wrappers, or the V315 identical-distribution-to-product-law
+wrappers.
 
-Latest verified target V314 adds the countable product-law direction and
+Latest verified target V315 adds the standard iid source-shape product-law
+wrappers:
+`durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_of_identDistrib` and
+`durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi_of_identDistrib`.
+These combine the base law of `X_0`, `IdentDistrib (X_i) (X_0)`, and
+`iIndepFun` with the V314 countable product-law theorem.
+
+Compiled support also includes the V314 countable product-law direction and
 criteria for Durrett Theorem 2.1.11:
 `durrett2019_theorem_2_1_11_iIndepFun_hasLaw_infinitePi`,
 `durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi`,
@@ -2063,6 +2071,8 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi`
 - `durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_infinitePi`
 - `durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi`
+- `durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_of_identDistrib`
+- `durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi_of_identDistrib`
 - `durrett2019_theorem_3_2_9_tendstoInDistribution_iff_forall_boundedContinuous_integral`
 - `durrett2019_theorem_3_2_10_continuous_mapping`
 - `durrett2019_theorem_3_2_10_continuous_mapping_common_probability_space`
