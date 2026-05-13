@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V260
+## Live In-Thread Goal Prompt V261
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,16 +19,22 @@ Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V260 starts Section 4.6.  It packages Durrett Theorem
+Latest verified target V261 continues Section 4.6.  V260 packages Durrett Theorem
 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds
 the dominated-family and tail-criterion constructors
 `durrett2019_section_4_6_uniformIntegrable_one_of_integrable_dominated` and
-`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_eLpNorm`.  Next
-aggressive theorem packet: prove the concrete Durrett Theorem 4.6.2
-source estimate that a uniform superlinear Orlicz/`p > 1` moment bound implies
-the V260 tail criterion, then use it to prepare Theorem 4.6.3 Vitali
-equivalence (`UI + convergence in probability ↔ L¹ convergence`).
+`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_eLpNorm`.  V261 adds
+the deterministic tail-envelope bridges
+`durrett2019_theorem_4_6_2_uniformIntegrable_of_tail_envelope_tendsto_zero` and
+`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_envelope_tendsto_zero`,
+plus the measure-theoretic `p > 1` source bridge
+`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd_with_modulus`.
+Next aggressive theorem packet: discharge the remaining scalar modulus for the
+uniform `Lᵖ`, `p > 1`, bound, i.e. choose `δ` so
+`R * δ ^ (1 - 1 / p.toReal) <= ε`, then package the clean Durrett 4.6.2
+uniform-`Lᵖ` endpoint and move to Theorem 4.6.3 Vitali equivalence
+(`UI + convergence in probability ↔ L¹ convergence`).
 
 ## Deprecated V255 Prompt Notes
 

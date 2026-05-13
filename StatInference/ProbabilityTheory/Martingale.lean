@@ -26376,6 +26376,120 @@ theorem durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_eLpNorm
     (P := P) (f := f) (p := 1) le_rfl ENNReal.one_ne_top hf_meas htail
 
 /--
+Durrett 2019, Theorem 4.6.2 deterministic-envelope form.
+
+If the tail `Lᵖ` seminorms are bounded uniformly by a deterministic envelope
+that tends to zero, then the family is uniformly integrable.  This is the
+bridge used to attach concrete source estimates, such as the textbook's
+uniform `Lᵖ`, `p > 1`, criterion.
+-/
+theorem durrett2019_theorem_4_6_2_uniformIntegrable_of_tail_envelope_tendsto_zero
+    {Ω ι : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {f : ι -> Ω -> ℝ} {p : ℝ≥0∞}
+    (hp : 1 ≤ p) (hp_ne_top : p ≠ ∞)
+    (hf_meas : ∀ i, AEStronglyMeasurable (f i) P)
+    {B : ℝ≥0 -> ℝ≥0∞} (hB_tendsto : Tendsto B atTop (𝓝 0))
+    (hbound :
+      ∀ C : ℝ≥0,
+        ∀ i,
+          eLpNorm ({ω | C ≤ ‖f i ω‖₊}.indicator (f i)) p P ≤ B C) :
+    UniformIntegrable f p P := by
+  refine
+    durrett2019_theorem_4_6_2_uniformIntegrable_of_tail_eLpNorm
+      (P := P) (f := f) (p := p) hp hp_ne_top hf_meas ?_
+  intro ε hε
+  rw [ENNReal.tendsto_atTop_zero] at hB_tendsto
+  obtain ⟨C, hC⟩ :=
+    hB_tendsto (ENNReal.ofReal ε) (ENNReal.ofReal_pos.2 hε)
+  exact ⟨C, fun i => (hbound C i).trans (hC C le_rfl)⟩
+
+/--
+Durrett 2019, Theorem 4.6.2 deterministic-envelope form specialized to
+`L¹` uniform integrability.
+-/
+theorem durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_envelope_tendsto_zero
+    {Ω ι : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {f : ι -> Ω -> ℝ}
+    (hf_meas : ∀ i, AEStronglyMeasurable (f i) P)
+    {B : ℝ≥0 -> ℝ≥0∞} (hB_tendsto : Tendsto B atTop (𝓝 0))
+    (hbound :
+      ∀ C : ℝ≥0,
+        ∀ i,
+          eLpNorm ({ω | C ≤ ‖f i ω‖₊}.indicator (f i)) 1 P ≤ B C) :
+    UniformIntegrable f 1 P :=
+  durrett2019_theorem_4_6_2_uniformIntegrable_of_tail_envelope_tendsto_zero
+    (P := P) (f := f) (p := 1) le_rfl ENNReal.one_ne_top hf_meas
+    hB_tendsto hbound
+
+/--
+Durrett 2019, Theorem 4.6.2 `Lᵖ` source bridge.
+
+For `p > 1`, a uniform `Lᵖ` bound gives `L¹` uniform integrability once the
+standard small-set modulus
+`R * μ(s) ^ (1 - 1 / p.toReal) <= ε` has been selected.  The remaining scalar
+work is exactly the elementary choice of `δ`; all measure-theoretic comparison
+is discharged here by Mathlib's `Lᵖ`-to-`L¹` comparison on restricted measures.
+-/
+theorem durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd_with_modulus
+    {Ω ι : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {f : ι -> Ω -> ℝ} {p : ℝ≥0∞}
+    (hp_one_lt : (1 : ℝ≥0∞) < p) (hp_ne_top : p ≠ ∞)
+    (hf_meas : ∀ i, AEStronglyMeasurable (f i) P)
+    {R : ℝ≥0} (hR : ∀ i, eLpNorm (f i) p P ≤ R)
+    (hsmall :
+      ∀ ε : ℝ, 0 < ε ->
+        ∃ δ : ℝ, 0 < δ ∧
+          (R : ℝ≥0∞) *
+              ENNReal.ofReal δ ^
+                (1 / (1 : ℝ≥0∞).toReal - 1 / p.toReal) ≤
+            ENNReal.ofReal ε) :
+    UniformIntegrable f 1 P := by
+  have hp_one : (1 : ℝ≥0∞) ≤ p := hp_one_lt.le
+  have hp_toReal : (1 : ℝ) < p.toReal :=
+    (ENNReal.toReal_lt_toReal ENNReal.one_ne_top hp_ne_top).2 hp_one_lt
+  have hexp_nonneg :
+      0 ≤ 1 / (1 : ℝ≥0∞).toReal - 1 / p.toReal := by
+    rw [ENNReal.toReal_one]
+    exact sub_nonneg.2 (one_div_le_one_div_of_le zero_lt_one hp_toReal.le)
+  refine ⟨hf_meas, ?_, ?_⟩
+  · intro ε hε
+    obtain ⟨δ, hδpos, hδsmall⟩ := hsmall ε hε
+    refine ⟨δ, hδpos, fun i s hs hμs => ?_⟩
+    have hf_restrict : AEStronglyMeasurable (f i) (P.restrict s) :=
+      (hf_meas i).mono_ac Measure.absolutelyContinuous_restrict
+    calc
+      eLpNorm (s.indicator (f i)) 1 P
+          = eLpNorm (f i) 1 (P.restrict s) :=
+            eLpNorm_indicator_eq_eLpNorm_restrict hs
+      _ ≤ eLpNorm (f i) p (P.restrict s) *
+            (P.restrict s) Set.univ ^
+              (1 / (1 : ℝ≥0∞).toReal - 1 / p.toReal) :=
+            eLpNorm_le_eLpNorm_mul_rpow_measure_univ hp_one hf_restrict
+      _ ≤ eLpNorm (f i) p P *
+            P s ^ (1 / (1 : ℝ≥0∞).toReal - 1 / p.toReal) := by
+            rw [Measure.restrict_apply' hs, Set.univ_inter]
+            exact mul_le_mul' (eLpNorm_restrict_le (f i) p P s) le_rfl
+      _ ≤ (R : ℝ≥0∞) *
+            ENNReal.ofReal δ ^
+              (1 / (1 : ℝ≥0∞).toReal - 1 / p.toReal) := by
+            exact mul_le_mul' (hR i) (ENNReal.rpow_le_rpow hμs hexp_nonneg)
+      _ ≤ ENNReal.ofReal ε := hδsmall
+  · refine
+      ⟨((R : ℝ≥0∞) *
+          P Set.univ ^ (1 / (1 : ℝ≥0∞).toReal - 1 / p.toReal)).toNNReal,
+        fun i => ?_⟩
+    rw [ENNReal.coe_toNNReal]
+    · calc
+        eLpNorm (f i) 1 P
+            ≤ eLpNorm (f i) p P *
+                P Set.univ ^ (1 / (1 : ℝ≥0∞).toReal - 1 / p.toReal) :=
+              eLpNorm_le_eLpNorm_mul_rpow_measure_univ hp_one (hf_meas i)
+        _ ≤ (R : ℝ≥0∞) *
+              P Set.univ ^ (1 / (1 : ℝ≥0∞).toReal - 1 / p.toReal) := by
+              exact mul_le_mul' (hR i) le_rfl
+    · finiteness
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
