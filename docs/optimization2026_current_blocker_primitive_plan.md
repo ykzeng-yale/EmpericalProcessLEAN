@@ -299,21 +299,35 @@ and
 It carries an arbitrary preliminary decrement budget sequence by induction,
 then rewrites the source decreasing parameter as
 `t_N = (1 - c0 / sqrt nu)^N * tStart` before applying the budget bridge.
+The log-count split packet adds
+`chewi1316_preliminary_budget_le_quarter_of_split`,
+`chewi1316_preliminary_tail_le_of_half_power_log`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_split`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_logTail`.
+It explicitly splits the initialization budget into `1/16`, `1/8`, and `1/16`
+terms and reuses the already-verified Chapter 5 scalar log theorem
+`chewi54_half_pow_mul_le_eps_of_log_ratio_le` for the preliminary tail
+half-power certificate.
 Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
-is the logarithmic/count-side scalar comparison matching the Nesterov §5.3.5
-citation: choose `N`, `tPre`, and `tMain` so the closed-form sequence budget
-fits the `1/4` initialization budget.  Do not route the next run back to product,
+is now narrower: prove the concrete preliminary contraction/count certificate
+that turns the Chewi/Nesterov choice of `N`, `tPre`, and `tMain` into the
+supplied half-power tail bound for
+`|(1 - c0 / sqrt nu)^N * tStart| * ||grad phi(xbar0)||*`; the already-compiled
+log-tail wrapper then gives the `1/4` main-stage initialization budget.  Do not
+route the next run back to product,
 sum,
 affine/range, positive-orthant barrier setup, the already-compiled Lemma
 13.16/main-stage algebra, the dual-norm interface, the generic main-stage
 wrappers, feasible-step membership, the positive-orthant main-stage one-step
 invariant, the closed-form parameter recurrence, the objective-gap stopping
 rule, exact-center/main-stage budget initialization, preliminary-to-main bridge,
-or finite preliminary sequence induction unless a new downstream proof directly
+finite preliminary sequence bridge, generic log-halving lemma, or finite
+preliminary sequence induction unless a new downstream proof directly
 needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has

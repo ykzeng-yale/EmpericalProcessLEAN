@@ -1,4 +1,5 @@
 import StatInference.Optimization.Basic
+import StatInference.Optimization.Theorem54
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import Mathlib.Analysis.Calculus.Deriv.ZPow
 import Mathlib.Analysis.InnerProductSpace.Calculus
@@ -12309,6 +12310,122 @@ theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequ
       (coord := coord) (tMain := tMain) (N := N)
       hinv_factor hinit hstep
       (by simpa [htclosed] using hbudget)
+
+/--
+Three-way scalar split for the preliminary-stage-to-main-stage initialization
+budget: main objective tail, carried preliminary Newton decrement, and the
+remaining preliminary barrier tail.
+-/
+theorem chewi1316_preliminary_budget_le_quarter_of_split
+    {mainTerm lambdaTerm tailTerm : ℝ}
+    (hmain : mainTerm ≤ 1 / 16)
+    (hlambda : lambdaTerm ≤ 1 / 8)
+    (htail : tailTerm ≤ 1 / 16) :
+    mainTerm + (lambdaTerm + tailTerm) ≤ 1 / 4 := by
+  nlinarith
+
+/--
+Logarithmic sufficient condition for a supplied half-power preliminary tail.
+This reuses the Chapter 5 halving/log scalar theorem rather than redoing the
+`log` monotonicity algebra in the interior-point file.
+-/
+theorem chewi1316_preliminary_tail_le_of_half_power_log
+    {tail tailBase eps : ℝ} {M : ℕ}
+    (htail : tail ≤ (1 / 2 : ℝ) ^ M * tailBase)
+    (htailBase_pos : 0 < tailBase)
+    (heps_pos : 0 < eps)
+    (hM_log : Real.log (tailBase / eps) ≤ (M : ℝ) * Real.log (2 : ℝ)) :
+    tail ≤ eps :=
+  htail.trans
+    (chewi54_half_pow_mul_le_eps_of_log_ratio_le
+      htailBase_pos heps_pos hM_log)
+
+/--
+Closed-form preliminary-stage initialization bridge with the textbook
+three-way smallness split exposed as separate hypotheses.
+-/
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_split
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {tMain tStart c0 nu : ℝ} {N : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (ht0 : tseq 0 = tStart)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hmainBudget : |tMain| * dualLocalNorm invHess (xseq N) a ≤ 1 / 16)
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hpreTailBudget :
+      |(1 - c0 / Real.sqrt nu) ^ N * tStart| *
+          dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        1 / 16) :
+    newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+      1 / 4 := by
+  exact
+    chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord) (tMain := tMain) (tStart := tStart)
+      (c0 := c0) (nu := nu) (N := N)
+      hinv_factor ht0 htstep hinit hstep
+      (chewi1316_preliminary_budget_le_quarter_of_split
+        hmainBudget hlambdaBudget hpreTailBudget)
+
+/--
+Closed-form preliminary-stage initialization bridge with the preliminary
+barrier tail discharged by a supplied halving-power/log-count certificate.
+-/
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_logTail
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {tMain tStart c0 nu tailBase : ℝ} {N M : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (ht0 : tseq 0 = tStart)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hmainBudget : |tMain| * dualLocalNorm invHess (xseq N) a ≤ 1 / 16)
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hpreTailHalf :
+      |(1 - c0 / Real.sqrt nu) ^ N * tStart| *
+          dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        (1 / 2 : ℝ) ^ M * tailBase)
+    (htailBase_pos : 0 < tailBase)
+    (hM_log :
+      Real.log (tailBase / (1 / 16 : ℝ)) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+      1 / 4 := by
+  exact
+    chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_split
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord) (tMain := tMain) (tStart := tStart)
+      (c0 := c0) (nu := nu) (N := N)
+      hinv_factor ht0 htstep hinit hstep hmainBudget hlambdaBudget
+      (chewi1316_preliminary_tail_le_of_half_power_log
+        (tailBase := tailBase) (eps := (1 / 16 : ℝ)) (M := M)
+        hpreTailHalf htailBase_pos (by norm_num) hM_log)
 
 theorem chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse
     [CompleteSpace E]

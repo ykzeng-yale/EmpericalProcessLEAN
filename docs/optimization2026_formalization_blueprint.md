@@ -142,9 +142,16 @@ finite sequence layer adds `preliminaryPath_decrement_bound_of_step`,
 and
 `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm`,
 carrying a preliminary decrement budget sequence by induction and rewriting
-`t_N = (1 - c0 / sqrt nu)^N * tStart`.  The next live route is the
-logarithmic/count-side scalar comparison matching the reverse path-following
-argument cited to Nesterov §5.3.5, then the strictly-feasible-start discussion.
+`t_N = (1 - c0 / sqrt nu)^N * tStart`.  The log-count split layer adds
+`chewi1316_preliminary_budget_le_quarter_of_split`,
+`chewi1316_preliminary_tail_le_of_half_power_log`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_split`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_logTail`,
+reusing `chewi54_half_pow_mul_le_eps_of_log_ratio_le` for the half-power/log
+tail calculation.  The next live route is the concrete preliminary
+contraction/count certificate matching the reverse path-following argument
+cited to Nesterov §5.3.5, then the strictly-feasible-start discussion.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
