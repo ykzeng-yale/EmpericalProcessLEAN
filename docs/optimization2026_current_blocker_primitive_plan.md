@@ -472,6 +472,10 @@ packet adds
 	`sourceRadius_successor_bound_of_add_steps_of_adjointSqrt`,
 	the corresponding radius-half wrappers, and
 	`chewi1316_uniformTailBound_of_add_steps_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	The existential source-start lift
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_addSteps_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`
+	now turns those additive-step radius-half data directly into the positive
+	main-stage initialization conclusion.
 	Search-first reuse: local `hessianPrimalFactor_of_adjointSqrt` and
 	mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.
 	Together these formalize the reverse

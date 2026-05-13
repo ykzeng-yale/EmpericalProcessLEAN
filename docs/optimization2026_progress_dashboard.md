@@ -343,6 +343,10 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `sourceRadius_successor_bound_of_add_steps_of_adjointSqrt`,
 	  the corresponding radius-half specializations, and
 	  `chewi1316_uniformTailBound_of_add_steps_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	  The existential source-start lift now also compiles as
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_addSteps_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	  so the additive step recurrence plus cumulative half-radius budget feeds
+	  directly into the positive-main-stage initialization theorem.
 	  Search-first reuse: local
 	  `hessianPrimalFactor_of_adjointSqrt`, mathlib `norm_add_le`,
 	  `norm_sum_le`, and `Finset.sum_range_sub`.  The live exact-source gate is

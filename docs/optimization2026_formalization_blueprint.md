@@ -290,6 +290,10 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`sequence_sub_initial_eq_sum_steps_of_succ_eq_add`, the source-radius
 	sum-step wrappers, their radius-half specializations, and
 	`chewi1316_uniformTailBound_of_add_steps_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	The source-start existential lift
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_addSteps_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`
+	now consumes the same additive-step radius-half data and returns the
+	positive main-stage initialization conclusion.
 	Search-first reuse: local `hessianPrimalFactor_of_adjointSqrt` and mathlib
 	`norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The next
 	exact-source §13.16 gate is no longer a raw `hradius_half`; it is the
