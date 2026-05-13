@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V293` in
+Route from `Live In-Thread Goal Prompt V294` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -189,10 +189,17 @@ average calculation is specialized to it.  V293 adds
 and
 `durrett2019_example_4_7_4_reverseAverageSigma_prefix_condExp_symmetry`,
 converting reverse-average-event-preserving measure-preserving coordinate
-transports into the finite-prefix conditional-expectation symmetry.  The next
-target is the exact Durrett source layer: construct those finite-permutation
-transports from exchangeability of the first `n` coordinates while the sum and
-tail are fixed.
+transports into the finite-prefix conditional-expectation symmetry.  V294 adds
+the reverse-average generator display and prefix/tail-invariance bridge:
+`durrett2019_example_4_7_4_reverseAverageGeneratorSet`,
+`durrett2019_example_4_7_4_reverseAverageSigma_eq_generateFrom`,
+`durrett2019_example_4_7_4_preimage_reverseAverageSigma_eq_of_prefixSum_tail_invariant`,
+and
+`durrett2019_example_4_7_4_reverseAverageSigma_prefix_condExp_symmetry_of_prefixSum_tail_invariant`.
+The next target is the exact Durrett source layer: construct the actual
+coordinate-swap measurable equivalences from exchangeability of the first `n`
+coordinates; V294 now handles reverse-average event preservation once prefix
+sum and tail-coordinate invariance are supplied.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

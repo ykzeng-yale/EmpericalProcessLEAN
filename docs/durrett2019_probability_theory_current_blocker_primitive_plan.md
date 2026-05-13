@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V293
+## Live In-Thread Goal Prompt V294
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -28,10 +28,11 @@ independent tail-block zero-one handoff, the V290 prefix-average
 conditional-expectation algebra core, the V291 concrete reverse-average
 sigma-field scaffold, the V292 decreasing-family and concrete conditional
 average consumer, the V293 exchangeability-transport-to-conditional-symmetry
-handoff, or the V281-V273 Section 4.6 tail-envelope /
+handoff, the V294 reverse-average generator/prefix-tail invariance bridge, or
+the V281-V273 Section 4.6 tail-envelope /
 conditional-expectation layers.
 
-Latest verified target V293 advances Section 4.7.  V260 packages Durrett
+Latest verified target V294 advances Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -222,17 +223,24 @@ and
 It converts reverse-average-event-preserving measure-preserving coordinate
 transports into the exact finite-prefix conditional-expectation symmetry
 consumed by the V292 prefix-average theorem.
+V294 makes the reverse-average sigma-field preservation automatic from source
+invariants.  It adds
+`durrett2019_example_4_7_4_reverseAverageGeneratorSet`,
+`durrett2019_example_4_7_4_reverseAverageSigma_eq_generateFrom`,
+`durrett2019_example_4_7_4_preimage_reverseAverageSigma_eq_of_prefixSum_tail_invariant`,
+and
+`durrett2019_example_4_7_4_reverseAverageSigma_prefix_condExp_symmetry_of_prefixSum_tail_invariant`.
 
-Next aggressive theorem packet: construct the actual finite-permutation
-transports that feed V293.  For the V291/V292 concrete zero-based sigma-field
-`𝒢_n = σ(S_n, ξ_n, ξ_{n+1}, ...)`, prove that swapping a prefix coordinate
-`i < n` with coordinate `0` preserves the law, fixes every `𝒢_n` event because
-the prefix sum and tail coordinates are fixed, and transports `ξ_i` to `ξ_0`.
+Next aggressive theorem packet: construct the actual coordinate-swap
+measurable equivalences that feed V294.  For the V291/V292 concrete zero-based
+sigma-field `𝒢_n = σ(S_n, ξ_n, ξ_{n+1}, ...)`, prove that swapping a prefix
+coordinate `i < n` with coordinate `0` preserves the law, fixes `S_n` and all
+tail coordinates, and transports `ξ_i` to `ξ_0`.
 Then connect the reverse-tail constant side through exchangeability /
 Hewitt-Savage if the exact Durrett sigma-field is not reducible to V289's
 independent tail-block wrapper.  Do not rewrap the already compiled direct
-strong law, V286/V287/V288/V289/V290/V291/V292/V293 handoffs, or V285 backwards
-Lévy endpoint.
+strong law, V286/V287/V288/V289/V290/V291/V292/V293/V294 handoffs, or V285
+backwards Lévy endpoint.
 
 ## Deprecated V255 Prompt Notes
 
