@@ -229,6 +229,12 @@ uses `vaart1998_common_law_of_observation_transform` and
 `vaart1998_iIndepFun_of_observation_transform` to derive score-vector and
 derivative-table measurability, marginal laws, and independence from a common
 i.i.d. observation process plus measurable score/derivative transforms.
+The observation-sequence-law source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationSequenceLawSource_scoreLawCoordinateMeanSource_scoreLawMemLpSource_zLawCoordinateMeanSource_zLawCoordinateCovarianceSource_derivativeLawCoordinateIntegrableSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+uses `vaart1998_marginal_law_of_common_sequence_law` and
+`vaart1998_iIndepFun_of_common_sequence_law` to derive the common observation
+marginal laws and independence from one infinite-product observation sequence
+law.
 The next proof packet should move to a concrete model-specialized Theorem 5.41
 instantiation, or package only a still-live source field that the current
 endpoint explicitly exposes, not replay display weak-convergence,
@@ -251,7 +257,8 @@ wrappers/law-side score coordinate-mean wrappers.
 Do not replay law-side limit coordinate-mean wrappers or law-side scalar
 coordinate-covariance wrappers, or derivative-law coordinate-integrability
 wrappers, iid infinite-product sequence-law wrappers, or
-observation-transform measurability/law/independence wrappers.
+observation-transform measurability/law/independence wrappers, or
+observation-sequence-law marginal/independence wrappers.
 
 ## Chapter Map
 
