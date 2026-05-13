@@ -239,18 +239,21 @@ main-stage assembly packet adds
 `chewi1316_positiveOrthant_mainStage_step_mem_and_decrement_le_quarter`.  This
 packages the source update `tNext = (1 + delta) * t`, the pre-Newton bound,
 the Dikin feasibility step, and the post-Newton `lambda <= 1/4` invariant for
-the finite positive-orthant central path.  The next live gate is the main-stage
-iteration/complexity layer: formalize the recurrence
-`t_{n+1} = (1 + c0 / sqrt nu) * t_n`, prove
-`t_N = (1 + c0 / sqrt nu)^N * t_0`, and combine it with the compiled objective
-gap lemma `chewi1316_objective_gap_le` and the invariant `lambda <= 1/4` to
-obtain the source stopping rule `t_N` large enough implies an
-`epsilon`-approximate solution.  Do not route the next run back to product,
-sum, affine/range, positive-orthant barrier setup, the already-compiled Lemma
-13.16/main-stage algebra, the dual-norm interface, the generic main-stage
-wrappers, feasible-step membership, or the positive-orthant main-stage
-one-step invariant unless a new downstream proof directly needs one of those
-verified declarations.
+the finite positive-orthant central path.  The newest scalar iteration packet
+adds `chewi1316_mainStageParameter_eq_pow_mul`,
+`chewi1316_mainStageParameter_eq_pow_mul_of_delta`, and
+`chewi1316_mainStageParameter_pos_of_pos`, proving the source closed form
+`t_N = (1 + c0 / sqrt nu)^N * t_0` from the multiplicative update recurrence.
+The next live gate is the objective-gap stopping rule: combine the closed-form
+parameter growth with the compiled objective gap lemma
+`chewi1316_objective_gap_le` and the invariant `lambda <= 1/4` to prove that
+`t_N` large enough implies an `epsilon`-approximate solution.  Do not route
+the next run back to product, sum, affine/range, positive-orthant barrier
+setup, the already-compiled Lemma 13.16/main-stage algebra, the dual-norm
+interface, the generic main-stage wrappers, feasible-step membership, the
+positive-orthant main-stage one-step invariant, or the closed-form parameter
+recurrence unless a new downstream proof directly needs one of those verified
+declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

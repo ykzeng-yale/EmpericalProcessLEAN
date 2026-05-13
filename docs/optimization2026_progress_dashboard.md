@@ -133,9 +133,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_positiveOrthant_mainStage_decrement_le_quarter`, and
   `chewi1316_positiveOrthant_mainStage_step_mem_and_decrement_le_quarter`.
   This closes the selected central-path one-step invariant for the finite
-  positive orthant.  Remaining gate: formalize the main-stage iteration
-  recurrence and objective-gap stopping rule, then move to the preliminary
-  stage/strictly-feasible-start discussion.
+  positive orthant.  The newest scalar iteration packet adds
+  `chewi1316_mainStageParameter_eq_pow_mul`,
+  `chewi1316_mainStageParameter_eq_pow_mul_of_delta`, and
+  `chewi1316_mainStageParameter_pos_of_pos`, closing the source closed form
+  for multiplicative `t_n` growth.  Remaining gate: combine this closed form
+  with `chewi1316_objective_gap_le` to prove the objective-gap stopping rule,
+  then move to the preliminary stage/strictly-feasible-start discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

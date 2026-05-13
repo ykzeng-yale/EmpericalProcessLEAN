@@ -10633,6 +10633,42 @@ theorem chewi1316_mainStage_newtonDecrement_le_quarter
       hlambda_pre_nonneg hc0_le hlambda_pre)
 
 /--
+Source-shaped closed form for the multiplicative path-following parameter
+update `t_{n+1} = r * t_n`.
+-/
+theorem chewi1316_mainStageParameter_eq_pow_mul
+    {tseq : ℕ -> ℝ} {r t0 : ℝ}
+    (h0 : tseq 0 = t0)
+    (hstep : ∀ n : ℕ, tseq (n + 1) = r * tseq n) :
+    ∀ n : ℕ, tseq n = r ^ n * t0 := by
+  intro n
+  induction n with
+  | zero =>
+      simp [h0]
+  | succ n ih =>
+      rw [hstep n, ih, pow_succ]
+      ring
+
+theorem chewi1316_mainStageParameter_eq_pow_mul_of_delta
+    {tseq : ℕ -> ℝ} {t0 c0 nu : ℝ}
+    (h0 : tseq 0 = t0)
+    (hstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 + c0 / Real.sqrt nu) * tseq n) :
+    ∀ n : ℕ, tseq n = (1 + c0 / Real.sqrt nu) ^ n * t0 :=
+  chewi1316_mainStageParameter_eq_pow_mul h0 hstep
+
+theorem chewi1316_mainStageParameter_pos_of_pos
+    {tseq : ℕ -> ℝ} {r t0 : ℝ}
+    (h0 : tseq 0 = t0)
+    (hstep : ∀ n : ℕ, tseq (n + 1) = r * tseq n)
+    (hr_pos : 0 < r)
+    (ht0_pos : 0 < t0) :
+    ∀ n : ℕ, 0 < tseq n := by
+  intro n
+  rw [chewi1316_mainStageParameter_eq_pow_mul h0 hstep n]
+  exact mul_pos (pow_pos hr_pos n) ht0_pos
+
+/--
 Chewi Theorem 13.8 gradient fundamental-theorem identity along the segment:
 `∫_0^1 Hess(z_t) (y - x) dt = grad y - grad x`.
 -/

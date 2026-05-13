@@ -100,10 +100,14 @@ positive-orthant main-stage assembly layer adds
 `chewi1316_positiveOrthant_mainStage_decrement_le_quarter`, and
 `chewi1316_positiveOrthant_mainStage_step_mem_and_decrement_le_quarter`,
 closing the selected central-path one-step invariant for the finite positive
-orthant.  The next live route is the main-stage iteration/complexity layer:
-prove the closed form for `t_n`, combine it with the compiled objective-gap
-bound, and then address the preliminary stage for producing an initial
-`lambda <= 1/4` point.
+orthant.  The newest scalar iteration layer adds
+`chewi1316_mainStageParameter_eq_pow_mul`,
+`chewi1316_mainStageParameter_eq_pow_mul_of_delta`, and
+`chewi1316_mainStageParameter_pos_of_pos`, proving the source closed form for
+the multiplicative `t_n` update.  The next live route is the objective-gap
+stopping rule: combine this closed form with the compiled objective-gap bound,
+then address the preliminary stage for producing an initial `lambda <= 1/4`
+point.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
