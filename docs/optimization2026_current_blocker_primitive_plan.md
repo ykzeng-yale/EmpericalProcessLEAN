@@ -200,15 +200,20 @@ pre-Newton update bound.  The newest dual-norm update-interface packet adds
 `chewi1316_preNewtonDecrement_le_update_bound_of_adjointSqrt_right_inverse`.
 This discharges the triangle/homogeneity interface from the same
 inverse-Hessian right-inverse plus square-root-coordinate model used in the
-Theorem 13.8 route.  The next theorem-sized packet should package the full
-main-stage invariant: express the new central-path gradient as
-`(1 + delta) • oldGrad + (-delta) • phiGrad`, apply the compiled pre-Newton
-bound, then feed the resulting decrement into the compiled Theorem 13.8
-Newton-step wrapper to preserve `lambda <= 1/4`.  Do not route the next run
-back to product, sum, affine/range, positive-orthant barrier setup, the
-already-compiled Lemma 13.16/main-stage algebra, or the dual-norm interface
-unless a new downstream proof directly needs one of those verified
-declarations.
+Theorem 13.8 route.  The newest main-stage invariant packet adds
+`chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse`,
+`chewi1316_mainStage_newtonDecrement_le_quarter_of_gradientUpdate_and_newtonBound`,
+and
+`chewi1316_mainStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment`.
+This packages the central-path gradient update equation and the compiled
+Theorem 13.8 Newton-step wrapper into the source invariant
+`lambda <= 1/4 -> lambda_next <= 1/4`, still leaving the concrete objective
+gradient-update equation, feasible Newton-step membership, and the already
+standard Theorem 13.8 source assumptions to be instantiated for the selected
+barrier model.  Do not route the next run back to product, sum, affine/range,
+positive-orthant barrier setup, the already-compiled Lemma 13.16/main-stage
+algebra, the dual-norm interface, or the generic main-stage wrapper unless a
+new downstream proof directly needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

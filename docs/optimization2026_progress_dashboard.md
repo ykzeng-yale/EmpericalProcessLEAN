@@ -95,10 +95,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_preNewtonDecrement_le_update_bound_of_adjointCoordFactor`, and
   `chewi1316_preNewtonDecrement_le_update_bound_of_adjointSqrt_right_inverse`,
   discharging the triangle/homogeneity gate from the same right-inverse plus
-  square-root-coordinate model used in the Theorem 13.8 route.  The remaining
-  gate for the full invariant is now the central-path gradient-update
-  decomposition and final call into the compiled Theorem 13.8 Newton-step
-  wrapper.
+  square-root-coordinate model used in the Theorem 13.8 route.  The newest
+  main-stage invariant packet adds
+  `chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse`,
+  `chewi1316_mainStage_newtonDecrement_le_quarter_of_gradientUpdate_and_newtonBound`,
+  and
+  `chewi1316_mainStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment`.
+  It packages the source gradient-update equation, the pre-Newton bound, and
+  the compiled Theorem 13.8 Newton-step wrapper into the invariant
+  `lambda <= 1/4 -> lambda_next <= 1/4`.  The remaining gate is concrete
+  instantiation for the selected barrier/central-path objective: prove the
+  objective gradient-update equation, feasible Newton-step membership, and
+  the standard source-Newton-segment assumptions.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

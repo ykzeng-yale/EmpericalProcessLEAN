@@ -65,10 +65,17 @@ dual-norm interface layer adds `dualLocalNorm_eq_adjointCoord_norm_of_factor`,
 `chewi1316_preNewtonDecrement_le_update_bound_of_adjointCoordFactor`, and
 `chewi1316_preNewtonDecrement_le_update_bound_of_adjointSqrt_right_inverse`,
 discharging that interface from the existing inverse-Hessian right-inverse and
-square-root-coordinate models.  The next live route is to package the full
-main-stage invariant by proving the central-path gradient-update decomposition
-and then applying the compiled pre-Newton bound plus Theorem 13.8 Newton-step
-wrapper.
+square-root-coordinate models.  The newest main-stage invariant layer adds
+`chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse`,
+`chewi1316_mainStage_newtonDecrement_le_quarter_of_gradientUpdate_and_newtonBound`,
+and
+`chewi1316_mainStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment`.
+It packages the source gradient-update equality, the pre-Newton bound, and the
+compiled Theorem 13.8 Newton-step wrapper into the invariant
+`lambda <= 1/4 -> lambda_next <= 1/4`.  The next live route is concrete
+central-path instantiation for the selected barrier model: prove the objective
+gradient-update equality, feasible Newton-step membership, and the standard
+source-Newton-segment assumptions.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

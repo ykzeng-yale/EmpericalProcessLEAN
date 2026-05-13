@@ -11594,6 +11594,70 @@ theorem chewi1316_preNewtonDecrement_le_update_bound_of_adjointSqrt_right_invers
       (coord := coord) (sqrtH := sqrtH)
       hsqrtH_coord hhess_eq hright v
 
+theorem chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse
+    [CompleteSpace E]
+    {hess invHess : E -> E →L[ℝ] E} {grad : E -> E}
+    {x oldGrad phiGrad : E} {coord sqrtH : E →L[ℝ] E}
+    {delta c0 lambdaOld nu : ℝ}
+    (hsqrtH_coord : ∀ z : E, sqrtH (coord z) = z)
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hright : ∀ v : E, hess x (invHess x v) = v)
+    (hgrad_update :
+      grad x = (1 + delta) • oldGrad + (-delta) • phiGrad)
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_le_c0 : delta * Real.sqrt nu ≤ c0)
+    (hlambda_old : dualLocalNorm invHess x oldGrad ≤ lambdaOld)
+    (hlambda_old_le : lambdaOld ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x phiGrad ≤ Real.sqrt nu) :
+    newtonDecrement grad invHess x ≤ (1 + c0) / 4 + c0 := by
+  simpa [newtonDecrement, hgrad_update] using
+    chewi1316_preNewtonDecrement_le_update_bound_of_adjointSqrt_right_inverse
+      (hess := hess) (invHess := invHess) (x := x)
+      (oldGrad := oldGrad) (phiGrad := phiGrad)
+      (coord := coord) (sqrtH := sqrtH) (delta := delta)
+      (c0 := c0) (lambdaOld := lambdaOld) (nu := nu)
+      hsqrtH_coord hhess_eq hright hdelta_nonneg hdelta_le_c0
+      hdelta_sqrt_le_c0 hlambda_old hlambda_old_le hphi_bound
+
+theorem chewi1316_mainStage_newtonDecrement_le_quarter_of_gradientUpdate_and_newtonBound
+    [CompleteSpace E]
+    {hess invHess : E -> E →L[ℝ] E} {grad : E -> E}
+    {x oldGrad phiGrad : E} {coord sqrtH : E →L[ℝ] E}
+    {delta c0 lambdaOld nu : ℝ}
+    (hsqrtH_coord : ∀ z : E, sqrtH (coord z) = z)
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hright : ∀ v : E, hess x (invHess x v) = v)
+    (hgrad_update :
+      grad x = (1 + delta) • oldGrad + (-delta) • phiGrad)
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_le_c0 : delta * Real.sqrt nu ≤ c0)
+    (hlambda_old : dualLocalNorm invHess x oldGrad ≤ lambdaOld)
+    (hlambda_old_le : lambdaOld ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x phiGrad ≤ Real.sqrt nu)
+    (hc0_le : c0 ≤ 1 / 16)
+    (hnewton :
+      newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+        (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+          (1 - newtonDecrement grad invHess x) ^ (2 : ℕ)) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤ 1 / 4 := by
+  have hpre :
+      newtonDecrement grad invHess x ≤ (1 + c0) / 4 + c0 :=
+    chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse
+      (hess := hess) (invHess := invHess) (grad := grad) (x := x)
+      (oldGrad := oldGrad) (phiGrad := phiGrad)
+      (coord := coord) (sqrtH := sqrtH) (delta := delta)
+      (c0 := c0) (lambdaOld := lambdaOld) (nu := nu)
+      hsqrtH_coord hhess_eq hright hgrad_update hdelta_nonneg hdelta_le_c0
+      hdelta_sqrt_le_c0 hlambda_old hlambda_old_le hphi_bound
+  exact
+    chewi1316_mainStage_newtonDecrement_le_quarter
+      (lambdaPre := newtonDecrement grad invHess x)
+      (lambdaAfter := newtonDecrement grad invHess (newtonStep grad invHess x))
+      (c0 := c0)
+      (dualLocalNorm_nonneg invHess x (grad x)) hc0_le hpre hnewton
+
 /--
 Chewi Proposition 13.11, shared-domain sum case, with the summed inverse-local
 identity and the component Cauchy bridges both discharged from right-inverse
@@ -14080,6 +14144,100 @@ theorem chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewton
       (s := s) (x := x) (M := M)
       hMlambda_lt hs hx hstep_mem hsc hess_pos hhess_cont hhess hmixed
       hsymm hgrad hnewton_linear (hhess_model hx) hinv_right
+
+/--
+Main-stage path-following invariant in the source shape of Chewi §13.4.
+The multiplicative parameter update is exposed by the pointwise gradient
+identity
+`grad x = (1 + delta) • oldGrad + (-delta) • phiGrad`; the pre-Newton bound is
+then fed directly into the compiled Theorem 13.8 Newton-step wrapper.
+-/
+theorem chewi1316_mainStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {sqrtCoord : E -> E ≃L[ℝ] E}
+    {s : Set E} {x oldGrad phiGrad : E}
+    {delta c0 lambdaOld nu : ℝ}
+    (hs : Convex ℝ s) (hx : x ∈ s)
+    (hstep_mem : newtonStep grad invHess x ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x (newtonStep grad invHess x) t))
+        (hessianSegmentPoint x (newtonStep grad invHess x) t))
+    (hnewton_linear :
+      grad x + hess x (newtonStep grad invHess x - x) = 0)
+    (hhess_model : ∀ ⦃z : E⦄, z ∈ s ->
+      hess z =
+        (ContinuousLinearMap.adjoint (sqrtCoord z).toContinuousLinearMap).comp
+          (sqrtCoord z).toContinuousLinearMap)
+    (hinv_model : ∀ ⦃z : E⦄, z ∈ s ->
+      invHess z =
+        (sqrtCoord z).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtCoord z).symm.toContinuousLinearMap))
+    (hgrad_update :
+      grad x = (1 + delta) • oldGrad + (-delta) • phiGrad)
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_le_c0 : delta * Real.sqrt nu ≤ c0)
+    (hlambda_old : dualLocalNorm invHess x oldGrad ≤ lambdaOld)
+    (hlambda_old_le : lambdaOld ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x phiGrad ≤ Real.sqrt nu)
+    (hc0_le : c0 ≤ 1 / 16) :
+    newtonDecrement grad invHess (newtonStep grad invHess x) ≤ 1 / 4 := by
+  have hsqrtH_coord : ∀ z : E,
+      (sqrtCoord x).toContinuousLinearMap
+          ((sqrtCoord x).symm.toContinuousLinearMap z) = z := by
+    intro z
+    simp
+  have hright : ∀ v : E, hess x (invHess x v) = v := by
+    exact
+      hessianRightInverse_of_adjointSqrtCoord_invHess
+        (H := hess x) (invH := invHess x) (sqrtCoord := sqrtCoord x)
+        (hhess_model hx) (hinv_model hx)
+  have hpre :
+      newtonDecrement grad invHess x ≤ (1 + c0) / 4 + c0 :=
+    chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse
+      (hess := hess) (invHess := invHess) (grad := grad) (x := x)
+      (oldGrad := oldGrad) (phiGrad := phiGrad)
+      (coord := (sqrtCoord x).symm.toContinuousLinearMap)
+      (sqrtH := (sqrtCoord x).toContinuousLinearMap)
+      (delta := delta) (c0 := c0) (lambdaOld := lambdaOld) (nu := nu)
+      hsqrtH_coord (hhess_model hx) hright hgrad_update
+      hdelta_nonneg hdelta_le_c0 hdelta_sqrt_le_c0
+      hlambda_old hlambda_old_le hphi_bound
+  have hpre_lt_one : (1 : ℝ) * newtonDecrement grad invHess x < 1 := by
+    have hbound_le_third : (1 + c0) / 4 + c0 ≤ 1 / 3 := by
+      nlinarith
+    have hpre_le_third : newtonDecrement grad invHess x ≤ 1 / 3 :=
+      hpre.trans hbound_le_third
+    nlinarith
+  have hnewton :
+      newtonDecrement grad invHess (newtonStep grad invHess x) ≤
+        (1 : ℝ) * (newtonDecrement grad invHess x) ^ (2 : ℕ) /
+          (1 - (1 : ℝ) * newtonDecrement grad invHess x) ^ (2 : ℕ) :=
+    chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment
+      (hess := hess) (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (grad := grad) (invHess := invHess) (sqrtCoord := sqrtCoord)
+      (s := s) (x := x) (M := (1 : ℝ))
+      hpre_lt_one hs hx hstep_mem hsc hhess_cont hhess hmixed hgrad
+      hnewton_linear hhess_model hinv_model
+  exact
+    chewi1316_mainStage_newtonDecrement_le_quarter_of_gradientUpdate_and_newtonBound
+      (hess := hess) (invHess := invHess) (grad := grad) (x := x)
+      (oldGrad := oldGrad) (phiGrad := phiGrad)
+      (coord := (sqrtCoord x).symm.toContinuousLinearMap)
+      (sqrtH := (sqrtCoord x).toContinuousLinearMap)
+      (delta := delta) (c0 := c0) (lambdaOld := lambdaOld) (nu := nu)
+      hsqrtH_coord (hhess_model hx) hright hgrad_update hdelta_nonneg
+      hdelta_le_c0 hdelta_sqrt_le_c0 hlambda_old hlambda_old_le hphi_bound
+      hc0_le (by simpa [one_mul] using hnewton)
 
 /--
 Chewi Theorem 13.8 assembly from a unit bilinear estimate on the normalized
