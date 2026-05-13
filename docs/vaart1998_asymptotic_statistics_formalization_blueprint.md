@@ -145,6 +145,10 @@ The limit-law mean source endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 now derives all projected limit mean fields from the vector-law mean-zero
 statement `∫ z, z ∂(Q.map Z) = 0`.
+The limit-law covariance bilinear source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+now derives diagonal limit covariance-to-score-variance fields from all-dual
+covariance bilinear equality between `Q.map Z` and `scoreLaw`.
 The next proof packet should move to a concrete model-specialized Theorem 5.41
 instantiation, or package only a still-live source field that the current
 endpoint explicitly exposes, not replay display weak-convergence,
@@ -157,7 +161,8 @@ score-at-theta0 vector scaling transfer, or
 estimator-definition/raw-root/measurability/sampled-derivative-action/
 population-`V` basis-action/pointwise-smoothness/score-vector display/direct
 vector-table/coordinate-projection/score-vector-measurability/score-law-vector
-moment/derivative-law-vector-integrability/limit-law-mean source wrappers.
+moment/derivative-law-vector-integrability/limit-law-mean/limit-law-covariance
+source wrappers.
 
 ## Chapter Map
 
