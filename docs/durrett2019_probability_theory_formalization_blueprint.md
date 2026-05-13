@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V289`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V290`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -103,11 +103,16 @@ sigma-fields through
 `durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_iIndep_tailBlocks`,
 and
 `durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_iIndep_tailBlocks`.
-The next proof packet should fill the exact Durrett source obligation: prove
-the backwards-average conditional-expectation calculation for `S_n / n` with
-`𝒢_n = σ(S_n, ξ_{n+1}, ξ_{n+2}, ...)`, then connect the reverse-tail constant
-side through exchangeability/Hewitt-Savage if the exact source sigma-field is
-not reducible to V289's independent tail-block wrapper.
+V290 proves the conditional-expectation algebra core
+`durrett2019_example_4_7_4_condExp_first_eq_invNat_prefixAverage` and
+`durrett2019_example_4_7_4_condExp_first_eq_prefixAverage_div`: prefix-sum
+measurability plus the finite-prefix symmetry input
+`E(ξ_i | 𝒢_n) = E(ξ_0 | 𝒢_n)` for all `i < n` imply
+`E(ξ_0 | 𝒢_n) = S_n / n`.  The next proof packet should define or reuse the
+exact Durrett source sigma-field `𝒢_n = σ(S_n, ξ_{n+1}, ξ_{n+2}, ...)`, prove
+the prefix-sum measurability input, and prove the symmetry input from
+finite-permutation exchangeability of the first `n` coordinates while the sum
+and tail are fixed.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:

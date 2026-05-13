@@ -802,6 +802,94 @@ theorem durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_indep
         hmX h𝒢_le hf_meas hindep)
 
 /--
+Durrett 2019, Example 4.7.4 conditional-expectation algebra core.  If the
+prefix sum is measurable with respect to the reverse sigma-field and the
+conditional expectations of all prefix coordinates are the same as that of the
+first coordinate, then the conditional expectation of the first coordinate is
+the empirical average of the prefix.
+
+The remaining textbook-specific work is to prove the symmetry hypothesis
+`hsym` from the concrete sigma-field
+`sigma(S_n, xi_{n+1}, xi_{n+2}, ...)`.
+-/
+theorem durrett2019_example_4_7_4_condExp_first_eq_invNat_prefixAverage
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {𝒢 : ℕ -> MeasurableSpace Ω} {ξ : ℕ -> Ω -> ℝ} {n : ℕ}
+    (hn : 0 < n)
+    (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (hξ_int : ∀ i ∈ Finset.range n, Integrable (ξ i) P)
+    (hsum_meas :
+      StronglyMeasurable[𝒢 n] (∑ i ∈ Finset.range n, ξ i))
+    (hsym :
+      ∀ i ∈ Finset.range n, P[ξ i | 𝒢 n] =ᵐ[P] P[ξ 0 | 𝒢 n]) :
+    P[ξ 0 | 𝒢 n] =ᵐ[P]
+      fun ω => ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, ξ i ω := by
+  classical
+  have hn_ne : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
+  have hsum_int :
+      Integrable (∑ i ∈ Finset.range n, ξ i) P :=
+    integrable_finsetSum' (μ := P) (Finset.range n) hξ_int
+  have hcond_sum :
+      P[∑ i ∈ Finset.range n, ξ i | 𝒢 n] =ᵐ[P]
+        ∑ i ∈ Finset.range n, P[ξ i | 𝒢 n] :=
+    condExp_finsetSum (μ := P) (s := Finset.range n)
+      (f := ξ) hξ_int (𝒢 n)
+  have hcond_sum_meas :
+      P[∑ i ∈ Finset.range n, ξ i | 𝒢 n] =ᵐ[P]
+        ∑ i ∈ Finset.range n, ξ i := by
+    exact
+      (condExp_of_stronglyMeasurable (μ := P) (h𝒢_le n)
+        hsum_meas hsum_int).eventuallyEq
+  have hsym_sum :
+      (∑ i ∈ Finset.range n, P[ξ i | 𝒢 n]) =ᵐ[P]
+        ∑ i ∈ Finset.range n, P[ξ 0 | 𝒢 n] :=
+    eventuallyEq_sum fun i hi => hsym i hi
+  have hsum_const :
+      (∑ i ∈ Finset.range n, P[ξ 0 | 𝒢 n]) =
+        fun ω => (n : ℝ) * P[ξ 0 | 𝒢 n] ω := by
+    ext ω
+    simp [Finset.sum_apply, Finset.sum_const, nsmul_eq_mul]
+  have hprefix_eq_mul :
+      (∑ i ∈ Finset.range n, ξ i) =ᵐ[P]
+        fun ω => (n : ℝ) * P[ξ 0 | 𝒢 n] ω :=
+    hcond_sum_meas.symm.trans
+      (hcond_sum.trans (hsym_sum.trans (EventuallyEq.of_eq hsum_const)))
+  filter_upwards [hprefix_eq_mul] with ω hω
+  have hω' : (n : ℝ) * P[ξ 0 | 𝒢 n] ω =
+      ∑ i ∈ Finset.range n, ξ i ω := by
+    simpa [Finset.sum_apply] using hω.symm
+  calc
+    P[ξ 0 | 𝒢 n] ω =
+        ((n : ℝ)⁻¹) * ((n : ℝ) * P[ξ 0 | 𝒢 n] ω) := by
+          rw [← mul_assoc, inv_mul_cancel₀ hn_ne, one_mul]
+    _ = ((n : ℝ)⁻¹) * ∑ i ∈ Finset.range n, ξ i ω := by
+          rw [hω']
+
+/--
+Durrett 2019, Example 4.7.4 conditional-expectation algebra core in the
+textbook division display `S_n / n`.
+-/
+theorem durrett2019_example_4_7_4_condExp_first_eq_prefixAverage_div
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {𝒢 : ℕ -> MeasurableSpace Ω} {ξ : ℕ -> Ω -> ℝ} {n : ℕ}
+    (hn : 0 < n)
+    (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (hξ_int : ∀ i ∈ Finset.range n, Integrable (ξ i) P)
+    (hsum_meas :
+      StronglyMeasurable[𝒢 n] (∑ i ∈ Finset.range n, ξ i))
+    (hsym :
+      ∀ i ∈ Finset.range n, P[ξ i | 𝒢 n] =ᵐ[P] P[ξ 0 | 𝒢 n]) :
+    P[ξ 0 | 𝒢 n] =ᵐ[P]
+      fun ω => (∑ i ∈ Finset.range n, ξ i ω) / (n : ℝ) := by
+  filter_upwards
+    [durrett2019_example_4_7_4_condExp_first_eq_invNat_prefixAverage
+      (P := P) (𝒢 := 𝒢) (ξ := ξ) (n := n)
+      hn h𝒢_le hξ_int hsum_meas hsym] with ω hω
+  simpa [div_eq_mul_inv, mul_comm] using hω
+
+/--
 Durrett 2019, Example 4.7.4, final strong-law endpoint using the compiled
 local strong-law primitive.
 -/

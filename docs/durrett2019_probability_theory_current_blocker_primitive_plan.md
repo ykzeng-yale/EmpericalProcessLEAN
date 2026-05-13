@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V289
+## Live In-Thread Goal Prompt V290
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -24,10 +24,11 @@ backwards Lévy Theorem 4.7.3 a.s./`L¹` dual-filtration and natural decreasing
 filtration display endpoints, the V286 Example 4.7.4 tail-constant/source
 handoff and direct strong-law wrapper, the V287 tail-independence-to-constant
 handoff, the V288 reverse-tail zero-one-to-constant handoff, the V289
-independent tail-block zero-one handoff, or the V281-V273 Section 4.6
+independent tail-block zero-one handoff, the V290 prefix-average
+conditional-expectation algebra core, or the V281-V273 Section 4.6
 tail-envelope/conditional-expectation layers.
 
-Latest verified target V289 advances Section 4.7.  V260 packages Durrett
+Latest verified target V290 advances Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -190,19 +191,24 @@ Kolmogorov zero-one support for independent tail blocks:
 `durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_iIndep_tailBlocks`,
 and
 `durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_iIndep_tailBlocks`.
+V290 proves the conditional-expectation algebra core for Durrett's
+backwards-average calculation:
+`durrett2019_example_4_7_4_condExp_first_eq_invNat_prefixAverage` and
+`durrett2019_example_4_7_4_condExp_first_eq_prefixAverage_div`.  These turn
+prefix-sum measurability and the symmetry fact
+`E(ξ_i | 𝒢_n) = E(ξ_0 | 𝒢_n)` for all `i < n` into the textbook identity
+`E(ξ_0 | 𝒢_n) = S_n / n`.
 
 Next aggressive theorem packet: continue Example 4.7.4 by constructing the
-actual source hypotheses that feed the backwards-average route.  Search local
-and Mathlib APIs for generated sigma-fields, finite
-permutation/exchangeability support, Hewitt-Savage/Kolmogorov zero-one tools,
-and `condExp` linearity/sum/scalar wrappers.  Target the
-conditional-expectation calculation
-`S_n / n = E(ξ_1 | 𝒢_n)` for
-`𝒢_n = σ(S_n, ξ_{n+1}, ξ_{n+2}, ...)`, then connect the reverse-tail
-constant side through exchangeability/Hewitt-Savage if the exact Durrett
-sigma-field is not reducible to the V289 independent tail-block wrapper.  Do
-not rewrap the already compiled direct strong law, V286/V287/V288/V289
-handoffs, or V285 backwards Lévy endpoint.
+actual source hypotheses that feed V290.  Define or reuse the exact Durrett
+sigma-field `𝒢_n = σ(S_n, ξ_{n+1}, ξ_{n+2}, ...)`, prove the prefix sum is
+`𝒢_n`-measurable, and prove the conditional-expectation symmetry input
+`E(ξ_i | 𝒢_n) = E(ξ_0 | 𝒢_n)` for `i < n` from finite-permutation
+exchangeability of the first `n` coordinates while the sum and tail are fixed.
+Then connect the reverse-tail constant side through exchangeability /
+Hewitt-Savage if the exact Durrett sigma-field is not reducible to V289's
+independent tail-block wrapper.  Do not rewrap the already compiled direct
+strong law, V286/V287/V288/V289/V290 handoffs, or V285 backwards Lévy endpoint.
 
 ## Deprecated V255 Prompt Notes
 
