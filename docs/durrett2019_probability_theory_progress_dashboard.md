@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V285` in
+Route from `Live In-Thread Goal Prompt V286` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -147,11 +147,17 @@ compiled endpoints are
 `durrett2019_theorem_4_7_3_condExp_eLpNorm_one_tendsto_tail_condExp`,
 `durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_tail_condExp`, and
 `durrett2019_theorem_4_7_3_condExp_nat_eLpNorm_one_tendsto_tail_condExp`.
-The next target is Example 4.7.4, the backwards-martingale proof of the strong
-law: search/reuse the local `ProbabilityMeasure/StrongLaw` endpoint,
-independence and identical-distribution APIs, and any Hewitt-Savage or
-exchangeability support; then add the backwards-average martingale and
-tail-triviality consumer layer without rebuilding V285.
+V286 starts Example 4.7.4 with the tail-constant consumer
+`durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_const_of_tail_condExp_ae_eq_const`,
+the conditional-expectation process handoff
+`durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_const`,
+and the direct strong-law endpoint
+`durrett2019_example_4_7_4_strongLaw_ae_real` reusing the local
+`ProbabilityMeasure.strongLaw_ae_real` wrapper.  The next target is the exact
+Durrett source layer: either prove the backwards-average conditional
+expectation calculation for `S_n / n`, or add a reusable
+Hewitt-Savage/tail-triviality bridge that supplies the V286 tail-constant
+hypothesis.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

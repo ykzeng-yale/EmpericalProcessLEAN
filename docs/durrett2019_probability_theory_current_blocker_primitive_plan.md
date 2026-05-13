@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V285
+## Live In-Thread Goal Prompt V286
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,10 +21,11 @@ conditional-expectation representation, backwards-martingale UI bridge, the
 V283 `L¹`/set-integral conditional-expectation identification bridge, the V284
 `limsup` tail-measurability and source-shaped Theorem 4.7.2 endpoint, the V285
 backwards Lévy Theorem 4.7.3 a.s./`L¹` dual-filtration and natural decreasing
-filtration display endpoints, or the V281-V273 Section 4.6
+filtration display endpoints, the V286 Example 4.7.4 tail-constant/source
+handoff and direct strong-law wrapper, or the V281-V273 Section 4.6
 tail-envelope/conditional-expectation layers.
 
-Latest verified target V285 advances Section 4.7.  V260 packages Durrett
+Latest verified target V286 advances Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -166,19 +167,24 @@ expectation reverse-time martingale, the dual-filtration a.s. endpoint
 natural decreasing-filtration display wrappers
 `durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_tail_condExp` and
 `durrett2019_theorem_4_7_3_condExp_nat_eLpNorm_one_tendsto_tail_condExp`.
+V286 starts Example 4.7.4.  It adds the V285 tail-triviality consumer
+`durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_const_of_tail_condExp_ae_eq_const`,
+the process handoff
+`durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_const`,
+and the direct compiled strong-law endpoint
+`durrett2019_example_4_7_4_strongLaw_ae_real` reusing
+`StatInference.ProbabilityMeasure.strongLaw_ae_real`.
 
-Next aggressive theorem packet: start Example 4.7.4, the backwards-martingale
-proof of the strong law.  First search local `ProbabilityMeasure/StrongLaw`,
-`ProbabilityTheory/Martingale`, Mathlib independence/identical-distribution
-APIs, and any Hewitt-Savage or exchangeability primitives.  Do not reprove the
-strong law if the local compiled endpoint already gives the final a.s.
-convergence; instead add the theorem-sized source bridge most useful for this
-textbook route: package the backwards-average martingale / conditional
-expectation calculation for `S_n / n` under the tail sigma-fields, then connect
-the V285 backwards Lévy endpoint to a tail-triviality or Hewitt-Savage consumer.
-If Hewitt-Savage is not locally ready, expose a clean final wrapper assuming
-the reverse tail conditional expectation is a.e. constant, and record the
-remaining exact tail-triviality side condition as the next blocker.
+Next aggressive theorem packet: continue Example 4.7.4 by proving the exact
+Durrett source obligations that feed the V286 handoff.  Search local and
+Mathlib APIs for generated sigma-fields, `condExp` linearity/sum/scalar
+wrappers, finite permutation/exchangeability support, and Hewitt-Savage or
+tail-triviality primitives.  Target either (1) the conditional-expectation
+calculation `S_n / n = E(ξ_1 | 𝒢_n)` for
+`𝒢_n = σ(S_n, ξ_{n+1}, ξ_{n+2}, ...)`, or (2) a clean tail-triviality bridge
+that proves `P[f | ⨅ n, 𝒢 n] =ᵐ fun _ => P[f]` from a reusable
+Hewitt-Savage/trivial-sigma-field hypothesis.  Do not rewrap the already
+compiled direct strong law or reopen V285.
 
 ## Deprecated V255 Prompt Notes
 

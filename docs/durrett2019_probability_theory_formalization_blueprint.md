@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V285`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V286`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -91,11 +91,12 @@ measurability.  V284 proves the missing tail measurability using the canonical
 endpoint.  V285 packages backwards Lévy Theorem 4.7.3 in both dual-filtration
 and textbook decreasing-filtration display forms, with a.s. and `L¹`
 convergence to the conditional expectation on the reverse tail sigma-field.
-The next proof packet should start Example 4.7.4, the backwards-martingale
-proof of the strong law: reuse the local strong-law endpoint where it is the
-right final consumer, but formalize the Durrett route by adding the
-backwards-average martingale / tail-triviality bridge rather than reopening
-the V285 convergence and tail-identification plumbing.
+V286 starts Example 4.7.4 with the tail-constant consumer for V285, the
+conditional-expectation process handoff, and a direct strong-law endpoint
+reusing `StatInference.ProbabilityMeasure.strongLaw_ae_real`.  The next proof
+packet should fill the exact Durrett source obligations: the backwards-average
+conditional-expectation calculation for `S_n / n`, or the
+Hewitt-Savage/tail-triviality bridge feeding the V286 constant-tail hypothesis.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:

@@ -1,4 +1,5 @@
 import StatInference.EmpiricalProcess.Theorem243
+import StatInference.ProbabilityMeasure.StrongLaw
 import StatInference.ProbabilityTheory.Martingale
 
 /-!
@@ -12,9 +13,9 @@ empirical-process lane.
 namespace StatInference
 namespace ProbabilityTheory
 
-open Filter MeasureTheory
+open Filter MeasureTheory _root_.ProbabilityTheory
 
-open scoped ENNReal MeasureTheory NNReal ProbabilityTheory Topology
+open scoped BigOperators ENNReal Function NNReal ProbabilityTheory Topology
 
 /-! ## Durrett, Section 4.7 -/
 
@@ -554,6 +555,76 @@ theorem durrett2019_theorem_4_7_3_condExp_nat_eLpNorm_one_tendsto_tail_condExp
   simpa [durrett2019_backwardsFiltration] using
     (durrett2019_theorem_4_7_3_condExp_eLpNorm_one_tendsto_tail_condExp
       (P := P) (ℱ := durrett2019_backwardsFiltration 𝒢 h𝒢_mono h𝒢_le) f)
+
+/--
+Durrett 2019, Theorem 4.7.3 consumer.  If the reverse tail conditional
+expectation is a.e. constant, the backwards Lévy limit is that constant.
+-/
+theorem durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_const_of_tail_condExp_ae_eq_const
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {𝒢 : ℕ -> MeasurableSpace Ω}
+    (h𝒢_mono : Antitone 𝒢) (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (f : Ω -> ℝ) (c : ℝ)
+    (hTail : P[f | ⨅ n : ℕ, 𝒢 n] =ᵐ[P] fun _ => c) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => P[f | 𝒢 n] ω)
+        atTop
+        (𝓝 c) := by
+  filter_upwards
+    [durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_tail_condExp
+      (P := P) (𝒢 := 𝒢) h𝒢_mono h𝒢_le f, hTail] with ω hlim htail
+  simpa [htail] using hlim
+
+/--
+Durrett 2019, Example 4.7.4 route bridge.  A process that is a.e. equal to
+reverse-time conditional expectations converges once the reverse tail
+conditional expectation is a.e. constant.
+-/
+theorem durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_const
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {𝒢 : ℕ -> MeasurableSpace Ω}
+    (h𝒢_mono : Antitone 𝒢) (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (A : ℕ -> Ω -> ℝ) (f : Ω -> ℝ) (c : ℝ)
+    (hA :
+      ∀ n, A n =ᵐ[P] P[f | 𝒢 n])
+    (hTail : P[f | ⨅ n : ℕ, 𝒢 n] =ᵐ[P] fun _ => c) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => A n ω)
+        atTop
+        (𝓝 c) := by
+  have hCond :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n : ℕ => P[f | 𝒢 n] ω)
+          atTop
+          (𝓝 c) :=
+    durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_const_of_tail_condExp_ae_eq_const
+      (P := P) (𝒢 := 𝒢) h𝒢_mono h𝒢_le f c hTail
+  have hA_all :
+      ∀ᵐ ω ∂P, ∀ n : ℕ, A n ω = P[f | 𝒢 n] ω :=
+    ae_all_iff.2 hA
+  filter_upwards [hCond, hA_all] with ω hlim hAω
+  exact Tendsto.congr'
+    (Eventually.of_forall (fun n : ℕ => (hAω n).symm)) hlim
+
+/--
+Durrett 2019, Example 4.7.4, final strong-law endpoint using the compiled
+local strong-law primitive.
+-/
+theorem durrett2019_example_4_7_4_strongLaw_ae_real
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    (ξ : ℕ -> Ω -> ℝ)
+    (hint : Integrable (ξ 0) P)
+    (hindep : Pairwise ((· ⟂ᵢ[P] ·) on ξ))
+    (hident : ∀ i, _root_.ProbabilityTheory.IdentDistrib (ξ i) (ξ 0) P P) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ i ∈ Finset.range n, ξ i ω) / n)
+        atTop
+        (𝓝 (∫ ω, ξ 0 ω ∂P)) := by
+  exact StatInference.ProbabilityMeasure.strongLaw_ae_real ξ hint hindep hident
 
 end ProbabilityTheory
 end StatInference
