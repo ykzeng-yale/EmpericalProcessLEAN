@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V265`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V266`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -46,9 +46,10 @@ and
 `durrett2019_theorem_4_6_3_tendsto_integral_abs_of_tendstoInMeasure_uniformIntegrable`.
 V265 starts Theorem 4.6.4 with the source forward implication from
 `UniformIntegrable` submartingales to a.s. plus `L¹` convergence, and the
-reverse `L¹`-to-`UnifIntegrable` bridge.  The next proof packet should either
-upgrade that reverse bridge to full probability `UniformIntegrable` if cheap, or
-move to Lemmas 4.6.5/4.6.6 and Theorem 4.6.7.  V259 closes the concrete Example 4.5.8
+reverse `L¹`-to-`UnifIntegrable` bridge.  V266 upgrades the reverse implication
+to full probability `UniformIntegrable` using the finite-prefix boundedness
+package from `L¹` convergence.  The next proof packet should move to Lemmas
+4.6.5/4.6.6 and Theorem 4.6.7.  V259 closes the concrete Example 4.5.8
 random-walk terminal-condition packet:
 the unit-variance, Rademacher, and canonical Rademacher endpoints now use
 finite `∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P` rather than

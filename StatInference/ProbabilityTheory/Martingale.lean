@@ -26771,6 +26771,104 @@ theorem durrett2019_theorem_4_6_4_submartingale_unifIntegrable_of_eLpNorm_one_te
     (P := P) (X := X) (Y := Y) (fun n => hX.integrable n) hY_int hL1
 
 /--
+Durrett 2019, Theorem 4.6.4 support for the reverse implication.
+
+`L¹` convergence gives the measure-theoretic uniform-integrability part by
+Vitali, and the probability-theory boundedness part follows from the triangle
+inequality plus a finite prefix bound.
+-/
+theorem durrett2019_theorem_4_6_4_uniformIntegrable_of_eLpNorm_one_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX_int : ∀ n, Integrable (X n) P) (hY_int : Integrable Y P)
+    (hL1 : Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0)) :
+    UniformIntegrable X 1 P := by
+  have hX_mem : ∀ n, MemLp (X n) 1 P := fun n =>
+    memLp_one_iff_integrable.2 (hX_int n)
+  have hY_mem : MemLp Y 1 P := memLp_one_iff_integrable.2 hY_int
+  have hUnif : UnifIntegrable X 1 P :=
+    durrett2019_theorem_4_6_3_unifIntegrable_of_eLpNorm_one_tendsto_zero
+      (P := P) (X := X) (Y := Y) hX_int hY_int hL1
+  have hL1_bound :
+      ∃ N, ∀ n, N ≤ n -> eLpNorm (X n - Y) 1 P ≤ (1 : ℝ≥0∞) := by
+    rw [ENNReal.tendsto_atTop_zero] at hL1
+    exact hL1 1 zero_lt_one
+  obtain ⟨N, hN⟩ := hL1_bound
+  let prefixBound : ℝ≥0 :=
+    (Finset.range N).sup fun n => (eLpNorm (X n) 1 P).toNNReal
+  let limitBound : ℝ≥0 := (eLpNorm Y 1 P).toNNReal
+  refine
+    ⟨fun n => (hX_mem n).aestronglyMeasurable,
+      hUnif,
+      ⟨prefixBound + 1 + limitBound, fun n => ?_⟩⟩
+  by_cases hn : n < N
+  · have hfinite : eLpNorm (X n) 1 P ≠ ∞ := (hX_mem n).2.ne
+    rw [← ENNReal.coe_toNNReal hfinite, ENNReal.coe_le_coe]
+    have hmem : n ∈ Finset.range N := by
+      simpa using hn
+    have hprefix :
+        (eLpNorm (X n) 1 P).toNNReal ≤ prefixBound := by
+      exact
+        Finset.le_sup
+          (s := Finset.range N)
+          (f := fun n => (eLpNorm (X n) 1 P).toNNReal)
+          hmem
+    have hle_bound : prefixBound ≤ prefixBound + 1 + limitBound := by
+      simp [add_assoc]
+    exact hprefix.trans hle_bound
+  · have hn_ge : N ≤ n := le_of_not_gt hn
+    have hfiniteY : eLpNorm Y 1 P ≠ ∞ := hY_mem.2.ne
+    have htriangle :
+        eLpNorm (X n) 1 P ≤
+          eLpNorm (X n - Y) 1 P + eLpNorm Y 1 P := by
+      calc
+        eLpNorm (X n) 1 P
+            = eLpNorm ((X n - Y) + Y) 1 P := by
+              congr 1
+              ext ω
+              simp [Pi.sub_apply]
+        _ ≤ eLpNorm (X n - Y) 1 P + eLpNorm Y 1 P :=
+              eLpNorm_add_le ((hX_mem n).aestronglyMeasurable.sub
+                hY_mem.aestronglyMeasurable) hY_mem.aestronglyMeasurable le_rfl
+    calc
+      eLpNorm (X n) 1 P
+          ≤ eLpNorm (X n - Y) 1 P + eLpNorm Y 1 P := htriangle
+      _ ≤ (1 : ℝ≥0∞) + eLpNorm Y 1 P := add_le_add (hN n hn_ge) le_rfl
+      _ = (1 : ℝ≥0∞) + limitBound := by
+            simp [limitBound, ENNReal.coe_toNNReal hfiniteY]
+      _ = ((1 : ℝ≥0) + limitBound : ℝ≥0) := by norm_num
+      _ ≤ prefixBound + 1 + limitBound := by
+            have hnn :
+                (1 : ℝ≥0) + limitBound ≤ prefixBound + 1 + limitBound := by
+              have hprefix_nonneg : (0 : ℝ≥0) ≤ prefixBound := bot_le
+              calc
+                (1 : ℝ≥0) + limitBound
+                    = 0 + ((1 : ℝ≥0) + limitBound) := by simp
+                _ ≤ prefixBound + ((1 : ℝ≥0) + limitBound) := by
+                    convert
+                      add_le_add_left hprefix_nonneg
+                        ((1 : ℝ≥0) + limitBound) using 1
+                _ = prefixBound + 1 + limitBound := by ac_rfl
+            exact_mod_cast hnn
+
+/--
+Durrett 2019, Theorem 4.6.4, reverse implication in probability-theory
+uniform-integrability form.
+
+If a submartingale converges in `L¹` to an integrable random variable, then the
+submartingale is uniformly integrable.
+-/
+theorem durrett2019_theorem_4_6_4_submartingale_uniformIntegrable_of_eLpNorm_one_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ} (hX : Submartingale X ℱ P)
+    (hY_int : Integrable Y P)
+    (hL1 : Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0)) :
+    UniformIntegrable X 1 P :=
+  durrett2019_theorem_4_6_4_uniformIntegrable_of_eLpNorm_one_tendsto_zero
+    (P := P) (X := X) (Y := Y) (fun n => hX.integrable n) hY_int hL1
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

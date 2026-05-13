@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V265
+## Live In-Thread Goal Prompt V266
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,7 @@ Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V265 continues Section 4.6.  V260 packages Durrett
+Latest verified target V266 continues Section 4.6.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -40,14 +40,15 @@ the source `(i) -> (ii)` implication for uniformly integrable submartingales,
 plus
 `durrett2019_theorem_4_6_4_submartingale_unifIntegrable_of_eLpNorm_one_tendsto_zero`,
 the reverse `(iii) -> (i)` bridge in Mathlib's measure-theoretic
-`UnifIntegrable` form.
+`UnifIntegrable` form.  V266 upgrades the reverse implication to full
+probability-theory uniform integrability with
+`durrett2019_theorem_4_6_4_uniformIntegrable_of_eLpNorm_one_tendsto_zero` and
+`durrett2019_theorem_4_6_4_submartingale_uniformIntegrable_of_eLpNorm_one_tendsto_zero`.
 
-Next aggressive theorem packet: either upgrade the V265 reverse bridge from
-`UnifIntegrable` to full probability `UniformIntegrable` if the bounded
-`eLpNorm` packaging is immediate, or move to Lemma 4.6.5, Lemma 4.6.6, and
-Theorem 4.6.7 martingale `L¹` convergence/conditional-expectation
-characterization.  Search Mathlib/local APIs first and keep the proof packet
-theorem-sized.
+Next aggressive theorem packet: move to Lemma 4.6.5, Lemma 4.6.6, and Theorem
+4.6.7 martingale `L¹` convergence/conditional-expectation characterization.
+Search Mathlib/local conditional-expectation uniqueness APIs first, reuse V260
+Theorem 4.6.1 for `(iv) -> (i)`, and keep the proof packet theorem-sized.
 
 ## Deprecated V255 Prompt Notes
 
