@@ -72,10 +72,16 @@ and
 `chewi1316_mainStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment`.
 It packages the source gradient-update equality, the pre-Newton bound, and the
 compiled Theorem 13.8 Newton-step wrapper into the invariant
-`lambda <= 1/4 -> lambda_next <= 1/4`.  The next live route is concrete
-central-path instantiation for the selected barrier model: prove the objective
-gradient-update equality, feasible Newton-step membership, and the standard
-source-Newton-segment assumptions.
+`lambda <= 1/4 -> lambda_next <= 1/4`.  The newest central-path algebra layer
+adds `centralPathGradient_update_eq`, `centralPathGradient_update_eq_of_tNext`,
+`chewi1316_preNewtonDecrement_le_update_bound_of_centralPathGradient_adjointSqrt_right_inverse`,
+and
+`chewi1316_mainStage_newtonDecrement_le_quarter_of_centralPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
+This discharges the algebraic `t_next = (1 + delta) * t` gradient-update
+rewrite for objectives with gradient `t • a + grad phi(x)`.  The next live
+route is concrete central-path instantiation for the selected barrier model:
+prove `grad x = t_next • a + grad phi x`, feasible Newton-step membership, and
+the standard source-Newton-segment assumptions.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

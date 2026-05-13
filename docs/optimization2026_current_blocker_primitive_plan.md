@@ -205,15 +205,23 @@ Theorem 13.8 route.  The newest main-stage invariant packet adds
 `chewi1316_mainStage_newtonDecrement_le_quarter_of_gradientUpdate_and_newtonBound`,
 and
 `chewi1316_mainStage_newtonDecrement_le_quarter_of_sqrtCoordFamilyModel_sourceNewtonSegment`.
-This packages the central-path gradient update equation and the compiled
-Theorem 13.8 Newton-step wrapper into the source invariant
-`lambda <= 1/4 -> lambda_next <= 1/4`, still leaving the concrete objective
-gradient-update equation, feasible Newton-step membership, and the already
-standard Theorem 13.8 source assumptions to be instantiated for the selected
-barrier model.  Do not route the next run back to product, sum, affine/range,
-positive-orthant barrier setup, the already-compiled Lemma 13.16/main-stage
-algebra, the dual-norm interface, or the generic main-stage wrapper unless a
-new downstream proof directly needs one of those verified declarations.
+This packages the source gradient-update equality, the pre-Newton bound, and
+the compiled Theorem 13.8 Newton-step wrapper into the invariant
+`lambda <= 1/4 -> lambda_next <= 1/4`.  The newest central-path algebra packet
+adds `centralPathGradient_update_eq`,
+`centralPathGradient_update_eq_of_tNext`,
+`chewi1316_preNewtonDecrement_le_update_bound_of_centralPathGradient_adjointSqrt_right_inverse`,
+and
+`chewi1316_mainStage_newtonDecrement_le_quarter_of_centralPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
+This discharges the purely algebraic `t_next = (1 + delta) * t` gradient-update
+rewrite for objectives with gradient `t • a + grad phi(x)`.  The next live
+gate is concrete model instantiation: provide the selected barrier/central-path
+objective gradient equality `grad x = t_next • a + grad phi x`, feasible
+Newton-step membership, and the standard source-Newton-segment assumptions.
+Do not route the next run back to product, sum, affine/range, positive-orthant
+barrier setup, the already-compiled Lemma 13.16/main-stage algebra, the
+dual-norm interface, or the generic main-stage wrappers unless a new downstream
+proof directly needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9
