@@ -223,6 +223,12 @@ The iid infinite-product sequence-law source endpoint
 uses `vaart1998_sequence_law_of_iIndepFun_common_law` to derive the score-vector
 and derivative-table infinite-product laws from marginal laws, measurability,
 and `iIndepFun`.
+The observation-transform i.i.d. source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationTransformIIndepSource_scoreLawCoordinateMeanSource_scoreLawMemLpSource_zLawCoordinateMeanSource_zLawCoordinateCovarianceSource_derivativeLawCoordinateIntegrableSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+uses `vaart1998_common_law_of_observation_transform` and
+`vaart1998_iIndepFun_of_observation_transform` to derive score-vector and
+derivative-table measurability, marginal laws, and independence from a common
+i.i.d. observation process plus measurable score/derivative transforms.
 The next proof packet should move to a concrete model-specialized Theorem 5.41
 instantiation, or package only a still-live source field that the current
 endpoint explicitly exposes, not replay display weak-convergence,
@@ -244,7 +250,8 @@ finite-coordinate-limit-covariance wrappers/law-side score second-moment
 wrappers/law-side score coordinate-mean wrappers.
 Do not replay law-side limit coordinate-mean wrappers or law-side scalar
 coordinate-covariance wrappers, or derivative-law coordinate-integrability
-wrappers, or iid infinite-product sequence-law wrappers.
+wrappers, iid infinite-product sequence-law wrappers, or
+observation-transform measurability/law/independence wrappers.
 
 ## Chapter Map
 
