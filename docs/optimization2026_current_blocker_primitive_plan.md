@@ -308,27 +308,36 @@ and
 It explicitly splits the initialization budget into `1/16`, `1/8`, and `1/16`
 terms and reuses the already-verified Chapter 5 scalar log theorem
 `chewi54_half_pow_mul_le_eps_of_log_ratio_le` for the preliminary tail
-half-power certificate.
+half-power certificate.  The factor-count packet adds
+`chewi1316_preliminary_tail_half_power_bound_of_factor_pow`,
+`chewi1316_preliminary_tail_half_power_bound_of_nonneg_factor_pow`,
+`chewi1316_factor_pow_le_half_pow_of_log_le`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_absFactorPowLogTail`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorPowLogTail`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorLogTail`.
+It converts a scalar contraction-factor power/log certificate for
+`1 - c0 / sqrt nu` into the half-power preliminary tail bound with
+`tailBase = |tStart| * ||grad phi(xbar0)||*`.
 Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
-is now narrower: prove the concrete preliminary contraction/count certificate
-that turns the Chewi/Nesterov choice of `N`, `tPre`, and `tMain` into the
-supplied half-power tail bound for
-`|(1 - c0 / sqrt nu)^N * tStart| * ||grad phi(xbar0)||*`; the already-compiled
-log-tail wrapper then gives the `1/4` main-stage initialization budget.  Do not
-route the next run back to product,
+is now narrower: prove the concrete Chewi/Nesterov scalar choices of `N`,
+`tPre`, and `tMain` satisfy the factor positivity/log-power and tail-base
+log-budget hypotheses exposed by `...factorLogTail`; the already-compiled
+wrapper then gives the `1/4` main-stage initialization budget.  Do not route the
+next run back to product,
 sum,
 affine/range, positive-orthant barrier setup, the already-compiled Lemma
 13.16/main-stage algebra, the dual-norm interface, the generic main-stage
 wrappers, feasible-step membership, the positive-orthant main-stage one-step
 invariant, the closed-form parameter recurrence, the objective-gap stopping
 rule, exact-center/main-stage budget initialization, preliminary-to-main bridge,
-finite preliminary sequence bridge, generic log-halving lemma, or finite
-preliminary sequence induction unless a new downstream proof directly
-needs one of those verified declarations.
+finite preliminary sequence bridge, generic log-halving lemma, factor-tail
+algebra, log-to-power comparison, or finite preliminary sequence induction
+unless a new downstream proof directly needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

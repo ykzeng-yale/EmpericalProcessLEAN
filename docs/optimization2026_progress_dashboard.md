@@ -182,11 +182,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_logTail`.
   This reuses the existing Chapter 5 scalar theorem
   `chewi54_half_pow_mul_le_eps_of_log_ratio_le` instead of reproving the
-  logarithmic halving algebra.  Remaining gate: prove the concrete preliminary
-  contraction/count certificate that bounds
-  `|(1 - c0 / sqrt nu)^N * tStart| * ||grad phi(xbar0)||*` by a half-power
-  envelope, then finish the Nesterov §5.3.5 initialization count and
-  strictly-feasible-start discussion.
+  logarithmic halving algebra.  The factor-count packet adds
+  `chewi1316_preliminary_tail_half_power_bound_of_factor_pow`,
+  `chewi1316_preliminary_tail_half_power_bound_of_nonneg_factor_pow`,
+  `chewi1316_factor_pow_le_half_pow_of_log_le`,
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_absFactorPowLogTail`,
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorPowLogTail`,
+  and
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorLogTail`.
+  These reduce the preliminary tail gate to source-shaped scalar inequalities
+  on `1 - c0 / sqrt nu`: positivity, a log-power comparison, and the
+  `tailBase = |tStart| * ||grad phi(xbar0)||*` log budget.  Remaining gate:
+  prove the concrete Chewi/Nesterov choice of `N`, `tPre`, and `tMain` satisfies
+  those scalar count inequalities, then finish the strictly-feasible-start
+  discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

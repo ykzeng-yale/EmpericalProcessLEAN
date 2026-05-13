@@ -149,9 +149,17 @@ carrying a preliminary decrement budget sequence by induction and rewriting
 and
 `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_logTail`,
 reusing `chewi54_half_pow_mul_le_eps_of_log_ratio_le` for the half-power/log
-tail calculation.  The next live route is the concrete preliminary
-contraction/count certificate matching the reverse path-following argument
-cited to Nesterov §5.3.5, then the strictly-feasible-start discussion.
+tail calculation.  The factor-count layer adds
+`chewi1316_preliminary_tail_half_power_bound_of_factor_pow`,
+`chewi1316_preliminary_tail_half_power_bound_of_nonneg_factor_pow`,
+`chewi1316_factor_pow_le_half_pow_of_log_le`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_absFactorPowLogTail`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorPowLogTail`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorLogTail`.
+The next live route is the concrete Chewi/Nesterov scalar count choice matching
+the reverse path-following argument cited to Nesterov §5.3.5, then the
+strictly-feasible-start discussion.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
