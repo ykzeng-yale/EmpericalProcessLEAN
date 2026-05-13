@@ -26727,6 +26727,50 @@ theorem durrett2019_theorem_4_6_3_tendsto_integral_abs_of_tendstoInMeasure_unifo
         (P := P) (X := X) (Y := Y) hprob hUI)
 
 /--
+Durrett 2019, Theorem 4.6.4, forward implication for submartingales.
+
+A uniformly integrable submartingale converges almost surely to Mathlib's
+canonical filtration limit process, and the convergence is in `L¹`.
+-/
+theorem durrett2019_theorem_4_6_4_submartingale_ae_tendsto_and_eLpNorm_one_tendsto_of_uniformIntegrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Submartingale X ℱ P)
+    (hUI : UniformIntegrable X 1 P) :
+    (∀ᵐ ω ∂P, Tendsto (fun n => X n ω) atTop (𝓝 (ℱ.limitProcess X P ω))) ∧
+      Tendsto (fun n => eLpNorm (X n - ℱ.limitProcess X P) 1 P) atTop (𝓝 0) := by
+  obtain ⟨R, hR⟩ := hUI.2.2
+  have hAe :
+      ∀ᵐ ω ∂P, Tendsto (fun n => X n ω) atTop (𝓝 (ℱ.limitProcess X P ω)) :=
+    durrett2019_theorem_4_2_11_submartingale_ae_tendsto_limitProcess_of_eLpNorm_bdd
+      (μ := P) (ℱ := ℱ) (X := X) hX hR
+  have hprob : TendstoInMeasure P X atTop (ℱ.limitProcess X P) :=
+    tendstoInMeasure_of_tendsto_ae
+      (μ := P) (f := X) (g := ℱ.limitProcess X P)
+      (fun n => hUI.aestronglyMeasurable n) hAe
+  exact
+    ⟨hAe,
+      durrett2019_theorem_4_6_3_eLpNorm_one_tendsto_zero_of_tendstoInMeasure_uniformIntegrable
+        (P := P) (X := X) (Y := ℱ.limitProcess X P) hprob hUI⟩
+
+/--
+Durrett 2019, Theorem 4.6.4, reverse implication in the measure-theoretic
+uniform-integrability form.
+
+If a submartingale converges in `L¹` to an integrable random variable, then its
+`L¹` norms are uniformly absolutely continuous.
+-/
+theorem durrett2019_theorem_4_6_4_submartingale_unifIntegrable_of_eLpNorm_one_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ} (hX : Submartingale X ℱ P)
+    (hY_int : Integrable Y P)
+    (hL1 : Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0)) :
+    UnifIntegrable X 1 P :=
+  durrett2019_theorem_4_6_3_unifIntegrable_of_eLpNorm_one_tendsto_zero
+    (P := P) (X := X) (Y := Y) (fun n => hX.integrable n) hY_int hL1
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
