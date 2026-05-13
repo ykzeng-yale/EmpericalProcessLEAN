@@ -17,6 +17,9 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreLawMemLpSource_derivativeTableLawSequenceSource_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+
+Immediate predecessor endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeTableLawSequenceSource_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 
 Immediate predecessor endpoint:
@@ -138,6 +141,11 @@ Immediate derivative-table sequence-law source:
 derive each marginal derivative-table law from the joint infinite-product law
 of the derivative-table sequence, using `measurePreserving_eval_infinitePi`
 and `HasLaw.comp`.
+
+Immediate score-law `L²` source:
+derive `MemLp id 2 scoreLaw` from `MemLp (scoreVector 0) 2 P` and the
+score-vector joint infinite-product law, using `memLp_map_measure_iff` and
+`HasLaw.map_eq`.
 
 Immediate derivative-law vector integrability source:
 derive coordinatewise derivative-law entry integrability from
@@ -394,6 +402,12 @@ derives every marginal derivative-table law from
 with the helper `vaart1998_derivativeTable_law_of_sequence_law`.  Thus
 `hDerivativeTable_law` is no longer a live separate field for the current
 endpoint.
+The newest score-law `L²` source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreLawMemLpSource_derivativeTableLawSequenceSource_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+derives `MemLp id 2 scoreLaw` from `MemLp (scoreVector 0) 2 P` with
+`vaart1998_scoreLaw_memLp_of_scoreVector_memLp`, after deriving the zero-index
+score-vector law from the joint score-vector law.  Thus `hScoreLaw_memLp` is
+no longer a live law-level field for the current endpoint.
 
 Continuation recipe:
 
@@ -424,7 +438,7 @@ Priority order for the next packet:
    vector integrability, limit-law mean, or limit-law covariance source
    wrappers, Gaussian limit moment wrappers, score-law mean source wrappers,
    score-vector sequence-law source wrappers, or derivative-table sequence-law
-   source wrappers.
+   source wrappers, or score-law `L²` source wrappers.
 
 Operating rules:
 
