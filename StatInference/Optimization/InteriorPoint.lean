@@ -12325,6 +12325,36 @@ theorem chewi1316_preliminary_budget_le_quarter_of_split
   nlinarith
 
 /--
+For any nonnegative scale, there is a positive scalar whose product with that
+scale is at most `1/16`.
+-/
+theorem chewi1316_exists_pos_abs_mul_le_sixteenth
+    {L : ℝ} (hL_nonneg : 0 ≤ L) :
+    ∃ t : ℝ, 0 < t ∧ |t| * L ≤ 1 / 16 := by
+  let t : ℝ := 1 / (16 * (L + 1))
+  have hL_add_pos : 0 < L + 1 := by linarith
+  have hden_pos : 0 < 16 * (L + 1) :=
+    mul_pos (by norm_num : 0 < (16 : ℝ)) hL_add_pos
+  have ht_pos : 0 < t := by
+    exact one_div_pos.mpr hden_pos
+  refine ⟨t, ht_pos, ?_⟩
+  rw [abs_of_pos ht_pos]
+  rw [div_mul_eq_mul_div, div_le_iff₀ hden_pos]
+  nlinarith
+
+/--
+There is a positive main-stage parameter satisfying the `1/16` objective-tail
+budget at any endpoint.
+-/
+theorem chewi1316_exists_positive_mainStageParameter_budget
+    {invHess : E -> E →L[ℝ] E} {x a : E} :
+    ∃ tMain : ℝ,
+      0 < tMain ∧
+      |tMain| * dualLocalNorm invHess x a ≤ 1 / 16 :=
+  chewi1316_exists_pos_abs_mul_le_sixteenth
+    (dualLocalNorm_nonneg invHess x a)
+
+/--
 Logarithmic sufficient condition for a supplied half-power preliminary tail.
 This reuses the Chapter 5 halving/log scalar theorem rather than redoing the
 `log` monotonicity algebra in the interior-point file.
@@ -13258,6 +13288,62 @@ theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequ
         |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
       (tailBound := tailBound) (M := M)
       htailBound_pos htailBase_le htailBoundLog)
+
+/--
+Existential positive-`tMain` version of the bounded-tail preliminary
+initialization bridge.  This discharges the source scalar budget
+`|tMain| * ||a||* <= 1/16` by choosing `tMain` small and positive.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound_nonneg
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {tStart c0 nu tailBound : ℝ} {N M : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (ht0 : tseq 0 = tStart)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0)
+    (htailBound_pos : 0 < tailBound)
+    (htailBase_le :
+      |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        tailBound)
+    (htailBoundLog :
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    ∃ tMain : ℝ,
+      0 < tMain ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  obtain ⟨tMain, htMain_pos, hmainBudget⟩ :=
+    chewi1316_exists_positive_mainStageParameter_budget
+      (invHess := invHess) (x := xseq N) (a := a)
+  refine ⟨tMain, htMain_pos, ?_⟩
+  exact
+    chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound_nonneg
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord) (tMain := tMain) (tStart := tStart)
+      (c0 := c0) (nu := nu) (tailBound := tailBound)
+      (N := N) (M := M)
+      hinv_factor ht0 htstep hinit hstep hmainBudget hlambdaBudget
+      hsqrt_pos hdelta_lt_one hcount htailBound_pos htailBase_le
+      htailBoundLog
 
 theorem chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse
     [CompleteSpace E]

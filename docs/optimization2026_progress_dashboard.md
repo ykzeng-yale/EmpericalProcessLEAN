@@ -224,7 +224,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   and
   `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound_nonneg`,
   removing the need to prove the actual preliminary tail base is strictly
-  positive.  Remaining gate: prove the concrete Chewi/Nesterov bound on
+  positive.  The positive-main-parameter packet adds
+  `chewi1316_exists_pos_abs_mul_le_sixteenth`,
+  `chewi1316_exists_positive_mainStageParameter_budget`, and
+  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound_nonneg`,
+  discharging the `|tMain| * ||a||* <= 1/16` scalar budget by choosing a small
+  positive `tMain`.  Remaining gate: prove the concrete Chewi/Nesterov bound on
   `|tStart| * ||grad phi(xbar0)||*` by a source quantity such as the
   analytical-center distance measure, then finish the strictly-feasible-start
   discussion.
