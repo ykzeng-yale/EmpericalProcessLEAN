@@ -11962,6 +11962,46 @@ theorem chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter_of_
     (a := a) (t := t) hcenter
     (dualLocalNorm_smul_of_adjointCoordFactor hinv_factor) ht_nonneg hscaled
 
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_barrierGrad_and_objective
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {x a : E}
+    {t phiBound objBound : ℝ}
+    (hphi : dualLocalNorm invHess x (phiGrad x) ≤ phiBound)
+    (hobj : dualLocalNorm invHess x (t • a) ≤ objBound)
+    (hbudget : objBound + phiBound ≤ 1 / 4)
+    (hdual_add : ∀ u v : E,
+      dualLocalNorm invHess x (u + v) ≤
+        dualLocalNorm invHess x u + dualLocalNorm invHess x v) :
+    newtonDecrement (centralPathGrad t a phiGrad) invHess x ≤ 1 / 4 := by
+  change dualLocalNorm invHess x (centralPathGrad t a phiGrad x) ≤ 1 / 4
+  calc
+    dualLocalNorm invHess x (centralPathGrad t a phiGrad x) =
+        dualLocalNorm invHess x (t • a + phiGrad x) := rfl
+    _ ≤ dualLocalNorm invHess x (t • a) +
+        dualLocalNorm invHess x (phiGrad x) := hdual_add _ _
+    _ ≤ objBound + phiBound := add_le_add hobj hphi
+    _ ≤ 1 / 4 := hbudget
+
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_barrierGrad_and_objective_adjointCoordFactor
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {x a : E}
+    {coord : E →L[ℝ] E} {t phiBound : ℝ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hphi : dualLocalNorm invHess x (phiGrad x) ≤ phiBound)
+    (hbudget :
+      |t| * dualLocalNorm invHess x a + phiBound ≤ 1 / 4) :
+    newtonDecrement (centralPathGrad t a phiGrad) invHess x ≤ 1 / 4 :=
+  chewi1316_mainStage_initial_decrement_le_quarter_of_barrierGrad_and_objective
+    (invHess := invHess) (phiGrad := phiGrad) (x := x)
+    (a := a) (t := t) (phiBound := phiBound)
+    (objBound := |t| * dualLocalNorm invHess x a)
+    hphi
+    (by
+      rw [dualLocalNorm_smul_of_adjointCoordFactor hinv_factor])
+    hbudget
+    (dualLocalNorm_add_le_of_adjointCoordFactor hinv_factor)
+
 theorem newton_linear_of_hessian_right_inverse
     {hess invHess : E -> E →L[ℝ] E} {grad : E -> E} {x : E}
     (hright : ∀ v : E, hess x (invHess x v) = v) :
@@ -12061,6 +12101,117 @@ theorem preliminaryPathGradient_decrease_eq_of_tNext
         delta • phiGrad x := by
   exact centralPathGradient_decrease_eq_of_tNext
     (E := E) htNext (preliminaryPathDirection phiGrad xbar0) (phiGrad x)
+
+theorem barrierGrad_dualLocalNorm_le_of_preliminaryPath
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 x : E}
+    {t lambda : ℝ}
+    (hpre :
+      dualLocalNorm invHess x (preliminaryPathGrad phiGrad xbar0 t x) ≤
+        lambda)
+    (hdual_add : ∀ u v : E,
+      dualLocalNorm invHess x (u + v) ≤
+        dualLocalNorm invHess x u + dualLocalNorm invHess x v)
+    (hdual_smul : ∀ (c : ℝ) (v : E),
+      dualLocalNorm invHess x (c • v) = |c| * dualLocalNorm invHess x v) :
+    dualLocalNorm invHess x (phiGrad x) ≤
+      lambda + |t| * dualLocalNorm invHess x (phiGrad xbar0) := by
+  have hdecomp :
+      phiGrad x =
+        preliminaryPathGrad phiGrad xbar0 t x + t • phiGrad xbar0 := by
+    simp [preliminaryPathGrad, preliminaryPathDirection, centralPathGrad]
+  calc
+    dualLocalNorm invHess x (phiGrad x) =
+        dualLocalNorm invHess x
+          (preliminaryPathGrad phiGrad xbar0 t x + t • phiGrad xbar0) := by
+      rw [hdecomp]
+    _ ≤ dualLocalNorm invHess x (preliminaryPathGrad phiGrad xbar0 t x) +
+        dualLocalNorm invHess x (t • phiGrad xbar0) := hdual_add _ _
+    _ = dualLocalNorm invHess x (preliminaryPathGrad phiGrad xbar0 t x) +
+        |t| * dualLocalNorm invHess x (phiGrad xbar0) := by
+      rw [hdual_smul]
+    _ ≤ lambda + |t| * dualLocalNorm invHess x (phiGrad xbar0) :=
+      by
+        simpa [add_comm, add_left_comm, add_assoc] using
+          add_le_add_right hpre
+            (|t| * dualLocalNorm invHess x (phiGrad xbar0))
+
+theorem barrierGrad_dualLocalNorm_le_of_preliminaryPath_adjointCoordFactor
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 x : E}
+    {coord : E →L[ℝ] E} {t lambda : ℝ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hpre :
+      dualLocalNorm invHess x (preliminaryPathGrad phiGrad xbar0 t x) ≤
+        lambda) :
+    dualLocalNorm invHess x (phiGrad x) ≤
+      lambda + |t| * dualLocalNorm invHess x (phiGrad xbar0) :=
+  barrierGrad_dualLocalNorm_le_of_preliminaryPath
+    (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+    (x := x) (t := t) (lambda := lambda) hpre
+    (dualLocalNorm_add_le_of_adjointCoordFactor hinv_factor)
+    (dualLocalNorm_smul_of_adjointCoordFactor hinv_factor)
+
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 x a : E}
+    {tPre tMain lambdaPre : ℝ}
+    (hpre :
+      dualLocalNorm invHess x (preliminaryPathGrad phiGrad xbar0 tPre x) ≤
+        lambdaPre)
+    (hbudget :
+      dualLocalNorm invHess x (tMain • a) +
+          (lambdaPre + |tPre| * dualLocalNorm invHess x (phiGrad xbar0)) ≤
+        1 / 4)
+    (hdual_add : ∀ u v : E,
+      dualLocalNorm invHess x (u + v) ≤
+        dualLocalNorm invHess x u + dualLocalNorm invHess x v)
+    (hdual_smul : ∀ (c : ℝ) (v : E),
+      dualLocalNorm invHess x (c • v) = |c| * dualLocalNorm invHess x v) :
+    newtonDecrement (centralPathGrad tMain a phiGrad) invHess x ≤ 1 / 4 := by
+  have hphi :
+      dualLocalNorm invHess x (phiGrad x) ≤
+        lambdaPre + |tPre| * dualLocalNorm invHess x (phiGrad xbar0) :=
+    barrierGrad_dualLocalNorm_le_of_preliminaryPath
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (x := x) (t := tPre) (lambda := lambdaPre)
+      hpre hdual_add hdual_smul
+  exact
+    chewi1316_mainStage_initial_decrement_le_quarter_of_barrierGrad_and_objective
+      (invHess := invHess) (phiGrad := phiGrad) (x := x)
+      (a := a) (t := tMain)
+      (phiBound :=
+        lambdaPre + |tPre| * dualLocalNorm invHess x (phiGrad xbar0))
+      (objBound := dualLocalNorm invHess x (tMain • a))
+      hphi le_rfl hbudget hdual_add
+
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound_adjointCoordFactor
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 x a : E}
+    {coord : E →L[ℝ] E} {tPre tMain lambdaPre : ℝ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hpre :
+      dualLocalNorm invHess x (preliminaryPathGrad phiGrad xbar0 tPre x) ≤
+        lambdaPre)
+    (hbudget :
+      |tMain| * dualLocalNorm invHess x a +
+          (lambdaPre + |tPre| * dualLocalNorm invHess x (phiGrad xbar0)) ≤
+        1 / 4) :
+    newtonDecrement (centralPathGrad tMain a phiGrad) invHess x ≤ 1 / 4 := by
+  have hbudget' :
+      dualLocalNorm invHess x (tMain • a) +
+          (lambdaPre + |tPre| * dualLocalNorm invHess x (phiGrad xbar0)) ≤
+        1 / 4 := by
+    rwa [dualLocalNorm_smul_of_adjointCoordFactor hinv_factor]
+  exact
+    chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (x := x) (a := a) (tPre := tPre) (tMain := tMain)
+      (lambdaPre := lambdaPre) hpre hbudget'
+      (dualLocalNorm_add_le_of_adjointCoordFactor hinv_factor)
+      (dualLocalNorm_smul_of_adjointCoordFactor hinv_factor)
 
 theorem chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse
     [CompleteSpace E]

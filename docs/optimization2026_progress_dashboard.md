@@ -161,9 +161,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   The exact-center main-stage bridge adds `centralPathGrad_at_analyticalCenter`
   and the four `chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter*`
   wrappers, reducing exact-center initialization to the scaled dual-norm bound
-  `|t| * ||a||*_center <= 1/4`.
+  `|t| * ||a||*_center <= 1/4`.  The latest preliminary-to-main bridge adds
+  `barrierGrad_dualLocalNorm_le_of_preliminaryPath`,
+  `barrierGrad_dualLocalNorm_le_of_preliminaryPath_adjointCoordFactor`,
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_barrierGrad_and_objective`,
+  and
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound_adjointCoordFactor`,
+  converting a final preliminary decrement plus small preliminary/main scaled
+  dual-norm budgets into the main-stage `lambda <= 1/4` initialization.
   Remaining gate: sequence-level preliminary convergence/iteration-count
-  wrapper using this center interface, then strictly-feasible-start discussion.
+  wrapper using this budget interface, then strictly-feasible-start discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

@@ -280,7 +280,18 @@ The exact-center main-stage initialization bridge also adds
 and
 `chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter_of_adjointCoordFactor_nonneg`,
 showing that at `grad phi(center) = 0`, the main-stage decrement is controlled by
-the scaled dual norm `|t| * ||a||*_center`.  Together these formalize the reverse
+the scaled dual norm `|t| * ||a||*_center`.  The newest preliminary-to-main bridge
+adds
+`chewi1316_mainStage_initial_decrement_le_quarter_of_barrierGrad_and_objective`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_barrierGrad_and_objective_adjointCoordFactor`,
+`barrierGrad_dualLocalNorm_le_of_preliminaryPath`,
+`barrierGrad_dualLocalNorm_le_of_preliminaryPath_adjointCoordFactor`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound_adjointCoordFactor`.
+It converts a final preliminary-path decrement at `tPre` plus small budgets
+`|tPre| * ||grad phi(xbar0)||*` and `|tMain| * ||a||*` into the main-stage
+initial condition `lambda <= 1/4`.  Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
@@ -288,15 +299,15 @@ zero Newton decrement at the source endpoints, and the one-step post-Newton
 is a sequence-level preliminary convergence/iteration-count wrapper matching
 the Nesterov §5.3.5 citation: carry the decreasing `t_n` recurrence and
 one-step invariant until a supplied log/count condition reaches an `x0,t0`
-suitable for the main stage, using the exact-center bridge as the target
-interface.  Do not route the next run back to product, sum,
+suitable for the main stage, using the preliminary-to-main budget bridge as the
+target interface.  Do not route the next run back to product, sum,
 affine/range, positive-orthant barrier setup, the already-compiled Lemma
 13.16/main-stage algebra, the dual-norm interface, the generic main-stage
 wrappers, feasible-step membership, the positive-orthant main-stage one-step
 invariant, the closed-form parameter recurrence, the objective-gap stopping
-rule, exact-center main-stage initialization, or preliminary
-endpoint/decreasing-gradient/decreasing-invariant algebra unless a new
-downstream proof directly needs one of those verified declarations.
+rule, exact-center/main-stage budget initialization, or preliminary
+endpoint/decreasing-gradient/decreasing-invariant algebra unless a new downstream
+proof directly needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

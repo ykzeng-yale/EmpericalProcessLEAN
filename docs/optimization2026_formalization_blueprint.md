@@ -128,10 +128,18 @@ and
 The exact-center main-stage bridge adds `centralPathGrad_at_analyticalCenter`
 and the four
 `chewi1316_mainStage_initial_decrement_le_quarter_of_analyticalCenter*` wrappers,
-reducing exact-center initialization to `|t| * ||a||*_center <= 1/4`.  The next
+reducing exact-center initialization to `|t| * ||a||*_center <= 1/4`.  The
+newest preliminary-to-main bridge adds
+`barrierGrad_dualLocalNorm_le_of_preliminaryPath`,
+`barrierGrad_dualLocalNorm_le_of_preliminaryPath_adjointCoordFactor`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_barrierGrad_and_objective`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound_adjointCoordFactor`,
+turning a final preliminary decrement plus small preliminary/main scaled
+dual-norm budgets into the main-stage `lambda <= 1/4` initialization.  The next
 live route is a sequence-level preliminary convergence/count wrapper matching
 the reverse path-following argument cited to Nesterov §5.3.5 and targeting this
-center interface, then the strictly-feasible-start discussion.
+budget interface, then the strictly-feasible-start discussion.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
