@@ -26569,6 +26569,96 @@ theorem durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd
       hp_one_lt hp_ne_top R)
 
 /--
+Durrett 2019, Theorem 4.6.3, Mathlib Vitali form.
+
+For an integrable real sequence and integrable limit, convergence in
+probability plus uniform absolute continuity of the `L¹` norms is equivalent to
+`L¹` convergence.
+-/
+theorem durrett2019_theorem_4_6_3_tendstoInMeasure_and_unifIntegrable_iff_eLpNorm_one
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX_int : ∀ n, Integrable (X n) P) (hY_int : Integrable Y P) :
+    TendstoInMeasure P X atTop Y ∧ UnifIntegrable X 1 P ↔
+      Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0) :=
+  tendstoInMeasure_iff_tendsto_Lp_finite
+    (μ := P) (f := X) (g := Y) (p := 1)
+    le_rfl ENNReal.one_ne_top
+    (fun n => memLp_one_iff_integrable.2 (hX_int n))
+    (memLp_one_iff_integrable.2 hY_int)
+
+/--
+Durrett 2019, Theorem 4.6.3, forward direction.
+
+If `X n -> Y` in probability and the sequence is uniformly integrable, then
+`X n -> Y` in `L¹`.  The integrability of `Y` is obtained from Mathlib's
+uniform-integrability limit theorem.
+-/
+theorem durrett2019_theorem_4_6_3_eLpNorm_one_tendsto_zero_of_tendstoInMeasure_uniformIntegrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hprob : TendstoInMeasure P X atTop Y)
+    (hUI : UniformIntegrable X 1 P) :
+    Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0) := by
+  have hY_memLp : MemLp Y 1 P :=
+    hUI.memLp_of_tendstoInMeasure hprob
+  exact
+    (tendstoInMeasure_iff_tendsto_Lp_finite
+      (μ := P) (f := X) (g := Y) (p := 1)
+      le_rfl ENNReal.one_ne_top
+      (fun n => hUI.memLp n) hY_memLp).1
+      ⟨hprob, hUI.unifIntegrable⟩
+
+/--
+Durrett 2019, Theorem 4.6.3, `L¹` convergence implies convergence in
+probability.
+-/
+theorem durrett2019_theorem_4_6_3_tendstoInMeasure_of_eLpNorm_one_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX_int : ∀ n, Integrable (X n) P) (hY_int : Integrable Y P)
+    (hL1 : Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0)) :
+    TendstoInMeasure P X atTop Y :=
+  ((durrett2019_theorem_4_6_3_tendstoInMeasure_and_unifIntegrable_iff_eLpNorm_one
+    (P := P) (X := X) (Y := Y) hX_int hY_int).2 hL1).1
+
+/--
+Durrett 2019, Theorem 4.6.3, `L¹` convergence implies uniform absolute
+continuity of the `L¹` norms.
+-/
+theorem durrett2019_theorem_4_6_3_unifIntegrable_of_eLpNorm_one_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX_int : ∀ n, Integrable (X n) P) (hY_int : Integrable Y P)
+    (hL1 : Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0)) :
+    UnifIntegrable X 1 P :=
+  ((durrett2019_theorem_4_6_3_tendstoInMeasure_and_unifIntegrable_iff_eLpNorm_one
+    (P := P) (X := X) (Y := Y) hX_int hY_int).2 hL1).2
+
+/--
+Durrett 2019, Theorem 4.6.3 under an explicit convergence-in-probability
+assumption: uniform absolute continuity of the `L¹` norms is equivalent to
+`L¹` convergence.
+-/
+theorem durrett2019_theorem_4_6_3_unifIntegrable_iff_eLpNorm_one_of_tendstoInMeasure
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX_int : ∀ n, Integrable (X n) P) (hY_int : Integrable Y P)
+    (hprob : TendstoInMeasure P X atTop Y) :
+    UnifIntegrable X 1 P ↔
+      Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0) := by
+  constructor
+  · intro hUI
+    exact
+      (durrett2019_theorem_4_6_3_tendstoInMeasure_and_unifIntegrable_iff_eLpNorm_one
+        (P := P) (X := X) (Y := Y) hX_int hY_int).1
+        ⟨hprob, hUI⟩
+  · intro hL1
+    exact
+      durrett2019_theorem_4_6_3_unifIntegrable_of_eLpNorm_one_tendsto_zero
+        (P := P) (X := X) (Y := Y) hX_int hY_int hL1
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

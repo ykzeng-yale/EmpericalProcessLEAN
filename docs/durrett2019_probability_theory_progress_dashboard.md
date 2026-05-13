@@ -32,10 +32,10 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V262` in
+Route from `Live In-Thread Goal Prompt V263` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.6 uniform integrability and
-`L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.  V262
+`L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.  V263
 starts Section 4.6 by wrapping Mathlib's
 `Integrable.uniformIntegrable_condExp` as
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp`, adds the filtration
@@ -47,9 +47,13 @@ deterministic tail-envelope bridges and the compiled measure-theoretic
 `durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd_with_modulus`.
 V262 closes the scalar small-set modulus and clean uniform-`L^p`, `p > 1`,
 endpoint as `durrett2019_theorem_4_6_2_uniformLp_smallSet_modulus` and
-`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd`.  The next
-target is Theorem 4.6.3 Vitali equivalence, reusing Mathlib's
-`tendstoInMeasure_iff_tendsto_Lp_finite` and uniform-integrability API.  V259
+`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd`.  V263 wraps
+Mathlib's Vitali theorem in Durrett `L¹` form through
+`durrett2019_theorem_4_6_3_tendstoInMeasure_and_unifIntegrable_iff_eLpNorm_one`,
+the forward `UniformIntegrable` wrapper, and the `L¹`-to-probability/UI
+consumers.  The next target is the remaining expectation-convergence statement
+`(iii)` of Theorem 4.6.3 and then Theorem 4.6.4 martingale `L¹` convergence.
+V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now
 use the exact textbook finite square-root stopping-time assumption
