@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V257
+## Live In-Thread Goal Prompt V258
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -18,21 +18,21 @@ compiled Chapter 2/3 probability foundations, Chapter 4.1-4.4 martingale
 infrastructure, Theorem 4.5.1/4.5.2/4.5.3/4.5.5 packages, and the V253-V255
 Example 4.5.8 bridges; do not re-prove those layers.
 
-Latest verified target V257 adds the canonical infinite iid Rademacher product
-space and plugs it into Durrett Example 4.5.8:
-`rademacherBoolSequenceLaw`, `rademacherSequenceCoordinate`,
-`rademacherSequenceCoordinate_hasLaw`,
-`rademacherSequenceCoordinate_iIndepFun`, and
-`durrett2019_example_4_5_8_canonicalRademacherRandomWalk_terminal_integral_eq_zero`.
-V256 already supplies Rademacher law moment/MemLp transfer, unit variance-clock
-display `A_n = n`, stopped unit-clock display as `(N ω).untopA`, and the
-law-level Rademacher-increment endpoint.  Next aggressive theorem packet:
-attack the exact textbook terminal-condition gap.  Search first for a way to
-weaken the 4.5.7/4.5.8 source surface from `Integrable Ainf` or
-`Integrable (fun ω => ((N ω).untopA : ℝ)) P` to the natural finite
-`∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P ≠ ∞`/`E sqrt(N) < ∞`
-side, or document the precise lower lemma that still forces full clock
-integrability.  Prefer a small compiled wrapper over new broad primitives.
+Latest verified target V258 closes the main terminal-condition gap in the
+Theorem 4.5.7/Example 4.5.8 bridge.  The new source wrappers in
+`Martingale.lean` weaken the old `Integrable Ainf` surface to the textbook
+shape `AEMeasurable Ainf P` plus finite square-root terminal clock
+`∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P ≠ ∞`.  Key endpoints:
+`durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_aemeasurable`,
+`durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top_aemeasurable`,
+`durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top_aemeasurable`,
+and
+`durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source_aemeasurable_sqrt_lintegral_ne_top`.
+Next aggressive theorem packet: specialize the existing Rademacher/unit-clock
+Example 4.5.8 route to the exact textbook `E sqrt(N) < ∞` assumption by proving
+the stopped unit-clock square-root finiteness display and feeding the new V258
+bridge; then remove any remaining endpoint that still asks for
+`Integrable (fun ω => ((N ω).untopA : ℝ)) P`.
 
 ## Deprecated V255 Prompt Notes
 

@@ -27,21 +27,25 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V257`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V258`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier: Durrett Example 4.5.8 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V257 adds the canonical
+`StatInference/ProbabilityTheory/Martingale.lean`.  V258 closes the main
+terminal-condition gap between Theorem 4.5.7 and Example 4.5.8.  The source
+wrappers now use `AEMeasurable Ainf P` plus finite square-root terminal clock
+`∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P ≠ ∞`, including the real
+`runningAbsSup` integrability bridge and the stopped-process Example 4.5.8
+bridge.  The next proof packet should specialize the Rademacher/unit-clock
+route to the exact textbook `E sqrt(N) < ∞` assumption and remove the remaining
+concrete endpoint that still requests
+`Integrable (fun ω => ((N ω).untopA : ℝ)) P`.  V257 adds the canonical
 infinite iid Rademacher product-space endpoint, with reusable product-coordinate
 facts in `StatInference/ProbabilityMeasure/Rademacher.lean` and
 `durrett2019_example_4_5_8_canonicalRademacherRandomWalk_terminal_integral_eq_zero`
-in `StatInference/ProbabilityTheory/Martingale.lean`.  The next proof packet
-should attack the exact textbook terminal-condition gap: weaken the current
-full stopped-clock integrability side toward finite `E sqrt(N)`/finite
-square-root terminal clock, or isolate and package the lower 4.5.7 lemma that
-still forces `Integrable Ainf`.  V256 adds the simple
+in `StatInference/ProbabilityTheory/Martingale.lean`.  V256 adds the simple
 symmetric random-walk endpoint: Rademacher law mean/second-moment/`L^2` transfer
 in `StatInference/ProbabilityMeasure/Rademacher.lean`, the unit variance-clock
 display `A_n = n`, the stopped unit-clock display as `(N ω).untopA`, and

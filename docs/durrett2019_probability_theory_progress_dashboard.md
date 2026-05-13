@@ -32,19 +32,27 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V257` in
+Route from `Live In-Thread Goal Prompt V258` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Example 4.5.8 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V257 adds the canonical
+`StatInference/ProbabilityTheory/Martingale.lean`.  V258 closes the main
+terminal-condition gap in the Theorem 4.5.7/Example 4.5.8 bridge: the source
+surface now accepts `AEMeasurable Ainf P` plus finite square-root terminal
+clock
+`∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P ≠ ∞`, rather than full
+`Integrable Ainf`.  New endpoints include
+`durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top_aemeasurable`
+and
+`durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source_aemeasurable_sqrt_lintegral_ne_top`.
+The next target is the concrete Rademacher/unit-clock Example 4.5.8
+specialization under the exact textbook `E sqrt(N) < ∞` assumption, replacing
+the remaining stopped-clock integrability endpoint.  V257 adds the canonical
 infinite iid Rademacher product-space endpoint:
 `rademacherBoolSequenceLaw`, `rademacherSequenceCoordinate`,
 `rademacherSequenceCoordinate_hasLaw`,
 `rademacherSequenceCoordinate_iIndepFun`, and
 `durrett2019_example_4_5_8_canonicalRademacherRandomWalk_terminal_integral_eq_zero`.
-The next target is the exact textbook terminal-condition gap: weaken the
-current full stopped-clock integrability side toward finite
-`E sqrt(N)`/finite square-root terminal clock, or isolate the lower 4.5.7 lemma
-that still forces `Integrable Ainf`.  V256 adds the simple
+V256 adds the simple
 symmetric random-walk specialization of Example 4.5.8: Rademacher law
 mean/second-moment/`L^2` transfer in
 `StatInference/ProbabilityMeasure/Rademacher.lean`, unit variance clock

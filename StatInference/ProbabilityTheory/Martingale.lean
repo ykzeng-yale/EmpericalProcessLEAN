@@ -22777,6 +22777,28 @@ theorem
   simpa [Pi.inf_apply] using hAinf_int.inf (integrable_const C)
 
 /--
+Durrett 2019, Theorem 4.5.7 support: a nonnegative a.e. measurable terminal
+envelope has integrable bounded truncations on a finite measure space.
+-/
+theorem
+    durrett2019_theorem_4_5_7_min_terminal_integrable_of_aemeasurable_nonneg
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ} {C : ℝ}
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hC_nonneg : 0 ≤ C) :
+    Integrable (fun ω => min (Ainf ω) C) P := by
+  have hMin_aestrongly :
+      AEStronglyMeasurable (fun ω => min (Ainf ω) C) P := by
+    exact (hAinf_meas.min aemeasurable_const).aestronglyMeasurable
+  refine (integrable_const C).mono' hMin_aestrongly ?_
+  filter_upwards [hAinf_nonneg] with ω hω
+  have hmin_nonneg : 0 ≤ min (Ainf ω) C :=
+    le_min hω hC_nonneg
+  have hmin_le : min (Ainf ω) C ≤ C := min_le_right _ _
+  simp [Real.norm_eq_abs, abs_of_nonneg hmin_nonneg, hmin_le]
+
+/--
 Durrett 2019, Theorem 4.5.7 stopped terminal-square support.
 
 If the stopped increasing-process clock is bounded both by a terminal envelope
@@ -22898,6 +22920,42 @@ theorem
 
 /--
 Durrett 2019, Theorem 4.5.7 threshold-time stopped terminal-square support
+with truncation integrability derived from a.e. measurability and
+nonnegativity of the terminal envelope.
+-/
+theorem
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_terminal_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {a : ℝ}
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hSquare_eq_A :
+      ∀ n,
+        (∫ ω,
+          stoppedProcess X
+            (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) =
+          ∫ ω,
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ∂P)
+    (hA0_le : A 0 ≤ᵐ[P] fun _ => a ^ 2)
+    (hA_le_Ainf : ∀ n, A n ≤ᵐ[P] Ainf) :
+    ∀ n,
+      (∫ ω,
+        stoppedProcess X
+          (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) (a ^ 2) ∂P :=
+  durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf) (a := a)
+    hA_predictable hA_int
+    (durrett2019_theorem_4_5_7_min_terminal_integrable_of_aemeasurable_nonneg
+      (P := P) (Ainf := Ainf) (C := a ^ 2) hAinf_nonneg hAinf_meas (sq_nonneg a))
+    hSquare_eq_A hA0_le hA_le_Ainf
+
+/--
+Durrett 2019, Theorem 4.5.7 threshold-time stopped terminal-square support
 with the stopped square/increasing-process identity supplied by the canonical
 predictable-part identification.
 -/
@@ -22933,6 +22991,49 @@ theorem
   durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_terminal_integrable
     (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf) (a := a)
     hA_predictable hA_int hAinf_int
+    (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_eq_of_predictablePart_ae_eq
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+      hX hA_predictable hX_memLp_two hX0 hPredictablePart_eq_A)
+    hA0_le hA_le_Ainf
+
+/--
+Durrett 2019, Theorem 4.5.7 threshold-time stopped terminal-square support
+with the predictable-part identity and only a.e. measurable nonnegative
+terminal envelope.
+-/
+theorem
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_terminal_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hPredictablePart_eq_A :
+      ∀ n,
+        predictablePart
+            (fun k ω =>
+              stoppedProcess X
+                (durrett2019_theorem_4_5_2_firstPredictableAbove A a) k ω ^ 2)
+            ℱ P n
+          =ᵐ[P]
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n)
+    (hA0_le : A 0 ≤ᵐ[P] fun _ => a ^ 2)
+    (hA_le_Ainf : ∀ n, A n ≤ᵐ[P] Ainf) :
+    ∀ n,
+      (∫ ω,
+        stoppedProcess X
+          (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) (a ^ 2) ∂P :=
+  durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_terminal_aemeasurable
+    (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf) (a := a)
+    hA_predictable hA_int hAinf_nonneg hAinf_meas
     (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_integral_eq_of_predictablePart_ae_eq
       (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
       hX hA_predictable hX_memLp_two hX0 hPredictablePart_eq_A)
@@ -22980,6 +23081,56 @@ theorem
       (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf) (a := a)
       hX hA_predictable hX_memLp_two hA_int hAinf_int hX0
       hPredictablePart_eq_A hA0_le hA_le_Ainf
+
+/--
+Durrett 2019, Theorem 4.5.7 threshold-time stopped terminal-square support
+with terminal domination from monotone convergence and only a.e. measurability
+of the terminal clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_monotone_terminal_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : StronglyAdapted ℱ (fun n ω => A (n + 1) ω))
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hPredictablePart_eq_A :
+      ∀ n,
+        predictablePart
+            (fun k ω =>
+              stoppedProcess X
+                (durrett2019_theorem_4_5_2_firstPredictableAbove A a) k ω ^ 2)
+            ℱ P n
+          =ᵐ[P]
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n)
+    (hA0_le : A 0 ≤ᵐ[P] fun _ => a ^ 2)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    ∀ n,
+      (∫ ω,
+        stoppedProcess X
+          (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) (a ^ 2) ∂P := by
+  have hA_le_Ainf : ∀ n, A n ≤ᵐ[P] Ainf :=
+    durrett2019_ae_le_of_ae_monotone_tendsto_atTop
+      (P := P) (A := A) (Ainf := Ainf) hA_mono hA_tendsto
+  have hAinf_nonneg : 0 ≤ᵐ[P] Ainf := by
+    filter_upwards [hA_mono, hA_tendsto] with ω hmonoω htendω
+    exact ge_of_tendsto' htendω fun n => by
+      have h0le : A 0 ω ≤ A n ω := hmonoω (Nat.zero_le n)
+      simpa [congrFun hA0 ω] using h0le
+  exact
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_terminal_aemeasurable
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf) (a := a)
+      hX hA_predictable hX_memLp_two hA_int hAinf_nonneg
+      hAinf_meas hX0 hPredictablePart_eq_A hA0_le hA_le_Ainf
 
 /--
 Durrett 2019, Theorem 4.5.7 threshold-time stopped terminal-square support
@@ -23037,6 +23188,59 @@ theorem
         (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
         hA_predictable hA_int hStoppedSquareMinus hA0)
       hA0_le hA_mono hA_tendsto
+
+/--
+Durrett 2019, Theorem 4.5.7 source stopped terminal-square support with only
+a.e. measurability of the monotone terminal clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ} {a : ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    ∀ n,
+      (∫ ω,
+        stoppedProcess X
+          (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) (a ^ 2) ∂P := by
+  have hA_shift_predictable :
+      StronglyAdapted ℱ (fun n ω => A (n + 1) ω) := by
+    intro n
+    exact hA_predictable.measurable_add_one n
+  have hA0_le : A 0 ≤ᵐ[P] fun _ => a ^ 2 := by
+    exact ae_of_all P fun ω => by
+      rw [congrFun hA0 ω]
+      exact sq_nonneg a
+  have hStoppedSquareMinus :
+      Martingale
+        (fun n ω =>
+          stoppedProcess X
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω ^ 2 -
+            stoppedProcess A
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A a) n ω)
+        ℱ P :=
+    durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_square_minus_increasing_martingale_of_source
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+      hA_shift_predictable hSquareMinus
+  exact
+    durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_predictablePart_identity_monotone_terminal_aemeasurable
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf) (a := a)
+      hX hA_shift_predictable hX_memLp_two hA_int hAinf_meas hX0
+      (durrett2019_theorem_4_5_2_firstPredictableAbove_stopped_predictablePart_eq_of_square_minus_increasing_martingale_of_predictable
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (a := a)
+        hA_predictable hA_int hStoppedSquareMinus hA0)
+      hA0_le hA0 hA_mono hA_tendsto
 
 /--
 Durrett 2019, Theorem 4.5.7 stopped maximal-probability support from the
@@ -23097,6 +23301,67 @@ theorem
         (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
         (a := (a : ℝ)) hX hA_predictable hSquareMinus hX_memLp_two
         hA_int hAinf_int hX0 hA0 hA_mono hA_tendsto n)
+  exact
+    durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_of_terminal_sq_le
+      (P := P) (ℱ := ℱ) (X := X) (N := N)
+      hX hN hStopped_sq_int ha (n := n)
+      (B := ∫ ω, min (Ainf ω) ((a : ℝ) ^ 2) ∂P) hterminal_sq_le
+
+/--
+Durrett 2019, Theorem 4.5.7 stopped maximal-probability support with only
+a.e. measurability of the monotone terminal clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_min_terminal_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    {a : ℝ≥0} (ha : a ≠ 0) (n : ℕ) :
+    P {ω |
+        (a : ℝ) <
+          durrett2019_runningAbsMax
+            (stoppedProcess X
+              (durrett2019_theorem_4_5_2_firstPredictableAbove A (a : ℝ))) n ω} ≤
+      ENNReal.ofReal (∫ ω, min (Ainf ω) ((a : ℝ) ^ 2) ∂P) /
+        ((a ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  have hA_shift_predictable :
+      StronglyAdapted ℱ (fun n ω => A (n + 1) ω) := by
+    intro n
+    exact hA_predictable.measurable_add_one n
+  let N : Ω -> ℕ∞ :=
+    durrett2019_theorem_4_5_2_firstPredictableAbove A (a : ℝ)
+  have hN : IsStoppingTime ℱ N :=
+    durrett2019_theorem_4_5_2_firstPredictableAbove_isStoppingTime
+      (ℱ := ℱ) (A := A) (a : ℝ) hA_shift_predictable
+  have hStopped_memLp_two :
+      ∀ n, MemLp (stoppedProcess X N n) (2 : ℝ≥0∞) P := by
+    intro n
+    exact memLp_stoppedProcess (ι := ℕ) hN hX_memLp_two n
+  have hStopped_sq_int :
+      ∀ n, Integrable (fun ω => stoppedProcess X N n ω ^ 2) P := by
+    intro n
+    exact
+      durrett2019_integrable_sq_of_memLp_two
+        (P := P) (Y := stoppedProcess X N n) (hStopped_memLp_two n)
+  have hterminal_sq_le :
+      (∫ ω, stoppedProcess X N n ω ^ 2 ∂P) ≤
+        ∫ ω, min (Ainf ω) ((a : ℝ) ^ 2) ∂P := by
+    simpa [N] using
+      (durrett2019_theorem_4_5_7_firstPredictableAbove_stopped_square_integral_le_min_terminal_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        (a := (a : ℝ)) hX hA_predictable hSquareMinus hX_memLp_two
+        hA_int hAinf_meas hX0 hA0 hA_mono hA_tendsto n)
   exact
     durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_of_terminal_sq_le
       (P := P) (ℱ := ℱ) (X := X) (N := N)
@@ -23283,6 +23548,46 @@ theorem
   exact hsplit.trans (add_le_add (le_refl _) hstopped)
 
 /--
+Durrett 2019, Theorem 4.5.7 source-facing finite-horizon probability bound
+with only a.e. measurability of the monotone terminal clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_tail_add_min_terminal_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    {a : ℝ≥0} (ha : a ≠ 0) (n : ℕ) :
+    P {ω |
+        (a : ℝ) < durrett2019_runningAbsMax X n ω} ≤
+      P {ω | ((a : ℝ) ^ 2) < Ainf ω} +
+        ENNReal.ofReal (∫ ω, min (Ainf ω) ((a : ℝ) ^ 2) ∂P) /
+          ((a ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  have hA_le_Ainf : ∀ n, A n ≤ᵐ[P] Ainf :=
+    durrett2019_ae_le_of_ae_monotone_tendsto_atTop
+      (P := P) (A := A) (Ainf := Ainf) hA_mono hA_tendsto
+  have hsplit :=
+    durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_tail_add_stopped
+      (P := P) (X := X) (A := A) (Ainf := Ainf) hA_le_Ainf
+      (a := a) n
+  have hstopped :=
+    durrett2019_theorem_4_5_7_stopped_runningAbsMax_probability_lt_le_min_terminal_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+      hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_meas hX0
+      hA0 hA_mono hA_tendsto ha n
+  exact hsplit.trans (add_le_add (le_refl _) hstopped)
+
+/--
 Durrett 2019, Theorem 4.5.7 layer-cake support.
 
 For a nonnegative random variable, a pointwise upper bound on all strict tail
@@ -23364,6 +23669,55 @@ theorem
     simpa [Real.toNNReal_of_nonneg ha.le] using hprob
 
 /--
+Durrett 2019, Theorem 4.5.7 finite-horizon layer-cake handoff from the source
+probability estimate with only a.e. measurability of the monotone terminal
+clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_terminal_tail_add_min_terminal_lintegral_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (n : ℕ) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≤
+      ∫⁻ a in Set.Ioi (0 : ℝ),
+        P {ω : Ω | a ^ 2 < Ainf ω} +
+          ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  refine
+    durrett2019_theorem_4_5_7_lintegral_le_lintegral_tail_bound_lt
+      (P := P) (Y := durrett2019_runningAbsMax X n)
+      (tailBound := fun a =>
+        P {ω : Ω | a ^ 2 < Ainf ω} +
+          ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞))
+      ?_ ?_ ?_
+  · exact ae_of_all P fun ω => durrett2019_runningAbsMax_nonneg (X := X) n ω
+  · exact (durrett2019_runningAbsMax_measurable
+      (P := P) (ℱ := ℱ) (X := X) hX n).aemeasurable
+  · intro a ha
+    have htoNNReal_ne : Real.toNNReal a ≠ 0 := by
+      rw [← NNReal.coe_ne_zero]
+      simpa [Real.toNNReal_of_nonneg ha.le] using (ne_of_gt ha : a ≠ 0)
+    have hprob :=
+      durrett2019_theorem_4_5_7_runningAbsMax_probability_lt_le_terminal_tail_add_min_terminal_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_meas hX0
+        hA0 hA_mono hA_tendsto htoNNReal_ne n
+    simpa [Real.toNNReal_of_nonneg ha.le] using hprob
+
+/--
 Durrett 2019, Theorem 4.5.7 deterministic RHS support.
 
 The first Fubini/layer-cake term in the proof is just the layer-cake formula
@@ -23437,6 +23791,36 @@ theorem durrett2019_theorem_4_5_7_terminal_tail_sq_measure_aemeasurable
 /--
 Durrett 2019, Theorem 4.5.7 deterministic RHS support.
 
+The terminal square-tail function is a.e. measurable under the weaker
+source-shaped assumption that the terminal clock is a.e. measurable.
+-/
+theorem durrett2019_theorem_4_5_7_terminal_tail_sq_measure_aemeasurable_of_aemeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_meas : AEMeasurable Ainf P) :
+    AEMeasurable (fun a : ℝ => P {ω : Ω | a ^ 2 < Ainf ω})
+      (volume.restrict (Set.Ioi (0 : ℝ))) := by
+  let AinfMk : Ω -> ℝ := hAinf_meas.mk Ainf
+  have hmk_meas : Measurable fun a : ℝ => P {ω : Ω | a ^ 2 < AinfMk ω} := by
+    let s : Set (ℝ × Ω) := {z | z.1 ^ 2 < AinfMk z.2}
+    have hs : MeasurableSet s := by
+      exact measurableSet_lt (measurable_fst.pow_const 2)
+        (hAinf_meas.measurable_mk.comp measurable_snd)
+    simpa [s] using (measurable_measure_prodMk_left (ν := P) hs)
+  have heq :
+      (fun a : ℝ => P {ω : Ω | a ^ 2 < Ainf ω}) =
+        fun a : ℝ => P {ω : Ω | a ^ 2 < AinfMk ω} := by
+    funext a
+    apply MeasureTheory.measure_congr
+    filter_upwards [hAinf_meas.ae_eq_mk] with ω hω
+    change (a ^ 2 < Ainf ω) = (a ^ 2 < AinfMk ω)
+    rw [hω]
+  rw [heq]
+  exact hmk_meas.aemeasurable
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
 Layer-cake form of the truncated terminal clock:
 `E(A_infty ∧ a^2) = ∫_0^∞ P(b < A_infty, b < a^2) db`.
 This is the first line of the second Fubini/calculus computation in the
@@ -23469,6 +23853,63 @@ theorem
     StatInference.ProbabilityMeasure.lintegral_eq_lintegral_tail_lt
       (μ := P) (X := fun ω => min (Ainf ω) (a ^ 2))
       hMin_nonneg hMin_int.aestronglyMeasurable.aemeasurable
+  calc
+    ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P)
+        = ∫⁻ ω, ENNReal.ofReal (min (Ainf ω) (a ^ 2)) ∂P := hleft
+    _ = ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < min (Ainf ω) (a ^ 2)} := hlayer
+    _ = ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} := by
+      refine MeasureTheory.lintegral_congr_ae ?_
+      filter_upwards [] with b
+      apply MeasureTheory.measure_congr
+      filter_upwards [] with ω
+      exact propext lt_min_iff
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+The truncated terminal-clock layer-cake identity only needs a.e.
+measurability and nonnegativity of `A_infty`.  The truncation
+`A_infty ∧ a^2` is bounded by the constant `a^2`, so full integrability of
+`A_infty` is not needed for this deterministic RHS step.
+-/
+theorem
+    durrett2019_theorem_4_5_7_min_terminal_lintegral_eq_tail_cut_lintegral_of_aemeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (a : ℝ) :
+    ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) =
+      ∫⁻ b in Set.Ioi (0 : ℝ),
+        P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} := by
+  have hMin_nonneg :
+      0 ≤ᵐ[P] fun ω => min (Ainf ω) (a ^ 2) := by
+    filter_upwards [hAinf_nonneg] with ω hω
+    exact le_min hω (sq_nonneg a)
+  have hMin_aestrongly :
+      AEStronglyMeasurable (fun ω => min (Ainf ω) (a ^ 2)) P := by
+    exact (hAinf_meas.min aemeasurable_const).aestronglyMeasurable
+  have hMin_int : Integrable (fun ω => min (Ainf ω) (a ^ 2)) P := by
+    refine (integrable_const (a ^ 2)).mono' hMin_aestrongly ?_
+    filter_upwards [hAinf_nonneg] with ω hω
+    have hmin_nonneg : 0 ≤ min (Ainf ω) (a ^ 2) :=
+      le_min hω (sq_nonneg a)
+    have hmin_le : min (Ainf ω) (a ^ 2) ≤ a ^ 2 :=
+      min_le_right _ _
+    simp [Real.norm_eq_abs, abs_of_nonneg hmin_nonneg, hmin_le]
+  have hleft :
+      ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) =
+        ∫⁻ ω, ENNReal.ofReal (min (Ainf ω) (a ^ 2)) ∂P :=
+    ofReal_integral_eq_lintegral_ofReal hMin_int hMin_nonneg
+  have hlayer :
+      (∫⁻ ω, ENNReal.ofReal (min (Ainf ω) (a ^ 2)) ∂P) =
+        ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < min (Ainf ω) (a ^ 2)} :=
+    StatInference.ProbabilityMeasure.lintegral_eq_lintegral_tail_lt
+      (μ := P) (X := fun ω => min (Ainf ω) (a ^ 2))
+      hMin_nonneg hMin_aestrongly.aemeasurable
   calc
     ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P)
         = ∫⁻ ω, ENNReal.ofReal (min (Ainf ω) (a ^ 2)) ∂P := hleft
@@ -23584,6 +24025,45 @@ theorem
               (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) := by
           rw [durrett2019_theorem_4_5_7_min_terminal_lintegral_eq_tail_cut_lintegral
             (P := P) (Ainf := Ainf) hAinf_nonneg hAinf_int a]
+    _ = ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) :=
+        durrett2019_theorem_4_5_7_set_lintegral_div_toNNReal_sq
+          (f := fun b => P {ω : Ω | b < Ainf ω ∧ b < a ^ 2}) ha
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+The second RHS truncation-to-double-integral handoff does not require full
+integrability of `A_infty`: a.e. measurability and nonnegativity are enough,
+because the truncated terminal clock is bounded by `a^2`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_tail_cut_double_lintegral_of_aemeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_meas : AEMeasurable Ainf P) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      ∫⁻ a in Set.Ioi (0 : ℝ),
+        ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  refine MeasureTheory.lintegral_congr_ae ?_
+  filter_upwards
+    [ae_restrict_mem (μ := volume) (measurableSet_Ioi : MeasurableSet (Set.Ioi (0 : ℝ)))]
+    with a ha
+  calc
+    ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)
+        =
+          (∫⁻ b in Set.Ioi (0 : ℝ),
+            P {ω : Ω | b < Ainf ω ∧ b < a ^ 2}) /
+              (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+          rw [durrett2019_theorem_4_5_7_min_terminal_lintegral_eq_tail_cut_lintegral_of_aemeasurable
+            (P := P) (Ainf := Ainf) hAinf_nonneg hAinf_meas a]
     _ = ∫⁻ b in Set.Ioi (0 : ℝ),
           P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
             (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) :=
@@ -24043,6 +24523,32 @@ theorem
 /--
 Durrett 2019, Theorem 4.5.7 deterministic RHS support.
 
+The full second deterministic RHS term reaches the weighted-tail integral under
+only a.e. measurability and nonnegativity of the terminal clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_weighted_tail_lintegral_of_aemeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_meas : AEMeasurable Ainf P) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      ∫⁻ b in Set.Ioi (0 : ℝ),
+        P {ω : Ω | b < Ainf ω} *
+          ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) := by
+  rw [durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_tail_cut_double_lintegral_of_aemeasurable
+    (P := P) (Ainf := Ainf) hAinf_nonneg hAinf_meas]
+  rw [durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap_of_aemeasurable
+    (P := P) (Ainf := Ainf) hAinf_meas]
+  exact
+    durrett2019_theorem_4_5_7_tail_cut_double_lintegral_eq_weighted_tail_lintegral
+      (P := P) (Ainf := Ainf)
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
 The square-root terminal expectation is the `p = 1/2` layer-cake endpoint
 for the terminal clock.  This is the weighted-tail form that the remaining
 one-dimensional calculus step must match after the Tonelli swap.
@@ -24111,6 +24617,62 @@ theorem
     (durrett2019_theorem_4_5_7_terminal_nonneg_of_initial_zero_monotone_tendsto
       (P := P) (A := A) (Ainf := Ainf) hA0 hA_mono hA_tendsto)
     hAinf_int
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+The second deterministic RHS term is `2 * E sqrt(A_infty)` under the weaker
+terminal-clock assumptions that are actually used by the deterministic
+calculus: a.e. measurability and nonnegativity.
+-/
+theorem
+    durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral_of_aemeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_meas : AEMeasurable Ainf P) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      (2 : ℝ≥0∞) *
+        ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P := by
+  rw [durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_weighted_tail_lintegral_of_aemeasurable
+    (P := P) (Ainf := Ainf) hAinf_nonneg hAinf_meas]
+  rw [durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral
+    (P := P) (Ainf := Ainf) hAinf_nonneg hAinf_meas]
+  rw [← mul_assoc]
+  have hconst : (2 : ℝ≥0∞) * ENNReal.ofReal ((1 : ℝ) / 2) = 1 := by
+    rw [ENNReal.ofReal_eq_coe_nnreal (by norm_num : 0 ≤ ((1 : ℝ) / 2))]
+    change
+      (((2 : ℝ≥0) * (NNReal.mk ((1 : ℝ) / 2) (by norm_num) : ℝ≥0) : ℝ≥0) :
+          ℝ≥0∞) = ((1 : ℝ≥0) : ℝ≥0∞)
+    rw [ENNReal.coe_inj]
+    ext
+    norm_num
+  rw [hconst, one_mul]
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support under the source
+monotone-terminal hypotheses, with only a.e. measurability of `A_infty`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral_of_source_monotone_terminal_aemeasurable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      (2 : ℝ≥0∞) *
+        ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P :=
+  durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral_of_aemeasurable
+    (P := P) (Ainf := Ainf)
+    (durrett2019_theorem_4_5_7_terminal_nonneg_of_initial_zero_monotone_tendsto
+      (P := P) (A := A) (Ainf := Ainf) hA0 hA_mono hA_tendsto)
+    hAinf_meas
 
 /--
 Durrett 2019, Theorem 4.5.7 deterministic RHS support.
@@ -24233,6 +24795,69 @@ theorem
       norm_num
 
 /--
+Durrett 2019, Theorem 4.5.7 finite-horizon endpoint with only a.e.
+measurability of the monotone terminal clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (n : ℕ) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≤
+      (3 : ℝ≥0∞) * ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P := by
+  let S : ℝ≥0∞ := ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P
+  let second : ℝ -> ℝ≥0∞ := fun a =>
+    ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+      (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)
+  have hbase :=
+    durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_terminal_tail_add_min_terminal_lintegral_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+      hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_meas hX0
+      hA0 hA_mono hA_tendsto n
+  have hsplit :
+      (∫⁻ a in Set.Ioi (0 : ℝ),
+        P {ω : Ω | a ^ 2 < Ainf ω} + second a ∂volume) =
+        (∫⁻ a in Set.Ioi (0 : ℝ), P {ω : Ω | a ^ 2 < Ainf ω} ∂volume) +
+          ∫⁻ a in Set.Ioi (0 : ℝ), second a ∂volume := by
+    exact lintegral_add_left'
+      (μ := volume.restrict (Set.Ioi (0 : ℝ)))
+      (durrett2019_theorem_4_5_7_terminal_tail_sq_measure_aemeasurable_of_aemeasurable
+        (P := P) (Ainf := Ainf) hAinf_meas)
+      second
+  have hfirst :
+      (∫⁻ a in Set.Ioi (0 : ℝ), P {ω : Ω | a ^ 2 < Ainf ω} ∂volume) = S := by
+    simpa [S] using
+      durrett2019_theorem_4_5_7_terminal_tail_sq_lintegral_eq_sqrt_lintegral
+        (P := P) (Ainf := Ainf) hAinf_meas
+  have hsecond :
+      (∫⁻ a in Set.Ioi (0 : ℝ), second a ∂volume) = (2 : ℝ≥0∞) * S := by
+    simpa [second, S] using
+      durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral_of_source_monotone_terminal_aemeasurable
+        (P := P) (A := A) (Ainf := Ainf) hAinf_meas hA0 hA_mono hA_tendsto
+  calc
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P)
+        ≤ ∫⁻ a in Set.Ioi (0 : ℝ),
+            P {ω : Ω | a ^ 2 < Ainf ω} + second a ∂volume := by
+          simpa [second] using hbase
+    _ = S + (2 : ℝ≥0∞) * S := by rw [hsplit, hfirst, hsecond]
+    _ = (3 : ℝ≥0∞) * S := by
+      nth_rewrite 1 [← one_mul S]
+      rw [← add_mul]
+      norm_num
+
+/--
 Durrett 2019, Theorem 4.5.7 monotone-convergence support.
 
 Uniform `lintegral` bounds on all finite running absolute maxima pass to the
@@ -24301,6 +24926,42 @@ theorem
       durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal
         (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
         hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_int hX0
+        hA0 hA_mono hA_tendsto n
+
+/--
+Durrett 2019, Theorem 4.5.7 infinite-horizon `ENNReal` endpoint with only
+a.e. measurability of the monotone terminal clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    (∫⁻ ω,
+        ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≤
+      (3 : ℝ≥0∞) * ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P := by
+  refine
+    durrett2019_runningAbsMax_lintegral_iSup_le_of_lintegral_le
+      (P := P) (X := X) ?_ ?_
+  · intro n
+    exact durrett2019_runningAbsMax_measurable
+      (P := P) (ℱ := ℱ) (X := X) hX n
+  · intro n
+    exact
+      durrett2019_theorem_4_5_7_runningAbsMax_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_meas hX0
         hA0 hA_mono hA_tendsto n
 
 /--
@@ -24394,6 +25055,41 @@ theorem
     durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal
       (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
       hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_int hX0
+      hA0 hA_mono hA_tendsto
+
+/--
+Durrett 2019, Theorem 4.5.7 infinite-horizon endpoint for the canonical real
+running absolute supremum with only a.e. measurability of the monotone
+terminal clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_ae_bddAbove_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω)) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω) ∂P) ≤
+      (3 : ℝ≥0∞) * ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P := by
+  rw [←
+    durrett2019_lintegral_iSup_runningAbsMax_eq_lintegral_runningAbsSup_of_ae_bddAbove
+      (P := P) (X := X) hBdd]
+  exact
+    durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+      hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_meas hX0
       hA0 hA_mono hA_tendsto
 
 /--
@@ -24551,6 +25247,61 @@ theorem
       hA0 hA_mono hA_tendsto hBdd
 
 /--
+Durrett 2019, Theorem 4.5.7 infinite-horizon endpoint from the natural
+finite square-root terminal clock assumption, without assuming
+`Integrable Ainf`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (hS_ne_top :
+      (∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P) ≠ ∞) :
+    (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω) ∂P) ≤
+      (3 : ℝ≥0∞) * ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P := by
+  let S : ℝ≥0∞ := ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P
+  have hiSup_bound :
+      (∫⁻ ω,
+          ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≤
+        (3 : ℝ≥0∞) * S := by
+    simpa [S] using
+      durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_meas hX0
+        hA0 hA_mono hA_tendsto
+  have hC_ne_top : (3 : ℝ≥0∞) * S ≠ ∞ := by
+    exact ENNReal.mul_ne_top (by norm_num : (3 : ℝ≥0∞) ≠ ∞) (by simpa [S] using hS_ne_top)
+  have hiSup_ne_top :
+      (∫⁻ ω,
+          ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≠ ∞ :=
+    ne_top_of_le_ne_top hC_ne_top hiSup_bound
+  have hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω) :=
+    durrett2019_runningAbsMax_ae_bddAbove_of_iSup_lintegral_ne_top
+      (P := P) (X := X)
+      (fun n => durrett2019_runningAbsMax_measurable
+        (P := P) (ℱ := ℱ) (X := X) hX n)
+      hiSup_ne_top
+  exact
+    durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_ae_bddAbove_aemeasurable
+      (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+      hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_meas hX0
+      hA0 hA_mono hA_tendsto hBdd
+
+/--
 Durrett 2019, Theorem 4.5.7 infinite-horizon endpoint for the canonical real
 running absolute supremum.
 
@@ -24639,6 +25390,85 @@ theorem
           ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≠ ∞ := by
     exact ne_top_of_le_ne_top
       (ENNReal.mul_ne_top (by norm_num : (3 : ℝ≥0∞) ≠ ∞) hS_ne_top)
+      hiSup_bound
+  have hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω) :=
+    durrett2019_runningAbsMax_ae_bddAbove_of_iSup_lintegral_ne_top
+      (P := P) (X := X)
+      (fun n => durrett2019_runningAbsMax_measurable
+        (P := P) (ℱ := ℱ) (X := X) hX n)
+      hiSup_ne_top
+  have hnonneg : 0 ≤ᵐ[P] durrett2019_runningAbsSup X := by
+    filter_upwards [hBdd] with ω hω
+    have h0 :
+        durrett2019_runningAbsMax X 0 ω ≤ durrett2019_runningAbsSup X ω := by
+      simpa [durrett2019_runningAbsSup] using
+        (le_ciSup hω 0 :
+          durrett2019_runningAbsMax X 0 ω ≤
+            ⨆ n : ℕ, durrett2019_runningAbsMax X n ω)
+    exact (durrett2019_runningAbsMax_nonneg (X := X) 0 ω).trans h0
+  exact
+    (lintegral_ofReal_ne_top_iff_integrable
+      (μ := P) (f := durrett2019_runningAbsSup X)
+      (durrett2019_runningAbsSup_aestronglyMeasurable
+        (P := P) (ℱ := ℱ) (X := X) hX)
+      hnonneg).1 hlin_ne_top
+
+/--
+Durrett 2019, Theorem 4.5.7 integrability consequence from the natural
+finite square-root terminal clock assumption, without assuming
+`Integrable Ainf`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top_aemeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (hS_ne_top :
+      (∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P) ≠ ∞) :
+    Integrable (durrett2019_runningAbsSup X) P := by
+  let S : ℝ≥0∞ := ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P
+  have hbound :
+      (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω) ∂P) ≤
+        (3 : ℝ≥0∞) * S := by
+    simpa [S] using
+      durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top_aemeasurable
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_meas hX0
+        hA0 hA_mono hA_tendsto hS_ne_top
+  have hS_ne_top' : S ≠ ∞ := by
+    simpa [S] using hS_ne_top
+  have hlin_ne_top :
+      (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω) ∂P) ≠ ∞ := by
+    exact ne_top_of_le_ne_top
+      (ENNReal.mul_ne_top (by norm_num : (3 : ℝ≥0∞) ≠ ∞) hS_ne_top')
+      hbound
+  have hiSup_bound :
+      (∫⁻ ω,
+          ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≤
+        (3 : ℝ≥0∞) * S := by
+    simpa [S] using
+      durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_meas hX0
+        hA0 hA_mono hA_tendsto
+  have hiSup_ne_top :
+      (∫⁻ ω,
+          ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≠ ∞ := by
+    exact ne_top_of_le_ne_top
+      (ENNReal.mul_ne_top (by norm_num : (3 : ℝ≥0∞) ≠ ∞) hS_ne_top')
       hiSup_bound
   have hBdd :
       ∀ᵐ ω ∂P,
@@ -24772,6 +25602,82 @@ theorem
       hlim hzero
 
 /--
+Durrett 2019, Example 4.5.8 source bridge from the natural finite
+square-root terminal clock assumption, without assuming `Integrable Ainf`.
+-/
+theorem
+    durrett2019_example_4_5_8_integral_limit_eq_zero_of_theorem_4_5_7_source_aemeasurable_sqrt_lintegral_ne_top
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf Y : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hS_ne_top :
+      (∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P) ≠ ∞)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (hlim : ∀ᵐ ω ∂P, Tendsto (fun n => X n ω) atTop (𝓝 (Y ω)))
+    (hzero : ∀ n, (∫ ω, X n ω ∂P) = 0) :
+    (∫ ω, Y ω ∂P) = 0 := by
+  let S : ℝ≥0∞ := ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P
+  have hiSup_bound :
+      (∫⁻ ω,
+          ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≤
+        (3 : ℝ≥0∞) * S := by
+    simpa [S] using
+      durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_aemeasurable
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_meas hX0
+        hA0 hA_mono hA_tendsto
+  have hS_ne_top' : S ≠ ∞ := by
+    simpa [S] using hS_ne_top
+  have hiSup_ne_top :
+      (∫⁻ ω,
+          ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≠ ∞ := by
+    exact ne_top_of_le_ne_top
+      (ENNReal.mul_ne_top (by norm_num : (3 : ℝ≥0∞) ≠ ∞) hS_ne_top')
+      hiSup_bound
+  have hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω) :=
+    durrett2019_runningAbsMax_ae_bddAbove_of_iSup_lintegral_ne_top
+      (P := P) (X := X)
+      (fun n => durrett2019_runningAbsMax_measurable
+        (P := P) (ℱ := ℱ) (X := X) hX n)
+      hiSup_ne_top
+  have hdom : ∀ n, ∀ᵐ ω ∂P, ‖X n ω‖ ≤ durrett2019_runningAbsSup X ω := by
+    intro n
+    filter_upwards [hBdd] with ω hω
+    have hterminal_le_max : ‖X n ω‖ ≤ durrett2019_runningAbsMax X n ω := by
+      rw [Real.norm_eq_abs]
+      dsimp [durrett2019_runningAbsMax]
+      exact Finset.le_sup' (fun k => |X k ω|) (by simp)
+    have hmax_le_sup :
+        durrett2019_runningAbsMax X n ω ≤ durrett2019_runningAbsSup X ω := by
+      simpa [durrett2019_runningAbsSup] using
+        (le_ciSup hω n :
+          durrett2019_runningAbsMax X n ω ≤
+            ⨆ m : ℕ, durrett2019_runningAbsMax X m ω)
+    exact hterminal_le_max.trans hmax_le_sup
+  exact
+    durrett2019_example_4_5_8_integral_limit_eq_zero_of_dominated
+      (P := P) (F := X) (Y := Y) (bound := durrett2019_runningAbsSup X)
+      (fun n => ((hX.stronglyMeasurable n).mono (ℱ.le n)).aestronglyMeasurable)
+      hdom
+      (durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top_aemeasurable
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_meas hX0
+        hA0 hA_mono hA_tendsto hS_ne_top)
+      hlim hzero
+
+/--
 Durrett 2019, Example 4.5.8 stopped-process source bridge.
 
 For a stopped martingale `S_{N ∧ n}`, finite-horizon zero expectations are
@@ -24841,6 +25747,75 @@ theorem
       (P := P) (ℱ := ℱ) (X := stoppedProcess S N) (A := A) (Ainf := Ainf)
       (Y := Y) hStopped hA_predictable hSquareMinus hStopped_memLp_two hA_int
       hAinf_int hStopped0 hA0 hA_mono hA_tendsto hlim hzero
+
+/--
+Durrett 2019, Example 4.5.8 stopped-process source bridge from the natural
+finite square-root terminal clock assumption, without assuming
+`Integrable Ainf`.
+-/
+theorem
+    durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source_aemeasurable_sqrt_lintegral_ne_top
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {S A : ℕ -> Ω -> ℝ} {N : Ω -> WithTop ℕ} {Ainf Y : Ω -> ℝ}
+    (hS : Martingale S ℱ P)
+    (hN : IsStoppingTime ℱ N)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => stoppedProcess S N n ω ^ 2 - A n ω) ℱ P)
+    (hS_memLp_two : ∀ n, MemLp (S n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_meas : AEMeasurable Ainf P)
+    (hSqrt_ne_top :
+      (∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P) ≠ ∞)
+    (hS0 : S 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (hlim : ∀ᵐ ω ∂P, Tendsto (fun n => stoppedProcess S N n ω) atTop (𝓝 (Y ω))) :
+    (∫ ω, Y ω ∂P) = 0 := by
+  have hStopped : Martingale (stoppedProcess S N) ℱ P :=
+    durrett2019_theorem_4_2_9_martingale_stoppedProcess hS hN
+  have hStopped_memLp_two :
+      ∀ n, MemLp (stoppedProcess S N n) (2 : ℝ≥0∞) P := by
+    intro n
+    exact memLp_stoppedProcess (ι := ℕ) hN hS_memLp_two n
+  have hStopped0 : stoppedProcess S N 0 =ᵐ[P] 0 := by
+    filter_upwards [hS0] with ω hω
+    have hzero_le : (0 : WithTop ℕ) ≤ N ω := by simp
+    have hstop : stoppedProcess S N 0 ω = S 0 ω :=
+      stoppedProcess_eq_of_le (u := S) (τ := N) (i := 0) (ω := ω) hzero_le
+    rw [hstop, hω]
+  have hzero : ∀ n, (∫ ω, stoppedProcess S N n ω ∂P) = 0 := by
+    intro n
+    let τn : Ω -> WithTop ℕ := fun ω => min (N ω) (n : WithTop ℕ)
+    have hτn : IsStoppingTime ℱ τn := by
+      simpa [τn] using hN.min_const n
+    have hbdd : ∀ ω, τn ω ≤ n := by
+      intro ω
+      dsimp [τn]
+      exact min_le_right _ _
+    have hopt :
+        (∫ ω, stoppedValue S τn ω ∂P) = ∫ ω, S 0 ω ∂P :=
+      durrett2019_theorem_4_4_1_martingale_integral_stoppedValue_eq_initial
+        (P := P) (ℱ := ℱ) (X := S) (N := τn) hS hτn (n := n) hbdd
+    have hprocess :
+        stoppedProcess S N n = stoppedValue S τn := by
+      funext ω
+      simp [τn, stoppedProcess, stoppedValue, min_comm]
+    calc
+      (∫ ω, stoppedProcess S N n ω ∂P)
+          = ∫ ω, stoppedValue S τn ω ∂P := by rw [hprocess]
+      _ = ∫ ω, S 0 ω ∂P := hopt
+      _ = 0 := by
+        have hzero_int : (∫ _ω, (0 : Ω -> ℝ) _ω ∂P) = 0 := by
+          simp
+        rw [integral_congr_ae hS0, hzero_int]
+  exact
+    durrett2019_example_4_5_8_integral_limit_eq_zero_of_theorem_4_5_7_source_aemeasurable_sqrt_lintegral_ne_top
+      (P := P) (ℱ := ℱ) (X := stoppedProcess S N) (A := A) (Ainf := Ainf)
+      (Y := Y) hStopped hA_predictable hSquareMinus hStopped_memLp_two hA_int
+      hAinf_meas hSqrt_ne_top hStopped0 hA0 hA_mono hA_tendsto hlim hzero
 
 /--
 Durrett 2019, Example 4.5.8 support: deterministic real clocks are predictable.
