@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V311
+## Live In-Thread Goal Prompt V312
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -27,9 +27,15 @@ canonical iid infinite-product coordinate and empirical-CDF wrappers, or the
 V308 textbook range-sum empirical-CDF display wrappers, or the V309 textbook
 `n^{-1} * sum` empirical-CDF display wrappers, or the V310 `iIndepFun`
 source-assumption wrappers for Durrett 2.4.9, or the V311 product-law source
-wrappers.
+wrappers, or the V312 `IdentDistrib` iid-source wrappers.
 
-Latest verified target V311 adds the infinite-product-law source criterion
+Latest verified target V312 adds the identical-distribution source bridge
+`durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero`, plus Durrett 2.4.9
+consumers from the standard iid source shape: one base marginal law for `X_0`,
+`IdentDistrib (X_i) (X_0)`, and `iIndepFun`.  The new 2.4.9 consumers end at
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun_identDistrib`.
+
+Compiled support also includes the V311 infinite-product-law source criterion
 `durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi`, plus Durrett
 2.4.9 consumers from a full sequence joint law `P^ℕ`:
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_hasLaw_infinitePi`,
@@ -2025,6 +2031,13 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_hasLaw_infinitePi`
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_hasLaw_infinitePi`
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_hasLaw_infinitePi`
+- `durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero`
+- `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun_identDistrib`
+- `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun_identDistrib`
+- `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun_identDistrib`
+- `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun_identDistrib`
+- `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun_identDistrib`
+- `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun_identDistrib`
 - `durrett2019_theorem_3_2_9_tendstoInDistribution_iff_forall_boundedContinuous_integral`
 - `durrett2019_theorem_3_2_10_continuous_mapping`
 - `durrett2019_theorem_3_2_10_continuous_mapping_common_probability_space`

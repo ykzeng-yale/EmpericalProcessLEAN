@@ -667,6 +667,26 @@ theorem durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi
     (P := μ) (X := X) (μ := fun _ : ℕ => ν) hLaw hJoint.aemeasurable).2 hJoint
 
 /--
+Durrett 2019, Theorem 2.1.11 support: identical distribution with the zeroth
+coordinate transports one base law to every coordinate.
+
+This is the common iid source shape in later textbook statements: after proving
+one marginal law, `IdentDistrib (X_i) (X_0)` supplies all matching marginal
+laws.
+-/
+theorem durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ) :
+    ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν μ := by
+  intro i
+  exact (hident i).symm.hasLaw hBase
+
+/--
 Durrett 2019, Theorem 2.1.12 product-measure/Fubini form.
 
 This is the reusable product-measure integral identity behind the independent
@@ -5146,6 +5166,120 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
   exact
     durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun
       X hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem from the
+standard iid source shape `X_i` identically distributed as `X_0` plus
+`iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator X :=
+  durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9, outer-a.s. half-line Glivenko-Cantelli theorem
+from the standard iid source shape `X_i` identically distributed as `X_0` plus
+`iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass μ P Set.univ
+      realHalfLineIndicator X :=
+  durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9, empirical-CDF Glivenko-Cantelli form from the
+standard iid source shape `X_i` identically distributed as `X_0` plus
+`iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    _root_.StatInference.RealEmpiricalCDFGlivenkoCantelliClass μ P X :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9, exact outer-a.s. empirical-CDF form from the
+standard iid source shape `X_i` identically distributed as `X_0` plus
+`iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9, exact outer-a.s. empirical-CDF range-sum display
+from the standard iid source shape `X_i` identically distributed as `X_0` plus
+`iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) /
+          (sampleSize : ℝ)) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9, exact outer-a.s. empirical-CDF display in
+textbook notation from the standard iid source shape `X_i` identically
+distributed as `X_0` plus `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
 
 /--
 Durrett 2019, Theorem 2.4.9, canonical iid product-space empirical
