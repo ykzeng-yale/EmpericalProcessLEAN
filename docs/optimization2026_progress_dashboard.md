@@ -43,21 +43,23 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/private/tmp/chewi-schur-direct` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
-- Latest Chapter 13 frontier: Chewi Proposition 13.11 now has a compiled
-  product-separable supplied-oracle barrier rule in
-  `StatInference/Optimization/InteriorPoint.lean`.  The product calculus uses
-  mathlib's `WithLp 2` L2 product inner-product structure from
-  `Mathlib.Analysis.InnerProductSpace.ProdL2`, not raw `E₁ × E₂`.  Reusable
-  declarations include `barrierProductSet`, `barrierProductCLM`,
-  `barrierProductHess`, `barrierProductInvHess`, `barrierProductGrad`,
-  `barrierProductThirdMixed`, the product local/dual-local norm square
-  identities and component domination lemmas, `barrierProductGradient_bound`,
-  `MixedThirdSelfConcordantOn.product`, `SelfConcordantBarrierOn.product`, and
-  the source-facing `chewi1311_product_selfConcordantBarrierOn`.
-- Next Chapter 13 target: continue Proposition 13.11 from the compiled
-  product, shared-domain sum, and affine-preimage layers.  Do not redo the
-  product split, sum local-norm algebra, or invertible-affine adjoint
-  transport.
+- Latest Chapter 13 frontier: Chewi Example 13.14's arbitrary finite-row
+  logarithmic barrier route is compiled via the concrete range inverse
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess`, and
+  Chewi Lemma 13.15(1) now has compiled Cauchy-to-square wrappers.  Reusable
+  declarations include `localNorm_neg`,
+  `abs_inner_le_dualLocalNorm_mul_localNorm_of_cauchy`,
+  `inner_sq_le_dualLocalNorm_sq_mul_localNorm_sq_of_cauchy`,
+  `abs_inner_le_sqrt_mul_localNorm_of_one_sided_cauchy`,
+  `inner_sq_le_mul_hessian_of_one_sided_cauchy`,
+  `chewi1315_gradient_inner_sq_le_of_cauchy`, and
+  `chewi1315_polytopeSlackNegLog_range_gradient_inner_sq_le`.
+- Next Chapter 13 target: Chewi Lemma 13.15(2), using the segment
+  `z_t = (1-t)x+t*y`, the part-(1) quadratic bound, and the derivative identity
+  for `t ↦ <grad f(z_t), y-x>`.  The first proof risk is the source's
+  reciprocal-derivative/sign step; if it needs an additional positivity or
+  zero-crossing split, record that exact blocker instead of falling back to
+  already-finished Proposition 13.11 product/sum/affine/range setup.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

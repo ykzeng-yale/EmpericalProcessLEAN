@@ -167,7 +167,19 @@ closes the arbitrary finite-row Example 13.14 route without a surjectivity
 hypothesis.  The proof inverts the positive-definite Hessian on the finite
 slack-map range and obtains the barrier-gradient bound from Cauchy plus the
 right-inverse identity, avoiding the previously exposed range-gradient energy
-oracle.  The row-decomposition lemmas
+oracle.  The Chewi Lemma 13.15(1) packet
+`localNorm_neg`, `abs_inner_le_dualLocalNorm_mul_localNorm_of_cauchy`,
+`inner_sq_le_dualLocalNorm_sq_mul_localNorm_sq_of_cauchy`,
+`abs_inner_le_sqrt_mul_localNorm_of_one_sided_cauchy`,
+`inner_sq_le_mul_hessian_of_one_sided_cauchy`,
+`chewi1315_gradient_inner_sq_le_of_cauchy`, and
+`chewi1315_polytopeSlackNegLog_range_gradient_inner_sq_le` now turns the
+compiled Cauchy bridges into the source squared gradient inequality, both in
+supplied-oracle form and for the concrete finite-row range log barrier.  The
+next Chapter 13 theorem-sized target should be Lemma 13.15(2)'s
+segment/reciprocal inequality; audit the sign/zero-crossing step in Chewi's
+informal proof before committing to an exact Lean statement.  The
+row-decomposition lemmas
 `polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
 `mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`, and
 `polytopeSlackSet_eq_iInter_halfspaceSlackSet` now expose the finite-row

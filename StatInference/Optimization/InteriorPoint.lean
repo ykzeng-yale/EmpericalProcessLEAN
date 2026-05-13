@@ -611,6 +611,12 @@ theorem localNorm_zero (hess : E -> E →L[ℝ] E) (x : E) :
     localNorm hess x 0 = 0 := by
   simp [localNorm]
 
+theorem localNorm_neg (hess : E -> E →L[ℝ] E) (x v : E) :
+    localNorm hess x (-v) = localNorm hess x v := by
+  unfold localNorm
+  congr 1
+  simp
+
 /-- Scaling law for the supplied-Hessian local norm by a nonnegative scalar. -/
 theorem localNorm_smul_of_nonneg
     {hess : E -> E →L[ℝ] E} {x v : E} {t : ℝ}
@@ -633,6 +639,92 @@ theorem localNorm_smul_of_nonneg
 theorem dualLocalNorm_zero (invHess : E -> E →L[ℝ] E) (x : E) :
     dualLocalNorm invHess x 0 = 0 := by
   simp [dualLocalNorm]
+
+/--
+Turn a one-sided primal/dual Cauchy bridge into the absolute-value form used
+in Chewi Lemma 13.15(1), by applying the bridge to `v` and `-v`.
+-/
+theorem abs_inner_le_dualLocalNorm_mul_localNorm_of_cauchy
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {x g v : E}
+    (hx_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w) :
+    |inner ℝ g v| ≤ dualLocalNorm invHess x g * localNorm hess x v := by
+  refine abs_le.2 ⟨?_, hx_cauchy g v⟩
+  have hneg := hx_cauchy g (-v)
+  have hnorm_neg : localNorm hess x (-v) = localNorm hess x v :=
+    localNorm_neg hess x v
+  have hneg' :
+      -inner ℝ g v ≤ dualLocalNorm invHess x g * localNorm hess x v := by
+    simpa [hnorm_neg] using hneg
+  linarith
+
+/--
+Squared Cauchy bridge between the supplied dual and primal local norms.  This
+is the algebraic core of Chewi Lemma 13.15(1).
+-/
+theorem inner_sq_le_dualLocalNorm_sq_mul_localNorm_sq_of_cauchy
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {x g v : E}
+    (hx_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w) :
+    (inner ℝ g v) ^ (2 : ℕ) ≤
+      (dualLocalNorm invHess x g) ^ (2 : ℕ) *
+        (localNorm hess x v) ^ (2 : ℕ) := by
+  have habs :=
+    abs_inner_le_dualLocalNorm_mul_localNorm_of_cauchy
+      (hess := hess) (invHess := invHess) (x := x)
+      (g := g) (v := v) hx_cauchy
+  have hprod_nonneg :
+      0 ≤ dualLocalNorm invHess x g * localNorm hess x v :=
+    mul_nonneg (dualLocalNorm_nonneg invHess x g)
+      (localNorm_nonneg hess x v)
+  have hsq :=
+    (sq_le_sq₀ (abs_nonneg (inner ℝ g v)) hprod_nonneg).2 habs
+  simpa [mul_pow] using hsq
+
+/--
+Absolute-value form of a one-sided Cauchy estimate with a fixed
+`sqrt(nu)` coefficient.
+-/
+theorem abs_inner_le_sqrt_mul_localNorm_of_one_sided_cauchy
+    {hess : E -> E →L[ℝ] E} {x g v : E} {nu : ℝ}
+    (hcauchy : ∀ w : E,
+      inner ℝ g w ≤ Real.sqrt nu * localNorm hess x w) :
+    |inner ℝ g v| ≤ Real.sqrt nu * localNorm hess x v := by
+  refine abs_le.2 ⟨?_, hcauchy v⟩
+  have hneg := hcauchy (-v)
+  have hnorm_neg : localNorm hess x (-v) = localNorm hess x v :=
+    localNorm_neg hess x v
+  have hneg' :
+      -inner ℝ g v ≤ Real.sqrt nu * localNorm hess x v := by
+    simpa [hnorm_neg] using hneg
+  linarith
+
+/--
+Source-shaped squared form of a one-sided `sqrt(nu)` Cauchy estimate:
+`<g,v>^2 <= nu * <v, Hess v>`.
+-/
+theorem inner_sq_le_mul_hessian_of_one_sided_cauchy
+    {hess : E -> E →L[ℝ] E} {x g v : E} {nu : ℝ}
+    (hnu : 0 ≤ nu)
+    (hquad : 0 ≤ inner ℝ v (hess x v))
+    (hcauchy : ∀ w : E,
+      inner ℝ g w ≤ Real.sqrt nu * localNorm hess x w) :
+    (inner ℝ g v) ^ (2 : ℕ) ≤ nu * inner ℝ v (hess x v) := by
+  have habs :=
+    abs_inner_le_sqrt_mul_localNorm_of_one_sided_cauchy
+      (hess := hess) (x := x) (g := g) (v := v) (nu := nu) hcauchy
+  have hprod_nonneg : 0 ≤ Real.sqrt nu * localNorm hess x v :=
+    mul_nonneg (Real.sqrt_nonneg nu) (localNorm_nonneg hess x v)
+  have hsq :=
+    (sq_le_sq₀ (abs_nonneg (inner ℝ g v)) hprod_nonneg).2 habs
+  calc
+    (inner ℝ g v) ^ (2 : ℕ) =
+        |inner ℝ g v| ^ (2 : ℕ) := by simp
+    _ ≤ (Real.sqrt nu * localNorm hess x v) ^ (2 : ℕ) := hsq
+    _ = nu * inner ℝ v (hess x v) := by
+        rw [mul_pow, Real.sq_sqrt hnu, localNorm_sq_eq_inner hquad]
 
 /--
 Nonnegativity of the supplied inverse-Hessian quadratic form from a right
@@ -1951,6 +2043,49 @@ theorem SelfConcordantBarrierOn.of_le_parameter
   gradient_bound := by
     intro x hx
     exact (hbar.gradient_bound hx).trans (Real.sqrt_le_sqrt hnu)
+
+/--
+Chewi Lemma 13.15(1), supplied-oracle form.  Once a Cauchy bridge between the
+chosen inverse-Hessian dual local norm and Hessian primal local norm is
+available at `x`, the barrier gradient-bound gives
+`<grad f x, v>^2 <= nu * <v, Hess f x v>`.
+-/
+theorem chewi1315_gradient_inner_sq_le_of_cauchy
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {thirdMixed : E -> E -> E -> ℝ}
+    {M nu : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess grad invHess thirdMixed M nu)
+    {x : E} (hx : x ∈ s)
+    (hx_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (v : E) :
+    (inner ℝ (grad x) v) ^ (2 : ℕ) ≤
+      nu * inner ℝ v (hess x v) := by
+  have hsq_cauchy :
+      (inner ℝ (grad x) v) ^ (2 : ℕ) ≤
+        (dualLocalNorm invHess x (grad x)) ^ (2 : ℕ) *
+          (localNorm hess x v) ^ (2 : ℕ) :=
+    inner_sq_le_dualLocalNorm_sq_mul_localNorm_sq_of_cauchy
+      (hess := hess) (invHess := invHess) (x := x)
+      (g := grad x) (v := v) hx_cauchy
+  have hdual_sq :
+      (dualLocalNorm invHess x (grad x)) ^ (2 : ℕ) ≤ nu := by
+    have hgb := hbar.gradient_bound hx
+    have hsq :=
+      (sq_le_sq₀
+        (dualLocalNorm_nonneg invHess x (grad x))
+        (Real.sqrt_nonneg nu)).2 hgb
+    simpa [Real.sq_sqrt hbar.parameter_nonneg] using hsq
+  have hlocal_nonneg : 0 ≤ inner ℝ v (hess x v) :=
+    hbar.self_concordant.hess_nonneg hx v
+  calc
+    (inner ℝ (grad x) v) ^ (2 : ℕ) ≤
+        (dualLocalNorm invHess x (grad x)) ^ (2 : ℕ) *
+          (localNorm hess x v) ^ (2 : ℕ) := hsq_cauchy
+    _ ≤ nu * (localNorm hess x v) ^ (2 : ℕ) := by
+        exact mul_le_mul_of_nonneg_right hdual_sq (sq_nonneg _)
+    _ = nu * inner ℝ v (hess x v) := by
+        rw [localNorm_sq_eq_inner hlocal_nonneg]
 
 section ProductBarrier
 
@@ -15473,6 +15608,41 @@ theorem chewi1314_polytopeSlackNegLog_range_componentCauchy
           (barrierAffineRangeHess (polytopeSlackCLM a) b
             positiveOrthantNegLogHessCLM) y w := by
         rw [← hlocal]
+
+/--
+Chewi Lemma 13.15(1), finite-row logarithmic barrier range slice from
+Example 13.14.  This packages the component Cauchy estimate into the displayed
+source inequality.
+-/
+theorem chewi1315_polytopeSlackNegLog_range_gradient_inner_sq_le
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {y : (polytopeSlackCLM a).range}
+    (hy : y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m)))
+    (w : (polytopeSlackCLM a).range) :
+    (inner ℝ
+        (barrierAffineRangeGrad (polytopeSlackCLM a) b
+          positiveOrthantNegLogGrad y) w) ^ (2 : ℕ) ≤
+      (m : ℝ) *
+        inner ℝ w
+          (barrierAffineRangeHess (polytopeSlackCLM a) b
+            positiveOrthantNegLogHessCLM y w) := by
+  exact inner_sq_le_mul_hessian_of_one_sided_cauchy
+    (hess := barrierAffineRangeHess (polytopeSlackCLM a) b
+      positiveOrthantNegLogHessCLM)
+    (x := y)
+    (g := barrierAffineRangeGrad (polytopeSlackCLM a) b
+      positiveOrthantNegLogGrad y)
+    (v := w)
+    (nu := (m : ℝ))
+    (Nat.cast_nonneg m)
+    (barrierAffineRangeHess_quadratic_nonneg (polytopeSlackCLM a) b
+      positiveOrthantNegLogHessCLM y w
+      (by
+        intro z
+        exact positiveOrthantNegLogHessCLM_quadratic_nonneg hy z))
+    (chewi1314_polytopeSlackNegLog_range_componentCauchy a b hy)
 
 set_option maxHeartbeats 800000 in
 theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess
