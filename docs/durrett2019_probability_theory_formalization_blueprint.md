@@ -27,14 +27,27 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V306`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V307`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current active frontier: Durrett Section 4.7 backwards martingales in
+Current active frontier: Durrett Theorem 2.4.9 Glivenko-Cantelli and Chapter
+2.1 independence/product-law support in
+`StatInference/ProbabilityTheory/Basic.lean`.  V307 adds the canonical
+infinite iid product-coordinate source package and the canonical product-space
+empirical-CDF Glivenko-Cantelli endpoints:
+`durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_canonical_iid`,
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid`.
+Do not redo the compiled 2.4.9 cutpoint-chain or Section 4.7 V282-V306 support
+unless a later theorem exposes a precise dependency gap.
+
+Historical Section 4.7 frontier:
+Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, with the
-reverse-time convergence theorem imported from the compiled VdV&W `ℕᵒᵈ`
+reverse-time convergence theorem imported from the compiled VdV&W `N^op`
 submartingale primitive in `StatInference.EmpiricalProcess.Theorem243`.
 V260-V262 close the Theorem 4.6.1/4.6.2 support layer: conditional-expectation
 uniform integrability, dominated-family support, tail criteria, deterministic
@@ -635,7 +648,13 @@ Treat
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure` as
-closed support.  Theorem 2.2.3 now has finite-block variance scaling, the
+closed support.  V307 additionally closes the canonical infinite iid product
+source shape and canonical product-space empirical-CDF endpoints:
+`durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_canonical_iid`,
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid`.
+Theorem 2.2.3 now has finite-block variance scaling, the
 `C / n` variance bound, the source-facing `E (S_n / n - mu)^2 <= C / n`
 display for uncorrelated and independent blocks, the `L^2 -> TendstoInMeasure`
 Lemma 2.2.2 specialization, and the average convergence-in-probability

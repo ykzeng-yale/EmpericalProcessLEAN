@@ -603,6 +603,40 @@ theorem durrett2019_theorem_2_1_11_canonical_iid_product_coordinates
   StatInference.ProbabilityMeasure.probability_pi_iid_coordinates_with_joint_law ν
 
 /--
+Durrett 2019, Theorem 2.1.11, canonical iid infinite-product coordinates.
+
+On the countable product probability space `ν^ℕ`, the coordinate projections
+are independent, have common law `ν`, and the whole coordinate process has law
+`ν^ℕ`.  This is the direct canonical product-space source package used by
+empirical-distribution and strong-law endpoints.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S) :
+    (∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> S => sample i) (ν : Measure S)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure S))) ∧
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> S => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) ∧
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> S => sample)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure S))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) := by
+  refine ⟨?_, ?_, ?_⟩
+  · intro i
+    exact
+      (measurePreserving_eval_infinitePi
+        (μ := fun _ : ℕ => (ν : Measure S)) i).hasLaw
+  · simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure S))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  · exact _root_.ProbabilityTheory.HasLaw.id
+
+/--
 Durrett 2019, Theorem 2.1.12 product-measure/Fubini form.
 
 This is the reusable product-measure integral identity behind the independent
@@ -4826,6 +4860,61 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure
   simpa [VdVWOuterAlmostSurePGlivenkoCantelliClass,
     empiricalDistributionFunction, populationRiskOfFunction,
     realHalfLineIndicator_integral_eq_cdf] using hhalf
+
+/--
+Durrett 2019, Theorem 2.4.9, canonical iid product-space empirical
+distribution-function form.
+
+For the coordinate process on the canonical product space `P^ℕ`, the empirical
+distribution functions satisfy the source-facing Glivenko-Cantelli predicate.
+This directly connects the Chapter 2.1 iid product-law package with the
+Theorem 2.4.9 empirical-CDF endpoint.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    _root_.StatInference.RealEmpiricalCDFGlivenkoCantelliClass
+      (Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))
+      (P : Measure ℝ)
+      (fun i => fun sample : ℕ -> ℝ => sample i) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  have hPairwise : Pairwise
+      ((_root_.ProbabilityTheory.IndepFun
+        (μ := Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))) on
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)) := by
+    intro i j hij
+    exact hCoord.2.1.indepFun hij
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli
+      (μ := Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))
+      (P := (P : Measure ℝ))
+      (fun i => fun sample : ℕ -> ℝ => sample i) hCoord.1 hPairwise
+
+/--
+Durrett 2019, Theorem 2.4.9, canonical iid product-space empirical
+distribution-function form in the exact outer-a.s. branch.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn
+      (Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ))) Set.univ
+      (fun c => ProbabilityTheory.cdf (P : Measure ℝ) c)
+      (fun sample sampleSize c =>
+        empiricalDistributionFunction
+          (samplePath (fun i => fun sequence : ℕ -> ℝ => sequence i) sample sampleSize) c) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  have hPairwise : Pairwise
+      ((_root_.ProbabilityTheory.IndepFun
+        (μ := Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))) on
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)) := by
+    intro i j hij
+    exact hCoord.2.1.indepFun hij
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure
+      (μ := Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))
+      (P := (P : Measure ℝ))
+      (fun i => fun sample : ℕ -> ℝ => sample i) hCoord.1 hPairwise
 
 /--
 Durrett 2019, Theorem 2.4.9, non-atomic half-line
