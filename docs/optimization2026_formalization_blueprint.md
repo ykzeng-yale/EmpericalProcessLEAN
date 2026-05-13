@@ -236,7 +236,12 @@ and
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_hessianSegmentExponentialBounds_and_inverseIdentity`,
 so a sequence of `HessianSegmentExponentialBounds` certificates plus a uniform
 denominator budget now suffices to trigger the source-start initialization
-pipeline.
+pipeline.  The mixed-third certificate layer adds
+`chewi1316_uniformTailBound_of_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity`
+and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity`,
+so the source-radius `HessianSegmentMixedThirdLocalNormCertificate` sequence can
+now feed the same pipeline directly.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

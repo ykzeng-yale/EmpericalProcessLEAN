@@ -13801,6 +13801,46 @@ theorem chewi1316_uniformTailBound_of_hessianSegmentExponentialBounds_and_invers
     hxseq_inv_local hxbar0_cauchy hsource hbudget
 
 /--
+Uniform preliminary source-tail bound from the mixed-third local-norm segment
+certificate used in the source-radius version of Chewi Lemma 13.6.
+-/
+theorem chewi1316_uniformTailBound_of_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {xbar0 : E} {xseq : ℕ -> E} {rseq : ℕ -> ℝ}
+    {M sourceBound den tailBound : ℝ}
+    (hden_pos : 0 < den)
+    (hxbar0_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess xbar0 v))
+    (hxseq_nonneg : ∀ N v, 0 ≤ inner ℝ v (hess (xseq N) v))
+    (hxseq_inv_nonneg : ∀ N v,
+      0 ≤ inner ℝ v (invHess (xseq N) v))
+    (hcert : ∀ N,
+      HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed
+        xbar0 (xseq N) M (rseq N))
+    (hMr_nonneg : ∀ N, 0 ≤ M * rseq N)
+    (hMr_lt : ∀ N, M * rseq N < 1)
+    (hden_le : ∀ N, den ≤ 1 - M * rseq N)
+    (hxseq_inv_local : ∀ N v,
+      localNorm hess (xseq N) (invHess (xseq N) v) =
+        dualLocalNorm invHess (xseq N) v)
+    (hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w)
+    (hsource :
+      dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤ sourceBound)
+    (hbudget : sourceBound / den ≤ tailBound) :
+    ∀ N,
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound :=
+  chewi1316_uniformTailBound_of_hessianSegmentExponentialBounds_and_inverseIdentity
+    (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+    (xbar0 := xbar0) (xseq := xseq) (rseq := rseq) (M := M)
+    (sourceBound := sourceBound) (den := den) (tailBound := tailBound)
+    hden_pos hxbar0_nonneg hxseq_nonneg hxseq_inv_nonneg
+    (fun N => (hcert N).toHessianSegmentExponentialBounds
+      (hMr_nonneg N) (hMr_lt N))
+    hMr_lt hden_le hxseq_inv_local hxbar0_cauchy hsource hbudget
+
+/--
 Existential positive-`tMain` version of the bounded-tail preliminary
 initialization bridge.  This discharges the source scalar budget
 `|tMain| * ||a||* <= 1/16` by choosing `tMain` small and positive.
@@ -14230,6 +14270,79 @@ theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_prel
         (sourceBound := sourceBound) (den := den) (tailBound := tailBound)
         hden_pos hxbar0_nonneg hxseq_nonneg hxseq_inv_nonneg henv
         hMr_lt hden_le hxseq_inv_local hxbar0_cauchy hsource hbudget)
+
+/--
+Source-start initialization from mixed-third local-norm segment certificates.
+This directly consumes the source-radius Chewi Lemma 13.6 certificate shape and
+routes it into the preliminary initialization pipeline.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {xbar0 a : E} {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {rseq : ℕ -> ℝ} {coord : ℕ -> E →L[ℝ] E}
+    {c0 nu M sourceBound den tailBound : ℝ}
+    (hinv_factor : ∀ N v,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint (coord N)) v‖ ^ (2 : ℕ))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget : ∀ N, lambdaSeq N ≤ 1 / 8)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hden_pos : 0 < den)
+    (hxbar0_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess xbar0 v))
+    (hxseq_nonneg : ∀ N v, 0 ≤ inner ℝ v (hess (xseq N) v))
+    (hxseq_inv_nonneg : ∀ N v,
+      0 ≤ inner ℝ v (invHess (xseq N) v))
+    (hcert : ∀ N,
+      HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed
+        xbar0 (xseq N) M (rseq N))
+    (hMr_nonneg : ∀ N, 0 ≤ M * rseq N)
+    (hMr_lt : ∀ N, M * rseq N < 1)
+    (hden_le : ∀ N, den ≤ 1 - M * rseq N)
+    (hxseq_inv_local : ∀ N v,
+      localNorm hess (xseq N) (invHess (xseq N) v) =
+        dualLocalNorm invHess (xseq N) v)
+    (hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w)
+    (hsource :
+      dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤ sourceBound)
+    (hbudget : sourceBound / den ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord) (c0 := c0) (nu := nu) (tailBound := tailBound)
+      hinv_factor hx0 ht0 htstep hlambda0 hstep hlambdaBudget
+      htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one
+      (chewi1316_uniformTailBound_of_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity
+        (hess := hess) (invHess := invHess) (thirdMixed := thirdMixed)
+        (phiGrad := phiGrad) (xbar0 := xbar0) (xseq := xseq)
+        (rseq := rseq) (M := M) (sourceBound := sourceBound)
+        (den := den) (tailBound := tailBound) hden_pos hxbar0_nonneg
+        hxseq_nonneg hxseq_inv_nonneg hcert hMr_nonneg hMr_lt hden_le
+        hxseq_inv_local hxbar0_cauchy hsource hbudget)
 
 /--
 Measured-tail source-start version: use

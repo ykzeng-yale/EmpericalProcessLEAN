@@ -410,15 +410,20 @@ and
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_hessianSegmentExponentialBounds_and_inverseIdentity`,
 so a sequence of `HessianSegmentExponentialBounds` certificates plus a uniform
 denominator budget `den <= 1 - M*r_N` now feeds the same source-start
-initialization route.
+initialization route.  The mixed-third certificate packet adds
+`chewi1316_uniformTailBound_of_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity`
+and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity`,
+so the source-radius `HessianSegmentMixedThirdLocalNormCertificate` sequence can
+now feed preliminary initialization directly.
 Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
-is now narrower: prove the concrete Chewi/Nesterov analytical-center segment
-certificate and denominator budget that supply `HessianSegmentExponentialBounds`
-for the preliminary sequence (or equivalently the local-norm lower comparison,
+is now narrower: prove the concrete Chewi/Nesterov analytical-center
+mixed-third local-norm segment certificate sequence and denominator budget
+`den <= 1 - M*r_N` (or equivalently the exponential/local-norm comparison,
 inverse-Hessian quadratic upper comparison, or directly the scaled final
 preliminary tail budget); the measured unscaled-tail fallback should be used
 only when a caller genuinely has an unscaled tail bound.
