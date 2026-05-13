@@ -27,21 +27,22 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V258`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V259`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current active frontier: Durrett Example 4.5.8 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V258 closes the main
-terminal-condition gap between Theorem 4.5.7 and Example 4.5.8.  The source
-wrappers now use `AEMeasurable Ainf P` plus finite square-root terminal clock
-`∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P ≠ ∞`, including the real
-`runningAbsSup` integrability bridge and the stopped-process Example 4.5.8
-bridge.  The next proof packet should specialize the Rademacher/unit-clock
-route to the exact textbook `E sqrt(N) < ∞` assumption and remove the remaining
-concrete endpoint that still requests
-`Integrable (fun ω => ((N ω).untopA : ℝ)) P`.  V257 adds the canonical
+Current active frontier: Durrett Section 4.6 uniform integrability and `L^1`
+martingale convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
+V259 closes the concrete Example 4.5.8 random-walk terminal-condition packet:
+the unit-variance, Rademacher, and canonical Rademacher endpoints now use
+finite `∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P` rather than
+full stopped-time integrability.  The next proof packet should start Theorem
+4.6.1 using Mathlib's `Integrable.uniformIntegrable_condExp`, then build the
+dominated-family and `L^p`-bounded uniform-integrability support needed for
+Theorem 4.6.2/4.6.3.  V258 closes the main terminal-condition gap between
+Theorem 4.5.7 and Example 4.5.8 using `AEMeasurable Ainf P` plus finite
+square-root terminal clock.  V257 adds the canonical
 infinite iid Rademacher product-space endpoint, with reusable product-coordinate
 facts in `StatInference/ProbabilityMeasure/Rademacher.lean` and
 `durrett2019_example_4_5_8_canonicalRademacherRandomWalk_terminal_integral_eq_zero`

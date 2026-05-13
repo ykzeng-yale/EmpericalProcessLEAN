@@ -32,21 +32,21 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V258` in
+Route from `Live In-Thread Goal Prompt V259` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
-The active theorem lane is Durrett Example 4.5.8 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V258 closes the main
-terminal-condition gap in the Theorem 4.5.7/Example 4.5.8 bridge: the source
-surface now accepts `AEMeasurable Ainf P` plus finite square-root terminal
-clock
-`∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P ≠ ∞`, rather than full
-`Integrable Ainf`.  New endpoints include
-`durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top_aemeasurable`
-and
-`durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source_aemeasurable_sqrt_lintegral_ne_top`.
-The next target is the concrete Rademacher/unit-clock Example 4.5.8
-specialization under the exact textbook `E sqrt(N) < ∞` assumption, replacing
-the remaining stopped-clock integrability endpoint.  V257 adds the canonical
+The active theorem lane is now Durrett Section 4.6 uniform integrability and
+`L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.  V259
+finishes the concrete Example 4.5.8 terminal-condition packet: the
+unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now
+use the exact textbook finite square-root stopping-time assumption
+`∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P ≠ ∞`, and the reusable
+general bridge is
+`durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments_sqrt_lintegral_ne_top`.
+V258 closes the main Theorem 4.5.7/Example 4.5.8 source bridge by weakening
+`Integrable Ainf` to `AEMeasurable Ainf P` plus finite square-root terminal
+clock.  Next target: package Durrett Theorem 4.6.1 as a local wrapper around
+Mathlib's `Integrable.uniformIntegrable_condExp`, then build the dominated and
+`L^p`-bounded uniform-integrability wrappers for Theorem 4.6.2/4.6.3.  V257 adds the canonical
 infinite iid Rademacher product-space endpoint:
 `rademacherBoolSequenceLaw`, `rademacherSequenceCoordinate`,
 `rademacherSequenceCoordinate_hasLaw`,

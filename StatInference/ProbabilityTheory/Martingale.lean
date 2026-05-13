@@ -26006,6 +26006,119 @@ theorem
       hA_mono hA_tendsto hlim
 
 /--
+Durrett 2019, Example 4.5.8 linear-random-walk source bridge under the natural
+finite square-root terminal clock assumption.
+
+This is the same source package as
+`...zeroMean_secondMoments`, but it feeds the V258 Theorem 4.5.7 bridge and no
+longer asks for full integrability of the stopped terminal clock.
+-/
+theorem
+    durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments_sqrt_lintegral_ne_top
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {ξ : ℕ -> Ω -> ℝ} {sigmaSq : ℕ -> ℝ} {N : Ω -> ℕ∞}
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n))
+    (hξ_memLp_two : ∀ n, MemLp (ξ n) (2 : ℝ≥0∞) P)
+    (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ P)
+    (hξ_mean_zero : ∀ n, (∫ ω, ξ n ω ∂P) = 0)
+    (hξ_second_moment : ∀ n, (∫ ω, ξ n ω ^ 2 ∂P) = sigmaSq n)
+    (hsigmaSq_nonneg : ∀ m, 0 ≤ sigmaSq m)
+    (hN : IsStoppingTime (Filtration.natural ξ hξ_sm) N)
+    (hN_ne_top : ∀ᵐ ω ∂P, N ω ≠ ⊤)
+    (hAinf_meas :
+      AEMeasurable
+        (stoppedValue
+          (fun (n : ℕ) (_ : Ω) =>
+            durrett2019_exercise_4_4_6_varianceClock sigmaSq n)
+          N) P)
+    (hAinf_sqrt_ne_top :
+      (∫⁻ ω,
+          ENNReal.ofReal
+            (Real.sqrt
+              (stoppedValue
+                (fun (n : ℕ) (_ : Ω) =>
+                  durrett2019_exercise_4_4_6_varianceClock sigmaSq n)
+                N ω)) ∂P) ≠ ∞) :
+    (∫ ω, stoppedValue (durrett2019_example_4_2_1_linearRandomWalk 0 ξ) N ω ∂P) =
+      0 := by
+  let ℱ : Filtration ℕ mΩ := Filtration.natural ξ hξ_sm
+  let S : ℕ -> Ω -> ℝ := durrett2019_example_4_2_1_linearRandomWalk 0 ξ
+  let A : ℕ -> Ω -> ℝ :=
+    fun n _ => durrett2019_exercise_4_4_6_varianceClock sigmaSq n
+  have hξ_int : ∀ n, Integrable (ξ n) P :=
+    fun n => (hξ_memLp_two n).integrable one_le_two
+  have hS : Martingale S ℱ P := by
+    simpa [S, ℱ] using
+      durrett2019_example_4_2_1_linearRandomWalk_martingale_of_iIndepFun_zeroMean
+        (μ := P) (s0 := 0) hξ_sm hξ_int hξ_indep hξ_mean_zero
+  have hS_memLp_two : ∀ n, MemLp (S n) (2 : ℝ≥0∞) P := by
+    intro n
+    simpa [S] using
+      durrett2019_example_4_2_1_linearRandomWalk_memLp_two
+        (μ := P) (s0 := 0) hξ_memLp_two n
+  have hSquareMinus_raw : Martingale (fun n ω => S n ω ^ 2 - A n ω) ℱ P := by
+    simpa [S, A, ℱ] using
+      durrett2019_exercise_4_4_6_linearRandomWalk_squareMinusVarianceClock_martingale_of_iIndepFun_zeroMean_secondMoments
+        (μ := P) (s0 := 0) (sigmaSq := sigmaSq) hξ_sm hξ_memLp_two
+        hξ_indep hξ_mean_zero hξ_second_moment
+  have hA_predictable : IsStronglyPredictable ℱ (stoppedProcess A N) := by
+    exact
+      durrett2019_isStronglyPredictable_stoppedProcess_of_predictable
+        (ℱ := ℱ) (A := A) (N := N)
+        (durrett2019_deterministic_clock_isStronglyPredictable
+          (ℱ := ℱ) (fun n =>
+            durrett2019_exercise_4_4_6_varianceClock sigmaSq n))
+        hN
+  have hSquareMinus :
+      Martingale
+        (fun n ω => stoppedProcess S N n ω ^ 2 - stoppedProcess A N n ω)
+        ℱ P :=
+    durrett2019_stopped_square_minus_stopped_clock_martingale
+      (P := P) (ℱ := ℱ) hSquareMinus_raw hN
+  have hA_int : ∀ n, Integrable (stoppedProcess A N n) P := by
+    intro n
+    exact integrable_stoppedProcess (ι := ℕ) hN
+      (fun k => integrable_const
+        (durrett2019_exercise_4_4_6_varianceClock sigmaSq k)) n
+  have hS0 : S 0 =ᵐ[P] 0 := by
+    exact Eventually.of_forall fun ω => by
+      simp [S]
+  have hA0 : stoppedProcess A N 0 = 0 := by
+    ext ω
+    have hzero_le : (0 : ℕ∞) ≤ N ω := by
+      cases N ω <;> simp
+    rw [stoppedProcess_eq_of_le (u := A) (τ := N) (i := 0) (ω := ω) hzero_le]
+    simp [A]
+  have hA_mono : ∀ᵐ ω ∂P, Monotone fun n => stoppedProcess A N n ω := by
+    exact Eventually.of_forall
+      (durrett2019_stoppedProcess_monotone_of_monotone
+        (N := N)
+        (u := A)
+        (fun ω =>
+          durrett2019_exercise_4_4_6_varianceClock_mono hsigmaSq_nonneg))
+  have hA_tendsto :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n => stoppedProcess A N n ω) atTop
+          (𝓝 (stoppedValue A N ω)) := by
+    filter_upwards [hN_ne_top] with ω hω
+    exact durrett2019_stoppedProcess_tendsto_stoppedValue_of_ne_top
+      (u := A) (N := N) hω
+  have hlim :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n => stoppedProcess S N n ω) atTop
+          (𝓝 (stoppedValue S N ω)) := by
+    filter_upwards [hN_ne_top] with ω hω
+    exact durrett2019_stoppedProcess_tendsto_stoppedValue_of_ne_top
+      (u := S) (N := N) hω
+  simpa [S, A, ℱ] using
+    durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source_aemeasurable_sqrt_lintegral_ne_top
+      (P := P) (ℱ := ℱ) (S := S) (A := stoppedProcess A N) (N := N)
+      (Ainf := stoppedValue A N) (Y := stoppedValue S N)
+      hS hN hA_predictable hSquareMinus hS_memLp_two hA_int hAinf_meas
+      hAinf_sqrt_ne_top hS0 hA0 hA_mono hA_tendsto hlim
+
+/--
 Durrett 2019, Exercise 4.4.6 support: the unit variance clock is the deterministic
 clock `n`.
 -/
@@ -26045,23 +26158,35 @@ theorem
     (hξ_second_moment_one : ∀ n, (∫ ω, ξ n ω ^ 2 ∂P) = 1)
     (hN : IsStoppingTime (Filtration.natural ξ hξ_sm) N)
     (hN_ne_top : ∀ᵐ ω ∂P, N ω ≠ ⊤)
-    (hN_untopA_int : Integrable (fun ω => ((N ω).untopA : ℝ)) P) :
+    (hN_untopA_sqrt_ne_top :
+      (∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P) ≠ ∞) :
     (∫ ω, stoppedValue (durrett2019_example_4_2_1_linearRandomWalk 0 ξ) N ω ∂P) =
       0 := by
-  have hclock_int :
-      Integrable
+  have hclock_meas :
+      AEMeasurable
         (stoppedValue
           (fun (n : ℕ) (_ : Ω) =>
             durrett2019_exercise_4_4_6_varianceClock (fun _ => (1 : ℝ)) n)
           N) P := by
     rw [durrett2019_exercise_4_4_6_stoppedValue_varianceClock_one_eq_untopA]
-    exact hN_untopA_int
+    have hN_meas := hN.measurable'
+    have hUntop_meas : Measurable fun ω => (N ω).untopA := hN_meas.untopA
+    exact ((MeasurableEmbedding.natCast (α := ℝ)).measurable.comp hUntop_meas).aemeasurable
+  have hclock_sqrt_ne_top :
+      (∫⁻ ω,
+          ENNReal.ofReal
+            (Real.sqrt
+              (stoppedValue
+                (fun (n : ℕ) (_ : Ω) =>
+                  durrett2019_exercise_4_4_6_varianceClock (fun _ => (1 : ℝ)) n)
+                N ω)) ∂P) ≠ ∞ := by
+    rwa [durrett2019_exercise_4_4_6_stoppedValue_varianceClock_one_eq_untopA]
   exact
-    durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments
+    durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments_sqrt_lintegral_ne_top
       (P := P) (ξ := ξ) (sigmaSq := fun _ => (1 : ℝ)) (N := N)
       hξ_sm hξ_memLp_two hξ_indep hξ_mean_zero
       (fun n => by simpa using hξ_second_moment_one n)
-      (fun _ => by norm_num) hN hN_ne_top hclock_int
+      (fun _ => by norm_num) hN hN_ne_top hclock_meas hclock_sqrt_ne_top
 
 /--
 Durrett 2019, Example 4.5.8 Rademacher-increment bridge.
@@ -26083,7 +26208,8 @@ theorem
     (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ P)
     (hN : IsStoppingTime (Filtration.natural ξ hξ_sm) N)
     (hN_ne_top : ∀ᵐ ω ∂P, N ω ≠ ⊤)
-    (hN_untopA_int : Integrable (fun ω => ((N ω).untopA : ℝ)) P) :
+    (hN_untopA_sqrt_ne_top :
+      (∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P) ≠ ∞) :
     (∫ ω, stoppedValue (durrett2019_example_4_2_1_linearRandomWalk 0 ξ) N ω ∂P) =
       0 := by
   exact
@@ -26099,7 +26225,7 @@ theorem
       (fun n =>
         _root_.StatInference.ProbabilityMeasure.hasLaw_rademacher_integral_sq_eq_one
           (hξ_law n))
-      hN hN_ne_top hN_untopA_int
+      hN hN_ne_top hN_untopA_sqrt_ne_top
 
 /--
 Durrett 2019, Example 4.5.8 canonical simple-random-walk endpoint.
@@ -26120,9 +26246,10 @@ theorem
     (hN_ne_top :
       ∀ᵐ ω ∂_root_.StatInference.ProbabilityMeasure.rademacherBoolSequenceLaw,
         N ω ≠ ⊤)
-    (hN_untopA_int :
-      Integrable (fun ω => ((N ω).untopA : ℝ))
-        _root_.StatInference.ProbabilityMeasure.rademacherBoolSequenceLaw) :
+    (hN_untopA_sqrt_ne_top :
+      (∫⁻ ω,
+          ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ))
+            ∂_root_.StatInference.ProbabilityMeasure.rademacherBoolSequenceLaw) ≠ ∞) :
     (∫ ω,
         stoppedValue
           (durrett2019_example_4_2_1_linearRandomWalk 0
@@ -26138,7 +26265,7 @@ theorem
       _root_.StatInference.ProbabilityMeasure.stronglyMeasurable_rademacherSequenceCoordinate
       _root_.StatInference.ProbabilityMeasure.rademacherSequenceCoordinate_hasLaw
       _root_.StatInference.ProbabilityMeasure.rademacherSequenceCoordinate_iIndepFun
-      hN hN_ne_top hN_untopA_int
+      hN hN_ne_top hN_untopA_sqrt_ne_top
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

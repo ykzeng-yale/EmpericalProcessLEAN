@@ -4,35 +4,33 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V258
+## Live In-Thread Goal Prompt V259
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
 below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane: Durrett Chapter 4 martingales in
-`StatInference/ProbabilityTheory/Martingale.lean`, specifically Example 4.5.8
-as a downstream consumer of the closed Theorem 4.5.7 endpoint.  Reuse the
-compiled Chapter 2/3 probability foundations, Chapter 4.1-4.4 martingale
-infrastructure, Theorem 4.5.1/4.5.2/4.5.3/4.5.5 packages, and the V253-V255
-Example 4.5.8 bridges; do not re-prove those layers.
+synced `main`.  Active lane: move from the now-closed Chapter 4.5 square-
+integrable martingale packet to Chapter 4.6 uniform integrability and `L^1`
+martingale convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
+Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
+4.2-4.5 martingale infrastructure, Mathlib
+`MeasureTheory.Function.UniformIntegrable`, and Mathlib
+`Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
+Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V258 closes the main terminal-condition gap in the
-Theorem 4.5.7/Example 4.5.8 bridge.  The new source wrappers in
-`Martingale.lean` weaken the old `Integrable Ainf` surface to the textbook
-shape `AEMeasurable Ainf P` plus finite square-root terminal clock
-`∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P ≠ ∞`.  Key endpoints:
-`durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_aemeasurable`,
-`durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top_aemeasurable`,
-`durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal_of_sqrt_lintegral_ne_top_aemeasurable`,
-and
-`durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source_aemeasurable_sqrt_lintegral_ne_top`.
-Next aggressive theorem packet: specialize the existing Rademacher/unit-clock
-Example 4.5.8 route to the exact textbook `E sqrt(N) < ∞` assumption by proving
-the stopped unit-clock square-root finiteness display and feeding the new V258
-bridge; then remove any remaining endpoint that still asks for
-`Integrable (fun ω => ((N ω).untopA : ℝ)) P`.
+Latest verified target V259 specializes Example 4.5.8 to the exact textbook
+finite square-root stopping-time assumption.  The unit-variance, Rademacher,
+and canonical Rademacher random-walk endpoints now assume
+`∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P ≠ ∞` rather than
+`Integrable (fun ω => ((N ω).untopA : ℝ)) P`, and the general zero-mean
+second-moment bridge has a reusable
+`...zeroMean_secondMoments_sqrt_lintegral_ne_top` variant.  Next aggressive
+theorem packet: start Section 4.6 by packaging Durrett Theorem 4.6.1 in the
+local style as a thin wrapper around Mathlib's
+`Integrable.uniformIntegrable_condExp`, then add the dominated-family and
+`L^p`-bounded uniform-integrability wrappers needed for Theorem 4.6.2/4.6.3.
 
 ## Deprecated V255 Prompt Notes
 
