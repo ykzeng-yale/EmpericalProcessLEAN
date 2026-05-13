@@ -175,6 +175,89 @@ theorem hasLaw_rademacher_memLp_two
     (memLp_map_measure_iff aestronglyMeasurable_id hX.aemeasurable).1 hid_map
   simpa [Function.comp_def] using hcomp
 
+/-! ## Canonical infinite iid Rademacher sequence -/
+
+/-- The canonical infinite product law of fair Bool Rademacher sources. -/
+noncomputable def rademacherBoolSequenceLaw : Measure (ℕ -> Bool) :=
+  Measure.infinitePi fun _ : ℕ => rademacherBoolLaw
+
+instance : IsProbabilityMeasure rademacherBoolSequenceLaw := by
+  unfold rademacherBoolSequenceLaw
+  infer_instance
+
+/-- The real-valued Rademacher coordinate on the canonical Bool product space. -/
+def rademacherSequenceCoordinate (n : ℕ) (ω : ℕ -> Bool) : ℝ :=
+  boolToRademacherSign (ω n)
+
+/-- Canonical infinite-product Rademacher coordinates are measurable. -/
+theorem measurable_rademacherSequenceCoordinate (n : ℕ) :
+    Measurable (rademacherSequenceCoordinate n) := by
+  exact measurable_boolToRademacherSign.comp (measurable_pi_apply n)
+
+/-- Canonical infinite-product Rademacher coordinates are strongly measurable. -/
+theorem stronglyMeasurable_rademacherSequenceCoordinate (n : ℕ) :
+    StronglyMeasurable (rademacherSequenceCoordinate n) :=
+  (measurable_rademacherSequenceCoordinate n).stronglyMeasurable
+
+/-- Each canonical infinite-product Rademacher coordinate has Rademacher law. -/
+theorem rademacherSequenceCoordinate_hasLaw (n : ℕ) :
+    HasLaw (rademacherSequenceCoordinate n) rademacherLaw
+      rademacherBoolSequenceLaw := by
+  have hbool :
+      HasLaw (fun ω : ℕ -> Bool => ω n) rademacherBoolLaw
+        rademacherBoolSequenceLaw := by
+    simpa [rademacherBoolSequenceLaw] using
+      (measurePreserving_eval_infinitePi
+        (μ := fun _ : ℕ => rademacherBoolLaw) n).hasLaw
+  simpa [rademacherSequenceCoordinate, Function.comp_def] using
+    boolToRademacherSign_hasLaw.comp hbool
+
+/-- The canonical infinite-product Rademacher coordinates are independent. -/
+theorem rademacherSequenceCoordinate_iIndepFun :
+    iIndepFun rademacherSequenceCoordinate rademacherBoolSequenceLaw := by
+  have hbool_indep :
+      iIndepFun (fun n (ω : ℕ -> Bool) => ω n)
+        rademacherBoolSequenceLaw := by
+    simpa [rademacherBoolSequenceLaw] using
+      (iIndepFun_infinitePi
+        (P := fun _ : ℕ => rademacherBoolLaw)
+        (X := fun _ (b : Bool) => b)
+        (fun _ => measurable_id))
+  simpa [rademacherSequenceCoordinate, Function.comp_def] using
+    hbool_indep.comp (fun _ => boolToRademacherSign)
+      (fun _ => measurable_boolToRademacherSign)
+
+/-- Canonical infinite-product Rademacher coordinates are sub-Gaussian. -/
+theorem rademacherSequenceCoordinate_hasSubgaussianMGF (n : ℕ) :
+    HasSubgaussianMGF (rademacherSequenceCoordinate n) 1
+      rademacherBoolSequenceLaw := by
+  have hident :
+      IdentDistrib boolToRademacherSign (rademacherSequenceCoordinate n)
+        rademacherBoolLaw rademacherBoolSequenceLaw :=
+    boolToRademacherSign_hasLaw.identDistrib
+      (rademacherSequenceCoordinate_hasLaw n)
+  exact boolToRademacherSign_hasSubgaussianMGF.congr_identDistrib hident
+
+/--
+Canonical infinite iid real-valued Rademacher signs on the Bool product space.
+
+This packages the concrete sample space used by simple random-walk statements.
+-/
+theorem canonical_iid_rademacherSequence :
+    (∀ n, Measurable (rademacherSequenceCoordinate n)) ∧
+      (∀ n, HasLaw (rademacherSequenceCoordinate n) rademacherLaw
+        rademacherBoolSequenceLaw) ∧
+      iIndepFun rademacherSequenceCoordinate rademacherBoolSequenceLaw ∧
+      IsProbabilityMeasure rademacherBoolSequenceLaw ∧
+      (∀ n, HasSubgaussianMGF (rademacherSequenceCoordinate n) 1
+        rademacherBoolSequenceLaw) := by
+  exact
+    ⟨measurable_rademacherSequenceCoordinate,
+      rademacherSequenceCoordinate_hasLaw,
+      rademacherSequenceCoordinate_iIndepFun,
+      inferInstance,
+      rademacherSequenceCoordinate_hasSubgaussianMGF⟩
+
 /-- A deterministic sign vector supported on `{-1, 1}`. -/
 def RademacherSignVector {n : ℕ} (sign : Fin n -> ℝ) : Prop :=
   ∀ i, sign i = -1 ∨ sign i = 1

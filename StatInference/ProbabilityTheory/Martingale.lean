@@ -25127,6 +25127,45 @@ theorem
       hN hN_ne_top hN_untopA_int
 
 /--
+Durrett 2019, Example 4.5.8 canonical simple-random-walk endpoint.
+
+On the canonical infinite Bool product space, the coordinates pushed through
+`boolToRademacherSign` are iid Rademacher increments.  Hence the stopped
+simple random walk has mean zero under the compiled V256 Rademacher bridge.
+-/
+theorem
+    durrett2019_example_4_5_8_canonicalRademacherRandomWalk_terminal_integral_eq_zero
+    {N : (ℕ -> Bool) -> ℕ∞}
+    (hN :
+      IsStoppingTime
+        (Filtration.natural
+          _root_.StatInference.ProbabilityMeasure.rademacherSequenceCoordinate
+          _root_.StatInference.ProbabilityMeasure.stronglyMeasurable_rademacherSequenceCoordinate)
+        N)
+    (hN_ne_top :
+      ∀ᵐ ω ∂_root_.StatInference.ProbabilityMeasure.rademacherBoolSequenceLaw,
+        N ω ≠ ⊤)
+    (hN_untopA_int :
+      Integrable (fun ω => ((N ω).untopA : ℝ))
+        _root_.StatInference.ProbabilityMeasure.rademacherBoolSequenceLaw) :
+    (∫ ω,
+        stoppedValue
+          (durrett2019_example_4_2_1_linearRandomWalk 0
+            _root_.StatInference.ProbabilityMeasure.rademacherSequenceCoordinate)
+          N ω
+        ∂_root_.StatInference.ProbabilityMeasure.rademacherBoolSequenceLaw) =
+      0 := by
+  exact
+    durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_rademacher
+      (P := _root_.StatInference.ProbabilityMeasure.rademacherBoolSequenceLaw)
+      (ξ := _root_.StatInference.ProbabilityMeasure.rademacherSequenceCoordinate)
+      (N := N)
+      _root_.StatInference.ProbabilityMeasure.stronglyMeasurable_rademacherSequenceCoordinate
+      _root_.StatInference.ProbabilityMeasure.rademacherSequenceCoordinate_hasLaw
+      _root_.StatInference.ProbabilityMeasure.rademacherSequenceCoordinate_iIndepFun
+      hN hN_ne_top hN_untopA_int
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

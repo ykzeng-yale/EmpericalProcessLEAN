@@ -27,21 +27,26 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V256`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V257`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier: Durrett Example 4.5.8 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V256 adds the simple
+`StatInference/ProbabilityTheory/Martingale.lean`.  V257 adds the canonical
+infinite iid Rademacher product-space endpoint, with reusable product-coordinate
+facts in `StatInference/ProbabilityMeasure/Rademacher.lean` and
+`durrett2019_example_4_5_8_canonicalRademacherRandomWalk_terminal_integral_eq_zero`
+in `StatInference/ProbabilityTheory/Martingale.lean`.  The next proof packet
+should attack the exact textbook terminal-condition gap: weaken the current
+full stopped-clock integrability side toward finite `E sqrt(N)`/finite
+square-root terminal clock, or isolate and package the lower 4.5.7 lemma that
+still forces `Integrable Ainf`.  V256 adds the simple
 symmetric random-walk endpoint: Rademacher law mean/second-moment/`L^2` transfer
 in `StatInference/ProbabilityMeasure/Rademacher.lean`, the unit variance-clock
 display `A_n = n`, the stopped unit-clock display as `(N ω).untopA`, and
 `durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_rademacher`.
-The next proof packet should move from this law-level endpoint to either a
-concrete iid infinite Rademacher/sign construction or the exact textbook
-terminal-condition bridge replacing the current real stopped-time integrability
-side condition.  V255 adds the linear-random-walk source bridge
+V255 adds the linear-random-walk source bridge
 `durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments`:
 the stopped Exercise 4.4.6 square-minus-variance-clock martingale now feeds the
 V254 optional-stopping/dominated bridge and concludes `E[S_N] = 0` from

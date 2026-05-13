@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V256
+## Live In-Thread Goal Prompt V257
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -18,19 +18,21 @@ compiled Chapter 2/3 probability foundations, Chapter 4.1-4.4 martingale
 infrastructure, Theorem 4.5.1/4.5.2/4.5.3/4.5.5 packages, and the V253-V255
 Example 4.5.8 bridges; do not re-prove those layers.
 
-Latest verified target V256 adds the simple symmetric random-walk specialization:
-Rademacher law moment/MemLp transfer in
-`StatInference/ProbabilityMeasure/Rademacher.lean`, unit variance-clock display
-`A_n = n`, stopped unit-clock display as `(N ω).untopA`, and the
-Rademacher-increment endpoint
-`durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_rademacher`.
-Next aggressive theorem packet: move from the law-level endpoint to a concrete
-iid infinite Rademacher/sign construction or to the exact textbook terminal
-condition bridge, replacing the current `Integrable (fun ω => ((N ω).untopA :
-ℝ)) P` side with the most source-faithful `E sqrt(N) < ∞`/terminal-clock
-assumption that Lean can compile.  Search Mathlib and local
-`StatInference/ProbabilityMeasure`/`StatInference/ProbabilityTheory` first;
-prefer a small compiled wrapper over new broad primitives.
+Latest verified target V257 adds the canonical infinite iid Rademacher product
+space and plugs it into Durrett Example 4.5.8:
+`rademacherBoolSequenceLaw`, `rademacherSequenceCoordinate`,
+`rademacherSequenceCoordinate_hasLaw`,
+`rademacherSequenceCoordinate_iIndepFun`, and
+`durrett2019_example_4_5_8_canonicalRademacherRandomWalk_terminal_integral_eq_zero`.
+V256 already supplies Rademacher law moment/MemLp transfer, unit variance-clock
+display `A_n = n`, stopped unit-clock display as `(N ω).untopA`, and the
+law-level Rademacher-increment endpoint.  Next aggressive theorem packet:
+attack the exact textbook terminal-condition gap.  Search first for a way to
+weaken the 4.5.7/4.5.8 source surface from `Integrable Ainf` or
+`Integrable (fun ω => ((N ω).untopA : ℝ)) P` to the natural finite
+`∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P ≠ ∞`/`E sqrt(N) < ∞`
+side, or document the precise lower lemma that still forces full clock
+integrability.  Prefer a small compiled wrapper over new broad primitives.
 
 ## Deprecated V255 Prompt Notes
 
@@ -221,6 +223,15 @@ bridge, or the V254 stopped-process zero-expectation specialization unless a
 compile error exposes a genuinely missing primitive.
 
 ## Recent Route Notes
+
+V257 adds the canonical infinite iid Rademacher product space.  In
+`StatInference/ProbabilityMeasure/Rademacher.lean`, `rademacherBoolSequenceLaw`
+is the infinite product of fair Bool laws, `rademacherSequenceCoordinate`
+pushes each coordinate through `boolToRademacherSign`, and compiled wrappers
+provide measurability, strong measurability, Rademacher law, independence, and
+sub-Gaussianity.  In `StatInference/ProbabilityTheory/Martingale.lean`, the
+canonical simple-random-walk endpoint feeds these product coordinates into the
+V256 Rademacher bridge for Durrett Example 4.5.8.
 
 V256 adds the simple symmetric random-walk bridge for Durrett Example 4.5.8.
 Reusable Rademacher support in `StatInference/ProbabilityMeasure/Rademacher.lean`
@@ -2104,6 +2115,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V256` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V257` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
