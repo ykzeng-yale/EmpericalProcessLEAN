@@ -241,6 +241,11 @@ uses `vaart1998_family_measurable_of_random_sequence_measurable` and
 `vaart1998_family_sequence_law_of_random_sequence_law` to derive the indexed
 observation-family measurability and sequence law from one measurable random
 observation sequence and its infinite-product law.
+The pushforward transform-law source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMapLawSource_scoreLawCoordinateMeanSource_scoreLawMemLpSource_zLawCoordinateMeanSource_zLawCoordinateCovarianceSource_derivativeLawCoordinateIntegrableSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+uses `vaart1998_hasLaw_map_of_measurable` to specialize `scoreLaw` and
+`derivativeLaw` to pushforward measures of the measurable score and derivative
+transforms under `observationLaw`.
 The next proof packet should move to a concrete model-specialized Theorem 5.41
 instantiation, or package only a still-live source field that the current
 endpoint explicitly exposes, not replay display weak-convergence,
@@ -265,7 +270,8 @@ coordinate-covariance wrappers, or derivative-law coordinate-integrability
 wrappers, iid infinite-product sequence-law wrappers, or
 observation-transform measurability/law/independence wrappers, or
 observation-sequence-law marginal/independence wrappers, or random
-observation-sequence measurability/law wrappers.
+observation-sequence measurability/law wrappers, or pushforward
+transform-law wrappers.
 
 ## Chapter Map
 
