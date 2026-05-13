@@ -15,14 +15,22 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: observation derivative basis-action source endpoint
+Latest verified packet: observation score covariance source endpoint
+for the score-at-theta0/Taylor route, including
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_observationScoreCovarianceSource_observationDerivativeBasisActionSource_zLawCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+It derives score-law coordinate covariance under
+`observationLaw.map scoreTransform` from the observation-level score-transform
+covariance identity, using
+`vaart1998_scoreLaw_coordinate_covariance_eq_observation_scoreTransform`.
+
+Immediate predecessor packet: observation derivative basis-action source endpoint
 for the score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_observationDerivativeBasisActionSource_zLawCoordinateMeanSource_zLawCoordinateCovarianceSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 It derives the sample-space population `V` basis-action integral from the
 observation-level derivative-transform identity, using
 `vaart1998_derivativeTable_zero_integral_eq_observation_derivativeTransform`.
 
-Immediate predecessor packet: observation-level transform moment source endpoint
+Earlier predecessor packet: observation-level transform moment source endpoint
 for the score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_zLawCoordinateMeanSource_zLawCoordinateCovarianceSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 It derives score-law `L²`, score-law coordinate mean-zero, and derivative-law
@@ -997,7 +1005,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart observation derivative basis action endpoint`).
+(`Add Vaart observation score covariance endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -1100,7 +1108,9 @@ equalities; it also specializes the score and derivative laws to observation
 pushforwards and derives pushforward score `L²`, score coordinate means, and
 derivative coordinate integrability from observation-level transform moment
 assumptions; and it derives the sample-space population `V` basis-action
-integral from the observation-level derivative-transform identity.
+integral from the observation-level derivative-transform identity; it also
+derives score-law covariance under `observationLaw.map scoreTransform` from
+the observation-level score-transform covariance identity.
 Move next only on a live source hypothesis of that
 endpoint, preferably a concrete model-specialized Theorem 5.41 instantiation
 or a narrow source package that removes another exposed model-facing field.
@@ -1118,6 +1128,7 @@ score-vector measurability wrappers, score-law vector moment wrappers,
 derivative-law vector integrability wrappers, limit-law mean source wrappers,
 observation-level transform moment/integrability wrappers,
 observation derivative basis-action wrappers,
+observation score covariance wrappers,
 limit-law covariance source wrappers, or historical ledger items.
 Gaussian limit moment wrappers, score-law mean source wrappers,
 score-vector sequence-law source wrappers, derivative-table sequence-law
