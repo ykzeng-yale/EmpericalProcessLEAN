@@ -230,7 +230,13 @@ dual-norm budget plus a uniform quadratic upper comparison between
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_localNormLower_and_inverseIdentity`,
 so the live gate can also be discharged in the primal self-concordant
 local-norm lower-comparison shape once the inverse-local and Cauchy bridges are
-available.
+available.  The segment-stability layer adds
+`chewi1316_uniformTailBound_of_hessianSegmentExponentialBounds_and_inverseIdentity`
+and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_hessianSegmentExponentialBounds_and_inverseIdentity`,
+so a sequence of `HessianSegmentExponentialBounds` certificates plus a uniform
+denominator budget now suffices to trigger the source-start initialization
+pipeline.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
