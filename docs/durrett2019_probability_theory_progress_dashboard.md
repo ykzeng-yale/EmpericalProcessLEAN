@@ -32,12 +32,17 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V324` in
+Route from `Live In-Thread Goal Prompt V325` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V324 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V325 adds
+`durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_coordinateCovariance`
+and
+`durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_centeredProductSubMean`,
+Exercise 3.10.8 forward real-Gaussian law wrappers from scalar coordinate
+covariance and centered product source hypotheses.  V324 adds
 `durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProductSubMean`
 and
 `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCenteredProduct_explicitMean_sum`,
@@ -1648,6 +1653,8 @@ Current proof route:
     `durrett2019_exercise_3_10_8_multivariateGaussian_of_linearCombination_hasGaussianLaw`,
     `durrett2019_exercise_3_10_8_multivariateGaussian_iff_linearCombination_hasGaussianLaw`,
     `durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_multivariateGaussian`,
+    `durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_coordinateCovariance`,
+    `durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_centeredProductSubMean`,
     `durrett2019_exercise_3_10_8_multivariateGaussian_of_linearCombination_law_eq_gaussianReal`,
     and
     `durrett2019_exercise_3_10_8_multivariateGaussian_iff_linearCombination_law_eq_gaussianReal`.

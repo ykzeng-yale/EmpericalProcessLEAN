@@ -639,6 +639,85 @@ theorem durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_mul
       rw [hmean_L, hvar_L]
 
 /--
+Durrett 2019, Exercise 3.10.8, source-facing forward law statement from scalar
+coordinate covariances.
+
+This removes the `covarianceBilinDual` table from the user-facing hypotheses.
+-/
+theorem durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_coordinateCovariance
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω} [IsProbabilityMeasure Q] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (mean : Coordinate -> ℝ) (Gamma : Coordinate -> Coordinate -> ℝ)
+    (theta : Coordinate -> ℝ)
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = mean coordinate)
+    (hZ_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) Q =
+        Gamma i j) :
+    Q.map (fun ω => ∑ i, theta i * Z ω i) =
+      _root_.ProbabilityTheory.gaussianReal
+        (∑ i, theta i * mean i)
+        (durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma).toNNReal :=
+  durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_multivariateGaussian
+    (Q := Q) (Z := Z)
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (mean := mean) (Gamma := Gamma) (theta := theta)
+    (hZ_coordinate_integrable := hZ_coordinate_integrable)
+    (hZ_coordinate_mean := hZ_coordinate_mean)
+    (hGamma := fun i j =>
+      (durrett2019_theorem_3_10_7_covarianceBilinDualTable_of_coordinateCovariance
+        (μ := Q) (Y := Z) hZ_memLp hZ_gaussian.aemeasurable Gamma
+        hZ_covariance i j).symm)
+
+/--
+Durrett 2019, Exercise 3.10.8, source-facing forward law statement from the
+textbook centered-product covariance definition.
+
+This packages `Gamma_ij = E[(Z_i - mean_i) (Z_j - mean_j)]` into the real
+Gaussian law of every finite linear combination.
+-/
+theorem durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_centeredProductSubMean
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω} [IsProbabilityMeasure Q] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 Q)
+    (mean : Coordinate -> ℝ) (Gamma : Coordinate -> Coordinate -> ℝ)
+    (theta : Coordinate -> ℝ)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = mean coordinate)
+    (hZ_centered_product : ∀ i j,
+      (∫ ω, (Z ω i - mean i) * (Z ω j - mean j) ∂Q) = Gamma i j) :
+    Q.map (fun ω => ∑ i, theta i * Z ω i) =
+      _root_.ProbabilityTheory.gaussianReal
+        (∑ i, theta i * mean i)
+        (durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma).toNNReal :=
+  durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_coordinateCovariance
+    (Q := Q) (Z := Z)
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (mean := mean) (Gamma := Gamma) (theta := theta)
+    (hZ_coordinate_integrable := fun coordinate =>
+      (hZ_coordinate_memLp coordinate).integrable (by simp))
+    (hZ_coordinate_mean := hZ_coordinate_mean)
+    (hZ_covariance :=
+      durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProductSubMean
+        (μ := Q) (Y := Z) mean hZ_coordinate_mean Gamma hZ_centered_product)
+
+/--
 Durrett 2019, Exercise 3.10.8, reverse direction from the source-facing real
 Gaussian laws of all linear combinations.
 -/
