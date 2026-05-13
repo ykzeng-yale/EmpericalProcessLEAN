@@ -199,6 +199,10 @@ The law-side score second-moment source endpoint
 uses `vaart1998_scoreVector_memLp_of_scoreLaw_memLp` to derive the sample-side
 score-vector second moment from the law-side score second moment and the
 zero-index marginal law.
+The law-side score coordinate-mean source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreLawCoordinateMeanSource_scoreLawMemLpSource_zCoordinateMeanSource_derivativeBasisMatrixActionSource_zEvalCovarianceSource_zSampleMeanSource_scoreVectorMeanSource_derivativeTableLawSequenceSource_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+uses `vaart1998_scoreVector_coordinate_mean_zero_of_scoreLaw_coordinate_mean_zero`
+to derive sample-side coordinate mean-zero from law-side coordinate mean-zero.
 The next proof packet should move to a concrete model-specialized Theorem 5.41
 instantiation, or package only a still-live source field that the current
 endpoint explicitly exposes, not replay display weak-convergence,
@@ -217,7 +221,7 @@ source/Gaussian-limit-moment/score-law-mean/score-vector-sequence-law
 wrappers/derivative-table-sequence-law wrappers/score-law-`L²` wrappers/
 score-vector-mean wrappers/limit-variable-sample-mean wrappers/
 finite-coordinate-limit-covariance wrappers/law-side score second-moment
-wrappers.
+wrappers/law-side score coordinate-mean wrappers.
 
 ## Chapter Map
 
