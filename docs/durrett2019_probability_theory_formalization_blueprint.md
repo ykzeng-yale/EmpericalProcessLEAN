@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V300`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V301`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -163,8 +163,15 @@ V300 adds reusable VdVW/Hewitt-Savage support:
 `durrett2019_example_4_7_4_eval_permutationSymmetricTail_preimage_natPermOfFin_eq`,
 and
 `durrett2019_example_4_7_4_eval_permutationSymmetricTail_setIntegral_natPermOfFin_eq`.
-The next proof packet should prove zero-one for the VdVW
-permutation-symmetric tail itself and feed it into V299.
+V301 adds the self-independence-to-zero-one consumer layer:
+`vdVWPermutationSymmetricTail_measure_zero_or_one_of_indep_self`,
+`vdVWPermutationSymmetricTail_measure_zero_or_one_all_of_indep_self`,
+`durrett2019_example_4_7_4_eval_permutationSymmetricTail_zero_or_one_of_indep_self`,
+`durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permutationSymmetric_tail_indep_self`,
+and
+`durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_permutationSymmetric_tail_indep_self`.
+The next proof packet should prove self-independence of the VdVW
+permutation-symmetric tail itself and feed it into V301.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:

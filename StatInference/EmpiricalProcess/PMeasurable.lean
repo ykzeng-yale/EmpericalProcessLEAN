@@ -3,6 +3,7 @@ import Mathlib.MeasureTheory.Constructions.Pi
 import Mathlib.MeasureTheory.Group.Arithmetic
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.MeasureTheory.Measure.NullMeasurable
+import Mathlib.Probability.Independence.ZeroOne
 import Mathlib.Probability.HasLawExists
 import Mathlib.Probability.ProductMeasure
 import Mathlib.Topology.Order.OrderClosed
@@ -927,6 +928,50 @@ theorem setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measur
     setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measurableSet_permutationSymmetric
       (Observation := Observation) P (n := n) perm hfix
       ((MeasurableSpace.measurableSet_iInf.mp hs) n) f
+
+/--
+Zero-one consumer for the VdV&W permutation-symmetric tail.  Once the tail
+sigma-field is shown independent of itself, every tail event has probability
+zero or one.
+
+This isolates the hard Hewitt-Savage step as self-independence of the
+permutation-symmetric tail.
+-/
+theorem vdVWPermutationSymmetricTail_measure_zero_or_one_of_indep_self
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    (hindep :
+      _root_.ProbabilityTheory.Indep
+        (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace Observation n)
+        (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace Observation n)
+        (vdVWInfiniteProductMeasure P))
+    {s : Set (ℕ -> Observation)}
+    (hs :
+      MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace Observation n] s) :
+    vdVWInfiniteProductMeasure P s = 0 ∨ vdVWInfiniteProductMeasure P s = 1 := by
+  exact
+    _root_.ProbabilityTheory.measure_eq_zero_or_one_of_indepSet_self
+      (hindep.indepSet_of_measurableSet hs hs)
+
+/--
+All-events form of the VdV&W permutation-symmetric tail zero-one consumer from
+self-independence.
+-/
+theorem vdVWPermutationSymmetricTail_measure_zero_or_one_all_of_indep_self
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    (hindep :
+      _root_.ProbabilityTheory.Indep
+        (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace Observation n)
+        (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace Observation n)
+        (vdVWInfiniteProductMeasure P)) :
+    ∀ s : Set (ℕ -> Observation),
+      MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace Observation n] s ->
+        vdVWInfiniteProductMeasure P s = 0 ∨ vdVWInfiniteProductMeasure P s = 1 := by
+  intro s hs
+  exact
+    vdVWPermutationSymmetricTail_measure_zero_or_one_of_indep_self
+      (Observation := Observation) P hindep hs
 
 /--
 Projecting the first `n` coordinates after an infinite permutation fixing the

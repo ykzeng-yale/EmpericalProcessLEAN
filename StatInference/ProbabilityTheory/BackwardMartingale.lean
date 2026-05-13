@@ -1606,6 +1606,49 @@ theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_setIntegral_natP
       (VdVWNatPermFixesFrom_natPermOfFin perm) hA f
 
 /--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  Once the
+VdVW permutation-symmetric tail is independent of itself under the iid real
+product law, every event in that tail has probability zero or one.
+-/
+theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_zero_or_one_of_indep_self
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    (hindep :
+      Indep
+        (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+        (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+        (vdVWInfiniteProductMeasure P)) :
+    ∀ B : Set (ℕ -> ℝ),
+      MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] B ->
+        vdVWInfiniteProductMeasure P B = 0 ∨ vdVWInfiniteProductMeasure P B = 1 := by
+  exact
+    StatInference.vdVWPermutationSymmetricTail_measure_zero_or_one_all_of_indep_self
+      (Observation := ℝ) P hindep
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  Self-independence
+of the VdVW permutation-symmetric tail transports zero-one triviality to
+Durrett's concrete reverse-average tail.
+-/
+theorem durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permutationSymmetric_tail_indep_self
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    (hindep :
+      Indep
+        (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+        (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+        (vdVWInfiniteProductMeasure P)) :
+    ∀ B : Set (ℕ -> ℝ),
+      MeasurableSet[
+        ⨅ n : ℕ,
+          durrett2019_example_4_7_4_reverseAverageSigma
+            (fun k (sequence : ℕ -> ℝ) => sequence k) n] B ->
+        vdVWInfiniteProductMeasure P B = 0 ∨ vdVWInfiniteProductMeasure P B = 1 := by
+  exact
+    durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permutationSymmetric_tail
+      (P := P)
+      (durrett2019_example_4_7_4_eval_permutationSymmetricTail_zero_or_one_of_indep_self
+        (P := P) hindep)
+
+/--
 Durrett 2019, Example 4.7.4 product-space source algebra: the finite swap of
 prefix coordinate `i` and coordinate `0` transports `xi_i` to `xi_0`.
 -/
@@ -1879,6 +1922,29 @@ theorem durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id
       (P := P) hid
       (durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permutationSymmetric_tail
         (P := P) hzeroOne)
+
+/--
+Durrett 2019, Example 4.7.4 product-space backwards-martingale route with the
+Hewitt-Savage side reduced to self-independence of the VdVW
+permutation-symmetric tail.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_permutationSymmetric_tail_indep_self
+    {P : Measure ℝ} [IsProbabilityMeasure P] (hid : Integrable id P)
+    (hindep :
+      Indep
+        (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+        (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+        (vdVWInfiniteProductMeasure P)) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ => (∑ i ∈ Finset.range n, sequence i) / (n : ℝ))
+        atTop
+        (𝓝 (∫ x : ℝ, x ∂P)) := by
+  exact
+    durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_permutationSymmetric_tail_zero_or_one
+      (P := P) hid
+      (durrett2019_example_4_7_4_eval_permutationSymmetricTail_zero_or_one_of_indep_self
+        (P := P) hindep)
 
 /--
 Durrett 2019, Example 4.7.4, final strong-law endpoint using the compiled
