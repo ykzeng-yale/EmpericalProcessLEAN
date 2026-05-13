@@ -30,7 +30,21 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current live route: `StatInference/Optimization/InteriorPoint.lean` supports
+Current live route supersedes the older paragraphs below: the Chapter 13 lane
+now has Chewi Lemma 13.15(1) and Lemma 13.15(2) compiled for the arbitrary
+finite-row polytope logarithmic barrier route.  The newest reusable transport
+declarations are `barrierAffinePreimageGrad_hasFDerivAt`,
+`convex_barrierAffineRangeSet`, `barrierAffineRangeGrad_hasFDerivAt`,
+`barrierAffineRangeGrad_continuousOn_of_hasFDerivAt`,
+`chewi1315_polytopeSlackNegLog_range_gradient_segment_inner_le`, and the
+source-space endpoint
+`chewi1315_polytopeSlackNegLog_gradient_segment_inner_le`.  The next proof
+packet should use these compiled Lemma 13.15 wrappers in the path-following
+decrement recurrence and central-path barrier-parameter estimates; do not
+reroute to earlier 13.6, 13.8, product/sum, or positive-orthant setup unless a
+new downstream proof directly needs those already verified declarations.
+
+Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
 `ψ_v(t)`, mixed-third certificate, Frechet-Hessian derivative, and local-norm
 sandwich declarations.  The newest source wrapper also includes the scalar

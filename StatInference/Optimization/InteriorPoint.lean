@@ -2917,6 +2917,31 @@ noncomputable def barrierAffinePreimageGrad
     (A : F →L[ℝ] E) (b : E) (grad : E -> E) : F -> F :=
   fun x => ContinuousLinearMap.adjoint A (grad (A x + b))
 
+theorem barrierAffinePreimageGrad_hasFDerivAt
+    (A : F →L[ℝ] E) (b : E) {grad : E -> E}
+    {hess : E -> E →L[ℝ] E} {x : F}
+    (hgrad : HasFDerivAt grad (hess (A x + b)) (A x + b)) :
+    HasFDerivAt (barrierAffinePreimageGrad A b grad)
+      (barrierAffinePreimageHess A b hess x) x := by
+  have hpoint : HasFDerivAt (fun y : F => A y + b) A x := by
+    simpa using A.hasFDerivAt.add_const b
+  have hcomp : HasFDerivAt (fun y : F => grad (A y + b))
+      ((hess (A x + b)).comp A) x := by
+    simpa [Function.comp_def] using
+      (HasFDerivAt.comp (𝕜 := ℝ)
+        (f := fun y : F => A y + b)
+        (f' := A)
+        (g := grad)
+        (g' := hess (A x + b))
+        x hgrad hpoint)
+  simpa [barrierAffinePreimageGrad, barrierAffinePreimageHess, Function.comp_def] using
+    (HasFDerivAt.comp (𝕜 := ℝ)
+      (f := fun y : F => grad (A y + b))
+      (f' := (hess (A x + b)).comp A)
+      (g := ContinuousLinearMap.adjoint A)
+      (g' := ContinuousLinearMap.adjoint A)
+      x (ContinuousLinearMap.adjoint A).hasFDerivAt hcomp)
+
 /--
 Pulled-back mixed-third oracle for the affine composition `x ↦ f(A x + b)`.
 -/
@@ -3561,6 +3586,28 @@ def barrierAffineRangeSet
     (A : F →L[ℝ] E) (b : E) (s : Set E) : Set A.range :=
   {y | (y : E) + b ∈ s}
 
+omit [CompleteSpace F] [CompleteSpace E] in
+theorem convex_barrierAffineRangeSet
+    (A : F →L[ℝ] E) (b : E) {s : Set E}
+    (hs : Convex ℝ s) :
+    Convex ℝ (barrierAffineRangeSet A b s) := by
+  intro x hx y hy a c ha hc hac
+  change ((a • x + c • y : A.range) : E) + b ∈ s
+  have hcombo :
+      ((a • x + c • y : A.range) : E) + b =
+        a • ((x : E) + b) + c • ((y : E) + b) := by
+    calc
+      ((a • x + c • y : A.range) : E) + b =
+          a • (x : E) + c • (y : E) + b := by
+        simp
+      _ = a • (x : E) + c • (y : E) + (a • b + c • b) := by
+        rw [← add_smul, hac, one_smul]
+      _ = a • ((x : E) + b) + c • ((y : E) + b) := by
+        rw [smul_add, smul_add]
+        abel
+  rw [hcombo]
+  exact hs hx hy ha hc hac
+
 noncomputable def barrierAffineRangeHess
     (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
     (hess : E -> E →L[ℝ] E) :
@@ -3571,6 +3618,30 @@ noncomputable def barrierAffineRangeGrad
     (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
     (grad : E -> E) : A.range -> A.range :=
   barrierAffinePreimageGrad A.range.subtypeL b grad
+
+omit [CompleteSpace F] in
+theorem barrierAffineRangeGrad_hasFDerivAt
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    {grad : E -> E} {hess : E -> E →L[ℝ] E}
+    {y : A.range}
+    (hgrad : HasFDerivAt grad (hess ((y : E) + b)) ((y : E) + b)) :
+    HasFDerivAt (barrierAffineRangeGrad A b grad)
+      (barrierAffineRangeHess A b hess y) y := by
+  simpa [barrierAffineRangeGrad, barrierAffineRangeHess] using
+    barrierAffinePreimageGrad_hasFDerivAt A.range.subtypeL b
+      (grad := grad) (hess := hess) (x := y) hgrad
+
+omit [CompleteSpace F] in
+theorem barrierAffineRangeGrad_continuousOn_of_hasFDerivAt
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    {s : Set E} {grad : E -> E} {hess : E -> E →L[ℝ] E}
+    (hgrad : ∀ ⦃y : A.range⦄, y ∈ barrierAffineRangeSet A b s ->
+      HasFDerivAt grad (hess ((y : E) + b)) ((y : E) + b)) :
+    ContinuousOn (barrierAffineRangeGrad A b grad)
+      (barrierAffineRangeSet A b s) := by
+  intro y hy
+  exact (barrierAffineRangeGrad_hasFDerivAt A b
+    (grad := grad) (hess := hess) (y := y) (hgrad hy)).continuousAt.continuousWithinAt
 
 def barrierAffineRangeThirdMixed
     (A : F →L[ℝ] E) (b : E) (third : E -> E -> E -> ℝ) :
@@ -15916,6 +15987,107 @@ theorem chewi1315_polytopeSlackNegLog_range_gradient_inner_sq_le
         intro z
         exact positiveOrthantNegLogHessCLM_quadratic_nonneg hy z))
     (chewi1314_polytopeSlackNegLog_range_componentCauchy a b hy)
+
+theorem chewi1315_polytopeSlackNegLog_range_gradient_segment_inner_le
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m) (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {x y : (polytopeSlackCLM a).range}
+    (hx : x ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m)))
+    (hy : y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m))) :
+    inner ℝ
+        (barrierAffineRangeGrad (polytopeSlackCLM a) b positiveOrthantNegLogGrad x)
+        (y - x) ≤
+      (m : ℝ) := by
+  let s : Set (polytopeSlackCLM a).range :=
+    barrierAffineRangeSet (polytopeSlackCLM a) b (positiveOrthant (d := m))
+  have hs : Convex ℝ s :=
+    convex_barrierAffineRangeSet (polytopeSlackCLM a) b convex_positiveOrthant
+  refine chewi1315_segment_inner_le_of_sq_deriv
+    (grad := barrierAffineRangeGrad (polytopeSlackCLM a) b positiveOrthantNegLogGrad)
+    (hess := barrierAffineRangeHess (polytopeSlackCLM a) b
+      positiveOrthantNegLogHessCLM)
+    (x := x) (y := y) (nu := (m : ℝ))
+    (by exact_mod_cast hm)
+    ?_ ?_ ?_
+  · exact hessianSegmentGradientInner_continuousOn_of_convex
+      (s := s) hs hx hy
+      (barrierAffineRangeGrad_continuousOn_of_hasFDerivAt
+        (polytopeSlackCLM a) b
+        (s := positiveOrthant (d := m))
+        (grad := positiveOrthantNegLogGrad)
+        (hess := positiveOrthantNegLogHessCLM)
+        (by
+          intro z hz
+          exact positiveOrthantNegLogGrad_hasFDerivAt hz))
+  · intro t ht
+    have hz : hessianSegmentPoint x y t ∈ s :=
+      hessianSegmentPoint_mem_of_convex_interior hs hx hy ht
+    exact barrierAffineRangeGrad_hasFDerivAt
+      (polytopeSlackCLM a) b
+      (grad := positiveOrthantNegLogGrad)
+      (hess := positiveOrthantNegLogHessCLM)
+      (y := hessianSegmentPoint x y t)
+      (positiveOrthantNegLogGrad_hasFDerivAt hz)
+  · intro t ht
+    have hz : hessianSegmentPoint x y t ∈ s :=
+      hessianSegmentPoint_mem_of_convex_interior hs hx hy ht
+    exact chewi1315_polytopeSlackNegLog_range_gradient_inner_sq_le
+      a b hz (y - x)
+
+theorem chewi1315_polytopeSlackNegLog_gradient_segment_inner_le
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m) (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {x y : F}
+    (hx : x ∈ polytopeSlackSet a b)
+    (hy : y ∈ polytopeSlackSet a b) :
+    inner ℝ
+        (barrierAffinePreimageGrad (polytopeSlackCLM a) b
+          positiveOrthantNegLogGrad x)
+        (y - x) ≤
+      (m : ℝ) := by
+  let xr : (polytopeSlackCLM a).range :=
+    ⟨polytopeSlackCLM a x, ⟨x, rfl⟩⟩
+  let yr : (polytopeSlackCLM a).range :=
+    ⟨polytopeSlackCLM a y, ⟨y, rfl⟩⟩
+  have hxr : xr ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m)) := by
+    intro i
+    simpa [xr, polytopeSlackCLM_add_offset_apply] using hx i
+  have hyr : yr ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m)) := by
+    intro i
+    simpa [yr, polytopeSlackCLM_add_offset_apply] using hy i
+  have hrange :=
+    chewi1315_polytopeSlackNegLog_range_gradient_segment_inner_le
+      hm a b hxr hyr
+  have hpre_inner :
+      inner ℝ
+          (barrierAffinePreimageGrad (polytopeSlackCLM a) b
+            positiveOrthantNegLogGrad x)
+          (y - x) =
+        inner ℝ
+          (positiveOrthantNegLogGrad (polytopeSlackCLM a x + b))
+          (polytopeSlackCLM a (y - x)) := by
+    simpa [barrierAffinePreimageGrad] using
+      (ContinuousLinearMap.adjoint_inner_left
+        (polytopeSlackCLM a) (y - x)
+        (positiveOrthantNegLogGrad (polytopeSlackCLM a x + b)))
+  have hrange_inner :
+      inner ℝ
+          (barrierAffineRangeGrad (polytopeSlackCLM a) b
+            positiveOrthantNegLogGrad xr)
+          (yr - xr) =
+        inner ℝ
+          (positiveOrthantNegLogGrad (polytopeSlackCLM a x + b))
+          (polytopeSlackCLM a (y - x)) := by
+    simpa [xr, yr, barrierAffineRangeGrad, barrierAffinePreimageGrad, map_sub] using
+      (ContinuousLinearMap.adjoint_inner_left
+        (polytopeSlackCLM a).range.subtypeL (yr - xr)
+        (positiveOrthantNegLogGrad (polytopeSlackCLM a x + b)))
+  rw [hpre_inner, ← hrange_inner]
+  exact hrange
 
 set_option maxHeartbeats 800000 in
 theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess

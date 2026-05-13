@@ -61,12 +61,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1315_gradient_segment_inner_le_of_cauchy`, and
   `chewi1315_gradient_segment_inner_le_of_cauchy_continuousOn`, plus the
   positive-orthant concrete instantiation `positiveOrthantNegLogGrad_continuousOn`
-  and `chewi1315_positiveOrthantNegLog_gradient_segment_inner_le`.
-- Next Chapter 13 target: transport Lemma 13.15(2) from the positive orthant
-  through the affine/range finite-row log-barrier route, or use the compiled
-  Lemma 13.15 wrappers in the path-following decrement recurrence.  The
-  reciprocal-derivative/sign step is no longer a blocker; remaining gates are
-  affine/range continuity and gradient/Hessian differentiability certificates.
+  and `chewi1315_positiveOrthantNegLog_gradient_segment_inner_le`.  The
+  newest affine transport packet adds
+  `barrierAffinePreimageGrad_hasFDerivAt`,
+  `convex_barrierAffineRangeSet`, `barrierAffineRangeGrad_hasFDerivAt`,
+  `barrierAffineRangeGrad_continuousOn_of_hasFDerivAt`,
+  `chewi1315_polytopeSlackNegLog_range_gradient_segment_inner_le`, and
+  `chewi1315_polytopeSlackNegLog_gradient_segment_inner_le`, closing Lemma
+  13.15(2) for arbitrary finite-row polytope logarithmic barriers when
+  `0 < m`.
+- Next Chapter 13 target: use the compiled Lemma 13.15 wrappers in the
+  path-following decrement recurrence and central-path barrier-parameter
+  estimates.  The reciprocal-derivative/sign step and affine/range
+  gradient-continuity/differentiability transport are no longer blockers.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

@@ -139,7 +139,7 @@ stale and cannot be edited until the whole textbook goal is complete.
 
 Current superseding update: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma
-13.15.  The latest verified local packets add `localNorm_neg`,
+13.15.  The compiled local packets add `localNorm_neg`,
 `abs_inner_le_dualLocalNorm_mul_localNorm_of_cauchy`,
 `inner_sq_le_dualLocalNorm_sq_mul_localNorm_sq_of_cauchy`,
 `abs_inner_le_sqrt_mul_localNorm_of_one_sided_cauchy`,
@@ -162,10 +162,20 @@ gradient/Hessian differentiability, and the local Cauchy bridge.  The newest
 concrete instantiation adds `positiveOrthantNegLogGrad_continuousOn` and
 `chewi1315_positiveOrthantNegLog_gradient_segment_inner_le`, proving Lemma
 13.15(2) for the finite positive-orthant logarithmic barrier when `0 < d`.
-The next theorem-sized packet should either transport this through the
-affine/range finite-row log-barrier route or use the compiled Lemma 13.15
-wrappers in the path-following decrement recurrence.  Do not route the next run
-back to product/sum/affine/range barrier setup unless a new downstream proof
+The newest affine transport packet adds
+`barrierAffinePreimageGrad_hasFDerivAt`,
+`convex_barrierAffineRangeSet`, `barrierAffineRangeGrad_hasFDerivAt`,
+`barrierAffineRangeGrad_continuousOn_of_hasFDerivAt`,
+`chewi1315_polytopeSlackNegLog_range_gradient_segment_inner_le`, and the
+source-space endpoint
+`chewi1315_polytopeSlackNegLog_gradient_segment_inner_le`.  This closes Chewi
+Lemma 13.15(2) for arbitrary finite-row polytope logarithmic barriers when
+`0 < m`, reusing the existing Example 13.14 range Cauchy bridge and the
+positive-orthant gradient derivative rather than duplicating barrier
+foundations.  The next theorem-sized packet should use the compiled Lemma
+13.15 wrappers in the path-following decrement recurrence and central-path
+barrier-parameter estimates.  Do not route the next run back to product, sum,
+affine/range, or positive-orthant barrier setup unless a new downstream proof
 directly needs one of those already-verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
