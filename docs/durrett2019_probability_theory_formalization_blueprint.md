@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V269`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V270`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -53,10 +53,12 @@ package from `L¹` convergence.  V267 adds Lemma 4.6.5 as a thin Mathlib
 route wrappers for the martingale conditional-expectation representation.  V269
 adds the compact Theorem 4.6.7 display forms for equivalence with an integrable
 `L¹` limit and equivalence with representation as conditional expectations of
-one integrable random variable.  The next proof packet should move to Theorem
-4.6.8, beginning with the conditional-expectation martingale/UI convergence
-wrapper and then the generated-sigma-field limit identification.  V259 closes
-the concrete Example 4.5.8
+one integrable random variable.  V270 packages Mathlib's Lévy upward theorem
+as Durrett Theorem 4.6.8 in a.s. and `L¹` forms and adds the immediate Theorem
+4.6.9 conditional-indicator convergence consequence.  The next proof packet
+should move to Theorem 4.6.10, the dominated convergence theorem for
+conditional expectations along an increasing filtration.  V259 closes the
+concrete Example 4.5.8
 random-walk terminal-condition packet:
 the unit-variance, Rademacher, and canonical Rademacher endpoints now use
 finite `∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P` rather than

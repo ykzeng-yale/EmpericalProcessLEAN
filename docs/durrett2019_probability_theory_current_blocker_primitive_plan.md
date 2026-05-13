@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V269
+## Live In-Thread Goal Prompt V270
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,7 @@ Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V269 continues Section 4.6.  V260 packages Durrett
+Latest verified target V270 continues Section 4.6.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -55,15 +55,20 @@ V269 adds the compact Theorem 4.6.7 display wrappers
 `durrett2019_theorem_4_6_7_uniformIntegrable_iff_exists_integrable_eLpNorm_one_tendsto_zero`
 and
 `durrett2019_theorem_4_6_7_uniformIntegrable_iff_exists_integrable_condExp`.
+V270 packages Mathlib's Lévy upward theorem as Durrett Theorem 4.6.8:
+`durrett2019_theorem_4_6_8_condExp_ae_tendsto_of_iSup_stronglyMeasurable`,
+`durrett2019_theorem_4_6_8_condExp_eLpNorm_one_tendsto_of_iSup_stronglyMeasurable`,
+`durrett2019_theorem_4_6_8_condExp_ae_tendsto_iSup_condExp`, and
+`durrett2019_theorem_4_6_8_condExp_eLpNorm_one_tendsto_iSup_condExp`.
+It also adds the immediate Theorem 4.6.9 consequence
+`durrett2019_theorem_4_6_9_levy_zero_one_condExp_indicator_ae_tendsto`.
 
-Next aggressive theorem packet: move directly to Theorem 4.6.8, the
-increasing-filtration conditional-expectation convergence theorem.  First
-search Mathlib/local APIs for conditional-expectation tower laws,
-`SigmaFiniteFiltration`, martingale convergence from uniform integrability,
-generated sigma-fields, and limit-process identification.  A good first packet
-is the conditional-expectation martingale/UI convergence wrapper to
-`ℱ.limitProcess`, leaving generated-sigma-field identification as the next
-hard source step if it does not discharge immediately.
+Next aggressive theorem packet: move to Theorem 4.6.10, the dominated
+convergence theorem for conditional expectations along an increasing
+filtration.  Search Mathlib/local APIs first for dominated convergence in
+probability/a.s., conditional expectation contraction and monotonicity,
+`eLpNorm`/`L¹` bounds, finite sup-tail envelopes, and reuse the V270 Theorem
+4.6.8 wrappers for the fixed dominating tail variables.
 
 ## Deprecated V255 Prompt Notes
 

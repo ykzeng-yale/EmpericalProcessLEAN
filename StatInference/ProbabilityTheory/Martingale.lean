@@ -27026,6 +27026,92 @@ theorem durrett2019_theorem_4_6_7_uniformIntegrable_iff_exists_integrable_condEx
         (P := P) (ℱ := ℱ) (X := X) (Y := Y) hY_int hrep
 
 /--
+Durrett 2019, Theorem 4.6.8, measurable-limit a.s. form.
+
+If an integrable random variable is measurable with respect to the limiting
+sigma-field `⨆ n, ℱ n`, then its conditional expectations along the increasing
+filtration converge almost surely to the random variable itself.
+-/
+theorem durrett2019_theorem_4_6_8_condExp_ae_tendsto_of_iSup_stronglyMeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : Ω -> ℝ} (hX_int : Integrable X P)
+    (hX_meas : StronglyMeasurable[⨆ n, ℱ n] X) :
+    ∀ᵐ ω ∂P, Tendsto (fun n => P[X | ℱ n] ω) atTop (𝓝 (X ω)) :=
+  hX_int.tendsto_ae_condExp hX_meas
+
+/--
+Durrett 2019, Theorem 4.6.8, measurable-limit `L¹` form.
+
+If an integrable random variable is measurable with respect to the limiting
+sigma-field `⨆ n, ℱ n`, then its conditional expectations along the increasing
+filtration converge to it in `L¹`.
+-/
+theorem durrett2019_theorem_4_6_8_condExp_eLpNorm_one_tendsto_of_iSup_stronglyMeasurable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : Ω -> ℝ} (hX_int : Integrable X P)
+    (hX_meas : StronglyMeasurable[⨆ n, ℱ n] X) :
+    Tendsto (fun n => eLpNorm (P[X | ℱ n] - X) 1 P) atTop (𝓝 0) :=
+  hX_int.tendsto_eLpNorm_condExp hX_meas
+
+/--
+Durrett 2019, Theorem 4.6.8, conditional-expectation target a.s. form.
+
+For any random variable, conditional expectations along an increasing
+filtration converge almost surely to the conditional expectation onto the
+limiting sigma-field `⨆ n, ℱ n`.
+-/
+theorem durrett2019_theorem_4_6_8_condExp_ae_tendsto_iSup_condExp
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    (X : Ω -> ℝ) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[X | ℱ n] ω) atTop (𝓝 (P[X | ⨆ n, ℱ n] ω)) :=
+  tendsto_ae_condExp (μ := P) (ℱ := ℱ) X
+
+/--
+Durrett 2019, Theorem 4.6.8, conditional-expectation target `L¹` form.
+
+For any random variable, conditional expectations along an increasing
+filtration converge in `L¹` to the conditional expectation onto the limiting
+sigma-field `⨆ n, ℱ n`.
+-/
+theorem durrett2019_theorem_4_6_8_condExp_eLpNorm_one_tendsto_iSup_condExp
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    (X : Ω -> ℝ) :
+    Tendsto (fun n => eLpNorm (P[X | ℱ n] - P[X | ⨆ n, ℱ n]) 1 P) atTop (𝓝 0) :=
+  tendsto_eLpNorm_condExp (μ := P) (ℱ := ℱ) X
+
+/--
+Durrett 2019, Theorem 4.6.9, Lévy's zero-one law convergence form.
+
+If `A` belongs to the limiting sigma-field of an increasing filtration, then
+the conditional probabilities of `A` along the filtration converge almost
+surely to `1_A`.
+-/
+theorem durrett2019_theorem_4_6_9_levy_zero_one_condExp_indicator_ae_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {A : Set Ω} (hA : MeasurableSet[⨆ n, ℱ n] A) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n => P[A.indicator (fun _ : Ω => (1 : ℝ)) | ℱ n] ω) atTop
+        (𝓝 (A.indicator (fun _ : Ω => (1 : ℝ)) ω)) := by
+  have hA_meas : MeasurableSet A :=
+    (iSup_le fun n => ℱ.le n) A hA
+  have hA_int : Integrable (A.indicator (fun _ : Ω => (1 : ℝ))) P :=
+    (integrable_const (1 : ℝ)).indicator hA_meas
+  have hA_stronglyMeasurable :
+      StronglyMeasurable[⨆ n, ℱ n] (A.indicator (fun _ : Ω => (1 : ℝ))) :=
+    (stronglyMeasurable_const :
+      StronglyMeasurable[⨆ n, ℱ n] (fun _ : Ω => (1 : ℝ))).indicator hA
+  exact
+    durrett2019_theorem_4_6_8_condExp_ae_tendsto_of_iSup_stronglyMeasurable
+      (P := P) (ℱ := ℱ) hA_int hA_stronglyMeasurable
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
