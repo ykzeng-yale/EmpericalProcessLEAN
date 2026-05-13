@@ -32,42 +32,21 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V315` in
+Route from `Live In-Thread Goal Prompt V316` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
-The active theorem lane is Durrett Theorem 2.4.9 Glivenko-Cantelli and Chapter
-2.1 independence/product-law support in
-`StatInference/ProbabilityTheory/Basic.lean`, reusing
-`StatInference.EmpiricalProcess.RealHalfLineGC`,
-`StatInference.EmpiricalProcess.GlivenkoCantelli`, and the local product-law
-wrappers.  V307 adds the canonical infinite iid product-coordinate source
-package and canonical empirical-CDF Glivenko-Cantelli endpoints:
-`durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates`,
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_canonical_iid`,
-and
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid`.
-V308 adds the exact range-sum display wrappers for Durrett's empirical CDF
-notation:
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum`
-and
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_range_sum`.
-V309 adds the exact `n^{-1} * sum` display wrappers:
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum`
-and
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_inv_mul_range_sum`.
-V310 adds direct `iIndepFun` source wrappers for the half-line, empirical-CDF,
-range-sum, and `n^{-1} * sum` Durrett 2.4.9 endpoints.  V311 adds the
-infinite-product-law source criterion and the matching Durrett 2.4.9 product-law
-consumers from a full sequence joint law `P^ℕ`.  V312 adds the
-`IdentDistrib` iid-source bridge and the matching Durrett 2.4.9 consumers from
-one base marginal law, identical distributions, and `iIndepFun`.  V313 adds
-the weaker pairwise-iid consumers from one base marginal law, identical
-distributions, and pairwise coordinate independence.  V314 adds the countable
-product-law forward direction and iff criteria for Chapter 2.1.  V315 adds the
-standard identical-distribution source-shape product-law wrappers.  Do not redo
-the compiled 2.4.9 cutpoint-chain, source displays, canonical iid wrappers,
-`iIndepFun`, product-law, `IdentDistrib`, pairwise-iid, countable product-law,
-or identical-distribution product-law wrappers unless a later theorem exposes a
-precise dependency gap.
+The active theorem lane is Chapter 3 weak convergence, characteristic
+functions, CLT, and Lindeberg-Feller support in
+`StatInference/ProbabilityTheory/Basic.lean`.  V316 adds
+`durrett2019_theorem_3_4_10_lindebergFeller_unitVariance_of_integrableSq`, the
+standard `N(0,1)` source endpoint for Theorem 3.4.10 from row-wise
+independence, mean-zero square-integrable rows, variance-sum convergence to
+`1`, and Lindeberg's condition.
+
+Do not route future cycles back to the compiled Chapter 2.1 product/iid
+wrappers, Theorem 2.4.9 empirical-CDF wrappers, Theorem 2.2 weak-law support,
+Chapter 3.2 weak-convergence wrappers, Theorem 3.3.17 Lévy continuity wrappers,
+Exercise 3.1.1, or the existing Theorem 3.4.10 analytic-certificate stack
+unless a later Chapter 3 theorem exposes a precise missing primitive.
 
 ## Historical Section 4.7 Snapshot
 
@@ -1707,14 +1686,15 @@ Every Lean packet should pass:
 ## Current Next Goal Cycle Contract
 
 Use the current blocker plan's live prompt as the active `/goal` replacement
-whenever the app-level wording lags.  Active frontier only: Durrett 2.4.9 and
-Chapter 2.1 source-shape support in `StatInference/ProbabilityTheory/Basic.lean`.
+whenever the app-level wording lags.  Active frontier: Chapter 3 weak
+convergence, characteristic functions, CLT, and Lindeberg-Feller support in
+`StatInference/ProbabilityTheory/Basic.lean`.
 
-Next proof packet: only add another 2.4.9/2.1 wrapper if it removes a concrete
-source-shape gap for a later theorem.  Otherwise move forward to the next
-Durrett textbook frontier.  Do not route back to the compiled 2.4.9
-cutpoint-chain, empirical-CDF display wrappers, canonical iid wrappers, or old
-Chapter 4 prompt text.
+Next proof packet: close a concrete Chapter 3 source-facing gap around
+Lindeberg-Feller, scalar CLT normalization, characteristic-function estimates,
+or Section 3.10 multivariate CLT wrappers.  Do not route back to the compiled
+Chapter 2 product/iid or empirical-CDF wrappers unless a Chapter 3 theorem
+requires a missing source primitive.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
 one compiled Lean packet, verify focused Lean plus targeted build/scans and root

@@ -9199,6 +9199,39 @@ theorem durrett2019_theorem_3_4_10_lindebergFeller_of_integrableSq
     hY
 
 /--
+Durrett 2019, Theorem 3.4.10, unit-variance Lindeberg-Feller source endpoint.
+
+This is the textbook standard-normal display: if the row variances sum to `1`,
+the rows satisfy Lindeberg's condition, and the row entries are mean-zero,
+square-integrable, and row-wise independent, then the row sums converge in
+distribution to `N(0,1)`.
+-/
+theorem durrett2019_theorem_3_4_10_lindebergFeller_unitVariance_of_integrableSq
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> ℕ -> Ω -> ℝ} {Y : Ω' -> ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m, Integrable (fun ω => X n m ω ^ 2) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X 1)
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 1) P') :
+    TendstoInDistribution
+      (fun n => durrett2019_lindebergFellerRowSum X n)
+      atTop Y (fun _ => P) P' := by
+  have hY' : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 ((1 : ℝ).toNNReal)) P' := by
+    simpa using hY
+  simpa using
+    durrett2019_theorem_3_4_10_lindebergFeller_of_integrableSq
+      (P := P) (P' := P') (X := X) (varianceLimit := 1) (Y := Y)
+      hX hX2 hindep (by norm_num) hmean_zero hvariance hlindeberg hY'
+
+/--
 Durrett early-chapter pi-system uniqueness shape.
 
 Probability laws agreeing on a pi-system that generates the measurable space

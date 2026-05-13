@@ -4,99 +4,34 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V315
+## Live In-Thread Goal Prompt V316
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
 below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane: Durrett Theorem 2.4.9 Glivenko-Cantelli and
-Chapter 2.1 independence/product-law support in
-`StatInference/ProbabilityTheory/Basic.lean`, reusing
-`StatInference.EmpiricalProcess.RealHalfLineGC`,
-`StatInference.EmpiricalProcess.GlivenkoCantelli`,
-`StatInference.EmpiricalProcess.PMeasurable`, and
-`StatInference.ProbabilityMeasure.ProductMeasure`.  Do not re-prove the
-compiled Chapter 2.1 generated-pi-system independence, grouped independence,
-finite disjoint-block independence, finite and pair product-law, finite iid
-product-law, product/Fubini expectation, Theorem 2.1.13 product-expectation,
-Theorem 2.4.9 cutpoint-chain, arbitrary-law half-line GC, empirical-CDF
-book-style endpoint, exact outer-a.s. empirical-CDF endpoint, or the V307
-canonical iid infinite-product coordinate and empirical-CDF wrappers, or the
-V308 textbook range-sum empirical-CDF display wrappers, or the V309 textbook
-`n^{-1} * sum` empirical-CDF display wrappers, or the V310 `iIndepFun`
-source-assumption wrappers for Durrett 2.4.9, or the V311 product-law source
-wrappers, or the V312 `IdentDistrib` plus `iIndepFun` iid-source wrappers, or
-the V313 pairwise-iid source wrappers, or the V314 countable product-law
-forward/criterion wrappers, or the V315 identical-distribution-to-product-law
-wrappers.
+synced `main`.  Active lane: Chapter 3 weak convergence, characteristic
+functions, CLT, and Lindeberg-Feller support in
+`StatInference/ProbabilityTheory/Basic.lean`, reusing mathlib characteristic
+functions, `TendstoInDistribution`, local weak-convergence wrappers, and the
+compiled Chapter 2 product/iid support only when a later Chapter 3 source shape
+needs it.
 
-Latest verified target V315 adds the standard iid source-shape product-law
-wrappers:
-`durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_of_identDistrib` and
-`durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi_of_identDistrib`.
-These combine the base law of `X_0`, `IdentDistrib (X_i) (X_0)`, and
-`iIndepFun` with the V314 countable product-law theorem.
+Latest verified target V316 adds the standard-normal Lindeberg-Feller endpoint
+`durrett2019_theorem_3_4_10_lindebergFeller_unitVariance_of_integrableSq`,
+specializing the compiled Theorem 3.4.10 source bridge to variance sum `1` and
+target law `N(0,1)`.
 
-Compiled support also includes the V314 countable product-law direction and
-criteria for Durrett Theorem 2.1.11:
-`durrett2019_theorem_2_1_11_iIndepFun_hasLaw_infinitePi`,
-`durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi`,
-`durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_infinitePi`, and
-`durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi`.
-
-Compiled support also includes the V313 Durrett 2.4.9 consumers from the weaker
-pairwise-iid source shape: one base marginal law for `X_0`,
-`IdentDistrib (X_i) (X_0)`, and pairwise coordinate independence.  The new
-2.4.9 consumers end at
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_pairwise_identDistrib`.
-
-Compiled support also includes the V312 identical-distribution source bridge
-`durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero`, plus Durrett 2.4.9
-consumers from the standard iid source shape: one base marginal law for `X_0`,
-`IdentDistrib (X_i) (X_0)`, and `iIndepFun`.  The new 2.4.9 consumers end at
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun_identDistrib`.
-
-Compiled support also includes the V311 infinite-product-law source criterion
-`durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi`, plus Durrett
-2.4.9 consumers from a full sequence joint law `P^ℕ`:
-`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_hasLaw_infinitePi`,
-`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_hasLaw_infinitePi`,
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_hasLaw_infinitePi`,
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_hasLaw_infinitePi`,
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_hasLaw_infinitePi`,
-and
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_hasLaw_infinitePi`.
-These convert the sequence product law into coordinate laws plus `iIndepFun`,
-then reuse the V310 source wrappers.
-
-Compiled support also includes the V310 standard iid-source wrappers:
-`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun`,
-`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun`,
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun`,
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun`,
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun`,
-and
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun`.
-The older compiled support also includes the V307 canonical iid product-space bridge:
-`durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates`,
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_canonical_iid`,
-and
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid`,
-plus the exact Durrett range-sum displays
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum`
-and
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_range_sum`,
-and the exact Durrett `n^{-1} * sum` displays
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum`
-and
-`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_inv_mul_range_sum`.
-The next aggressive packet in this lane should only touch Durrett 2.4.9 or
-Chapter 2.1 if it removes a concrete source-shape gap for a later theorem.
-Otherwise move forward to the next textbook frontier; do not loop back through
-the compiled cutpoint-chain, empirical-CDF displays, canonical iid wrappers, or
-stale Chapter 4 prompt text.
+Do not re-prove the compiled Chapter 2.1 product/iid wrappers, Theorem 2.4.9
+empirical-CDF wrappers, Theorem 2.2 weak-law layer-cake support, Chapter 3.2
+weak-convergence wrappers, Theorem 3.3.17 Lévy continuity wrappers, Exercise
+3.1.1 product theorem, or the existing Theorem 3.4.10 Lindeberg-Feller
+analytic certificate stack.  Next aggressive packet: continue Chapter 3 by
+closing a concrete source-facing gap around Lindeberg-Feller, scalar CLT
+normalizations, characteristic-function estimates, or Section 3.10 multivariate
+CLT wrappers; touch Chapter 2 only if a Chapter 3 theorem requires a missing
+source primitive.
 
 ## Historical V306 Prompt Notes
 
