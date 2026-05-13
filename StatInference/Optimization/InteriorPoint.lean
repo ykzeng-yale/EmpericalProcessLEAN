@@ -14087,6 +14087,11 @@ theorem positiveOrthantNegLogGrad_hasFDerivAt {d : ℕ}
     simpa [positiveOrthantNegLogGrad, hproj] using hcomp
   exact hstrict.hasFDerivAt
 
+theorem positiveOrthantNegLogGrad_continuousOn {d : ℕ} :
+    ContinuousOn positiveOrthantNegLogGrad (positiveOrthant (d := d)) := by
+  intro x hx
+  exact (positiveOrthantNegLogGrad_hasFDerivAt hx).continuousAt.continuousWithinAt
+
 theorem positiveOrthantNegLog_newtonStep_mem {d : ℕ}
     {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
     newtonStep positiveOrthantNegLogGrad positiveOrthantNegLogInvHessCLM x ∈
@@ -14960,6 +14965,58 @@ theorem positiveOrthantNegLog_componentCauchy {d : ℕ} :
     (positiveOrthantNegLogInvHessCLM_quadratic_nonneg x)
     (positiveOrthantNegLogHessCLM_quadratic_nonneg hx)
     (positiveOrthantNegLogGrad x) w
+
+set_option maxHeartbeats 800000 in
+theorem chewi1315_positiveOrthantNegLog_gradient_segment_inner_le
+    {d : ℕ} (hd : 0 < d)
+    {x y : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ positiveOrthant (d := d))
+    (hy : y ∈ positiveOrthant (d := d)) :
+    inner ℝ (positiveOrthantNegLogGrad x) (y - x) ≤ (d : ℝ) := by
+  refine chewi1315_segment_inner_le_of_sq_deriv
+    (grad := positiveOrthantNegLogGrad)
+    (hess := positiveOrthantNegLogHessCLM)
+    (x := x) (y := y) (nu := (d : ℝ))
+    (by exact_mod_cast hd)
+    ?_ ?_
+    ?_
+  · exact hessianSegmentGradientInner_continuousOn_of_convex
+      convex_positiveOrthant hx hy positiveOrthantNegLogGrad_continuousOn
+  · intro t ht
+    exact positiveOrthantNegLogGrad_hasFDerivAt
+      (hessianSegmentPoint_mem_of_convex_interior convex_positiveOrthant hx hy ht)
+  · intro t ht
+    have hz : hessianSegmentPoint x y t ∈ positiveOrthant (d := d) :=
+      hessianSegmentPoint_mem_of_convex_interior convex_positiveOrthant hx hy ht
+    have hcauchy_sqrt : ∀ w : EuclideanSpace ℝ (Fin d),
+        inner ℝ (positiveOrthantNegLogGrad (hessianSegmentPoint x y t)) w ≤
+          Real.sqrt (d : ℝ) *
+            localNorm positiveOrthantNegLogHessCLM
+              (hessianSegmentPoint x y t) w := by
+      intro w
+      have hcauchy := positiveOrthantNegLog_componentCauchy hz w
+      have hgrad_bound :=
+        positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card hz
+      calc
+        inner ℝ (positiveOrthantNegLogGrad (hessianSegmentPoint x y t)) w ≤
+            dualLocalNorm positiveOrthantNegLogInvHessCLM
+                (hessianSegmentPoint x y t)
+                (positiveOrthantNegLogGrad (hessianSegmentPoint x y t)) *
+              localNorm positiveOrthantNegLogHessCLM
+                (hessianSegmentPoint x y t) w := hcauchy
+        _ = Real.sqrt (d : ℝ) *
+              localNorm positiveOrthantNegLogHessCLM
+                (hessianSegmentPoint x y t) w := by
+            rw [hgrad_bound]
+    exact inner_sq_le_mul_hessian_of_one_sided_cauchy
+      (hess := positiveOrthantNegLogHessCLM)
+      (x := hessianSegmentPoint x y t)
+      (g := positiveOrthantNegLogGrad (hessianSegmentPoint x y t))
+      (v := y - x)
+      (nu := (d : ℝ))
+      (Nat.cast_nonneg d)
+      (positiveOrthantNegLogHessCLM_quadratic_nonneg hz (y - x))
+      hcauchy_sqrt
 
 theorem negLogBarrier_second_deriv (x : ℝ) :
     deriv^[2] negLogBarrier x = negLogBarrierSecond x := by

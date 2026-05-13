@@ -59,12 +59,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `hessianSegmentGradientInner_continuousOn_of_convex`,
   `chewi1315_segment_inner_le_of_sq_deriv`,
   `chewi1315_gradient_segment_inner_le_of_cauchy`, and
-  `chewi1315_gradient_segment_inner_le_of_cauchy_continuousOn`.
-- Next Chapter 13 target: instantiate Lemma 13.15(2)'s supplied gates for a
-  concrete barrier family, or use the compiled Lemma 13.15 wrappers in the
-  path-following decrement recurrence.  The reciprocal-derivative/sign step is
-  no longer a blocker; remaining gates are concrete continuity,
-  gradient/Hessian differentiability, and local Cauchy bridge certificates.
+  `chewi1315_gradient_segment_inner_le_of_cauchy_continuousOn`, plus the
+  positive-orthant concrete instantiation `positiveOrthantNegLogGrad_continuousOn`
+  and `chewi1315_positiveOrthantNegLog_gradient_segment_inner_le`.
+- Next Chapter 13 target: transport Lemma 13.15(2) from the positive orthant
+  through the affine/range finite-row log-barrier route, or use the compiled
+  Lemma 13.15 wrappers in the path-following decrement recurrence.  The
+  reciprocal-derivative/sign step is no longer a blocker; remaining gates are
+  affine/range continuity and gradient/Hessian differentiability certificates.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

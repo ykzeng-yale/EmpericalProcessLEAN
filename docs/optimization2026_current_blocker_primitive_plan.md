@@ -158,13 +158,15 @@ Lemma 13.15(2) packet adds
 `chewi1315_gradient_segment_inner_le_of_cauchy_continuousOn`.  This discharges
 the source reciprocal/sign/zero-crossing argument in Lean and proves the
 source inequality from convex-domain segment membership, gradient continuity,
-gradient/Hessian differentiability, and the local Cauchy bridge.  The next
-theorem-sized packet should either instantiate these gates for a concrete
-barrier family such as the arbitrary finite-row log barrier, or move directly
-into the path-following decrement recurrence after recording which
-continuity/differentiability certificates are still supplied.  Do not route the
-next run back to product/sum/affine/range barrier setup unless a new downstream
-proof directly needs one of those already-verified declarations.
+gradient/Hessian differentiability, and the local Cauchy bridge.  The newest
+concrete instantiation adds `positiveOrthantNegLogGrad_continuousOn` and
+`chewi1315_positiveOrthantNegLog_gradient_segment_inner_le`, proving Lemma
+13.15(2) for the finite positive-orthant logarithmic barrier when `0 < d`.
+The next theorem-sized packet should either transport this through the
+affine/range finite-row log-barrier route or use the compiled Lemma 13.15
+wrappers in the path-following decrement recurrence.  Do not route the next run
+back to product/sum/affine/range barrier setup unless a new downstream proof
+directly needs one of those already-verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

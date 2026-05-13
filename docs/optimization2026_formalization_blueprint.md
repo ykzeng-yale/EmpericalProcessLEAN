@@ -185,9 +185,13 @@ Lemma 13.15(2) packet
 `chewi1315_gradient_segment_inner_le_of_cauchy_continuousOn` now formalizes
 Chewi's reciprocal-derivative/sign argument and turns the squared gradient
 inequality plus the segment gradient derivative into
-`<grad f(x), y-x> <= nu`.  The next Chapter 13 theorem-sized target should
-instantiate these supplied gates for a concrete barrier family or use them in
-the path-following decrement recurrence.  The
+`<grad f(x), y-x> <= nu`.  The concrete positive-orthant consumer
+`positiveOrthantNegLogGrad_continuousOn` and
+`chewi1315_positiveOrthantNegLog_gradient_segment_inner_le` now instantiate
+that theorem for the finite product logarithmic barrier with parameter `d`.
+The next Chapter 13 theorem-sized target should transport this through the
+affine/range finite-row log-barrier route or use it in the path-following
+decrement recurrence.  The
 row-decomposition lemmas
 `polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
 `mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`, and
