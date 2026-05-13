@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V271`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V272`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -58,8 +58,10 @@ as Durrett Theorem 4.6.8 in a.s. and `L¹` forms and adds the immediate Theorem
 4.6.9 conditional-indicator convergence consequence.  V271 starts Theorem
 4.6.10 with the final bridge from the source estimate
 `E(|Y_n - Y| | ℱ_n) -> 0` a.s. to the desired varying conditional-expectation
-convergence.  The next proof packet should prove that source estimate from the
-dominated tail-envelope argument.  V259 closes the
+convergence.  V272 adds the tail-envelope source-estimate bridge that reduces
+that estimate to eventual fixed-tail conditional bounds plus vanishing limiting
+tail conditional expectations.  The next proof packet should instantiate that
+bridge with the concrete textbook `W_N` envelope.  V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:
 the unit-variance, Rademacher, and canonical Rademacher endpoints now use

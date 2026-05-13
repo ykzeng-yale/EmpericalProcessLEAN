@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V271` in
+Route from `Live In-Thread Goal Prompt V272` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.6 uniform integrability and
 `L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
@@ -74,8 +74,12 @@ conditional expectation onto `⨆ n, ℱ n`.  It also adds Theorem 4.6.9:
 V271 starts Theorem 4.6.10 with
 `durrett2019_theorem_4_6_10_condExp_tendsto_of_abs_error_condExp_tendsto_zero`,
 the final bridge from `E(|Y_n - Y| | ℱ_n) -> 0` a.s. to the desired varying
-conditional-expectation convergence.  The next target is proving that source
-estimate from the dominated tail-envelope argument.
+conditional-expectation convergence.  V272 adds
+`durrett2019_theorem_4_6_10_abs_error_condExp_tendsto_zero_of_tail_condExp_bounds`,
+the order-theoretic tail-envelope bridge that turns eventual fixed-tail
+conditional bounds plus vanishing limiting tail conditionals into that source
+estimate.  The next target is instantiating V272 with the concrete textbook
+`W_N` envelope.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

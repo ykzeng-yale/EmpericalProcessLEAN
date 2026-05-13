@@ -27164,6 +27164,72 @@ theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_abs_error_condExp_tendsto_
   simpa [sub_add_cancel] using hSum
 
 /--
+Durrett 2019, Theorem 4.6.10, tail-envelope source-estimate bridge.
+
+This isolates the order-theoretic core of the textbook `W_N` argument.  If the
+conditional absolute errors are eventually bounded by each fixed tail envelope,
+the fixed tail envelopes converge along the filtration, and their limiting
+conditional expectations tend to zero, then the source estimate
+`E(|Y_n - Y| | ℱ_n) -> 0` holds a.s.
+-/
+theorem durrett2019_theorem_4_6_10_abs_error_condExp_tendsto_zero_of_tail_condExp_bounds
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {W : ℕ -> Ω -> ℝ}
+    (hError_le_tail :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          ∀ᶠ n in atTop,
+            P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω ≤ P[W N | ℱ n] ω)
+    (hTail_upward :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          Tendsto (fun n => P[W N | ℱ n] ω) atTop
+            (𝓝 (P[W N | ⨆ k, ℱ k] ω)))
+    (hTail_limit_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun N => P[W N | ⨆ k, ℱ k] ω) atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω) atTop (𝓝 0) := by
+  have hError_nonneg :
+      ∀ᵐ ω ∂P, ∀ n,
+        0 ≤ P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω := by
+    rw [ae_all_iff]
+    intro n
+    exact condExp_nonneg (μ := P) (m := ℱ n)
+      (Eventually.of_forall fun x => norm_nonneg (Y n x - Ylim x))
+  have hError_le_tail_ae :
+      ∀ᵐ ω ∂P, ∀ N,
+        ∀ᶠ n in atTop,
+          P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω ≤ P[W N | ℱ n] ω := by
+    exact ae_all_iff.2 hError_le_tail
+  have hTail_upward_ae :
+      ∀ᵐ ω ∂P, ∀ N,
+        Tendsto (fun n => P[W N | ℱ n] ω) atTop
+          (𝓝 (P[W N | ⨆ k, ℱ k] ω)) := by
+    exact ae_all_iff.2 hTail_upward
+  filter_upwards
+    [hError_nonneg, hError_le_tail_ae, hTail_upward_ae, hTail_limit_zero]
+    with ω hError_nonnegω hError_le_tailω hTail_upwardω hTail_limit_zeroω
+  rw [tendsto_order]
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun n => lt_of_lt_of_le ha (hError_nonnegω n)
+  · intro a ha
+    have hhalf_pos : 0 < a / 2 := half_pos ha
+    have hTailLimit_eventually :
+        ∀ᶠ N in atTop, P[W N | ⨆ k, ℱ k] ω < a / 2 :=
+      (tendsto_order.1 hTail_limit_zeroω).2 (a / 2) hhalf_pos
+    rcases eventually_atTop.1 hTailLimit_eventually with ⟨N, hN⟩
+    have hTailLimit_lt : P[W N | ⨆ k, ℱ k] ω < a := by
+      exact (hN N le_rfl).trans (half_lt_self ha)
+    have hTailFixed_eventually :
+        ∀ᶠ n in atTop, P[W N | ℱ n] ω < a :=
+      (tendsto_order.1 (hTail_upwardω N)).2 a hTailLimit_lt
+    filter_upwards [hError_le_tailω N, hTailFixed_eventually] with n hError_le hTail_lt
+    exact lt_of_le_of_lt hError_le hTail_lt
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
