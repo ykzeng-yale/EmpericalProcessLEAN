@@ -1,6 +1,6 @@
 # van der Vaart 1998 Progress Dashboard
 
-Status date: 2026-05-12.
+Status date: 2026-05-13.
 
 ## Current Lane
 
@@ -15,14 +15,21 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: derivative-law vector integrability source endpoint for
-the score-at-theta0/Taylor route, including
+Latest verified packet: limit-law mean source endpoint for the
+score-at-theta0/Taylor route, including
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+in `MEstimators.lean`.  It derives every projected limit mean field from
+`∫ z, z ∂(Q.map Z) = 0` using `integral_map` and
+`ContinuousLinearMap.integral_comp_comm`.
+
+Immediate predecessor packet: derivative-law vector integrability source
+endpoint for the score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 in `MEstimators.lean`.  It derives coordinate derivative-law entry
 integrability from `Integrable id derivativeLaw` by composing with continuous
 coordinate projections.
 
-Immediate predecessor packet: score-law vector moment source endpoint for the
+Earlier predecessor packet: score-law vector moment source endpoint for the
 score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 in `MEstimators.lean`.  It derives coordinate score-law `L²` from
@@ -898,10 +905,11 @@ for the score-law and derivative-law state spaces internally and derives
 coordinatewise score-vector measurability from vector-valued score-vector
 measurability.  It also derives coordinate score-law `L²` and zero mean from
 vector-level score-law moment sources, and coordinate derivative-law entry
-integrability from `Integrable id derivativeLaw`.  Move next only on a live
-source hypothesis of that endpoint, preferably a concrete model-specialized
-Theorem 5.41 instantiation or a narrow source package that removes another
-exposed model-facing field.
+integrability from `Integrable id derivativeLaw`; it derives projected limit
+mean fields from vector-law mean zero.  Move next only on a live source
+hypothesis of that endpoint, preferably a concrete model-specialized Theorem
+5.41 instantiation or a narrow source package that removes another exposed
+model-facing field.
 Do not replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
 score infrastructure, derivative-bound and finite strong-law infrastructure,
 law-tail routing, display-congruence, display-convergence, display weak
@@ -913,7 +921,8 @@ estimator-definition/raw-root/measurability/sampled-derivative-action/
 population-`V` basis-action/pointwise-smoothness/score-vector display source
 wrappers, direct vector/table wrappers, coordinate-projection wrappers,
 score-vector measurability wrappers, score-law vector moment wrappers,
-derivative-law vector integrability wrappers, or historical ledger items.
+derivative-law vector integrability wrappers, limit-law mean source wrappers,
+or historical ledger items.
 
 ## Reuse Dependencies
 
