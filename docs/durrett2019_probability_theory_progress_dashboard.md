@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V270` in
+Route from `Live In-Thread Goal Prompt V271` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.6 uniform integrability and
 `L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
@@ -71,8 +71,11 @@ V270 packages Theorem 4.6.8 via Mathlib's Lévy upward theorem in a.s. and `L¹`
 forms, both for an already `⨆ n, ℱ n`-measurable limit and for the target
 conditional expectation onto `⨆ n, ℱ n`.  It also adds Theorem 4.6.9:
 `durrett2019_theorem_4_6_9_levy_zero_one_condExp_indicator_ae_tendsto`.
-The next target is Theorem 4.6.10: dominated convergence for conditional
-expectations along an increasing filtration.
+V271 starts Theorem 4.6.10 with
+`durrett2019_theorem_4_6_10_condExp_tendsto_of_abs_error_condExp_tendsto_zero`,
+the final bridge from `E(|Y_n - Y| | ℱ_n) -> 0` a.s. to the desired varying
+conditional-expectation convergence.  The next target is proving that source
+estimate from the dominated tail-envelope argument.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

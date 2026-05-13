@@ -27112,6 +27112,58 @@ theorem durrett2019_theorem_4_6_9_levy_zero_one_condExp_indicator_ae_tendsto
       (P := P) (ℱ := ℱ) hA_int hA_stronglyMeasurable
 
 /--
+Durrett 2019, Theorem 4.6.10, final conditional dominated-convergence bridge.
+
+The remaining source estimate in the textbook proof is
+`E(|Y_n - Y| | ℱ_n) -> 0` a.s.  Once that estimate is available, Jensen's
+inequality for conditional expectation and Theorem 4.6.8 give the desired
+varying-conditional-expectation convergence.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_abs_error_condExp_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hAbsError :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n => P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω)
+          atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  have hFixed :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n => P[Ylim | ℱ n] ω) atTop
+          (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) :=
+    durrett2019_theorem_4_6_8_condExp_ae_tendsto_iSup_condExp
+      (P := P) (ℱ := ℱ) Ylim
+  have hBound :
+      ∀ᵐ ω ∂P, ∀ n,
+        ‖P[Y n | ℱ n] ω - P[Ylim | ℱ n] ω‖ ≤
+          P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω := by
+    rw [ae_all_iff]
+    intro n
+    have hSub :
+        P[(fun x => Y n x - Ylim x) | ℱ n] =ᵐ[P]
+          P[Y n | ℱ n] - P[Ylim | ℱ n] :=
+      condExp_sub (μ := P) (m := ℱ n) (hY_int n) hYlim_int
+    have hNorm :
+        (fun ω => ‖P[(fun x => Y n x - Ylim x) | ℱ n] ω‖) ≤ᵐ[P]
+          P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] :=
+      norm_condExp_le (μ := P) (m := ℱ n)
+        (f := fun x => Y n x - Ylim x)
+    filter_upwards [hSub, hNorm] with ω hSubω hNormω
+    simpa [hSubω] using hNormω
+  filter_upwards [hAbsError, hFixed, hBound] with ω hAbsω hFixedω hBoundω
+  have hDiff :
+      Tendsto (fun n => P[Y n | ℱ n] ω - P[Ylim | ℱ n] ω) atTop (𝓝 0) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    exact squeeze_zero' (Eventually.of_forall fun n => norm_nonneg _)
+      (Eventually.of_forall fun n => hBoundω n) hAbsω
+  have hSum := hDiff.add hFixedω
+  simpa [sub_add_cancel] using hSum
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V270`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V271`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -55,9 +55,11 @@ adds the compact Theorem 4.6.7 display forms for equivalence with an integrable
 `L¹` limit and equivalence with representation as conditional expectations of
 one integrable random variable.  V270 packages Mathlib's Lévy upward theorem
 as Durrett Theorem 4.6.8 in a.s. and `L¹` forms and adds the immediate Theorem
-4.6.9 conditional-indicator convergence consequence.  The next proof packet
-should move to Theorem 4.6.10, the dominated convergence theorem for
-conditional expectations along an increasing filtration.  V259 closes the
+4.6.9 conditional-indicator convergence consequence.  V271 starts Theorem
+4.6.10 with the final bridge from the source estimate
+`E(|Y_n - Y| | ℱ_n) -> 0` a.s. to the desired varying conditional-expectation
+convergence.  The next proof packet should prove that source estimate from the
+dominated tail-envelope argument.  V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:
 the unit-variance, Rademacher, and canonical Rademacher endpoints now use
