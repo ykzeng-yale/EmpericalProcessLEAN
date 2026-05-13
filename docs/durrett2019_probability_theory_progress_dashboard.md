@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V246` in
+Route from `Live In-Thread Goal Prompt V247` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Theorem 4.5.7 in
 `StatInference/ProbabilityTheory/Martingale.lean`.  V201 compiles the
@@ -296,13 +296,22 @@ the source-level Tonelli/measurability swap layer.  V246 adds
 `durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral_of_integrable`,
 and
 `durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral_of_source_monotone_terminal`,
-the `p = 1/2` square-root weighted-tail layer-cake endpoint.  The next target
-is the one-dimensional inverse-square calculus package plus the monotone
+the `p = 1/2` square-root weighted-tail layer-cake endpoint.  V247 adds
+`durrett2019_theorem_4_5_7_inv_sq_weight_of_toNNReal_sq`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_rpow_neg_two`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_rpow_neg_two`,
+`durrett2019_theorem_4_5_7_ofReal_sqrt_inv_eq_rpow_half_sub_one`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_toNNReal_sq_inv_eq_tail_weight`,
+and
+`durrett2019_theorem_4_5_7_const_div_lintegral_Ioi_sqrt_toNNReal_sq`,
+the inverse-square denominator/calculus layer for the fixed-`b` inner
+integral.  The next target is the event-split restriction package plus the monotone
 finite-horizon-to-supremum limit; do not redo the Doob/Kolmogorov probability
 conversion, stopped-source packaging, raw/stopped survival packaging, V241
 layer-cake handoff, V242 first-RHS bridge, V243 truncation layer-cake bridge,
 V244 weighted double-integral handoff, V245 Tonelli swap layer, or V246
-square-root weighted-tail endpoint.
+square-root weighted-tail endpoint, or V247 inverse-square denominator
+calculus.
 
 Closed Chapter 2 support remains available in
 `StatInference/ProbabilityTheory/Basic.lean`, with empirical-CDF support in
@@ -1263,7 +1272,7 @@ mostly mathlib-foundation plus Billingsley reusable support.
 | Chapter 2.3 Borel-Cantelli | source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/BorelCantelli.lean` | Durrett wrappers for Theorems 2.3.1 and 2.3.7 compile over existing local Borel-Cantelli wrappers. |
 | Chapter 2.4 SLLN and empirical CDF | source-wrapper/local-layer | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityMeasure/StrongLaw.lean`; `StatInference/EmpiricalProcess/RealHalfLineGC.lean` | Durrett Theorem 2.4.1 source wrappers compile over the local strong-law wrappers. Conditional Theorem 2.4.9 handoffs compile from supplied endpoint grids, supplied middle CDF partitions, supplied cutpoint chains, or supplied center-range monotone subdivisions. The one-cell, two-cell, right-append, finite cutpoint-chain, cutpoint-chain append, endpoint-grid-to-chain, closed-cover, punctured-cover, punctured-cover inserted-subcell CDF increment, punctured-cover cell splitting, open-cover/center-avoidance, endpoint-center, strict-subdivision-prefix, extracted-subdivision-adjacency, monotone-duplicate-skip, monotone endpoint-center, monotone center-range, arbitrary-law punctured local/finite compact-cover, arbitrary-law punctured monotone-subdivision, arbitrary-law punctured monotone-subdivision cutpoint-chain, arbitrary-law cutpoint-chain, arbitrary-law half-line GC, source-facing empirical-CDF predicate, EDF theorem wrapper, non-atomic local small-neighborhood, non-atomic finite compact-cover, non-atomic monotone-subdivision, non-atomic cutpoint-chain, cutpoint-chain-to-GC, center-range subdivision-to-GC, and non-atomic GC packages compile. Treat this lane as reusable support unless a later theorem reopens an exact source-shape gap. |
 | Chapter 3 weak convergence, CLT, and characteristic functions | source-wrapper/closed-support | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityTheory/Multivariate.lean`; `StatInference/ProbabilityMeasure/WeakConvergence.lean`; `StatInference/EmpiricalProcess/WeakConvergence.lean`; `StatInference/AsymptoticStatistics/MomentEstimators.lean`; mathlib `ConvergenceInDistribution`, characteristic-function, Levy, Taylor, and CLT APIs | Section 3.2 weak convergence now has compiled wrappers for Theorem 3.2.9 bounded-continuous tests, Theorem 3.2.10 continuous mapping continuous case, and Theorem 3.2.11 Portmanteau. Section 3.3 now has compiled Theorem 3.3.1 basic characteristic-function wrappers, Theorem 3.3.2 independent-sum product law, Theorem 3.3.17 continuity theorem wrappers, Theorem 3.3.19 scalar Taylor remainder estimate, and Theorem 3.3.20 centered Taylor support. Section 3.4 now has Theorem 3.4.1 i.i.d. CLT wrappers plus Theorem 3.4.10 triangular-array characteristic-function product, explicit Gaussian display, row Gaussian target, quadratic variance product, Exercise 3.1.1 row-sum/max/absolute-bound/product interfaces, the proved Exercise 3.1.1 real triangular-array product theorem, variance-tail-to-max-smallness bridges, the variance-tail split proved from square-integrable rows, max-row-variance-to-factor-norm bridges, Lemma 3.4.3 product-difference control, analytic-certificate bridges from supplied split product approximations, a named characteristic/quadratic error row sum, compiled finite-row/one-factor/scalar-Taylor/expansion/remainder bridges, and a final square-integrable Lindeberg-Feller source wrapper. Section 3.10 has a finite-coordinate law-level Cramer-Wold wrapper, Theorem 3.10.7 projected scalar/summand and covariance/Gaussian source wrappers, theta-projection Gaussian characteristic-function covariance-table display, all-dual source handoffs, coordinate-mean handoff, scalar coordinate covariance and centered-product source endpoints, vector Gaussian coordinate-covariance CLT wrappers, common-vector-law coordinate-covariance wrapper, canonical i.i.d. product-sample endpoints, Gaussian-coordinate independence criterion wrappers, and Exercise 3.10.8 linear-combination characterization wrappers. |
-| Chapter 4 martingales | active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityTheory/ConditionalExpectation.lean`; `StatInference/ProbabilityTheory/Martingale.lean`; mathlib `Probability/ConditionalExpectation.lean` and `Probability/Martingale/*` | Chapter 4.1 conditional expectation is compiled through Theorem 4.1.15. Chapter 4.2 and Chapter 4.3 are reusable support. Chapter 4.4 now includes the maximal-inequality route through Theorem 4.4.6, Theorem 4.4.7 orthogonality, Theorem 4.4.8 conditional variance, Example 4.4.9 nonzero-limit support, Exercise 4.4.10 `L^2` and almost-sure convergence from square-summable increments, and Exercise 4.4.11 predictable-transform and Kronecker wrappers. Section 4.5.1 has the finite Doob `L^2` route and source bridge. V201-V204 compile Theorem 4.5.2 source/event-local convergence infrastructure. V205-V223 compile the Theorem 4.5.3 random-normalizer/variance-ratio/tail-integral route. V224-V235 compile the final Theorem 4.5.5 conditional Borel-Cantelli ratio package. V236-V246 now compile the Theorem 4.5.7 finite maximal-probability layer through the source-level Tonelli swap and square-root weighted-tail endpoint for the weighted second RHS integral. Next target: evaluate the swapped second RHS integral by one-dimensional calculus and then pass from finite horizons to `sup_n`. |
+| Chapter 4 martingales | active/source-wrapper | `StatInference/ProbabilityTheory/Basic.lean`; `StatInference/ProbabilityTheory/ConditionalExpectation.lean`; `StatInference/ProbabilityTheory/Martingale.lean`; mathlib `Probability/ConditionalExpectation.lean` and `Probability/Martingale/*` | Chapter 4.1 conditional expectation is compiled through Theorem 4.1.15. Chapter 4.2 and Chapter 4.3 are reusable support. Chapter 4.4 now includes the maximal-inequality route through Theorem 4.4.6, Theorem 4.4.7 orthogonality, Theorem 4.4.8 conditional variance, Example 4.4.9 nonzero-limit support, Exercise 4.4.10 `L^2` and almost-sure convergence from square-summable increments, and Exercise 4.4.11 predictable-transform and Kronecker wrappers. Section 4.5.1 has the finite Doob `L^2` route and source bridge. V201-V204 compile Theorem 4.5.2 source/event-local convergence infrastructure. V205-V223 compile the Theorem 4.5.3 random-normalizer/variance-ratio/tail-integral route. V224-V235 compile the final Theorem 4.5.5 conditional Borel-Cantelli ratio package. V236-V247 now compile the Theorem 4.5.7 finite maximal-probability layer through the source-level Tonelli swap, square-root weighted-tail endpoint, and inverse-square denominator calculus for the weighted second RHS integral. Next target: finish the fixed-`b` event-split inner integral and then pass from finite horizons to `sup_n`. |
 | Chapter 5 Markov chains | pending-local | none | Likely requires new local abstractions for transition kernels and hitting times. |
 | Chapters 6-8 ergodic/Brownian/Donsker | pending-local | none | Defer until early probability spine is stable or remote agents land reusable support. |
 
@@ -1306,20 +1315,21 @@ Use the current blocker plan's live prompt as the active `/goal` replacement
 whenever the app-level wording lags.  Active frontier only: Durrett Theorem
 4.5.7 in `StatInference/ProbabilityTheory/Martingale.lean`.
 
-Next proof packet: evaluate the remaining swapped second V241
-right-hand-side integral by deterministic inverse-square calculus and connect
-the result to the V246 weighted-tail endpoint, then to
+Next proof packet: prove the fixed-`b` event-split inner integral after the
+V245 Tonelli swap and V247 denominator calculus, then connect the result to
+the V246 weighted-tail endpoint and finally to
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search mathlib/local APIs first,
-especially `integrableOn_Ioi_rpow_of_lt`, `integral_Ioi_rpow_of_lt`,
-`ofReal_integral_eq_lintegral_ofReal`, `lintegral_const_mul`,
-`ENNReal.ofReal`, `Real.lt_sqrt`, and monotone convergence APIs for the finite
+especially `lintegral_indicator`, `setLIntegral_congr_fun`,
+`Measure.restrict_restrict_of_subset`, `Real.sqrt_lt'`, `Measure.measure_congr`,
+finite-measure `measure_ne_top`, and monotone convergence APIs for the finite
 running maxima.
 Do not re-prove compiled Chapter 2/3, Theorem 4.5.2, Theorem 4.5.3, Theorem
 4.5.5, the V236 probability conversion, V237/V238/V239 stopped-source
 packaging, the V240 raw/stopped survival split, the V241 layer-cake handoff,
 the V242 first-RHS bridge, or the V243 truncation layer-cake bridge while this
 frontier is active.  Do not redo the V244 weighted double-integral handoff,
-the V245 Tonelli swap, or the V246 square-root weighted-tail endpoint.
+the V245 Tonelli swap, the V246 square-root weighted-tail endpoint, or the V247
+inverse-square denominator calculus.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
 one compiled Lean packet, verify focused Lean plus targeted build/scans and root

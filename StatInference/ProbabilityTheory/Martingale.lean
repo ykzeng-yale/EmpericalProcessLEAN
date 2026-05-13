@@ -23737,6 +23737,138 @@ theorem
 /--
 Durrett 2019, Theorem 4.5.7 deterministic RHS support.
 
+On the positive half-line, the textbook denominator
+`((Real.toNNReal a)^2 : ENNReal)` is exactly the inverse-square weight.
+-/
+theorem durrett2019_theorem_4_5_7_inv_sq_weight_of_toNNReal_sq
+    {a : ℝ} (ha : 0 < a) :
+    ((((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞))⁻¹ =
+      ENNReal.ofReal (a ^ (-2 : ℝ)) := by
+  have hden :
+      ((((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+        ENNReal.ofReal (a ^ 2) := by
+    rw [ENNReal.ofReal_pow ha.le 2]
+    rw [← ENNReal.ofNNReal_toNNReal a]
+    exact ENNReal.coe_pow (Real.toNNReal a) 2
+  have hrpow : (a ^ 2)⁻¹ = a ^ (-2 : ℝ) := by
+    rw [← Real.rpow_neg_one (a ^ 2)]
+    rw [← Real.rpow_natCast]
+    rw [← Real.rpow_mul ha.le]
+    norm_num
+  rw [hden, ← ENNReal.ofReal_inv_of_pos (sq_pos_of_pos ha), hrpow]
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+Lebesgue `lintegral` form of the one-dimensional inverse-square calculation:
+`∫_c^∞ a^{-2} da = c^{-1}` for `c > 0`.
+-/
+theorem durrett2019_theorem_4_5_7_lintegral_Ioi_rpow_neg_two
+    {c : ℝ} (hc : 0 < c) :
+    (∫⁻ a in Set.Ioi c, ENNReal.ofReal (a ^ (-2 : ℝ)) ∂volume) =
+      ENNReal.ofReal c⁻¹ := by
+  have hint :
+      IntegrableOn (fun a : ℝ => a ^ (-2 : ℝ)) (Set.Ioi c) volume :=
+    integrableOn_Ioi_rpow_of_lt
+      (a := (-2 : ℝ)) (c := c) (by norm_num) hc
+  have hnonneg :
+      0 ≤ᵐ[volume.restrict (Set.Ioi c)] fun a : ℝ => a ^ (-2 : ℝ) := by
+    filter_upwards
+      [self_mem_ae_restrict (measurableSet_Ioi : MeasurableSet (Set.Ioi c))]
+      with a ha
+    exact Real.rpow_nonneg (le_of_lt (hc.trans ha)) (-2 : ℝ)
+  have hconvert :
+      ENNReal.ofReal (∫ a in Set.Ioi c, a ^ (-2 : ℝ) ∂volume) =
+        ∫⁻ a in Set.Ioi c, ENNReal.ofReal (a ^ (-2 : ℝ)) ∂volume :=
+    ofReal_integral_eq_lintegral_ofReal hint hnonneg
+  rw [← hconvert]
+  rw [integral_Ioi_rpow_of_lt (a := (-2 : ℝ)) (c := c) (by norm_num) hc]
+  congr 1
+  rw [show (-2 : ℝ) + 1 = -1 by norm_num]
+  rw [Real.rpow_neg_one]
+  ring
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+Specialization of the inverse-square calculation at the lower endpoint
+`sqrt b`.
+-/
+theorem durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_rpow_neg_two
+    {b : ℝ} (hb : 0 < b) :
+    (∫⁻ a in Set.Ioi (Real.sqrt b), ENNReal.ofReal (a ^ (-2 : ℝ)) ∂volume) =
+      ENNReal.ofReal (Real.sqrt b)⁻¹ :=
+  durrett2019_theorem_4_5_7_lintegral_Ioi_rpow_neg_two
+    (c := Real.sqrt b) (Real.sqrt_pos.2 hb)
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+The inverse-square integral endpoint `1 / sqrt b` is the same tail weight
+`b^(1/2 - 1)` used by the `p = 1/2` layer-cake formula.
+-/
+theorem durrett2019_theorem_4_5_7_ofReal_sqrt_inv_eq_rpow_half_sub_one
+    {b : ℝ} (hb : 0 < b) :
+    ENNReal.ofReal (Real.sqrt b)⁻¹ =
+      ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) := by
+  congr 1
+  rw [Real.sqrt_eq_rpow]
+  rw [← Real.rpow_neg_one (b ^ ((1 : ℝ) / 2))]
+  rw [← Real.rpow_mul hb.le]
+  congr 1
+  ring
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+The actual denominator from the stopped maximal inequality has the same
+inverse-square integral over `a > sqrt b` as the textbook tail weight.
+-/
+theorem
+    durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_toNNReal_sq_inv_eq_tail_weight
+    {b : ℝ} (hb : 0 < b) :
+    (∫⁻ a in Set.Ioi (Real.sqrt b),
+        ((((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞))⁻¹ ∂volume) =
+      ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) := by
+  calc
+    (∫⁻ a in Set.Ioi (Real.sqrt b),
+        ((((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞))⁻¹ ∂volume)
+        = ∫⁻ a in Set.Ioi (Real.sqrt b),
+            ENNReal.ofReal (a ^ (-2 : ℝ)) ∂volume := by
+          refine MeasureTheory.lintegral_congr_ae ?_
+          filter_upwards
+            [self_mem_ae_restrict
+              (measurableSet_Ioi : MeasurableSet (Set.Ioi (Real.sqrt b)))]
+            with a ha
+          exact durrett2019_theorem_4_5_7_inv_sq_weight_of_toNNReal_sq
+            ((Real.sqrt_pos.2 hb).trans ha)
+    _ = ENNReal.ofReal (Real.sqrt b)⁻¹ :=
+          durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_rpow_neg_two hb
+    _ = ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) :=
+          durrett2019_theorem_4_5_7_ofReal_sqrt_inv_eq_rpow_half_sub_one hb
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+Constant-coefficient form of the previous inverse-square calculation.  This
+is the deterministic part of the fixed-`b` inner integral after the event
+`b < a^2` has been rewritten as `sqrt b < a`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_const_div_lintegral_Ioi_sqrt_toNNReal_sq
+    {b : ℝ} (hb : 0 < b) (C : ℝ≥0∞) (hC_ne_top : C ≠ ∞) :
+    (∫⁻ a in Set.Ioi (Real.sqrt b),
+        C / (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) ∂volume) =
+      C * ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) := by
+  simp_rw [div_eq_mul_inv]
+  rw [lintegral_const_mul' C
+    (fun a : ℝ => ((((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞))⁻¹) hC_ne_top]
+  rw [durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_toNNReal_sq_inv_eq_tail_weight hb]
+  ring_nf
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
 The square-root terminal expectation is the `p = 1/2` layer-cake endpoint
 for the terminal clock.  This is the weighted-tail form that the remaining
 one-dimensional calculus step must match after the Tonelli swap.

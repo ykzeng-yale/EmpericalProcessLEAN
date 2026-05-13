@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V246
+## Live In-Thread Goal Prompt V247
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,8 +19,19 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V246 adds the square-root weighted-tail
-layer-cake endpoint:
+Latest verified Lean packet V247 adds the inverse-square calculus and
+denominator normalization layer:
+`durrett2019_theorem_4_5_7_inv_sq_weight_of_toNNReal_sq`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_rpow_neg_two`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_rpow_neg_two`,
+`durrett2019_theorem_4_5_7_ofReal_sqrt_inv_eq_rpow_half_sub_one`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_toNNReal_sq_inv_eq_tail_weight`,
+and
+`durrett2019_theorem_4_5_7_const_div_lintegral_Ioi_sqrt_toNNReal_sq`.
+It proves that the exact denominator from the maximal inequality integrates
+over `a > sqrt b` to the `b^(1/2 - 1)` tail weight, including a finite
+constant-coefficient form.  V246 adds the square-root weighted-tail layer-cake
+endpoint:
 `durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral`,
 `durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral_of_integrable`,
 and
@@ -90,25 +101,28 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: prove the remaining inner
-one-dimensional inverse-square integral after the V245 Tonelli swap, including
-the event rewrite `b < a^2` on `a > 0` as `sqrt b < a`, the denominator rewrite
-from `((Real.toNNReal a)^2 : ENNReal)` to the `a^{-2}` weight, and the calculus
-identity `∫_{sqrt b}^∞ a^{-2} da = 1 / sqrt b`.  Then assemble the V244/V245
-second-RHS handoff with the V246 weighted-tail endpoint to prove
+Next aggressive theorem-sized packet: prove the fixed-`b` event-split inner
+integral after the V245 Tonelli swap:
+`∫_0^∞ P(b < A_infty, b < a^2) / ((Real.toNNReal a)^2) da =
+  P(b < A_infty) * b^(1/2 - 1)`.
+Use V247 to handle the denominator and calculus after rewriting
+`b < a^2` on `a > 0` as `sqrt b < a`; the remaining hard part is the set
+integral restriction/indicator transition from `a > 0` to `a > sqrt b`.
+Then assemble the V244/V245 second-RHS handoff with the V246 weighted-tail
+endpoint to prove
 `∫_0^∞ a^{-2} E(A_infty ∧ a^2) da = 2 E sqrt(A_infty)`, toward Durrett's
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search Mathlib/local APIs first
-(`integrableOn_Ioi_rpow_of_lt`, `integral_Ioi_rpow_of_lt`,
-`ofReal_integral_eq_lintegral_ofReal`, `lintegral_const_mul`,
-`ENNReal.ofReal`, `Real.lt_sqrt`, monotone running-supremum support, and
+(`lintegral_indicator`, `setLIntegral_congr_fun`,
+`Measure.restrict_restrict_of_subset`, `Real.sqrt_lt'`, `Measure.measure_congr`,
+finite-measure `measure_ne_top`, monotone running-supremum support, and
 `Monotone.lintegral_iSup`/monotone convergence APIs).  Do not revisit closed
 Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the V236 probability conversion, the
 V237/V238/V239 stopped source packaging, the V240 raw/stopped survival split,
 the V241 layer-cake handoff, the V242 first-RHS bridge, the V243
 truncated-terminal layer-cake bridge, the V244 weighted double-integral
-handoff, the V245 Tonelli/measurability swap layer, or the V246 square-root
-weighted-tail endpoint unless a compile error exposes a genuinely missing
-primitive.
+handoff, the V245 Tonelli/measurability swap layer, the V246 square-root
+weighted-tail endpoint, or the V247 inverse-square denominator calculus unless
+a compile error exposes a genuinely missing primitive.
 
 ## Recent Route Notes
 
@@ -592,9 +606,22 @@ and
 This gives the exact `p = 1/2` layer-cake target that the second-RHS calculus
 step must match.
 
-Next aggressive step: continue Durrett Theorem 4.5.7 by proving the inner
-inverse-square calculus calculation after Tonelli, then assemble it with the
-V246 weighted-tail endpoint so the V241/V242 RHS turns into
+V247 adds the inverse-square calculus and denominator normalization layer:
+`durrett2019_theorem_4_5_7_inv_sq_weight_of_toNNReal_sq`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_rpow_neg_two`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_rpow_neg_two`,
+`durrett2019_theorem_4_5_7_ofReal_sqrt_inv_eq_rpow_half_sub_one`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_toNNReal_sq_inv_eq_tail_weight`,
+and
+`durrett2019_theorem_4_5_7_const_div_lintegral_Ioi_sqrt_toNNReal_sq`.
+This discharges the exact denominator/calculus part of the fixed-`b` inner
+integral once the event split has restricted the `a` integral to
+`a > sqrt b`.
+
+Next aggressive step: continue Durrett Theorem 4.5.7 by proving the fixed-`b`
+event split from `b < a^2` to the `a > sqrt b` restricted integral, then
+assemble it with the V246/V247 weighted-tail endpoints so the V241/V242 RHS
+turns into
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Do not start by formalizing the full
 Friedman urn state process unless it directly reuses the compiled 4.5.5 ratio
 package.  Do not revisit raw clock pointwise monotonicity, direct martingale
@@ -605,6 +632,7 @@ first-RHS layer-cake bridge, the V243 truncated-terminal layer-cake bridge,
 the V244 weighted double-integral handoff,
 the V245 Tonelli/measurability swap layer,
 the V246 square-root weighted-tail endpoint,
+the V247 inverse-square denominator calculus,
 stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1951,6 +1979,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V246` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V247` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

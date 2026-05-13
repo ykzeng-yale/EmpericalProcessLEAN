@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V246`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V247`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -324,6 +324,14 @@ V246 adds the square-root weighted-tail layer-cake endpoint:
 `durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral_of_integrable`,
 and
 `durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral_of_source_monotone_terminal`.
+V247 adds the inverse-square calculus and denominator normalization layer:
+`durrett2019_theorem_4_5_7_inv_sq_weight_of_toNNReal_sq`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_rpow_neg_two`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_rpow_neg_two`,
+`durrett2019_theorem_4_5_7_ofReal_sqrt_inv_eq_rpow_half_sub_one`,
+`durrett2019_theorem_4_5_7_lintegral_Ioi_sqrt_toNNReal_sq_inv_eq_tail_weight`,
+and
+`durrett2019_theorem_4_5_7_const_div_lintegral_Ioi_sqrt_toNNReal_sq`.
 The next theorem-facing target is no longer finite sum/integral exchange,
 V214-to-V209 wiring, the tail-integral-to-clock-bound package,
 variance-ratio integrability packaging, lower-bound/no-zero/divergence
@@ -336,9 +344,9 @@ handoff, raw-clock monotonicity, final Theorem 4.5.5 packaging, stopped
 4.5.7 source packaging, the V240 raw/stopped split, or the V241 layer-cake
 handoff, the V242 first-RHS bridge, or the V243 truncation layer-cake bridge.
 Do not redo the V244 weighted double-integral handoff, the V245
-Tonelli/measurability swap layer, or the V246 square-root weighted-tail
-endpoint.  Move next to the Theorem 4.5.7 deterministic inverse-square
-calculus evaluation of the second V241 right-hand-side integral, then the
+Tonelli/measurability swap layer, the V246 square-root weighted-tail endpoint,
+or the V247 inverse-square denominator calculus.  Move next to the Theorem
+4.5.7 fixed-`b` event-split inner integral, then the
 finite-horizon-to-supremum monotone limit.  Do not route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped
 running-maximum boundedness, stopped predictability, exact Theorem 4.5.2
