@@ -577,6 +577,25 @@ theorem durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_const_of_tail_condExp_a
   simpa [htail] using hlim
 
 /--
+Durrett 2019, Example 4.7.4 tail-triviality bridge.  If a random variable is
+measurable with respect to a sigma-field independent of the reverse tail, then
+its reverse-tail conditional expectation is its ordinary expectation.
+-/
+theorem durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_independent
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {mX : MeasurableSpace Ω}
+    {𝒢 : ℕ -> MeasurableSpace Ω} {f : Ω -> ℝ}
+    (hmX : mX ≤ mΩ) (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (hf_meas : StronglyMeasurable[mX] f)
+    (hindep : Indep mX (⨅ n : ℕ, 𝒢 n) P) :
+    P[f | ⨅ n : ℕ, 𝒢 n] =ᵐ[P] fun _ => ∫ ω, f ω ∂P := by
+  have htail_le : (⨅ n : ℕ, 𝒢 n) ≤ mΩ :=
+    (iInf_le (fun n : ℕ => 𝒢 n) 0).trans (h𝒢_le 0)
+  exact _root_.MeasureTheory.condExp_indep_eq
+    (μ := P) (m₁ := mX) (m₂ := ⨅ n : ℕ, 𝒢 n) (m := mΩ)
+    (f := f) hmX htail_le hf_meas hindep
+
+/--
 Durrett 2019, Example 4.7.4 route bridge.  A process that is a.e. equal to
 reverse-time conditional expectations converges once the reverse tail
 conditional expectation is a.e. constant.
@@ -608,6 +627,33 @@ theorem durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_const
   filter_upwards [hCond, hA_all] with ω hlim hAω
   exact Tendsto.congr'
     (Eventually.of_forall (fun n : ℕ => (hAω n).symm)) hlim
+
+/--
+Durrett 2019, Example 4.7.4 route bridge with the tail-constant side
+discharged from independence of the source sigma-field and the reverse tail.
+-/
+theorem durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_independent
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {mX : MeasurableSpace Ω}
+    {𝒢 : ℕ -> MeasurableSpace Ω}
+    (h𝒢_mono : Antitone 𝒢) (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (A : ℕ -> Ω -> ℝ) (f : Ω -> ℝ)
+    (hmX : mX ≤ mΩ)
+    (hf_meas : StronglyMeasurable[mX] f)
+    (hA : ∀ n, A n =ᵐ[P] P[f | 𝒢 n])
+    (hindep : Indep mX (⨅ n : ℕ, 𝒢 n) P) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => A n ω)
+        atTop
+        (𝓝 (∫ ω, f ω ∂P)) := by
+  exact
+    durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_const
+      (Ω := Ω) (mΩ := mΩ) (P := P) (𝒢 := 𝒢)
+      h𝒢_mono h𝒢_le A f (∫ ω, f ω ∂P) hA
+      (durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_independent
+        (Ω := Ω) (mΩ := mΩ) (P := P) (mX := mX) (𝒢 := 𝒢) (f := f)
+        hmX h𝒢_le hf_meas hindep)
 
 /--
 Durrett 2019, Example 4.7.4, final strong-law endpoint using the compiled

@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V286` in
+Route from `Live In-Thread Goal Prompt V287` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -153,11 +153,14 @@ the conditional-expectation process handoff
 `durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_const`,
 and the direct strong-law endpoint
 `durrett2019_example_4_7_4_strongLaw_ae_real` reusing the local
-`ProbabilityMeasure.strongLaw_ae_real` wrapper.  The next target is the exact
-Durrett source layer: either prove the backwards-average conditional
-expectation calculation for `S_n / n`, or add a reusable
-Hewitt-Savage/tail-triviality bridge that supplies the V286 tail-constant
-hypothesis.
+`ProbabilityMeasure.strongLaw_ae_real` wrapper.  V287 adds
+`durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_independent` and
+`durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_independent`,
+which discharge the V286 constant-tail hypothesis from independence of the
+source sigma-field and the reverse tail.  The next target is the exact Durrett
+source layer: either prove the backwards-average conditional-expectation
+calculation for `S_n / n`, or construct the exchangeability/Hewitt-Savage
+independence hypothesis that feeds V287.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

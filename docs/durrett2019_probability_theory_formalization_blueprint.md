@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V286`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V287`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -93,10 +93,12 @@ and textbook decreasing-filtration display forms, with a.s. and `L¹`
 convergence to the conditional expectation on the reverse tail sigma-field.
 V286 starts Example 4.7.4 with the tail-constant consumer for V285, the
 conditional-expectation process handoff, and a direct strong-law endpoint
-reusing `StatInference.ProbabilityMeasure.strongLaw_ae_real`.  The next proof
-packet should fill the exact Durrett source obligations: the backwards-average
-conditional-expectation calculation for `S_n / n`, or the
-Hewitt-Savage/tail-triviality bridge feeding the V286 constant-tail hypothesis.
+reusing `StatInference.ProbabilityMeasure.strongLaw_ae_real`.  V287 discharges
+the V286 constant-tail hypothesis from independence of the source sigma-field
+and the reverse tail.  The next proof packet should fill the exact Durrett
+source obligations: the backwards-average conditional-expectation calculation
+for `S_n / n`, or the exchangeability/Hewitt-Savage independence bridge feeding
+the V287 tail-independence hypothesis.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:
