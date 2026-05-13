@@ -231,6 +231,71 @@ theorem durrett2019_theorem_4_7_1_eLpNorm_one_tendsto_of_ae_tendsto_backwards_ma
       (P := P) (X := X) (Y := Y) hAe hread_ui
 
 /--
+Durrett 2019, Theorem 4.7.2, tail measurability of the identified backwards
+martingale limit.
+
+The proof uses the canonical real-valued modification
+`limsup_n X_{-n}`.  For every fixed reverse time `m`, shifting the tail by
+`m` makes the same limsup measurable with respect to `F_{-m}`; measurability
+with respect to every `F_{-m}` gives measurability with respect to their
+intersection.
+-/
+theorem durrett2019_theorem_4_7_2_limit_aestronglyMeasurable_tail_of_ae_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕᵒᵈ mΩ}
+    {X : ℕᵒᵈ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hAe :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n : ℕ => X (OrderDual.toDual n) ω) atTop (𝓝 (Y ω))) :
+    AEStronglyMeasurable[⨅ n : ℕ, ℱ (OrderDual.toDual n)] Y P := by
+  let Z : Ω -> ℝ := fun ω =>
+    limsup (fun n : ℕ => X (OrderDual.toDual n) ω) atTop
+  have hZ_meas_each :
+      ∀ m : ℕ, Measurable[ℱ (OrderDual.toDual m)] Z := by
+    intro m
+    have hshift_meas :
+        Measurable[ℱ (OrderDual.toDual m)] fun ω =>
+          limsup (fun n : ℕ => X (OrderDual.toDual (n + m)) ω) atTop := by
+      refine
+        Measurable.limsup
+          (mδ := ℱ (OrderDual.toDual m))
+          (f := fun n : ℕ => fun ω => X (OrderDual.toDual (n + m)) ω)
+          ?_
+      intro n
+      exact
+        ((hX.stronglyMeasurable (OrderDual.toDual (n + m))).mono
+          (ℱ.mono
+            (show OrderDual.toDual (n + m) ≤ OrderDual.toDual m by
+              change m ≤ n + m
+              exact Nat.le_add_left m n))).measurable
+    have hshift_eq :
+        (fun ω =>
+          limsup
+            (fun n : ℕ => X (OrderDual.toDual n + OrderDual.toDual m) ω)
+            atTop) = Z := by
+      funext ω
+      have hseq :
+          (fun n : ℕ => X (OrderDual.toDual n + OrderDual.toDual m) ω) =
+            fun n : ℕ => X (OrderDual.toDual (n + m)) ω := by
+        funext n
+        rw [show OrderDual.toDual n + OrderDual.toDual m =
+          OrderDual.toDual (n + m) from rfl]
+      rw [hseq]
+      exact Filter.limsup_nat_add (fun n : ℕ => X (OrderDual.toDual n) ω) m
+    simpa [hshift_eq] using hshift_meas
+  have hZ_meas_tail :
+      Measurable[⨅ n : ℕ, ℱ (OrderDual.toDual n)] Z := by
+    intro s hs
+    exact
+      MeasurableSpace.measurableSet_iInf.mpr
+        (fun n => hZ_meas_each n hs)
+  have hZ_eq_Y : Z =ᵐ[P] Y := by
+    filter_upwards [hAe] with ω hω
+    exact hω.limsup_eq
+  exact hZ_meas_tail.stronglyMeasurable.aestronglyMeasurable.congr hZ_eq_Y
+
+/--
 Durrett 2019, Theorem 4.7.2, conditional-expectation identification of a
 reverse-time `L¹` limit.  If the limit is measurable with respect to the tail
 sigma-field, then the martingale set-integral identities identify it as
@@ -330,6 +395,29 @@ theorem durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto
   exact
     durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_L1_tendsto
       (P := P) (ℱ := ℱ) (X := X) (Y := Y) hX hY_int hY_tail hL1
+
+/--
+Durrett 2019, Theorem 4.7.2.  A backwards martingale limit is the conditional
+expectation of the terminal value with respect to the reverse tail
+sigma-field.
+-/
+theorem durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto_backwards_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕᵒᵈ mΩ}
+    {X : ℕᵒᵈ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hAe :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n : ℕ => X (OrderDual.toDual n) ω) atTop (𝓝 (Y ω))) :
+    Y =ᵐ[P] P[X (OrderDual.toDual 0) |
+      ⨅ n : ℕ, ℱ (OrderDual.toDual n)] := by
+  have hY_tail :
+      AEStronglyMeasurable[⨅ n : ℕ, ℱ (OrderDual.toDual n)] Y P :=
+    durrett2019_theorem_4_7_2_limit_aestronglyMeasurable_tail_of_ae_tendsto
+      (P := P) (ℱ := ℱ) (X := X) (Y := Y) hX hAe
+  exact
+    durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto
+      (P := P) (ℱ := ℱ) (X := X) (Y := Y) hX hY_tail hAe
 
 end ProbabilityTheory
 end StatInference

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V283
+## Live In-Thread Goal Prompt V284
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -18,10 +18,11 @@ submartingale convergence primitive, the Chapter 4.1 conditional-expectation
 wrappers, and the Section 4.6 uniform-integrability/Vitali endpoints.  Do not
 re-prove the V282 order-dual a.s. convergence bridge, terminal
 conditional-expectation representation, backwards-martingale UI bridge, the
-V283 `L¹`/set-integral conditional-expectation identification bridge, or the
+V283 `L¹`/set-integral conditional-expectation identification bridge, the V284
+`limsup` tail-measurability and source-shaped Theorem 4.7.2 endpoint, or the
 V281-V273 Section 4.6 tail-envelope/conditional-expectation layers.
 
-Latest verified target V283 advances Section 4.7.  V260 packages Durrett
+Latest verified target V284 advances Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -151,17 +152,20 @@ and proves the main Theorem 4.7.2 set-integral/conditional-expectation
 identification assuming tail measurability:
 `durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_L1_tendsto` and
 `durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto`.
+V284 closes that missing tail-measurability layer by using the canonical
+real-valued modification `limsup_n X_{-n}`.  It proves
+`durrett2019_theorem_4_7_2_limit_aestronglyMeasurable_tail_of_ae_tendsto` and
+then the fully source-shaped
+`durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto_backwards_martingale`.
 
-Next aggressive theorem packet: prove the missing reverse-limit tail
-measurability
-`AEStronglyMeasurable[⨅ n : ℕ, ℱ (OrderDual.toDual n)] Y P` from the a.s.
-reverse-time convergence of a backwards martingale, then close the
-source-shaped Theorem 4.7.2 endpoint without assuming tail measurability.
-After that, package Theorem 4.7.3 backwards Lévy a.s./`L¹` convergence using
-the now-identified limit.  Search mathlib first for a.e. limits of measurable
-sequences over `iInf` sigma-fields, `AEMeasurable`/`AEStronglyMeasurable`
-bridges, and shifted reverse-time convergence; do not rebuild the order-dual
-upcrossing convergence theorem or the V283 set-integral uniqueness bridge.
+Next aggressive theorem packet: package Theorem 4.7.3 backwards Lévy.  Use the
+V284 Theorem 4.7.2 endpoint with the backwards martingale
+`X_n = P[X_0 | ℱ_{-n}]` over a decreasing filtration, then expose both a.s. and
+`L¹` convergence to `P[X_0 | ⨅ n, ℱ_{-n}]`.  Search and reuse Section 4.6
+Lévy/upward wrappers, the backwards-filtration constructor, and the V284 tail
+conditional-expectation identification; do not rebuild the order-dual
+convergence theorem, `limsup` tail-measurability proof, or set-integral
+uniqueness bridge.
 
 ## Deprecated V255 Prompt Notes
 
