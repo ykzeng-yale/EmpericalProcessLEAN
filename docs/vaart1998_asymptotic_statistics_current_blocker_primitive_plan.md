@@ -17,6 +17,9 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+
+Immediate predecessor endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 
 Immediate predecessor endpoint:
@@ -122,6 +125,11 @@ derive coordinatewise score-law `L²` and zero-mean fields from
 Immediate score-law vector mean source:
 derive all-dual score-law mean-zero fields from
 `∫ sampleVector, sampleVector ∂scoreLaw = 0`.
+
+Immediate score-vector sequence-law source:
+derive each marginal score-vector law from the joint infinite-product law of
+the score-vector sequence, using `measurePreserving_eval_infinitePi` and
+`HasLaw.comp`.
 
 Immediate derivative-law vector integrability source:
 derive coordinatewise derivative-law entry integrability from
@@ -365,6 +373,12 @@ derives all-dual score-law mean-zero fields from
 `ContinuousLinearMap.integral_comp_comm` and the finite-measure instance
 recovered from the score-vector law.  Thus `hScoreLaw_mean_zero_dual` is no
 longer a live all-dual projected field for the current endpoint.
+The newest score-vector sequence-law source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+derives every marginal score-vector law from
+`HasLaw (fun omega i => scoreVector i omega) (Measure.infinitePi (fun _ => scoreLaw)) P`
+with the helper `vaart1998_scoreVector_law_of_sequence_law`.  Thus
+`hScoreVector_law` is no longer a live separate field for the current endpoint.
 
 Continuation recipe:
 
@@ -393,7 +407,8 @@ Priority order for the next packet:
    score-vector display, direct vector/table, coordinate-projection,
    score-vector measurability, score-law vector moment, or derivative-law
    vector integrability, limit-law mean, or limit-law covariance source
-   wrappers, Gaussian limit moment wrappers, or score-law mean source wrappers.
+   wrappers, Gaussian limit moment wrappers, score-law mean source wrappers,
+   or score-vector sequence-law source wrappers.
 
 Operating rules:
 
