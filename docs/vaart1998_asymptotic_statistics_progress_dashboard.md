@@ -15,14 +15,23 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: pushforward transform-law source endpoint
+Latest verified packet: observation-level transform moment source endpoint
+for the score-at-theta0/Taylor route, including
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_zLawCoordinateMeanSource_zLawCoordinateCovarianceSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
+It derives score-law `L²`, score-law coordinate mean-zero, and derivative-law
+coordinate integrability from observation-level transform moment assumptions,
+using `vaart1998_memLp_id_map_of_memLp_transform`,
+`vaart1998_scoreLaw_coordinate_mean_zero_of_observation_scoreTransform`, and
+`vaart1998_derivativeLaw_coordinate_integrable_of_observation_derivativeTransform`.
+
+Immediate predecessor packet: pushforward transform-law source endpoint
 for the score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMapLawSource_scoreLawCoordinateMeanSource_scoreLawMemLpSource_zLawCoordinateMeanSource_zLawCoordinateCovarianceSource_derivativeLawCoordinateIntegrableSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 It specializes `scoreLaw` and `derivativeLaw` to pushforward measures of the
 measurable score and derivative transforms under `observationLaw`, using
 `vaart1998_hasLaw_map_of_measurable`.
 
-Immediate predecessor packet: random observation-sequence source endpoint
+Earlier predecessor packet: random observation-sequence source endpoint
 for the score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceSource_scoreLawCoordinateMeanSource_scoreLawMemLpSource_zLawCoordinateMeanSource_zLawCoordinateCovarianceSource_derivativeLawCoordinateIntegrableSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 It derives indexed observation-family measurability and the indexed-family
@@ -981,7 +990,7 @@ Chapter 4 handoff:
   bridge.
 
 Latest verified Vaart frontier: this packet
-(`Add Vaart pushforward transform-law source endpoint`).
+(`Add Vaart observation transform moment source endpoint`).
 Current packet verification passed for:
 
 - `lake env lean StatInference/AsymptoticStatistics/MEstimators.lean`
@@ -1080,7 +1089,10 @@ it also derives law-level score mean zero from sample-side score-vector mean
 zero and the zero-index score-vector law; it derives law-level limit mean
 zero from sample-side limit-variable mean zero; and it derives all-dual
 limit/score covariance equality from finite coordinate-evaluation covariance
-equalities.
+equalities; it also specializes the score and derivative laws to observation
+pushforwards and derives pushforward score `L²`, score coordinate means, and
+derivative coordinate integrability from observation-level transform moment
+assumptions.
 Move next only on a live source hypothesis of that
 endpoint, preferably a concrete model-specialized Theorem 5.41 instantiation
 or a narrow source package that removes another exposed model-facing field.
@@ -1096,6 +1108,7 @@ population-`V` basis-action/pointwise-smoothness/score-vector display source
 wrappers, direct vector/table wrappers, coordinate-projection wrappers,
 score-vector measurability wrappers, score-law vector moment wrappers,
 derivative-law vector integrability wrappers, limit-law mean source wrappers,
+observation-level transform moment/integrability wrappers,
 limit-law covariance source wrappers, or historical ledger items.
 Gaussian limit moment wrappers, score-law mean source wrappers,
 score-vector sequence-law source wrappers, derivative-table sequence-law

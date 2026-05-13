@@ -246,6 +246,12 @@ The pushforward transform-law source endpoint
 uses `vaart1998_hasLaw_map_of_measurable` to specialize `scoreLaw` and
 `derivativeLaw` to pushforward measures of the measurable score and derivative
 transforms under `observationLaw`.
+The observation-level transform moment source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_zLawCoordinateMeanSource_zLawCoordinateCovarianceSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+uses pushforward `MemLp`, integral-map, and integrable-map helpers to derive
+score-law `L²`, score-law coordinate mean-zero, and derivative-law coordinate
+integrability from observation-level score and derivative transform moment
+assumptions.
 The next proof packet should move to a concrete model-specialized Theorem 5.41
 instantiation, or package only a still-live source field that the current
 endpoint explicitly exposes, not replay display weak-convergence,
@@ -271,7 +277,8 @@ wrappers, iid infinite-product sequence-law wrappers, or
 observation-transform measurability/law/independence wrappers, or
 observation-sequence-law marginal/independence wrappers, or random
 observation-sequence measurability/law wrappers, or pushforward
-transform-law wrappers.
+transform-law wrappers, or observation-level transform moment/integrability
+wrappers.
 
 ## Chapter Map
 
