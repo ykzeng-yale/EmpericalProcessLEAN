@@ -190,11 +190,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorPowLogTail`,
   and
   `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorLogTail`.
+  The count-discharge packet adds
+  `chewi1316_factorLog_le_halfLog_of_count`,
+  `chewi1316_factor_pow_le_half_pow_of_count`,
+  `chewi1316_count_condition_of_sqrt_mul_log_le`,
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorCountTail`,
+  and
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTail`.
   These reduce the preliminary tail gate to source-shaped scalar inequalities
-  on `1 - c0 / sqrt nu`: positivity, a log-power comparison, and the
+  on `1 - c0 / sqrt nu`: positivity, the textbook-shaped count
+  `M log 2 * sqrt nu <= N c0`, and the remaining
   `tailBase = |tStart| * ||grad phi(xbar0)||*` log budget.  Remaining gate:
-  prove the concrete Chewi/Nesterov choice of `N`, `tPre`, and `tMain` satisfies
-  those scalar count inequalities, then finish the strictly-feasible-start
+  prove the concrete Chewi/Nesterov choice of `M`, `tPre`, and `tMain`
+  satisfies that tail-base log budget, then finish the strictly-feasible-start
   discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include

@@ -318,17 +318,24 @@ and
 `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorLogTail`.
 It converts a scalar contraction-factor power/log certificate for
 `1 - c0 / sqrt nu` into the half-power preliminary tail bound with
-`tailBase = |tStart| * ||grad phi(xbar0)||*`.
+`tailBase = |tStart| * ||grad phi(xbar0)||*`.  The count-discharge packet adds
+`chewi1316_factorLog_le_halfLog_of_count`,
+`chewi1316_factor_pow_le_half_pow_of_count`,
+`chewi1316_count_condition_of_sqrt_mul_log_le`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorCountTail`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTail`.
+It proves the `log(1 - delta) <= -delta` count argument and exposes the
+textbook-shaped sufficient condition `M log 2 * sqrt nu <= N c0`.
 Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
-is now narrower: prove the concrete Chewi/Nesterov scalar choices of `N`,
-`tPre`, and `tMain` satisfy the factor positivity/log-power and tail-base
-log-budget hypotheses exposed by `...factorLogTail`; the already-compiled
-wrapper then gives the `1/4` main-stage initialization budget.  Do not route the
-next run back to product,
+is now narrower: prove the concrete Chewi/Nesterov scalar choices of `M`,
+`tPre`, and `tMain` satisfy the tail-base log-budget hypothesis exposed by
+`...factorSqrtCountTail`; the already-compiled wrapper then gives the `1/4`
+main-stage initialization budget.  Do not route the next run back to product,
 sum,
 affine/range, positive-orthant barrier setup, the already-compiled Lemma
 13.16/main-stage algebra, the dual-norm interface, the generic main-stage
@@ -336,8 +343,9 @@ wrappers, feasible-step membership, the positive-orthant main-stage one-step
 invariant, the closed-form parameter recurrence, the objective-gap stopping
 rule, exact-center/main-stage budget initialization, preliminary-to-main bridge,
 finite preliminary sequence bridge, generic log-halving lemma, factor-tail
-algebra, log-to-power comparison, or finite preliminary sequence induction
-unless a new downstream proof directly needs one of those verified declarations.
+algebra, log-to-power comparison, count-discharge algebra, or finite
+preliminary sequence induction unless a new downstream proof directly needs one
+of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

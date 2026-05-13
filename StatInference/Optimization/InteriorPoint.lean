@@ -12488,6 +12488,67 @@ theorem chewi1316_factor_pow_le_half_pow_of_log_le
   exact (Real.log_le_log_iff hrpow_pos hhalfpow_pos).mp hlogpow
 
 /--
+Count-side logarithmic comparison for a contraction step `1 - delta`.  If the
+iteration count pays for `M` halvings, then the log of the contraction factor
+is below the log of `(1 / 2)^M`.
+-/
+theorem chewi1316_factorLog_le_halfLog_of_count
+    {delta : ℝ} {N M : ℕ}
+    (hdelta_lt_one : delta < 1)
+    (hcount : (M : ℝ) * Real.log (2 : ℝ) ≤ (N : ℝ) * delta) :
+    (N : ℝ) * Real.log (1 - delta) ≤
+      (M : ℝ) * Real.log (1 / 2 : ℝ) := by
+  have hfactor_pos : 0 < 1 - delta := sub_pos.mpr hdelta_lt_one
+  have hlog_bound : Real.log (1 - delta) ≤ -delta := by
+    exact (Real.log_le_sub_one_of_pos hfactor_pos).trans_eq (by ring)
+  have hmul :
+      (N : ℝ) * Real.log (1 - delta) ≤ (N : ℝ) * (-delta) :=
+    mul_le_mul_of_nonneg_left hlog_bound (Nat.cast_nonneg N)
+  have hneg : -((N : ℝ) * delta) ≤
+      -((M : ℝ) * Real.log (2 : ℝ)) :=
+    neg_le_neg hcount
+  have hhalf_log : Real.log (1 / 2 : ℝ) = -Real.log (2 : ℝ) := by
+    have hhalf : (1 / 2 : ℝ) = (2 : ℝ)⁻¹ := by norm_num
+    rw [hhalf, Real.log_inv]
+  calc
+    (N : ℝ) * Real.log (1 - delta) ≤ (N : ℝ) * (-delta) := hmul
+    _ = -((N : ℝ) * delta) := by ring
+    _ ≤ -((M : ℝ) * Real.log (2 : ℝ)) := hneg
+    _ = (M : ℝ) * Real.log (1 / 2 : ℝ) := by
+        rw [hhalf_log]
+        ring
+
+/--
+Power form of `chewi1316_factorLog_le_halfLog_of_count`.
+-/
+theorem chewi1316_factor_pow_le_half_pow_of_count
+    {delta : ℝ} {N M : ℕ}
+    (hdelta_lt_one : delta < 1)
+    (hcount : (M : ℝ) * Real.log (2 : ℝ) ≤ (N : ℝ) * delta) :
+    (1 - delta) ^ N ≤ (1 / 2 : ℝ) ^ M :=
+  chewi1316_factor_pow_le_half_pow_of_log_le
+    (r := 1 - delta) (N := N) (M := M)
+    (sub_pos.mpr hdelta_lt_one)
+    (chewi1316_factorLog_le_halfLog_of_count
+      (delta := delta) (N := N) (M := M) hdelta_lt_one hcount)
+
+/--
+Textbook-shaped count condition: multiplying the halving budget by `sqrtNu`
+is enough to discharge the divided count condition.
+-/
+theorem chewi1316_count_condition_of_sqrt_mul_log_le
+    {sqrtNu c0 : ℝ} {N M : ℕ}
+    (hsqrt_pos : 0 < sqrtNu)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * sqrtNu ≤ (N : ℝ) * c0) :
+    (M : ℝ) * Real.log (2 : ℝ) ≤ (N : ℝ) * (c0 / sqrtNu) := by
+  have hdiv :
+      (M : ℝ) * Real.log (2 : ℝ) ≤ ((N : ℝ) * c0) / sqrtNu :=
+    (le_div_iff₀ hsqrt_pos).2 (by
+      simpa [mul_comm, mul_left_comm, mul_assoc] using hcount)
+  simpa [mul_div_assoc] using hdiv
+
+/--
 Closed-form preliminary-stage initialization bridge whose preliminary barrier
 tail is supplied by a scalar bound on the absolute contraction factor
 `|1 - c0 / sqrt nu|^N`.
@@ -12640,7 +12701,112 @@ theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequ
     hfactor_pos.le
     (chewi1316_factor_pow_le_half_pow_of_log_le
       (r := 1 - c0 / Real.sqrt nu) (N := N) (M := M)
-      hfactor_pos hfactorLog)
+    hfactor_pos hfactorLog)
+    htailBase_pos hM_log
+
+/--
+Source-shaped preliminary initialization bridge where the factor-log hypothesis
+is discharged from the divided count condition
+`M log 2 <= N * (c0 / sqrt nu)`.
+-/
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorCountTail
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {tMain tStart c0 nu : ℝ} {N M : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (ht0 : tseq 0 = tStart)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hmainBudget : |tMain| * dualLocalNorm invHess (xseq N) a ≤ 1 / 16)
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) ≤
+        (N : ℝ) * (c0 / Real.sqrt nu))
+    (htailBase_pos :
+      0 <
+        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+    (hM_log :
+      Real.log
+          ((|tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0)) /
+            (1 / 16 : ℝ)) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+      1 / 4 :=
+  chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorLogTail
+    (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+    (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+    (coord := coord) (tMain := tMain) (tStart := tStart)
+    (c0 := c0) (nu := nu) (N := N) (M := M)
+    hinv_factor ht0 htstep hinit hstep hmainBudget hlambdaBudget
+    (sub_pos.mpr hdelta_lt_one)
+    (chewi1316_factorLog_le_halfLog_of_count
+      (delta := c0 / Real.sqrt nu) (N := N) (M := M)
+      hdelta_lt_one hcount)
+    htailBase_pos hM_log
+
+/--
+Textbook-shaped preliminary initialization bridge where the count condition is
+written without division as
+`M log 2 * sqrt nu <= N * c0`.
+-/
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTail
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {tMain tStart c0 nu : ℝ} {N M : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (ht0 : tseq 0 = tStart)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hmainBudget : |tMain| * dualLocalNorm invHess (xseq N) a ≤ 1 / 16)
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0)
+    (htailBase_pos :
+      0 <
+        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+    (hM_log :
+      Real.log
+          ((|tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0)) /
+            (1 / 16 : ℝ)) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+      1 / 4 :=
+  chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorCountTail
+    (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+    (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+    (coord := coord) (tMain := tMain) (tStart := tStart)
+    (c0 := c0) (nu := nu) (N := N) (M := M)
+    hinv_factor ht0 htstep hinit hstep hmainBudget hlambdaBudget
+    hdelta_lt_one
+    (chewi1316_count_condition_of_sqrt_mul_log_le
+      (sqrtNu := Real.sqrt nu) (c0 := c0) (N := N) (M := M)
+      hsqrt_pos hcount)
     htailBase_pos hM_log
 
 theorem chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse

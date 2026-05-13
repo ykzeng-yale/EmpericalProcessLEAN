@@ -157,8 +157,14 @@ tail calculation.  The factor-count layer adds
 `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorPowLogTail`,
 and
 `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorLogTail`.
-The next live route is the concrete Chewi/Nesterov scalar count choice matching
-the reverse path-following argument cited to Nesterov §5.3.5, then the
+The count-discharge layer adds `chewi1316_factorLog_le_halfLog_of_count`,
+`chewi1316_factor_pow_le_half_pow_of_count`,
+`chewi1316_count_condition_of_sqrt_mul_log_le`,
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorCountTail`,
+and
+`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTail`.
+The next live route is the concrete Chewi/Nesterov tail-base log-budget choice
+matching the reverse path-following argument cited to Nesterov §5.3.5, then the
 strictly-feasible-start discussion.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
