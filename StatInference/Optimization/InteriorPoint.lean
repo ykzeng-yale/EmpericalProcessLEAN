@@ -12178,6 +12178,95 @@ theorem barrierGrad_dualLocalNorm_le_of_preliminaryPath_adjointCoordFactor
     (dualLocalNorm_add_le_of_adjointCoordFactor hinv_factor)
     (dualLocalNorm_smul_of_adjointCoordFactor hinv_factor)
 
+/--
+Reverse preliminary-path triangle bound.  If the preliminary residual
+`grad phi(x) - t grad phi(xbar0)` is small and the current barrier gradient is
+bounded, then the scaled source gradient is bounded at the current local dual
+norm.
+-/
+theorem sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 x : E}
+    {t lambda phiBound : ℝ}
+    (hpre :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 t) invHess x ≤
+        lambda)
+    (hphi : dualLocalNorm invHess x (phiGrad x) ≤ phiBound)
+    (hdual_add : ∀ u v : E,
+      dualLocalNorm invHess x (u + v) ≤
+        dualLocalNorm invHess x u + dualLocalNorm invHess x v)
+    (hdual_smul : ∀ (c : ℝ) (v : E),
+      dualLocalNorm invHess x (c • v) = |c| * dualLocalNorm invHess x v) :
+    |t| * dualLocalNorm invHess x (phiGrad xbar0) ≤
+      phiBound + lambda := by
+  change dualLocalNorm invHess x (preliminaryPathGrad phiGrad xbar0 t x) ≤
+    lambda at hpre
+  have hdecomp :
+      t • phiGrad xbar0 =
+        phiGrad x + -preliminaryPathGrad phiGrad xbar0 t x := by
+    simp [preliminaryPathGrad, preliminaryPathDirection, centralPathGrad]
+  have hneg :
+      dualLocalNorm invHess x
+          (-preliminaryPathGrad phiGrad xbar0 t x) =
+        dualLocalNorm invHess x (preliminaryPathGrad phiGrad xbar0 t x) := by
+    have h := hdual_smul (-1) (preliminaryPathGrad phiGrad xbar0 t x)
+    simpa only [neg_smul, one_smul, abs_neg, abs_one, one_mul] using h
+  calc
+    |t| * dualLocalNorm invHess x (phiGrad xbar0) =
+        dualLocalNorm invHess x (t • phiGrad xbar0) := by
+      rw [hdual_smul]
+    _ = dualLocalNorm invHess x
+        (phiGrad x + -preliminaryPathGrad phiGrad xbar0 t x) := by
+      rw [hdecomp]
+    _ ≤ dualLocalNorm invHess x (phiGrad x) +
+        dualLocalNorm invHess x
+          (-preliminaryPathGrad phiGrad xbar0 t x) :=
+      hdual_add _ _
+    _ = dualLocalNorm invHess x (phiGrad x) +
+        dualLocalNorm invHess x (preliminaryPathGrad phiGrad xbar0 t x) := by
+      rw [hneg]
+    _ ≤ phiBound + lambda := add_le_add hphi hpre
+
+theorem sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_adjointCoordFactor
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 x : E}
+    {coord : E →L[ℝ] E} {t lambda phiBound : ℝ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hpre :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 t) invHess x ≤
+        lambda)
+    (hphi : dualLocalNorm invHess x (phiGrad x) ≤ phiBound) :
+    |t| * dualLocalNorm invHess x (phiGrad xbar0) ≤
+      phiBound + lambda :=
+  sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath
+    (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+    (x := x) (t := t) (lambda := lambda) (phiBound := phiBound)
+    hpre hphi
+    (dualLocalNorm_add_le_of_adjointCoordFactor hinv_factor)
+    (dualLocalNorm_smul_of_adjointCoordFactor hinv_factor)
+
+theorem sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_barrier
+    [CompleteSpace E]
+    {s : Set E} {hess invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {third : E -> E -> E -> ℝ}
+    {xbar0 x : E} {coord : E →L[ℝ] E} {M nu t lambda : ℝ}
+    (hbar : SelfConcordantBarrierOn s hess phiGrad invHess third M nu)
+    (hx : x ∈ s)
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hpre :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 t) invHess x ≤
+        lambda) :
+    |t| * dualLocalNorm invHess x (phiGrad xbar0) ≤
+      Real.sqrt nu + lambda :=
+  sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_adjointCoordFactor
+    (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+    (x := x) (coord := coord) (t := t) (lambda := lambda)
+    (phiBound := Real.sqrt nu)
+    hinv_factor hpre (hbar.gradient_bound hx)
+
 theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_bound
     {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 x a : E}
     {tPre tMain lambdaPre : ℝ}
@@ -12258,6 +12347,66 @@ theorem preliminaryPath_decrement_bound_of_step
       simpa using hinit
   | succ n ih =>
       exact hstep n ih
+
+theorem sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_adjointCoordFactor
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {phiBound : ℝ} {N : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hphi : dualLocalNorm invHess (xseq N) (phiGrad (xseq N)) ≤ phiBound) :
+    |tseq N| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+      phiBound + lambdaSeq N := by
+  have hpre :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq N))
+          invHess (xseq N) ≤ lambdaSeq N :=
+    preliminaryPath_decrement_bound_of_step
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      hinit hstep N
+  exact
+    sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_adjointCoordFactor
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (x := xseq N) (coord := coord) (t := tseq N)
+      (lambda := lambdaSeq N) (phiBound := phiBound)
+      hinv_factor hpre hphi
+
+theorem sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_barrier
+    [CompleteSpace E]
+    {s : Set E} {hess invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {third : E -> E -> E -> ℝ}
+    {xbar0 : E} {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {M nu : ℝ} {N : ℕ}
+    (hbar : SelfConcordantBarrierOn s hess phiGrad invHess third M nu)
+    (hxN : xseq N ∈ s)
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1)) :
+    |tseq N| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+      Real.sqrt nu + lambdaSeq N :=
+  sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_adjointCoordFactor
+    (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+    (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+    (coord := coord) (phiBound := Real.sqrt nu) (N := N)
+    hinv_factor hinit hstep (hbar.gradient_bound hxN)
 
 theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence
     [CompleteSpace E]

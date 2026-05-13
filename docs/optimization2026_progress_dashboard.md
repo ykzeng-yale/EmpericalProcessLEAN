@@ -240,6 +240,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   gate: replace this measured fallback with the concrete Chewi/Nesterov bound
   on `||grad phi(xbar0)||*` by a source quantity such as the analytical-center
   distance measure, then finish the strictly-feasible-start discussion.
+  The reverse preliminary-gradient packet adds
+  `sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath`,
+  `sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_adjointCoordFactor`,
+  `sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_barrier`,
+  `sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_adjointCoordFactor`,
+  and `sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_barrier`.
+  These prove the source-side triangle bound
+  `|t_N| * ||grad phi(xbar0)||*_{x_N} <= sqrt(nu) + lambda_N` from the
+  preliminary residual plus the self-concordant barrier gradient bound, reusing
+  the existing adjoint-coordinate dual-norm additivity/homogeneity layer.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

@@ -194,6 +194,15 @@ upper bound.  The next live route is to replace this fallback with the concrete
 Chewi/Nesterov source upper bound for the preliminary tail base matching the
 reverse path-following argument cited to Nesterov §5.3.5, then the
 strictly-feasible-start discussion.
+The reverse preliminary-gradient layer adds
+`sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath`,
+`sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_adjointCoordFactor`,
+`sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_barrier`,
+`sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_adjointCoordFactor`,
+and `sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_barrier`,
+which package the estimate
+`|t_N| * ||grad phi(xbar0)||*_{x_N} <= sqrt(nu) + lambda_N` from the
+preliminary residual and barrier gradient bound.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
