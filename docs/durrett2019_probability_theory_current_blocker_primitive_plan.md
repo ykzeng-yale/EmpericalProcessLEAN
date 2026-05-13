@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V321
+## Live In-Thread Goal Prompt V322
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,8 +19,13 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V321 adds the Durrett Theorem 3.10.7 explicit-mean
-canonical i.i.d. product endpoint
+Latest verified target V322 adds the literal Durrett Theorem 3.10.7 normalized
+sum endpoint
+`durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum`,
+plus the algebra bridge
+`durrett2019_theorem_3_10_7_canonicalProduct_explicitMean_normalization_eq_sum`.
+V321 adds the Durrett Theorem 3.10.7 explicit-mean canonical i.i.d. product
+endpoint
 `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean`,
 which rewrites the reusable population-moment centering into the textbook
 mean vector `mu`.  V320 adds the positive-variance Lindeberg-Feller source
@@ -46,11 +51,12 @@ weak-convergence wrappers, Theorem 3.3.17 Lévy continuity wrappers, Exercise
 3.1.1 product theorem, or the existing Theorem 3.4.10 Lindeberg-Feller
 analytic certificate stack, or the V320 positive-variance `sigma * chi`
 Lindeberg-Feller endpoint, or the V321 explicit-mean canonical multivariate CLT
-endpoint.  Next aggressive packet: continue Chapter 3 by closing a concrete
-source-facing gap around the literal `(S_n - n * mu) / sqrt n` multivariate
-display, characteristic-function estimates, remaining Lindeberg-Feller side
-conditions, or Section 3.10 Gaussian-law wrappers; touch Chapter 2 only if a
-Chapter 3 theorem requires a missing source primitive.
+endpoint, or the V322 literal normalized-sum multivariate CLT endpoint.  Next
+aggressive packet: continue Chapter 3 by closing a concrete source-facing gap
+around the covariance/characteristic-function display for the multivariate
+Gaussian limit, remaining Lindeberg-Feller side conditions, or Section 3.10
+Gaussian-law wrappers; touch Chapter 2 only if a Chapter 3 theorem requires a
+missing source primitive.
 
 ## Historical V306 Prompt Notes
 
@@ -2187,6 +2193,8 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianSource`
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianSource`
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean`
+- `durrett2019_theorem_3_10_7_canonicalProduct_explicitMean_normalization_eq_sum`
+- `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum`
 - `durrett2019_section_4_1_IsConditionalExpectationVersion`
 - `durrett2019_section_4_1_condExp_isConditionalExpectationVersion`
 - `durrett2019_example_4_1_3_self_isConditionalExpectationVersion`

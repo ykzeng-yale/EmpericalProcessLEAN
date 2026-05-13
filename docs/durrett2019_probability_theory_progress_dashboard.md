@@ -32,12 +32,15 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V321` in
+Route from `Live In-Thread Goal Prompt V322` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V321 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V322 adds
+`durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum`,
+the literal normalized-sum canonical i.i.d. product endpoint for Durrett
+Theorem 3.10.7.  V321 adds
 `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean`,
 the explicit mean-vector canonical i.i.d. product endpoint for Durrett
 Theorem 3.10.7.  V320 adds
@@ -1612,6 +1615,8 @@ Current proof route:
     `durrett2019_theorem_3_10_7_canonicalSampleCoordinateCovariance_eq_vectorLaw`,
     `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance`,
     `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean`,
+    `durrett2019_theorem_3_10_7_canonicalProduct_explicitMean_normalization_eq_sum`,
+    `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum`,
     and
     `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCenteredProduct`.
 36. Durrett Section 3.10 now has Gaussian-coordinate independence wrappers:
