@@ -78,10 +78,17 @@ adds `centralPathGradient_update_eq`, `centralPathGradient_update_eq_of_tNext`,
 and
 `chewi1316_mainStage_newtonDecrement_le_quarter_of_centralPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
 This discharges the algebraic `t_next = (1 + delta) * t` gradient-update
-rewrite for objectives with gradient `t • a + grad phi(x)`.  The next live
-route is concrete central-path instantiation for the selected barrier model:
-prove `grad x = t_next • a + grad phi x`, feasible Newton-step membership, and
-the standard source-Newton-segment assumptions.
+rewrite for objectives with gradient `t • a + grad phi(x)`.  The newest
+positive-orthant central-path layer adds `centralPathGrad`,
+`centralPathGrad_hasFDerivAt`, `newton_linear_of_hessian_right_inverse`,
+`positiveOrthantCentralPathGrad_hasFDerivAt`,
+`positiveOrthantCentralPathGrad_segment_hasFDerivAt`,
+`positiveOrthantCentralPathGrad_newton_linear`, and
+`positiveOrthantNegLog_dualLocalNorm_grad_le_sqrt_card`.  It discharges the
+positive-orthant central-path objective differentiability, segment
+differentiability, Newton linearization, and barrier-gradient norm bound.  The
+next live route is feasible Newton-step membership for the selected
+central-path step and a final lightweight positive-orthant main-stage assembly.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

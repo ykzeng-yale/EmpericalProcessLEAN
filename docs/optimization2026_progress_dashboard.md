@@ -110,10 +110,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   and
   `chewi1316_mainStage_newtonDecrement_le_quarter_of_centralPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
   This discharges the algebraic `t_next = (1 + delta) * t` gradient-update
-  rewrite for objectives with gradient `t • a + grad phi(x)`.  The remaining
-  gate is concrete instantiation for the selected barrier/central-path
-  objective: prove `grad x = t_next • a + grad phi x`, feasible Newton-step
-  membership, and the standard source-Newton-segment assumptions.
+  rewrite for objectives with gradient `t • a + grad phi(x)`.  The newest
+  positive-orthant central-path packet adds `centralPathGrad`,
+  `centralPathGrad_hasFDerivAt`, `newton_linear_of_hessian_right_inverse`,
+  `positiveOrthantCentralPathGrad_hasFDerivAt`,
+  `positiveOrthantCentralPathGrad_segment_hasFDerivAt`,
+  `positiveOrthantCentralPathGrad_newton_linear`, and
+  `positiveOrthantNegLog_dualLocalNorm_grad_le_sqrt_card`.  It discharges the
+  positive-orthant central-path objective differentiability, segment
+  differentiability, Newton linearization, and barrier-gradient norm bound.
+  The remaining gate is feasible Newton-step membership for the selected
+  central-path step plus a final lightweight positive-orthant main-stage
+  assembly.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

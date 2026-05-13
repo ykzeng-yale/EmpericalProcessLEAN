@@ -11594,6 +11594,28 @@ theorem chewi1316_preNewtonDecrement_le_update_bound_of_adjointSqrt_right_invers
       (coord := coord) (sqrtH := sqrtH)
       hsqrtH_coord hhess_eq hright v
 
+def centralPathGrad (t : ℝ) (a : E) (phiGrad : E -> E) (x : E) : E :=
+  t • a + phiGrad x
+
+@[simp] theorem centralPathGrad_apply (t : ℝ) (a : E) (phiGrad : E -> E) (x : E) :
+    centralPathGrad t a phiGrad x = t • a + phiGrad x :=
+  rfl
+
+theorem centralPathGrad_hasFDerivAt
+    {phiGrad : E -> E} {hessAt : E →L[ℝ] E} {t : ℝ} {a x : E}
+    (hphi : HasFDerivAt phiGrad hessAt x) :
+    HasFDerivAt (centralPathGrad t a phiGrad) hessAt x := by
+  have hconst : HasFDerivAt (fun _ : E => t • a) (0 : E →L[ℝ] E) x :=
+    hasFDerivAt_const (t • a) x
+  simpa [centralPathGrad] using hconst.add hphi
+
+theorem newton_linear_of_hessian_right_inverse
+    {hess invHess : E -> E →L[ℝ] E} {grad : E -> E} {x : E}
+    (hright : ∀ v : E, hess x (invHess x v) = v) :
+    grad x + hess x (newtonStep grad invHess x - x) = 0 := by
+  rw [newtonStep_sub]
+  simp [hright]
+
 theorem centralPathGradient_update_eq
     (a barrierGrad : E) (t delta : ℝ) :
     ((1 + delta) * t) • a + barrierGrad =
@@ -15646,6 +15668,50 @@ theorem positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card {d : ℕ}
     positiveOrthantNegLog_gradient_invHess_inner_eq_card hx
   dsimp [dualLocalNorm]
   rw [hquad]
+
+theorem positiveOrthantCentralPathGrad_hasFDerivAt {d : ℕ}
+    {x a : EuclideanSpace ℝ (Fin d)} {t : ℝ}
+    (hx : x ∈ positiveOrthant (d := d)) :
+    HasFDerivAt (centralPathGrad t a positiveOrthantNegLogGrad)
+      (positiveOrthantNegLogHessCLM x) x :=
+  centralPathGrad_hasFDerivAt
+    (t := t) (a := a) (hphi := positiveOrthantNegLogGrad_hasFDerivAt hx)
+
+theorem positiveOrthantCentralPathGrad_segment_hasFDerivAt {d : ℕ}
+    {x y a : EuclideanSpace ℝ (Fin d)} {t : ℝ}
+    (hx : x ∈ positiveOrthant (d := d))
+    (hy : y ∈ positiveOrthant (d := d)) :
+    ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (centralPathGrad t a positiveOrthantNegLogGrad)
+        (positiveOrthantNegLogHessCLM (hessianSegmentPoint x y τ))
+        (hessianSegmentPoint x y τ) := by
+  intro τ hτ
+  exact positiveOrthantCentralPathGrad_hasFDerivAt
+    (t := t) (a := a)
+    (hessianSegmentPoint_mem_of_convex
+      convex_positiveOrthant hx hy
+      (by simpa [Set.uIcc_of_le zero_le_one] using hτ))
+
+theorem positiveOrthantCentralPathGrad_newton_linear {d : ℕ}
+    {x a : EuclideanSpace ℝ (Fin d)} {t : ℝ}
+    (hx : x ∈ positiveOrthant (d := d)) :
+    centralPathGrad t a positiveOrthantNegLogGrad x +
+        positiveOrthantNegLogHessCLM x
+          (newtonStep (centralPathGrad t a positiveOrthantNegLogGrad)
+              positiveOrthantNegLogInvHessCLM x - x) =
+      0 :=
+  newton_linear_of_hessian_right_inverse
+    (hess := positiveOrthantNegLogHessCLM)
+    (invHess := positiveOrthantNegLogInvHessCLM)
+    (grad := centralPathGrad t a positiveOrthantNegLogGrad)
+    (x := x)
+    (positiveOrthantNegLogHessCLM_invHess_right_inverse hx)
+
+theorem positiveOrthantNegLog_dualLocalNorm_grad_le_sqrt_card {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    dualLocalNorm positiveOrthantNegLogInvHessCLM x (positiveOrthantNegLogGrad x) ≤
+      Real.sqrt (d : ℝ) := by
+  rw [positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card hx]
 
 /--
 Finite-product version of Chewi Example 13.10 and Definition 13.9: the

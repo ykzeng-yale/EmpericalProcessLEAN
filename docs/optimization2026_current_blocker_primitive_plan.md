@@ -214,14 +214,22 @@ adds `centralPathGradient_update_eq`,
 and
 `chewi1316_mainStage_newtonDecrement_le_quarter_of_centralPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
 This discharges the purely algebraic `t_next = (1 + delta) * t` gradient-update
-rewrite for objectives with gradient `t • a + grad phi(x)`.  The next live
-gate is concrete model instantiation: provide the selected barrier/central-path
-objective gradient equality `grad x = t_next • a + grad phi x`, feasible
-Newton-step membership, and the standard source-Newton-segment assumptions.
-Do not route the next run back to product, sum, affine/range, positive-orthant
-barrier setup, the already-compiled Lemma 13.16/main-stage algebra, the
-dual-norm interface, or the generic main-stage wrappers unless a new downstream
-proof directly needs one of those verified declarations.
+rewrite for objectives with gradient `t • a + grad phi(x)`.  The newest
+positive-orthant central-path packet adds `centralPathGrad`,
+`centralPathGrad_hasFDerivAt`, `newton_linear_of_hessian_right_inverse`,
+`positiveOrthantCentralPathGrad_hasFDerivAt`,
+`positiveOrthantCentralPathGrad_segment_hasFDerivAt`,
+`positiveOrthantCentralPathGrad_newton_linear`, and
+`positiveOrthantNegLog_dualLocalNorm_grad_le_sqrt_card`.  This discharges the
+positive-orthant central-path objective differentiability, segment
+differentiability, Newton linearization, and barrier-gradient norm bound used
+by the main-stage wrapper.  The next live gate is now the feasible Newton-step
+membership for the selected central-path step and a final lightweight
+positive-orthant main-stage assembly.  Do not route the next run back to
+product, sum, affine/range, positive-orthant barrier setup, the already-compiled
+Lemma 13.16/main-stage algebra, the dual-norm interface, or the generic
+main-stage wrappers unless a new downstream proof directly needs one of those
+verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9
