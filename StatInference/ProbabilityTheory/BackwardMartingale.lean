@@ -1938,6 +1938,270 @@ theorem durrett2019_example_4_7_4_eval_tail_prefix_product_of_permuted_prefix_li
   exact tendsto_nhds_unique (by simpa [μ] using hinter) hproduct_tendsto
 
 /--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage approximation support.  The
+finite-prefix event family consists of all events measurable with respect to
+some finite prefix filtration.
+-/
+def durrett2019_example_4_7_4_finitePrefixEventSet
+    (S : Type*) [MeasurableSpace S] : Set (Set (ℕ -> S)) :=
+  {A | ∃ n : ℕ, MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S n] A}
+
+/-- The finite-prefix event family contains `∅`. -/
+theorem durrett2019_example_4_7_4_finitePrefixEventSet_empty_mem
+    (S : Type*) [MeasurableSpace S] :
+    (∅ : Set (ℕ -> S)) ∈
+      durrett2019_example_4_7_4_finitePrefixEventSet S :=
+  ⟨0, by
+    exact
+      (@MeasurableSet.empty (ℕ -> S)
+        ((durrett2019_theorem_4_3_8_prefixFiltration S) 0))⟩
+
+/-- The finite-prefix event family contains the whole space. -/
+theorem durrett2019_example_4_7_4_finitePrefixEventSet_univ_mem
+    (S : Type*) [MeasurableSpace S] :
+    (Set.univ : Set (ℕ -> S)) ∈
+      durrett2019_example_4_7_4_finitePrefixEventSet S :=
+  ⟨0, by
+    exact
+      (@MeasurableSet.univ (ℕ -> S)
+        ((durrett2019_theorem_4_3_8_prefixFiltration S) 0))⟩
+
+/--
+Every finite-prefix event is ambiently measurable in the product
+sigma-field.
+-/
+theorem durrett2019_example_4_7_4_finitePrefixEventSet_measurableSet
+    {S : Type*} [MeasurableSpace S] {A : Set (ℕ -> S)}
+    (hA : A ∈ durrett2019_example_4_7_4_finitePrefixEventSet S) :
+    MeasurableSet A := by
+  rcases hA with ⟨n, hA⟩
+  exact (durrett2019_theorem_4_3_8_prefixFiltration S).le n A hA
+
+/--
+The finite-prefix event family is a ring of sets.  This packages the closure
+properties needed by Mathlib's measured-set density theorem.
+-/
+theorem durrett2019_example_4_7_4_finitePrefixEventSet_isSetRing
+    (S : Type*) [MeasurableSpace S] :
+    IsSetRing (durrett2019_example_4_7_4_finitePrefixEventSet S) where
+  empty_mem := durrett2019_example_4_7_4_finitePrefixEventSet_empty_mem S
+  union_mem := by
+    rintro A B ⟨n, hA⟩ ⟨m, hB⟩
+    refine ⟨max n m, ?_⟩
+    exact
+      ((durrett2019_theorem_4_3_8_prefixFiltration S).mono
+          (le_max_left n m) A hA).union
+        ((durrett2019_theorem_4_3_8_prefixFiltration S).mono
+          (le_max_right n m) B hB)
+  diff_mem := by
+    rintro A B ⟨n, hA⟩ ⟨m, hB⟩
+    refine ⟨max n m, ?_⟩
+    exact
+      ((durrett2019_theorem_4_3_8_prefixFiltration S).mono
+          (le_max_left n m) A hA).diff
+        ((durrett2019_theorem_4_3_8_prefixFiltration S).mono
+          (le_max_right n m) B hB)
+
+/--
+The finite-prefix event family satisfies the coverage side condition in
+Mathlib's measured-set density theorem: the singleton cover `{univ}` already
+covers the product space exactly.
+-/
+theorem durrett2019_example_4_7_4_finitePrefixEventSet_countable_cover
+    (S : Type*) [MeasurableSpace S] (μ : Measure (ℕ -> S)) :
+    ∃ D : Set (Set (ℕ -> S)),
+      D.Countable ∧ D ⊆ durrett2019_example_4_7_4_finitePrefixEventSet S ∧
+        μ (⋃₀ D)ᶜ = 0 := by
+  refine ⟨{Set.univ}, Set.countable_singleton Set.univ, ?_, ?_⟩
+  · intro A hA
+    rw [Set.mem_singleton_iff] at hA
+    rw [hA]
+    exact durrett2019_example_4_7_4_finitePrefixEventSet_univ_mem S
+  · simp
+
+/--
+Every measurable finite cylinder is a finite-prefix event, after enlarging the
+prefix to contain all cylinder coordinates.
+-/
+theorem durrett2019_example_4_7_4_cylinder_mem_finitePrefixEventSet
+    {S : Type*} [MeasurableSpace S] {I : Finset ℕ} {T : Set (I -> S)}
+    (hT : MeasurableSet T) :
+    MeasureTheory.cylinder (α := fun _ : ℕ => S) I T ∈
+      durrett2019_example_4_7_4_finitePrefixEventSet S := by
+  let n : ℕ := I.sup id + 1
+  have hI : I ⊆ Finset.range n := by
+    intro i hi
+    rw [Finset.mem_range]
+    exact Nat.lt_succ_of_le (Finset.le_sup (s := I) (f := id) hi)
+  refine ⟨n, ?_⟩
+  have hmeas_restrict :
+      Measurable[durrett2019_theorem_4_3_8_prefixFiltration S n]
+        (I.restrict : (ℕ -> S) -> I -> S) := by
+    have hcomap_le :
+        MeasurableSpace.pi.comap (I.restrict : (ℕ -> S) -> I -> S) ≤
+          MeasurableSpace.pi.comap
+            ((Finset.range n).restrict : (ℕ -> S) -> Finset.range n -> S) := by
+      rw [← Finset.restrict₂_comp_restrict hI, ← MeasurableSpace.comap_comp]
+      exact MeasurableSpace.comap_mono (Finset.measurable_restrict₂ hI).comap_le
+    simpa [durrett2019_theorem_4_3_8_prefixFiltration] using
+      Measurable.of_comap_le hcomap_le
+  change MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S n]
+    ((I.restrict : (ℕ -> S) -> I -> S) ⁻¹' T)
+  exact hmeas_restrict hT
+
+/--
+The finite-prefix event ring generates the ambient countable product
+sigma-field.  This discharges the generation hypothesis in the measured-set
+density wrapper by reusing Mathlib's measurable-cylinder generation theorem.
+-/
+theorem durrett2019_example_4_7_4_finitePrefixEventSet_generateFrom
+    (S : Type*) [MeasurableSpace S] :
+    (inferInstance : MeasurableSpace (ℕ -> S)) =
+      MeasurableSpace.generateFrom
+        (durrett2019_example_4_7_4_finitePrefixEventSet S) := by
+  apply le_antisymm
+  · rw [← MeasureTheory.generateFrom_measurableCylinders (α := fun _ : ℕ => S)]
+    refine MeasurableSpace.generateFrom_le ?_
+    intro A hA
+    rcases (MeasureTheory.mem_measurableCylinders A).mp hA with ⟨I, T, hT, rfl⟩
+    exact
+      MeasurableSpace.measurableSet_generateFrom
+        (durrett2019_example_4_7_4_cylinder_mem_finitePrefixEventSet (S := S) hT)
+  · refine MeasurableSpace.generateFrom_le ?_
+    intro A hA
+    exact durrett2019_example_4_7_4_finitePrefixEventSet_measurableSet hA
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage approximation support.  If the
+finite-prefix event ring generates the ambient product sigma-field, then every
+ambient measurable event is approximable in symmetric-difference measure by a
+finite-prefix event.
+-/
+theorem durrett2019_example_4_7_4_exists_measure_symmDiff_lt_of_finitePrefixEventSet_generateFrom
+    {S : Type*} [MeasurableSpace S] {μ : Measure (ℕ -> S)} [IsFiniteMeasure μ]
+    (hgenerate :
+      (inferInstance : MeasurableSpace (ℕ -> S)) =
+        MeasurableSpace.generateFrom
+          (durrett2019_example_4_7_4_finitePrefixEventSet S))
+    {B : Set (ℕ -> S)} (hB : MeasurableSet B) {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ D ∈ durrett2019_example_4_7_4_finitePrefixEventSet S, μ (D ∆ B) < ε :=
+  MeasureTheory.exists_measure_symmDiff_lt_of_generateFrom_isSetRing
+    (durrett2019_example_4_7_4_finitePrefixEventSet_isSetRing S)
+    (durrett2019_example_4_7_4_finitePrefixEventSet_countable_cover S μ)
+    hgenerate hB hε
+
+/--
+Finite-prefix events approximate every ambient measurable event in
+symmetric-difference measure.
+-/
+theorem durrett2019_example_4_7_4_exists_measure_symmDiff_lt_finitePrefixEventSet
+    {S : Type*} [MeasurableSpace S] {μ : Measure (ℕ -> S)} [IsFiniteMeasure μ]
+    {B : Set (ℕ -> S)} (hB : MeasurableSet B) {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ D ∈ durrett2019_example_4_7_4_finitePrefixEventSet S, μ (D ∆ B) < ε :=
+  durrett2019_example_4_7_4_exists_measure_symmDiff_lt_of_finitePrefixEventSet_generateFrom
+    (μ := μ)
+    (durrett2019_example_4_7_4_finitePrefixEventSet_generateFrom S) hB hε
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage approximation support.  The
+finite-prefix event-ring density theorem can be packaged as a sequence whose
+symmetric-difference measure tends to zero.
+-/
+theorem durrett2019_example_4_7_4_exists_prefix_symmDiff_tendsto_zero_of_finitePrefixEventSet_generateFrom
+    {S : Type*} [MeasurableSpace S] {μ : Measure (ℕ -> S)} [IsFiniteMeasure μ]
+    (hgenerate :
+      (inferInstance : MeasurableSpace (ℕ -> S)) =
+        MeasurableSpace.generateFrom
+          (durrett2019_example_4_7_4_finitePrefixEventSet S))
+    {B : Set (ℕ -> S)} (hB : MeasurableSet B) :
+    ∃ D : ℕ -> Set (ℕ -> S), ∃ cutoff : ℕ -> ℕ,
+      (∀ k,
+        MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S (cutoff k)]
+          (D k)) ∧
+      Tendsto (fun k => μ (D k ∆ B)) atTop (𝓝 0) := by
+  classical
+  have hexists :
+      ∀ k : ℕ, ∃ D ∈ durrett2019_example_4_7_4_finitePrefixEventSet S,
+        μ (D ∆ B) < ((k : ℝ≥0∞)⁻¹) := by
+    intro k
+    exact
+      durrett2019_example_4_7_4_exists_measure_symmDiff_lt_of_finitePrefixEventSet_generateFrom
+        (μ := μ) hgenerate hB (ENNReal.inv_pos.mpr (ENNReal.natCast_ne_top k))
+  choose D hD_mem hD_bound using hexists
+  choose cutoff hD_prefix using hD_mem
+  refine ⟨D, cutoff, hD_prefix, ?_⟩
+  rw [ENNReal.tendsto_nhds_zero]
+  intro ε hε
+  have hinv := ENNReal.tendsto_inv_nat_nhds_zero
+  rw [ENNReal.tendsto_nhds_zero] at hinv
+  filter_upwards [hinv ε hε] with k hk
+  exact (le_of_lt (hD_bound k)).trans hk
+
+/--
+Finite-prefix events can be chosen as a sequence whose symmetric-difference
+measure tends to zero for any ambient measurable event.
+-/
+theorem durrett2019_example_4_7_4_exists_prefix_symmDiff_tendsto_zero
+    {S : Type*} [MeasurableSpace S] {μ : Measure (ℕ -> S)} [IsFiniteMeasure μ]
+    {B : Set (ℕ -> S)} (hB : MeasurableSet B) :
+    ∃ D : ℕ -> Set (ℕ -> S), ∃ cutoff : ℕ -> ℕ,
+      (∀ k,
+        MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S (cutoff k)]
+          (D k)) ∧
+      Tendsto (fun k => μ (D k ∆ B)) atTop (𝓝 0) :=
+  durrett2019_example_4_7_4_exists_prefix_symmDiff_tendsto_zero_of_finitePrefixEventSet_generateFrom
+    (μ := μ)
+    (durrett2019_example_4_7_4_finitePrefixEventSet_generateFrom S) hB
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage approximation support.  Under the
+finite-prefix event-ring generation statement, every VdVW
+permutation-symmetric-tail event has the prefix symmetric-difference
+approximants required by V305.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixApprox_of_finitePrefixEventSet_generateFrom
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    (hgenerate :
+      (inferInstance : MeasurableSpace (ℕ -> ℝ)) =
+        MeasurableSpace.generateFrom
+          (durrett2019_example_4_7_4_finitePrefixEventSet ℝ)) :
+    ∀ {B : Set (ℕ -> ℝ)},
+      MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] B ->
+        ∃ D : ℕ -> Set (ℕ -> ℝ), ∃ cutoff : ℕ -> ℕ,
+          (∀ k,
+            MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ (cutoff k)]
+              (D k)) ∧
+          Tendsto (fun k => vdVWInfiniteProductMeasure P (D k ∆ B)) atTop (𝓝 0) := by
+  intro B hB
+  have htail_le :
+      (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n) ≤
+        (inferInstance : MeasurableSpace (ℕ -> ℝ)) := by
+    refine (iInf_le (fun n : ℕ => vdVWPermutationSymmetricMeasurableSpace ℝ n) 0).trans ?_
+    refine MeasurableSpace.generateFrom_le ?_
+    intro s hs
+    rcases hs with ⟨statistic, hmeas, _hsymm, target, htarget, rfl⟩
+    exact hmeas htarget
+  exact
+    durrett2019_example_4_7_4_exists_prefix_symmDiff_tendsto_zero_of_finitePrefixEventSet_generateFrom
+      (μ := vdVWInfiniteProductMeasure P) hgenerate (htail_le B hB)
+
+/--
+Every VdVW permutation-symmetric-tail event has finite-prefix approximants in
+the symmetric-difference metric required by V305.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixApprox
+    {P : Measure ℝ} [IsProbabilityMeasure P] :
+    ∀ {B : Set (ℕ -> ℝ)},
+      MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] B ->
+        ∃ D : ℕ -> Set (ℕ -> ℝ), ∃ cutoff : ℕ -> ℕ,
+          (∀ k,
+            MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ (cutoff k)]
+              (D k)) ∧
+          Tendsto (fun k => vdVWInfiniteProductMeasure P (D k ∆ B)) atTop (𝓝 0) :=
+  durrett2019_example_4_7_4_eval_prefixApprox_of_finitePrefixEventSet_generateFrom
+    (P := P) (durrett2019_example_4_7_4_finitePrefixEventSet_generateFrom ℝ)
+
+/--
 Durrett 2019, Example 4.7.4 / Hewitt-Savage approximation support.  If a
 sequence of measurable sets converges to a target in the symmetric-difference
 measure metric, then their measures converge.
@@ -2140,6 +2404,53 @@ theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_pr
     (P := P) hprefixProduct
     (durrett2019_example_4_7_4_eval_prefixLimit_of_symmDiff_prefix_approx
       (P := P) hprefixApprox)
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  After the
+finite-prefix event-ring generation theorem is available, V305 reduces
+self-independence to the prefix-product formula alone.
+-/
+theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_generateFrom
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    (hgenerate :
+      (inferInstance : MeasurableSpace (ℕ -> ℝ)) =
+        MeasurableSpace.generateFrom
+          (durrett2019_example_4_7_4_finitePrefixEventSet ℝ))
+    (hprefixProduct :
+      ∀ {A D : Set (ℕ -> ℝ)} {n : ℕ},
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] A ->
+        MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ n] D ->
+          vdVWInfiniteProductMeasure P (A ∩ D) =
+            vdVWInfiniteProductMeasure P A * vdVWInfiniteProductMeasure P D) :
+    Indep
+      (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+      (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+      (vdVWInfiniteProductMeasure P) :=
+  durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_symmDiff_approx
+    (P := P) hprefixProduct
+    (durrett2019_example_4_7_4_eval_prefixApprox_of_finitePrefixEventSet_generateFrom
+      (P := P) hgenerate)
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  With the
+finite-prefix approximation theorem discharged, self-independence now reduces
+to the product formula against finite-prefix events.
+-/
+theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    (hprefixProduct :
+      ∀ {A D : Set (ℕ -> ℝ)} {n : ℕ},
+        MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] A ->
+        MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ n] D ->
+          vdVWInfiniteProductMeasure P (A ∩ D) =
+            vdVWInfiniteProductMeasure P A * vdVWInfiniteProductMeasure P D) :
+    Indep
+      (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+      (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n)
+      (vdVWInfiniteProductMeasure P) :=
+  durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_generateFrom
+    (P := P) (durrett2019_example_4_7_4_finitePrefixEventSet_generateFrom ℝ)
+    hprefixProduct
 
 /--
 Durrett 2019, Example 4.7.4 product-space source algebra: the finite swap of

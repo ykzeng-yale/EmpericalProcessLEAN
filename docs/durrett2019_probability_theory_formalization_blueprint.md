@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V305`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V306`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -194,12 +194,20 @@ V305 adds the prefix symmetric-difference approximation-to-limit bridge:
 `durrett2019_example_4_7_4_tendsto_measure_inter_of_symmDiff_tendsto_zero`,
 `durrett2019_example_4_7_4_eval_prefixLimit_of_symmDiff_prefix_approx`, and
 `durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product_symmDiff_approx`.
-The next proof packet should prove the actual finite-prefix
-symmetric-difference approximation existence/basis step for VdVW
-permutation-symmetric-tail events, preferably using Mathlib's
-`exists_measure_symmDiff_lt_of_generateFrom_isSetRing` after packaging the
-finite-prefix event ring and its ambient product-sigma-field generation, then
-feed the resulting self-independence into V301.
+V306 adds the finite-prefix approximation basis:
+`durrett2019_example_4_7_4_finitePrefixEventSet`,
+`durrett2019_example_4_7_4_finitePrefixEventSet_isSetRing`,
+`durrett2019_example_4_7_4_finitePrefixEventSet_generateFrom`,
+`durrett2019_example_4_7_4_exists_measure_symmDiff_lt_finitePrefixEventSet`,
+`durrett2019_example_4_7_4_exists_prefix_symmDiff_tendsto_zero`,
+`durrett2019_example_4_7_4_eval_prefixApprox`, and
+`durrett2019_example_4_7_4_eval_permutationSymmetricTail_indep_self_of_prefix_product`.
+The next proof packet should prove the remaining finite-prefix product formula:
+for a permutation-symmetric tail event `A` and each finite-prefix event `D`,
+`vdVWInfiniteProductMeasure P (A ∩ D) =
+  vdVWInfiniteProductMeasure P A * vdVWInfiniteProductMeasure P D`, using the
+V303 transported-prefix equality, a block-moving finite permutation/cutoff, and
+V304/V305/V306 to close the self-independence route into V301.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:
