@@ -27,25 +27,25 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V263`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V264`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier: Durrett Section 4.6 uniform integrability and `L^1`
 martingale convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
-V263 starts Section 4.6 with thin wrappers around Mathlib uniform-integrability
-API: Durrett Theorem 4.6.1 conditional-expectation uniform integrability, its
-filtration form, dominated-family support, and the tail-criterion constructor
-for Theorem 4.6.2.  It adds deterministic tail-envelope bridges and the
-compiled measure-theoretic `p > 1` source bridge
-`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd_with_modulus`.
-V262 closes the scalar small-set modulus for uniform `L^p`, `p > 1`, bounds
-and packages the clean endpoint
+V260-V262 close the Theorem 4.6.1/4.6.2 support layer: conditional-expectation
+uniform integrability, dominated-family support, tail criteria, deterministic
+tail envelopes, the scalar small-set modulus, and the clean uniform-`L^p`,
+`p > 1`, endpoint
 `durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd`.  V263 wraps
-Mathlib's Vitali theorem and `TendstoInMeasure`/`L¹` APIs in Durrett form.  The
-next proof packet should add the expectation-convergence `(iii)` part of
-Theorem 4.6.3 and then move to Theorem 4.6.4 martingale `L¹` convergence.  V259 closes the concrete Example 4.5.8
+Mathlib's Vitali theorem and `TendstoInMeasure`/`L¹` APIs in Durrett form.  V264
+adds the expectation-convergence `(iii)` layer through
+`durrett2019_theorem_4_6_3_tendsto_integral_abs_of_eLpNorm_one_tendsto_zero`
+and
+`durrett2019_theorem_4_6_3_tendsto_integral_abs_of_tendstoInMeasure_uniformIntegrable`.
+The next proof packet should either package the existing Theorem 4.6.3 wrappers
+if cheap, or move directly to Theorem 4.6.4 martingale `L¹` convergence.  V259 closes the concrete Example 4.5.8
 random-walk terminal-condition packet:
 the unit-variance, Rademacher, and canonical Rademacher endpoints now use
 finite `∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P` rather than

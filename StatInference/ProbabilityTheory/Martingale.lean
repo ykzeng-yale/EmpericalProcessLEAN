@@ -26659,6 +26659,74 @@ theorem durrett2019_theorem_4_6_3_unifIntegrable_iff_eLpNorm_one_of_tendstoInMea
         (P := P) (X := X) (Y := Y) hX_int hY_int hL1
 
 /--
+Durrett 2019, Theorem 4.6.3, expectation-convergence consequence of `L¹`
+convergence.
+
+This is the `(ii) -> (iii)` integral part: `L¹` convergence of `X n` to `Y`
+implies convergence of the first absolute moments.
+-/
+theorem durrett2019_theorem_4_6_3_tendsto_integral_abs_of_eLpNorm_one_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX_int : ∀ n, Integrable (X n) P) (hY_int : Integrable Y P)
+    (hL1 : Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0)) :
+    Tendsto (fun n => ∫ ω, |X n ω| ∂P) atTop (𝓝 (∫ ω, |Y ω| ∂P)) := by
+  have hY_abs_int : Integrable (fun ω => |Y ω|) P := by
+    simpa [Real.norm_eq_abs] using hY_int.norm
+  have hX_abs_int : ∀ n, Integrable (fun ω => |X n ω|) P := by
+    intro n
+    simpa [Real.norm_eq_abs] using (hX_int n).norm
+  have hAbsL1 :
+      Tendsto
+        (fun n => eLpNorm ((fun ω => |X n ω|) - fun ω => |Y ω|) 1 P)
+        atTop (𝓝 0) := by
+    rw [ENNReal.tendsto_atTop_zero] at hL1 ⊢
+    intro ε hε
+    obtain ⟨N, hN⟩ := hL1 ε hε
+    refine ⟨N, fun n hn => ?_⟩
+    have hnorm_eq :
+        eLpNorm (fun ω => ‖X n ω - Y ω‖) 1 P =
+          eLpNorm (X n - Y) 1 P := by
+      refine eLpNorm_congr_norm_ae ?_
+      exact Eventually.of_forall fun ω => by
+        simp [Pi.sub_apply]
+    calc
+      eLpNorm ((fun ω => |X n ω|) - fun ω => |Y ω|) 1 P
+          ≤ eLpNorm (fun ω => ‖X n ω - Y ω‖) 1 P := by
+            refine eLpNorm_mono_ae_real (μ := P) (p := 1) ?_
+            exact Eventually.of_forall fun ω => by
+              simpa [Pi.sub_apply, Real.norm_eq_abs] using
+                norm_abs_sub_abs (X n ω) (Y ω)
+      _ = eLpNorm (X n - Y) 1 P := hnorm_eq
+      _ ≤ ε := hN n hn
+  exact
+    tendsto_integral_of_L1' (μ := P)
+      (f := fun ω => |Y ω|)
+      hY_abs_int
+      (Eventually.of_forall hX_abs_int)
+      hAbsL1
+
+/--
+Durrett 2019, Theorem 4.6.3, expectation convergence from uniform
+integrability plus convergence in probability.
+-/
+theorem durrett2019_theorem_4_6_3_tendsto_integral_abs_of_tendstoInMeasure_uniformIntegrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hprob : TendstoInMeasure P X atTop Y)
+    (hUI : UniformIntegrable X 1 P) :
+    Tendsto (fun n => ∫ ω, |X n ω| ∂P) atTop (𝓝 (∫ ω, |Y ω| ∂P)) := by
+  have hY_int : Integrable Y P :=
+    hUI.integrable_of_tendstoInMeasure hprob
+  have hX_int : ∀ n, Integrable (X n) P := fun n =>
+    memLp_one_iff_integrable.1 (hUI.memLp n)
+  exact
+    durrett2019_theorem_4_6_3_tendsto_integral_abs_of_eLpNorm_one_tendsto_zero
+      (P := P) (X := X) (Y := Y) hX_int hY_int
+      (durrett2019_theorem_4_6_3_eLpNorm_one_tendsto_zero_of_tendstoInMeasure_uniformIntegrable
+        (P := P) (X := X) (Y := Y) hprob hUI)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

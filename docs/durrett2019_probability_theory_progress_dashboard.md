@@ -32,27 +32,24 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V263` in
+Route from `Live In-Thread Goal Prompt V264` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.6 uniform integrability and
-`L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.  V263
-starts Section 4.6 by wrapping Mathlib's
-`Integrable.uniformIntegrable_condExp` as
-`durrett2019_theorem_4_6_1_uniformIntegrable_condExp`, adds the filtration
-form, and packages dominated-family/tail-criterion support through
-`durrett2019_section_4_6_uniformIntegrable_one_of_integrable_dominated` and
-`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_eLpNorm`; it also adds
-deterministic tail-envelope bridges and the compiled measure-theoretic
-`p > 1` source bridge
-`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd_with_modulus`.
-V262 closes the scalar small-set modulus and clean uniform-`L^p`, `p > 1`,
-endpoint as `durrett2019_theorem_4_6_2_uniformLp_smallSet_modulus` and
+`L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
+V260-V262 close Theorem 4.6.1 and Theorem 4.6.2 support: conditional
+expectation uniform integrability, dominated families, tail criteria,
+deterministic tail envelopes, the scalar small-set modulus, and the clean
+uniform-`L^p`, `p > 1`, endpoint
 `durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd`.  V263 wraps
 Mathlib's Vitali theorem in Durrett `L¹` form through
 `durrett2019_theorem_4_6_3_tendstoInMeasure_and_unifIntegrable_iff_eLpNorm_one`,
 the forward `UniformIntegrable` wrapper, and the `L¹`-to-probability/UI
-consumers.  The next target is the remaining expectation-convergence statement
-`(iii)` of Theorem 4.6.3 and then Theorem 4.6.4 martingale `L¹` convergence.
+consumers.  V264 adds the expectation-convergence `(iii)` layer:
+`durrett2019_theorem_4_6_3_tendsto_integral_abs_of_eLpNorm_one_tendsto_zero`
+and
+`durrett2019_theorem_4_6_3_tendsto_integral_abs_of_tendstoInMeasure_uniformIntegrable`.
+The next target is a cheap Theorem 4.6.3 source wrapper if it falls out
+immediately; otherwise move to Theorem 4.6.4 martingale `L¹` convergence.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now
@@ -62,9 +59,7 @@ general bridge is
 `durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments_sqrt_lintegral_ne_top`.
 V258 closes the main Theorem 4.5.7/Example 4.5.8 source bridge by weakening
 `Integrable Ainf` to `AEMeasurable Ainf P` plus finite square-root terminal
-clock.  Next target: package Durrett Theorem 4.6.1 as a local wrapper around
-Mathlib's `Integrable.uniformIntegrable_condExp`, then build the dominated and
-`L^p`-bounded uniform-integrability wrappers for Theorem 4.6.2/4.6.3.  V257 adds the canonical
+clock.  V257 adds the canonical
 infinite iid Rademacher product-space endpoint:
 `rademacherBoolSequenceLaw`, `rademacherSequenceCoordinate`,
 `rademacherSequenceCoordinate_hasLaw`,

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V263
+## Live In-Thread Goal Prompt V264
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,30 +19,28 @@ Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V263 continues Section 4.6.  V260 packages Durrett Theorem
-4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
-`durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds
-the dominated-family and tail-criterion constructors
-`durrett2019_section_4_6_uniformIntegrable_one_of_integrable_dominated` and
-`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_eLpNorm`.  V261 adds
-the deterministic tail-envelope bridges
-`durrett2019_theorem_4_6_2_uniformIntegrable_of_tail_envelope_tendsto_zero` and
-`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_envelope_tendsto_zero`,
-plus the measure-theoretic `p > 1` source bridge
-`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd_with_modulus`.
-V262 discharges the scalar modulus as
-`durrett2019_theorem_4_6_2_uniformLp_smallSet_modulus` and packages the clean
-uniform-`Lᵖ`, `p > 1`, endpoint
-`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd`.  V263 starts
-Theorem 4.6.3 Vitali equivalence with
+Latest verified target V264 continues Section 4.6.  V260 packages Durrett
+Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
+`durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
+dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
+close the deterministic tail-envelope, scalar modulus, and clean uniform-`Lᵖ`,
+`p > 1`, endpoint
+`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd`.  V263 wraps
+Mathlib's Vitali theorem in Durrett `L¹` form via
 `durrett2019_theorem_4_6_3_tendstoInMeasure_and_unifIntegrable_iff_eLpNorm_one`,
-the forward `UniformIntegrable` wrapper
-`durrett2019_theorem_4_6_3_eLpNorm_one_tendsto_zero_of_tendstoInMeasure_uniformIntegrable`,
-and the `L¹` convergence to convergence-in-probability / `UnifIntegrable`
-consumers.  Next aggressive theorem packet: add the remaining Durrett 4.6.3
-expectation-convergence component `(iii)`, i.e. connect `L¹` convergence with
-`Tendsto (fun n => ∫ |X n|) (𝓝 (∫ |Y|))` and package the three-way theorem,
-then move to Theorem 4.6.4 martingale `L¹` convergence.
+the forward `UniformIntegrable` wrapper, and the `L¹` convergence to
+convergence-in-probability / `UnifIntegrable` consumers.  V264 adds the
+expectation-convergence component `(iii)`:
+`durrett2019_theorem_4_6_3_tendsto_integral_abs_of_eLpNorm_one_tendsto_zero`
+and
+`durrett2019_theorem_4_6_3_tendsto_integral_abs_of_tendstoInMeasure_uniformIntegrable`.
+
+Next aggressive theorem packet: if immediate, package the already-compiled
+V263/V264 pieces into a clean Theorem 4.6.3 source wrapper without duplicating
+proof work; otherwise move directly to Durrett Theorem 4.6.4 martingale `L¹`
+convergence, reusing Theorem 4.6.1 conditional-expectation uniform
+integrability, V263/V264 Vitali wrappers, and Mathlib martingale convergence
+APIs.  Search Mathlib/local APIs first and keep the proof packet theorem-sized.
 
 ## Deprecated V255 Prompt Notes
 
