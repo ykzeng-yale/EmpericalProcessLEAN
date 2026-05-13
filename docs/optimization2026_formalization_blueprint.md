@@ -43,6 +43,16 @@ packet should use these compiled Lemma 13.15 wrappers in the path-following
 decrement recurrence and central-path barrier-parameter estimates; do not
 reroute to earlier 13.6, 13.8, product/sum, or positive-orthant setup unless a
 new downstream proof directly needs those already verified declarations.
+The follow-up Lemma 13.16 assembly now compiles through
+`real_le_div_one_sub_of_sq_div_one_add_le_mul`,
+`chewi1316_localNorm_le_decrement_div_one_sub`,
+`chewi1316_central_objective_gap_le`,
+`chewi1316_objective_gap_to_center_le`, and
+`chewi1316_objective_gap_le`, giving the source objective-gap estimate from
+supplied central-path optimality and Lemma 13.6/13.15 inputs.  The next live
+route is the main-stage update invariant: prove the pre-Newton decrement after
+the multiplicative `t` update and then feed it to the compiled Theorem 13.8
+Newton-step wrapper to preserve `lambda <= 1/4`.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

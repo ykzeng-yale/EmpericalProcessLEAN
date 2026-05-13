@@ -10243,6 +10243,230 @@ theorem chewi1315_gradient_segment_inner_le_of_cauchy_continuousOn
     (hessianSegmentGradientInner_continuousOn_of_convex hs hx hy hgrad_cont)
     hgrad hcauchy
 
+theorem real_le_div_one_sub_of_sq_div_one_add_le_mul
+    {r lambda : ℝ}
+    (hr : 0 ≤ r)
+    (hlambda_nonneg : 0 ≤ lambda)
+    (hlambda_lt : lambda < 1)
+    (hineq : r ^ (2 : ℕ) / (1 + r) ≤ lambda * r) :
+    r ≤ lambda / (1 - lambda) := by
+  by_cases hr_zero : r = 0
+  · rw [hr_zero]
+    exact div_nonneg hlambda_nonneg (sub_nonneg.mpr hlambda_lt.le)
+  have hr_pos : 0 < r := lt_of_le_of_ne hr (Ne.symm hr_zero)
+  have hden_pos : 0 < 1 - lambda := sub_pos.mpr hlambda_lt
+  have hone_add_pos : 0 < 1 + r := by nlinarith
+  have hmul₀ : r ^ (2 : ℕ) ≤ lambda * r * (1 + r) := by
+    exact (div_le_iff₀ hone_add_pos).mp hineq
+  have hmul : r * r ≤ (lambda * (1 + r)) * r := by
+    nlinarith
+  have hr_le : r ≤ lambda * (1 + r) :=
+    le_of_mul_le_mul_right hmul hr_pos
+  rw [le_div_iff₀ hden_pos]
+  nlinarith
+
+/--
+Chewi Lemma 13.16 distance rearrangement.  If Lemma 13.6 gives
+`r^2/(1+r) <= <g, x-x_*^t>` and the local Cauchy/decrement bound gives
+`<g, x-x_*^t> <= lambda*r`, then `r <= lambda/(1-lambda)`.
+-/
+theorem chewi1316_localNorm_le_decrement_div_one_sub
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {x center g : E} {lambda : ℝ}
+    (hlambda_lt : lambda < 1)
+    (hdecrement : dualLocalNorm invHess x g ≤ lambda)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ g (x - center)) :
+    localNorm hess x (x - center) ≤ lambda / (1 - lambda) := by
+  let r := localNorm hess x (x - center)
+  have hr_nonneg : 0 ≤ r := by
+    dsimp [r]
+    exact localNorm_nonneg hess x (x - center)
+  have hinner_le : inner ℝ g (x - center) ≤ lambda * r := by
+    have hbase := hcauchy g (x - center)
+    have hmul := mul_le_mul_of_nonneg_right hdecrement hr_nonneg
+    exact hbase.trans hmul
+  have hlambda_nonneg : 0 ≤ lambda :=
+    (dualLocalNorm_nonneg invHess x g).trans hdecrement
+  exact real_le_div_one_sub_of_sq_div_one_add_le_mul
+    (r := r) (lambda := lambda) hr_nonneg hlambda_nonneg hlambda_lt
+    (hlower.trans hinner_le)
+
+/--
+First term in Chewi Lemma 13.16: a central-path optimality equation and the
+Lemma 13.15 barrier displacement bound imply
+`<a,x_*(t)> - <a,x_*> <= nu/t`.
+-/
+theorem chewi1316_central_objective_gap_le
+    {grad : E -> E} {a center optimum : E} {t nu : ℝ}
+    (ht_pos : 0 < t)
+    (hcentral : t • a + grad center = 0)
+    (hbarrier_step : inner ℝ (grad center) (optimum - center) ≤ nu) :
+    inner ℝ a center - inner ℝ a optimum ≤ nu / t := by
+  have ht_ne : t ≠ 0 := ht_pos.ne'
+  have htA : t • a = -grad center := by
+    rw [eq_neg_iff_add_eq_zero]
+    exact hcentral
+  have hobj :
+      inner ℝ a center - inner ℝ a optimum =
+        (1 / t) * inner ℝ (grad center) (optimum - center) := by
+    calc
+      inner ℝ a center - inner ℝ a optimum =
+          inner ℝ a (center - optimum) := by
+        rw [inner_sub_right]
+      _ = (1 / t) * inner ℝ (t • a) (center - optimum) := by
+        rw [real_inner_smul_left]
+        field_simp [ht_ne]
+      _ = (1 / t) * (-(inner ℝ (grad center) (center - optimum))) := by
+        rw [htA]
+        simp [inner_neg_left]
+      _ = (1 / t) * inner ℝ (grad center) (optimum - center) := by
+        have hnegstep : optimum - center = -(center - optimum) := by
+          abel
+        rw [hnegstep, inner_neg_right]
+  rw [hobj]
+  have hscale := mul_le_mul_of_nonneg_left hbarrier_step (by positivity : 0 ≤ 1 / t)
+  simpa [div_eq_mul_inv, one_div, mul_comm, mul_left_comm, mul_assoc] using hscale
+
+/--
+Second term in Chewi Lemma 13.16.  The local Cauchy bounds for
+`grad f_t(x)` and `grad phi(x)`, together with the Lemma 13.6 distance
+rearrangement, give the central-path objective gap from `x` to `x_*(t)`.
+-/
+theorem chewi1316_objective_gap_to_center_le
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {a x center : E} {t nu lambda : ℝ}
+    (ht_pos : 0 < t)
+    (hlambda_lt : lambda < 1)
+    (hdecrement : dualLocalNorm invHess x (t • a + phiGrad x) ≤ lambda)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (t • a + phiGrad x) (x - center)) :
+    inner ℝ a x - inner ℝ a center ≤
+      (1 / t) * (((lambda + Real.sqrt nu) * lambda) / (1 - lambda)) := by
+  let r := localNorm hess x (x - center)
+  have ht_ne : t ≠ 0 := ht_pos.ne'
+  have hr_nonneg : 0 ≤ r := by
+    dsimp [r]
+    exact localNorm_nonneg hess x (x - center)
+  have hlambda_nonneg : 0 ≤ lambda :=
+    (dualLocalNorm_nonneg invHess x (t • a + phiGrad x)).trans hdecrement
+  have hcoef_nonneg : 0 ≤ lambda + Real.sqrt nu :=
+    add_nonneg hlambda_nonneg (Real.sqrt_nonneg nu)
+  have hdist :
+      r ≤ lambda / (1 - lambda) :=
+    chewi1316_localNorm_le_decrement_div_one_sub
+      (hess := hess) (invHess := invHess) (x := x) (center := center)
+      (g := t • a + phiGrad x) hlambda_lt hdecrement hcauchy hlower
+  have hgradft_pair :
+      inner ℝ (t • a + phiGrad x) (x - center) ≤ lambda * r := by
+    have hbase := hcauchy (t • a + phiGrad x) (x - center)
+    have hmul := mul_le_mul_of_nonneg_right hdecrement hr_nonneg
+    exact hbase.trans hmul
+  have hphi_pair :
+      inner ℝ (phiGrad x) (center - x) ≤ Real.sqrt nu * r := by
+    have hbase := hcauchy (phiGrad x) (center - x)
+    have hnorm : localNorm hess x (center - x) = r := by
+      dsimp [r]
+      simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
+        localNorm_neg hess x (x - center)
+    have hmul := mul_le_mul_of_nonneg_right hphi_bound hr_nonneg
+    have hbase' :
+        inner ℝ (phiGrad x) (center - x) ≤
+          dualLocalNorm invHess x (phiGrad x) * r := by
+      simpa [hnorm] using hbase
+    exact hbase'.trans hmul
+  have hta_pair :
+      inner ℝ (t • a) (x - center) ≤ (lambda + Real.sqrt nu) * r := by
+    have hsplit :
+        inner ℝ (t • a) (x - center) =
+          inner ℝ (t • a + phiGrad x) (x - center) +
+            inner ℝ (phiGrad x) (center - x) := by
+      have hnegstep : center - x = -(x - center) := by
+        abel
+      rw [hnegstep, inner_neg_right, inner_add_left]
+      ring
+    calc
+      inner ℝ (t • a) (x - center)
+          = inner ℝ (t • a + phiGrad x) (x - center) +
+              inner ℝ (phiGrad x) (center - x) := hsplit
+      _ ≤ lambda * r + Real.sqrt nu * r := add_le_add hgradft_pair hphi_pair
+      _ = (lambda + Real.sqrt nu) * r := by ring
+  have hta_pair' :
+      inner ℝ (t • a) (x - center) ≤
+        (lambda + Real.sqrt nu) * (lambda / (1 - lambda)) := by
+    exact hta_pair.trans (mul_le_mul_of_nonneg_left hdist hcoef_nonneg)
+  have hobj :
+      inner ℝ a x - inner ℝ a center =
+        (1 / t) * inner ℝ (t • a) (x - center) := by
+    calc
+      inner ℝ a x - inner ℝ a center =
+          inner ℝ a (x - center) := by
+        rw [inner_sub_right]
+      _ = (1 / t) * inner ℝ (t • a) (x - center) := by
+        rw [real_inner_smul_left]
+        field_simp [ht_ne]
+  rw [hobj]
+  have hscale := mul_le_mul_of_nonneg_left hta_pair' (by positivity : 0 ≤ 1 / t)
+  simpa [div_eq_mul_inv, one_div, mul_comm, mul_left_comm, mul_assoc] using hscale
+
+/--
+Chewi Lemma 13.16, supplied-interface assembly.  The theorem combines the
+Lemma 13.15 central-path barrier term with the Lemma 13.6 distance/decrement
+term to obtain the displayed source objective-gap estimate.
+-/
+theorem chewi1316_objective_gap_le
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {a x center optimum : E} {t nu lambda : ℝ}
+    (ht_pos : 0 < t)
+    (hlambda_lt : lambda < 1)
+    (hcentral : t • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement : dualLocalNorm invHess x (t • a + phiGrad x) ≤ lambda)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (t • a + phiGrad x) (x - center)) :
+    inner ℝ a x - inner ℝ a optimum ≤
+      (1 / t) *
+        (nu + (((lambda + Real.sqrt nu) * lambda) / (1 - lambda))) := by
+  have hcenter :=
+    chewi1316_central_objective_gap_le
+      (grad := phiGrad) (a := a) (center := center) (optimum := optimum)
+      (t := t) (nu := nu) ht_pos hcentral hbarrier_step
+  have hto_center :=
+    chewi1316_objective_gap_to_center_le
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (t := t)
+      (nu := nu) (lambda := lambda)
+      ht_pos hlambda_lt hdecrement hphi_bound hcauchy hlower
+  have hsum := add_le_add hto_center hcenter
+  have hsplit :
+      inner ℝ a x - inner ℝ a optimum =
+        (inner ℝ a x - inner ℝ a center) +
+          (inner ℝ a center - inner ℝ a optimum) := by
+    ring
+  rw [hsplit]
+  calc
+    (inner ℝ a x - inner ℝ a center) +
+        (inner ℝ a center - inner ℝ a optimum)
+        ≤ (1 / t) * (((lambda + Real.sqrt nu) * lambda) / (1 - lambda)) +
+            nu / t := hsum
+    _ = (1 / t) *
+        (nu + (((lambda + Real.sqrt nu) * lambda) / (1 - lambda))) := by
+      ring
+
 /--
 Chewi Theorem 13.8 gradient fundamental-theorem identity along the segment:
 `∫_0^1 Hess(z_t) (y - x) dt = grad y - grad x`.

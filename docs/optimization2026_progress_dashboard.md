@@ -72,8 +72,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   `0 < m`.
 - Next Chapter 13 target: use the compiled Lemma 13.15 wrappers in the
   path-following decrement recurrence and central-path barrier-parameter
-  estimates.  The reciprocal-derivative/sign step and affine/range
-  gradient-continuity/differentiability transport are no longer blockers.
+  estimates.  The newest Lemma 13.16 assembly packet adds
+  `real_le_div_one_sub_of_sq_div_one_add_le_mul`,
+  `chewi1316_localNorm_le_decrement_div_one_sub`,
+  `chewi1316_central_objective_gap_le`,
+  `chewi1316_objective_gap_to_center_le`, and
+  `chewi1316_objective_gap_le`, closing the supplied-interface objective-gap
+  estimate from the source proof.  The reciprocal-derivative/sign step,
+  affine/range gradient-continuity/differentiability transport, and Lemma
+  13.16 algebra are no longer blockers.  Next target: the main-stage update
+  invariant for `lambda <= 1/4` under
+  `t_{n+1} = (1 + c0 / sqrt nu) * t_n` and one Newton step.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

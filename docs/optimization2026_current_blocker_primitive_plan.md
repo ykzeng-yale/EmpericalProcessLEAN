@@ -174,9 +174,23 @@ Lemma 13.15(2) for arbitrary finite-row polytope logarithmic barriers when
 positive-orthant gradient derivative rather than duplicating barrier
 foundations.  The next theorem-sized packet should use the compiled Lemma
 13.15 wrappers in the path-following decrement recurrence and central-path
-barrier-parameter estimates.  Do not route the next run back to product, sum,
-affine/range, or positive-orthant barrier setup unless a new downstream proof
-directly needs one of those already-verified declarations.
+barrier-parameter estimates.  The newest Lemma 13.16 assembly packet adds
+`real_le_div_one_sub_of_sq_div_one_add_le_mul`,
+`chewi1316_localNorm_le_decrement_div_one_sub`,
+`chewi1316_central_objective_gap_le`,
+`chewi1316_objective_gap_to_center_le`, and
+`chewi1316_objective_gap_le`, proving the source-shaped objective-gap bound
+from supplied central-path optimality, Lemma 13.15 barrier displacement,
+local Cauchy/decrement bounds, and the Lemma 13.6 distance lower inequality.
+The next theorem-sized packet should formalize the main-stage update
+invariant: with `lambda_{t_n}(x_n) <= 1/4`,
+`t_{n+1} = (1 + c0 / sqrt nu) * t_n`, `0 <= c0 <= 1/16`, and `1 <= nu`,
+the pre-Newton decrement for `f_{t_{n+1}}` is small enough that the compiled
+Theorem 13.8 Newton-step wrapper returns
+`lambda_{t_{n+1}}(x_{n+1}) <= 1/4`.  Do not route the next run back to product,
+sum, affine/range, positive-orthant barrier setup, or the already-compiled
+Lemma 13.16 algebra unless a new downstream proof directly needs one of those
+verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9
