@@ -15300,6 +15300,76 @@ theorem positiveOrthantNegLog_localNorm_eq_sqrtCoord_norm {d : ℕ}
   rw [hquad]
   exact Real.sqrt_sq (norm_nonneg (S v))
 
+theorem positiveOrthant_mem_of_localNorm_sub_lt_one {d : ℕ}
+    {x y : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ positiveOrthant (d := d))
+    (hy : localNorm positiveOrthantNegLogHessCLM x (y - x) < 1) :
+    y ∈ positiveOrthant (d := d) := by
+  intro i
+  let S : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+    (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap
+  have hcoord_norm :
+      ‖S (y - x) i‖ ≤ ‖S (y - x)‖ :=
+    PiLp.norm_apply_le (S (y - x)) i
+  have hcoord_abs_raw :
+      |(x i)⁻¹ * y i - (x i)⁻¹ * x i| ≤ ‖S (y - x)‖ := by
+    simpa [S, hx, Real.norm_eq_abs] using hcoord_norm
+  have hcoord_abs :
+      |(x i)⁻¹ * (y i - x i)| ≤ ‖S (y - x)‖ := by
+    convert hcoord_abs_raw using 2
+    ring
+  have hlocal_eq :
+      localNorm positiveOrthantNegLogHessCLM x (y - x) = ‖S (y - x)‖ := by
+    simpa [S] using positiveOrthantNegLog_localNorm_eq_sqrtCoord_norm hx (y - x)
+  have hnorm_lt : ‖S (y - x)‖ < 1 := by
+    rwa [← hlocal_eq]
+  have habs_lt : |(x i)⁻¹ * (y i - x i)| < 1 :=
+    hcoord_abs.trans_lt hnorm_lt
+  have hlower : -1 < (x i)⁻¹ * (y i - x i) := (abs_lt.mp habs_lt).1
+  have hmul :
+      (-1 : ℝ) * x i < ((x i)⁻¹ * (y i - x i)) * x i :=
+    mul_lt_mul_of_pos_right hlower (hx i)
+  have hright :
+      ((x i)⁻¹ * (y i - x i)) * x i = y i - x i := by
+    field_simp [(hx i).ne']
+  have hshift : -x i < y i - x i := by
+    simpa [hright] using hmul
+  nlinarith
+
+theorem positiveOrthant_mem_of_mem_dikinEllipsoid_one {d : ℕ}
+    {x y : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ positiveOrthant (d := d))
+    (hy : y ∈ dikinEllipsoid positiveOrthantNegLogHessCLM x 1) :
+    y ∈ positiveOrthant (d := d) :=
+  positiveOrthant_mem_of_localNorm_sub_lt_one hx (by simpa [dikinEllipsoid] using hy)
+
+set_option maxHeartbeats 1000000 in
+theorem positiveOrthant_newtonStep_mem_of_newtonDecrement_lt_one {d : ℕ}
+    {grad : EuclideanSpace ℝ (Fin d) -> EuclideanSpace ℝ (Fin d)}
+    {x : EuclideanSpace ℝ (Fin d)}
+    (hx : x ∈ positiveOrthant (d := d))
+    (hlambda : newtonDecrement grad positiveOrthantNegLogInvHessCLM x < 1) :
+    newtonStep grad positiveOrthantNegLogInvHessCLM x ∈ positiveOrthant (d := d) := by
+  have hstep_norm :
+      localNorm positiveOrthantNegLogHessCLM x
+          (newtonStep grad positiveOrthantNegLogInvHessCLM x - x) =
+        newtonDecrement grad positiveOrthantNegLogInvHessCLM x :=
+    localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse
+      (hess := positiveOrthantNegLogHessCLM)
+      (grad := grad) (invHess := positiveOrthantNegLogInvHessCLM) (x := x)
+      (positiveOrthantNegLogHessCLM_invHess_right_inverse hx)
+  exact positiveOrthant_mem_of_localNorm_sub_lt_one hx (by simpa [hstep_norm] using hlambda)
+
+theorem positiveOrthantCentralPathGrad_newtonStep_mem_of_decrement_lt_one {d : ℕ}
+    {x a : EuclideanSpace ℝ (Fin d)} {t : ℝ}
+    (hx : x ∈ positiveOrthant (d := d))
+    (hlambda :
+      newtonDecrement (centralPathGrad t a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM x < 1) :
+    newtonStep (centralPathGrad t a positiveOrthantNegLogGrad)
+        positiveOrthantNegLogInvHessCLM x ∈ positiveOrthant (d := d) :=
+  positiveOrthant_newtonStep_mem_of_newtonDecrement_lt_one hx hlambda
+
 theorem positiveOrthantNegLogThirdMixed_eq_neg_two_inner_sqrt_squareVec {d : ℕ}
     {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
     (u v : EuclideanSpace ℝ (Fin d)) :

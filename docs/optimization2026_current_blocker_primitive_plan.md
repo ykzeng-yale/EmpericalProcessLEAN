@@ -223,13 +223,22 @@ positive-orthant central-path packet adds `centralPathGrad`,
 `positiveOrthantNegLog_dualLocalNorm_grad_le_sqrt_card`.  This discharges the
 positive-orthant central-path objective differentiability, segment
 differentiability, Newton linearization, and barrier-gradient norm bound used
-by the main-stage wrapper.  The next live gate is now the feasible Newton-step
-membership for the selected central-path step and a final lightweight
-positive-orthant main-stage assembly.  Do not route the next run back to
-product, sum, affine/range, positive-orthant barrier setup, the already-compiled
-Lemma 13.16/main-stage algebra, the dual-norm interface, or the generic
-main-stage wrappers unless a new downstream proof directly needs one of those
-verified declarations.
+by the main-stage wrapper.  The newest feasible-step packet adds
+`positiveOrthant_mem_of_localNorm_sub_lt_one`,
+`positiveOrthant_mem_of_mem_dikinEllipsoid_one`,
+`positiveOrthant_newtonStep_mem_of_newtonDecrement_lt_one`, and
+`positiveOrthantCentralPathGrad_newtonStep_mem_of_decrement_lt_one`.  This
+closes the Dikin-radius-one feasibility gate for positive-orthant Newton
+steps by reusing the compiled square-root-coordinate local norm identity and
+Newton decrement/Dikin membership wrappers.  The next live gate is now the
+final lightweight positive-orthant main-stage assembly: derive the needed
+`lambda < 1` feasible-step input from the compiled `lambda <= 1/4`/main-stage
+bound, feed the selected central-path Newton step through the feasible-step
+lemma, and package the source-facing invariant.  Do not route the next run
+back to product, sum, affine/range, positive-orthant barrier setup, the
+already-compiled Lemma 13.16/main-stage algebra, the dual-norm interface, the
+generic main-stage wrappers, or feasible-step membership unless a new
+downstream proof directly needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

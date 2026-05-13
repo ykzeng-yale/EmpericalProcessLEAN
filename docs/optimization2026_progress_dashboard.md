@@ -119,9 +119,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   `positiveOrthantNegLog_dualLocalNorm_grad_le_sqrt_card`.  It discharges the
   positive-orthant central-path objective differentiability, segment
   differentiability, Newton linearization, and barrier-gradient norm bound.
-  The remaining gate is feasible Newton-step membership for the selected
-  central-path step plus a final lightweight positive-orthant main-stage
-  assembly.
+  The newest feasible-step packet adds
+  `positiveOrthant_mem_of_localNorm_sub_lt_one`,
+  `positiveOrthant_mem_of_mem_dikinEllipsoid_one`,
+  `positiveOrthant_newtonStep_mem_of_newtonDecrement_lt_one`, and
+  `positiveOrthantCentralPathGrad_newtonStep_mem_of_decrement_lt_one`.  It
+  proves that positive-orthant Dikin radius-one membership, and hence a
+  positive-orthant Newton step with decrement `< 1`, stays feasible.  The
+  remaining gate is the final positive-orthant main-stage assembly: turn the
+  compiled `lambda <= 1/4` next-decrement bound into the feasible-step input,
+  then package the selected central-path Newton update as the source-facing
+  invariant.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
