@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V313
+## Live In-Thread Goal Prompt V314
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -28,9 +28,17 @@ V308 textbook range-sum empirical-CDF display wrappers, or the V309 textbook
 `n^{-1} * sum` empirical-CDF display wrappers, or the V310 `iIndepFun`
 source-assumption wrappers for Durrett 2.4.9, or the V311 product-law source
 wrappers, or the V312 `IdentDistrib` plus `iIndepFun` iid-source wrappers, or
-the V313 pairwise-iid source wrappers.
+the V313 pairwise-iid source wrappers, or the V314 countable product-law
+forward/criterion wrappers.
 
-Latest verified target V313 adds Durrett 2.4.9 consumers from the weaker
+Latest verified target V314 adds the countable product-law direction and
+criteria for Durrett Theorem 2.1.11:
+`durrett2019_theorem_2_1_11_iIndepFun_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_infinitePi`, and
+`durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi`.
+
+Compiled support also includes the V313 Durrett 2.4.9 consumers from the weaker
 pairwise-iid source shape: one base marginal law for `X_0`,
 `IdentDistrib (X_i) (X_0)`, and pairwise coordinate independence.  The new
 2.4.9 consumers end at
@@ -2051,6 +2059,10 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_pairwise_identDistrib`
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_pairwise_identDistrib`
 - `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_pairwise_identDistrib`
+- `durrett2019_theorem_2_1_11_iIndepFun_hasLaw_infinitePi`
+- `durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi`
+- `durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_infinitePi`
+- `durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi`
 - `durrett2019_theorem_3_2_9_tendstoInDistribution_iff_forall_boundedContinuous_integral`
 - `durrett2019_theorem_3_2_10_continuous_mapping`
 - `durrett2019_theorem_3_2_10_continuous_mapping_common_probability_space`

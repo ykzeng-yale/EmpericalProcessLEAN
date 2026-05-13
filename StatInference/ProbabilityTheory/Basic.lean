@@ -667,6 +667,78 @@ theorem durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi
     (P := μ) (X := X) (μ := fun _ : ℕ => ν) hLaw hJoint.aemeasurable).2 hJoint
 
 /--
+Durrett 2019, Theorem 2.1.11, countable product-law form.
+
+Independent random variables with marginal laws `ν_i` have sequence-valued
+joint law `∏ᵢ ν_i`.
+-/
+theorem durrett2019_theorem_2_1_11_iIndepFun_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    {X : ∀ i, Ω -> S i}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (ν i) μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi ν) μ :=
+  hindep.hasLaw_infinitePi hLaw
+    (aemeasurable_pi_lambda _ fun i => (hLaw i).aemeasurable)
+
+/--
+Durrett 2019, Theorem 2.1.11, countable iid product-law form.
+
+Independent random variables with common marginal law `ν` have sequence-valued
+joint law `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ :=
+  durrett2019_theorem_2_1_11_iIndepFun_hasLaw_infinitePi
+    (S := fun _ : ℕ => S) (ν := fun _ : ℕ => ν) hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.1.11, countable product-law criterion.
+
+For a sequence with known marginal laws, independence is equivalent to the
+sequence-valued joint law being the infinite product of those marginals.
+-/
+theorem durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} [IsProbabilityMeasure μ] {ν : ∀ i, Measure (S i)}
+    {X : ∀ i, Ω -> S i}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (ν i) μ) :
+    _root_.ProbabilityTheory.iIndepFun (μ := μ) X ↔
+      _root_.ProbabilityTheory.HasLaw (fun ω => fun i : ℕ => X i ω)
+        (Measure.infinitePi ν) μ :=
+  _root_.ProbabilityTheory.iIndepFun_iff_hasLaw_Pi_infinitePi hLaw
+    (aemeasurable_pi_lambda _ fun i => (hLaw i).aemeasurable)
+
+/--
+Durrett 2019, Theorem 2.1.11, countable iid product-law criterion.
+
+For a sequence with common marginal law `ν`, independence is equivalent to the
+sequence-valued joint law being `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} [IsProbabilityMeasure μ] {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ) :
+    _root_.ProbabilityTheory.iIndepFun (μ := μ) X ↔
+      _root_.ProbabilityTheory.HasLaw (fun ω => fun i : ℕ => X i ω)
+        (Measure.infinitePi fun _ : ℕ => ν) μ :=
+  durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_infinitePi
+    (S := fun _ : ℕ => S) (ν := fun _ : ℕ => ν) hLaw
+
+/--
 Durrett 2019, Theorem 2.1.11 support: identical distribution with the zeroth
 coordinate transports one base law to every coordinate.
 
