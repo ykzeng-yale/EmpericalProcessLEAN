@@ -184,6 +184,9 @@ The positive-main-parameter layer adds
 `chewi1316_exists_pos_abs_mul_le_sixteenth`,
 `chewi1316_exists_positive_mainStageParameter_budget`, and
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound_nonneg`.
+The source-start layer adds `preliminaryPath_initial_decrement_le_of_start_one_self`
+and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_factorSqrtCountTailBoundLogBound_nonneg`.
 The next live route is the concrete Chewi/Nesterov source upper bound for the
 preliminary tail base matching the reverse path-following argument cited to
 Nesterov §5.3.5, then the strictly-feasible-start discussion.

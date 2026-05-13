@@ -356,15 +356,19 @@ strictly positive.  The positive-main-parameter packet adds
 `chewi1316_exists_positive_mainStageParameter_budget`, and
 `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound_nonneg`,
 so the `|tMain| * ||a||* <= 1/16` scalar budget is now discharged by an
-explicit positive choice of `tMain`.
+explicit positive choice of `tMain`.  The source-start packet adds
+`preliminaryPath_initial_decrement_le_of_start_one_self` and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_factorSqrtCountTailBoundLogBound_nonneg`,
+so the canonical preliminary start `tseq 0 = 1`, `xseq 0 = xbar0` discharges
+the initial decrement from endpoint stationarity.
 Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
 is now narrower: prove a concrete source upper bound on
-`|tStart| * ||grad phi(xbar0)||*` plus the concrete preliminary `tPre` scalar
-budget hypotheses feeding the positive-`tMain` wrapper; the
+`||grad phi(xbar0)||*` plus the concrete preliminary `tPre` scalar budget
+hypotheses feeding the source-start positive-`tMain` wrapper; the
 already-compiled wrapper then gives the `1/4` main-stage initialization budget.
 Do not route the next run back to product,
 sum,
@@ -377,8 +381,8 @@ finite preliminary sequence bridge, generic log-halving lemma, factor-tail
 algebra, log-to-power comparison, count-discharge algebra, tail-base log-budget
 algebra, tail-base log-choice algebra, integer budget existence, nonnegative
 tail-base discharge, positive main-parameter budget, or finite preliminary
-sequence induction unless a new downstream proof directly needs one of those
-verified declarations.
+sequence induction, or source-start initial decrement unless a new downstream
+proof directly needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

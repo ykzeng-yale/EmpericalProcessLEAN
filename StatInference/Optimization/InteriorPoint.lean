@@ -12078,6 +12078,30 @@ theorem preliminaryPath_newtonDecrement_one_self_le_quarter
   rw [preliminaryPath_newtonDecrement_one_self_eq_zero]
   norm_num
 
+/--
+Source-start preliminary-path initial decrement.  If the preliminary path
+starts at `t = 1` and `xbar0`, then any initial lambda at least `1/4` certifies
+the first decrement bound used by the finite preliminary sequence wrappers.
+-/
+theorem preliminaryPath_initial_decrement_le_of_start_one_self
+    {phiGrad : E -> E} {invHess : E -> E →L[ℝ] E}
+    {xbar0 : E} {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0) :
+    newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+        invHess (xseq 0) ≤ lambdaSeq 0 := by
+  calc
+    newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+        invHess (xseq 0)
+        = newtonDecrement (preliminaryPathGrad phiGrad xbar0 1)
+            invHess xbar0 := by
+            rw [ht0, hx0]
+    _ ≤ 1 / 4 :=
+        preliminaryPath_newtonDecrement_one_self_le_quarter
+          (phiGrad := phiGrad) (invHess := invHess) (xbar0 := xbar0)
+    _ ≤ lambdaSeq 0 := hlambda0
+
 theorem preliminaryPath_newtonDecrement_zero_of_analyticalCenter
     {phiGrad : E -> E} {invHess : E -> E →L[ℝ] E} {xbar0 center : E}
     (hcenter : phiGrad center = 0) :
@@ -13343,6 +13367,66 @@ theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_prel
       (N := N) (M := M)
       hinv_factor ht0 htstep hinit hstep hmainBudget hlambdaBudget
       hsqrt_pos hdelta_lt_one hcount htailBound_pos htailBase_le
+      htailBoundLog
+
+/--
+Source-start version of the positive-`tMain` preliminary initialization
+bridge.  It discharges the initial preliminary decrement from the canonical
+start `tStart = 1`, `xseq 0 = xbar0`.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_factorSqrtCountTailBoundLogBound_nonneg
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {c0 nu tailBound : ℝ} {N M : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0)
+    (htailBound_pos : 0 < tailBound)
+    (htailBase_le :
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound)
+    (htailBoundLog :
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    ∃ tMain : ℝ,
+      0 < tMain ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  have hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0 :=
+    preliminaryPath_initial_decrement_le_of_start_one_self
+      (phiGrad := phiGrad) (invHess := invHess) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      hx0 ht0 hlambda0
+  have htailBase_le' :
+      |(1 : ℝ)| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        tailBound := by
+    simpa using htailBase_le
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound_nonneg
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord) (tStart := 1) (c0 := c0) (nu := nu)
+      (tailBound := tailBound) (N := N) (M := M)
+      hinv_factor ht0 htstep hinit hstep hlambdaBudget
+      hsqrt_pos hdelta_lt_one hcount htailBound_pos htailBase_le'
       htailBoundLog
 
 theorem chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse

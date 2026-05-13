@@ -229,8 +229,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_exists_positive_mainStageParameter_budget`, and
   `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound_nonneg`,
   discharging the `|tMain| * ||a||* <= 1/16` scalar budget by choosing a small
-  positive `tMain`.  Remaining gate: prove the concrete Chewi/Nesterov bound on
-  `|tStart| * ||grad phi(xbar0)||*` by a source quantity such as the
+  positive `tMain`.  The source-start packet adds
+  `preliminaryPath_initial_decrement_le_of_start_one_self` and
+  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_factorSqrtCountTailBoundLogBound_nonneg`,
+  discharging the preliminary initial decrement from the canonical start
+  `tseq 0 = 1`, `xseq 0 = xbar0`.  Remaining gate: prove the concrete
+  Chewi/Nesterov bound on `||grad phi(xbar0)||*` by a source quantity such as the
   analytical-center distance measure, then finish the strictly-feasible-start
   discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
