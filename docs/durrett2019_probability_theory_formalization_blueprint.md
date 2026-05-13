@@ -27,17 +27,20 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V253`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V254`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier: Durrett Example 4.5.8 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V253 starts the example by
-packaging the dominated optional-stopping bridge from the source anchor:
-finite-horizon zero expectations pass to the stopped limit once Theorem 4.5.7
-supplies an integrable running supremum.  The next proof packet should
-instantiate that bridge for the stopped simple symmetric random walk.  V252 closes the
+`StatInference/ProbabilityTheory/Martingale.lean`.  V254 adds the stopped-process
+specialization
+`durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source`:
+bounded optional stopping for `N ∧ n` now supplies the finite-horizon zero
+expectations for `S_{N ∧ n}`, and the V253 dominated/4.5.7 bridge passes the
+zero expectation to the terminal limit.  The next proof packet should instantiate
+this bridge for the stopped simple symmetric random walk, reusing local
+Rademacher support before adding new random-walk primitives.  V252 closes the
 source-facing infinite-horizon Theorem 4.5.7 endpoint:
 `durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`.
 It derives the real-supremum a.e. boundedness from finite `iSup` expectation

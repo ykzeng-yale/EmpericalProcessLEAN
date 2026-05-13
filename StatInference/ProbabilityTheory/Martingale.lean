@@ -24771,6 +24771,77 @@ theorem
       hlim hzero
 
 /--
+Durrett 2019, Example 4.5.8 stopped-process source bridge.
+
+For a stopped martingale `S_{N ∧ n}`, finite-horizon zero expectations are
+supplied by the bounded optional-stopping theorem applied to `N ∧ n`.  The
+remaining hypotheses are exactly the Theorem 4.5.7 clock/source assumptions
+for the stopped process and the a.s. convergence of the stopped process to the
+chosen terminal variable.
+-/
+theorem
+    durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {S A : ℕ -> Ω -> ℝ} {N : Ω -> WithTop ℕ} {Ainf Y : Ω -> ℝ}
+    (hS : Martingale S ℱ P)
+    (hN : IsStoppingTime ℱ N)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => stoppedProcess S N n ω ^ 2 - A n ω) ℱ P)
+    (hS_memLp_two : ∀ n, MemLp (S n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_int : Integrable Ainf P)
+    (hS0 : S 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (hlim : ∀ᵐ ω ∂P, Tendsto (fun n => stoppedProcess S N n ω) atTop (𝓝 (Y ω))) :
+    (∫ ω, Y ω ∂P) = 0 := by
+  have hStopped : Martingale (stoppedProcess S N) ℱ P :=
+    durrett2019_theorem_4_2_9_martingale_stoppedProcess hS hN
+  have hStopped_memLp_two :
+      ∀ n, MemLp (stoppedProcess S N n) (2 : ℝ≥0∞) P := by
+    intro n
+    exact memLp_stoppedProcess (ι := ℕ) hN hS_memLp_two n
+  have hStopped0 : stoppedProcess S N 0 =ᵐ[P] 0 := by
+    filter_upwards [hS0] with ω hω
+    have hzero_le : (0 : WithTop ℕ) ≤ N ω := by simp
+    have hstop : stoppedProcess S N 0 ω = S 0 ω :=
+      stoppedProcess_eq_of_le (u := S) (τ := N) (i := 0) (ω := ω) hzero_le
+    rw [hstop, hω]
+  have hzero : ∀ n, (∫ ω, stoppedProcess S N n ω ∂P) = 0 := by
+    intro n
+    let τn : Ω -> WithTop ℕ := fun ω => min (N ω) (n : WithTop ℕ)
+    have hτn : IsStoppingTime ℱ τn := by
+      simpa [τn] using hN.min_const n
+    have hbdd : ∀ ω, τn ω ≤ n := by
+      intro ω
+      dsimp [τn]
+      exact min_le_right _ _
+    have hopt :
+        (∫ ω, stoppedValue S τn ω ∂P) = ∫ ω, S 0 ω ∂P :=
+      durrett2019_theorem_4_4_1_martingale_integral_stoppedValue_eq_initial
+        (P := P) (ℱ := ℱ) (X := S) (N := τn) hS hτn (n := n) hbdd
+    have hprocess :
+        stoppedProcess S N n = stoppedValue S τn := by
+      funext ω
+      simp [τn, stoppedProcess, stoppedValue, min_comm]
+    calc
+      (∫ ω, stoppedProcess S N n ω ∂P)
+          = ∫ ω, stoppedValue S τn ω ∂P := by rw [hprocess]
+      _ = ∫ ω, S 0 ω ∂P := hopt
+      _ = 0 := by
+        have hzero_int : (∫ _ω, (0 : Ω -> ℝ) _ω ∂P) = 0 := by
+          simp
+        rw [integral_congr_ae hS0, hzero_int]
+  exact
+    durrett2019_example_4_5_8_integral_limit_eq_zero_of_theorem_4_5_7_source
+      (P := P) (ℱ := ℱ) (X := stoppedProcess S N) (A := A) (Ainf := Ainf)
+      (Y := Y) hStopped hA_predictable hSquareMinus hStopped_memLp_two hA_int
+      hAinf_int hStopped0 hA0 hA_mono hA_tendsto hlim hzero
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
