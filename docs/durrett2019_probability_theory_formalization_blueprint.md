@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V288`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V289`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -96,10 +96,18 @@ conditional-expectation process handoff, and a direct strong-law endpoint
 reusing `StatInference.ProbabilityMeasure.strongLaw_ae_real`.  V287 discharges
 the V286 constant-tail hypothesis from independence of the source sigma-field
 and the reverse tail.  V288 discharges the same side from a zero-one law for
-the reverse tail sigma-field.  The next proof packet should fill the exact
-Durrett source obligations: the backwards-average conditional-expectation
-calculation for `S_n / n`, or the exchangeability/Hewitt-Savage/Kolmogorov
-zero-one bridge feeding the V288 tail zero-one hypothesis.
+the reverse tail sigma-field.  V289 discharges the V288 zero-one side from the
+compiled Durrett 4.3.8 Kolmogorov zero-one support for independent tail-block
+sigma-fields through
+`durrett2019_example_4_7_4_tail_zero_or_one_of_iIndep_tailBlocks`,
+`durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_iIndep_tailBlocks`,
+and
+`durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_iIndep_tailBlocks`.
+The next proof packet should fill the exact Durrett source obligation: prove
+the backwards-average conditional-expectation calculation for `S_n / n` with
+`𝒢_n = σ(S_n, ξ_{n+1}, ξ_{n+2}, ...)`, then connect the reverse-tail constant
+side through exchangeability/Hewitt-Savage if the exact source sigma-field is
+not reducible to V289's independent tail-block wrapper.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:

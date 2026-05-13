@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V288` in
+Route from `Live In-Thread Goal Prompt V289` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -161,10 +161,17 @@ source sigma-field and the reverse tail.  V288 adds
 `durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_tail_zero_or_one` and
 `durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_zero_or_one`,
 which discharge the same constant-tail side from a zero-one law for the
-reverse tail sigma-field.  The next target is the exact Durrett source layer:
-either prove the backwards-average conditional-expectation calculation for
-`S_n / n`, or construct the exchangeability/Hewitt-Savage/Kolmogorov zero-one
-hypothesis that feeds V288.
+reverse tail sigma-field.  V289 adds
+`durrett2019_example_4_7_4_tail_zero_or_one_of_iIndep_tailBlocks`,
+`durrett2019_example_4_7_4_tail_condExp_ae_eq_integral_of_iIndep_tailBlocks`,
+and
+`durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_iIndep_tailBlocks`,
+which feed V288 from the compiled Durrett 4.3.8 Kolmogorov zero-one support
+for independent tail blocks.  The next target is the exact Durrett source
+layer: prove the backwards-average conditional-expectation calculation for
+`S_n / n` with `𝒢_n = σ(S_n, ξ_{n+1}, ξ_{n+2}, ...)`, then connect the
+reverse-tail constant side through exchangeability/Hewitt-Savage if the exact
+source sigma-field is not reducible to V289's independent tail-block wrapper.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now
