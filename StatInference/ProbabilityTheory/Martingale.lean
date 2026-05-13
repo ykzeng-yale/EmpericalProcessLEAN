@@ -28099,6 +28099,96 @@ theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_stronglyAdapted_dominated_
       hZ_int hY_dom hY_tendsto
 
 /--
+Durrett 2019, Exercise 4.6.7, moving conditional-expectation contraction.
+
+For each `n`, conditional expectation onto `ℱ n` is an `L¹` contraction, so
+the conditional expectations of `Y_n` and `Y` are no farther apart in `L¹`
+than `Y_n` and `Y` themselves.
+-/
+theorem durrett2019_exercise_4_6_7_condExp_diff_eLpNorm_one_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P) :
+    ∀ n,
+      eLpNorm (P[Y n | ℱ n] - P[Ylim | ℱ n]) 1 P ≤
+        eLpNorm (Y n - Ylim) 1 P := by
+  intro n
+  have hSub :
+      P[Y n - Ylim | ℱ n] =ᵐ[P] P[Y n | ℱ n] - P[Ylim | ℱ n] :=
+    condExp_sub (μ := P) (m := ℱ n) (hY_int n) hYlim_int
+  calc
+    eLpNorm (P[Y n | ℱ n] - P[Ylim | ℱ n]) 1 P
+        = eLpNorm (P[Y n - Ylim | ℱ n]) 1 P := by
+          exact (eLpNorm_congr_ae hSub).symm
+    _ ≤ eLpNorm (Y n - Ylim) 1 P :=
+          eLpNorm_one_condExp_le_eLpNorm
+            (μ := P) (m := ℱ n) (f := Y n - Ylim)
+
+/--
+Durrett 2019, Exercise 4.6.7, `L¹` convergence of conditional expectations
+along an increasing filtration.
+
+If `Y_n -> Y` in `L¹`, then
+`E(Y_n | ℱ_n) -> E(Y | ⨆ n, ℱ n)` in `L¹`.
+-/
+theorem durrett2019_exercise_4_6_7_condExp_eLpNorm_one_tendsto_iSup_of_eLpNorm_one_tendsto
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hL1 : Tendsto (fun n => eLpNorm (Y n - Ylim) 1 P) atTop (𝓝 0)) :
+    Tendsto
+      (fun n => eLpNorm (P[Y n | ℱ n] - P[Ylim | ⨆ k, ℱ k]) 1 P)
+      atTop (𝓝 0) := by
+  have hMoving :
+      Tendsto
+        (fun n => eLpNorm (P[Y n | ℱ n] - P[Ylim | ℱ n]) 1 P)
+        atTop (𝓝 0) := by
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le
+      tendsto_const_nhds hL1 (fun n => zero_le) ?_
+    exact
+      durrett2019_exercise_4_6_7_condExp_diff_eLpNorm_one_le
+        (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) hY_int hYlim_int
+  have hFixed :
+      Tendsto
+        (fun n => eLpNorm (P[Ylim | ℱ n] - P[Ylim | ⨆ k, ℱ k]) 1 P)
+        atTop (𝓝 0) :=
+    durrett2019_theorem_4_6_8_condExp_eLpNorm_one_tendsto_iSup_condExp
+      (P := P) (ℱ := ℱ) Ylim
+  have hUpper :
+      Tendsto
+        (fun n =>
+          eLpNorm (P[Y n | ℱ n] - P[Ylim | ℱ n]) 1 P +
+            eLpNorm (P[Ylim | ℱ n] - P[Ylim | ⨆ k, ℱ k]) 1 P)
+        atTop (𝓝 0) := by
+    simpa using hMoving.add hFixed
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le
+    tendsto_const_nhds hUpper (fun n => zero_le) ?_
+  intro n
+  have hLimit_le : (⨆ k, ℱ k) ≤ mΩ := iSup_le fun k => ℱ.le k
+  have hA_meas :
+      AEStronglyMeasurable (P[Y n | ℱ n] - P[Ylim | ℱ n]) P :=
+    ((stronglyMeasurable_condExp.mono (ℱ.le n)).sub
+      (stronglyMeasurable_condExp.mono (ℱ.le n))).aestronglyMeasurable
+  have hB_meas :
+      AEStronglyMeasurable (P[Ylim | ℱ n] - P[Ylim | ⨆ k, ℱ k]) P :=
+    ((stronglyMeasurable_condExp.mono (ℱ.le n)).sub
+      (stronglyMeasurable_condExp.mono hLimit_le)).aestronglyMeasurable
+  calc
+    eLpNorm (P[Y n | ℱ n] - P[Ylim | ⨆ k, ℱ k]) 1 P
+        = eLpNorm
+            ((P[Y n | ℱ n] - P[Ylim | ℱ n]) +
+              (P[Ylim | ℱ n] - P[Ylim | ⨆ k, ℱ k])) 1 P := by
+          congr 1
+          ext ω
+          simp only [Pi.sub_apply, Pi.add_apply]
+          ring_nf
+    _ ≤ eLpNorm (P[Y n | ℱ n] - P[Ylim | ℱ n]) 1 P +
+          eLpNorm (P[Ylim | ℱ n] - P[Ylim | ⨆ k, ℱ k]) 1 P :=
+        eLpNorm_add_le hA_meas hB_meas le_rfl
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
