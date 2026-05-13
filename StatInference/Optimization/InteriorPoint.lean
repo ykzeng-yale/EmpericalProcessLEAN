@@ -12620,6 +12620,72 @@ theorem chewi1316_tailBase_le_sixteenth_mul_two_pow_of_bound_log_le
       (tailBase := tailBound) (M := M) htailBound_pos hlog)
 
 /--
+Archimedean integer choice for a base-two logarithmic budget.
+-/
+theorem chewi1316_exists_nat_mul_log_two_ge (A : ℝ) :
+    ∃ M : ℕ, A ≤ (M : ℝ) * Real.log (2 : ℝ) := by
+  have hlog_pos : 0 < Real.log (2 : ℝ) :=
+    Real.log_pos (by norm_num : (1 : ℝ) < 2)
+  obtain ⟨M, hM⟩ := exists_nat_ge (A / Real.log (2 : ℝ))
+  refine ⟨M, ?_⟩
+  exact (div_le_iff₀ hlog_pos).mp hM
+
+/--
+Archimedean integer choice for any positive scalar iteration unit.
+-/
+theorem chewi1316_exists_nat_mul_pos_ge {A scale : ℝ}
+    (hscale_pos : 0 < scale) :
+    ∃ N : ℕ, A ≤ (N : ℝ) * scale := by
+  obtain ⟨N, hN⟩ := exists_nat_ge (A / scale)
+  refine ⟨N, ?_⟩
+  exact (div_le_iff₀ hscale_pos).mp hN
+
+/--
+There is always a natural `M` satisfying the source-shaped preliminary
+tail-bound logarithmic choice.
+-/
+theorem chewi1316_exists_tailBound_log_index {tailBound : ℝ}
+    (_htailBound_pos : 0 < tailBound) :
+    ∃ M : ℕ,
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (M : ℝ) * Real.log (2 : ℝ) :=
+  chewi1316_exists_nat_mul_log_two_ge
+    (Real.log ((16 : ℝ) * tailBound))
+
+/--
+For a fixed logarithmic budget index `M`, a positive path-following constant
+`c0` admits a natural iteration count satisfying the preliminary count budget.
+-/
+theorem chewi1316_exists_preliminary_count_index
+    {M : ℕ} {c0 nu : ℝ} (hc0_pos : 0 < c0) :
+    ∃ N : ℕ,
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0 :=
+  chewi1316_exists_nat_mul_pos_ge
+    (A := (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu)
+    (scale := c0) hc0_pos
+
+/--
+Combined integer choices for the preliminary stage: choose `M` from the
+tail-bound logarithm, then choose `N` from the count-side inequality.
+-/
+theorem chewi1316_exists_preliminary_tail_log_count_indices
+    {tailBound c0 nu : ℝ}
+    (htailBound_pos : 0 < tailBound) (hc0_pos : 0 < c0) :
+    ∃ M N : ℕ,
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (M : ℝ) * Real.log (2 : ℝ) ∧
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0 := by
+  obtain ⟨M, hM⟩ :=
+    chewi1316_exists_tailBound_log_index
+      (tailBound := tailBound) htailBound_pos
+  obtain ⟨N, hN⟩ :=
+    chewi1316_exists_preliminary_count_index
+      (M := M) (c0 := c0) (nu := nu) hc0_pos
+  exact ⟨M, N, hM, hN⟩
+
+/--
 Closed-form preliminary-stage initialization bridge whose preliminary barrier
 tail is supplied by a scalar bound on the absolute contraction factor
 `|1 - c0 / sqrt nu|^N`.

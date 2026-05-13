@@ -170,6 +170,11 @@ The log-choice layer adds `chewi1316_tailBase_le_sixteenth_mul_two_pow_of_log_le
 `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailLogBound`,
 and
 `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound`.
+The integer-choice layer adds `chewi1316_exists_nat_mul_log_two_ge`,
+`chewi1316_exists_nat_mul_pos_ge`,
+`chewi1316_exists_tailBound_log_index`,
+`chewi1316_exists_preliminary_count_index`, and
+`chewi1316_exists_preliminary_tail_log_count_indices`.
 The next live route is the concrete Chewi/Nesterov source upper bound for the
 preliminary tail base matching the reverse path-following argument cited to
 Nesterov §5.3.5, then the strictly-feasible-start discussion.

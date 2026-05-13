@@ -211,10 +211,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   and
   `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound`.
   Thus `M` can now be chosen from a logarithmic upper bound on any convenient
-  source tail bound.  Remaining gate: prove the concrete Chewi/Nesterov bound
-  on `|tStart| * ||grad phi(xbar0)||*` by a source quantity such as the
-  analytical-center distance measure, then finish the strictly-feasible-start
-  discussion.
+  source tail bound.  The integer-choice layer adds
+  `chewi1316_exists_nat_mul_log_two_ge`,
+  `chewi1316_exists_nat_mul_pos_ge`,
+  `chewi1316_exists_tailBound_log_index`,
+  `chewi1316_exists_preliminary_count_index`, and
+  `chewi1316_exists_preliminary_tail_log_count_indices`, proving that natural
+  indices `M,N` exist for the log-tail and `M log 2 * sqrt nu <= N c0` count
+  budgets whenever `tailBound > 0` and `c0 > 0`.  Remaining gate: prove the
+  concrete Chewi/Nesterov bound on `|tStart| * ||grad phi(xbar0)||*` by a
+  source quantity such as the analytical-center distance measure, then finish
+  the strictly-feasible-start discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
