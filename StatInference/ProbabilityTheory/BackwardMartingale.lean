@@ -1489,6 +1489,44 @@ theorem durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_produc
         (P := P) (n := n) hξ_int)
 
 /--
+Durrett 2019, Example 4.7.4 product-space integrability source bridge.
+Coordinate evaluations on the iid infinite product sequence space are
+integrable whenever the one-dimensional identity random variable is integrable.
+-/
+theorem durrett2019_example_4_7_4_eval_integrable_of_integrable_id
+    {P : Measure ℝ} [IsProbabilityMeasure P] (hid : Integrable id P) (i : ℕ) :
+    Integrable (fun sequence : ℕ -> ℝ => sequence i)
+      (vdVWInfiniteProductMeasure P) := by
+  have hmp :
+      MeasurePreserving (fun sequence : ℕ -> ℝ => sequence i)
+        (vdVWInfiniteProductMeasure P) P := by
+    simpa [vdVWInfiniteProductMeasure] using
+      measurePreserving_eval_infinitePi (μ := fun _ : ℕ => P) i
+  simpa [vdVWInfiniteProductMeasure, Function.comp_def] using
+    hmp.integrable_comp_of_integrable hid
+
+/--
+Durrett 2019, Example 4.7.4 product-space conditional-average display with the
+source moment assumption on the one-dimensional law.  This removes the
+coordinate-by-coordinate integrability hypothesis from V295.
+-/
+theorem durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product_of_integrable_id
+    {P : Measure ℝ} [IsProbabilityMeasure P] {n : ℕ}
+    (hn : 0 < n) (hid : Integrable id P) :
+    (vdVWInfiniteProductMeasure P)[
+        (fun sequence : ℕ -> ℝ => sequence 0) |
+        durrett2019_example_4_7_4_reverseAverageSigma
+          (fun k sequence => sequence k) n] =ᵐ[vdVWInfiniteProductMeasure P]
+      fun sequence : ℕ -> ℝ =>
+        (∑ i ∈ Finset.range n, sequence i) / (n : ℝ) := by
+  exact
+    durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product
+      (P := P) (n := n) hn
+      (fun i _hi =>
+        durrett2019_example_4_7_4_eval_integrable_of_integrable_id
+          (P := P) hid i)
+
+/--
 Durrett 2019, Example 4.7.4, final strong-law endpoint using the compiled
 local strong-law primitive.
 -/
@@ -1504,6 +1542,53 @@ theorem durrett2019_example_4_7_4_strongLaw_ae_real
         atTop
         (𝓝 (∫ ω, ξ 0 ω ∂P)) := by
   exact StatInference.ProbabilityMeasure.strongLaw_ae_real ξ hint hindep hident
+
+/--
+Durrett 2019, Example 4.7.4 product-space strong-law endpoint for the
+coordinate-evaluation process.  The source moment assumption is integrability
+of the identity under the one-dimensional law.
+-/
+theorem durrett2019_example_4_7_4_eval_strongLaw_ae_real_of_integrable_id
+    {P : Measure ℝ} [IsProbabilityMeasure P] (hid : Integrable id P) :
+    ∀ᵐ sequence ∂(vdVWInfiniteProductMeasure P),
+      Tendsto
+        (fun n : ℕ => (∑ i ∈ Finset.range n, sequence i) / (n : ℝ))
+        atTop
+        (𝓝 (∫ x : ℝ, x ∂P)) := by
+  have h0_int :
+      Integrable (fun sequence : ℕ -> ℝ => sequence 0)
+        (vdVWInfiniteProductMeasure P) :=
+    durrett2019_example_4_7_4_eval_integrable_of_integrable_id
+      (P := P) hid 0
+  have hindep :
+      Pairwise
+        ((· ⟂ᵢ[vdVWInfiniteProductMeasure P] ·) on
+          (fun i => fun sequence : ℕ -> ℝ => sequence i)) := by
+    intro i j hij
+    exact (vdVWInfiniteProductMeasure_iIndepFun_coordinates
+      (P := P)).indepFun hij
+  have hident :
+      ∀ i,
+        _root_.ProbabilityTheory.IdentDistrib
+          (fun sequence : ℕ -> ℝ => sequence i)
+          (fun sequence : ℕ -> ℝ => sequence 0)
+          (vdVWInfiniteProductMeasure P) (vdVWInfiniteProductMeasure P) := by
+    intro i
+    exact
+      (vdVWInfiniteProductMeasure_coordinate_hasLaw (P := P) i).identDistrib
+        (vdVWInfiniteProductMeasure_coordinate_hasLaw (P := P) 0)
+  have hsl :=
+    durrett2019_example_4_7_4_strongLaw_ae_real
+      (P := vdVWInfiniteProductMeasure P)
+      (ξ := fun i sequence => sequence i)
+      h0_int hindep hident
+  have hmean :
+      (∫ sequence, sequence 0 ∂(vdVWInfiniteProductMeasure P)) =
+        ∫ x : ℝ, x ∂P := by
+    simpa [id] using
+      (vdVWInfiniteProductMeasure_coordinate_hasLaw (P := P) 0).integral_eq
+  filter_upwards [hsl] with sequence hseq
+  simpa [hmean] using hseq
 
 end ProbabilityTheory
 end StatInference

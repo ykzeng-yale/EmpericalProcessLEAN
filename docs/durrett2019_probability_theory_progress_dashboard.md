@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V295` in
+Route from `Live In-Thread Goal Prompt V296` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -204,9 +204,13 @@ process with finite coordinate swaps:
 `durrett2019_example_4_7_4_eval_condExp_eq_zero_of_prefixSwap`,
 `durrett2019_example_4_7_4_eval_prefix_condExp_symmetry_of_prefixSwaps`, and
 `durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product`.
-The next target is to discharge coordinate-evaluation integrability from the
-one-dimensional law and assemble the backwards-martingale product endpoint
-using the compiled tail-constant handoffs.
+V296 adds
+`durrett2019_example_4_7_4_eval_integrable_of_integrable_id`,
+`durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product_of_integrable_id`,
+and `durrett2019_example_4_7_4_eval_strongLaw_ae_real_of_integrable_id`.
+The next target is to assemble the backwards-martingale product proof route
+using the compiled tail-constant handoffs, rather than the direct strong-law
+shortcut.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

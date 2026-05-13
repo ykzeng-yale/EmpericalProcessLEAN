@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V295
+## Live In-Thread Goal Prompt V296
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -30,10 +30,11 @@ sigma-field scaffold, the V292 decreasing-family and concrete conditional
 average consumer, the V293 exchangeability-transport-to-conditional-symmetry
 handoff, the V294 reverse-average generator/prefix-tail invariance bridge, or
 the V295 iid-product coordinate-swap conditional-average layer, or the
+V296 product integrability/source-moment strong-law endpoint, or the
 V281-V273 Section 4.6 tail-envelope /
 conditional-expectation layers.
 
-Latest verified target V295 advances Section 4.7.  V260 packages Durrett
+Latest verified target V296 advances Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -240,17 +241,21 @@ permutation machinery.  It adds
 `durrett2019_example_4_7_4_eval_condExp_eq_zero_of_prefixSwap`,
 `durrett2019_example_4_7_4_eval_prefix_condExp_symmetry_of_prefixSwaps`, and
 `durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product`.
+V296 discharges the remaining product-coordinate integrability assumption from
+the one-dimensional source moment and adds
+`durrett2019_example_4_7_4_eval_integrable_of_integrable_id`,
+`durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product_of_integrable_id`,
+and `durrett2019_example_4_7_4_eval_strongLaw_ae_real_of_integrable_id`.
 
-Next aggressive theorem packet: remove the remaining source-side assumptions
-around the V295 product-space display.  First prove coordinate-evaluation
-integrability under `vdVWInfiniteProductMeasure P` from integrability of the
-identity under the one-dimensional law `P`; then assemble the backwards
-martingale Example 4.7.4 product endpoint by combining V295 with the compiled
-backwards convergence/tail-constant handoffs.  If the reverse-tail constant
-side is still too general, connect it through V289's independent tail-block
-zero-one wrapper or a Hewitt-Savage-specific wrapper.  Do not rewrap the
-already compiled direct strong law, V286/V287/V288/V289/V290/V291/V292/V293/
-V294/V295 handoffs, or V285 backwards Lévy endpoint.
+Next aggressive theorem packet: assemble the genuine backwards-martingale
+product proof route for Example 4.7.4.  Combine the V296 source-moment
+conditional-average display with the compiled backwards convergence and
+tail-constant handoffs, avoiding the direct strong-law shortcut except as a
+reference endpoint.  If the reverse-tail constant side is still too general,
+connect it through V289's independent tail-block zero-one wrapper or a
+Hewitt-Savage-specific wrapper.  Do not rewrap the already compiled direct
+strong law, V286/V287/V288/V289/V290/V291/V292/V293/V294/V295/V296 handoffs,
+or V285 backwards Lévy endpoint.
 
 ## Deprecated V255 Prompt Notes
 

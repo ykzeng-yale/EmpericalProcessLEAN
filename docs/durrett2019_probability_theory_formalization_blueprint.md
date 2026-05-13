@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V295`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V296`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -137,8 +137,12 @@ V295 adds the iid product-space coordinate-swap layer
 `durrett2019_example_4_7_4_eval_condExp_eq_zero_of_prefixSwap`,
 `durrett2019_example_4_7_4_eval_prefix_condExp_symmetry_of_prefixSwaps`, and
 `durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product`.
-The next proof packet should discharge product coordinate integrability from
-the one-dimensional law and assemble the backwards-martingale product endpoint.
+V296 adds
+`durrett2019_example_4_7_4_eval_integrable_of_integrable_id`,
+`durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product_of_integrable_id`,
+and `durrett2019_example_4_7_4_eval_strongLaw_ae_real_of_integrable_id`.
+The next proof packet should assemble the backwards-martingale product proof
+route using the compiled tail-constant handoffs.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:
