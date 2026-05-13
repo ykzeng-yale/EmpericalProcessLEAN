@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V247
+## Live In-Thread Goal Prompt V249
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,21 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V247 adds the inverse-square calculus and
+Latest verified Lean packet V249 adds the outer second-RHS assembly:
+`durrett2019_theorem_4_5_7_tail_cut_double_lintegral_eq_weighted_tail_lintegral`,
+`durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_weighted_tail_lintegral`,
+`durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral`,
+and
+`durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral_of_source_monotone_terminal`.
+It combines V244/V245/V248 with the V246 square-root layer-cake endpoint and
+proves the second deterministic RHS term is `2 * E sqrt(A_infty)`.  V248 adds
+the fixed-`b` event-split inner-integral layer:
+`durrett2019_theorem_4_5_7_lintegral_Ioi_zero_indicator_Ioi_sqrt` and
+`durrett2019_theorem_4_5_7_tail_cut_inner_lintegral_eq_tail_weight`.
+It rewrites the Tonelli inner integral
+`∫_0^∞ P(b < A_infty, b < a^2) / ((Real.toNNReal a)^2) da` for `b > 0`
+as `P(b < A_infty) * b^(1/2 - 1)`, using the event split
+`b < a^2 ↔ sqrt b < a` on `a > 0`.  V247 adds the inverse-square calculus and
 denominator normalization layer:
 `durrett2019_theorem_4_5_7_inv_sq_weight_of_toNNReal_sq`,
 `durrett2019_theorem_4_5_7_lintegral_Ioi_rpow_neg_two`,
@@ -101,28 +115,22 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: prove the fixed-`b` event-split inner
-integral after the V245 Tonelli swap:
-`∫_0^∞ P(b < A_infty, b < a^2) / ((Real.toNNReal a)^2) da =
-  P(b < A_infty) * b^(1/2 - 1)`.
-Use V247 to handle the denominator and calculus after rewriting
-`b < a^2` on `a > 0` as `sqrt b < a`; the remaining hard part is the set
-integral restriction/indicator transition from `a > 0` to `a > sqrt b`.
-Then assemble the V244/V245 second-RHS handoff with the V246 weighted-tail
-endpoint to prove
-`∫_0^∞ a^{-2} E(A_infty ∧ a^2) da = 2 E sqrt(A_infty)`, toward Durrett's
-`E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Search Mathlib/local APIs first
-(`lintegral_indicator`, `setLIntegral_congr_fun`,
-`Measure.restrict_restrict_of_subset`, `Real.sqrt_lt'`, `Measure.measure_congr`,
-finite-measure `measure_ne_top`, monotone running-supremum support, and
-`Monotone.lintegral_iSup`/monotone convergence APIs).  Do not revisit closed
+Next aggressive theorem-sized packet: combine the V241 finite running-maximum
+bound with V242 first RHS `E sqrt(A_infty)` and V249 second RHS
+`2 * E sqrt(A_infty)` to prove the finite-horizon
+`E(max_{m <= n} |X_m|) <= 3 * E sqrt(A_infty)` extended-expectation bound.
+Then move to the monotone finite-horizon-to-`sup_n` limit.  Search
+Mathlib/local APIs first (`lintegral_add`, `add_mul`, `lintegral_const_mul'`,
+`Monotone.lintegral_iSup`, `iSup`/running maximum monotonicity, and existing
+runningAbsMax monotone support).  Do not revisit closed
 Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the V236 probability conversion, the
 V237/V238/V239 stopped source packaging, the V240 raw/stopped survival split,
 the V241 layer-cake handoff, the V242 first-RHS bridge, the V243
 truncated-terminal layer-cake bridge, the V244 weighted double-integral
 handoff, the V245 Tonelli/measurability swap layer, the V246 square-root
-weighted-tail endpoint, or the V247 inverse-square denominator calculus unless
-a compile error exposes a genuinely missing primitive.
+weighted-tail endpoint, the V247 inverse-square denominator calculus, or the
+V248 fixed-`b` inner integral, or the V249 second-RHS assembly unless a compile
+error exposes a genuinely missing primitive.
 
 ## Recent Route Notes
 
@@ -618,9 +626,22 @@ This discharges the exact denominator/calculus part of the fixed-`b` inner
 integral once the event split has restricted the `a` integral to
 `a > sqrt b`.
 
-Next aggressive step: continue Durrett Theorem 4.5.7 by proving the fixed-`b`
-event split from `b < a^2` to the `a > sqrt b` restricted integral, then
-assemble it with the V246/V247 weighted-tail endpoints so the V241/V242 RHS
+V248 adds the fixed-`b` event-split inner-integral layer:
+`durrett2019_theorem_4_5_7_lintegral_Ioi_zero_indicator_Ioi_sqrt` and
+`durrett2019_theorem_4_5_7_tail_cut_inner_lintegral_eq_tail_weight`.
+This proves that the Tonelli inner integral equals the terminal tail
+probability times the `p = 1/2` layer-cake weight.
+
+V249 adds the outer second-RHS assembly:
+`durrett2019_theorem_4_5_7_tail_cut_double_lintegral_eq_weighted_tail_lintegral`,
+`durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_weighted_tail_lintegral`,
+`durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral`,
+and
+`durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral_of_source_monotone_terminal`.
+This proves the full second deterministic RHS term is `2 * E sqrt(A_infty)`.
+
+Next aggressive step: continue Durrett Theorem 4.5.7 by combining the V241
+finite running-maximum bound with V242 and V249 so the finite-horizon RHS
 turns into
 `E(sup_n |X_n|) <= 3 E(A_infty^(1/2))`.  Do not start by formalizing the full
 Friedman urn state process unless it directly reuses the compiled 4.5.5 ratio
@@ -633,6 +654,8 @@ the V244 weighted double-integral handoff,
 the V245 Tonelli/measurability swap layer,
 the V246 square-root weighted-tail endpoint,
 the V247 inverse-square denominator calculus,
+the V248 fixed-`b` inner integral,
+the V249 second-RHS assembly,
 stopped running-maximum boundedness,
 stopped predictability, exact Theorem 4.5.2 source packaging, deterministic
 Exercise 4.4.11 normalizers, reciprocal predictability/bounds,
@@ -1979,6 +2002,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V247` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V249` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -23869,6 +23869,147 @@ theorem
 /--
 Durrett 2019, Theorem 4.5.7 deterministic RHS support.
 
+Inside the positive half-line, an indicator of `a > sqrt b` can be absorbed
+into the integration domain.
+-/
+theorem
+    durrett2019_theorem_4_5_7_lintegral_Ioi_zero_indicator_Ioi_sqrt
+    {b : ℝ} (hb : 0 < b) (g : ℝ -> ℝ≥0∞) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        (Set.Ioi (Real.sqrt b)).indicator g a ∂volume) =
+      ∫⁻ a in Set.Ioi (Real.sqrt b), g a ∂volume := by
+  rw [lintegral_indicator (measurableSet_Ioi : MeasurableSet (Set.Ioi (Real.sqrt b)))]
+  rw [Measure.restrict_restrict_of_subset]
+  intro a ha
+  exact (Real.sqrt_pos.2 hb).trans ha
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+For each fixed positive `b`, the inner integral after Tonelli collapses to the
+tail probability times the square-root layer-cake weight.
+-/
+theorem durrett2019_theorem_4_5_7_tail_cut_inner_lintegral_eq_tail_weight
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ} {b : ℝ} (hb : 0 < b) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) ∂volume) =
+      P {ω : Ω | b < Ainf ω} *
+        ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) := by
+  let C : ℝ≥0∞ := P {ω : Ω | b < Ainf ω}
+  have hC_ne_top : C ≠ ∞ := by
+    exact measure_ne_top P {ω : Ω | b < Ainf ω}
+  have hpoint :
+      Set.EqOn
+        (fun a : ℝ =>
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞))
+        (fun a : ℝ =>
+          (Set.Ioi (Real.sqrt b)).indicator
+            (fun a : ℝ => C / (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) a)
+        (Set.Ioi (0 : ℝ)) := by
+    intro a ha
+    have ha_pos : 0 < a := ha
+    by_cases hsqrt : Real.sqrt b < a
+    · have hba2 : b < a ^ 2 :=
+        (Real.sqrt_lt' ha_pos).1 hsqrt
+      have hevent :
+          {ω : Ω | b < Ainf ω ∧ b < a ^ 2} =
+            {ω : Ω | b < Ainf ω} := by
+        ext ω
+        simp [hba2]
+      change
+        P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) =
+          (Set.Ioi (Real.sqrt b)).indicator
+            (fun a : ℝ => C / (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) a
+      have ha_mem : a ∈ Set.Ioi (Real.sqrt b) := hsqrt
+      rw [Set.indicator_of_mem ha_mem, hevent]
+    · have hnot_ba2 : ¬ b < a ^ 2 := by
+        intro hba2
+        exact hsqrt ((Real.sqrt_lt' ha_pos).2 hba2)
+      have hevent :
+          {ω : Ω | b < Ainf ω ∧ b < a ^ 2} = ∅ := by
+        ext ω
+        simp [hnot_ba2]
+      change
+        P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) =
+          (Set.Ioi (Real.sqrt b)).indicator
+            (fun a : ℝ => C / (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) a
+      have ha_not_mem : a ∉ Set.Ioi (Real.sqrt b) := hsqrt
+      rw [Set.indicator_of_notMem ha_not_mem, hevent, measure_empty]
+      simp
+  calc
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) ∂volume)
+        = ∫⁻ a in Set.Ioi (0 : ℝ),
+            (Set.Ioi (Real.sqrt b)).indicator
+              (fun a : ℝ => C / (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) a
+              ∂volume := by
+          exact setLIntegral_congr_fun measurableSet_Ioi hpoint
+    _ = ∫⁻ a in Set.Ioi (Real.sqrt b),
+          C / (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) ∂volume :=
+        durrett2019_theorem_4_5_7_lintegral_Ioi_zero_indicator_Ioi_sqrt
+          hb (fun a : ℝ => C / (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞))
+    _ = C * ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) :=
+        durrett2019_theorem_4_5_7_const_div_lintegral_Ioi_sqrt_toNNReal_sq
+          hb C hC_ne_top
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+Outer `b`-integral assembly of the fixed-`b` inner integral.
+-/
+theorem
+    durrett2019_theorem_4_5_7_tail_cut_double_lintegral_eq_weighted_tail_lintegral
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ} :
+    (∫⁻ b in Set.Ioi (0 : ℝ),
+        ∫⁻ a in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) ∂volume ∂volume) =
+      ∫⁻ b in Set.Ioi (0 : ℝ),
+        P {ω : Ω | b < Ainf ω} *
+          ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) := by
+  refine MeasureTheory.lintegral_congr_ae ?_
+  filter_upwards
+    [self_mem_ae_restrict (measurableSet_Ioi : MeasurableSet (Set.Ioi (0 : ℝ)))]
+    with b hb
+  exact durrett2019_theorem_4_5_7_tail_cut_inner_lintegral_eq_tail_weight
+    (P := P) (Ainf := Ainf) hb
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+The full second deterministic RHS term, after truncation layer-cake and
+Tonelli, is the square-root weighted-tail integral.
+-/
+theorem
+    durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_weighted_tail_lintegral
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_int : Integrable Ainf P) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      ∫⁻ b in Set.Ioi (0 : ℝ),
+        P {ω : Ω | b < Ainf ω} *
+          ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) := by
+  rw [durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_tail_cut_double_lintegral
+    (P := P) (Ainf := Ainf) hAinf_nonneg hAinf_int]
+  rw [durrett2019_theorem_4_5_7_tail_cut_weighted_double_lintegral_swap_of_integrable
+    (P := P) (Ainf := Ainf) hAinf_int]
+  exact
+    durrett2019_theorem_4_5_7_tail_cut_double_lintegral_eq_weighted_tail_lintegral
+      (P := P) (Ainf := Ainf)
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
 The square-root terminal expectation is the `p = 1/2` layer-cake endpoint
 for the terminal clock.  This is the weighted-tail form that the remaining
 one-dimensional calculus step must match after the Tonelli swap.
@@ -23933,6 +24074,60 @@ theorem
           P {ω : Ω | b < Ainf ω} *
             ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) :=
   durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral_of_integrable
+    (P := P) (Ainf := Ainf)
+    (durrett2019_theorem_4_5_7_terminal_nonneg_of_initial_zero_monotone_tendsto
+      (P := P) (A := A) (Ainf := Ainf) hA0 hA_mono hA_tendsto)
+    hAinf_int
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+The second deterministic RHS term in the proof is `2 * E sqrt(A_infty)`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_int : Integrable Ainf P) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      (2 : ℝ≥0∞) *
+        ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P := by
+  rw [durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_weighted_tail_lintegral
+    (P := P) (Ainf := Ainf) hAinf_nonneg hAinf_int]
+  rw [durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral_of_integrable
+    (P := P) (Ainf := Ainf) hAinf_nonneg hAinf_int]
+  rw [← mul_assoc]
+  have hconst : (2 : ℝ≥0∞) * ENNReal.ofReal ((1 : ℝ) / 2) = 1 := by
+    rw [ENNReal.ofReal_eq_coe_nnreal (by norm_num : 0 ≤ ((1 : ℝ) / 2))]
+    change
+      (((2 : ℝ≥0) * (NNReal.mk ((1 : ℝ) / 2) (by norm_num) : ℝ≥0) : ℝ≥0) :
+          ℝ≥0∞) = ((1 : ℝ≥0) : ℝ≥0∞)
+    rw [ENNReal.coe_inj]
+    ext
+    norm_num
+  rw [hconst, one_mul]
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support under the source
+monotone-terminal hypotheses.
+-/
+theorem
+    durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral_of_source_monotone_terminal
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hAinf_int : Integrable Ainf P)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      (2 : ℝ≥0∞) *
+        ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P :=
+  durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_two_sqrt_lintegral
     (P := P) (Ainf := Ainf)
     (durrett2019_theorem_4_5_7_terminal_nonneg_of_initial_zero_monotone_tendsto
       (P := P) (A := A) (Ainf := Ainf) hA0 hA_mono hA_tendsto)
