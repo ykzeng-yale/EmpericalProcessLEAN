@@ -1649,6 +1649,70 @@ theorem durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permut
         (P := P) hindep)
 
 /--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  In the iid real
+product space, the finite prefix filtration is independent of the ordinary
+future-coordinate tail sigma-field.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixFiltration_indep_tailCoordinateSigma
+    {P : Measure ℝ} [IsProbabilityMeasure P] (n : ℕ) :
+    Indep
+      (durrett2019_theorem_4_3_8_prefixFiltration ℝ n)
+      (durrett2019_theorem_4_3_8_tailCoordinateSigma ℝ n)
+      (vdVWInfiniteProductMeasure P) := by
+  let mAmbient : MeasurableSpace (ℕ -> ℝ) := inferInstance
+  let prefixSigma : MeasurableSpace (ℕ -> ℝ) :=
+    ⨆ i : ℕ, ⨆ _ : i < n, durrett2019_theorem_4_3_8_coordinateSigma ℝ i
+  have hprefix_le :
+      durrett2019_theorem_4_3_8_prefixFiltration ℝ n ≤ prefixSigma := by
+    have hrestrict :
+        Measurable[prefixSigma]
+          ((Finset.range n).restrict : (ℕ -> ℝ) -> ↥(Finset.range n) -> ℝ) := by
+      rw [measurable_pi_iff]
+      intro i
+      have hi : (i : ℕ) < n := Finset.mem_range.mp i.property
+      have hcoord :
+          Measurable[durrett2019_theorem_4_3_8_coordinateSigma ℝ (i : ℕ)]
+            (fun sequence : ℕ -> ℝ => sequence (i : ℕ)) :=
+        comap_measurable (fun sequence : ℕ -> ℝ => sequence (i : ℕ))
+      exact Measurable.iSup' (i : ℕ) (Measurable.iSup' hi hcoord)
+    simpa [durrett2019_theorem_4_3_8_prefixFiltration, prefixSigma] using
+      hrestrict.comap_le
+  have hindep_prefix_tail :
+      @_root_.ProbabilityTheory.Indep (ℕ -> ℝ)
+        prefixSigma
+        (durrett2019_theorem_4_3_8_tailCoordinateSigma ℝ n)
+        mAmbient
+        (vdVWInfiniteProductMeasure P) := by
+    let prefixSet : Set ℕ := {i | i < n}
+    let tailSet : Set ℕ := {i | i ≥ n}
+    have hdisjoint : Disjoint prefixSet tailSet := by
+      rw [Set.disjoint_left]
+      intro i hi htail
+      have htail' : n ≤ i := by
+        simpa [tailSet] using htail
+      exact (not_le_of_gt hi) htail'
+    have hcoord_le :
+        ∀ i, durrett2019_theorem_4_3_8_coordinateSigma ℝ i ≤
+          mAmbient := by
+      intro i
+      simpa [mAmbient] using
+        (durrett2019_theorem_4_3_8_coordinateSigma_le (S := ℝ) i)
+    have hindep :
+        _root_.ProbabilityTheory.iIndep
+          (fun i => durrett2019_theorem_4_3_8_coordinateSigma ℝ i)
+          (Measure.infinitePi fun _ : ℕ => P) :=
+      durrett2019_theorem_4_3_8_coordinateSigma_iIndep_infinitePi
+    simpa [vdVWInfiniteProductMeasure, durrett2019_theorem_4_3_8_tailCoordinateSigma,
+      prefixSigma, prefixSet, tailSet] using
+      (_root_.ProbabilityTheory.indep_iSup_of_disjoint
+        (_mΩ := mAmbient)
+        (m := fun i => durrett2019_theorem_4_3_8_coordinateSigma ℝ i)
+        hcoord_le hindep hdisjoint)
+  exact
+    _root_.ProbabilityTheory.indep_of_indep_of_le_left
+      hindep_prefix_tail hprefix_le
+
+/--
 Durrett 2019, Example 4.7.4 product-space source algebra: the finite swap of
 prefix coordinate `i` and coordinate `0` transports `xi_i` to `xi_0`.
 -/

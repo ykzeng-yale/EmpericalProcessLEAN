@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V301`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V302`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -170,8 +170,15 @@ V301 adds the self-independence-to-zero-one consumer layer:
 `durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permutationSymmetric_tail_indep_self`,
 and
 `durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_permutationSymmetric_tail_indep_self`.
+V302 adds the finite-prefix/future-coordinate-tail independence support:
+`durrett2019_theorem_4_3_8_prefixFiltration_le_iSup_coordinateSigma_lt`,
+`durrett2019_theorem_4_3_8_prefixCoordinateSigma_indep_tailCoordinateSigma_infinitePi`,
+`durrett2019_theorem_4_3_8_prefixFiltration_indep_tailCoordinateSigma_infinitePi`,
+and
+`durrett2019_example_4_7_4_eval_prefixFiltration_indep_tailCoordinateSigma`.
 The next proof packet should prove self-independence of the VdVW
-permutation-symmetric tail itself and feed it into V301.
+permutation-symmetric tail itself and feed it into V301, using V302 for the
+finite-prefix/future-tail independence part of the Hewitt-Savage argument.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:

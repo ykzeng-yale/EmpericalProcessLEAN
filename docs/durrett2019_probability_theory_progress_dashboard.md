@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V301` in
+Route from `Live In-Thread Goal Prompt V302` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -237,8 +237,15 @@ V301 adds the self-independence-to-zero-one consumer layer:
 `durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permutationSymmetric_tail_indep_self`,
 and
 `durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_permutationSymmetric_tail_indep_self`.
+V302 adds finite-prefix/future-coordinate-tail independence support:
+`durrett2019_theorem_4_3_8_prefixFiltration_le_iSup_coordinateSigma_lt`,
+`durrett2019_theorem_4_3_8_prefixCoordinateSigma_indep_tailCoordinateSigma_infinitePi`,
+`durrett2019_theorem_4_3_8_prefixFiltration_indep_tailCoordinateSigma_infinitePi`,
+and
+`durrett2019_example_4_7_4_eval_prefixFiltration_indep_tailCoordinateSigma`.
 The next target is self-independence for the VdVW permutation-symmetric tail
-itself, then applying V301.
+itself, using V302 for the finite-prefix/future-tail independence part, then
+applying V301.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now
