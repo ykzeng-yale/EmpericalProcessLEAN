@@ -291,7 +291,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   and
   `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity`,
   so the source-radius `HessianSegmentMixedThirdLocalNormCertificate` sequence
-  can now feed preliminary initialization directly.
+  can now feed preliminary initialization directly.  The source-start successor
+  layer adds
+  `chewi1316_sourceTailBound_of_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity`,
+  `chewi1316_uniformTailBound_of_sourceRadius_successor_and_inverseIdentity`,
+  and
+  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_and_inverseIdentity`,
+  handling `xseq 0 = xbar0` separately and using source-radius segment
+  certificates only on successor indices.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

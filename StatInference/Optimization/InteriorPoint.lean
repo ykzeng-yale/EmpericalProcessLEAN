@@ -13841,6 +13841,142 @@ theorem chewi1316_uniformTailBound_of_hessianSegmentMixedThirdLocalNormCertifica
     hMr_lt hden_le hxseq_inv_local hxbar0_cauchy hsource hbudget
 
 /--
+Single-endpoint source-tail bound from a mixed-third local-norm segment
+certificate.  This is the pointwise form used to handle successor indices in a
+preliminary sequence whose zeroth point is exactly the source.
+-/
+theorem chewi1316_sourceTailBound_of_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {xbar0 y : E} {M r sourceBound den tailBound : ℝ}
+    (hden_pos : 0 < den)
+    (hxbar0_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess xbar0 v))
+    (hy_nonneg : ∀ v : E, 0 ≤ inner ℝ v (hess y v))
+    (hy_inv_nonneg : ∀ v : E, 0 ≤ inner ℝ v (invHess y v))
+    (hcert :
+      HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed
+        xbar0 y M r)
+    (hMr_nonneg : 0 ≤ M * r)
+    (hMr_lt : M * r < 1)
+    (hden_le : den ≤ 1 - M * r)
+    (hy_inv_local : ∀ v : E,
+      localNorm hess y (invHess y v) =
+        dualLocalNorm invHess y v)
+    (hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w)
+    (hsource :
+      dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤ sourceBound)
+    (hbudget : sourceBound / den ≤ tailBound) :
+    dualLocalNorm invHess y (phiGrad xbar0) ≤ tailBound := by
+  have henv :
+      HessianSegmentExponentialBounds hess xbar0 y M r :=
+    hcert.toHessianSegmentExponentialBounds hMr_nonneg hMr_lt
+  have hlower : ∀ w : E,
+      den * localNorm hess xbar0 w ≤ localNorm hess y w := by
+    intro w
+    have hscale :
+        den * localNorm hess xbar0 w ≤
+          (1 - M * r) * localNorm hess xbar0 w :=
+      mul_le_mul_of_nonneg_right hden_le (localNorm_nonneg hess xbar0 w)
+    exact hscale.trans
+      (mul_one_sub_localNorm_le_of_hessianSegmentExponentialBounds
+        (hess := hess) (x := xbar0) (y := y)
+        (M := M) (r := r) hMr_lt hxbar0_nonneg hy_nonneg henv w)
+  have hdual :
+      dualLocalNorm invHess y (phiGrad xbar0) ≤
+        dualLocalNorm invHess xbar0 (phiGrad xbar0) / den :=
+    dualLocalNorm_le_div_of_localNorm_lower_and_inverseIdentity
+      (hess := hess) (invHess := invHess) (x := xbar0) (y := y)
+      (den := den) hden_pos hy_inv_nonneg hlower hy_inv_local
+      hxbar0_cauchy (phiGrad xbar0)
+  exact hdual.trans
+    ((div_le_div_of_nonneg_right hsource hden_pos.le).trans hbudget)
+
+/--
+Uniform preliminary source-tail bound from source-radius mixed-third segment
+certificates on successor indices, with the zeroth index discharged by
+`xseq 0 = xbar0`.
+-/
+theorem chewi1316_uniformTailBound_of_sourceRadius_successor_and_inverseIdentity
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {invHess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {xbar0 : E} {xseq : ℕ -> E} {M sourceBound den tailBound : ℝ}
+    (hden_pos : 0 < den)
+    (hs : Convex ℝ s)
+    (hxbar0 : xbar0 ∈ s)
+    (hx0 : xseq 0 = xbar0)
+    (hxseq_succ : ∀ N : ℕ, xseq (N + 1) ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hdiff_ne : ∀ N : ℕ, xseq (N + 1) - xbar0 ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ N t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint xbar0 (xseq (N + 1)) t))
+          (hessianSegmentPoint xbar0 (xseq (N + 1)) t))
+    (hmixed : ∀ N v t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v
+            ((hessDeriv (hessianSegmentPoint xbar0 (xseq (N + 1)) t)
+              (xseq (N + 1) - xbar0)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed
+            xbar0 (xseq (N + 1)) v t)
+    (hMr_lt : ∀ N : ℕ,
+      M * localNorm hess xbar0 (xseq (N + 1) - xbar0) < 1)
+    (hden_le : ∀ N : ℕ,
+      den ≤ 1 - M * localNorm hess xbar0 (xseq (N + 1) - xbar0))
+    (hxseq_inv_nonneg : ∀ N v,
+      0 ≤ inner ℝ v (invHess (xseq N) v))
+    (hxseq_inv_local : ∀ N v,
+      localNorm hess (xseq N) (invHess (xseq N) v) =
+        dualLocalNorm invHess (xseq N) v)
+    (hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w)
+    (hsource :
+      dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤ sourceBound)
+    (hsource_tail : sourceBound ≤ tailBound)
+    (hbudget : sourceBound / den ≤ tailBound) :
+    ∀ N,
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound := by
+  intro N
+  cases N with
+  | zero =>
+      simpa [hx0] using hsource.trans hsource_tail
+  | succ N =>
+      have hcert :
+          HessianSegmentMixedThirdLocalNormCertificate hess thirdMixed
+            xbar0 (xseq (N + 1)) M
+              (localNorm hess xbar0 (xseq (N + 1) - xbar0)) :=
+        HessianSegmentMixedThirdLocalNormCertificate.of_convex_mixedThirdSelfConcordantOn_of_hasFDerivAt_sourceRadius
+          (s := s) (hess := hess) (hessDeriv := hessDeriv)
+          (thirdMixed := thirdMixed) (x := xbar0) (y := xseq (N + 1))
+          (M := M) (hMr_lt N) hs hxbar0 (hxseq_succ N) hsc hess_pos
+          (hdiff_ne N) hhess_cont (hhess N) (hmixed N)
+      have hMr_nonneg :
+          0 ≤ M * localNorm hess xbar0 (xseq (N + 1) - xbar0) :=
+        mul_nonneg hsc.parameter_pos.le
+          (localNorm_nonneg hess xbar0 (xseq (N + 1) - xbar0))
+      have htail :=
+        chewi1316_sourceTailBound_of_hessianSegmentMixedThirdLocalNormCertificate_and_inverseIdentity
+          (hess := hess) (invHess := invHess) (thirdMixed := thirdMixed)
+          (phiGrad := phiGrad) (xbar0 := xbar0) (y := xseq (N + 1))
+          (M := M)
+          (r := localNorm hess xbar0 (xseq (N + 1) - xbar0))
+          (sourceBound := sourceBound) (den := den) (tailBound := tailBound)
+          hden_pos (fun v => hsc.hess_nonneg hxbar0 v)
+          (fun v => hsc.hess_nonneg (hxseq_succ N) v)
+          (hxseq_inv_nonneg (N + 1)) hcert hMr_nonneg (hMr_lt N)
+          (hden_le N) (hxseq_inv_local (N + 1)) hxbar0_cauchy hsource
+          hbudget
+      simpa [Nat.succ_eq_add_one] using htail
+
+/--
 Existential positive-`tMain` version of the bounded-tail preliminary
 initialization bridge.  This discharges the source scalar budget
 `|tMain| * ||a||* <= 1/16` by choosing `tMain` small and positive.
@@ -14343,6 +14479,99 @@ theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_prel
         (den := den) (tailBound := tailBound) hden_pos hxbar0_nonneg
         hxseq_nonneg hxseq_inv_nonneg hcert hMr_nonneg hMr_lt hden_le
         hxseq_inv_local hxbar0_cauchy hsource hbudget)
+
+/--
+Source-start initialization from source-radius mixed-third segment certificates
+on successor indices, with the degenerate zeroth segment handled by
+`xseq 0 = xbar0`.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_and_inverseIdentity
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {invHess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {xbar0 a : E} {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : ℕ -> E →L[ℝ] E} {c0 nu M sourceBound den tailBound : ℝ}
+    (hinv_factor : ∀ N v,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint (coord N)) v‖ ^ (2 : ℕ))
+    (hs : Convex ℝ s)
+    (hxbar0 : xbar0 ∈ s)
+    (hx0 : xseq 0 = xbar0)
+    (hxseq_succ : ∀ N : ℕ, xseq (N + 1) ∈ s)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget : ∀ N, lambdaSeq N ≤ 1 / 8)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hden_pos : 0 < den)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hdiff_ne : ∀ N : ℕ, xseq (N + 1) - xbar0 ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ N t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint xbar0 (xseq (N + 1)) t))
+          (hessianSegmentPoint xbar0 (xseq (N + 1)) t))
+    (hmixed : ∀ N v t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v
+            ((hessDeriv (hessianSegmentPoint xbar0 (xseq (N + 1)) t)
+              (xseq (N + 1) - xbar0)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed
+            xbar0 (xseq (N + 1)) v t)
+    (hMr_lt : ∀ N : ℕ,
+      M * localNorm hess xbar0 (xseq (N + 1) - xbar0) < 1)
+    (hden_le : ∀ N : ℕ,
+      den ≤ 1 - M * localNorm hess xbar0 (xseq (N + 1) - xbar0))
+    (hxseq_inv_nonneg : ∀ N v,
+      0 ≤ inner ℝ v (invHess (xseq N) v))
+    (hxseq_inv_local : ∀ N v,
+      localNorm hess (xseq N) (invHess (xseq N) v) =
+        dualLocalNorm invHess (xseq N) v)
+    (hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w)
+    (hsource :
+      dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤ sourceBound)
+    (hsource_tail : sourceBound ≤ tailBound)
+    (hbudget : sourceBound / den ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord) (c0 := c0) (nu := nu) (tailBound := tailBound)
+      hinv_factor hx0 ht0 htstep hlambda0 hstep hlambdaBudget
+      htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one
+      (chewi1316_uniformTailBound_of_sourceRadius_successor_and_inverseIdentity
+        (s := s) (hess := hess) (hessDeriv := hessDeriv)
+        (invHess := invHess) (thirdMixed := thirdMixed)
+        (phiGrad := phiGrad) (xbar0 := xbar0) (xseq := xseq)
+        (M := M) (sourceBound := sourceBound) (den := den)
+        (tailBound := tailBound) hden_pos hs hxbar0 hx0 hxseq_succ hsc
+        hess_pos hdiff_ne hhess_cont hhess hmixed hMr_lt hden_le
+        hxseq_inv_nonneg hxseq_inv_local hxbar0_cauchy hsource
+        hsource_tail hbudget)
 
 /--
 Measured-tail source-start version: use
