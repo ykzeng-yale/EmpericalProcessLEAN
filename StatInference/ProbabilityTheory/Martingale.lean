@@ -26885,6 +26885,92 @@ theorem durrett2019_lemma_4_6_5_tendsto_setIntegral_of_eLpNorm_one_tendsto_zero
     (Eventually.of_forall hX_int) hL1 A
 
 /--
+Durrett 2019, Lemma 4.6.6.
+
+If a martingale converges in `L¹` to an integrable random variable `Y`, then
+each martingale time is the conditional expectation of `Y` with respect to the
+corresponding filtration level.
+-/
+theorem durrett2019_lemma_4_6_6_martingale_ae_eq_condExp_of_eLpNorm_one_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hY_int : Integrable Y P)
+    (hL1 : Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0))
+    (n : ℕ) :
+    X n =ᵐ[P] P[Y | ℱ n] := by
+  refine
+    ae_eq_condExp_of_forall_setIntegral_eq (μ := P) (m := ℱ n) (m₀ := mΩ)
+      (ℱ.le n) hY_int ?_ ?_ ?_
+  · intro s _hs _hμs
+    exact (hX.integrable n).integrableOn
+  · intro s hs _hμs
+    have htend :
+        Tendsto (fun m => ∫ ω in s, X m ω ∂P) atTop
+          (𝓝 (∫ ω in s, Y ω ∂P)) :=
+      durrett2019_lemma_4_6_5_tendsto_setIntegral_of_eLpNorm_one_tendsto_zero
+        (P := P) (X := X) (Y := Y) (fun m => hX.integrable m) hY_int hL1 s
+    have hevent :
+        ∀ᶠ m in atTop,
+          ∫ ω in s, X n ω ∂P = ∫ ω in s, X m ω ∂P := by
+      refine eventually_atTop.2 ⟨n, fun m hnm => ?_⟩
+      exact hX.setIntegral_eq hnm hs
+    exact tendsto_nhds_unique (tendsto_const_nhds.congr' hevent) htend
+  · exact (hX.stronglyMeasurable n).aestronglyMeasurable
+
+/--
+Durrett 2019, Theorem 4.6.7, `(i) -> (ii)`.
+
+A uniformly integrable martingale converges almost surely and in `L¹` to the
+canonical filtration limit process.
+-/
+theorem durrett2019_theorem_4_6_7_martingale_ae_tendsto_and_eLpNorm_one_tendsto_of_uniformIntegrable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hUI : UniformIntegrable X 1 P) :
+    (∀ᵐ ω ∂P, Tendsto (fun n => X n ω) atTop (𝓝 (ℱ.limitProcess X P ω))) ∧
+      Tendsto (fun n => eLpNorm (X n - ℱ.limitProcess X P) 1 P) atTop (𝓝 0) :=
+  durrett2019_theorem_4_6_4_submartingale_ae_tendsto_and_eLpNorm_one_tendsto_of_uniformIntegrable
+    (P := P) (ℱ := ℱ) (X := X) hX.submartingale hUI
+
+/--
+Durrett 2019, Theorem 4.6.7, `(iii) -> (iv)`.
+
+If a martingale converges in `L¹` to an integrable random variable, then the
+martingale is represented by conditional expectations of that limit.
+-/
+theorem durrett2019_theorem_4_6_7_exists_integrable_condExp_of_eLpNorm_one_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    [SigmaFiniteFiltration P ℱ]
+    {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ} (hX : Martingale X ℱ P)
+    (hY_int : Integrable Y P)
+    (hL1 : Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0)) :
+    ∃ Z : Ω -> ℝ, Integrable Z P ∧ ∀ n, X n =ᵐ[P] P[Z | ℱ n] :=
+  ⟨Y, hY_int,
+    fun n =>
+      durrett2019_lemma_4_6_6_martingale_ae_eq_condExp_of_eLpNorm_one_tendsto_zero
+        (P := P) (ℱ := ℱ) (X := X) (Y := Y) hX hY_int hL1 n⟩
+
+/--
+Durrett 2019, Theorem 4.6.7, `(iv) -> (i)`.
+
+A martingale represented as conditional expectations of one integrable random
+variable is uniformly integrable.
+-/
+theorem durrett2019_theorem_4_6_7_uniformIntegrable_of_condExp_representation
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hY_int : Integrable Y P)
+    (hrep : ∀ n, X n =ᵐ[P] P[Y | ℱ n]) :
+    UniformIntegrable X 1 P :=
+  (durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration
+    (P := P) (X := Y) hY_int ℱ).ae_eq fun n => (hrep n).symm
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

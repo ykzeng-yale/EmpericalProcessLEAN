@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V267
+## Live In-Thread Goal Prompt V268
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,7 @@ Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V267 continues Section 4.6.  V260 packages Durrett
+Latest verified target V268 continues Section 4.6.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -46,12 +46,18 @@ probability-theory uniform integrability with
 `durrett2019_theorem_4_6_4_submartingale_uniformIntegrable_of_eLpNorm_one_tendsto_zero`.
 V267 adds Lemma 4.6.5 as the thin Mathlib set-integral continuity wrapper
 `durrett2019_lemma_4_6_5_tendsto_setIntegral_of_eLpNorm_one_tendsto_zero`.
+V268 adds Lemma 4.6.6 and Theorem 4.6.7 route wrappers:
+`durrett2019_lemma_4_6_6_martingale_ae_eq_condExp_of_eLpNorm_one_tendsto_zero`,
+`durrett2019_theorem_4_6_7_martingale_ae_tendsto_and_eLpNorm_one_tendsto_of_uniformIntegrable`,
+`durrett2019_theorem_4_6_7_exists_integrable_condExp_of_eLpNorm_one_tendsto_zero`,
+and `durrett2019_theorem_4_6_7_uniformIntegrable_of_condExp_representation`.
 
-Next aggressive theorem packet: move to Lemma 4.6.6 and Theorem 4.6.7
-martingale `L¹` convergence/conditional-expectation characterization.  Search
-Mathlib/local conditional-expectation uniqueness APIs first, reuse V267 Lemma
-4.6.5 for set-integral convergence and V260 Theorem 4.6.1 for `(iv) -> (i)`,
-and keep the proof packet theorem-sized.
+Next aggressive theorem packet: if immediate, package the V268 implications
+into a compact Theorem 4.6.7 display wrapper; otherwise move directly to
+Theorem 4.6.8, the increasing-filtration conditional-expectation convergence
+theorem.  Search Mathlib/local conditional-expectation tower, generated
+sigma-field, and martingale convergence APIs first, and keep the proof packet
+theorem-sized.
 
 ## Deprecated V255 Prompt Notes
 

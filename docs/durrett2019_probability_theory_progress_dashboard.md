@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V267` in
+Route from `Live In-Thread Goal Prompt V268` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.6 uniform integrability and
 `L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
@@ -58,7 +58,12 @@ and
 `durrett2019_theorem_4_6_4_submartingale_uniformIntegrable_of_eLpNorm_one_tendsto_zero`.
 V267 adds Lemma 4.6.5:
 `durrett2019_lemma_4_6_5_tendsto_setIntegral_of_eLpNorm_one_tendsto_zero`.
-The next target is Lemma 4.6.6 and Theorem 4.6.7.
+V268 adds Lemma 4.6.6 and Theorem 4.6.7 route wrappers:
+`durrett2019_lemma_4_6_6_martingale_ae_eq_condExp_of_eLpNorm_one_tendsto_zero`,
+`durrett2019_theorem_4_6_7_martingale_ae_tendsto_and_eLpNorm_one_tendsto_of_uniformIntegrable`,
+`durrett2019_theorem_4_6_7_exists_integrable_condExp_of_eLpNorm_one_tendsto_zero`,
+and `durrett2019_theorem_4_6_7_uniformIntegrable_of_condExp_representation`.
+The next target is a cheap Theorem 4.6.7 display wrapper or Theorem 4.6.8.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now
