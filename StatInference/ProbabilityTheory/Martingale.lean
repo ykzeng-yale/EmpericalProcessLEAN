@@ -26490,6 +26490,85 @@ theorem durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd_with_modu
     · finiteness
 
 /--
+Durrett 2019, Theorem 4.6.2 scalar small-set modulus for the uniform `Lᵖ`
+criterion.
+
+This chooses the elementary `δ` needed by
+`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd_with_modulus`.
+-/
+theorem durrett2019_theorem_4_6_2_uniformLp_smallSet_modulus
+    {p : ℝ≥0∞} (hp_one_lt : (1 : ℝ≥0∞) < p) (hp_ne_top : p ≠ ∞)
+    (R : ℝ≥0) :
+    ∀ ε : ℝ, 0 < ε ->
+      ∃ δ : ℝ, 0 < δ ∧
+        (R : ℝ≥0∞) *
+            ENNReal.ofReal δ ^
+              (1 / (1 : ℝ≥0∞).toReal - 1 / p.toReal) ≤
+          ENNReal.ofReal ε := by
+  intro ε hε
+  let a : ℝ := 1 / (1 : ℝ≥0∞).toReal - 1 / p.toReal
+  have hp_toReal : (1 : ℝ) < p.toReal :=
+    (ENNReal.toReal_lt_toReal ENNReal.one_ne_top hp_ne_top).2 hp_one_lt
+  have ha_pos : 0 < a := by
+    dsimp [a]
+    simpa using sub_pos.2 (one_div_lt_one_div_of_lt zero_lt_one hp_toReal)
+  let D : ℝ≥0∞ := (R : ℝ≥0∞) + 1
+  have hD_ne_zero : D ≠ 0 := by
+    dsimp [D]
+    positivity
+  have hD_ne_top : D ≠ ∞ := by
+    dsimp [D]
+    finiteness
+  let η : ℝ≥0∞ := ENNReal.ofReal ε / D
+  have hη_pos : 0 < η := by
+    dsimp [η]
+    exact ENNReal.div_pos (ENNReal.ofReal_pos.2 hε).ne' hD_ne_top
+  have hη_ne_zero : η ≠ 0 := hη_pos.ne'
+  have hη_ne_top : η ≠ ∞ := by
+    dsimp [η]
+    finiteness
+  let δE : ℝ≥0∞ := η ^ a⁻¹
+  have hδE_ne_top : δE ≠ ∞ := by
+    dsimp [δE]
+    finiteness
+  have hδE_pos : 0 < δE := by
+    dsimp [δE]
+    exact ENNReal.rpow_pos hη_pos hη_ne_top
+  refine ⟨δE.toReal, ENNReal.toReal_pos hδE_pos.ne' hδE_ne_top, ?_⟩
+  rw [ENNReal.ofReal_toReal hδE_ne_top]
+  calc
+    (R : ℝ≥0∞) * δE ^ a
+        = (R : ℝ≥0∞) * η := by
+          dsimp [δE]
+          rw [ENNReal.rpow_inv_rpow ha_pos.ne']
+    _ ≤ D * η := by
+          exact
+            mul_le_mul'
+              (by
+                dsimp [D]
+                exact le_add_right le_rfl)
+              le_rfl
+    _ = ENNReal.ofReal ε := by
+          change D * (ENNReal.ofReal ε / D) = ENNReal.ofReal ε
+          exact ENNReal.mul_div_cancel hD_ne_zero hD_ne_top
+
+/--
+Durrett 2019, Theorem 4.6.2: uniform `Lᵖ`, `p > 1`, boundedness implies
+`L¹` uniform integrability.
+-/
+theorem durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd
+    {Ω ι : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {f : ι -> Ω -> ℝ} {p : ℝ≥0∞}
+    (hp_one_lt : (1 : ℝ≥0∞) < p) (hp_ne_top : p ≠ ∞)
+    (hf_meas : ∀ i, AEStronglyMeasurable (f i) P)
+    {R : ℝ≥0} (hR : ∀ i, eLpNorm (f i) p P ≤ R) :
+    UniformIntegrable f 1 P :=
+  durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd_with_modulus
+    (P := P) (f := f) hp_one_lt hp_ne_top hf_meas hR
+    (durrett2019_theorem_4_6_2_uniformLp_smallSet_modulus
+      hp_one_lt hp_ne_top R)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

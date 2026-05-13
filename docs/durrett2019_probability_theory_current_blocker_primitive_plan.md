@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V261
+## Live In-Thread Goal Prompt V262
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,7 @@ Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V261 continues Section 4.6.  V260 packages Durrett Theorem
+Latest verified target V262 continues Section 4.6.  V260 packages Durrett Theorem
 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds
 the dominated-family and tail-criterion constructors
@@ -30,11 +30,14 @@ the deterministic tail-envelope bridges
 `durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_envelope_tendsto_zero`,
 plus the measure-theoretic `p > 1` source bridge
 `durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd_with_modulus`.
-Next aggressive theorem packet: discharge the remaining scalar modulus for the
-uniform `Lᵖ`, `p > 1`, bound, i.e. choose `δ` so
-`R * δ ^ (1 - 1 / p.toReal) <= ε`, then package the clean Durrett 4.6.2
-uniform-`Lᵖ` endpoint and move to Theorem 4.6.3 Vitali equivalence
-(`UI + convergence in probability ↔ L¹ convergence`).
+V262 discharges the scalar modulus as
+`durrett2019_theorem_4_6_2_uniformLp_smallSet_modulus` and packages the clean
+uniform-`Lᵖ`, `p > 1`, endpoint
+`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_eLpNorm_bdd`.  Next
+aggressive theorem packet: start Theorem 4.6.3 Vitali equivalence
+(`UI + convergence in probability ↔ L¹ convergence`) by wrapping Mathlib's
+`tendstoInMeasure_iff_tendsto_Lp_finite`/uniform-integrability API in the
+Durrett `L¹` statement.
 
 ## Deprecated V255 Prompt Notes
 
