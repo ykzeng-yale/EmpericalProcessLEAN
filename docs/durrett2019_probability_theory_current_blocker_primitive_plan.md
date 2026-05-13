@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V319
+## Live In-Thread Goal Prompt V320
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -18,8 +18,13 @@ functions, `TendstoInDistribution`, local weak-convergence wrappers, and the
 compiled Chapter 2 product/iid support only when a later Chapter 3 source shape
 needs it.
 
-Latest verified target V319 adds the literal Durrett `mu, sigma` i.i.d. CLT
-display
+Latest verified target V320 adds the positive-variance Lindeberg-Feller
+source endpoints
+`durrett2019_theorem_3_4_10_lindebergFeller_sigmaVariance_of_integrableSq`
+and
+`durrett2019_theorem_3_4_10_lindebergFeller_sigmaChi_of_integrableSq`,
+including the literal Durrett display `S_n => sigma * chi` for standard
+normal `chi`.  V319 adds the literal Durrett `mu, sigma` i.i.d. CLT display
 `durrett2019_theorem_3_4_1_centralLimitTheorem_muSigmaSqrt`, proving
 `(S_n - n * mu) / (sigma * sqrt n) => N(0,1)` when
 `E X_0 = mu`, `Var X_0 = sigma^2`, and `sigma > 0`.  V318 adds
@@ -34,11 +39,12 @@ Do not re-prove the compiled Chapter 2.1 product/iid wrappers, Theorem 2.4.9
 empirical-CDF wrappers, Theorem 2.2 weak-law layer-cake support, Chapter 3.2
 weak-convergence wrappers, Theorem 3.3.17 Lévy continuity wrappers, Exercise
 3.1.1 product theorem, or the existing Theorem 3.4.10 Lindeberg-Feller
-analytic certificate stack.  Next aggressive packet: continue Chapter 3 by
-closing a concrete source-facing gap around Lindeberg-Feller, scalar CLT
-normalizations, characteristic-function estimates, or Section 3.10 multivariate
-CLT wrappers; touch Chapter 2 only if a Chapter 3 theorem requires a missing
-source primitive.
+analytic certificate stack, or the V320 positive-variance `sigma * chi`
+Lindeberg-Feller endpoint.  Next aggressive packet: continue Chapter 3 by
+closing a concrete source-facing gap around characteristic-function estimates,
+remaining Lindeberg-Feller side conditions, or Section 3.10 multivariate CLT
+wrappers; touch Chapter 2 only if a Chapter 3 theorem requires a missing source
+primitive.
 
 ## Historical V306 Prompt Notes
 
@@ -2043,6 +2049,8 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_standardNormal`
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt`
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_muSigmaSqrt`
+- `durrett2019_theorem_3_4_10_lindebergFeller_sigmaVariance_of_integrableSq`
+- `durrett2019_theorem_3_4_10_lindebergFeller_sigmaChi_of_integrableSq`
 - `durrett2019_lindebergFellerRowSum`
 - `durrett2019_lindebergFellerRowIndependent`
 - `durrett2019_lindebergFellerMeanZero`
@@ -2164,6 +2172,9 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_expansionBound_integrableSq`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_remainderBound_integrableSq`
 - `durrett2019_theorem_3_4_10_lindebergFeller_of_integrableSq`
+- `durrett2019_theorem_3_4_10_lindebergFeller_unitVariance_of_integrableSq`
+- `durrett2019_theorem_3_4_10_lindebergFeller_sigmaVariance_of_integrableSq`
+- `durrett2019_theorem_3_4_10_lindebergFeller_sigmaChi_of_integrableSq`
 - `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto`
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedScalarCLT`
 - `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedSummandCLT`

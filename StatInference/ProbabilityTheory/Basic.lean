@@ -9381,6 +9381,71 @@ theorem durrett2019_theorem_3_4_10_lindebergFeller_unitVariance_of_integrableSq
       hX hX2 hindep (by norm_num) hmean_zero hvariance hlindeberg hY'
 
 /--
+Durrett 2019, Theorem 3.4.10, positive-variance Lindeberg-Feller source
+endpoint.
+
+If the row variance sums converge to `sigma^2 > 0`, then the row sums converge
+in distribution to the centered Gaussian law with variance `sigma^2`.
+-/
+theorem durrett2019_theorem_3_4_10_lindebergFeller_sigmaVariance_of_integrableSq
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> ℕ -> Ω -> ℝ} {Y : Ω' -> ℝ} {sigma : ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m, Integrable (fun ω => X n m ω ^ 2) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hsigma_pos : 0 < sigma)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X (sigma ^ 2))
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 (sigma ^ 2).toNNReal) P') :
+    TendstoInDistribution
+      (fun n => durrett2019_lindebergFellerRowSum X n)
+      atTop Y (fun _ => P) P' :=
+  durrett2019_theorem_3_4_10_lindebergFeller_of_integrableSq
+    (P := P) (P' := P') (X := X) (varianceLimit := sigma ^ 2) (Y := Y)
+    hX hX2 hindep (sq_pos_of_pos hsigma_pos) hmean_zero hvariance
+    hlindeberg hY
+
+/--
+Durrett 2019, Theorem 3.4.10, literal `sigma * chi` source endpoint.
+
+This is the textbook display `S_n => sigma * chi`, where `chi` has the
+standard normal law.
+-/
+theorem durrett2019_theorem_3_4_10_lindebergFeller_sigmaChi_of_integrableSq
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> ℕ -> Ω -> ℝ} {chi : Ω' -> ℝ} {sigma : ℝ}
+    (hX : ∀ n m, AEMeasurable (X n m) P)
+    (hX2 : ∀ n m, Integrable (fun ω => X n m ω ^ 2) P)
+    (hindep : durrett2019_lindebergFellerRowIndependent P X)
+    (hsigma_pos : 0 < sigma)
+    (hmean_zero : durrett2019_lindebergFellerMeanZero P X)
+    (hvariance :
+      durrett2019_lindebergFellerVarianceSumConvergence P X (sigma ^ 2))
+    (hlindeberg : durrett2019_lindebergFellerCondition P X)
+    (hchi : _root_.ProbabilityTheory.HasLaw chi
+      (_root_.ProbabilityTheory.gaussianReal 0 1) P') :
+    TendstoInDistribution
+      (fun n => durrett2019_lindebergFellerRowSum X n)
+      atTop (fun ω => sigma * chi ω) (fun _ => P) P' := by
+  have hY : _root_.ProbabilityTheory.HasLaw (fun ω => sigma * chi ω)
+      (_root_.ProbabilityTheory.gaussianReal 0 (sigma ^ 2).toNNReal) P' := by
+    convert (_root_.ProbabilityTheory.gaussianReal_const_mul hchi sigma) using 1
+    ext
+    simp [Real.toNNReal_of_nonneg (sq_nonneg sigma)]
+  exact
+    durrett2019_theorem_3_4_10_lindebergFeller_sigmaVariance_of_integrableSq
+      (P := P) (P' := P') (X := X) (Y := fun ω => sigma * chi ω)
+      (sigma := sigma) hX hX2 hindep hsigma_pos hmean_zero hvariance
+      hlindeberg hY
+
+/--
 Durrett early-chapter pi-system uniqueness shape.
 
 Probability laws agreeing on a pi-system that generates the measurable space

@@ -32,11 +32,16 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V319` in
+Route from `Live In-Thread Goal Prompt V320` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
-`StatInference/ProbabilityTheory/Basic.lean`.  V319 adds
+`StatInference/ProbabilityTheory/Basic.lean`.  V320 adds
+`durrett2019_theorem_3_4_10_lindebergFeller_sigmaVariance_of_integrableSq`
+and
+`durrett2019_theorem_3_4_10_lindebergFeller_sigmaChi_of_integrableSq`, the
+positive-variance and literal `S_n => sigma * chi` source endpoints for
+Theorem 3.4.10.  V319 adds
 `durrett2019_theorem_3_4_1_centralLimitTheorem_muSigmaSqrt`, the literal
 Durrett `mu, sigma` display for Theorem 3.4.1.  V318 adds
 `durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt`, the exact Durrett
@@ -1422,7 +1427,9 @@ support.  Compiled declarations:
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_varianceGaussian`;
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_standardNormal`;
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt`;
-- `durrett2019_theorem_3_4_1_centralLimitTheorem_muSigmaSqrt`.
+- `durrett2019_theorem_3_4_1_centralLimitTheorem_muSigmaSqrt`;
+- `durrett2019_theorem_3_4_10_lindebergFeller_sigmaVariance_of_integrableSq`;
+- `durrett2019_theorem_3_4_10_lindebergFeller_sigmaChi_of_integrableSq`.
 
 The current aggressive theorem frontier is Chapter 3.  The old large Chapter
 2 targets are closed as reusable source wrappers:
@@ -1551,7 +1558,13 @@ Current proof route:
     one-factor remainder bound from square-integrable rows, analytic certificate
     from square-integrable rows, and final Lindeberg-Feller wrapper from
     square-integrable rows also compile.
-28. Durrett Theorem 3.10.6 now has the finite-coordinate law-level Cramér-Wold
+28. Durrett Theorem 3.4.10 now has positive-variance source endpoints
+    `durrett2019_theorem_3_4_10_lindebergFeller_sigmaVariance_of_integrableSq`
+    and
+    `durrett2019_theorem_3_4_10_lindebergFeller_sigmaChi_of_integrableSq`,
+    including the literal textbook display `S_n => sigma * chi` for a standard
+    normal `chi`.
+29. Durrett Theorem 3.10.6 now has the finite-coordinate law-level Cramér-Wold
     wrapper
     `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto` in
     `StatInference/ProbabilityTheory/Multivariate.lean`, reusing the local
