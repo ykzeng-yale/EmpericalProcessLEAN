@@ -23735,6 +23735,78 @@ theorem
     (P := P) (Ainf := Ainf) hAinf_int.aestronglyMeasurable.aemeasurable
 
 /--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+The square-root terminal expectation is the `p = 1/2` layer-cake endpoint
+for the terminal clock.  This is the weighted-tail form that the remaining
+one-dimensional calculus step must match after the Tonelli swap.
+-/
+theorem
+    durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Ainf : Ω -> ℝ}
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_meas : AEMeasurable Ainf P) :
+    (∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P) =
+      ENNReal.ofReal ((1 : ℝ) / 2) *
+        ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω} *
+            ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) := by
+  have hleft :
+      (∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P) =
+        ∫⁻ ω, ENNReal.ofReal (Ainf ω ^ ((1 : ℝ) / 2)) ∂P := by
+    refine MeasureTheory.lintegral_congr_ae ?_
+    filter_upwards [hAinf_nonneg] with ω hω
+    rw [Real.sqrt_eq_rpow]
+  rw [hleft]
+  exact
+    durrett2019_lemma_2_2_13_lintegral_rpow_tail_lt
+      (P := P) (Y := Ainf) hAinf_nonneg hAinf_meas
+      (by norm_num : 0 < ((1 : ℝ) / 2))
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support with integrability
+supplying measurability of the terminal clock.
+-/
+theorem
+    durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral_of_integrable
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Ainf : Ω -> ℝ}
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_int : Integrable Ainf P) :
+    (∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P) =
+      ENNReal.ofReal ((1 : ℝ) / 2) *
+        ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω} *
+            ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) :=
+  durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral
+    (P := P) (Ainf := Ainf) hAinf_nonneg
+    hAinf_int.aestronglyMeasurable.aemeasurable
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support under the source
+monotone-terminal hypotheses.
+-/
+theorem
+    durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral_of_source_monotone_terminal
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hAinf_int : Integrable Ainf P)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    (∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P) =
+      ENNReal.ofReal ((1 : ℝ) / 2) *
+        ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω} *
+            ENNReal.ofReal (b ^ (((1 : ℝ) / 2) - 1)) :=
+  durrett2019_theorem_4_5_7_sqrt_lintegral_eq_half_mul_weighted_tail_lintegral_of_integrable
+    (P := P) (Ainf := Ainf)
+    (durrett2019_theorem_4_5_7_terminal_nonneg_of_initial_zero_monotone_tendsto
+      (P := P) (A := A) (Ainf := Ainf) hA0 hA_mono hA_tendsto)
+    hAinf_int
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
