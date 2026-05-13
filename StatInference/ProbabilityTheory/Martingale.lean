@@ -24583,6 +24583,194 @@ theorem
       (P := P) (A := A) (Ainf := Ainf) hAinf_int hA0 hA_mono hA_tendsto)
 
 /--
+Durrett 2019, Theorem 4.5.7 integrability consequence.
+
+The source-facing `3 * E sqrt(A_infty)` maximal estimate gives an integrable
+canonical running absolute supremum.  This is the domination input used in
+Example 4.5.8.
+-/
+theorem
+    durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_int : Integrable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    Integrable (durrett2019_runningAbsSup X) P := by
+  let S : ℝ≥0∞ := ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P
+  have hbound :
+      (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω) ∂P) ≤
+        (3 : ℝ≥0∞) * S := by
+    simpa [S] using
+      durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_int hX0
+        hA0 hA_mono hA_tendsto
+  have hS_ne_top : S ≠ ∞ := by
+    simpa [S] using
+      durrett2019_theorem_4_5_7_sqrt_lintegral_ne_top_of_source_monotone_terminal
+        (P := P) (A := A) (Ainf := Ainf) hAinf_int hA0 hA_mono hA_tendsto
+  have hlin_ne_top :
+      (∫⁻ ω, ENNReal.ofReal (durrett2019_runningAbsSup X ω) ∂P) ≠ ∞ := by
+    exact ne_top_of_le_ne_top
+      (ENNReal.mul_ne_top (by norm_num : (3 : ℝ≥0∞) ≠ ∞) hS_ne_top)
+      hbound
+  have hiSup_bound :
+      (∫⁻ ω,
+          ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≤
+        (3 : ℝ≥0∞) * S := by
+    simpa [S] using
+      durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_int hX0
+        hA0 hA_mono hA_tendsto
+  have hiSup_ne_top :
+      (∫⁻ ω,
+          ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≠ ∞ := by
+    exact ne_top_of_le_ne_top
+      (ENNReal.mul_ne_top (by norm_num : (3 : ℝ≥0∞) ≠ ∞) hS_ne_top)
+      hiSup_bound
+  have hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω) :=
+    durrett2019_runningAbsMax_ae_bddAbove_of_iSup_lintegral_ne_top
+      (P := P) (X := X)
+      (fun n => durrett2019_runningAbsMax_measurable
+        (P := P) (ℱ := ℱ) (X := X) hX n)
+      hiSup_ne_top
+  have hnonneg : 0 ≤ᵐ[P] durrett2019_runningAbsSup X := by
+    filter_upwards [hBdd] with ω hω
+    have h0 :
+        durrett2019_runningAbsMax X 0 ω ≤ durrett2019_runningAbsSup X ω := by
+      simpa [durrett2019_runningAbsSup] using
+        (le_ciSup hω 0 :
+          durrett2019_runningAbsMax X 0 ω ≤
+            ⨆ n : ℕ, durrett2019_runningAbsMax X n ω)
+    exact (durrett2019_runningAbsMax_nonneg (X := X) 0 ω).trans h0
+  exact
+    (lintegral_ofReal_ne_top_iff_integrable
+      (μ := P) (f := durrett2019_runningAbsSup X)
+      (durrett2019_runningAbsSup_aestronglyMeasurable
+        (P := P) (ℱ := ℱ) (X := X) hX)
+      hnonneg).1 hlin_ne_top
+
+/--
+Durrett 2019, Example 4.5.8 dominated optional-stopping bridge.
+
+If a sequence of stopped variables has zero expectation at each finite horizon,
+converges a.s. to `Y`, and is dominated by one integrable envelope, then the
+limit has expectation zero.
+-/
+theorem durrett2019_example_4_5_8_integral_limit_eq_zero_of_dominated
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {F : ℕ -> Ω -> ℝ} {Y bound : Ω -> ℝ}
+    (hF_meas : ∀ n, AEStronglyMeasurable (F n) P)
+    (hbound : ∀ n, ∀ᵐ ω ∂P, ‖F n ω‖ ≤ bound ω)
+    (hbound_int : Integrable bound P)
+    (hlim : ∀ᵐ ω ∂P, Tendsto (fun n => F n ω) atTop (𝓝 (Y ω)))
+    (hzero : ∀ n, (∫ ω, F n ω ∂P) = 0) :
+    (∫ ω, Y ω ∂P) = 0 := by
+  have htendsto :
+      Tendsto (fun n => ∫ ω, F n ω ∂P) atTop (𝓝 (∫ ω, Y ω ∂P)) :=
+    MeasureTheory.tendsto_integral_filter_of_dominated_convergence
+      (μ := P) (bound := bound) (F := F) (f := Y)
+      (Eventually.of_forall hF_meas)
+      (Eventually.of_forall hbound)
+      hbound_int hlim
+  have hconst :
+      Tendsto (fun _n : ℕ => (0 : ℝ)) atTop (𝓝 (∫ ω, Y ω ∂P)) := by
+    simpa [hzero] using htendsto
+  exact (tendsto_nhds_unique tendsto_const_nhds hconst).symm
+
+/--
+Durrett 2019, Example 4.5.8 source bridge.
+
+For a square-integrable martingale with the Theorem 4.5.7 clock hypotheses,
+finite-horizon zero expectations pass to the a.s. limit by domination from the
+`3 * E sqrt(A_infty)` maximal estimate.
+-/
+theorem
+    durrett2019_example_4_5_8_integral_limit_eq_zero_of_theorem_4_5_7_source
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] [IsProbabilityMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {X A : ℕ -> Ω -> ℝ} {Ainf Y : Ω -> ℝ}
+    (hX : Martingale X ℱ P)
+    (hA_predictable : IsStronglyPredictable ℱ A)
+    (hSquareMinus : Martingale (fun n ω => X n ω ^ 2 - A n ω) ℱ P)
+    (hX_memLp_two : ∀ n, MemLp (X n) (2 : ℝ≥0∞) P)
+    (hA_int : ∀ n, Integrable (A n) P)
+    (hAinf_int : Integrable Ainf P)
+    (hX0 : X 0 =ᵐ[P] 0)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (hlim : ∀ᵐ ω ∂P, Tendsto (fun n => X n ω) atTop (𝓝 (Y ω)))
+    (hzero : ∀ n, (∫ ω, X n ω ∂P) = 0) :
+    (∫ ω, Y ω ∂P) = 0 := by
+  let S : ℝ≥0∞ := ∫⁻ ω, ENNReal.ofReal (Real.sqrt (Ainf ω)) ∂P
+  have hiSup_bound :
+      (∫⁻ ω,
+          ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≤
+        (3 : ℝ≥0∞) * S := by
+    simpa [S] using
+      durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_int hX0
+        hA0 hA_mono hA_tendsto
+  have hS_ne_top : S ≠ ∞ := by
+    simpa [S] using
+      durrett2019_theorem_4_5_7_sqrt_lintegral_ne_top_of_source_monotone_terminal
+        (P := P) (A := A) (Ainf := Ainf) hAinf_int hA0 hA_mono hA_tendsto
+  have hiSup_ne_top :
+      (∫⁻ ω,
+          ⨆ n : ℕ, ENNReal.ofReal (durrett2019_runningAbsMax X n ω) ∂P) ≠ ∞ := by
+    exact ne_top_of_le_ne_top
+      (ENNReal.mul_ne_top (by norm_num : (3 : ℝ≥0∞) ≠ ∞) hS_ne_top)
+      hiSup_bound
+  have hBdd :
+      ∀ᵐ ω ∂P,
+        BddAbove (Set.range fun n => durrett2019_runningAbsMax X n ω) :=
+    durrett2019_runningAbsMax_ae_bddAbove_of_iSup_lintegral_ne_top
+      (P := P) (X := X)
+      (fun n => durrett2019_runningAbsMax_measurable
+        (P := P) (ℱ := ℱ) (X := X) hX n)
+      hiSup_ne_top
+  have hdom : ∀ n, ∀ᵐ ω ∂P, ‖X n ω‖ ≤ durrett2019_runningAbsSup X ω := by
+    intro n
+    filter_upwards [hBdd] with ω hω
+    have hterminal_le_max : ‖X n ω‖ ≤ durrett2019_runningAbsMax X n ω := by
+      rw [Real.norm_eq_abs]
+      dsimp [durrett2019_runningAbsMax]
+      exact Finset.le_sup' (fun k => |X k ω|) (by simp)
+    have hmax_le_sup :
+        durrett2019_runningAbsMax X n ω ≤ durrett2019_runningAbsSup X ω := by
+      simpa [durrett2019_runningAbsSup] using
+        (le_ciSup hω n :
+          durrett2019_runningAbsMax X n ω ≤
+            ⨆ m : ℕ, durrett2019_runningAbsMax X m ω)
+    exact hterminal_le_max.trans hmax_le_sup
+  exact
+    durrett2019_example_4_5_8_integral_limit_eq_zero_of_dominated
+      (P := P) (F := X) (Y := Y) (bound := durrett2019_runningAbsSup X)
+      (fun n => ((hX.stronglyMeasurable n).mono (ℱ.le n)).aestronglyMeasurable)
+      hdom
+      (durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal
+        (P := P) (ℱ := ℱ) (X := X) (A := A) (Ainf := Ainf)
+        hX hA_predictable hSquareMinus hX_memLp_two hA_int hAinf_int hX0
+        hA0 hA_mono hA_tendsto)
+      hlim hzero
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

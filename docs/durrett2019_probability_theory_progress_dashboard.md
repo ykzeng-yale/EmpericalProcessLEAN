@@ -32,10 +32,16 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V252` in
+Route from `Live In-Thread Goal Prompt V253` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
-The active theorem lane is Durrett Theorem 4.5.7 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V252 removes the remaining
+The active theorem lane is Durrett Example 4.5.8 in
+`StatInference/ProbabilityTheory/Martingale.lean`.  V253 adds the first
+downstream consumer of the closed 4.5.7 endpoint:
+`durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal`,
+`durrett2019_example_4_5_8_integral_limit_eq_zero_of_dominated`, and
+`durrett2019_example_4_5_8_integral_limit_eq_zero_of_theorem_4_5_7_source`.
+The next target is the stopped simple symmetric random-walk source
+instantiation from the textbook example.  V252 removes the remaining
 manual boundedness/finiteness side inputs from the canonical infinite-horizon
 source endpoint.  It adds
 `durrett2019_runningAbsMax_ae_bddAbove_of_iSup_lintegral_ne_top`,

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V252
+## Live In-Thread Goal Prompt V253
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,14 +12,22 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane: Durrett Chapter 4 martingales in
-`StatInference/ProbabilityTheory/Martingale.lean`, specifically Durrett
-Theorem 4.5.7.  Already compiled and reusable: Chapter 2 support through the
+`StatInference/ProbabilityTheory/Martingale.lean`, specifically Example 4.5.8
+as the first downstream consumer of the now-closed Durrett Theorem 4.5.7.
+Already compiled and reusable: Chapter 2 support through the
 SLLN/Glivenko-Cantelli/layer-cake endpoints, Chapter 3 weak-convergence and
 CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V252 removes the remaining manual boundedness and
+Latest verified Lean packet V253 starts Example 4.5.8 from the source anchor
+immediately after Theorem 4.5.7.  New compiled support:
+`durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal`,
+`durrett2019_example_4_5_8_integral_limit_eq_zero_of_dominated`, and
+`durrett2019_example_4_5_8_integral_limit_eq_zero_of_theorem_4_5_7_source`.
+It packages the exact bridge used in the textbook example: finite-horizon zero
+expectations pass to the stopped limit once Theorem 4.5.7 supplies an
+integrable running supremum.  V252 removes the remaining manual boundedness and
 square-root-finiteness side conditions from the canonical infinite-horizon
 Durrett 4.5.7 endpoint.  New reusable support:
 `durrett2019_runningAbsMax_ae_bddAbove_of_iSup_lintegral_ne_top`,
@@ -146,13 +154,15 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: do not keep looping on the Durrett 4.5.7
-endpoint.  The source-facing `runningAbsSup` `3 * E sqrt(A_infty)` theorem now
-compiles with no manual boundedness or square-root finiteness input.  Move to
-the next downstream Durrett Chapter 4 consumer only after checking the source
-Markdown/PDF anchor for the next theorem-sized target; otherwise package a
-short theorem-report note for 4.5.7 and then advance.  Search Mathlib/local APIs
-first for any new target.  Do not
+Next aggressive theorem-sized packet: continue Example 4.5.8 by instantiating
+the V253 dominated bridge for a stopped simple symmetric random walk.  Search
+local/Mathlib support first for stopped simple random-walk sums, finite-horizon
+optional stopping, stopped-process a.s. convergence to `S_N`, and the clock
+identity `A_infty = N`/`E sqrt(N) < ∞`.  If those source details are too large
+for one packet, first add the clean stopped-process specialization with
+assumptions `X n = S_{N ∧ n}`, `Tendsto X_n S_N`, and finite-horizon integral
+zero, but do not redo the dominated-convergence or Theorem 4.5.7 integrability
+bridge.  Do not
 revisit closed
 Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the V236 probability conversion, the
 V237/V238/V239 stopped source packaging, the V240 raw/stopped survival split,
@@ -161,9 +171,9 @@ truncated-terminal layer-cake bridge, the V244 weighted double-integral
 handoff, the V245 Tonelli/measurability swap layer, the V246 square-root
 weighted-tail endpoint, the V247 inverse-square denominator calculus, or the
 V248 fixed-`b` inner integral, the V249 second-RHS assembly, the V250
-finite-horizon aggregation, the V251 monotone `iSup` endpoint, or the V252
-no-manual-boundedness/finiteness cleanup unless a compile error exposes a
-genuinely missing primitive.
+finite-horizon aggregation, the V251 monotone `iSup` endpoint, the V252
+no-manual-boundedness/finiteness cleanup, or the V253 dominated optional
+stopping bridge unless a compile error exposes a genuinely missing primitive.
 
 ## Recent Route Notes
 
@@ -2040,6 +2050,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V252` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V253` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
