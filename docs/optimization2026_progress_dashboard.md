@@ -409,6 +409,14 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  producing the reusable `hdecrement_step` interface for the source update
 	  `x_{n+1} = newtonStep (grad f_{t_{n+1}}) x_n` and recording that the
 	  old-parameter Newton recurrence is not the exact textbook indexing.
+	  The correct-index source-tail packet adds
+	  `chewi1316_uniformTailBound_of_preliminaryNextNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily`
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
+	  It reuses the generic source-radius engine with
+	  `gradSeq n = grad f_{t_{n+1}}` and separates the pre-Newton displacement
+	  `stepBudget` from the residual budget sequence `lambdaSeq`, avoiding the
+	  old wrong-index shortcut.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
@@ -421,9 +429,9 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `norm_sum_le`, and `Finset.sum_range_sub`.  The live exact-source gate is
 	  now the concrete Chewi/Nesterov analytical-center data for the
 	  next-parameter preliminary Newton recurrence: successor membership, a
-	  global derivative package, square-root-coordinate data, and the correct
-	  source-displacement or alternative analytical-center radius budget for
-	  those steps.
+	  global derivative package, square-root-coordinate data, and either a
+	  proved next-parameter `stepBudget` source-displacement estimate or an
+	  alternative analytical-center radius route.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

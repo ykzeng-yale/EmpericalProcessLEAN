@@ -357,6 +357,14 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	This records the indexing correction: old wrappers using
 	`grad f_{t_n}` for the Newton step are not the exact preliminary
 	path-following source shape.
+	The correct-index source-tail layer adds
+	`chewi1316_uniformTailBound_of_preliminaryNextNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
+	It reuses the generic source-radius proof with
+	`gradSeq n = grad f_{t_{n+1}}` and keeps a separate `stepBudget` for the
+	pre-Newton displacement norms, so downstream work must prove that budget
+	or use a sharper analytical-center radius argument.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

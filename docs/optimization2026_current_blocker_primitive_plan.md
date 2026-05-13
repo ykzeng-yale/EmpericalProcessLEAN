@@ -542,6 +542,15 @@ packet adds
 	`x_{n+1} = newtonStep (grad f_{t_{n+1}}) x_n`; this fixes the indexing
 	risk in older source-tail wrappers that used the old-parameter Newton
 	step `grad f_{t_n}`.
+	The correct-index source-tail packet adds
+	`chewi1316_uniformTailBound_of_preliminaryNextNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
+	These reuse the generic Newton-step source-radius engine with
+	`gradSeq n = grad f_{t_{n+1}}` and keep a separate `stepBudget` for the
+	pre-Newton displacements, avoiding the incorrect shortcut that the old
+	residual sequence `lambdaSeq n` controls the next-parameter Newton step
+	norm.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
@@ -556,12 +565,11 @@ packet adds
 	`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 	zero Newton decrement at the source endpoints, and the one-step post-Newton
 	`lambda <= 1/4` and successor `lambda <= 1/8` invariants for the supplied
-	preliminary path.  The next live gate is now narrower: build the real
-	textbook preliminary-path assembly around the next-parameter Newton
-	recurrence, including successor membership, a global Hessian
-	derivative/mixed-third package on the domain, square-root-coordinate data,
-	and the correct source-displacement or alternative analytical-center
-	radius budget for those next-parameter Newton steps.
+	preliminary path.  The next live gate is now sharper: discharge or replace
+	the separate next-parameter `stepBudget` source-displacement control for
+	the concrete Chewi/Nesterov preliminary path, while supplying successor
+	membership, global Hessian derivative/mixed-third data, and
+	square-root-coordinate data.
 	Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has
