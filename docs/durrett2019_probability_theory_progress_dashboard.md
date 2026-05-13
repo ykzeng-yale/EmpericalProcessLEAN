@@ -32,12 +32,19 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V325` in
+Route from `Live In-Thread Goal Prompt V326` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V325 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V326 adds
+`durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_coordinateCovarianceTable`,
+`durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_coordinateCovarianceTable`,
+`durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_centeredProductSubMean`,
+and
+`durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_centeredProductSubMean`,
+Section 3.10 Gaussian-coordinate independence source wrappers from scalar
+covariance tables and centered-product covariance tables.  V325 adds
 `durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_coordinateCovariance`
 and
 `durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_centeredProductSubMean`,
@@ -1646,7 +1653,14 @@ Current proof route:
     `durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_coordinateCovariance_zero`,
     `durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_covarianceBilinDualTable`,
     and
-    `durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_covarianceBilinDualTable`.
+    `durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_covarianceBilinDualTable`,
+    plus the source-facing scalar covariance-table and centered-product-table
+    wrappers
+    `durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_coordinateCovarianceTable`,
+    `durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_coordinateCovarianceTable`,
+    `durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_centeredProductSubMean`,
+    and
+    `durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_centeredProductSubMean`.
 37. Durrett Exercise 3.10.8 now has finite linear-combination Gaussian
     characterization wrappers:
     `durrett2019_exercise_3_10_8_linearCombination_hasGaussianLaw_of_multivariateGaussian`,

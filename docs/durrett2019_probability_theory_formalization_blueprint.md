@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V325`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V326`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -35,7 +35,14 @@ automation.
 Current active frontier: Chapter 3 weak convergence, characteristic functions,
 CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V325 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V326 adds
+`durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_coordinateCovarianceTable`,
+`durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_coordinateCovarianceTable`,
+`durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_centeredProductSubMean`,
+and
+`durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_centeredProductSubMean`,
+Section 3.10 Gaussian-coordinate independence source wrappers from scalar
+covariance tables and centered-product covariance tables.  V325 adds
 `durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_coordinateCovariance`
 and
 `durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_centeredProductSubMean`,

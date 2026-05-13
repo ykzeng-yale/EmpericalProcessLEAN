@@ -409,6 +409,128 @@ theorem durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_covarianceBili
         (P := P) (Z := Z) hZ_gaussian hZ_memLp Gamma hZ_table
 
 /--
+Durrett 2019, Section 3.10, scalar covariance-table form of the Gaussian
+coordinate independence criterion.
+
+If the scalar coordinate covariance table of a finite-coordinate Gaussian
+vector is `Gamma` and all off-diagonal entries of `Gamma` vanish, then the
+coordinates are independent.
+-/
+theorem durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_coordinateCovarianceTable
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z P)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) P =
+        Gamma i j)
+    (hGamma_offDiagonal_zero : ∀ i j : Coordinate, i ≠ j -> Gamma i j = 0) :
+    _root_.ProbabilityTheory.iIndepFun (fun i ω => Z ω i) P :=
+  durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_coordinateCovariance_zero
+    (P := P) (Z := Z) hZ_gaussian
+    (fun i j hij => by
+      rw [hZ_covariance i j]
+      exact hGamma_offDiagonal_zero i j hij)
+
+/--
+Durrett 2019, Section 3.10, scalar covariance-table `iff` form of the Gaussian
+coordinate independence criterion.
+
+For a finite-coordinate Gaussian vector with supplied scalar covariance table
+`Gamma`, the coordinates are independent if and only if the off-diagonal
+entries of `Gamma` vanish.
+-/
+theorem durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_coordinateCovarianceTable
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z P)
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 P)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) P =
+        Gamma i j) :
+    _root_.ProbabilityTheory.iIndepFun (fun i ω => Z ω i) P ↔
+      ∀ i j : Coordinate, i ≠ j -> Gamma i j = 0 := by
+  constructor
+  · intro hindep i j hij
+    have hcov_zero :
+        _root_.ProbabilityTheory.covariance
+          (fun ω => Z ω i) (fun ω => Z ω j) P = 0 :=
+      (hindep.indepFun hij).covariance_eq_zero
+        (hZ_coordinate_memLp i) (hZ_coordinate_memLp j)
+    rw [← hZ_covariance i j]
+    exact hcov_zero
+  · exact
+      durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_coordinateCovarianceTable
+        (P := P) (Z := Z) hZ_gaussian Gamma hZ_covariance
+
+/--
+Durrett 2019, Section 3.10, centered-product covariance-table form of the
+Gaussian coordinate independence criterion.
+
+This packages the textbook covariance definition
+`Gamma_ij = E[(Z_i - mean_i) (Z_j - mean_j)]` before applying the compiled
+Gaussian independence criterion.
+-/
+theorem durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_centeredProductSubMean
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z P)
+    (mean : Coordinate -> ℝ) (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂P) = mean coordinate)
+    (hZ_centered_product : ∀ i j,
+      (∫ ω, (Z ω i - mean i) * (Z ω j - mean j) ∂P) = Gamma i j)
+    (hGamma_offDiagonal_zero : ∀ i j : Coordinate, i ≠ j -> Gamma i j = 0) :
+    _root_.ProbabilityTheory.iIndepFun (fun i ω => Z ω i) P :=
+  durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_coordinateCovarianceTable
+    (P := P) (Z := Z) hZ_gaussian Gamma
+    (durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProductSubMean
+      (μ := P) (Y := Z) mean hZ_coordinate_mean Gamma hZ_centered_product)
+    hGamma_offDiagonal_zero
+
+/--
+Durrett 2019, Section 3.10, centered-product covariance-table `iff` form of
+the Gaussian coordinate independence criterion.
+
+Under the source covariance identities
+`Gamma_ij = E[(Z_i - mean_i) (Z_j - mean_j)]`, coordinate independence is
+equivalent to the vanishing of the off-diagonal entries of `Gamma`.
+-/
+theorem durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_centeredProductSubMean
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z P)
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 P)
+    (mean : Coordinate -> ℝ) (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂P) = mean coordinate)
+    (hZ_centered_product : ∀ i j,
+      (∫ ω, (Z ω i - mean i) * (Z ω j - mean j) ∂P) = Gamma i j) :
+    _root_.ProbabilityTheory.iIndepFun (fun i ω => Z ω i) P ↔
+      ∀ i j : Coordinate, i ≠ j -> Gamma i j = 0 :=
+  durrett2019_section_3_10_gaussianCoordinate_iIndepFun_iff_coordinateCovarianceTable
+    (P := P) (Z := Z) hZ_gaussian hZ_coordinate_memLp Gamma
+    (durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProductSubMean
+      (μ := P) (Y := Z) mean hZ_coordinate_mean Gamma hZ_centered_product)
+
+/--
 The covariance bilinear form of Durrett's projection is the double sum of the
 coordinate covariance table.
 -/
