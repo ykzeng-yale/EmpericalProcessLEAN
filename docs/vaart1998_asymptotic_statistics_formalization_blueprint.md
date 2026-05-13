@@ -19,7 +19,14 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    the next proof packet; the solved-progress ledgers are evidence, not
    instructions to replay.
 
-Current frontier: Theorem 5.41 now has a compiled finite-coordinate
+Current frontier: Theorem 5.41 now has a compiled observation envelope-average
+source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_observationDerivativeBasisActionSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`.
+It uses `vaart1998_envelopeAverage_tendstoInMeasure_of_observation_samples_integrable`,
+the existing iid empirical-average strong law, and the almost-sure to
+in-probability bridge to derive empirical envelope convergence from
+observation-level envelope measurability, integrability, mean identity, and
+finite sample-path identity.  Theorem 5.41 also has a compiled finite-coordinate
 root-Taylor action endpoint and sampled pointwise-Taylor bridges into its
 root/Taylor-expansion fields.  The direct `O_P(1)` residual-source wrapper
 defines the literal Taylor residual internally, proves its convergence and
@@ -267,6 +274,12 @@ The sample-side Gaussian coordinate mean source endpoint
 uses `integral_map` to derive pushed-forward Gaussian limit-law coordinate
 mean-zero from coordinate mean-zero of the representative limit variable `Z`
 under `Q`.
+The observation envelope-average source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_observationDerivativeBasisActionSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`
+uses the existing endpoint strong law for iid empirical averages and the
+local almost-sure to in-probability bridge to derive the empirical envelope
+convergence assumption from observation-level envelope measurability,
+integrability, mean identity, and the finite sample-path identity.
 The next proof packet should move to a concrete model-specialized Theorem 5.41
 instantiation, or package only a still-live source field that the current
 endpoint explicitly exposes, not replay display weak-convergence,
@@ -294,7 +307,8 @@ observation-sequence-law marginal/independence wrappers, or random
 observation-sequence measurability/law wrappers, or pushforward
 transform-law wrappers, or observation-level transform moment/integrability
 wrappers, observation derivative basis-action wrappers, or observation score
-covariance wrappers, or Gaussian limit-law coordinate mean wrappers.
+covariance wrappers, Gaussian limit-law coordinate mean wrappers, or
+observation envelope-average wrappers.
 
 ## Chapter Map
 

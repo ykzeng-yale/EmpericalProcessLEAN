@@ -15,14 +15,23 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: sample-side Gaussian coordinate mean source endpoint
-for the score-at-theta0/Taylor route, including
+Latest verified packet: observation envelope-average source endpoint for the
+score-at-theta0/Taylor route, including
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_observationDerivativeBasisActionSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`.
+It derives empirical envelope convergence in probability from the existing
+iid empirical-average strong law, observation sample-path identity, envelope
+measurability, envelope integrability, and the envelope population mean
+identity, using
+`vaart1998_envelopeAverage_tendstoInMeasure_of_observation_samples_integrable`.
+
+Immediate predecessor packet: sample-side Gaussian coordinate mean source
+endpoint for the score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_observationScoreCovarianceSource_observationDerivativeBasisActionSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 It derives coordinate mean-zero under `Q.map Z` from coordinate mean-zero of
 the representative Gaussian limit variable `Z` under `Q`, using
 `vaart1998_zLaw_coordinate_mean_zero_of_z_coordinate_mean_zero`.
 
-Immediate predecessor packet: observation score covariance source endpoint
+Earlier predecessor packet: observation score covariance source endpoint
 for the score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_observationScoreCovarianceSource_observationDerivativeBasisActionSource_zLawCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`.
 It derives score-law coordinate covariance under
@@ -412,7 +421,10 @@ wrappers, iid infinite-product sequence-law wrappers, or
 observation-transform measurability/law/independence wrappers, or
 observation-sequence-law marginal/independence wrappers, or random
 observation-sequence measurability/law wrappers, or pushforward
-transform-law wrappers.
+transform-law wrappers, or observation-level transform moment/integrability
+wrappers, observation derivative basis-action wrappers, observation score
+covariance wrappers, Gaussian limit-law coordinate mean wrappers, or
+observation envelope-average wrappers.
 
 ## Verified Frontier
 
@@ -1117,32 +1129,23 @@ derivative coordinate integrability from observation-level transform moment
 assumptions; and it derives the sample-space population `V` basis-action
 integral from the observation-level derivative-transform identity; it also
 derives score-law covariance under `observationLaw.map scoreTransform` from
-the observation-level score-transform covariance identity.
+the observation-level score-transform covariance identity; it derives
+pushed-forward Gaussian limit-law coordinate means from sample-side Gaussian
+coordinate means; and it derives empirical envelope convergence in probability
+from the observation-level envelope strong law and sample-path identity.
 Move next only on a live source hypothesis of that
 endpoint, preferably a concrete model-specialized Theorem 5.41 instantiation
 or a narrow source package that removes another exposed model-facing field.
 Do not replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
 score infrastructure, derivative-bound and finite strong-law infrastructure,
 law-tail routing, display-congruence, display-convergence, display weak
- convergence, score-equation `O_P(1)`, Taylor-zero `O_P(1)`, absorbing
-tightness/source/Taylor/measurability endpoints, projected-to-action law-tail
-routing, display-tightness action-bound, display weak-tightness action-bound,
-displayed weak-convergence source helpers, earlier Theorem 5.41 wrappers, or
-estimator-definition/raw-root/measurability/sampled-derivative-action/
-population-`V` basis-action/pointwise-smoothness/score-vector display source
-wrappers, direct vector/table wrappers, coordinate-projection wrappers,
-score-vector measurability wrappers, score-law vector moment wrappers,
-derivative-law vector integrability wrappers, limit-law mean source wrappers,
-observation-level transform moment/integrability wrappers,
-observation derivative basis-action wrappers,
-observation score covariance wrappers,
-Gaussian limit-law coordinate mean wrappers,
-limit-law covariance source wrappers, or historical ledger items.
-Gaussian limit moment wrappers, score-law mean source wrappers,
-score-vector sequence-law source wrappers, derivative-table sequence-law
-source wrappers, score-law `L²` source wrappers, score-vector mean source
-wrappers, limit-variable sample mean source wrappers, and finite-coordinate
-limit covariance source wrappers are also complete and should not be replayed.
+convergence, score-equation `O_P(1)`, Taylor-zero `O_P(1)`, absorbing
+tightness/source/Taylor/measurability endpoints, earlier Theorem 5.41 wrappers,
+or any source wrapper already listed as complete above.  In particular, do not
+rebuild the estimator-definition/raw-root/measurability/sampled-derivative/
+population-`V`/pointwise-smoothness/score-display/direct-table/coordinate-
+projection/law-moment/sequence-law/observation-transform/observation-score-
+covariance/Gaussian-coordinate-mean/envelope-average routes.
 
 ## Reuse Dependencies
 

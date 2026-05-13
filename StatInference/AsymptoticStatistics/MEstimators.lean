@@ -24319,6 +24319,91 @@ theorem vaart1998_iIndepFun_of_observation_transform
       (fun _ : ℕ => hTransform_meas)
 
 /--
+Observation-level iid envelope integrability gives convergence in probability
+of the empirical envelope averages along the finite samples.
+-/
+theorem vaart1998_envelopeAverage_tendstoInMeasure_of_observation_samples_integrable
+    {Ω Observation : Type*} [MeasurableSpace Ω] [MeasurableSpace Observation]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    (observation : ℕ -> Ω -> Observation)
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (envelope : Observation -> ℝ) (envelopeMean : ℝ)
+    (hObservation_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (observation i) observationLaw P)
+    (hObservation_iIndep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => observation i) P)
+    (hSamples_eq_observation : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      samples n ω i = observation i.val ω)
+    (hEnvelope_meas : Measurable envelope)
+    (hEnvelope_integrable : Integrable envelope observationLaw)
+    (hEnvelopeMean_eq :
+      envelopeMean = ∫ observation, envelope observation ∂observationLaw) :
+    TendstoInMeasure P
+      (fun n ω => empiricalAverage (samples n ω) envelope)
+      atTop (fun _ : Ω => envelopeMean) := by
+  have hObservation_pairwise :
+      Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun (observation i) (observation j) P := by
+    intro i j hij
+    exact hObservation_iIndep.indepFun hij
+  have hAverage_eq : ∀ n : ℕ,
+      (fun ω => empiricalAverage (samples n ω) envelope) =
+        fun ω => empiricalAverage (samplePath observation ω n) envelope := by
+    intro n
+    funext ω
+    dsimp [empiricalAverage, samplePath]
+    congr 1
+    refine Finset.sum_congr rfl ?_
+    intro i _hi
+    exact congrArg envelope (hSamples_eq_observation n ω i)
+  have hEnvelopeAverage_strongMeas : ∀ n : ℕ,
+      AEStronglyMeasurable
+        (fun ω => empiricalAverage (samples n ω) envelope) P := by
+    intro n
+    rw [hAverage_eq n]
+    exact
+      (empiricalAverage_samplePath_aemeasurable_of_hasLaw
+        observation envelope n hObservation_law hEnvelope_meas).aestronglyMeasurable
+  have hEnvelopeAverage_ae_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n : ℕ =>
+            empiricalAverage (samplePath observation ω n) envelope -
+              ∫ observation, envelope observation ∂observationLaw)
+          atTop (𝓝 0) :=
+    endpoint_empiricalAverage_sub_population_tendsto_zero_ae_of_iid
+      observation envelope hEnvelope_meas.aemeasurable hEnvelope_integrable
+      hObservation_law hObservation_pairwise
+  have hEnvelopeAverage_ae :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n : ℕ => empiricalAverage (samples n ω) envelope)
+          atTop (𝓝 (envelopeMean : ℝ)) := by
+    filter_upwards [hEnvelopeAverage_ae_zero] with ω hω
+    have hto_integral :
+        Tendsto (fun n : ℕ =>
+            empiricalAverage (samplePath observation ω n) envelope)
+          atTop
+          (𝓝 (∫ observation, envelope observation ∂observationLaw)) := by
+      have hsum :=
+        hω.add
+          (tendsto_const_nhds
+            (x := ∫ observation, envelope observation ∂observationLaw))
+      simpa [sub_eq_add_neg, add_assoc] using hsum
+    have hto_samples :
+        Tendsto (fun n : ℕ => empiricalAverage (samples n ω) envelope)
+          atTop
+          (𝓝 (∫ observation, envelope observation ∂observationLaw)) := by
+      refine hto_integral.congr' ?_
+      exact Eventually.of_forall fun n => by
+        exact (congrFun (hAverage_eq n) ω).symm
+    simpa [hEnvelopeMean_eq] using hto_samples
+  exact
+    vaart1998_tendstoInMeasure_of_tendsto_ae
+      hEnvelopeAverage_strongMeas hEnvelopeAverage_ae
+
+/--
 The score law has a second moment when a representative score vector has one.
 -/
 theorem vaart1998_scoreLaw_memLp_of_scoreVector_memLp
@@ -29082,6 +29167,228 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       hDerivativeTransform_integrable hScoreVector_eq_transform
       hDerivativeTable_eq_transform hZ_meas hZ_gaussian
       hZLaw_coordinate_mean_zero hZ_observationScore_coordinate_covariance
+      hScaledScore_vector_eq_pointwise hScoreAtTheta0_vector_eq_pointwise
+      hDerivativeAtTheta0_basis_action_pointwise hV_observation_basis_action
+      hEstimator_consistency hEnvelope_nonneg hEnvelopeAverage_tendsto
+      hEnvelopeBound hDerivativeAtTheta0_summand_measurable
+      hSecondDerivative_summand_measurable hTheta0_measurable
+      hEstimator_measurable hScale_measurable hRawRoot_pointwise
+      hEstimatingAtEstimator_eq_scaled hDelta_eq_sub_pointwise
+      hScaledEstimator_eq_sub_pointwise hOpen_pointwise
+      hSegmentSubset_pointwise hContDiffEstimatingMap_pointwise
+      hDerivativeAt_eq_fderiv_pointwise hContDiffDerivativeAt_pointwise
+      hSecondDerivative_eq_fderiv_pointwise
+
+/--
+van der Vaart 1998, Theorem 5.41, random observation-sequence endpoint with
+the empirical envelope convergence derived from iid observation samples.
+
+This wrapper uses the strong-law endpoint for the observation-level envelope,
+then converts the almost-sure sample-path convergence to convergence in
+probability for the finite-sample display used by the M-estimator proof.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_observationDerivativeBasisActionSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope
+    {Ω Ω' Observation Coord Param : Type*} [Fintype Coord] [Fintype Param]
+    [DecidableEq Param]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace Observation]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)] [CompleteSpace (Coord -> ℝ)]
+    [MeasurableSpace (Param -> ℝ)] [SecondCountableTopology (Param -> ℝ)]
+    [BorelSpace (Param -> ℝ)] [OpensMeasurableSpace (Param -> ℝ)]
+    [CompleteSpace (Param -> ℝ)]
+    [MeasurableSub₂ (Param -> ℝ)] [MeasurableSMul₂ ℝ (Param -> ℝ)]
+    [MeasurableSpace (Coord × Param -> ℝ)]
+    [OpensMeasurableSpace (Coord × Param -> ℝ)]
+    [SecondCountableTopology ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [OpensMeasurableSpace ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ ((Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ
+      ((Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    (V : (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ))
+    (observation : ℕ -> Ω -> Observation)
+    (observationSequence : Ω -> ℕ -> Observation)
+    (scoreTransform : Observation -> Coord -> ℝ)
+    (derivativeTransform : Observation -> Coord × Param -> ℝ)
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scale : ℕ -> Ω -> ℝ)
+    (estimatingMap : ℕ -> Ω -> Observation -> (Param -> ℝ) -> Coord -> ℝ)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> (Param -> ℝ) ->
+        (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (scoreAtTheta0 estimatingAtEstimator :
+      ℕ -> Ω -> Observation -> Coord -> ℝ)
+    (secondDerivative :
+      ℕ -> Ω -> Observation ->
+        (Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (sourceSet : ℕ -> Ω -> Observation -> Set (Param -> ℝ))
+    (envelope : Observation -> ℝ)
+    (envelopeMean : ℝ)
+    (scoreVector : ℕ -> Ω -> Coord -> ℝ)
+    (derivativeTable : ℕ -> Ω -> Coord × Param -> ℝ)
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    {theta0 estimator delta scaledEstimator : ℕ -> Ω -> Param -> ℝ}
+    {Z : Ω' -> Coord -> ℝ}
+    (hLeftInverse : ∀ x : Param -> ℝ, Vinv (V x) = x)
+    (hObservationSequence_meas : Measurable observationSequence)
+    (hObservationSequence_law :
+      _root_.ProbabilityTheory.HasLaw observationSequence
+        (Measure.infinitePi (fun _ : ℕ => observationLaw)) P)
+    (hObservation_eq_sequence : ∀ i : ℕ, ∀ ω,
+      observation i ω = observationSequence ω i)
+    (hScoreTransform_meas : Measurable scoreTransform)
+    (hScoreTransform_memLp : MemLp scoreTransform 2 observationLaw)
+    (hScoreTransform_coordinate_mean_zero : ∀ coordinate : Coord,
+      (∫ observation, scoreTransform observation coordinate ∂observationLaw) = 0)
+    (hDerivativeTransform_meas : Measurable derivativeTransform)
+    (hDerivativeTransform_integrable : ∀ coordinate param,
+      Integrable
+        (fun observation => derivativeTransform observation (coordinate, param))
+        observationLaw)
+    (hScoreVector_eq_transform : ∀ i : ℕ, ∀ ω,
+      scoreVector i ω = scoreTransform (observation i ω))
+    (hDerivativeTable_eq_transform : ∀ i : ℕ, ∀ ω,
+      derivativeTable i ω = derivativeTransform (observation i ω))
+    (hZ_meas : Measurable Z)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_coordinate_mean_zero : ∀ coordinate : Coord,
+      (∫ ω, Z ω coordinate ∂Q) = 0)
+    (hZ_observationScore_coordinate_covariance : ∀ i j : Coord,
+      _root_.ProbabilityTheory.covariance
+          (fun z : Coord -> ℝ => z i) (fun z : Coord -> ℝ => z j) (Q.map Z) =
+        _root_.ProbabilityTheory.covariance
+          (fun observation => scoreTransform observation i)
+          (fun observation => scoreTransform observation j) observationLaw)
+    (hScaledScore_vector_eq_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      scale n ω • estimatingMap n ω (samples n ω i)
+        (theta0 n ω) =
+        √(n : ℝ) • scoreVector i.val ω)
+    (hScoreAtTheta0_vector_eq_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      scoreAtTheta0 n ω (samples n ω i) =
+        √(n : ℝ) • scoreVector i.val ω)
+    (hDerivativeAtTheta0_basis_action_pointwise :
+      ∀ n : ℕ, ∀ ω, ∀ i : Fin n, ∀ param : Param, ∀ coordinate : Coord,
+        derivativeAt n ω (samples n ω i) (theta0 n ω)
+            (Pi.single param (1 : ℝ) : Param -> ℝ) coordinate =
+          derivativeTable i.val ω (coordinate, param))
+    (hV_observation_basis_action : ∀ param : Param, ∀ coordinate : Coord,
+      V (Pi.single param (1 : ℝ) : Param -> ℝ) coordinate =
+        ∫ observation,
+          derivativeTransform observation (coordinate, param) ∂observationLaw)
+    (hEstimator_consistency :
+      TendstoInMeasure P
+        (fun n ω => ‖estimator n ω - theta0 n ω‖) atTop 0)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hSamples_eq_observation : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      samples n ω i = observation i.val ω)
+    (hEnvelope_meas : Measurable envelope)
+    (hEnvelope_integrable : Integrable envelope observationLaw)
+    (hEnvelopeMean_eq :
+      envelopeMean = ∫ observation, envelope observation ∂observationLaw)
+    (hEnvelopeBound : ∀ᶠ n in atTop, ∀ ω x,
+      ‖secondDerivative n ω x‖ ≤ envelope x)
+    (hDerivativeAtTheta0_summand_measurable : ∀ n : ℕ, ∀ i : Fin n,
+      Measurable
+        (fun ω => derivativeAt n ω (samples n ω i) (theta0 n ω)))
+    (hSecondDerivative_summand_measurable : ∀ n : ℕ, ∀ i : Fin n,
+      Measurable
+        (fun ω => secondDerivative n ω (samples n ω i)))
+    (hTheta0_measurable : ∀ n, Measurable (theta0 n))
+    (hEstimator_measurable : ∀ n, Measurable (estimator n))
+    (hScale_measurable : ∀ n, Measurable (scale n))
+    (hRawRoot_pointwise : ∀ n : ℕ, ∀ ω,
+      empiricalAverageVector (samples n ω)
+        (fun x => estimatingMap n ω x (estimator n ω)) = 0)
+    (hEstimatingAtEstimator_eq_scaled : ∀ n : ℕ, ∀ ω x,
+      estimatingAtEstimator n ω x =
+        scale n ω • estimatingMap n ω x (estimator n ω))
+    (hDelta_eq_sub_pointwise : ∀ n : ℕ, ∀ ω,
+      delta n ω = estimator n ω - theta0 n ω)
+    (hScaledEstimator_eq_sub_pointwise : ∀ n : ℕ, ∀ ω,
+      scaledEstimator n ω =
+        scale n ω • (estimator n ω - theta0 n ω))
+    (hOpen_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      IsOpen (sourceSet n ω (samples n ω i)))
+    (hSegmentSubset_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      ((fun t : ℝ => theta0 n ω + t • delta n ω) ''
+          Set.Icc (0 : ℝ) 1) ⊆
+        sourceSet n ω (samples n ω i))
+    (hContDiffEstimatingMap_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      ContDiffOn ℝ 1 (estimatingMap n ω (samples n ω i))
+        (sourceSet n ω (samples n ω i)))
+    (hDerivativeAt_eq_fderiv_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+        fderiv ℝ (estimatingMap n ω (samples n ω i))
+            (theta0 n ω + x • delta n ω) =
+          derivativeAt n ω (samples n ω i)
+            (theta0 n ω + x • delta n ω))
+    (hContDiffDerivativeAt_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      ContDiffOn ℝ 1 (derivativeAt n ω (samples n ω i))
+        (sourceSet n ω (samples n ω i)))
+    (hSecondDerivative_eq_fderiv_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+        fderiv ℝ (derivativeAt n ω (samples n ω i))
+            (theta0 n ω + x • delta n ω) =
+          secondDerivative n ω (samples n ω i)) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ)) (Z ω))
+      (fun _ => P) Q := by
+  have hObservationFamily_law :
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω i => observation i ω)
+        (Measure.infinitePi (fun _ : ℕ => observationLaw)) P :=
+    vaart1998_family_sequence_law_of_random_sequence_law
+      (P := P) (sample := observation)
+      (sampleSequence := observationSequence) (sampleLaw := observationLaw)
+      hObservationSequence_law hObservation_eq_sequence
+  have hObservation_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (observation i) observationLaw P :=
+    vaart1998_marginal_law_of_common_sequence_law
+      (P := P) (sample := observation) (sampleLaw := observationLaw)
+      hObservationFamily_law
+  have hObservation_iIndep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => observation i) P :=
+    vaart1998_iIndepFun_of_common_sequence_law
+      (P := P) (sample := observation) (sampleLaw := observationLaw)
+      hObservationFamily_law
+  have hEnvelopeAverage_tendsto :
+      TendstoInMeasure P
+        (fun n ω => empiricalAverage (samples n ω) envelope)
+        atTop (fun _ : Ω => envelopeMean) :=
+    vaart1998_envelopeAverage_tendstoInMeasure_of_observation_samples_integrable
+      (P := P) (observationLaw := observationLaw)
+      observation samples envelope envelopeMean
+      hObservation_law hObservation_iIndep hSamples_eq_observation
+      hEnvelope_meas hEnvelope_integrable hEnvelopeMean_eq
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_observationRandomSequenceTransformMomentSource_observationScoreCovarianceSource_observationDerivativeBasisActionSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (observation := observation) (observationSequence := observationSequence)
+      (scoreTransform := scoreTransform)
+      (derivativeTransform := derivativeTransform)
+      (samples := samples) (scale := scale)
+      (estimatingMap := estimatingMap) (derivativeAt := derivativeAt)
+      (scoreAtTheta0 := scoreAtTheta0)
+      (estimatingAtEstimator := estimatingAtEstimator)
+      (secondDerivative := secondDerivative)
+      (sourceSet := sourceSet)
+      (envelope := envelope) (envelopeMean := envelopeMean)
+      (scoreVector := scoreVector) (derivativeTable := derivativeTable)
+      (observationLaw := observationLaw)
+      (theta0 := theta0) (estimator := estimator) (delta := delta)
+      (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hObservationSequence_meas hObservationSequence_law
+      hObservation_eq_sequence hScoreTransform_meas hScoreTransform_memLp
+      hScoreTransform_coordinate_mean_zero hDerivativeTransform_meas
+      hDerivativeTransform_integrable hScoreVector_eq_transform
+      hDerivativeTable_eq_transform hZ_meas hZ_gaussian
+      hZ_coordinate_mean_zero hZ_observationScore_coordinate_covariance
       hScaledScore_vector_eq_pointwise hScoreAtTheta0_vector_eq_pointwise
       hDerivativeAtTheta0_basis_action_pointwise hV_observation_basis_action
       hEstimator_consistency hEnvelope_nonneg hEnvelopeAverage_tendsto
