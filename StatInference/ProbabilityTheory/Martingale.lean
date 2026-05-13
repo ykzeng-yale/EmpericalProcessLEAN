@@ -27261,6 +27261,76 @@ theorem durrett2019_theorem_4_6_10_abs_error_condExp_tendsto_zero_of_tail_bounds
       (P := P) (ℱ := ℱ) (X := W N)
 
 /--
+Durrett 2019, Theorem 4.6.10, pointwise tail-envelope comparison.
+
+This turns the textbook's eventual pointwise estimate
+`|Y_n - Y| <= W_N` into the conditional-expectation estimate consumed by the
+tail-bound bridge.
+-/
+theorem durrett2019_theorem_4_6_10_error_condExp_le_tail_of_eventual_ae_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {W : ℕ -> Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hW_int : ∀ N, Integrable (W N) P)
+    (hPointwise :
+      ∀ N,
+        ∀ᶠ n in atTop, (fun x => ‖Y n x - Ylim x‖) ≤ᵐ[P] W N) :
+    ∀ N,
+      ∀ᵐ ω ∂P,
+        ∀ᶠ n in atTop,
+          P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω ≤ P[W N | ℱ n] ω := by
+  intro N
+  rcases eventually_atTop.1 (hPointwise N) with ⟨n0, hn0⟩
+  have hAll :
+      ∀ᵐ ω ∂P, ∀ n, n0 ≤ n ->
+        P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω ≤ P[W N | ℱ n] ω := by
+    rw [ae_all_iff]
+    intro n
+    by_cases hn : n0 ≤ n
+    · have hError_int : Integrable (fun x => ‖Y n x - Ylim x‖) P :=
+        ((hY_int n).sub hYlim_int).norm
+      have hmono :
+          P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ≤ᵐ[P] P[W N | ℱ n] :=
+        condExp_mono (μ := P) (m := ℱ n) hError_int (hW_int N) (hn0 n hn)
+      filter_upwards [hmono] with ω hmonoω
+      intro _
+      exact hmonoω
+    · exact Eventually.of_forall fun _ hn' => (hn hn').elim
+  filter_upwards [hAll] with ω hAllω
+  exact eventually_atTop.2 ⟨n0, fun n hn => hAllω n hn⟩
+
+/--
+Durrett 2019, Theorem 4.6.10, source-estimate bridge from an eventual
+pointwise tail envelope.
+
+After the concrete textbook `W_N` supplies the eventual pointwise bound and
+the limiting tail conditional expectations tend to zero, the source estimate
+`E(|Y_n - Y| | F_n) -> 0` follows.
+-/
+theorem durrett2019_theorem_4_6_10_abs_error_condExp_tendsto_zero_of_eventual_ae_tail_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {W : ℕ -> Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hW_int : ∀ N, Integrable (W N) P)
+    (hPointwise :
+      ∀ N,
+        ∀ᶠ n in atTop, (fun x => ‖Y n x - Ylim x‖) ≤ᵐ[P] W N)
+    (hTail_limit_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun N => P[W N | ⨆ k, ℱ k] ω) atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω) atTop (𝓝 0) := by
+  exact
+    durrett2019_theorem_4_6_10_abs_error_condExp_tendsto_zero_of_tail_bounds
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (W := W)
+      (durrett2019_theorem_4_6_10_error_condExp_le_tail_of_eventual_ae_bound
+        (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (W := W)
+        hY_int hYlim_int hW_int hPointwise)
+      hTail_limit_zero
+
+/--
 Durrett 2019, Theorem 4.6.10, final theorem-shaped bridge from tail-envelope
 bounds.
 
@@ -27295,6 +27365,71 @@ theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_tail_bounds
     durrett2019_theorem_4_6_10_condExp_tendsto_of_abs_error_condExp_tendsto_zero
       (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim)
       hY_int hYlim_int hAbsError
+
+/--
+Durrett 2019, Theorem 4.6.10, final theorem-shaped bridge from an eventual
+pointwise tail envelope.
+
+This is the interface closest to the textbook proof before constructing the
+concrete `W_N`: the caller supplies integrability of the envelopes, the
+eventual pointwise domination `|Y_n - Y| <= W_N`, and the limiting tail
+conditional expectations tending to zero.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_eventual_ae_tail_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {W : ℕ -> Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hW_int : ∀ N, Integrable (W N) P)
+    (hPointwise :
+      ∀ N,
+        ∀ᶠ n in atTop, (fun x => ‖Y n x - Ylim x‖) ≤ᵐ[P] W N)
+    (hTail_limit_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun N => P[W N | ⨆ k, ℱ k] ω) atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_tail_bounds
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (W := W)
+      hY_int hYlim_int
+      (durrett2019_theorem_4_6_10_error_condExp_le_tail_of_eventual_ae_bound
+        (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (W := W)
+        hY_int hYlim_int hW_int hPointwise)
+      hTail_limit_zero
+
+/--
+Durrett 2019, Theorem 4.6.10, final pointwise-tail bridge with envelope
+integrability discharged by domination.
+
+This is the next interface for the concrete textbook `W_N`: it suffices to
+prove that the envelopes are a.e. strongly measurable and dominated by one
+integrable random variable, such as the usual `2Z` envelope.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_eventual_ae_tail_bound_of_integrable_dominated
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {W : ℕ -> Ω -> ℝ} {Z : Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hW_meas : ∀ N, AEStronglyMeasurable (W N) P)
+    (hZ_int : Integrable Z P)
+    (hW_dom : ∀ N, ∀ᵐ ω ∂P, ‖W N ω‖ ≤ Z ω)
+    (hPointwise :
+      ∀ N,
+        ∀ᶠ n in atTop, (fun x => ‖Y n x - Ylim x‖) ≤ᵐ[P] W N)
+    (hTail_limit_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun N => P[W N | ⨆ k, ℱ k] ω) atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_eventual_ae_tail_bound
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (W := W)
+      hY_int hYlim_int
+      (fun N => hZ_int.mono' (hW_meas N) (hW_dom N))
+      hPointwise hTail_limit_zero
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
