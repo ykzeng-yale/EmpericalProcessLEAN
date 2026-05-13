@@ -5,6 +5,7 @@ import StatInference.AsymptoticStatistics.MomentEstimators
 import StatInference.EmpiricalProcess.Average
 import StatInference.EmpiricalProcess.Basic
 import StatInference.EmpiricalProcess.GlivenkoCantelli
+import StatInference.ProbabilityTheory.Multivariate
 
 /-!
 # van der Vaart 1998 Chapter 5 M-estimator consistency
@@ -24011,6 +24012,53 @@ theorem vaart1998_zLaw_map_mean_zero_of_sample_mean_zero
     _ = 0 := hZ_sample_mean_zero
 
 /--
+Coordinate covariance equality determines all continuous-linear projected
+covariances on a finite real coordinate space.
+-/
+theorem vaart1998_covarianceBilinDual_eq_of_finiteCoordinateEval_eq
+    {Coord : Type*} [Fintype Coord]
+    [MeasurableSpace (Coord -> ℝ)]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)]
+    [CompleteSpace (Coord -> ℝ)]
+    {μ ν : Measure (Coord -> ℝ)} [IsFiniteMeasure ν]
+    (hν_memLp : MemLp id 2 ν)
+    (hEval : ∀ i j : Coord,
+      _root_.ProbabilityTheory.covarianceBilinDual μ
+          (vaart1998_finiteCoordinateEvalCLM (Coordinate := Coord) i)
+          (vaart1998_finiteCoordinateEvalCLM (Coordinate := Coord) j) =
+        _root_.ProbabilityTheory.covarianceBilinDual ν
+          (vaart1998_finiteCoordinateEvalCLM (Coordinate := Coord) i)
+          (vaart1998_finiteCoordinateEvalCLM (Coordinate := Coord) j)) :
+    ∀ L K : StrongDual ℝ (Coord -> ℝ),
+      _root_.ProbabilityTheory.covarianceBilinDual μ L K =
+        _root_.ProbabilityTheory.covarianceBilinDual ν L K := by
+  classical
+  refine vaart1998_covarianceBilinDual_eq_of_diagonal_variance
+    (μ := μ) (ν := ν) hν_memLp ?_
+  intro L
+  let theta :=
+    StatInference.ProbabilityTheory.durrett2019_theorem_3_10_7_dualCoordinates L
+  have hL :
+      StatInference.ProbabilityTheory.durrett2019_theorem_3_10_7_thetaProjection
+          theta = L := by
+    simpa [theta] using
+      StatInference.ProbabilityTheory.durrett2019_theorem_3_10_7_thetaProjection_dualCoordinates
+        L
+  have hdiag :
+      _root_.ProbabilityTheory.covarianceBilinDual μ L L =
+        _root_.ProbabilityTheory.covarianceBilinDual ν L L := by
+    rw [← hL]
+    rw [StatInference.ProbabilityTheory.durrett2019_theorem_3_10_7_covarianceBilinDual_thetaProjection
+      (μ := μ) (theta := theta)]
+    rw [StatInference.ProbabilityTheory.durrett2019_theorem_3_10_7_covarianceBilinDual_thetaProjection
+      (μ := ν) (theta := theta)]
+    simp [hEval]
+  exact hdiag.trans
+    (_root_.ProbabilityTheory.covarianceBilinDual_self_eq_variance hν_memLp L)
+
+/--
 van der Vaart 1998, Theorem 5.41, current finite-dimensional endpoint with a
 score-vector sequence-law source.
 
@@ -24885,6 +24933,201 @@ theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAv
       (scaledEstimator := scaledEstimator) (Z := Z)
       hLeftInverse hScoreVector_meas hZ_meas hScoreVector_zero_memLp
       hScoreVector_zero_mean hZ_gaussian hZ_map_mean_zero
+      hZ_covariance_scoreLaw_bilin hScoreVector_sequence_law
+      hScaledScore_vector_eq_pointwise hScoreAtTheta0_vector_eq_pointwise
+      hDerivativeLaw_integrable_id hDerivativeTable_sequence_law
+      hDerivativeAtTheta0_matrix_action_pointwise hV_basis_action
+      hEstimator_consistency hEnvelope_nonneg hEnvelopeAverage_tendsto
+      hEnvelopeBound hDerivativeAtTheta0_summand_measurable
+      hSecondDerivative_summand_measurable hTheta0_measurable
+      hEstimator_measurable hScale_measurable hRawRoot_pointwise
+      hEstimatingAtEstimator_eq_scaled hDelta_eq_sub_pointwise
+      hScaledEstimator_eq_sub_pointwise hOpen_pointwise
+      hSegmentSubset_pointwise hContDiffEstimatingMap_pointwise
+      hDerivativeAt_eq_fderiv_pointwise hContDiffDerivativeAt_pointwise
+      hSecondDerivative_eq_fderiv_pointwise
+
+/--
+van der Vaart 1998, Theorem 5.41, current finite-dimensional endpoint with a
+coordinate covariance source.
+
+This wrapper derives all-dual covariance equality between the Gaussian limit law
+and the score law from equality on finite coordinate-evaluation functionals.
+-/
+theorem vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_zEvalCovarianceSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMemLpSource_derivativeTableLawSequenceSource_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope
+    {Ω Ω' Observation Coord Param : Type*} [Fintype Coord] [Fintype Param]
+    [DecidableEq Param]
+    [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)] [CompleteSpace (Coord -> ℝ)]
+    [MeasurableSpace (Param -> ℝ)] [SecondCountableTopology (Param -> ℝ)]
+    [BorelSpace (Param -> ℝ)] [OpensMeasurableSpace (Param -> ℝ)]
+    [CompleteSpace (Param -> ℝ)]
+    [MeasurableSub₂ (Param -> ℝ)] [MeasurableSMul₂ ℝ (Param -> ℝ)]
+    [MeasurableSpace (Coord × Param -> ℝ)]
+    [OpensMeasurableSpace (Coord × Param -> ℝ)]
+    [SecondCountableTopology ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [OpensMeasurableSpace ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ ((Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ
+      ((Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    (V : (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ))
+    (samples : ∀ n : ℕ, Ω -> SampleAt Observation n)
+    (scale : ℕ -> Ω -> ℝ)
+    (estimatingMap : ℕ -> Ω -> Observation -> (Param -> ℝ) -> Coord -> ℝ)
+    (derivativeAt :
+      ℕ -> Ω -> Observation -> (Param -> ℝ) ->
+        (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (scoreAtTheta0 estimatingAtEstimator :
+      ℕ -> Ω -> Observation -> Coord -> ℝ)
+    (secondDerivative :
+      ℕ -> Ω -> Observation ->
+        (Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (sourceSet : ℕ -> Ω -> Observation -> Set (Param -> ℝ))
+    (envelope : Observation -> ℝ)
+    (envelopeMean : ℝ)
+    (scoreVector : ℕ -> Ω -> Coord -> ℝ)
+    (derivativeTable : ℕ -> Ω -> Coord × Param -> ℝ)
+    {scoreLaw : Measure (Coord -> ℝ)} [IsProbabilityMeasure scoreLaw]
+    {derivativeLaw : Measure (Coord × Param -> ℝ)}
+    [IsProbabilityMeasure derivativeLaw]
+    {theta0 estimator delta scaledEstimator : ℕ -> Ω -> Param -> ℝ}
+    {Z : Ω' -> Coord -> ℝ}
+    (hLeftInverse : ∀ x : Param -> ℝ, Vinv (V x) = x)
+    (hScoreVector_meas : ∀ i : ℕ, Measurable (scoreVector i))
+    (hZ_meas : Measurable Z)
+    (hScoreVector_zero_memLp : MemLp (scoreVector 0) 2 P)
+    (hScoreVector_zero_mean : (∫ ω, scoreVector 0 ω ∂P) = 0)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_sample_mean_zero : (∫ ω, Z ω ∂Q) = 0)
+    (hZ_covariance_scoreLaw_eval : ∀ i j : Coord,
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z)
+          (vaart1998_finiteCoordinateEvalCLM (Coordinate := Coord) i)
+          (vaart1998_finiteCoordinateEvalCLM (Coordinate := Coord) j) =
+        _root_.ProbabilityTheory.covarianceBilinDual scoreLaw
+          (vaart1998_finiteCoordinateEvalCLM (Coordinate := Coord) i)
+          (vaart1998_finiteCoordinateEvalCLM (Coordinate := Coord) j))
+    (hScoreVector_sequence_law :
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω i => scoreVector i ω)
+        (Measure.infinitePi (fun _ : ℕ => scoreLaw)) P)
+    (hScaledScore_vector_eq_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      scale n ω • estimatingMap n ω (samples n ω i)
+        (theta0 n ω) =
+        √(n : ℝ) • scoreVector i.val ω)
+    (hScoreAtTheta0_vector_eq_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      scoreAtTheta0 n ω (samples n ω i) =
+        √(n : ℝ) • scoreVector i.val ω)
+    (hDerivativeLaw_integrable_id : Integrable id derivativeLaw)
+    (hDerivativeTable_sequence_law :
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω i => derivativeTable i ω)
+        (Measure.infinitePi (fun _ : ℕ => derivativeLaw)) P)
+    (hDerivativeAtTheta0_matrix_action_pointwise :
+      ∀ n : ℕ, ∀ ω, ∀ i : Fin n, ∀ x : Param -> ℝ, ∀ coordinate : Coord,
+        derivativeAt n ω (samples n ω i) (theta0 n ω) x coordinate =
+          ∑ param : Param,
+            x param * derivativeTable i.val ω (coordinate, param))
+    (hV_basis_action : ∀ param : Param, ∀ coordinate : Coord,
+      V (Pi.single param (1 : ℝ) : Param -> ℝ) coordinate =
+        ∫ sample, derivativeTable 0 sample (coordinate, param) ∂P)
+    (hEstimator_consistency :
+      TendstoInMeasure P
+        (fun n ω => ‖estimator n ω - theta0 n ω‖) atTop 0)
+    (hEnvelope_nonneg : ∀ x, 0 ≤ envelope x)
+    (hEnvelopeAverage_tendsto :
+      TendstoInMeasure P
+        (fun n ω => empiricalAverage (samples n ω) envelope)
+        atTop (fun _ : Ω => envelopeMean))
+    (hEnvelopeBound : ∀ᶠ n in atTop, ∀ ω x,
+      ‖secondDerivative n ω x‖ ≤ envelope x)
+    (hDerivativeAtTheta0_summand_measurable : ∀ n : ℕ, ∀ i : Fin n,
+      Measurable
+        (fun ω => derivativeAt n ω (samples n ω i) (theta0 n ω)))
+    (hSecondDerivative_summand_measurable : ∀ n : ℕ, ∀ i : Fin n,
+      Measurable
+        (fun ω => secondDerivative n ω (samples n ω i)))
+    (hTheta0_measurable : ∀ n, Measurable (theta0 n))
+    (hEstimator_measurable : ∀ n, Measurable (estimator n))
+    (hScale_measurable : ∀ n, Measurable (scale n))
+    (hRawRoot_pointwise : ∀ n : ℕ, ∀ ω,
+      empiricalAverageVector (samples n ω)
+        (fun x => estimatingMap n ω x (estimator n ω)) = 0)
+    (hEstimatingAtEstimator_eq_scaled : ∀ n : ℕ, ∀ ω x,
+      estimatingAtEstimator n ω x =
+        scale n ω • estimatingMap n ω x (estimator n ω))
+    (hDelta_eq_sub_pointwise : ∀ n : ℕ, ∀ ω,
+      delta n ω = estimator n ω - theta0 n ω)
+    (hScaledEstimator_eq_sub_pointwise : ∀ n : ℕ, ∀ ω,
+      scaledEstimator n ω =
+        scale n ω • (estimator n ω - theta0 n ω))
+    (hOpen_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      IsOpen (sourceSet n ω (samples n ω i)))
+    (hSegmentSubset_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      ((fun t : ℝ => theta0 n ω + t • delta n ω) ''
+          Set.Icc (0 : ℝ) 1) ⊆
+        sourceSet n ω (samples n ω i))
+    (hContDiffEstimatingMap_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      ContDiffOn ℝ 1 (estimatingMap n ω (samples n ω i))
+        (sourceSet n ω (samples n ω i)))
+    (hDerivativeAt_eq_fderiv_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+        fderiv ℝ (estimatingMap n ω (samples n ω i))
+            (theta0 n ω + x • delta n ω) =
+          derivativeAt n ω (samples n ω i)
+            (theta0 n ω + x • delta n ω))
+    (hContDiffDerivativeAt_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      ContDiffOn ℝ 1 (derivativeAt n ω (samples n ω i))
+        (sourceSet n ω (samples n ω i)))
+    (hSecondDerivative_eq_fderiv_pointwise : ∀ n : ℕ, ∀ ω, ∀ i : Fin n,
+      ∀ x ∈ Set.Ioo (0 : ℝ) 1,
+        fderiv ℝ (derivativeAt n ω (samples n ω i))
+            (theta0 n ω + x • delta n ω) =
+          secondDerivative n ω (samples n ω i)) :
+    TendstoInDistribution scaledEstimator atTop
+      (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ)) (Z ω))
+      (fun _ => P) Q := by
+  haveI : _root_.ProbabilityTheory.IsGaussian (Q.map Z) :=
+    hZ_gaussian.isGaussian_map
+  have hZ_memLp : MemLp id 2 (Q.map Z) :=
+    _root_.ProbabilityTheory.IsGaussian.memLp_two_id
+  have hScoreVector_law_zero :
+      _root_.ProbabilityTheory.HasLaw (scoreVector 0) scoreLaw P :=
+    vaart1998_scoreVector_law_of_sequence_law
+      (P := P) (scoreVector := scoreVector) (scoreLaw := scoreLaw)
+      hScoreVector_sequence_law 0
+  have hScoreLaw_memLp : MemLp id 2 scoreLaw :=
+    vaart1998_scoreLaw_memLp_of_scoreVector_memLp
+      (P := P) (scoreVector := scoreVector) (scoreLaw := scoreLaw)
+      hScoreVector_law_zero hScoreVector_zero_memLp
+  have hZ_covariance_scoreLaw_bilin :
+      ∀ L K : StrongDual ℝ (Coord -> ℝ),
+        _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z) L K =
+          _root_.ProbabilityTheory.covarianceBilinDual scoreLaw L K :=
+    vaart1998_covarianceBilinDual_eq_of_finiteCoordinateEval_eq
+      (μ := Q.map Z) (ν := scoreLaw) hScoreLaw_memLp
+      hZ_covariance_scoreLaw_eval
+  exact
+    vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_zSampleMeanSource_scoreVectorMeanSource_scoreLawMemLpSource_derivativeTableLawSequenceSource_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope
+      (P := P) (Q := Q) (V := V) (Vinv := Vinv)
+      (samples := samples) (scale := scale)
+      (estimatingMap := estimatingMap) (derivativeAt := derivativeAt)
+      (scoreAtTheta0 := scoreAtTheta0)
+      (estimatingAtEstimator := estimatingAtEstimator)
+      (secondDerivative := secondDerivative)
+      (sourceSet := sourceSet)
+      (envelope := envelope) (envelopeMean := envelopeMean)
+      (scoreVector := scoreVector) (derivativeTable := derivativeTable)
+      (scoreLaw := scoreLaw) (derivativeLaw := derivativeLaw)
+      (theta0 := theta0) (estimator := estimator) (delta := delta)
+      (scaledEstimator := scaledEstimator) (Z := Z)
+      hLeftInverse hScoreVector_meas hZ_meas hScoreVector_zero_memLp
+      hScoreVector_zero_mean hZ_gaussian hZ_sample_mean_zero
       hZ_covariance_scoreLaw_bilin hScoreVector_sequence_law
       hScaledScore_vector_eq_pointwise hScoreAtTheta0_vector_eq_pointwise
       hDerivativeLaw_integrable_id hDerivativeTable_sequence_law
