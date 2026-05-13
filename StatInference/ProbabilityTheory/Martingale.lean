@@ -27230,6 +27230,73 @@ theorem durrett2019_theorem_4_6_10_abs_error_condExp_tendsto_zero_of_tail_condEx
     exact lt_of_le_of_lt hError_le hTail_lt
 
 /--
+Durrett 2019, Theorem 4.6.10, source-estimate bridge with the fixed-tail
+upward convergence discharged by Theorem 4.6.8.
+
+This is the convenient interface for the concrete `W_N` construction: it only
+requires eventual conditional error bounds and the limiting tail conditional
+expectations tending to zero.
+-/
+theorem durrett2019_theorem_4_6_10_abs_error_condExp_tendsto_zero_of_tail_bounds
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {W : ℕ -> Ω -> ℝ}
+    (hError_le_tail :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          ∀ᶠ n in atTop,
+            P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω ≤ P[W N | ℱ n] ω)
+    (hTail_limit_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun N => P[W N | ⨆ k, ℱ k] ω) atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω) atTop (𝓝 0) := by
+  refine
+    durrett2019_theorem_4_6_10_abs_error_condExp_tendsto_zero_of_tail_condExp_bounds
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (W := W)
+      hError_le_tail ?_ hTail_limit_zero
+  intro N
+  exact
+    durrett2019_theorem_4_6_8_condExp_ae_tendsto_iSup_condExp
+      (P := P) (ℱ := ℱ) (X := W N)
+
+/--
+Durrett 2019, Theorem 4.6.10, final theorem-shaped bridge from tail-envelope
+bounds.
+
+Once the concrete `W_N` envelope supplies the eventual conditional error bound
+and the limiting tail conditional expectations tend to zero, the dominated
+conditional-convergence conclusion follows.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_tail_bounds
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {W : ℕ -> Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hError_le_tail :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          ∀ᶠ n in atTop,
+            P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω ≤ P[W N | ℱ n] ω)
+    (hTail_limit_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun N => P[W N | ⨆ k, ℱ k] ω) atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  have hAbsError :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n => P[(fun x => ‖Y n x - Ylim x‖) | ℱ n] ω)
+          atTop (𝓝 0) :=
+    durrett2019_theorem_4_6_10_abs_error_condExp_tendsto_zero_of_tail_bounds
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (W := W)
+      hError_le_tail hTail_limit_zero
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_abs_error_condExp_tendsto_zero
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim)
+      hY_int hYlim_int hAbsError
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

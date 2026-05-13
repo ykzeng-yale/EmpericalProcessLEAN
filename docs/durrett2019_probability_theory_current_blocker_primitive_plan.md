@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V272
+## Live In-Thread Goal Prompt V273
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,7 @@ Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V272 continues Section 4.6.  V260 packages Durrett
+Latest verified target V273 continues Section 4.6.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -73,13 +73,19 @@ if the conditional absolute errors are eventually bounded by each fixed tail
 envelope, fixed tail envelopes converge along the filtration, and their
 limiting conditional expectations tend to zero, then
 `E(|Y_n - Y| | ℱ_n) -> 0` a.s.
+V273 discharges the fixed-tail upward convergence automatically via Theorem
+4.6.8 and adds
+`durrett2019_theorem_4_6_10_abs_error_condExp_tendsto_zero_of_tail_bounds`
+plus the theorem-shaped final bridge
+`durrett2019_theorem_4_6_10_condExp_tendsto_of_tail_bounds`.
 
 Next aggressive theorem packet: instantiate V272 with the concrete textbook
-tail envelope.  Prove the measurability/integrability of
-`W_N = sup { |Y_n - Y_m| : n,m >= N }` from domination by `2Z`, prove
-eventual bounds `|Y_n - Y| <= W_N`, apply V270 Theorem 4.6.8 to each fixed
-`W_N`, and prove the monotone/conditional-expectation step sending
-`E(W_N | ⨆ n, ℱ n)` down to zero.
+tail envelope through the V273 final bridge.  Prove the
+measurability/integrability of `W_N = sup { |Y_n - Y_m| : n,m >= N }` from
+domination by `2Z`, prove eventual conditional bounds
+`E(|Y_n - Y| | ℱ_n) <= E(W_N | ℱ_n)`, and prove
+`E(W_N | ⨆ n, ℱ n) -> 0` a.s.  Do not re-prove the fixed-tail upward
+convergence; V273 already supplies it from V270.
 
 ## Deprecated V255 Prompt Notes
 
