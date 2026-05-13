@@ -1379,6 +1379,49 @@ theorem durrett2019_example_4_7_4_eval_prefixSum_comp_natPermOfFin
           simpa using Equiv.sum_comp perm.symm g
 
 /--
+Durrett 2019, Example 4.7.4 product-space source algebra: every coordinate
+permutation fixing coordinates from `n` onward preserves the first-`n` prefix
+sum.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixSum_comp_tailFixingPerm
+    {n : ℕ} (perm : Equiv.Perm ℕ) (hfix : VdVWNatPermFixesFrom n perm) :
+    (fun sequence : ℕ -> ℝ =>
+      durrett2019_example_4_7_4_prefixSum (fun k sequence => sequence k) n
+        (vdVWPermuteNatSequence (Observation := ℝ) perm sequence)) =
+      durrett2019_example_4_7_4_prefixSum
+        (fun k sequence => sequence k) n := by
+  ext sequence
+  dsimp [durrett2019_example_4_7_4_prefixSum]
+  rw [← Fin.sum_univ_eq_sum_range
+    (fun k => vdVWPermuteNatSequence (Observation := ℝ) perm sequence k) n]
+  rw [← Fin.sum_univ_eq_sum_range (fun k => sequence k) n]
+  have hfirst :=
+    vdVWFirstNSample_permuteNatSequence
+      (Observation := ℝ) perm hfix sequence
+  change
+    (∑ i : Fin n,
+        vdVWFirstNSample n
+          (vdVWPermuteNatSequence (Observation := ℝ) perm sequence) i) =
+      ∑ i : Fin n, vdVWFirstNSample n sequence i
+  rw [hfirst]
+  let restricted : Equiv.Perm (Fin n) := vdVWNatPermRestrictFin perm hfix
+  let g : Fin n -> ℝ := fun i => vdVWFirstNSample n sequence i
+  calc
+    (∑ i : Fin n,
+        vdVWFinCoordinatePermMeasurableEquiv restricted
+          (vdVWFirstNSample n sequence) i)
+        = ∑ i : Fin n, g (restricted.symm i) := by
+            apply Finset.sum_congr rfl
+            intro i _hi
+            have hcoord :=
+              vdVWFinCoordinatePermMeasurableEquiv_apply_apply
+                (Observation := ℝ) restricted
+                (vdVWFirstNSample n sequence) (restricted.symm i)
+            simpa [g] using hcoord
+    _ = ∑ i : Fin n, g i := by
+          simpa using Equiv.sum_comp restricted.symm g
+
+/--
 Durrett 2019, Example 4.7.4 product-space source algebra: finite coordinate
 permutations extended by identity outside the first `n` fix every tail
 coordinate from `n` onward.
@@ -1398,6 +1441,112 @@ theorem durrett2019_example_4_7_4_eval_tail_comp_natPermOfFin
     rw [Equiv.apply_symm_apply]
     exact (hfix j hj).symm
   rw [hsymm]
+
+/--
+Durrett 2019, Example 4.7.4 product-space source algebra: every coordinate
+permutation fixing coordinates from `n` onward fixes every tail coordinate
+from `n` onward.
+-/
+theorem durrett2019_example_4_7_4_eval_tail_comp_tailFixingPerm
+    {n j : ℕ} (hj : n ≤ j)
+    (perm : Equiv.Perm ℕ) (hfix : VdVWNatPermFixesFrom n perm) :
+    (fun sequence : ℕ -> ℝ =>
+      vdVWPermuteNatSequence (Observation := ℝ) perm sequence j) =
+      fun sequence => sequence j := by
+  ext sequence
+  dsimp [vdVWPermuteNatSequence]
+  have hsymm : perm.symm j = j := by
+    apply perm.injective
+    rw [Equiv.apply_symm_apply]
+    exact (hfix j hj).symm
+  rw [hsymm]
+
+/--
+Durrett 2019, Example 4.7.4 product-space permutation-symmetry source:
+the first-`n` prefix sum is symmetric under every permutation fixing the tail
+from `n` onward.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixSum_permutationSymmetricFrom
+    (n : ℕ) :
+    VdVWPermutationSymmetricFrom n
+      (durrett2019_example_4_7_4_prefixSum
+        (fun k (sequence : ℕ -> ℝ) => sequence k) n) := by
+  intro perm hfix sequence
+  exact congrFun
+    (durrett2019_example_4_7_4_eval_prefixSum_comp_tailFixingPerm
+      (n := n) perm hfix) sequence
+
+/--
+Durrett 2019, Example 4.7.4 product-space permutation-symmetry source:
+tail coordinates are symmetric under every permutation fixing the tail from
+`n` onward.
+-/
+theorem durrett2019_example_4_7_4_eval_tailCoordinate_permutationSymmetricFrom
+    {n i : ℕ} (hi : n ≤ i) :
+    VdVWPermutationSymmetricFrom n (fun sequence : ℕ -> ℝ => sequence i) := by
+  intro perm hfix sequence
+  exact congrFun
+    (durrett2019_example_4_7_4_eval_tail_comp_tailFixingPerm
+      (n := n) (j := i) hi perm hfix) sequence
+
+/--
+Durrett 2019, Example 4.7.4 product-space permutation-symmetric
+measurability of the first-`n` prefix sum.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixSum_measurable_permutationSymmetric
+    (n : ℕ) :
+    Measurable[vdVWPermutationSymmetricMeasurableSpace ℝ n]
+      (durrett2019_example_4_7_4_prefixSum
+        (fun k (sequence : ℕ -> ℝ) => sequence k) n) := by
+  refine measurable_vdVWPermutationSymmetricMeasurableSpace_of_symmetric ?_ ?_
+  · dsimp [durrett2019_example_4_7_4_prefixSum]
+    exact Finset.measurable_fun_sum (Finset.range n) fun i _hi =>
+      measurable_pi_apply i
+  · exact durrett2019_example_4_7_4_eval_prefixSum_permutationSymmetricFrom n
+
+/--
+Durrett 2019, Example 4.7.4 product-space permutation-symmetric
+measurability of every tail coordinate.
+-/
+theorem durrett2019_example_4_7_4_eval_tailCoordinate_measurable_permutationSymmetric
+    {n i : ℕ} (hi : n ≤ i) :
+    Measurable[vdVWPermutationSymmetricMeasurableSpace ℝ n]
+      (fun sequence : ℕ -> ℝ => sequence i) := by
+  refine measurable_vdVWPermutationSymmetricMeasurableSpace_of_symmetric ?_ ?_
+  · exact measurable_pi_apply i
+  · exact durrett2019_example_4_7_4_eval_tailCoordinate_permutationSymmetricFrom hi
+
+/--
+Durrett 2019, Example 4.7.4 product-space bridge: Durrett's concrete
+reverse-average sigma-field is contained in the VdV&W permutation-symmetric
+sigma-field with the same cutoff.
+-/
+theorem durrett2019_example_4_7_4_eval_reverseAverageSigma_le_permutationSymmetric
+    (n : ℕ) :
+    durrett2019_example_4_7_4_reverseAverageSigma
+        (fun k (sequence : ℕ -> ℝ) => sequence k) n ≤
+      vdVWPermutationSymmetricMeasurableSpace ℝ n := by
+  dsimp [durrett2019_example_4_7_4_reverseAverageSigma]
+  refine sup_le ?_ ?_
+  · exact
+      (durrett2019_example_4_7_4_eval_prefixSum_measurable_permutationSymmetric
+        n).comap_le
+  · refine iSup_le fun i => iSup_le fun hi => ?_
+    exact
+      (durrett2019_example_4_7_4_eval_tailCoordinate_measurable_permutationSymmetric
+        (n := n) (i := i) hi).comap_le
+
+/--
+Durrett 2019, Example 4.7.4 product-space bridge: the reverse-average tail is
+contained in the VdV&W permutation-symmetric tail.
+-/
+theorem durrett2019_example_4_7_4_eval_reverseAverageTail_le_permutationSymmetricTail :
+    (⨅ n : ℕ,
+        durrett2019_example_4_7_4_reverseAverageSigma
+          (fun k (sequence : ℕ -> ℝ) => sequence k) n) ≤
+      ⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n := by
+  exact iInf_mono fun n =>
+    durrett2019_example_4_7_4_eval_reverseAverageSigma_le_permutationSymmetric n
 
 /--
 Durrett 2019, Example 4.7.4 product-space source algebra: the finite swap of
