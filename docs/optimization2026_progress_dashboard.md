@@ -355,11 +355,18 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  replacing the auxiliary `stepBound` function by the textbook-shaped
 	  cumulative budget
 	  `sum_{n<=N} ||steps n||_{xbar0} <= 1/2`.
+	  The preliminary-Newton packet adds
+	  `sourceRadius_successor_half_of_newtonSteps_sumLocalNorm_of_adjointSqrt`,
+	  `chewi1316_uniformTailBound_of_preliminaryNewtonSteps_sumLocalNorm_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_sumLocalNorm_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	  so callers can provide the algorithmic recurrence
+	  `x_{n+1} = NewtonStep(preliminaryPathGrad(t_n), x_n)` directly.
 	  Search-first reuse: local
 	  `hessianPrimalFactor_of_adjointSqrt`, mathlib `norm_add_le`,
 	  `norm_sum_le`, and `Finset.sum_range_sub`.  The live exact-source gate is
 	  now the concrete Chewi/Nesterov analytical-center data: successor
-	  membership, a global derivative package, the additive step recurrence,
+	  membership, a global derivative package, the preliminary Newton recurrence,
 	  the cumulative source-local step-norm budget, and
 	  `2 * sqrt(nu) <= tailBound`.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra

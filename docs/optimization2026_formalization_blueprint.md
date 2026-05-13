@@ -301,11 +301,18 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_addSteps_sumLocalNorm_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
 	so callers can use the natural cumulative source-local budget
 	`sum_{n<=N} ||steps n||_{xbar0} <= 1/2` directly.
+	The preliminary-Newton packet adds
+	`sourceRadius_successor_half_of_newtonSteps_sumLocalNorm_of_adjointSqrt`,
+	`chewi1316_uniformTailBound_of_preliminaryNewtonSteps_sumLocalNorm_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_sumLocalNorm_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`,
+	so the exact-source route can consume the algorithmic recurrence
+	`x_{n+1} = NewtonStep(preliminaryPathGrad(t_n), x_n)` directly.
 	Search-first reuse: local `hessianPrimalFactor_of_adjointSqrt` and mathlib
 	`norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The next
 	exact-source §13.16 gate is no longer a raw `hradius_half`; it is the
-	concrete additive update recurrence, cumulative source-local step-norm
-	budget, successor membership, global derivative
+	concrete preliminary Newton recurrence, cumulative source-local
+	Newton-displacement budget, successor membership, global derivative
 	package, and the scalar tail budget `2 * sqrt(nu) <= tailBound`.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
