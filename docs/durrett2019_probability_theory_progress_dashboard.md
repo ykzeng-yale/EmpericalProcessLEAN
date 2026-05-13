@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V284` in
+Route from `Live In-Thread Goal Prompt V285` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -139,9 +139,19 @@ V284 closes the remaining Theorem 4.7.2 measurability step with the canonical
 a separate tail-measurability assumption:
 `durrett2019_theorem_4_7_2_limit_aestronglyMeasurable_tail_of_ae_tendsto` and
 `durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto_backwards_martingale`.
-The next target is backwards Lévy Theorem 4.7.3: build the decreasing
-filtration conditional-expectation martingale and derive a.s./`L¹` convergence
-to `P[X_0 | ⨅ n : ℕ, ℱ (OrderDual.toDual n)]`.
+V285 packages backwards Lévy Theorem 4.7.3: conditional expectations along a
+decreasing filtration form a backwards martingale and converge a.s. and in
+`L¹` to the conditional expectation on the reverse tail sigma-field.  The
+compiled endpoints are
+`durrett2019_theorem_4_7_3_condExp_ae_tendsto_tail_condExp`,
+`durrett2019_theorem_4_7_3_condExp_eLpNorm_one_tendsto_tail_condExp`,
+`durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_tail_condExp`, and
+`durrett2019_theorem_4_7_3_condExp_nat_eLpNorm_one_tendsto_tail_condExp`.
+The next target is Example 4.7.4, the backwards-martingale proof of the strong
+law: search/reuse the local `ProbabilityMeasure/StrongLaw` endpoint,
+independence and identical-distribution APIs, and any Hewitt-Savage or
+exchangeability support; then add the backwards-average martingale and
+tail-triviality consumer layer without rebuilding V285.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

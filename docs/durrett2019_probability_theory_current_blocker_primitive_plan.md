@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V284
+## Live In-Thread Goal Prompt V285
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,10 +19,12 @@ wrappers, and the Section 4.6 uniform-integrability/Vitali endpoints.  Do not
 re-prove the V282 order-dual a.s. convergence bridge, terminal
 conditional-expectation representation, backwards-martingale UI bridge, the
 V283 `L¹`/set-integral conditional-expectation identification bridge, the V284
-`limsup` tail-measurability and source-shaped Theorem 4.7.2 endpoint, or the
-V281-V273 Section 4.6 tail-envelope/conditional-expectation layers.
+`limsup` tail-measurability and source-shaped Theorem 4.7.2 endpoint, the V285
+backwards Lévy Theorem 4.7.3 a.s./`L¹` dual-filtration and natural decreasing
+filtration display endpoints, or the V281-V273 Section 4.6
+tail-envelope/conditional-expectation layers.
 
-Latest verified target V284 advances Section 4.7.  V260 packages Durrett
+Latest verified target V285 advances Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -157,15 +159,26 @@ real-valued modification `limsup_n X_{-n}`.  It proves
 `durrett2019_theorem_4_7_2_limit_aestronglyMeasurable_tail_of_ae_tendsto` and
 then the fully source-shaped
 `durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto_backwards_martingale`.
+V285 packages Theorem 4.7.3 backwards Lévy.  It proves the conditional
+expectation reverse-time martingale, the dual-filtration a.s. endpoint
+`durrett2019_theorem_4_7_3_condExp_ae_tendsto_tail_condExp`, the `L¹` endpoint
+`durrett2019_theorem_4_7_3_condExp_eLpNorm_one_tendsto_tail_condExp`, and the
+natural decreasing-filtration display wrappers
+`durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_tail_condExp` and
+`durrett2019_theorem_4_7_3_condExp_nat_eLpNorm_one_tendsto_tail_condExp`.
 
-Next aggressive theorem packet: package Theorem 4.7.3 backwards Lévy.  Use the
-V284 Theorem 4.7.2 endpoint with the backwards martingale
-`X_n = P[X_0 | ℱ_{-n}]` over a decreasing filtration, then expose both a.s. and
-`L¹` convergence to `P[X_0 | ⨅ n, ℱ_{-n}]`.  Search and reuse Section 4.6
-Lévy/upward wrappers, the backwards-filtration constructor, and the V284 tail
-conditional-expectation identification; do not rebuild the order-dual
-convergence theorem, `limsup` tail-measurability proof, or set-integral
-uniqueness bridge.
+Next aggressive theorem packet: start Example 4.7.4, the backwards-martingale
+proof of the strong law.  First search local `ProbabilityMeasure/StrongLaw`,
+`ProbabilityTheory/Martingale`, Mathlib independence/identical-distribution
+APIs, and any Hewitt-Savage or exchangeability primitives.  Do not reprove the
+strong law if the local compiled endpoint already gives the final a.s.
+convergence; instead add the theorem-sized source bridge most useful for this
+textbook route: package the backwards-average martingale / conditional
+expectation calculation for `S_n / n` under the tail sigma-fields, then connect
+the V285 backwards Lévy endpoint to a tail-triviality or Hewitt-Savage consumer.
+If Hewitt-Savage is not locally ready, expose a clean final wrapper assuming
+the reverse tail conditional expectation is a.e. constant, and record the
+remaining exact tail-triviality side condition as the next blocker.
 
 ## Deprecated V255 Prompt Notes
 

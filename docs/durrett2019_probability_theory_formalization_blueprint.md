@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V284`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V285`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -88,9 +88,14 @@ identified a.s. limit, and the main Theorem 4.7.2
 conditional-expectation/set-integral identification assuming tail
 measurability.  V284 proves the missing tail measurability using the canonical
 `limsup_n X_{-n}` modification and closes the fully source-shaped Theorem 4.7.2
-endpoint.  The next proof packet should package backwards Lévy Theorem 4.7.3:
-the conditional expectations along a decreasing filtration converge a.s. and
-in `L¹` to the conditional expectation on the tail/intersection sigma-field.
+endpoint.  V285 packages backwards Lévy Theorem 4.7.3 in both dual-filtration
+and textbook decreasing-filtration display forms, with a.s. and `L¹`
+convergence to the conditional expectation on the reverse tail sigma-field.
+The next proof packet should start Example 4.7.4, the backwards-martingale
+proof of the strong law: reuse the local strong-law endpoint where it is the
+right final consumer, but formalize the Durrett route by adding the
+backwards-average martingale / tail-triviality bridge rather than reopening
+the V285 convergence and tail-identification plumbing.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:

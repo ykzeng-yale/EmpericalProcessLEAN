@@ -419,5 +419,141 @@ theorem durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto_backwards_mar
     durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto
       (P := P) (ℱ := ℱ) (X := X) (Y := Y) hX hY_tail hAe
 
+/--
+Durrett 2019, Theorem 4.7.3, backwards Lévy setup.  Conditional
+expectations along a reverse-time filtration form a backwards martingale.
+-/
+theorem durrett2019_theorem_4_7_3_backwards_condExp_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕᵒᵈ mΩ}
+    (f : Ω -> ℝ) :
+    Martingale (fun n : ℕᵒᵈ => P[f | ℱ n]) ℱ P := by
+  exact martingale_condExp f ℱ P
+
+/--
+Durrett 2019, Theorem 4.7.3, backwards Lévy theorem in a.s. form.
+
+Conditional expectations along a decreasing filtration converge a.s. to the
+conditional expectation on the reverse tail sigma-field.
+-/
+theorem durrett2019_theorem_4_7_3_condExp_ae_tendsto_tail_condExp
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕᵒᵈ mΩ}
+    (f : Ω -> ℝ) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => P[f | ℱ (OrderDual.toDual n)] ω)
+        atTop
+        (𝓝 (P[f | ⨅ n : ℕ, ℱ (OrderDual.toDual n)] ω)) := by
+  let X : ℕᵒᵈ -> Ω -> ℝ := fun n => P[f | ℱ n]
+  have hX : Martingale X ℱ P :=
+    durrett2019_theorem_4_7_3_backwards_condExp_martingale
+      (P := P) (ℱ := ℱ) f
+  have hExists :
+      ∀ᵐ ω ∂P, ∃ limit : ℝ,
+        Tendsto (fun n : ℕ => X (OrderDual.toDual n) ω) atTop (𝓝 limit) :=
+    durrett2019_theorem_4_7_1_ae_exists_limit_of_backwards_martingale
+      (P := P) (ℱ := ℱ) (X := X) hX
+  obtain ⟨Y, _hY_meas, hY_tendsto⟩ :
+      ∃ Y : Ω -> ℝ, Measurable Y ∧
+        ∀ᵐ ω ∂P,
+          Tendsto (fun n : ℕ => X (OrderDual.toDual n) ω) atTop (𝓝 (Y ω)) :=
+    measurable_limit_of_tendsto_metrizable_ae
+      (μ := P) (f := fun n : ℕ => fun ω => X (OrderDual.toDual n) ω)
+      (L := atTop)
+      (fun n => StronglyMeasurable.aemeasurable (μ := P)
+        ((stronglyMeasurable_condExp (μ := P)
+          (m := ℱ (OrderDual.toDual n)) (f := f)).mono
+            (ℱ.le (OrderDual.toDual n))))
+      hExists
+  have hY_eq_terminal_tail :
+      Y =ᵐ[P] P[X (OrderDual.toDual 0) |
+        ⨅ n : ℕ, ℱ (OrderDual.toDual n)] := by
+    simpa [X] using
+      (durrett2019_theorem_4_7_2_ae_eq_condExp_tail_of_ae_tendsto_backwards_martingale
+        (P := P) (ℱ := ℱ) (X := X) (Y := Y) hX hY_tendsto)
+  have htail_le_zero :
+      (⨅ n : ℕ, ℱ (OrderDual.toDual n)) ≤ ℱ (OrderDual.toDual 0) := by
+    exact iInf_le (fun n : ℕ => ℱ (OrderDual.toDual n)) 0
+  have hterminal_tail :
+      P[X (OrderDual.toDual 0) |
+          ⨅ n : ℕ, ℱ (OrderDual.toDual n)] =ᵐ[P]
+        P[f | ⨅ n : ℕ, ℱ (OrderDual.toDual n)] := by
+    simpa [X] using
+      (condExp_condExp_of_le (μ := P) (f := f)
+        htail_le_zero (ℱ.le (OrderDual.toDual 0)))
+  have hY_eq_tail :
+      Y =ᵐ[P] P[f | ⨅ n : ℕ, ℱ (OrderDual.toDual n)] :=
+    hY_eq_terminal_tail.trans hterminal_tail
+  filter_upwards [hY_tendsto, hY_eq_tail] with ω hlim hYω
+  simpa [X, hYω] using hlim
+
+/--
+Durrett 2019, Theorem 4.7.3, backwards Lévy theorem in `L¹` form.
+-/
+theorem durrett2019_theorem_4_7_3_condExp_eLpNorm_one_tendsto_tail_condExp
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕᵒᵈ mΩ}
+    (f : Ω -> ℝ) :
+    Tendsto
+      (fun n : ℕ =>
+        eLpNorm
+          (P[f | ℱ (OrderDual.toDual n)] -
+            P[f | ⨅ n : ℕ, ℱ (OrderDual.toDual n)])
+          1 P)
+      atTop (𝓝 0) := by
+  let X : ℕᵒᵈ -> Ω -> ℝ := fun n => P[f | ℱ n]
+  have hX : Martingale X ℱ P :=
+    durrett2019_theorem_4_7_3_backwards_condExp_martingale
+      (P := P) (ℱ := ℱ) f
+  have hAe :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n : ℕ => X (OrderDual.toDual n) ω)
+          atTop
+          (𝓝 (P[f | ⨅ n : ℕ, ℱ (OrderDual.toDual n)] ω)) := by
+    simpa [X] using
+      (durrett2019_theorem_4_7_3_condExp_ae_tendsto_tail_condExp
+        (P := P) (ℱ := ℱ) f)
+  simpa [X] using
+    (durrett2019_theorem_4_7_1_eLpNorm_one_tendsto_of_ae_tendsto_backwards_martingale
+      (P := P) (ℱ := ℱ) (X := X)
+      (Y := fun ω => P[f | ⨅ n : ℕ, ℱ (OrderDual.toDual n)] ω) hX hAe)
+
+/--
+Durrett 2019, Theorem 4.7.3, textbook decreasing-filtration display form.
+-/
+theorem durrett2019_theorem_4_7_3_condExp_nat_ae_tendsto_tail_condExp
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {𝒢 : ℕ -> MeasurableSpace Ω}
+    (h𝒢_mono : Antitone 𝒢) (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (f : Ω -> ℝ) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => P[f | 𝒢 n] ω)
+        atTop
+        (𝓝 (P[f | ⨅ n : ℕ, 𝒢 n] ω)) := by
+  simpa [durrett2019_backwardsFiltration] using
+    (durrett2019_theorem_4_7_3_condExp_ae_tendsto_tail_condExp
+      (P := P) (ℱ := durrett2019_backwardsFiltration 𝒢 h𝒢_mono h𝒢_le) f)
+
+/--
+Durrett 2019, Theorem 4.7.3, textbook decreasing-filtration `L¹` display form.
+-/
+theorem durrett2019_theorem_4_7_3_condExp_nat_eLpNorm_one_tendsto_tail_condExp
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {𝒢 : ℕ -> MeasurableSpace Ω}
+    (h𝒢_mono : Antitone 𝒢) (h𝒢_le : ∀ n, 𝒢 n ≤ mΩ)
+    (f : Ω -> ℝ) :
+    Tendsto
+      (fun n : ℕ =>
+        eLpNorm
+          (P[f | 𝒢 n] - P[f | ⨅ n : ℕ, 𝒢 n])
+          1 P)
+      atTop (𝓝 0) := by
+  simpa [durrett2019_backwardsFiltration] using
+    (durrett2019_theorem_4_7_3_condExp_eLpNorm_one_tendsto_tail_condExp
+      (P := P) (ℱ := durrett2019_backwardsFiltration 𝒢 h𝒢_mono h𝒢_le) f)
+
 end ProbabilityTheory
 end StatInference
