@@ -533,23 +533,35 @@ packet adds
 	`chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`.
 	These show the successor `1/8` budget follows from the same Theorem 13.8
 	Newton-step route when the source update constant satisfies `c0 <= 1/200`.
+	The next-parameter sequence bridge adds
+	`chewi1316_preliminaryPath_decrement_step_le_eighth_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`
+	and
+	`chewi1316_preliminaryPath_lambdaSeq_step_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`.
+	These turn the pointwise preliminary invariant into the exact
+	`hdecrement_step` interface for a trajectory satisfying the textbook update
+	`x_{n+1} = newtonStep (grad f_{t_{n+1}}) x_n`; this fixes the indexing
+	risk in older source-tail wrappers that used the old-parameter Newton
+	step `grad f_{t_n}`.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
 	`localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse`,
 	`hessianRightInverse_of_adjointSqrtCoord_invHess`,
 	`inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse`,
-	and mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.
+	`newton_linear_of_hessian_right_inverse`, the compiled pointwise
+	preliminary `1/8` invariant, and mathlib `norm_add_le`, `norm_sum_le`,
+	and `Finset.sum_range_sub`.
 	Together these formalize the reverse
 	path-following setup with vector
 	`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 	zero Newton decrement at the source endpoints, and the one-step post-Newton
-	`lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
-	is now narrower: prove the concrete Chewi/Nesterov analytical-center successor
-	source-radius data: successor membership, a global Hessian derivative/mixed-third
-	package on the domain, the preliminary Newton recurrence, a square-root
-	coordinate family on the preliminary points, the scalar summability budget
-	`sum 2*lambda_n <= 1/2`, and `2 * sqrt(nu) <= tailBound`.
+	`lambda <= 1/4` and successor `lambda <= 1/8` invariants for the supplied
+	preliminary path.  The next live gate is now narrower: build the real
+	textbook preliminary-path assembly around the next-parameter Newton
+	recurrence, including successor membership, a global Hessian
+	derivative/mixed-third package on the domain, square-root-coordinate data,
+	and the correct source-displacement or alternative analytical-center
+	radius budget for those next-parameter Newton steps.
 	Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has

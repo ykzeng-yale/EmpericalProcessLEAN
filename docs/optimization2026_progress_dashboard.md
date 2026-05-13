@@ -401,7 +401,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  and
 	  `chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`,
 	  deriving the successor `1/8` budget from the existing Theorem 13.8
-	  Newton-step pipeline when `c0 <= 1/200`.  Search-first reuse:
+	  Newton-step pipeline when `c0 <= 1/200`.  The next-parameter sequence
+	  bridge adds
+	  `chewi1316_preliminaryPath_decrement_step_le_eighth_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`
+	  and
+	  `chewi1316_preliminaryPath_lambdaSeq_step_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
+	  producing the reusable `hdecrement_step` interface for the source update
+	  `x_{n+1} = newtonStep (grad f_{t_{n+1}}) x_n` and recording that the
+	  old-parameter Newton recurrence is not the exact textbook indexing.
+	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
 	  `hessianPrimalFactor_of_adjointSqrt`,
@@ -409,12 +417,13 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse`,
 	  `hessianRightInverse_of_adjointSqrtCoord_invHess`,
 	  `inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse`,
-	  mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The
-	  live exact-source gate is
-	  now the concrete Chewi/Nesterov analytical-center data: successor
-	  membership, a global derivative package, the preliminary Newton recurrence,
-	  a square-root-coordinate family on the preliminary points, the scalar summability
-	  budget `sum 2*lambda_n <= 1/2`, and `2 * sqrt(nu) <= tailBound`.
+	  `newton_linear_of_hessian_right_inverse`, and mathlib `norm_add_le`,
+	  `norm_sum_le`, and `Finset.sum_range_sub`.  The live exact-source gate is
+	  now the concrete Chewi/Nesterov analytical-center data for the
+	  next-parameter preliminary Newton recurrence: successor membership, a
+	  global derivative package, square-root-coordinate data, and the correct
+	  source-displacement or alternative analytical-center radius budget for
+	  those steps.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

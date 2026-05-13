@@ -20561,6 +20561,172 @@ theorem chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_preliminaryPathG
       hphi_bound hc0_le
 
 /--
+Sequence-level preliminary-stage successor invariant with the textbook
+next-parameter Newton update.  If `x_{n+1}` is the Newton step for the
+decreased parameter `t_{n+1}`, then any current decrement bounded by `1/4`
+is followed by a successor decrement bounded by `1/8`.
+-/
+theorem chewi1316_preliminaryPath_decrement_step_le_eighth_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {sqrtCoord : E -> E ≃L[ℝ] E}
+    {xbar0 : E} {xseq : ℕ -> E} {tseq : ℕ -> ℝ}
+    {delta c0 nu : ℝ}
+    (hs : Convex ℝ s)
+    (hxseq_mem : ∀ n : ℕ, xseq n ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hgrad_segment : ∀ n τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+        (hess (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+        (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+    (hhess_model : ∀ ⦃z : E⦄, z ∈ s ->
+      hess z =
+        (ContinuousLinearMap.adjoint (sqrtCoord z).toContinuousLinearMap).comp
+          (sqrtCoord z).toContinuousLinearMap)
+    (hinv_model : ∀ ⦃z : E⦄, z ∈ s ->
+      invHess z =
+        (sqrtCoord z).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtCoord z).symm.toContinuousLinearMap))
+    (htstep : ∀ n : ℕ, tseq (n + 1) = (1 - delta) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq n))
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_one : delta ≤ 1)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_le_c0 : delta * Real.sqrt nu ≤ c0)
+    (hphi_bound : ∀ n : ℕ,
+      dualLocalNorm invHess (xseq n) (phiGrad (xseq n)) ≤ Real.sqrt nu)
+    (hc0_le : c0 ≤ 1 / 200) :
+    ∀ n : ℕ,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ 1 / 4 ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ 1 / 8 := by
+  intro n hdecrement
+  have hstep_mem :
+      newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq n) ∈ s := by
+    simpa [hnewton_next n] using hxseq_mem (n + 1)
+  have hgrad_n : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+        (hess
+          (hessianSegmentPoint (xseq n)
+            (newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+              invHess (xseq n)) τ))
+        (hessianSegmentPoint (xseq n)
+          (newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+            invHess (xseq n)) τ) := by
+    intro τ hτ
+    simpa [hnewton_next n] using hgrad_segment n τ hτ
+  have hright : ∀ v : E, hess (xseq n) (invHess (xseq n) v) = v :=
+    hessianRightInverse_of_adjointSqrtCoord_invHess
+      (H := hess (xseq n)) (invH := invHess (xseq n))
+      (sqrtCoord := sqrtCoord (xseq n))
+      (hhess_model (hxseq_mem n)) (hinv_model (hxseq_mem n))
+  have hnewton_linear :
+      preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)) (xseq n) +
+          hess (xseq n)
+            (newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+                invHess (xseq n) - xseq n) =
+        0 :=
+    newton_linear_of_hessian_right_inverse
+      (hess := hess) (invHess := invHess)
+      (grad := preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+      (x := xseq n) hright
+  have hpost :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess
+          (newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+            invHess (xseq n)) ≤ 1 / 8 :=
+    chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment
+      (hess := hess) (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (grad := preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+      (phiGrad := phiGrad) (invHess := invHess) (sqrtCoord := sqrtCoord)
+      (s := s) (x := xseq n) (xbar0 := xbar0)
+      (t := tseq n) (tNext := tseq (n + 1)) (delta := delta)
+      (c0 := c0) (lambdaOld := (1 / 4 : ℝ)) (nu := nu)
+      hs (hxseq_mem n) hstep_mem hsc hhess_cont hhess hmixed
+      hgrad_n hnewton_linear hhess_model hinv_model (htstep n) rfl
+      hdelta_nonneg hdelta_le_one hdelta_le_c0 hdelta_sqrt_le_c0
+      hdecrement (by norm_num) (hphi_bound n) hc0_le
+  simpa [← hnewton_next n] using hpost
+
+/--
+`lambdaSeq` interface for the next-parameter preliminary-stage successor
+invariant.  This is the exact `hdecrement_step` shape consumed by the
+preliminary initialization wrappers.
+-/
+theorem chewi1316_preliminaryPath_lambdaSeq_step_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {sqrtCoord : E -> E ≃L[ℝ] E}
+    {xbar0 : E} {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {delta c0 nu : ℝ}
+    (hs : Convex ℝ s)
+    (hxseq_mem : ∀ n : ℕ, xseq n ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hgrad_segment : ∀ n τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+        (hess (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+        (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+    (hhess_model : ∀ ⦃z : E⦄, z ∈ s ->
+      hess z =
+        (ContinuousLinearMap.adjoint (sqrtCoord z).toContinuousLinearMap).comp
+          (sqrtCoord z).toContinuousLinearMap)
+    (hinv_model : ∀ ⦃z : E⦄, z ∈ s ->
+      invHess z =
+        (sqrtCoord z).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtCoord z).symm.toContinuousLinearMap))
+    (htstep : ∀ n : ℕ, tseq (n + 1) = (1 - delta) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq n))
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_one : delta ≤ 1)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_le_c0 : delta * Real.sqrt nu ≤ c0)
+    (hphi_bound : ∀ n : ℕ,
+      dualLocalNorm invHess (xseq n) (phiGrad (xseq n)) ≤ Real.sqrt nu)
+    (hc0_le : c0 ≤ 1 / 200)
+    (hlambda_le_quarter : ∀ n : ℕ, lambdaSeq n ≤ 1 / 4)
+    (hlambda_succ_ge_eighth : ∀ n : ℕ, 1 / 8 ≤ lambdaSeq (n + 1)) :
+    ∀ n : ℕ,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1) := by
+  have hstep_eighth :=
+    chewi1316_preliminaryPath_decrement_step_le_eighth_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (thirdMixed := thirdMixed) (phiGrad := phiGrad)
+      (invHess := invHess) (sqrtCoord := sqrtCoord)
+      (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+      (delta := delta) (c0 := c0) (nu := nu)
+      hs hxseq_mem hsc hhess_cont hhess hmixed hgrad_segment
+      hhess_model hinv_model htstep hnewton_next hdelta_nonneg
+      hdelta_le_one hdelta_le_c0 hdelta_sqrt_le_c0 hphi_bound hc0_le
+  intro n hle
+  exact (hstep_eighth n (hle.trans (hlambda_le_quarter n))).trans
+    (hlambda_succ_ge_eighth n)
+
+/--
 Chewi Theorem 13.8 assembly from a unit bilinear estimate on the normalized
 Delta operator.  This leaves the remaining textbook work as the symmetric or
 bilinear Hessian-difference estimate, while reusing mathlib for the

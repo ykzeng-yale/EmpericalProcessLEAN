@@ -347,6 +347,16 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_preliminaryPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`,
 	so the successor `1/8` budget can be proved from the existing Theorem 13.8
 	Newton-step route under `c0 <= 1/200`.
+	The next-parameter sequence bridge adds
+	`chewi1316_preliminaryPath_decrement_step_le_eighth_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`
+	and
+	`chewi1316_preliminaryPath_lambdaSeq_step_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
+	turning the pointwise invariant into the reusable sequence
+	`hdecrement_step` interface for the textbook recurrence
+	`x_{n+1} = newtonStep (grad f_{t_{n+1}}) x_n`.
+	This records the indexing correction: old wrappers using
+	`grad f_{t_n}` for the Newton step are not the exact preliminary
+	path-following source shape.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
