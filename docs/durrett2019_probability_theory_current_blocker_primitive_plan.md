@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V326
+## Live In-Thread Goal Prompt V327
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,13 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V326 adds Section 3.10 Gaussian-coordinate independence
+Latest verified target V327 adds Exercise 3.10.8 source-facing finite
+linear-combination characterization `iff` wrappers from scalar coordinate
+covariance and centered-product covariance hypotheses:
+`durrett2019_exercise_3_10_8_multivariateGaussian_iff_linearCombination_law_eq_gaussianReal_of_coordinateCovariance`
+and
+`durrett2019_exercise_3_10_8_multivariateGaussian_iff_linearCombination_law_eq_gaussianReal_of_centeredProductSubMean`.
+V326 adds Section 3.10 Gaussian-coordinate independence
 source wrappers from scalar covariance tables and centered-product covariance
 tables:
 `durrett2019_section_3_10_gaussianCoordinate_iIndepFun_of_coordinateCovarianceTable`,
@@ -82,11 +88,12 @@ V323 scalar-covariance/centered-product Gaussian characteristic-function
 display, or the V324 nonzero-mean covariance-definition normalized-sum CLT
 endpoint, or the V325 Exercise 3.10.8 scalar-covariance/centered-product real
 Gaussian law wrappers, or the V326 Gaussian-coordinate independence
-covariance-table/centered-product wrappers.  Next aggressive packet: continue
-Chapter 3 by closing a concrete source-facing gap around remaining Section
-3.10 Gaussian-law wrappers, remaining Lindeberg-Feller side conditions, or
-characteristic-function transport into later source statements; touch Chapter 2
-only if a Chapter 3 theorem requires a missing source primitive.
+covariance-table/centered-product wrappers, or the V327 Exercise 3.10.8
+source-facing `iff` wrappers.  Next aggressive packet: continue Chapter 3 by
+closing a concrete source-facing gap around remaining Section 3.10 Gaussian-law
+wrappers, remaining Lindeberg-Feller side conditions, or characteristic-function
+transport into later source statements; touch Chapter 2 only if a Chapter 3
+theorem requires a missing source primitive.
 
 ## Historical V306 Prompt Notes
 
