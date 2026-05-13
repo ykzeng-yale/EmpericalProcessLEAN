@@ -250,6 +250,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `|t_N| * ||grad phi(xbar0)||*_{x_N} <= sqrt(nu) + lambda_N` from the
   preliminary residual plus the self-concordant barrier gradient bound, reusing
   the existing adjoint-coordinate dual-norm additivity/homogeneity layer.
+  The final-tail initialization packet adds
+  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_sourceStart_tailBudget`
+  and
+  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBudget`.
+  These are the direct source-start wrappers for the actual scaled preliminary
+  tail budget `|t_N| * ||grad phi(xbar0)||*_{x_N} <= 1/16`, avoiding the older
+  measured unscaled-tail fallback when a Chewi/Nesterov estimate controls the
+  final scaled tail directly.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

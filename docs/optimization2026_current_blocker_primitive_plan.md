@@ -374,16 +374,22 @@ and `sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_barrier`,
 proving the source-side triangle estimate
 `|t_N| * ||grad phi(xbar0)||*_{x_N} <= sqrt(nu) + lambda_N` from the
 preliminary residual and the self-concordant barrier gradient bound.
+The final-tail initialization packet adds
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_sourceStart_tailBudget`
+and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBudget`,
+which consume the actual scaled preliminary tail budget
+`|t_N| * ||grad phi(xbar0)||*_{x_N} <= 1/16` directly and then choose a positive
+main-stage parameter.
 Together these formalize the reverse
 path-following setup with vector
 `-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 zero Newton decrement at the source endpoints, and the one-step post-Newton
 `lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
-is now narrower: combine the reverse preliminary-gradient bound with the
-concrete Chewi/Nesterov analytical-center estimate to replace the measured-tail
-fallback by a source-shaped upper bound on the preliminary tail budget; the
-already-compiled source-start positive-`tMain` wrapper then gives the `1/4`
-main-stage initialization budget.
+is now narrower: prove the concrete Chewi/Nesterov analytical-center estimate
+that supplies the scaled final preliminary tail budget for the new direct
+source-start wrappers; the measured unscaled-tail fallback should be used only
+when a caller genuinely has an unscaled tail bound.
 Do not route the next run back to product,
 sum,
 affine/range, positive-orthant barrier setup, the already-compiled Lemma

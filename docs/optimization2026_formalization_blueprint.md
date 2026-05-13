@@ -203,6 +203,12 @@ and `sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_barrier`,
 which package the estimate
 `|t_N| * ||grad phi(xbar0)||*_{x_N} <= sqrt(nu) + lambda_N` from the
 preliminary residual and barrier gradient bound.
+The final-tail initialization layer adds
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_sourceStart_tailBudget`
+and
+`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBudget`,
+which directly consume the scaled final preliminary tail budget and choose a
+positive main-stage parameter.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
