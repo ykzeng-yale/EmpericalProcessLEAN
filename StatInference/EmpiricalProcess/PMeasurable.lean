@@ -874,6 +874,61 @@ theorem setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measur
           rw [hmp.map_eq]
 
 /--
+Every event measurable in the VdV&W permutation-symmetric tail is invariant
+under any coordinate permutation fixing a finite tail.
+
+This is the first source handoff toward a Hewitt-Savage zero-one theorem.
+-/
+theorem preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetricTail
+    {Observation : Type u} [MeasurableSpace Observation]
+    {s : Set (ℕ -> Observation)}
+    (hs :
+      MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace Observation n] s)
+    (perm : Equiv.Perm ℕ) {n : ℕ} (hfix : VdVWNatPermFixesFrom n perm) :
+    vdVWPermuteNatSequence (Observation := Observation) perm ⁻¹' s = s := by
+  exact
+    preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetric
+      (Observation := Observation) (n := n) perm hfix
+      ((MeasurableSpace.measurableSet_iInf.mp hs) n)
+
+/--
+Tail version of the finite-prefix permutation invariance specialized to
+permutations induced from `Fin n`.
+-/
+theorem preimage_vdVWPermuteNatSequence_natPermOfFin_eq_of_measurableSet_permutationSymmetricTail
+    {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) {s : Set (ℕ -> Observation)}
+    (hs :
+      MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace Observation n] s) :
+    vdVWPermuteNatSequence (Observation := Observation) (vdVWNatPermOfFin perm) ⁻¹' s =
+      s := by
+  exact
+    preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetricTail
+      (Observation := Observation) hs (vdVWNatPermOfFin perm)
+      (VdVWNatPermFixesFrom_natPermOfFin perm)
+
+/--
+Set-integral invariance over a permutation-symmetric tail event under any
+coordinate permutation fixing a finite tail.
+-/
+theorem setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measurableSet_permutationSymmetricTail
+    {Observation : Type u} [MeasurableSpace Observation]
+    (P : Measure Observation) [IsProbabilityMeasure P]
+    (perm : Equiv.Perm ℕ) {n : ℕ} (hfix : VdVWNatPermFixesFrom n perm)
+    {s : Set (ℕ -> Observation)}
+    (hs :
+      MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace Observation n] s)
+    (f : (ℕ -> Observation) -> ℝ) :
+    (∫ sequence in s,
+        f (vdVWPermuteNatSequence (Observation := Observation) perm sequence)
+          ∂(vdVWInfiniteProductMeasure P)) =
+      ∫ sequence in s, f sequence ∂(vdVWInfiniteProductMeasure P) := by
+  exact
+    setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measurableSet_permutationSymmetric
+      (Observation := Observation) P (n := n) perm hfix
+      ((MeasurableSpace.measurableSet_iInf.mp hs) n) f
+
+/--
 Projecting the first `n` coordinates after an infinite permutation fixing the
 tail is the finite-coordinate permutation induced by restricting that
 permutation to the first `n` coordinates.

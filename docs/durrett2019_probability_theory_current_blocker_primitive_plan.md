@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V299
+## Live In-Thread Goal Prompt V300
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -34,10 +34,11 @@ V296 product integrability/source-moment strong-law endpoint, or the
 V297 eventual-prefix backwards-route product endpoint, or the
 V298 reverse-average-to-permutation-symmetric-tail bridge, or the
 V299 permutation-symmetric tail zero-one transport endpoint, or the
+V300 permutation-symmetric tail finite-permutation invariance support, or the
 V281-V273 Section 4.6 tail-envelope /
 conditional-expectation layers.
 
-Latest verified target V299 advances Section 4.7.  V260 packages Durrett
+Latest verified target V300 advances Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -270,16 +271,28 @@ V297 backwards-martingale endpoint.  It adds
 `durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permutationSymmetric_tail`
 and
 `durrett2019_example_4_7_4_eval_prefixAverage_ae_tendsto_of_integrable_id_and_permutationSymmetric_tail_zero_or_one`.
+V300 adds reusable VdVW/Hewitt-Savage support in
+`StatInference/EmpiricalProcess/PMeasurable.lean`:
+`preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetricTail`,
+`preimage_vdVWPermuteNatSequence_natPermOfFin_eq_of_measurableSet_permutationSymmetricTail`,
+and
+`setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measurableSet_permutationSymmetricTail`.
+It also adds Durrett-shaped real-product wrappers
+`durrett2019_example_4_7_4_eval_permutationSymmetricTail_preimage_natPermOfFin_eq`
+and
+`durrett2019_example_4_7_4_eval_permutationSymmetricTail_setIntegral_natPermOfFin_eq`.
 
 Next aggressive theorem packet: prove the actual zero-one theorem for the VdVW
 permutation-symmetric tail
 `⨅ n, vdVWPermutationSymmetricMeasurableSpace ℝ n` under the iid product
 measure.  Search mathlib/local first for Hewitt-Savage, exchangeable-tail, or
-permutation-invariant zero-one support.  If no direct primitive exists, add a
-source-shaped VdVW/Hewitt-Savage wrapper using finite coordinate permutation
-invariance plus product exchangeability.  Feed the resulting zero-one theorem
-directly into V299.  Do not rewrap the already compiled direct strong law,
-V286/V287/V288/V289/V290/V291/V292/V293/V294/V295/V296/V297/V298/V299
+permutation-invariant zero-one support.  If no direct primitive exists, use
+V300's finite-permutation invariance and set-integral invariance as the source
+hooks for a VdVW/Hewitt-Savage wrapper proving
+`μ A = 0 ∨ μ A = 1` for every `A` measurable in the permutation-symmetric
+tail.  Feed the resulting zero-one theorem directly into V299.  Do not rewrap
+the already compiled direct strong law,
+V286/V287/V288/V289/V290/V291/V292/V293/V294/V295/V296/V297/V298/V299/V300
 handoffs, or V285 backwards Lévy endpoint.
 
 ## Deprecated V255 Prompt Notes

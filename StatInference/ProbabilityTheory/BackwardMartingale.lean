@@ -1,3 +1,4 @@
+import StatInference.EmpiricalProcess.PMeasurable
 import StatInference.EmpiricalProcess.Theorem243
 import StatInference.ProbabilityMeasure.StrongLaw
 import StatInference.ProbabilityTheory.Martingale
@@ -1569,6 +1570,40 @@ theorem durrett2019_example_4_7_4_eval_reverseAverage_tail_zero_or_one_of_permut
   exact hzeroOne B
     (durrett2019_example_4_7_4_eval_reverseAverageTail_le_permutationSymmetricTail
       B hB)
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  Events in the
+VdVW permutation-symmetric tail are invariant under every finite-prefix
+coordinate permutation of the iid real product space.
+-/
+theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_preimage_natPermOfFin_eq
+    {n : ℕ} (perm : Equiv.Perm (Fin n)) {A : Set (ℕ -> ℝ)}
+    (hA :
+      MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] A) :
+    vdVWPermuteNatSequence (Observation := ℝ) (vdVWNatPermOfFin perm) ⁻¹' A = A := by
+  exact
+    StatInference.preimage_vdVWPermuteNatSequence_natPermOfFin_eq_of_measurableSet_permutationSymmetricTail
+      (Observation := ℝ) perm hA
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  Set integrals over
+events in the VdVW permutation-symmetric tail are invariant under finite-prefix
+coordinate permutations.
+-/
+theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_setIntegral_natPermOfFin_eq
+    {P : Measure ℝ} [IsProbabilityMeasure P] {n : ℕ}
+    (perm : Equiv.Perm (Fin n)) {A : Set (ℕ -> ℝ)}
+    (hA :
+      MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] A)
+    (f : (ℕ -> ℝ) -> ℝ) :
+    (∫ sequence in A,
+        f (vdVWPermuteNatSequence (Observation := ℝ) (vdVWNatPermOfFin perm) sequence)
+          ∂(vdVWInfiniteProductMeasure P)) =
+      ∫ sequence in A, f sequence ∂(vdVWInfiniteProductMeasure P) := by
+  exact
+    StatInference.setIntegral_vdVWInfiniteProductMeasure_comp_permuteNatSequence_of_measurableSet_permutationSymmetricTail
+      (Observation := ℝ) P (vdVWNatPermOfFin perm)
+      (VdVWNatPermFixesFrom_natPermOfFin perm) hA f
 
 /--
 Durrett 2019, Example 4.7.4 product-space source algebra: the finite swap of
