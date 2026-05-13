@@ -208,6 +208,11 @@ The law-side limit coordinate-mean source endpoint
 uses `vaart1998_z_coordinate_mean_zero_of_zLaw_coordinate_mean_zero` to derive
 sample-side coordinate mean-zero for `Z` from coordinate mean-zero under
 `Q.map Z`.
+The law-side scalar coordinate-covariance source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreLawCoordinateMeanSource_scoreLawMemLpSource_zLawCoordinateMeanSource_zLawCoordinateCovarianceSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_derivativeTableLawSequenceSource_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+uses `vaart1998_covarianceBilinDual_eval_eq_of_law_coordinate_covariance` to
+derive coordinate-evaluation `covarianceBilinDual` equality between `Q.map Z`
+and `scoreLaw` from ordinary scalar coordinate covariance equality.
 The next proof packet should move to a concrete model-specialized Theorem 5.41
 instantiation, or package only a still-live source field that the current
 endpoint explicitly exposes, not replay display weak-convergence,
@@ -227,7 +232,8 @@ wrappers/derivative-table-sequence-law wrappers/score-law-`L²` wrappers/
 score-vector-mean wrappers/limit-variable-sample-mean wrappers/
 finite-coordinate-limit-covariance wrappers/law-side score second-moment
 wrappers/law-side score coordinate-mean wrappers.
-Do not replay law-side limit coordinate-mean wrappers.
+Do not replay law-side limit coordinate-mean wrappers or law-side scalar
+coordinate-covariance wrappers.
 
 ## Chapter Map
 
