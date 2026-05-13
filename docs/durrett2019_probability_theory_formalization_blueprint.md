@@ -27,27 +27,31 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V255`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V256`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier: Durrett Example 4.5.8 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V255 adds the linear-random-walk
-source bridge
+`StatInference/ProbabilityTheory/Martingale.lean`.  V256 adds the simple
+symmetric random-walk endpoint: Rademacher law mean/second-moment/`L^2` transfer
+in `StatInference/ProbabilityMeasure/Rademacher.lean`, the unit variance-clock
+display `A_n = n`, the stopped unit-clock display as `(N ω).untopA`, and
+`durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_rademacher`.
+The next proof packet should move from this law-level endpoint to either a
+concrete iid infinite Rademacher/sign construction or the exact textbook
+terminal-condition bridge replacing the current real stopped-time integrability
+side condition.  V255 adds the linear-random-walk source bridge
 `durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments`:
 the stopped Exercise 4.4.6 square-minus-variance-clock martingale now feeds the
 V254 optional-stopping/dominated bridge and concludes `E[S_N] = 0` from
 independent mean-zero increments, deterministic second moments, a.s. finite
-`N`, and integrability of the stopped variance clock.  The next proof packet
-should specialize this to simple symmetric/Rademacher increments by supplying
-the moment and unit-clock display.  V254 adds the stopped-process
+`N`, and integrability of the stopped variance clock.  V254 adds the stopped-process
 specialization
 `durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source`:
 bounded optional stopping for `N ∧ n` now supplies the finite-horizon zero
 expectations for `S_{N ∧ n}`, and the V253 dominated/4.5.7 bridge passes the
-zero expectation to the terminal limit.  Reuse local Rademacher support before
-adding new random-walk primitives.  V252 closes the
+zero expectation to the terminal limit.  V252 closes the
 source-facing infinite-horizon Theorem 4.5.7 endpoint:
 `durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`.
 It derives the real-supremum a.e. boundedness from finite `iSup` expectation

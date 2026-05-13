@@ -21,7 +21,7 @@ namespace ProbabilityMeasure
 
 open MeasureTheory ProbabilityTheory
 
-open scoped NNReal
+open scoped ENNReal NNReal
 
 universe u
 
@@ -58,9 +58,23 @@ theorem abs_boolToRademacherSign_le_one (b : Bool) :
   · simp [hneg]
   · simp [hpos]
 
+/-- The square of a Bool-to-real Rademacher sign is one. -/
+theorem boolToRademacherSign_sq (b : Bool) :
+    boolToRademacherSign b ^ 2 = 1 := by
+  rcases boolToRademacherSign_eq_neg_one_or_one b with hneg | hpos
+  · simp [hneg]
+  · simp [hpos]
+
 /-- The fair Bool-to-real Rademacher sign has mean zero. -/
 theorem integral_boolToRademacherSign_eq_zero :
     ∫ b, boolToRademacherSign b ∂rademacherBoolLaw = 0 := by
+  unfold rademacherBoolLaw
+  rw [PMF.integral_eq_sum]
+  norm_num [rademacherBoolPMF, boolToRademacherSign, PMF.bernoulli_apply]
+
+/-- The fair Bool-to-real Rademacher sign has second moment one. -/
+theorem integral_boolToRademacherSign_sq_eq_one :
+    ∫ b, boolToRademacherSign b ^ 2 ∂rademacherBoolLaw = 1 := by
   unfold rademacherBoolLaw
   rw [PMF.integral_eq_sum]
   norm_num [rademacherBoolPMF, boolToRademacherSign, PMF.bernoulli_apply]
@@ -84,6 +98,21 @@ theorem boolToRademacherSign_hasLaw :
   exact PMF.toMeasure_map (p := rademacherBoolPMF)
     (f := boolToRademacherSign) measurable_boolToRademacherSign
 
+/-- The identity under the real Rademacher law has mean zero. -/
+theorem integral_id_rademacherLaw_eq_zero :
+    ∫ x, x ∂rademacherLaw = 0 := by
+  rw [← boolToRademacherSign_hasLaw.integral_eq]
+  exact integral_boolToRademacherSign_eq_zero
+
+/-- The identity under the real Rademacher law has second moment one. -/
+theorem integral_id_sq_rademacherLaw_eq_one :
+    ∫ x, x ^ 2 ∂rademacherLaw = 1 := by
+  have h :=
+    boolToRademacherSign_hasLaw.integral_comp
+      (f := fun x : ℝ => x ^ 2) (by fun_prop)
+  rw [← h]
+  exact integral_boolToRademacherSign_sq_eq_one
+
 /-- The canonical fair Bool-to-real Rademacher sign is sub-Gaussian. -/
 theorem boolToRademacherSign_hasSubgaussianMGF :
     HasSubgaussianMGF boolToRademacherSign 1 rademacherBoolLaw := by
@@ -106,6 +135,45 @@ theorem id_rademacherLaw_hasSubgaussianMGF :
     HasSubgaussianMGF id 1 rademacherLaw := by
   exact boolToRademacherSign_hasSubgaussianMGF.congr_identDistrib
     (boolToRademacherSign_hasLaw.identDistrib HasLaw.id)
+
+/-- The canonical Bool-to-real Rademacher sign is in `L^2`. -/
+theorem boolToRademacherSign_memLp_two :
+    MemLp boolToRademacherSign (2 : ℝ≥0∞) rademacherBoolLaw := by
+  simp
+
+/-- The identity under the real Rademacher law is in `L^2`. -/
+theorem id_rademacherLaw_memLp_two :
+    MemLp id (2 : ℝ≥0∞) rademacherLaw := by
+  exact id_rademacherLaw_hasSubgaussianMGF.memLp (2 : ℝ≥0)
+
+/-- A random variable with the real Rademacher law has mean zero. -/
+theorem hasLaw_rademacher_integral_eq_zero
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} {X : Ω -> ℝ}
+    (hX : HasLaw X rademacherLaw P) :
+    ∫ ω, X ω ∂P = 0 := by
+  rw [hX.integral_eq, integral_id_rademacherLaw_eq_zero]
+
+/-- A random variable with the real Rademacher law has second moment one. -/
+theorem hasLaw_rademacher_integral_sq_eq_one
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} {X : Ω -> ℝ}
+    (hX : HasLaw X rademacherLaw P) :
+    ∫ ω, X ω ^ 2 ∂P = 1 := by
+  have h :=
+    hX.integral_comp (f := fun x : ℝ => x ^ 2) (by fun_prop)
+  change ∫ ω, ((fun x : ℝ => x ^ 2) ∘ X) ω ∂P = 1
+  rw [h, integral_id_sq_rademacherLaw_eq_one]
+
+/-- A random variable with the real Rademacher law is in `L^2`. -/
+theorem hasLaw_rademacher_memLp_two
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} {X : Ω -> ℝ}
+    (hX : HasLaw X rademacherLaw P) :
+    MemLp X (2 : ℝ≥0∞) P := by
+  have hid_map : MemLp id (2 : ℝ≥0∞) (Measure.map X P) := by
+    simpa [hX.map_eq] using id_rademacherLaw_memLp_two
+  have hcomp :
+      MemLp (id ∘ X) (2 : ℝ≥0∞) P :=
+    (memLp_map_measure_iff aestronglyMeasurable_id hX.aemeasurable).1 hid_map
+  simpa [Function.comp_def] using hcomp
 
 /-- A deterministic sign vector supported on `{-1, 1}`. -/
 def RademacherSignVector {n : ℕ} (sign : Fin n -> ℝ) : Prop :=

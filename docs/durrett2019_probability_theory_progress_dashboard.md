@@ -32,10 +32,19 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V255` in
+Route from `Live In-Thread Goal Prompt V256` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Example 4.5.8 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V255 adds the
+`StatInference/ProbabilityTheory/Martingale.lean`.  V256 adds the simple
+symmetric random-walk specialization of Example 4.5.8: Rademacher law
+mean/second-moment/`L^2` transfer in
+`StatInference/ProbabilityMeasure/Rademacher.lean`, unit variance clock
+`A_n = n`, stopped unit-clock display as `(N ω).untopA`, and the endpoint
+`durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_rademacher`.
+The next target is either a concrete iid infinite Rademacher/sign construction
+or the exact textbook terminal-condition bridge that replaces
+`Integrable (fun ω => ((N ω).untopA : ℝ)) P` with the most source-faithful
+`E sqrt(N) < ∞`/terminal-clock assumption Lean can support.  V255 adds the
 linear-random-walk source bridge:
 `durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments`.
 It reuses the compiled Exercise 4.4.6 square-minus-variance-clock martingale for
@@ -51,10 +60,7 @@ V253 adds the first downstream consumer of the closed 4.5.7 endpoint:
 `durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal`,
 `durrett2019_example_4_5_8_integral_limit_eq_zero_of_dominated`, and
 `durrett2019_example_4_5_8_integral_limit_eq_zero_of_theorem_4_5_7_source`.
-The next target is the simple symmetric/Rademacher specialization of V255:
-prove or package the local Rademacher moment inputs, set `sigmaSq = fun _ => 1`,
-and display the stopped variance clock as the textbook `N`/`N ∧ n` clock with
-only the real terminal-clock integrability side condition left.  V252 removes the remaining
+V252 removes the remaining
 manual boundedness/finiteness side inputs from the canonical infinite-horizon
 source endpoint.  It adds
 `durrett2019_runningAbsMax_ae_bddAbove_of_iSup_lintegral_ne_top`,

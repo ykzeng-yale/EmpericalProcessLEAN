@@ -4,11 +4,38 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V255
+## Live In-Thread Goal Prompt V256
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
 below are provenance, not prompt text.
+
+Continue Durrett 2019 Probability Theory formalization in Lean from latest
+synced `main`.  Active lane: Durrett Chapter 4 martingales in
+`StatInference/ProbabilityTheory/Martingale.lean`, specifically Example 4.5.8
+as a downstream consumer of the closed Theorem 4.5.7 endpoint.  Reuse the
+compiled Chapter 2/3 probability foundations, Chapter 4.1-4.4 martingale
+infrastructure, Theorem 4.5.1/4.5.2/4.5.3/4.5.5 packages, and the V253-V255
+Example 4.5.8 bridges; do not re-prove those layers.
+
+Latest verified target V256 adds the simple symmetric random-walk specialization:
+Rademacher law moment/MemLp transfer in
+`StatInference/ProbabilityMeasure/Rademacher.lean`, unit variance-clock display
+`A_n = n`, stopped unit-clock display as `(N ω).untopA`, and the
+Rademacher-increment endpoint
+`durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_rademacher`.
+Next aggressive theorem packet: move from the law-level endpoint to a concrete
+iid infinite Rademacher/sign construction or to the exact textbook terminal
+condition bridge, replacing the current `Integrable (fun ω => ((N ω).untopA :
+ℝ)) P` side with the most source-faithful `E sqrt(N) < ∞`/terminal-clock
+assumption that Lean can compile.  Search Mathlib and local
+`StatInference/ProbabilityMeasure`/`StatInference/ProbabilityTheory` first;
+prefer a small compiled wrapper over new broad primitives.
+
+## Deprecated V255 Prompt Notes
+
+The long text below is retained only as provenance for previous proof packets;
+do not use it as the next `/goal` prompt.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Active lane: Durrett Chapter 4 martingales in
@@ -20,7 +47,7 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V255 adds the linear-random-walk source bridge for
+Deprecated packet V255 added the linear-random-walk source bridge for
 Example 4.5.8:
 `durrett2019_deterministic_clock_isStronglyPredictable`,
 `durrett2019_stoppedProcess_monotone_of_monotone`,
@@ -194,6 +221,15 @@ bridge, or the V254 stopped-process zero-expectation specialization unless a
 compile error exposes a genuinely missing primitive.
 
 ## Recent Route Notes
+
+V256 adds the simple symmetric random-walk bridge for Durrett Example 4.5.8.
+Reusable Rademacher support in `StatInference/ProbabilityMeasure/Rademacher.lean`
+now packages the fair sign second moment, real Rademacher law mean/second
+moment, and law-to-`L^2`/moment transfer.  In
+`StatInference/ProbabilityTheory/Martingale.lean`, the unit variance clock is
+displayed as `A_n = n`, the stopped unit clock is displayed as
+`fun ω => ((N ω).untopA : ℝ)`, and the Rademacher-law endpoint feeds those facts
+into the V255 independent-increment bridge to conclude `E[S_N] = 0`.
 
 V201 compiled the Theorem 4.5.2 countable-threshold source assembly:
 `durrett2019_theorem_4_5_2_stopped_square_minus_increasing_martingale_of_source`,
@@ -2068,6 +2104,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V255` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V256` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

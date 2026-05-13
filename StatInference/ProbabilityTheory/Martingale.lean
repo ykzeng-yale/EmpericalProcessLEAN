@@ -9,6 +9,7 @@ import Mathlib.Algebra.Order.Field.GeomSum
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 import Mathlib.Analysis.SpecialFunctions.Pow.Integral
 import Mathlib.MeasureTheory.Integral.Lebesgue.DominatedConvergence
+import StatInference.ProbabilityMeasure.Rademacher
 import StatInference.ProbabilityTheory.ConditionalExpectation
 
 /-!
@@ -25028,6 +25029,102 @@ theorem
       (Ainf := stoppedValue A N) (Y := stoppedValue S N)
       hS hN hA_predictable hSquareMinus hS_memLp_two hA_int hAinf_int hS0 hA0
       hA_mono hA_tendsto hlim
+
+/--
+Durrett 2019, Exercise 4.4.6 support: the unit variance clock is the deterministic
+clock `n`.
+-/
+theorem durrett2019_exercise_4_4_6_varianceClock_one (n : ℕ) :
+    durrett2019_exercise_4_4_6_varianceClock (fun _ => (1 : ℝ)) n = n := by
+  simp [durrett2019_exercise_4_4_6_varianceClock]
+
+/--
+Durrett 2019, Example 4.5.8 support: the stopped unit variance clock is the
+real-valued stopped time.
+-/
+theorem durrett2019_exercise_4_4_6_stoppedValue_varianceClock_one_eq_untopA
+    {Ω : Type*} (N : Ω -> ℕ∞) :
+    stoppedValue
+        (fun (n : ℕ) (_ : Ω) =>
+          durrett2019_exercise_4_4_6_varianceClock (fun _ => (1 : ℝ)) n) N =
+      fun ω => ((N ω).untopA : ℝ) := by
+  ext ω
+  simp [stoppedValue, durrett2019_exercise_4_4_6_varianceClock_one]
+
+/--
+Durrett 2019, Example 4.5.8 unit-variance linear-random-walk bridge.
+
+This is the simple-random-walk-shaped specialization of the V255 bridge:
+independent mean-zero increments with second moment one have variance clock
+`A_n = n`, so the stopped terminal clock is the real-valued stopped time.
+-/
+theorem
+    durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_unitSecondMoment
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {ξ : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞}
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n))
+    (hξ_memLp_two : ∀ n, MemLp (ξ n) (2 : ℝ≥0∞) P)
+    (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ P)
+    (hξ_mean_zero : ∀ n, (∫ ω, ξ n ω ∂P) = 0)
+    (hξ_second_moment_one : ∀ n, (∫ ω, ξ n ω ^ 2 ∂P) = 1)
+    (hN : IsStoppingTime (Filtration.natural ξ hξ_sm) N)
+    (hN_ne_top : ∀ᵐ ω ∂P, N ω ≠ ⊤)
+    (hN_untopA_int : Integrable (fun ω => ((N ω).untopA : ℝ)) P) :
+    (∫ ω, stoppedValue (durrett2019_example_4_2_1_linearRandomWalk 0 ξ) N ω ∂P) =
+      0 := by
+  have hclock_int :
+      Integrable
+        (stoppedValue
+          (fun (n : ℕ) (_ : Ω) =>
+            durrett2019_exercise_4_4_6_varianceClock (fun _ => (1 : ℝ)) n)
+          N) P := by
+    rw [durrett2019_exercise_4_4_6_stoppedValue_varianceClock_one_eq_untopA]
+    exact hN_untopA_int
+  exact
+    durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments
+      (P := P) (ξ := ξ) (sigmaSq := fun _ => (1 : ℝ)) (N := N)
+      hξ_sm hξ_memLp_two hξ_indep hξ_mean_zero
+      (fun n => by simpa using hξ_second_moment_one n)
+      (fun _ => by norm_num) hN hN_ne_top hclock_int
+
+/--
+Durrett 2019, Example 4.5.8 Rademacher-increment bridge.
+
+This packages the simple symmetric random walk case: independent increments
+with the real Rademacher law have mean zero, second moment one, and belong to
+`L^2`, so the unit-variance stopped random-walk bridge applies.
+-/
+theorem
+    durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_rademacher
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {ξ : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞}
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n))
+    (hξ_law :
+      ∀ n,
+        _root_.ProbabilityTheory.HasLaw (ξ n)
+          _root_.StatInference.ProbabilityMeasure.rademacherLaw P)
+    (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ P)
+    (hN : IsStoppingTime (Filtration.natural ξ hξ_sm) N)
+    (hN_ne_top : ∀ᵐ ω ∂P, N ω ≠ ⊤)
+    (hN_untopA_int : Integrable (fun ω => ((N ω).untopA : ℝ)) P) :
+    (∫ ω, stoppedValue (durrett2019_example_4_2_1_linearRandomWalk 0 ξ) N ω ∂P) =
+      0 := by
+  exact
+    durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_unitSecondMoment
+      (P := P) (ξ := ξ) (N := N) hξ_sm
+      (fun n =>
+        _root_.StatInference.ProbabilityMeasure.hasLaw_rademacher_memLp_two
+          (hξ_law n))
+      hξ_indep
+      (fun n =>
+        _root_.StatInference.ProbabilityMeasure.hasLaw_rademacher_integral_eq_zero
+          (hξ_law n))
+      (fun n =>
+        _root_.StatInference.ProbabilityMeasure.hasLaw_rademacher_integral_sq_eq_one
+          (hξ_law n))
+      hN hN_ne_top hN_untopA_int
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
