@@ -742,6 +742,26 @@ def vdVWPermutationSymmetricMeasurableSpace
   MeasurableSpace.generateFrom
     (VdVWPermutationSymmetricGeneratorSet Observation n)
 
+/-- The VdV&W permutation-symmetric sigma-field is a sub-sigma-field of the
+ambient product sigma-field. -/
+theorem vdVWPermutationSymmetricMeasurableSpace_le
+    {Observation : Type u} [MeasurableSpace Observation] (n : ℕ) :
+    vdVWPermutationSymmetricMeasurableSpace Observation n ≤
+      (inferInstance : MeasurableSpace (ℕ -> Observation)) := by
+  refine MeasurableSpace.generateFrom_le ?_
+  intro s hs
+  rcases hs with ⟨statistic, hmeas, _hsymm, target, htarget, rfl⟩
+  exact hmeas htarget
+
+/-- The VdV&W permutation-symmetric tail is a sub-sigma-field of the ambient
+product sigma-field. -/
+theorem vdVWPermutationSymmetricTail_le
+    {Observation : Type u} [MeasurableSpace Observation] :
+    (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace Observation n) ≤
+      (inferInstance : MeasurableSpace (ℕ -> Observation)) :=
+  (iInf_le (fun n : ℕ => vdVWPermutationSymmetricMeasurableSpace Observation n) 0).trans
+    (vdVWPermutationSymmetricMeasurableSpace_le (Observation := Observation) 0)
+
 /-- A generator of `Σ_n` is measurable in `Σ_n`. -/
 theorem measurableSet_vdVWPermutationSymmetricMeasurableSpace_of_generator
     {Observation : Type u} [MeasurableSpace Observation] {n : ℕ}

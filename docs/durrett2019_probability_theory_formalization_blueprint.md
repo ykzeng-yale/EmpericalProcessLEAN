@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V302`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V303`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -176,9 +176,18 @@ V302 adds the finite-prefix/future-coordinate-tail independence support:
 `durrett2019_theorem_4_3_8_prefixFiltration_indep_tailCoordinateSigma_infinitePi`,
 and
 `durrett2019_example_4_7_4_eval_prefixFiltration_indep_tailCoordinateSigma`.
-The next proof packet should prove self-independence of the VdVW
-permutation-symmetric tail itself and feed it into V301, using V302 for the
-finite-prefix/future-tail independence part of the Hewitt-Savage argument.
+V303 adds the transported-prefix Hewitt-Savage support:
+`vdVWPermutationSymmetricMeasurableSpace_le`,
+`vdVWPermutationSymmetricTail_le`,
+`durrett2019_example_4_7_4_permuteNatSequence_prefixFiltration_tailCoordinateSigma_measurable`,
+`durrett2019_example_4_7_4_preimage_permuteNatSequence_prefixFiltration_tailCoordinateSigma`,
+`durrett2019_example_4_7_4_eval_prefixFiltration_indep_permuted_prefix`,
+`durrett2019_example_4_7_4_eval_prefix_inter_permuted_prefix_measure_eq_mul`,
+and
+`durrett2019_example_4_7_4_eval_permutationSymmetricTail_inter_prefix_eq_inter_permuted_prefix`.
+The next proof packet should prove the finite-prefix approximation-to-product
+limit for VdVW permutation-symmetric-tail events, then feed the resulting
+self-independence into V301.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:

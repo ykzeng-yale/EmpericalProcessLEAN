@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V302` in
+Route from `Live In-Thread Goal Prompt V303` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -243,9 +243,18 @@ V302 adds finite-prefix/future-coordinate-tail independence support:
 `durrett2019_theorem_4_3_8_prefixFiltration_indep_tailCoordinateSigma_infinitePi`,
 and
 `durrett2019_example_4_7_4_eval_prefixFiltration_indep_tailCoordinateSigma`.
-The next target is self-independence for the VdVW permutation-symmetric tail
-itself, using V302 for the finite-prefix/future-tail independence part, then
-applying V301.
+V303 adds transported-prefix Hewitt-Savage support:
+`vdVWPermutationSymmetricMeasurableSpace_le`,
+`vdVWPermutationSymmetricTail_le`,
+`durrett2019_example_4_7_4_permuteNatSequence_prefixFiltration_tailCoordinateSigma_measurable`,
+`durrett2019_example_4_7_4_preimage_permuteNatSequence_prefixFiltration_tailCoordinateSigma`,
+`durrett2019_example_4_7_4_eval_prefixFiltration_indep_permuted_prefix`,
+`durrett2019_example_4_7_4_eval_prefix_inter_permuted_prefix_measure_eq_mul`,
+and
+`durrett2019_example_4_7_4_eval_permutationSymmetricTail_inter_prefix_eq_inter_permuted_prefix`.
+The next target is the finite-prefix approximation-to-product-limit theorem
+for self-independence of the VdVW permutation-symmetric tail, then applying
+V301.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

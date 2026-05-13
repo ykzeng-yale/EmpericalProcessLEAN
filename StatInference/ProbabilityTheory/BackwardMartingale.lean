@@ -1713,6 +1713,178 @@ theorem durrett2019_example_4_7_4_eval_prefixFiltration_indep_tailCoordinateSigm
       hindep_prefix_tail hprefix_le
 
 /--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  If a coordinate
+permutation moves the first `n` coordinates into the future block starting at
+`m`, then the pulled-back prefix filtration is measurable from the future
+coordinate tail.
+-/
+theorem durrett2019_example_4_7_4_permuteNatSequence_prefixFiltration_tailCoordinateSigma_measurable
+    {S : Type*} [MeasurableSpace S] {n m : ℕ} (perm : Equiv.Perm ℕ)
+    (hmove : ∀ i : ℕ, i < n -> m ≤ perm.symm i) :
+    Measurable[durrett2019_theorem_4_3_8_tailCoordinateSigma S m,
+      durrett2019_theorem_4_3_8_prefixFiltration S n]
+      (vdVWPermuteNatSequence (Observation := S) perm) := by
+  let I : Finset ℕ := Finset.range n
+  have hrestrict :
+      @Measurable (ℕ -> S) (I -> S)
+        (durrett2019_theorem_4_3_8_tailCoordinateSigma S m) inferInstance
+        (fun sequence : ℕ -> S =>
+          (I.restrict : (ℕ -> S) -> I -> S)
+            (vdVWPermuteNatSequence (Observation := S) perm sequence)) := by
+    refine
+      (@measurable_pi_iff (ℕ -> S) I (fun _ : I => S)
+        (durrett2019_theorem_4_3_8_tailCoordinateSigma S m)
+        (fun _ : I => inferInstance)
+        (g := fun sequence : ℕ -> S =>
+          (I.restrict : (ℕ -> S) -> I -> S)
+            (vdVWPermuteNatSequence (Observation := S) perm sequence))).mpr ?_
+    intro i
+    have hi : (i : ℕ) < n := Finset.mem_range.mp i.property
+    have hcoord :
+        Measurable[durrett2019_theorem_4_3_8_tailCoordinateSigma S m]
+          (fun sequence : ℕ -> S => sequence (perm.symm (i : ℕ))) :=
+      durrett2019_theorem_4_3_8_coordinate_tailCoordinateSigma_measurable
+        (S := S) (n := m) (i := perm.symm (i : ℕ)) (hmove (i : ℕ) hi)
+    simpa [I, vdVWPermuteNatSequence] using hcoord
+  change Measurable[durrett2019_theorem_4_3_8_tailCoordinateSigma S m,
+    MeasurableSpace.pi.comap (I.restrict : (ℕ -> S) -> I -> S)]
+    (vdVWPermuteNatSequence (Observation := S) perm)
+  intro C hC
+  rcases (MeasurableSpace.measurableSet_comap.mp hC) with ⟨B, hB, hBC⟩
+  rw [← hBC]
+  exact hrestrict hB
+
+/--
+Set form of the previous lemma: a moved finite-prefix event is measurable in
+the future-coordinate tail.
+-/
+theorem durrett2019_example_4_7_4_preimage_permuteNatSequence_prefixFiltration_tailCoordinateSigma
+    {S : Type*} [MeasurableSpace S] {n m : ℕ} (perm : Equiv.Perm ℕ)
+    (hmove : ∀ i : ℕ, i < n -> m ≤ perm.symm i)
+    {C : Set (ℕ -> S)}
+    (hC : MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration S n] C) :
+    MeasurableSet[durrett2019_theorem_4_3_8_tailCoordinateSigma S m]
+      (vdVWPermuteNatSequence (Observation := S) perm ⁻¹' C) :=
+  (durrett2019_example_4_7_4_permuteNatSequence_prefixFiltration_tailCoordinateSigma_measurable
+    (S := S) (n := n) (m := m) perm hmove) hC
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  A prefix event is
+independent of a second prefix event after that second event is transported
+into the future coordinate tail.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixFiltration_indep_permuted_prefix
+    {P : Measure ℝ} [IsProbabilityMeasure P] {n m : ℕ} (hnm : n ≤ m)
+    (perm : Equiv.Perm ℕ)
+    (hmove : ∀ i : ℕ, i < n -> m ≤ perm.symm i)
+    {C D : Set (ℕ -> ℝ)}
+    (hC : MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ n] C)
+    (hD : MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ n] D) :
+    IndepSet C (vdVWPermuteNatSequence (Observation := ℝ) perm ⁻¹' D)
+      (vdVWInfiniteProductMeasure P) := by
+  have hC_m :
+      MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ m] C :=
+    (durrett2019_theorem_4_3_8_prefixFiltration ℝ).mono hnm C hC
+  have hD_tail :
+      MeasurableSet[durrett2019_theorem_4_3_8_tailCoordinateSigma ℝ m]
+        (vdVWPermuteNatSequence (Observation := ℝ) perm ⁻¹' D) :=
+    durrett2019_example_4_7_4_preimage_permuteNatSequence_prefixFiltration_tailCoordinateSigma
+      (S := ℝ) (n := n) (m := m) perm hmove hD
+  exact
+    (durrett2019_example_4_7_4_eval_prefixFiltration_indep_tailCoordinateSigma
+      (P := P) m).indepSet_of_measurableSet hC_m hD_tail
+
+/--
+Measure form of the transported-prefix independence lemma.  The right-hand
+factor is stated before transport, using invariance of the iid product law
+under coordinate permutations.
+-/
+theorem durrett2019_example_4_7_4_eval_prefix_inter_permuted_prefix_measure_eq_mul
+    {P : Measure ℝ} [IsProbabilityMeasure P] {n m : ℕ} (hnm : n ≤ m)
+    (perm : Equiv.Perm ℕ)
+    (hmove : ∀ i : ℕ, i < n -> m ≤ perm.symm i)
+    {C D : Set (ℕ -> ℝ)}
+    (hC : MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ n] C)
+    (hD : MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ n] D) :
+    vdVWInfiniteProductMeasure P
+        (C ∩ (vdVWPermuteNatSequence (Observation := ℝ) perm ⁻¹' D)) =
+      vdVWInfiniteProductMeasure P C * vdVWInfiniteProductMeasure P D := by
+  let T : (ℕ -> ℝ) -> (ℕ -> ℝ) :=
+    vdVWPermuteNatSequence (Observation := ℝ) perm
+  let μ : Measure (ℕ -> ℝ) := vdVWInfiniteProductMeasure P
+  have hD_ambient : MeasurableSet D :=
+    (durrett2019_theorem_4_3_8_prefixFiltration ℝ).le n D hD
+  have hmp : MeasurePreserving T μ μ := by
+    simpa [T, μ] using
+      (vdVWInfiniteProductMeasure_measurePreserving_permuteNatSequence
+        (Observation := ℝ) P perm)
+  have hD_measure :
+      μ (T ⁻¹' D) = μ D := by
+    have hmap_apply : Measure.map T μ D = μ (T ⁻¹' D) :=
+      Measure.map_apply hmp.measurable hD_ambient
+    calc
+      μ (T ⁻¹' D) = Measure.map T μ D := hmap_apply.symm
+      _ = μ D := by rw [hmp.map_eq]
+  have hindep :
+      IndepSet C (T ⁻¹' D) μ := by
+    simpa [T, μ] using
+      (durrett2019_example_4_7_4_eval_prefixFiltration_indep_permuted_prefix
+        (P := P) (n := n) (m := m) hnm perm hmove hC hD)
+  calc
+    μ (C ∩ (T ⁻¹' D)) = μ C * μ (T ⁻¹' D) :=
+      hindep.measure_inter_eq_mul
+    _ = μ C * μ D := by rw [hD_measure]
+
+/--
+Durrett 2019, Example 4.7.4 / Hewitt-Savage route support.  Intersections of a
+permutation-symmetric-tail event with a prefix event are unchanged when the
+prefix event is pulled back by any finite-tail-fixing coordinate permutation.
+-/
+theorem durrett2019_example_4_7_4_eval_permutationSymmetricTail_inter_prefix_eq_inter_permuted_prefix
+    {P : Measure ℝ} [IsProbabilityMeasure P] {n N : ℕ}
+    (perm : Equiv.Perm ℕ) (hfix : VdVWNatPermFixesFrom N perm)
+    {A C : Set (ℕ -> ℝ)}
+    (hA :
+      MeasurableSet[⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n] A)
+    (hC : MeasurableSet[durrett2019_theorem_4_3_8_prefixFiltration ℝ n] C) :
+    vdVWInfiniteProductMeasure P (A ∩ C) =
+      vdVWInfiniteProductMeasure P
+        (A ∩ (vdVWPermuteNatSequence (Observation := ℝ) perm ⁻¹' C)) := by
+  let T : (ℕ -> ℝ) -> (ℕ -> ℝ) :=
+    vdVWPermuteNatSequence (Observation := ℝ) perm
+  let μ : Measure (ℕ -> ℝ) := vdVWInfiniteProductMeasure P
+  have htail_le :
+      (⨅ n : ℕ, vdVWPermutationSymmetricMeasurableSpace ℝ n) ≤
+        (inferInstance : MeasurableSpace (ℕ -> ℝ)) := by
+    refine (iInf_le (fun n : ℕ => vdVWPermutationSymmetricMeasurableSpace ℝ n) 0).trans ?_
+    refine MeasurableSpace.generateFrom_le ?_
+    intro s hs
+    rcases hs with ⟨statistic, hmeas, _hsymm, target, htarget, rfl⟩
+    exact hmeas htarget
+  have hA_ambient : MeasurableSet A :=
+    htail_le A hA
+  have hC_ambient : MeasurableSet C :=
+    (durrett2019_theorem_4_3_8_prefixFiltration ℝ).le n C hC
+  have hE : MeasurableSet (A ∩ C) := hA_ambient.inter hC_ambient
+  have hmp : MeasurePreserving T μ μ := by
+    simpa [T, μ] using
+      (vdVWInfiniteProductMeasure_measurePreserving_permuteNatSequence
+        (Observation := ℝ) P perm)
+  have hpre_A : T ⁻¹' A = A := by
+    simpa [T] using
+      (StatInference.preimage_vdVWPermuteNatSequence_eq_of_measurableSet_permutationSymmetricTail
+        (Observation := ℝ) hA perm hfix)
+  calc
+    μ (A ∩ C) = Measure.map T μ (A ∩ C) := by
+      rw [hmp.map_eq]
+    _ = μ (T ⁻¹' (A ∩ C)) := by
+      rw [Measure.map_apply hmp.measurable hE]
+    _ = μ ((T ⁻¹' A) ∩ (T ⁻¹' C)) := by
+      rfl
+    _ = μ (A ∩ (T ⁻¹' C)) := by
+      rw [hpre_A]
+
+/--
 Durrett 2019, Example 4.7.4 product-space source algebra: the finite swap of
 prefix coordinate `i` and coordinate `0` transports `xi_i` to `xi_0`.
 -/
