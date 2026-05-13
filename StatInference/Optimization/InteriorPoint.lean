@@ -15528,6 +15528,88 @@ theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_prel
   exact ⟨M, N, tMain, htMain_pos, hM, hN, hmain⟩
 
 /--
+Non-vacuous uniform-tail source-start initialization.  The index selected by
+the logarithmic/count argument is shifted to a successor, so the small final
+Newton-decrement budget only has to hold for positive preliminary indices.
+This avoids combining the canonical start condition `1/4 <= lambdaSeq 0` with
+a global `lambdaSeq N <= 1/8` hypothesis at `N = 0`.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound_tailLambdaBudget
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : ℕ -> E →L[ℝ] E} {c0 nu tailBound : ℝ}
+    (hinv_factor : ∀ N v,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint (coord N)) v‖ ^ (2 : ℕ))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget_succ : ∀ N, lambdaSeq (N + 1) ≤ 1 / 8)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (htailBase_le : ∀ N,
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound) :
+    ∃ M N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (M : ℝ) * Real.log (2 : ℝ) ∧
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  obtain ⟨M, N, hM, hN⟩ :=
+    chewi1316_exists_preliminary_tail_log_count_indices
+      (tailBound := tailBound) (c0 := c0) (nu := nu)
+      htailBound_pos hc0_pos
+  let Nsucc : ℕ := N + 1
+  have hNsucc :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (Nsucc : ℝ) * c0 := by
+    have hN_le : (N : ℝ) ≤ (Nsucc : ℝ) := by
+      exact_mod_cast Nat.le_succ N
+    have hmul : (N : ℝ) * c0 ≤ (Nsucc : ℝ) * c0 :=
+      mul_le_mul_of_nonneg_right hN_le hc0_pos.le
+    exact hN.trans hmul
+  have htailBase_le' :
+      |(1 : ℝ)| *
+          dualLocalNorm invHess (xseq Nsucc) (phiGrad xbar0) ≤
+        tailBound := by
+    simpa using htailBase_le Nsucc
+  have htail :
+      |(1 - c0 / Real.sqrt nu) ^ Nsucc| *
+          dualLocalNorm invHess (xseq Nsucc) (phiGrad xbar0) ≤
+        1 / 16 := by
+    have htail' :=
+      chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBoundLogBound_nonneg
+        (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+        (xseq := xseq) (tStart := 1) (c0 := c0) (nu := nu)
+        (tailBound := tailBound) (N := Nsucc) (M := M)
+        hsqrt_pos hdelta_lt_one hNsucc htailBound_pos htailBase_le'
+        hM
+    simpa using htail'
+  obtain ⟨tMain, htMain_pos, hmain⟩ :=
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBudget
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := coord Nsucc) (c0 := c0) (nu := nu) (N := Nsucc)
+      (hinv_factor Nsucc) hx0 ht0 htstep hlambda0 hstep
+      (by
+        change lambdaSeq (N + 1) ≤ 1 / 8
+        exact hlambdaBudget_succ N)
+      htail
+  exact ⟨M, Nsucc, tMain, htMain_pos, hM, hNsucc, hmain⟩
+
+/--
 Source-start initialization from a single inverse-Hessian quadratic upper
 comparison to the source point.  This packages the local-norm transport bridge
 with the uniform-tail initialization wrapper.
@@ -17032,6 +17114,134 @@ theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_prel
         (H := hess (xseq N)) (invH := invHess (xseq N))
         (sqrtCoord := sqrtCoord N) (hhess_seq N) (hinv_seq N))
     hxbar0_cauchy hbudget
+
+/--
+Non-vacuous square-root-coordinate family version of the current-local
+preliminary Newton source-start initialization bridge.  It uses the successor
+index selected by the logarithmic/count argument, so the small final
+Newton-decrement budget is required only for `lambdaSeq (N + 1)`.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {invHess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {xbar0 a : E} {xseq : ℕ -> E}
+    {tseq lambdaSeq : ℕ -> ℝ} {sqrtCoord : ℕ -> E ≃L[ℝ] E}
+    {c0 nu tailBound : ℝ}
+    (hhess_seq : ∀ N : ℕ,
+      hess (xseq N) =
+        (ContinuousLinearMap.adjoint (sqrtCoord N).toContinuousLinearMap).comp
+          (sqrtCoord N).toContinuousLinearMap)
+    (hinv_seq : ∀ N : ℕ,
+      invHess (xseq N) =
+        (sqrtCoord N).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrtCoord N).symm.toContinuousLinearMap))
+    (hs : Convex ℝ s)
+    (hxbar0 : xbar0 ∈ s)
+    (hx0 : xseq 0 = xbar0)
+    (hxseq_succ : ∀ N : ℕ, xseq (N + 1) ∈ s)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hdecrement_step : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget_succ : ∀ N, lambdaSeq (N + 1) ≤ 1 / 8)
+    (hsourceBudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * lambdaSeq n) ≤ 1 / 2)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hbar : SelfConcordantBarrierOn s hess phiGrad invHess thirdMixed (1 : ℝ) nu)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess_global : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed_global : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hnewton : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq n)) invHess
+          (xseq n))
+    (hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w)
+    (hbudget : 2 * Real.sqrt nu ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  have hinv_right : ∀ N v, hess (xseq N) (invHess (xseq N) v) = v := by
+    intro N
+    exact
+      hessianRightInverse_of_adjointSqrtCoord_invHess
+        (H := hess (xseq N)) (invH := invHess (xseq N))
+        (sqrtCoord := sqrtCoord N) (hhess_seq N) (hinv_seq N)
+  have hcurrent : ∀ n : ℕ,
+      localNorm hess (xseq n)
+        (newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq n)) invHess
+          (xseq n) - xseq n) ≤ lambdaSeq n := by
+    intro n
+    have hstep_norm :
+        localNorm hess (xseq n)
+          (newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq n)) invHess
+            (xseq n) - xseq n) =
+          newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+            invHess (xseq n) :=
+      localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse
+        (hess := hess)
+        (grad := preliminaryPathGrad phiGrad xbar0 (tseq n))
+        (invHess := invHess) (x := xseq n) (hinv_right n)
+    rw [hstep_norm]
+    exact
+      preliminaryPath_decrement_bound_of_step
+        (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+        (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+        (preliminaryPath_initial_decrement_le_of_start_one_self
+          (phiGrad := phiGrad) (invHess := invHess) (xbar0 := xbar0)
+          (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+          hx0 ht0 hlambda0)
+        hdecrement_step n
+  have htailBase_le : ∀ N,
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound :=
+    chewi1316_uniformTailBound_of_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (invHess := invHess) (thirdMixed := thirdMixed) (phiGrad := phiGrad)
+      (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+      (lambdaSeq := lambdaSeq) (sqrtCoord := sqrtCoord)
+      (nu := nu) (tailBound := tailBound)
+      hhess_seq hinv_seq hs hxbar0 hx0 hxseq_succ hbar hess_pos
+      hhess_cont hhess_global hmixed_global hnewton hcurrent hsourceBudget
+      hxbar0_cauchy hbudget
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound_tailLambdaBudget
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := fun N => (sqrtCoord N).symm.toContinuousLinearMap)
+      (c0 := c0) (nu := nu) (tailBound := tailBound)
+      (fun N v =>
+        inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse
+          (hess := hess) (invHess := invHess) (x := xseq N)
+          (coord := (sqrtCoord N).symm.toContinuousLinearMap)
+          (sqrtH := (sqrtCoord N).toContinuousLinearMap)
+          (by
+            intro z
+            simp)
+          (hhess_seq N)
+          (hinv_right N)
+          v)
+      hx0 ht0 htstep hlambda0 hdecrement_step hlambdaBudget_succ
+      htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one htailBase_le
 
 /--
 Measured-tail source-start version: use

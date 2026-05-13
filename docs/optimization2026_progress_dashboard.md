@@ -385,7 +385,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  These derive the source Hessian factorization, inverse-Hessian
 	  right-inverse, and dual quadratic factorization from
 	  `sqrtCoord N : E ≃L[ℝ] E` plus the representation
-	  `invHess(x_n) = sqrtCoord_n.symm ∘ sqrtCoord_n.symm†`.  Search-first reuse:
+	  `invHess(x_n) = sqrtCoord_n.symm ∘ sqrtCoord_n.symm†`.  The
+	  non-vacuous successor-index cleanup now adds
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound_tailLambdaBudget`
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
+	  This records and fixes a route issue in the older existential wrappers:
+	  `1/4 <= lambdaSeq 0` plus global `lambdaSeq N <= 1/8` is inconsistent at
+	  `N = 0`; the new wrappers select a successor final index and require only
+	  `lambdaSeq (N+1) <= 1/8`.  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
 	  `hessianPrimalFactor_of_adjointSqrt`,

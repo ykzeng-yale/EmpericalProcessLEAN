@@ -516,6 +516,14 @@ packet adds
 	and dual quadratic factorization from the concrete representation
 	`hess(x_n) = sqrtCoord_n† sqrtCoord_n` and
 	`invHess(x_n) = sqrtCoord_n.symm sqrtCoord_n.symm†`.
+	The non-vacuous successor-index cleanup adds
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound_tailLambdaBudget`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
+	This fixes the route issue that the older existential source-start wrappers
+	combined `1/4 <= lambdaSeq 0` with a global `lambdaSeq N <= 1/8` premise,
+	which is inconsistent at `N = 0`; the new wrappers always select a
+	successor preliminary index and only require `lambdaSeq (N+1) <= 1/8`.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
