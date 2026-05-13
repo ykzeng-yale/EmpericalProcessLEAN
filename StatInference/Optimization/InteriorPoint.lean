@@ -905,6 +905,57 @@ theorem inverseHessianQuadratic_nonneg_of_adjointCoordFactor
   rw [hinv_factor v]
   exact sq_nonneg _
 
+theorem dualLocalNorm_eq_adjointCoord_norm_of_factor
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {x : E} {coord : E →L[ℝ] E}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (v : E) :
+    dualLocalNorm invHess x v =
+      ‖(ContinuousLinearMap.adjoint coord) v‖ := by
+  have hinv_nonneg : 0 ≤ inner ℝ v (invHess x v) := by
+    rw [hinv_factor v]
+    exact sq_nonneg _
+  refine (sq_eq_sq₀
+    (dualLocalNorm_nonneg invHess x v)
+    (norm_nonneg ((ContinuousLinearMap.adjoint coord) v))).mp ?_
+  calc
+    (dualLocalNorm invHess x v) ^ (2 : ℕ) =
+        inner ℝ v (invHess x v) :=
+      dualLocalNorm_sq_eq_inner hinv_nonneg
+    _ = ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ) :=
+      hinv_factor v
+
+theorem dualLocalNorm_add_le_of_adjointCoordFactor
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {x : E} {coord : E →L[ℝ] E}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (u v : E) :
+    dualLocalNorm invHess x (u + v) ≤
+      dualLocalNorm invHess x u + dualLocalNorm invHess x v := by
+  rw [dualLocalNorm_eq_adjointCoord_norm_of_factor hinv_factor (u + v)]
+  rw [dualLocalNorm_eq_adjointCoord_norm_of_factor hinv_factor u]
+  rw [dualLocalNorm_eq_adjointCoord_norm_of_factor hinv_factor v]
+  simpa [map_add] using
+    norm_add_le ((ContinuousLinearMap.adjoint coord) u)
+      ((ContinuousLinearMap.adjoint coord) v)
+
+theorem dualLocalNorm_smul_of_adjointCoordFactor
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {x : E} {coord : E →L[ℝ] E}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (c : ℝ) (v : E) :
+    dualLocalNorm invHess x (c • v) =
+      |c| * dualLocalNorm invHess x v := by
+  rw [dualLocalNorm_eq_adjointCoord_norm_of_factor hinv_factor (c • v)]
+  rw [dualLocalNorm_eq_adjointCoord_norm_of_factor hinv_factor v]
+  simp [map_smul, norm_smul, Real.norm_eq_abs]
+
 theorem newtonStep_sub
     (grad : E -> E) (invHess : E -> E →L[ℝ] E) (x : E) :
     newtonStep grad invHess x - x = -invHess x (grad x) := by
@@ -10523,6 +10574,31 @@ theorem chewi1316_preNewtonDecrement_le_update_bound
         nlinarith
   exact hnorm_step.trans (by nlinarith)
 
+theorem chewi1316_preNewtonDecrement_le_update_bound_of_adjointCoordFactor
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {x oldGrad phiGrad : E}
+    {coord : E →L[ℝ] E} {delta c0 lambdaOld nu : ℝ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess x v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_le_c0 : delta * Real.sqrt nu ≤ c0)
+    (hlambda_old : dualLocalNorm invHess x oldGrad ≤ lambdaOld)
+    (hlambda_old_le : lambdaOld ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x phiGrad ≤ Real.sqrt nu) :
+    dualLocalNorm invHess x
+        ((1 + delta) • oldGrad + (-delta) • phiGrad) ≤
+      (1 + c0) / 4 + c0 :=
+  chewi1316_preNewtonDecrement_le_update_bound
+    (invHess := invHess) (x := x) (oldGrad := oldGrad)
+    (phiGrad := phiGrad) (delta := delta) (c0 := c0)
+    (lambdaOld := lambdaOld) (nu := nu)
+    hdelta_nonneg hdelta_le_c0 hdelta_sqrt_le_c0
+    hlambda_old hlambda_old_le hphi_bound
+    (dualLocalNorm_add_le_of_adjointCoordFactor hinv_factor)
+    (dualLocalNorm_smul_of_adjointCoordFactor hinv_factor)
+
 theorem real_mainStage_newton_fraction_le_quarter
     {lambdaPre c0 : ℝ}
     (hlambda_nonneg : 0 ≤ lambdaPre)
@@ -11488,6 +11564,35 @@ theorem inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inv
       simp
     _ = ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ) := by
       rw [hadj_eq]
+
+theorem chewi1316_preNewtonDecrement_le_update_bound_of_adjointSqrt_right_inverse
+    [CompleteSpace E]
+    {hess invHess : E -> E →L[ℝ] E} {x oldGrad phiGrad : E}
+    {coord sqrtH : E →L[ℝ] E} {delta c0 lambdaOld nu : ℝ}
+    (hsqrtH_coord : ∀ z : E, sqrtH (coord z) = z)
+    (hhess_eq : hess x = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hright : ∀ v : E, hess x (invHess x v) = v)
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_le_c0 : delta * Real.sqrt nu ≤ c0)
+    (hlambda_old : dualLocalNorm invHess x oldGrad ≤ lambdaOld)
+    (hlambda_old_le : lambdaOld ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x phiGrad ≤ Real.sqrt nu) :
+    dualLocalNorm invHess x
+        ((1 + delta) • oldGrad + (-delta) • phiGrad) ≤
+      (1 + c0) / 4 + c0 := by
+  refine
+    chewi1316_preNewtonDecrement_le_update_bound_of_adjointCoordFactor
+      (invHess := invHess) (x := x) (oldGrad := oldGrad)
+      (phiGrad := phiGrad) (coord := coord) (delta := delta)
+      (c0 := c0) (lambdaOld := lambdaOld) (nu := nu) ?_ hdelta_nonneg
+      hdelta_le_c0 hdelta_sqrt_le_c0 hlambda_old hlambda_old_le hphi_bound
+  intro v
+  exact
+    inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse
+      (hess := hess) (invHess := invHess) (x := x)
+      (coord := coord) (sqrtH := sqrtH)
+      hsqrtH_coord hhess_eq hright v
 
 /--
 Chewi Proposition 13.11, shared-domain sum case, with the summed inverse-local

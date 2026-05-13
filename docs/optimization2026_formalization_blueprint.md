@@ -58,10 +58,17 @@ The newest main-stage algebra layer adds
 `real_mainStage_newton_fraction_le_quarter`, and
 `chewi1316_mainStage_newtonDecrement_le_quarter`.  It proves the source
 `c0 <= 1/16` post-Newton algebra and the pre-Newton update bound from a
-supplied dual-local-norm triangle/homogeneity interface.  The next live route
-is to discharge that interface from the existing inverse-Hessian
-right-inverse or square-root-coordinate models and then package the full
-main-stage invariant.
+supplied dual-local-norm triangle/homogeneity interface.  The newest
+dual-norm interface layer adds `dualLocalNorm_eq_adjointCoord_norm_of_factor`,
+`dualLocalNorm_add_le_of_adjointCoordFactor`,
+`dualLocalNorm_smul_of_adjointCoordFactor`,
+`chewi1316_preNewtonDecrement_le_update_bound_of_adjointCoordFactor`, and
+`chewi1316_preNewtonDecrement_le_update_bound_of_adjointSqrt_right_inverse`,
+discharging that interface from the existing inverse-Hessian right-inverse and
+square-root-coordinate models.  The next live route is to package the full
+main-stage invariant by proving the central-path gradient-update decomposition
+and then applying the compiled pre-Newton bound plus Theorem 13.8 Newton-step
+wrapper.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

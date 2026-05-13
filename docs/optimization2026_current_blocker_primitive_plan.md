@@ -192,14 +192,23 @@ Theorem 13.8 Newton-step wrapper returns
 `real_mainStage_newton_fraction_le_quarter`, and
 `chewi1316_mainStage_newtonDecrement_le_quarter`.  This closes the scalar
 `c0 <= 1/16` post-Newton algebra and the supplied dual-norm-interface
-pre-Newton update bound.  The next theorem-sized packet should discharge or
-instantiate the currently supplied dual-local-norm triangle/homogeneity
-interface, preferably from the existing inverse-Hessian right-inverse or
-square-root-coordinate model, then package the full main-stage invariant with
-the compiled Theorem 13.8 wrapper.  Do not route the next run back to product,
-sum, affine/range, positive-orthant barrier setup, or the already-compiled
-Lemma 13.16/main-stage algebra unless a new downstream proof directly needs
-one of those verified declarations.
+pre-Newton update bound.  The newest dual-norm update-interface packet adds
+`dualLocalNorm_eq_adjointCoord_norm_of_factor`,
+`dualLocalNorm_add_le_of_adjointCoordFactor`,
+`dualLocalNorm_smul_of_adjointCoordFactor`,
+`chewi1316_preNewtonDecrement_le_update_bound_of_adjointCoordFactor`, and
+`chewi1316_preNewtonDecrement_le_update_bound_of_adjointSqrt_right_inverse`.
+This discharges the triangle/homogeneity interface from the same
+inverse-Hessian right-inverse plus square-root-coordinate model used in the
+Theorem 13.8 route.  The next theorem-sized packet should package the full
+main-stage invariant: express the new central-path gradient as
+`(1 + delta) • oldGrad + (-delta) • phiGrad`, apply the compiled pre-Newton
+bound, then feed the resulting decrement into the compiled Theorem 13.8
+Newton-step wrapper to preserve `lambda <= 1/4`.  Do not route the next run
+back to product, sum, affine/range, positive-orthant barrier setup, the
+already-compiled Lemma 13.16/main-stage algebra, or the dual-norm interface
+unless a new downstream proof directly needs one of those verified
+declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

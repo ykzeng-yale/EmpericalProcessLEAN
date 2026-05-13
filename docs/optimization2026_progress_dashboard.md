@@ -88,10 +88,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   `real_mainStage_newton_fraction_le_quarter`, and
   `chewi1316_mainStage_newtonDecrement_le_quarter`, closing the scalar
   `c0 <= 1/16` post-Newton algebra and the supplied dual-norm-interface
-  pre-Newton update bound.  The remaining gate for the full invariant is to
-  discharge the dual-local-norm triangle/homogeneity interface from a
-  right-inverse or square-root-coordinate model, then feed the pre-bound into
-  the compiled Theorem 13.8 Newton-step wrapper.
+  pre-Newton update bound.  The newest dual-norm interface packet adds
+  `dualLocalNorm_eq_adjointCoord_norm_of_factor`,
+  `dualLocalNorm_add_le_of_adjointCoordFactor`,
+  `dualLocalNorm_smul_of_adjointCoordFactor`,
+  `chewi1316_preNewtonDecrement_le_update_bound_of_adjointCoordFactor`, and
+  `chewi1316_preNewtonDecrement_le_update_bound_of_adjointSqrt_right_inverse`,
+  discharging the triangle/homogeneity gate from the same right-inverse plus
+  square-root-coordinate model used in the Theorem 13.8 route.  The remaining
+  gate for the full invariant is now the central-path gradient-update
+  decomposition and final call into the compiled Theorem 13.8 Newton-step
+  wrapper.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
