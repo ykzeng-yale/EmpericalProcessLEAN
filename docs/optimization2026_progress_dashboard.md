@@ -371,13 +371,22 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  This inductively transports each current-local Newton displacement to the
 	  source metric using Chewi Lemma 13.6 and replaces the raw source-local
 	  cumulative hypothesis by `sum_{n<=N} 2 * lambda_n <= 1/2` plus the
-	  current-local/Newton-decrement identities.  Search-first reuse: local
+	  current-local/Newton-decrement identities.  The right-inverse cleanup adds
+	  `chewi1316_uniformTailBound_of_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_hessianRightInverse`
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_hessianRightInverse`,
+	  deriving both the inverse-local identity and the Newton-step
+	  local-norm/decrement identity from
+	  `hess(x_n) (invHess(x_n) v) = v`.  Search-first reuse: local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
-	  `hessianPrimalFactor_of_adjointSqrt`, mathlib `norm_add_le`,
-	  `norm_sum_le`, and `Finset.sum_range_sub`.  The live exact-source gate is
+	  `hessianPrimalFactor_of_adjointSqrt`,
+	  `localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
+	  `localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse`,
+	  mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The
+	  live exact-source gate is
 	  now the concrete Chewi/Nesterov analytical-center data: successor
 	  membership, a global derivative package, the preliminary Newton recurrence,
-	  current-local Newton-step/decrement identities, the scalar summability
+	  a Hessian right-inverse on the preliminary points, the scalar summability
 	  budget `sum 2*lambda_n <= 1/2`, and `2 * sqrt(nu) <= tailBound`.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include

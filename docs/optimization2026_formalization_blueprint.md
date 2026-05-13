@@ -317,14 +317,21 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	It inductively uses Chewi Lemma 13.6 to compare the source metric to the
 	current metric and replaces the raw source-local cumulative step budget by
 	`sum_{n<=N} 2 * lambda_n <= 1/2` plus current-local/Newton-decrement
-	identities.  Search-first reuse: local
+	identities.  The right-inverse cleanup adds
+	`chewi1316_uniformTailBound_of_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_hessianRightInverse`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_hessianRightInverse`,
+	deriving both inverse-local and step-norm identities from
+	`hess(x_n) (invHess(x_n) v) = v`.  Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
-	`hessianPrimalFactor_of_adjointSqrt` and mathlib `norm_add_le`,
-	`norm_sum_le`, and `Finset.sum_range_sub`.  The next
+	`hessianPrimalFactor_of_adjointSqrt`,
+	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
+	`localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse`,
+	and mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The next
 	exact-source §13.16 gate is no longer a raw `hradius_half`; it is the
-	concrete preliminary Newton recurrence, current-local Newton-step/decrement
-	identities, scalar summability budget `sum 2*lambda_n <= 1/2`, successor
-	membership, global derivative package, and the scalar tail budget
+	concrete preliminary Newton recurrence, Hessian right-inverse on the
+	preliminary points, scalar summability budget `sum 2*lambda_n <= 1/2`,
+	successor membership, global derivative package, and the scalar tail budget
 	`2 * sqrt(nu) <= tailBound`.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports

@@ -501,9 +501,18 @@ packet adds
 	displacement into the source metric and replace the raw source-local
 	cumulative budget by the scalar budget `sum_{n<=N} 2 * lambda_n <= 1/2`
 	together with current-local/Newton-decrement identities.
+	The right-inverse cleanup adds
+	`chewi1316_uniformTailBound_of_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_hessianRightInverse`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_hessianRightInverse`.
+	These derive both the inverse-local identity and the Newton-step
+	local-norm/decrement identity from
+	`hess(x_n) (invHess(x_n) v) = v`.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
-	`hessianPrimalFactor_of_adjointSqrt` and mathlib `norm_add_le`,
-	`norm_sum_le`, and `Finset.sum_range_sub`.
+	`hessianPrimalFactor_of_adjointSqrt`,
+	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
+	`localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse`,
+	and mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.
 	Together these formalize the reverse
 	path-following setup with vector
 	`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
@@ -511,8 +520,8 @@ packet adds
 	`lambda <= 1/4` invariant for the supplied preliminary path.  The next live gate
 	is now narrower: prove the concrete Chewi/Nesterov analytical-center successor
 	source-radius data: successor membership, a global Hessian derivative/mixed-third
-	package on the domain, the preliminary Newton recurrence, current-local
-	Newton-step/decrement identities, the scalar summability budget
+	package on the domain, the preliminary Newton recurrence, a Hessian
+	right-inverse on the preliminary points, the scalar summability budget
 	`sum 2*lambda_n <= 1/2`, and `2 * sqrt(nu) <= tailBound`.
 	Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
