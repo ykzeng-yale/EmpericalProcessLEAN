@@ -17847,6 +17847,94 @@ theorem chewi1316_preNewtonDecrement_le_decrease_bound_of_preliminaryPathGradien
       hdelta_le_one hdelta_le_c0 hdelta_sqrt_le_c0 hlambda_old
       hlambda_old_le hphi_bound
 
+/--
+Pointwise next-parameter pre-Newton decrement budget for the preliminary path.
+The old residual bound `lambda_{t_n}(x_n) <= 1/4` and the decreasing parameter
+update imply a bound on `lambda_{t_{n+1}}(x_n)` before taking the Newton step.
+-/
+theorem chewi1316_preliminaryPath_preDecrementNext_le_stepBudget_of_residual_quarter_sqrtCoordFamily
+    [CompleteSpace E]
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {xbar0 : E} {xseq : ℕ -> E}
+    {tseq stepBudget : ℕ -> ℝ} {sqrtCoord : ℕ -> E ≃L[ℝ] E}
+    {delta c0 nu : ℝ}
+    (hhess_seq : ∀ N : ℕ,
+      hess (xseq N) =
+        (ContinuousLinearMap.adjoint (sqrtCoord N).toContinuousLinearMap).comp
+          (sqrtCoord N).toContinuousLinearMap)
+    (hinv_seq : ∀ N : ℕ,
+      invHess (xseq N) =
+        (sqrtCoord N).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint (sqrtCoord N).symm.toContinuousLinearMap))
+    (htstep_delta : ∀ n : ℕ, tseq (n + 1) = (1 - delta) * tseq n)
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_one : delta ≤ 1)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_le_c0 : delta * Real.sqrt nu ≤ c0)
+    (hresidual_quarter : ∀ n : ℕ,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+        invHess (xseq n) ≤ 1 / 4)
+    (hphi_bound : ∀ n : ℕ,
+      dualLocalNorm invHess (xseq n) (phiGrad (xseq n)) ≤ Real.sqrt nu)
+    (hstepBudget_lower : ∀ n : ℕ, (1 + c0) / 4 + c0 ≤ stepBudget n) :
+    ∀ n : ℕ,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq n) ≤ stepBudget n := by
+  intro n
+  have hsqrtH_coord : ∀ z : E,
+      (sqrtCoord n).toContinuousLinearMap
+          ((sqrtCoord n).symm.toContinuousLinearMap z) = z := by
+    intro z
+    simp
+  have hright : ∀ v : E, hess (xseq n) (invHess (xseq n) v) = v :=
+    hessianRightInverse_of_adjointSqrtCoord_invHess
+      (H := hess (xseq n)) (invH := invHess (xseq n))
+      (sqrtCoord := sqrtCoord n) (hhess_seq n) (hinv_seq n)
+  have hpre :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq n) ≤ (1 + c0) / 4 + c0 :=
+    chewi1316_preNewtonDecrement_le_decrease_bound_of_preliminaryPathGradient_adjointSqrt_right_inverse
+      (hess := hess) (invHess := invHess)
+      (grad := preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+      (phiGrad := phiGrad) (x := xseq n) (xbar0 := xbar0)
+      (coord := (sqrtCoord n).symm.toContinuousLinearMap)
+      (sqrtH := (sqrtCoord n).toContinuousLinearMap)
+      (t := tseq n) (tNext := tseq (n + 1)) (delta := delta)
+      (c0 := c0) (lambdaOld := (1 / 4 : ℝ)) (nu := nu)
+      hsqrtH_coord (hhess_seq n) hright (htstep_delta n) rfl
+      hdelta_nonneg hdelta_le_one hdelta_le_c0 hdelta_sqrt_le_c0
+      (hresidual_quarter n) (by norm_num) (hphi_bound n)
+  exact hpre.trans (hstepBudget_lower n)
+
+/--
+The residual-quarter pre-decrement bound is not itself a viable global
+`stepBudget` for the source-radius prefix-sum interface: when `c0 >= 0`,
+the lower bound is already at least `1/4`, so two such steps contradict the
+`1/2` prefix budget.  This records the route check that the Chapter 13
+preliminary path needs a sharper radius/telescoping argument, not a constant
+step-budget summability wrapper.
+-/
+theorem chewi1316_preDecrementStepBudget_lower_incompatible_with_sourceBudget
+    {stepBudget : ℕ -> ℝ} {c0 : ℝ}
+    (hc0_nonneg : 0 ≤ c0)
+    (hstepBudget_lower : ∀ n : ℕ, (1 + c0) / 4 + c0 ≤ stepBudget n)
+    (hsourceBudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * stepBudget n) ≤ 1 / 2) :
+    False := by
+  have hterm : ∀ n ∈ Finset.range 2, (1 / 2 : ℝ) ≤ 2 * stepBudget n := by
+    intro n hn
+    have hn_lower := hstepBudget_lower n
+    nlinarith
+  have hsum_lower :
+      (∑ n ∈ Finset.range 2, (1 / 2 : ℝ)) ≤
+        ∑ n ∈ Finset.range 2, 2 * stepBudget n := by
+    exact Finset.sum_le_sum hterm
+  have hconst_sum : (∑ n ∈ Finset.range 2, (1 / 2 : ℝ)) = 1 := by
+    norm_num
+  have hsource_two : (∑ n ∈ Finset.range 2, 2 * stepBudget n) ≤ 1 / 2 := by
+    simpa using hsourceBudget 1
+  nlinarith
+
 theorem chewi1316_mainStage_newtonDecrement_le_quarter_of_gradientUpdate_and_newtonBound
     [CompleteSpace E]
     {hess invHess : E -> E →L[ℝ] E} {grad : E -> E}

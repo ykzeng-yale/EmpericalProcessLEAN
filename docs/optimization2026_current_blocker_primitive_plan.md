@@ -559,6 +559,19 @@ packet adds
 	`lambda_{f_{t_{n+1}}}(x_n)` using
 	`localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse`, so
 	callers no longer need to provide raw local-norm step bounds.
+	The pre-decrement pointwise bridge adds
+	`chewi1316_preliminaryPath_preDecrementNext_le_stepBudget_of_residual_quarter_sqrtCoordFamily`,
+	which derives a next-parameter pre-Newton decrement budget from the old
+	residual invariant `lambda_{f_{t_n}}(x_n) <= 1/4`, the decreasing update
+	`t_{n+1} = (1 - delta) t_n`, and the square-root-coordinate inverse-Hessian
+	model.  It also records
+	`chewi1316_preDecrementStepBudget_lower_incompatible_with_sourceBudget`:
+	when `c0 >= 0`, the resulting constant lower bound is already at least
+	`1/4`, so feeding that constant-level budget into the global prefix-sum
+	source-radius interface contradicts the `1/2` source budget after two
+	steps.  This formally rules out the naive constant pre-decrement
+	summability route and points the next blocker at a sharper preliminary
+	radius/telescoping argument or an analytical-center distance bound.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

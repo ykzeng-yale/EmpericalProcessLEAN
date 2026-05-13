@@ -425,6 +425,17 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `lambda_{f_{t_{n+1}}}(x_n)` via the compiled right-inverse
 	  local-norm/decrement identity, so raw local-norm bounds are no longer the
 	  live interface.
+	  The pre-decrement pointwise bridge adds
+	  `chewi1316_preliminaryPath_preDecrementNext_le_stepBudget_of_residual_quarter_sqrtCoordFamily`,
+	  deriving the next-parameter pre-Newton decrement budget from the old
+	  residual `<= 1/4`, the decreasing `t` update, and the
+	  square-root-coordinate inverse-Hessian model.  The same run also adds
+	  `chewi1316_preDecrementStepBudget_lower_incompatible_with_sourceBudget`,
+	  formally showing that this constant-level bound cannot be used as a
+	  global source-radius prefix-sum budget when `c0 >= 0`: two steps already
+	  contradict the `1/2` source budget.  The live blocker is therefore not
+	  another wrapper around this route, but a sharper preliminary
+	  radius/telescoping argument or an analytical-center distance bound.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

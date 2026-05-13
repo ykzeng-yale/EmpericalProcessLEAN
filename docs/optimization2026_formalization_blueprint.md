@@ -373,6 +373,17 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`lambda_{f_{t_{n+1}}}(x_n)` using the right-inverse Newton
 	local-norm/decrement identity, leaving the summed pre-Newton decrement
 	budget as the sharper downstream scalar gate.
+	The pre-decrement pointwise bridge adds
+	`chewi1316_preliminaryPath_preDecrementNext_le_stepBudget_of_residual_quarter_sqrtCoordFamily`,
+	which derives the next-parameter pre-Newton decrement budget from the old
+	residual invariant, decreasing `t` update, and square-root-coordinate
+	inverse-Hessian model.  The route check
+	`chewi1316_preDecrementStepBudget_lower_incompatible_with_sourceBudget`
+	shows this constant-level budget cannot satisfy the global source-radius
+	prefix-sum interface when `c0 >= 0`; two steps already exceed the `1/2`
+	source budget.  The blueprint should now prefer a sharper preliminary
+	radius/telescoping argument or an analytical-center distance bound instead
+	of wrapping this constant budget route further.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
