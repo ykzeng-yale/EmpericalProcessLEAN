@@ -141,9 +141,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   adds `chewi1316_objectiveGapNumerator_le_two_mul`,
   `chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t`, and
   `chewi1316_objective_gap_le_eps_of_mainStageParameter_large`, proving the
-  source stopping rule once the closed-form `t_N` is large enough.  Remaining
-  gate: preliminary-stage initialization and strictly-feasible-start
-  discussion.
+  source stopping rule once the closed-form `t_N` is large enough.  The newest
+  preliminary-stage packet adds
+  `chewi1316_preliminaryStageParameter_eq_pow_mul_of_delta`,
+  `chewi1316_preliminaryStageParameter_pos_of_pos`,
+  `centralPathGradient_decrease_eq`,
+  `centralPathGradient_decrease_eq_of_tNext`, `preliminaryPathDirection`,
+  `preliminaryPathGrad`, endpoint identities and zero-decrement wrappers for
+  `t = 1` and `t = 0`, `preliminaryPathGrad_hasFDerivAt`, and
+  `preliminaryPathGradient_decrease_eq_of_tNext`.  Remaining gate: supplied
+  preliminary convergence/iteration-count wrapper, then
+  strictly-feasible-start discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

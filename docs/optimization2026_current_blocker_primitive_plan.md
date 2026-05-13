@@ -250,16 +250,30 @@ The newest objective-gap stopping packet adds
 `chewi1316_objective_gap_le_eps_of_mainStageParameter_large`, combining the
 closed-form parameter growth with the compiled Lemma 13.16 objective-gap bound
 to prove the source stopping rule when `t_N` is large enough.  The next live
-gate is the preliminary-stage initialization paragraph: formalize the reverse
-path-following setup with vector `-grad phi(xbar0)`, decreasing `t`, and the
-target `lambda <= 1/4`, initially as supplied-interface wrappers matching the
-Nesterov §5.3.5 citation.  Do not route the next run back to product, sum,
-affine/range, positive-orthant barrier setup, the already-compiled Lemma
+preliminary-stage packet adds
+`chewi1316_preliminaryStageParameter_eq_pow_mul_of_delta`,
+`chewi1316_preliminaryStageParameter_pos_of_pos`,
+`centralPathGradient_decrease_eq`,
+`centralPathGradient_decrease_eq_of_tNext`, `preliminaryPathDirection`,
+`preliminaryPathGrad`, `preliminaryPathGrad_one_self`,
+`preliminaryPathGrad_zero`, `preliminaryPathGrad_zero_of_analyticalCenter`,
+`preliminaryPath_newtonDecrement_one_self_eq_zero`,
+`preliminaryPath_newtonDecrement_one_self_le_quarter`,
+`preliminaryPath_newtonDecrement_zero_of_analyticalCenter`,
+`preliminaryPathGrad_hasFDerivAt`, and
+`preliminaryPathGradient_decrease_eq_of_tNext`.  This formalizes the reverse
+path-following setup with vector `-grad phi(xbar0)`, decreasing `t`, endpoint
+stationarity at `t = 1` and `t = 0`, and zero Newton decrement at the source
+endpoints.  The next live gate is to add a supplied-interface preliminary
+convergence wrapper matching the Nesterov §5.3.5 citation: from the decreasing
+path update plus a supplied iteration-count/log bound, produce an `x0,t0` with
+`lambda <= 1/4` for the main stage.  Do not route the next run back to product,
+sum, affine/range, positive-orthant barrier setup, the already-compiled Lemma
 13.16/main-stage algebra, the dual-norm interface, the generic main-stage
 wrappers, feasible-step membership, the positive-orthant main-stage one-step
-invariant, the closed-form parameter recurrence, or the objective-gap stopping
-rule unless a new downstream proof directly needs one of those verified
-declarations.
+invariant, the closed-form parameter recurrence, the objective-gap stopping
+rule, or preliminary endpoint/decreasing-gradient algebra unless a new
+downstream proof directly needs one of those verified declarations.
 
 Superseding update for the current frontier: the active Chapter 13 lane has
 moved past the positive-orthant Theorem 13.8 wrapper and Definition 13.9

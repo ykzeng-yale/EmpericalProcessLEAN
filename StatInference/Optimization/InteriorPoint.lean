@@ -10747,6 +10747,24 @@ theorem chewi1316_mainStageParameter_pos_of_pos
   rw [chewi1316_mainStageParameter_eq_pow_mul h0 hstep n]
   exact mul_pos (pow_pos hr_pos n) ht0_pos
 
+theorem chewi1316_preliminaryStageParameter_eq_pow_mul_of_delta
+    {tseq : ℕ -> ℝ} {tStart c0 nu : ℝ}
+    (h0 : tseq 0 = tStart)
+    (hstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n) :
+    ∀ n : ℕ, tseq n = (1 - c0 / Real.sqrt nu) ^ n * tStart :=
+  chewi1316_mainStageParameter_eq_pow_mul h0 hstep
+
+theorem chewi1316_preliminaryStageParameter_pos_of_pos
+    {tseq : ℕ -> ℝ} {tStart c0 nu : ℝ}
+    (h0 : tseq 0 = tStart)
+    (hstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hr_pos : 0 < 1 - c0 / Real.sqrt nu)
+    (htStart_pos : 0 < tStart) :
+    ∀ n : ℕ, 0 < tseq n :=
+  chewi1316_mainStageParameter_pos_of_pos h0 hstep hr_pos htStart_pos
+
 /--
 Main-stage objective-gap stopping rule with the multiplicative parameter
 recurrence expanded into the source closed form.
@@ -11789,6 +11807,85 @@ theorem centralPathGradient_update_eq_of_tNext
       (1 + delta) • (t • a + barrierGrad) + (-delta) • barrierGrad := by
   rw [htNext]
   exact centralPathGradient_update_eq a barrierGrad t delta
+
+theorem centralPathGradient_decrease_eq
+    (a barrierGrad : E) (t delta : ℝ) :
+    ((1 - delta) * t) • a + barrierGrad =
+      (1 - delta) • (t • a + barrierGrad) + delta • barrierGrad := by
+  module
+
+theorem centralPathGradient_decrease_eq_of_tNext
+    {t tNext delta : ℝ} (htNext : tNext = (1 - delta) * t)
+    (a barrierGrad : E) :
+    tNext • a + barrierGrad =
+      (1 - delta) • (t • a + barrierGrad) + delta • barrierGrad := by
+  rw [htNext]
+  exact centralPathGradient_decrease_eq a barrierGrad t delta
+
+def preliminaryPathDirection (phiGrad : E -> E) (xbar0 : E) : E :=
+  -phiGrad xbar0
+
+def preliminaryPathGrad (phiGrad : E -> E) (xbar0 : E) (t : ℝ) : E -> E :=
+  centralPathGrad t (preliminaryPathDirection phiGrad xbar0) phiGrad
+
+@[simp] theorem preliminaryPathGrad_apply
+    (phiGrad : E -> E) (xbar0 : E) (t : ℝ) (x : E) :
+    preliminaryPathGrad phiGrad xbar0 t x =
+      t • (-phiGrad xbar0) + phiGrad x :=
+  rfl
+
+theorem preliminaryPathGrad_one_self (phiGrad : E -> E) (xbar0 : E) :
+    preliminaryPathGrad phiGrad xbar0 1 xbar0 = 0 := by
+  simp [preliminaryPathGrad, preliminaryPathDirection, centralPathGrad]
+
+theorem preliminaryPathGrad_zero (phiGrad : E -> E) (xbar0 x : E) :
+    preliminaryPathGrad phiGrad xbar0 0 x = phiGrad x := by
+  simp [preliminaryPathGrad, preliminaryPathDirection, centralPathGrad]
+
+theorem preliminaryPathGrad_zero_of_analyticalCenter
+    {phiGrad : E -> E} {xbar0 center : E}
+    (hcenter : phiGrad center = 0) :
+    preliminaryPathGrad phiGrad xbar0 0 center = 0 := by
+  simp [hcenter]
+
+theorem preliminaryPath_newtonDecrement_one_self_eq_zero
+    {phiGrad : E -> E} {invHess : E -> E →L[ℝ] E} {xbar0 : E} :
+    newtonDecrement (preliminaryPathGrad phiGrad xbar0 1) invHess xbar0 = 0 := by
+  change dualLocalNorm invHess xbar0
+      (preliminaryPathGrad phiGrad xbar0 1 xbar0) = 0
+  rw [preliminaryPathGrad_one_self]
+  simp [dualLocalNorm]
+
+theorem preliminaryPath_newtonDecrement_one_self_le_quarter
+    {phiGrad : E -> E} {invHess : E -> E →L[ℝ] E} {xbar0 : E} :
+    newtonDecrement (preliminaryPathGrad phiGrad xbar0 1) invHess xbar0 ≤ 1 / 4 := by
+  rw [preliminaryPath_newtonDecrement_one_self_eq_zero]
+  norm_num
+
+theorem preliminaryPath_newtonDecrement_zero_of_analyticalCenter
+    {phiGrad : E -> E} {invHess : E -> E →L[ℝ] E} {xbar0 center : E}
+    (hcenter : phiGrad center = 0) :
+    newtonDecrement (preliminaryPathGrad phiGrad xbar0 0) invHess center = 0 := by
+  change dualLocalNorm invHess center
+      (preliminaryPathGrad phiGrad xbar0 0 center) = 0
+  rw [preliminaryPathGrad_zero_of_analyticalCenter hcenter]
+  simp [dualLocalNorm]
+
+theorem preliminaryPathGrad_hasFDerivAt
+    {phiGrad : E -> E} {hessAt : E →L[ℝ] E} {xbar0 x : E} {t : ℝ}
+    (hphi : HasFDerivAt phiGrad hessAt x) :
+    HasFDerivAt (preliminaryPathGrad phiGrad xbar0 t) hessAt x :=
+  centralPathGrad_hasFDerivAt
+    (t := t) (a := preliminaryPathDirection phiGrad xbar0) hphi
+
+theorem preliminaryPathGradient_decrease_eq_of_tNext
+    {phiGrad : E -> E} {xbar0 x : E} {t tNext delta : ℝ}
+    (htNext : tNext = (1 - delta) * t) :
+    preliminaryPathGrad phiGrad xbar0 tNext x =
+      (1 - delta) • preliminaryPathGrad phiGrad xbar0 t x +
+        delta • phiGrad x := by
+  exact centralPathGradient_decrease_eq_of_tNext
+    (E := E) htNext (preliminaryPathDirection phiGrad xbar0) (phiGrad x)
 
 theorem chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse
     [CompleteSpace E]

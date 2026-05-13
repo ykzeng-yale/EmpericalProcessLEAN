@@ -108,10 +108,18 @@ the multiplicative `t_n` update.  The newest objective-gap stopping layer adds
 `chewi1316_objectiveGapNumerator_le_two_mul`,
 `chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t`, and
 `chewi1316_objective_gap_le_eps_of_mainStageParameter_large`, combining the
-closed-form `t_n` growth with the compiled objective-gap bound.  The next live
-route is the preliminary stage for producing an initial `lambda <= 1/4` point,
-starting from source-shaped supplied-interface wrappers for the reverse
-path-following argument cited to Nesterov §5.3.5.
+closed-form `t_n` growth with the compiled objective-gap bound.  The newest
+preliminary-stage layer adds
+`chewi1316_preliminaryStageParameter_eq_pow_mul_of_delta`,
+`chewi1316_preliminaryStageParameter_pos_of_pos`,
+`centralPathGradient_decrease_eq`,
+`centralPathGradient_decrease_eq_of_tNext`, `preliminaryPathDirection`,
+`preliminaryPathGrad`, endpoint identities and zero-decrement wrappers for
+`t = 1` and `t = 0`, `preliminaryPathGrad_hasFDerivAt`, and
+`preliminaryPathGradient_decrease_eq_of_tNext`.  The next live route is a
+supplied-interface preliminary convergence wrapper matching the reverse
+path-following argument cited to Nesterov §5.3.5, then the
+strictly-feasible-start discussion.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment
