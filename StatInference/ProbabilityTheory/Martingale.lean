@@ -23402,6 +23402,93 @@ theorem
     (P := P) (Ainf := Ainf) hAinf_int.aestronglyMeasurable.aemeasurable
 
 /--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+Layer-cake form of the truncated terminal clock:
+`E(A_infty ∧ a^2) = ∫_0^∞ P(b < A_infty, b < a^2) db`.
+This is the first line of the second Fubini/calculus computation in the
+textbook proof.
+-/
+theorem
+    durrett2019_theorem_4_5_7_min_terminal_lintegral_eq_tail_cut_lintegral
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_int : Integrable Ainf P)
+    (a : ℝ) :
+    ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) =
+      ∫⁻ b in Set.Ioi (0 : ℝ),
+        P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} := by
+  have hMin_nonneg :
+      0 ≤ᵐ[P] fun ω => min (Ainf ω) (a ^ 2) := by
+    filter_upwards [hAinf_nonneg] with ω hω
+    exact le_min hω (sq_nonneg a)
+  have hMin_int : Integrable (fun ω => min (Ainf ω) (a ^ 2)) P := by
+    simpa [Pi.inf_apply] using hAinf_int.inf (integrable_const (a ^ 2))
+  have hleft :
+      ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) =
+        ∫⁻ ω, ENNReal.ofReal (min (Ainf ω) (a ^ 2)) ∂P :=
+    ofReal_integral_eq_lintegral_ofReal hMin_int hMin_nonneg
+  have hlayer :
+      (∫⁻ ω, ENNReal.ofReal (min (Ainf ω) (a ^ 2)) ∂P) =
+        ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < min (Ainf ω) (a ^ 2)} :=
+    StatInference.ProbabilityMeasure.lintegral_eq_lintegral_tail_lt
+      (μ := P) (X := fun ω => min (Ainf ω) (a ^ 2))
+      hMin_nonneg hMin_int.aestronglyMeasurable.aemeasurable
+  calc
+    ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P)
+        = ∫⁻ ω, ENNReal.ofReal (min (Ainf ω) (a ^ 2)) ∂P := hleft
+    _ = ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < min (Ainf ω) (a ^ 2)} := hlayer
+    _ = ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} := by
+      refine MeasureTheory.lintegral_congr_ae ?_
+      filter_upwards [] with b
+      apply MeasureTheory.measure_congr
+      filter_upwards [] with ω
+      exact propext lt_min_iff
+
+/--
+Durrett 2019, Theorem 4.5.7 source support: the monotone terminal clock
+`A_infty` is nonnegative when `A_0 = 0`.
+-/
+theorem
+    durrett2019_theorem_4_5_7_terminal_nonneg_of_initial_zero_monotone_tendsto
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    0 ≤ᵐ[P] Ainf := by
+  filter_upwards [hA_mono, hA_tendsto] with ω hmonoω htendω
+  exact ge_of_tendsto' htendω fun n => by
+    have h0le : A 0 ω ≤ A n ω := hmonoω (Nat.zero_le n)
+    simpa [congrFun hA0 ω] using h0le
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support under the source
+monotone-terminal hypotheses.
+-/
+theorem
+    durrett2019_theorem_4_5_7_min_terminal_lintegral_eq_tail_cut_lintegral_of_source_monotone_terminal
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hAinf_int : Integrable Ainf P)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω)))
+    (a : ℝ) :
+    ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) =
+      ∫⁻ b in Set.Ioi (0 : ℝ),
+        P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} :=
+  durrett2019_theorem_4_5_7_min_terminal_lintegral_eq_tail_cut_lintegral
+    (P := P) (Ainf := Ainf)
+    (durrett2019_theorem_4_5_7_terminal_nonneg_of_initial_zero_monotone_tendsto
+      (P := P) (A := A) (Ainf := Ainf) hA0 hA_mono hA_tendsto)
+    hAinf_int a
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
