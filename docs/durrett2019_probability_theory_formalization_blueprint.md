@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V243`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V244`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -307,6 +307,11 @@ V243 adds the second-RHS truncation layer-cake bridge:
 `durrett2019_theorem_4_5_7_terminal_nonneg_of_initial_zero_monotone_tendsto`,
 and
 `durrett2019_theorem_4_5_7_min_terminal_lintegral_eq_tail_cut_lintegral_of_source_monotone_terminal`.
+V244 adds the weighted second-RHS double-integral handoff:
+`durrett2019_theorem_4_5_7_set_lintegral_div_toNNReal_sq`,
+`durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_tail_cut_double_lintegral`,
+and
+`durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_tail_cut_double_lintegral_of_source_monotone_terminal`.
 The next theorem-facing target is no longer finite sum/integral exchange,
 V214-to-V209 wiring, the tail-integral-to-clock-bound package,
 variance-ratio integrability packaging, lower-bound/no-zero/divergence
@@ -318,7 +323,8 @@ finite/infinite event-cover ratio assembly, the max-normalizer 4.5.3 source
 handoff, raw-clock monotonicity, final Theorem 4.5.5 packaging, stopped
 4.5.7 source packaging, the V240 raw/stopped split, or the V241 layer-cake
 handoff, the V242 first-RHS bridge, or the V243 truncation layer-cake bridge.
-Move next to the Theorem 4.5.7 deterministic/Fubini swap and calculus
+Do not redo the V244 weighted double-integral handoff.  Move next to the
+Theorem 4.5.7 deterministic/Tonelli swap and calculus
 evaluation of the second V241 right-hand-side integral, then the
 finite-horizon-to-supremum monotone limit.  Do not route back to
 Chapter 2.1, Theorem 2.4.9, Theorem 2.2.12, Chapter 3 wrappers, stopped

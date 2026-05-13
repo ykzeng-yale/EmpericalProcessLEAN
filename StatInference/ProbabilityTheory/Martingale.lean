@@ -23489,6 +23489,100 @@ theorem
     hAinf_int a
 
 /--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+On the positive half-line, the finite denominator `a^2` can be pushed inside
+the inner layer-cake integral.  This is the local algebraic step needed before
+swapping the `a` and `b` integrations in the second Fubini/calculus term.
+-/
+theorem
+    durrett2019_theorem_4_5_7_set_lintegral_div_toNNReal_sq
+    {f : ℝ -> ℝ≥0∞} {a : ℝ} (ha : 0 < a) :
+    (∫⁻ b in Set.Ioi (0 : ℝ), f b) /
+        (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) =
+      ∫⁻ b in Set.Ioi (0 : ℝ),
+        f b / (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  have htoNNReal_ne : Real.toNNReal a ≠ 0 := by
+    rw [← NNReal.coe_ne_zero]
+    simpa [Real.toNNReal_of_nonneg ha.le] using (ne_of_gt ha : a ≠ 0)
+  have hden_ne_zero :
+      (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) ≠ 0 := by
+    rw [ENNReal.coe_ne_zero]
+    exact pow_ne_zero 2 htoNNReal_ne
+  simp_rw [div_eq_mul_inv]
+  rw [lintegral_mul_const' ((((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)⁻¹)
+    (fun b => f b)
+    ((ENNReal.inv_ne_top).2 hden_ne_zero)]
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support.
+
+The second RHS term from the finite maximal inequality can be rewritten as a
+weighted double layer-cake integral:
+`∫_0^∞ a^{-2} E(A_infty ∧ a^2) da`
+becomes
+`∫_0^∞ ∫_0^∞ a^{-2} P(b < A_infty, b < a^2) db da`.
+The next proof packet can now focus only on Tonelli plus the one-dimensional
+calculus evaluation of the inner `a` integral.
+-/
+theorem
+    durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_tail_cut_double_lintegral
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Ainf : Ω -> ℝ}
+    (hAinf_nonneg : 0 ≤ᵐ[P] Ainf)
+    (hAinf_int : Integrable Ainf P) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      ∫⁻ a in Set.Ioi (0 : ℝ),
+        ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+  refine MeasureTheory.lintegral_congr_ae ?_
+  filter_upwards
+    [ae_restrict_mem (μ := volume) (measurableSet_Ioi : MeasurableSet (Set.Ioi (0 : ℝ)))]
+    with a ha
+  calc
+    ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)
+        =
+          (∫⁻ b in Set.Ioi (0 : ℝ),
+            P {ω : Ω | b < Ainf ω ∧ b < a ^ 2}) /
+              (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) := by
+          rw [durrett2019_theorem_4_5_7_min_terminal_lintegral_eq_tail_cut_lintegral
+            (P := P) (Ainf := Ainf) hAinf_nonneg hAinf_int a]
+    _ = ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) :=
+        durrett2019_theorem_4_5_7_set_lintegral_div_toNNReal_sq
+          (f := fun b => P {ω : Ω | b < Ainf ω ∧ b < a ^ 2}) ha
+
+/--
+Durrett 2019, Theorem 4.5.7 deterministic RHS support under the source
+monotone-terminal hypotheses.
+-/
+theorem
+    durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_tail_cut_double_lintegral_of_source_monotone_terminal
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {A : ℕ -> Ω -> ℝ} {Ainf : Ω -> ℝ}
+    (hAinf_int : Integrable Ainf P)
+    (hA0 : A 0 = 0)
+    (hA_mono : ∀ᵐ ω ∂P, Monotone fun n => A n ω)
+    (hA_tendsto : ∀ᵐ ω ∂P, Tendsto (fun n => A n ω) atTop (𝓝 (Ainf ω))) :
+    (∫⁻ a in Set.Ioi (0 : ℝ),
+        ENNReal.ofReal (∫ ω, min (Ainf ω) (a ^ 2) ∂P) /
+          (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞)) =
+      ∫⁻ a in Set.Ioi (0 : ℝ),
+        ∫⁻ b in Set.Ioi (0 : ℝ),
+          P {ω : Ω | b < Ainf ω ∧ b < a ^ 2} /
+            (((Real.toNNReal a) ^ 2 : ℝ≥0) : ℝ≥0∞) :=
+  durrett2019_theorem_4_5_7_second_rhs_weighted_lintegral_eq_tail_cut_double_lintegral
+    (P := P) (Ainf := Ainf)
+    (durrett2019_theorem_4_5_7_terminal_nonneg_of_initial_zero_monotone_tendsto
+      (P := P) (A := A) (Ainf := Ainf) hA0 hA_mono hA_tendsto)
+    hAinf_int
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
