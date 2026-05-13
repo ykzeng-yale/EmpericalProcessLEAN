@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V317
+## Live In-Thread Goal Prompt V318
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -18,10 +18,13 @@ functions, `TendstoInDistribution`, local weak-convergence wrappers, and the
 compiled Chapter 2 product/iid support only when a later Chapter 3 source shape
 needs it.
 
-Latest verified target V317 adds the textbook-normalized i.i.d. CLT endpoint
-`durrett2019_theorem_3_4_1_centralLimitTheorem_standardNormal`, proving
-`(S_n - n E X_0) / sqrt(n Var X_0) => N(0,1)` under positive variance.  V316
-adds the standard-normal Lindeberg-Feller endpoint
+Latest verified target V318 adds the exact Durrett denominator display
+`durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt`, proving
+`(S_n - n E X_0) / (sigma * sqrt n) => N(0,1)` when
+`Var X_0 = sigma^2` and `sigma > 0`.  V317 adds
+`durrett2019_theorem_3_4_1_centralLimitTheorem_standardNormal`, the
+`sqrt(n Var X_0)` display.  V316 adds the standard-normal Lindeberg-Feller
+endpoint
 `durrett2019_theorem_3_4_10_lindebergFeller_unitVariance_of_integrableSq`.
 
 Do not re-prove the compiled Chapter 2.1 product/iid wrappers, Theorem 2.4.9
@@ -2035,6 +2038,7 @@ namespace now has a compiled starter module:
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_centered_unitVariance`
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_varianceGaussian`
 - `durrett2019_theorem_3_4_1_centralLimitTheorem_standardNormal`
+- `durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt`
 - `durrett2019_lindebergFellerRowSum`
 - `durrett2019_lindebergFellerRowIndependent`
 - `durrett2019_lindebergFellerMeanZero`

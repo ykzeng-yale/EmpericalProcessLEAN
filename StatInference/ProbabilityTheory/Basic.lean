@@ -6215,6 +6215,66 @@ theorem durrett2019_theorem_3_4_1_centralLimitTheorem_standardNormal
           √(_root_.ProbabilityTheory.variance (X 0) P)) (by fun_prop)
 
 /--
+Durrett 2019, Theorem 3.4.1, textbook `sigma * sqrt n` display.
+
+If `Var X_0 = sigma^2` with `sigma > 0`, then
+`(S_n - n E X_0) / (sigma * sqrt n) => N(0,1)`.
+-/
+theorem durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt
+    {Ω Ω' : Type u} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    {P : Measure Ω} {P' : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure P']
+    {X : ℕ -> Ω -> ℝ} {Y : Ω' -> ℝ} {sigma : ℝ}
+    (hY : _root_.ProbabilityTheory.HasLaw Y
+      (_root_.ProbabilityTheory.gaussianReal 0 1) P')
+    (hsigma_pos : 0 < sigma)
+    (hvariance : _root_.ProbabilityTheory.variance (X 0) P = sigma ^ 2)
+    (hindep : _root_.ProbabilityTheory.iIndepFun X P)
+    (hident : ∀ i : ℕ, _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        (sigma * √(n : ℝ))⁻¹ *
+          (∑ k ∈ Finset.range n, X k ω -
+            (n : ℝ) * ∫ ω, X 0 ω ∂P))
+      atTop Y (fun _ => P) P' := by
+  have hsigma_ne : sigma ≠ 0 := hsigma_pos.ne'
+  have hvariance_ne :
+      _root_.ProbabilityTheory.variance (X 0) P ≠ 0 := by
+    rw [hvariance]
+    exact pow_ne_zero 2 hsigma_ne
+  have hX0_aemeas : AEMeasurable (X 0) P := (hident 0).aemeasurable_fst
+  have hX0_int : Integrable (X 0) P := by
+    exact memLp_one_iff_integrable.1 <|
+      (_root_.ProbabilityTheory.memLp_two_of_variance_ne_zero
+        hX0_aemeas.aestronglyMeasurable hvariance_ne).mono_exponent (by simp)
+  have hdisplay (n : ℕ) (ω : Ω) :
+      (sigma * √(n : ℝ))⁻¹ *
+          (∑ k ∈ Finset.range n, X k ω -
+            (n : ℝ) * ∫ ω, X 0 ω ∂P) =
+        (√(n : ℝ))⁻¹ *
+          ∑ k ∈ Finset.range n,
+            (X k ω - ∫ ω, X 0 ω ∂P) / sigma := by
+    rw [← Finset.sum_div, Finset.sum_sub_distrib]
+    simp [div_eq_mul_inv, mul_assoc, mul_comm, mul_left_comm]
+  simp_rw [hdisplay]
+  convert
+    _root_.ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum
+      (P := P) (P' := P') (X := fun n ω =>
+        (X n ω - ∫ ω, X 0 ω ∂P) / sigma) (Y := Y)
+      hY ?_ ?_ ?_ ?_
+  · rw [integral_div, integral_sub hX0_int (by simp)]
+    simp
+  · simp only [Pi.pow_apply, div_pow]
+    rw [integral_div, ← _root_.ProbabilityTheory.variance_eq_integral hX0_aemeas,
+      hvariance]
+    field_simp [hsigma_ne]
+  · exact hindep.comp
+      (fun _ x => (x - ∫ ω, X 0 ω ∂P) / sigma) (by fun_prop)
+  · convert fun n =>
+      (hident n).comp
+        (u := fun x => (x - ∫ ω, X 0 ω ∂P) / sigma) (by fun_prop)
+
+/--
 Durrett 2019, Theorem 3.4.10, triangular-array row sum notation.
 
 The textbook indexes row `n` by `1 <= m <= n`; this Lean wrapper uses the

@@ -27,14 +27,16 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V317`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V318`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier: Chapter 3 weak convergence, characteristic functions,
 CLT, and Lindeberg-Feller support in
-`StatInference/ProbabilityTheory/Basic.lean`.  V317 adds
+`StatInference/ProbabilityTheory/Basic.lean`.  V318 adds
+`durrett2019_theorem_3_4_1_centralLimitTheorem_sigmaSqrt`, the exact Durrett
+`sigma * sqrt n` denominator display.  V317 adds
 `durrett2019_theorem_3_4_1_centralLimitTheorem_standardNormal`, the
 textbook-normalized positive-variance i.i.d. CLT endpoint.  V316 adds
 `durrett2019_theorem_3_4_10_lindebergFeller_unitVariance_of_integrableSq`, the
