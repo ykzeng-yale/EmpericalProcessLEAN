@@ -867,6 +867,96 @@ theorem durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_o
         simpa using hvar_map.symm.trans hvar_projection)
 
 /--
+Durrett 2019, Theorem 3.10.7, centered Gaussian characteristic-function display
+from scalar coordinate covariance identities.
+
+This is the textbook covariance-table source form of
+`E exp(i theta · chi) = exp(-sum_i sum_j theta_i theta_j Gamma_ij / 2)`.
+-/
+theorem durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_coordinateCovariance
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (theta : Coordinate -> ℝ)
+    (hZ_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) Q =
+        Gamma i j) :
+    MeasureTheory.charFunDual (Q.map Z)
+        (durrett2019_theorem_3_10_7_thetaProjection theta) =
+      Complex.exp
+        (-((durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma : ℂ) / 2)) := by
+  have htable : ∀ i j,
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j) =
+        Gamma i j :=
+    durrett2019_theorem_3_10_7_covarianceBilinDualTable_of_coordinateCovariance
+      (μ := Q) (Y := Z) hZ_memLp hZ_gaussian.aemeasurable Gamma hZ_covariance
+  exact
+    durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_covarianceBilinDualTable
+      (Q := Q) (Z := Z)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (Gamma := Gamma) (theta := theta)
+      (hZ_mean :=
+        durrett2019_theorem_3_10_7_thetaProjectionMean_zero_of_coordinateMean_zero
+          (Q := Q) (Z := Z) hZ_coordinate_integrable hZ_coordinate_mean theta)
+      (hGamma := fun i j => (htable i j).symm)
+
+/--
+Durrett 2019, Theorem 3.10.7, centered Gaussian characteristic-function display
+from centered product identities.
+
+When `chi` is coordinatewise centered, the source identities
+`E[chi_i chi_j] = Gamma_ij` imply Durrett's displayed Gaussian characteristic
+function.
+-/
+theorem durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_centeredProduct
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (theta : Coordinate -> ℝ)
+    (hZ_centered_product : ∀ i j,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j) :
+    MeasureTheory.charFunDual (Q.map Z)
+        (durrett2019_theorem_3_10_7_thetaProjection theta) =
+      Complex.exp
+        (-((durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma : ℂ) / 2)) :=
+  durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_coordinateCovariance
+    (Q := Q) (Z := Z)
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (hZ_coordinate_integrable := fun coordinate =>
+      (hZ_coordinate_memLp coordinate).integrable (by simp))
+    (hZ_coordinate_mean := hZ_coordinate_mean)
+    (Gamma := Gamma) (theta := theta)
+    (hZ_covariance :=
+      durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProduct
+        (μ := Q) (Y := Z) hZ_coordinate_memLp hZ_coordinate_mean Gamma
+        hZ_centered_product)
+
+/--
 Durrett 2019, Theorem 3.10.7, all-projection covariance source handoff from
 coordinate covariance tables.
 
