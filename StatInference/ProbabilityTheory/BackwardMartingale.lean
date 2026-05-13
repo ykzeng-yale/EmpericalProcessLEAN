@@ -801,6 +801,72 @@ theorem durrett2019_example_4_7_4_ae_tendsto_of_ae_eq_condExp_nat_and_tail_indep
         (Ω := Ω) (mΩ := mΩ) (P := P) (mX := mX) (𝒢 := 𝒢) (f := f)
         hmX h𝒢_le hf_meas hindep)
 
+/-- Durrett 2019, Example 4.7.4 prefix sum `S_n`. -/
+@[reducible]
+def durrett2019_example_4_7_4_prefixSum
+    {Ω : Type*} (ξ : ℕ -> Ω -> ℝ) (n : ℕ) : Ω -> ℝ :=
+  fun ω => ∑ i ∈ Finset.range n, ξ i ω
+
+/--
+Durrett 2019, Example 4.7.4 reverse-average sigma-field
+`sigma(S_n, xi_n, xi_{n+1}, ...)` in zero-based Lean indexing.
+
+This is the concrete sigma-field used to feed the prefix-average conditional
+expectation bridge below.  It is written as a supremum of comaps so that the
+measurability obligations are direct.
+-/
+@[reducible]
+def durrett2019_example_4_7_4_reverseAverageSigma
+    {Ω : Type*} (ξ : ℕ -> Ω -> ℝ) (n : ℕ) : MeasurableSpace Ω :=
+  MeasurableSpace.comap
+      (durrett2019_example_4_7_4_prefixSum ξ n)
+      (inferInstance : MeasurableSpace ℝ) ⊔
+    ⨆ i : ℕ, ⨆ _ : i ≥ n,
+      MeasurableSpace.comap (ξ i) (inferInstance : MeasurableSpace ℝ)
+
+/-- The prefix sum is measurable in Durrett's reverse-average sigma-field. -/
+theorem durrett2019_example_4_7_4_prefixSum_measurable_reverseAverageSigma
+    {Ω : Type*} {ξ : ℕ -> Ω -> ℝ} (n : ℕ) :
+    Measurable[durrett2019_example_4_7_4_reverseAverageSigma ξ n]
+      (durrett2019_example_4_7_4_prefixSum ξ n) :=
+  Measurable.of_comap_le le_sup_left
+
+/-- The prefix sum is strongly measurable in Durrett's reverse-average sigma-field. -/
+theorem durrett2019_example_4_7_4_prefixSum_stronglyMeasurable_reverseAverageSigma
+    {Ω : Type*} {ξ : ℕ -> Ω -> ℝ} (n : ℕ) :
+    StronglyMeasurable[durrett2019_example_4_7_4_reverseAverageSigma ξ n]
+      (durrett2019_example_4_7_4_prefixSum ξ n) :=
+  (durrett2019_example_4_7_4_prefixSum_measurable_reverseAverageSigma
+    (ξ := ξ) n).stronglyMeasurable
+
+/-- Tail coordinates are measurable in Durrett's reverse-average sigma-field. -/
+theorem durrett2019_example_4_7_4_tailCoordinate_measurable_reverseAverageSigma
+    {Ω : Type*} {ξ : ℕ -> Ω -> ℝ} {n i : ℕ} (hi : i ≥ n) :
+    Measurable[durrett2019_example_4_7_4_reverseAverageSigma ξ n] (ξ i) := by
+  refine Measurable.of_comap_le ?_
+  have htail :
+      MeasurableSpace.comap (ξ i) (inferInstance : MeasurableSpace ℝ) ≤
+        (⨆ j : ℕ, ⨆ _ : j ≥ n,
+          MeasurableSpace.comap (ξ j) (inferInstance : MeasurableSpace ℝ)) :=
+    le_iSup_of_le i (le_iSup_of_le hi le_rfl)
+  exact htail.trans le_sup_right
+
+/--
+Durrett's reverse-average sigma-field is a sub-sigma-field of the ambient
+space whenever the coordinates are ambient-measurable.
+-/
+theorem durrett2019_example_4_7_4_reverseAverageSigma_le
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ξ : ℕ -> Ω -> ℝ} {n : ℕ}
+    (hξ_meas : ∀ i, Measurable (ξ i)) :
+    durrett2019_example_4_7_4_reverseAverageSigma ξ n ≤ mΩ := by
+  refine sup_le ?_ ?_
+  · have hsum_meas :
+        Measurable (durrett2019_example_4_7_4_prefixSum ξ n) := by
+      dsimp [durrett2019_example_4_7_4_prefixSum]
+      exact Finset.measurable_fun_sum (Finset.range n) fun i _hi => hξ_meas i
+    exact hsum_meas.comap_le
+  · exact iSup_le fun i => iSup_le fun _hi => (hξ_meas i).comap_le
+
 /--
 Durrett 2019, Example 4.7.4 conditional-expectation algebra core.  If the
 prefix sum is measurable with respect to the reverse sigma-field and the

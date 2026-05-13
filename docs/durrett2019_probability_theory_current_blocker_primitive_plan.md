@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V290
+## Live In-Thread Goal Prompt V291
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -25,10 +25,11 @@ filtration display endpoints, the V286 Example 4.7.4 tail-constant/source
 handoff and direct strong-law wrapper, the V287 tail-independence-to-constant
 handoff, the V288 reverse-tail zero-one-to-constant handoff, the V289
 independent tail-block zero-one handoff, the V290 prefix-average
-conditional-expectation algebra core, or the V281-V273 Section 4.6
-tail-envelope/conditional-expectation layers.
+conditional-expectation algebra core, the V291 concrete reverse-average
+sigma-field scaffold, or the V281-V273 Section 4.6 tail-envelope /
+conditional-expectation layers.
 
-Latest verified target V290 advances Section 4.7.  V260 packages Durrett
+Latest verified target V291 advances Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -198,17 +199,25 @@ backwards-average calculation:
 prefix-sum measurability and the symmetry fact
 `E(ξ_i | 𝒢_n) = E(ξ_0 | 𝒢_n)` for all `i < n` into the textbook identity
 `E(ξ_0 | 𝒢_n) = S_n / n`.
+V291 defines the concrete zero-based reverse-average sigma-field
+`durrett2019_example_4_7_4_reverseAverageSigma ξ n =
+σ(S_n, ξ_n, ξ_{n+1}, ...)` and proves the scaffold facts:
+`durrett2019_example_4_7_4_prefixSum_measurable_reverseAverageSigma`,
+`durrett2019_example_4_7_4_prefixSum_stronglyMeasurable_reverseAverageSigma`,
+`durrett2019_example_4_7_4_tailCoordinate_measurable_reverseAverageSigma`, and
+`durrett2019_example_4_7_4_reverseAverageSigma_le`.
 
 Next aggressive theorem packet: continue Example 4.7.4 by constructing the
-actual source hypotheses that feed V290.  Define or reuse the exact Durrett
-sigma-field `𝒢_n = σ(S_n, ξ_{n+1}, ξ_{n+2}, ...)`, prove the prefix sum is
-`𝒢_n`-measurable, and prove the conditional-expectation symmetry input
+actual source hypotheses that feed V290.  For the V291 concrete zero-based
+sigma-field `𝒢_n = σ(S_n, ξ_n, ξ_{n+1}, ...)`, prove the decreasing-family
+property `𝒢_{n+1} ≤ 𝒢_n` and prove the conditional-expectation symmetry input
 `E(ξ_i | 𝒢_n) = E(ξ_0 | 𝒢_n)` for `i < n` from finite-permutation
 exchangeability of the first `n` coordinates while the sum and tail are fixed.
 Then connect the reverse-tail constant side through exchangeability /
 Hewitt-Savage if the exact Durrett sigma-field is not reducible to V289's
 independent tail-block wrapper.  Do not rewrap the already compiled direct
-strong law, V286/V287/V288/V289/V290 handoffs, or V285 backwards Lévy endpoint.
+strong law, V286/V287/V288/V289/V290/V291 handoffs, or V285 backwards Lévy
+endpoint.
 
 ## Deprecated V255 Prompt Notes
 

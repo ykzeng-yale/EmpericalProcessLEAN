@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V290`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V291`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -108,9 +108,13 @@ V290 proves the conditional-expectation algebra core
 `durrett2019_example_4_7_4_condExp_first_eq_prefixAverage_div`: prefix-sum
 measurability plus the finite-prefix symmetry input
 `E(ξ_i | 𝒢_n) = E(ξ_0 | 𝒢_n)` for all `i < n` imply
-`E(ξ_0 | 𝒢_n) = S_n / n`.  The next proof packet should define or reuse the
-exact Durrett source sigma-field `𝒢_n = σ(S_n, ξ_{n+1}, ξ_{n+2}, ...)`, prove
-the prefix-sum measurability input, and prove the symmetry input from
+`E(ξ_0 | 𝒢_n) = S_n / n`.  V291 defines the concrete zero-based
+reverse-average sigma-field
+`durrett2019_example_4_7_4_reverseAverageSigma ξ n =
+σ(S_n, ξ_n, ξ_{n+1}, ...)` and proves the prefix-sum
+measurability/strong-measurability input, tail-coordinate measurability, and
+ambient sub-sigma-field fact.  The next proof packet should prove this family
+is decreasing and prove the finite-prefix symmetry input from
 finite-permutation exchangeability of the first `n` coordinates while the sum
 and tail are fixed.
 V259 closes the
