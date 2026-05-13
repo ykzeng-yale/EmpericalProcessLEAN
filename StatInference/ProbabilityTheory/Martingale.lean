@@ -26869,6 +26869,22 @@ theorem durrett2019_theorem_4_6_4_submartingale_uniformIntegrable_of_eLpNorm_one
     (P := P) (X := X) (Y := Y) (fun n => hX.integrable n) hY_int hL1
 
 /--
+Durrett 2019, Lemma 4.6.5.
+
+If integrable random variables converge in `L¹`, then their integrals over any
+fixed event converge.
+-/
+theorem durrett2019_lemma_4_6_5_tendsto_setIntegral_of_eLpNorm_one_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {X : ℕ -> Ω -> ℝ} {Y : Ω -> ℝ}
+    (hX_int : ∀ n, Integrable (X n) P) (hY_int : Integrable Y P)
+    (hL1 : Tendsto (fun n => eLpNorm (X n - Y) 1 P) atTop (𝓝 0))
+    (A : Set Ω) :
+    Tendsto (fun n => ∫ ω in A, X n ω ∂P) atTop (𝓝 (∫ ω in A, Y ω ∂P)) :=
+  tendsto_setIntegral_of_L1' (μ := P) (f := Y) hY_int
+    (Eventually.of_forall hX_int) hL1 A
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that
