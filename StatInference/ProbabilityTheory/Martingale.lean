@@ -27562,8 +27562,210 @@ theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwise_iSup_tail_ae_tend
       (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (W := W) (Z := Z)
       hY_int hYlim_int hW_meas hZ_int hW_dom hW_tendsto_zero
       (durrett2019_theorem_4_6_10_eventual_ae_tail_bound_of_pairwise_tail_bound
-        (P := P) (Y := Y) (Ylim := Ylim) (W := W)
-        hY_tendsto hPairwise)
+      (P := P) (Y := Y) (Ylim := Ylim) (W := W)
+      hY_tendsto hPairwise)
+
+/--
+Durrett 2019, Theorem 4.6.10, concrete pairwise tail-envelope value.
+
+For fixed `N` and `ω`, this is the supremum of all pairwise tail differences
+`|Y_n(ω) - Y_m(ω)|` with `m,n >= N`.  It is the Lean-side version of the
+textbook envelope `W_N = sup {|Y_n - Y_m| : m,n >= N}`.
+-/
+noncomputable def durrett2019_theorem_4_6_10_pairwiseTailEnvelope
+    {Ω : Type*} (Y : ℕ -> Ω -> ℝ) (N : ℕ) (ω : Ω) : ℝ :=
+  sSup {r : ℝ | ∃ n m, N ≤ n ∧ N ≤ m ∧ r = ‖Y n ω - Y m ω‖}
+
+/--
+Durrett 2019, Theorem 4.6.10, the concrete `sSup` tail envelope bounds every
+pairwise tail difference.
+
+The only side condition is the standard bounded-above fact for the real
+supremum set.  In the textbook application this comes from `|Y_n| <= Z`, which
+gives the deterministic pointwise bound `|Y_n - Y_m| <= 2Z`.
+-/
+theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_pairwise_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} {Y : ℕ -> Ω -> ℝ}
+    (hBdd :
+      ∀ N ω,
+        BddAbove {r : ℝ | ∃ n m, N ≤ n ∧ N ≤ m ∧ r = ‖Y n ω - Y m ω‖}) :
+    ∀ N,
+      ∀ᵐ ω ∂P,
+        ∀ n m, N ≤ n -> N ≤ m ->
+          ‖Y n ω - Y m ω‖ ≤
+            durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω := by
+  intro N
+  exact Eventually.of_forall fun ω n m hn hm => by
+    exact le_csSup (hBdd N ω) ⟨n, m, hn, hm, rfl⟩
+
+/--
+Durrett 2019, Theorem 4.6.10, a.e. bounded-above version of the concrete
+`sSup` pairwise-tail bound.
+
+This is the form used when the boundedness of the supremum set is obtained
+from an a.s. domination hypothesis.
+-/
+theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_pairwise_bound_ae
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω} {Y : ℕ -> Ω -> ℝ}
+    (hBdd :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          BddAbove {r : ℝ | ∃ n m, N ≤ n ∧ N ≤ m ∧ r = ‖Y n ω - Y m ω‖}) :
+    ∀ N,
+      ∀ᵐ ω ∂P,
+        ∀ n m, N ≤ n -> N ≤ m ->
+          ‖Y n ω - Y m ω‖ ≤
+            durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω := by
+  intro N
+  filter_upwards [hBdd N] with ω hBddω
+  intro n m hn hm
+  exact le_csSup hBddω ⟨n, m, hn, hm, rfl⟩
+
+/--
+Durrett 2019, Theorem 4.6.10, bounded-above support from a supplied pointwise
+pairwise bound.
+
+For the textbook envelope this pointwise bound is usually `2Z`.
+-/
+theorem durrett2019_theorem_4_6_10_pairwiseTailEnvelope_bddAbove_of_pairwise_bound
+    {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : ℕ -> Ω -> ℝ} {B : ℕ -> Ω -> ℝ}
+    (hBound :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          ∀ n m, N ≤ n -> N ≤ m -> ‖Y n ω - Y m ω‖ ≤ B N ω) :
+    ∀ N,
+      ∀ᵐ ω ∂P,
+        BddAbove {r : ℝ | ∃ n m, N ≤ n ∧ N ≤ m ∧ r = ‖Y n ω - Y m ω‖} := by
+  intro N
+  filter_upwards [hBound N] with ω hBoundω
+  exact ⟨B N ω, fun r hr => by
+    rcases hr with ⟨n, m, hn, hm, rfl⟩
+    exact hBoundω n m hn hm⟩
+
+/--
+Durrett 2019, Theorem 4.6.10, final bridge using the concrete `sSup` pairwise
+tail envelope.
+
+After defining `W_N` as the pairwise tail supremum, the remaining concrete
+work is boundedness of that supremum set, limiting-sigma-field measurability,
+domination by an integrable envelope, and a.s. convergence of `W_N` to zero.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {Z : Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hW_meas :
+      ∀ N,
+        StronglyMeasurable[⨆ k, ℱ k]
+          (durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N))
+    (hZ_int : Integrable Z P)
+    (hW_dom :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          ‖durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω‖ ≤ Z ω)
+    (hW_tendsto_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun N => durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω)
+          atTop (𝓝 0))
+    (hY_tendsto :
+      ∀ᵐ ω ∂P, Tendsto (fun m => Y m ω) atTop (𝓝 (Ylim ω)))
+    (hBdd :
+      ∀ N ω,
+        BddAbove {r : ℝ | ∃ n m, N ≤ n ∧ N ≤ m ∧ r = ‖Y n ω - Y m ω‖}) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwise_iSup_tail_ae_tendsto_zero
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim)
+      (W := durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y) (Z := Z)
+      hY_int hYlim_int hW_meas hZ_int hW_dom hW_tendsto_zero hY_tendsto
+      (durrett2019_theorem_4_6_10_pairwiseTailEnvelope_pairwise_bound
+        (P := P) (Y := Y) hBdd)
+
+/--
+Durrett 2019, Theorem 4.6.10, final bridge using the concrete `sSup` pairwise
+tail envelope with only a.e. boundedness of the supremum set.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_ae_bdd
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {Z : Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hW_meas :
+      ∀ N,
+        StronglyMeasurable[⨆ k, ℱ k]
+          (durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N))
+    (hZ_int : Integrable Z P)
+    (hW_dom :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          ‖durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω‖ ≤ Z ω)
+    (hW_tendsto_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun N => durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω)
+          atTop (𝓝 0))
+    (hY_tendsto :
+      ∀ᵐ ω ∂P, Tendsto (fun m => Y m ω) atTop (𝓝 (Ylim ω)))
+    (hBdd :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          BddAbove {r : ℝ | ∃ n m, N ≤ n ∧ N ≤ m ∧ r = ‖Y n ω - Y m ω‖}) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwise_iSup_tail_ae_tendsto_zero
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim)
+      (W := durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y) (Z := Z)
+      hY_int hYlim_int hW_meas hZ_int hW_dom hW_tendsto_zero hY_tendsto
+      (durrett2019_theorem_4_6_10_pairwiseTailEnvelope_pairwise_bound_ae
+        (P := P) (Y := Y) hBdd)
+
+/--
+Durrett 2019, Theorem 4.6.10, final bridge using the concrete `sSup` pairwise
+tail envelope with a supplied pointwise pairwise upper bound.
+
+This is designed for the textbook domination step `|Y_n - Y_m| <= 2Z`.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_pairwise_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {Z : Ω -> ℝ} {B : ℕ -> Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hW_meas :
+      ∀ N,
+        StronglyMeasurable[⨆ k, ℱ k]
+          (durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N))
+    (hZ_int : Integrable Z P)
+    (hW_dom :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          ‖durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω‖ ≤ Z ω)
+    (hW_tendsto_zero :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun N => durrett2019_theorem_4_6_10_pairwiseTailEnvelope Y N ω)
+          atTop (𝓝 0))
+    (hY_tendsto :
+      ∀ᵐ ω ∂P, Tendsto (fun m => Y m ω) atTop (𝓝 (Ylim ω)))
+    (hBound :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          ∀ n m, N ≤ n -> N ≤ m -> ‖Y n ω - Y m ω‖ ≤ B N ω) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwiseTailEnvelope_ae_bdd
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (Z := Z)
+      hY_int hYlim_int hW_meas hZ_int hW_dom hW_tendsto_zero hY_tendsto
+      (durrett2019_theorem_4_6_10_pairwiseTailEnvelope_bddAbove_of_pairwise_bound
+        (P := P) (Y := Y) (B := B) hBound)
 
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.

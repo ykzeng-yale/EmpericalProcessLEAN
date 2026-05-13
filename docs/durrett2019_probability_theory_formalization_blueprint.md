@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V276`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V277`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -69,9 +69,11 @@ random variable, such as `2Z`.  V275 discharges the limiting conditional
 tail-zero side from limiting-sigma-field measurability and a.s. convergence
 `W_N -> 0`.  V276 proves the limit-passage from pairwise tail envelopes and
 `Y_n -> Y` a.s. to the eventual pointwise limit-error envelope.  The next
-proof packet should construct or package the concrete textbook `W_N` envelope
-and prove its limiting-sigma-field strong measurability, domination, a.s.
-convergence to zero, and pairwise tail domination.  V259 closes the
+V277 introduces the concrete `sSup` tail envelope and final consumers that use
+it, including a.e. boundedness and supplied pairwise-bound variants.  The next
+proof packet should prove source properties for this concrete envelope:
+limiting-sigma-field strong measurability, domination by `2Z`, and a.s.
+convergence to zero.  V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:
 the unit-variance, Rademacher, and canonical Rademacher endpoints now use

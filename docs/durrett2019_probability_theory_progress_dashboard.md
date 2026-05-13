@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V276` in
+Route from `Live In-Thread Goal Prompt V277` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.6 uniform integrability and
 `L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
@@ -97,10 +97,12 @@ measurability and a.s. convergence `W_N -> 0`.  V276 adds
 and
 `durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwise_iSup_tail_ae_tendsto_zero`,
 which pass from pairwise tail bounds and `Y_n -> Y` a.s. to the eventual
-pointwise limit-error bound.  The next target is constructing or packaging the
-concrete textbook `W_N` envelope, proving limiting-sigma-field strong
-measurability, domination by `2Z`, `W_N -> 0` a.s., and pairwise tail
-domination.
+pointwise limit-error bound.  V277 introduces the concrete `sSup` tail envelope
+`durrett2019_theorem_4_6_10_pairwiseTailEnvelope`, proves pairwise-bound
+extraction from boundedness, adds a.e. boundedness and supplied-pairwise-bound
+variants, and adds final consumers for the concrete envelope.  The next target
+is proving limiting-sigma-field strong measurability of this `sSup` envelope,
+domination by `2Z` from `|Y_n| <= Z`, and `W_N -> 0` a.s.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now
