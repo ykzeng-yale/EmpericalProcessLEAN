@@ -269,6 +269,12 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_and_inverseIdentity`,
 	so exact-source callers no longer need a nonzero-displacement proof for
 	successors that are exactly `xbar0`.
+	The global-derivative packet adds
+	`chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_globalDeriv_and_inverseIdentity`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_globalDeriv_and_inverseIdentity`,
+	so the exact-source route now consumes one domain-wide Hessian derivative
+	and mixed-third identity package instead of per-successor segment identities.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

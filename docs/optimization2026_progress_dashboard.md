@@ -317,8 +317,14 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  and
 	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_and_inverseIdentity`,
 	  so equal-to-source successors no longer require a nonzero segment
-	  certificate.  The live exact-source gate is now successor membership,
-	  segment derivative/mixed-third identities, a uniform radius bound, and
+	  certificate.  The global-derivative packet adds
+	  `chewi1316_uniformTailBound_of_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_globalDeriv_and_inverseIdentity`
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadius_successor_radiusBound_canonicalDen_zeroSafe_globalDeriv_and_inverseIdentity`,
+	  deriving all per-successor segment derivative oracles from a single
+	  domain-wide Hessian derivative and mixed-third identity package.  The live
+	  exact-source gate is now successor membership, a global derivative package,
+	  a uniform radius bound, and
 	  `sourceBound / (1 - M*radiusBound) <= tailBound`.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
