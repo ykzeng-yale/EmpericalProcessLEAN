@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V308`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V309`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -46,6 +46,10 @@ notation:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum`
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_range_sum`.
+V309 adds the exact `n^{-1} * sum` display wrappers:
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum`
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_inv_mul_range_sum`.
 Do not redo the compiled 2.4.9 cutpoint-chain or Section 4.7 V282-V306 support
 unless a later theorem exposes a precise dependency gap.
 
@@ -663,6 +667,10 @@ V308 additionally closes the exact range-sum display wrappers:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum`
 and
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_range_sum`.
+V309 additionally closes the exact `n^{-1} * sum` display wrappers:
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum`
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_inv_mul_range_sum`.
 Theorem 2.2.3 now has finite-block variance scaling, the
 `C / n` variance bound, the source-facing `E (S_n / n - mu)^2 <= C / n`
 display for uncorrelated and independent blocks, the `L^2 -> TendstoInMeasure`
