@@ -24842,6 +24842,194 @@ theorem
       hAinf_int hStopped0 hA0 hA_mono hA_tendsto hlim hzero
 
 /--
+Durrett 2019, Example 4.5.8 support: deterministic real clocks are predictable.
+-/
+theorem durrett2019_deterministic_clock_isStronglyPredictable
+    {Ω : Type*} [mΩ : MeasurableSpace Ω] {ℱ : Filtration ℕ mΩ}
+    (a : ℕ -> ℝ) :
+    IsStronglyPredictable ℱ (fun (n : ℕ) (_ : Ω) => a n) := by
+  refine IsStronglyPredictable.of_measurable_add_one ?h0 ?hsucc
+  · exact stronglyMeasurable_const
+  · intro n
+    exact stronglyMeasurable_const
+
+/--
+Durrett 2019, Example 4.5.8 support: stopping preserves a pathwise monotone
+real process.
+-/
+theorem durrett2019_stoppedProcess_monotone_of_monotone
+    {Ω : Type*} {u : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞}
+    (hu : ∀ ω, Monotone fun n => u n ω) :
+    ∀ ω, Monotone fun n => stoppedProcess u N n ω := by
+  intro ω i j hij
+  cases hNω : N ω with
+  | top =>
+      simpa [stoppedProcess, hNω] using hu ω hij
+  | coe t =>
+      simpa [stoppedProcess, hNω] using hu ω (min_le_min hij le_rfl)
+
+/--
+Durrett 2019, Exercise 4.4.6 support: a nonnegative deterministic variance
+clock is monotone.
+-/
+theorem durrett2019_exercise_4_4_6_varianceClock_mono
+    {sigmaSq : ℕ -> ℝ} (hsigmaSq_nonneg : ∀ m, 0 ≤ sigmaSq m) :
+    Monotone (durrett2019_exercise_4_4_6_varianceClock sigmaSq) := by
+  refine monotone_nat_of_le_succ fun n => ?_
+  rw [durrett2019_exercise_4_4_6_varianceClock_succ]
+  exact le_add_of_nonneg_right (hsigmaSq_nonneg (n + 1))
+
+/--
+Durrett 2019, Example 4.5.8 support: if the stopping time is finite on a path,
+the stopped process converges to its stopped value.
+-/
+theorem durrett2019_stoppedProcess_tendsto_stoppedValue_of_ne_top
+    {Ω : Type*} {u : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞} {ω : Ω}
+    (hN_ne_top : N ω ≠ ⊤) :
+    Tendsto (fun n => stoppedProcess u N n ω) atTop
+      (𝓝 (stoppedValue u N ω)) := by
+  cases hNω : N ω with
+  | top =>
+      exact (hN_ne_top hNω).elim
+  | coe t =>
+      refine tendsto_nhds_of_eventually_eq ?_
+      filter_upwards [eventually_ge_atTop t] with n hn
+      have hge : N ω ≤ (n : ℕ∞) := by
+        rw [hNω]
+        exact_mod_cast hn
+      rw [stoppedProcess_eq_of_ge (u := u) (τ := N) (i := n) (ω := ω) hge]
+      simp [stoppedValue, hNω]
+
+/--
+Durrett 2019, Example 4.5.8 support: stopping a square-minus-clock martingale
+gives the square of the stopped process minus the stopped clock.
+-/
+theorem durrett2019_stopped_square_minus_stopped_clock_martingale
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {ℱ : Filtration ℕ mΩ} [SigmaFiniteFiltration P ℱ]
+    {S A : ℕ -> Ω -> ℝ} {N : Ω -> ℕ∞}
+    (hSquareMinus : Martingale (fun n ω => S n ω ^ 2 - A n ω) ℱ P)
+    (hN : IsStoppingTime ℱ N) :
+    Martingale
+      (fun n ω => stoppedProcess S N n ω ^ 2 - stoppedProcess A N n ω) ℱ P := by
+  have hStopped :
+      Martingale (stoppedProcess (fun n ω => S n ω ^ 2 - A n ω) N) ℱ P :=
+    durrett2019_theorem_4_2_9_martingale_stoppedProcess hSquareMinus hN
+  have hEq :
+      (fun n ω => stoppedProcess S N n ω ^ 2 - stoppedProcess A N n ω) =
+        stoppedProcess (fun n ω => S n ω ^ 2 - A n ω) N := by
+    ext n ω
+    simp [stoppedProcess]
+  simpa [hEq] using hStopped
+
+/--
+Durrett 2019, Example 4.5.8 linear-random-walk source bridge.
+
+For a zero-start random walk with independent mean-zero increments and
+deterministic second moments, the already-formalized Exercise 4.4.6
+square-minus-variance-clock martingale supplies the stopped
+`S_{N ∧ n}^2 - A_{N ∧ n}` martingale needed by Theorem 4.5.7.  A.s. finiteness
+of `N` identifies the stopped-process limits with the stopped values.
+-/
+theorem
+    durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {ξ : ℕ -> Ω -> ℝ} {sigmaSq : ℕ -> ℝ} {N : Ω -> ℕ∞}
+    (hξ_sm : ∀ n, StronglyMeasurable (ξ n))
+    (hξ_memLp_two : ∀ n, MemLp (ξ n) (2 : ℝ≥0∞) P)
+    (hξ_indep : _root_.ProbabilityTheory.iIndepFun ξ P)
+    (hξ_mean_zero : ∀ n, (∫ ω, ξ n ω ∂P) = 0)
+    (hξ_second_moment : ∀ n, (∫ ω, ξ n ω ^ 2 ∂P) = sigmaSq n)
+    (hsigmaSq_nonneg : ∀ m, 0 ≤ sigmaSq m)
+    (hN : IsStoppingTime (Filtration.natural ξ hξ_sm) N)
+    (hN_ne_top : ∀ᵐ ω ∂P, N ω ≠ ⊤)
+    (hAinf_int :
+      Integrable
+        (stoppedValue
+          (fun (n : ℕ) (_ : Ω) =>
+            durrett2019_exercise_4_4_6_varianceClock sigmaSq n)
+          N) P) :
+    (∫ ω, stoppedValue (durrett2019_example_4_2_1_linearRandomWalk 0 ξ) N ω ∂P) =
+      0 := by
+  let ℱ : Filtration ℕ mΩ := Filtration.natural ξ hξ_sm
+  let S : ℕ -> Ω -> ℝ := durrett2019_example_4_2_1_linearRandomWalk 0 ξ
+  let A : ℕ -> Ω -> ℝ :=
+    fun n _ => durrett2019_exercise_4_4_6_varianceClock sigmaSq n
+  have hξ_int : ∀ n, Integrable (ξ n) P :=
+    fun n => (hξ_memLp_two n).integrable one_le_two
+  have hS : Martingale S ℱ P := by
+    simpa [S, ℱ] using
+      durrett2019_example_4_2_1_linearRandomWalk_martingale_of_iIndepFun_zeroMean
+        (μ := P) (s0 := 0) hξ_sm hξ_int hξ_indep hξ_mean_zero
+  have hS_memLp_two : ∀ n, MemLp (S n) (2 : ℝ≥0∞) P := by
+    intro n
+    simpa [S] using
+      durrett2019_example_4_2_1_linearRandomWalk_memLp_two
+        (μ := P) (s0 := 0) hξ_memLp_two n
+  have hSquareMinus_raw : Martingale (fun n ω => S n ω ^ 2 - A n ω) ℱ P := by
+    simpa [S, A, ℱ] using
+      durrett2019_exercise_4_4_6_linearRandomWalk_squareMinusVarianceClock_martingale_of_iIndepFun_zeroMean_secondMoments
+        (μ := P) (s0 := 0) (sigmaSq := sigmaSq) hξ_sm hξ_memLp_two
+        hξ_indep hξ_mean_zero hξ_second_moment
+  have hA_predictable : IsStronglyPredictable ℱ (stoppedProcess A N) := by
+    exact
+      durrett2019_isStronglyPredictable_stoppedProcess_of_predictable
+        (ℱ := ℱ) (A := A) (N := N)
+        (durrett2019_deterministic_clock_isStronglyPredictable
+          (ℱ := ℱ) (fun n =>
+            durrett2019_exercise_4_4_6_varianceClock sigmaSq n))
+        hN
+  have hSquareMinus :
+      Martingale
+        (fun n ω => stoppedProcess S N n ω ^ 2 - stoppedProcess A N n ω)
+        ℱ P :=
+    durrett2019_stopped_square_minus_stopped_clock_martingale
+      (P := P) (ℱ := ℱ) hSquareMinus_raw hN
+  have hA_int : ∀ n, Integrable (stoppedProcess A N n) P := by
+    intro n
+    exact integrable_stoppedProcess (ι := ℕ) hN
+      (fun k => integrable_const
+        (durrett2019_exercise_4_4_6_varianceClock sigmaSq k)) n
+  have hS0 : S 0 =ᵐ[P] 0 := by
+    exact Eventually.of_forall fun ω => by
+      simp [S]
+  have hA0 : stoppedProcess A N 0 = 0 := by
+    ext ω
+    have hzero_le : (0 : ℕ∞) ≤ N ω := by
+      cases N ω <;> simp
+    rw [stoppedProcess_eq_of_le (u := A) (τ := N) (i := 0) (ω := ω) hzero_le]
+    simp [A]
+  have hA_mono : ∀ᵐ ω ∂P, Monotone fun n => stoppedProcess A N n ω := by
+    exact Eventually.of_forall
+      (durrett2019_stoppedProcess_monotone_of_monotone
+        (N := N)
+        (u := A)
+        (fun ω =>
+          durrett2019_exercise_4_4_6_varianceClock_mono hsigmaSq_nonneg))
+  have hA_tendsto :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n => stoppedProcess A N n ω) atTop
+          (𝓝 (stoppedValue A N ω)) := by
+    filter_upwards [hN_ne_top] with ω hω
+    exact durrett2019_stoppedProcess_tendsto_stoppedValue_of_ne_top
+      (u := A) (N := N) hω
+  have hlim :
+      ∀ᵐ ω ∂P,
+        Tendsto (fun n => stoppedProcess S N n ω) atTop
+          (𝓝 (stoppedValue S N ω)) := by
+    filter_upwards [hN_ne_top] with ω hω
+    exact durrett2019_stoppedProcess_tendsto_stoppedValue_of_ne_top
+      (u := S) (N := N) hω
+  simpa [S, A, ℱ] using
+    durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source
+      (P := P) (ℱ := ℱ) (S := S) (A := stoppedProcess A N) (N := N)
+      (Ainf := stoppedValue A N) (Y := stoppedValue S N)
+      hS hN hA_predictable hSquareMinus hS_memLp_two hA_int hAinf_int hS0 hA0
+      hA_mono hA_tendsto hlim
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

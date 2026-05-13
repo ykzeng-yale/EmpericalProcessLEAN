@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V254
+## Live In-Thread Goal Prompt V255
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -20,7 +20,19 @@ CLT wrappers, Chapter 4.1-4.4 martingale infrastructure, Theorem 4.5.1
 maximal support, Theorem 4.5.2 convergence/threshold source package, Theorem
 4.5.3 random-normalizer route, and final Theorem 4.5.5 ratio package.
 
-Latest verified Lean packet V254 adds the stopped-process specialization for
+Latest verified Lean packet V255 adds the linear-random-walk source bridge for
+Example 4.5.8:
+`durrett2019_deterministic_clock_isStronglyPredictable`,
+`durrett2019_stoppedProcess_monotone_of_monotone`,
+`durrett2019_exercise_4_4_6_varianceClock_mono`,
+`durrett2019_stoppedProcess_tendsto_stoppedValue_of_ne_top`,
+`durrett2019_stopped_square_minus_stopped_clock_martingale`, and
+`durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments`.
+It stops the already-compiled Exercise 4.4.6 square-minus-variance-clock
+martingale for an independent mean-zero linear random walk, derives the stopped
+clock predictability/monotonicity and stopped-value limits, and concludes
+`E[S_N] = 0` under a.s. finite `N` plus integrability of the stopped variance
+clock.  V254 adds the stopped-process specialization for
 Example 4.5.8:
 `durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source`.
 It derives the finite-horizon zero expectations for `S_{N ∧ n}` from bounded
@@ -159,16 +171,16 @@ and
 V236 already supplied the raw/stopped
 `P(max_{m <= n} |X_m| > a)` Kolmogorov/Doob probability conversion.
 
-Next aggressive theorem-sized packet: instantiate the V254 stopped-process
-bridge for the stopped simple symmetric random walk in Example 4.5.8.  Search
-local/Mathlib support first, especially `StatInference/ProbabilityMeasure/Rademacher.lean`,
-for Rademacher increments, finite random-walk sums, stopped-process convergence
-to `S_N`, the square-minus-clock martingale for `S_{N ∧ n}^2 - (N ∧ n)`, and the
-clock identity/side condition `A_infty = N` with `E sqrt(N) < ∞`.  If the
-infinite simple-walk object is still missing, first add the smallest reusable
-source package for an abstract simple symmetric walk that supplies exactly the
-V254 inputs; do not rebuild dominated convergence, optional-stopping zero
-expectations, or Theorem 4.5.7 integrability.  Do not revisit closed
+Next aggressive theorem-sized packet: specialize the V255 linear-random-walk
+bridge to simple symmetric/Rademacher increments.  Search local/Mathlib support
+first, especially `StatInference/ProbabilityMeasure/Rademacher.lean`, for
+Rademacher moment facts (`E ξ = 0`, `E ξ^2 = 1`, `ξ ∈ L^2`) and iid sign
+construction/reuse.  The clean target is an endpoint with
+`sigmaSq = fun _ => 1`, stopped variance clock displayed as `N` or `N ∧ n`, and
+only the genuine textbook side condition `E sqrt(N) < ∞`/terminal clock
+integrability left.  Do not rebuild the V255 stopped square-minus-clock
+martingale, stopped-value convergence, V254 optional-stopping zero expectations,
+dominated convergence, or Theorem 4.5.7 integrability.  Do not revisit closed
 Chapter 2/3/4.5.2/4.5.3/4.5.5 plumbing, the V236 probability conversion, the
 V237/V238/V239 stopped source packaging, the V240 raw/stopped survival split,
 the V241 layer-cake handoff, the V242 first-RHS bridge, the V243
@@ -2056,6 +2068,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V254` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V255` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

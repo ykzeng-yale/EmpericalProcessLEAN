@@ -32,10 +32,17 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V254` in
+Route from `Live In-Thread Goal Prompt V255` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Durrett Example 4.5.8 in
-`StatInference/ProbabilityTheory/Martingale.lean`.  V254 adds the stopped-process
+`StatInference/ProbabilityTheory/Martingale.lean`.  V255 adds the
+linear-random-walk source bridge:
+`durrett2019_example_4_5_8_stoppedLinearRandomWalk_terminal_integral_eq_zero_of_iIndepFun_zeroMean_secondMoments`.
+It reuses the compiled Exercise 4.4.6 square-minus-variance-clock martingale for
+independent mean-zero increments, stops it at `N`, derives stopped clock
+predictability/monotonicity and stopped-value limits, and concludes
+`E[S_N] = 0` assuming a.s. finite `N` and integrability of the stopped variance
+clock.  V254 adds the stopped-process
 specialization:
 `durrett2019_example_4_5_8_stoppedProcess_integral_limit_eq_zero_of_theorem_4_5_7_source`.
 It derives the finite-horizon zero expectations for `S_{N ∧ n}` from bounded
@@ -44,9 +51,10 @@ V253 adds the first downstream consumer of the closed 4.5.7 endpoint:
 `durrett2019_theorem_4_5_7_runningAbsSup_integrable_of_source_square_minus_martingale_monotone_terminal`,
 `durrett2019_example_4_5_8_integral_limit_eq_zero_of_dominated`, and
 `durrett2019_example_4_5_8_integral_limit_eq_zero_of_theorem_4_5_7_source`.
-The next target is the stopped simple symmetric random-walk source instantiation
-from the textbook example, reusing `StatInference/ProbabilityMeasure/Rademacher.lean`
-where it helps.  V252 removes the remaining
+The next target is the simple symmetric/Rademacher specialization of V255:
+prove or package the local Rademacher moment inputs, set `sigmaSq = fun _ => 1`,
+and display the stopped variance clock as the textbook `N`/`N ∧ n` clock with
+only the real terminal-clock integrability side condition left.  V252 removes the remaining
 manual boundedness/finiteness side inputs from the canonical infinite-horizon
 source endpoint.  It adds
 `durrett2019_runningAbsMax_ae_bddAbove_of_iSup_lintegral_ne_top`,
@@ -57,7 +65,7 @@ source endpoint.  It adds
 and the clean source-facing
 `durrett2019_theorem_4_5_7_runningAbsSup_lintegral_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`.
 The next Durrett route should stop recursing on this endpoint and move through
-the V254 Example 4.5.8 source instantiation.  V251 adds the
+the V255 Rademacher/simple-walk specialization.  V251 adds the
 infinite-horizon monotone-convergence endpoint for Theorem 4.5.7:
 `durrett2019_runningAbsMax_lintegral_iSup_le_of_lintegral_le`,
 `durrett2019_theorem_4_5_7_lintegral_iSup_runningAbsMax_le_three_sqrt_lintegral_of_source_square_minus_martingale_monotone_terminal`,
