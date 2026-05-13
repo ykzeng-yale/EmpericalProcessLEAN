@@ -15,14 +15,20 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: limit-law covariance bilinear source endpoint for the
+Latest verified packet: Gaussian limit moment source endpoint for the
 score-at-theta0/Taylor route, including
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+in `MEstimators.lean`.  It derives `MemLp id 2 (Q.map Z)` from
+`HasGaussianLaw Z Q` via `ProbabilityTheory.IsGaussian.memLp_two_id`.
+
+Immediate predecessor packet: limit-law covariance bilinear source endpoint for
+the score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 in `MEstimators.lean`.  It derives the diagonal covariance-to-score-variance
 fields from law-level covariance bilinear equality between `Q.map Z` and
 `scoreLaw`.
 
-Immediate predecessor packet: limit-law mean source endpoint for the
+Earlier predecessor packet: limit-law mean source endpoint for the
 score-at-theta0/Taylor route, including
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 in `MEstimators.lean`.  It derives every projected limit mean field from
@@ -914,10 +920,10 @@ measurability.  It also derives coordinate score-law `L²` and zero mean from
 vector-level score-law moment sources, and coordinate derivative-law entry
 integrability from `Integrable id derivativeLaw`; it derives projected limit
 mean fields from vector-law mean zero and derives diagonal limit covariance
-fields from law-level covariance bilinear equality.  Move next only on a live
-source hypothesis of that endpoint, preferably a concrete model-specialized
-Theorem 5.41 instantiation or a narrow source package that removes another
-exposed model-facing field.
+fields from law-level covariance bilinear equality; it derives Gaussian limit
+`L²` from the Gaussian law.  Move next only on a live source hypothesis of that
+endpoint, preferably a concrete model-specialized Theorem 5.41 instantiation
+or a narrow source package that removes another exposed model-facing field.
 Do not replay solved Chapter 2-4 infrastructure, canonical/projected/common-vector
 score infrastructure, derivative-bound and finite strong-law infrastructure,
 law-tail routing, display-congruence, display-convergence, display weak
@@ -931,6 +937,7 @@ wrappers, direct vector/table wrappers, coordinate-projection wrappers,
 score-vector measurability wrappers, score-law vector moment wrappers,
 derivative-law vector integrability wrappers, limit-law mean source wrappers,
 limit-law covariance source wrappers, or historical ledger items.
+Gaussian limit moment wrappers are also complete and should not be replayed.
 
 ## Reuse Dependencies
 
