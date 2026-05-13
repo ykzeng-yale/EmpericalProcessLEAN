@@ -136,8 +136,12 @@ now derives coordinatewise score-vector measurability from vector-valued
 score-law vector moment source endpoint
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
 now derives coordinate score-law `L²` from `MemLp id 2 scoreLaw` and
-coordinate score-law mean zero from dual mean-zero under `scoreLaw`.  The next
-proof packet should move to a concrete model-specialized Theorem 5.41
+coordinate score-law mean zero from dual mean-zero under `scoreLaw`.  The
+derivative-law vector integrability source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+now derives coordinate derivative-law entry integrability from
+`Integrable id derivativeLaw` by composing with `ContinuousLinearMap.proj`.
+The next proof packet should move to a concrete model-specialized Theorem 5.41
 instantiation, or package only a still-live source field that the current
 endpoint explicitly exposes, not replay display weak-convergence,
 display-tightness, score-CLT, residual convergence, absorbing tightness,
@@ -149,7 +153,7 @@ score-at-theta0 vector scaling transfer, or
 estimator-definition/raw-root/measurability/sampled-derivative-action/
 population-`V` basis-action/pointwise-smoothness/score-vector display/direct
 vector-table/coordinate-projection/score-vector-measurability/score-law-vector
-moment source wrappers.
+moment/derivative-law-vector-integrability source wrappers.
 
 ## Chapter Map
 
