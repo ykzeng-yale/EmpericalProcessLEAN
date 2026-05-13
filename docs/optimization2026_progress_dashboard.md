@@ -377,16 +377,27 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_hessianRightInverse`,
 	  deriving both the inverse-local identity and the Newton-step
 	  local-norm/decrement identity from
-	  `hess(x_n) (invHess(x_n) v) = v`.  Search-first reuse: local
+	  `hess(x_n) (invHess(x_n) v) = v`.  The square-root-coordinate family layer
+	  now adds
+	  `chewi1316_uniformTailBound_of_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily`
+	  and
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily`.
+	  These derive the source Hessian factorization, inverse-Hessian
+	  right-inverse, and dual quadratic factorization from
+	  `sqrtCoord N : E ≃L[ℝ] E` plus the representation
+	  `invHess(x_n) = sqrtCoord_n.symm ∘ sqrtCoord_n.symm†`.  Search-first reuse:
+	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
 	  `hessianPrimalFactor_of_adjointSqrt`,
 	  `localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
 	  `localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse`,
+	  `hessianRightInverse_of_adjointSqrtCoord_invHess`,
+	  `inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse`,
 	  mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The
 	  live exact-source gate is
 	  now the concrete Chewi/Nesterov analytical-center data: successor
 	  membership, a global derivative package, the preliminary Newton recurrence,
-	  a Hessian right-inverse on the preliminary points, the scalar summability
+	  a square-root-coordinate family on the preliminary points, the scalar summability
 	  budget `sum 2*lambda_n <= 1/2`, and `2 * sqrt(nu) <= tailBound`.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include

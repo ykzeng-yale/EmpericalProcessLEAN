@@ -322,14 +322,24 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	and
 	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_hessianRightInverse`,
 	deriving both inverse-local and step-norm identities from
-	`hess(x_n) (invHess(x_n) v) = v`.  Search-first reuse: local
+	`hess(x_n) (invHess(x_n) v) = v`.  The square-root-coordinate family layer
+	adds
+	`chewi1316_uniformTailBound_of_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily`
+	and
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNewtonSteps_currentLocalNormBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily`,
+	deriving the source Hessian factorization, inverse-Hessian right-inverse,
+	and dual quadratic factorization from
+	`hess(x_n) = sqrtCoord_n† sqrtCoord_n` and
+	`invHess(x_n) = sqrtCoord_n.symm sqrtCoord_n.symm†`.  Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
 	`localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse`,
+	`hessianRightInverse_of_adjointSqrtCoord_invHess`,
+	`inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse`,
 	and mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The next
 	exact-source §13.16 gate is no longer a raw `hradius_half`; it is the
-	concrete preliminary Newton recurrence, Hessian right-inverse on the
+	concrete preliminary Newton recurrence, square-root-coordinate family on the
 	preliminary points, scalar summability budget `sum 2*lambda_n <= 1/2`,
 	successor membership, global derivative package, and the scalar tail budget
 	`2 * sqrt(nu) <= tailBound`.
