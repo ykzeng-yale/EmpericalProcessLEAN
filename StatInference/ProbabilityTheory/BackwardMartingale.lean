@@ -1269,6 +1269,226 @@ theorem durrett2019_example_4_7_4_reverseAverageSigma_prefix_condExp_symmetry_of
       hcoord
 
 /--
+Durrett 2019, Example 4.7.4 product-space source algebra: finite coordinate
+permutations preserve the prefix sum of the coordinate-evaluation process.
+-/
+theorem durrett2019_example_4_7_4_eval_prefixSum_comp_natPermOfFin
+    {n : ℕ} (perm : Equiv.Perm (Fin n)) :
+    (fun sequence : ℕ -> ℝ =>
+      durrett2019_example_4_7_4_prefixSum (fun k sequence => sequence k) n
+        (vdVWNatCoordinatePermMeasurableEquiv (Observation := ℝ)
+          (vdVWNatPermOfFin perm) sequence)) =
+      durrett2019_example_4_7_4_prefixSum
+        (fun k sequence => sequence k) n := by
+  ext sequence
+  rw [vdVWNatCoordinatePermMeasurableEquiv_eq_vdVWPermuteNatSequence]
+  dsimp [durrett2019_example_4_7_4_prefixSum]
+  rw [← Fin.sum_univ_eq_sum_range
+    (fun k => vdVWPermuteNatSequence (vdVWNatPermOfFin perm) sequence k) n]
+  rw [← Fin.sum_univ_eq_sum_range (fun k => sequence k) n]
+  have hfirst :=
+    vdVWFirstNSample_permuteNatSequence_natPermOfFin
+      (Observation := ℝ) perm sequence
+  change
+    (∑ i : Fin n,
+        vdVWFirstNSample n
+          (vdVWPermuteNatSequence (vdVWNatPermOfFin perm) sequence) i) =
+      ∑ i : Fin n, vdVWFirstNSample n sequence i
+  rw [hfirst]
+  let g : Fin n -> ℝ := fun i => vdVWFirstNSample n sequence i
+  calc
+    (∑ i : Fin n,
+        vdVWFinCoordinatePermMeasurableEquiv perm
+          (vdVWFirstNSample n sequence) i)
+        = ∑ i : Fin n, g (perm.symm i) := by
+            apply Finset.sum_congr rfl
+            intro i _hi
+            have hcoord :=
+              vdVWFinCoordinatePermMeasurableEquiv_apply_apply
+                (Observation := ℝ) perm
+                (vdVWFirstNSample n sequence) (perm.symm i)
+            simpa [g] using hcoord
+    _ = ∑ i : Fin n, g i := by
+          simpa using Equiv.sum_comp perm.symm g
+
+/--
+Durrett 2019, Example 4.7.4 product-space source algebra: finite coordinate
+permutations extended by identity outside the first `n` fix every tail
+coordinate from `n` onward.
+-/
+theorem durrett2019_example_4_7_4_eval_tail_comp_natPermOfFin
+    {n j : ℕ} (hj : n ≤ j) (perm : Equiv.Perm (Fin n)) :
+    (fun sequence : ℕ -> ℝ =>
+      (vdVWNatCoordinatePermMeasurableEquiv (Observation := ℝ)
+        (vdVWNatPermOfFin perm) sequence) j) =
+      fun sequence => sequence j := by
+  ext sequence
+  rw [vdVWNatCoordinatePermMeasurableEquiv_eq_vdVWPermuteNatSequence]
+  dsimp [vdVWPermuteNatSequence]
+  have hfix := VdVWNatPermFixesFrom_natPermOfFin perm
+  have hsymm : (vdVWNatPermOfFin perm).symm j = j := by
+    apply (vdVWNatPermOfFin perm).injective
+    rw [Equiv.apply_symm_apply]
+    exact (hfix j hj).symm
+  rw [hsymm]
+
+/--
+Durrett 2019, Example 4.7.4 product-space source algebra: the finite swap of
+prefix coordinate `i` and coordinate `0` transports `xi_i` to `xi_0`.
+-/
+theorem durrett2019_example_4_7_4_eval_coordinate_eq_zero_comp_prefixSwap
+    {n i : ℕ} (hi : i < n) :
+    (fun sequence : ℕ -> ℝ => sequence i) =
+      fun sequence =>
+        (vdVWNatCoordinatePermMeasurableEquiv (Observation := ℝ)
+          (vdVWNatPermOfFin (Equiv.swap (⟨i, hi⟩ : Fin n)
+            (⟨0, Nat.lt_of_le_of_lt (Nat.zero_le i) hi⟩ : Fin n)))
+          sequence) 0 := by
+  ext sequence
+  let iFin : Fin n := ⟨i, hi⟩
+  let zeroFin : Fin n := ⟨0, Nat.lt_of_le_of_lt (Nat.zero_le i) hi⟩
+  let permFin : Equiv.Perm (Fin n) := Equiv.swap iFin zeroFin
+  let permNat : Equiv.Perm ℕ := vdVWNatPermOfFin permFin
+  have hnat : permNat i = 0 := by
+    change vdVWNatPermOfFin permFin (iFin : ℕ) = (zeroFin : ℕ)
+    rw [vdVWNatPermOfFin_apply_fin]
+    simp [permFin, iFin, zeroFin]
+  have hcoord :=
+    vdVWNatCoordinatePermMeasurableEquiv_apply_apply
+      (Observation := ℝ) permNat sequence i
+  rw [hnat] at hcoord
+  exact hcoord.symm
+
+set_option maxHeartbeats 800000 in
+/--
+Durrett 2019, Example 4.7.4 product-space finite-prefix conditional
+symmetry.  On the iid infinite product sequence space, finite coordinate swaps
+provide the exchangeability transports required by V294.
+-/
+theorem durrett2019_example_4_7_4_eval_condExp_eq_zero_of_prefixSwap
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {n i : ℕ} (hi : i < n)
+    (hi_int : Integrable (fun sequence : ℕ -> ℝ => sequence i)
+      (vdVWInfiniteProductMeasure P))
+    (h0_int : Integrable (fun sequence : ℕ -> ℝ => sequence 0)
+      (vdVWInfiniteProductMeasure P)) :
+    (vdVWInfiniteProductMeasure P)[
+        (fun sequence : ℕ -> ℝ => sequence i) |
+        durrett2019_example_4_7_4_reverseAverageSigma
+          (fun k sequence => sequence k) n] =ᵐ[vdVWInfiniteProductMeasure P]
+      (vdVWInfiniteProductMeasure P)[
+        (fun sequence : ℕ -> ℝ => sequence 0) |
+        durrett2019_example_4_7_4_reverseAverageSigma
+          (fun k sequence => sequence k) n] := by
+  let zeroFin : Fin n := ⟨0, Nat.lt_of_le_of_lt (Nat.zero_le i) hi⟩
+  let iFin : Fin n := ⟨i, hi⟩
+  let permFin : Equiv.Perm (Fin n) := Equiv.swap iFin zeroFin
+  let permNat : Equiv.Perm ℕ := vdVWNatPermOfFin permFin
+  let T : (ℕ -> ℝ) ≃ᵐ (ℕ -> ℝ) :=
+    vdVWNatCoordinatePermMeasurableEquiv (Observation := ℝ) permNat
+  have hT_pres :
+      MeasurePreserving T
+        (vdVWInfiniteProductMeasure P) (vdVWInfiniteProductMeasure P) := by
+    simpa [T, permNat] using
+      vdVWInfiniteProductMeasure_measurePreserving_natCoordinatePerm
+        (Observation := ℝ) P permNat
+  have hprefix :
+      (fun sequence : ℕ -> ℝ =>
+        durrett2019_example_4_7_4_prefixSum
+          (fun k sequence => sequence k) n (T sequence)) =
+        durrett2019_example_4_7_4_prefixSum
+          (fun k sequence => sequence k) n := by
+    simpa [T, permNat, permFin] using
+      durrett2019_example_4_7_4_eval_prefixSum_comp_natPermOfFin
+        (n := n) permFin
+  have htail :
+      ∀ j : ℕ, n ≤ j ->
+        (fun sequence : ℕ -> ℝ => (T sequence) j) =
+          fun sequence => sequence j := by
+    intro j hj
+    simpa [T, permNat, permFin] using
+      durrett2019_example_4_7_4_eval_tail_comp_natPermOfFin
+        (n := n) (j := j) hj permFin
+  have hT_sets :
+      ∀ s : Set (ℕ -> ℝ),
+        MeasurableSet[
+          durrett2019_example_4_7_4_reverseAverageSigma
+            (fun k sequence => sequence k) n] s ->
+          T ⁻¹' s = s :=
+    durrett2019_example_4_7_4_preimage_reverseAverageSigma_eq_of_prefixSum_tail_invariant
+      (ξ := fun k sequence => sequence k) (n := n) T hprefix htail
+  have hcoord :
+      (fun sequence : ℕ -> ℝ => sequence i) =
+        fun sequence => (fun sequence : ℕ -> ℝ => sequence 0) (T sequence) := by
+    simpa [T, permNat, permFin, iFin, zeroFin] using
+      durrett2019_example_4_7_4_eval_coordinate_eq_zero_comp_prefixSwap
+        (n := n) (i := i) hi
+  exact
+    durrett2019_example_4_7_4_condExp_eq_zero_of_reverseAverage_invariant_equiv
+      (P := vdVWInfiniteProductMeasure P)
+      (ξ := fun k sequence => sequence k)
+      (n := n) (i := i)
+      (fun k => measurable_pi_apply k)
+      hi_int h0_int T hT_pres hT_sets hcoord
+
+/--
+Durrett 2019, Example 4.7.4 product-space finite-prefix conditional symmetry,
+vectorized over all prefix coordinates.
+-/
+theorem durrett2019_example_4_7_4_eval_prefix_condExp_symmetry_of_prefixSwaps
+    {P : Measure ℝ} [IsProbabilityMeasure P] {n : ℕ}
+    (hξ_int :
+      ∀ i ∈ Finset.range n,
+        Integrable (fun sequence : ℕ -> ℝ => sequence i)
+          (vdVWInfiniteProductMeasure P)) :
+    ∀ i ∈ Finset.range n,
+      (vdVWInfiniteProductMeasure P)[
+          (fun sequence : ℕ -> ℝ => sequence i) |
+          durrett2019_example_4_7_4_reverseAverageSigma
+            (fun k sequence => sequence k) n] =ᵐ[vdVWInfiniteProductMeasure P]
+        (vdVWInfiniteProductMeasure P)[
+          (fun sequence : ℕ -> ℝ => sequence 0) |
+          durrett2019_example_4_7_4_reverseAverageSigma
+            (fun k sequence => sequence k) n] := by
+  intro i hi
+  exact
+    durrett2019_example_4_7_4_eval_condExp_eq_zero_of_prefixSwap
+      (P := P) (n := n) (i := i) (Finset.mem_range.mp hi)
+      (hξ_int i hi)
+      (hξ_int 0
+        (Finset.mem_range.mpr
+          (Nat.lt_of_le_of_lt (Nat.zero_le i) (Finset.mem_range.mp hi))))
+
+/--
+Durrett 2019, Example 4.7.4 product-space conditional-average display.
+For the coordinate-evaluation process on the iid infinite product sequence
+space, finite coordinate swaps prove the finite-prefix symmetry input, so the
+compiled V292 average calculation gives `E(xi_0 | G_n) = S_n / n`.
+-/
+theorem durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product
+    {P : Measure ℝ} [IsProbabilityMeasure P] {n : ℕ}
+    (hn : 0 < n)
+    (hξ_int :
+      ∀ i ∈ Finset.range n,
+        Integrable (fun sequence : ℕ -> ℝ => sequence i)
+          (vdVWInfiniteProductMeasure P)) :
+    (vdVWInfiniteProductMeasure P)[
+        (fun sequence : ℕ -> ℝ => sequence 0) |
+        durrett2019_example_4_7_4_reverseAverageSigma
+          (fun k sequence => sequence k) n] =ᵐ[vdVWInfiniteProductMeasure P]
+      fun sequence : ℕ -> ℝ =>
+        (∑ i ∈ Finset.range n, sequence i) / (n : ℝ) := by
+  exact
+    durrett2019_example_4_7_4_condExp_first_eq_reverseAverageSigma_prefixAverage_div
+      (P := vdVWInfiniteProductMeasure P)
+      (ξ := fun k sequence => sequence k)
+      (n := n) hn
+      (fun k => measurable_pi_apply k)
+      hξ_int
+      (durrett2019_example_4_7_4_eval_prefix_condExp_symmetry_of_prefixSwaps
+        (P := P) (n := n) hξ_int)
+
+/--
 Durrett 2019, Example 4.7.4, final strong-law endpoint using the compiled
 local strong-law primitive.
 -/

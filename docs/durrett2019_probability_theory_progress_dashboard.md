@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V294` in
+Route from `Live In-Thread Goal Prompt V295` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.7 backwards martingales in
 `StatInference/ProbabilityTheory/BackwardMartingale.lean`, reusing the
@@ -196,10 +196,17 @@ the reverse-average generator display and prefix/tail-invariance bridge:
 `durrett2019_example_4_7_4_preimage_reverseAverageSigma_eq_of_prefixSum_tail_invariant`,
 and
 `durrett2019_example_4_7_4_reverseAverageSigma_prefix_condExp_symmetry_of_prefixSum_tail_invariant`.
-The next target is the exact Durrett source layer: construct the actual
-coordinate-swap measurable equivalences from exchangeability of the first `n`
-coordinates; V294 now handles reverse-average event preservation once prefix
-sum and tail-coordinate invariance are supplied.
+V295 specializes this to the iid infinite product coordinate-evaluation
+process with finite coordinate swaps:
+`durrett2019_example_4_7_4_eval_prefixSum_comp_natPermOfFin`,
+`durrett2019_example_4_7_4_eval_tail_comp_natPermOfFin`,
+`durrett2019_example_4_7_4_eval_coordinate_eq_zero_comp_prefixSwap`,
+`durrett2019_example_4_7_4_eval_condExp_eq_zero_of_prefixSwap`,
+`durrett2019_example_4_7_4_eval_prefix_condExp_symmetry_of_prefixSwaps`, and
+`durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product`.
+The next target is to discharge coordinate-evaluation integrability from the
+one-dimensional law and assemble the backwards-martingale product endpoint
+using the compiled tail-constant handoffs.
 V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now

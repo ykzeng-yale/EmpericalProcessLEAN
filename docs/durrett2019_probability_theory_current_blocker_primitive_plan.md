@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V294
+## Live In-Thread Goal Prompt V295
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -29,10 +29,11 @@ conditional-expectation algebra core, the V291 concrete reverse-average
 sigma-field scaffold, the V292 decreasing-family and concrete conditional
 average consumer, the V293 exchangeability-transport-to-conditional-symmetry
 handoff, the V294 reverse-average generator/prefix-tail invariance bridge, or
-the V281-V273 Section 4.6 tail-envelope /
+the V295 iid-product coordinate-swap conditional-average layer, or the
+V281-V273 Section 4.6 tail-envelope /
 conditional-expectation layers.
 
-Latest verified target V294 advances Section 4.7.  V260 packages Durrett
+Latest verified target V295 advances Section 4.7.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -230,17 +231,26 @@ invariants.  It adds
 `durrett2019_example_4_7_4_preimage_reverseAverageSigma_eq_of_prefixSum_tail_invariant`,
 and
 `durrett2019_example_4_7_4_reverseAverageSigma_prefix_condExp_symmetry_of_prefixSum_tail_invariant`.
+V295 specializes the V294 transport layer to the iid infinite product
+coordinate-evaluation process using the VdVW finite/natural coordinate
+permutation machinery.  It adds
+`durrett2019_example_4_7_4_eval_prefixSum_comp_natPermOfFin`,
+`durrett2019_example_4_7_4_eval_tail_comp_natPermOfFin`,
+`durrett2019_example_4_7_4_eval_coordinate_eq_zero_comp_prefixSwap`,
+`durrett2019_example_4_7_4_eval_condExp_eq_zero_of_prefixSwap`,
+`durrett2019_example_4_7_4_eval_prefix_condExp_symmetry_of_prefixSwaps`, and
+`durrett2019_example_4_7_4_eval_condExp_first_eq_prefixAverage_div_product`.
 
-Next aggressive theorem packet: construct the actual coordinate-swap
-measurable equivalences that feed V294.  For the V291/V292 concrete zero-based
-sigma-field `𝒢_n = σ(S_n, ξ_n, ξ_{n+1}, ...)`, prove that swapping a prefix
-coordinate `i < n` with coordinate `0` preserves the law, fixes `S_n` and all
-tail coordinates, and transports `ξ_i` to `ξ_0`.
-Then connect the reverse-tail constant side through exchangeability /
-Hewitt-Savage if the exact Durrett sigma-field is not reducible to V289's
-independent tail-block wrapper.  Do not rewrap the already compiled direct
-strong law, V286/V287/V288/V289/V290/V291/V292/V293/V294 handoffs, or V285
-backwards Lévy endpoint.
+Next aggressive theorem packet: remove the remaining source-side assumptions
+around the V295 product-space display.  First prove coordinate-evaluation
+integrability under `vdVWInfiniteProductMeasure P` from integrability of the
+identity under the one-dimensional law `P`; then assemble the backwards
+martingale Example 4.7.4 product endpoint by combining V295 with the compiled
+backwards convergence/tail-constant handoffs.  If the reverse-tail constant
+side is still too general, connect it through V289's independent tail-block
+zero-one wrapper or a Hewitt-Savage-specific wrapper.  Do not rewrap the
+already compiled direct strong law, V286/V287/V288/V289/V290/V291/V292/V293/
+V294/V295 handoffs, or V285 backwards Lévy endpoint.
 
 ## Deprecated V255 Prompt Notes
 
