@@ -156,6 +156,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   `barrierAffinePreimageGradientInvHessRightInverse_quadratic_eq`,
   `chewi1314_polytopeSlackNegLog_gradient_invHessRightInverse_inner_eq_card`,
   and `chewi1314_polytopeSlackNegLog_gradient_invHessSurjective_inner_eq_card`,
+  plus the pulled-gradient Hessian right-inverse identities
+  `barrierAffinePreimageHess_invHessRightInverse_grad`,
+  `chewi1314_polytopeSlackNegLog_hess_invHessRightInverse_grad`, and
+  `chewi1314_polytopeSlackNegLog_hess_invHessSurjective_grad`,
   plus the head/tail induction
   wrappers
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_sum` and
@@ -186,6 +190,8 @@ This dashboard tracks the Chewi optimization formalization lane for
   slack-map range satisfying a range Hessian right-inverse identity and the
   concrete range-gradient quadratic energy bound.  For fully general row
   families, next construct the concrete range oracle/right-inverse/energy bound
+  using the new pulled-gradient Hessian identity when the slack map is
+  full-row-rank/surjective,
   or instantiate the row-decomposition
   induction by providing the summed inverse-Hessian nonnegativity /
   inverse-local identity and the recursive tail component-Cauchy bridge.  For

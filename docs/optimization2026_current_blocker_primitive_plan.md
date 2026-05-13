@@ -1382,6 +1382,16 @@ The newest affine-gradient energy packet adds
 and `chewi1314_polytopeSlackNegLog_gradient_invHessSurjective_inner_eq_card`,
 so full-row-rank/surjective slack-map pullbacks inherit the exact orthant
 gradient energy `(m : ℝ)`.
+The newest affine pulled-gradient right-inverse packet adds
+`barrierAffinePreimageRightInverse_adjoint`,
+`barrierAffinePreimageHess_invHessRightInverse_adjoint`,
+`barrierAffinePreimageHess_invHessRightInverse_grad`,
+`chewi1314_polytopeSlackNegLog_hess_invHessRightInverse_grad`, and
+`chewi1314_polytopeSlackNegLog_hess_invHessSurjective_grad`.  Thus
+full-row-rank/surjective slack-map pullbacks now have both the exact gradient
+energy and the Hessian right-inverse identity on the pulled barrier gradient;
+future work should feed these facts into the range/oracle barrier wrapper
+instead of asking for a false global inverse on rank-deficient pullbacks.
 Future fully general polytope-log-barrier work should construct that concrete
 range inverse-Hessian/right-inverse plus gradient-energy oracle,
 or alternatively use the compiled finite sum-rule packets together with the

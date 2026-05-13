@@ -3021,6 +3021,29 @@ theorem barrierAffinePreimageGrad_rightInverse_adjoint
           rw [hcomp]
           rfl
 
+theorem barrierAffinePreimageRightInverse_adjoint
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F)
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E) (y : E) :
+    ContinuousLinearMap.adjoint B (ContinuousLinearMap.adjoint A y) = y := by
+  have hcomp :
+      (ContinuousLinearMap.adjoint B).comp (ContinuousLinearMap.adjoint A) =
+        ContinuousLinearMap.id ℝ E := by
+    calc
+      (ContinuousLinearMap.adjoint B).comp (ContinuousLinearMap.adjoint A)
+          = ContinuousLinearMap.adjoint (A.comp B) := by
+            exact (ContinuousLinearMap.adjoint_comp A B).symm
+      _ = ContinuousLinearMap.adjoint (ContinuousLinearMap.id ℝ E) := by
+            rw [hAB]
+      _ = ContinuousLinearMap.id ℝ E := by
+            simp
+  calc
+    ContinuousLinearMap.adjoint B (ContinuousLinearMap.adjoint A y) =
+        ((ContinuousLinearMap.adjoint B).comp (ContinuousLinearMap.adjoint A)) y := by
+          rfl
+    _ = y := by
+          rw [hcomp]
+          rfl
+
 theorem barrierAffinePreimageGradientDualLocalNorm_rightInverse_eq
     (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
     (invHess : E -> E →L[ℝ] E) (grad : E -> E)
@@ -3041,6 +3064,38 @@ theorem barrierAffinePreimageGradientInvHessRightInverse_quadratic_eq
       inner ℝ (grad (A x + b)) (invHess (A x + b) (grad (A x + b))) := by
   rw [barrierAffinePreimageInvHessRightInverse_quadratic_eq]
   rw [barrierAffinePreimageGrad_rightInverse_adjoint A B b grad hAB]
+
+theorem barrierAffinePreimageHess_invHessRightInverse_adjoint
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    (hess : E -> E →L[ℝ] E) (invHess : E -> E →L[ℝ] E)
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E) (x : F) (y : E)
+    (hright : hess (A x + b) (invHess (A x + b) y) = y) :
+    barrierAffinePreimageHess A b hess x
+        (barrierAffinePreimageInvHessRightInverse A B b invHess x
+          (ContinuousLinearMap.adjoint A y)) =
+      ContinuousLinearMap.adjoint A y := by
+  have hAB_apply : ∀ z : E, A (B z) = z := by
+    intro z
+    simpa [ContinuousLinearMap.comp_apply] using
+      congrArg (fun L : E →L[ℝ] E => L z) hAB
+  have hadj := barrierAffinePreimageRightInverse_adjoint A B hAB y
+  simp [barrierAffinePreimageHess, barrierAffinePreimageInvHessRightInverse,
+    ContinuousLinearMap.comp_apply, hadj, hAB_apply, hright]
+
+theorem barrierAffinePreimageHess_invHessRightInverse_grad
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    (hess : E -> E →L[ℝ] E) (grad : E -> E)
+    (invHess : E -> E →L[ℝ] E)
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E) (x : F)
+    (hright : hess (A x + b) (invHess (A x + b) (grad (A x + b))) =
+      grad (A x + b)) :
+    barrierAffinePreimageHess A b hess x
+        (barrierAffinePreimageInvHessRightInverse A B b invHess x
+          (barrierAffinePreimageGrad A b grad x)) =
+      barrierAffinePreimageGrad A b grad x := by
+  simpa [barrierAffinePreimageGrad] using
+    barrierAffinePreimageHess_invHessRightInverse_adjoint
+      A B b hess invHess hAB x (grad (A x + b)) hright
 
 theorem barrierAffinePreimageCauchy_rightInverse
     (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
@@ -14998,6 +15053,51 @@ theorem chewi1314_polytopeSlackNegLog_gradient_invHessSurjective_inner_eq_card
       (m : ℝ) := by
   exact
     chewi1314_polytopeSlackNegLog_gradient_invHessRightInverse_inner_eq_card
+      a b
+      (barrierAffinePreimageRightInverseOfSurjective (polytopeSlackCLM a) hA)
+      (barrierAffinePreimageRightInverseOfSurjective_spec (polytopeSlackCLM a) hA)
+      hx
+
+theorem chewi1314_polytopeSlackNegLog_hess_invHessRightInverse_grad
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (B : EuclideanSpace ℝ (Fin m) →L[ℝ] F)
+    (hAB : (polytopeSlackCLM a).comp B =
+      ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin m)))
+    {x : F} (hx : x ∈ polytopeSlackSet a b) :
+    barrierAffinePreimageHess (polytopeSlackCLM a) b
+        positiveOrthantNegLogHessCLM x
+        (barrierAffinePreimageInvHessRightInverse (polytopeSlackCLM a) B b
+          positiveOrthantNegLogInvHessCLM x
+          (barrierAffinePreimageGrad (polytopeSlackCLM a) b
+            positiveOrthantNegLogGrad x)) =
+      barrierAffinePreimageGrad (polytopeSlackCLM a) b
+        positiveOrthantNegLogGrad x := by
+  have hx' :
+      x ∈ barrierAffinePreimageSet (polytopeSlackCLM a) b
+        (positiveOrthant (d := m)) := by
+    exact (mem_barrierAffinePreimageSet_polytopeSlackCLM_iff a b x).2 hx
+  exact barrierAffinePreimageHess_invHessRightInverse_grad
+    (polytopeSlackCLM a) B b positiveOrthantNegLogHessCLM
+    positiveOrthantNegLogGrad positiveOrthantNegLogInvHessCLM hAB x
+    (positiveOrthantNegLogHessCLM_invHess_right_inverse hx'
+      (positiveOrthantNegLogGrad ((polytopeSlackCLM a) x + b)))
+
+theorem chewi1314_polytopeSlackNegLog_hess_invHessSurjective_grad
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (hA : (polytopeSlackCLM a).range = ⊤)
+    {x : F} (hx : x ∈ polytopeSlackSet a b) :
+    barrierAffinePreimageHess (polytopeSlackCLM a) b
+        positiveOrthantNegLogHessCLM x
+        (barrierAffinePreimageInvHessSurjective (polytopeSlackCLM a) b
+          positiveOrthantNegLogInvHessCLM hA x
+          (barrierAffinePreimageGrad (polytopeSlackCLM a) b
+            positiveOrthantNegLogGrad x)) =
+      barrierAffinePreimageGrad (polytopeSlackCLM a) b
+        positiveOrthantNegLogGrad x := by
+  exact
+    chewi1314_polytopeSlackNegLog_hess_invHessRightInverse_grad
       a b
       (barrierAffinePreimageRightInverseOfSurjective (polytopeSlackCLM a) hA)
       (barrierAffinePreimageRightInverseOfSurjective_spec (polytopeSlackCLM a) hA)

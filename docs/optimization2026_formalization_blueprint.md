@@ -148,7 +148,14 @@ work.  The affine/polytope pullback identities
 `chewi1314_polytopeSlackNegLog_gradient_invHessRightInverse_inner_eq_card`,
 and `chewi1314_polytopeSlackNegLog_gradient_invHessSurjective_inner_eq_card`
 now transfer the exact gradient energy to full-row-rank/surjective slack-map
-pullbacks.  The row-decomposition lemmas
+pullbacks.  The affine pulled-gradient packet
+`barrierAffinePreimageRightInverse_adjoint`,
+`barrierAffinePreimageHess_invHessRightInverse_grad`,
+`chewi1314_polytopeSlackNegLog_hess_invHessRightInverse_grad`, and
+`chewi1314_polytopeSlackNegLog_hess_invHessSurjective_grad` now transfers the
+matching Hessian right-inverse identity on the pulled barrier gradient.  This
+should be used as the concrete gradient-local inverse gate for full-row-rank
+or surjective slack-map pullbacks.  The row-decomposition lemmas
 `polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
 `mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`, and
 `polytopeSlackSet_eq_iInter_halfspaceSlackSet` now expose the finite-row
