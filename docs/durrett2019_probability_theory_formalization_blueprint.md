@@ -27,20 +27,23 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V259`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V260`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier: Durrett Section 4.6 uniform integrability and `L^1`
 martingale convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
-V259 closes the concrete Example 4.5.8 random-walk terminal-condition packet:
+V260 starts Section 4.6 with thin wrappers around Mathlib uniform-integrability
+API: Durrett Theorem 4.6.1 conditional-expectation uniform integrability, its
+filtration form, dominated-family support, and the tail-criterion constructor
+for Theorem 4.6.2.  The next proof packet should prove the concrete
+superlinear Orlicz/`p > 1` moment-to-tail estimate feeding that constructor,
+then move to Theorem 4.6.3.  V259 closes the concrete Example 4.5.8
+random-walk terminal-condition packet:
 the unit-variance, Rademacher, and canonical Rademacher endpoints now use
 finite `∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P` rather than
-full stopped-time integrability.  The next proof packet should start Theorem
-4.6.1 using Mathlib's `Integrable.uniformIntegrable_condExp`, then build the
-dominated-family and `L^p`-bounded uniform-integrability support needed for
-Theorem 4.6.2/4.6.3.  V258 closes the main terminal-condition gap between
+full stopped-time integrability.  V258 closes the main terminal-condition gap between
 Theorem 4.5.7 and Example 4.5.8 using `AEMeasurable Ainf P` plus finite
 square-root terminal clock.  V257 adds the canonical
 infinite iid Rademacher product-space endpoint, with reusable product-coordinate

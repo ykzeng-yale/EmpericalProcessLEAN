@@ -32,10 +32,19 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V259` in
+Route from `Live In-Thread Goal Prompt V260` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is now Durrett Section 4.6 uniform integrability and
-`L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.  V259
+`L^1` convergence in `StatInference/ProbabilityTheory/Martingale.lean`.  V260
+starts Section 4.6 by wrapping Mathlib's
+`Integrable.uniformIntegrable_condExp` as
+`durrett2019_theorem_4_6_1_uniformIntegrable_condExp`, adds the filtration
+form, and packages dominated-family/tail-criterion support through
+`durrett2019_section_4_6_uniformIntegrable_one_of_integrable_dominated` and
+`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_eLpNorm`.  The next
+target is the concrete Durrett 4.6.2 source estimate from a superlinear
+Orlicz/`p > 1` moment bound into that tail criterion, then the Theorem 4.6.3
+Vitali equivalence route.  V259
 finishes the concrete Example 4.5.8 terminal-condition packet: the
 unit-variance, Rademacher, and canonical Rademacher random-walk endpoints now
 use the exact textbook finite square-root stopping-time assumption

@@ -26267,6 +26267,114 @@ theorem
       _root_.StatInference.ProbabilityMeasure.rademacherSequenceCoordinate_iIndepFun
       hN hN_ne_top hN_untopA_sqrt_ne_top
 
+/-! ## Durrett, Section 4.6 -/
+
+/--
+Durrett 2019, Theorem 4.6.1.
+
+For an integrable real random variable, the family of its conditional
+expectations over any indexed family of sub-σ-fields is uniformly integrable.
+This is the local Durrett-facing wrapper around Mathlib's
+`Integrable.uniformIntegrable_condExp`.
+-/
+theorem durrett2019_theorem_4_6_1_uniformIntegrable_condExp
+    {Ω ι : Type*} [mΩ : MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : Ω -> ℝ} (hX_int : Integrable X P)
+    {𝒢 : ι -> MeasurableSpace Ω} (h𝒢 : ∀ i, 𝒢 i ≤ mΩ) :
+    UniformIntegrable (fun i => P[X | 𝒢 i]) 1 P :=
+  hX_int.uniformIntegrable_condExp h𝒢
+
+/--
+Durrett 2019, Theorem 4.6.1, filtration form.
+
+Specializing the conditional-expectation family to a filtration gives the
+version used by later martingale `L¹` convergence arguments.
+-/
+theorem durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration
+    {Ω ι : Type*} [Preorder ι] [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {X : Ω -> ℝ} (hX_int : Integrable X P)
+    (ℱ : Filtration ι mΩ) :
+    UniformIntegrable (fun i => P[X | ℱ i]) 1 P :=
+  durrett2019_theorem_4_6_1_uniformIntegrable_condExp
+    (P := P) (X := X) hX_int (𝒢 := fun i => ℱ i) fun i => ℱ.le i
+
+/--
+Durrett 2019, Section 4.6 dominated-family support.
+
+A family dominated by one `Lᵖ` random variable is uniformly integrable.  This
+packages the textbook's elementary dominated example in Mathlib's probability
+`UniformIntegrable` form.
+-/
+theorem durrett2019_section_4_6_uniformIntegrable_of_memLp_dominated
+    {Ω ι : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {f : ι -> Ω -> ℝ} {S : Ω -> ℝ} {p : ℝ≥0∞}
+    (hp : 1 ≤ p) (hp_ne_top : p ≠ ∞)
+    (hf_meas : ∀ i, AEStronglyMeasurable (f i) P)
+    (hS : MemLp S p P)
+    (hdom : ∀ i, ∀ᵐ ω ∂P, ‖f i ω‖ ≤ S ω) :
+    UniformIntegrable f p P := by
+  refine ⟨hf_meas, ?_, ?_⟩
+  · exact
+      durrett2019_theorem_4_4_6_unifIntegrable_of_memLp_dominated
+        (P := P) (f := f) (S := S) hp hp_ne_top hS hdom
+  · refine ⟨(eLpNorm S p P).toNNReal, fun i => ?_⟩
+    rw [ENNReal.coe_toNNReal hS.2.ne]
+    exact eLpNorm_mono_ae_real (hdom i)
+
+/--
+Durrett 2019, Section 4.6 dominated-family support in the textbook `L¹`
+form.
+-/
+theorem durrett2019_section_4_6_uniformIntegrable_one_of_integrable_dominated
+    {Ω ι : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {f : ι -> Ω -> ℝ} {S : Ω -> ℝ}
+    (hf_meas : ∀ i, AEStronglyMeasurable (f i) P)
+    (hS_int : Integrable S P)
+    (hdom : ∀ i, ∀ᵐ ω ∂P, ‖f i ω‖ ≤ S ω) :
+    UniformIntegrable f 1 P :=
+  durrett2019_section_4_6_uniformIntegrable_of_memLp_dominated
+    (P := P) (f := f) (S := S) (p := 1) le_rfl ENNReal.one_ne_top
+    hf_meas (memLp_one_iff_integrable.2 hS_int) hdom
+
+/--
+Durrett 2019, Theorem 4.6.2 tail criterion support.
+
+This is the Mathlib uniform-integrability constructor, named in the Durrett
+route: it reduces uniform integrability to one uniform tail estimate.
+-/
+theorem durrett2019_theorem_4_6_2_uniformIntegrable_of_tail_eLpNorm
+    {Ω ι : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {f : ι -> Ω -> ℝ} {p : ℝ≥0∞}
+    (hp : 1 ≤ p) (hp_ne_top : p ≠ ∞)
+    (hf_meas : ∀ i, AEStronglyMeasurable (f i) P)
+    (htail :
+      ∀ ε : ℝ, 0 < ε ->
+        ∃ C : ℝ≥0,
+          ∀ i,
+            eLpNorm ({ω | C ≤ ‖f i ω‖₊}.indicator (f i)) p P ≤
+              ENNReal.ofReal ε) :
+    UniformIntegrable f p P :=
+  uniformIntegrable_of hp hp_ne_top hf_meas htail
+
+/--
+Durrett 2019, Theorem 4.6.2 tail criterion support in the `L¹` form used for
+uniform integrability of random variables.
+-/
+theorem durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_eLpNorm
+    {Ω ι : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {f : ι -> Ω -> ℝ}
+    (hf_meas : ∀ i, AEStronglyMeasurable (f i) P)
+    (htail :
+      ∀ ε : ℝ, 0 < ε ->
+        ∃ C : ℝ≥0,
+          ∀ i,
+            eLpNorm ({ω | C ≤ ‖f i ω‖₊}.indicator (f i)) 1 P ≤
+              ENNReal.ofReal ε) :
+    UniformIntegrable f 1 P :=
+  durrett2019_theorem_4_6_2_uniformIntegrable_of_tail_eLpNorm
+    (P := P) (f := f) (p := 1) le_rfl ENNReal.one_ne_top hf_meas htail
+
 /--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is

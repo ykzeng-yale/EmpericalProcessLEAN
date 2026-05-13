@@ -4,33 +4,31 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V259
+## Live In-Thread Goal Prompt V260
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
 below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane: move from the now-closed Chapter 4.5 square-
-integrable martingale packet to Chapter 4.6 uniform integrability and `L^1`
-martingale convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
+synced `main`.  Active lane: Durrett Section 4.6 uniform integrability and
+`L^1` martingale convergence in `StatInference/ProbabilityTheory/Martingale.lean`.
 Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 4.2-4.5 martingale infrastructure, Mathlib
 `MeasureTheory.Function.UniformIntegrable`, and Mathlib
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V259 specializes Example 4.5.8 to the exact textbook
-finite square-root stopping-time assumption.  The unit-variance, Rademacher,
-and canonical Rademacher random-walk endpoints now assume
-`∫⁻ ω, ENNReal.ofReal (Real.sqrt ((N ω).untopA : ℝ)) ∂P ≠ ∞` rather than
-`Integrable (fun ω => ((N ω).untopA : ℝ)) P`, and the general zero-mean
-second-moment bridge has a reusable
-`...zeroMean_secondMoments_sqrt_lintegral_ne_top` variant.  Next aggressive
-theorem packet: start Section 4.6 by packaging Durrett Theorem 4.6.1 in the
-local style as a thin wrapper around Mathlib's
-`Integrable.uniformIntegrable_condExp`, then add the dominated-family and
-`L^p`-bounded uniform-integrability wrappers needed for Theorem 4.6.2/4.6.3.
+Latest verified target V260 starts Section 4.6.  It packages Durrett Theorem
+4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
+`durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds
+the dominated-family and tail-criterion constructors
+`durrett2019_section_4_6_uniformIntegrable_one_of_integrable_dominated` and
+`durrett2019_theorem_4_6_2_uniformIntegrable_one_of_tail_eLpNorm`.  Next
+aggressive theorem packet: prove the concrete Durrett Theorem 4.6.2
+source estimate that a uniform superlinear Orlicz/`p > 1` moment bound implies
+the V260 tail criterion, then use it to prepare Theorem 4.6.3 Vitali
+equivalence (`UI + convergence in probability ↔ L¹ convergence`).
 
 ## Deprecated V255 Prompt Notes
 
