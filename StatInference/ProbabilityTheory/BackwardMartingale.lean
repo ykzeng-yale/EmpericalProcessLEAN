@@ -1041,6 +1041,102 @@ theorem durrett2019_example_4_7_4_condExp_first_eq_reverseAverageSigma_prefixAve
   simp [durrett2019_example_4_7_4_prefixSum, Finset.sum_apply]
 
 /--
+Conditional-expectation symmetry from an invariant measurable equivalence.
+This is the reusable handoff from a finite-exchangeability transport proof to
+the `hsym` hypothesis used in Durrett Example 4.7.4.
+-/
+theorem durrett2019_condExp_eq_of_invariant_measurableEquiv
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {m : MeasurableSpace Ω} (hm : m ≤ mΩ)
+    {f g : Ω -> ℝ}
+    (hf_int : Integrable f P) (hg_int : Integrable g P)
+    (T : @MeasurableEquiv Ω Ω mΩ mΩ)
+    (hT_pres : @MeasurePreserving Ω Ω mΩ mΩ T P P)
+    (hT_sets : ∀ s : Set Ω, MeasurableSet[m] s -> T ⁻¹' s = s)
+    (hfg : f = fun ω => g (T ω)) :
+    P[f | m] =ᵐ[P] P[g | m] := by
+  refine
+    vdVW_condExp_eq_of_forall_setIntegral_eq
+      (Ω := Ω) (mΩ := mΩ) (μ := P) (m := m) hm hf_int hg_int ?_
+  intro s hs
+  calc
+    (∫ ω in s, f ω ∂P)
+        = ∫ ω in s, g (T ω) ∂P := by rw [hfg]
+    _ = ∫ ω in T ⁻¹' s, g (T ω) ∂P := by rw [hT_sets s hs]
+    _ = ∫ ω in s, g ω ∂(@MeasureTheory.Measure.map Ω Ω mΩ mΩ T P) := by
+          exact
+            (@setIntegral_map_equiv Ω ℝ mΩ _ _ P Ω mΩ T g s).symm
+    _ = ∫ ω in s, g ω ∂P := by
+          rw [show @MeasureTheory.Measure.map Ω Ω mΩ mΩ T P = P from
+            @MeasureTheory.MeasurePreserving.map_eq Ω Ω mΩ mΩ T P P hT_pres]
+
+/--
+Durrett 2019, Example 4.7.4 source-symmetry handoff specialized to the
+concrete reverse-average sigma-field.  A transformation preserving `P`, fixing
+the reverse-average events, and sending coordinate `i` to coordinate `0`
+identifies the corresponding conditional expectations.
+-/
+theorem durrett2019_example_4_7_4_condExp_eq_zero_of_reverseAverage_invariant_equiv
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {ξ : ℕ -> Ω -> ℝ} {n i : ℕ}
+    (hξ_meas : ∀ k, Measurable (ξ k))
+    (hi_int : Integrable (ξ i) P)
+    (h0_int : Integrable (ξ 0) P)
+    (T : Ω ≃ᵐ Ω)
+    (hT_pres : MeasurePreserving T P P)
+    (hT_sets :
+      ∀ s : Set Ω,
+        MeasurableSet[durrett2019_example_4_7_4_reverseAverageSigma ξ n] s ->
+          T ⁻¹' s = s)
+    (hcoord : (fun ω => ξ i ω) = fun ω => ξ 0 (T ω)) :
+    P[ξ i | durrett2019_example_4_7_4_reverseAverageSigma ξ n] =ᵐ[P]
+      P[ξ 0 | durrett2019_example_4_7_4_reverseAverageSigma ξ n] := by
+  exact
+    durrett2019_condExp_eq_of_invariant_measurableEquiv
+      (P := P)
+      (m := durrett2019_example_4_7_4_reverseAverageSigma ξ n)
+      (f := ξ i) (g := ξ 0)
+      (durrett2019_example_4_7_4_reverseAverageSigma_le
+        (ξ := ξ) (n := n) hξ_meas)
+      hi_int h0_int T hT_pres hT_sets hcoord
+
+/--
+Durrett 2019, Example 4.7.4 vectorized finite-prefix symmetry constructor.
+Once each prefix coordinate has a reverse-average-preserving exchangeability
+transport to coordinate `0`, this returns exactly the `hsym` input consumed by
+`durrett2019_example_4_7_4_condExp_first_eq_reverseAverageSigma_prefixAverage_div`.
+-/
+theorem durrett2019_example_4_7_4_reverseAverageSigma_prefix_condExp_symmetry
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {ξ : ℕ -> Ω -> ℝ} {n : ℕ}
+    (hξ_meas : ∀ k, Measurable (ξ k))
+    (hξ_int : ∀ i ∈ Finset.range n, Integrable (ξ i) P)
+    (T : ℕ -> Ω ≃ᵐ Ω)
+    (hT_pres :
+      ∀ i ∈ Finset.range n, MeasurePreserving (T i) P P)
+    (hT_sets :
+      ∀ i ∈ Finset.range n, ∀ s : Set Ω,
+        MeasurableSet[durrett2019_example_4_7_4_reverseAverageSigma ξ n] s ->
+          (T i) ⁻¹' s = s)
+    (hcoord :
+      ∀ i ∈ Finset.range n, (fun ω => ξ i ω) = fun ω => ξ 0 ((T i) ω)) :
+    ∀ i ∈ Finset.range n,
+      P[ξ i | durrett2019_example_4_7_4_reverseAverageSigma ξ n] =ᵐ[P]
+        P[ξ 0 | durrett2019_example_4_7_4_reverseAverageSigma ξ n] := by
+  intro i hi
+  exact
+    durrett2019_example_4_7_4_condExp_eq_zero_of_reverseAverage_invariant_equiv
+      (P := P) (ξ := ξ) (n := n) (i := i)
+      hξ_meas (hξ_int i hi)
+      (hξ_int 0
+        (Finset.mem_range.mpr
+          (Nat.lt_of_le_of_lt (Nat.zero_le i) (Finset.mem_range.mp hi))))
+      (T i) (hT_pres i hi) (hT_sets i hi) (hcoord i hi)
+
+/--
 Durrett 2019, Example 4.7.4, final strong-law endpoint using the compiled
 local strong-law primitive.
 -/

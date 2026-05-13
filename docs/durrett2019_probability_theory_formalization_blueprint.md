@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V292`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V293`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -119,9 +119,14 @@ reverse-average conditional-expectation consumer:
 `durrett2019_example_4_7_4_prefixSum_measurable_reverseAverageSigma_of_le`,
 `durrett2019_example_4_7_4_reverseAverageSigma_antitone`, and
 `durrett2019_example_4_7_4_condExp_first_eq_reverseAverageSigma_prefixAverage_div`.
-The next proof packet should prove the finite-prefix symmetry input from
-finite-permutation exchangeability of the first `n` coordinates while the sum
-and tail are fixed.
+V293 adds the compiled source handoff
+`durrett2019_condExp_eq_of_invariant_measurableEquiv`,
+`durrett2019_example_4_7_4_condExp_eq_zero_of_reverseAverage_invariant_equiv`,
+and
+`durrett2019_example_4_7_4_reverseAverageSigma_prefix_condExp_symmetry`.
+The next proof packet should construct the finite-permutation transports that
+preserve the reverse-average events and transport each prefix coordinate to
+coordinate `0`; the conditional-expectation symmetry now follows from V293.
 V259 closes the
 concrete Example 4.5.8
 random-walk terminal-condition packet:
