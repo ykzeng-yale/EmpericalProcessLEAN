@@ -189,6 +189,11 @@ The coordinate limit-mean source endpoint
 uses `vaart1998_vector_integral_zero_of_coordinate_mean_zero` and Gaussian
 second moments to derive the full vector mean-zero statement for `Z` from
 finite coordinate mean-zero identities.
+The score-vector coordinate mean source endpoint
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_scoreVectorCoordinateMeanSource_zCoordinateMeanSource_derivativeBasisMatrixActionSource_zEvalCovarianceSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMemLpSource_derivativeTableLawSequenceSource_scoreVectorLawSequenceSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_scoreVectorMeasurableSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelopeTendsto_envelope`
+uses the same finite-coordinate integral helper and `hScoreVector_zero_memLp`
+to derive the full vector mean-zero statement for `scoreVector 0` from
+coordinate mean-zero identities.
 The next proof packet should move to a concrete model-specialized Theorem 5.41
 instantiation, or package only a still-live source field that the current
 endpoint explicitly exposes, not replay display weak-convergence,
@@ -199,8 +204,8 @@ score common-law transfer, derivative-table common-law transfer, centered
 derivative-coordinate residual algebra, smooth/raw/scaled Taylor transfer,
 score-at-theta0 vector scaling transfer, or
 estimator-definition/raw-root/measurability/sampled-derivative-action/
-sampled-derivative-basis-action/coordinate-limit-mean/population-`V`
-basis-action/pointwise-smoothness/score-vector display/direct
+sampled-derivative-basis-action/coordinate-limit-mean/score-vector-coordinate
+mean/population-`V` basis-action/pointwise-smoothness/score-vector display/direct
 vector-table/coordinate-projection/score-vector-measurability/score-law-vector
 moment/derivative-law-vector-integrability/limit-law-mean/limit-law-covariance
 source/Gaussian-limit-moment/score-law-mean/score-vector-sequence-law
