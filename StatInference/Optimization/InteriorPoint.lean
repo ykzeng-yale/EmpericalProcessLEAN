@@ -12576,6 +12576,50 @@ theorem chewi1316_tailBase_log_budget_of_le_pow
         rw [Real.log_pow]
 
 /--
+Logarithmic choice of `M` implies the preliminary tail-base power bound.
+-/
+theorem chewi1316_tailBase_le_sixteenth_mul_two_pow_of_log_le
+    {tailBase : ℝ} {M : ℕ}
+    (htailBase_pos : 0 < tailBase)
+    (hlog :
+      Real.log ((16 : ℝ) * tailBase) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    tailBase ≤ (1 / 16 : ℝ) * (2 : ℝ) ^ M := by
+  have hsixteen_pos : 0 < (16 : ℝ) := by norm_num
+  have htwo_pos : 0 < (2 : ℝ) := by norm_num
+  have hleft_pos : 0 < (16 : ℝ) * tailBase :=
+    mul_pos hsixteen_pos htailBase_pos
+  have hpow_pos : 0 < (2 : ℝ) ^ M := pow_pos htwo_pos M
+  have hlogpow :
+      Real.log ((16 : ℝ) * tailBase) ≤
+        Real.log ((2 : ℝ) ^ M) := by
+    rw [Real.log_pow]
+    exact hlog
+  have hmul_le : (16 : ℝ) * tailBase ≤ (2 : ℝ) ^ M :=
+    (Real.log_le_log_iff hleft_pos hpow_pos).mp hlogpow
+  have hscale :=
+    mul_le_mul_of_nonneg_left hmul_le (by norm_num : 0 ≤ (1 / 16 : ℝ))
+  calc
+    tailBase = (1 / 16 : ℝ) * ((16 : ℝ) * tailBase) := by ring
+    _ ≤ (1 / 16 : ℝ) * (2 : ℝ) ^ M := hscale
+
+/--
+Bounded-tail version of the logarithmic `M` choice.  This lets the source proof
+use any convenient upper bound on the actual preliminary tail base.
+-/
+theorem chewi1316_tailBase_le_sixteenth_mul_two_pow_of_bound_log_le
+    {tailBase tailBound : ℝ} {M : ℕ}
+    (htailBound_pos : 0 < tailBound)
+    (htailBase_le : tailBase ≤ tailBound)
+    (hlog :
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    tailBase ≤ (1 / 16 : ℝ) * (2 : ℝ) ^ M :=
+  htailBase_le.trans
+    (chewi1316_tailBase_le_sixteenth_mul_two_pow_of_log_le
+      (tailBase := tailBound) (M := M) htailBound_pos hlog)
+
+/--
 Closed-form preliminary-stage initialization bridge whose preliminary barrier
 tail is supplied by a scalar bound on the absolute contraction factor
 `|1 - c0 / sqrt nu|^N`.
@@ -12886,6 +12930,113 @@ theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequ
       (tailBase :=
         |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
       (M := M) htailBase_pos htailBase_le)
+
+/--
+Textbook-shaped preliminary initialization bridge where the tail-base power
+bound is supplied by a logarithmic choice of `M`.
+-/
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailLogBound
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {tMain tStart c0 nu : ℝ} {N M : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (ht0 : tseq 0 = tStart)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hmainBudget : |tMain| * dualLocalNorm invHess (xseq N) a ≤ 1 / 16)
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0)
+    (htailBase_pos :
+      0 <
+        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+    (htailLog :
+      Real.log
+          ((16 : ℝ) *
+            (|tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+      1 / 4 :=
+  chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBound
+    (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+    (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+    (coord := coord) (tMain := tMain) (tStart := tStart)
+    (c0 := c0) (nu := nu) (N := N) (M := M)
+    hinv_factor ht0 htstep hinit hstep hmainBudget hlambdaBudget
+    hsqrt_pos hdelta_lt_one hcount htailBase_pos
+    (chewi1316_tailBase_le_sixteenth_mul_two_pow_of_log_le
+      (tailBase :=
+        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+      (M := M) htailBase_pos htailLog)
+
+/--
+Bounded-tail version of the logarithmic `M` choice for preliminary
+initialization.
+-/
+theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound
+    [CompleteSpace E]
+    {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
+    {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : E →L[ℝ] E} {tMain tStart c0 nu tailBound : ℝ} {N M : ℕ}
+    (hinv_factor : ∀ v : E,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (ht0 : tseq 0 = tStart)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hmainBudget : |tMain| * dualLocalNorm invHess (xseq N) a ≤ 1 / 16)
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0)
+    (htailBase_pos :
+      0 <
+        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+    (htailBound_pos : 0 < tailBound)
+    (htailBase_le :
+      |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        tailBound)
+    (htailBoundLog :
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+      1 / 4 :=
+  chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBound
+    (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+    (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+    (coord := coord) (tMain := tMain) (tStart := tStart)
+    (c0 := c0) (nu := nu) (N := N) (M := M)
+    hinv_factor ht0 htstep hinit hstep hmainBudget hlambdaBudget
+    hsqrt_pos hdelta_lt_one hcount htailBase_pos
+    (chewi1316_tailBase_le_sixteenth_mul_two_pow_of_bound_log_le
+      (tailBase :=
+        |tStart| * dualLocalNorm invHess (xseq N) (phiGrad xbar0))
+      (tailBound := tailBound) (M := M)
+      htailBound_pos htailBase_le htailBoundLog)
 
 theorem chewi1316_preNewtonDecrement_le_update_bound_of_gradientUpdate_adjointSqrt_right_inverse
     [CompleteSpace E]

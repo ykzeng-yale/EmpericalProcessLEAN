@@ -204,10 +204,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   packet adds `chewi1316_tailBase_log_budget_of_le_pow` and
   `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBound`,
   discharging the log budget from the plain power bound
-  `|tStart| * ||grad phi(xbar0)||* <= (1/16) * 2^M`.  Remaining gate: prove the
-  concrete Chewi/Nesterov choice of `M`, `tPre`, and `tMain` satisfies this
-  power bound and the main/tail budget hypotheses, then finish the
-  strictly-feasible-start discussion.
+  `|tStart| * ||grad phi(xbar0)||* <= (1/16) * 2^M`.  The log-choice packet
+  adds `chewi1316_tailBase_le_sixteenth_mul_two_pow_of_log_le`,
+  `chewi1316_tailBase_le_sixteenth_mul_two_pow_of_bound_log_le`,
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailLogBound`,
+  and
+  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_factorSqrtCountTailBoundLogBound`.
+  Thus `M` can now be chosen from a logarithmic upper bound on any convenient
+  source tail bound.  Remaining gate: prove the concrete Chewi/Nesterov bound
+  on `|tStart| * ||grad phi(xbar0)||*` by a source quantity such as the
+  analytical-center distance measure, then finish the strictly-feasible-start
+  discussion.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
