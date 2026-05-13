@@ -156,10 +156,16 @@ row.  The vector-slack packet
 `chewi1314_polytopeSlackNegLog_componentCauchy_of_rightInverse` /
 `chewi1314_polytopeSlackNegLog_componentCauchy_of_surjective` now supplies the
 tail Cauchy bridge whenever the finite slack map has a supplied right inverse
-or is surjective, reusing `positiveOrthantNegLog_componentCauchy`.  Next
-construct the concrete range oracle and energy bound for the fully general
-polytope barrier, or prove the summed inverse-Hessian nonnegativity /
-inverse-local identity for the head/tail finite-row induction; all segment
+or is surjective, reusing `positiveOrthantNegLog_componentCauchy`.  The
+source-shaped tail-induction consumers
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_rightInverse_componentCauchy`
+and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy`
+now discharge both the recursive tail barrier and tail Cauchy bridge for
+full-row-rank/surjective tail slack maps.  Next construct the concrete range
+oracle and energy bound for the fully general polytope barrier, or prove the
+summed inverse-Hessian nonnegativity / inverse-local identity for the
+head/tail finite-row induction; all segment
 membership, `ψ`
 continuity, local-norm continuity/positivity, Riccati comparison, derivative
 inequality, coefficient scaling, final sandwich assembly, first Newton/Dikin

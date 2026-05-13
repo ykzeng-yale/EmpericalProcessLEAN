@@ -1391,6 +1391,16 @@ adds `positiveOrthantNegLog_componentCauchy`,
 `chewi1314_polytopeSlackNegLog_componentCauchy_of_surjective`, so full-row-rank
 finite slack systems can now provide the recursive tail Cauchy bridge directly
 from the positive-orthant product barrier and affine right-inverse transport.
+The newest tail-induction consumer packet adds
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_rightInverse_componentCauchy`
+and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy`;
+for a nonzero head row and a full-row-rank/surjective tail slack map, these
+wrappers discharge both the recursive tail barrier and the recursive tail
+Cauchy bridge from the existing vector-slack right-inverse/surjective APIs.
+The remaining hypotheses in that source-shaped route are only the summed
+inverse-Hessian nonnegativity and inverse-local identity for the head-plus-tail
+barrier Hessian.
 Do not redo scalar
 self-concordance, affine right-inverse algebra, or binary sum inverse-local /
 Cauchy algebra.
@@ -1430,10 +1440,12 @@ The exact blockers are:
   wrapper and prove only the summed inverse-Hessian nonnegativity /
   inverse-local identity plus the recursive tail Cauchy bridge.  When the
   tail slack map has a supplied right inverse or is surjective, discharge that
-  tail Cauchy bridge with
-  `chewi1314_polytopeSlackNegLog_componentCauchy_of_rightInverse` or
-  `chewi1314_polytopeSlackNegLog_componentCauchy_of_surjective`.  The
-  remaining alternative is opening the inf-projection rule.
+  whole recursive tail package with
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_rightInverse_componentCauchy`
+  or
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy`,
+  leaving only the summed inverse-Hessian nonnegativity/inverse-local gate.
+  The remaining alternative is opening the inf-projection rule.
   Do not reconstruct product, sum, or invertible-affine local-norm algebra.
 
 Search-first cache for this lane: pinned mathlib has no direct Chewi

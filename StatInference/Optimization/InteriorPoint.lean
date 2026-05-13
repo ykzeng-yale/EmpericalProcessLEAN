@@ -15161,6 +15161,124 @@ theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_compo
   simpa [polytopeSlackSet_succ_eq_barrierInterSet a b] using hsum
 
 /--
+Source-shaped head/tail induction step for Chewi Example 13.14 when the tail
+slack map has a supplied right inverse.  The positive-orthant tail barrier and
+tail component-Cauchy bridge are discharged here; the only remaining sum-rule
+gate is the supplied summed inverse-Hessian nonnegativity and inverse-local
+identity.
+-/
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_rightInverse_componentCauchy
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin (m + 1) -> F) (b : EuclideanSpace ℝ (Fin (m + 1)))
+    (ha0 : a 0 ≠ 0)
+    (Btail : EuclideanSpace ℝ (Fin m) →L[ℝ] F)
+    (hTailAB : (polytopeSlackCLM (fun i : Fin m => a i.succ)).comp Btail =
+      ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin m)))
+    (sumInvHess : F -> F →L[ℝ] F)
+    (hsumInvNonneg : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      ∀ v : F, 0 ≤ inner ℝ v (sumInvHess x v))
+    (hsumInvLocal : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      ∀ v : F,
+        localNorm
+            (barrierSumHess
+              (barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0)
+                negLogHessCLM)
+              (barrierAffinePreimageHess
+                (polytopeSlackCLM (fun i : Fin m => a i.succ))
+                (polytopeSlackTailOffset b) positiveOrthantNegLogHessCLM))
+            x (sumInvHess x v) =
+          dualLocalNorm sumInvHess x v) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierSumHess
+        (barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0) negLogHessCLM)
+        (barrierAffinePreimageHess
+          (polytopeSlackCLM (fun i : Fin m => a i.succ))
+          (polytopeSlackTailOffset b) positiveOrthantNegLogHessCLM))
+      (barrierSumGrad
+        (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0) negLogBarrierGrad)
+        (barrierAffinePreimageGrad
+          (polytopeSlackCLM (fun i : Fin m => a i.succ))
+          (polytopeSlackTailOffset b) positiveOrthantNegLogGrad))
+      sumInvHess
+      (barrierSumThirdMixed
+        (barrierAffinePreimageThirdMixed (halfspaceSlackCLM (a 0)) (b 0)
+          negLogBarrierThirdMixed)
+        (barrierAffinePreimageThirdMixed
+          (polytopeSlackCLM (fun i : Fin m => a i.succ))
+          (polytopeSlackTailOffset b) positiveOrthantNegLogThirdMixed))
+      1 (1 + (m : ℝ)) := by
+  refine chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy
+    (tailInvHess :=
+      barrierAffinePreimageInvHessRightInverse
+        (polytopeSlackCLM (fun i : Fin m => a i.succ)) Btail
+        (polytopeSlackTailOffset b) positiveOrthantNegLogInvHessCLM)
+    a b ha0 ?_ sumInvHess hsumInvNonneg hsumInvLocal ?_
+  · exact chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_of_rightInverse
+      (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b) Btail hTailAB
+  · exact chewi1314_polytopeSlackNegLog_componentCauchy_of_rightInverse
+      (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b) Btail hTailAB
+
+/--
+Source-shaped head/tail induction step for Chewi Example 13.14 when the tail
+slack map is surjective.  This chooses mathlib's continuous right inverse for
+the tail and reuses the right-inverse component-Cauchy induction wrapper.
+-/
+theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin (m + 1) -> F) (b : EuclideanSpace ℝ (Fin (m + 1)))
+    (ha0 : a 0 ≠ 0)
+    (hTailA : (polytopeSlackCLM (fun i : Fin m => a i.succ)).range = ⊤)
+    (sumInvHess : F -> F →L[ℝ] F)
+    (hsumInvNonneg : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      ∀ v : F, 0 ≤ inner ℝ v (sumInvHess x v))
+    (hsumInvLocal : ∀ ⦃x : F⦄,
+      x ∈ barrierInterSet (halfspaceSlackSet (a 0) (b 0))
+        (polytopeSlackSet (fun i : Fin m => a i.succ) (polytopeSlackTailOffset b)) ->
+      ∀ v : F,
+        localNorm
+            (barrierSumHess
+              (barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0)
+                negLogHessCLM)
+              (barrierAffinePreimageHess
+                (polytopeSlackCLM (fun i : Fin m => a i.succ))
+                (polytopeSlackTailOffset b) positiveOrthantNegLogHessCLM))
+            x (sumInvHess x v) =
+          dualLocalNorm sumInvHess x v) :
+    SelfConcordantBarrierOn (polytopeSlackSet a b)
+      (barrierSumHess
+        (barrierAffinePreimageHess (halfspaceSlackCLM (a 0)) (b 0) negLogHessCLM)
+        (barrierAffinePreimageHess
+          (polytopeSlackCLM (fun i : Fin m => a i.succ))
+          (polytopeSlackTailOffset b) positiveOrthantNegLogHessCLM))
+      (barrierSumGrad
+        (barrierAffinePreimageGrad (halfspaceSlackCLM (a 0)) (b 0) negLogBarrierGrad)
+        (barrierAffinePreimageGrad
+          (polytopeSlackCLM (fun i : Fin m => a i.succ))
+          (polytopeSlackTailOffset b) positiveOrthantNegLogGrad))
+      sumInvHess
+      (barrierSumThirdMixed
+        (barrierAffinePreimageThirdMixed (halfspaceSlackCLM (a 0)) (b 0)
+          negLogBarrierThirdMixed)
+        (barrierAffinePreimageThirdMixed
+          (polytopeSlackCLM (fun i : Fin m => a i.succ))
+          (polytopeSlackTailOffset b) positiveOrthantNegLogThirdMixed))
+      1 (1 + (m : ℝ)) := by
+  exact
+    chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_rightInverse_componentCauchy
+      a b ha0
+      (barrierAffinePreimageRightInverseOfSurjective
+        (polytopeSlackCLM (fun i : Fin m => a i.succ)) hTailA)
+      (barrierAffinePreimageRightInverseOfSurjective_spec
+        (polytopeSlackCLM (fun i : Fin m => a i.succ)) hTailA)
+      sumInvHess hsumInvNonneg hsumInvLocal
+
+/--
 Induction step for Chewi Example 13.14's finite-row logarithmic barrier, with
 the head/tail sum gate supplied by adjoint square-root coordinate models.
 Future concrete polytope work can instantiate the three square-root models
