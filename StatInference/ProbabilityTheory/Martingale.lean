@@ -27501,6 +27501,71 @@ theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_iSup_tail_ae_tendsto_zero
       hZ_int hW_dom hPointwise hTail_limit_zero
 
 /--
+Durrett 2019, Theorem 4.6.10, pairwise tail envelope to limit-error envelope.
+
+If `W_N` eventually bounds all pairwise tail differences `|Y_n - Y_m|` for
+`m,n >= N` and `Y_m -> Y` a.s., then `W_N` eventually bounds the limit error
+`|Y_n - Y|`.  This is the limit-passage step in the textbook construction of
+`W_N = sup {|Y_n - Y_m| : m,n >= N}`.
+-/
+theorem durrett2019_theorem_4_6_10_eventual_ae_tail_bound_of_pairwise_tail_bound
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {W : ℕ -> Ω -> ℝ}
+    (hY_tendsto :
+      ∀ᵐ ω ∂P, Tendsto (fun m => Y m ω) atTop (𝓝 (Ylim ω)))
+    (hPairwise :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          ∀ n m, N ≤ n -> N ≤ m -> ‖Y n ω - Y m ω‖ ≤ W N ω) :
+    ∀ N,
+      ∀ᶠ n in atTop, (fun x => ‖Y n x - Ylim x‖) ≤ᵐ[P] W N := by
+  intro N
+  refine eventually_atTop.2 ⟨N, ?_⟩
+  intro n hn
+  filter_upwards [hY_tendsto, hPairwise N] with ω hY_tendstoω hPairwiseω
+  have hNorm_tendsto :
+      Tendsto (fun m => ‖Y n ω - Y m ω‖) atTop
+        (𝓝 ‖Y n ω - Ylim ω‖) :=
+    (tendsto_const_nhds.sub hY_tendstoω).norm
+  exact
+    le_of_tendsto hNorm_tendsto
+      (eventually_atTop.2 ⟨N, fun m hm => hPairwiseω n m hn hm⟩)
+
+/--
+Durrett 2019, Theorem 4.6.10, final bridge from a pairwise tail envelope.
+
+This packages the textbook `W_N` route before the actual supremum construction:
+the caller supplies a measurable dominated pairwise tail envelope `W_N` that
+tends to zero a.s. and bounds all pairwise tail differences.
+-/
+theorem durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwise_iSup_tail_ae_tendsto_zero
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P] {ℱ : Filtration ℕ mΩ}
+    {Y : ℕ -> Ω -> ℝ} {Ylim : Ω -> ℝ} {W : ℕ -> Ω -> ℝ} {Z : Ω -> ℝ}
+    (hY_int : ∀ n, Integrable (Y n) P) (hYlim_int : Integrable Ylim P)
+    (hW_meas : ∀ N, StronglyMeasurable[⨆ k, ℱ k] (W N))
+    (hZ_int : Integrable Z P)
+    (hW_dom : ∀ N, ∀ᵐ ω ∂P, ‖W N ω‖ ≤ Z ω)
+    (hW_tendsto_zero :
+      ∀ᵐ ω ∂P, Tendsto (fun N => W N ω) atTop (𝓝 0))
+    (hY_tendsto :
+      ∀ᵐ ω ∂P, Tendsto (fun m => Y m ω) atTop (𝓝 (Ylim ω)))
+    (hPairwise :
+      ∀ N,
+        ∀ᵐ ω ∂P,
+          ∀ n m, N ≤ n -> N ≤ m -> ‖Y n ω - Y m ω‖ ≤ W N ω) :
+    ∀ᵐ ω ∂P,
+      Tendsto (fun n => P[Y n | ℱ n] ω) atTop
+        (𝓝 (P[Ylim | ⨆ n, ℱ n] ω)) := by
+  exact
+    durrett2019_theorem_4_6_10_condExp_tendsto_of_iSup_tail_ae_tendsto_zero
+      (P := P) (ℱ := ℱ) (Y := Y) (Ylim := Ylim) (W := W) (Z := Z)
+      hY_int hYlim_int hW_meas hZ_int hW_dom hW_tendsto_zero
+      (durrett2019_theorem_4_6_10_eventual_ae_tail_bound_of_pairwise_tail_bound
+        (P := P) (Y := Y) (Ylim := Ylim) (W := W)
+        hY_tendsto hPairwise)
+
+/--
 Durrett 2019, Example 4.4.9, the first conditional second-moment recurrence.
 This is the direct use of Theorem 4.4.8: once the conditional variance term is
 identified, the conditional second moment is the previous square plus that

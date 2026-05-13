@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V275
+## Live In-Thread Goal Prompt V276
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,7 @@ Reuse the compiled Chapter 4.1 conditional-expectation wrappers, Chapter
 `Integrable.uniformIntegrable_condExp`; do not re-prove the V258/V259
 Theorem 4.5.7 or Example 4.5.8 bridge layers.
 
-Latest verified target V275 continues Section 4.6.  V260 packages Durrett
+Latest verified target V276 continues Section 4.6.  V260 packages Durrett
 Theorem 4.6.1 as `durrett2019_theorem_4_6_1_uniformIntegrable_condExp` and
 `durrett2019_theorem_4_6_1_uniformIntegrable_condExp_filtration`, and adds the
 dominated-family/tail-criterion constructors for Theorem 4.6.2.  V261-V262
@@ -90,14 +90,20 @@ measurable in the limiting sigma-field and tend to zero a.s.:
 `durrett2019_theorem_4_6_10_tail_condExp_tendsto_zero_of_iSup_stronglyMeasurable`
 and
 `durrett2019_theorem_4_6_10_condExp_tendsto_of_iSup_tail_ae_tendsto_zero`.
+V276 proves the limit-passage from pairwise tail envelopes to the pointwise
+limit-error envelope:
+`durrett2019_theorem_4_6_10_eventual_ae_tail_bound_of_pairwise_tail_bound`
+and the final pairwise-tail consumer
+`durrett2019_theorem_4_6_10_condExp_tendsto_of_pairwise_iSup_tail_ae_tendsto_zero`.
 
 Next aggressive theorem packet: construct or package the concrete textbook
 tail envelope `W_N = sup { |Y_n - Y_m| : n,m >= N }` in the most Lean-friendly
 form, prove its limiting-sigma-field strong measurability, prove domination by
-the integrable `2Z` envelope, prove `W_N -> 0` a.s., and prove the eventual
-pointwise bound `|Y_n - Y| <= W_N`.  Do not re-prove conditional monotonicity,
-fixed-tail upward convergence, envelope integrability, or limiting conditional
-tail-zero; V275, V274, and V273 already supply those bridges.
+the integrable `2Z` envelope, prove `W_N -> 0` a.s., and prove that it bounds
+all pairwise tail differences.  Do not re-prove the `m -> infinity` limit
+passage, conditional monotonicity, fixed-tail upward convergence, envelope
+integrability, or limiting conditional tail-zero; V276-V273 already supply
+those bridges.
 
 ## Deprecated V255 Prompt Notes
 
