@@ -1376,6 +1376,12 @@ Hessian.  The newest positive-orthant base-identity packet adds
 `positiveOrthantNegLogHessCLM_invHess_right_inverse` and
 `positiveOrthantNegLog_gradient_invHess_inner_eq_card`, giving the exact
 full-space Hessian inverse identity and gradient energy for the orthant model.
+The newest affine-gradient energy packet adds
+`barrierAffinePreimageGradientInvHessRightInverse_quadratic_eq`,
+`chewi1314_polytopeSlackNegLog_gradient_invHessRightInverse_inner_eq_card`,
+and `chewi1314_polytopeSlackNegLog_gradient_invHessSurjective_inner_eq_card`,
+so full-row-rank/surjective slack-map pullbacks inherit the exact orthant
+gradient energy `(m : ℝ)`.
 Future fully general polytope-log-barrier work should construct that concrete
 range inverse-Hessian/right-inverse plus gradient-energy oracle,
 or alternatively use the compiled finite sum-rule packets together with the

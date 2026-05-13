@@ -143,7 +143,12 @@ positive-orthant base identities
 `positiveOrthantNegLogHessCLM_invHess_right_inverse` and
 `positiveOrthantNegLog_gradient_invHess_inner_eq_card` now expose the exact
 full-space right-inverse and gradient-energy facts for later range-restriction
-work.  The row-decomposition lemmas
+work.  The affine/polytope pullback identities
+`barrierAffinePreimageGradientInvHessRightInverse_quadratic_eq`,
+`chewi1314_polytopeSlackNegLog_gradient_invHessRightInverse_inner_eq_card`,
+and `chewi1314_polytopeSlackNegLog_gradient_invHessSurjective_inner_eq_card`
+now transfer the exact gradient energy to full-row-rank/surjective slack-map
+pullbacks.  The row-decomposition lemmas
 `polytopeSlackCLM_apply`, `polytopeSlackCLM_add_offset_apply`,
 `mem_polytopeSlackSet_iff_forall_halfspaceSlackSet`, and
 `polytopeSlackSet_eq_iInter_halfspaceSlackSet` now expose the finite-row

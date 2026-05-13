@@ -3031,6 +3031,17 @@ theorem barrierAffinePreimageGradientDualLocalNorm_rightInverse_eq
   rw [barrierAffinePreimageDualLocalNorm_rightInverse_eq]
   rw [barrierAffinePreimageGrad_rightInverse_adjoint A B b grad hAB]
 
+theorem barrierAffinePreimageGradientInvHessRightInverse_quadratic_eq
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    (invHess : E -> E →L[ℝ] E) (grad : E -> E)
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E) (x : F) :
+    inner ℝ (barrierAffinePreimageGrad A b grad x)
+        (barrierAffinePreimageInvHessRightInverse A B b invHess x
+          (barrierAffinePreimageGrad A b grad x)) =
+      inner ℝ (grad (A x + b)) (invHess (A x + b) (grad (A x + b))) := by
+  rw [barrierAffinePreimageInvHessRightInverse_quadratic_eq]
+  rw [barrierAffinePreimageGrad_rightInverse_adjoint A B b grad hAB]
+
 theorem barrierAffinePreimageCauchy_rightInverse
     (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
     {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
@@ -14947,6 +14958,50 @@ theorem chewi1314_polytopeSlackNegLog_componentCauchy_of_surjective
   exact chewi1314_polytopeSlackNegLog_componentCauchy_of_rightInverse a b
     (barrierAffinePreimageRightInverseOfSurjective (polytopeSlackCLM a) hA)
     (barrierAffinePreimageRightInverseOfSurjective_spec (polytopeSlackCLM a) hA)
+
+theorem chewi1314_polytopeSlackNegLog_gradient_invHessRightInverse_inner_eq_card
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (B : EuclideanSpace ℝ (Fin m) →L[ℝ] F)
+    (hAB : (polytopeSlackCLM a).comp B =
+      ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin m)))
+    {x : F} (hx : x ∈ polytopeSlackSet a b) :
+    inner ℝ
+        (barrierAffinePreimageGrad (polytopeSlackCLM a) b
+          positiveOrthantNegLogGrad x)
+        (barrierAffinePreimageInvHessRightInverse (polytopeSlackCLM a) B b
+          positiveOrthantNegLogInvHessCLM x
+          (barrierAffinePreimageGrad (polytopeSlackCLM a) b
+            positiveOrthantNegLogGrad x)) =
+      (m : ℝ) := by
+  have hx' :
+      x ∈ barrierAffinePreimageSet (polytopeSlackCLM a) b
+        (positiveOrthant (d := m)) := by
+    exact (mem_barrierAffinePreimageSet_polytopeSlackCLM_iff a b x).2 hx
+  rw [barrierAffinePreimageGradientInvHessRightInverse_quadratic_eq
+    (polytopeSlackCLM a) B b positiveOrthantNegLogInvHessCLM
+    positiveOrthantNegLogGrad hAB x]
+  exact positiveOrthantNegLog_gradient_invHess_inner_eq_card hx'
+
+theorem chewi1314_polytopeSlackNegLog_gradient_invHessSurjective_inner_eq_card
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (hA : (polytopeSlackCLM a).range = ⊤)
+    {x : F} (hx : x ∈ polytopeSlackSet a b) :
+    inner ℝ
+        (barrierAffinePreimageGrad (polytopeSlackCLM a) b
+          positiveOrthantNegLogGrad x)
+        (barrierAffinePreimageInvHessSurjective (polytopeSlackCLM a) b
+          positiveOrthantNegLogInvHessCLM hA x
+          (barrierAffinePreimageGrad (polytopeSlackCLM a) b
+            positiveOrthantNegLogGrad x)) =
+      (m : ℝ) := by
+  exact
+    chewi1314_polytopeSlackNegLog_gradient_invHessRightInverse_inner_eq_card
+      a b
+      (barrierAffinePreimageRightInverseOfSurjective (polytopeSlackCLM a) hA)
+      (barrierAffinePreimageRightInverseOfSurjective_spec (polytopeSlackCLM a) hA)
+      hx
 
 /--
 Chewi Example 13.14, finite-row logarithmic barrier in translated-range form.
