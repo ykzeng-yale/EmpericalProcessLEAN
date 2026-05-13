@@ -868,6 +868,56 @@ theorem durrett2019_example_4_7_4_reverseAverageSigma_le
   · exact iSup_le fun i => iSup_le fun _hi => (hξ_meas i).comap_le
 
 /--
+Later prefix sums are measurable with respect to earlier reverse-average
+sigma-fields.  Algebraically, `S_m = S_n + sum_{n <= i < m} xi_i`.
+-/
+theorem durrett2019_example_4_7_4_prefixSum_measurable_reverseAverageSigma_of_le
+    {Ω : Type*} {ξ : ℕ -> Ω -> ℝ} {n m : ℕ} (hnm : n ≤ m) :
+    Measurable[durrett2019_example_4_7_4_reverseAverageSigma ξ n]
+      (durrett2019_example_4_7_4_prefixSum ξ m) := by
+  have hprefix :
+      Measurable[durrett2019_example_4_7_4_reverseAverageSigma ξ n]
+        (durrett2019_example_4_7_4_prefixSum ξ n) :=
+    durrett2019_example_4_7_4_prefixSum_measurable_reverseAverageSigma
+      (ξ := ξ) n
+  have htail :
+      Measurable[durrett2019_example_4_7_4_reverseAverageSigma ξ n]
+        (fun ω => ∑ i ∈ Finset.Ico n m, ξ i ω) := by
+    exact Finset.measurable_fun_sum (Finset.Ico n m) fun i hi =>
+      durrett2019_example_4_7_4_tailCoordinate_measurable_reverseAverageSigma
+        (ξ := ξ) (n := n) (i := i) (Finset.mem_Ico.mp hi).1
+  have hsum := hprefix.add htail
+  have hsum_eq :
+      (fun ω =>
+        durrett2019_example_4_7_4_prefixSum ξ n ω +
+          ∑ i ∈ Finset.Ico n m, ξ i ω) =
+        durrett2019_example_4_7_4_prefixSum ξ m := by
+    ext ω
+    exact Finset.sum_range_add_sum_Ico (fun i => ξ i ω) hnm
+  rwa [hsum_eq] at hsum
+
+/--
+Durrett's concrete reverse-average sigma-fields decrease with `n`.
+-/
+theorem durrett2019_example_4_7_4_reverseAverageSigma_antitone
+    {Ω : Type*} (ξ : ℕ -> Ω -> ℝ) :
+    Antitone (fun n : ℕ =>
+      durrett2019_example_4_7_4_reverseAverageSigma ξ n) := by
+  intro n m hnm
+  change
+    durrett2019_example_4_7_4_reverseAverageSigma ξ m ≤
+      durrett2019_example_4_7_4_reverseAverageSigma ξ n
+  dsimp [durrett2019_example_4_7_4_reverseAverageSigma]
+  refine sup_le ?_ ?_
+  · exact
+      (durrett2019_example_4_7_4_prefixSum_measurable_reverseAverageSigma_of_le
+        (ξ := ξ) hnm).comap_le
+  · refine iSup_le fun i => iSup_le fun hi => ?_
+    exact
+      (durrett2019_example_4_7_4_tailCoordinate_measurable_reverseAverageSigma
+        (ξ := ξ) (n := n) (i := i) (hnm.trans hi)).comap_le
+
+/--
 Durrett 2019, Example 4.7.4 conditional-expectation algebra core.  If the
 prefix sum is measurable with respect to the reverse sigma-field and the
 conditional expectations of all prefix coordinates are the same as that of the
@@ -954,6 +1004,41 @@ theorem durrett2019_example_4_7_4_condExp_first_eq_prefixAverage_div
       (P := P) (𝒢 := 𝒢) (ξ := ξ) (n := n)
       hn h𝒢_le hξ_int hsum_meas hsym] with ω hω
   simpa [div_eq_mul_inv, mul_comm] using hω
+
+/--
+Durrett 2019, Example 4.7.4 conditional-expectation calculation specialized
+to the concrete reverse-average sigma-field.  After V291/V292, the only
+remaining source-specific input is the finite-prefix symmetry statement
+`hsym`.
+-/
+theorem durrett2019_example_4_7_4_condExp_first_eq_reverseAverageSigma_prefixAverage_div
+    {Ω : Type*} [mΩ : MeasurableSpace Ω]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {ξ : ℕ -> Ω -> ℝ} {n : ℕ}
+    (hn : 0 < n)
+    (hξ_meas : ∀ i, Measurable (ξ i))
+    (hξ_int : ∀ i ∈ Finset.range n, Integrable (ξ i) P)
+    (hsym :
+      ∀ i ∈ Finset.range n,
+        P[ξ i | durrett2019_example_4_7_4_reverseAverageSigma ξ n] =ᵐ[P]
+          P[ξ 0 | durrett2019_example_4_7_4_reverseAverageSigma ξ n]) :
+    P[ξ 0 | durrett2019_example_4_7_4_reverseAverageSigma ξ n] =ᵐ[P]
+      fun ω => (∑ i ∈ Finset.range n, ξ i ω) / (n : ℝ) := by
+  refine
+    durrett2019_example_4_7_4_condExp_first_eq_prefixAverage_div
+      (P := P)
+      (𝒢 := fun k : ℕ =>
+        durrett2019_example_4_7_4_reverseAverageSigma ξ k)
+      (ξ := ξ) (n := n) hn
+      (fun k =>
+        durrett2019_example_4_7_4_reverseAverageSigma_le
+          (ξ := ξ) (n := k) hξ_meas)
+      hξ_int ?_ hsym
+  convert
+    (durrett2019_example_4_7_4_prefixSum_stronglyMeasurable_reverseAverageSigma
+      (ξ := ξ) n) using 1
+  ext ω
+  simp [durrett2019_example_4_7_4_prefixSum, Finset.sum_apply]
 
 /--
 Durrett 2019, Example 4.7.4, final strong-law endpoint using the compiled

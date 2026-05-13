@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V291`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V292`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -113,8 +113,13 @@ reverse-average sigma-field
 `durrett2019_example_4_7_4_reverseAverageSigma ξ n =
 σ(S_n, ξ_n, ξ_{n+1}, ...)` and proves the prefix-sum
 measurability/strong-measurability input, tail-coordinate measurability, and
-ambient sub-sigma-field fact.  The next proof packet should prove this family
-is decreasing and prove the finite-prefix symmetry input from
+ambient sub-sigma-field fact.  V292 proves the later-prefix measurability
+bridge, the antitone/decreasing-family theorem, and the concrete
+reverse-average conditional-expectation consumer:
+`durrett2019_example_4_7_4_prefixSum_measurable_reverseAverageSigma_of_le`,
+`durrett2019_example_4_7_4_reverseAverageSigma_antitone`, and
+`durrett2019_example_4_7_4_condExp_first_eq_reverseAverageSigma_prefixAverage_div`.
+The next proof packet should prove the finite-prefix symmetry input from
 finite-permutation exchangeability of the first `n` coordinates while the sum
 and tail are fixed.
 V259 closes the
