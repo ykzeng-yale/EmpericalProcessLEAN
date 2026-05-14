@@ -529,6 +529,23 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  Euclidean norm of `x_i / xbar0_i`, and show that the direct final-tail
 	  budget follows from scaled relative bounds
 	  `|t| * |x_i / xbar0_i| <= 1/(16*sqrt d)`.
+	  The newest scaled-relative obstruction packet adds
+	  `scalar_newton_decreasing_parameter_product_ge_half`,
+	  `chewi1316_positiveOrthant_preliminaryNextNewtonStep_scaled_relative_ge_half`,
+	  and
+	  `chewi1316_positiveOrthant_scaledRelativeTailBudget_forces_half_le`.
+	  For the actual preliminary Newton recurrence with
+	  `c0/sqrt d <= 1/200`, it proves
+	  `1/2 <= |t_N| * |x_N i / xbar0_i|`, so imposing the direct
+	  positive-orthant scaled-tail gate
+	  `|t_N| * |x_N i / xbar0_i| <= 1/(16*sqrt d)` forces
+	  `1/2 <= 1/(16*sqrt d)`.  Thus the pure positive-orthant scaled-tail
+	  certificate is also a diagnostic obstruction rather than the final
+	  textbook-scale §13.16 route; the next proof route should use a true
+	  moving-center/local-metric certificate or a bounded-polytope source-tail
+	  argument.  Search-first result: no existing mathlib/local theorem
+	  matched this scalar product invariant; reuse remains the compiled
+	  positive-orthant coordinate recurrence plus elementary real algebra.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

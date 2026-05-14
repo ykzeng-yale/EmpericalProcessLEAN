@@ -680,6 +680,22 @@ packet adds
 	`|t| * |x_i / xbar0_i| <= 1/(16*sqrt d)`.  Future §13.16 packets should
 	target this moving/scaled relative-coordinate invariant rather than
 	unscaled displacement from `xbar0`.
+	The newest scaled-relative obstruction packet adds
+	`scalar_newton_decreasing_parameter_product_ge_half`,
+	`chewi1316_positiveOrthant_preliminaryNextNewtonStep_scaled_relative_ge_half`,
+	and
+	`chewi1316_positiveOrthant_scaledRelativeTailBudget_forces_half_le`.
+	For the actual preliminary Newton recurrence with `c0/sqrt d <= 1/200`,
+	it proves `1/2 <= |t_N| * |x_N i / xbar0_i|`; therefore any direct
+	positive-orthant scaled-tail certificate
+	`|t_N| * |x_N i / xbar0_i| <= 1/(16*sqrt d)` forces
+	`1/2 <= 1/(16*sqrt d)`.  This rules out the pure positive-orthant
+	scaled-tail gate as a textbook-scale §13.16 route and redirects the next
+	packet toward a true moving-center/local-metric certificate or a
+	bounded-polytope source-tail argument.  Search-first result: no existing
+	mathlib/local theorem matched this scalar product invariant; the proof
+	reuses the compiled positive-orthant coordinate recurrence and elementary
+	real algebra.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

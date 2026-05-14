@@ -24183,7 +24183,13 @@ theorem scalar_newton_decreasing_parameter_step_lower
     intro n
     induction n with
     | zero =>
-        simp [hy0, ht0]
+        constructor
+        · rw [hy0]
+        · constructor
+          · rw [hy0, ht0]
+            norm_num
+          · rw [hy0, ht0]
+            norm_num
     | succ n ih =>
         rcases ih with ⟨hy_ge, hz_nonneg, hz_le_one⟩
         have hu_eq :
@@ -24247,6 +24253,74 @@ theorem scalar_newton_decreasing_parameter_step_lower
   rw [hy_succ_alt]
   nlinarith
 
+theorem scalar_newton_decreasing_parameter_product_ge_half
+    {y t : ℕ -> ℝ} {delta : ℝ}
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le : delta ≤ 1 / 200)
+    (hy0 : y 0 = 1)
+    (ht0 : t 0 = 1)
+    (htstep : ∀ n : ℕ, t (n + 1) = (1 - delta) * t n)
+    (hystep : ∀ n : ℕ, y (n + 1) = 2 * y n - t (n + 1) * (y n) ^ (2 : ℕ)) :
+    ∀ n : ℕ, 1 / 2 ≤ t n * y n := by
+  have hq_nonneg : 0 ≤ 1 - delta := by
+    nlinarith
+  have hq_le_one : 1 - delta ≤ 1 := by
+    nlinarith
+  have hq_ge : (199 / 200 : ℝ) ≤ 1 - delta := by
+    nlinarith
+  have hstate : ∀ n : ℕ, 1 / 2 ≤ t n * y n ∧ t n * y n ≤ 1 := by
+    intro n
+    induction n with
+    | zero =>
+        constructor
+        · rw [hy0, ht0]
+          norm_num
+        · rw [hy0, ht0]
+          norm_num
+    | succ n ih =>
+        rcases ih with ⟨hz_ge_half, hz_le_one⟩
+        have hz_nonneg : 0 ≤ t n * y n := by
+          nlinarith
+        have hu_eq :
+            t (n + 1) * y n = (1 - delta) * (t n * y n) := by
+          rw [htstep n]
+          ring
+        have hu_ge : (199 / 400 : ℝ) ≤ t (n + 1) * y n := by
+          rw [hu_eq]
+          have hmul :=
+            mul_le_mul hq_ge hz_ge_half (by norm_num : (0 : ℝ) ≤ 1 / 2)
+              hq_nonneg
+          norm_num at hmul
+          simpa [mul_comm, mul_left_comm, mul_assoc] using hmul
+        have hu_le_one : t (n + 1) * y n ≤ 1 := by
+          rw [hu_eq]
+          have hmul :=
+            mul_le_mul hq_le_one hz_le_one hz_nonneg
+              (by norm_num : (0 : ℝ) ≤ 1)
+          nlinarith
+        have hy_succ_factor :
+            y (n + 1) = y n * (2 - t (n + 1) * y n) := by
+          rw [hystep n]
+          ring
+        have hz_succ_eq :
+            t (n + 1) * y (n + 1) =
+              (t (n + 1) * y n) * (2 - t (n + 1) * y n) := by
+          rw [hy_succ_factor]
+          ring
+        have hz_succ_ge_half : 1 / 2 ≤ t (n + 1) * y (n + 1) := by
+          rw [hz_succ_eq]
+          have hprod :
+              0 ≤ (t (n + 1) * y n - 199 / 400) *
+                (1 - t (n + 1) * y n) :=
+            mul_nonneg (by nlinarith) (by nlinarith)
+          nlinarith
+        have hz_succ_le_one : t (n + 1) * y (n + 1) ≤ 1 := by
+          rw [hz_succ_eq]
+          nlinarith [sq_nonneg (t (n + 1) * y n - 1)]
+        exact ⟨hz_succ_ge_half, hz_succ_le_one⟩
+  intro n
+  exact (hstate n).1
+
 theorem chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_linear_lower
     {d : ℕ}
     {xbar0 : EuclideanSpace ℝ (Fin d)}
@@ -24287,6 +24361,81 @@ theorem chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_linear
           chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_eq
             (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
             hxbar0 hxseq_mem hnewton_next n i)
+
+theorem chewi1316_positiveOrthant_preliminaryNextNewtonStep_scaled_relative_ge_half
+    {d : ℕ}
+    {xbar0 : EuclideanSpace ℝ (Fin d)}
+    {xseq : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {tseq : ℕ -> ℝ}
+    {c0 : ℝ} (i : Fin d)
+    (hxbar0 : xbar0 ∈ positiveOrthant (d := d))
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ positiveOrthant (d := d))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (d : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 (tseq (n + 1)))
+          positiveOrthantNegLogInvHessCLM (xseq n))
+    (hc0_nonneg : 0 ≤ c0)
+    (hsqrt_pos : 0 < Real.sqrt (d : ℝ))
+    (hdelta_le : c0 / Real.sqrt (d : ℝ) ≤ 1 / 200)
+    (n : ℕ) :
+    1 / 2 ≤ |tseq n| * |xseq n i / xbar0 i| := by
+  have hxbar0_ne : xbar0 i ≠ 0 := (hxbar0 i).ne'
+  have hprod :
+      1 / 2 ≤ tseq n * (xseq n i / xbar0 i) :=
+    scalar_newton_decreasing_parameter_product_ge_half
+      (y := fun n : ℕ => xseq n i / xbar0 i) (t := tseq)
+      (delta := c0 / Real.sqrt (d : ℝ))
+      (div_nonneg hc0_nonneg hsqrt_pos.le) hdelta_le
+      (by
+        change xseq 0 i / xbar0 i = 1
+        rw [hx0]
+        exact div_self hxbar0_ne)
+      ht0 htstep
+      (by
+        intro n
+        simpa using
+          chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_eq
+            (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+            hxbar0 hxseq_mem hnewton_next n i) n
+  have habs : tseq n * (xseq n i / xbar0 i) ≤
+      |tseq n * (xseq n i / xbar0 i)| :=
+    le_abs_self _
+  rw [abs_mul] at habs
+  exact hprod.trans habs
+
+theorem chewi1316_positiveOrthant_scaledRelativeTailBudget_forces_half_le
+    {d : ℕ}
+    {xbar0 : EuclideanSpace ℝ (Fin d)}
+    {xseq : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {tseq : ℕ -> ℝ}
+    {c0 : ℝ} (i : Fin d)
+    (hxbar0 : xbar0 ∈ positiveOrthant (d := d))
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ positiveOrthant (d := d))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (d : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 (tseq (n + 1)))
+          positiveOrthantNegLogInvHessCLM (xseq n))
+    (hc0_nonneg : 0 ≤ c0)
+    (hsqrt_pos : 0 < Real.sqrt (d : ℝ))
+    (hdelta_le : c0 / Real.sqrt (d : ℝ) ≤ 1 / 200)
+    {N : ℕ}
+    (hscaled_tail :
+      |tseq N| * |xseq N i / xbar0 i| ≤ 1 / (16 * Real.sqrt (d : ℝ))) :
+    (1 / 2 : ℝ) ≤ 1 / (16 * Real.sqrt (d : ℝ)) :=
+  (chewi1316_positiveOrthant_preliminaryNextNewtonStep_scaled_relative_ge_half
+    (xbar0 := xbar0) (xseq := xseq) (tseq := tseq) (c0 := c0) i
+    hxbar0 hxseq_mem hx0 ht0 htstep hnewton_next hc0_nonneg hsqrt_pos hdelta_le N).trans
+      hscaled_tail
 
 theorem scalar_sequence_linear_lower_bound_of_step
     {y : ℕ -> ℝ} {delta : ℝ}

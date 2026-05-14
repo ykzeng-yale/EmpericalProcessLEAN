@@ -473,7 +473,17 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`positiveOrthantNegLog_sourceGrad_tailBudget_of_scaled_relative_le` reduces
 	the direct source-start final-tail budget to
 	`|t| * |x_i/xbar0_i| <= 1/(16*sqrt d)` for every coordinate.  This is the
-	preferred next scalar invariant for positive-orthant experiments.
+	preferred diagnostic interface for positive-orthant experiments.  The newest
+	scaled-relative obstruction packet adds
+	`scalar_newton_decreasing_parameter_product_ge_half`,
+	`chewi1316_positiveOrthant_preliminaryNextNewtonStep_scaled_relative_ge_half`,
+	and
+	`chewi1316_positiveOrthant_scaledRelativeTailBudget_forces_half_le`,
+	proving that the actual preliminary Newton recurrence with
+	`c0/sqrt d <= 1/200` keeps
+	`1/2 <= |t_N| * |x_N i/xbar0_i|`.  Hence the direct positive-orthant
+	scaled-tail budget forces `1/2 <= 1/(16*sqrt d)` and is not a
+	textbook-scale final route by itself.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
