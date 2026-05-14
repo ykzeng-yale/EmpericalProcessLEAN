@@ -304,6 +304,14 @@ predicate from the scaled preliminary-path bridge.  Future callers no longer
 need to manually compose `...postThresholdRangeTailBound...` with
 `...postThresholdRangeTailBound_of_sourcePreliminaryPath_abs_t_lower`; they can
 state the lower-denominator/lambda-budget certificate directly.
+The newest canonical-source-decrement packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_sourceDecrement_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_sourceDecrement_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`.
+These instantiate the canonical preliminary lambda schedule
+`lambda_0 = 1/4`, `lambda_{n+1} = 1/8` from the source `1/4 -> 1/8`
+decrement step, requiring only `1 <= Nmin` for the post-threshold window and
+the denominator budget `(sqrt m + 1/8) / tau_N <= tailBound`.
 This half-contraction endpoint is conditional infrastructure, not yet the
 recommended mathematical route.  The search-first check of the archived
 Chapter 13 obstruction notes shows that fixed-source global preliminary

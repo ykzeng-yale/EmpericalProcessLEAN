@@ -153,6 +153,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   §13.16 post-threshold consumers, so future proofs can supply the
   lower-denominator/lambda-budget certificate directly instead of rebuilding
   the raw range-tail predicate by hand.
+  The canonical-source-decrement endpoints now add
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_sourceDecrement_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_sourceDecrement_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`.
+  They instantiate `lambda_0 = 1/4`, `lambda_{n+1} = 1/8` internally from
+  the source `1/4 -> 1/8` decrement step, leaving future callers with the
+  post-threshold lower-denominator budget and `1 <= Nmin`.
   Route correction: this is conditional infrastructure.  The archived
   positive-orthant obstruction packets already warn that global fixed-source
   radius/summability gates are not the right textbook-scale path for the
