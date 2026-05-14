@@ -116,6 +116,13 @@ its generic pre-decrement-budget sibling is
 These wrappers let the selected range-tail invariant start after a burn-in
 threshold `Nmin`, matching the expected moving-center/bounded-polytope proof
 shape.
+The post-threshold range-tail wrappers now compile as
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_postThresholdRangeTailBound_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdRangeTailBound_succ_noFactor_standardConstants`.
+These are the cleanest consumers for the next geometric packet: prove a plain
+range-tail bound for every output index after `Nmin`, independent of the
+selected logarithmic count parameters.
 This endpoint should be treated as conditional infrastructure.  Earlier
 verified positive-orthant obstruction packets show that the bare actual
 decreasing-`t` preliminary recurrence is not expected to satisfy the old

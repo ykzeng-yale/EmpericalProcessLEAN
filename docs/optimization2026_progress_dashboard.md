@@ -126,6 +126,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   It shifts the internally chosen selected successor index past a burn-in
   threshold `Nmin`, so future bounded-polytope estimates may be stated only
   after their invariant has activated.
+  The post-threshold range-tail packet now compiles the plain-tail interfaces
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_postThresholdRangeTailBound_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdRangeTailBound_succ_noFactor_standardConstants`.
+  These are the preferred consumers once geometry proves
+  `∀ Nout ≥ Nmin, rangeTailNorm Nout ≤ tailBound`.
   Route correction: this is conditional infrastructure.  The archived
   positive-orthant obstruction packets already warn that global fixed-source
   radius/summability gates are not the right textbook-scale path for the
@@ -173,6 +179,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_thresholdedEventualSelectedRangeTailBound_succ_noFactor_standardConstants`,
   allowing the selected successor range-tail bound to start after a burn-in
   threshold.
+  The post-threshold range-tail variant now removes the `M` and count
+  parameters from the tail assumption entirely; it only needs a plain tail
+  bound for all output indices after `Nmin`.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing
@@ -218,10 +227,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
   Its thresholded sibling
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_thresholdedEventualSelectedRangeTailBound_succ_noFactor_standardConstants`
-  is the preferred entrypoint for post-burn-in tail invariants.  The preferred
-  next proof targets are now the valid actual doubled contraction and the
-  moving-center/bounded-polytope eventual selected successor range-tail
-  estimate.
+  and post-threshold sibling
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdRangeTailBound_succ_noFactor_standardConstants`
+  are the preferred entrypoints for post-burn-in tail invariants.  The
+  preferred next proof targets are now the valid actual doubled contraction
+  and a moving-center/bounded-polytope post-threshold range-tail estimate.
   Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range
