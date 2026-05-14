@@ -32,12 +32,18 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V342` in
+Route from `Live In-Thread Goal Prompt V343` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V342 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V343 adds
+`durrett2019_theorem_3_10_7_covarianceTableQuadratic_smul`,
+`durrett2019_theorem_3_10_7_covarianceTableQuadratic_smul_complex`,
+`durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_tsq_of_coordinateCovariance`,
+and
+`durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCoordinateCovariance_tsq`,
+the textbook `t^2` Gaussian exponent layer for Durrett Theorem 3.10.7.  V342 adds
 `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_coordinateCovariance`
 and
 `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCoordinateCovariance`,
@@ -1691,7 +1697,15 @@ Current proof route:
     `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_constMeasure`,
     plus its fixed-source characteristic-function wrapper
     `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_constMeasure_of_charFun`.
-29. Durrett Theorem 3.10.7 now has the arbitrary-frequency centered Gaussian
+29. Durrett Theorem 3.10.7 now has the finite covariance-table homogeneity
+    wrappers
+    `durrett2019_theorem_3_10_7_covarianceTableQuadratic_smul` and
+    `durrett2019_theorem_3_10_7_covarianceTableQuadratic_smul_complex`, the
+    textbook `t^2` centered Gaussian projected characteristic-function display
+    `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_tsq_of_coordinateCovariance`,
+    and the corresponding projected-characteristic CLT consumer
+    `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCoordinateCovariance_tsq`.
+    It also has the arbitrary-frequency centered Gaussian
     projected characteristic-function display
     `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_coordinateCovariance`,
     a projected-characteristic CLT consumer from the centered Gaussian

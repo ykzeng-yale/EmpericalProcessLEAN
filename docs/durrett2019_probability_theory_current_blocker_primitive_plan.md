@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V342
+## Live In-Thread Goal Prompt V343
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,8 +19,18 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V342 adds the arbitrary-frequency centered Gaussian
-projection display
+Latest verified target V343 adds the finite covariance-table homogeneity
+wrappers
+`durrett2019_theorem_3_10_7_covarianceTableQuadratic_smul` and
+`durrett2019_theorem_3_10_7_covarianceTableQuadratic_smul_complex`, the
+textbook `t^2` centered Gaussian projected characteristic-function display
+`durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_tsq_of_coordinateCovariance`,
+and the Durrett Theorem 3.10.7 source endpoint
+`durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCoordinateCovariance_tsq`.
+This lets the projected empirical characteristic-function hypothesis be stated
+as `exp(-(t^2 * theta Gamma theta^T) / 2)`, closer to the textbook display,
+while reusing V342's covariance-table endpoint.  V342 adds the
+arbitrary-frequency centered Gaussian projection display
 `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_coordinateCovariance`
 and the Durrett Theorem 3.10.7 source endpoint
 `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCoordinateCovariance`.
@@ -199,10 +209,11 @@ Cramér-Wold wrapper, or the V339 Cramér-Wold projected characteristic-function
 transport wrappers, or the V340 random-vector/source projected
 characteristic-function transport wrappers, or the V341 projected
 characteristic-function multivariate CLT consumer, or the V342 centered
-Gaussian projected-characteristic CLT consumer.  Next aggressive packet:
-continue
-Chapter 3 by closing a concrete source-facing gap around remaining Section 3.10
-Gaussian-law wrappers, remaining Lindeberg-Feller side conditions, or
+Gaussian projected-characteristic CLT consumer, or the V343 textbook `t^2`
+Gaussian exponent wrappers.  Next aggressive packet: continue Chapter 3 by
+closing a concrete source-facing gap around projected empirical
+characteristic-function convergence, remaining Section 3.10 Gaussian-law
+wrappers, remaining Lindeberg-Feller side conditions, or
 characteristic-function transport into later source statements; touch Chapter 2
 only if a Chapter 3 theorem requires a missing source primitive.
 
