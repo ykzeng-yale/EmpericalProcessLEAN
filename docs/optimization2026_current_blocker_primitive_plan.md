@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V8`, this file's top
+   the full book is complete, route from `Live Goal Prompt V9`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V8
+## Live Goal Prompt V9
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -209,11 +209,18 @@ handoff adds
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hess_pointwise`:
 if future spectral work supplies a pointwise Hessian square-root factor
 `H = S†S`, the required inverse-Hessian model follows automatically from the
-compiled range right-inverse identity.  The search-first spectral result is
-that no ready local/mathlib theorem directly returns this full
+compiled range right-inverse identity.  The newest CLM-to-equivalence adapter
+adds
+`continuousLinearMap_exists_adjointSqrtCoord_of_adjointSqrt_right_inverse_finiteDim`
+and
+`chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hessCLM_pointwise`:
+if future spectral work supplies only a continuous-linear-map factor
+`H = sqrtH†sqrtH`, finite-dimensional invertibility and the full range
+sqrt-coordinate model now follow automatically.  The search-first spectral
+result is that no ready local/mathlib theorem directly returns this full
 sqrt-coordinate family from a positive self-adjoint continuous linear map.  The
-smallest next range-sqrt target should be a pointwise Hessian factor theorem
-feeding `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hess_pointwise`.
+smallest next range-sqrt target should be a pointwise CLM Hessian factor theorem
+feeding `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hessCLM_pointwise`.
 Reuse the new local positive-operator bridge, range Hessian right-inverse
 lemmas, and mathlib positive-operator / `LinearMap.IsSymmetric`
 spectral/eigenbasis APIs; avoid stronger continuity or measurability
@@ -221,9 +228,9 @@ requirements for the selected family.
 The selection part is now compiled as
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise`: the
 remaining range-sqrt work is the pointwise spectral/matrix construction of a
-single feasible-point Hessian square-root equivalence from the positive range
-Hessian, not the global family packaging, positivity conversion, or inverse
-model proof.
+single feasible-point continuous-linear-map Hessian square root from the
+positive range Hessian, not the global family packaging, equivalence
+promotion, positivity conversion, or inverse model proof.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new

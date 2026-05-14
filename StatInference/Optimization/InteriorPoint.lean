@@ -5314,6 +5314,45 @@ theorem continuousLinearMap_adjointSqrtCoord_inv_eq_of_right_inverse_finiteDim
   apply hinj
   rw [hright v, hmodel_right v]
 
+/--
+If `H = S†S` and `H` has a right inverse, then `S` is injective and hence a
+continuous linear equivalence in finite dimension.
+-/
+theorem continuousLinearMap_exists_adjointSqrtCoord_of_adjointSqrt_right_inverse_finiteDim
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    [CompleteSpace F] [FiniteDimensional ℝ F]
+    {H invH sqrtH : F →L[ℝ] F}
+    (hH_eq : H = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH)
+    (hright : ∀ v : F, H (invH v) = v) :
+    ∃ sqrtCoord : F ≃L[ℝ] F,
+      H =
+        (ContinuousLinearMap.adjoint sqrtCoord.toContinuousLinearMap).comp
+          sqrtCoord.toContinuousLinearMap ∧
+      sqrtCoord.toContinuousLinearMap = sqrtH := by
+  have hH_inj : Function.Injective (H : F -> F) := by
+    have hsurj : Function.Surjective (H : F -> F) :=
+      fun w => ⟨invH w, hright w⟩
+    exact (LinearMap.injective_iff_surjective (K := ℝ) (V := F)
+      (f := H.toLinearMap)).2 hsurj
+  have hcomp_inj : Function.Injective (ContinuousLinearMap.adjoint sqrtH ∘ sqrtH) := by
+    intro x y hxy
+    apply hH_inj
+    simpa [hH_eq, ContinuousLinearMap.comp_apply] using hxy
+  have hsqrtH_inj : Function.Injective (sqrtH : F -> F) :=
+    (ContinuousLinearMap.adjoint_comp_self_injective_iff sqrtH).1 hcomp_inj
+  have hker_bot : LinearMap.ker (sqrtH : F →ₗ[ℝ] F) = ⊥ :=
+    LinearMap.ker_eq_bot.2 hsqrtH_inj
+  have hdet_ne : sqrtH.det ≠ 0 := by
+    intro hdet
+    have hker_ne : LinearMap.ker (sqrtH : F →ₗ[ℝ] F) ≠ ⊥ :=
+      (LinearMap.det_eq_zero_iff_ker_ne_bot).1 hdet
+    exact hker_ne hker_bot
+  let sqrtCoord : F ≃L[ℝ] F :=
+    sqrtH.toContinuousLinearEquivOfDetNeZero hdet_ne
+  refine ⟨sqrtCoord, ?_, ?_⟩
+  · simpa [sqrtCoord] using hH_eq
+  · simp [sqrtCoord]
+
 theorem barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim
     [FiniteDimensional ℝ E₂]
     (selector : E₁ -> E₂)
@@ -29896,6 +29935,56 @@ theorem chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hess_pointwi
       (sqrtCoord := sqrtCoord) hhess
       (chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
         aRow bSlack hz)
+
+/--
+Finite-row range square-root-coordinate selection from a pointwise continuous
+linear square-root Hessian factor.  The factor is automatically promoted to a
+continuous linear equivalence because the range Hessian has a right inverse.
+-/
+theorem chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hessCLM_pointwise
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (hpoint_hess : ∀ z : (polytopeSlackCLM aRow).range,
+      z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        ∃ sqrtH :
+            (polytopeSlackCLM aRow).range →L[ℝ]
+              (polytopeSlackCLM aRow).range,
+          barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM z =
+            (ContinuousLinearMap.adjoint sqrtH).comp sqrtH) :
+    ∃ sqrtCoordRange :
+        (polytopeSlackCLM aRow).range ->
+          (polytopeSlackCLM aRow).range ≃L[ℝ] (polytopeSlackCLM aRow).range,
+      (∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
+        z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM z =
+            (ContinuousLinearMap.adjoint
+              (sqrtCoordRange z).toContinuousLinearMap).comp
+              (sqrtCoordRange z).toContinuousLinearMap) ∧
+      (∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
+        z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack z =
+            (sqrtCoordRange z).symm.toContinuousLinearMap.comp
+              (ContinuousLinearMap.adjoint
+                (sqrtCoordRange z).symm.toContinuousLinearMap)) := by
+  refine
+    chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hess_pointwise
+      aRow bSlack ?_
+  intro z hz
+  obtain ⟨sqrtH, hhess⟩ := hpoint_hess z hz
+  obtain ⟨sqrtCoord, hhess_coord, _⟩ :=
+    continuousLinearMap_exists_adjointSqrtCoord_of_adjointSqrt_right_inverse_finiteDim
+      (H := barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogHessCLM z)
+      (invH := chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack z)
+      (sqrtH := sqrtH) hhess
+      (chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
+        aRow bSlack hz)
+  exact ⟨sqrtCoord, hhess_coord⟩
 
 /--
 Finite-row range-space preliminary one-step invariant from a domain-wide

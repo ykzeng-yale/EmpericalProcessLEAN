@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V8` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V9` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -102,16 +102,22 @@ result: the smallest useful range-sqrt target is
 an existential point-dependent `sqrtCoordRange` theorem that only asks for the
 Hessian factor `H = S†S`.  The inverse-model handoff
 `continuousLinearMap_adjointSqrtCoord_inv_eq_of_right_inverse_finiteDim`
-derives `invHess = S⁻¹(S⁻¹)†` from the compiled right-inverse identity.  Reuse
-the new positive-operator bridge, local range Hessian right-inverse lemmas, and
-mathlib positive-operator / `LinearMap.IsSymmetric` spectral/eigenbasis APIs;
-do not add continuity/measurability obligations for the selected family unless
-a later statement requires them.
+derives `invHess = S⁻¹(S⁻¹)†` from the compiled right-inverse identity.  The
+CLM-to-equivalence adapter
+`continuousLinearMap_exists_adjointSqrtCoord_of_adjointSqrt_right_inverse_finiteDim`
+and range wrapper
+`chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hessCLM_pointwise`
+now reduce the next spectral packet to a pointwise continuous-linear-map
+Hessian factor `H = sqrtH†sqrtH`.  Reuse the new positive-operator bridge,
+local range Hessian right-inverse lemmas, and mathlib positive-operator /
+`LinearMap.IsSymmetric` spectral/eigenbasis APIs; do not add
+continuity/measurability obligations for the selected family unless a later
+statement requires them.
 The selection wrapper
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise` now
 packages pointwise feasible square-root witnesses into the domain-wide family;
-the next range-sqrt packet should prove only the pointwise Hessian
-square-root equivalence from the positive range Hessian.
+the next range-sqrt packet should prove only the pointwise CLM Hessian
+square-root factor from the positive range Hessian.
 Do
 not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the
