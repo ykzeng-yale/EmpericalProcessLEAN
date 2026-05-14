@@ -52,14 +52,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
   The newest correction weakens both `sqrtCoordModel` wrappers from a fixed
   range equivalence to a domain-wide family `fun z => sqrtCoordRange z`, matching
-  the nonconstant logarithmic-barrier Hessian.  The current exact-source gates
-  are now: construct the point-dependent range Hessian/inverse-Hessian
+  the nonconstant logarithmic-barrier Hessian.  The newest source-transport
+  packet adds `barrierAffineRange_preliminaryPathGrad_adjoint_rightInverse_eq`,
+  `barrierAffineRange_preliminaryPath_newtonStep_rangeRestrict_eq`,
+  `chewi1316_polytopeSlackNegLog_rangePreliminaryNextNewtonSteps_of_sourcePullbackPreliminaryNextNewtonSteps`,
+  `chewi1316_polytopeSlackNegLog_rangePreDecrementNext_le_of_sourcePullbackPreDecrementNext_le`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+  The current exact-source gates are now: construct the point-dependent range Hessian/inverse-Hessian
   sqrt-coordinate family (or an equivalent mathlib
-  spectral / positive-operator construction), prove the concrete range
-  preliminary-next-Newton recurrence, and prove the summable next
-  pre-decrement budget.  Source-pullback decrement, scalar constants,
+  spectral / positive-operator construction) and prove the summable source
+  next pre-decrement budget.  Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
-  invariant are no longer the live gates.
+  invariant are no longer the live gates; range recurrence and range
+  pre-decrement are now transported from source-coordinate assumptions.
 - Archived Chapter 13 context before later §13.16 packets: Chewi Example 13.14's arbitrary finite-row
   logarithmic barrier route is compiled via the concrete range inverse
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess`, and
@@ -703,10 +708,12 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  The source-pullback preliminary decrement shape and the one-step
 	  invariant are no longer live blockers once a point-dependent domain-wide
 	  range Hessian/inverse-Hessian sqrt-coordinate family is supplied.  The
-	  remaining exact-source gates are the concrete range recurrence, the
-	  summable next pre-decrement budget, and the range sqrt-coordinate family
-	  itself (or an equivalent mathlib spectral / positive-operator
-	  construction).
+	  new source-transport wrappers remove the concrete range recurrence and
+	  range pre-decrement gates when the source-coordinate Newton recurrence
+	  and source pre-decrement budget are supplied.  The remaining
+	  exact-source gates are the summable source next pre-decrement budget and
+	  the range sqrt-coordinate family itself (or an equivalent mathlib
+	  spectral / positive-operator construction).
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

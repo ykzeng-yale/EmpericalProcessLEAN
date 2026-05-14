@@ -146,12 +146,18 @@ and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
 The newest correction weakens both `sqrtCoordModel` wrappers from a fixed
 range equivalence to a domain-wide family `fun z => sqrtCoordRange z`, matching the
-nonconstant logarithmic-barrier Hessian.
+nonconstant logarithmic-barrier Hessian.  The newest source-transport packet
+adds `barrierAffineRange_preliminaryPathGrad_adjoint_rightInverse_eq`,
+`barrierAffineRange_preliminaryPath_newtonStep_rangeRestrict_eq`,
+`chewi1316_polytopeSlackNegLog_rangePreliminaryNextNewtonSteps_of_sourcePullbackPreliminaryNextNewtonSteps`,
+`chewi1316_polytopeSlackNegLog_rangePreDecrementNext_le_of_sourcePullbackPreDecrementNext_le`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
 Continue aggressively from exactly this frontier.  The next theorem-sized
 targets are: build the point-dependent range Hessian/inverse-Hessian
 sqrt-coordinate family (or an equivalent mathlib spectral / positive-operator
-construction), prove the concrete range preliminary-next-Newton recurrence,
-and prove the summable next pre-decrement budget.  Do not spend a run
+construction) and prove the summable source next pre-decrement budget.  The
+range recurrence and range pre-decrement budget are now transported from the
+source-coordinate recurrence/budget by compiled wrappers.  Do not spend a run
 re-solving source-pullback decrement transport, scalar constants, successor
 membership, source-radius-half, finite sequence/log-count plumbing, or the
 exposed range one-step `1/4 -> 1/8` invariant; these are already behind
@@ -868,10 +874,16 @@ packet adds
 	range one-step `1/4 -> 1/8` invariant as live caller-facing gates whenever
 	a point-dependent domain-wide range Hessian/inverse-Hessian
 	sqrt-coordinate family is
-	supplied.  The remaining direct gates are the concrete range preliminary
-	next-Newton recurrence, the summable next pre-decrement budget, and the
-	range sqrt-coordinate family itself (or an equivalent mathlib spectral /
-	positive-operator construction).
+	supplied.  The source-transport packet adds
+	`barrierAffineRange_preliminaryPathGrad_adjoint_rightInverse_eq`,
+	`barrierAffineRange_preliminaryPath_newtonStep_rangeRestrict_eq`,
+	`chewi1316_polytopeSlackNegLog_rangePreliminaryNextNewtonSteps_of_sourcePullbackPreliminaryNextNewtonSteps`,
+	`chewi1316_polytopeSlackNegLog_rangePreDecrementNext_le_of_sourcePullbackPreDecrementNext_le`, and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+	The remaining direct gates are the source next pre-decrement summability
+	and the range sqrt-coordinate family itself (or an equivalent mathlib
+	spectral / positive-operator construction); the range recurrence is now
+	just transport from the source-coordinate Newton recurrence.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
@@ -887,9 +899,9 @@ packet adds
 	zero Newton decrement at the source endpoints, and the one-step post-Newton
 	`lambda <= 1/4` and successor `lambda <= 1/8` invariants for the supplied
 	preliminary path.  The next live gate is now sharper: build the concrete
-	point-dependent range sqrt-coordinate family, prove the Chewi/Nesterov range preliminary
-	next-Newton recurrence, and prove the summable next-parameter pre-Newton
-	decrement budget feeding the compiled standard-constant no-factor handoff.
+	point-dependent range sqrt-coordinate family and prove the summable
+	next-parameter source pre-Newton decrement budget feeding the compiled
+	standard-constant no-factor handoff.
 	Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has

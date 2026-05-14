@@ -41,14 +41,20 @@ and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
 The newest correction weakens both `sqrtCoordModel` wrappers from a fixed
 range equivalence to a domain-wide family `fun z => sqrtCoordRange z`, matching the
-nonconstant logarithmic-barrier Hessian.  The active theorem-sized target is
-to construct the point-dependent range Hessian/inverse-Hessian
+nonconstant logarithmic-barrier Hessian.  The newest source-transport packet
+adds `barrierAffineRange_preliminaryPathGrad_adjoint_rightInverse_eq`,
+`barrierAffineRange_preliminaryPath_newtonStep_rangeRestrict_eq`,
+`chewi1316_polytopeSlackNegLog_rangePreliminaryNextNewtonSteps_of_sourcePullbackPreliminaryNextNewtonSteps`,
+`chewi1316_polytopeSlackNegLog_rangePreDecrementNext_le_of_sourcePullbackPreDecrementNext_le`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+The active theorem-sized target is to construct the point-dependent range Hessian/inverse-Hessian
 sqrt-coordinate family (or an equivalent mathlib
-spectral / positive-operator construction), prove the concrete range
-preliminary-next-Newton recurrence, and prove the summable next
-pre-decrement budget.  Do not route the next packet back to source-pullback
+spectral / positive-operator construction) and prove the summable source
+next pre-decrement budget.  Do not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the
-range one-step invariant; those are already behind compiled wrappers.
+range one-step invariant; those are already behind compiled wrappers.  Do not
+chase a separate range recurrence when the source-coordinate Newton recurrence
+is available, because it now transports automatically.
 
 Archived route context below: the Chapter 13 lane
 now has Chewi Lemma 13.15(1) and Lemma 13.15(2) compiled for the arbitrary
@@ -616,10 +622,12 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	one-step invariant through a domain-wide range Hessian/inverse-Hessian
 	sqrt-coordinate family, so source-pullback decrement transport and the
 	range one-step `1/4 -> 1/8` invariant are no longer separate exact-source
-	gates.  The next exact-source gate is now to prove the concrete range
-	preliminary Newton recurrence, pre-decrement summability, and the range
-	sqrt-coordinate family itself (or an equivalent mathlib spectral /
-	positive-operator construction).
+	gates.  Source-transport wrappers now also remove the concrete range
+	recurrence and range pre-decrement gates when the source-coordinate Newton
+	recurrence and source pre-decrement budget are supplied.  The next
+	exact-source gate is now to prove source pre-decrement summability and
+	the range sqrt-coordinate family itself (or an equivalent mathlib
+	spectral / positive-operator construction).
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
@@ -630,9 +638,9 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	and mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The next
 	exact-source §13.16 gate is no longer a raw `hradius_half`, custom
 	`lambdaSeq`, scalar tail-budget choice, source-pullback decrement
-	transport, or exposed range one-step invariant; it is the concrete range
-	preliminary Newton recurrence, scalar summability budget
-	`sum 2*lambda_n <= 1/2`, and the point-dependent range sqrt-coordinate
+	transport, exposed range one-step invariant, or separate range recurrence;
+	it is the scalar summability budget `sum 2*lambda_n <= 1/2` for the
+	source next pre-decrement and the point-dependent range sqrt-coordinate
 	family.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
