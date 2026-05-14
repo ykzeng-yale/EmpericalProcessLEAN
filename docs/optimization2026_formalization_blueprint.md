@@ -97,9 +97,11 @@ The actual-budget base estimate now compiles as
 under the standard preliminary update with `t_0 = 1`, the actual source
 next-pre-decrement budget at index `0` is bounded by `1 / 200` using the
 finite-row barrier gradient bound and local-norm homogeneity.  The next
-source-facing theorem-sized target is therefore the actual successor doubled
-contraction, together with the scalar `q = 1 / 2` wrapper that converts this
-base estimate into the contracting-budget total-mass condition.
+source-facing theorem-sized target is therefore only the actual successor
+doubled contraction.  The scalar `q = 1 / 2` wrapper is now compiled through
+`chewi1316_initialTotal_half_le_of_stepBudget_zero_le_standard`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_initialTotal_half_le_standard`, and the preferred source endpoint
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_noFactor_standardConstants`.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the

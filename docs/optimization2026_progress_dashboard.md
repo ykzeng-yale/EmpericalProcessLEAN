@@ -109,9 +109,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   for the standard preliminary update and `t_0 = 1`, the real source
   next-pre-decrement budget at index `0` is at most `1 / 200`, using the
   finite-row barrier gradient bound.  The remaining exact-source gate is the
-  successor doubled contraction for the actual budget sequence, plus the small
-  scalar wrapper turning this base bound into the contracting-budget initial
-  total condition for `q = 1 / 2`.
+  successor doubled contraction for the actual budget sequence.  The scalar
+  initial-total side for `q = 1 / 2` is now compiled through
+  `chewi1316_initialTotal_half_le_of_stepBudget_zero_le_standard`,
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_initialTotal_half_le_standard`, and the preferred endpoint
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_noFactor_standardConstants`.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

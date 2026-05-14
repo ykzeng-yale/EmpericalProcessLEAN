@@ -32285,6 +32285,57 @@ theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_zero_le_stand
     _ = 1 / 200 := hdelta_sqrt
 
 /--
+Scalar initial-total side for the standard half-contraction route: a base
+budget of at most `1 / 200` is far below the `q = 1 / 2` geometric total
+requirement.
+-/
+theorem chewi1316_initialTotal_half_le_of_stepBudget_zero_le_standard
+    {stepBudget : ℕ -> ℝ}
+    (hzero : stepBudget 0 ≤ 1 / 200) :
+    (2 * stepBudget 0) * (1 - (1 / 2 : ℝ))⁻¹ ≤ 1 / 2 := by
+  have hdouble : 2 * stepBudget 0 ≤ 1 / 100 := by
+    have h := mul_le_mul_of_nonneg_left hzero (by norm_num : (0 : ℝ) ≤ 2)
+    norm_num at h
+    exact h
+  calc
+    (2 * stepBudget 0) * (1 - (1 / 2 : ℝ))⁻¹ =
+        2 * (2 * stepBudget 0) := by
+          norm_num [mul_comm, mul_left_comm, mul_assoc]
+    _ ≤ 2 * (1 / 100 : ℝ) :=
+          mul_le_mul_of_nonneg_left hdouble (by norm_num : (0 : ℝ) ≤ 2)
+    _ ≤ 1 / 2 := by norm_num
+
+/--
+Concrete initial-total side for the actual finite-row preliminary
+next-pre-decrement budget with the standard half-contraction factor.
+-/
+theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_initialTotal_half_le_standard
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq : ℕ -> ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n) :
+    (2 *
+        chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+          aRow bSlack xbar0 xseq tseq 0) *
+      (1 - (1 / 2 : ℝ))⁻¹ ≤ 1 / 2 := by
+  exact
+    chewi1316_initialTotal_half_le_of_stepBudget_zero_le_standard
+      (stepBudget :=
+        chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+          aRow bSlack xbar0 xseq tseq)
+      (chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_zero_le_standard
+        (hm := hm) (aRow := aRow) (bSlack := bSlack) hxbar0Range hx0 ht0
+        htstep)
+
+/--
 Preferred concrete standard-constant §13.16 source handoff: the auxiliary
 budget is the actual next-pre-decrement sequence.  The remaining quantitative
 work is exactly a doubled contraction and the initial total-mass bound for
@@ -32362,6 +32413,64 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
         simpa [stepBudget] using hrec n)
       (by
         simpa [stepBudget] using htotal)
+
+/--
+Preferred standard half-contraction endpoint for the actual finite-row
+preliminary next-pre-decrement budget.  The base and geometric-total
+requirements are discharged from the standard start, so the only remaining
+quantitative proof obligation is the actual doubled contraction.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hrec : ∀ n : ℕ,
+      2 * chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+          aRow bSlack xbar0 xseq tseq (n + 1) ≤
+        (1 / 2 : ℝ) * (2 *
+          chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+            aRow bSlack xbar0 xseq tseq n)) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (2 * Real.sqrt (m : ℝ))) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (N : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq N) ≤ 1 / 4 := by
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementContractingBudget_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (aObj := aObj) (xseq := xseq) (tseq := tseq) (q := (1 / 2 : ℝ))
+      hxbar0Range hx0 ht0 htstep hnewton_next_source
+      (by norm_num) (by norm_num) hrec
+      (chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_initialTotal_half_le_standard
+        (hm := hm) (aRow := aRow) (bSlack := bSlack)
+        (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+        hxbar0Range hx0 ht0 htstep)
 
 /--
 Induction step for Chewi Example 13.14's finite-row logarithmic barrier.  A
