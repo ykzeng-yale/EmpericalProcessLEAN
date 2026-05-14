@@ -32,12 +32,17 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V341` in
+Route from `Live In-Thread Goal Prompt V342` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V341 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V342 adds
+`durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_coordinateCovariance`
+and
+`durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCoordinateCovariance`,
+Durrett Theorem 3.10.7 projected-characteristic CLT from the centered Gaussian
+quadratic exponential and matching coordinate covariance table.  V341 adds
 `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions`,
 Durrett Theorem 3.10.7 multivariate CLT from projected
 characteristic-function convergence.  V340 adds
@@ -1686,7 +1691,13 @@ Current proof route:
     `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_constMeasure`,
     plus its fixed-source characteristic-function wrapper
     `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_constMeasure_of_charFun`.
-29. Durrett Theorem 3.10.7 now has a compiled projected
+29. Durrett Theorem 3.10.7 now has the arbitrary-frequency centered Gaussian
+    projected characteristic-function display
+    `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_coordinateCovariance`,
+    a projected-characteristic CLT consumer from the centered Gaussian
+    quadratic exponential
+    `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCoordinateCovariance`,
+    plus a compiled projected
     characteristic-function CLT consumer, plus projected scalar and projected
     summand CLT wrappers:
     `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions`,
