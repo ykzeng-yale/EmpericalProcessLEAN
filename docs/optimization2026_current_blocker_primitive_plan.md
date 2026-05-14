@@ -295,6 +295,15 @@ not a replacement for the moving-center/bounded-polytope invariant: because
 the standard preliminary `t_N` decreases, future use must prove a valid
 finite-window, selected-window, or genuinely moving-center lower-denominator
 certificate before calling this route.
+The newest composition packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`.
+These call the post-threshold range-tail consumers after deriving the tail
+predicate from the scaled preliminary-path bridge.  Future callers no longer
+need to manually compose `...postThresholdRangeTailBound...` with
+`...postThresholdRangeTailBound_of_sourcePreliminaryPath_abs_t_lower`; they can
+state the lower-denominator/lambda-budget certificate directly.
 This half-contraction endpoint is conditional infrastructure, not yet the
 recommended mathematical route.  The search-first check of the archived
 Chapter 13 obstruction notes shows that fixed-source global preliminary

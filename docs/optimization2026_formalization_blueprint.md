@@ -135,6 +135,13 @@ post-threshold range-tail predicate via a valid lower bound on `|t_N|`,
 This is useful for finite-window or moving-denominator certificates, but it
 must not be used as a global fixed-source scaled-tail shortcut for the
 decreasing-`t` path.
+The composed post-threshold consumers now compile as
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`.
+They are the direct caller-facing route when a future finite-window or
+moving-center proof supplies `0 < tau_N <= |t_N|`, lambda control, and the
+resulting tail budget.
 This endpoint should be treated as conditional infrastructure.  Earlier
 verified positive-orthant obstruction packets show that the bare actual
 decreasing-`t` preliminary recurrence is not expected to satisfy the old

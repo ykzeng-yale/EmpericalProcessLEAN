@@ -145,6 +145,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   are available.  Treat this as a conditional finite-window/moving-denominator
   bridge, not as a revival of the archived false fixed-source scaled-tail
   route.
+  The composed post-threshold endpoints now add
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`.
+  They compose the lower-`|t_N|` scaled-tail bridge with the existing
+  §13.16 post-threshold consumers, so future proofs can supply the
+  lower-denominator/lambda-budget certificate directly instead of rebuilding
+  the raw range-tail predicate by hand.
   Route correction: this is conditional infrastructure.  The archived
   positive-orthant obstruction packets already warn that global fixed-source
   radius/summability gates are not the right textbook-scale path for the
