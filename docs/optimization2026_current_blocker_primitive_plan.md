@@ -644,6 +644,17 @@ packet adds
 	initialization conclusion with that same `M,N`.  The next exact-source
 	packet should target a selected finite window or moving-center radius
 	certificate, not a global `forall N` source-radius theorem.
+	The selected-index route is now lifted through the square-root-coordinate
+	and concrete finite positive-orthant layers by
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_selectedSourceRadiusHalf_barrier_globalDeriv_and_sqrtCoordModel`,
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_selectedSourceRadiusHalf`,
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_selectedCoordRadiusHalf`,
+	and
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_selectedRelativeCoordRadiusHalf`.
+	Thus the positive-orthant exact-source gate is now a finite-window scalar
+	bound:
+	`|xseq N i / xbar0 i - 1| <= 1/(2*sqrt d)` for the selected positive
+	index `N`, together with the already-explicit log/count budgets for `M,N`.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

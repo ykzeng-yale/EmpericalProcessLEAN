@@ -445,6 +445,16 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	radius certificate for the concrete preliminary path or replace it with a
 	moving-center certificate; it should not reintroduce the all-prefix
 	source-radius premise.
+	The selected correction is now lifted to the square-root-coordinate and
+	finite positive-orthant layers:
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_selectedSourceRadiusHalf_barrier_globalDeriv_and_sqrtCoordModel`,
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_selectedSourceRadiusHalf`,
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_selectedCoordRadiusHalf`,
+	and
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_selectedRelativeCoordRadiusHalf`.
+	The next exact-source §13.16 target should be the selected scalar recurrence
+	bound `|xseq N i / xbar0 i - 1| <= 1/(2*sqrt d)` for a positive chosen
+	index `N` satisfying the existing log/count budgets.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

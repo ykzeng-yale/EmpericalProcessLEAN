@@ -500,6 +500,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  source-tail estimate from `SelfConcordantBarrierOn`, global Hessian
 	  derivative/mixed-third data, inverse-local identity, source Cauchy, and
 	  `2 * sqrt(nu) <= tailBound`.
+	  The selected route is now concrete for the finite positive orthant via
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_selectedSourceRadiusHalf_barrier_globalDeriv_and_sqrtCoordModel`,
+	  `chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_selectedSourceRadiusHalf`,
+	  `chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_selectedCoordRadiusHalf`,
+	  and
+	  `chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_selectedRelativeCoordRadiusHalf`.
+	  The remaining positive-orthant radius task is finite-window scalar:
+	  prove `|xseq N i / xbar0 i - 1| <= 1/(2*sqrt d)` for the selected
+	  positive index `N` and combine it with the explicit log/count budgets.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
