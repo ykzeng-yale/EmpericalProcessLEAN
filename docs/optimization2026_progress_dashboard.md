@@ -558,6 +558,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  current point, so the next bounded-polytope packet can prove the actual
 	  source-tail estimate in range/slack coordinates instead of reusing the
 	  false positive-orthant source-radius or scaled-tail routes.
+	  The newest range-tail consumer packet adds
+	  `chewi1314_polytopeSlackNegLog_rangePullInvHess` and
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeTailBudget`.
+	  It packages the exact §13.16 source-start handoff for finite-row
+	  polytope logarithmic barriers: once the closed-form scaled source tail is
+	  proved in the slack-range inverse-Hessian metric, positive main-stage
+	  initialization follows from the existing source-start theorem.  The live
+	  blocker is now the genuine bounded-polytope range-tail estimate, not
+	  affine transport or main-stage initialization plumbing.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

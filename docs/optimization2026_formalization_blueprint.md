@@ -493,6 +493,11 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1314_polytopeSlackNegLog_scaled_sourceGrad_dualLocalNorm_rangeInvHess_eq`,
 	moving the remaining §13.16 source-gradient tail into finite slack-range
 	coordinates for bounded-polytope estimates.
+	The range-tail consumer packet adds
+	`chewi1314_polytopeSlackNegLog_rangePullInvHess` and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeTailBudget`,
+	so the final §13.16 initialization now follows from a single closed-form
+	scaled source-tail bound in the slack-range metric.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

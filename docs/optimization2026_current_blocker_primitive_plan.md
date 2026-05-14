@@ -708,6 +708,13 @@ packet adds
 	packet should use this range-coordinate statement to prove the true
 	bounded-polytope source-tail estimate, rather than returning to the already
 	ruled-out positive-orthant source-radius or scaled-tail certificates.
+	The newest range-tail consumer packet adds
+	`chewi1314_polytopeSlackNegLog_rangePullInvHess` and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeTailBudget`.
+	It turns a closed-form scaled final source-tail bound in the slack-range
+	inverse-Hessian metric into the positive main-stage initialization
+	certificate, reusing the compiled source-start theorem.  The next packet is
+	therefore the actual bounded-polytope range-tail estimate.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

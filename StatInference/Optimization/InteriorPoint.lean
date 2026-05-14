@@ -25567,6 +25567,14 @@ noncomputable def chewi1314_polytopeSlackNegLog_rangeInvHess
       intro y hy v hv
       exact chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos a b hy hv)
 
+noncomputable def chewi1314_polytopeSlackNegLog_rangePullInvHess
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :
+    F -> F →L[ℝ] F :=
+  barrierAffinePreimageInvHessSurjective (polytopeSlackCLM a).rangeRestrict 0
+    (chewi1314_polytopeSlackNegLog_rangeInvHess a b)
+    (barrierAffinePreimageRangeRestrict_range_eq_top (polytopeSlackCLM a))
+
 theorem chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
     {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
@@ -25885,6 +25893,74 @@ theorem chewi1314_polytopeSlackNegLog_scaled_sourceGrad_dualLocalNorm_rangeInvHe
           (barrierAffineRangeGrad (polytopeSlackCLM a) b
             positiveOrthantNegLogGrad ((polytopeSlackCLM a).rangeRestrict x0)) := by
   rw [chewi1314_polytopeSlackNegLog_sourceGrad_dualLocalNorm_rangeInvHess_eq]
+
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeTailBudget
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F} {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : F →L[ℝ] F} {c0 nu : ℝ} {N : ℕ}
+    (hinv_factor : ∀ v : F,
+      inner ℝ v
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack
+            (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint coord) v‖ ^ (2 : ℕ))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq n))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hrangeTailBudget :
+      |(1 - c0 / Real.sqrt nu) ^ N| *
+          dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+            ((polytopeSlackCLM aRow).rangeRestrict (xseq N))
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict xbar0)) ≤
+        1 / 16) :
+    ∃ tMain : ℝ,
+      0 < tMain ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq N) ≤ 1 / 4 := by
+  have htail :
+      |(1 - c0 / Real.sqrt nu) ^ N| *
+          dualLocalNorm
+            (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+            (xseq N)
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad xbar0) ≤
+        1 / 16 := by
+    rw [chewi1314_polytopeSlackNegLog_rangePullInvHess]
+    rw [chewi1314_polytopeSlackNegLog_scaled_sourceGrad_dualLocalNorm_rangeInvHess_eq]
+    exact hrangeTailBudget
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBudget
+      (invHess := chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+      (phiGrad := barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogGrad)
+      (xbar0 := xbar0) (a := aObj) (xseq := xseq) (tseq := tseq)
+      (lambdaSeq := lambdaSeq) (coord := coord) (c0 := c0) (nu := nu)
+      (N := N) hinv_factor hx0 ht0 htstep hlambda0 hstep
+      hlambdaBudget htail
 
 /--
 Induction step for Chewi Example 13.14's finite-row logarithmic barrier.  A
