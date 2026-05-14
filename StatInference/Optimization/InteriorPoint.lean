@@ -21194,6 +21194,159 @@ theorem chewi1316_preliminaryPath_lambdaSeq_step_of_nextNewton_sqrtCoordFamilyMo
     (hlambda_succ_ge_eighth n)
 
 /--
+Correct-index source-start preliminary initialization with the sequence
+decrement step discharged internally from the next-parameter Newton update.
+The only remaining quantitative source-radius input is the summable
+next-parameter pre-Newton decrement budget.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordModel
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {invHess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {xbar0 a : E} {xseq : ℕ -> E}
+    {tseq stepBudget : ℕ -> ℝ} {sqrtCoord : E -> E ≃L[ℝ] E}
+    {c0 nu tailBound : ℝ}
+    (hs : Convex ℝ s)
+    (hxbar0 : xbar0 ∈ s)
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ s)
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hgrad_segment : ∀ n τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+        (hess (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+        (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+    (hhess_model : ∀ ⦃z : E⦄, z ∈ s ->
+      hess z =
+        (ContinuousLinearMap.adjoint (sqrtCoord z).toContinuousLinearMap).comp
+          (sqrtCoord z).toContinuousLinearMap)
+    (hinv_model : ∀ ⦃z : E⦄, z ∈ s ->
+      invHess z =
+        (sqrtCoord z).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtCoord z).symm.toContinuousLinearMap))
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq n))
+    (hpre_decrement_next : ∀ n : ℕ,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq n) ≤ stepBudget n)
+    (hstepBudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * stepBudget n) ≤ 1 / 2)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hdelta_le_c0 : c0 / Real.sqrt nu ≤ c0)
+    (hc0_le : c0 ≤ 1 / 200)
+    (hbar : SelfConcordantBarrierOn s hess phiGrad invHess thirdMixed (1 : ℝ) nu)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess_global : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed_global : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hbudget : 2 * Real.sqrt nu ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  let lambdaSeq : ℕ -> ℝ := fun n => if n = 0 then (1 / 4 : ℝ) else 1 / 8
+  have hlambda0 : (1 / 4 : ℝ) ≤ lambdaSeq 0 := by
+    simp [lambdaSeq]
+  have hlambda_le_quarter : ∀ n : ℕ, lambdaSeq n ≤ 1 / 4 := by
+    intro n
+    by_cases hn : n = 0
+    · simp [lambdaSeq, hn]
+    · simp [lambdaSeq, hn]
+      norm_num
+  have hlambda_succ_ge_eighth : ∀ n : ℕ, (1 / 8 : ℝ) ≤ lambdaSeq (n + 1) := by
+    intro n
+    simp [lambdaSeq]
+  have hlambdaBudget_succ : ∀ n : ℕ, lambdaSeq (n + 1) ≤ 1 / 8 := by
+    intro n
+    simp [lambdaSeq]
+  have hdelta_nonneg : 0 ≤ c0 / Real.sqrt nu :=
+    div_nonneg (le_of_lt hc0_pos) (le_of_lt hsqrt_pos)
+  have hdelta_le_one : c0 / Real.sqrt nu ≤ 1 :=
+    le_of_lt hdelta_lt_one
+  have hdelta_sqrt_le_c0 : (c0 / Real.sqrt nu) * Real.sqrt nu ≤ c0 := by
+    have hsqrt_ne : Real.sqrt nu ≠ 0 := ne_of_gt hsqrt_pos
+    have hmul : (c0 / Real.sqrt nu) * Real.sqrt nu = c0 := by
+      field_simp [hsqrt_ne]
+    exact le_of_eq hmul
+  have hdecrement_step : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1) :=
+    chewi1316_preliminaryPath_lambdaSeq_step_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (thirdMixed := thirdMixed) (phiGrad := phiGrad)
+      (invHess := invHess) (sqrtCoord := sqrtCoord)
+      (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+      (lambdaSeq := lambdaSeq) (delta := c0 / Real.sqrt nu)
+      (c0 := c0) (nu := nu) hs hxseq_mem hbar.self_concordant
+      hhess_cont hhess_global hmixed_global hgrad_segment
+      hhess_model hinv_model htstep hnewton_next hdelta_nonneg
+      hdelta_le_one hdelta_le_c0 hdelta_sqrt_le_c0
+      (fun n => hbar.gradient_bound (hxseq_mem n)) hc0_le
+      hlambda_le_quarter hlambda_succ_ge_eighth
+  have hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v) := by
+    intro z hz v hv
+    exact hessianQuadratic_pos_of_adjointSqrtCoord
+      (sqrtCoord z) (hhess_model hz) hv
+  have hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w := by
+    intro v w
+    have hright : ∀ u : E, hess xbar0 (invHess xbar0 u) = u :=
+      hessianRightInverse_of_adjointSqrtCoord_invHess
+        (H := hess xbar0) (invH := invHess xbar0)
+        (sqrtCoord := sqrtCoord xbar0)
+        (hhess_model hxbar0) (hinv_model hxbar0)
+    have hinv_factor : ∀ u : E,
+        inner ℝ u (invHess xbar0 u) =
+          ‖(ContinuousLinearMap.adjoint
+              (sqrtCoord xbar0).symm.toContinuousLinearMap) u‖ ^ (2 : ℕ) :=
+      fun u =>
+        inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse
+          (hess := hess) (invHess := invHess) (x := xbar0)
+          (coord := (sqrtCoord xbar0).symm.toContinuousLinearMap)
+          (sqrtH := (sqrtCoord xbar0).toContinuousLinearMap)
+          (by intro z; simp)
+          (hhess_model hxbar0) hright u
+    exact dualPrimalCauchy_of_adjointCoordSqrt
+      (hess := hess) (invHess := invHess) (x := xbar0)
+      (coord := (sqrtCoord xbar0).symm.toContinuousLinearMap)
+      (sqrtH := (sqrtCoord xbar0).toContinuousLinearMap)
+      (by intro step; simp) hinv_factor (hhess_model hxbar0)
+      (hbar.invHess_nonneg hxbar0)
+      (hbar.self_concordant.hess_nonneg hxbar0) v w
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (invHess := invHess) (thirdMixed := thirdMixed) (phiGrad := phiGrad)
+      (xbar0 := xbar0) (a := a) (xseq := xseq) (tseq := tseq)
+      (lambdaSeq := lambdaSeq) (stepBudget := stepBudget)
+      (sqrtCoord := fun N => sqrtCoord (xseq N))
+      (c0 := c0) (nu := nu) (tailBound := tailBound)
+      (fun N => hhess_model (hxseq_mem N))
+      (fun N => hinv_model (hxseq_mem N))
+      hs hxbar0 hx0 (fun N => hxseq_mem (N + 1)) ht0 htstep
+      hlambda0 hdecrement_step hlambdaBudget_succ hstepBudget
+      htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one hbar hess_pos
+      hhess_cont hhess_global hmixed_global hnewton_next
+      hpre_decrement_next hxbar0_cauchy hbudget
+
+/--
 Chewi Theorem 13.8 assembly from a unit bilinear estimate on the normalized
 Delta operator.  This leaves the remaining textbook work as the symmetric or
 bilinear Hessian-difference estimate, while reusing mathlib for the

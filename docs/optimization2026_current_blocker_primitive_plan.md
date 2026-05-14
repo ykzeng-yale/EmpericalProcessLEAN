@@ -572,6 +572,16 @@ packet adds
 	steps.  This formally rules out the naive constant pre-decrement
 	summability route and points the next blocker at a sharper preliminary
 	radius/telescoping argument or an analytical-center distance bound.
+	The correct-index source-start consumer now adds
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordModel`.
+	This theorem removes repeated caller plumbing: it uses the domain-wide
+	`sqrtCoord : E -> E ≃L[ℝ] E` model to build the sequence square-root data,
+	the source Cauchy bridge, Hessian strict positivity, and the internal
+	`lambdaSeq` decrement step with budgets `lambdaSeq 0 = 1/4` and
+	`lambdaSeq (n+1) = 1/8`.  It still leaves the real source gate explicit:
+	prove a summable next-parameter pre-Newton budget
+	`sum_{n<=N} 2 * stepBudget n <= 1/2`; do not replace it by the constant
+	pointwise budget ruled out above.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

@@ -436,6 +436,17 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  contradict the `1/2` source budget.  The live blocker is therefore not
 	  another wrapper around this route, but a sharper preliminary
 	  radius/telescoping argument or an analytical-center distance bound.
+	  The newest correct-index source-start consumer adds
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordModel`.
+	  It instantiates the internal residual budget sequence as `1/4` at the
+	  source start and `1/8` on successor indices, derives the decrement-step
+	  premise from
+	  `chewi1316_preliminaryPath_lambdaSeq_step_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
+	  and derives the source Cauchy/right-inverse data from the domain-wide
+	  adjoint-square model.  The remaining live quantitative hypothesis is still
+	  the genuinely nontrivial summable next-parameter pre-Newton decrement
+	  budget `sum 2 * stepBudget <= 1/2`; the old constant pointwise route is
+	  still ruled out by the incompatibility theorem.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

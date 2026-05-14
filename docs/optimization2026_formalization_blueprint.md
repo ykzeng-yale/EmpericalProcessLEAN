@@ -383,7 +383,15 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	prefix-sum interface when `c0 >= 0`; two steps already exceed the `1/2`
 	source budget.  The blueprint should now prefer a sharper preliminary
 	radius/telescoping argument or an analytical-center distance bound instead
-	of wrapping this constant budget route further.
+	of wrapping this constant budget route further.  The correct-index
+	source-start consumer
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordModel`
+	now internally supplies the piecewise residual budget sequence (`1/4` at
+	index zero, `1/8` after that), the next-Newton decrement-step premise, the
+	sequence square-root data, Hessian strict positivity, and the source Cauchy
+	bridge from the domain-wide adjoint-square model.  Future packets should
+	target the remaining summable next-parameter pre-Newton budget, not
+	re-thread those interface assumptions.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
