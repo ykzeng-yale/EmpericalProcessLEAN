@@ -655,6 +655,21 @@ packet adds
 	bound:
 	`|xseq N i / xbar0 i - 1| <= 1/(2*sqrt d)` for the selected positive
 	index `N`, together with the already-explicit log/count budgets for `M,N`.
+	The actual preliminary Newton scalar recurrence has now been checked
+	against this gate.  The new declarations
+	`scalar_newton_decreasing_parameter_step_lower`,
+	`chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_linear_lower`,
+	`chewi1316_selectedRelativeCoordRadiusHalf_forces_count_bound_of_preliminaryNextNewton`,
+	and
+	`chewi1316_selectedRelativeCoordRadiusHalf_and_count_force_logIndex_bound`
+	show that the recurrence itself forces linear relative-coordinate growth:
+	a selected relative-radius certificate at index `N`, combined with the
+	Chewi count condition, implies
+	`M * log 2 * sqrt d <= 1/2`.  Therefore the selected-source-radius route is
+	only viable in a very small finite window; for the textbook-scale log/count
+	choice, the exact §13.16 proof should switch to a moving-center/local-metric
+	argument or a different source-tail estimate rather than trying to prove
+	this selected relative-radius certificate.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

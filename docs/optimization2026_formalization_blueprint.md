@@ -455,6 +455,18 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	The next exact-source §13.16 target should be the selected scalar recurrence
 	bound `|xseq N i / xbar0 i - 1| <= 1/(2*sqrt d)` for a positive chosen
 	index `N` satisfying the existing log/count budgets.
+	The newest scalar route check proves this target is not the right
+	textbook-scale route without an additional small-window assumption:
+	`scalar_newton_decreasing_parameter_step_lower`,
+	`chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_linear_lower`,
+	`chewi1316_selectedRelativeCoordRadiusHalf_forces_count_bound_of_preliminaryNextNewton`,
+	and
+	`chewi1316_selectedRelativeCoordRadiusHalf_and_count_force_logIndex_bound`
+	show that the actual recurrence plus selected radius and count budget
+	implies `M * log 2 * sqrt d <= 1/2`.  The next §13.16 proof packet should
+	therefore seek a moving-center/local-metric certificate or a different
+	source-tail estimate, not another all-prefix or selected source-radius
+	wrapper for the same analytical center.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

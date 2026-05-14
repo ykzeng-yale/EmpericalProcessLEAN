@@ -509,6 +509,19 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  The remaining positive-orthant radius task is finite-window scalar:
 	  prove `|xseq N i / xbar0 i - 1| <= 1/(2*sqrt d)` for the selected
 	  positive index `N` and combine it with the explicit log/count budgets.
+	  The newest scalar route check adds
+	  `scalar_newton_decreasing_parameter_step_lower`,
+	  `chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_linear_lower`,
+	  `chewi1316_selectedRelativeCoordRadiusHalf_forces_count_bound_of_preliminaryNextNewton`,
+	  and
+	  `chewi1316_selectedRelativeCoordRadiusHalf_and_count_force_logIndex_bound`.
+	  These prove for the actual preliminary Newton recurrence that selected
+	  relative-radius plus the count budget forces
+	  `M * log 2 * sqrt d <= 1/2`.  This is now a verified proof-route
+	  obstruction: the selected source-radius certificate cannot support the
+	  textbook-scale log/count choice except in a tiny window, so future §13.16
+	  work should move to a moving-center/local-metric argument or another
+	  source-tail estimate.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

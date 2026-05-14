@@ -24083,6 +24083,128 @@ theorem chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_eq
     hxseq_mem hnewton_next n i]
   field_simp [hxi0]
 
+theorem scalar_newton_decreasing_parameter_step_lower
+    {y t : ℕ -> ℝ} {delta : ℝ}
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_one : delta ≤ 1)
+    (hy0 : y 0 = 1)
+    (ht0 : t 0 = 1)
+    (htstep : ∀ n : ℕ, t (n + 1) = (1 - delta) * t n)
+    (hystep : ∀ n : ℕ, y (n + 1) = 2 * y n - t (n + 1) * (y n) ^ (2 : ℕ)) :
+    ∀ n : ℕ, y (n + 1) ≥ y n + delta := by
+  have hq_nonneg : 0 ≤ 1 - delta := by
+    linarith
+  have hq_le_one : 1 - delta ≤ 1 := by
+    linarith
+  have hstate : ∀ n : ℕ, 1 ≤ y n ∧ 0 ≤ t n * y n ∧ t n * y n ≤ 1 := by
+    intro n
+    induction n with
+    | zero =>
+        simp [hy0, ht0]
+    | succ n ih =>
+        rcases ih with ⟨hy_ge, hz_nonneg, hz_le_one⟩
+        have hu_eq :
+            t (n + 1) * y n = (1 - delta) * (t n * y n) := by
+          rw [htstep n]
+          ring
+        have hu_nonneg : 0 ≤ t (n + 1) * y n := by
+          rw [hu_eq]
+          exact mul_nonneg hq_nonneg hz_nonneg
+        have hu_le_q : t (n + 1) * y n ≤ 1 - delta := by
+          rw [hu_eq]
+          have hmul := mul_le_mul_of_nonneg_left hz_le_one hq_nonneg
+          simpa using hmul
+        have hu_le_one : t (n + 1) * y n ≤ 1 := hu_le_q.trans hq_le_one
+        have hy_succ_alt :
+            y (n + 1) = y n + y n * (1 - t (n + 1) * y n) := by
+          rw [hystep n]
+          ring
+        have hy_succ_factor :
+            y (n + 1) = y n * (2 - t (n + 1) * y n) := by
+          rw [hystep n]
+          ring
+        have hy_succ_ge_one : 1 ≤ y (n + 1) := by
+          have hprod_nonneg :
+              0 ≤ y n * (1 - t (n + 1) * y n) :=
+            mul_nonneg (by linarith) (by linarith)
+          rw [hy_succ_alt]
+          nlinarith
+        have hz_succ_eq :
+            t (n + 1) * y (n + 1) =
+              (t (n + 1) * y n) * (2 - t (n + 1) * y n) := by
+          rw [hy_succ_factor]
+          ring
+        have hz_succ_nonneg : 0 ≤ t (n + 1) * y (n + 1) := by
+          rw [hz_succ_eq]
+          exact mul_nonneg hu_nonneg (by linarith)
+        have hz_succ_le_one : t (n + 1) * y (n + 1) ≤ 1 := by
+          rw [hz_succ_eq]
+          nlinarith [sq_nonneg (t (n + 1) * y n - 1)]
+        exact ⟨hy_succ_ge_one, hz_succ_nonneg, hz_succ_le_one⟩
+  intro n
+  rcases hstate n with ⟨hy_ge, hz_nonneg, hz_le_one⟩
+  have hu_eq :
+      t (n + 1) * y n = (1 - delta) * (t n * y n) := by
+    rw [htstep n]
+    ring
+  have hu_le_q : t (n + 1) * y n ≤ 1 - delta := by
+    rw [hu_eq]
+    have hmul := mul_le_mul_of_nonneg_left hz_le_one hq_nonneg
+    simpa using hmul
+  have hgap_ge_delta : delta ≤ 1 - t (n + 1) * y n := by
+    linarith
+  have hy_succ_alt :
+      y (n + 1) = y n + y n * (1 - t (n + 1) * y n) := by
+    rw [hystep n]
+    ring
+  have hone_minus_nonneg : 0 ≤ 1 - t (n + 1) * y n := by
+    linarith
+  have hmul :=
+    mul_le_mul_of_nonneg_right hy_ge hone_minus_nonneg
+  rw [hy_succ_alt]
+  nlinarith
+
+theorem chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_linear_lower
+    {d : ℕ}
+    {xbar0 : EuclideanSpace ℝ (Fin d)}
+    {xseq : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {tseq : ℕ -> ℝ}
+    {c0 : ℝ} (i : Fin d)
+    (hxbar0 : xbar0 ∈ positiveOrthant (d := d))
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ positiveOrthant (d := d))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (d : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 (tseq (n + 1)))
+          positiveOrthantNegLogInvHessCLM (xseq n))
+    (hc0_nonneg : 0 ≤ c0)
+    (hsqrt_pos : 0 < Real.sqrt (d : ℝ))
+    (hdelta_lt_one : c0 / Real.sqrt (d : ℝ) < 1) :
+    ∀ n : ℕ,
+      xseq (n + 1) i / xbar0 i ≥
+        xseq n i / xbar0 i + c0 / Real.sqrt (d : ℝ) := by
+  have hxbar0_ne : xbar0 i ≠ 0 := (hxbar0 i).ne'
+  exact
+    scalar_newton_decreasing_parameter_step_lower
+      (y := fun n : ℕ => xseq n i / xbar0 i) (t := tseq)
+      (delta := c0 / Real.sqrt (d : ℝ))
+      (div_nonneg hc0_nonneg hsqrt_pos.le) (le_of_lt hdelta_lt_one)
+      (by
+        change xseq 0 i / xbar0 i = 1
+        rw [hx0]
+        exact div_self hxbar0_ne)
+      ht0 htstep
+      (by
+        intro n
+        simpa using
+          chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_eq
+            (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+            hxbar0 hxseq_mem hnewton_next n i)
+
 theorem scalar_sequence_linear_lower_bound_of_step
     {y : ℕ -> ℝ} {delta : ℝ}
     (hstep : ∀ n : ℕ, y (n + 1) ≥ y n + delta) :
@@ -24154,6 +24276,95 @@ theorem chewi1316_relativeCoordRadiusHalf_forces_count_bound_of_linear_growth
     field_simp [hsqrt_pos.ne']
   rw [hleft, hright] at hmul
   simpa [Nat.cast_add, Nat.cast_one, one_div, mul_comm, mul_left_comm, mul_assoc] using hmul
+
+theorem chewi1316_selectedRelativeCoordRadiusHalf_forces_count_bound_of_preliminaryNextNewton
+    {d : ℕ}
+    {xbar0 : EuclideanSpace ℝ (Fin d)}
+    {xseq : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {tseq : ℕ -> ℝ}
+    {c0 : ℝ} (i : Fin d) (N : ℕ)
+    (hxbar0 : xbar0 ∈ positiveOrthant (d := d))
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ positiveOrthant (d := d))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (d : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 (tseq (n + 1)))
+          positiveOrthantNegLogInvHessCLM (xseq n))
+    (hc0_nonneg : 0 ≤ c0)
+    (hsqrt_pos : 0 < Real.sqrt (d : ℝ))
+    (hdelta_lt_one : c0 / Real.sqrt (d : ℝ) < 1)
+    (hrelative_radius_N :
+      |xseq N i / xbar0 i - 1| ≤ 1 / (2 * Real.sqrt (d : ℝ))) :
+    (N : ℝ) * c0 ≤ 1 / 2 := by
+  have hxbar0_ne : xbar0 i ≠ 0 := (hxbar0 i).ne'
+  have hstep_lower :
+      ∀ n : ℕ,
+        xseq (n + 1) i / xbar0 i ≥
+          xseq n i / xbar0 i + c0 / Real.sqrt (d : ℝ) :=
+    chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_linear_lower
+      (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+      (c0 := c0) i hxbar0 hxseq_mem hx0 ht0 htstep hnewton_next
+      hc0_nonneg hsqrt_pos hdelta_lt_one
+  have hstart :
+      (fun n : ℕ => xseq n i / xbar0 i) 0 = 1 := by
+    change xseq 0 i / xbar0 i = 1
+    rw [hx0]
+    exact div_self hxbar0_ne
+  have hraw :
+      (N : ℝ) * (c0 / Real.sqrt (d : ℝ)) ≤
+        1 / (2 * Real.sqrt (d : ℝ)) :=
+    scalar_radius_bound_forces_linear_step_count
+      (y := fun n : ℕ => xseq n i / xbar0 i)
+      (delta := c0 / Real.sqrt (d : ℝ))
+      (R := 1 / (2 * Real.sqrt (d : ℝ)))
+      (N := N) hstep_lower hstart hrelative_radius_N
+  have hmul := mul_le_mul_of_nonneg_right hraw hsqrt_pos.le
+  have hleft :
+      (N : ℝ) * (c0 / Real.sqrt (d : ℝ)) * Real.sqrt (d : ℝ) =
+        (N : ℝ) * c0 := by
+    field_simp [hsqrt_pos.ne']
+  have hright :
+      (1 / (2 * Real.sqrt (d : ℝ))) * Real.sqrt (d : ℝ) =
+        (1 / 2 : ℝ) := by
+    field_simp [hsqrt_pos.ne']
+  rw [hleft, hright] at hmul
+  simpa [one_div, mul_comm, mul_left_comm, mul_assoc] using hmul
+
+theorem chewi1316_selectedRelativeCoordRadiusHalf_and_count_force_logIndex_bound
+    {d : ℕ}
+    {xbar0 : EuclideanSpace ℝ (Fin d)}
+    {xseq : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {tseq : ℕ -> ℝ}
+    {c0 : ℝ} (i : Fin d) {N Midx : ℕ}
+    (hxbar0 : xbar0 ∈ positiveOrthant (d := d))
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ positiveOrthant (d := d))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (d : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 (tseq (n + 1)))
+          positiveOrthantNegLogInvHessCLM (xseq n))
+    (hc0_nonneg : 0 ≤ c0)
+    (hsqrt_pos : 0 < Real.sqrt (d : ℝ))
+    (hdelta_lt_one : c0 / Real.sqrt (d : ℝ) < 1)
+    (hrelative_radius_N :
+      |xseq N i / xbar0 i - 1| ≤ 1 / (2 * Real.sqrt (d : ℝ)))
+    (hcount :
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (d : ℝ) ≤
+        (N : ℝ) * c0) :
+    (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (d : ℝ) ≤ 1 / 2 :=
+  hcount.trans
+    (chewi1316_selectedRelativeCoordRadiusHalf_forces_count_bound_of_preliminaryNextNewton
+      (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+      (c0 := c0) i N hxbar0 hxseq_mem hx0 ht0 htstep hnewton_next
+      hc0_nonneg hsqrt_pos hdelta_lt_one hrelative_radius_N)
 
 set_option maxHeartbeats 4000000 in
 /--
