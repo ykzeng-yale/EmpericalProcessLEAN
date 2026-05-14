@@ -12037,6 +12037,58 @@ theorem sourceRadius_le_of_sum_steps_of_adjointSqrt
     _ ≤ radiusBound :=
       hsum_bound
 
+/--
+Finite-sum triangle inequality for the supplied local norm from symmetry and
+strict positivity of the Hessian at the base point.  This is the no-square-root
+counterpart of `localNorm_sum_le_sum_localNorm_of_adjointSqrt`.
+-/
+theorem localNorm_sum_le_sum_localNorm_of_hessian_pos
+    {ι : Type*} (s : Finset ι)
+    {hess : E -> E →L[ℝ] E} {x : E}
+    (hsymm : ∀ u v : E, inner ℝ (hess x u) v = inner ℝ u (hess x v))
+    (hpos : ∀ {w : E}, w ≠ 0 -> 0 < inner ℝ w (hess x w))
+    (step : ι -> E) :
+    localNorm hess x (∑ i ∈ s, step i) ≤
+      ∑ i ∈ s, localNorm hess x (step i) := by
+  classical
+  refine Finset.induction_on s ?_ ?_
+  · simp [localNorm_zero]
+  · intro a s ha ih
+    rw [Finset.sum_insert ha, Finset.sum_insert ha]
+    exact
+      (localNorm_add_le_of_hessian_pos (hess := hess) (x := x)
+        hsymm hpos (step a) (∑ i ∈ s, step i)).trans
+        (by
+          simpa [add_comm, add_left_comm, add_assoc] using
+            (add_le_add_left ih (localNorm hess x (step a))))
+
+/--
+Source-radius bound from a supplied telescoping identity and cumulative
+step-local-norm budget, using only source Hessian symmetry and positivity.
+-/
+theorem sourceRadius_le_of_sum_steps_of_hessian_pos
+    {hess : E -> E →L[ℝ] E} {xbar0 xN : E}
+    {steps : ℕ -> E} {stepBound : ℕ -> ℝ} {N : ℕ} {radiusBound : ℝ}
+    (hsymm : ∀ u v : E,
+      inner ℝ (hess xbar0 u) v = inner ℝ u (hess xbar0 v))
+    (hpos : ∀ {w : E}, w ≠ 0 -> 0 < inner ℝ w (hess xbar0 w))
+    (htelescope : xN - xbar0 = ∑ n ∈ Finset.range (N + 1), steps n)
+    (hstep_bound : ∀ n, n ∈ Finset.range (N + 1) ->
+      localNorm hess xbar0 (steps n) ≤ stepBound n)
+    (hsum_bound : (∑ n ∈ Finset.range (N + 1), stepBound n) ≤ radiusBound) :
+    localNorm hess xbar0 (xN - xbar0) ≤ radiusBound := by
+  calc
+    localNorm hess xbar0 (xN - xbar0) =
+        localNorm hess xbar0 (∑ n ∈ Finset.range (N + 1), steps n) := by
+      rw [htelescope]
+    _ ≤ ∑ n ∈ Finset.range (N + 1), localNorm hess xbar0 (steps n) :=
+      localNorm_sum_le_sum_localNorm_of_hessian_pos
+        (s := Finset.range (N + 1)) hsymm hpos steps
+    _ ≤ ∑ n ∈ Finset.range (N + 1), stepBound n :=
+      Finset.sum_le_sum hstep_bound
+    _ ≤ radiusBound :=
+      hsum_bound
+
 omit [InnerProductSpace ℝ E] in
 /--
 Vector-valued forward telescope: if `steps n = x_{n+1} - x_n`, then the
@@ -12260,6 +12312,61 @@ theorem sourceRadius_successor_half_of_newtonSteps_sumLocalNorm_of_adjointSqrt
     hsum_local
 
 /--
+Radius-half specialization from the additive update recurrence, stated
+directly in terms of cumulative source-local norms and using only source
+Hessian symmetry/positivity.
+-/
+theorem sourceRadius_successor_half_of_add_steps_sumLocalNorm_of_hessian_pos
+    {hess : E -> E →L[ℝ] E} {xbar0 : E} {xseq steps : ℕ -> E}
+    (hsymm : ∀ u v : E,
+      inner ℝ (hess xbar0 u) v = inner ℝ u (hess xbar0 v))
+    (hpos : ∀ {w : E}, w ≠ 0 -> 0 < inner ℝ w (hess xbar0 w))
+    (hx0 : xseq 0 = xbar0)
+    (hstep : ∀ n : ℕ, xseq (n + 1) = xseq n + steps n)
+    (hsum_local : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), localNorm hess xbar0 (steps n)) ≤
+        1 / 2) :
+    ∀ N : ℕ, localNorm hess xbar0 (xseq (N + 1) - xbar0) ≤ 1 / 2 :=
+  fun N =>
+    sourceRadius_le_of_sum_steps_of_hessian_pos
+      (hess := hess) (xbar0 := xbar0) (xN := xseq (N + 1))
+      (steps := steps) (stepBound := fun n => localNorm hess xbar0 (steps n))
+      (N := N) (radiusBound := (1 / 2 : ℝ)) hsymm hpos
+      (sequence_sub_initial_eq_sum_steps_of_succ_eq_add hx0 hstep N)
+      (by
+        intro _n _hn
+        rfl)
+      (hsum_local N)
+
+/--
+Radius-half specialization for a sequence following supplied Newton steps,
+using only source Hessian symmetry/positivity.
+-/
+theorem sourceRadius_successor_half_of_newtonSteps_sumLocalNorm_of_hessian_pos
+    {hess : E -> E →L[ℝ] E} {xbar0 : E} {xseq : ℕ -> E}
+    {gradSeq : ℕ -> E -> E} {invHess : E -> E →L[ℝ] E}
+    (hsymm : ∀ u v : E,
+      inner ℝ (hess xbar0 u) v = inner ℝ u (hess xbar0 v))
+    (hpos : ∀ {w : E}, w ≠ 0 -> 0 < inner ℝ w (hess xbar0 w))
+    (hx0 : xseq 0 = xbar0)
+    (hnewton : ∀ n : ℕ,
+      xseq (n + 1) = newtonStep (gradSeq n) invHess (xseq n))
+    (hsum_local : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1),
+          localNorm hess xbar0
+            (newtonStep (gradSeq n) invHess (xseq n) - xseq n)) ≤ 1 / 2) :
+    ∀ N : ℕ, localNorm hess xbar0 (xseq (N + 1) - xbar0) ≤ 1 / 2 :=
+  sourceRadius_successor_half_of_add_steps_sumLocalNorm_of_hessian_pos
+    (hess := hess) (xbar0 := xbar0) (xseq := xseq)
+    (steps := fun n => newtonStep (gradSeq n) invHess (xseq n) - xseq n)
+    hsymm hpos hx0
+    (by
+      intro n
+      rw [hnewton n]
+      rw [add_comm, sub_add_cancel])
+    hsum_local
+
+/--
 If the current point is within the source Dikin half-radius, Chewi Lemma 13.6
 transports current local norms back to the source metric with factor `2`.
 -/
@@ -12403,6 +12510,137 @@ theorem sourceLocalNorm_sum_newtonSteps_le_half_of_currentLocalNorm_budget
   change (∑ n ∈ Finset.range (N + 1), localNorm hess xbar0 (step n)) ≤ 1 / 2
   exact
     (Finset.sum_le_sum (fun n _hn => hstep_bound n)).trans (hbudget N)
+
+/--
+No-square-root version of the inductive source-metric budget for a Newton
+trajectory.  The source Hessian factorization is replaced by symmetry and
+strict positivity at the source point.
+-/
+theorem sourceLocalNorm_sum_newtonSteps_le_half_of_currentLocalNorm_budget_hessian_pos
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {xbar0 : E} {xseq : ℕ -> E}
+    {gradSeq : ℕ -> E -> E} {invHess : E -> E →L[ℝ] E}
+    {lambdaSeq : ℕ -> ℝ}
+    (hsymm_source : ∀ u v : E,
+      inner ℝ (hess xbar0 u) v = inner ℝ u (hess xbar0 v))
+    (hpos_source : ∀ {v : E}, v ≠ 0 -> 0 < inner ℝ v (hess xbar0 v))
+    (hs : Convex ℝ s) (hxbar0 : xbar0 ∈ s) (hx0 : xseq 0 = xbar0)
+    (hxseq_succ : ∀ N : ℕ, xseq (N + 1) ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess_global : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed_global : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hnewton : ∀ n : ℕ,
+      xseq (n + 1) = newtonStep (gradSeq n) invHess (xseq n))
+    (hcurrent : ∀ n : ℕ,
+      localNorm hess (xseq n)
+        (newtonStep (gradSeq n) invHess (xseq n) - xseq n) ≤ lambdaSeq n)
+    (hbudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * lambdaSeq n) ≤ 1 / 2) :
+    ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1),
+          localNorm hess xbar0
+            (newtonStep (gradSeq n) invHess (xseq n) - xseq n)) ≤ 1 / 2 := by
+  let step : ℕ -> E :=
+    fun n => newtonStep (gradSeq n) invHess (xseq n) - xseq n
+  have hxseq_mem : ∀ n : ℕ, xseq n ∈ s := by
+    intro n
+    cases n with
+    | zero =>
+        rw [hx0]
+        exact hxbar0
+    | succ n =>
+        exact hxseq_succ n
+  have hupdate : ∀ n : ℕ, xseq (n + 1) = xseq n + step n := by
+    intro n
+    dsimp [step]
+    rw [hnewton n]
+    rw [add_comm, sub_add_cancel]
+  have hstep_bound :
+      ∀ n : ℕ, localNorm hess xbar0 (step n) ≤ 2 * lambdaSeq n := by
+    intro n
+    exact Nat.strong_induction_on n (fun n ih => by
+      have hradius : localNorm hess xbar0 (xseq n - xbar0) ≤ 1 / 2 := by
+        cases n with
+        | zero =>
+            rw [hx0]
+            simpa using
+              (show localNorm hess xbar0 (xbar0 - xbar0) ≤ (1 / 2 : ℝ) by
+                simp [localNorm_zero])
+        | succ k =>
+            exact
+              sourceRadius_le_of_sum_steps_of_hessian_pos
+                (hess := hess) (xbar0 := xbar0) (xN := xseq (k + 1))
+                (steps := step)
+                (stepBound := fun i => 2 * lambdaSeq i) (N := k)
+                (radiusBound := (1 / 2 : ℝ)) hsymm_source hpos_source
+                (sequence_sub_initial_eq_sum_steps_of_succ_eq_add
+                  (xbar0 := xbar0) (xseq := xseq) (steps := step) hx0 hupdate k)
+                (by
+                  intro i hi
+                  exact ih i (Finset.mem_range.mp hi))
+                (hbudget k)
+      have hsource_current :
+          localNorm hess xbar0 (step n) ≤ 2 * localNorm hess (xseq n) (step n) :=
+        localNorm_source_le_two_current_of_sourceRadius_half
+          (s := s) (hess := hess) (hessDeriv := hessDeriv)
+          (thirdMixed := thirdMixed) (xbar0 := xbar0) (x := xseq n)
+          (v := step n) hs hxbar0 (hxseq_mem n) hsc hess_pos hhess_cont
+          hhess_global hmixed_global hradius
+      exact hsource_current.trans
+        (mul_le_mul_of_nonneg_left
+          (by simpa [step] using hcurrent n) (by norm_num : (0 : ℝ) ≤ 2)))
+  intro N
+  change (∑ n ∈ Finset.range (N + 1), localNorm hess xbar0 (step n)) ≤ 1 / 2
+  exact
+    (Finset.sum_le_sum (fun n _hn => hstep_bound n)).trans (hbudget N)
+
+/--
+No-square-root current-local budget route all the way to the radius-half
+successor certificate.
+-/
+theorem sourceRadius_successor_half_of_newtonSteps_currentLocalNorm_budget_hessian_pos
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {xbar0 : E} {xseq : ℕ -> E}
+    {gradSeq : ℕ -> E -> E} {invHess : E -> E →L[ℝ] E}
+    {lambdaSeq : ℕ -> ℝ}
+    (hsymm_source : ∀ u v : E,
+      inner ℝ (hess xbar0 u) v = inner ℝ u (hess xbar0 v))
+    (hpos_source : ∀ {v : E}, v ≠ 0 -> 0 < inner ℝ v (hess xbar0 v))
+    (hs : Convex ℝ s) (hxbar0 : xbar0 ∈ s) (hx0 : xseq 0 = xbar0)
+    (hxseq_succ : ∀ N : ℕ, xseq (N + 1) ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess_global : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed_global : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hnewton : ∀ n : ℕ,
+      xseq (n + 1) = newtonStep (gradSeq n) invHess (xseq n))
+    (hcurrent : ∀ n : ℕ,
+      localNorm hess (xseq n)
+        (newtonStep (gradSeq n) invHess (xseq n) - xseq n) ≤ lambdaSeq n)
+    (hbudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * lambdaSeq n) ≤ 1 / 2) :
+    ∀ N : ℕ, localNorm hess xbar0 (xseq (N + 1) - xbar0) ≤ 1 / 2 :=
+  sourceRadius_successor_half_of_newtonSteps_sumLocalNorm_of_hessian_pos
+    (hess := hess) (xbar0 := xbar0) (xseq := xseq)
+    (gradSeq := gradSeq) (invHess := invHess) hsymm_source hpos_source
+    hx0 hnewton
+    (sourceLocalNorm_sum_newtonSteps_le_half_of_currentLocalNorm_budget_hessian_pos
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (thirdMixed := thirdMixed) (xbar0 := xbar0) (xseq := xseq)
+      (gradSeq := gradSeq) (invHess := invHess) (lambdaSeq := lambdaSeq)
+      hsymm_source hpos_source hs hxbar0 hx0 hxseq_succ hsc hess_pos
+      hhess_cont hhess_global hmixed_global hnewton hcurrent hbudget)
 
 /--
 An adjoint-square Hessian factorization is symmetric.
@@ -26572,6 +26810,224 @@ theorem chewi1316_polytopeSlackNegLog_rangeRestrict_successor_mem_of_preliminary
         simp [hx0])
       hnewton_next_range hpre_decrement_next_range hstepBudget
 
+set_option maxHeartbeats 800000 in
+/--
+Source-radius-half certificate for a finite-row slack-range preliminary Newton
+sequence, derived directly from the next-parameter pre-decrement summability
+budget.  This is the no-square-root route: the source Hessian triangle
+inequality uses symmetry and strict positivity at `xbar0Range`.
+-/
+theorem chewi1316_polytopeSlackNegLog_rangeSourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0Range : (polytopeSlackCLM aRow).range}
+    {xseqRange : ℕ -> (polytopeSlackCLM aRow).range}
+    {tseq stepBudget : ℕ -> ℝ}
+    (hxbar0Range :
+      xbar0Range ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hx0 : xseqRange 0 = xbar0Range)
+    (hnewton_next : ∀ n : ℕ,
+      xseqRange (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0Range (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          (xseqRange n))
+    (hpre_decrement_next : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0Range (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          (xseqRange n) ≤ stepBudget n)
+    (hstepBudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * stepBudget n) ≤ 1 / 2) :
+    ∀ N : ℕ,
+      localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          xbar0Range (xseqRange (N + 1) - xbar0Range) ≤ 1 / 2 := by
+  let sRange : Set (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+      (positiveOrthant (d := m))
+  let rangeHess :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range →L[ℝ]
+          (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogHessCLM
+  let rangeGrad :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogGrad
+  let rangeInvHess :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range →L[ℝ]
+          (polytopeSlackCLM aRow).range :=
+    chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack
+  let rangeHessDeriv :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range →L[ℝ]
+          ((polytopeSlackCLM aRow).range →L[ℝ]
+            (polytopeSlackCLM aRow).range) :=
+    chewi1314_polytopeSlackNegLog_rangeHessDeriv aRow bSlack
+  let rangeThird :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range ->
+          (polytopeSlackCLM aRow).range -> ℝ :=
+    barrierAffineRangeThirdMixed (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogThirdMixed
+  have hsRange : Convex ℝ sRange := by
+    simpa [sRange] using
+      convex_barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        convex_positiveOrthant
+  have hxseq_succ : ∀ N : ℕ, xseqRange (N + 1) ∈ sRange := by
+    intro N
+    simpa [sRange] using
+      chewi1316_polytopeSlackNegLog_range_successor_mem_of_preliminaryNextNewtonSteps_preDecrementBudget
+        (aRow := aRow) (bSlack := bSlack) (xbar0Range := xbar0Range)
+        (xseqRange := xseqRange) (tseq := tseq) (stepBudget := stepBudget)
+        hxbar0Range hx0 hnewton_next hpre_decrement_next hstepBudget N
+  have hxseq_mem : ∀ n : ℕ, xseqRange n ∈ sRange := by
+    intro n
+    cases n with
+    | zero =>
+        simpa [sRange, hx0] using hxbar0Range
+    | succ n =>
+        exact hxseq_succ n
+  have hcurrent : ∀ n : ℕ,
+      localNorm rangeHess (xseqRange n)
+        (newtonStep
+            (preliminaryPathGrad rangeGrad xbar0Range (tseq (n + 1)))
+            rangeInvHess (xseqRange n) -
+          xseqRange n) ≤ stepBudget n := by
+    intro n
+    have hnorm :
+        localNorm rangeHess (xseqRange n)
+          (newtonStep
+              (preliminaryPathGrad rangeGrad xbar0Range (tseq (n + 1)))
+              rangeInvHess (xseqRange n) -
+            xseqRange n) =
+          newtonDecrement
+            (preliminaryPathGrad rangeGrad xbar0Range (tseq (n + 1)))
+            rangeInvHess (xseqRange n) := by
+      exact
+        localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse
+          (hess := rangeHess)
+          (grad := preliminaryPathGrad rangeGrad xbar0Range (tseq (n + 1)))
+          (invHess := rangeInvHess) (x := xseqRange n)
+          (by
+            intro v
+            simpa [sRange, rangeHess, rangeInvHess] using
+              chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
+                aRow bSlack (by simpa [sRange] using hxseq_mem n) v)
+    simpa [rangeGrad, rangeInvHess, hnorm] using hpre_decrement_next n
+  exact
+    sourceRadius_successor_half_of_newtonSteps_currentLocalNorm_budget_hessian_pos
+      (s := sRange) (hess := rangeHess) (hessDeriv := rangeHessDeriv)
+      (thirdMixed := rangeThird) (xbar0 := xbar0Range)
+      (xseq := xseqRange)
+      (gradSeq := fun n =>
+        preliminaryPathGrad rangeGrad xbar0Range (tseq (n + 1)))
+      (invHess := rangeInvHess) (lambdaSeq := stepBudget)
+      (by
+        intro u v
+        simpa [rangeHess] using
+          chewi1314_polytopeSlackNegLog_rangeHess_symmetric
+            aRow bSlack hxbar0Range u v)
+      (by
+        intro v hv
+        simpa [rangeHess] using
+          chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos
+            aRow bSlack hxbar0Range hv)
+      hsRange (by simpa [sRange] using hxbar0Range) hx0 hxseq_succ
+      (by
+        simpa [sRange, rangeHess, rangeThird, barrierAffineRangeSet,
+          barrierAffineRangeHess, barrierAffineRangeThirdMixed,
+          barrierAffinePreimageSet, barrierAffinePreimageThirdMixed] using
+          ((positiveOrthantNegLog_selfConcordantBarrierOn
+            (d := m)).self_concordant.affinePreimage
+              (A := (polytopeSlackCLM aRow).range.subtypeL) (b := bSlack)))
+      (by
+        intro z hz v hv
+        simpa [sRange, rangeHess] using
+          chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos
+            aRow bSlack (by simpa [sRange] using hz) hv)
+      (by
+        simpa [sRange, rangeHess] using
+          chewi1314_polytopeSlackNegLog_rangeHess_continuousOn aRow bSlack)
+      (by
+        intro z hz
+        simpa [sRange, rangeHess, rangeHessDeriv] using
+          chewi1314_polytopeSlackNegLog_rangeHess_hasFDerivAt
+            aRow bSlack (by simpa [sRange] using hz))
+      (by
+        intro z hz aDir v
+        simpa [sRange, rangeHessDeriv, rangeThird] using
+          chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner
+            aRow bSlack z aDir v)
+      (by
+        intro n
+        simpa [rangeGrad, rangeInvHess] using hnewton_next n)
+      hcurrent hstepBudget
+
+/--
+Source-space statement of the no-factor range source-radius-half certificate.
+-/
+theorem chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq stepBudget : ℕ -> ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (hnewton_next_range : ∀ n : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq (n + 1)) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+            (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq n)))
+    (hpre_decrement_next_range : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+            (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq n)) ≤
+        stepBudget n)
+    (hstepBudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * stepBudget n) ≤ 1 / 2) :
+    ∀ N : ℕ,
+      localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq (N + 1)) -
+            (polytopeSlackCLM aRow).rangeRestrict xbar0) ≤ 1 / 2 := by
+  exact
+    chewi1316_polytopeSlackNegLog_rangeSourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor
+      (aRow := aRow) (bSlack := bSlack)
+      (xbar0Range := (polytopeSlackCLM aRow).rangeRestrict xbar0)
+      (xseqRange := fun n => (polytopeSlackCLM aRow).rangeRestrict (xseq n))
+      (tseq := tseq) (stepBudget := stepBudget)
+      hxbar0Range
+      (by
+        simp [hx0])
+      hnewton_next_range hpre_decrement_next_range hstepBudget
+
 theorem chewi1314_polytopeSlackNegLog_range_sourceCauchy_of_adjointSqrtCoord
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
     {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
@@ -28711,6 +29167,105 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       hxbar0Range hx0 hxseq_succ_range ht0 htstep hlambda0 hstep
       hlambdaBudget_succ hradius_half_range htailBound_pos hc0_pos
       hsqrt_pos hdelta_lt_one hbudget
+
+/--
+Finite-row polytope source-start initialization from only the range
+preliminary-next-Newton recurrence, its summable next pre-decrement budget,
+and the scalar tail/lambda budgets.  The no-factor source-radius-half
+certificate is proved internally from the same range Newton data, so it is no
+longer a caller-facing gate.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps_preDecrementBudget
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq lambdaSeq stepBudget : ℕ -> ℝ}
+    {c0 tailBound : ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (m : ℝ)) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq n))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget_succ : ∀ N, lambdaSeq (N + 1) ≤ 1 / 8)
+    (hnewton_next_range : ∀ n : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq (n + 1)) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+            (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq n)))
+    (hpre_decrement_next_range : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+            (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq n)) ≤
+        stepBudget n)
+    (hstepBudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * stepBudget n) ≤ 1 / 2)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt (m : ℝ))
+    (hdelta_lt_one : c0 / Real.sqrt (m : ℝ) < 1)
+    (hbudget : 2 * Real.sqrt (m : ℝ) ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq N) ≤ 1 / 4 := by
+  have hradius_half_range : ∀ N : ℕ,
+      localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq (N + 1)) -
+            (polytopeSlackCLM aRow).rangeRestrict xbar0) ≤ 1 / 2 :=
+    chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (stepBudget := stepBudget)
+      hxbar0Range hx0 hnewton_next_range hpre_decrement_next_range
+      hstepBudget
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (lambdaSeq := lambdaSeq) (stepBudget := stepBudget) (c0 := c0)
+      (tailBound := tailBound) hxbar0Range hx0 ht0 htstep hlambda0 hstep
+      hlambdaBudget_succ hnewton_next_range hpre_decrement_next_range
+      hstepBudget hradius_half_range htailBound_pos hc0_pos hsqrt_pos
+      hdelta_lt_one hbudget
 
 /--
 Induction step for Chewi Example 13.14's finite-row logarithmic barrier.  A

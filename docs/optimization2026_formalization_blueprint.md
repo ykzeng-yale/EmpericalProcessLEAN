@@ -567,10 +567,18 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps`.
 	It derives successor range membership from range local-norm Dikin
 	membership plus the summable next pre-decrement budget.
-	The next exact-source gate can now be attacked either by proving the direct
-	range source-radius-half certificate and scalar source tail budget, or by
-	discharging the stronger range preliminary Newton recurrence,
-	pre-decrement summability, and square-root-coordinate model.
+	The no-square-root radius packet adds
+	`localNorm_sum_le_sum_localNorm_of_hessian_pos`,
+	`sourceRadius_le_of_sum_steps_of_hessian_pos`,
+	`sourceRadius_successor_half_of_newtonSteps_currentLocalNorm_budget_hessian_pos`,
+	`chewi1316_polytopeSlackNegLog_rangeSourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor`,
+	`chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor`, and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps_preDecrementBudget`.
+	It derives range source-radius-half from the same range preliminary Newton
+	recurrence plus summable next pre-decrement budget, without an adjoint-square
+	coordinate model.
+	The next exact-source gate is now to prove the concrete range preliminary
+	Newton recurrence, pre-decrement summability, and scalar/source tail budget.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
@@ -580,9 +588,8 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse`,
 	and mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The next
 	exact-source §13.16 gate is no longer a raw `hradius_half`; it is the
-	concrete preliminary Newton recurrence, square-root-coordinate family on the
-	preliminary points, scalar summability budget `sum 2*lambda_n <= 1/2`,
-	the range source-radius-half proof, and the scalar tail budget
+	concrete preliminary Newton recurrence, scalar summability budget
+	`sum 2*lambda_n <= 1/2`, and the scalar tail budget
 	`2 * sqrt(nu) <= tailBound`.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports

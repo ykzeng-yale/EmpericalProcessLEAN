@@ -659,10 +659,18 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `chewi1316_polytopeSlackNegLog_range_successor_mem_of_preliminaryNextNewtonSteps_preDecrementBudget`,
 	  `chewi1316_polytopeSlackNegLog_rangeRestrict_successor_mem_of_preliminaryNextNewtonSteps_preDecrementBudget`, and
 	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps`.
-	  The live exact-source gate is now the concrete Chewi/Nesterov
-	  analytical-center data for range source-radius-half plus scalar/source
-	  tail budgets; successor range membership is discharged by the compiled
-	  pre-decrement-budget handoff when that route is used.
+	  The no-square-root radius packet adds
+	  `localNorm_sum_le_sum_localNorm_of_hessian_pos`,
+	  `sourceRadius_le_of_sum_steps_of_hessian_pos`,
+	  `sourceRadius_successor_half_of_newtonSteps_currentLocalNorm_budget_hessian_pos`,
+	  `chewi1316_polytopeSlackNegLog_rangeSourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor`,
+	  `chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor`, and
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps_preDecrementBudget`.
+	  Range source-radius-half and successor membership are now both
+	  discharged from the compiled range preliminary-next-Newton recurrence
+	  plus summable pre-decrement budget.  The remaining live exact-source
+	  gates are proving those concrete recurrence/pre-decrement hypotheses and
+	  the scalar/source tail budgets.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
