@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V328
+## Live In-Thread Goal Prompt V329
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,13 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V328 adds Durrett Theorem 3.10.7 nonzero-mean Gaussian
+Latest verified target V329 adds Durrett Theorem 3.10.7 literal expectation
+forms of the nonzero-mean Gaussian theta characteristic-function display:
+`durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_expectation_display_of_covarianceBilinDualTable`,
+`durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_expectation_display_of_coordinateCovariance`,
+and
+`durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_expectation_display_of_centeredProductSubMean`.
+V328 adds Durrett Theorem 3.10.7 nonzero-mean Gaussian
 theta characteristic-function displays from covariance-table, scalar
 coordinate covariance, and centered-product covariance hypotheses:
 `durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_display_of_covarianceBilinDualTable`,
@@ -97,11 +103,12 @@ endpoint, or the V325 Exercise 3.10.8 scalar-covariance/centered-product real
 Gaussian law wrappers, or the V326 Gaussian-coordinate independence
 covariance-table/centered-product wrappers, or the V327 Exercise 3.10.8
 source-facing `iff` wrappers, or the V328 nonzero-mean Gaussian theta
-characteristic-function displays.  Next aggressive packet: continue Chapter 3
-by closing a concrete source-facing gap around remaining Section 3.10
-Gaussian-law wrappers, remaining Lindeberg-Feller side conditions, or
-characteristic-function transport into later source statements; touch Chapter 2
-only if a Chapter 3 theorem requires a missing source primitive.
+characteristic-function displays, or the V329 literal expectation-form
+characteristic displays.  Next aggressive packet: continue Chapter 3 by closing
+a concrete source-facing gap around remaining Section 3.10 Gaussian-law
+wrappers, remaining Lindeberg-Feller side conditions, or characteristic-function
+transport into later source statements; touch Chapter 2 only if a Chapter 3
+theorem requires a missing source primitive.
 
 ## Historical V306 Prompt Notes
 
