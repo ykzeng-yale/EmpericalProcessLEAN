@@ -558,10 +558,19 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor`.
 	This removes the pulled-back inverse-Hessian factorization gate from the
 	direct finite-row §13.16 slack-range handoff.
+	The range-successor packet adds
+	`barrierAffineRange_localNorm_eq_ambient`,
+	`barrierAffineRangeSet_mem_of_localNorm_sub_lt_one_positiveOrthant`,
+	`chewi1314_polytopeSlackNegLog_range_newtonStep_mem_of_decrement_lt_one`,
+	`chewi1316_polytopeSlackNegLog_range_successor_mem_of_preliminaryNextNewtonSteps_preDecrementBudget`,
+	`chewi1316_polytopeSlackNegLog_rangeRestrict_successor_mem_of_preliminaryNextNewtonSteps_preDecrementBudget`, and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps`.
+	It derives successor range membership from range local-norm Dikin
+	membership plus the summable next pre-decrement budget.
 	The next exact-source gate can now be attacked either by proving the direct
-	range source-radius-half/successor-membership certificates and scalar
-	source tail budget, or by discharging the stronger range preliminary Newton
-	recurrence, pre-decrement summability, and square-root-coordinate model.
+	range source-radius-half certificate and scalar source tail budget, or by
+	discharging the stronger range preliminary Newton recurrence,
+	pre-decrement summability, and square-root-coordinate model.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
@@ -573,7 +582,7 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	exact-source §13.16 gate is no longer a raw `hradius_half`; it is the
 	concrete preliminary Newton recurrence, square-root-coordinate family on the
 	preliminary points, scalar summability budget `sum 2*lambda_n <= 1/2`,
-	successor membership, global derivative package, and the scalar tail budget
+	the range source-radius-half proof, and the scalar tail budget
 	`2 * sqrt(nu) <= tailBound`.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports

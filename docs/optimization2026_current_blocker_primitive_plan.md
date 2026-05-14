@@ -803,9 +803,17 @@ packet adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor`.
 	This removes the pulled-back inverse-Hessian factorization from the direct
 	§13.16 slack-range handoff: the final-point triangle/homogeneity laws are
-	now derived from the concrete range Hessian right-inverse.  The remaining
-	direct gates are range source-radius-half, successor range membership, and
-	the scalar/source tail-budget data.
+	now derived from the concrete range Hessian right-inverse.  The newest
+	range-successor packet adds `barrierAffineRange_localNorm_eq_ambient`,
+	`barrierAffineRangeSet_mem_of_localNorm_sub_lt_one_positiveOrthant`,
+	`chewi1314_polytopeSlackNegLog_range_newtonStep_mem_of_decrement_lt_one`,
+	`chewi1316_polytopeSlackNegLog_range_successor_mem_of_preliminaryNextNewtonSteps_preDecrementBudget`,
+	`chewi1316_polytopeSlackNegLog_rangeRestrict_successor_mem_of_preliminaryNextNewtonSteps_preDecrementBudget`, and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps`.
+	This removes successor range membership as a separate direct-route gate
+	whenever the caller supplies the range preliminary-next-Newton recurrence
+	and its summable pre-decrement budget.  The remaining direct gates are
+	range source-radius-half and scalar/source tail-budget data.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
@@ -820,11 +828,11 @@ packet adds
 	`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 	zero Newton decrement at the source endpoints, and the one-step post-Newton
 	`lambda <= 1/4` and successor `lambda <= 1/8` invariants for the supplied
-	preliminary path.  The next live gate is now sharper: prove a summable
-	next-parameter pre-Newton decrement budget for the concrete Chewi/Nesterov
-	preliminary path, or replace it with a stronger analytical-center radius
-	argument, while supplying successor membership, global Hessian
-	derivative/mixed-third data, and square-root-coordinate data.
+	preliminary path.  The next live gate is now sharper: prove the concrete
+	Chewi/Nesterov range source-radius-half certificate and scalar tail-budget
+	data, or prove a summable next-parameter pre-Newton decrement budget that
+	feeds the compiled successor-membership handoff while supporting the same
+	radius-half conclusion.
 	Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has

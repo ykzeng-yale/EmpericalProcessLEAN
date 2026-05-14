@@ -652,11 +652,17 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `hessianRightInverse_of_adjointSqrtCoord_invHess`,
 	  `inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse`,
 	  `newton_linear_of_hessian_right_inverse`, and mathlib `norm_add_le`,
-	  `norm_sum_le`, and `Finset.sum_range_sub`.  The live exact-source gate is
-	  now the concrete Chewi/Nesterov analytical-center data for the
-	  next-parameter preliminary Newton recurrence: successor membership,
-	  range source-radius-half, and either a summable next-parameter pre-Newton
-	  decrement budget or an alternative analytical-center radius route.
+	  `norm_sum_le`, and `Finset.sum_range_sub`.  The range-successor packet
+	  adds `barrierAffineRange_localNorm_eq_ambient`,
+	  `barrierAffineRangeSet_mem_of_localNorm_sub_lt_one_positiveOrthant`,
+	  `chewi1314_polytopeSlackNegLog_range_newtonStep_mem_of_decrement_lt_one`,
+	  `chewi1316_polytopeSlackNegLog_range_successor_mem_of_preliminaryNextNewtonSteps_preDecrementBudget`,
+	  `chewi1316_polytopeSlackNegLog_rangeRestrict_successor_mem_of_preliminaryNextNewtonSteps_preDecrementBudget`, and
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps`.
+	  The live exact-source gate is now the concrete Chewi/Nesterov
+	  analytical-center data for range source-radius-half plus scalar/source
+	  tail budgets; successor range membership is discharged by the compiled
+	  pre-decrement-budget handoff when that route is used.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
