@@ -725,6 +725,18 @@ packet adds
 	source-tail estimate for bounded polytopes; do not return to the already
 	ruled-out positive-orthant source-radius or scaled-relative certificates,
 	and do not repeat affine/range transport or scalar log/count plumbing.
+	The range-preliminary-Newton packet adds
+	`chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_globalDeriv_and_sqrtCoordFamily`
+	and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
+	It instantiates the generic correct-index preliminary-next-Newton tail
+	theorem on the finite slack range, deriving the range barrier, Hessian
+	positivity, and source-point Cauchy bridge from Example 13.14's
+	range inverse-Hessian plus a supplied range square-root-coordinate family.
+	The next proof target is now concrete range-space data: prove the
+	range preliminary Newton recurrence, the summed pre-decrement budget, the
+	range square-root-coordinate model, and the global range Hessian derivative
+	package for the bounded-polytope preliminary path.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

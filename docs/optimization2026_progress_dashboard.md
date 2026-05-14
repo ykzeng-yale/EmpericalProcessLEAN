@@ -574,6 +574,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  now implies the positive main-stage initialization theorem for finite-row
 	  polytope logarithmic barriers.  The next proof target is the actual
 	  uniform range-tail estimate in bounded-polytope geometry.
+	  The newest range-preliminary-Newton packet adds
+	  `chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_globalDeriv_and_sqrtCoordFamily`
+	  and
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
+	  These instantiate the existing generic correct-index source-tail theorem
+	  directly on the finite slack range and assemble it back to positive
+	  main-stage initialization.  The remaining §13.16 work is now the concrete
+	  range Newton recurrence/summability/square-root/global-derivative package,
+	  not any scalar log/count or affine transport layer.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
