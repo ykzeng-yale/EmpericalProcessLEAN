@@ -32,12 +32,15 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V340` in
+Route from `Live In-Thread Goal Prompt V341` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V340 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V341 adds
+`durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions`,
+Durrett Theorem 3.10.7 multivariate CLT from projected
+characteristic-function convergence.  V340 adds
 `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribution_of_projected_charFun`,
 `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_of_charFun`,
 and
@@ -1683,8 +1686,10 @@ Current proof route:
     `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_constMeasure`,
     plus its fixed-source characteristic-function wrapper
     `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_constMeasure_of_charFun`.
-29. Durrett Theorem 3.10.7 now has compiled projected scalar and projected
+29. Durrett Theorem 3.10.7 now has a compiled projected
+    characteristic-function CLT consumer, plus projected scalar and projected
     summand CLT wrappers:
+    `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions`,
     `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedScalarCLT` and
     `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedSummandCLT`.
 30. Durrett Theorem 3.10.7 now has compiled covariance/Gaussian source wrappers:

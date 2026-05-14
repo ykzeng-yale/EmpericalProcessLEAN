@@ -2476,6 +2476,64 @@ theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDi
 
 /--
 Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from projected
+characteristic functions.
+
+This is the characteristic-function version of the Cramér-Wold assembly step:
+once every textbook scalar projection of the scaled centered empirical vector
+has pointwise characteristic-function convergence to the corresponding
+projection of the limit vector, the empirical vector itself converges in
+distribution.
+-/
+theorem durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hchar : ∀ theta : Coordinate -> ℝ, ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun
+            (P.map
+              (fun ω =>
+                ∑ i, theta i *
+                  (√(n : ℝ) •
+                    (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEmpiricalMoment
+                        X n ω -
+                      StatInference.AsymptoticStatistics.vaart1998_finiteCoordinatePopulationMoment
+                        P X)) i)) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun
+          (Q.map (fun ω => ∑ i, theta i * Z ω i)) t))) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+            StatInference.AsymptoticStatistics.vaart1998_finiteCoordinatePopulationMoment P X))
+      atTop Z (fun _ => P) Q :=
+  durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_constMeasure_of_charFun
+    (P := P) (Q := Q)
+    (X := fun n ω =>
+      √(n : ℝ) •
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+          StatInference.AsymptoticStatistics.vaart1998_finiteCoordinatePopulationMoment P X))
+    (Z := Z)
+    (fun n => by
+      simpa [StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateScaledCenteredEmpiricalMoment]
+        using
+          StatInference.AsymptoticStatistics.vaart1998_finiteCoordinate_scaledCenteredEmpiricalMoment_aemeasurable_real
+            (P := P) X hX_meas n)
+    hZ_aemeas hchar
+
+/--
+Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from projected
 scalar CLTs.
 
 This is the Cramér-Wold assembly step in Durrett's proof: once every continuous
