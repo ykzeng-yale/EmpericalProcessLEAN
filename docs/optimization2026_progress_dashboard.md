@@ -58,13 +58,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_rangePreliminaryNextNewtonSteps_of_sourcePullbackPreliminaryNextNewtonSteps`,
   `chewi1316_polytopeSlackNegLog_rangePreDecrementNext_le_of_sourcePullbackPreDecrementNext_le`, and
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+  The source one-step API now also adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_sourceDecrement`, letting a direct source-coordinate
+  `1/4 -> 1/8` proof feed the standard handoff without separate range
+  recurrence or range pre-decrement assumptions.
   The current exact-source gates are now: construct the point-dependent range Hessian/inverse-Hessian
   sqrt-coordinate family (or an equivalent mathlib
   spectral / positive-operator construction) and prove the summable source
   next pre-decrement budget.  Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range
-  pre-decrement are now transported from source-coordinate assumptions.
+  pre-decrement are now transported from source-coordinate assumptions.  A
+  direct source one-step proof should use `...standardConstants_of_sourceDecrement`
+  instead of re-entering the range wrapper stack.
 - Archived Chapter 13 context before later §13.16 packets: Chewi Example 13.14's arbitrary finite-row
   logarithmic barrier route is compiled via the concrete range inverse
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess`, and
@@ -713,7 +719,9 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  and source pre-decrement budget are supplied.  The remaining
 	  exact-source gates are the summable source next pre-decrement budget and
 	  the range sqrt-coordinate family itself (or an equivalent mathlib
-	  spectral / positive-operator construction).
+	  spectral / positive-operator construction) for the range-sqrt route;
+	  the new `...standardConstants_of_sourceDecrement` wrapper can consume a
+	  direct source one-step proof without that range-sqrt route.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

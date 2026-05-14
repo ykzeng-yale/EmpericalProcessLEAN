@@ -152,12 +152,19 @@ adds `barrierAffineRange_preliminaryPathGrad_adjoint_rightInverse_eq`,
 `chewi1316_polytopeSlackNegLog_rangePreliminaryNextNewtonSteps_of_sourcePullbackPreliminaryNextNewtonSteps`,
 `chewi1316_polytopeSlackNegLog_rangePreDecrementNext_le_of_sourcePullbackPreDecrementNext_le`, and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+The newest source one-step API adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_sourceDecrement`, so a direct source-coordinate `1/4 -> 1/8`
+decrement proof can feed the standard handoff without any separate range
+recurrence or range pre-decrement assumptions.
 Continue aggressively from exactly this frontier.  The next theorem-sized
 targets are: build the point-dependent range Hessian/inverse-Hessian
 sqrt-coordinate family (or an equivalent mathlib spectral / positive-operator
 construction) and prove the summable source next pre-decrement budget.  The
 range recurrence and range pre-decrement budget are now transported from the
-source-coordinate recurrence/budget by compiled wrappers.  Do not spend a run
+source-coordinate recurrence/budget by compiled wrappers.  If the next route
+proves a source-coordinate one-step decrement directly, use the new
+`...standardConstants_of_sourceDecrement` handoff instead of re-entering the
+range wrapper stack.  Do not spend a run
 re-solving source-pullback decrement transport, scalar constants, successor
 membership, source-radius-half, finite sequence/log-count plumbing, or the
 exposed range one-step `1/4 -> 1/8` invariant; these are already behind
@@ -880,10 +887,14 @@ packet adds
 	`chewi1316_polytopeSlackNegLog_rangePreliminaryNextNewtonSteps_of_sourcePullbackPreliminaryNextNewtonSteps`,
 	`chewi1316_polytopeSlackNegLog_rangePreDecrementNext_le_of_sourcePullbackPreDecrementNext_le`, and
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+	The source one-step API adds
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_sourceDecrement`.
 	The remaining direct gates are the source next pre-decrement summability
 	and the range sqrt-coordinate family itself (or an equivalent mathlib
-	spectral / positive-operator construction); the range recurrence is now
-	just transport from the source-coordinate Newton recurrence.
+	spectral / positive-operator construction) for the range-sqrt route; a
+	direct source one-step proof can bypass the range-sqrt wrapper and feed
+	`...standardConstants_of_sourceDecrement` directly.  The range recurrence
+	is now just transport from the source-coordinate Newton recurrence.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
