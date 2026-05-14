@@ -266,6 +266,12 @@ Future work should therefore not rebuild the actual-budget prefix summability
 plumbing: after a valid theorem supplies the actual half contraction and the
 moving-center/bounded-polytope eventual selected range-tail bound, this
 endpoint initializes the positive main stage directly.
+The thresholded actual selected-tail bridge now adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_thresholdedEventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+It lets the tail invariant begin only after a supplied burn-in threshold
+`Nmin`; the proof shifts the selected count index past that threshold before
+calling the selected-tail consumer.  Future moving-center/bounded-polytope
+work can therefore state its tail estimate as a post-threshold invariant.
 This half-contraction endpoint is conditional infrastructure, not yet the
 recommended mathematical route.  The search-first check of the archived
 Chapter 13 obstruction notes shows that fixed-source global preliminary
@@ -326,6 +332,11 @@ It chooses the logarithmic `M` and successor count index internally from
 input is now an eventual selected successor bound valid whenever the count
 inequality holds.  This is the preferred conditional entrypoint for the next
 moving-center/bounded-polytope proof packet.
+The thresholded pre-decrement-budget variant
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_thresholdedEventualSelectedRangeTailBound_succ_noFactor_standardConstants`
+also chooses the selected index internally, but forces the output index past a
+burn-in threshold `Nmin`.  Prefer this variant when the next geometric proof
+only establishes the range-tail estimate eventually.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new

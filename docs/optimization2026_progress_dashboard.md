@@ -121,6 +121,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   and calls the existential selected-tail handoff.  The remaining proof inputs
   for this route are now exactly the actual half contraction and the eventual
   selected successor range-tail estimate.
+  The thresholded actual selected-tail bridge now compiles as
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_thresholdedEventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+  It shifts the internally chosen selected successor index past a burn-in
+  threshold `Nmin`, so future bounded-polytope estimates may be stated only
+  after their invariant has activated.
   Route correction: this is conditional infrastructure.  The archived
   positive-orthant obstruction packets already warn that global fixed-source
   radius/summability gates are not the right textbook-scale path for the
@@ -164,6 +169,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   geometry packet should therefore prove an eventual selected successor
   range-tail bound under the count inequality, rather than rebuilding scalar
   `M,N` selection or measured-tail log plumbing.
+  The thresholded pre-decrement-budget variant now adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_thresholdedEventualSelectedRangeTailBound_succ_noFactor_standardConstants`,
+  allowing the selected successor range-tail bound to start after a burn-in
+  threshold.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing
@@ -207,9 +216,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementContractingBudget_noFactor_standardConstants`.
   The selected-tail actual-budget bridge additionally adds
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
-  The preferred next proof targets are now the valid actual doubled
-  contraction and the moving-center/bounded-polytope eventual selected
-  successor range-tail estimate.
+  Its thresholded sibling
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_thresholdedEventualSelectedRangeTailBound_succ_noFactor_standardConstants`
+  is the preferred entrypoint for post-burn-in tail invariants.  The preferred
+  next proof targets are now the valid actual doubled contraction and the
+  moving-center/bounded-polytope eventual selected successor range-tail
+  estimate.
   Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range

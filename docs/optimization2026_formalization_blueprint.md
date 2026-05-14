@@ -109,6 +109,13 @@ selected-tail handoff, deriving the prefix budget internally from the compiled
 `tsum` machinery.  Downstream Chapter 13 work should focus on the actual
 contraction proof and the moving-center/bounded-polytope selected range-tail
 bound rather than redoing prefix-budget summability.
+The thresholded actual selected-tail bridge now compiles as
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_thresholdedEventualSelectedRangeTailBound_succ_noFactor_standardConstants`;
+its generic pre-decrement-budget sibling is
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_thresholdedEventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+These wrappers let the selected range-tail invariant start after a burn-in
+threshold `Nmin`, matching the expected moving-center/bounded-polytope proof
+shape.
 This endpoint should be treated as conditional infrastructure.  Earlier
 verified positive-orthant obstruction packets show that the bare actual
 decreasing-`t` preliminary recurrence is not expected to satisfy the old
