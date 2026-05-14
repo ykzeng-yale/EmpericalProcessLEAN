@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V347
+## Live In-Thread Goal Prompt V348
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,13 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V347 adds the vector-Gaussian-source wrappers
+Latest verified target V348 adds the common-vector-law source wrappers
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_commonVectorLawGaussianSource_centeredProduct`
+and
+`durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianSource_centeredProduct_tsq`.
+These use the common finite-coordinate vector law and infinite product law to
+discharge the i.i.d. sample-vector hypotheses before feeding the V346 textbook
+`t^2` characteristic-function route.  V347 adds the vector-Gaussian-source wrappers
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_vectorGaussianSource_centeredProduct`
 and
 `durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianSource_centeredProduct_tsq`.
@@ -244,11 +250,11 @@ Gaussian projected-characteristic CLT consumer, or the V343 textbook `t^2`
 Gaussian exponent wrappers, or the V344 centered-product `t^2` source
 wrappers, or the V345 projected-scalar-CLT to characteristic-function bridge,
 or the V346 projected-summand-CLT to characteristic-function bridge, or the
-V347 vector-Gaussian-source characteristic-function bridge.  Next aggressive
-packet: continue Chapter 3 by closing a concrete source-facing gap around
-common-vector-law or canonical-product assumptions feeding the V347 route,
-remaining Section 3.10 Gaussian-law wrappers, remaining Lindeberg-Feller side
-conditions, or
+V347 vector-Gaussian-source characteristic-function bridge, or the V348
+common-vector-law characteristic-function bridge.  Next aggressive packet:
+continue Chapter 3 by closing a concrete source-facing gap around
+canonical-product assumptions feeding the V348 route, remaining Section 3.10
+Gaussian-law wrappers, remaining Lindeberg-Feller side conditions, or
 characteristic-function transport into later source statements; touch Chapter 2
 only if a Chapter 3 theorem requires a missing source primitive.
 
