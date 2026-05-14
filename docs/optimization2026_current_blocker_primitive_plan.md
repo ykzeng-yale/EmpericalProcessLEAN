@@ -137,7 +137,28 @@ objective and should be preferred over archived prompts.
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current superseding update: the active Chapter 13 lane has moved beyond
+Current active frontier: the finite-row slack-range §13.16 handoff now
+compiles through source-pullback preliminary decrement transport and a range
+sqrt-coordinate one-step wrapper.  Reusable declarations added in the latest
+packet are `chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn`,
+`chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewton_sqrtCoordModel`,
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+Continue aggressively from exactly this frontier.  The next theorem-sized
+targets are: build the domain-wide range Hessian/inverse-Hessian
+sqrt-coordinate model (or an equivalent mathlib spectral / positive-operator
+construction), prove the concrete range preliminary-next-Newton recurrence,
+and prove the summable next pre-decrement budget.  Do not spend a run
+re-solving source-pullback decrement transport, scalar constants, successor
+membership, source-radius-half, finite sequence/log-count plumbing, or the
+exposed range one-step `1/4 -> 1/8` invariant; these are already behind
+compiled wrappers.  Keep code/docs in English, chat status in Chinese/English
+mix, use search-first reuse of mathlib and local `StatInference`, then edit
+one endpoint-moving Lean theorem packet, run focused `lake env lean`, promote
+with `lake build StatInference.Optimization.InteriorPoint`, scan for proof
+holes/secrets, rebase, commit, and push.
+
+Archived route log below: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma
 13.15.  The compiled local packets add `localNorm_neg`,
 `abs_inner_le_dualLocalNorm_mul_localNorm_of_cauchy`,
@@ -836,12 +857,17 @@ packet adds
 	`chewi1314_polytopeSlackNegLog_preliminaryPath_newtonDecrement_rangePull_eq`,
 	`chewi1316_polytopeSlackNegLog_rangePull_decrement_step_le_eighth_of_range_decrement_step`, and
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeDecrement`.
-	This removes the source-pullback preliminary decrement shape as a live
-	caller-facing gate: the standard-constant handoff can now consume the
-	one-step `1/4 -> 1/8` invariant directly in finite-row range coordinates.
-	The remaining direct gates are proving the actual Chewi/Nesterov range
-	one-step `1/4 -> 1/8` invariant, range preliminary-next-Newton recurrence,
-	and pre-decrement summability assumptions.
+	The range sqrt-coordinate wrapper adds
+	`chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn`,
+	`chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewton_sqrtCoordModel`, and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+	This removes the source-pullback preliminary decrement shape and the
+	range one-step `1/4 -> 1/8` invariant as live caller-facing gates whenever
+	a domain-wide range Hessian/inverse-Hessian sqrt-coordinate model is
+	supplied.  The remaining direct gates are the concrete range preliminary
+	next-Newton recurrence, the summable next pre-decrement budget, and the
+	range sqrt-coordinate model itself (or an equivalent mathlib spectral /
+	positive-operator construction).
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
@@ -856,11 +882,10 @@ packet adds
 	`-grad phi(xbar0)`, decreasing `t`, endpoint stationarity at `t = 1` and `t = 0`,
 	zero Newton decrement at the source endpoints, and the one-step post-Newton
 	`lambda <= 1/4` and successor `lambda <= 1/8` invariants for the supplied
-	preliminary path.  The next live gate is now sharper: prove the concrete
-	Chewi/Nesterov range preliminary-next-Newton recurrence, the range one-step
-	`1/4 -> 1/8` decrement invariant, and the summable next-parameter
-	pre-Newton decrement budget feeding the compiled standard-constant
-	no-factor handoff.
+	preliminary path.  The next live gate is now sharper: build the concrete
+	range sqrt-coordinate model, prove the Chewi/Nesterov range preliminary
+	next-Newton recurrence, and prove the summable next-parameter pre-Newton
+	decrement budget feeding the compiled standard-constant no-factor handoff.
 	Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has

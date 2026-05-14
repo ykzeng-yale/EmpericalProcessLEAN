@@ -30,7 +30,23 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current live route supersedes the older paragraphs below: the Chapter 13 lane
+Current live route supersedes the older paragraphs below: the finite-row
+slack-range §13.16 handoff now compiles through source-pullback preliminary
+decrement transport and the new range sqrt-coordinate one-step wrapper.
+Reusable declarations include
+`chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn`,
+`chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewton_sqrtCoordModel`,
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+The active theorem-sized target is to construct the domain-wide range
+Hessian/inverse-Hessian sqrt-coordinate model (or an equivalent mathlib
+spectral / positive-operator construction), prove the concrete range
+preliminary-next-Newton recurrence, and prove the summable next
+pre-decrement budget.  Do not route the next packet back to source-pullback
+decrement, scalar constants, successor membership, source-radius-half, or the
+range one-step invariant; those are already behind compiled wrappers.
+
+Archived route context below: the Chapter 13 lane
 now has Chewi Lemma 13.15(1) and Lemma 13.15(2) compiled for the arbitrary
 finite-row polytope logarithmic barrier route.  The newest reusable transport
 declarations are `barrierAffinePreimageGrad_hasFDerivAt`,
@@ -588,12 +604,18 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1314_polytopeSlackNegLog_preliminaryPath_newtonDecrement_rangePull_eq`,
 	`chewi1316_polytopeSlackNegLog_rangePull_decrement_step_le_eighth_of_range_decrement_step`, and
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeDecrement`.
+	The range sqrt-coordinate wrapper adds
+	`chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn`,
+	`chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewton_sqrtCoordModel`, and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
 	It lets the direct standard-constant handoff consume the preliminary
-	one-step invariant in range coordinates, so source-pullback decrement
-	transport is no longer a separate exact-source gate.  The next
-	exact-source gate is now to prove the concrete range preliminary Newton
-	recurrence, range one-step `1/4 -> 1/8` invariant, and pre-decrement
-	summability.
+	one-step invariant through a domain-wide range Hessian/inverse-Hessian
+	sqrt-coordinate model, so source-pullback decrement transport and the
+	range one-step `1/4 -> 1/8` invariant are no longer separate exact-source
+	gates.  The next exact-source gate is now to prove the concrete range
+	preliminary Newton recurrence, pre-decrement summability, and the range
+	sqrt-coordinate model itself (or an equivalent mathlib spectral /
+	positive-operator construction).
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
@@ -603,10 +625,10 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse`,
 	and mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The next
 	exact-source §13.16 gate is no longer a raw `hradius_half`, custom
-	`lambdaSeq`, scalar tail-budget choice, or source-pullback decrement
-	transport; it is the concrete range preliminary Newton recurrence, range
-	one-step `1/4 -> 1/8` invariant, and scalar summability budget
-	`sum 2*lambda_n <= 1/2`.
+	`lambdaSeq`, scalar tail-budget choice, source-pullback decrement
+	transport, or exposed range one-step invariant; it is the concrete range
+	preliminary Newton recurrence, scalar summability budget
+	`sum 2*lambda_n <= 1/2`, and the range sqrt-coordinate model.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

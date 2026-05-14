@@ -43,7 +43,21 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/tmp/chewi-dual-seminorm` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
-- Latest Chapter 13 frontier: Chewi Example 13.14's arbitrary finite-row
+- Latest Chapter 13 frontier: the finite-row slack-range §13.16 handoff now
+  compiles through source-pullback decrement transport and a range
+  sqrt-coordinate one-step wrapper.  New reusable declarations are
+  `chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn`,
+  `chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewton_sqrtCoordModel`,
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+  The current exact-source gates are now: construct the domain-wide range
+  Hessian/inverse-Hessian sqrt-coordinate model (or an equivalent mathlib
+  spectral / positive-operator construction), prove the concrete range
+  preliminary-next-Newton recurrence, and prove the summable next
+  pre-decrement budget.  Source-pullback decrement, scalar constants,
+  successor membership, source-radius-half, and the exposed range one-step
+  invariant are no longer the live gates.
+- Archived Chapter 13 context before later §13.16 packets: Chewi Example 13.14's arbitrary finite-row
   logarithmic barrier route is compiled via the concrete range inverse
   `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess`, and
   Chewi Lemma 13.15 now has compiled Cauchy-to-square and segment reciprocal
@@ -70,7 +84,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1315_polytopeSlackNegLog_gradient_segment_inner_le`, closing Lemma
   13.15(2) for arbitrary finite-row polytope logarithmic barriers when
   `0 < m`.
-- Next Chapter 13 target: use the compiled Lemma 13.15 wrappers in the
+- Archived Chapter 13 route log: use the compiled Lemma 13.15 wrappers in the
   path-following decrement recurrence and central-path barrier-parameter
   estimates.  The newest Lemma 13.16 assembly packet adds
   `real_le_div_one_sub_of_sq_div_one_add_le_mul`,
@@ -679,12 +693,17 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `chewi1314_polytopeSlackNegLog_preliminaryPath_newtonDecrement_rangePull_eq`,
 	  `chewi1316_polytopeSlackNegLog_rangePull_decrement_step_le_eighth_of_range_decrement_step`, and
 	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeDecrement`.
-	  The source-pullback preliminary decrement shape is no longer a live
-	  blocker; the standard-constant handoff can consume the one-step
-	  invariant directly in range coordinates.  The remaining live
-	  exact-source gates are proving the concrete range one-step
-	  `1/4 -> 1/8` invariant, range recurrence, and pre-decrement
-	  summability.
+	  The range sqrt-coordinate wrapper adds
+	  `chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn`,
+	  `chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewton_sqrtCoordModel`, and
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+	  The source-pullback preliminary decrement shape and the one-step
+	  invariant are no longer live blockers once a domain-wide range
+	  Hessian/inverse-Hessian sqrt-coordinate model is supplied.  The
+	  remaining exact-source gates are the concrete range recurrence, the
+	  summable next pre-decrement budget, and the range sqrt-coordinate model
+	  itself (or an equivalent mathlib spectral / positive-operator
+	  construction).
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
