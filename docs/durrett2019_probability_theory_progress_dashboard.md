@@ -32,12 +32,17 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V343` in
+Route from `Live In-Thread Goal Prompt V344` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V343 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V344 adds
+`durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_tsq_of_centeredProduct`
+and
+`durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCenteredProduct_tsq`,
+the centered-product source variant of the textbook `t^2` characteristic-function
+endpoint for Durrett Theorem 3.10.7.  V343 adds
 `durrett2019_theorem_3_10_7_covarianceTableQuadratic_smul`,
 `durrett2019_theorem_3_10_7_covarianceTableQuadratic_smul_complex`,
 `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_tsq_of_coordinateCovariance`,
@@ -1705,6 +1710,11 @@ Current proof route:
     `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_tsq_of_coordinateCovariance`,
     and the corresponding projected-characteristic CLT consumer
     `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCoordinateCovariance_tsq`.
+    The same `t^2` endpoint is also available from centered product identities
+    for the Gaussian limit:
+    `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_tsq_of_centeredProduct`
+    and
+    `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCenteredProduct_tsq`.
     It also has the arbitrary-frequency centered Gaussian
     projected characteristic-function display
     `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_coordinateCovariance`,
