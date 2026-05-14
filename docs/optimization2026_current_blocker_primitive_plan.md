@@ -299,6 +299,17 @@ consumer.  Treat them as conditional infrastructure: the preferred exact route
 still needs a valid moving-center / bounded-polytope argument for the measured
 range-tail logarithmic bound, and eventually a side-condition route that does
 not smuggle in the archived false fixed-source radius/summability assumption.
+The newest selected-tail-bound packet adds the scalar log bridge
+`chewi1316_measuredTailLog_le_of_tailBound` plus
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants`.
+Thus the next moving-center/bounded-polytope packet can target a plain
+selected successor estimate
+`dualLocalNorm rangeInvHess (rangeRestrict (xseq (N+1))) (rangeGrad (rangeRestrict xbar0)) <= tailBound`
+together with `log (16 * (tailBound + 1)) <= M log 2`; it no longer needs to
+manually prove the measured-tail logarithmic hypothesis or redo source/range
+transport.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new

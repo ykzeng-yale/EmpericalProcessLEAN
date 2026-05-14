@@ -131,6 +131,14 @@ budget before invoking the measured-tail consumer.  They should be used as
 conditional infrastructure; the preferred full §13.16 proof still needs the
 moving-center / bounded-polytope measured range-tail logarithmic estimate
 without reviving the archived fixed-source global-radius route.
+The selected-tail-bound packet adds `chewi1316_measuredTailLog_le_of_tailBound`
+and the three selected-bound handoffs ending in
+`...rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,
+`...sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`, and
+`...sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants`.
+This makes the next geometric target source-shaped: prove a selected successor
+dual-norm bound by moving-center/bounded-polytope reasoning, then discharge
+only the scalar log/count side before applying the compiled handoff.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the

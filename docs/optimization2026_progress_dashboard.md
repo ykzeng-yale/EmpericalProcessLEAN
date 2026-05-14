@@ -143,6 +143,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   prefix pre-decrement budget, leaving the real preferred mathematical target
   as the moving-center / bounded-polytope measured range-tail logarithmic
   bound at a selected successor index.
+  The selected-tail-bound packet adds `chewi1316_measuredTailLog_le_of_tailBound`
+  and the range/source/concrete selected-bound handoffs
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants`.
+  Future geometry work can now supply a plain selected successor dual-norm
+  bound plus `log (16 * (tailBound + 1)) <= M log 2`; the measured-tail
+  logarithmic conversion and source/range transport are compiled.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing
