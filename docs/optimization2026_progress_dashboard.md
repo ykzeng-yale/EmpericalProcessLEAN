@@ -59,17 +59,24 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_rangePreDecrementNext_le_of_sourcePullbackPreDecrementNext_le`, and
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
   The source one-step API now also adds
-  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_sourceDecrement`, letting a direct source-coordinate
-  `1/4 -> 1/8` proof feed the standard handoff without separate range
-  recurrence or range pre-decrement assumptions.
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_sourceDecrement`.
+  The source canonical-lambda packet adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`, so a direct source-coordinate
+  `1/4 -> 1/8` proof can feed either the general `c0`/`tailBound` handoff
+  or the standard handoff without separate range recurrence or range
+  pre-decrement assumptions.  The same packet adds
+  `chewi1316_stepBudget_prefix_le_half_of_tsum`, reducing the remaining
+  prefix-budget obligation to a nonnegative summable majorant with total
+  `tsum <= 1 / 2`.
   The current exact-source gates are now: construct the point-dependent range Hessian/inverse-Hessian
   sqrt-coordinate family (or an equivalent mathlib
-  spectral / positive-operator construction) and prove the summable source
-  next pre-decrement budget.  Source-pullback decrement, scalar constants,
+  spectral / positive-operator construction) and prove the source next
+  pre-decrement summability / total-mass bound feeding the `tsum` bridge.
+  Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range
   pre-decrement are now transported from source-coordinate assumptions.  A
-  direct source one-step proof should use `...standardConstants_of_sourceDecrement`
+  direct source one-step proof should use the source canonical/standard handoffs
   instead of re-entering the range wrapper stack.
 - Archived Chapter 13 context before later §13.16 packets: Chewi Example 13.14's arbitrary finite-row
   logarithmic barrier route is compiled via the concrete range inverse

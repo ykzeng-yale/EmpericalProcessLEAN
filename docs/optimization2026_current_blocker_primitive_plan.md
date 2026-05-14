@@ -153,18 +153,24 @@ adds `barrierAffineRange_preliminaryPathGrad_adjoint_rightInverse_eq`,
 `chewi1316_polytopeSlackNegLog_rangePreDecrementNext_le_of_sourcePullbackPreDecrementNext_le`, and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
 The newest source one-step API adds
-`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_sourceDecrement`, so a direct source-coordinate `1/4 -> 1/8`
-decrement proof can feed the standard handoff without any separate range
-recurrence or range pre-decrement assumptions.
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_sourceDecrement`, and the newest source canonical-lambda packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`.
+A direct source-coordinate `1/4 -> 1/8` decrement proof can now feed either
+the general `c0`/`tailBound` handoff or the standard-constant handoff without
+any separate range recurrence or range pre-decrement assumptions.  The same
+packet adds `chewi1316_stepBudget_prefix_le_half_of_tsum`, so the remaining
+source next pre-decrement budget can be proved from a nonnegative summable
+majorant with total `tsum <= 1 / 2`.
 Continue aggressively from exactly this frontier.  The next theorem-sized
 targets are: build the point-dependent range Hessian/inverse-Hessian
 sqrt-coordinate family (or an equivalent mathlib spectral / positive-operator
-construction) and prove the summable source next pre-decrement budget.  The
+construction) and prove the source next pre-decrement summability / total-mass
+bound feeding `chewi1316_stepBudget_prefix_le_half_of_tsum`.  The
 range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
-`...standardConstants_of_sourceDecrement` handoff instead of re-entering the
-range wrapper stack.  Do not spend a run
+source canonical/standard handoffs instead of re-entering the range wrapper
+stack.  Do not spend a run
 re-solving source-pullback decrement transport, scalar constants, successor
 membership, source-radius-half, finite sequence/log-count plumbing, or the
 exposed range one-step `1/4 -> 1/8` invariant; these are already behind

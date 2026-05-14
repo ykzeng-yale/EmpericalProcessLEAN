@@ -48,19 +48,25 @@ adds `barrierAffineRange_preliminaryPathGrad_adjoint_rightInverse_eq`,
 `chewi1316_polytopeSlackNegLog_rangePreDecrementNext_le_of_sourcePullbackPreDecrementNext_le`, and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
 The source one-step API now also adds
-`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_sourceDecrement`, so a direct source-coordinate `1/4 -> 1/8`
-decrement proof can feed the standard handoff without separate range
-recurrence or range pre-decrement assumptions.
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_sourceDecrement`.
+The source canonical-lambda packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`, so a direct source-coordinate `1/4 -> 1/8`
+decrement proof can feed either the general `c0`/`tailBound` handoff or the
+standard handoff without separate range recurrence or range pre-decrement
+assumptions.  The same packet adds `chewi1316_stepBudget_prefix_le_half_of_tsum`,
+so the prefix budget can now be proved from a nonnegative summable majorant
+with total `tsum <= 1 / 2`.
 The active theorem-sized target is to construct the point-dependent range Hessian/inverse-Hessian
 sqrt-coordinate family (or an equivalent mathlib
-spectral / positive-operator construction) and prove the summable source
-next pre-decrement budget.  Do not route the next packet back to source-pullback
+spectral / positive-operator construction) and prove the source next
+pre-decrement summability / total-mass bound feeding the `tsum` bridge.  Do
+not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the
 range one-step invariant; those are already behind compiled wrappers.  Do not
 chase a separate range recurrence when the source-coordinate Newton recurrence
 is available, because it now transports automatically.  If the next route
-proves the one-step decrement directly in source coordinates, use
-`...standardConstants_of_sourceDecrement` instead of the range-sqrt wrapper.
+proves the one-step decrement directly in source coordinates, use the source
+canonical/standard handoffs instead of the range-sqrt wrapper.
 
 Archived route context below: the Chapter 13 lane
 now has Chewi Lemma 13.15(1) and Lemma 13.15(2) compiled for the arbitrary
