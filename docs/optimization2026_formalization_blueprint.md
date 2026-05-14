@@ -109,6 +109,12 @@ fixed-source global radius/summability route at textbook scale.  The preferred
 route is therefore still the moving-center / bounded-polytope range-tail
 estimate, with the half-contraction endpoint used only if a separate valid
 invariant supplies that contraction.
+The newest measured-tail wrapper,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_noFactor`,
+uses the actual measured slack-range tail norm at the selected preliminary
+index and the log/count hypotheses to initialize the positive main stage.  This
+is the source-shaped bridge to use while developing the stronger
+moving-center/bounded-polytope tail invariant.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the

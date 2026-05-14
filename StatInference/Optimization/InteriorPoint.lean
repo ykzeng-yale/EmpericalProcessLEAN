@@ -27987,6 +27987,114 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       hx0 ht0 htstep hlambda0 hstep hlambdaBudget htail
 
 /--
+Measured-tail slack-range source-start initialization.  Instead of imposing a
+uniform range-tail bound, this wrapper uses the actual measured range dual
+local norm at the selected preliminary index.  This is the source-shaped
+quantity appearing in the omitted Chewi/Nesterov preliminary-stage analysis.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_noFactor
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F} {tseq lambdaSeq : ℕ -> ℝ}
+    {c0 : ℝ} {N M : ℕ}
+    (hxN_range :
+      (polytopeSlackCLM aRow).rangeRestrict (xseq N) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (m : ℝ)) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq n))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget : lambdaSeq N ≤ 1 / 8)
+    (hsqrt_pos : 0 < Real.sqrt (m : ℝ))
+    (hdelta_lt_one : c0 / Real.sqrt (m : ℝ) < 1)
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (N : ℝ) * c0)
+    (hmeasuredRangeTailLog :
+      Real.log
+          ((16 : ℝ) *
+            (dualLocalNorm
+                (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+                ((polytopeSlackCLM aRow).rangeRestrict (xseq N))
+                (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+                  positiveOrthantNegLogGrad
+                  ((polytopeSlackCLM aRow).rangeRestrict xbar0)) + 1)) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    ∃ tMain : ℝ,
+      0 < tMain ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq N) ≤ 1 / 4 := by
+  let xseqRange : ℕ -> (polytopeSlackCLM aRow).range :=
+    fun n => (polytopeSlackCLM aRow).rangeRestrict (xseq n)
+  let xbar0Range : (polytopeSlackCLM aRow).range :=
+    (polytopeSlackCLM aRow).rangeRestrict xbar0
+  let phiGradRange : (polytopeSlackCLM aRow).range ->
+      (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogGrad
+  let tailNorm : ℝ :=
+    dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+      (xseqRange N) (phiGradRange xbar0Range)
+  have htail_nonneg : 0 ≤ tailNorm := by
+    exact
+      dualLocalNorm_nonneg
+        (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+        (xseqRange N) (phiGradRange xbar0Range)
+  have htailBound_pos : 0 < tailNorm + 1 := by
+    linarith
+  have htailBase_le : |(1 : ℝ)| * tailNorm ≤ tailNorm + 1 := by
+    rw [abs_one, one_mul]
+    linarith
+  have hrangeTailBudget :
+      |(1 - c0 / Real.sqrt (m : ℝ)) ^ N| *
+          dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+            ((polytopeSlackCLM aRow).rangeRestrict (xseq N))
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict xbar0)) ≤
+        1 / 16 := by
+    have htail :=
+      chewi1316_preliminary_final_tail_le_sixteenth_of_factorSqrtCountTailBoundLogBound_nonneg
+        (invHess := chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+        (phiGrad := phiGradRange) (xbar0 := xbar0Range)
+        (xseq := xseqRange) (tStart := 1) (c0 := c0)
+        (nu := (m : ℝ)) (tailBound := tailNorm + 1)
+        (N := N) (M := M) hsqrt_pos hdelta_lt_one hcount
+        htailBound_pos htailBase_le
+        (by
+          simpa [xseqRange, xbar0Range, phiGradRange, tailNorm] using
+            hmeasuredRangeTailLog)
+    simpa [xseqRange, xbar0Range, phiGradRange, tailNorm] using htail
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeTailBudget_noFactor
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (lambdaSeq := lambdaSeq) (c0 := c0) (nu := (m : ℝ))
+      (N := N) hxN_range hx0 ht0 htstep hlambda0 hstep
+      hlambdaBudget hrangeTailBudget
+
+/--
 Successor-index source-start initialization for finite-row polytope logarithmic
 barriers from a uniform slack-range source-tail estimate.  This is the
 bounded-polytope handoff shape for Chewi Lemma 13.16: once the source-gradient

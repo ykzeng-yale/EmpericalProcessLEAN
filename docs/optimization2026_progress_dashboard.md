@@ -121,6 +121,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   proves the actual half contraction, the next serious Chapter 13 work should
   return to the moving-center / bounded-polytope range-tail estimate and use
   the existing range-tail source-start consumers.
+  The measured-tail range packet now adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_noFactor`,
+  which initializes the positive main stage from the actual measured
+  slack-range tail norm at a selected preliminary index and the corresponding
+  log/count inequalities.  This is the preferred exact selected-index wrapper
+  while the stronger moving-center or bounded-polytope invariant is being
+  proved.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

@@ -239,11 +239,9 @@ source-facing §13.16 wrappers, adding
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementTsumBudget_noFactor_standardConstants`,
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_standardConstants`, and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementContractingBudget_noFactor_standardConstants`.
-These are now the preferred source-facing consumers.  The live mathematical
-blocker is only the source next-pre-decrement estimate plus either a summable
-total-mass proof, a geometric majorant, or the doubled-budget contraction
-`2 * stepBudget (n+1) <= q * (2 * stepBudget n)` with
-`(2 * stepBudget 0) * (1 - q)⁻¹ <= 1 / 2`.
+These remain useful conditional source-facing consumers when a valid
+pre-decrement budget is available, but they are no longer the preferred
+unconditional route for the actual preliminary path.
 The newest actual-budget packet names the real source next-pre-decrement
 sequence as `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget` and
 adds
@@ -273,6 +271,14 @@ route is the direct moving-center / bounded-polytope range-tail estimate that
 older route notes identify after the positive-orthant obstruction packets,
 reusing the compiled range-tail and source-start consumers rather than
 re-entering the false fixed-source radius/summability path.
+The newest measured-tail packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_noFactor`.
+It removes the need for a uniform guessed tail bound at this layer: for a
+chosen `M,N`, the actual measured slack-range tail norm at `x_N`, plus the
+usual count/log inequality, directly initializes the positive main stage.  This
+is now the preferred wrapper for the omitted Chewi/Nesterov preliminary-stage
+quantity while the stronger bounded-polytope or moving-center invariant is
+being developed.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
