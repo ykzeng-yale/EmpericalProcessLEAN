@@ -134,6 +134,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_succ_noFactor_standardConstants`,
   so downstream work no longer has to carry `lambdaSeq` or scalar
   `c0 = 1/200` plumbing for this measured-tail route.
+  The source-facing measured-tail handoff packet now adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_measuredRangeTailLogBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_measuredRangeTailLogBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_measuredRangeTailLogBound_succ_noFactor_standardConstants`.
+  These derive successor range membership and the `1/4 -> 1/8` preliminary
+  invariant internally from range/source preliminary Newton data plus the
+  prefix pre-decrement budget, leaving the real preferred mathematical target
+  as the moving-center / bounded-polytope measured range-tail logarithmic
+  bound at a selected successor index.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

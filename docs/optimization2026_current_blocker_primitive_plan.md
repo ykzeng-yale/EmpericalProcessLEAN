@@ -286,9 +286,19 @@ and
 These discharge the auxiliary `lambdaSeq` bookkeeping and standard Chewi
 constant side for a selected successor index.  The remaining high-value
 preliminary-stage target is now a theorem that supplies the measured
-slack-range tail logarithmic bound at some successor index together with the
-range feasibility and one-step decrement invariant; do not reintroduce a
-uniform fixed-source tail assumption.
+slack-range tail logarithmic bound at some successor index; do not reintroduce
+a uniform fixed-source tail assumption.  The newest source-facing measured-tail
+packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_measuredRangeTailLogBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_measuredRangeTailLogBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_measuredRangeTailLogBound_succ_noFactor_standardConstants`.
+These wrappers derive successor range feasibility and the `1/4 -> 1/8`
+one-step preliminary invariant from range/source preliminary Newton data plus
+the prefix pre-decrement budget before calling the selected measured-tail
+consumer.  Treat them as conditional infrastructure: the preferred exact route
+still needs a valid moving-center / bounded-polytope argument for the measured
+range-tail logarithmic bound, and eventually a side-condition route that does
+not smuggle in the archived false fixed-source radius/summability assumption.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
