@@ -824,9 +824,15 @@ packet adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps_preDecrementBudget`.
 	This removes range source-radius-half as a separate direct-route gate when
 	the same range preliminary-next-Newton recurrence and summable
-	pre-decrement budget are supplied.  The remaining direct gates are the
-	concrete scalar/source tail-budget data and, upstream, proving the actual
-	Chewi/Nesterov recurrence plus pre-decrement summability assumptions.
+	pre-decrement budget are supplied.  The canonical scalar packet adds
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`
+	and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants`.
+	This fixes the auxiliary residual sequence to `1/4, 1/8, ...`, sets
+	`c0 = 1/200`, and discharges `tailBound = 2 * sqrt m` under `0 < m`.
+	The remaining direct gates are proving the actual Chewi/Nesterov
+	one-step `1/4 -> 1/8` invariant, range preliminary-next-Newton recurrence,
+	and pre-decrement summability assumptions.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
@@ -842,9 +848,10 @@ packet adds
 	zero Newton decrement at the source endpoints, and the one-step post-Newton
 	`lambda <= 1/4` and successor `lambda <= 1/8` invariants for the supplied
 	preliminary path.  The next live gate is now sharper: prove the concrete
-	Chewi/Nesterov range preliminary-next-Newton recurrence and summable
-	next-parameter pre-Newton decrement budget, then discharge the scalar/source
-	tail-budget data feeding the compiled no-factor handoff.
+	Chewi/Nesterov range preliminary-next-Newton recurrence, the one-step
+	`1/4 -> 1/8` decrement invariant, and the summable next-parameter
+	pre-Newton decrement budget feeding the compiled standard-constant
+	no-factor handoff.
 	Equivalent exponential/local-norm,
 	inverse-Hessian, or direct scaled final-tail routes remain acceptable; the
 	measured unscaled-tail fallback should be used only when a caller genuinely has

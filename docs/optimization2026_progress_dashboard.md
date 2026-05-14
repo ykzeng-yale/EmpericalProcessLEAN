@@ -668,9 +668,14 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps_preDecrementBudget`.
 	  Range source-radius-half and successor membership are now both
 	  discharged from the compiled range preliminary-next-Newton recurrence
-	  plus summable pre-decrement budget.  The remaining live exact-source
-	  gates are proving those concrete recurrence/pre-decrement hypotheses and
-	  the scalar/source tail budgets.
+	  plus summable pre-decrement budget.  The canonical scalar packet adds
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`
+	  and
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants`,
+	  fixing the auxiliary lambda sequence, `c0 = 1/200`, and
+	  `tailBound = 2 * sqrt m`.  The remaining live exact-source gates are
+	  proving the concrete one-step `1/4 -> 1/8` invariant, range recurrence,
+	  and pre-decrement summability.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,
