@@ -582,9 +582,18 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	and
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants`.
 	It fixes the auxiliary lambda sequence, `c0 = 1/200`, and
-	`tailBound = 2 * sqrt m`.  The next exact-source gate is now to prove the
-	concrete range preliminary Newton recurrence, one-step `1/4 -> 1/8`
-	invariant, and pre-decrement summability.
+	`tailBound = 2 * sqrt m`.  The range-preliminary transport packet adds
+	`barrierAffinePreimage_preliminaryPathGrad_eq`,
+	`barrierAffineRange_preliminaryPathGrad_dualLocalNorm_surjective_eq`,
+	`chewi1314_polytopeSlackNegLog_preliminaryPath_newtonDecrement_rangePull_eq`,
+	`chewi1316_polytopeSlackNegLog_rangePull_decrement_step_le_eighth_of_range_decrement_step`, and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeDecrement`.
+	It lets the direct standard-constant handoff consume the preliminary
+	one-step invariant in range coordinates, so source-pullback decrement
+	transport is no longer a separate exact-source gate.  The next
+	exact-source gate is now to prove the concrete range preliminary Newton
+	recurrence, range one-step `1/4 -> 1/8` invariant, and pre-decrement
+	summability.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
@@ -594,9 +603,10 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse`,
 	and mathlib `norm_add_le`, `norm_sum_le`, and `Finset.sum_range_sub`.  The next
 	exact-source §13.16 gate is no longer a raw `hradius_half`, custom
-	`lambdaSeq`, or scalar tail-budget choice; it is the concrete preliminary
-	Newton recurrence, one-step `1/4 -> 1/8` invariant, and scalar summability
-	budget `sum 2*lambda_n <= 1/2`.
+	`lambdaSeq`, scalar tail-budget choice, or source-pullback decrement
+	transport; it is the concrete range preliminary Newton recurrence, range
+	one-step `1/4 -> 1/8` invariant, and scalar summability budget
+	`sum 2*lambda_n <= 1/2`.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

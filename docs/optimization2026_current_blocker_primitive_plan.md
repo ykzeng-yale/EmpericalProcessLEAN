@@ -830,7 +830,16 @@ packet adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants`.
 	This fixes the auxiliary residual sequence to `1/4, 1/8, ...`, sets
 	`c0 = 1/200`, and discharges `tailBound = 2 * sqrt m` under `0 < m`.
-	The remaining direct gates are proving the actual Chewi/Nesterov
+	The range-preliminary transport packet adds
+	`barrierAffinePreimage_preliminaryPathGrad_eq`,
+	`barrierAffineRange_preliminaryPathGrad_dualLocalNorm_surjective_eq`,
+	`chewi1314_polytopeSlackNegLog_preliminaryPath_newtonDecrement_rangePull_eq`,
+	`chewi1316_polytopeSlackNegLog_rangePull_decrement_step_le_eighth_of_range_decrement_step`, and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeDecrement`.
+	This removes the source-pullback preliminary decrement shape as a live
+	caller-facing gate: the standard-constant handoff can now consume the
+	one-step `1/4 -> 1/8` invariant directly in finite-row range coordinates.
+	The remaining direct gates are proving the actual Chewi/Nesterov range
 	one-step `1/4 -> 1/8` invariant, range preliminary-next-Newton recurrence,
 	and pre-decrement summability assumptions.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
@@ -848,7 +857,7 @@ packet adds
 	zero Newton decrement at the source endpoints, and the one-step post-Newton
 	`lambda <= 1/4` and successor `lambda <= 1/8` invariants for the supplied
 	preliminary path.  The next live gate is now sharper: prove the concrete
-	Chewi/Nesterov range preliminary-next-Newton recurrence, the one-step
+	Chewi/Nesterov range preliminary-next-Newton recurrence, the range one-step
 	`1/4 -> 1/8` decrement invariant, and the summable next-parameter
 	pre-Newton decrement budget feeding the compiled standard-constant
 	no-factor handoff.
