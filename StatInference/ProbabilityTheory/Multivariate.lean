@@ -2027,6 +2027,71 @@ theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto
     hproj
 
 /--
+Durrett 2019, Theorem 3.10.6, Cramér-Wold device, random-vector convergence
+form.
+
+For finite real coordinate spaces, convergence in distribution of every
+continuous linear projection implies convergence in distribution of the vector
+itself.
+-/
+theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribution
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : ℕ -> Measure Ω} [∀ n, IsProbabilityMeasure (P n)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : ℕ -> Ω -> Coordinate -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_aemeas : ∀ n, AEMeasurable (X n) (P n))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hproj : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      TendstoInDistribution (fun n ω => L (X n ω)) atTop
+        (fun ω => L (Z ω)) P Q) :
+    TendstoInDistribution X atTop Z P Q := by
+  refine
+    ({ forall_aemeasurable := hX_aemeas
+       aemeasurable_limit := hZ_aemeas
+       tendsto := ?_ } :
+      TendstoInDistribution X atTop Z P Q)
+  let μs : ℕ -> ProbabilityMeasure (Coordinate -> ℝ) :=
+    fun n => ⟨(P n).map (X n), Measure.isProbabilityMeasure_map (hX_aemeas n)⟩
+  let μ : ProbabilityMeasure (Coordinate -> ℝ) :=
+    ⟨Q.map Z, Measure.isProbabilityMeasure_map hZ_aemeas⟩
+  have hprojected :
+      StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateProjectedLawConvergence
+        μs μ := by
+    intro L
+    have hseq_eq :
+        (fun n => (μs n).map L.continuous.measurable.aemeasurable) =
+          (fun n : ℕ =>
+            (⟨(P n).map (fun ω => L (X n ω)),
+              Measure.isProbabilityMeasure_map ((hproj L).forall_aemeasurable n)⟩ :
+              ProbabilityMeasure ℝ)) := by
+      funext n
+      ext s
+      change ((P n).map (X n)).map L s =
+        (P n).map (fun ω => L (X n ω)) s
+      rw [AEMeasurable.map_map_of_aemeasurable
+        L.continuous.measurable.aemeasurable (hX_aemeas n)]
+      rfl
+    have hlim_eq :
+        μ.map L.continuous.measurable.aemeasurable =
+          (⟨Q.map (fun ω => L (Z ω)),
+            Measure.isProbabilityMeasure_map ((hproj L).aemeasurable_limit)⟩ :
+            ProbabilityMeasure ℝ) := by
+      ext s
+      change (Q.map Z).map L s = Q.map (fun ω => L (Z ω)) s
+      rw [AEMeasurable.map_map_of_aemeasurable
+        L.continuous.measurable.aemeasurable hZ_aemeas]
+      rfl
+    simpa [hseq_eq, hlim_eq] using (hproj L).tendsto
+  simpa [μs, μ] using
+    durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto
+      (μs := μs) (μ := μ) hprojected
+
+/--
 Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from projected
 scalar CLTs.
 
