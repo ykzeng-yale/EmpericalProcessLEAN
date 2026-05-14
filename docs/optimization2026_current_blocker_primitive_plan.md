@@ -1464,6 +1464,10 @@ or
 These turn the same Schur certificate plus source first/second differentiability
 and vertical first-order data into the envelope/literal package without
 replaying full-Hessian derivative hypotheses.
+For the full literal source-radius local-norm theorem in one call, use
+`chewi1311_infProjection_literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtFirstSecondSchurHessDerivativeOn`.
+It combines the same Schur-certificate branch with vertical first-order data
+and the local-norm transport target.
 The theorem-facing source-square-root endpoints
 `chewi1311_infProjection_thirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`,
 `chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`
@@ -1476,6 +1480,9 @@ on `s`, the vertical `Hyy` square-root model on the projected domain, and the
 source mixed-third identity.  Prefer the non-literal third-order endpoint when
 the reusable `BarrierInfProjectionThirdOrderEnvelopeOn` certificate is needed
 before vertical-minimizer/literal-infimum data is packaged.
+When the source proof has vertical first-order lower models and needs the
+literal local-norm theorem directly from full-Hessian derivative data, call
+`chewi1311_infProjection_literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtFirstSecondFullHessianDerivative`.
 Once that reusable third-order envelope certificate is already available,
 `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtThirdOrderEnvelope`
 is the shortest local-norm consumer; it avoids re-threading first-, second-,

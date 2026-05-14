@@ -965,6 +965,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   now turn an already-built Schur certificate plus source first/second
   differentiability into the reusable third-order envelope or literal infimum
   package.
+  The sourceFullSqrt literal Schur local-norm endpoint
+  `chewi1311_infProjection_literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtFirstSecondSchurHessDerivativeOn`
+  now combines that Schur-certificate branch with vertical first-order data
+  into the literal projected local-norm theorem.
   The sourceFullSqrt Schur local-norm consumer
   `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSchurHessDerivativeOn`
   now turns an already-built Schur certificate directly into the projected
@@ -974,6 +978,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   now exposes `BarrierInfProjectionThirdOrderEnvelopeOn` from source
   full-square-root plus source first/second/full-Hessian derivative data,
   without requiring the literal vertical-minimizer package.
+  The full-derivative literal one-call endpoint
+  `chewi1311_infProjection_literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtFirstSecondFullHessianDerivative`
+  now packages vertical first-order, literal infimum, and local-norm transport
+  from sourceFullSqrt first/second/full-Hessian derivative data.
   The matching third-order-envelope local-norm consumer
   `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtThirdOrderEnvelope`
   now routes that reusable envelope certificate directly to the local-norm

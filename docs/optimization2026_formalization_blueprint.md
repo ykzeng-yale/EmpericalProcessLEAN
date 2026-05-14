@@ -808,6 +808,10 @@ For those branches, use
 to obtain the reusable selected-value envelope and
 `chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondSchurHessDerivativeOn`
 to obtain the literal infimum package from the same Schur certificate.
+Use
+`chewi1311_infProjection_literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtFirstSecondSchurHessDerivativeOn`
+when the exact theorem also needs the literal source-radius local-norm
+conclusion from that Schur-certificate branch.
 When the Schur certificate is already present and the target is local-norm
 transport, use
 `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSchurHessDerivativeOn`.
@@ -819,6 +823,8 @@ one-call source endpoints
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`
 and
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFirstSecondFullHessianDerivative_isOpen_of_verticalFirstOrder`.
+The theorem-facing sourceFullSqrt version of the latter is
+`chewi1311_infProjection_literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtFirstSecondFullHessianDerivative`.
 These are the shortest verified routes from original-domain derivative data to
 the literal envelope package and Chewi source-radius local-norm sandwich.
 For local-norm transport without selected-value envelope data, use
