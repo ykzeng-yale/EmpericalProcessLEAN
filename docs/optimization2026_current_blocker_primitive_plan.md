@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V9`, this file's top
+   the full book is complete, route from `Live Goal Prompt V10`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V9
+## Live Goal Prompt V10
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -191,10 +191,16 @@ now supply the source or range pre-decrement estimate, the doubled-budget
 contraction `2 * stepBudget (n+1) <= q * (2 * stepBudget n)`, `0 <= q < 1`,
 and `(2 * stepBudget 0) * (1 - q)⁻¹ <= 1 / 2`, then call the contracting
 canonical, standard source-decrement, or standard range-sqrt handoff directly.
-Continue aggressively from exactly this frontier.  The next theorem-sized
-targets are: build the point-dependent range Hessian/inverse-Hessian
-sqrt-coordinate family (or an equivalent mathlib spectral / positive-operator
-construction) and prove the source next pre-decrement decay / total-mass
+Continue aggressively from exactly this frontier.  The range
+sqrt-coordinate family is no longer the active blocker: the newest local
+spectral packet adds
+`continuousLinearMap_exists_adjointSqrt_of_isPositive_finiteDim`, proving from
+Mathlib's finite-dimensional self-adjoint eigenbasis APIs that every positive
+continuous linear map has an adjoint-square CLM factor, and
+`chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`, which packages the
+finite-row logarithmic-barrier range Hessian and inverse-Hessian model into
+the exact point-dependent family consumed by the §13.16 wrappers.  The next
+theorem-sized target is the source next pre-decrement decay / total-mass
 bound, preferably as the doubled-budget contraction feeding the new source
 `preDecrementContractingBudget` handoff or as the pointwise geometric majorant
 feeding the source `preDecrementGeometricBudget` handoffs.  The newest
@@ -218,19 +224,15 @@ if future spectral work supplies only a continuous-linear-map factor
 `H = sqrtH†sqrtH`, finite-dimensional invertibility and the full range
 sqrt-coordinate model now follow automatically.  The search-first spectral
 result is that no ready local/mathlib theorem directly returns this full
-sqrt-coordinate family from a positive self-adjoint continuous linear map.  The
-smallest next range-sqrt target should be a pointwise CLM Hessian factor theorem
-feeding `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hessCLM_pointwise`.
-Reuse the new local positive-operator bridge, range Hessian right-inverse
-lemmas, and mathlib positive-operator / `LinearMap.IsSymmetric`
-spectral/eigenbasis APIs; avoid stronger continuity or measurability
-requirements for the selected family.
+sqrt-coordinate family from a positive self-adjoint continuous linear map; this
+is now discharged locally by the generic finite-dimensional spectral theorem.
+Reuse this new generic theorem, the positive-operator bridge, and the range
+Hessian right-inverse lemmas instead of redoing spectral selection,
+equivalence promotion, positivity conversion, or the inverse model proof.
 The selection part is now compiled as
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise`: the
-remaining range-sqrt work is the pointwise spectral/matrix construction of a
-single feasible-point continuous-linear-map Hessian square root from the
-positive range Hessian, not the global family packaging, equivalence
-promotion, positivity conversion, or inverse model proof.
+full source-facing range-sqrt endpoint is now compiled as
+`chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new

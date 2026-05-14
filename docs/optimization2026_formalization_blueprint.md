@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V9` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V10` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -85,10 +85,11 @@ handoff, the standard source-decrement handoff, or the standard range-sqrt
 handoff directly from `2 * stepBudget (n+1) <= q * (2 * stepBudget n)`,
 `0 <= q < 1`, and `(2 * stepBudget 0) * (1 - q)⁻¹ <= 1 / 2`, without
 reproving scalar recurrence, geometric-majorant, or `tsum` algebra.
-The active theorem-sized target is to construct the point-dependent range Hessian/inverse-Hessian
-sqrt-coordinate family (or an equivalent mathlib
-spectral / positive-operator construction) and prove the source next
-pre-decrement decay / total-mass bound feeding either the source
+The range sqrt-coordinate gate is now closed by
+`continuousLinearMap_exists_adjointSqrt_of_isPositive_finiteDim` and
+`chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`.  The active
+theorem-sized target is to prove the source next pre-decrement decay /
+total-mass bound feeding either the source
 `preDecrementContractingBudget` handoff or the source
 `preDecrementGeometricBudget` handoffs.
 The newest range-Hessian positivity bridge adds
@@ -97,27 +98,24 @@ The newest range-Hessian positivity bridge adds
 concrete finite-row range Hessian as a Mathlib positive operator via
 `ContinuousLinearMap.isPositive_iff` and
 `ContinuousLinearMap.isPositive_toLinearMap_iff`.  Search-first spectral
-result: the smallest useful range-sqrt target is
-`chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hess_pointwise`,
-an existential point-dependent `sqrtCoordRange` theorem that only asks for the
-Hessian factor `H = S†S`.  The inverse-model handoff
+result: no ready local/mathlib theorem directly returned the required
+positive-operator square-root family, so this lane now uses a local
+finite-dimensional eigenbasis theorem based on Mathlib
+`LinearMap.IsSymmetric` spectral APIs.  The inverse-model handoff
 `continuousLinearMap_adjointSqrtCoord_inv_eq_of_right_inverse_finiteDim`
 derives `invHess = S⁻¹(S⁻¹)†` from the compiled right-inverse identity.  The
 CLM-to-equivalence adapter
 `continuousLinearMap_exists_adjointSqrtCoord_of_adjointSqrt_right_inverse_finiteDim`
 and range wrapper
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hessCLM_pointwise`
-now reduce the next spectral packet to a pointwise continuous-linear-map
-Hessian factor `H = sqrtH†sqrtH`.  Reuse the new positive-operator bridge,
-local range Hessian right-inverse lemmas, and mathlib positive-operator /
-`LinearMap.IsSymmetric` spectral/eigenbasis APIs; do not add
-continuity/measurability obligations for the selected family unless a later
-statement requires them.
+now reduce a CLM Hessian factor `H = sqrtH†sqrtH` to the exact range model.
+The new generic local spectral theorem provides that factor from positivity,
+and the full range-sqrt endpoint should be reused directly.
 The selection wrapper
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise` now
 packages pointwise feasible square-root witnesses into the domain-wide family;
-the next range-sqrt packet should prove only the pointwise CLM Hessian
-square-root factor from the positive range Hessian.
+the source-facing endpoint is
+`chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`.
 Do
 not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the

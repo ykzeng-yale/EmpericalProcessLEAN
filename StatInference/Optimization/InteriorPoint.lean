@@ -5353,6 +5353,91 @@ theorem continuousLinearMap_exists_adjointSqrtCoord_of_adjointSqrt_right_inverse
   · simpa [sqrtCoord] using hH_eq
   · simp [sqrtCoord]
 
+/--
+Finite-dimensional positive continuous linear maps have a continuous-linear
+square root in the adjoint-square sense.
+-/
+theorem continuousLinearMap_exists_adjointSqrt_of_isPositive_finiteDim
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    [CompleteSpace F] [FiniteDimensional ℝ F]
+    {H : F →L[ℝ] F} (hH : H.IsPositive) :
+    ∃ sqrtH : F →L[ℝ] F,
+      H = (ContinuousLinearMap.adjoint sqrtH).comp sqrtH := by
+  classical
+  let n : ℕ := Module.finrank ℝ F
+  let e : OrthonormalBasis (Fin n) ℝ F :=
+    hH.isSymmetric.eigenvectorBasis (n := n) rfl
+  let lam : Fin n -> ℝ :=
+    hH.isSymmetric.eigenvalues (n := n) rfl
+  let sqrtH : F →L[ℝ] F :=
+    ∑ i : Fin n, (Real.sqrt (lam i)) •
+      (InnerProductSpace.rankOne ℝ (e i) (e i) : F →L[ℝ] F)
+  have hsqrt_coord : ∀ y : F, ∀ i : Fin n,
+      e.repr (sqrtH y) i = Real.sqrt (lam i) * e.repr y i := by
+    intro y i
+    simp only [sqrtH, ContinuousLinearMap.sum_apply, map_sum,
+      ContinuousLinearMap.smul_apply, InnerProductSpace.rankOne_apply,
+      OrthonormalBasis.repr_apply_apply]
+    rw [WithLp.ofLp_sum]
+    rw [Finset.sum_apply]
+    change (∑ j : Fin n,
+        (e.repr (Real.sqrt (lam j) • inner ℝ (e j) y • e j)).ofLp i) =
+      Real.sqrt (lam i) * inner ℝ (e i) y
+    rw [Finset.sum_eq_single i]
+    · rw [OrthonormalBasis.repr_apply_apply]
+      simp [real_inner_smul_right]
+    · intro j _ hji
+      have hij : i ≠ j := hji.symm
+      have horth : inner ℝ (e i) (e j) = 0 := by
+        rw [← OrthonormalBasis.repr_apply_apply]
+        simp [hij]
+      rw [OrthonormalBasis.repr_apply_apply]
+      simp [real_inner_smul_right, horth]
+    · intro hi
+      exact False.elim (hi (Finset.mem_univ i))
+  have hsqrt_basis : ∀ i : Fin n, sqrtH (e i) = Real.sqrt (lam i) • e i := by
+    intro i
+    apply e.repr.injective
+    ext j
+    rw [hsqrt_coord (e i) j]
+    by_cases hji : j = i
+    · subst hji
+      simp
+    · have hij : i ≠ j := fun hij => hji hij.symm
+      simp [hji]
+  refine ⟨sqrtH, ?_⟩
+  ext x
+  apply e.repr.injective
+  ext i
+  calc
+    e.repr (H x) i =
+        lam i * e.repr x i := by
+          simpa [e, lam] using
+            hH.isSymmetric.eigenvectorBasis_apply_self_apply
+              (n := n) rfl x i
+    _ = Real.sqrt (lam i) * (Real.sqrt (lam i) * e.repr x i) := by
+          have hnonneg : 0 ≤ lam i := by
+            simpa [lam] using hH.toLinearMap.nonneg_eigenvalues (n := n) rfl i
+          have hmul : Real.sqrt (lam i) * Real.sqrt (lam i) = lam i :=
+            Real.mul_self_sqrt hnonneg
+          calc
+            lam i * e.repr x i =
+                (Real.sqrt (lam i) * Real.sqrt (lam i)) * e.repr x i := by
+                  rw [hmul]
+            _ = Real.sqrt (lam i) * (Real.sqrt (lam i) * e.repr x i) := by
+                  ring
+    _ = e.repr (((ContinuousLinearMap.adjoint sqrtH).comp sqrtH) x) i := by
+          symm
+          rw [OrthonormalBasis.repr_apply_apply,
+            ContinuousLinearMap.comp_apply,
+            ContinuousLinearMap.adjoint_inner_right,
+            hsqrt_basis i, real_inner_smul_left]
+          have hcoord_inner :
+              inner ℝ (e i) (sqrtH x) =
+                Real.sqrt (lam i) * e.repr x i := by
+            simpa [OrthonormalBasis.repr_apply_apply] using hsqrt_coord x i
+          rw [hcoord_inner]
+
 theorem barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim
     [FiniteDimensional ℝ E₂]
     (selector : E₁ -> E₂)
@@ -29985,6 +30070,38 @@ theorem chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hessCLM_poin
       (chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
         aRow bSlack hz)
   exact ⟨sqrtCoord, hhess_coord⟩
+
+/--
+Finite-row logarithmic-barrier range Hessians have the square-root-coordinate
+family required by the §13.16 range preliminary-path wrappers.
+-/
+theorem chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m)) :
+    ∃ sqrtCoordRange :
+        (polytopeSlackCLM aRow).range ->
+          (polytopeSlackCLM aRow).range ≃L[ℝ] (polytopeSlackCLM aRow).range,
+      (∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
+        z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM z =
+            (ContinuousLinearMap.adjoint
+              (sqrtCoordRange z).toContinuousLinearMap).comp
+              (sqrtCoordRange z).toContinuousLinearMap) ∧
+      (∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
+        z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack z =
+            (sqrtCoordRange z).symm.toContinuousLinearMap.comp
+              (ContinuousLinearMap.adjoint
+                (sqrtCoordRange z).symm.toContinuousLinearMap)) := by
+  refine
+    chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hessCLM_pointwise
+      aRow bSlack ?_
+  intro z hz
+  exact continuousLinearMap_exists_adjointSqrt_of_isPositive_finiteDim
+    (chewi1314_polytopeSlackNegLog_rangeHess_isPositive aRow bSlack hz)
 
 /--
 Finite-row range-space preliminary one-step invariant from a domain-wide
