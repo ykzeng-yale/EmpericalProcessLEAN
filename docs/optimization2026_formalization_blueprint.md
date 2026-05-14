@@ -535,10 +535,24 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	from the direct source-radius route by reusing the positive-orthant
 	logarithmic-barrier Hessian derivative package through affine/range
 	transport.
+	The direct Cauchy/right-inverse packet adds
+	`hessianCauchy_sq_of_quadratic_pos`,
+	`dualPrimalCauchy_of_hessian_right_inverse_pos`,
+	`barrierAffinePreimageHess_symmetric`,
+	`barrierAffineRangeHess_symmetric`,
+	`positiveOrthantNegLogHessCLM_symmetric`,
+	`chewi1314_polytopeSlackNegLog_rangeHess_symmetric`,
+	`chewi1314_polytopeSlackNegLog_range_sourceCauchy`,
+	`chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf`,
+	and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget`,
+	removing the source-point square-root-coordinate/factorization assumption
+	from the direct source-radius route.
 	The next exact-source gate can now be attacked either by proving the direct
-	range source-radius-half/source-factorization/successor-membership
-	certificates, or by discharging the stronger range preliminary Newton
-	recurrence, pre-decrement summability, and square-root-coordinate model.
+	range source-radius-half/successor-membership certificates plus the
+	pulled-back inverse-Hessian factorization used by the decrement model, or
+	by discharging the stronger range preliminary Newton recurrence,
+	pre-decrement summability, and square-root-coordinate model.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

@@ -611,6 +611,21 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  This removes the global range Hessian derivative/mixed-third assumptions
 	  from the direct source-radius route by transporting the positive-orthant
 	  logarithmic-barrier Hessian derivative through the affine slack range.
+	  The newest direct Cauchy/right-inverse packet adds
+	  `hessianCauchy_sq_of_quadratic_pos`,
+	  `dualPrimalCauchy_of_hessian_right_inverse_pos`,
+	  `barrierAffinePreimageHess_symmetric`,
+	  `barrierAffineRangeHess_symmetric`,
+	  `positiveOrthantNegLogHessCLM_symmetric`,
+	  `chewi1314_polytopeSlackNegLog_rangeHess_symmetric`,
+	  `chewi1314_polytopeSlackNegLog_range_sourceCauchy`,
+	  `chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf`,
+	  and
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget`.
+	  This removes the source-point square-root-coordinate/factorization
+	  assumption from the direct range source-radius route by proving the
+	  needed source Cauchy bridge from strict range Hessian positivity and the
+	  concrete range inverse-Hessian right-inverse.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
@@ -623,9 +638,9 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `norm_sum_le`, and `Finset.sum_range_sub`.  The live exact-source gate is
 	  now the concrete Chewi/Nesterov analytical-center data for the
 	  next-parameter preliminary Newton recurrence: successor membership,
-	  range source-radius-half, source square-root/inverse-Hessian data, and
-	  either a summable next-parameter pre-Newton decrement budget or an
-	  alternative analytical-center radius route.
+	  range source-radius-half, pulled-back inverse-Hessian factorization for
+	  the decrement model, and either a summable next-parameter pre-Newton
+	  decrement budget or an alternative analytical-center radius route.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

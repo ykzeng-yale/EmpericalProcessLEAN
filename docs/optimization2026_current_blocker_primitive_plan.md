@@ -774,6 +774,22 @@ packet adds
 	logarithmic barrier, so the remaining direct gates are now range
 	source-radius-half, successor range membership, source Hessian/inverse-
 	Hessian factorization at the source point, and the scalar tail budget.
+	The newest direct Cauchy/right-inverse packet adds
+	`hessianCauchy_sq_of_quadratic_pos`,
+	`dualPrimalCauchy_of_hessian_right_inverse_pos`,
+	`barrierAffinePreimageHess_symmetric`,
+	`barrierAffineRangeHess_symmetric`,
+	`positiveOrthantNegLogHessCLM_symmetric`,
+	`chewi1314_polytopeSlackNegLog_rangeHess_symmetric`,
+	`chewi1314_polytopeSlackNegLog_range_sourceCauchy`,
+	`chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf`,
+	and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget`.
+	This discharges the source-point Cauchy/source square-root factorization
+	gate directly from strict range Hessian positivity plus the concrete range
+	inverse-Hessian right-inverse.  The remaining direct gates are now range
+	source-radius-half, successor range membership, pulled-back inverse-Hessian
+	factorization for the decrement model, and the scalar tail budget.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

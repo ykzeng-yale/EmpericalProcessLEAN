@@ -892,6 +892,105 @@ theorem dualLocalNorm_le_sqrt_of_cauchy_and_hessian_right_inverse
   exact le_of_mul_le_mul_right hmul hD_pos
 
 /--
+Squared Cauchy estimate for the positive-definite symmetric bilinear form
+`(u,v) ↦ <u, H v>`.
+-/
+theorem hessianCauchy_sq_of_quadratic_pos
+    {H : E →L[ℝ] E}
+    (hsymm : ∀ u v : E, inner ℝ (H u) v = inner ℝ u (H v))
+    (hpos : ∀ {w : E}, w ≠ 0 -> 0 < inner ℝ w (H w))
+    (u v : E) :
+    (inner ℝ u (H v)) ^ (2 : ℕ) ≤
+      inner ℝ u (H u) * inner ℝ v (H v) := by
+  by_cases hv : v = 0
+  · simp [hv]
+  have hBvv_pos : 0 < inner ℝ v (H v) := hpos hv
+  let Buv : ℝ := inner ℝ u (H v)
+  let Bvv : ℝ := inner ℝ v (H v)
+  let c : ℝ := Buv / Bvv
+  have hquad_nonneg : 0 ≤ inner ℝ (u - c • v) (H (u - c • v)) := by
+    by_cases hzero : u - c • v = 0
+    · simp [hzero]
+    · exact (hpos hzero).le
+  have hexpand : inner ℝ (u - c • v) (H (u - c • v)) =
+      inner ℝ u (H u) - Buv ^ (2 : ℕ) / Bvv := by
+    have hsymm_uv : inner ℝ (H u) v = inner ℝ u (H v) := hsymm u v
+    have hinner_vHu : inner ℝ v (H u) = inner ℝ u (H v) := by
+      exact (real_inner_comm (H u) v).trans hsymm_uv
+    simp only [map_sub, map_smul, inner_sub_left, inner_sub_right,
+      real_inner_smul_left, real_inner_smul_right]
+    dsimp [c, Buv, Bvv]
+    rw [hinner_vHu]
+    field_simp [ne_of_gt hBvv_pos]
+    ring
+  rw [hexpand] at hquad_nonneg
+  have hdiv_le : Buv ^ (2 : ℕ) / Bvv ≤ inner ℝ u (H u) := by
+    linarith
+  have hmul : Buv ^ (2 : ℕ) ≤ inner ℝ u (H u) * Bvv := by
+    exact (div_le_iff₀ hBvv_pos).mp hdiv_le
+  simpa [Buv, Bvv] using hmul
+
+/--
+Dual/primal Cauchy bridge from a symmetric positive-definite Hessian and a
+right-inverse Hessian oracle.  This avoids constructing an explicit square
+root coordinate when strict Hessian positivity is already available.
+-/
+theorem dualPrimalCauchy_of_hessian_right_inverse_pos
+    {hess invHess : E -> E →L[ℝ] E} {x : E}
+    (hsymm : ∀ u v : E, inner ℝ (hess x u) v = inner ℝ u (hess x v))
+    (hhess_pos : ∀ {w : E}, w ≠ 0 -> 0 < inner ℝ w (hess x w))
+    (hright : ∀ v : E, hess x (invHess x v) = v) :
+    ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w := by
+  intro v w
+  let u : E := invHess x v
+  let H : E →L[ℝ] E := hess x
+  have hhess_nonneg : ∀ z : E, 0 ≤ inner ℝ z (hess x z) := by
+    intro z
+    by_cases hz : z = 0
+    · simp [hz]
+    · exact (hhess_pos hz).le
+  have hinv_nonneg : 0 ≤ inner ℝ v (invHess x v) :=
+    inverseHessianQuadratic_nonneg_of_hessian_right_inverse
+      (hess := hess) (invHess := invHess) (x := x)
+      hhess_nonneg hright v
+  have hw_nonneg : 0 ≤ inner ℝ w (hess x w) := hhess_nonneg w
+  have hsquare_raw := hessianCauchy_sq_of_quadratic_pos
+    (H := H) (hsymm := by simpa [H] using hsymm)
+    (hpos := by intro z hz; simpa [H] using hhess_pos hz) u w
+  have hinner_eq : inner ℝ v w = inner ℝ u (H w) := by
+    calc
+      inner ℝ v w = inner ℝ (H u) w := by
+        simp [u, H, hright v]
+      _ = inner ℝ u (H w) := hsymm u w
+  have hu_eq : inner ℝ u (H u) = inner ℝ v (invHess x v) := by
+    simp [u, H, hright v, real_inner_comm]
+  have hprod_sq : (inner ℝ u (H w)) ^ (2 : ℕ) ≤
+      (dualLocalNorm invHess x v * localNorm hess x w) ^ (2 : ℕ) := by
+    calc
+      (inner ℝ u (H w)) ^ (2 : ℕ) ≤
+          inner ℝ u (H u) * inner ℝ w (H w) := hsquare_raw
+      _ = inner ℝ v (invHess x v) * inner ℝ w (hess x w) := by
+          simp [hu_eq, H]
+      _ = (dualLocalNorm invHess x v) ^ (2 : ℕ) *
+            (localNorm hess x w) ^ (2 : ℕ) := by
+          rw [dualLocalNorm_sq_eq_inner hinv_nonneg,
+            localNorm_sq_eq_inner hw_nonneg]
+      _ = (dualLocalNorm invHess x v * localNorm hess x w) ^ (2 : ℕ) := by
+          ring
+  have hprod_nonneg : 0 ≤ dualLocalNorm invHess x v * localNorm hess x w :=
+    mul_nonneg (dualLocalNorm_nonneg invHess x v)
+      (localNorm_nonneg hess x w)
+  have habs : |inner ℝ u (H w)| ≤
+      dualLocalNorm invHess x v * localNorm hess x w := by
+    refine (sq_le_sq₀ (abs_nonneg _) hprod_nonneg).mp ?_
+    simpa using hprod_sq
+  calc
+    inner ℝ v w = inner ℝ u (H w) := hinner_eq
+    _ ≤ |inner ℝ u (H w)| := le_abs_self _
+    _ ≤ dualLocalNorm invHess x v * localNorm hess x w := habs
+
+/--
 Nonnegativity of the supplied inverse-Hessian quadratic form from the
 adjoint-coordinate factorization used in the Theorem 13.8 Rayleigh route.
 -/
@@ -3082,6 +3181,27 @@ theorem barrierAffinePreimageHess_quadratic_eq
   simpa [barrierAffinePreimageHess] using
     (ContinuousLinearMap.adjoint_inner_right A v (hess (A x + b) (A v)))
 
+theorem barrierAffinePreimageHess_symmetric
+    (A : F →L[ℝ] E) (b : E) (hess : E -> E →L[ℝ] E)
+    (x u v : F)
+    (hsymm : ∀ p q : E,
+      inner ℝ (hess (A x + b) p) q =
+        inner ℝ p (hess (A x + b) q)) :
+    inner ℝ (barrierAffinePreimageHess A b hess x u) v =
+      inner ℝ u (barrierAffinePreimageHess A b hess x v) := by
+  calc
+    inner ℝ (barrierAffinePreimageHess A b hess x u) v =
+        inner ℝ (hess (A x + b) (A u)) (A v) := by
+          simpa [barrierAffinePreimageHess, ContinuousLinearMap.comp_apply] using
+            (ContinuousLinearMap.adjoint_inner_left A v
+              (hess (A x + b) (A u)))
+    _ = inner ℝ (A u) (hess (A x + b) (A v)) := hsymm (A u) (A v)
+    _ = inner ℝ u (barrierAffinePreimageHess A b hess x v) := by
+          symm
+          simpa [barrierAffinePreimageHess, ContinuousLinearMap.comp_apply] using
+            (ContinuousLinearMap.adjoint_inner_right A u
+              (hess (A x + b) (A v)))
+
 theorem barrierAffinePreimageHess_quadratic_nonneg
     (A : F →L[ℝ] E) (b : E) (hess : E -> E →L[ℝ] E)
     (x v : F)
@@ -3840,6 +3960,18 @@ theorem barrierAffineRangeHessDeriv_inner_eq
   simpa [barrierAffineRangeHessDeriv, barrierAffineRangeThirdMixed] using
     barrierAffinePreimageHessDeriv_inner_eq A.range.subtypeL b
       (hessDeriv := hessDeriv) (third := third) y u v hmixed
+
+omit [CompleteSpace F] in
+theorem barrierAffineRangeHess_symmetric
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (hess : E -> E →L[ℝ] E) (y u v : A.range)
+    (hsymm : ∀ p q : E,
+      inner ℝ (hess ((y : E) + b) p) q =
+        inner ℝ p (hess ((y : E) + b) q)) :
+    inner ℝ (barrierAffineRangeHess A b hess y u) v =
+      inner ℝ u (barrierAffineRangeHess A b hess y v) := by
+  simpa [barrierAffineRangeHess] using
+    barrierAffinePreimageHess_symmetric A.range.subtypeL b hess y u v hsymm
 
 omit [CompleteSpace F] in
 theorem barrierAffineRangeHess_quadratic_nonneg
@@ -22925,6 +23057,19 @@ theorem positiveOrthantNegLogHessCLM_quadratic_pos {d : ℕ}
   rw [hquad]
   exact sq_pos_of_ne_zero (norm_ne_zero_iff.mpr hSv_ne)
 
+theorem positiveOrthantNegLogHessCLM_symmetric {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
+    (u v : EuclideanSpace ℝ (Fin d)) :
+    inner ℝ (positiveOrthantNegLogHessCLM x u) v =
+      inner ℝ u (positiveOrthantNegLogHessCLM x v) := by
+  have hsymm : (positiveOrthantNegLogHessCLM x : EuclideanSpace ℝ (Fin d) →ₗ[ℝ]
+      EuclideanSpace ℝ (Fin d)).IsSymmetric :=
+    hessianSymmetric_of_adjointSqrt
+      (H := positiveOrthantNegLogHessCLM x)
+      (sqrtH := (positiveOrthantNegLogSqrtCoord x).toContinuousLinearMap)
+      (positiveOrthantNegLogHessCLM_sqrtCoord_model hx)
+  exact hsymm u v
+
 theorem positiveOrthantNegLog_localNorm_sq_eq_sum {d : ℕ}
     {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
     (v : EuclideanSpace ℝ (Fin d)) :
@@ -25676,6 +25821,23 @@ theorem chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos
       exact positiveOrthantNegLogHessCLM_quadratic_pos hy hw)
     hv
 
+theorem chewi1314_polytopeSlackNegLog_rangeHess_symmetric
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {y : (polytopeSlackCLM a).range}
+    (hy : y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m)))
+    (u v : (polytopeSlackCLM a).range) :
+    inner ℝ
+        (barrierAffineRangeHess (polytopeSlackCLM a) b
+          positiveOrthantNegLogHessCLM y u) v =
+      inner ℝ u
+        (barrierAffineRangeHess (polytopeSlackCLM a) b
+          positiveOrthantNegLogHessCLM y v) := by
+  exact barrierAffineRangeHess_symmetric (polytopeSlackCLM a) b
+    positiveOrthantNegLogHessCLM y u v
+    (fun p q => positiveOrthantNegLogHessCLM_symmetric hy p q)
+
 noncomputable def chewi1314_polytopeSlackNegLog_rangeInvHess
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
     {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :
@@ -25765,6 +25927,33 @@ theorem chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner
     (positiveOrthantNegLogHessDerivCLM_mixed_inner
       ((y : EuclideanSpace ℝ (Fin m)) + b) (aDir : EuclideanSpace ℝ (Fin m))
       (v : EuclideanSpace ℝ (Fin m)))
+
+/--
+Source-point Cauchy bridge on the finite slack range, discharged from strict
+range Hessian positivity and the concrete range inverse Hessian right-inverse.
+This avoids a supplied source square-root coordinate at `xbar0Range`.
+-/
+theorem chewi1314_polytopeSlackNegLog_range_sourceCauchy
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {y : (polytopeSlackCLM a).range}
+    (hy : y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m))) :
+    ∀ v w : (polytopeSlackCLM a).range,
+      inner ℝ v w ≤
+        dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess a b) y v *
+          localNorm
+            (barrierAffineRangeHess (polytopeSlackCLM a) b
+              positiveOrthantNegLogHessCLM) y w := by
+  exact dualPrimalCauchy_of_hessian_right_inverse_pos
+    (hess := barrierAffineRangeHess (polytopeSlackCLM a) b
+      positiveOrthantNegLogHessCLM)
+    (invHess := chewi1314_polytopeSlackNegLog_rangeInvHess a b)
+    (x := y)
+    (chewi1314_polytopeSlackNegLog_rangeHess_symmetric a b hy)
+    (fun {w} hw =>
+      chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos a b hy hw)
+    (chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse a b hy)
 
 theorem chewi1314_polytopeSlackNegLog_range_sourceCauchy_of_adjointSqrtCoord
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
@@ -27069,6 +27258,53 @@ theorem chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_
       hradius_half hbudget
 
 /--
+Uniform slack-range source-tail estimate from source-radius-half, with both
+the source Cauchy bridge and the range Hessian calculus instantiated for the
+finite-row polytope logarithmic barrier.
+-/
+theorem chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0Range : (polytopeSlackCLM aRow).range}
+    {xseqRange : ℕ -> (polytopeSlackCLM aRow).range}
+    {tailBound : ℝ}
+    (hxbar0Range :
+      xbar0Range ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hx0 : xseqRange 0 = xbar0Range)
+    (hxseq_succ : ∀ N : ℕ,
+      xseqRange (N + 1) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hradius_half : ∀ N : ℕ,
+      localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          xbar0Range (xseqRange (N + 1) - xbar0Range) ≤ 1 / 2)
+    (hbudget : 2 * Real.sqrt (m : ℝ) ≤ tailBound) :
+    ∀ N,
+      dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+        (xseqRange N)
+        (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad xbar0Range) ≤ tailBound := by
+  exact
+    chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_zeroSafe_globalDeriv_and_inverseIdentity
+      (aRow := aRow) (bSlack := bSlack) (xbar0Range := xbar0Range)
+      (xseqRange := xseqRange)
+      (hessDerivRange := chewi1314_polytopeSlackNegLog_rangeHessDeriv aRow bSlack)
+      (tailBound := tailBound) hxbar0Range hx0 hxseq_succ
+      (chewi1314_polytopeSlackNegLog_rangeHess_continuousOn aRow bSlack)
+      (fun z hz => chewi1314_polytopeSlackNegLog_rangeHess_hasFDerivAt
+        aRow bSlack hz)
+      (fun z _hz a v =>
+        chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner
+          aRow bSlack z a v)
+      hradius_half
+      (chewi1314_polytopeSlackNegLog_range_sourceCauchy
+        aRow bSlack hxbar0Range)
+      hbudget
+
+/--
 Finite-row polytope source-start initialization from a direct range
 source-radius-half tail certificate.  Compared with the preliminary-Newton
 range wrapper, this exposes the aggressive reusable checkpoint: once the
@@ -27436,6 +27672,102 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
         (polytopeSlackCLM aRow).rangeRestrict (xseq N))
       (sqrtCoord0 := sqrtCoord0) (tailBound := tailBound)
       hhess0 hinv0 hxbar0Range
+      (by
+        simp [hx0])
+      hxseq_succ_range hradius_half_range hbudget
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformRangeTailBound_tailLambdaBudget
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (lambdaSeq := lambdaSeq) (coord := coord) (c0 := c0)
+      (nu := (m : ℝ)) (tailBound := tailBound) hinv_factor hx0 ht0
+      htstep hlambda0 hstep hlambdaBudget_succ htailBound_pos hc0_pos
+      hsqrt_pos hdelta_lt_one hrangeTailBase_le
+
+/--
+Finite-row polytope source-start initialization from a range source-radius-half
+certificate, with the source Cauchy bridge and range Hessian calculus
+instantiated concretely.  The remaining source-facing assumptions are the
+range radius/successor gates, the pulled-back inverse-Hessian factorization
+used by the decrement model, and scalar tail budgets.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : ℕ -> F →L[ℝ] F}
+    {c0 tailBound : ℝ}
+    (hinv_factor : ∀ N v,
+      inner ℝ v
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack
+            (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint (coord N)) v‖ ^ (2 : ℕ))
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (hxseq_succ_range : ∀ N : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq (N + 1)) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (m : ℝ)) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq n))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget_succ : ∀ N, lambdaSeq (N + 1) ≤ 1 / 8)
+    (hradius_half_range : ∀ N : ℕ,
+      localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq (N + 1)) -
+            (polytopeSlackCLM aRow).rangeRestrict xbar0) ≤ 1 / 2)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt (m : ℝ))
+    (hdelta_lt_one : c0 / Real.sqrt (m : ℝ) < 1)
+    (hbudget : 2 * Real.sqrt (m : ℝ) ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq N) ≤ 1 / 4 := by
+  have hrangeTailBase_le : ∀ N,
+      dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+        ((polytopeSlackCLM aRow).rangeRestrict (xseq N))
+        (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad
+          ((polytopeSlackCLM aRow).rangeRestrict xbar0)) ≤ tailBound :=
+    chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf
+      (aRow := aRow) (bSlack := bSlack)
+      (xbar0Range := (polytopeSlackCLM aRow).rangeRestrict xbar0)
+      (xseqRange := fun N =>
+        (polytopeSlackCLM aRow).rangeRestrict (xseq N))
+      (tailBound := tailBound) hxbar0Range
       (by
         simp [hx0])
       hxseq_succ_range hradius_half_range hbudget
