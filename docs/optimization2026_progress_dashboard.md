@@ -114,6 +114,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_initialTotal_half_le_of_stepBudget_zero_le_standard`,
   `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_initialTotal_half_le_standard`, and the preferred endpoint
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_noFactor_standardConstants`.
+  The actual selected-tail bridge now compiles as
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+  It sets `stepBudget` to the real next-pre-decrement budget, derives the
+  prefix budget from the half-contraction plus the compiled initial-total side,
+  and calls the existential selected-tail handoff.  The remaining proof inputs
+  for this route are now exactly the actual half contraction and the eventual
+  selected successor range-tail estimate.
   Route correction: this is conditional infrastructure.  The archived
   positive-orthant obstruction packets already warn that global fixed-source
   radius/summability gates are not the right textbook-scale path for the
@@ -198,8 +205,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   The actual-budget packet names the real source next-pre-decrement sequence
   as `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget` and adds
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementContractingBudget_noFactor_standardConstants`.
-  The preferred next proof target is now the doubled contraction and initial
-  total-mass bound for that actual budget sequence.
+  The selected-tail actual-budget bridge additionally adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+  The preferred next proof targets are now the valid actual doubled
+  contraction and the moving-center/bounded-polytope eventual selected
+  successor range-tail estimate.
   Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range

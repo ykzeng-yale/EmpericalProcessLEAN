@@ -33476,6 +33476,107 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
         hxbar0Range hx0 ht0 htstep)
 
 /--
+Concrete finite-row selected-tail handoff with the actual preliminary
+next-pre-decrement budget.  The prefix-budget side is discharged from a
+half-contraction of the actual budget sequence; the remaining geometry input
+is exactly the eventual selected successor range-tail bound.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventualSelectedRangeTailBound_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ} {tailBound : ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hrec : ∀ n : ℕ,
+      2 * chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+          aRow bSlack xbar0 xseq tseq (n + 1) ≤
+        (1 / 2 : ℝ) * (2 *
+          chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+            aRow bSlack xbar0 xseq tseq n))
+    (htailBound_nonneg : 0 ≤ tailBound)
+    (heventualSelectedRangeTailBound : ∀ M N : ℕ,
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+          ((N + 1 : ℕ) : ℝ) * (1 / 200 : ℝ) ->
+        dualLocalNorm
+            (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+            ((polytopeSlackCLM aRow).rangeRestrict (xseq (N + 1)))
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict xbar0)) ≤
+          tailBound) :
+    ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 := by
+  let stepBudget : ℕ -> ℝ :=
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+      aRow bSlack xbar0 xseq tseq
+  have hpre_decrement_next_source : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ stepBudget n := by
+    intro n
+    simp [stepBudget, chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget]
+  have htotal :
+      (2 * stepBudget 0) * (1 - (1 / 2 : ℝ))⁻¹ ≤ 1 / 2 := by
+    simpa [stepBudget] using
+      chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_initialTotal_half_le_standard
+        (hm := hm) (aRow := aRow) (bSlack := bSlack)
+        (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+        hxbar0Range hx0 ht0 htstep
+  obtain ⟨hsummable, htsum⟩ :=
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_doubled_recurrence
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (stepBudget := stepBudget)
+      hpre_decrement_next_source (by norm_num) (by norm_num)
+      (by
+        intro n
+        simpa [stepBudget] using hrec n)
+      htotal
+  have hstepBudget :
+      ∀ K : ℕ, (∑ n ∈ Finset.range (K + 1), 2 * stepBudget n) ≤ 1 / 2 :=
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_prefix_le_half_of_tsum
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (stepBudget := stepBudget)
+      hpre_decrement_next_source hsummable htsum
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventualSelectedRangeTailBound_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (stepBudget := stepBudget) hxbar0Range hx0 ht0 htstep
+      hnewton_next_source hpre_decrement_next_source hstepBudget
+      htailBound_nonneg heventualSelectedRangeTailBound
+
+/--
 Induction step for Chewi Example 13.14's finite-row logarithmic barrier.  A
 nonzero head row plus a recursively supplied tail polytope barrier combine via
 the binary shared-domain sum rule.

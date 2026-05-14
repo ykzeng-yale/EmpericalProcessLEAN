@@ -102,6 +102,13 @@ doubled contraction.  The scalar `q = 1 / 2` wrapper is now compiled through
 `chewi1316_initialTotal_half_le_of_stepBudget_zero_le_standard`,
 `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_initialTotal_half_le_standard`, and the preferred source endpoint
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_noFactor_standardConstants`.
+The actual selected-tail bridge now compiles as
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+It combines the actual-budget half contraction with the existential
+selected-tail handoff, deriving the prefix budget internally from the compiled
+`tsum` machinery.  Downstream Chapter 13 work should focus on the actual
+contraction proof and the moving-center/bounded-polytope selected range-tail
+bound rather than redoing prefix-budget summability.
 This endpoint should be treated as conditional infrastructure.  Earlier
 verified positive-orthant obstruction packets show that the bare actual
 decreasing-`t` preliminary recurrence is not expected to satisfy the old

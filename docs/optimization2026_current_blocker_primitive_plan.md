@@ -257,6 +257,15 @@ combined with the scalar `q = 1 / 2` arithmetic.  The newest half-contraction
 consumer adds `chewi1316_initialTotal_half_le_of_stepBudget_zero_le_standard`,
 `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_initialTotal_half_le_standard`, and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_noFactor_standardConstants`.
+The newest actual selected-tail bridge adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+It instantiates `stepBudget` with the real source next-pre-decrement sequence,
+uses the compiled half-contraction-to-`tsum` and `tsum`-to-prefix bridges to
+derive the prefix budget, and then calls the existential selected-tail handoff.
+Future work should therefore not rebuild the actual-budget prefix summability
+plumbing: after a valid theorem supplies the actual half contraction and the
+moving-center/bounded-polytope eventual selected range-tail bound, this
+endpoint initializes the positive main stage directly.
 This half-contraction endpoint is conditional infrastructure, not yet the
 recommended mathematical route.  The search-first check of the archived
 Chapter 13 obstruction notes shows that fixed-source global preliminary
