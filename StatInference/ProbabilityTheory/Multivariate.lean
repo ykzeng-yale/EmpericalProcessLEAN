@@ -2132,6 +2132,33 @@ theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDi
           simp [theta, durrett2019_theorem_3_10_7_thetaProjection_apply])
 
 /--
+Durrett 2019, Theorem 3.10.6, Cramér-Wold device in textbook
+`theta · X_n` notation for a fixed source probability space.
+
+This is the usual random-variable form: all `X_n` live on the same probability
+space `P`.
+-/
+theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_constMeasure
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : ℕ -> Ω -> Coordinate -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_aemeas : ∀ n, AEMeasurable (X n) P)
+    (hZ_aemeas : AEMeasurable Z Q)
+    (htheta : ∀ theta : Coordinate -> ℝ,
+      TendstoInDistribution (fun n ω => ∑ i, theta i * X n ω i) atTop
+        (fun ω => ∑ i, theta i * Z ω i) (fun _ : ℕ => P) Q) :
+    TendstoInDistribution X atTop Z (fun _ : ℕ => P) Q :=
+  durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution
+    (P := fun _ : ℕ => P) (Q := Q) (X := X) (Z := Z)
+    hX_aemeas hZ_aemeas htheta
+
+/--
 Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from projected
 scalar CLTs.
 
