@@ -183,6 +183,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   preliminary recurrence already has a prefix pre-decrement budget or the
   actual half-contraction: range membership, selected radius-half, and the
   selected tail bound are all derived internally.
+  The existential compact packet now adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_internalEventualSelectedRangeTailBound_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_internalEventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+  These choose `M,N` internally as well, leaving only source recurrence,
+  prefix budget or actual half-contraction, and `2 * sqrt m <= tailBound` for
+  this conditional §13.16 route.
   Route correction: this is conditional infrastructure.  The archived
   positive-orthant obstruction packets already warn that global fixed-source
   radius/summability gates are not the right textbook-scale path for the

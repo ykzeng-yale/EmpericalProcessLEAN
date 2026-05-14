@@ -170,6 +170,12 @@ The internal selected-tail packet now compiles as
 It derives successor range membership, selected source-radius-half, and the
 selected tail bound from the source preliminary recurrence plus prefix budget,
 or from the actual half-contraction after the existing budget machinery.
+The existential compact packet now compiles as
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_internalEventualSelectedRangeTailBound_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_internalEventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+It also chooses the logarithmic/count indices, so explicit selected `M,N`
+plumbing is closed for this conditional route.
 This endpoint should be treated as conditional infrastructure.  Earlier
 verified positive-orthant obstruction packets show that the bare actual
 decreasing-`t` preliminary recurrence is not expected to satisfy the old

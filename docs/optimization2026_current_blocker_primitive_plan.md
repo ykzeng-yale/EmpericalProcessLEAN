@@ -342,6 +342,16 @@ prefix budget.  Future callers should prefer these compact endpoints when
 they already have the pre-decrement budget or actual half-contraction; do not
 manually supply `hxN_range`, selected source-radius-half, or selected
 range-tail hypotheses in that case.
+The newest existential compact packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_internalEventualSelectedRangeTailBound_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_internalEventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+These also choose the logarithmic/count indices internally, so the conditional
+source §13.16 handoff now exposes only the source preliminary recurrence,
+prefix pre-decrement budget (or actual half-contraction), and scalar
+`2 * sqrt m <= tailBound`.  Do not re-add wrappers whose only purpose is to
+pass explicit `M,N`, count, log, selected range-tail, or selected
+source-radius hypotheses.
 This half-contraction endpoint is conditional infrastructure, not yet the
 recommended mathematical route.  The search-first check of the archived
 Chapter 13 obstruction notes shows that fixed-source global preliminary
