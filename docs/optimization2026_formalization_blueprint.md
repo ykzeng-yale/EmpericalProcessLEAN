@@ -392,6 +392,14 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	bridge from the domain-wide adjoint-square model.  Future packets should
 	target the remaining summable next-parameter pre-Newton budget, not
 	re-thread those interface assumptions.
+	The positive-orthant instantiation
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_preDecrementBudget`
+	now removes the concrete finite-product barrier side conditions for this
+	correct-index route by reusing the compiled positive-orthant
+	sqrt-coordinate models, self-concordant barrier theorem, Hessian derivative,
+	mixed-third identity, and convex segment membership.  The unresolved
+	blueprint item remains the real quantitative source budget, not the
+	concrete barrier plumbing.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

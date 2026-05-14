@@ -23071,6 +23071,82 @@ theorem positiveOrthantNegLog_componentCauchy {d : ℕ} :
     (positiveOrthantNegLogHessCLM_quadratic_nonneg hx)
     (positiveOrthantNegLogGrad x) w
 
+set_option maxHeartbeats 4000000 in
+/--
+Concrete positive-orthant source-start preliminary initialization consumer for
+Chewi Lemma 13.16.  This specializes the correct-index generic source-start
+pipeline to the finite-product logarithmic barrier, discharging the barrier,
+Hessian-derivative, and square-root-coordinate model inputs.  The remaining
+assumption is the genuinely quantitative summable next-parameter pre-Newton
+budget for the chosen preliminary path.
+-/
+theorem chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_preDecrementBudget
+    {d : ℕ}
+    {xbar0 a : EuclideanSpace ℝ (Fin d)}
+    {xseq : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {tseq stepBudget : ℕ -> ℝ}
+    {c0 tailBound : ℝ}
+    (hxbar0 : xbar0 ∈ positiveOrthant (d := d))
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ positiveOrthant (d := d))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (d : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 (tseq (n + 1)))
+          positiveOrthantNegLogInvHessCLM (xseq n))
+    (hpre_decrement_next : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 (tseq (n + 1)))
+          positiveOrthantNegLogInvHessCLM (xseq n) ≤ stepBudget n)
+    (hstepBudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * stepBudget n) ≤ 1 / 2)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt (d : ℝ))
+    (hdelta_lt_one : c0 / Real.sqrt (d : ℝ) < 1)
+    (hdelta_le_c0 : c0 / Real.sqrt (d : ℝ) ≤ c0)
+    (hc0_le : c0 ≤ 1 / 200)
+    (hbudget : 2 * Real.sqrt (d : ℝ) ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (d : ℝ) ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM (xseq N) ≤ 1 / 4 := by
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_preliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_barrier_globalDeriv_and_sqrtCoordModel
+      (s := positiveOrthant (d := d))
+      (hess := positiveOrthantNegLogHessCLM)
+      (hessDeriv := positiveOrthantNegLogHessDerivCLM)
+      (invHess := positiveOrthantNegLogInvHessCLM)
+      (thirdMixed := positiveOrthantNegLogThirdMixed)
+      (phiGrad := positiveOrthantNegLogGrad)
+      (xbar0 := xbar0) (a := a) (xseq := xseq) (tseq := tseq)
+      (stepBudget := stepBudget) (sqrtCoord := positiveOrthantNegLogSqrtCoord)
+      (c0 := c0) (nu := (d : ℝ)) (tailBound := tailBound)
+      convex_positiveOrthant hxbar0 hxseq_mem hx0 ht0 htstep
+      (fun n τ hτ =>
+        preliminaryPathGrad_hasFDerivAt
+          (positiveOrthantNegLogGrad_hasFDerivAt
+            (hessianSegmentPoint_mem_of_convex
+              convex_positiveOrthant (hxseq_mem n) (hxseq_mem (n + 1))
+              (by simpa [Set.uIcc_of_le zero_le_one] using hτ))))
+      positiveOrthantNegLogHessCLM_sqrtCoord_model_positiveOrthant
+      positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant
+      hnewton_next hpre_decrement_next hstepBudget
+      htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one hdelta_le_c0 hc0_le
+      positiveOrthantNegLog_selfConcordantBarrierOn
+      (continuousOn_of_forall_continuousAt
+        (fun z hz => (positiveOrthantNegLogHessCLM_hasFDerivAt hz).continuousAt))
+      (fun z hz => positiveOrthantNegLogHessCLM_hasFDerivAt hz)
+      (fun z _hz a v => positiveOrthantNegLogHessDerivCLM_mixed_inner z a v)
+      hbudget
+
 set_option maxHeartbeats 800000 in
 theorem chewi1315_positiveOrthantNegLog_gradient_segment_inner_le
     {d : ℕ} (hd : 0 < d)

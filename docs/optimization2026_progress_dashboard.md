@@ -447,6 +447,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  the genuinely nontrivial summable next-parameter pre-Newton decrement
 	  budget `sum 2 * stepBudget <= 1/2`; the old constant pointwise route is
 	  still ruled out by the incompatibility theorem.
+	  The concrete positive-orthant source-start consumer now also compiles as
+	  `chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_preDecrementBudget`.
+	  It specializes the correct-index initialization route to the finite
+	  positive-orthant logarithmic barrier, reusing the existing sqrt-coordinate
+	  model, inverse-Hessian model, self-concordant barrier instance, Hessian
+	  differentiability, mixed-third identity, and convex segment membership.
+	  No new quantitative shortcut is assumed: the next live gate remains the
+	  summable pre-Newton budget or an analytical-center/source-radius estimate
+	  strong enough to imply it.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

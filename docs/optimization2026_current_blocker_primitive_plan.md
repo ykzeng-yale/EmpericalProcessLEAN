@@ -582,6 +582,17 @@ packet adds
 	prove a summable next-parameter pre-Newton budget
 	`sum_{n<=N} 2 * stepBudget n <= 1/2`; do not replace it by the constant
 	pointwise budget ruled out above.
+	The concrete positive-orthant specialization now adds
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_preDecrementBudget`.
+	This discharges the finite-product log-barrier plumbing for the same
+	correct-index source-start route: `positiveOrthantNegLogSqrtCoord`,
+	`positiveOrthantNegLogHessCLM_sqrtCoord_model_positiveOrthant`,
+	`positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant`,
+	`positiveOrthantNegLog_selfConcordantBarrierOn`,
+	`positiveOrthantNegLogHessCLM_hasFDerivAt`, and
+	`positiveOrthantNegLogHessDerivCLM_mixed_inner`.  The live blocker remains
+	exactly the quantitative summable next-parameter pre-Newton decrement
+	budget or a stronger analytical-center/source-radius route.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
