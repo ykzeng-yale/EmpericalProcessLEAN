@@ -13891,6 +13891,102 @@ theorem sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_barrier
     (coord := coord) (phiBound := Real.sqrt nu) (N := N)
     hinv_factor hinit hstep (hbar.gradient_bound hxN)
 
+theorem sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_barrier_dualLaws
+    {s : Set E} {hess invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {third : E -> E -> E -> ℝ}
+    {xbar0 : E} {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {M nu : ℝ} {N : ℕ}
+    (hbar : SelfConcordantBarrierOn s hess phiGrad invHess third M nu)
+    (hxN : xseq N ∈ s)
+    (hdual_add : ∀ u v : E,
+      dualLocalNorm invHess (xseq N) (u + v) ≤
+        dualLocalNorm invHess (xseq N) u +
+          dualLocalNorm invHess (xseq N) v)
+    (hdual_smul : ∀ (c : ℝ) (v : E),
+      dualLocalNorm invHess (xseq N) (c • v) =
+        |c| * dualLocalNorm invHess (xseq N) v)
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1)) :
+    |tseq N| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+      Real.sqrt nu + lambdaSeq N := by
+  have hpre :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq N))
+          invHess (xseq N) ≤ lambdaSeq N :=
+    preliminaryPath_decrement_bound_of_step
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      hinit hstep N
+  exact
+    sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (x := xseq N) (t := tseq N) (lambda := lambdaSeq N)
+      (phiBound := Real.sqrt nu) hpre (hbar.gradient_bound hxN)
+      hdual_add hdual_smul
+
+theorem dualLocalNorm_le_div_of_abs_mul_dualLocalNorm_le_of_abs_lower
+    {invHess : E -> E →L[ℝ] E} {x g : E} {t sourceBound tau : ℝ}
+    (htau_pos : 0 < tau)
+    (htau_le : tau ≤ |t|)
+    (hscaled : |t| * dualLocalNorm invHess x g ≤ sourceBound) :
+    dualLocalNorm invHess x g ≤ sourceBound / tau := by
+  have hmul :
+      tau * dualLocalNorm invHess x g ≤ sourceBound := by
+    exact
+      (mul_le_mul_of_nonneg_right htau_le
+        (dualLocalNorm_nonneg invHess x g)).trans hscaled
+  exact (le_div_iff₀ htau_pos).2 (by simpa [mul_comm] using hmul)
+
+theorem sourceGrad_dualLocalNorm_le_of_preliminaryPath_sequence_barrier_dualLaws_abs_t_lower
+    {s : Set E} {hess invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {third : E -> E -> E -> ℝ}
+    {xbar0 : E} {xseq : ℕ -> E} {tseq lambdaSeq : ℕ -> ℝ}
+    {M nu tau lambdaBound : ℝ} {N : ℕ}
+    (hbar : SelfConcordantBarrierOn s hess phiGrad invHess third M nu)
+    (hxN : xseq N ∈ s)
+    (hdual_add : ∀ u v : E,
+      dualLocalNorm invHess (xseq N) (u + v) ≤
+        dualLocalNorm invHess (xseq N) u +
+          dualLocalNorm invHess (xseq N) v)
+    (hdual_smul : ∀ (c : ℝ) (v : E),
+      dualLocalNorm invHess (xseq N) (c • v) =
+        |c| * dualLocalNorm invHess (xseq N) v)
+    (hinit :
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq 0))
+          invHess (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (htau_pos : 0 < tau)
+    (htau_le : tau ≤ |tseq N|)
+    (hlambda_le : lambdaSeq N ≤ lambdaBound) :
+    dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+      (Real.sqrt nu + lambdaBound) / tau := by
+  have hscaled :
+      |tseq N| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        Real.sqrt nu + lambdaSeq N :=
+    sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_barrier_dualLaws
+      (hess := hess) (third := third) (hbar := hbar) (hxN := hxN)
+      hdual_add hdual_smul hinit hstep
+  have hscaled_bound :
+      |tseq N| * dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤
+        Real.sqrt nu + lambdaBound :=
+    hscaled.trans (by
+      simpa [add_comm, add_left_comm, add_assoc] using
+        add_le_add_left hlambda_le (Real.sqrt nu))
+  exact
+    dualLocalNorm_le_div_of_abs_mul_dualLocalNorm_le_of_abs_lower
+      (invHess := invHess) (x := xseq N) (g := phiGrad xbar0)
+      (t := tseq N) (sourceBound := Real.sqrt nu + lambdaBound)
+      (tau := tau) htau_pos htau_le hscaled_bound
+
 theorem chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence
     [CompleteSpace E]
     {invHess : E -> E →L[ℝ] E} {phiGrad : E -> E} {xbar0 a : E}
@@ -27814,6 +27910,159 @@ theorem chewi1314_polytopeSlackNegLog_scaled_sourceGrad_dualLocalNorm_rangeInvHe
           (barrierAffineRangeGrad (polytopeSlackCLM a) b
             positiveOrthantNegLogGrad ((polytopeSlackCLM a).rangeRestrict x0)) := by
   rw [chewi1314_polytopeSlackNegLog_sourceGrad_dualLocalNorm_rangeInvHess_eq]
+
+/--
+Pointwise range-tail estimate from the reverse preliminary-path bound.  The
+caller supplies a lower bound on `|t_N|`, because the preliminary estimate
+controls the scaled source tail `|t_N| * ||grad phi(xbar0)||*_{x_N}`.
+-/
+theorem chewi1316_polytopeSlackNegLog_rangeTailBound_of_sourcePreliminaryPath_abs_t_lower
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq lambdaSeq : ℕ -> ℝ}
+    {N : ℕ} {tau lambdaBound tailBound : ℝ}
+    (hxN : xseq N ∈ polytopeSlackSet aRow bSlack)
+    (hinit :
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq 0))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq n))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (htau_pos : 0 < tau)
+    (htau_le : tau ≤ |tseq N|)
+    (hlambda_le : lambdaSeq N ≤ lambdaBound)
+    (hbudget : (Real.sqrt (m : ℝ) + lambdaBound) / tau ≤ tailBound) :
+    dualLocalNorm
+        (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+        ((polytopeSlackCLM aRow).rangeRestrict (xseq N))
+        (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad
+          ((polytopeSlackCLM aRow).rangeRestrict xbar0)) ≤
+      tailBound := by
+  have hxNRange :
+      (polytopeSlackCLM aRow).rangeRestrict (xseq N) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) := by
+    intro i
+    simpa [polytopeSlackCLM_add_offset_apply] using hxN i
+  have hsource :
+      dualLocalNorm
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq N)
+          (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad xbar0) ≤
+        (Real.sqrt (m : ℝ) + lambdaBound) / tau :=
+    sourceGrad_dualLocalNorm_le_of_preliminaryPath_sequence_barrier_dualLaws_abs_t_lower
+      (s := polytopeSlackSet aRow bSlack)
+      (hess := barrierAffinePreimageHess (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogHessCLM)
+      (invHess := chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+      (phiGrad := barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogGrad)
+      (third := barrierAffinePreimageThirdMixed (polytopeSlackCLM aRow)
+        bSlack positiveOrthantNegLogThirdMixed)
+      (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+      (lambdaSeq := lambdaSeq) (M := (1 : ℝ)) (nu := (m : ℝ))
+      (tau := tau) (lambdaBound := lambdaBound) (N := N)
+      (chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess
+        aRow bSlack)
+      hxN
+      (chewi1314_polytopeSlackNegLog_rangePullInvHess_dualLocalNorm_add_le
+        aRow bSlack hxNRange)
+      (chewi1314_polytopeSlackNegLog_rangePullInvHess_dualLocalNorm_smul
+        aRow bSlack hxNRange)
+      hinit hstep htau_pos htau_le hlambda_le
+  have hsource_tail :
+      dualLocalNorm
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq N)
+          (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad xbar0) ≤ tailBound :=
+    hsource.trans hbudget
+  rw [← chewi1314_polytopeSlackNegLog_sourceGrad_dualLocalNorm_rangeInvHess_eq
+    aRow bSlack (xseq N) xbar0]
+  simpa [chewi1314_polytopeSlackNegLog_rangePullInvHess] using hsource_tail
+
+/--
+Uniform post-threshold version of
+`chewi1316_polytopeSlackNegLog_rangeTailBound_of_sourcePreliminaryPath_abs_t_lower`.
+This produces exactly the range-tail predicate consumed by the current
+thresholded §13.16 handoffs, from per-output lower bounds on `|t_N|` and the
+preliminary decrement schedule.
+-/
+theorem chewi1316_polytopeSlackNegLog_postThresholdRangeTailBound_of_sourcePreliminaryPath_abs_t_lower
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq lambdaSeq : ℕ -> ℝ}
+    {Nmin : ℕ} {tauSeq lambdaBoundSeq : ℕ -> ℝ} {tailBound : ℝ}
+    (hxN : ∀ Nout : ℕ, Nmin ≤ Nout ->
+      xseq Nout ∈ polytopeSlackSet aRow bSlack)
+    (hinit :
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq 0))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq 0) ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq n))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (htau_pos : ∀ Nout : ℕ, Nmin ≤ Nout -> 0 < tauSeq Nout)
+    (htau_le : ∀ Nout : ℕ, Nmin ≤ Nout -> tauSeq Nout ≤ |tseq Nout|)
+    (hlambda_le : ∀ Nout : ℕ, Nmin ≤ Nout ->
+      lambdaSeq Nout ≤ lambdaBoundSeq Nout)
+    (hbudget : ∀ Nout : ℕ, Nmin ≤ Nout ->
+      (Real.sqrt (m : ℝ) + lambdaBoundSeq Nout) / tauSeq Nout ≤
+        tailBound) :
+    ∀ Nout : ℕ,
+      Nmin ≤ Nout ->
+        dualLocalNorm
+            (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+            ((polytopeSlackCLM aRow).rangeRestrict (xseq Nout))
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict xbar0)) ≤
+          tailBound := by
+  intro Nout hNout
+  exact
+    chewi1316_polytopeSlackNegLog_rangeTailBound_of_sourcePreliminaryPath_abs_t_lower
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (N := Nout) (tau := tauSeq Nout)
+      (lambdaBound := lambdaBoundSeq Nout) (tailBound := tailBound)
+      (hxN Nout hNout) hinit hstep (htau_pos Nout hNout)
+      (htau_le Nout hNout) (hlambda_le Nout hNout)
+      (hbudget Nout hNout)
 
 /--
 Finite-row polytope preliminary-path Newton decrements are unchanged by passing

@@ -123,6 +123,18 @@ and
 These are the cleanest consumers for the next geometric packet: prove a plain
 range-tail bound for every output index after `Nmin`, independent of the
 selected logarithmic count parameters.
+The scaled-to-unscaled tail bridge now compiles as
+`sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_barrier_dualLaws`,
+`dualLocalNorm_le_div_of_abs_mul_dualLocalNorm_le_of_abs_lower`,
+`sourceGrad_dualLocalNorm_le_of_preliminaryPath_sequence_barrier_dualLaws_abs_t_lower`,
+`chewi1316_polytopeSlackNegLog_rangeTailBound_of_sourcePreliminaryPath_abs_t_lower`, and
+`chewi1316_polytopeSlackNegLog_postThresholdRangeTailBound_of_sourcePreliminaryPath_abs_t_lower`.
+It converts the reusable reverse preliminary-path bound into the exact
+post-threshold range-tail predicate via a valid lower bound on `|t_N|`,
+`lambda_N` control, and the existing source/range dual-local norm transport.
+This is useful for finite-window or moving-denominator certificates, but it
+must not be used as a global fixed-source scaled-tail shortcut for the
+decreasing-`t` path.
 This endpoint should be treated as conditional infrastructure.  Earlier
 verified positive-orthant obstruction packets show that the bare actual
 decreasing-`t` preliminary recurrence is not expected to satisfy the old

@@ -279,6 +279,22 @@ and
 These reduce the geometric input to a plain bound
 `∀ Nout, Nmin ≤ Nout -> rangeTailNorm Nout <= tailBound`; the wrapper supplies
 the selected `M,N` and count side internally.
+The newest scaled-to-unscaled tail bridge adds
+`sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_barrier_dualLaws`,
+`dualLocalNorm_le_div_of_abs_mul_dualLocalNorm_le_of_abs_lower`,
+`sourceGrad_dualLocalNorm_le_of_preliminaryPath_sequence_barrier_dualLaws_abs_t_lower`,
+`chewi1316_polytopeSlackNegLog_rangeTailBound_of_sourcePreliminaryPath_abs_t_lower`, and
+`chewi1316_polytopeSlackNegLog_postThresholdRangeTailBound_of_sourcePreliminaryPath_abs_t_lower`.
+These reuse the reverse preliminary-path scaled-tail estimate, the finite-row
+range-pull dual-local triangle/homogeneity laws, and
+`chewi1314_polytopeSlackNegLog_sourceGrad_dualLocalNorm_rangeInvHess_eq` to
+produce exactly the post-threshold range-tail predicate from per-output
+assumptions `0 < tau_N <= |t_N|`, `lambda_N <= Lambda_N`, and
+`(sqrt m + Lambda_N) / tau_N <= tailBound`.  This is a conditional bridge,
+not a replacement for the moving-center/bounded-polytope invariant: because
+the standard preliminary `t_N` decreases, future use must prove a valid
+finite-window, selected-window, or genuinely moving-center lower-denominator
+certificate before calling this route.
 This half-contraction endpoint is conditional infrastructure, not yet the
 recommended mathematical route.  The search-first check of the archived
 Chapter 13 obstruction notes shows that fixed-source global preliminary

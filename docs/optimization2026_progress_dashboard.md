@@ -132,6 +132,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdRangeTailBound_succ_noFactor_standardConstants`.
   These are the preferred consumers once geometry proves
   `∀ Nout ≥ Nmin, rangeTailNorm Nout ≤ tailBound`.
+  The scaled-to-unscaled tail bridge now adds
+  `sourceGrad_dualLocalNorm_scaled_le_of_preliminaryPath_sequence_barrier_dualLaws`,
+  `dualLocalNorm_le_div_of_abs_mul_dualLocalNorm_le_of_abs_lower`,
+  `sourceGrad_dualLocalNorm_le_of_preliminaryPath_sequence_barrier_dualLaws_abs_t_lower`,
+  `chewi1316_polytopeSlackNegLog_rangeTailBound_of_sourcePreliminaryPath_abs_t_lower`, and
+  `chewi1316_polytopeSlackNegLog_postThresholdRangeTailBound_of_sourcePreliminaryPath_abs_t_lower`.
+  It turns the reverse preliminary-path estimate
+  `|t_N| * ||grad phi(xbar0)||*_{x_N} <= sqrt m + lambda_N` into the exact
+  post-threshold range-tail predicate whenever a valid lower denominator
+  `0 < tau_N <= |t_N|` and budget `(sqrt m + Lambda_N) / tau_N <= tailBound`
+  are available.  Treat this as a conditional finite-window/moving-denominator
+  bridge, not as a revival of the archived false fixed-source scaled-tail
+  route.
   Route correction: this is conditional infrastructure.  The archived
   positive-orthant obstruction packets already warn that global fixed-source
   radius/summability gates are not the right textbook-scale path for the
