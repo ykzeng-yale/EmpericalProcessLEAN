@@ -2027,6 +2027,40 @@ theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto
     hproj
 
 /--
+Durrett 2019, Theorem 3.10.6, Cramér-Wold device, law form in the textbook
+`theta · x` notation.
+
+For finite real coordinate spaces, weak convergence of every Durrett coordinate
+projection `sum_i theta_i x_i` implies weak convergence of the vector laws.
+-/
+theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_lawTendsto
+    {Coordinate : Type*} [Fintype Coordinate]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {μs : ℕ -> ProbabilityMeasure (Coordinate -> ℝ)}
+    {μ : ProbabilityMeasure (Coordinate -> ℝ)}
+    (htheta : ∀ theta : Coordinate -> ℝ,
+      Tendsto (β := ProbabilityMeasure ℝ)
+        (fun n => (μs n).map
+          (durrett2019_theorem_3_10_7_thetaProjection
+            theta).continuous.measurable.aemeasurable)
+        atTop
+        (𝓝 (μ.map
+          (durrett2019_theorem_3_10_7_thetaProjection
+            theta).continuous.measurable.aemeasurable))) :
+    Tendsto μs atTop (𝓝 μ) :=
+  durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto
+    (μs := μs) (μ := μ)
+    (fun L => by
+      let theta := durrett2019_theorem_3_10_7_dualCoordinates L
+      have hL :
+          durrett2019_theorem_3_10_7_thetaProjection theta = L :=
+        durrett2019_theorem_3_10_7_thetaProjection_dualCoordinates L
+      simpa [hL] using htheta theta)
+
+/--
 Durrett 2019, Theorem 3.10.6, Cramér-Wold device, random-vector convergence
 form.
 
