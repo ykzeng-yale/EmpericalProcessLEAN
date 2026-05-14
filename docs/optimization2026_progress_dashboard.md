@@ -175,6 +175,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   source-radius-half now directly yields the selected tail bound and the
   positive main-stage initialization, with actual-budget prefix summability
   discharged when the half-contraction is available.
+  The internal selected-tail packet now adds
+  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_preDecrementBudget`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_internalSelectedRangeTailBound_succ_noFactor_standardConstants`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_internalSelectedRangeTailBound_succ_noFactor_standardConstants`.
+  These are the preferred compact conditional consumers when the source
+  preliminary recurrence already has a prefix pre-decrement budget or the
+  actual half-contraction: range membership, selected radius-half, and the
+  selected tail bound are all derived internally.
   Route correction: this is conditional infrastructure.  The archived
   positive-orthant obstruction packets already warn that global fixed-source
   radius/summability gates are not the right textbook-scale path for the

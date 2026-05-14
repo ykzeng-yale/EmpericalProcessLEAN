@@ -331,6 +331,17 @@ source-radius-half certificate at `x_{N+1}` gives the selected slack-range
 source-tail bound, and the actual-budget wrapper additionally derives the
 prefix pre-decrement budget from the half-contraction of the real
 `sourcePreDecrementNextBudget`.
+The newest internal selected-tail packet adds
+`chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_preDecrementBudget`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_internalSelectedRangeTailBound_succ_noFactor_standardConstants`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_internalSelectedRangeTailBound_succ_noFactor_standardConstants`.
+These reuse the compiled source-to-range transport, successor range
+membership, and `rangeRestrict_sourceRadiusHalf` budget theorem to derive the
+selected tail bound internally from the source preliminary recurrence and
+prefix budget.  Future callers should prefer these compact endpoints when
+they already have the pre-decrement budget or actual half-contraction; do not
+manually supply `hxN_range`, selected source-radius-half, or selected
+range-tail hypotheses in that case.
 This half-contraction endpoint is conditional infrastructure, not yet the
 recommended mathematical route.  The search-first check of the archived
 Chapter 13 obstruction notes shows that fixed-source global preliminary
