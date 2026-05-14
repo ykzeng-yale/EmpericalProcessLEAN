@@ -78,8 +78,8 @@ micro-packet overhead.
    primitive, but write down only material results that change the route.
    Reuse the cached search results in this document before repeating broad
    `rg` passes.
-4. Worktree discipline.  Broad Optimization proof packets should run in the
-   isolated `/private/tmp/chewi-schur-direct` worktree.  Fetch/rebase at
+4. Worktree discipline.  Broad Optimization proof packets should run in an
+   isolated Optimization worktree such as `/tmp/chewi-dual-seminorm`.  Fetch/rebase at
    the start and once immediately before push; avoid repeated fetch/rebase
    loops while a focused proof packet is still being developed.
 5. Verification tiers.  During development, use focused
@@ -787,9 +787,25 @@ packet adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget`.
 	This discharges the source-point Cauchy/source square-root factorization
 	gate directly from strict range Hessian positivity plus the concrete range
-	inverse-Hessian right-inverse.  The remaining direct gates are now range
-	source-radius-half, successor range membership, pulled-back inverse-Hessian
-	factorization for the decrement model, and the scalar tail budget.
+	inverse-Hessian right-inverse.  The direct dual-seminorm/no-factor packet adds
+	`localNorm_add_le_of_hessian_pos`,
+	`dualLocalNorm_add_le_of_hessian_right_inverse_pos`,
+	`dualLocalNorm_smul_of_invHess_nonneg`,
+	`dualLocalNorm_smul_of_hessian_right_inverse`,
+	`chewi1314_polytopeSlackNegLog_rangeInvHess_dualLocalNorm_add_le`,
+	`chewi1314_polytopeSlackNegLog_rangeInvHess_dualLocalNorm_smul`,
+	`chewi1314_polytopeSlackNegLog_rangePullInvHess_dualLocalNorm_add_le`,
+	`chewi1314_polytopeSlackNegLog_rangePullInvHess_dualLocalNorm_smul`,
+	`chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_dualLaws`,
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_sourceStart_tailBudget_dualLaws`,
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBudget_dualLaws`,
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeTailBudget_noFactor`, and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor`.
+	This removes the pulled-back inverse-Hessian factorization from the direct
+	§13.16 slack-range handoff: the final-point triangle/homogeneity laws are
+	now derived from the concrete range Hessian right-inverse.  The remaining
+	direct gates are range source-radius-half, successor range membership, and
+	the scalar/source tail-budget data.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

@@ -548,11 +548,20 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget`,
 	removing the source-point square-root-coordinate/factorization assumption
 	from the direct source-radius route.
+	The direct dual-seminorm/no-factor packet adds
+	`dualLocalNorm_add_le_of_hessian_right_inverse_pos`,
+	`dualLocalNorm_smul_of_hessian_right_inverse`,
+	`chewi1314_polytopeSlackNegLog_rangePullInvHess_dualLocalNorm_add_le`,
+	`chewi1314_polytopeSlackNegLog_rangePullInvHess_dualLocalNorm_smul`,
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBudget_dualLaws`,
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeTailBudget_noFactor`, and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor`.
+	This removes the pulled-back inverse-Hessian factorization gate from the
+	direct finite-row §13.16 slack-range handoff.
 	The next exact-source gate can now be attacked either by proving the direct
-	range source-radius-half/successor-membership certificates plus the
-	pulled-back inverse-Hessian factorization used by the decrement model, or
-	by discharging the stronger range preliminary Newton recurrence,
-	pre-decrement summability, and square-root-coordinate model.
+	range source-radius-half/successor-membership certificates and scalar
+	source tail budget, or by discharging the stronger range preliminary Newton
+	recurrence, pre-decrement summability, and square-root-coordinate model.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

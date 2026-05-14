@@ -40,7 +40,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   `lake build StatInference.Optimization.<Module>`; root-build only after
   root-import or broad cross-module changes; batch final docs, scans, rebase,
   commit, and push once per verified packet.
-- Current proof worktree: use `/private/tmp/chewi-schur-direct` for the
+- Current proof worktree: use `/tmp/chewi-dual-seminorm` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
 - Latest Chapter 13 frontier: Chewi Example 13.14's arbitrary finite-row
@@ -626,6 +626,23 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  assumption from the direct range source-radius route by proving the
 	  needed source Cauchy bridge from strict range Hessian positivity and the
 	  concrete range inverse-Hessian right-inverse.
+	  The direct dual-seminorm/no-factor packet adds
+	  `localNorm_add_le_of_hessian_pos`,
+	  `dualLocalNorm_add_le_of_hessian_right_inverse_pos`,
+	  `dualLocalNorm_smul_of_invHess_nonneg`,
+	  `dualLocalNorm_smul_of_hessian_right_inverse`,
+	  `chewi1314_polytopeSlackNegLog_rangeInvHess_dualLocalNorm_add_le`,
+	  `chewi1314_polytopeSlackNegLog_rangeInvHess_dualLocalNorm_smul`,
+	  `chewi1314_polytopeSlackNegLog_rangePullInvHess_dualLocalNorm_add_le`,
+	  `chewi1314_polytopeSlackNegLog_rangePullInvHess_dualLocalNorm_smul`,
+	  `chewi1316_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_dualLaws`,
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_sourceStart_tailBudget_dualLaws`,
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_tailBudget_dualLaws`,
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeTailBudget_noFactor`, and
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor`.
+	  This removes the pulled-back inverse-Hessian factorization gate from the
+	  direct §13.16 slack-range handoff by deriving final-point
+	  triangle/homogeneity from the concrete range right-inverse.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
@@ -638,8 +655,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `norm_sum_le`, and `Finset.sum_range_sub`.  The live exact-source gate is
 	  now the concrete Chewi/Nesterov analytical-center data for the
 	  next-parameter preliminary Newton recurrence: successor membership,
-	  range source-radius-half, pulled-back inverse-Hessian factorization for
-	  the decrement model, and either a summable next-parameter pre-Newton
+	  range source-radius-half, and either a summable next-parameter pre-Newton
 	  decrement budget or an alternative analytical-center radius route.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
