@@ -612,6 +612,18 @@ packet adds
 	prove for the concrete preliminary path
 	`|xseq (N+1) i - xbar0 i| <= (1/(2*sqrt d))*xbar0 i` for every
 	coordinate and prefix index.
+	The scalar recurrence layer now further compiles:
+	`positiveOrthant_preliminaryPathGrad_apply_coord`,
+	`positiveOrthant_preliminaryPath_newtonStep_apply`,
+	`positiveOrthant_coord_abs_sub_le_mul_of_relative_abs_sub_le`,
+	`chewi1316_positiveOrthant_preliminaryNextNewtonStep_coord_eq`,
+	`chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_eq`,
+	and
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_relativeCoordRadiusHalf`.
+	Thus the next sharp blocker is scalar: for
+	`y_n(i)=xseq n i / xbar0 i`, use
+	`y_{n+1}=2*y_n-tseq(n+1)*y_n^2` and the closed-form `tseq`
+	recurrence to prove `|y_{N+1}(i)-1| <= 1/(2*sqrt d)`.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

@@ -472,6 +472,17 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  reduce the finite positive-orthant source-radius gate to the coordinate
 	  inequalities
 	  `|xseq (N+1) i - xbar0 i| <= (1/(2*sqrt d))*xbar0 i`.
+	  The new scalar recurrence layer
+	  `positiveOrthant_preliminaryPathGrad_apply_coord`,
+	  `positiveOrthant_preliminaryPath_newtonStep_apply`,
+	  `positiveOrthant_coord_abs_sub_le_mul_of_relative_abs_sub_le`,
+	  `chewi1316_positiveOrthant_preliminaryNextNewtonStep_coord_eq`,
+	  `chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_eq`,
+	  and
+	  `chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_relativeCoordRadiusHalf`
+	  now reduces the next gate to bounding
+	  `|xseq (N+1) i / xbar0 i - 1|` from the scalar recurrence
+	  `y_{n+1}=2*y_n-tseq(n+1)*y_n^2`.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

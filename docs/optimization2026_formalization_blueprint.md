@@ -416,6 +416,17 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_coordRadiusHalf`.
 	Use it to replace the abstract source-radius-half premise by coordinate
 	relative displacement bounds along the preliminary path.
+	The scalar relative-coordinate route is now first-class:
+	`positiveOrthant_preliminaryPathGrad_apply_coord`,
+	`positiveOrthant_preliminaryPath_newtonStep_apply`,
+	`positiveOrthant_coord_abs_sub_le_mul_of_relative_abs_sub_le`,
+	`chewi1316_positiveOrthant_preliminaryNextNewtonStep_coord_eq`,
+	`chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_eq`,
+	and
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_relativeCoordRadiusHalf`
+	show that it is enough to prove the scalar relative-radius invariant for
+	`y_n(i)=xseq n i/xbar0 i` under
+	`y_{n+1}=2*y_n-tseq(n+1)*y_n^2`.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

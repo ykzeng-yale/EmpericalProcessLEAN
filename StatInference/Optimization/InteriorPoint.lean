@@ -22057,6 +22057,25 @@ theorem positiveOrthantNegLog_newton_linear {d : ℕ}
   field_simp [hxi]
   ring
 
+theorem positiveOrthant_preliminaryPathGrad_apply_coord {d : ℕ}
+    (xbar0 x : EuclideanSpace ℝ (Fin d)) (t : ℝ) (i : Fin d) :
+    preliminaryPathGrad positiveOrthantNegLogGrad xbar0 t x i =
+      t * (xbar0 i)⁻¹ - (x i)⁻¹ := by
+  simp [preliminaryPathGrad, preliminaryPathDirection, centralPathGrad,
+    negLogBarrier_deriv]
+  ring
+
+theorem positiveOrthant_preliminaryPath_newtonStep_apply {d : ℕ}
+    {xbar0 x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d))
+    (t : ℝ) (i : Fin d) :
+    newtonStep (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 t)
+        positiveOrthantNegLogInvHessCLM x i =
+      2 * x i - t * (xbar0 i)⁻¹ * (x i) ^ (2 : ℕ) := by
+  have hxi : x i ≠ 0 := (hx i).ne'
+  simp [newtonStep, negLogBarrier_deriv]
+  field_simp [hxi]
+  ring
+
 /--
 The positive-orthant square-root Hessian coordinate map at a point known to lie
 in the positive orthant.
@@ -22529,6 +22548,25 @@ theorem positiveOrthantNegLog_sourceRadiusHalf_of_coord_abs_le_inv_two_sqrt
       2⁻¹ * (Real.sqrt (d : ℝ) * (Real.sqrt (d : ℝ))⁻¹) = (2⁻¹ : ℝ) := by
     rw [mul_inv_cancel₀ hsqrt_pos.ne', mul_one]
   simpa [one_div, hscale, mul_assoc, mul_left_comm, mul_comm] using hbound
+
+theorem positiveOrthant_coord_abs_sub_le_mul_of_relative_abs_sub_le {d : ℕ}
+    {x0 x : EuclideanSpace ℝ (Fin d)} (hx0 : x0 ∈ positiveOrthant (d := d))
+    {r : ℝ} {i : Fin d}
+    (hrel : |x i / x0 i - 1| ≤ r) :
+    |x i - x0 i| ≤ r * x0 i := by
+  have hxi_pos : 0 < x0 i := hx0 i
+  have hscale :
+      (x i / x0 i - 1) * x0 i = x i - x0 i := by
+    field_simp [hxi_pos.ne']
+  have habs_eq :
+      |x i - x0 i| = |x i / x0 i - 1| * x0 i := by
+    calc
+      |x i - x0 i| = |(x i / x0 i - 1) * x0 i| := by
+        rw [hscale]
+      _ = |x i / x0 i - 1| * x0 i := by
+        rw [abs_mul, abs_of_pos hxi_pos]
+  rw [habs_eq]
+  exact mul_le_mul_of_nonneg_right hrel hxi_pos.le
 
 theorem positiveOrthant_mem_of_localNorm_sub_lt_one {d : ℕ}
     {x y : EuclideanSpace ℝ (Fin d)}
@@ -23474,6 +23512,49 @@ theorem chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le
       (fun z _hz a v => positiveOrthantNegLogHessDerivCLM_mixed_inner z a v)
       hbudget
 
+theorem chewi1316_positiveOrthant_preliminaryNextNewtonStep_coord_eq
+    {d : ℕ}
+    {xbar0 : EuclideanSpace ℝ (Fin d)}
+    {xseq : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {tseq : ℕ -> ℝ}
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ positiveOrthant (d := d))
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 (tseq (n + 1)))
+          positiveOrthantNegLogInvHessCLM (xseq n))
+    (n : ℕ) (i : Fin d) :
+    xseq (n + 1) i =
+      2 * xseq n i - tseq (n + 1) * (xbar0 i)⁻¹ *
+        (xseq n i) ^ (2 : ℕ) := by
+  rw [hnewton_next n]
+  exact
+    positiveOrthant_preliminaryPath_newtonStep_apply
+      (xbar0 := xbar0) (x := xseq n) (t := tseq (n + 1))
+      (hxseq_mem n) i
+
+theorem chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_eq
+    {d : ℕ}
+    {xbar0 : EuclideanSpace ℝ (Fin d)}
+    {xseq : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {tseq : ℕ -> ℝ}
+    (hxbar0 : xbar0 ∈ positiveOrthant (d := d))
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ positiveOrthant (d := d))
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 (tseq (n + 1)))
+          positiveOrthantNegLogInvHessCLM (xseq n))
+    (n : ℕ) (i : Fin d) :
+    xseq (n + 1) i / xbar0 i =
+      2 * (xseq n i / xbar0 i) -
+        tseq (n + 1) * (xseq n i / xbar0 i) ^ (2 : ℕ) := by
+  have hxi0 : xbar0 i ≠ 0 := (hxbar0 i).ne'
+  rw [chewi1316_positiveOrthant_preliminaryNextNewtonStep_coord_eq
+    (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+    hxseq_mem hnewton_next n i]
+  field_simp [hxi0]
+
 set_option maxHeartbeats 4000000 in
 /--
 Coordinate-radius interface for the concrete positive-orthant source-start
@@ -23525,6 +23606,59 @@ theorem chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le
     positiveOrthantNegLog_sourceRadiusHalf_of_coord_abs_le_inv_two_sqrt
       (x0 := xbar0) (x := xseq (N + 1)) hxbar0 hsqrt_pos
       (hcoord_radius N)
+
+set_option maxHeartbeats 4000000 in
+/--
+Relative-coordinate radius interface for the concrete positive-orthant
+source-start initialization.  Together with
+`chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_eq`, this
+reduces the remaining source-radius gate to a scalar recurrence bound for
+`xseq n i / xbar0 i`.
+-/
+theorem chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_relativeCoordRadiusHalf
+    {d : ℕ}
+    {xbar0 a : EuclideanSpace ℝ (Fin d)}
+    {xseq : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {tseq : ℕ -> ℝ}
+    {c0 tailBound : ℝ}
+    (hxbar0 : xbar0 ∈ positiveOrthant (d := d))
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ positiveOrthant (d := d))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (d : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 (tseq (n + 1)))
+          positiveOrthantNegLogInvHessCLM (xseq n))
+    (hrelative_radius : ∀ N : ℕ, ∀ i : Fin d,
+      |xseq (N + 1) i / xbar0 i - 1| ≤
+        1 / (2 * Real.sqrt (d : ℝ)))
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt (d : ℝ))
+    (hdelta_lt_one : c0 / Real.sqrt (d : ℝ) < 1)
+    (hdelta_le_c0 : c0 / Real.sqrt (d : ℝ) ≤ c0)
+    (hc0_le : c0 ≤ 1 / 200)
+    (hbudget : 2 * Real.sqrt (d : ℝ) ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (d : ℝ) ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM (xseq N) ≤ 1 / 4 := by
+  refine
+    chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_coordRadiusHalf
+      hxbar0 hxseq_mem hx0 ht0 htstep hnewton_next ?_
+      htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one hdelta_le_c0 hc0_le
+      hbudget
+  intro N i
+  exact
+    positiveOrthant_coord_abs_sub_le_mul_of_relative_abs_sub_le
+      (x0 := xbar0) (x := xseq (N + 1)) hxbar0 (hrelative_radius N i)
 
 set_option maxHeartbeats 800000 in
 theorem chewi1315_positiveOrthantNegLog_gradient_segment_inner_le
