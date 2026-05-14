@@ -517,8 +517,26 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1314_polytopeSlackNegLog_range_sourceCauchy_of_adjointSqrtCoord`,
 	`chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_zeroSafe_globalDeriv_and_sourceSqrtCoord`, and
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_zeroSafe_globalDeriv_and_sourceSqrtCoord_tailLambdaBudget`.
+	The range Hessian-derivative handoff packet adds
+	`barrierAffinePreimageHessCLM`, `barrierAffinePreimageHessDeriv`,
+	`barrierAffinePreimageHess_hasFDerivAt`,
+	`barrierAffinePreimageHessDeriv_inner_eq`,
+	`barrierAffineRangeHessDeriv`, `barrierAffineRangeHess_hasFDerivAt`,
+	`barrierAffineRangeHess_continuousOn_of_hasFDerivAt`,
+	`barrierAffineRangeHessDeriv_inner_eq`,
+	`chewi1314_polytopeSlackNegLog_rangeHessDeriv`,
+	`chewi1314_polytopeSlackNegLog_rangeHess_hasFDerivAt`,
+	`chewi1314_polytopeSlackNegLog_rangeHess_continuousOn`,
+	`chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner`,
+	`chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_and_sourceSqrtCoord`,
+	and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_and_sourceSqrtCoord_tailLambdaBudget`.
+	This removes the global range Hessian derivative/mixed-third assumptions
+	from the direct source-radius route by reusing the positive-orthant
+	logarithmic-barrier Hessian derivative package through affine/range
+	transport.
 	The next exact-source gate can now be attacked either by proving the direct
-	range source-radius-half/source-factorization/global-derivative
+	range source-radius-half/source-factorization/successor-membership
 	certificates, or by discharging the stronger range preliminary Newton
 	recurrence, pre-decrement summability, and square-root-coordinate model.
 	Search-first reuse: local

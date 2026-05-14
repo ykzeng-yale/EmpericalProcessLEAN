@@ -594,6 +594,23 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  discharging source-point Cauchy from a source-only adjoint-square
 	  factorization.  The remaining §13.16 work is now concrete range geometry,
 	  not scalar log/count or affine transport plumbing.
+	  The newest range Hessian-derivative handoff packet adds
+	  `barrierAffinePreimageHessCLM`, `barrierAffinePreimageHessDeriv`,
+	  `barrierAffinePreimageHess_hasFDerivAt`,
+	  `barrierAffinePreimageHessDeriv_inner_eq`,
+	  `barrierAffineRangeHessDeriv`, `barrierAffineRangeHess_hasFDerivAt`,
+	  `barrierAffineRangeHess_continuousOn_of_hasFDerivAt`,
+	  `barrierAffineRangeHessDeriv_inner_eq`,
+	  `chewi1314_polytopeSlackNegLog_rangeHessDeriv`,
+	  `chewi1314_polytopeSlackNegLog_rangeHess_hasFDerivAt`,
+	  `chewi1314_polytopeSlackNegLog_rangeHess_continuousOn`,
+	  `chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner`,
+	  `chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_and_sourceSqrtCoord`,
+	  and
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_and_sourceSqrtCoord_tailLambdaBudget`.
+	  This removes the global range Hessian derivative/mixed-third assumptions
+	  from the direct source-radius route by transporting the positive-orthant
+	  logarithmic-barrier Hessian derivative through the affine slack range.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
@@ -605,10 +622,10 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `newton_linear_of_hessian_right_inverse`, and mathlib `norm_add_le`,
 	  `norm_sum_le`, and `Finset.sum_range_sub`.  The live exact-source gate is
 	  now the concrete Chewi/Nesterov analytical-center data for the
-	  next-parameter preliminary Newton recurrence: successor membership, a
-	  global derivative package, square-root-coordinate data, and either a
-	  summable next-parameter pre-Newton decrement budget or an alternative
-	  analytical-center radius route.
+	  next-parameter preliminary Newton recurrence: successor membership,
+	  range source-radius-half, source square-root/inverse-Hessian data, and
+	  either a summable next-parameter pre-Newton decrement budget or an
+	  alternative analytical-center radius route.
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
   now compiles in supplied-oracle form.  Reusable declarations include
   `barrierInterSet`, `barrierSumHess`, `barrierSumGrad`,

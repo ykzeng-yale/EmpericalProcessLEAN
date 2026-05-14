@@ -2964,6 +2964,59 @@ noncomputable def barrierAffinePreimageHess
     F -> F →L[ℝ] F :=
   fun x => (ContinuousLinearMap.adjoint A).comp ((hess (A x + b)).comp A)
 
+/-- Fixed linear transport `H ↦ A† H A` for affine-preimage Hessians. -/
+noncomputable def barrierAffinePreimageHessCLM
+    (A : F →L[ℝ] E) :
+    (E →L[ℝ] E) →L[ℝ] F →L[ℝ] F :=
+  (ContinuousLinearMap.compL ℝ F E F (ContinuousLinearMap.adjoint A)).comp
+    ((ContinuousLinearMap.compL ℝ F E E).flip A)
+
+/--
+Derivative oracle for the affine-preimage Hessian `x ↦ A† (hess (A x + b)) A`.
+-/
+noncomputable def barrierAffinePreimageHessDeriv
+    (A : F →L[ℝ] E) (b : E)
+    (hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)) :
+    F -> F →L[ℝ] (F →L[ℝ] F) :=
+  fun x => (barrierAffinePreimageHessCLM A).comp
+    ((hessDeriv (A x + b)).comp A)
+
+theorem barrierAffinePreimageHessCLM_apply
+    (A : F →L[ℝ] E) (H : E →L[ℝ] E) :
+    barrierAffinePreimageHessCLM A H =
+      (ContinuousLinearMap.adjoint A).comp (H.comp A) := by
+  rfl
+
+theorem barrierAffinePreimageHessDeriv_apply
+    (A : F →L[ℝ] E) (b : E)
+    (hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)) (x u : F) :
+    barrierAffinePreimageHessDeriv A b hessDeriv x u =
+      (ContinuousLinearMap.adjoint A).comp
+        ((hessDeriv (A x + b) (A u)).comp A) := by
+  rfl
+
+theorem barrierAffinePreimageHess_hasFDerivAt
+    (A : F →L[ℝ] E) (b : E) {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)} {x : F}
+    (hhess : HasFDerivAt hess (hessDeriv (A x + b)) (A x + b)) :
+    HasFDerivAt (barrierAffinePreimageHess A b hess)
+      (barrierAffinePreimageHessDeriv A b hessDeriv x) x := by
+  have hpoint : HasFDerivAt (fun y : F => A y + b) A x := by
+    simpa using A.hasFDerivAt.add_const b
+  have hcomp : HasFDerivAt (fun y : F => hess (A y + b))
+      ((hessDeriv (A x + b)).comp A) x := by
+    simpa [Function.comp_def] using
+      (HasFDerivAt.comp (𝕜 := ℝ)
+        (f := fun y : F => A y + b)
+        (f' := A)
+        (g := hess)
+        (g' := hessDeriv (A x + b))
+        x hhess hpoint)
+  have hlinear :=
+    (barrierAffinePreimageHessCLM A).hasFDerivAt.comp x hcomp
+  simpa [barrierAffinePreimageHess, barrierAffinePreimageHessCLM,
+    barrierAffinePreimageHessDeriv, Function.comp_def] using hlinear
+
 /-- Pulled-back gradient oracle for the affine composition `x ↦ f(A x + b)`. -/
 noncomputable def barrierAffinePreimageGrad
     (A : F →L[ℝ] E) (b : E) (grad : E -> E) : F -> F :=
@@ -3001,6 +3054,25 @@ def barrierAffinePreimageThirdMixed
     (A : F →L[ℝ] E) (b : E) (third : E -> E -> E -> ℝ) :
     F -> F -> F -> ℝ :=
   fun x u v => third (A x + b) (A u) (A v)
+
+theorem barrierAffinePreimageHessDeriv_inner_eq
+    (A : F →L[ℝ] E) (b : E)
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {third : E -> E -> E -> ℝ} (x u v : F)
+    (hmixed :
+      inner ℝ (A v) ((hessDeriv (A x + b) (A u)) (A v)) =
+        third (A x + b) (A u) (A v)) :
+    inner ℝ v ((barrierAffinePreimageHessDeriv A b hessDeriv x u) v) =
+      barrierAffinePreimageThirdMixed A b third x u v := by
+  calc
+    inner ℝ v ((barrierAffinePreimageHessDeriv A b hessDeriv x u) v) =
+        inner ℝ (A v) ((hessDeriv (A x + b) (A u)) (A v)) := by
+          rw [barrierAffinePreimageHessDeriv_apply]
+          simpa [ContinuousLinearMap.comp_apply] using
+            (ContinuousLinearMap.adjoint_inner_right A v
+              ((hessDeriv (A x + b) (A u)) (A v)))
+    _ = barrierAffinePreimageThirdMixed A b third x u v := by
+          simpa [barrierAffinePreimageThirdMixed] using hmixed
 
 theorem barrierAffinePreimageHess_quadratic_eq
     (A : F →L[ℝ] E) (b : E) (hess : E -> E →L[ℝ] E)
@@ -3687,6 +3759,40 @@ noncomputable def barrierAffineRangeHess
     A.range -> A.range →L[ℝ] A.range :=
   barrierAffinePreimageHess A.range.subtypeL b hess
 
+noncomputable def barrierAffineRangeHessDeriv
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)) :
+    A.range -> A.range →L[ℝ] (A.range →L[ℝ] A.range) :=
+  barrierAffinePreimageHessDeriv A.range.subtypeL b hessDeriv
+
+omit [CompleteSpace F] in
+theorem barrierAffineRangeHess_hasFDerivAt
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {y : A.range}
+    (hhess : HasFDerivAt hess (hessDeriv ((y : E) + b)) ((y : E) + b)) :
+    HasFDerivAt (barrierAffineRangeHess A b hess)
+      (barrierAffineRangeHessDeriv A b hessDeriv y) y := by
+  simpa [barrierAffineRangeHess, barrierAffineRangeHessDeriv] using
+    barrierAffinePreimageHess_hasFDerivAt A.range.subtypeL b
+      (hess := hess) (hessDeriv := hessDeriv) (x := y) hhess
+
+omit [CompleteSpace F] in
+set_option synthInstance.maxHeartbeats 80000 in
+theorem barrierAffineRangeHess_continuousOn_of_hasFDerivAt
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    (hhess : ∀ ⦃y : A.range⦄, y ∈ barrierAffineRangeSet A b s ->
+      HasFDerivAt hess (hessDeriv ((y : E) + b)) ((y : E) + b)) :
+    ContinuousOn (barrierAffineRangeHess A b hess)
+      (barrierAffineRangeSet A b s) := by
+  intro y hy
+  exact (barrierAffineRangeHess_hasFDerivAt A b
+    (hess := hess) (hessDeriv := hessDeriv) (y := y)
+    (hhess hy)).continuousAt.continuousWithinAt
+
 noncomputable def barrierAffineRangeGrad
     (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
     (grad : E -> E) : A.range -> A.range :=
@@ -3720,6 +3826,20 @@ def barrierAffineRangeThirdMixed
     (A : F →L[ℝ] E) (b : E) (third : E -> E -> E -> ℝ) :
     A.range -> A.range -> A.range -> ℝ :=
   fun y u v => third ((y : E) + b) (u : E) (v : E)
+
+omit [CompleteSpace F] in
+theorem barrierAffineRangeHessDeriv_inner_eq
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {third : E -> E -> E -> ℝ} (y u v : A.range)
+    (hmixed :
+      inner ℝ (v : E) ((hessDeriv ((y : E) + b) (u : E)) (v : E)) =
+        third ((y : E) + b) (u : E) (v : E)) :
+    inner ℝ v ((barrierAffineRangeHessDeriv A b hessDeriv y u) v) =
+      barrierAffineRangeThirdMixed A b third y u v := by
+  simpa [barrierAffineRangeHessDeriv, barrierAffineRangeThirdMixed] using
+    barrierAffinePreimageHessDeriv_inner_eq A.range.subtypeL b
+      (hessDeriv := hessDeriv) (third := third) y u v hmixed
 
 omit [CompleteSpace F] in
 theorem barrierAffineRangeHess_quadratic_nonneg
@@ -25592,6 +25712,60 @@ theorem chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
       exact chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos a b hy hv)
     hy v
 
+noncomputable def chewi1314_polytopeSlackNegLog_rangeHessDeriv
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :
+    (polytopeSlackCLM a).range ->
+      (polytopeSlackCLM a).range →L[ℝ]
+        ((polytopeSlackCLM a).range →L[ℝ] (polytopeSlackCLM a).range) :=
+  barrierAffineRangeHessDeriv (polytopeSlackCLM a) b
+    positiveOrthantNegLogHessDerivCLM
+
+theorem chewi1314_polytopeSlackNegLog_rangeHess_hasFDerivAt
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {y : (polytopeSlackCLM a).range}
+    (hy : y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m))) :
+    HasFDerivAt
+      (barrierAffineRangeHess (polytopeSlackCLM a) b
+        positiveOrthantNegLogHessCLM)
+      (chewi1314_polytopeSlackNegLog_rangeHessDeriv a b y) y := by
+  exact barrierAffineRangeHess_hasFDerivAt (polytopeSlackCLM a) b
+    (hess := positiveOrthantNegLogHessCLM)
+    (hessDeriv := positiveOrthantNegLogHessDerivCLM)
+    (y := y) (positiveOrthantNegLogHessCLM_hasFDerivAt hy)
+
+theorem chewi1314_polytopeSlackNegLog_rangeHess_continuousOn
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :
+    ContinuousOn
+      (barrierAffineRangeHess (polytopeSlackCLM a) b
+        positiveOrthantNegLogHessCLM)
+      (barrierAffineRangeSet (polytopeSlackCLM a) b
+        (positiveOrthant (d := m))) := by
+  exact barrierAffineRangeHess_continuousOn_of_hasFDerivAt
+    (polytopeSlackCLM a) b
+    (s := positiveOrthant (d := m))
+    (hess := positiveOrthantNegLogHessCLM)
+    (hessDeriv := positiveOrthantNegLogHessDerivCLM)
+    (fun y hy => positiveOrthantNegLogHessCLM_hasFDerivAt hy)
+
+theorem chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (y aDir v : (polytopeSlackCLM a).range) :
+    inner ℝ v
+        ((chewi1314_polytopeSlackNegLog_rangeHessDeriv a b y aDir) v) =
+      barrierAffineRangeThirdMixed (polytopeSlackCLM a) b
+        positiveOrthantNegLogThirdMixed y aDir v := by
+  exact barrierAffineRangeHessDeriv_inner_eq (polytopeSlackCLM a) b
+    (hessDeriv := positiveOrthantNegLogHessDerivCLM)
+    (third := positiveOrthantNegLogThirdMixed) y aDir v
+    (positiveOrthantNegLogHessDerivCLM_mixed_inner
+      ((y : EuclideanSpace ℝ (Fin m)) + b) (aDir : EuclideanSpace ℝ (Fin m))
+      (v : EuclideanSpace ℝ (Fin m)))
+
 theorem chewi1314_polytopeSlackNegLog_range_sourceCauchy_of_adjointSqrtCoord
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
     {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
@@ -26836,6 +27010,65 @@ theorem chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_
       hhess_global hmixed_global hradius_half hxbar0_cauchy hbudget
 
 /--
+Uniform slack-range source-tail estimate from source-radius-half and a
+source-only square-root coordinate, with the range Hessian continuity,
+derivative, and mixed-third package instantiated from the positive-orthant
+logarithmic barrier.
+-/
+theorem chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_and_sourceSqrtCoord
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0Range : (polytopeSlackCLM aRow).range}
+    {xseqRange : ℕ -> (polytopeSlackCLM aRow).range}
+    {sqrtCoord0 :
+      (polytopeSlackCLM aRow).range ≃L[ℝ] (polytopeSlackCLM aRow).range}
+    {tailBound : ℝ}
+    (hhess0 :
+      barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM xbar0Range =
+        (ContinuousLinearMap.adjoint
+          sqrtCoord0.toContinuousLinearMap).comp
+            sqrtCoord0.toContinuousLinearMap)
+    (hinv0 :
+      chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack xbar0Range =
+        sqrtCoord0.symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            sqrtCoord0.symm.toContinuousLinearMap))
+    (hxbar0Range :
+      xbar0Range ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hx0 : xseqRange 0 = xbar0Range)
+    (hxseq_succ : ∀ N : ℕ,
+      xseqRange (N + 1) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hradius_half : ∀ N : ℕ,
+      localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          xbar0Range (xseqRange (N + 1) - xbar0Range) ≤ 1 / 2)
+    (hbudget : 2 * Real.sqrt (m : ℝ) ≤ tailBound) :
+    ∀ N,
+      dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+        (xseqRange N)
+        (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad xbar0Range) ≤ tailBound := by
+  exact
+    chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_zeroSafe_globalDeriv_and_sourceSqrtCoord
+      (aRow := aRow) (bSlack := bSlack) (xbar0Range := xbar0Range)
+      (xseqRange := xseqRange)
+      (hessDerivRange := chewi1314_polytopeSlackNegLog_rangeHessDeriv aRow bSlack)
+      (sqrtCoord0 := sqrtCoord0) (tailBound := tailBound)
+      hhess0 hinv0 hxbar0Range hx0 hxseq_succ
+      (chewi1314_polytopeSlackNegLog_rangeHess_continuousOn aRow bSlack)
+      (fun z hz => chewi1314_polytopeSlackNegLog_rangeHess_hasFDerivAt
+        aRow bSlack hz)
+      (fun z _hz a v =>
+        chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner
+          aRow bSlack z a v)
+      hradius_half hbudget
+
+/--
 Finite-row polytope source-start initialization from a direct range
 source-radius-half tail certificate.  Compared with the preliminary-Newton
 range wrapper, this exposes the aggressive reusable checkpoint: once the
@@ -27096,6 +27329,116 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
         simp [hx0])
       hxseq_succ_range hhess_cont hhess_global hmixed_global
       hradius_half_range hbudget
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformRangeTailBound_tailLambdaBudget
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (lambdaSeq := lambdaSeq) (coord := coord) (c0 := c0)
+      (nu := (m : ℝ)) (tailBound := tailBound) hinv_factor hx0 ht0
+      htstep hlambda0 hstep hlambdaBudget_succ htailBound_pos hc0_pos
+      hsqrt_pos hdelta_lt_one hrangeTailBase_le
+
+/--
+Finite-row polytope source-start initialization from a range source-radius-half
+certificate and a source-only square-root coordinate, with the range Hessian
+calculus package instantiated from the positive-orthant logarithmic barrier.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_and_sourceSqrtCoord_tailLambdaBudget
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq lambdaSeq : ℕ -> ℝ}
+    {coord : ℕ -> F →L[ℝ] F}
+    {sqrtCoord0 :
+      (polytopeSlackCLM aRow).range ≃L[ℝ] (polytopeSlackCLM aRow).range}
+    {c0 tailBound : ℝ}
+    (hinv_factor : ∀ N v,
+      inner ℝ v
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack
+            (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint (coord N)) v‖ ^ (2 : ℕ))
+    (hhess0 :
+      barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM
+          ((polytopeSlackCLM aRow).rangeRestrict xbar0) =
+        (ContinuousLinearMap.adjoint
+          sqrtCoord0.toContinuousLinearMap).comp
+            sqrtCoord0.toContinuousLinearMap)
+    (hinv0 :
+      chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack
+          ((polytopeSlackCLM aRow).rangeRestrict xbar0) =
+        sqrtCoord0.symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            sqrtCoord0.symm.toContinuousLinearMap))
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (hxseq_succ_range : ∀ N : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq (N + 1)) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (m : ℝ)) * tseq n)
+    (hlambda0 : 1 / 4 ≤ lambdaSeq 0)
+    (hstep : ∀ n,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq n))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq (n + 1)) ≤ lambdaSeq (n + 1))
+    (hlambdaBudget_succ : ∀ N, lambdaSeq (N + 1) ≤ 1 / 8)
+    (hradius_half_range : ∀ N : ℕ,
+      localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq (N + 1)) -
+            (polytopeSlackCLM aRow).rangeRestrict xbar0) ≤ 1 / 2)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt (m : ℝ))
+    (hdelta_lt_one : c0 / Real.sqrt (m : ℝ) < 1)
+    (hbudget : 2 * Real.sqrt (m : ℝ) ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq N) ≤ 1 / 4 := by
+  have hrangeTailBase_le : ∀ N,
+      dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+        ((polytopeSlackCLM aRow).rangeRestrict (xseq N))
+        (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad
+          ((polytopeSlackCLM aRow).rangeRestrict xbar0)) ≤ tailBound :=
+    chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_and_sourceSqrtCoord
+      (aRow := aRow) (bSlack := bSlack)
+      (xbar0Range := (polytopeSlackCLM aRow).rangeRestrict xbar0)
+      (xseqRange := fun N =>
+        (polytopeSlackCLM aRow).rangeRestrict (xseq N))
+      (sqrtCoord0 := sqrtCoord0) (tailBound := tailBound)
+      hhess0 hinv0 hxbar0Range
+      (by
+        simp [hx0])
+      hxseq_succ_range hradius_half_range hbudget
   exact
     chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformRangeTailBound_tailLambdaBudget
       (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)

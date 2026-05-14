@@ -751,9 +751,29 @@ packet adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_zeroSafe_globalDeriv_and_sourceSqrtCoord_tailLambdaBudget`.
 	It discharges the direct route's source-point Cauchy certificate from an
 	adjoint-square factorization only at `xbar0Range`.  The remaining direct
-	gates are therefore the range source-radius-half certificate, successor
-	membership, source Hessian/inverse-Hessian factorization, global range
-	Hessian derivative/mixed-third package, and the scalar tail budget.
+	gates before the Hessian-calculus handoff were the range
+	source-radius-half certificate, successor membership, source
+	Hessian/inverse-Hessian factorization, global range Hessian
+	derivative/mixed-third package, and the scalar tail budget.
+	The newest range Hessian-derivative handoff packet adds
+	`barrierAffinePreimageHessCLM`, `barrierAffinePreimageHessDeriv`,
+	`barrierAffinePreimageHess_hasFDerivAt`,
+	`barrierAffinePreimageHessDeriv_inner_eq`,
+	`barrierAffineRangeHessDeriv`, `barrierAffineRangeHess_hasFDerivAt`,
+	`barrierAffineRangeHess_continuousOn_of_hasFDerivAt`,
+	`barrierAffineRangeHessDeriv_inner_eq`,
+	`chewi1314_polytopeSlackNegLog_rangeHessDeriv`,
+	`chewi1314_polytopeSlackNegLog_rangeHess_hasFDerivAt`,
+	`chewi1314_polytopeSlackNegLog_rangeHess_continuousOn`,
+	`chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner`,
+	`chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_and_sourceSqrtCoord`,
+	and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_and_sourceSqrtCoord_tailLambdaBudget`.
+	This instantiates the finite-row polytope range Hessian continuity,
+	derivative, and mixed-third assumptions from the positive-orthant
+	logarithmic barrier, so the remaining direct gates are now range
+	source-radius-half, successor range membership, source Hessian/inverse-
+	Hessian factorization at the source point, and the scalar tail budget.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
