@@ -1452,6 +1452,7 @@ source-domain `grad`/`hess` derivative data, the mixed-third pairing,
 selector differentiability, and vertical inverse differentiability.  Use it
 before choosing the literal-envelope or direct local-norm transport consumer.
 The theorem-facing source-square-root endpoints
+`chewi1311_infProjection_thirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`,
 `chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`
 and
 `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtFirstSecondFullHessianDerivative`
@@ -1459,7 +1460,9 @@ now combine `BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt`
 with source-domain first/second/full-Hessian derivative data.  Use these when
 the concrete source instance already has the adjoint-square full-Hessian model
 on `s`, the vertical `Hyy` square-root model on the projected domain, and the
-source mixed-third identity.
+source mixed-third identity.  Prefer the non-literal third-order endpoint when
+the reusable `BarrierInfProjectionThirdOrderEnvelopeOn` certificate is needed
+before vertical-minimizer/literal-infimum data is packaged.
 When no selected-value/literal envelope data is needed, use the shorter direct
 endpoint
 `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSecondFullHessianDerivative_direct`.

@@ -778,12 +778,16 @@ avoid manually restating the selected-graph Hessian derivative certificate.
 Use the non-literal wrappers when the reusable `BarrierInfProjectionThirdOrderEnvelopeOn`
 certificate is needed before the literal vertical-minimizer package.
 The theorem-facing source-square-root wrappers
+`chewi1311_infProjection_thirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`,
 `chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`
 and
 `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtFirstSecondFullHessianDerivative`
 now assemble the source full-square-root model, source-domain first/second/full
 derivative data, and projected-domain vertical `Hyy` model into the literal
-inf-projection package or projected source-radius local-norm sandwich.
+inf-projection package or projected source-radius local-norm sandwich.  The
+non-literal third-order wrapper is the preferred branch point when the concrete
+source proof needs `BarrierInfProjectionThirdOrderEnvelopeOn` before adding
+literal vertical-minimizer hypotheses.
 The direct transport wrapper
 `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSecondFullHessianDerivative_direct`
 is the shortest theorem-facing route when the next consumer only needs the

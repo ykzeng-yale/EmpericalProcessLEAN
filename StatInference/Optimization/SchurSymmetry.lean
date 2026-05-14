@@ -4460,6 +4460,96 @@ theorem BarrierInfProjectionAdjointSqrtEnvelopeModel.projected_localNorm_sandwic
       hMr_lt hs hx hy
 
 /--
+Source-domain square-root plus first-, second-, and full-Hessian derivative
+data give the reusable non-literal third-order envelope certificate for
+Chewi Proposition 13.11(4).  This is the theorem-facing source-start endpoint
+to use before literal-infimum/minimizer data has been packaged.
+-/
+theorem chewi1311_infProjection_thirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₁] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {f : WithLp 2 (E₁ × E₂) -> ℝ}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {hessDeriv : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) →L[ℝ]
+        ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hyy_hess_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      barrierInfProjectionBlockYY selector hess x =
+        (ContinuousLinearMap.adjoint (sqrtHyy x).toContinuousLinearMap).comp
+          (sqrtHyy x).toContinuousLinearMap)
+    (hyy_inv_eq : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      invHyy x =
+        (sqrtHyy x).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtHyy x).symm.toContinuousLinearMap))
+    (hfull_hess_eq_source :
+      ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+        hess z =
+          (ContinuousLinearMap.adjoint (sqrtFull z).toContinuousLinearMap).comp
+            (sqrtFull z).toContinuousLinearMap)
+    (hfull_inv_eq_source :
+      ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+        invHess z =
+          (sqrtFull z).symm.toContinuousLinearMap.comp
+            (ContinuousLinearMap.adjoint
+              (sqrtFull z).symm.toContinuousLinearMap))
+    (hfgrad : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      HasGradientAt f (grad z) z)
+    (hgrad : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      HasFDerivAt grad (hess z) z)
+    (hhess : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      ∀ a v : WithLp 2 (E₁ × E₂),
+        inner ℝ v ((hessDeriv z a) v) = third z a v)
+    (hselector : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector x) x)
+    (hinvDeriv : ∀ ⦃x : E₁⦄, x ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv x) x) :
+    BarrierInfProjectionThirdOrderEnvelopeOn s f selector grad hess invHyy third
+      (fun x =>
+        barrierInfProjectionSchurHessDeriv
+          (barrierInfProjectionBlockXY selector hess)
+          (barrierInfProjectionBlockYX selector hess)
+          invHyy
+          (fun x =>
+            barrierInfProjectionBlockXXDeriv
+              (hessDeriv (barrierInfProjectionPoint selector x)) (dselector x))
+          (fun x =>
+            barrierInfProjectionBlockXYDeriv
+              (hessDeriv (barrierInfProjectionPoint selector x)) (dselector x))
+          (fun x =>
+            barrierInfProjectionBlockYXDeriv
+              (hessDeriv (barrierInfProjectionPoint selector x)) (dselector x))
+          invHyyDeriv x) := by
+  let hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu :=
+    BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt
+      hsel hbar hyy_hess_eq hyy_inv_eq hfull_hess_eq_source
+      hfull_inv_eq_source
+  exact
+    hmodel.thirdOrderEnvelopeOn_of_sourceFirstSecondFullHessianDerivative_isOpen
+      (f := f) hopen hfgrad hgrad hhess hmixed hselector hinvDeriv
+
+/--
 Source-domain square-root plus derivative-data wrapper for Chewi Proposition
 13.11(4)'s literal inf-projection package.  This is the theorem-facing entry
 point for concrete source models that naturally state the adjoint-square

@@ -958,6 +958,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   certificate from the same source full-square-root and derivative data.  Use
   it when the next step needs the certificate itself before selecting either
   the literal-envelope route or the direct local-norm route.
+  The non-literal third-order envelope endpoint
+  `chewi1311_infProjection_thirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`
+  now exposes `BarrierInfProjectionThirdOrderEnvelopeOn` from source
+  full-square-root plus source first/second/full-Hessian derivative data,
+  without requiring the literal vertical-minimizer package.
   Future item-4 source instances should therefore focus on constructing the
   literal package and concrete square-root/envelope model, not rebuilding
   segment Schur-derivative, local-norm transport, or projected-Hessian
