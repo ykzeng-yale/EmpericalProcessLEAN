@@ -114,6 +114,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_initialTotal_half_le_of_stepBudget_zero_le_standard`,
   `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_initialTotal_half_le_standard`, and the preferred endpoint
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_noFactor_standardConstants`.
+  Route correction: this is conditional infrastructure.  The archived
+  positive-orthant obstruction packets already warn that global fixed-source
+  radius/summability gates are not the right textbook-scale path for the
+  actual decreasing-`t` preliminary recurrence.  Unless a new valid invariant
+  proves the actual half contraction, the next serious Chapter 13 work should
+  return to the moving-center / bounded-polytope range-tail estimate and use
+  the existing range-tail source-start consumers.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

@@ -102,6 +102,13 @@ doubled contraction.  The scalar `q = 1 / 2` wrapper is now compiled through
 `chewi1316_initialTotal_half_le_of_stepBudget_zero_le_standard`,
 `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_initialTotal_half_le_standard`, and the preferred source endpoint
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_noFactor_standardConstants`.
+This endpoint should be treated as conditional infrastructure.  Earlier
+verified positive-orthant obstruction packets show that the bare actual
+decreasing-`t` preliminary recurrence is not expected to satisfy the old
+fixed-source global radius/summability route at textbook scale.  The preferred
+route is therefore still the moving-center / bounded-polytope range-tail
+estimate, with the half-contraction endpoint used only if a separate valid
+invariant supplies that contraction.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the

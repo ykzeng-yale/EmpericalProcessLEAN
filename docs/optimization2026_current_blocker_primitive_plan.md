@@ -259,12 +259,20 @@ combined with the scalar `q = 1 / 2` arithmetic.  The newest half-contraction
 consumer adds `chewi1316_initialTotal_half_le_of_stepBudget_zero_le_standard`,
 `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_initialTotal_half_le_standard`, and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_noFactor_standardConstants`.
-Thus the live exact-source §13.16 blocker is now only the actual doubled
-contraction
-`2 * stepBudget (n+1) <= (1 / 2) * (2 * stepBudget n)` for
-`stepBudget = chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget ...`;
-do not introduce another arbitrary `stepBudget` or redo initial-total
-geometric arithmetic.
+This half-contraction endpoint is conditional infrastructure, not yet the
+recommended mathematical route.  The search-first check of the archived
+Chapter 13 obstruction notes shows that fixed-source global preliminary
+summability and source-radius style gates were already ruled out for the
+textbook-scale decreasing-`t` path unless a genuinely new moving-center or
+bounded-polytope invariant is supplied.  Therefore do not spend another run
+trying to prove the unconditional actual doubled contraction
+`2 * stepBudget (n+1) <= (1 / 2) * (2 * stepBudget n)` from the bare actual
+recurrence.  Use the half-contraction endpoint only if a separate theorem
+proves that contraction under additional valid hypotheses.  The preferred live
+route is the direct moving-center / bounded-polytope range-tail estimate that
+older route notes identify after the positive-orthant obstruction packets,
+reusing the compiled range-tail and source-start consumers rather than
+re-entering the false fixed-source radius/summability path.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
