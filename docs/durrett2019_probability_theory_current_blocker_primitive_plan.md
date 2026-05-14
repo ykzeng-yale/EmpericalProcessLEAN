@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V344
+## Live In-Thread Goal Prompt V345
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,17 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V344 adds the centered-product source wrappers
+Latest verified target V345 adds the projected-scalar-CLT to
+characteristic-function bridge
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_projectedScalarCLT`,
+its textbook `t^2` centered-product Gaussian endpoint
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_projectedScalarCLT_centeredProduct`,
+and the direct vector CLT consumer
+`durrett2019_theorem_3_10_7_multivariateCLT_of_projectedScalarCLT_centeredGaussianCenteredProduct_tsq`.
+This connects the scalar Cramér-Wold CLT route to the characteristic-function
+route, so projected scalar CLTs now discharge the V344 projected empirical
+characteristic-function hypothesis.  V344 adds the centered-product source
+wrappers
 `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_tsq_of_centeredProduct`
 and
 `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCenteredProduct_tsq`.
@@ -218,10 +228,11 @@ characteristic-function transport wrappers, or the V341 projected
 characteristic-function multivariate CLT consumer, or the V342 centered
 Gaussian projected-characteristic CLT consumer, or the V343 textbook `t^2`
 Gaussian exponent wrappers, or the V344 centered-product `t^2` source
-wrappers.  Next aggressive packet: continue Chapter 3 by closing a concrete
-source-facing gap around projected empirical characteristic-function
-convergence, remaining Section 3.10 Gaussian-law wrappers, remaining
-Lindeberg-Feller side conditions, or
+wrappers, or the V345 projected-scalar-CLT to characteristic-function bridge.
+Next aggressive packet: continue Chapter 3 by closing a concrete source-facing
+gap around projected empirical characteristic-function convergence, remaining
+Section 3.10 Gaussian-law wrappers, remaining Lindeberg-Feller side conditions,
+or
 characteristic-function transport into later source statements; touch Chapter 2
 only if a Chapter 3 theorem requires a missing source primitive.
 
