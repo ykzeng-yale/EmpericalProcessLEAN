@@ -788,6 +788,13 @@ The direct transport wrapper
 `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSecondFullHessianDerivative_direct`
 is the shortest theorem-facing route when the next consumer only needs the
 projected local-norm sandwich and not the literal selected-value envelope.
+The companion Schur-certificate wrapper
+`chewi1311_infProjection_schurHessDerivativeOn_of_sourceFullSqrtSecondFullHessianDerivative`
+exposes the intermediate `BarrierInfProjectionSchurHessDerivativeOn`
+certificate from source full-square-root, source `grad`/`hess` derivative,
+mixed-third, selector-derivative, and vertical inverse-derivative hypotheses.
+Use this wrapper when the source instance needs to branch into multiple
+consumers from the same Schur derivative certificate.
 If the source model also proves first- and second-order differentiability on
 `s`, use
 `BarrierInfProjectionSelectorStationary.hasGradientAt_of_source`,

@@ -1444,6 +1444,13 @@ directly.  Then use
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
 or
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`.
+The theorem-facing source-square-root Schur certificate endpoint
+`chewi1311_infProjection_schurHessDerivativeOn_of_sourceFullSqrtSecondFullHessianDerivative`
+is now the shortest source-start route to this certificate: it combines
+`BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt` with
+source-domain `grad`/`hess` derivative data, the mixed-third pairing,
+selector differentiability, and vertical inverse differentiability.  Use it
+before choosing the literal-envelope or direct local-norm transport consumer.
 The theorem-facing source-square-root endpoints
 `chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`
 and

@@ -4738,6 +4738,93 @@ theorem chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sou
     hmodel.projected_localNorm_sandwich_sourceRadius_of_sourceSecondFullHessianDerivative_isOpen_direct
       hopen hgrad hhess hmixed hselector hinvDeriv hMr_lt hs hx hy
 
+/--
+Source-domain square-root plus derivative-data wrapper for the Schur-Hessian
+derivative certificate in Chewi Proposition 13.11(4).  This exposes the core
+certificate directly, before choosing between the literal envelope route and
+the direct local-norm transport route.
+-/
+theorem chewi1311_infProjection_schurHessDerivativeOn_of_sourceFullSqrtSecondFullHessianDerivative
+    [FiniteDimensional ℝ E₂] [CompleteSpace E₂]
+    [CompleteSpace (WithLp 2 (E₁ × E₂))]
+    {s : Set (WithLp 2 (E₁ × E₂))}
+    {selector : E₁ -> E₂}
+    {hess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {grad : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂)}
+    {invHess : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) →L[ℝ]
+      WithLp 2 (E₁ × E₂)}
+    {third : WithLp 2 (E₁ × E₂) -> WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) -> ℝ}
+    {invHyy : E₁ -> E₂ →L[ℝ] E₂}
+    {sqrtFull : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) ≃L[ℝ] WithLp 2 (E₁ × E₂)}
+    {sqrtHyy : E₁ -> E₂ ≃L[ℝ] E₂} {M nu : ℝ}
+    {hessDeriv : WithLp 2 (E₁ × E₂) ->
+      WithLp 2 (E₁ × E₂) →L[ℝ]
+        ((WithLp 2 (E₁ × E₂)) →L[ℝ] WithLp 2 (E₁ × E₂))}
+    {dselector : E₁ -> E₁ →L[ℝ] E₂}
+    {invHyyDeriv : E₁ -> E₁ →L[ℝ] (E₂ →L[ℝ] E₂)}
+    (hsel : BarrierInfProjectionSelectorStationary s selector grad)
+    (hbar : SelfConcordantBarrierOn s hess grad invHess third M nu)
+    (hopen : IsOpen (barrierInfProjectionSet s))
+    (hyy_hess_eq : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+      barrierInfProjectionBlockYY selector hess z =
+        (ContinuousLinearMap.adjoint (sqrtHyy z).toContinuousLinearMap).comp
+          (sqrtHyy z).toContinuousLinearMap)
+    (hyy_inv_eq : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+      invHyy z =
+        (sqrtHyy z).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtHyy z).symm.toContinuousLinearMap))
+    (hfull_hess_eq_source :
+      ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+        hess z =
+          (ContinuousLinearMap.adjoint (sqrtFull z).toContinuousLinearMap).comp
+            (sqrtFull z).toContinuousLinearMap)
+    (hfull_inv_eq_source :
+      ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+        invHess z =
+          (sqrtFull z).symm.toContinuousLinearMap.comp
+            (ContinuousLinearMap.adjoint
+              (sqrtFull z).symm.toContinuousLinearMap))
+    (hgrad : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      HasFDerivAt grad (hess z) z)
+    (hhess : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ ⦃z : WithLp 2 (E₁ × E₂)⦄, z ∈ s ->
+      ∀ a v : WithLp 2 (E₁ × E₂),
+        inner ℝ v ((hessDeriv z a) v) = third z a v)
+    (hselector : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+      HasFDerivAt selector (dselector z) z)
+    (hinvDeriv : ∀ ⦃z : E₁⦄, z ∈ barrierInfProjectionSet s ->
+      HasFDerivAt invHyy (invHyyDeriv z) z) :
+    BarrierInfProjectionSchurHessDerivativeOn s selector hess invHyy third
+      (fun x =>
+        barrierInfProjectionSchurHessDeriv
+          (barrierInfProjectionBlockXY selector hess)
+          (barrierInfProjectionBlockYX selector hess)
+          invHyy
+          (fun x =>
+            barrierInfProjectionBlockXXDeriv
+              (hessDeriv (barrierInfProjectionPoint selector x)) (dselector x))
+          (fun x =>
+            barrierInfProjectionBlockXYDeriv
+              (hessDeriv (barrierInfProjectionPoint selector x)) (dselector x))
+          (fun x =>
+            barrierInfProjectionBlockYXDeriv
+              (hessDeriv (barrierInfProjectionPoint selector x)) (dselector x))
+          invHyyDeriv x) := by
+  let hmodel :
+      BarrierInfProjectionAdjointSqrtEnvelopeModel s selector hess grad invHess
+        third invHyy sqrtFull sqrtHyy M nu :=
+    BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt
+      hsel hbar hyy_hess_eq hyy_inv_eq hfull_hess_eq_source
+      hfull_inv_eq_source
+  exact
+    hmodel.schurHessDerivativeOn_of_sourceFullHessianDerivative_isOpen
+      hopen hgrad hhess hmixed hselector hinvDeriv
+
 end InfProjectionSchurSymmetry
 
 end Optimization

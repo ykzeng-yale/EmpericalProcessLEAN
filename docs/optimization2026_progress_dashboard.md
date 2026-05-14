@@ -952,6 +952,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   needed: source full-square-root model plus source `grad`/`hess` derivative
   data and mixed-third pairing directly imply the projected source-radius
   local-norm sandwich.
+  The matching Schur-certificate endpoint
+  `chewi1311_infProjection_schurHessDerivativeOn_of_sourceFullSqrtSecondFullHessianDerivative`
+  now exposes the intermediate `BarrierInfProjectionSchurHessDerivativeOn`
+  certificate from the same source full-square-root and derivative data.  Use
+  it when the next step needs the certificate itself before selecting either
+  the literal-envelope route or the direct local-norm route.
   Future item-4 source instances should therefore focus on constructing the
   literal package and concrete square-root/envelope model, not rebuilding
   segment Schur-derivative, local-norm transport, or projected-Hessian
