@@ -777,6 +777,13 @@ and
 avoid manually restating the selected-graph Hessian derivative certificate.
 Use the non-literal wrappers when the reusable `BarrierInfProjectionThirdOrderEnvelopeOn`
 certificate is needed before the literal vertical-minimizer package.
+The theorem-facing source-square-root wrappers
+`chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`
+and
+`chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtFirstSecondFullHessianDerivative`
+now assemble the source full-square-root model, source-domain first/second/full
+derivative data, and projected-domain vertical `Hyy` model into the literal
+inf-projection package or projected source-radius local-norm sandwich.
 If the source model also proves first- and second-order differentiability on
 `s`, use
 `BarrierInfProjectionSelectorStationary.hasGradientAt_of_source`,

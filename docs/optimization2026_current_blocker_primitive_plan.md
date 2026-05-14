@@ -1444,6 +1444,15 @@ directly.  Then use
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literalThirdOrderEnvelopeOn_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`
 or
 `BarrierInfProjectionAdjointSqrtEnvelopeModel.literal_projected_localNorm_sandwich_sourceRadius_of_sourceFullHessianDerivative_isOpen_of_verticalFirstOrder`.
+The theorem-facing source-square-root endpoints
+`chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`
+and
+`chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtFirstSecondFullHessianDerivative`
+now combine `BarrierInfProjectionAdjointSqrtEnvelopeModel.of_sourceFullSqrt`
+with source-domain first/second/full-Hessian derivative data.  Use these when
+the concrete source instance already has the adjoint-square full-Hessian model
+on `s`, the vertical `Hyy` square-root model on the projected domain, and the
+source mixed-third identity.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,

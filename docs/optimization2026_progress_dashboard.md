@@ -936,6 +936,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   Use the former when only projected local-norm transport is needed and no
   selected-value `f` envelope data should be carried; use the latter when the
   theorem-facing selected-value envelope is already part of the source route.
+  The newest theorem-facing source endpoints
+  `chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`
+  and
+  `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtFirstSecondFullHessianDerivative`
+  now combine the source full-square-root model constructor with the
+  source-domain first/second/full-Hessian derivative data.  Concrete
+  Proposition 13.11(4) instances can therefore feed source-domain square-root,
+  gradient, Hessian derivative, mixed-third, selector derivative, and vertical
+  inverse-derivative data directly into the literal package or projected
+  source-radius local-norm sandwich.
   Future item-4 source instances should therefore focus on constructing the
   literal package and concrete square-root/envelope model, not rebuilding
   segment Schur-derivative, local-norm transport, or projected-Hessian
