@@ -2192,6 +2192,189 @@ theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribu
       (μs := μs) (μ := μ) hprojected
 
 /--
+Durrett 2019, Theorem 3.10.6, Cramér-Wold device from projected
+characteristic functions, random-vector form.
+
+For finite real coordinate spaces, pointwise convergence of the characteristic
+functions of every projected random variable implies convergence in
+distribution of the random vectors.
+-/
+theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribution_of_projected_charFun
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : ℕ -> Measure Ω} [∀ n, IsProbabilityMeasure (P n)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : ℕ -> Ω -> Coordinate -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_aemeas : ∀ n, AEMeasurable (X n) (P n))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hchar : ∀ L : StrongDual ℝ (Coordinate -> ℝ), ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun ((P n).map (fun ω => L (X n ω))) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun (Q.map (fun ω => L (Z ω))) t))) :
+    TendstoInDistribution X atTop Z P Q := by
+  refine
+    ({ forall_aemeasurable := hX_aemeas
+       aemeasurable_limit := hZ_aemeas
+       tendsto := ?_ } :
+      TendstoInDistribution X atTop Z P Q)
+  let μs : ℕ -> ProbabilityMeasure (Coordinate -> ℝ) :=
+    fun n => ⟨(P n).map (X n), Measure.isProbabilityMeasure_map (hX_aemeas n)⟩
+  let μ : ProbabilityMeasure (Coordinate -> ℝ) :=
+    ⟨Q.map Z, Measure.isProbabilityMeasure_map hZ_aemeas⟩
+  have hchar_law : ∀ L : StrongDual ℝ (Coordinate -> ℝ), ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun
+            (((μs n).map L.continuous.measurable.aemeasurable :
+              ProbabilityMeasure ℝ) : Measure ℝ) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun
+          ((μ.map L.continuous.measurable.aemeasurable :
+            ProbabilityMeasure ℝ) : Measure ℝ) t)) := by
+    intro L t
+    have hseq_eq :
+        (fun n : ℕ =>
+          Measure.map (fun x : Coordinate -> ℝ => L x)
+            ((μs n : ProbabilityMeasure (Coordinate -> ℝ)) :
+              Measure (Coordinate -> ℝ))) =
+          (fun n : ℕ => (P n).map (fun ω => L (X n ω))) := by
+      funext n
+      ext s
+      change ((P n).map (X n)).map L s =
+        (P n).map (fun ω => L (X n ω)) s
+      rw [AEMeasurable.map_map_of_aemeasurable
+        L.continuous.measurable.aemeasurable (hX_aemeas n)]
+      rfl
+    have hlim_eq :
+        Measure.map (fun x : Coordinate -> ℝ => L x)
+          ((μ : ProbabilityMeasure (Coordinate -> ℝ)) :
+            Measure (Coordinate -> ℝ)) =
+          Q.map (fun ω => L (Z ω)) := by
+      ext s
+      change (Q.map Z).map L s = Q.map (fun ω => L (Z ω)) s
+      rw [AEMeasurable.map_map_of_aemeasurable
+        L.continuous.measurable.aemeasurable hZ_aemeas]
+      rfl
+    change Tendsto
+      (fun n : ℕ =>
+        MeasureTheory.charFun
+          (Measure.map (fun x : Coordinate -> ℝ => L x)
+            ((μs n : ProbabilityMeasure (Coordinate -> ℝ)) :
+              Measure (Coordinate -> ℝ))) t)
+      atTop
+      (𝓝 (MeasureTheory.charFun
+        (Measure.map (fun x : Coordinate -> ℝ => L x)
+          ((μ : ProbabilityMeasure (Coordinate -> ℝ)) :
+            Measure (Coordinate -> ℝ))) t))
+    have hseq_char_eq :
+        (fun n : ℕ =>
+          MeasureTheory.charFun
+            (Measure.map (fun x : Coordinate -> ℝ => L x)
+              ((μs n : ProbabilityMeasure (Coordinate -> ℝ)) :
+                Measure (Coordinate -> ℝ))) t) =
+          (fun n : ℕ =>
+            MeasureTheory.charFun ((P n).map (fun ω => L (X n ω))) t) := by
+      funext n
+      rw [congrFun hseq_eq n]
+    have hlim_char_eq :
+        MeasureTheory.charFun
+          (Measure.map (fun x : Coordinate -> ℝ => L x)
+            ((μ : ProbabilityMeasure (Coordinate -> ℝ)) :
+              Measure (Coordinate -> ℝ))) t =
+          MeasureTheory.charFun (Q.map (fun ω => L (Z ω))) t := by
+      rw [hlim_eq]
+    rw [hseq_char_eq, hlim_char_eq]
+    exact hchar L t
+  simpa [μs, μ] using
+    durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto_of_projected_charFun
+      (μs := μs) (μ := μ) hchar_law
+
+/--
+Durrett 2019, Theorem 3.10.6, Cramér-Wold device from projected
+characteristic functions in textbook `theta · X_n` notation.
+
+For finite real coordinate spaces, pointwise convergence of the characteristic
+functions of every scalar projection `sum_i theta_i X_{n,i}` implies
+convergence in distribution of the random vectors.
+-/
+theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_of_charFun
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : ℕ -> Measure Ω} [∀ n, IsProbabilityMeasure (P n)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : ℕ -> Ω -> Coordinate -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_aemeas : ∀ n, AEMeasurable (X n) (P n))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hchar : ∀ theta : Coordinate -> ℝ, ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun
+            ((P n).map (fun ω => ∑ i, theta i * X n ω i)) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun
+          (Q.map (fun ω => ∑ i, theta i * Z ω i)) t))) :
+    TendstoInDistribution X atTop Z P Q :=
+  durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribution_of_projected_charFun
+    (P := P) (Q := Q) (X := X) (Z := Z) hX_aemeas hZ_aemeas
+    (fun L t => by
+      let theta := durrett2019_theorem_3_10_7_dualCoordinates L
+      have hL :
+          durrett2019_theorem_3_10_7_thetaProjection theta = L :=
+        durrett2019_theorem_3_10_7_thetaProjection_dualCoordinates L
+      have hseq_eq :
+          (fun n : ℕ => (P n).map (fun ω => L (X n ω))) =
+            (fun n : ℕ =>
+              (P n).map (fun ω => ∑ i, theta i * X n ω i)) := by
+        funext n
+        have hf :
+            (fun ω => L (X n ω)) =
+              (fun ω => ∑ i, theta i * X n ω i) := by
+          funext ω
+          rw [← hL]
+          simp [theta, durrett2019_theorem_3_10_7_thetaProjection_apply]
+        rw [hf]
+      have hlim_eq :
+          Q.map (fun ω => L (Z ω)) =
+            Q.map (fun ω => ∑ i, theta i * Z ω i) := by
+        have hf :
+            (fun ω => L (Z ω)) =
+              (fun ω => ∑ i, theta i * Z ω i) := by
+          funext ω
+          rw [← hL]
+          simp [theta, durrett2019_theorem_3_10_7_thetaProjection_apply]
+        rw [hf]
+      change Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun ((P n).map (fun ω => L (X n ω))) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun (Q.map (fun ω => L (Z ω))) t))
+      have hseq_char_eq :
+          (fun n : ℕ =>
+            MeasureTheory.charFun ((P n).map (fun ω => L (X n ω))) t) =
+            (fun n : ℕ =>
+              MeasureTheory.charFun
+                ((P n).map (fun ω => ∑ i, theta i * X n ω i)) t) := by
+        funext n
+        rw [congrFun hseq_eq n]
+      have hlim_char_eq :
+          MeasureTheory.charFun (Q.map (fun ω => L (Z ω))) t =
+            MeasureTheory.charFun
+              (Q.map (fun ω => ∑ i, theta i * Z ω i)) t := by
+        rw [hlim_eq]
+      rw [hseq_char_eq, hlim_char_eq]
+      exact hchar theta t)
+
+/--
 Durrett 2019, Theorem 3.10.6, Cramér-Wold device in the textbook
 `theta · X_n` notation.
 
@@ -2257,6 +2440,39 @@ theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDi
   durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution
     (P := fun _ : ℕ => P) (Q := Q) (X := X) (Z := Z)
     hX_aemeas hZ_aemeas htheta
+
+/--
+Durrett 2019, Theorem 3.10.6, Cramér-Wold device from projected
+characteristic functions in textbook `theta · X_n` notation for a fixed source
+probability space.
+
+This is the usual random-variable characteristic-function form: all `X_n` live
+on the same probability space `P`.
+-/
+theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_constMeasure_of_charFun
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : ℕ -> Ω -> Coordinate -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_aemeas : ∀ n, AEMeasurable (X n) P)
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hchar : ∀ theta : Coordinate -> ℝ, ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun
+            (P.map (fun ω => ∑ i, theta i * X n ω i)) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun
+          (Q.map (fun ω => ∑ i, theta i * Z ω i)) t))) :
+    TendstoInDistribution X atTop Z (fun _ : ℕ => P) Q :=
+  durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution_of_charFun
+    (P := fun _ : ℕ => P) (Q := Q) (X := X) (Z := Z)
+    hX_aemeas hZ_aemeas hchar
 
 /--
 Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from projected
