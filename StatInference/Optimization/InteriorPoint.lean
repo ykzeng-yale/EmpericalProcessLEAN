@@ -26562,6 +26562,38 @@ theorem chewi1314_polytopeSlackNegLog_rangeHess_symmetric
     positiveOrthantNegLogHessCLM y u v
     (fun p q => positiveOrthantNegLogHessCLM_symmetric hy p q)
 
+theorem chewi1314_polytopeSlackNegLog_rangeHess_isPositive
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {y : (polytopeSlackCLM a).range}
+    (hy : y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m))) :
+    (barrierAffineRangeHess (polytopeSlackCLM a) b
+      positiveOrthantNegLogHessCLM y).IsPositive := by
+  rw [ContinuousLinearMap.isPositive_iff]
+  constructor
+  · intro u v
+    exact chewi1314_polytopeSlackNegLog_rangeHess_symmetric a b hy u v
+  · intro v
+    rw [real_inner_comm]
+    exact barrierAffineRangeHess_quadratic_nonneg (polytopeSlackCLM a) b
+      positiveOrthantNegLogHessCLM y v
+      ((positiveOrthantNegLog_selfConcordantBarrierOn (d := m)).self_concordant.hess_nonneg
+        hy)
+
+theorem chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {y : (polytopeSlackCLM a).range}
+    (hy : y ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+      (positiveOrthant (d := m))) :
+    ((barrierAffineRangeHess (polytopeSlackCLM a) b
+      positiveOrthantNegLogHessCLM y :
+        (polytopeSlackCLM a).range →L[ℝ] (polytopeSlackCLM a).range) :
+        (polytopeSlackCLM a).range →ₗ[ℝ] (polytopeSlackCLM a).range).IsPositive := by
+  exact (ContinuousLinearMap.isPositive_toLinearMap_iff _).2
+    (chewi1314_polytopeSlackNegLog_rangeHess_isPositive a b hy)
+
 noncomputable def chewi1314_polytopeSlackNegLog_rangeInvHess
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
     {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :

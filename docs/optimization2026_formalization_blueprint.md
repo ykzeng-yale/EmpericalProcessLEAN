@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V6` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V7` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -91,18 +91,25 @@ spectral / positive-operator construction) and prove the source next
 pre-decrement decay / total-mass bound feeding either the source
 `preDecrementContractingBudget` handoff or the source
 `preDecrementGeometricBudget` handoffs.
-Search-first spectral result: the smallest useful range-sqrt target is
+The newest range-Hessian positivity bridge adds
+`chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
+`chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the
+concrete finite-row range Hessian as a Mathlib positive operator via
+`ContinuousLinearMap.isPositive_iff` and
+`ContinuousLinearMap.isPositive_toLinearMap_iff`.  Search-first spectral
+result: the smallest useful range-sqrt target is
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`, an existential
 point-dependent `sqrtCoordRange` theorem that returns exactly the existing
-`hhess_model` and `hinv_model` hypotheses.  Reuse local range Hessian
-positivity/symmetry/right-inverse lemmas and mathlib `LinearMap.IsSymmetric`
-spectral/eigenbasis APIs; do not add continuity/measurability obligations for
-the selected family unless a later statement requires them.
+`hhess_model` and `hinv_model` hypotheses.  Reuse the new positive-operator
+bridge, local range Hessian right-inverse lemmas, and mathlib
+positive-operator / `LinearMap.IsSymmetric` spectral/eigenbasis APIs; do not add
+continuity/measurability obligations for the selected family unless a later
+statement requires them.
 The selection wrapper
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise` now
 packages pointwise feasible square-root witnesses into the domain-wide family;
 the next range-sqrt packet should prove those pointwise witnesses from
-positive self-adjoint range Hessian data.
+the positive range Hessian and compiled right-inverse model.
 Do
 not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the

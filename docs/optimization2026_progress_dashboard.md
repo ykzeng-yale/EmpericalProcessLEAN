@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V6` near the top of
+  `Live Goal Prompt V7` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -103,21 +103,29 @@ This dashboard tracks the Chewi optimization formalization lane for
   contraction feeding the source `preDecrementContractingBudget` handoff or as
   the pointwise geometric majorant feeding the source
   `preDecrementGeometricBudget` handoffs.
-  Search-first spectral result: there is no ready local/mathlib theorem that
+  The range-Hessian positivity bridge now adds
+  `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
+  `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing
+  the concrete finite-row range Hessian as a Mathlib positive operator via
+  `ContinuousLinearMap.isPositive_iff` and
+  `ContinuousLinearMap.isPositive_toLinearMap_iff`.  Search-first spectral result: there is no ready local/mathlib theorem that
   directly constructs the required family from a positive self-adjoint
   continuous linear map.  The smallest useful next theorem is an existential
   finite-row model
   `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`, returning a
   point-dependent `sqrtCoordRange` plus exactly the existing `hhess_model` and
   `hinv_model` hypotheses consumed by the range-sqrt wrappers.  Reuse local
-  range Hessian positivity/symmetry/right-inverse lemmas and mathlib
+  range Hessian positivity/right-inverse lemmas and mathlib positive-operator,
   `LinearMap.IsSymmetric` spectral/eigenbasis APIs; do not ask for continuity
   or measurability of the selected family unless a later theorem needs it.
   The selection wrapper
   `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise`
   now compiles: once a future spectral/matrix proof gives pointwise feasible
   square-root witnesses, this wrapper packages them into the exact
-  domain-wide family consumed by the range-sqrt §13.16 APIs.
+  domain-wide family consumed by the range-sqrt §13.16 APIs.  The remaining
+  range-sqrt blocker is now the pointwise spectral/matrix construction of one
+  feasible square-root witness from this positive range Hessian and the compiled
+  right-inverse model.
   Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range
@@ -1736,7 +1744,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   precisely block that diff before doing strategy/doc-only work.  No uncompiled
   theorem should be carried across a process update.
 - Process correction from the May 8 Chapter 13 pivot: future manual runs should
-  enter through `Live Goal Prompt V6` in
+  enter through `Live Goal Prompt V7` in
   `docs/optimization2026_current_blocker_primitive_plan.md`, then move
   directly to the active Lean theorem statement.  The next packet is not a
   route-planning loop and not an already-solved ASGD tower peel; it is the
