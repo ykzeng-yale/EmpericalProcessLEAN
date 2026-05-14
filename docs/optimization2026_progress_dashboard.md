@@ -160,6 +160,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   They instantiate `lambda_0 = 1/4`, `lambda_{n+1} = 1/8` internally from
   the source `1/4 -> 1/8` decrement step, leaving future callers with the
   post-threshold lower-denominator budget and `1 <= Nmin`.
+  The selected-window lower-denominator packet now adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_sourceDecrement_selectedAbsTLowerTail_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_sourceDecrement_selectedAbsTLowerTail_succ_noFactor_standardConstants`.
+  These reduce the lower-`|t|` input to one selected successor index
+  `N+1`, avoiding the stronger post-threshold all-future denominator
+  certificate when the actual preliminary `t_N` is decreasing.
   Route correction: this is conditional infrastructure.  The archived
   positive-orthant obstruction packets already warn that global fixed-source
   radius/summability gates are not the right textbook-scale path for the

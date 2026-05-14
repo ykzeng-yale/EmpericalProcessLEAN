@@ -312,6 +312,16 @@ These instantiate the canonical preliminary lambda schedule
 `lambda_0 = 1/4`, `lambda_{n+1} = 1/8` from the source `1/4 -> 1/8`
 decrement step, requiring only `1 <= Nmin` for the post-threshold window and
 the denominator budget `(sqrt m + 1/8) / tau_N <= tailBound`.
+The newest selected-window lower-denominator packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_sourceDecrement_selectedAbsTLowerTail_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_sourceDecrement_selectedAbsTLowerTail_succ_noFactor_standardConstants`.
+These are the preferred lower-denominator consumers for the finite selected
+window: they need only `x_{N+1}` in the slack polytope,
+`0 < tau <= |t_{N+1}|`, `(sqrt m + 1/8) / tau <= tailBound`, and the selected
+log/count side.  Prefer these over the post-threshold lower-`|t|` wrappers
+when the decreasing preliminary `t_N` makes a uniform all-future lower
+denominator implausible.
 This half-contraction endpoint is conditional infrastructure, not yet the
 recommended mathematical route.  The search-first check of the archived
 Chapter 13 obstruction notes shows that fixed-source global preliminary

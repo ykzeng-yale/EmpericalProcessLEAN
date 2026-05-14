@@ -149,6 +149,13 @@ and
 These instantiate the canonical preliminary lambda schedule internally from
 the source one-step decrement estimate, so the next proof layer can focus on
 the lower-denominator/window certificate.
+The selected-window lower-denominator variants now compile as
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_sourceDecrement_selectedAbsTLowerTail_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_sourceDecrement_selectedAbsTLowerTail_succ_noFactor_standardConstants`.
+They are the source-facing finite-window alternative to the post-threshold
+lower-`|t|` route, requiring the denominator and tail-budget certificate only
+at the selected successor index.
 This endpoint should be treated as conditional infrastructure.  Earlier
 verified positive-orthant obstruction packets show that the bare actual
 decreasing-`t` preliminary recurrence is not expected to satisfy the old
