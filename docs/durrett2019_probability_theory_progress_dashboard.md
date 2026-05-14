@@ -32,12 +32,18 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V338` in
+Route from `Live In-Thread Goal Prompt V339` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V338 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V339 adds
+`durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto_of_projected_charFun`
+and
+`durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_lawTendsto_of_charFun`,
+Durrett Theorem 3.10.6 Cramér-Wold characteristic-function transport wrappers
+from all projected characteristic functions to vector-law convergence.  V338
+adds
 `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_lawTendsto`,
 Durrett Theorem 3.10.6 Cramér-Wold in the law-level textbook `theta · x`
 form.  V337 adds
@@ -1655,8 +1661,12 @@ Current proof route:
     Vaart finite-coordinate Cramér-Wold theorem, plus the random-vector
     convergence-in-distribution wrapper
     `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribution`,
+    the projected characteristic-function law wrapper
+    `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto_of_projected_charFun`,
     the law-level textbook theta-projection wrapper
     `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_lawTendsto`,
+    the textbook theta-projection characteristic-function wrapper
+    `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_lawTendsto_of_charFun`,
     the random-vector textbook theta-projection wrapper
     `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution`,
     and the fixed-source probability-space theta wrapper

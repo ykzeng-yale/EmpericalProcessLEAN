@@ -2027,6 +2027,37 @@ theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto
     hproj
 
 /--
+Durrett 2019, Theorem 3.10.6, Cramér-Wold device from projected
+characteristic functions.
+
+For finite real coordinate spaces, pointwise convergence of the characteristic
+functions of every one-dimensional continuous linear projection implies weak
+convergence of the vector laws.
+-/
+theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto_of_projected_charFun
+    {Coordinate : Type*} [Fintype Coordinate]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {μs : ℕ -> ProbabilityMeasure (Coordinate -> ℝ)}
+    {μ : ProbabilityMeasure (Coordinate -> ℝ)}
+    (hchar : ∀ L : StrongDual ℝ (Coordinate -> ℝ), ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun
+            (((μs n).map L.continuous.measurable.aemeasurable :
+              ProbabilityMeasure ℝ) : Measure ℝ) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun
+          ((μ.map L.continuous.measurable.aemeasurable :
+            ProbabilityMeasure ℝ) : Measure ℝ) t))) :
+    Tendsto μs atTop (𝓝 μ) :=
+  durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto
+    (μs := μs) (μ := μ)
+    (fun L => ProbabilityMeasure.tendsto_iff_tendsto_charFun.mpr (hchar L))
+
+/--
 Durrett 2019, Theorem 3.10.6, Cramér-Wold device, law form in the textbook
 `theta · x` notation.
 
@@ -2059,6 +2090,41 @@ theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_lawTendsto
           durrett2019_theorem_3_10_7_thetaProjection theta = L :=
         durrett2019_theorem_3_10_7_thetaProjection_dualCoordinates L
       simpa [hL] using htheta theta)
+
+/--
+Durrett 2019, Theorem 3.10.6, Cramér-Wold device from projected
+characteristic functions in the textbook `theta · x` notation.
+
+For finite real coordinate spaces, pointwise convergence of the characteristic
+functions of every scalar projection `sum_i theta_i x_i` implies weak
+convergence of the vector laws.
+-/
+theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_lawTendsto_of_charFun
+    {Coordinate : Type*} [Fintype Coordinate]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {μs : ℕ -> ProbabilityMeasure (Coordinate -> ℝ)}
+    {μ : ProbabilityMeasure (Coordinate -> ℝ)}
+    (hchar : ∀ theta : Coordinate -> ℝ, ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun
+            (((μs n).map
+              (durrett2019_theorem_3_10_7_thetaProjection
+                theta).continuous.measurable.aemeasurable :
+              ProbabilityMeasure ℝ) : Measure ℝ) t)
+        atTop
+        (𝓝 (MeasureTheory.charFun
+          ((μ.map
+            (durrett2019_theorem_3_10_7_thetaProjection
+              theta).continuous.measurable.aemeasurable :
+            ProbabilityMeasure ℝ) : Measure ℝ) t))) :
+    Tendsto μs atTop (𝓝 μ) :=
+  durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_lawTendsto
+    (μs := μs) (μ := μ)
+    (fun theta => ProbabilityMeasure.tendsto_iff_tendsto_charFun.mpr (hchar theta))
 
 /--
 Durrett 2019, Theorem 3.10.6, Cramér-Wold device, random-vector convergence

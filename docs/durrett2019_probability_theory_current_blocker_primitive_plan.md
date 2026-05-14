@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V338
+## Live In-Thread Goal Prompt V339
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,15 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V338 adds Durrett Theorem 3.10.6 Cramér-Wold in the
+Latest verified target V339 adds Durrett Theorem 3.10.6 Cramér-Wold
+characteristic-function transport wrappers:
+`durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_lawTendsto_of_projected_charFun`
+and
+`durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_lawTendsto_of_charFun`.
+These package pointwise characteristic-function convergence of every
+one-dimensional projection into vector-law weak convergence, both in
+continuous-linear-functional form and Durrett's textbook `theta · x` notation.
+V338 adds Durrett Theorem 3.10.6 Cramér-Wold in the
 law-level textbook `theta · x` form:
 `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_lawTendsto`.
 This packages the source-facing finite-coordinate weak-convergence condition
@@ -164,7 +172,8 @@ linear-combination law/`iff` wrappers, or the V334 standalone centered reverse
 Exercise 3.10.8 implication, or the V335 random-vector Cramér-Wold wrapper, or
 the V336 textbook theta-form Cramér-Wold wrapper, or the V337 fixed-source
 probability theta-form Cramér-Wold wrapper, or the V338 law-level theta-form
-Cramér-Wold wrapper.  Next aggressive packet: continue
+Cramér-Wold wrapper, or the V339 Cramér-Wold projected characteristic-function
+transport wrappers.  Next aggressive packet: continue
 Chapter 3 by closing a concrete source-facing gap around remaining Section 3.10
 Gaussian-law wrappers, remaining Lindeberg-Feller side conditions, or
 characteristic-function transport into later source statements; touch Chapter 2
