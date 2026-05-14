@@ -76,11 +76,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_geometric_majorant`,
   so a pointwise estimate `2 * stepBudget n <= C * q^n` with `0 <= q < 1`
   and `C * (1 - q)⁻¹ <= 1 / 2` now supplies the source `tsum` assumptions.
+  The geometric handoff packet adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_canonicalLambda`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_standardConstants_of_sourceDecrement`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`,
+  so source §13.16 handoffs can now consume the geometric majorant directly.
   The current exact-source gates are now: construct the point-dependent range Hessian/inverse-Hessian
   sqrt-coordinate family (or an equivalent mathlib
   spectral / positive-operator construction) and prove the source next
-  pre-decrement geometric-majorant / total-mass bound feeding the source
-  `preDecrementTsumBudget` handoffs.
+  pre-decrement pointwise geometric-majorant / total-mass bound feeding the
+  source `preDecrementGeometricBudget` handoffs.
   Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range

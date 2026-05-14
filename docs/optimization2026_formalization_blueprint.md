@@ -64,12 +64,17 @@ The geometric budget bridge adds
 `chewi1316_stepBudget_tsum_le_half_of_geometric_majorant` and
 `chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_geometric_majorant`,
 so the common estimate `2 * stepBudget n <= C * q^n`, `0 <= q < 1`,
-`C * (1 - q)⁻¹ <= 1 / 2` is now enough to feed those handoffs.
+`C * (1 - q)⁻¹ <= 1 / 2` is now enough to feed those handoffs.  The geometric
+handoff packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_canonicalLambda`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_standardConstants_of_sourceDecrement`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`,
+so source §13.16 handoffs can consume the geometric majorant directly.
 The active theorem-sized target is to construct the point-dependent range Hessian/inverse-Hessian
 sqrt-coordinate family (or an equivalent mathlib
 spectral / positive-operator construction) and prove the source next
-pre-decrement geometric-majorant / total-mass bound feeding the source
-`preDecrementTsumBudget` handoffs.  Do
+pre-decrement pointwise geometric-majorant / total-mass bound feeding the
+source `preDecrementGeometricBudget` handoffs.  Do
 not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the
 range one-step invariant; those are already behind compiled wrappers.  Do not
