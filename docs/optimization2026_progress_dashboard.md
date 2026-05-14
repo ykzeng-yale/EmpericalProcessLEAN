@@ -88,11 +88,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_geometricBudget_of_rangePreDecrementNext`,
   `chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_contractingBudget_of_rangePreDecrementNext`, and
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementContractingBudget_noFactor_canonicalLambda`.
+  The standard-consumer packet adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementContractingBudget_noFactor_standardConstants_of_sourceDecrement` and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementContractingBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`, so the standard source-decrement and range-sqrt routes also consume the doubled-budget recurrence directly.
   Thus a proof of `2 * stepBudget (n+1) <= q * (2 * stepBudget n)`,
   `0 <= q < 1`, and `(2 * stepBudget 0) * (1 - q)⁻¹ <= 1 / 2`
-  feeds the source canonical §13.16 handoff directly; range-side
-  pre-decrement estimates can also be transported to source before consuming
-  the geometric/contracting budget.
+  feeds the canonical, standard source-decrement, or standard range-sqrt
+  §13.16 handoff directly; range-side pre-decrement estimates can also be
+  transported to source before consuming the geometric/contracting budget.
   The current exact-source gates are now: construct the point-dependent range Hessian/inverse-Hessian
   sqrt-coordinate family (or an equivalent mathlib
   spectral / positive-operator construction) and prove the source next
@@ -100,6 +103,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   contraction feeding the source `preDecrementContractingBudget` handoff or as
   the pointwise geometric majorant feeding the source
   `preDecrementGeometricBudget` handoffs.
+  Search-first spectral result: there is no ready local/mathlib theorem that
+  directly constructs the required family from a positive self-adjoint
+  continuous linear map.  The smallest useful next theorem is an existential
+  finite-row model
+  `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`, returning a
+  point-dependent `sqrtCoordRange` plus exactly the existing `hhess_model` and
+  `hinv_model` hypotheses consumed by the range-sqrt wrappers.  Reuse local
+  range Hessian positivity/symmetry/right-inverse lemmas and mathlib
+  `LinearMap.IsSymmetric` spectral/eigenbasis APIs; do not ask for continuity
+  or measurability of the selected family unless a later theorem needs it.
   Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range
