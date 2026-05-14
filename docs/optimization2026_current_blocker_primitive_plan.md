@@ -1456,6 +1456,14 @@ source-radius local-norm sandwich, use
 `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSchurHessDerivativeOn`;
 it reuses the source-square-root model to supply positivity and inverse
 identities without restating derivative data.
+If the next target is instead the reusable selected-value envelope or the
+literal infimum package, use
+`chewi1311_infProjection_thirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondSchurHessDerivativeOn`
+or
+`chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondSchurHessDerivativeOn`.
+These turn the same Schur certificate plus source first/second differentiability
+and vertical first-order data into the envelope/literal package without
+replaying full-Hessian derivative hypotheses.
 The theorem-facing source-square-root endpoints
 `chewi1311_infProjection_thirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`,
 `chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`

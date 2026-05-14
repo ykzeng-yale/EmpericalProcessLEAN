@@ -958,6 +958,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   certificate from the same source full-square-root and derivative data.  Use
   it when the next step needs the certificate itself before selecting either
   the literal-envelope route or the direct local-norm route.
+  The sourceFullSqrt Schur-envelope consumers
+  `chewi1311_infProjection_thirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondSchurHessDerivativeOn`
+  and
+  `chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondSchurHessDerivativeOn`
+  now turn an already-built Schur certificate plus source first/second
+  differentiability into the reusable third-order envelope or literal infimum
+  package.
   The sourceFullSqrt Schur local-norm consumer
   `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSchurHessDerivativeOn`
   now turns an already-built Schur certificate directly into the projected

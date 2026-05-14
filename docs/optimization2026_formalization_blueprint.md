@@ -803,6 +803,11 @@ certificate from source full-square-root, source `grad`/`hess` derivative,
 mixed-third, selector-derivative, and vertical inverse-derivative hypotheses.
 Use this wrapper when the source instance needs to branch into multiple
 consumers from the same Schur derivative certificate.
+For those branches, use
+`chewi1311_infProjection_thirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondSchurHessDerivativeOn`
+to obtain the reusable selected-value envelope and
+`chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondSchurHessDerivativeOn`
+to obtain the literal infimum package from the same Schur certificate.
 When the Schur certificate is already present and the target is local-norm
 transport, use
 `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSchurHessDerivativeOn`.
