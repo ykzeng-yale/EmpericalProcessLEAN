@@ -593,6 +593,15 @@ packet adds
 	`positiveOrthantNegLogHessDerivCLM_mixed_inner`.  The live blocker remains
 	exactly the quantitative summable next-parameter pre-Newton decrement
 	budget or a stronger analytical-center/source-radius route.
+	The direct source-radius route now also compiles as
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadiusHalf_barrier_globalDeriv_and_sqrtCoordModel`
+	and its concrete finite-product specialization
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_sourceRadiusHalf`.
+	These use the tail-lambda source-start wrapper, so `lambdaSeq 0 = 1/4`
+	and successor `lambdaSeq = 1/8` are compatible.  The remaining analytical
+	center gate can now be stated sharply as
+	`forall N, ||x_{N+1} - xbar0||_{xbar0} <= 1/2` for the actual preliminary
+	path, without any additional positive-orthant barrier plumbing.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

@@ -21347,6 +21347,191 @@ theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_prel
       hpre_decrement_next hxbar0_cauchy hbudget
 
 /--
+Correct-index source-start preliminary initialization from a direct
+source-radius-half certificate.  Compared with the pre-decrement-budget route,
+this exposes the stronger analytical-center/source-radius alternative directly:
+callers provide `||x_{N+1}-xbar0||_{xbar0} <= 1/2`, while the residual
+sequence, source tail, inverse-Hessian factorization, and Cauchy data are
+discharged from a domain-wide square-root-coordinate model.
+-/
+theorem chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadiusHalf_barrier_globalDeriv_and_sqrtCoordModel
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {invHess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {xbar0 a : E} {xseq : ℕ -> E}
+    {tseq : ℕ -> ℝ} {sqrtCoord : E -> E ≃L[ℝ] E}
+    {c0 nu tailBound : ℝ}
+    (hs : Convex ℝ s)
+    (hxbar0 : xbar0 ∈ s)
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ s)
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt nu) * tseq n)
+    (hgrad_segment : ∀ n τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+        (hess (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+        (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+    (hhess_model : ∀ ⦃z : E⦄, z ∈ s ->
+      hess z =
+        (ContinuousLinearMap.adjoint (sqrtCoord z).toContinuousLinearMap).comp
+          (sqrtCoord z).toContinuousLinearMap)
+    (hinv_model : ∀ ⦃z : E⦄, z ∈ s ->
+      invHess z =
+        (sqrtCoord z).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtCoord z).symm.toContinuousLinearMap))
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq n))
+    (hradius_half : ∀ N : ℕ,
+      localNorm hess xbar0 (xseq (N + 1) - xbar0) ≤ 1 / 2)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt nu)
+    (hdelta_lt_one : c0 / Real.sqrt nu < 1)
+    (hdelta_le_c0 : c0 / Real.sqrt nu ≤ c0)
+    (hc0_le : c0 ≤ 1 / 200)
+    (hbar : SelfConcordantBarrierOn s hess phiGrad invHess thirdMixed (1 : ℝ) nu)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess_global : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed_global : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hbudget : 2 * Real.sqrt nu ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt nu ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a phiGrad) invHess (xseq N) ≤
+        1 / 4 := by
+  let lambdaSeq : ℕ -> ℝ := fun n => if n = 0 then (1 / 4 : ℝ) else 1 / 8
+  have hlambda0 : (1 / 4 : ℝ) ≤ lambdaSeq 0 := by
+    simp [lambdaSeq]
+  have hlambda_le_quarter : ∀ n : ℕ, lambdaSeq n ≤ 1 / 4 := by
+    intro n
+    by_cases hn : n = 0
+    · simp [lambdaSeq, hn]
+    · simp [lambdaSeq, hn]
+      norm_num
+  have hlambda_succ_ge_eighth : ∀ n : ℕ, (1 / 8 : ℝ) ≤ lambdaSeq (n + 1) := by
+    intro n
+    simp [lambdaSeq]
+  have hlambdaBudget_succ : ∀ n : ℕ, lambdaSeq (n + 1) ≤ 1 / 8 := by
+    intro n
+    simp [lambdaSeq]
+  have hdelta_nonneg : 0 ≤ c0 / Real.sqrt nu :=
+    div_nonneg (le_of_lt hc0_pos) (le_of_lt hsqrt_pos)
+  have hdelta_le_one : c0 / Real.sqrt nu ≤ 1 :=
+    le_of_lt hdelta_lt_one
+  have hdelta_sqrt_le_c0 : (c0 / Real.sqrt nu) * Real.sqrt nu ≤ c0 := by
+    have hsqrt_ne : Real.sqrt nu ≠ 0 := ne_of_gt hsqrt_pos
+    have hmul : (c0 / Real.sqrt nu) * Real.sqrt nu = c0 := by
+      field_simp [hsqrt_ne]
+    exact le_of_eq hmul
+  have hdecrement_step : ∀ n,
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq n))
+          invHess (xseq n) ≤ lambdaSeq n ->
+      newtonDecrement (preliminaryPathGrad phiGrad xbar0 (tseq (n + 1)))
+          invHess (xseq (n + 1)) ≤ lambdaSeq (n + 1) :=
+    chewi1316_preliminaryPath_lambdaSeq_step_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (thirdMixed := thirdMixed) (phiGrad := phiGrad)
+      (invHess := invHess) (sqrtCoord := sqrtCoord)
+      (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+      (lambdaSeq := lambdaSeq) (delta := c0 / Real.sqrt nu)
+      (c0 := c0) (nu := nu) hs hxseq_mem hbar.self_concordant
+      hhess_cont hhess_global hmixed_global hgrad_segment
+      hhess_model hinv_model htstep hnewton_next hdelta_nonneg
+      hdelta_le_one hdelta_le_c0 hdelta_sqrt_le_c0
+      (fun n => hbar.gradient_bound (hxseq_mem n)) hc0_le
+      hlambda_le_quarter hlambda_succ_ge_eighth
+  have hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v) := by
+    intro z hz v hv
+    exact hessianQuadratic_pos_of_adjointSqrtCoord
+      (sqrtCoord z) (hhess_model hz) hv
+  have hinv_right : ∀ N v, hess (xseq N) (invHess (xseq N) v) = v := by
+    intro N
+    exact
+      hessianRightInverse_of_adjointSqrtCoord_invHess
+        (H := hess (xseq N)) (invH := invHess (xseq N))
+        (sqrtCoord := sqrtCoord (xseq N))
+        (hhess_model (hxseq_mem N)) (hinv_model (hxseq_mem N))
+  have hinv_factor : ∀ N v,
+      inner ℝ v (invHess (xseq N) v) =
+        ‖(ContinuousLinearMap.adjoint
+            (sqrtCoord (xseq N)).symm.toContinuousLinearMap) v‖ ^ (2 : ℕ) := by
+    intro N v
+    exact
+      inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse
+        (hess := hess) (invHess := invHess) (x := xseq N)
+        (coord := (sqrtCoord (xseq N)).symm.toContinuousLinearMap)
+        (sqrtH := (sqrtCoord (xseq N)).toContinuousLinearMap)
+        (by intro z; simp)
+        (hhess_model (hxseq_mem N)) (hinv_right N) v
+  have hxseq_inv_local : ∀ N v,
+      localNorm hess (xseq N) (invHess (xseq N) v) =
+        dualLocalNorm invHess (xseq N) v := by
+    intro N v
+    exact
+      localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse
+        (hess := hess) (invHess := invHess) (x := xseq N)
+        (fun w => hbar.self_concordant.hess_nonneg (hxseq_mem N) w)
+        (hinv_right N) v
+  have hxbar0_cauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess xbar0 v *
+        localNorm hess xbar0 w := by
+    intro v w
+    have hright : ∀ u : E, hess xbar0 (invHess xbar0 u) = u :=
+      hessianRightInverse_of_adjointSqrtCoord_invHess
+        (H := hess xbar0) (invH := invHess xbar0)
+        (sqrtCoord := sqrtCoord xbar0)
+        (hhess_model hxbar0) (hinv_model hxbar0)
+    have hfactor : ∀ u : E,
+        inner ℝ u (invHess xbar0 u) =
+          ‖(ContinuousLinearMap.adjoint
+              (sqrtCoord xbar0).symm.toContinuousLinearMap) u‖ ^ (2 : ℕ) := by
+      intro u
+      exact
+        inverseHessianQuadratic_eq_adjointCoord_norm_sq_of_adjointSqrt_right_inverse
+          (hess := hess) (invHess := invHess) (x := xbar0)
+          (coord := (sqrtCoord xbar0).symm.toContinuousLinearMap)
+          (sqrtH := (sqrtCoord xbar0).toContinuousLinearMap)
+          (by intro z; simp)
+          (hhess_model hxbar0) hright u
+    exact dualPrimalCauchy_of_adjointCoordSqrt
+      (hess := hess) (invHess := invHess) (x := xbar0)
+      (coord := (sqrtCoord xbar0).symm.toContinuousLinearMap)
+      (sqrtH := (sqrtCoord xbar0).toContinuousLinearMap)
+      (by intro step; simp) hfactor (hhess_model hxbar0)
+      (hbar.invHess_nonneg hxbar0)
+      (hbar.self_concordant.hess_nonneg hxbar0) v w
+  have htailBase : ∀ N,
+      dualLocalNorm invHess (xseq N) (phiGrad xbar0) ≤ tailBound :=
+    chewi1316_uniformTailBound_of_sourceRadius_successor_radiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (invHess := invHess) (thirdMixed := thirdMixed) (phiGrad := phiGrad)
+      (xbar0 := xbar0) (xseq := xseq) (nu := nu)
+      (tailBound := tailBound) hs hxbar0 hx0
+      (fun N => hxseq_mem (N + 1)) hbar hess_pos hhess_cont
+      hhess_global hmixed_global hradius_half hxseq_inv_local
+      hxbar0_cauchy hbudget
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformTailBound_tailLambdaBudget
+      (invHess := invHess) (phiGrad := phiGrad) (xbar0 := xbar0)
+      (a := a) (xseq := xseq) (tseq := tseq) (lambdaSeq := lambdaSeq)
+      (coord := fun N => (sqrtCoord (xseq N)).symm.toContinuousLinearMap)
+      (c0 := c0) (nu := nu) (tailBound := tailBound)
+      hinv_factor hx0 ht0 htstep hlambda0 hdecrement_step
+      hlambdaBudget_succ htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one
+      htailBase
+
+/--
 Chewi Theorem 13.8 assembly from a unit bilinear estimate on the normalized
 Delta operator.  This leaves the remaining textbook work as the symmetric or
 bilinear Hessian-difference estimate, while reusing mathlib for the
@@ -23139,6 +23324,78 @@ theorem chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le
       positiveOrthantNegLogHessCLM_sqrtCoord_model_positiveOrthant
       positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant
       hnewton_next hpre_decrement_next hstepBudget
+      htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one hdelta_le_c0 hc0_le
+      positiveOrthantNegLog_selfConcordantBarrierOn
+      (continuousOn_of_forall_continuousAt
+        (fun z hz => (positiveOrthantNegLogHessCLM_hasFDerivAt hz).continuousAt))
+      (fun z hz => positiveOrthantNegLogHessCLM_hasFDerivAt hz)
+      (fun z _hz a v => positiveOrthantNegLogHessDerivCLM_mixed_inner z a v)
+      hbudget
+
+set_option maxHeartbeats 4000000 in
+/--
+Concrete positive-orthant source-start initialization from a direct
+source-radius-half certificate.  This is the analytical-center/radius
+alternative to the summable pre-Newton-budget wrapper above: all finite-product
+log-barrier data are discharged, and callers only need the preliminary path,
+successor feasibility, and the source metric radius certificate.
+-/
+theorem chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_sourceRadiusHalf
+    {d : ℕ}
+    {xbar0 a : EuclideanSpace ℝ (Fin d)}
+    {xseq : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {tseq : ℕ -> ℝ}
+    {c0 tailBound : ℝ}
+    (hxbar0 : xbar0 ∈ positiveOrthant (d := d))
+    (hxseq_mem : ∀ N : ℕ, xseq N ∈ positiveOrthant (d := d))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (d : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad positiveOrthantNegLogGrad xbar0 (tseq (n + 1)))
+          positiveOrthantNegLogInvHessCLM (xseq n))
+    (hradius_half : ∀ N : ℕ,
+      localNorm positiveOrthantNegLogHessCLM xbar0 (xseq (N + 1) - xbar0) ≤
+        1 / 2)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt (d : ℝ))
+    (hdelta_lt_one : c0 / Real.sqrt (d : ℝ) < 1)
+    (hdelta_le_c0 : c0 / Real.sqrt (d : ℝ) ≤ c0)
+    (hc0_le : c0 ≤ 1 / 200)
+    (hbudget : 2 * Real.sqrt (d : ℝ) ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (d : ℝ) ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement (centralPathGrad tMain a positiveOrthantNegLogGrad)
+          positiveOrthantNegLogInvHessCLM (xseq N) ≤ 1 / 4 := by
+  exact
+    chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadiusHalf_barrier_globalDeriv_and_sqrtCoordModel
+      (s := positiveOrthant (d := d))
+      (hess := positiveOrthantNegLogHessCLM)
+      (hessDeriv := positiveOrthantNegLogHessDerivCLM)
+      (invHess := positiveOrthantNegLogInvHessCLM)
+      (thirdMixed := positiveOrthantNegLogThirdMixed)
+      (phiGrad := positiveOrthantNegLogGrad)
+      (xbar0 := xbar0) (a := a) (xseq := xseq) (tseq := tseq)
+      (sqrtCoord := positiveOrthantNegLogSqrtCoord)
+      (c0 := c0) (nu := (d : ℝ)) (tailBound := tailBound)
+      convex_positiveOrthant hxbar0 hxseq_mem hx0 ht0 htstep
+      (fun n τ hτ =>
+        preliminaryPathGrad_hasFDerivAt
+          (positiveOrthantNegLogGrad_hasFDerivAt
+            (hessianSegmentPoint_mem_of_convex
+              convex_positiveOrthant (hxseq_mem n) (hxseq_mem (n + 1))
+              (by simpa [Set.uIcc_of_le zero_le_one] using hτ))))
+      positiveOrthantNegLogHessCLM_sqrtCoord_model_positiveOrthant
+      positiveOrthantNegLogInvHessCLM_sqrtCoord_model_positiveOrthant
+      hnewton_next hradius_half
       htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one hdelta_le_c0 hc0_le
       positiveOrthantNegLog_selfConcordantBarrierOn
       (continuousOn_of_forall_continuousAt

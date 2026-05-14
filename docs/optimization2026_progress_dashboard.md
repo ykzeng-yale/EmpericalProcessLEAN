@@ -456,6 +456,13 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  No new quantitative shortcut is assumed: the next live gate remains the
 	  summable pre-Newton budget or an analytical-center/source-radius estimate
 	  strong enough to imply it.
+	  The direct analytical-center route now compiles too:
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadiusHalf_barrier_globalDeriv_and_sqrtCoordModel`
+	  and
+	  `chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_sourceRadiusHalf`.
+	  This removes the need to package the radius route through a fake
+	  summable budget; future work should prove the concrete preliminary-path
+	  source-radius-half certificate itself.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

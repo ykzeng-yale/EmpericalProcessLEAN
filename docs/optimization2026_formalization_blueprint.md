@@ -400,6 +400,14 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	mixed-third identity, and convex segment membership.  The unresolved
 	blueprint item remains the real quantitative source budget, not the
 	concrete barrier plumbing.
+	The direct radius-half packet
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourceRadiusHalf_barrier_globalDeriv_and_sqrtCoordModel`
+	and the concrete finite-product wrapper
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_sourceRadiusHalf`
+	now make the analytical-center alternative first-class.  They reuse the
+	tail-lambda source-start wrapper, avoiding the impossible global
+	`lambdaSeq <= 1/8` condition at index zero, and leave only the actual
+	source-radius-half certificate for the preliminary path.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
