@@ -587,8 +587,13 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  It gives a lighter route to the same finite-row polytope initialization:
 	  supply range source-radius-half, source-point Cauchy, successor
 	  membership, and the global range Hessian derivative package directly.
-	  The remaining §13.16 work is now concrete range geometry, not scalar
-	  log/count or affine transport plumbing.
+	  The source-only square-root packet adds
+	  `chewi1314_polytopeSlackNegLog_range_sourceCauchy_of_adjointSqrtCoord`,
+	  `chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_zeroSafe_globalDeriv_and_sourceSqrtCoord`, and
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_zeroSafe_globalDeriv_and_sourceSqrtCoord_tailLambdaBudget`,
+	  discharging source-point Cauchy from a source-only adjoint-square
+	  factorization.  The remaining §13.16 work is now concrete range geometry,
+	  not scalar log/count or affine transport plumbing.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

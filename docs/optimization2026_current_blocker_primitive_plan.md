@@ -745,6 +745,15 @@ packet adds
 	proving these direct certificates or by instantiating the stronger
 	range preliminary Newton recurrence, summed pre-decrement budget, and
 	range square-root-coordinate model when that is faster.
+	The source-only square-root packet adds
+	`chewi1314_polytopeSlackNegLog_range_sourceCauchy_of_adjointSqrtCoord`,
+	`chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_zeroSafe_globalDeriv_and_sourceSqrtCoord`, and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_zeroSafe_globalDeriv_and_sourceSqrtCoord_tailLambdaBudget`.
+	It discharges the direct route's source-point Cauchy certificate from an
+	adjoint-square factorization only at `xbar0Range`.  The remaining direct
+	gates are therefore the range source-radius-half certificate, successor
+	membership, source Hessian/inverse-Hessian factorization, global range
+	Hessian derivative/mixed-third package, and the scalar tail budget.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
