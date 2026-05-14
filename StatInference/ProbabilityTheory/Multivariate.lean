@@ -2826,5 +2826,64 @@ theorem durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCe
         (μ := ν) (Y := fun sampleVector coordinate => sampleVector coordinate)
         hν_coordinate_memLp hν_coordinate_mean Gamma hν_centered_product)
 
+/--
+Durrett 2019, Theorem 3.10.7, canonical i.i.d. product-sample endpoint in the
+literal centered normalized-sum display.
+
+This is the centered source form `S_n / sqrt n => chi`, written
+coordinatewise for a finite coordinate type.
+-/
+theorem durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCenteredProduct_sum
+    {Coordinate Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hν_coordinate_memLp : ∀ coordinate,
+      MemLp (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate) 2 ν)
+    (hν_coordinate_mean : ∀ coordinate,
+      (∫ sampleVector, sampleVector coordinate ∂ν) = 0)
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 Q)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_centered_product : ∀ i j,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hν_centered_product : ∀ i j,
+      (∫ sampleVector, sampleVector i * sampleVector j ∂ν) = Gamma i j) :
+    TendstoInDistribution
+      (fun (n : ℕ) sample =>
+        fun coordinate : Coordinate =>
+          (√(n : ℝ))⁻¹ *
+            (∑ i ∈ Finset.range n, sample i coordinate))
+      atTop Z (fun _ => Measure.infinitePi (fun _ : ℕ => ν)) Q := by
+  refine TendstoInDistribution.congr ?_ Filter.EventuallyEq.rfl
+    (durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCenteredProduct_explicitMean_sum
+      (ν := ν) (Q := Q) (Z := Z) (mu := fun _ : Coordinate => 0)
+      (hcoordinate_meas := hcoordinate_meas)
+      (hν_coordinate_memLp := hν_coordinate_memLp)
+      (hν_coordinate_mean := hν_coordinate_mean)
+      (hZ_aemeas := hZ_aemeas)
+      (hZ_coordinate_memLp := hZ_coordinate_memLp)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (hZ_coordinate_mean := hZ_coordinate_mean)
+      (Gamma := Gamma)
+      (hZ_centered_product := hZ_centered_product)
+      (hν_centered_product := fun i j => by
+        simpa using hν_centered_product i j))
+  intro n
+  exact Filter.Eventually.of_forall fun sample => by
+    ext coordinate
+    simp
+
 end ProbabilityTheory
 end StatInference
