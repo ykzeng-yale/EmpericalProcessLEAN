@@ -946,6 +946,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   gradient, Hessian derivative, mixed-third, selector derivative, and vertical
   inverse-derivative data directly into the literal package or projected
   source-radius local-norm sandwich.
+  The direct-transport source endpoint
+  `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSecondFullHessianDerivative_direct`
+  now gives the shorter route when no literal selected-value envelope is
+  needed: source full-square-root model plus source `grad`/`hess` derivative
+  data and mixed-third pairing directly imply the projected source-radius
+  local-norm sandwich.
   Future item-4 source instances should therefore focus on constructing the
   literal package and concrete square-root/envelope model, not rebuilding
   segment Schur-derivative, local-norm transport, or projected-Hessian

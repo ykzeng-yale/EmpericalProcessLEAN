@@ -784,6 +784,10 @@ and
 now assemble the source full-square-root model, source-domain first/second/full
 derivative data, and projected-domain vertical `Hyy` model into the literal
 inf-projection package or projected source-radius local-norm sandwich.
+The direct transport wrapper
+`chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSecondFullHessianDerivative_direct`
+is the shortest theorem-facing route when the next consumer only needs the
+projected local-norm sandwich and not the literal selected-value envelope.
 If the source model also proves first- and second-order differentiability on
 `s`, use
 `BarrierInfProjectionSelectorStationary.hasGradientAt_of_source`,

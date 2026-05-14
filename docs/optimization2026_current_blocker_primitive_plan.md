@@ -1453,6 +1453,12 @@ with source-domain first/second/full-Hessian derivative data.  Use these when
 the concrete source instance already has the adjoint-square full-Hessian model
 on `s`, the vertical `Hyy` square-root model on the projected domain, and the
 source mixed-third identity.
+When no selected-value/literal envelope data is needed, use the shorter direct
+endpoint
+`chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSecondFullHessianDerivative_direct`.
+It combines the same source full-square-root model with source `grad`/`hess`
+derivative data and the mixed-third pairing, then routes through the direct
+Schur local-norm consumer.
 
 Compiled declarations to reuse include
 `hessianSegmentPoint_hasDerivAt`,
