@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V335
+## Live In-Thread Goal Prompt V336
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,12 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V335 adds Durrett Theorem 3.10.6 Cramér-Wold in
+Latest verified target V336 adds Durrett Theorem 3.10.6 Cramér-Wold in the
+textbook `theta · X_n` random-vector convergence-in-distribution form:
+`durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution`.
+This packages projection convergence over `theta : Coordinate -> R` into vector
+convergence, reusing V335's continuous-linear-functional version.  V335 adds
+Durrett Theorem 3.10.6 Cramér-Wold in
 random-vector convergence-in-distribution form:
 `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribution`.
 It upgrades the previous law-level wrapper to the source-facing statement that
@@ -146,12 +151,12 @@ characteristic displays, or the V331 centered normalized-sum canonical product
 endpoint, or the V332 centered Exercise 3.10.8 linear-combination law/`iff`
 wrappers, or the V333 covariance-table centered Exercise 3.10.8
 linear-combination law/`iff` wrappers, or the V334 standalone centered reverse
-Exercise 3.10.8 implication, or the V335 random-vector Cramér-Wold wrapper.
-Next aggressive packet: continue Chapter 3 by closing a concrete source-facing
-gap around remaining Section 3.10 Gaussian-law wrappers, remaining
-Lindeberg-Feller side conditions, or characteristic-function transport into
-later source statements; touch Chapter 2 only if a Chapter 3 theorem requires a
-missing source primitive.
+Exercise 3.10.8 implication, or the V335 random-vector Cramér-Wold wrapper, or
+the V336 textbook theta-form Cramér-Wold wrapper.  Next aggressive packet:
+continue Chapter 3 by closing a concrete source-facing gap around remaining
+Section 3.10 Gaussian-law wrappers, remaining Lindeberg-Feller side conditions,
+or characteristic-function transport into later source statements; touch
+Chapter 2 only if a Chapter 3 theorem requires a missing source primitive.
 
 ## Historical V306 Prompt Notes
 

@@ -2092,6 +2092,46 @@ theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribu
       (μs := μs) (μ := μ) hprojected
 
 /--
+Durrett 2019, Theorem 3.10.6, Cramér-Wold device in the textbook
+`theta · X_n` notation.
+
+For finite real coordinate spaces, convergence in distribution of every
+Durrett coordinate projection `sum_i theta_i X_{n,i}` implies convergence in
+distribution of the vector itself.
+-/
+theorem durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {P : ℕ -> Measure Ω} [∀ n, IsProbabilityMeasure (P n)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : ℕ -> Ω -> Coordinate -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_aemeas : ∀ n, AEMeasurable (X n) (P n))
+    (hZ_aemeas : AEMeasurable Z Q)
+    (htheta : ∀ theta : Coordinate -> ℝ,
+      TendstoInDistribution (fun n ω => ∑ i, theta i * X n ω i) atTop
+        (fun ω => ∑ i, theta i * Z ω i) P Q) :
+    TendstoInDistribution X atTop Z P Q :=
+  durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribution
+    (P := P) (Q := Q) (X := X) (Z := Z) hX_aemeas hZ_aemeas
+    (fun L => by
+      let theta := durrett2019_theorem_3_10_7_dualCoordinates L
+      have hL :
+          durrett2019_theorem_3_10_7_thetaProjection theta = L :=
+        durrett2019_theorem_3_10_7_thetaProjection_dualCoordinates L
+      refine TendstoInDistribution.congr ?_ ?_ (htheta theta)
+      · intro n
+        exact Filter.Eventually.of_forall fun ω => by
+          rw [← hL]
+          simp [theta, durrett2019_theorem_3_10_7_thetaProjection_apply]
+      · exact Filter.Eventually.of_forall fun ω => by
+          rw [← hL]
+          simp [theta, durrett2019_theorem_3_10_7_thetaProjection_apply])
+
+/--
 Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from projected
 scalar CLTs.
 

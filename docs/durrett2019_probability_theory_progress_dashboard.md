@@ -32,12 +32,15 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V335` in
+Route from `Live In-Thread Goal Prompt V336` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V335 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V336 adds
+`durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution`,
+Durrett Theorem 3.10.6 Cramér-Wold in the textbook `theta · X_n`
+random-vector convergence-in-distribution form.  V335 adds
 `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribution`,
 Durrett Theorem 3.10.6 Cramér-Wold in random-vector
 convergence-in-distribution form.  V334 adds
@@ -1645,7 +1648,9 @@ Current proof route:
     `StatInference/ProbabilityTheory/Multivariate.lean`, reusing the local
     Vaart finite-coordinate Cramér-Wold theorem, plus the random-vector
     convergence-in-distribution wrapper
-    `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribution`.
+    `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribution`
+    and the textbook theta-projection wrapper
+    `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution`.
 29. Durrett Theorem 3.10.7 now has compiled projected scalar and projected
     summand CLT wrappers:
     `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedScalarCLT` and

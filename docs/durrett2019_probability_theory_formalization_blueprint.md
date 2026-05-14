@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V335`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V336`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -35,7 +35,10 @@ automation.
 Current active frontier: Chapter 3 weak convergence, characteristic functions,
 CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V335 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V336 adds
+`durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_theta_tendstoInDistribution`,
+Durrett Theorem 3.10.6 Cramér-Wold in the textbook `theta · X_n`
+random-vector convergence-in-distribution form.  V335 adds
 `durrett2019_theorem_3_10_6_cramerWold_finiteCoordinate_tendstoInDistribution`,
 Durrett Theorem 3.10.6 Cramér-Wold in random-vector
 convergence-in-distribution form.  V334 adds
