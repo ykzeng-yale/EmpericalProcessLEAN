@@ -1977,6 +1977,17 @@ reusing `barrierSum_invHess_nonneg_and_invLocal_of_right_inverse_on`.  For
 full-row-rank/surjective tail slack maps, the remaining source-shaped induction
 gate is now a single identity:
 `barrierSumHess headHess tailHess x (sumInvHess x v) = v`.
+The newest summed-square-root correction adds
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy_of_sumAdjointSqrtCoord`,
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_rightInverse_componentCauchy_of_sumAdjointSqrtCoord`,
+and
+`chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy_of_sumAdjointSqrtCoord`.
+These derive the single summed Hessian right-inverse from
+`H_sum = S†S` and `H_sum^{-1} = S^{-1}(S^{-1})†`, while keeping the
+rank-deficient head halfspace on the component-Cauchy route.  Proof-route
+warning: do not try to instantiate full-space adjoint-square equivalences for
+individual halfspace Hessians in arbitrary ambient dimension; the single-row
+head Hessian is generally degenerate.
 Do not redo scalar
 self-concordance, affine right-inverse algebra, or binary sum inverse-local /
 Cauchy algebra.

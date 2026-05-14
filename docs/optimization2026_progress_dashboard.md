@@ -601,7 +601,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   source-shaped gate is now the single summed Hessian right-inverse identity
   `barrierSumHess headHess tailHess x (sumInvHess x v) = v`; use the
   full-space adjoint-square route only for genuinely positive-definite
-  component models.
+  component models.  The latest route-correction packet adds
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_componentCauchy_of_sumAdjointSqrtCoord`,
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_rightInverse_componentCauchy_of_sumAdjointSqrtCoord`,
+  and
+  `chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_succ_of_tail_surjective_componentCauchy_of_sumAdjointSqrtCoord`;
+  these consume only a summed adjoint-square model for `H_sum`, avoiding the
+  false requirement that the rank-deficient head halfspace Hessian have a
+  full-space continuous-linear-equivalence square root.
 - Latest affine-preimage frontier: Proposition 13.11(3) now compiles in
   supplied-oracle form, for invertible affine maps, as a single
   non-invertible/range certificate object, and for affine maps whose linear

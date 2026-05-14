@@ -591,7 +591,12 @@ now discharge both the recursive tail barrier and tail Cauchy bridge for
 full-row-rank/surjective tail slack maps.  The `_of_sumRightInverse` wrappers
 for the same component-Cauchy induction route now reduce the remaining
 head/tail finite-row induction gate to the single summed Hessian right-inverse
-identity `barrierSumHess headHess tailHess x (sumInvHess x v) = v`.  Next
+identity `barrierSumHess headHess tailHess x (sumInvHess x v) = v`.  The
+new `_of_sumAdjointSqrtCoord` wrappers derive that identity from only the
+summed adjoint-square model `H_sum = S†S`,
+`H_sum^{-1} = S^{-1}(S^{-1})†`, which is the correct route for arbitrary
+ambient halfspaces because a single row Hessian is generally rank-deficient.
+Next
 construct the concrete range oracle/right-inverse/energy bound for the fully
 general polytope barrier, or provide that summed right-inverse identity for the
 head/tail finite-row induction; all segment
