@@ -5282,6 +5282,38 @@ theorem continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv
     _ = inner ℝ v w := by
           simp [S, C]
 
+/--
+If `H = S†S` and a supplied inverse oracle is a right inverse for `H`, then in
+finite dimension the oracle must be the canonical `S⁻¹(S⁻¹)†` inverse model.
+-/
+theorem continuousLinearMap_adjointSqrtCoord_inv_eq_of_right_inverse_finiteDim
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    [CompleteSpace F] [FiniteDimensional ℝ F]
+    {H invH : F →L[ℝ] F} (sqrtCoord : F ≃L[ℝ] F)
+    (hH_eq :
+      H =
+        (ContinuousLinearMap.adjoint sqrtCoord.toContinuousLinearMap).comp
+          sqrtCoord.toContinuousLinearMap)
+    (hright : ∀ v : F, H (invH v) = v) :
+    invH =
+      sqrtCoord.symm.toContinuousLinearMap.comp
+        (ContinuousLinearMap.adjoint sqrtCoord.symm.toContinuousLinearMap) := by
+  let model : F →L[ℝ] F :=
+    sqrtCoord.symm.toContinuousLinearMap.comp
+      (ContinuousLinearMap.adjoint sqrtCoord.symm.toContinuousLinearMap)
+  have hmodel_right : ∀ v : F, H (model v) = v :=
+    continuousLinearMap_right_inverse_of_adjointSqrtCoord_inv
+      (H := H) (invH := model) sqrtCoord hH_eq rfl
+  have hinj : Function.Injective (H : F -> F) := by
+    have hsurj : Function.Surjective (H : F -> F) :=
+      fun w => ⟨invH w, hright w⟩
+    exact (LinearMap.injective_iff_surjective (K := ℝ) (V := F)
+      (f := H.toLinearMap)).2 hsurj
+  ext v
+  change invH v = model v
+  apply hinj
+  rw [hright v, hmodel_right v]
+
 theorem barrierInfProjectionBlockYY_left_inverse_of_right_inverse_finiteDim
     [FiniteDimensional ℝ E₂]
     (selector : E₁ -> E₂)
@@ -29812,6 +29844,58 @@ theorem chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise
   · intro z hz
     have hchoice := Classical.choose_spec (hpoint z hz)
     simpa [sqrtCoordRange, sRange, hz] using hchoice.2
+
+/--
+Finite-row range square-root-coordinate selection from only a pointwise Hessian
+square-root factor.  The inverse-Hessian model is derived from the compiled
+right-inverse identity, so future spectral work only has to construct
+`H = S†S` at each feasible range point.
+-/
+theorem chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_hess_pointwise
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (hpoint_hess : ∀ z : (polytopeSlackCLM aRow).range,
+      z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        ∃ sqrtCoord :
+            (polytopeSlackCLM aRow).range ≃L[ℝ]
+              (polytopeSlackCLM aRow).range,
+          barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM z =
+            (ContinuousLinearMap.adjoint sqrtCoord.toContinuousLinearMap).comp
+              sqrtCoord.toContinuousLinearMap) :
+    ∃ sqrtCoordRange :
+        (polytopeSlackCLM aRow).range ->
+          (polytopeSlackCLM aRow).range ≃L[ℝ] (polytopeSlackCLM aRow).range,
+      (∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
+        z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM z =
+            (ContinuousLinearMap.adjoint
+              (sqrtCoordRange z).toContinuousLinearMap).comp
+              (sqrtCoordRange z).toContinuousLinearMap) ∧
+      (∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
+        z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack z =
+            (sqrtCoordRange z).symm.toContinuousLinearMap.comp
+              (ContinuousLinearMap.adjoint
+                (sqrtCoordRange z).symm.toContinuousLinearMap)) := by
+  refine
+    chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise
+      aRow bSlack ?_
+  intro z hz
+  obtain ⟨sqrtCoord, hhess⟩ := hpoint_hess z hz
+  refine ⟨sqrtCoord, hhess, ?_⟩
+  exact
+    continuousLinearMap_adjointSqrtCoord_inv_eq_of_right_inverse_finiteDim
+      (H := barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogHessCLM z)
+      (invH := chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack z)
+      (sqrtCoord := sqrtCoord) hhess
+      (chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
+        aRow bSlack hz)
 
 /--
 Finite-row range-space preliminary one-step invariant from a domain-wide
