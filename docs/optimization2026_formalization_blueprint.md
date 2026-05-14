@@ -498,6 +498,11 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeTailBudget`,
 	so the final §13.16 initialization now follows from a single closed-form
 	scaled source-tail bound in the slack-range metric.
+	The uniform range-tail handoff packet adds
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformRangeTailBound_tailLambdaBudget`,
+	choosing the scalar log/count indices internally and using the successor
+	final-decrement budget.  This reduces the remaining finite-row polytope
+	§13.16 gate to proving the uniform slack-range source-tail estimate itself.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

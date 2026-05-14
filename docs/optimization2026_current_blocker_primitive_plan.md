@@ -715,6 +715,16 @@ packet adds
 	inverse-Hessian metric into the positive main-stage initialization
 	certificate, reusing the compiled source-start theorem.  The next packet is
 	therefore the actual bounded-polytope range-tail estimate.
+	The newest uniform range-tail handoff packet adds
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformRangeTailBound_tailLambdaBudget`.
+	It chooses the logarithmic/count preliminary length internally, shifts to a
+	successor index for the final `lambda <= 1/8` budget, and feeds the
+	range-tail consumer from a single uniform slack-range bound
+	`dualLocalNorm rangeInvHess (rangeRestrict (xseq N)) (rangeGrad (rangeRestrict xbar0)) <= tailBound`.
+	The live mathematical blocker is now exactly this uniform slack-range
+	source-tail estimate for bounded polytopes; do not return to the already
+	ruled-out positive-orthant source-radius or scaled-relative certificates,
+	and do not repeat affine/range transport or scalar log/count plumbing.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

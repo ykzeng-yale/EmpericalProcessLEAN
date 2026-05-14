@@ -567,6 +567,13 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  initialization follows from the existing source-start theorem.  The live
 	  blocker is now the genuine bounded-polytope range-tail estimate, not
 	  affine transport or main-stage initialization plumbing.
+	  The newest uniform range-tail handoff packet adds
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_uniformRangeTailBound_tailLambdaBudget`.
+	  It reuses the scalar log/count index chooser and successor
+	  `lambda <= 1/8` route, so a single uniform slack-range source-tail bound
+	  now implies the positive main-stage initialization theorem for finite-row
+	  polytope logarithmic barriers.  The next proof target is the actual
+	  uniform range-tail estimate in bounded-polytope geometry.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,
