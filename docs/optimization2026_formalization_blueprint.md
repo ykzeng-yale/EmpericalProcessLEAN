@@ -92,6 +92,14 @@ theorem-sized target is to prove the source next pre-decrement decay /
 total-mass bound feeding either the source
 `preDecrementContractingBudget` handoff or the source
 `preDecrementGeometricBudget` handoffs.
+The actual-budget base estimate now compiles as
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_zero_le_standard`:
+under the standard preliminary update with `t_0 = 1`, the actual source
+next-pre-decrement budget at index `0` is bounded by `1 / 200` using the
+finite-row barrier gradient bound and local-norm homogeneity.  The next
+source-facing theorem-sized target is therefore the actual successor doubled
+contraction, together with the scalar `q = 1 / 2` wrapper that converts this
+base estimate into the contracting-budget total-mass condition.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the

@@ -248,8 +248,17 @@ The newest actual-budget packet names the real source next-pre-decrement
 sequence as `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget` and
 adds
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementContractingBudget_noFactor_standardConstants`.
-Prefer this endpoint next: prove the doubled contraction and initial
-total-mass bound for the actual budget sequence directly, rather than
+The newest initial-budget packet adds
+`preliminaryPathGrad_self_eq` and
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_zero_le_standard`,
+proving from the barrier gradient bound and the standard update
+`t_{1} = (1 - (1/200) / sqrt m) * t_0`, `t_0 = 1`, that the actual source
+next-pre-decrement budget at index `0` is at most `1 / 200`.  This supplies
+the base estimate needed for the contracting-budget total-mass side when
+combined with the scalar `q = 1 / 2` arithmetic.  Prefer this endpoint next:
+prove the actual doubled contraction
+`2 * stepBudget (n+1) <= (1 / 2) * (2 * stepBudget n)` and the tiny scalar
+initial-total wrapper for the actual budget sequence directly, rather than
 introducing another arbitrary `stepBudget`.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route

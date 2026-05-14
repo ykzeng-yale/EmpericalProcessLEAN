@@ -13376,6 +13376,12 @@ theorem preliminaryPathGrad_one_self (phiGrad : E -> E) (xbar0 : E) :
     preliminaryPathGrad phiGrad xbar0 1 xbar0 = 0 := by
   simp [preliminaryPathGrad, preliminaryPathDirection, centralPathGrad]
 
+theorem preliminaryPathGrad_self_eq (phiGrad : E -> E) (xbar0 : E) (t : ℝ) :
+    preliminaryPathGrad phiGrad xbar0 t xbar0 =
+      (1 - t) • phiGrad xbar0 := by
+  simp [preliminaryPathGrad, preliminaryPathDirection, centralPathGrad]
+  module
+
 theorem preliminaryPathGrad_zero (phiGrad : E -> E) (xbar0 x : E) :
     preliminaryPathGrad phiGrad xbar0 0 x = phiGrad x := by
   simp [preliminaryPathGrad, preliminaryPathDirection, centralPathGrad]
@@ -32205,6 +32211,78 @@ noncomputable def chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
         xbar0 (tseq (n + 1)))
       (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
       (xseq n)
+
+/--
+At the start of the finite-row preliminary path, the actual next-pre-decrement
+budget is at most the standard Chewi step constant `1/200`.
+-/
+theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_zero_le_standard
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq : ℕ -> ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n) :
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+      aRow bSlack xbar0 xseq tseq 0 ≤ 1 / 200 := by
+  let phiGrad : F -> F :=
+    barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogGrad
+  let invHess : F -> F →L[ℝ] F :=
+    chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack
+  let delta : ℝ := (1 / 200 : ℝ) / Real.sqrt (m : ℝ)
+  have hsqrt_pos : 0 < Real.sqrt (m : ℝ) := by
+    exact Real.sqrt_pos.2 (by exact_mod_cast hm)
+  have hdelta_nonneg : 0 ≤ delta :=
+    div_nonneg (by norm_num) (le_of_lt hsqrt_pos)
+  have hdelta_sqrt : delta * Real.sqrt (m : ℝ) = 1 / 200 := by
+    have hsqrt_ne : Real.sqrt (m : ℝ) ≠ 0 := ne_of_gt hsqrt_pos
+    simp [delta, hsqrt_ne]
+  have hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack := by
+    intro i
+    have hpos : 0 < bSlack i +
+        ((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+          EuclideanSpace ℝ (Fin m)) i := by
+      simpa [barrierAffineRangeSet, positiveOrthant] using hxbar0Range i
+    have hcoord :
+        ((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+          EuclideanSpace ℝ (Fin m)) i =
+          (polytopeSlackCLM aRow xbar0) i := by
+      rfl
+    rw [hcoord, polytopeSlackCLM_apply] at hpos
+    nlinarith
+  have hgrad_bound :
+      dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤
+        Real.sqrt (m : ℝ) := by
+    simpa [invHess, phiGrad] using
+      (chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess
+        aRow bSlack).gradient_bound hxbar0Set
+  have hgrad_eq :
+      preliminaryPathGrad phiGrad xbar0 (tseq (0 + 1)) (xseq 0) =
+        delta • phiGrad xbar0 := by
+    rw [hx0, htstep 0, ht0]
+    rw [preliminaryPathGrad_self_eq]
+    simp [delta]
+  calc
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+        aRow bSlack xbar0 xseq tseq 0 =
+        dualLocalNorm invHess xbar0 (delta • phiGrad xbar0) := by
+          simp only [chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget,
+            newtonDecrement, invHess, phiGrad]
+          rw [hgrad_eq, hx0]
+    _ = delta * dualLocalNorm invHess xbar0 (phiGrad xbar0) := by
+          rw [chewi1314_polytopeSlackNegLog_rangePullInvHess_dualLocalNorm_smul
+            aRow bSlack hxbar0Range delta (phiGrad xbar0)]
+          rw [abs_of_nonneg hdelta_nonneg]
+    _ ≤ delta * Real.sqrt (m : ℝ) :=
+          mul_le_mul_of_nonneg_left hgrad_bound hdelta_nonneg
+    _ = 1 / 200 := hdelta_sqrt
 
 /--
 Preferred concrete standard-constant §13.16 source handoff: the auxiliary

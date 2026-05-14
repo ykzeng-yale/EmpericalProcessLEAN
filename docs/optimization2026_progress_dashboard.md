@@ -104,6 +104,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   contraction feeding the source `preDecrementContractingBudget` handoff or as
   the pointwise geometric majorant feeding the source
   `preDecrementGeometricBudget` handoffs.
+  The actual-budget base case now compiles as
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_zero_le_standard`:
+  for the standard preliminary update and `t_0 = 1`, the real source
+  next-pre-decrement budget at index `0` is at most `1 / 200`, using the
+  finite-row barrier gradient bound.  The remaining exact-source gate is the
+  successor doubled contraction for the actual budget sequence, plus the small
+  scalar wrapper turning this base bound into the contracting-budget initial
+  total condition for `q = 1 / 2`.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing
