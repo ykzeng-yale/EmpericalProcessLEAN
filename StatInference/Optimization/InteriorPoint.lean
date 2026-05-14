@@ -29720,6 +29720,68 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       hsqrt_pos hdelta_lt_one le_rfl
 
 /--
+Selection wrapper for the finite-row range square-root-coordinate model.  A
+pointwise feasible-set square-root witness is enough to build the domain-wide
+family consumed by the §13.16 range-sqrt wrappers; no continuity or
+measurability of the selected family is needed at this layer.
+-/
+theorem chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (hpoint : ∀ z : (polytopeSlackCLM aRow).range,
+      z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        ∃ sqrtCoord :
+            (polytopeSlackCLM aRow).range ≃L[ℝ]
+              (polytopeSlackCLM aRow).range,
+          barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM z =
+            (ContinuousLinearMap.adjoint sqrtCoord.toContinuousLinearMap).comp
+              sqrtCoord.toContinuousLinearMap ∧
+          chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack z =
+            sqrtCoord.symm.toContinuousLinearMap.comp
+              (ContinuousLinearMap.adjoint
+                sqrtCoord.symm.toContinuousLinearMap)) :
+    ∃ sqrtCoordRange :
+        (polytopeSlackCLM aRow).range ->
+          (polytopeSlackCLM aRow).range ≃L[ℝ] (polytopeSlackCLM aRow).range,
+      (∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
+        z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM z =
+            (ContinuousLinearMap.adjoint
+              (sqrtCoordRange z).toContinuousLinearMap).comp
+              (sqrtCoordRange z).toContinuousLinearMap) ∧
+      (∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
+        z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack z =
+            (sqrtCoordRange z).symm.toContinuousLinearMap.comp
+              (ContinuousLinearMap.adjoint
+                (sqrtCoordRange z).symm.toContinuousLinearMap)) := by
+  classical
+  let sRange : Set (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+      (positiveOrthant (d := m))
+  let sqrtCoordRange :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range ≃L[ℝ]
+          (polytopeSlackCLM aRow).range :=
+    fun z =>
+      if hz : z ∈ sRange then
+        Classical.choose (hpoint z (by simpa [sRange] using hz))
+      else
+        ContinuousLinearEquiv.refl ℝ (polytopeSlackCLM aRow).range
+  refine ⟨sqrtCoordRange, ?_, ?_⟩
+  · intro z hz
+    have hchoice := Classical.choose_spec (hpoint z hz)
+    simpa [sqrtCoordRange, sRange, hz] using hchoice.1
+  · intro z hz
+    have hchoice := Classical.choose_spec (hpoint z hz)
+    simpa [sqrtCoordRange, sRange, hz] using hchoice.2
+
+/--
 Finite-row range-space preliminary one-step invariant from a domain-wide
 square-root-coordinate model.  The range Newton recurrence and summable
 pre-decrement budget provide the range membership needed along each Newton

@@ -207,6 +207,10 @@ current `hhess_model`/`hinv_model` hypotheses.  Reuse local range Hessian
 positivity/symmetry/right-inverse lemmas and mathlib `LinearMap.IsSymmetric`
 spectral/eigenbasis APIs; avoid stronger continuity or measurability
 requirements for the selected family.
+The selection part is now compiled as
+`chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise`: the
+remaining range-sqrt work is the pointwise spectral/matrix construction of a
+single feasible-point square-root witness, not the global family packaging.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new

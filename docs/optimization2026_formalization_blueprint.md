@@ -97,7 +97,13 @@ point-dependent `sqrtCoordRange` theorem that returns exactly the existing
 `hhess_model` and `hinv_model` hypotheses.  Reuse local range Hessian
 positivity/symmetry/right-inverse lemmas and mathlib `LinearMap.IsSymmetric`
 spectral/eigenbasis APIs; do not add continuity/measurability obligations for
-the selected family unless a later statement requires them.  Do
+the selected family unless a later statement requires them.
+The selection wrapper
+`chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise` now
+packages pointwise feasible square-root witnesses into the domain-wide family;
+the next range-sqrt packet should prove those pointwise witnesses from
+positive self-adjoint range Hessian data.
+Do
 not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the
 range one-step invariant; those are already behind compiled wrappers.  Do not

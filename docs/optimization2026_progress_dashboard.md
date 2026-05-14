@@ -113,6 +113,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   range Hessian positivity/symmetry/right-inverse lemmas and mathlib
   `LinearMap.IsSymmetric` spectral/eigenbasis APIs; do not ask for continuity
   or measurability of the selected family unless a later theorem needs it.
+  The selection wrapper
+  `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise`
+  now compiles: once a future spectral/matrix proof gives pointwise feasible
+  square-root witnesses, this wrapper packages them into the exact
+  domain-wide family consumed by the range-sqrt §13.16 APIs.
   Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range
