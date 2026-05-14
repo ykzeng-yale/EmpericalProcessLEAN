@@ -322,6 +322,15 @@ window: they need only `x_{N+1}` in the slack polytope,
 log/count side.  Prefer these over the post-threshold lower-`|t|` wrappers
 when the decreasing preliminary `t_N` makes a uniform all-future lower
 denominator implausible.
+The newest selected range source-radius packet adds
+`chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourceRadiusHalf`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeSourceRadiusHalf_succ_noFactor_standardConstants`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_selectedRangeSourceRadiusHalf_succ_noFactor_standardConstants`.
+This is the finite-window bounded-polytope entrypoint: a selected range
+source-radius-half certificate at `x_{N+1}` gives the selected slack-range
+source-tail bound, and the actual-budget wrapper additionally derives the
+prefix pre-decrement budget from the half-contraction of the real
+`sourcePreDecrementNextBudget`.
 This half-contraction endpoint is conditional infrastructure, not yet the
 recommended mathematical route.  The search-first check of the archived
 Chapter 13 obstruction notes shows that fixed-source global preliminary

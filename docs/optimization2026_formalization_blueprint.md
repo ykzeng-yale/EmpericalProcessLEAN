@@ -156,6 +156,13 @@ and
 They are the source-facing finite-window alternative to the post-threshold
 lower-`|t|` route, requiring the denominator and tail-budget certificate only
 at the selected successor index.
+The selected range source-radius packet now compiles as
+`chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourceRadiusHalf`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeSourceRadiusHalf_succ_noFactor_standardConstants`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_selectedRangeSourceRadiusHalf_succ_noFactor_standardConstants`.
+This packages the finite-window bounded-polytope tail route: selected
+range source-radius-half gives the selected slack-range tail bound, and the
+actual-budget endpoint additionally consumes the real half-contraction budget.
 This endpoint should be treated as conditional infrastructure.  Earlier
 verified positive-orthant obstruction packets show that the bare actual
 decreasing-`t` preliminary recurrence is not expected to satisfy the old

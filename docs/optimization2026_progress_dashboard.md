@@ -167,6 +167,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   These reduce the lower-`|t|` input to one selected successor index
   `N+1`, avoiding the stronger post-threshold all-future denominator
   certificate when the actual preliminary `t_N` is decreasing.
+  The selected range source-radius packet now adds
+  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourceRadiusHalf`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeSourceRadiusHalf_succ_noFactor_standardConstants`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_selectedRangeSourceRadiusHalf_succ_noFactor_standardConstants`.
+  This moves the bounded-polytope route one layer upstream: selected range
+  source-radius-half now directly yields the selected tail bound and the
+  positive main-stage initialization, with actual-budget prefix summability
+  discharged when the half-contraction is available.
   Route correction: this is conditional infrastructure.  The archived
   positive-orthant obstruction packets already warn that global fixed-source
   radius/summability gates are not the right textbook-scale path for the
