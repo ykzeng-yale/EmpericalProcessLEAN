@@ -436,6 +436,15 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`(N+1)*c0 <= 1/2`.  Use this to avoid chasing a false global
 	source-radius proof; the likely next blueprint correction is a finite-window
 	initialization certificate or a moving-center/local-metric radius argument.
+	The finite-window correction now has a compiled source-start wrapper:
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_selectedSourceRadiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	It keeps the Chewi log/count choices explicit, asks only for a selected
+	`xseq N` source-radius-half certificate, and derives the source-tail bound
+	from the barrier gradient estimate plus the local self-concordant Hessian
+	transport.  Future exact-source §13.16 work should discharge this selected
+	radius certificate for the concrete preliminary path or replace it with a
+	moving-center certificate; it should not reintroduce the all-prefix
+	source-radius premise.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

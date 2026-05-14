@@ -492,6 +492,14 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  This is a verified warning that the all-prefix source-radius route should
 	  be treated as a finite-window certificate unless a different moving-center
 	  argument is supplied.
+	  The selected-index source-radius wrapper
+	  `chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_selectedSourceRadiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`
+	  now compiles.  It avoids the suspect global `forall N` hypothesis by
+	  taking explicit `M,N` log/count budgets plus only the radius-half
+	  certificate at the selected preliminary index, then proving the local
+	  source-tail estimate from `SelfConcordantBarrierOn`, global Hessian
+	  derivative/mixed-third data, inverse-local identity, source Cauchy, and
+	  `2 * sqrt(nu) <= tailBound`.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

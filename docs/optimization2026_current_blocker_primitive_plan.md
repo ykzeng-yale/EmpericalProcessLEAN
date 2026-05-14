@@ -634,6 +634,16 @@ packet adds
 	source-radius premise is likely too strong for the full decreasing-`t`
 	preliminary path; future work should either prove a finite-window version
 	or switch to a metric/center adapted to the moving path.
+	The selected-index source-radius packet now adds
+	`chewi1316_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_selectedSourceRadiusHalf_zeroSafe_barrier_globalDeriv_and_inverseIdentity`.
+	This is the finite-window replacement for the suspect all-prefix route:
+	callers provide the chosen log/count indices `M,N`, the source-radius-half
+	certificate only at `xseq N`, the global barrier derivative package, and
+	the scalar budget `2 * sqrt(nu) <= tailBound`; the wrapper proves the
+	selected source-tail estimate and returns the positive main-stage
+	initialization conclusion with that same `M,N`.  The next exact-source
+	packet should target a selected finite window or moving-center radius
+	certificate, not a global `forall N` source-radius theorem.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,
