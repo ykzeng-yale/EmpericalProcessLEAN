@@ -467,6 +467,13 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	therefore seek a moving-center/local-metric certificate or a different
 	source-tail estimate, not another all-prefix or selected source-radius
 	wrapper for the same analytical center.
+	The moving-coordinate route is now concretely exposed:
+	`positiveOrthantNegLog_sourceGrad_dualLocalNorm_eq_norm_relative` gives the
+	exact source-gradient dual norm as `||x_i/xbar0_i||_2`, and
+	`positiveOrthantNegLog_sourceGrad_tailBudget_of_scaled_relative_le` reduces
+	the direct source-start final-tail budget to
+	`|t| * |x_i/xbar0_i| <= 1/(16*sqrt d)` for every coordinate.  This is the
+	preferred next scalar invariant for positive-orthant experiments.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,

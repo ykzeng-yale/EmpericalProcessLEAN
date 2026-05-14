@@ -522,6 +522,13 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  textbook-scale log/count choice except in a tiny window, so future §13.16
 	  work should move to a moving-center/local-metric argument or another
 	  source-tail estimate.
+	  The moving-coordinate source-tail route now starts with
+	  `positiveOrthantNegLog_sourceGrad_dualLocalNorm_eq_norm_relative` and
+	  `positiveOrthantNegLog_sourceGrad_tailBudget_of_scaled_relative_le`.
+	  These identify the positive-orthant source-gradient dual norm with the
+	  Euclidean norm of `x_i / xbar0_i`, and show that the direct final-tail
+	  budget follows from scaled relative bounds
+	  `|t| * |x_i / xbar0_i| <= 1/(16*sqrt d)`.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

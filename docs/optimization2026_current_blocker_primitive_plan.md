@@ -670,6 +670,16 @@ packet adds
 	choice, the exact §13.16 proof should switch to a moving-center/local-metric
 	argument or a different source-tail estimate rather than trying to prove
 	this selected relative-radius certificate.
+	The moving-coordinate source-tail route now has a concrete positive-orthant
+	API: `positiveOrthantNegLog_sourceGrad_dualLocalNorm_eq_norm_relative`
+	rewrites
+	`||grad phi(xbar0)||*_{x}` as the Euclidean norm of the coordinate ratios
+	`x_i / xbar0_i`, and
+	`positiveOrthantNegLog_sourceGrad_tailBudget_of_scaled_relative_le`
+	discharges the direct final-tail budget from the scaled coordinate bounds
+	`|t| * |x_i / xbar0_i| <= 1/(16*sqrt d)`.  Future §13.16 packets should
+	target this moving/scaled relative-coordinate invariant rather than
+	unscaled displacement from `xbar0`.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

@@ -23385,6 +23385,89 @@ theorem positiveOrthantNegLog_dualLocalNorm_grad_le_sqrt_card {d : ℕ}
       Real.sqrt (d : ℝ) := by
   rw [positiveOrthantNegLog_dualLocalNorm_grad_eq_sqrt_card hx]
 
+/--
+Exact positive-orthant source-gradient dual norm in relative coordinates.
+This is the explicit substitute for abstract source-tail bounds in the
+preliminary path: measuring `grad phi(x0)` at `x` gives the Euclidean norm of
+the coordinate ratios `x_i / x0_i`.
+-/
+theorem positiveOrthantNegLog_sourceGrad_dualLocalNorm_eq_norm_relative {d : ℕ}
+    {x0 x : EuclideanSpace ℝ (Fin d)}
+    (hx0 : x0 ∈ positiveOrthant (d := d)) :
+    dualLocalNorm positiveOrthantNegLogInvHessCLM x
+        (positiveOrthantNegLogGrad x0) =
+      ‖WithLp.toLp 2 (fun i : Fin d => x i / x0 i)‖ := by
+  have hquad :
+      inner ℝ (positiveOrthantNegLogGrad x0)
+          (positiveOrthantNegLogInvHessCLM x (positiveOrthantNegLogGrad x0)) =
+        inner ℝ (WithLp.toLp 2 (fun i : Fin d => x i / x0 i))
+          (WithLp.toLp 2 (fun i : Fin d => x i / x0 i)) := by
+    rw [PiLp.inner_apply, PiLp.inner_apply]
+    refine Finset.sum_congr rfl ?_
+    intro i _hi
+    rw [positiveOrthantNegLogGrad_apply,
+      positiveOrthantNegLogInvHessCLM_apply,
+      positiveOrthantNegLogGrad_apply]
+    rw [negLogBarrier_deriv]
+    have hx0i : x0 i ≠ 0 := (hx0 i).ne'
+    simp [RCLike.inner_apply]
+    field_simp [hx0i]
+    rw [sq_abs, sq_abs]
+    ring
+  dsimp [dualLocalNorm]
+  rw [hquad, norm_eq_sqrt_real_inner]
+
+theorem positiveOrthantNegLog_scaled_sourceGrad_dualLocalNorm_le_of_scaled_relative_le
+    {d : ℕ} {x0 x : EuclideanSpace ℝ (Fin d)} {t B : ℝ}
+    (hx0 : x0 ∈ positiveOrthant (d := d))
+    (hB_nonneg : 0 ≤ B)
+    (hcoord : ∀ i : Fin d, |t| * |x i / x0 i| ≤ B) :
+    |t| * dualLocalNorm positiveOrthantNegLogInvHessCLM x
+        (positiveOrthantNegLogGrad x0) ≤
+      Real.sqrt (d : ℝ) * B := by
+  let rel : EuclideanSpace ℝ (Fin d) :=
+    WithLp.toLp 2 (fun i : Fin d => x i / x0 i)
+  have hdual :
+      dualLocalNorm positiveOrthantNegLogInvHessCLM x
+          (positiveOrthantNegLogGrad x0) = ‖rel‖ := by
+    simpa [rel] using
+      positiveOrthantNegLog_sourceGrad_dualLocalNorm_eq_norm_relative
+        (x0 := x0) (x := x) hx0
+  calc
+    |t| * dualLocalNorm positiveOrthantNegLogInvHessCLM x
+        (positiveOrthantNegLogGrad x0) = ‖t • rel‖ := by
+      rw [hdual, norm_smul, Real.norm_eq_abs]
+    _ ≤ Real.sqrt (d : ℝ) * B :=
+      euclideanSpace_norm_le_sqrt_fin_mul_of_abs_coord_le
+        (z := t • rel) (r := B) hB_nonneg (by
+          intro i
+          simpa [rel, abs_mul, mul_comm, mul_left_comm, mul_assoc] using
+            hcoord i)
+
+theorem positiveOrthantNegLog_sourceGrad_tailBudget_of_scaled_relative_le
+    {d : ℕ} {x0 x : EuclideanSpace ℝ (Fin d)} {t : ℝ}
+    (hx0 : x0 ∈ positiveOrthant (d := d))
+    (hsqrt_pos : 0 < Real.sqrt (d : ℝ))
+    (hcoord : ∀ i : Fin d,
+      |t| * |x i / x0 i| ≤ 1 / (16 * Real.sqrt (d : ℝ))) :
+    |t| * dualLocalNorm positiveOrthantNegLogInvHessCLM x
+        (positiveOrthantNegLogGrad x0) ≤
+      1 / 16 := by
+  have hbound :=
+    positiveOrthantNegLog_scaled_sourceGrad_dualLocalNorm_le_of_scaled_relative_le
+      (x0 := x0) (x := x) (t := t)
+      (B := 1 / (16 * Real.sqrt (d : ℝ))) hx0
+      (by positivity) hcoord
+  have hsimp :
+      Real.sqrt (d : ℝ) * (1 / (16 * Real.sqrt (d : ℝ))) =
+        (1 / 16 : ℝ) := by
+    field_simp [hsqrt_pos.ne']
+  calc
+    |t| * dualLocalNorm positiveOrthantNegLogInvHessCLM x
+        (positiveOrthantNegLogGrad x0) ≤
+        Real.sqrt (d : ℝ) * (1 / (16 * Real.sqrt (d : ℝ))) := hbound
+    _ = 1 / 16 := hsimp
+
 set_option maxHeartbeats 2000000 in
 /--
 Positive-orthant specialization of the §13.4 pre-Newton update bound.  This
