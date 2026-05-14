@@ -60,10 +60,15 @@ assumptions.  The source `tsum` budget packet adds
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementTsumBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
 The prefix budget can now be proved from a summable majorant with total
 `tsum <= 1 / 2`, with nonnegativity derived from the pre-decrement inequality.
+The geometric budget bridge adds
+`chewi1316_stepBudget_tsum_le_half_of_geometric_majorant` and
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_geometric_majorant`,
+so the common estimate `2 * stepBudget n <= C * q^n`, `0 <= q < 1`,
+`C * (1 - q)⁻¹ <= 1 / 2` is now enough to feed those handoffs.
 The active theorem-sized target is to construct the point-dependent range Hessian/inverse-Hessian
 sqrt-coordinate family (or an equivalent mathlib
 spectral / positive-operator construction) and prove the source next
-pre-decrement summability / total-mass bound feeding the source
+pre-decrement geometric-majorant / total-mass bound feeding the source
 `preDecrementTsumBudget` handoffs.  Do
 not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the

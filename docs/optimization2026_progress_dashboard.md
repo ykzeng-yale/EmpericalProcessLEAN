@@ -71,11 +71,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementTsumBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
   These reduce the remaining prefix-budget obligation to a summable majorant
   with total `tsum <= 1 / 2`, deriving nonnegativity from the pre-decrement
-  inequality itself.
+  inequality itself.  The geometric budget bridge adds
+  `chewi1316_stepBudget_tsum_le_half_of_geometric_majorant` and
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_geometric_majorant`,
+  so a pointwise estimate `2 * stepBudget n <= C * q^n` with `0 <= q < 1`
+  and `C * (1 - q)⁻¹ <= 1 / 2` now supplies the source `tsum` assumptions.
   The current exact-source gates are now: construct the point-dependent range Hessian/inverse-Hessian
   sqrt-coordinate family (or an equivalent mathlib
   spectral / positive-operator construction) and prove the source next
-  pre-decrement summability / total-mass bound feeding the source
+  pre-decrement geometric-majorant / total-mass bound feeding the source
   `preDecrementTsumBudget` handoffs.
   Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step

@@ -30107,6 +30107,87 @@ theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_prefix_le_half_of_t
       hsummable htsum
 
 /--
+Geometric majorant bridge for the §13.16 preliminary next-decrement budget:
+if `2 * stepBudget n` is nonnegative and dominated by `C * q^n` with
+`0 <= q < 1` and total geometric mass at most `1 / 2`, then the `tsum`
+budget required by the source handoffs is available.
+-/
+theorem chewi1316_stepBudget_tsum_le_half_of_geometric_majorant
+    {stepBudget : ℕ -> ℝ} {C q : ℝ}
+    (hterm_nonneg : ∀ n : ℕ, 0 ≤ 2 * stepBudget n)
+    (hq_nonneg : 0 ≤ q)
+    (hq_lt_one : q < 1)
+    (hmajorant : ∀ n : ℕ, 2 * stepBudget n ≤ C * q ^ n)
+    (hgeom_total : C * (1 - q)⁻¹ ≤ 1 / 2) :
+    Summable (fun n : ℕ => 2 * stepBudget n) ∧
+      (∑' n : ℕ, 2 * stepBudget n) ≤ 1 / 2 := by
+  have hgeom_summable : Summable fun n : ℕ => C * q ^ n :=
+    (summable_geometric_of_lt_one hq_nonneg hq_lt_one).mul_left C
+  have hsummable : Summable fun n : ℕ => 2 * stepBudget n :=
+    Summable.of_nonneg_of_le hterm_nonneg hmajorant hgeom_summable
+  have htsum_le_geom :
+      (∑' n : ℕ, 2 * stepBudget n) ≤ ∑' n : ℕ, C * q ^ n :=
+    hsummable.tsum_le_tsum hmajorant hgeom_summable
+  have hgeom_sum :
+      (∑' n : ℕ, C * q ^ n) = C * (1 - q)⁻¹ := by
+    rw [tsum_mul_left, tsum_geometric_of_lt_one hq_nonneg hq_lt_one]
+  have hgeom_bound : (∑' n : ℕ, C * q ^ n) ≤ 1 / 2 := by
+    simpa [hgeom_sum] using hgeom_total
+  exact ⟨hsummable, htsum_le_geom.trans hgeom_bound⟩
+
+/--
+Source-coordinate finite-row geometric majorant bridge for the §13.16
+preliminary next-decrement budget.  Nonnegativity of `stepBudget` is derived
+from the source pre-decrement inequality, so callers only need the geometric
+upper bound and its total mass estimate.
+-/
+theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_geometric_majorant
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq stepBudget : ℕ -> ℝ}
+    {C q : ℝ}
+    (hpre_decrement_next_source : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ stepBudget n)
+    (hq_nonneg : 0 ≤ q)
+    (hq_lt_one : q < 1)
+    (hmajorant : ∀ n : ℕ, 2 * stepBudget n ≤ C * q ^ n)
+    (hgeom_total : C * (1 - q)⁻¹ ≤ 1 / 2) :
+    Summable (fun n : ℕ => 2 * stepBudget n) ∧
+      (∑' n : ℕ, 2 * stepBudget n) ≤ 1 / 2 := by
+  have hstepBudget_nonneg : ∀ n : ℕ, 0 ≤ stepBudget n := by
+    intro n
+    have hdec_nonneg :
+        0 ≤
+          newtonDecrement
+            (preliminaryPathGrad
+              (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+                positiveOrthantNegLogGrad)
+              xbar0 (tseq (n + 1)))
+            (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+            (xseq n) := by
+      simpa [newtonDecrement] using
+        dualLocalNorm_nonneg
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n)
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)) (xseq n))
+    exact hdec_nonneg.trans (hpre_decrement_next_source n)
+  exact
+    chewi1316_stepBudget_tsum_le_half_of_geometric_majorant
+      (stepBudget := stepBudget) (C := C) (q := q)
+      (fun n => mul_nonneg (by norm_num : (0 : ℝ) ≤ 2)
+        (hstepBudget_nonneg n))
+      hq_nonneg hq_lt_one hmajorant hgeom_total
+
+/--
 Canonical-lambda finite-row §13.16 handoff from source-coordinate preliminary
 Newton data, with general `c0` and `tailBound`.  This is the source-facing
 version of the range canonical-lambda wrapper: source one-step decrement,

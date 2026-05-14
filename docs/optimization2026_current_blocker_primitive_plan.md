@@ -165,12 +165,18 @@ source `tsum` budget packet adds
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementTsumBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
 Thus the remaining source next-pre-decrement budget can be proved as a
 summable majorant with total `tsum <= 1 / 2`; nonnegativity of `stepBudget` is
-now derived from the pre-decrement inequality itself.
+now derived from the pre-decrement inequality itself.  The newest geometric
+budget bridge adds `chewi1316_stepBudget_tsum_le_half_of_geometric_majorant`
+and
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_geometric_majorant`,
+so a pointwise estimate `2 * stepBudget n <= C * q^n` with `0 <= q < 1` and
+`C * (1 - q)⁻¹ <= 1 / 2` directly supplies the `tsum` assumptions.
 Continue aggressively from exactly this frontier.  The next theorem-sized
 targets are: build the point-dependent range Hessian/inverse-Hessian
 sqrt-coordinate family (or an equivalent mathlib spectral / positive-operator
 construction) and prove the source next pre-decrement summability / total-mass
-bound feeding the source `preDecrementTsumBudget` handoffs.  The
+bound, preferably as the geometric majorant feeding the source
+`preDecrementTsumBudget` handoffs.  The
 range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
