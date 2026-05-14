@@ -53,13 +53,18 @@ The source canonical-lambda packet adds
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`, so a direct source-coordinate `1/4 -> 1/8`
 decrement proof can feed either the general `c0`/`tailBound` handoff or the
 standard handoff without separate range recurrence or range pre-decrement
-assumptions.  The same packet adds `chewi1316_stepBudget_prefix_le_half_of_tsum`,
-so the prefix budget can now be proved from a nonnegative summable majorant
-with total `tsum <= 1 / 2`.
+assumptions.  The source `tsum` budget packet adds
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_prefix_le_half_of_tsum`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementTsumBudget_noFactor_canonicalLambda`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementTsumBudget_noFactor_standardConstants_of_sourceDecrement`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementTsumBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+The prefix budget can now be proved from a summable majorant with total
+`tsum <= 1 / 2`, with nonnegativity derived from the pre-decrement inequality.
 The active theorem-sized target is to construct the point-dependent range Hessian/inverse-Hessian
 sqrt-coordinate family (or an equivalent mathlib
 spectral / positive-operator construction) and prove the source next
-pre-decrement summability / total-mass bound feeding the `tsum` bridge.  Do
+pre-decrement summability / total-mass bound feeding the source
+`preDecrementTsumBudget` handoffs.  Do
 not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the
 range one-step invariant; those are already behind compiled wrappers.  Do not
