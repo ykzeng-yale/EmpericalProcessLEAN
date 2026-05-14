@@ -32,14 +32,18 @@ active blocker.
 
 Current live route supersedes the older paragraphs below: the finite-row
 slack-range §13.16 handoff now compiles through source-pullback preliminary
-decrement transport and the new range sqrt-coordinate one-step wrapper.
+decrement transport and the point-dependent range sqrt-coordinate one-step
+wrapper.
 Reusable declarations include
 `chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn`,
 `chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewton_sqrtCoordModel`,
 and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
-The active theorem-sized target is to construct the domain-wide range
-Hessian/inverse-Hessian sqrt-coordinate model (or an equivalent mathlib
+The newest correction weakens both `sqrtCoordModel` wrappers from a fixed
+range equivalence to a domain-wide family `fun z => sqrtCoordRange z`, matching the
+nonconstant logarithmic-barrier Hessian.  The active theorem-sized target is
+to construct the point-dependent range Hessian/inverse-Hessian
+sqrt-coordinate family (or an equivalent mathlib
 spectral / positive-operator construction), prove the concrete range
 preliminary-next-Newton recurrence, and prove the summable next
 pre-decrement budget.  Do not route the next packet back to source-pullback
@@ -610,11 +614,11 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
 	It lets the direct standard-constant handoff consume the preliminary
 	one-step invariant through a domain-wide range Hessian/inverse-Hessian
-	sqrt-coordinate model, so source-pullback decrement transport and the
+	sqrt-coordinate family, so source-pullback decrement transport and the
 	range one-step `1/4 -> 1/8` invariant are no longer separate exact-source
 	gates.  The next exact-source gate is now to prove the concrete range
 	preliminary Newton recurrence, pre-decrement summability, and the range
-	sqrt-coordinate model itself (or an equivalent mathlib spectral /
+	sqrt-coordinate family itself (or an equivalent mathlib spectral /
 	positive-operator construction).
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
@@ -628,7 +632,8 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`lambdaSeq`, scalar tail-budget choice, source-pullback decrement
 	transport, or exposed range one-step invariant; it is the concrete range
 	preliminary Newton recurrence, scalar summability budget
-	`sum 2*lambda_n <= 1/2`, and the range sqrt-coordinate model.
+	`sum 2*lambda_n <= 1/2`, and the point-dependent range sqrt-coordinate
+	family.
 
 Older route context: `StatInference/Optimization/InteriorPoint.lean` supports
 Chewi Lemma 13.6.  Reuse the compiled scalar Gronwall, concrete segment

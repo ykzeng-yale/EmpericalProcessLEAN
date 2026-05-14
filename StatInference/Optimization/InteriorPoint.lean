@@ -29626,6 +29626,7 @@ theorem chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewt
     {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
     {xbar0 : F} {xseq : ℕ -> F} {tseq stepBudget : ℕ -> ℝ}
     {sqrtCoordRange :
+      (polytopeSlackCLM aRow).range ->
       (polytopeSlackCLM aRow).range ≃L[ℝ] (polytopeSlackCLM aRow).range}
     {c0 : ℝ}
     (hhess_model : ∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
@@ -29633,14 +29634,15 @@ theorem chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewt
           (positiveOrthant (d := m)) ->
         barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
             positiveOrthantNegLogHessCLM z =
-          (ContinuousLinearMap.adjoint sqrtCoordRange.toContinuousLinearMap).comp
-            sqrtCoordRange.toContinuousLinearMap)
+          (ContinuousLinearMap.adjoint (sqrtCoordRange z).toContinuousLinearMap).comp
+            (sqrtCoordRange z).toContinuousLinearMap)
     (hinv_model : ∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
       z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
           (positiveOrthant (d := m)) ->
         chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack z =
-          sqrtCoordRange.symm.toContinuousLinearMap.comp
-            (ContinuousLinearMap.adjoint sqrtCoordRange.symm.toContinuousLinearMap))
+          (sqrtCoordRange z).symm.toContinuousLinearMap.comp
+            (ContinuousLinearMap.adjoint
+              (sqrtCoordRange z).symm.toContinuousLinearMap))
     (hxbar0Range :
       (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
         barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
@@ -29793,7 +29795,7 @@ theorem chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewt
       (s := sRange) (hess := rangeHess)
       (hessDeriv := chewi1314_polytopeSlackNegLog_rangeHessDeriv aRow bSlack)
       (thirdMixed := rangeThird) (phiGrad := rangeGrad)
-      (invHess := rangeInvHess) (sqrtCoord := fun _ => sqrtCoordRange)
+      (invHess := rangeInvHess) (sqrtCoord := sqrtCoordRange)
       (xbar0 := (polytopeSlackCLM aRow).rangeRestrict xbar0)
       (xseq := xseqRange) (tseq := tseq)
       (delta := c0 / Real.sqrt (m : ℝ)) (c0 := c0) (nu := (m : ℝ))
@@ -29961,20 +29963,22 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
     {xbar0 aObj : F} {xseq : ℕ -> F}
     {tseq stepBudget : ℕ -> ℝ}
     {sqrtCoordRange :
+      (polytopeSlackCLM aRow).range ->
       (polytopeSlackCLM aRow).range ≃L[ℝ] (polytopeSlackCLM aRow).range}
     (hhess_model : ∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
       z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
           (positiveOrthant (d := m)) ->
         barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
             positiveOrthantNegLogHessCLM z =
-          (ContinuousLinearMap.adjoint sqrtCoordRange.toContinuousLinearMap).comp
-            sqrtCoordRange.toContinuousLinearMap)
+          (ContinuousLinearMap.adjoint (sqrtCoordRange z).toContinuousLinearMap).comp
+            (sqrtCoordRange z).toContinuousLinearMap)
     (hinv_model : ∀ ⦃z : (polytopeSlackCLM aRow).range⦄,
       z ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
           (positiveOrthant (d := m)) ->
         chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack z =
-          sqrtCoordRange.symm.toContinuousLinearMap.comp
-            (ContinuousLinearMap.adjoint sqrtCoordRange.symm.toContinuousLinearMap))
+          (sqrtCoordRange z).symm.toContinuousLinearMap.comp
+            (ContinuousLinearMap.adjoint
+              (sqrtCoordRange z).symm.toContinuousLinearMap))
     (hxbar0Range :
       (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
         barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack

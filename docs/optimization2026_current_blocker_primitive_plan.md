@@ -138,15 +138,18 @@ Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
 Current active frontier: the finite-row slack-range §13.16 handoff now
-compiles through source-pullback preliminary decrement transport and a range
-sqrt-coordinate one-step wrapper.  Reusable declarations added in the latest
-packet are `chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn`,
+compiles through source-pullback preliminary decrement transport and a
+point-dependent range sqrt-coordinate one-step wrapper.  Reusable
+declarations are `chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn`,
 `chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewton_sqrtCoordModel`,
 and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
+The newest correction weakens both `sqrtCoordModel` wrappers from a fixed
+range equivalence to a domain-wide family `fun z => sqrtCoordRange z`, matching the
+nonconstant logarithmic-barrier Hessian.
 Continue aggressively from exactly this frontier.  The next theorem-sized
-targets are: build the domain-wide range Hessian/inverse-Hessian
-sqrt-coordinate model (or an equivalent mathlib spectral / positive-operator
+targets are: build the point-dependent range Hessian/inverse-Hessian
+sqrt-coordinate family (or an equivalent mathlib spectral / positive-operator
 construction), prove the concrete range preliminary-next-Newton recurrence,
 and prove the summable next pre-decrement budget.  Do not spend a run
 re-solving source-pullback decrement transport, scalar constants, successor
@@ -863,10 +866,11 @@ packet adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
 	This removes the source-pullback preliminary decrement shape and the
 	range one-step `1/4 -> 1/8` invariant as live caller-facing gates whenever
-	a domain-wide range Hessian/inverse-Hessian sqrt-coordinate model is
+	a point-dependent domain-wide range Hessian/inverse-Hessian
+	sqrt-coordinate family is
 	supplied.  The remaining direct gates are the concrete range preliminary
 	next-Newton recurrence, the summable next pre-decrement budget, and the
-	range sqrt-coordinate model itself (or an equivalent mathlib spectral /
+	range sqrt-coordinate family itself (or an equivalent mathlib spectral /
 	positive-operator construction).
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
@@ -883,7 +887,7 @@ packet adds
 	zero Newton decrement at the source endpoints, and the one-step post-Newton
 	`lambda <= 1/4` and successor `lambda <= 1/8` invariants for the supplied
 	preliminary path.  The next live gate is now sharper: build the concrete
-	range sqrt-coordinate model, prove the Chewi/Nesterov range preliminary
+	point-dependent range sqrt-coordinate family, prove the Chewi/Nesterov range preliminary
 	next-Newton recurrence, and prove the summable next-parameter pre-Newton
 	decrement budget feeding the compiled standard-constant no-factor handoff.
 	Equivalent exponential/local-norm,

@@ -44,14 +44,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
 - Latest Chapter 13 frontier: the finite-row slack-range §13.16 handoff now
-  compiles through source-pullback decrement transport and a range
-  sqrt-coordinate one-step wrapper.  New reusable declarations are
+  compiles through source-pullback decrement transport and a point-dependent
+  range sqrt-coordinate one-step wrapper.  New reusable declarations are
   `chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn`,
   `chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewton_sqrtCoordModel`,
   and
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
-  The current exact-source gates are now: construct the domain-wide range
-  Hessian/inverse-Hessian sqrt-coordinate model (or an equivalent mathlib
+  The newest correction weakens both `sqrtCoordModel` wrappers from a fixed
+  range equivalence to a domain-wide family `fun z => sqrtCoordRange z`, matching
+  the nonconstant logarithmic-barrier Hessian.  The current exact-source gates
+  are now: construct the point-dependent range Hessian/inverse-Hessian
+  sqrt-coordinate family (or an equivalent mathlib
   spectral / positive-operator construction), prove the concrete range
   preliminary-next-Newton recurrence, and prove the summable next
   pre-decrement budget.  Source-pullback decrement, scalar constants,
@@ -698,10 +701,10 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewton_sqrtCoordModel`, and
 	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`.
 	  The source-pullback preliminary decrement shape and the one-step
-	  invariant are no longer live blockers once a domain-wide range
-	  Hessian/inverse-Hessian sqrt-coordinate model is supplied.  The
+	  invariant are no longer live blockers once a point-dependent domain-wide
+	  range Hessian/inverse-Hessian sqrt-coordinate family is supplied.  The
 	  remaining exact-source gates are the concrete range recurrence, the
-	  summable next pre-decrement budget, and the range sqrt-coordinate model
+	  summable next pre-decrement budget, and the range sqrt-coordinate family
 	  itself (or an equivalent mathlib spectral / positive-operator
 	  construction).
 - Latest sum-rule frontier: Proposition 13.11(1)'s shared-domain sum algebra
