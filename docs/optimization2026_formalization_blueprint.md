@@ -70,11 +70,23 @@ handoff packet adds
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_standardConstants_of_sourceDecrement`, and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`,
 so source §13.16 handoffs can consume the geometric majorant directly.
+The contracting-budget packet adds
+`chewi1316_stepBudget_geometric_majorant_of_doubled_recurrence`,
+`chewi1316_stepBudget_tsum_le_half_of_doubled_recurrence`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_doubled_recurrence`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_geometricBudget_of_rangePreDecrementNext`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_contractingBudget_of_rangePreDecrementNext`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementContractingBudget_noFactor_canonicalLambda`.
+Thus the next preliminary-path decay proof can feed the canonical source
+handoff directly from `2 * stepBudget (n+1) <= q * (2 * stepBudget n)`,
+`0 <= q < 1`, and `(2 * stepBudget 0) * (1 - q)⁻¹ <= 1 / 2`, without
+reproving scalar recurrence, geometric-majorant, or `tsum` algebra.
 The active theorem-sized target is to construct the point-dependent range Hessian/inverse-Hessian
 sqrt-coordinate family (or an equivalent mathlib
 spectral / positive-operator construction) and prove the source next
-pre-decrement pointwise geometric-majorant / total-mass bound feeding the
-source `preDecrementGeometricBudget` handoffs.  Do
+pre-decrement decay / total-mass bound feeding either the source
+`preDecrementContractingBudget` handoff or the source
+`preDecrementGeometricBudget` handoffs.  Do
 not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the
 range one-step invariant; those are already behind compiled wrappers.  Do not

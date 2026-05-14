@@ -30188,6 +30188,186 @@ theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_geo
       hq_nonneg hq_lt_one hmajorant hgeom_total
 
 /--
+A contracting doubled budget unrolls to the geometric majorant used by the
+§13.16 preliminary next-decrement budget.  This reuses the existing scalar
+recurrence layer instead of duplicating Gronwall algebra.
+-/
+theorem chewi1316_stepBudget_geometric_majorant_of_doubled_recurrence
+    {stepBudget : ℕ -> ℝ} {q : ℝ}
+    (hq_nonneg : 0 ≤ q)
+    (hrec : ∀ n : ℕ,
+      2 * stepBudget (n + 1) ≤ q * (2 * stepBudget n)) :
+    ∀ n : ℕ, 2 * stepBudget n ≤ (2 * stepBudget 0) * q ^ n := by
+  intro n
+  have hpow :=
+    scalarRecurrence_le_pow
+      (u := fun k : ℕ => 2 * stepBudget k) (A := q) hq_nonneg hrec n
+  simpa [mul_comm, mul_left_comm, mul_assoc] using hpow
+
+/--
+Contracting-budget version of the geometric `tsum` bridge.  If the doubled
+step budget contracts by a factor `q < 1`, the initial doubled budget times the
+geometric denominator is enough to supply every prefix budget.
+-/
+theorem chewi1316_stepBudget_tsum_le_half_of_doubled_recurrence
+    {stepBudget : ℕ -> ℝ} {q : ℝ}
+    (hterm_nonneg : ∀ n : ℕ, 0 ≤ 2 * stepBudget n)
+    (hq_nonneg : 0 ≤ q)
+    (hq_lt_one : q < 1)
+    (hrec : ∀ n : ℕ,
+      2 * stepBudget (n + 1) ≤ q * (2 * stepBudget n))
+    (htotal : (2 * stepBudget 0) * (1 - q)⁻¹ ≤ 1 / 2) :
+    Summable (fun n : ℕ => 2 * stepBudget n) ∧
+      (∑' n : ℕ, 2 * stepBudget n) ≤ 1 / 2 := by
+  exact
+    chewi1316_stepBudget_tsum_le_half_of_geometric_majorant
+      (stepBudget := stepBudget) (C := 2 * stepBudget 0) (q := q)
+      hterm_nonneg hq_nonneg hq_lt_one
+      (chewi1316_stepBudget_geometric_majorant_of_doubled_recurrence
+        (stepBudget := stepBudget) (q := q) hq_nonneg hrec)
+      htotal
+
+/--
+Source-coordinate finite-row pre-decrement budget from a contracting doubled
+budget.  The only caller-facing quantitative obligations are the contraction
+factor and the geometric total mass of the initial doubled budget.
+-/
+theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_doubled_recurrence
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq stepBudget : ℕ -> ℝ}
+    (hpre_decrement_next_source : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ stepBudget n)
+    (hq_nonneg : 0 ≤ q)
+    (hq_lt_one : q < 1)
+    (hrec : ∀ n : ℕ,
+      2 * stepBudget (n + 1) ≤ q * (2 * stepBudget n))
+    (htotal : (2 * stepBudget 0) * (1 - q)⁻¹ ≤ 1 / 2) :
+    Summable (fun n : ℕ => 2 * stepBudget n) ∧
+      (∑' n : ℕ, 2 * stepBudget n) ≤ 1 / 2 := by
+  exact
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_geometric_majorant
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (stepBudget := stepBudget)
+      (C := 2 * stepBudget 0) (q := q) hpre_decrement_next_source
+      hq_nonneg hq_lt_one
+      (chewi1316_stepBudget_geometric_majorant_of_doubled_recurrence
+        (stepBudget := stepBudget) (q := q) hq_nonneg hrec)
+      htotal
+
+/--
+Range-coordinate pre-decrement estimates can be consumed by the source
+geometric-budget path: finite-row range and pulled-back source Newton
+decrements are definitionally equal after the established affine transport.
+-/
+theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_geometricBudget_of_rangePreDecrementNext
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq stepBudget : ℕ -> ℝ}
+    {C q : ℝ}
+    (hpre_decrement_next_range : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+            (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq n)) ≤
+        stepBudget n)
+    (hq_nonneg : 0 ≤ q)
+    (hq_lt_one : q < 1)
+    (hmajorant : ∀ n : ℕ, 2 * stepBudget n ≤ C * q ^ n)
+    (hgeom_total : C * (1 - q)⁻¹ ≤ 1 / 2) :
+    (∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ stepBudget n) ∧
+    Summable (fun n : ℕ => 2 * stepBudget n) ∧
+      (∑' n : ℕ, 2 * stepBudget n) ≤ 1 / 2 := by
+  have hpre_decrement_next_source : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ stepBudget n := by
+    intro n
+    simpa [chewi1314_polytopeSlackNegLog_preliminaryPath_newtonDecrement_rangePull_eq]
+      using hpre_decrement_next_range n
+  obtain ⟨hsummable, htsum⟩ :=
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_geometric_majorant
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (stepBudget := stepBudget)
+      (C := C) (q := q) hpre_decrement_next_source hq_nonneg hq_lt_one
+      hmajorant hgeom_total
+  exact ⟨hpre_decrement_next_source, hsummable, htsum⟩
+
+/--
+Range-coordinate version of the contracting-budget adapter.  This is useful
+when the concrete preliminary analysis is carried out on the slack range but
+the source §13.16 wrappers are the final consumers.
+-/
+theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_contractingBudget_of_rangePreDecrementNext
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq stepBudget : ℕ -> ℝ}
+    {q : ℝ}
+    (hpre_decrement_next_range : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+            (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq n)) ≤
+        stepBudget n)
+    (hq_nonneg : 0 ≤ q)
+    (hq_lt_one : q < 1)
+    (hrec : ∀ n : ℕ,
+      2 * stepBudget (n + 1) ≤ q * (2 * stepBudget n))
+    (htotal : (2 * stepBudget 0) * (1 - q)⁻¹ ≤ 1 / 2) :
+    (∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ stepBudget n) ∧
+    Summable (fun n : ℕ => 2 * stepBudget n) ∧
+      (∑' n : ℕ, 2 * stepBudget n) ≤ 1 / 2 := by
+  have hpre_decrement_next_source : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ stepBudget n := by
+    intro n
+    simpa [chewi1314_polytopeSlackNegLog_preliminaryPath_newtonDecrement_rangePull_eq]
+      using hpre_decrement_next_range n
+  obtain ⟨hsummable, htsum⟩ :=
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_doubled_recurrence
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (stepBudget := stepBudget)
+      hpre_decrement_next_source hq_nonneg hq_lt_one hrec htotal
+  exact ⟨hpre_decrement_next_source, hsummable, htsum⟩
+
+/--
 Canonical-lambda finite-row §13.16 handoff from source-coordinate preliminary
 Newton data, with general `c0` and `tailBound`.  This is the source-facing
 version of the range canonical-lambda wrapper: source one-step decrement,
@@ -30438,6 +30618,94 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       (xseq := xseq) (tseq := tseq) (stepBudget := stepBudget)
       (C := C) (q := q) hpre_decrement_next_source hq_nonneg hq_lt_one
       hmajorant hgeom_total
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementTsumBudget_noFactor_canonicalLambda
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (stepBudget := stepBudget) (c0 := c0) (tailBound := tailBound)
+      hxbar0Range hx0 ht0 htstep hdecrement_step_eighth_source
+      hnewton_next_source hpre_decrement_next_source hsummable htsum
+      htailBound_pos hc0_pos hsqrt_pos hdelta_lt_one hbudget
+
+/--
+Canonical-lambda finite-row §13.16 source handoff with the pre-decrement
+budget supplied by a contracting doubled recurrence.  This is the recurrence
+form of the geometric-budget wrapper: callers prove
+`2 * stepBudget (n+1) <= q * (2 * stepBudget n)` and the initial total-mass
+bound, and the existing `tsum`/prefix layer supplies the path-following budget.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementContractingBudget_noFactor_canonicalLambda
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq stepBudget : ℕ -> ℝ} {c0 tailBound q : ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - c0 / Real.sqrt (m : ℝ)) * tseq n)
+    (hdecrement_step_eighth_source : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq n))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ 1 / 4 ->
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq (n + 1)) ≤ 1 / 8)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hpre_decrement_next_source : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ stepBudget n)
+    (hq_nonneg : 0 ≤ q)
+    (hq_lt_one : q < 1)
+    (hrec : ∀ n : ℕ,
+      2 * stepBudget (n + 1) ≤ q * (2 * stepBudget n))
+    (htotal : (2 * stepBudget 0) * (1 - q)⁻¹ ≤ 1 / 2)
+    (htailBound_pos : 0 < tailBound)
+    (hc0_pos : 0 < c0)
+    (hsqrt_pos : 0 < Real.sqrt (m : ℝ))
+    (hdelta_lt_one : c0 / Real.sqrt (m : ℝ) < 1)
+    (hbudget : 2 * Real.sqrt (m : ℝ) ≤ tailBound) :
+    ∃ Midx N : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * tailBound) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (N : ℝ) * c0 ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq N) ≤ 1 / 4 := by
+  obtain ⟨hsummable, htsum⟩ :=
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_doubled_recurrence
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (stepBudget := stepBudget)
+      hpre_decrement_next_source hq_nonneg hq_lt_one hrec htotal
   exact
     chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementTsumBudget_noFactor_canonicalLambda
       (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)

@@ -81,11 +81,25 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_standardConstants_of_sourceDecrement`, and
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_standardConstants_of_rangeSqrtCoordModel`,
   so source §13.16 handoffs can now consume the geometric majorant directly.
+  The contracting-budget packet adds
+  `chewi1316_stepBudget_geometric_majorant_of_doubled_recurrence`,
+  `chewi1316_stepBudget_tsum_le_half_of_doubled_recurrence`,
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_tsum_le_half_of_doubled_recurrence`,
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_geometricBudget_of_rangePreDecrementNext`,
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNext_contractingBudget_of_rangePreDecrementNext`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementContractingBudget_noFactor_canonicalLambda`.
+  Thus a proof of `2 * stepBudget (n+1) <= q * (2 * stepBudget n)`,
+  `0 <= q < 1`, and `(2 * stepBudget 0) * (1 - q)⁻¹ <= 1 / 2`
+  feeds the source canonical §13.16 handoff directly; range-side
+  pre-decrement estimates can also be transported to source before consuming
+  the geometric/contracting budget.
   The current exact-source gates are now: construct the point-dependent range Hessian/inverse-Hessian
   sqrt-coordinate family (or an equivalent mathlib
   spectral / positive-operator construction) and prove the source next
-  pre-decrement pointwise geometric-majorant / total-mass bound feeding the
-  source `preDecrementGeometricBudget` handoffs.
+  pre-decrement decay/total-mass bound, preferably as the doubled-budget
+  contraction feeding the source `preDecrementContractingBudget` handoff or as
+  the pointwise geometric majorant feeding the source
+  `preDecrementGeometricBudget` handoffs.
   Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range
