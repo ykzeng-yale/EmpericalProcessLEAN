@@ -546,6 +546,18 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  argument.  Search-first result: no existing mathlib/local theorem
 	  matched this scalar product invariant; reuse remains the compiled
 	  positive-orthant coordinate recurrence plus elementary real algebra.
+	  The newest affine/range source-tail transport packet adds
+	  `barrierAffinePreimageAdjointDualLocalNorm_rightInverse_eq`,
+	  `barrierAffinePreimageSourceGradientDualLocalNorm_rightInverse_eq`,
+	  `barrierAffineRangeSourceGradientDualLocalNorm_surjective_eq`,
+	  `chewi1314_polytopeSlackNegLog_sourceGrad_dualLocalNorm_rangeInvHess_eq`,
+	  and
+	  `chewi1314_polytopeSlackNegLog_scaled_sourceGrad_dualLocalNorm_rangeInvHess_eq`.
+	  These move the §13.16 source-gradient tail from the original polytope
+	  variable space into the finite slack-range inverse-Hessian metric at the
+	  current point, so the next bounded-polytope packet can prove the actual
+	  source-tail estimate in range/slack coordinates instead of reusing the
+	  false positive-orthant source-radius or scaled-tail routes.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

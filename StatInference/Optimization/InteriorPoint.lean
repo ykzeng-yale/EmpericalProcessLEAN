@@ -3390,6 +3390,27 @@ theorem barrierAffinePreimageGradientDualLocalNorm_rightInverse_eq
   rw [barrierAffinePreimageDualLocalNorm_rightInverse_eq]
   rw [barrierAffinePreimageGrad_rightInverse_adjoint A B b grad hAB]
 
+theorem barrierAffinePreimageAdjointDualLocalNorm_rightInverse_eq
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    (invHess : E -> E →L[ℝ] E)
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E)
+    (x : F) (v : E) :
+    dualLocalNorm (barrierAffinePreimageInvHessRightInverse A B b invHess) x
+        (ContinuousLinearMap.adjoint A v) =
+      dualLocalNorm invHess (A x + b) v := by
+  rw [barrierAffinePreimageDualLocalNorm_rightInverse_eq]
+  rw [barrierAffinePreimageRightInverse_adjoint A B hAB]
+
+theorem barrierAffinePreimageSourceGradientDualLocalNorm_rightInverse_eq
+    (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
+    (invHess : E -> E →L[ℝ] E) (grad : E -> E)
+    (hAB : A.comp B = ContinuousLinearMap.id ℝ E) (x x0 : F) :
+    dualLocalNorm (barrierAffinePreimageInvHessRightInverse A B b invHess) x
+        (barrierAffinePreimageGrad A b grad x0) =
+      dualLocalNorm invHess (A x + b) (grad (A x0 + b)) := by
+  rw [barrierAffinePreimageDualLocalNorm_rightInverse_eq]
+  rw [barrierAffinePreimageGrad_rightInverse_adjoint A B b grad hAB]
+
 theorem barrierAffinePreimageGradientInvHessRightInverse_quadratic_eq
     (A : F →L[ℝ] E) (B : E →L[ℝ] F) (b : E)
     (invHess : E -> E →L[ℝ] E) (grad : E -> E)
@@ -3919,6 +3940,31 @@ theorem barrierAffineRange_preimageGrad_eq
       (ContinuousLinearMap.adjoint A.range.subtypeL)) (grad (A x + b)) =
     (ContinuousLinearMap.adjoint A) (grad (A x + b))
   rw [hadj]
+
+theorem barrierAffineRangeSourceGradientDualLocalNorm_surjective_eq
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (invHessRange : A.range -> A.range →L[ℝ] A.range)
+    (grad : E -> E) (x x0 : F) :
+    dualLocalNorm
+        (barrierAffinePreimageInvHessSurjective A.rangeRestrict 0 invHessRange
+          (barrierAffinePreimageRangeRestrict_range_eq_top A))
+        x (barrierAffinePreimageGrad A b grad x0) =
+      dualLocalNorm invHessRange (A.rangeRestrict x)
+        (barrierAffineRangeGrad A b grad (A.rangeRestrict x0)) := by
+  have hgrad_eq :=
+    congr_fun (barrierAffineRange_preimageGrad_eq A b grad) x0
+  rw [← hgrad_eq]
+  simpa using
+    (barrierAffinePreimageSourceGradientDualLocalNorm_rightInverse_eq
+      (A := A.rangeRestrict)
+      (B := barrierAffinePreimageRightInverseOfSurjective A.rangeRestrict
+        (barrierAffinePreimageRangeRestrict_range_eq_top A))
+      (b := (0 : A.range))
+      (invHess := invHessRange)
+      (grad := barrierAffineRangeGrad A b grad)
+      (hAB := barrierAffinePreimageRightInverseOfSurjective_spec
+        A.rangeRestrict (barrierAffinePreimageRangeRestrict_range_eq_top A))
+      (x := x) (x0 := x0))
 
 omit [CompleteSpace F] [CompleteSpace E] in
 theorem barrierAffineRange_preimageThirdMixed_eq
@@ -25799,6 +25845,46 @@ theorem chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess
             exact positiveOrthantNegLogHessCLM_quadratic_nonneg hy z))
       (chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse a b hy)
       (chewi1314_polytopeSlackNegLog_range_componentCauchy a b hy)
+
+theorem chewi1314_polytopeSlackNegLog_sourceGrad_dualLocalNorm_rangeInvHess_eq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (x x0 : F) :
+    dualLocalNorm
+        (barrierAffinePreimageInvHessSurjective
+          (polytopeSlackCLM a).rangeRestrict 0
+          (chewi1314_polytopeSlackNegLog_rangeInvHess a b)
+          (barrierAffinePreimageRangeRestrict_range_eq_top (polytopeSlackCLM a)))
+        x
+        (barrierAffinePreimageGrad (polytopeSlackCLM a) b
+          positiveOrthantNegLogGrad x0) =
+      dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess a b)
+        ((polytopeSlackCLM a).rangeRestrict x)
+        (barrierAffineRangeGrad (polytopeSlackCLM a) b
+          positiveOrthantNegLogGrad ((polytopeSlackCLM a).rangeRestrict x0)) :=
+  barrierAffineRangeSourceGradientDualLocalNorm_surjective_eq
+    (polytopeSlackCLM a) b (chewi1314_polytopeSlackNegLog_rangeInvHess a b)
+    positiveOrthantNegLogGrad x x0
+
+theorem chewi1314_polytopeSlackNegLog_scaled_sourceGrad_dualLocalNorm_rangeInvHess_eq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (x x0 : F) (t : ℝ) :
+    |t| *
+        dualLocalNorm
+          (barrierAffinePreimageInvHessSurjective
+            (polytopeSlackCLM a).rangeRestrict 0
+            (chewi1314_polytopeSlackNegLog_rangeInvHess a b)
+            (barrierAffinePreimageRangeRestrict_range_eq_top (polytopeSlackCLM a)))
+          x
+          (barrierAffinePreimageGrad (polytopeSlackCLM a) b
+            positiveOrthantNegLogGrad x0) =
+      |t| *
+        dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess a b)
+          ((polytopeSlackCLM a).rangeRestrict x)
+          (barrierAffineRangeGrad (polytopeSlackCLM a) b
+            positiveOrthantNegLogGrad ((polytopeSlackCLM a).rangeRestrict x0)) := by
+  rw [chewi1314_polytopeSlackNegLog_sourceGrad_dualLocalNorm_rangeInvHess_eq]
 
 /--
 Induction step for Chewi Example 13.14's finite-row logarithmic barrier.  A

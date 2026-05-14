@@ -696,6 +696,18 @@ packet adds
 	mathlib/local theorem matched this scalar product invariant; the proof
 	reuses the compiled positive-orthant coordinate recurrence and elementary
 	real algebra.
+	The newest affine/range source-tail transport packet adds
+	`barrierAffinePreimageAdjointDualLocalNorm_rightInverse_eq`,
+	`barrierAffinePreimageSourceGradientDualLocalNorm_rightInverse_eq`,
+	`barrierAffineRangeSourceGradientDualLocalNorm_surjective_eq`,
+	`chewi1314_polytopeSlackNegLog_sourceGrad_dualLocalNorm_rangeInvHess_eq`,
+	and
+	`chewi1314_polytopeSlackNegLog_scaled_sourceGrad_dualLocalNorm_rangeInvHess_eq`.
+	It rewrites the §13.16 source-gradient tail for a finite-row polytope
+	logarithmic barrier into the slack-range inverse-Hessian metric.  The next
+	packet should use this range-coordinate statement to prove the true
+	bounded-polytope source-tail estimate, rather than returning to the already
+	ruled-out positive-orthant source-radius or scaled-tail certificates.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

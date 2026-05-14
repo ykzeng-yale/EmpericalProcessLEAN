@@ -484,6 +484,15 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`1/2 <= |t_N| * |x_N i/xbar0_i|`.  Hence the direct positive-orthant
 	scaled-tail budget forces `1/2 <= 1/(16*sqrt d)` and is not a
 	textbook-scale final route by itself.
+	The affine/range source-tail transport packet adds
+	`barrierAffinePreimageAdjointDualLocalNorm_rightInverse_eq`,
+	`barrierAffinePreimageSourceGradientDualLocalNorm_rightInverse_eq`,
+	`barrierAffineRangeSourceGradientDualLocalNorm_surjective_eq`,
+	`chewi1314_polytopeSlackNegLog_sourceGrad_dualLocalNorm_rangeInvHess_eq`,
+	and
+	`chewi1314_polytopeSlackNegLog_scaled_sourceGrad_dualLocalNorm_rangeInvHess_eq`,
+	moving the remaining §13.16 source-gradient tail into finite slack-range
+	coordinates for bounded-polytope estimates.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
