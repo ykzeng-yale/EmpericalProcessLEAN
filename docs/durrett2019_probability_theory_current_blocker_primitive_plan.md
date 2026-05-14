@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V331
+## Live In-Thread Goal Prompt V332
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,16 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V331 adds Durrett Theorem 3.10.7 literal centered
+Latest verified target V332 adds Durrett Exercise 3.10.8 centered
+linear-combination Gaussian-law source wrappers:
+`durrett2019_exercise_3_10_8_centeredLinearCombination_law_eq_gaussianReal_of_coordinateCovariance`,
+`durrett2019_exercise_3_10_8_centeredLinearCombination_law_eq_gaussianReal_of_centeredProduct`,
+`durrett2019_exercise_3_10_8_multivariateGaussian_iff_centeredLinearCombination_law_eq_gaussianReal_of_coordinateCovariance`,
+and
+`durrett2019_exercise_3_10_8_multivariateGaussian_iff_centeredLinearCombination_law_eq_gaussianReal_of_centeredProduct`.
+These package the source display where every linear combination has centered
+real Gaussian law with variance `theta Gamma theta^t`.  V331 adds Durrett
+Theorem 3.10.7 literal centered
 normalized-sum canonical product endpoint:
 `durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCenteredProduct_sum`.
 This packages the centered textbook display `S_n / sqrt n => chi` from the
@@ -117,7 +126,8 @@ source-facing `iff` wrappers, or the V328 nonzero-mean Gaussian theta
 characteristic-function displays, or the V329 literal expectation-form
 characteristic displays, or the V330 centered literal expectation-form
 characteristic displays, or the V331 centered normalized-sum canonical product
-endpoint.  Next aggressive packet: continue Chapter 3 by closing a concrete
+endpoint, or the V332 centered Exercise 3.10.8 linear-combination law/`iff`
+wrappers.  Next aggressive packet: continue Chapter 3 by closing a concrete
 source-facing gap around remaining Section 3.10 Gaussian-law wrappers,
 remaining Lindeberg-Feller side conditions, or characteristic-function transport
 into later source statements; touch Chapter 2 only if a Chapter 3 theorem
