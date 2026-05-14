@@ -32,12 +32,19 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V327` in
+Route from `Live In-Thread Goal Prompt V328` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V327 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V328 adds
+`durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_display_of_covarianceBilinDualTable`,
+`durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_display_of_coordinateCovariance`,
+and
+`durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_display_of_centeredProductSubMean`,
+Durrett Theorem 3.10.7 nonzero-mean Gaussian theta characteristic-function
+displays from covariance-table, scalar coordinate covariance, and
+centered-product covariance hypotheses.  V327 adds
 `durrett2019_exercise_3_10_8_multivariateGaussian_iff_linearCombination_law_eq_gaussianReal_of_coordinateCovariance`
 and
 `durrett2019_exercise_3_10_8_multivariateGaussian_iff_linearCombination_law_eq_gaussianReal_of_centeredProductSubMean`,
@@ -1618,7 +1625,12 @@ Current proof route:
     `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_covarianceBilinDualTable`,
     `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_coordinateCovariance`,
     and
-    `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_centeredProduct`.
+    `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_of_centeredProduct`,
+    plus nonzero-mean source displays
+    `durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_display_of_covarianceBilinDualTable`,
+    `durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_display_of_coordinateCovariance`,
+    and
+    `durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_display_of_centeredProductSubMean`.
 32. Durrett Theorem 3.10.7 now has finite-coordinate dual-coordinate
     representation, all-dual centered-mean and covariance-table handoffs, and
     the vector Gaussian CLT wrapper from centered theta means plus coordinate
