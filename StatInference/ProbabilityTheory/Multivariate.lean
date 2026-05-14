@@ -3243,6 +3243,136 @@ theorem durrett2019_theorem_3_10_7_multivariateCLT_of_projectedSummandCLT_center
     (Gamma := Gamma) (hZ_centered_product := hZ_centered_product)
 
 /--
+Durrett 2019, Theorem 3.10.7, vector Gaussian source assumptions imply the
+textbook `t^2` projected characteristic-function convergence.
+
+This packages the mathlib one-dimensional CLT source hypotheses through the
+projected summand CLT and then through the V346 characteristic-function bridge.
+-/
+theorem durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_vectorGaussianSource_centeredProduct
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_coordinate_memLp : ∀ coordinate, MemLp (X coordinate 0) 2 P)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      (∫ ω, L (Z ω) ∂Q) = 0)
+    (hZ_covariance : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        _root_.ProbabilityTheory.variance
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateProjectedSample L X 0) P)
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_centered_product : ∀ i j,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hX_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i => StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        P)
+    (hX_ident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0)
+        P P) :
+    ∀ theta : Coordinate -> ℝ, ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun
+            (P.map
+              (fun ω =>
+                ∑ i, theta i *
+                  (√(n : ℝ) •
+                    (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEmpiricalMoment
+                        X n ω -
+                      StatInference.AsymptoticStatistics.vaart1998_finiteCoordinatePopulationMoment
+                        P X)) i)) t)
+        atTop
+        (𝓝 (Complex.exp
+          (-(((t : ℂ) ^ 2 *
+            (durrett2019_theorem_3_10_7_covarianceTableQuadratic
+              theta Gamma : ℂ)) / 2)))) :=
+  durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_projectedSummandCLT_centeredProduct
+    (P := P) (Q := Q) (X := X) (Z := Z)
+    (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_vectorGaussianSource
+      (P := P) (Q := Q) (X := X) (Z := Z)
+      (hX_coordinate_memLp := hX_coordinate_memLp)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (hZ_mean := hZ_mean) (hZ_covariance := hZ_covariance)
+      (hX_indep := hX_indep) (hX_ident := hX_ident))
+    hZ_gaussian hZ_memLp hZ_coordinate_memLp hZ_coordinate_mean Gamma
+    hZ_centered_product
+
+/--
+Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from vector
+Gaussian source assumptions, via the textbook `t^2` characteristic-function
+endpoint and centered product identities for the Gaussian limit.
+-/
+theorem durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianSource_centeredProduct_tsq
+    {Coordinate Ω Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {P : Measure Ω} [IsProbabilityMeasure P]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : Coordinate -> ℕ -> Ω -> ℝ} {Z : Ω' -> Coordinate -> ℝ}
+    (hX_meas : ∀ coordinate i, Measurable (X coordinate i))
+    (hX_coordinate_memLp : ∀ coordinate, MemLp (X coordinate 0) 2 P)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_mean : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      (∫ ω, L (Z ω) ∂Q) = 0)
+    (hZ_covariance : ∀ L : StrongDual ℝ (Coordinate -> ℝ),
+      _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z) L L =
+        _root_.ProbabilityTheory.variance
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateProjectedSample L X 0) P)
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_centered_product : ∀ i j,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hX_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i => StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        P)
+    (hX_ident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X i)
+        (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateSampleVector X 0)
+        P P) :
+    TendstoInDistribution
+      (fun (n : ℕ) ω =>
+        √(n : ℝ) •
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEmpiricalMoment X n ω -
+            StatInference.AsymptoticStatistics.vaart1998_finiteCoordinatePopulationMoment P X))
+      atTop Z (fun _ => P) Q :=
+  durrett2019_theorem_3_10_7_multivariateCLT_of_projectedSummandCLT_centeredGaussianCenteredProduct_tsq
+    (P := P) (Q := Q) (X := X) (Z := Z)
+    (hX_meas := hX_meas)
+    (hsummand :=
+      StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateProjectedSummandCLT_of_mathlibCLT_coordinateMemLp_vectorGaussianSource
+        (P := P) (Q := Q) (X := X) (Z := Z)
+        (hX_coordinate_memLp := hX_coordinate_memLp)
+        (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+        (hZ_mean := hZ_mean) (hZ_covariance := hZ_covariance)
+        (hX_indep := hX_indep) (hX_ident := hX_ident))
+    (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+    (hZ_coordinate_memLp := hZ_coordinate_memLp)
+    (hZ_coordinate_mean := hZ_coordinate_mean)
+    (Gamma := Gamma) (hZ_centered_product := hZ_centered_product)
+
+/--
 Durrett 2019, Theorem 3.10.7, finite-coordinate multivariate CLT from projected
 scalar CLTs.
 
