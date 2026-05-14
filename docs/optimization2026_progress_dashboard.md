@@ -133,6 +133,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise`
   now compiles, and the source-facing range-sqrt model now compiles as
   `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`.
+  The concrete-consumer packet now instantiates that model inside the
+  source-facing standard §13.16 wrappers, adding the no-sqrt-model-assumption
+  endpoints
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementTsumBudget_noFactor_standardConstants`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_standardConstants`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementContractingBudget_noFactor_standardConstants`.
+  The remaining live blocker is the source next-pre-decrement estimate and
+  one of the compiled total-mass/geometric/contracting budget interfaces.
   Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range

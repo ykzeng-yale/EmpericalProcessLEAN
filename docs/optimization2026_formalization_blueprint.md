@@ -116,6 +116,16 @@ The selection wrapper
 packages pointwise feasible square-root witnesses into the domain-wide family;
 the source-facing endpoint is
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`.
+The concrete-consumer packet now instantiates that endpoint in the
+source-facing standard §13.16 wrappers, so callers can use the no-sqrt-model
+endpoints ending in
+`preDecrementBudget_noFactor_standardConstants`,
+`preDecrementTsumBudget_noFactor_standardConstants`,
+`preDecrementGeometricBudget_noFactor_standardConstants`, and
+`preDecrementContractingBudget_noFactor_standardConstants` for
+`sourcePreliminaryNextNewtonSteps`.  Thus the active proof obligation has
+shrunk to the source next-pre-decrement estimate plus one compiled budget
+interface.
 Do
 not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the

@@ -233,6 +233,17 @@ The selection part is now compiled as
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel_of_pointwise`: the
 full source-facing range-sqrt endpoint is now compiled as
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`.
+The newest concrete-consumer packet instantiates that endpoint inside the
+source-facing §13.16 wrappers, adding
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementTsumBudget_noFactor_standardConstants`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementGeometricBudget_noFactor_standardConstants`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementContractingBudget_noFactor_standardConstants`.
+These are now the preferred source-facing consumers.  The live mathematical
+blocker is only the source next-pre-decrement estimate plus either a summable
+total-mass proof, a geometric majorant, or the doubled-budget contraction
+`2 * stepBudget (n+1) <= q * (2 * stepBudget n)` with
+`(2 * stepBudget 0) * (1 - q)⁻¹ <= 1 / 2`.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
