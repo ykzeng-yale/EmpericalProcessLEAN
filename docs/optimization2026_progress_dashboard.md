@@ -463,6 +463,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  This removes the need to package the radius route through a fake
 	  summable budget; future work should prove the concrete preliminary-path
 	  source-radius-half certificate itself.
+	  The newest coordinate-radius packet makes that certificate more concrete:
+	  `euclideanSpace_norm_le_sqrt_fin_mul_of_abs_coord_le`,
+	  `positiveOrthantNegLog_localNorm_le_sqrt_fin_mul_of_coord_abs_le`,
+	  `positiveOrthantNegLog_sourceRadiusHalf_of_coord_abs_le_inv_two_sqrt`,
+	  and
+	  `chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_coordRadiusHalf`
+	  reduce the finite positive-orthant source-radius gate to the coordinate
+	  inequalities
+	  `|xseq (N+1) i - xbar0 i| <= (1/(2*sqrt d))*xbar0 i`.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

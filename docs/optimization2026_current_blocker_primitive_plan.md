@@ -602,6 +602,16 @@ packet adds
 	center gate can now be stated sharply as
 	`forall N, ||x_{N+1} - xbar0||_{xbar0} <= 1/2` for the actual preliminary
 	path, without any additional positive-orthant barrier plumbing.
+	The coordinate-radius interface now also compiles through
+	`euclideanSpace_norm_le_sqrt_fin_mul_of_abs_coord_le`,
+	`positiveOrthantNegLog_localNorm_le_sqrt_fin_mul_of_coord_abs_le`,
+	`positiveOrthantNegLog_sourceRadiusHalf_of_coord_abs_le_inv_two_sqrt`,
+	and
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_coordRadiusHalf`.
+	The next quantitative gate can therefore be attacked coordinatewise:
+	prove for the concrete preliminary path
+	`|xseq (N+1) i - xbar0 i| <= (1/(2*sqrt d))*xbar0 i` for every
+	coordinate and prefix index.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

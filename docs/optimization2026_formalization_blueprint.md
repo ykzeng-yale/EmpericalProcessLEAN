@@ -408,6 +408,14 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	tail-lambda source-start wrapper, avoiding the impossible global
 	`lambdaSeq <= 1/8` condition at index zero, and leave only the actual
 	source-radius-half certificate for the preliminary path.
+	The finite positive-orthant coordinate-radius interface is now available:
+	`euclideanSpace_norm_le_sqrt_fin_mul_of_abs_coord_le`,
+	`positiveOrthantNegLog_localNorm_le_sqrt_fin_mul_of_coord_abs_le`,
+	`positiveOrthantNegLog_sourceRadiusHalf_of_coord_abs_le_inv_two_sqrt`,
+	and
+	`chewi1316_positiveOrthant_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryNextNewtonSteps_coordRadiusHalf`.
+	Use it to replace the abstract source-radius-half premise by coordinate
+	relative displacement bounds along the preliminary path.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
