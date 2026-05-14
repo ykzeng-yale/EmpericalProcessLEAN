@@ -244,6 +244,13 @@ blocker is only the source next-pre-decrement estimate plus either a summable
 total-mass proof, a geometric majorant, or the doubled-budget contraction
 `2 * stepBudget (n+1) <= q * (2 * stepBudget n)` with
 `(2 * stepBudget 0) * (1 - q)⁻¹ <= 1 / 2`.
+The newest actual-budget packet names the real source next-pre-decrement
+sequence as `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget` and
+adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementContractingBudget_noFactor_standardConstants`.
+Prefer this endpoint next: prove the doubled contraction and initial
+total-mass bound for the actual budget sequence directly, rather than
+introducing another arbitrary `stepBudget`.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new

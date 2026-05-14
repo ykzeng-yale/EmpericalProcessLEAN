@@ -126,6 +126,10 @@ endpoints ending in
 `sourcePreliminaryNextNewtonSteps`.  Thus the active proof obligation has
 shrunk to the source next-pre-decrement estimate plus one compiled budget
 interface.
+The actual source next-pre-decrement sequence is now named
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget`, and the preferred
+contracting endpoint is
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementContractingBudget_noFactor_standardConstants`.
 Do
 not route the next packet back to source-pullback
 decrement, scalar constants, successor membership, source-radius-half, or the

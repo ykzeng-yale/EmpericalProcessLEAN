@@ -142,6 +142,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementContractingBudget_noFactor_standardConstants`.
   The remaining live blocker is the source next-pre-decrement estimate and
   one of the compiled total-mass/geometric/contracting budget interfaces.
+  The actual-budget packet names the real source next-pre-decrement sequence
+  as `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget` and adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementContractingBudget_noFactor_standardConstants`.
+  The preferred next proof target is now the doubled contraction and initial
+  total-mass bound for that actual budget sequence.
   Source-pullback decrement, scalar constants,
   successor membership, source-radius-half, and the exposed range one-step
   invariant are no longer the live gates; range recurrence and range
