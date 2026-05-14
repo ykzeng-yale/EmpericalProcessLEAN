@@ -139,6 +139,11 @@ and the three selected-bound handoffs ending in
 This makes the next geometric target source-shaped: prove a selected successor
 dual-norm bound by moving-center/bounded-polytope reasoning, then discharge
 only the scalar log/count side before applying the compiled handoff.
+The existential selected-tail-bound endpoint
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventualSelectedRangeTailBound_succ_noFactor_standardConstants`
+now chooses `M` and the successor count index internally.  The remaining
+source-shaped geometry obligation is an eventual selected successor bound
+under that count inequality.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the

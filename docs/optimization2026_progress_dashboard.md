@@ -151,6 +151,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   Future geometry work can now supply a plain selected successor dual-norm
   bound plus `log (16 * (tailBound + 1)) <= M log 2`; the measured-tail
   logarithmic conversion and source/range transport are compiled.
+  The existential selected-tail-bound handoff now adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventualSelectedRangeTailBound_succ_noFactor_standardConstants`,
+  which chooses `M` and the successor count index internally.  The next exact
+  geometry packet should therefore prove an eventual selected successor
+  range-tail bound under the count inequality, rather than rebuilding scalar
+  `M,N` selection or measured-tail log plumbing.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

@@ -310,6 +310,13 @@ selected successor estimate
 together with `log (16 * (tailBound + 1)) <= M log 2`; it no longer needs to
 manually prove the measured-tail logarithmic hypothesis or redo source/range
 transport.
+The newest existential selected-tail-bound handoff adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+It chooses the logarithmic `M` and successor count index internally from
+`chewi1316_exists_preliminary_tail_log_count_indices`; the remaining geometry
+input is now an eventual selected successor bound valid whenever the count
+inequality holds.  This is the preferred conditional entrypoint for the next
+moving-center/bounded-polytope proof packet.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
