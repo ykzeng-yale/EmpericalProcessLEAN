@@ -788,6 +788,10 @@ inf-projection package or projected source-radius local-norm sandwich.  The
 non-literal third-order wrapper is the preferred branch point when the concrete
 source proof needs `BarrierInfProjectionThirdOrderEnvelopeOn` before adding
 literal vertical-minimizer hypotheses.
+If that reusable certificate is already available, route it to the local-norm
+sandwich with
+`chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtThirdOrderEnvelope`
+rather than replaying the derivative hypotheses.
 The direct transport wrapper
 `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSecondFullHessianDerivative_direct`
 is the shortest theorem-facing route when the next consumer only needs the
@@ -799,6 +803,9 @@ certificate from source full-square-root, source `grad`/`hess` derivative,
 mixed-third, selector-derivative, and vertical inverse-derivative hypotheses.
 Use this wrapper when the source instance needs to branch into multiple
 consumers from the same Schur derivative certificate.
+When the Schur certificate is already present and the target is local-norm
+transport, use
+`chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSchurHessDerivativeOn`.
 If the source model also proves first- and second-order differentiability on
 `s`, use
 `BarrierInfProjectionSelectorStationary.hasGradientAt_of_source`,

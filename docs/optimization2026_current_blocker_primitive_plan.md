@@ -1451,6 +1451,11 @@ is now the shortest source-start route to this certificate: it combines
 source-domain `grad`/`hess` derivative data, the mixed-third pairing,
 selector differentiability, and vertical inverse differentiability.  Use it
 before choosing the literal-envelope or direct local-norm transport consumer.
+If that Schur certificate is already built and the next target is only the
+source-radius local-norm sandwich, use
+`chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSchurHessDerivativeOn`;
+it reuses the source-square-root model to supply positivity and inverse
+identities without restating derivative data.
 The theorem-facing source-square-root endpoints
 `chewi1311_infProjection_thirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`,
 `chewi1311_infProjection_literalThirdOrderEnvelopeOn_of_sourceFullSqrtFirstSecondFullHessianDerivative`
@@ -1463,6 +1468,10 @@ on `s`, the vertical `Hyy` square-root model on the projected domain, and the
 source mixed-third identity.  Prefer the non-literal third-order endpoint when
 the reusable `BarrierInfProjectionThirdOrderEnvelopeOn` certificate is needed
 before vertical-minimizer/literal-infimum data is packaged.
+Once that reusable third-order envelope certificate is already available,
+`chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtThirdOrderEnvelope`
+is the shortest local-norm consumer; it avoids re-threading first-, second-,
+and full-Hessian derivative hypotheses.
 When no selected-value/literal envelope data is needed, use the shorter direct
 endpoint
 `chewi1311_infProjection_projected_localNorm_sandwich_sourceRadius_of_sourceFullSqrtSecondFullHessianDerivative_direct`.
