@@ -761,6 +761,47 @@ theorem durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_mul
       rw [hmean_L, hvar_L]
 
 /--
+Durrett 2019, Exercise 3.10.8, centered source-facing forward law statement
+from the covariance table of the Gaussian law.
+
+This is the centered form of the textbook linear-combination display:
+`theta · Z` has real Gaussian law with mean zero and variance
+`theta Gamma theta^t`.
+-/
+theorem durrett2019_exercise_3_10_8_centeredLinearCombination_law_eq_gaussianReal_of_covarianceBilinDualTable
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω} [IsProbabilityMeasure Q] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (Gamma : Coordinate -> Coordinate -> ℝ) (theta : Coordinate -> ℝ)
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (hGamma : ∀ i j,
+      Gamma i j =
+        _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j)) :
+    Q.map (fun ω => ∑ i, theta i * Z ω i) =
+      _root_.ProbabilityTheory.gaussianReal 0
+        (durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma).toNNReal := by
+  simpa using
+    durrett2019_exercise_3_10_8_linearCombination_law_eq_gaussianReal_of_multivariateGaussian
+      (Q := Q) (Z := Z)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (mean := fun _ : Coordinate => 0) (Gamma := Gamma) (theta := theta)
+      (hZ_coordinate_integrable := hZ_coordinate_integrable)
+      (hZ_coordinate_mean := hZ_coordinate_mean)
+      (hGamma := hGamma)
+
+/--
 Durrett 2019, Exercise 3.10.8, source-facing forward law statement from scalar
 coordinate covariances.
 
@@ -984,6 +1025,46 @@ theorem durrett2019_exercise_3_10_8_multivariateGaussian_iff_linearCombination_l
   · exact
       durrett2019_exercise_3_10_8_multivariateGaussian_of_linearCombination_law_eq_gaussianReal
         (Q := Q) (Z := Z) mean Gamma hZ_aemeasurable
+
+/--
+Durrett 2019, Exercise 3.10.8, centered source-facing finite-coordinate `iff`
+from the covariance table of the Gaussian law.
+-/
+theorem durrett2019_exercise_3_10_8_multivariateGaussian_iff_centeredLinearCombination_law_eq_gaussianReal_of_covarianceBilinDualTable
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω} [IsProbabilityMeasure Q] {Z : Ω -> Coordinate -> ℝ}
+    (hZ_aemeasurable : AEMeasurable Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (hGamma : ∀ i j,
+      Gamma i j =
+        _root_.ProbabilityTheory.covarianceBilinDual (Q.map Z)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) i)
+          (StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEvalCLM
+            (Coordinate := Coordinate) j)) :
+    _root_.ProbabilityTheory.HasGaussianLaw Z Q ↔
+      ∀ theta : Coordinate -> ℝ,
+        Q.map (fun ω => ∑ i, theta i * Z ω i) =
+          _root_.ProbabilityTheory.gaussianReal 0
+            (durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma).toNNReal := by
+  simpa using
+    durrett2019_exercise_3_10_8_multivariateGaussian_iff_linearCombination_law_eq_gaussianReal
+      (Q := Q) (Z := Z)
+      (hZ_aemeasurable := hZ_aemeasurable)
+      (hZ_memLp := hZ_memLp)
+      (mean := fun _ : Coordinate => 0) (Gamma := Gamma)
+      (hZ_coordinate_integrable := hZ_coordinate_integrable)
+      (hZ_coordinate_mean := hZ_coordinate_mean)
+      (hGamma := hGamma)
 
 /--
 Durrett 2019, Exercise 3.10.8, source-facing finite-coordinate `iff` from
