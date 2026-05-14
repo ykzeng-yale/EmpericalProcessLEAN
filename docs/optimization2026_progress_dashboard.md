@@ -483,6 +483,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  now reduces the next gate to bounding
 	  `|xseq (N+1) i / xbar0 i - 1|` from the scalar recurrence
 	  `y_{n+1}=2*y_n-tseq(n+1)*y_n^2`.
+	  The obstruction/consequence layer
+	  `scalar_sequence_linear_lower_bound_of_step`,
+	  `scalar_radius_bound_forces_linear_step_count`, and
+	  `chewi1316_relativeCoordRadiusHalf_forces_count_bound_of_linear_growth`
+	  proves that if the relative coordinate has linear lower growth
+	  `>= c0/sqrt d`, then relative-radius-half implies `(N+1)*c0 <= 1/2`.
+	  This is a verified warning that the all-prefix source-radius route should
+	  be treated as a finite-window certificate unless a different moving-center
+	  argument is supplied.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

@@ -23555,6 +23555,78 @@ theorem chewi1316_positiveOrthant_preliminaryNextNewtonStep_relativeCoord_eq
     hxseq_mem hnewton_next n i]
   field_simp [hxi0]
 
+theorem scalar_sequence_linear_lower_bound_of_step
+    {y : ℕ -> ℝ} {delta : ℝ}
+    (hstep : ∀ n : ℕ, y (n + 1) ≥ y n + delta) :
+    ∀ N : ℕ, y N ≥ y 0 + (N : ℝ) * delta := by
+  intro N
+  induction N with
+  | zero =>
+      simp
+  | succ N ih =>
+      calc
+        y (N + 1) ≥ y N + delta := hstep N
+        _ ≥ (y 0 + (N : ℝ) * delta) + delta :=
+          by
+            simpa [add_comm, add_left_comm, add_assoc] using
+              add_le_add_right ih delta
+        _ = y 0 + ((N + 1 : ℕ) : ℝ) * delta := by
+          norm_num [Nat.cast_add, Nat.cast_one]
+          ring
+
+theorem scalar_radius_bound_forces_linear_step_count
+    {y : ℕ -> ℝ} {delta R : ℝ} {N : ℕ}
+    (hstep : ∀ n : ℕ, y (n + 1) ≥ y n + delta)
+    (hstart : y 0 = 1)
+    (hradius : |y N - 1| ≤ R) :
+    (N : ℝ) * delta ≤ R := by
+  have hgrowth := scalar_sequence_linear_lower_bound_of_step hstep N
+  have hle_sub : (N : ℝ) * delta ≤ y N - 1 := by
+    nlinarith
+  exact hle_sub.trans ((le_abs_self (y N - 1)).trans hradius)
+
+theorem chewi1316_relativeCoordRadiusHalf_forces_count_bound_of_linear_growth
+    {d : ℕ}
+    {xbar0 : EuclideanSpace ℝ (Fin d)}
+    {xseq : ℕ -> EuclideanSpace ℝ (Fin d)}
+    {c0 : ℝ} (i : Fin d) (N : ℕ)
+    (hxbar0 : xbar0 ∈ positiveOrthant (d := d))
+    (hx0 : xseq 0 = xbar0)
+    (hsqrt_pos : 0 < Real.sqrt (d : ℝ))
+    (hstep_lower : ∀ n : ℕ,
+      xseq (n + 1) i / xbar0 i ≥
+        xseq n i / xbar0 i + c0 / Real.sqrt (d : ℝ))
+    (hrelative_radius : ∀ M : ℕ,
+      |xseq (M + 1) i / xbar0 i - 1| ≤
+        1 / (2 * Real.sqrt (d : ℝ))) :
+    ((N + 1 : ℕ) : ℝ) * c0 ≤ 1 / 2 := by
+  have hxbar0_ne : xbar0 i ≠ 0 := (hxbar0 i).ne'
+  have hstart :
+      (fun n : ℕ => xseq n i / xbar0 i) 0 = 1 := by
+    change xseq 0 i / xbar0 i = 1
+    rw [hx0]
+    exact div_self hxbar0_ne
+  have hraw :
+      ((N + 1 : ℕ) : ℝ) * (c0 / Real.sqrt (d : ℝ)) ≤
+        1 / (2 * Real.sqrt (d : ℝ)) :=
+    scalar_radius_bound_forces_linear_step_count
+      (y := fun n : ℕ => xseq n i / xbar0 i)
+      (delta := c0 / Real.sqrt (d : ℝ))
+      (R := 1 / (2 * Real.sqrt (d : ℝ)))
+      (N := N + 1) hstep_lower hstart (hrelative_radius N)
+  have hmul := mul_le_mul_of_nonneg_right hraw hsqrt_pos.le
+  have hleft :
+      ((N + 1 : ℕ) : ℝ) * (c0 / Real.sqrt (d : ℝ)) *
+          Real.sqrt (d : ℝ) =
+        ((N + 1 : ℕ) : ℝ) * c0 := by
+    field_simp [hsqrt_pos.ne']
+  have hright :
+      (1 / (2 * Real.sqrt (d : ℝ))) * Real.sqrt (d : ℝ) =
+        (1 / 2 : ℝ) := by
+    field_simp [hsqrt_pos.ne']
+  rw [hleft, hright] at hmul
+  simpa [Nat.cast_add, Nat.cast_one, one_div, mul_comm, mul_left_comm, mul_assoc] using hmul
+
 set_option maxHeartbeats 4000000 in
 /--
 Coordinate-radius interface for the concrete positive-orthant source-start

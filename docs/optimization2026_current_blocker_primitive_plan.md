@@ -624,6 +624,16 @@ packet adds
 	`y_n(i)=xseq n i / xbar0 i`, use
 	`y_{n+1}=2*y_n-tseq(n+1)*y_n^2` and the closed-form `tseq`
 	recurrence to prove `|y_{N+1}(i)-1| <= 1/(2*sqrt d)`.
+	A verified obstruction/consequence layer now also compiles:
+	`scalar_sequence_linear_lower_bound_of_step`,
+	`scalar_radius_bound_forces_linear_step_count`, and
+	`chewi1316_relativeCoordRadiusHalf_forces_count_bound_of_linear_growth`.
+	If the scalar relative coordinate grows by at least `c0/sqrt d` per step,
+	the uniform relative-radius-half premise forces `(N+1)*c0 <= 1/2` for
+	every certified prefix index.  This flags that a global all-`N`
+	source-radius premise is likely too strong for the full decreasing-`t`
+	preliminary path; future work should either prove a finite-window version
+	or switch to a metric/center adapted to the moving path.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

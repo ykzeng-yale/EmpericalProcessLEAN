@@ -427,6 +427,15 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	show that it is enough to prove the scalar relative-radius invariant for
 	`y_n(i)=xseq n i/xbar0 i` under
 	`y_{n+1}=2*y_n-tseq(n+1)*y_n^2`.
+	The scalar obstruction layer
+	`scalar_sequence_linear_lower_bound_of_step`,
+	`scalar_radius_bound_forces_linear_step_count`, and
+	`chewi1316_relativeCoordRadiusHalf_forces_count_bound_of_linear_growth`
+	now records that any proof combining relative-radius-half with per-step
+	lower growth `c0/sqrt d` can only cover prefixes satisfying
+	`(N+1)*c0 <= 1/2`.  Use this to avoid chasing a false global
+	source-radius proof; the likely next blueprint correction is a finite-window
+	initialization certificate or a moving-center/local-metric radius argument.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
