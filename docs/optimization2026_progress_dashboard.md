@@ -580,9 +580,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
 	  These instantiate the existing generic correct-index source-tail theorem
 	  directly on the finite slack range and assemble it back to positive
-	  main-stage initialization.  The remaining §13.16 work is now the concrete
-	  range Newton recurrence/summability/square-root/global-derivative package,
-	  not any scalar log/count or affine transport layer.
+	  main-stage initialization.  The direct source-radius handoff packet adds
+	  `chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_zeroSafe_globalDeriv_and_inverseIdentity`
+	  and
+	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_zeroSafe_globalDeriv_and_inverseIdentity_tailLambdaBudget`.
+	  It gives a lighter route to the same finite-row polytope initialization:
+	  supply range source-radius-half, source-point Cauchy, successor
+	  membership, and the global range Hessian derivative package directly.
+	  The remaining §13.16 work is now concrete range geometry, not scalar
+	  log/count or affine transport plumbing.
 	  Search-first reuse:
 	  local
 	  `chewi136_localNorm_sandwich_sourceRadius`,

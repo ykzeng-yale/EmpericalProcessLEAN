@@ -733,10 +733,18 @@ packet adds
 	theorem on the finite slack range, deriving the range barrier, Hessian
 	positivity, and source-point Cauchy bridge from Example 13.14's
 	range inverse-Hessian plus a supplied range square-root-coordinate family.
-	The next proof target is now concrete range-space data: prove the
-	range preliminary Newton recurrence, the summed pre-decrement budget, the
-	range square-root-coordinate model, and the global range Hessian derivative
-	package for the bounded-polytope preliminary path.
+	The direct source-radius handoff packet adds
+	`chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_zeroSafe_globalDeriv_and_inverseIdentity`
+	and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_zeroSafe_globalDeriv_and_inverseIdentity_tailLambdaBudget`.
+	It reuses the same generic source-tail theorem but avoids baking in the
+	preliminary-Newton recurrence and square-root-coordinate family: the
+	remaining direct gate is now a range source-radius-half certificate,
+	source-point Cauchy certificate, successor membership, and the global range
+	Hessian derivative package.  The exact-source route can proceed either by
+	proving these direct certificates or by instantiating the stronger
+	range preliminary Newton recurrence, summed pre-decrement budget, and
+	range square-root-coordinate model when that is faster.
 	Search-first reuse: local `chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
 	`localNorm_invHess_eq_dualLocalNorm_of_hessian_right_inverse`,

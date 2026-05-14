@@ -509,9 +509,14 @@ now feed the same pipeline directly.  The source-start successor layer adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_radiusHalf_zeroSafe_globalDeriv_and_sqrtCoordFamily_tailLambdaBudget`.
 	It applies the generic preliminary-next-Newton source-tail theorem on the
 	slack range and assembles the result to the source-start initialization.
-	The next exact-source gate is the concrete bounded-polytope range-space
-	Newton recurrence, pre-decrement summability, square-root-coordinate model,
-	and global range Hessian derivative package.
+	The direct source-radius handoff packet adds
+	`chewi1316_polytopeSlackNegLog_uniformRangeTailBound_of_sourceRadiusHalf_zeroSafe_globalDeriv_and_inverseIdentity`
+	and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_zeroSafe_globalDeriv_and_inverseIdentity_tailLambdaBudget`.
+	The next exact-source gate can now be attacked either by proving the direct
+	range source-radius-half/source-Cauchy/global-derivative certificates, or by
+	discharging the stronger range preliminary Newton recurrence,
+	pre-decrement summability, and square-root-coordinate model.
 	Search-first reuse: local
 	`chewi136_localNorm_sandwich_sourceRadius`,
 	`hessianPrimalFactor_of_adjointSqrt`,
