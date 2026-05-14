@@ -279,6 +279,16 @@ usual count/log inequality, directly initializes the positive main stage.  This
 is now the preferred wrapper for the omitted Chewi/Nesterov preliminary-stage
 quantity while the stronger bounded-polytope or moving-center invariant is
 being developed.
+The newest successor selected-index packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_succ_noFactor_canonicalLambda`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_succ_noFactor_standardConstants`.
+These discharge the auxiliary `lambdaSeq` bookkeeping and standard Chewi
+constant side for a selected successor index.  The remaining high-value
+preliminary-stage target is now a theorem that supplies the measured
+slack-range tail logarithmic bound at some successor index together with the
+range feasibility and one-step decrement invariant; do not reintroduce a
+uniform fixed-source tail assumption.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new

@@ -128,6 +128,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   log/count inequalities.  This is the preferred exact selected-index wrapper
   while the stronger moving-center or bounded-polytope invariant is being
   proved.
+  The successor selected-index layer now adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_succ_noFactor_canonicalLambda`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_succ_noFactor_standardConstants`,
+  so downstream work no longer has to carry `lambdaSeq` or scalar
+  `c0 = 1/200` plumbing for this measured-tail route.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

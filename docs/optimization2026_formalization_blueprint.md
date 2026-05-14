@@ -115,6 +115,12 @@ uses the actual measured slack-range tail norm at the selected preliminary
 index and the log/count hypotheses to initialize the positive main stage.  This
 is the source-shaped bridge to use while developing the stronger
 moving-center/bounded-polytope tail invariant.
+The successor selected-index wrappers
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_succ_noFactor_canonicalLambda`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_succ_noFactor_standardConstants`
+remove the auxiliary lambda-sequence and standard-constant bookkeeping from
+this measured-tail route.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the
