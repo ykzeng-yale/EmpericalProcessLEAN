@@ -983,6 +983,34 @@ theorem durrett2019_exercise_3_10_8_multivariateGaussian_of_linearCombination_la
         infer_instance)
 
 /--
+Durrett 2019, Exercise 3.10.8, centered reverse direction from the
+source-facing real Gaussian laws of all linear combinations.
+
+This is the centered form: if every finite linear combination has centered real
+Gaussian law with variance `theta Gamma theta^t`, then the finite-coordinate
+random vector has a multivariate Gaussian law.
+-/
+theorem durrett2019_exercise_3_10_8_multivariateGaussian_of_centeredLinearCombination_law_eq_gaussianReal
+    {Coordinate Ω : Type*} [Fintype Coordinate] [MeasurableSpace Ω]
+    [MeasurableSpace (Coordinate -> ℝ)]
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω} {Z : Ω -> Coordinate -> ℝ}
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_aemeasurable : AEMeasurable Z Q)
+    (hlinear_law : ∀ theta : Coordinate -> ℝ,
+      Q.map (fun ω => ∑ i, theta i * Z ω i) =
+        _root_.ProbabilityTheory.gaussianReal 0
+          (durrett2019_theorem_3_10_7_covarianceTableQuadratic theta Gamma).toNNReal) :
+    _root_.ProbabilityTheory.HasGaussianLaw Z Q :=
+  durrett2019_exercise_3_10_8_multivariateGaussian_of_linearCombination_law_eq_gaussianReal
+    (Q := Q) (Z := Z) (mean := fun _ : Coordinate => 0) Gamma
+    hZ_aemeasurable
+    (fun theta => by
+      simpa using hlinear_law theta)
+
+/--
 Durrett 2019, Exercise 3.10.8, source-facing finite-coordinate `iff`.
 
 Under supplied mean and covariance coordinates, multivariate Gaussianity is

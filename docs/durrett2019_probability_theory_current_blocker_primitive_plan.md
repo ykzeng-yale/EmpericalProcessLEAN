@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V333
+## Live In-Thread Goal Prompt V334
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,12 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V333 adds Durrett Exercise 3.10.8 centered
+Latest verified target V334 adds the standalone centered reverse direction for
+Durrett Exercise 3.10.8:
+`durrett2019_exercise_3_10_8_multivariateGaussian_of_centeredLinearCombination_law_eq_gaussianReal`.
+This packages the implication from centered real Gaussian laws of all finite
+linear combinations to multivariate Gaussianity.  V333 adds Durrett Exercise
+3.10.8 centered
 linear-combination Gaussian-law wrappers from the covariance table of the
 Gaussian law:
 `durrett2019_exercise_3_10_8_centeredLinearCombination_law_eq_gaussianReal_of_covarianceBilinDualTable`
@@ -134,11 +139,12 @@ characteristic displays, or the V330 centered literal expectation-form
 characteristic displays, or the V331 centered normalized-sum canonical product
 endpoint, or the V332 centered Exercise 3.10.8 linear-combination law/`iff`
 wrappers, or the V333 covariance-table centered Exercise 3.10.8
-linear-combination law/`iff` wrappers.  Next aggressive packet: continue
-Chapter 3 by closing a concrete source-facing gap around remaining Section 3.10
-Gaussian-law wrappers, remaining Lindeberg-Feller side conditions, or
-characteristic-function transport into later source statements; touch Chapter 2
-only if a Chapter 3 theorem requires a missing source primitive.
+linear-combination law/`iff` wrappers, or the V334 standalone centered reverse
+Exercise 3.10.8 implication.  Next aggressive packet: continue Chapter 3 by
+closing a concrete source-facing gap around remaining Section 3.10 Gaussian-law
+wrappers, remaining Lindeberg-Feller side conditions, or characteristic-function
+transport into later source statements; touch Chapter 2 only if a Chapter 3
+theorem requires a missing source primitive.
 
 ## Historical V306 Prompt Notes
 
