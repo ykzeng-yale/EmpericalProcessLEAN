@@ -40876,6 +40876,61 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       (N := N) hx0 ht0 htstep hxRange hnewton_next_source hN hlogWindow
 
 /--
+The exact `K + 1 <= 49` finite-window log condition used by the
+slack-ratio-tail stepping stone is impossible for any nonzero finite-row
+dimension.  The left side is at least `log 2`, while the right side is at most
+`49 / 200`.
+-/
+theorem chewi1316_exactSlackRatioTail_logWindow_impossible_of_length_le_forty_nine
+    {m N : ℕ} (hm : 0 < m) (hN : N + 1 ≤ 49) :
+    ¬
+      ((Real.log ((16 : ℝ) *
+            (Real.sqrt (m : ℝ) * (3 / 2 : ℝ) + 1)) +
+          Real.log (2 : ℝ)) *
+        Real.sqrt (m : ℝ) ≤
+      ((N + 1 : ℕ) : ℝ) * (1 / 200 : ℝ)) := by
+  intro hlogWindow
+  have hsqrt_ge_one : 1 ≤ Real.sqrt (m : ℝ) := by
+    rw [Real.one_le_sqrt]
+    exact_mod_cast hm
+  have hinside_ge_one :
+      1 ≤
+        (16 : ℝ) * (Real.sqrt (m : ℝ) * (3 / 2 : ℝ) + 1) := by
+    nlinarith
+  have hlog_inside_nonneg :
+      0 ≤ Real.log
+        ((16 : ℝ) * (Real.sqrt (m : ℝ) * (3 / 2 : ℝ) + 1)) :=
+    Real.log_nonneg hinside_ge_one
+  have hlog_two_pos : 0 < Real.log (2 : ℝ) :=
+    Real.log_pos (by norm_num : (1 : ℝ) < 2)
+  have hlog_two_gt_window : (49 / 200 : ℝ) < Real.log (2 : ℝ) := by
+    linarith [Real.log_two_gt_d9]
+  let logBudget : ℝ :=
+    Real.log ((16 : ℝ) * (Real.sqrt (m : ℝ) * (3 / 2 : ℝ) + 1)) +
+      Real.log (2 : ℝ)
+  have hlogBudget_ge_log_two : Real.log (2 : ℝ) ≤ logBudget := by
+    dsimp [logBudget]
+    linarith
+  have hlogBudget_nonneg : 0 ≤ logBudget :=
+    hlog_two_pos.le.trans hlogBudget_ge_log_two
+  have hlhs_ge_log_two :
+      Real.log (2 : ℝ) ≤ logBudget * Real.sqrt (m : ℝ) := by
+    have hmul :
+        Real.log (2 : ℝ) * (1 : ℝ) ≤
+          logBudget * Real.sqrt (m : ℝ) :=
+      mul_le_mul hlogBudget_ge_log_two hsqrt_ge_one
+        (by norm_num : (0 : ℝ) ≤ 1) hlogBudget_nonneg
+    simpa using hmul
+  have hrhs_le : ((N + 1 : ℕ) : ℝ) * (1 / 200 : ℝ) ≤ 49 / 200 := by
+    have hNreal : ((N + 1 : ℕ) : ℝ) ≤ 49 := by
+      exact_mod_cast hN
+    nlinarith
+  have hlog_two_le_window : Real.log (2 : ℝ) ≤ 49 / 200 :=
+    (hlhs_ge_log_two.trans (by simpa [logBudget] using hlogWindow)).trans
+      hrhs_le
+  linarith
+
+/--
 The actual next-pre-decrement sequence has the required prefix budget once its
 doubled terms contract by the standard factor `1/2`.  This packages the
 standard start bound and scalar geometric summation for downstream actual-path

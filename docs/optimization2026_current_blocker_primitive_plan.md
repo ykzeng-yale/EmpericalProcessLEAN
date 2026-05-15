@@ -731,6 +731,16 @@ therefore closed.  The next blocker is scalar/source-side: prove that Chewi's
 overshoot-aware log window can be met for a useful selected `N <= 48` from the
 textbook parameter/margin assumptions, or shift to the moving-center
 long-window argument when the finite window is too short.
+The scalar check is now compiled as
+`chewi1316_exactSlackRatioTail_logWindow_impossible_of_length_le_forty_nine`:
+for every nonzero finite-row dimension and every `N + 1 <= 49`, the exact
+slack-ratio-tail auto-index log window is impossible because the left side is
+at least `log 2 > 49 / 200` while the right side is at most `49 / 200`.
+Therefore the finite-window exact-tail initializer remains useful only as a
+local consistency/diagnostic stepping stone; it cannot be the final Chewi
+§13.16 preliminary-stage route.  The next aggressive target is the
+moving-center or long-window range-tail invariant that decouples the
+logarithmic count window from the local `K+1 <= 49` prefix budget.
 
 Archived route log below: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma

@@ -451,6 +451,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   so callers no longer provide global range feasibility for this route.  The
   next finite-window blocker is the scalar/source-side log window, or else the
   moving-center long-window argument if the finite window cannot satisfy it.
+  The scalar obstruction is now formalized as
+  `chewi1316_exactSlackRatioTail_logWindow_impossible_of_length_le_forty_nine`:
+  for `m > 0` and `N + 1 <= 49`, the exact slack-ratio-tail auto-index window
+  is contradictory.  Thus this finite-window endpoint is diagnostic
+  infrastructure, not the final §13.16 preliminary-stage route; next work
+  should attack the moving-center/long-window range-tail invariant.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds
