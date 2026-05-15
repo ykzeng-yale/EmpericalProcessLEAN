@@ -624,8 +624,17 @@ and
 `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_length_le_twenty_five`.
 Future finite-window work should call these instead of reopening the
 quadratic recurrence side-condition or re-summing the uniform `1/100` bound.
-The `K+1 <= 25` corollary is only a local-window prefix budget; it is not a
-global preliminary-stage summability theorem.
+The newest sharpened finite-window packet improves this route by proving the
+stable scalar invariant `real_quadratic_add_standard_le_one_one_hundred_ninety_eight`,
+the actual-budget bound
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_le_one_one_hundred_ninety_eight_of_quadratic_add_standard`,
+the prefix estimate
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_length_div_ninety_nine_of_quadratic_add_standard`,
+and the half-budget corollary
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_length_le_forty_nine`.
+The old `K+1 <= 25` corollary is superseded by `K+1 <= 49` for finite-window
+work, but this remains a local-window prefix budget, not a global
+preliminary-stage summability theorem.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
@@ -1340,16 +1349,23 @@ packet adds
 	`chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five`,
 	and
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five_internalSelectedRangeTailBound_succ_noFactor_standardConstants`.
-	The sharper slack-ratio finite-window packet now also compiles:
+	The sharper slack-ratio finite-window packet also compiles:
 	`chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRatio_three_halves_length_le_twenty_five` and
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
-	This is the current §13.16 frontier: the honest actual quadratic
-	finite-window prefix budget now feeds the selected range-tail estimate and
-	the main-stage initializer under `N + 1 <= 25`; the best verified finite-window
-	tail constant is `sqrt(m) * 3/2`, without assuming a global all-prefix budget
-	or the unproved half-contraction.  Next target: remove the short-window
-	restriction by proving the moving-center range-tail/count estimate, or
-	replace the linear `1/50` finite-window budget with a valid long-window decay
+	The newest sharpened finite-window packet improves the scalar invariant to
+	`1/198`, giving the prefix bound `(K+1)/99` and extending the selected
+	slack-ratio route through
+	`chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRatio_three_halves_length_le_forty_nine`
+	and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
+	This is the current §13.16 finite-window frontier: the honest actual
+	quadratic finite-window prefix budget now feeds the selected range-tail
+	estimate and the main-stage initializer under `N + 1 <= 49`; the best verified
+	finite-window tail constant is still `sqrt(m) * 3/2`, without assuming a global
+	all-prefix budget or the unproved half-contraction.  Next target: remove the
+	short-window restriction by proving the moving-center range-tail/count
+	estimate, or replace the linear `(K+1)/99` finite-window budget with a valid
+	long-window decay
 	argument for the actual next-pre-decrement sequence.
 	The canonical scalar packet adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`

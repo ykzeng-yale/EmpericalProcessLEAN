@@ -379,9 +379,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   and
   `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_length_le_twenty_five`.
   These give a side-condition-free recurrence and a verified local-window
-  prefix budget for windows with `K+1 <= 25`; they should be reused by the
-  next selected-index/moving-tail packet, while the global prefix budget
-  remains unsolved.
+  prefix budget for windows with `K+1 <= 25`.  The newest sharpened
+  finite-window packet improves the stable scalar invariant to `1/198` via
+  `real_quadratic_add_standard_le_one_one_hundred_ninety_eight`, adds
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_le_one_one_hundred_ninety_eight_of_quadratic_add_standard`,
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_length_div_ninety_nine_of_quadratic_add_standard`,
+  and
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_length_le_forty_nine`.
+  Future selected-index work should reuse the `K+1 <= 49` local-window prefix
+  budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing
@@ -1075,14 +1081,17 @@ This dashboard tracks the Chewi optimization formalization lane for
 		  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five`,
 		  and
 		  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five_internalSelectedRangeTailBound_succ_noFactor_standardConstants`.
-		  The sharper finite-window slack-ratio packet adds
-		  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRatio_three_halves_length_le_twenty_five` and
-		  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
-		  This consumes the honest actual quadratic finite-window prefix budget
-		  under `N + 1 <= 25` all the way to the main-stage initializer, with
-		  verified tail constant `sqrt(m) * 3/2`; do not restart the global
-		  prefix-budget or half-contraction route.  Next live §13.16 target is the
-		  moving-center range-tail/count estimate that removes the short-window
+			  The sharper finite-window slack-ratio packet adds
+			  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRatio_three_halves_length_le_twenty_five` and
+			  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
+			  The newest scalar sharpening extends the same slack-ratio route through
+			  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRatio_three_halves_length_le_forty_nine` and
+			  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
+			  This consumes the honest actual quadratic finite-window prefix budget
+			  under `N + 1 <= 49` all the way to the main-stage initializer, with
+			  verified tail constant `sqrt(m) * 3/2`; do not restart the global
+			  prefix-budget or half-contraction route.  Next live §13.16 target is the
+			  moving-center range-tail/count estimate that removes the short-window
 		  restriction, or a valid long-window decay argument for the actual
 		  next-pre-decrement sequence.  The canonical scalar packet adds
 		  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`
