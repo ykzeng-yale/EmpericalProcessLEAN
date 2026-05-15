@@ -252,6 +252,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallyRangeTailBound_succ_noFactor_standardConstants`.
   Thus the next geometry proof can use a post-threshold or `∀ᶠ N in atTop`
   plain range-tail bound directly, together with all-iterate range feasibility.
+  The no-prefix slack-ratio packet adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySlackRatioBound_succ_noFactor_standardConstants`.
+  This converts an eventual translated-slack coordinate ratio envelope into
+  the no-prefix range-tail initializer, so future moving-center work can
+  target coordinate ratios directly without reintroducing a prefix budget.
   The no-prefix lower-denominator packet adds
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`
   and

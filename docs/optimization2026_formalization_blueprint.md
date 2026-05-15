@@ -237,6 +237,11 @@ finite Euclidean coordinate-envelope bounds, and the existing range
 inverse-Hessian/Cauchy stack; there is no direct Mathlib range-restriction
 lemma to import.  The next exact target should therefore prove the eventual
 slack-ratio envelope from bounded-polytope or moving-center invariants.
+The no-prefix counterpart now compiles as
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySlackRatioBound_succ_noFactor_standardConstants`.
+Use it when the moving-center proof supplies all-iterate range feasibility
+directly; it avoids routing coordinate-ratio estimates through the archived
+global prefix-budget gate.
 The prefix-budget route now supplies that envelope with constant `3/2`:
 `positiveOrthant_ratio_abs_le_one_add_of_localNorm_sub_le`,
 `chewi1314_polytopeSlackNegLog_range_slackRatio_le_one_add_of_sourceLocalNorm_le`,

@@ -452,6 +452,14 @@ future geometry target is now a plain eventual selected successor bound
 `dualLocalNorm rangeInvHess (rangeRestrict (xseq (N+1))) (rangeGrad (rangeRestrict xbar0)) <= tailBound`
 under the count inequality, plus the all-iterate range-feasibility invariant;
 manual measured-tail log and `M,N` plumbing should not be repeated.
+The newest no-prefix slack-ratio packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySlackRatioBound_succ_noFactor_standardConstants`.
+It consumes all-iterate range feasibility plus an eventual translated-slack
+coordinate ratio envelope, converts it through
+`chewi1314_polytopeSlackNegLog_range_sourceGrad_dualLocalNorm_le_sqrt_mul_of_slackRatio_le`,
+and calls the no-prefix eventual range-tail initializer.  This is now the
+preferred consumer when the moving-center/bounded-polytope proof naturally
+outputs coordinate slack ratios rather than a dual-norm tail bound.
 The newest no-prefix post-threshold packet adds
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_thresholdedEventualSelectedRangeTailBound_succ_noFactor_standardConstants`,
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_postThresholdRangeTailBound_succ_noFactor_standardConstants`, and
