@@ -719,6 +719,18 @@ all-iterate feasibility.  The next blocker is to discharge that finite
 `hxRangePrefix` assumption itself by a simultaneous local feasibility/budget
 induction, reusing the pairwise recurrence and selected pre-decrement geometry
 wrappers rather than reopening scalar recurrence or range-tail plumbing.
+That simultaneous induction is now compiled as
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_le_one_one_hundred_ninety_eight_of_quadratic_add_standard_currentPrefixRange`
+and
+`chewi1316_polytopeSlackNegLog_rangeRestrict_mem_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget`.
+The exact finite-window auto-index initializer is lifted to initial-range
+form by
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_exactSlackRatioTail_autoLogIndex_succ_noFactor_standardConstants_of_initialRange`.
+The global `∀ k` range-feasibility blocker for this finite-window route is
+therefore closed.  The next blocker is scalar/source-side: prove that Chewi's
+overshoot-aware log window can be met for a useful selected `N <= 48` from the
+textbook parameter/margin assumptions, or shift to the moving-center
+long-window argument when the finite window is too short.
 
 Archived route log below: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma

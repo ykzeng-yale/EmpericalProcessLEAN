@@ -440,7 +440,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRatio_three_halves_length_le_forty_nine_prefixRange`.
   The `K+1 <= 49` budget and selected range-tail wrapper now consume only
   finite feasibility through `N+1`; the next exact blocker is a simultaneous
-  proof that generates that finite feasibility locally.
+  proof that generates that finite feasibility locally.  That blocker is now
+  closed for the actual source preliminary path by
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_le_one_one_hundred_ninety_eight_of_quadratic_add_standard_currentPrefixRange`
+  and
+  `chewi1316_polytopeSlackNegLog_rangeRestrict_mem_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget`.
+  The exact finite-window auto-index initializer now has an initial-range
+  version,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_exactSlackRatioTail_autoLogIndex_succ_noFactor_standardConstants_of_initialRange`,
+  so callers no longer provide global range feasibility for this route.  The
+  next finite-window blocker is the scalar/source-side log window, or else the
+  moving-center long-window argument if the finite window cannot satisfy it.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds
