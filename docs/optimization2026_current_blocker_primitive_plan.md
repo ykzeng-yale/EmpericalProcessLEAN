@@ -658,16 +658,18 @@ selected successor dual-norm tail bound and one scalar window inequality
 reintroduce manual `M`, `hcount`, or `htailBoundLog` plumbing.
 The newest finite-window geometry packet exposes the actual-path
 bounded-polytope facts directly as
+`chewi1316_polytopeSlackNegLog_rangeRestrict_successor_mem_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine`,
 `chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine`
 and
 `chewi1316_polytopeSlackNegLog_slackRatio_three_halves_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine`.
 These are the reusable geometry artifacts behind the finite-window selected
 tail bound: from the honest actual quadratic budget and `N + 1 <= 49`, the
-range-restricted successor lies within source local radius `1/2`, hence its
-translated slack-coordinate ratios are bounded by `3/2`.  Future range-tail
-work should reuse these declarations instead of reopening the selected
-pre-decrement budget, source-to-range transport, radius-half proof, or
-coordinate ratio conversion.
+range-restricted successor stays in the slack-range domain, lies within source
+local radius `1/2`, and has translated slack-coordinate ratios bounded by
+`3/2`.  Future range-tail work should reuse these declarations instead of
+reopening the selected pre-decrement budget, source-to-range transport,
+successor-membership induction, radius-half proof, or coordinate ratio
+conversion.
 The old `K+1 <= 25` corollary is superseded by `K+1 <= 49` for finite-window
 work, but this remains a local-window prefix budget, not a global
 preliminary-stage summability theorem.

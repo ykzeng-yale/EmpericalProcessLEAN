@@ -39239,6 +39239,78 @@ theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_hal
   exact hprefix.trans hlen
 
 /--
+Actual finite-window selected successor range feasibility with the sharper
+`K + 1 <= 49` prefix budget.  This exposes the membership part of the
+bounded-polytope route separately from the radius and tail estimates.
+-/
+theorem chewi1316_polytopeSlackNegLog_rangeRestrict_successor_mem_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq : ℕ -> ℝ} {N : ℕ}
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ k : ℕ,
+      tseq (k + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq k)
+    (hxRange : ∀ k : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq k) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hnewton_next_source : ∀ k : ℕ,
+      xseq (k + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (k + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq k))
+    (hN : N + 1 ≤ 49) :
+    (polytopeSlackCLM aRow).rangeRestrict (xseq (N + 1)) ∈
+      barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) := by
+  let stepBudget : ℕ -> ℝ :=
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+      aRow bSlack xbar0 xseq tseq
+  have hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) := by
+    simpa [hx0] using hxRange 0
+  have hpre_decrement_next_source : ∀ n : ℕ,
+      newtonDecrement
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n) ≤ stepBudget n := by
+    intro n
+    simp [stepBudget, chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget]
+  have hnewton_next_range :=
+    chewi1316_polytopeSlackNegLog_rangePreliminaryNextNewtonSteps_of_sourcePullbackPreliminaryNextNewtonSteps
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) hnewton_next_source
+  have hpre_decrement_next_range :=
+    chewi1316_polytopeSlackNegLog_rangePreDecrementNext_le_of_sourcePullbackPreDecrementNext_le
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (stepBudget := stepBudget)
+      hpre_decrement_next_source
+  have hstepBudgetN :
+      (∑ n ∈ Finset.range (N + 1), 2 * stepBudget n) ≤ 1 / 2 := by
+    simpa [stepBudget] using
+      chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_length_le_forty_nine
+        (hm := hm) (aRow := aRow) (bSlack := bSlack)
+        (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+        hx0 ht0 htstep hxRange hnewton_next_source (K := N) hN
+  exact
+    chewi1316_polytopeSlackNegLog_rangeRestrict_successor_mem_of_preliminaryNextNewtonSteps_selectedPreDecrementBudget
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (xseq := xseq) (tseq := tseq) (stepBudget := stepBudget)
+      (N := N) hxbar0Range hx0 hnewton_next_range hpre_decrement_next_range
+      hstepBudgetN
+
+/--
 Actual finite-window range source-radius-half certificate with the sharper
 `K + 1 <= 49` prefix budget.  This exposes the bounded-polytope geometry
 artifact used by the downstream tail-bound wrappers.

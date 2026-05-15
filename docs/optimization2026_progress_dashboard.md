@@ -408,12 +408,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   inequality, and avoid manual `M`, count, and log side-condition plumbing.
   The finite-window geometry packet now exposes the actual-path
   bounded-polytope facts directly as
+  `chewi1316_polytopeSlackNegLog_rangeRestrict_successor_mem_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine`,
   `chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine`
   and
   `chewi1316_polytopeSlackNegLog_slackRatio_three_halves_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine`.
-  Thus the verified finite-window route has standalone source-radius-half and
-  translated slack-ratio artifacts, not only a downstream selected-tail
-  consumer.
+  Thus the verified finite-window route has standalone range-feasibility,
+  source-radius-half, and translated slack-ratio artifacts, not only a
+  downstream selected-tail consumer.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds
