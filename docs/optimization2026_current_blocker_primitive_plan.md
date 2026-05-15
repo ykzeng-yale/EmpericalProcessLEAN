@@ -763,8 +763,10 @@ The newest `BddAbove`/`sSup` version adds
 `chewi1316_polytopeSlackNegLog_bddAbove_feasibleSlackCoordinateImage_of_isCompact`,
 `chewi1316_polytopeSlackNegLog_bddAbove_feasibleSlackCoordinateImage_of_subset_isCompact`,
 `chewi1316_polytopeSlackNegLog_feasibleSlackCoordinateSup_le_slackCoordinateImageOnSup_of_subset_isCompact`,
+`chewi1316_polytopeSlackNegLog_slackCoordinateImageOnSup_le_of_forall_le`,
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_bddAbove_slackCoordinateSup`,
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateSup`,
+`chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateUpperBound`,
 and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_bddAboveSlackCoordinateSup_succ_noFactor_standardConstants`,
 with the compact-entry wrapper
@@ -772,14 +774,19 @@ with the compact-entry wrapper
 and the more practical compact-superset wrapper
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSupersetSlackCoordinateSup_succ_noFactor_standardConstants`,
 plus the envelope-sup entrypoint
-`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSupersetEnvelopeSlackCoordinateSup_succ_noFactor_standardConstants`.
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSupersetEnvelopeSlackCoordinateSup_succ_noFactor_standardConstants`
+and the pointwise envelope-upper-bound entrypoint
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSupersetSlackCoordinateUpperBound_succ_noFactor_standardConstants`.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
 data directly: prove the feasible translated slack range is compact (or show
 it sits inside a compact closure/envelope, or show each coordinate image is
 `BddAbove`), then compare either its coordinate `sSup` values or the compact
 envelope coordinate `sSup` values to `B * slack_i(xbar0)`.  The envelope-sup
 comparison uses `csSup_le_csSup` with the source feasible point as the
-nonempty witness, avoiding any fake bottom instance for real `sSup`.
+nonempty witness, avoiding any fake bottom instance for real `sSup`.  The
+newest upper-bound wrapper reduces the scalar envelope obligation further to
+pointwise bounds `slack_i(y) <= upper_i` on the compact envelope plus
+`upper_i <= B * slack_i(xbar0)`.
 
 Archived route log below: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma

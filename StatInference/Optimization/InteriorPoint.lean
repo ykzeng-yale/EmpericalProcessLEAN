@@ -41153,6 +41153,35 @@ theorem chewi1316_polytopeSlackNegLog_feasibleSlackCoordinateSup_le_slackCoordin
     himage_subset
 
 /--
+Pointwise coordinate upper bounds on a nonempty envelope bound the envelope
+coordinate supremum.  This is the scalar `csSup_le` bridge used when bounded
+polytope geometry naturally gives explicit coordinate bounds on the compact
+envelope.
+-/
+theorem chewi1316_polytopeSlackNegLog_slackCoordinateImageOnSup_le_of_forall_le
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {K : Set (polytopeSlackCLM aRow).range} {upper : ℝ}
+    (i : Fin m)
+    (hK_nonempty : K.Nonempty)
+    (hupper :
+      ∀ y : (polytopeSlackCLM aRow).range,
+        y ∈ K ->
+          (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) ≤ upper) :
+    sSup
+        (chewi1316_polytopeSlackNegLog_slackCoordinateImageOn
+          aRow bSlack K i) ≤ upper := by
+  refine csSup_le
+    (hK_nonempty.image
+      (fun y : (polytopeSlackCLM aRow).range =>
+        (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i)))
+    ?_
+  intro r hr
+  rcases hr with ⟨y, hyK, rfl⟩
+  exact hupper y hyK
+
+/--
 Supremum version of the bounded-coordinate bridge.  A bounded-polytope proof
 often yields `BddAbove` for each translated slack coordinate; if the coordinate
 suprema are dominated by `B` times the source slacks, this produces the global
@@ -41245,6 +41274,57 @@ theorem chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_s
     (chewi1316_polytopeSlackNegLog_feasibleSlackCoordinateSup_le_slackCoordinateImageOnSup_of_subset_isCompact
       aRow bSlack hfeasible_nonempty hKcompact hsubset i).trans
       (hKsup_ratio i)
+
+/--
+Compact-envelope upper-bound version of the bounded-coordinate bridge.  It is
+enough to give pointwise coordinate upper bounds on a compact envelope
+containing the feasible translated slack range and compare those bounds to the
+source slacks.
+-/
+theorem chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateUpperBound
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {K : Set (polytopeSlackCLM aRow).range}
+    {xbar0 : F} {upper : Fin m -> ℝ} {B : ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hKcompact : IsCompact K)
+    (hsubset :
+      barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ⊆
+        K)
+    (hK_upper :
+      ∀ y : (polytopeSlackCLM aRow).range,
+        y ∈ K ->
+          ∀ i : Fin m,
+            (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) ≤ upper i)
+    (hupper_ratio : ∀ i : Fin m,
+      upper i ≤
+        B * ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+              EuclideanSpace ℝ (Fin m)) + bSlack) i)) :
+    ∀ y : (polytopeSlackCLM aRow).range,
+      y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ->
+      ∀ i : Fin m,
+        |(((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) /
+            ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+                EuclideanSpace ℝ (Fin m)) + bSlack) i)| ≤ B := by
+  refine
+    chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateSup
+      (aRow := aRow) (bSlack := bSlack) (K := K) (xbar0 := xbar0)
+      (B := B) hxbar0Range hKcompact hsubset ?_
+  intro i
+  have hK_nonempty : K.Nonempty :=
+    ⟨(polytopeSlackCLM aRow).rangeRestrict xbar0, hsubset hxbar0Range⟩
+  exact
+    (chewi1316_polytopeSlackNegLog_slackCoordinateImageOnSup_le_of_forall_le
+      (aRow := aRow) (bSlack := bSlack) (K := K)
+      (upper := upper i) i hK_nonempty
+      (fun y hyK => hK_upper y hyK i)).trans
+      (hupper_ratio i)
 
 /--
 Actual preliminary Newton source-start initializer from a global feasible
@@ -41649,6 +41729,77 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       (chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateSup
         (aRow := aRow) (bSlack := bSlack) (K := K) (xbar0 := xbar0)
         (B := B) hxbar0Range hKcompact hsubset hKsup_ratio)
+
+/--
+Actual preliminary Newton source-start initializer from pointwise coordinate
+upper bounds on a compact translated slack-range envelope.  This is the
+bounded-polytope entrypoint closest to elementary polytope geometry: provide a
+compact envelope containing the strict feasible range, bound each translated
+slack coordinate on the envelope, and compare those coordinate bounds to the
+source slacks.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSupersetSlackCoordinateUpperBound_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {K : Set (polytopeSlackCLM aRow).range}
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ} {upper : Fin m -> ℝ} {B tailBound : ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hB_nonneg : 0 ≤ B)
+    (hbudget : Real.sqrt (m : ℝ) * B ≤ tailBound)
+    (hKcompact : IsCompact K)
+    (hsubset :
+      barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ⊆
+        K)
+    (hK_upper :
+      ∀ y : (polytopeSlackCLM aRow).range,
+        y ∈ K ->
+          ∀ i : Fin m,
+            (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) ≤ upper i)
+    (hupper_ratio : ∀ i : Fin m,
+      upper i ≤
+        B * ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+              EuclideanSpace ℝ (Fin m)) + bSlack) i)) :
+    ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 := by
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_globalSlackRatioBound_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (B := B) (tailBound := tailBound)
+      hxbar0Range hx0 ht0 htstep hnewton_next_source hB_nonneg hbudget
+      (chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateUpperBound
+        (aRow := aRow) (bSlack := bSlack) (K := K) (xbar0 := xbar0)
+        (upper := upper) (B := B) hxbar0Range hKcompact hsubset
+        hK_upper hupper_ratio)
 
 /--
 The actual next-pre-decrement sequence has the required prefix budget once its
