@@ -167,6 +167,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   These reduce the lower-`|t|` input to one selected successor index
   `N+1`, avoiding the stronger post-threshold all-future denominator
   certificate when the actual preliminary `t_N` is decreasing.
+  The closed-form denominator packet now adds
+  `chewi1316_preliminaryStageParameter_abs_eq_pow_standardConstants`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_sourceDecrement_postThresholdClosedFormAbsTLowerTail_succ_noFactor_standardConstants`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_sourceDecrement_selectedClosedFormAbsTLowerTail_succ_noFactor_standardConstants`.
+  Actual-budget callers can now state tail budgets directly with the standard
+  geometric denominator instead of carrying a separate `tau <= |t_N|`
+  certificate.
   The selected range source-radius packet now adds
   `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourceRadiusHalf`,
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeSourceRadiusHalf_succ_noFactor_standardConstants`, and
@@ -254,6 +261,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_selectedAbsTLowerTail_succ_noFactor_standardConstants`.
   This is the finite-window version: the denominator certificate is needed
   only at the selected successor index `N+1`.
+  The no-prefix closed-form denominator packet adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_postThresholdClosedFormAbsTLowerTail_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_selectedClosedFormAbsTLowerTail_succ_noFactor_standardConstants`.
+  Range-feasibility/moving-center work should now budget directly against
+  `(1 - (1/200) / sqrt m)^N` or the selected successor denominator.
   The selected-tail-bound packet adds `chewi1316_measuredTailLog_le_of_tailBound`
   and the range/source/concrete selected-bound handoffs
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,

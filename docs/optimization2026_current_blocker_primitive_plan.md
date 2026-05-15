@@ -322,6 +322,14 @@ window: they need only `x_{N+1}` in the slack polytope,
 log/count side.  Prefer these over the post-threshold lower-`|t|` wrappers
 when the decreasing preliminary `t_N` makes a uniform all-future lower
 denominator implausible.
+The newest closed-form denominator packet adds
+`chewi1316_preliminaryStageParameter_abs_eq_pow_standardConstants`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_sourceDecrement_postThresholdClosedFormAbsTLowerTail_succ_noFactor_standardConstants`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_sourceDecrement_selectedClosedFormAbsTLowerTail_succ_noFactor_standardConstants`.
+For the standard preliminary schedule, future actual-budget callers no longer
+need to prove `tau <= |t_N|`; they can state the tail budget directly with
+the explicit denominator `(1 - (1/200) / sqrt m)^N` or the selected successor
+denominator `(1 - (1/200) / sqrt m)^(N+1)`.
 The newest selected range source-radius packet adds
 `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourceRadiusHalf`,
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeSourceRadiusHalf_succ_noFactor_standardConstants`, and
@@ -449,6 +457,14 @@ handoff: future proofs can supply the denominator certificate only at the
 chosen successor index `N+1`, together with the selected count/log scalar
 inputs, while `hxRange` and the source Newton recurrence still discharge the
 standard decrement invariant internally.
+The newest no-prefix closed-form denominator packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_postThresholdClosedFormAbsTLowerTail_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_selectedClosedFormAbsTLowerTail_succ_noFactor_standardConstants`.
+These instantiate `tauSeq N` internally as the exact standard preliminary
+closed form.  Future range-feasibility/moving-center work should supply the
+tail budget against the explicit geometric denominator instead of separately
+proving `tauSeq N <= |t_N|`.
 The newest selected-tail-bound packet adds the scalar log bridge
 `chewi1316_measuredTailLog_le_of_tailBound` plus
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,
