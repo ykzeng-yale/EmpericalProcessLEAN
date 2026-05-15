@@ -647,6 +647,15 @@ and the single overshoot-aware scalar window
 `(log (16 * (sqrt m * 3 / 2 + 1)) + log 2) * sqrt m <= (N + 1) / 200`;
 they no longer manually choose `M` or separately prove the log/count
 side-conditions.
+The newest selected-tail auto-index packet generalizes this shape by adding
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_selectedRangeTailBound_autoLogIndex_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_internalSlackRatioBound_three_halves_autoLogIndex_succ_noFactor_standardConstants`.
+Future moving-center or bounded-polytope packets should call the general
+`rangeMem_selectedRangeTailBound_autoLogIndex` theorem after proving the
+selected successor dual-norm tail bound and one scalar window inequality
+`(log (16 * (tailBound + 1)) + log 2) * sqrt m <= (N + 1) / 200`; do not
+reintroduce manual `M`, `hcount`, or `htailBoundLog` plumbing.
 The old `K+1 <= 25` corollary is superseded by `K+1 <= 49` for finite-window
 work, but this remains a local-window prefix budget, not a global
 preliminary-stage summability theorem.

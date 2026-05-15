@@ -398,6 +398,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Real.log_nonneg` to choose the base-two log index with one `log 2`
   overshoot, so finite-window callers now pass one scalar window inequality
   instead of manually supplying `M`, the log bound, and the count bound.
+  The selected-tail auto-index packet generalizes this for future
+  moving-center work, adding
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_selectedRangeTailBound_autoLogIndex_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_internalSlackRatioBound_three_halves_autoLogIndex_succ_noFactor_standardConstants`.
+  A moving-center or bounded-polytope proof can now provide the selected
+  successor dual-norm tail bound plus one overshoot-aware scalar window
+  inequality, and avoid manual `M`, count, and log side-condition plumbing.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds
