@@ -32,12 +32,17 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V351` in
+Route from `Live In-Thread Goal Prompt V352` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V351 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V352 adds
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum`
+and
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCenteredProduct_explicitMean_sum`,
+the literal nonzero-mean normalized-sum characteristic-function displays for
+Durrett Theorem 3.10.7.  V351 adds
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCenteredProduct_sum`,
 the literal centered normalized-sum characteristic-function display for the
 canonical product sample.  V350 adds
@@ -1780,6 +1785,11 @@ Current proof route:
     The literal centered normalized-sum characteristic-function display now
     compiles as
     `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCenteredProduct_sum`.
+    The literal nonzero-mean normalized-sum characteristic-function displays now
+    compile as
+    `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum`
+    and
+    `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCenteredProduct_explicitMean_sum`.
     It also has the arbitrary-frequency centered Gaussian
     projected characteristic-function display
     `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_coordinateCovariance`,
