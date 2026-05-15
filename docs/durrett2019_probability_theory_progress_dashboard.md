@@ -32,12 +32,18 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V355` in
+Route from `Live In-Thread Goal Prompt V356` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V355 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V356 adds
+`durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCovarianceBilinDualTable`,
+`durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCovarianceBilinDualTable_tsq`,
+and
+`durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCenteredProduct`,
+the covariance-bilinear table and centered-product source consumers for the
+projected-characteristic Durrett Theorem 3.10.7 vector CLT route.  V355 adds
 `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_covarianceBilinDualTable`,
 `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_tsq_of_covarianceBilinDualTable`,
 and
@@ -1828,6 +1834,12 @@ Current proof route:
     `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_tsq_of_covarianceBilinDualTable`,
     and
     `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_centeredProduct`.
+    The covariance-bilinear table and centered-product projected-characteristic
+    CLT consumers now compile as
+    `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCovarianceBilinDualTable`,
+    `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCovarianceBilinDualTable_tsq`,
+    and
+    `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedCharacteristicFunctions_centeredGaussianCenteredProduct`.
     It also has the arbitrary-frequency centered Gaussian
     projected characteristic-function display
     `durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_coordinateCovariance`,
