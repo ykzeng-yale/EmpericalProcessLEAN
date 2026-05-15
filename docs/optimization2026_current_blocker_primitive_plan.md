@@ -741,6 +741,14 @@ local consistency/diagnostic stepping stone; it cannot be the final Chewi
 §13.16 preliminary-stage route.  The next aggressive target is the
 moving-center or long-window range-tail invariant that decouples the
 logarithmic count window from the local `K+1 <= 49` prefix budget.
+The bounded-polytope handoff now compiles as
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_globalSlackRatioBound_succ_noFactor_standardConstants`.
+It reuses the actual-path range-feasibility theorem and the no-prefix
+eventual slack-ratio initializer: future geometry only has to prove a global
+source-relative slack-ratio envelope for every feasible range point, plus the
+scalar budget `sqrt(m) * B <= tailBound`.  This is the preferred route over
+reopening the impossible finite-window log window or assuming an unproved
+actual-budget half-contraction.
 
 Archived route log below: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma

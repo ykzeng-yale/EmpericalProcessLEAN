@@ -40931,6 +40931,87 @@ theorem chewi1316_exactSlackRatioTail_logWindow_impossible_of_length_le_forty_ni
   linarith
 
 /--
+Actual preliminary Newton source-start initializer from a global feasible
+slack-ratio envelope.  This is the bounded-polytope handoff: once a geometric
+argument bounds the source-relative slack ratios for every feasible range
+point, the actual path range feasibility proved above turns that bound into
+the no-prefix eventual tail initializer, without any finite-window or
+half-contraction assumption.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_globalSlackRatioBound_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ} {B tailBound : ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hB_nonneg : 0 ≤ B)
+    (hbudget : Real.sqrt (m : ℝ) * B ≤ tailBound)
+    (hglobalSlackRatioBound :
+      ∀ y : (polytopeSlackCLM aRow).range,
+        y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        ∀ i : Fin m,
+          |(((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) /
+              ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+                    EuclideanSpace ℝ (Fin m)) + bSlack) i)| ≤ B) :
+    ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 := by
+  have hxRange :
+      ∀ k : ℕ,
+        (polytopeSlackCLM aRow).rangeRestrict (xseq k) ∈
+          barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) :=
+    chewi1316_polytopeSlackNegLog_rangeRestrict_mem_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+      hxbar0Range hx0 ht0 htstep hnewton_next_source
+  have heventuallySlackRatioBound :
+      ∀ᶠ Nout : ℕ in atTop,
+        ∀ i : Fin m,
+          |((((polytopeSlackCLM aRow).rangeRestrict (xseq Nout) :
+                EuclideanSpace ℝ (Fin m)) + bSlack) i) /
+              ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+                EuclideanSpace ℝ (Fin m)) + bSlack) i)| ≤ B :=
+    Eventually.of_forall fun Nout =>
+      hglobalSlackRatioBound
+        ((polytopeSlackCLM aRow).rangeRestrict (xseq Nout))
+        (hxRange Nout)
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySlackRatioBound_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (B := B) (tailBound := tailBound)
+      hxRange hx0 ht0 htstep hnewton_next_source hB_nonneg hbudget
+      heventuallySlackRatioBound
+
+/--
 The actual next-pre-decrement sequence has the required prefix budget once its
 doubled terms contract by the standard factor `1/2`.  This packages the
 standard start bound and scalar geometric summation for downstream actual-path

@@ -242,6 +242,13 @@ The no-prefix counterpart now compiles as
 Use it when the moving-center proof supplies all-iterate range feasibility
 directly; it avoids routing coordinate-ratio estimates through the archived
 global prefix-budget gate.
+The actual-path bounded-polytope wrapper now compiles as
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_globalSlackRatioBound_succ_noFactor_standardConstants`.
+It discharges all-iterate range feasibility internally from the actual
+preliminary Newton path and reduces the remaining geometry obligation to a
+global source-relative slack-ratio bound over feasible range points.  This is
+the preferred long-window entrypoint when boundedness of the feasible range
+polytope is available.
 The no-prefix source-radius counterpart now compiles as
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySourceRadiusBound_succ_noFactor_standardConstants`
 and the half-radius specialization
