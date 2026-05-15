@@ -1300,13 +1300,17 @@ packet adds
 	`chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five`,
 	and
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five_internalSelectedRangeTailBound_succ_noFactor_standardConstants`.
+	The sharper slack-ratio finite-window packet now also compiles:
+	`chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRatio_three_halves_length_le_twenty_five` and
+	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
 	This is the current §13.16 frontier: the honest actual quadratic
 	finite-window prefix budget now feeds the selected range-tail estimate and
-	the main-stage initializer under `N + 1 <= 25`, without assuming a global
-	all-prefix budget or the unproved half-contraction.  Next target: remove the
-	short-window restriction by proving the moving-center range-tail/count
-	estimate, or replace the linear `1/50` finite-window budget with a valid
-	long-window decay argument for the actual next-pre-decrement sequence.
+	the main-stage initializer under `N + 1 <= 25`; the best verified finite-window
+	tail constant is `sqrt(m) * 3/2`, without assuming a global all-prefix budget
+	or the unproved half-contraction.  Next target: remove the short-window
+	restriction by proving the moving-center range-tail/count estimate, or
+	replace the linear `1/50` finite-window budget with a valid long-window decay
+	argument for the actual next-pre-decrement sequence.
 	The canonical scalar packet adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`
 	and
