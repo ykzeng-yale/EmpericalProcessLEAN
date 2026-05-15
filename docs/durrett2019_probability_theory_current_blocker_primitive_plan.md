@@ -4,22 +4,31 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V367
+## Live In-Thread Goal Prompt V368
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
 below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Active lane: Chapter 3 weak convergence, characteristic
-functions, CLT, and Lindeberg-Feller support in
-`StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`, reusing mathlib
-characteristic functions, `TendstoInDistribution`, local weak-convergence
-wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
-2 product/iid support only when a later Chapter 3 source shape needs it.
+synced `main`.  Active immediate lane for this goal cycle: Chapter 2.1
+independence/product-law support and Durrett Theorem 2.4.9
+Glivenko-Cantelli source-facing wrappers in
+`StatInference/ProbabilityTheory/Basic.lean`,
+`StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  Reuse mathlib/local
+independence, `HasLaw`, product-measure, strong-law, and empirical-process
+wrappers first; only add exact source-shape consumers that are not already
+compiled.
 
-Latest verified target V367 adds literal normalized-sum projected
+Latest verified target V368 adds the canonical iid infinite-product
+pairwise-independence consumer
+`durrett2019_theorem_2_1_11_canonical_iid_infinite_product_pairwise_indepFun`
+and the canonical iid half-line Glivenko-Cantelli wrappers
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_canonical_iid` and
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_canonical_iid`.
+The existing canonical empirical-CDF endpoints now reuse those wrappers instead
+of rebuilding pairwise independence inline.  V367 adds literal normalized-sum projected
 characteristic-function wrappers for vector-source and common-vector-law
 centered-product routes:
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_vectorGaussianSource_centeredProduct_explicitMean_sum`,
@@ -440,12 +449,13 @@ displays, or the V363 literal centered normalized-sum arbitrary-frequency
 display, or the V364 zero-mean coordinate-covariance literal normalized-sum
 wrappers, or the V365 vector/common-law explicit-mean normalized-sum CLT
 wrappers, or the V366 vector/common-law centered-product normalized-sum CLT
-wrappers, or the V367 vector/common-law centered-product normalized-sum
-projected-characteristic wrappers.  Next aggressive packet:
-continue Chapter 3 by closing a concrete source-facing gap around remaining
-Section 3.10 Gaussian-law wrappers, characteristic-function transport into
-later source statements, or remaining Lindeberg-Feller side conditions; touch
-Chapter 2 only if a Chapter 3 theorem requires a missing source primitive.
+wrappers, the V367 vector/common-law centered-product normalized-sum
+projected-characteristic wrappers, or the V368 canonical iid product-space
+half-line Glivenko-Cantelli wrappers.  Next aggressive packet:
+continue Chapter 2.1 / Theorem 2.4.9 only by closing a concrete missing
+source-facing shape around independence, product laws, canonical iid
+coordinates, empirical-CDF notation, or half-line Glivenko-Cantelli consumers;
+do not rebuild the compiled cutpoint-chain/grid proof route.
 
 ## Historical V306 Prompt Notes
 
@@ -2935,6 +2945,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V367` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V368` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

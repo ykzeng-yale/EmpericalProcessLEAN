@@ -27,15 +27,24 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V367`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V368`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current active frontier: Chapter 3 weak convergence, characteristic functions,
-CLT, and Lindeberg-Feller support in
-`StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V367 adds
+Current active frontier for this goal cycle: Chapter 2.1
+independence/product-law support and Durrett Theorem 2.4.9
+Glivenko-Cantelli source-facing wrappers in
+`StatInference/ProbabilityTheory/Basic.lean`,
+`StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V368 adds
+`durrett2019_theorem_2_1_11_canonical_iid_infinite_product_pairwise_indepFun`,
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_canonical_iid`,
+and
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_canonical_iid`,
+the canonical iid product-space pairwise-independence and half-line
+Glivenko-Cantelli wrappers.  The canonical empirical-CDF endpoints now consume
+these wrappers directly.  V367 adds
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_vectorGaussianSource_centeredProduct_explicitMean_sum`,
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_vectorGaussianSource_centeredProduct_explicitMean_sum`,
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_commonVectorLawGaussianSource_centeredProduct_explicitMean_sum`,
