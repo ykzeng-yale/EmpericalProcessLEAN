@@ -1051,12 +1051,15 @@ This dashboard tracks the Chewi optimization formalization lane for
 		  `chewi1316_polytopeSlackNegLog_rangeSourceRadiusHalf_of_preliminaryNextNewtonSteps_selectedPreDecrementBudget_noFactor`,
 		  `chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_preliminaryNextNewtonSteps_selectedPreDecrementBudget_noFactor`,
 		  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_selectedPreDecrementBudget`, and
-		  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five`.
+		  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five`,
+		  and
+		  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five_internalSelectedRangeTailBound_succ_noFactor_standardConstants`.
 		  This consumes the honest actual quadratic finite-window prefix budget
-		  under `N + 1 <= 25`; do not restart the global prefix-budget or
-		  half-contraction route.  Next live §13.16 target is selected-window
-		  main-stage initializer promotion or the moving-center range-tail/count
-		  estimate that removes the short-window restriction.  The canonical scalar packet adds
+		  under `N + 1 <= 25` all the way to the main-stage initializer; do not
+		  restart the global prefix-budget or half-contraction route.  Next live
+		  §13.16 target is the moving-center range-tail/count estimate that removes
+		  the short-window restriction, or a valid long-window decay argument for
+		  the actual next-pre-decrement sequence.  The canonical scalar packet adds
 		  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`
 		  and
 		  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants`,
