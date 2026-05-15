@@ -266,6 +266,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
   The remaining source-side blocker is now the actual preliminary
   pre-decrement budget/decay proof feeding this initializer.
+  The actual half-contraction route now reuses that sharper bridge via
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_half_contraction_standard`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
+  This packages actual half-contraction into the `3/2` slack-ratio
+  initializer.  Search-first result: no relevant Mathlib Newton-decrement
+  theorem exists; next proof work should reuse local
+  `chewi138_*newtonDecrement_step*` and preliminary-stage decrement wrappers.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

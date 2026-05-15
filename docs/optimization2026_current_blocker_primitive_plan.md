@@ -460,6 +460,17 @@ certificate
 norm identity.  Do not rebuild slack-coordinate ratio bounds from scratch.
 The next aggressive target is to discharge or improve the actual preliminary
 pre-decrement budget/decay assumption that feeds this concrete initializer.
+The actual-budget route now has a reusable prefix-budget adapter:
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_half_contraction_standard`.
+The new actual-path endpoint
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`
+combines the actual doubled half-contraction with the `3/2` slack-ratio
+initializer, so callers only need the actual half-contraction and
+`sqrt(m) * 3/2 <= tailBound`.  Search-first result for the next contraction
+proof: Mathlib has no Newton-decrement/self-concordant optimizer API to reuse;
+stay local and inspect the `chewi138_*newtonDecrement_step*` stack plus
+`chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_*` wrappers before
+adding any new primitives.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new

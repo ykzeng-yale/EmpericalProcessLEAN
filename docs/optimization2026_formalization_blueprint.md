@@ -245,6 +245,16 @@ The prefix-budget route now supplies that envelope with constant `3/2`:
 This reuses the compiled range source-radius-half theorem and Mathlib
 `eventually_ge_atTop`, so downstream work should attack the actual
 pre-decrement budget/decay proof rather than reopening the slack-ratio bridge.
+The actual-budget consumer now has the same sharp route:
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_half_contraction_standard`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
+This reduces the actual preliminary endpoint to the doubled half-contraction
+of `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget` plus the
+scalar tail budget `sqrt(m) * 3/2 <= tailBound`.  Search-first contraction
+result: Mathlib does not provide the needed optimizer-decrement theorem; use
+the local `chewi138_*newtonDecrement_step*` and preliminary-stage decrement
+wrappers as the next proof ingredients.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the
