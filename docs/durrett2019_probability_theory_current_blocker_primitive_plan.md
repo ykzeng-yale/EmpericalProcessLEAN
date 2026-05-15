@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V352
+## Live In-Thread Goal Prompt V353
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,17 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V352 adds the literal nonzero-mean normalized-sum
+Latest verified target V353 adds the nonzero-mean Gaussian projected scalar
+ordinary characteristic-function wrappers
+`durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_charFun_of_coordinateCovariance`,
+`durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_charFun_tsq_of_coordinateCovariance`,
+and
+`durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_charFun_tsq_of_centeredProductSubMean`.
+These package Durrett's arbitrary-frequency Gaussian projection display with
+the linear mean phase and the textbook `t^2` covariance exponent, including the
+source covariance definition
+`Gamma_ij = E[(chi_i - mean_i)(chi_j - mean_j)]`.  V352 adds the literal
+nonzero-mean normalized-sum
 characteristic-function wrappers
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum`
 and
@@ -285,7 +295,8 @@ common-vector-law characteristic-function bridge, the V349 canonical-product
 characteristic-function bridge, the V350 canonical coordinate-covariance and
 centered-product characteristic-function bridge, or the V351 centered
 normalized-sum characteristic-function bridge, or the V352 nonzero-mean
-normalized-sum characteristic-function bridge.  Next aggressive packet:
+normalized-sum characteristic-function bridge, or the V353 nonzero-mean
+Gaussian ordinary characteristic-function bridge.  Next aggressive packet:
 continue Chapter 3 by closing a concrete source-facing gap around remaining
 Section 3.10 Gaussian-law wrappers, characteristic-function transport into
 later source statements, or remaining Lindeberg-Feller side conditions; touch
@@ -2779,6 +2790,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V352` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V353` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

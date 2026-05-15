@@ -1960,9 +1960,189 @@ theorem durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_display_o
     (hZ_coordinate_mean := hZ_coordinate_mean)
     (Gamma := Gamma) (theta := theta)
     (hZ_covariance :=
-  durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProduct
+      durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProduct
         (μ := Q) (Y := Z) hZ_coordinate_memLp hZ_coordinate_mean Gamma
         hZ_centered_product)
+
+/--
+Durrett 2019, Theorem 3.10.7, nonzero-mean Gaussian projected scalar
+characteristic-function display at arbitrary frequency.
+
+This rewrites the `charFunDual` display for `theta · chi` into the ordinary
+one-dimensional characteristic function of the projected scalar law at `t`,
+keeping the source mean vector and covariance table explicit.
+-/
+theorem durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_charFun_of_coordinateCovariance
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (mean : Coordinate -> ℝ) (Gamma : Coordinate -> Coordinate -> ℝ)
+    (theta : Coordinate -> ℝ) (t : ℝ)
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = mean coordinate)
+    (hZ_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) Q =
+        Gamma i j) :
+    MeasureTheory.charFun (Q.map (fun ω => ∑ i, theta i * Z ω i)) t =
+      Complex.exp
+        ((((∑ i, (t * theta i) * mean i : ℝ) : ℂ) * Complex.I) -
+          ((durrett2019_theorem_3_10_7_covarianceTableQuadratic
+            (fun i => t * theta i) Gamma : ℂ) / 2)) := by
+  let L := durrett2019_theorem_3_10_7_thetaProjection theta
+  have hmap :
+      Q.map (fun ω => ∑ i, theta i * Z ω i) =
+        (Q.map Z).map L := by
+    have hfun :
+        (fun ω => ∑ i, theta i * Z ω i) =
+          (fun ω => L (Z ω)) := by
+      funext ω
+      simp [L, durrett2019_theorem_3_10_7_thetaProjection_apply]
+    have hcomp :
+        (Q.map Z).map L = Q.map (fun ω => L (Z ω)) := by
+      rw [AEMeasurable.map_map_of_aemeasurable
+        L.continuous.measurable.aemeasurable hZ_gaussian.aemeasurable]
+      rfl
+    rw [hfun, hcomp]
+  have hL :
+      t • L =
+        durrett2019_theorem_3_10_7_thetaProjection
+          (fun i => t * theta i) := by
+    ext x
+    simp [L, durrett2019_theorem_3_10_7_thetaProjection_apply,
+      Finset.mul_sum, mul_assoc]
+  calc
+    MeasureTheory.charFun (Q.map (fun ω => ∑ i, theta i * Z ω i)) t
+        = MeasureTheory.charFun
+            ((Q.map Z).map L) t := by
+          rw [hmap]
+    _ = MeasureTheory.charFunDual (Q.map Z) (t • L) := by
+          simpa [L] using
+            (MeasureTheory.charFun_map_eq_charFunDual_smul
+              (μ := Q.map Z) L t)
+    _ = MeasureTheory.charFunDual (Q.map Z)
+          (durrett2019_theorem_3_10_7_thetaProjection
+            (fun i => t * theta i)) := by
+          rw [hL]
+    _ = Complex.exp
+          ((((∑ i, (t * theta i) * mean i : ℝ) : ℂ) * Complex.I) -
+            ((durrett2019_theorem_3_10_7_covarianceTableQuadratic
+              (fun i => t * theta i) Gamma : ℂ) / 2)) :=
+          durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_display_of_coordinateCovariance
+            (Q := Q) (Z := Z) (hZ_gaussian := hZ_gaussian)
+            (hZ_memLp := hZ_memLp)
+            (mean := mean) (Gamma := Gamma)
+            (theta := fun i => t * theta i)
+            (hZ_coordinate_integrable := hZ_coordinate_integrable)
+            (hZ_coordinate_mean := hZ_coordinate_mean)
+            (hZ_covariance := hZ_covariance)
+
+/--
+Durrett 2019, Theorem 3.10.7, nonzero-mean Gaussian projected scalar
+characteristic-function display with the textbook linear phase and `t^2`
+quadratic exponent.
+-/
+theorem durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_charFun_tsq_of_coordinateCovariance
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (mean : Coordinate -> ℝ) (Gamma : Coordinate -> Coordinate -> ℝ)
+    (theta : Coordinate -> ℝ) (t : ℝ)
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = mean coordinate)
+    (hZ_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) Q =
+        Gamma i j) :
+    MeasureTheory.charFun (Q.map (fun ω => ∑ i, theta i * Z ω i)) t =
+      Complex.exp
+        ((((t * ∑ i, theta i * mean i : ℝ) : ℂ) * Complex.I) -
+          (((t : ℂ) ^ 2 *
+            (durrett2019_theorem_3_10_7_covarianceTableQuadratic
+              theta Gamma : ℂ)) / 2)) := by
+  calc
+    MeasureTheory.charFun (Q.map (fun ω => ∑ i, theta i * Z ω i)) t
+        = Complex.exp
+          ((((∑ i, (t * theta i) * mean i : ℝ) : ℂ) * Complex.I) -
+            ((durrett2019_theorem_3_10_7_covarianceTableQuadratic
+              (fun i => t * theta i) Gamma : ℂ) / 2)) :=
+          durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_charFun_of_coordinateCovariance
+            (Q := Q) (Z := Z) (hZ_gaussian := hZ_gaussian)
+            (hZ_memLp := hZ_memLp)
+            (mean := mean) (Gamma := Gamma) (theta := theta) (t := t)
+            (hZ_coordinate_integrable := hZ_coordinate_integrable)
+            (hZ_coordinate_mean := hZ_coordinate_mean)
+            (hZ_covariance := hZ_covariance)
+    _ = Complex.exp
+          ((((t * ∑ i, theta i * mean i : ℝ) : ℂ) * Complex.I) -
+            (((t : ℂ) ^ 2 *
+              (durrett2019_theorem_3_10_7_covarianceTableQuadratic
+                theta Gamma : ℂ)) / 2)) := by
+          rw [durrett2019_theorem_3_10_7_covarianceTableQuadratic_smul_complex
+            (Gamma := Gamma) (theta := theta) (t := t)]
+          congr 1
+          have hmean :
+              (∑ i, (t * theta i) * mean i) =
+                t * ∑ i, theta i * mean i := by
+            simp [Finset.mul_sum, mul_comm, mul_left_comm]
+          rw [hmean]
+
+/--
+Durrett 2019, Theorem 3.10.7, nonzero-mean Gaussian projected scalar
+characteristic-function display from the textbook centered-product covariance
+definition.
+
+This packages `Gamma_ij = E[(chi_i - mean_i)(chi_j - mean_j)]` into the
+ordinary one-dimensional characteristic-function display with the linear phase
+and `t^2` covariance exponent.
+-/
+theorem durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_charFun_tsq_of_centeredProductSubMean
+    {Coordinate Ω' : Type*} [Fintype Coordinate] [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 Q)
+    (mean : Coordinate -> ℝ) (Gamma : Coordinate -> Coordinate -> ℝ)
+    (theta : Coordinate -> ℝ) (t : ℝ)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = mean coordinate)
+    (hZ_centered_product : ∀ i j,
+      (∫ ω, (Z ω i - mean i) * (Z ω j - mean j) ∂Q) = Gamma i j) :
+    MeasureTheory.charFun (Q.map (fun ω => ∑ i, theta i * Z ω i)) t =
+      Complex.exp
+        ((((t * ∑ i, theta i * mean i : ℝ) : ℂ) * Complex.I) -
+          (((t : ℂ) ^ 2 *
+            (durrett2019_theorem_3_10_7_covarianceTableQuadratic
+              theta Gamma : ℂ)) / 2)) :=
+  durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_charFun_tsq_of_coordinateCovariance
+    (Q := Q) (Z := Z) (hZ_gaussian := hZ_gaussian)
+    (hZ_memLp := hZ_memLp)
+    (mean := mean) (Gamma := Gamma) (theta := theta) (t := t)
+    (hZ_coordinate_integrable := fun coordinate =>
+      (hZ_coordinate_memLp coordinate).integrable (by simp))
+    (hZ_coordinate_mean := hZ_coordinate_mean)
+    (hZ_covariance :=
+      durrett2019_theorem_3_10_7_coordinateCovariance_eq_of_centeredProductSubMean
+        (μ := Q) (Y := Z) mean hZ_coordinate_mean Gamma hZ_centered_product)
 
 /--
 Durrett 2019, Theorem 3.10.7, centered Gaussian projected scalar
