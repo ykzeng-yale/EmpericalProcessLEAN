@@ -219,6 +219,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   prefix pre-decrement budget, leaving the real preferred mathematical target
   as the moving-center / bounded-polytope measured range-tail logarithmic
   bound at a selected successor index.
+  The range-feasibility measured-tail packet now adds
+  `chewi1316_polytopeSlackNegLog_range_decrement_step_le_eighth_of_nextNewton_sqrtCoordModel_of_rangeMem`,
+  `chewi1316_polytopeSlackNegLog_source_decrement_step_le_eighth_of_nextNewton_rangeMem_standardConstants`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_measuredRangeTailLogBound_succ_noFactor_standardConstants`.
+  These no-prefix-budget wrappers are the preferred measured-tail consumers
+  once a moving-center or bounded-polytope proof supplies feasibility of every
+  range-restricted iterate directly; they avoid reviving the archived false
+  fixed-source/global-prefix route.  The current exact-source blocker is now
+  to prove the actual range-feasibility/moving-center invariant and the
+  selected successor measured-tail log estimate.
   The selected-tail-bound packet adds `chewi1316_measuredTailLog_le_of_tailBound`
   and the range/source/concrete selected-bound handoffs
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,
