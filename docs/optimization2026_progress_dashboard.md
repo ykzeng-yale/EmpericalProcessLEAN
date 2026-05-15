@@ -283,6 +283,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   standard corollary `B_{n+1} <= 1/8 + 1/200`; it confirms the next proof
   should use a valid additive/finite-window recurrence, not a free raw
   half-contraction.
+  The newest quadratic-recurrence packet adds
+  `chewi1316_polytopeSlackNegLog_range_postDecrement_le_quadratic_of_nextNewton_sqrtCoordModel`,
+  `chewi1316_polytopeSlackNegLog_sourcePostDecrement_le_quadratic_of_nextNewton`,
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_delta_sqrt`, and
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_standard`.
+  This compiles the real actual-budget recurrence
+  `B_{n+1} <= B_n^2 / (1 - B_n)^2 + 1 / 200` for standard constants.  Because
+  the additive term creates a floor, the conditional half-contraction
+  consumers remain useful only behind a separately proved stronger theorem;
+  the active route should derive a finite-window/selected-index consequence or
+  use the existing moving-center measured-tail handoffs.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

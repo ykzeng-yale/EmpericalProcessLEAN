@@ -263,6 +263,18 @@ and
 The actual next-pre-decrement budget at `t_{n+2}` is controlled by the
 post-step decrement at `t_{n+1}` plus the parameter-shift cost
 `delta * sqrt(m)`, giving `1/8 + 1/200` under standard constants.
+The actual-budget recurrence is now source-verified through
+`chewi1316_polytopeSlackNegLog_range_postDecrement_le_quadratic_of_nextNewton_sqrtCoordModel`,
+`chewi1316_polytopeSlackNegLog_sourcePostDecrement_le_quadratic_of_nextNewton`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_delta_sqrt`, and
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_standard`.
+Thus the correct scalar shape is
+`B_{n+1} <= B_n^2 / (1 - B_n)^2 + 1 / 200` for the standard preliminary
+schedule, not a raw half-contraction.  Downstream §13.16 work should now use
+this verified additive recurrence to derive a finite-window/selected-index
+certificate, or route through the moving-center measured-tail wrappers; do not
+feed the conditional half-contraction consumers unless a separate theorem
+really proves that stronger assumption.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the

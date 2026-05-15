@@ -481,6 +481,19 @@ the standard constants `B_{n+1} <= 1/8 + 1/200` after a `1/8` post-step
 certificate.  This is not the raw half-contraction; future work should combine
 the local `1/8` preliminary-stage theorem with a valid scalar recurrence or
 finite-window budget, rather than assuming `B_{n+1} <= B_n / 2`.
+The quadratic-recurrence packet now adds
+`chewi1316_polytopeSlackNegLog_range_postDecrement_le_quadratic_of_nextNewton_sqrtCoordModel`,
+`chewi1316_polytopeSlackNegLog_sourcePostDecrement_le_quadratic_of_nextNewton`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_delta_sqrt`, and
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_standard`.
+The verified actual recurrence is
+`B_{n+1} <= B_n^2 / (1 - B_n)^2 + delta * sqrt(m)`, and under standard
+constants the additive term is `1 / 200`.  This is the current precise
+blocker: the additive floor prevents a free geometric/summable prefix budget,
+so the next aggressive packet should either prove a valid scalar finite-window
+consequence that feeds an existing measured-tail/selected-index handoff, or
+switch to the moving-center bounded-polytope tail route instead of trying to
+force half-contraction.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
