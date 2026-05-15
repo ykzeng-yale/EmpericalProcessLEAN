@@ -302,6 +302,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   under the verified recurrence, discharging the recurrence's own `< 1` side
   condition while still leaving the finite-window/moving-tail budget as the
   real Chapter 13 blocker.
+  The finite-window packaging packet adds
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_standard_of_nextNewton`,
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_length_div_fifty_of_quadratic_add_standard`,
+  and
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_length_le_twenty_five`.
+  These give a side-condition-free recurrence and a verified local-window
+  prefix budget for windows with `K+1 <= 25`; they should be reused by the
+  next selected-index/moving-tail packet, while the global prefix budget
+  remains unsolved.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

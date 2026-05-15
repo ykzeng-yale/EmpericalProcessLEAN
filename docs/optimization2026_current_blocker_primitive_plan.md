@@ -503,6 +503,15 @@ separate `< 1` side condition: all actual next-pre-decrement budgets stay
 below `1 / 100`.  This is a boundedness invariant only; it still does not
 produce the prefix `tsum <= 1 / 2`, so the remaining §13.16 route is still
 finite-window/selected-index or moving-tail, not summability by contraction.
+The packaged finite-window packet adds
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_standard_of_nextNewton`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_length_div_fifty_of_quadratic_add_standard`,
+and
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_length_le_twenty_five`.
+Future finite-window work should call these instead of reopening the
+quadratic recurrence side-condition or re-summing the uniform `1/100` bound.
+The `K+1 <= 25` corollary is only a local-window prefix budget; it is not a
+global preliminary-stage summability theorem.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new

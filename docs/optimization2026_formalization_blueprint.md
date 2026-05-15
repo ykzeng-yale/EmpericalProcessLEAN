@@ -283,6 +283,15 @@ So the actual budget recurrence is self-iterable and keeps every `B_n` below
 `1 / 100`; this closes the recurring `< 1` side condition for future finite
 window arguments, but it deliberately does not claim the nonexistent
 summable/half-contraction budget.
+The finite-window packaging layer now adds
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_standard_of_nextNewton`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_length_div_fifty_of_quadratic_add_standard`,
+and
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_length_le_twenty_five`.
+This gives downstream wrappers a side-condition-free actual recurrence and a
+small-window prefix budget from the uniform `1/100` estimate.  Treat the
+`K+1 <= 25` prefix result as finite-window infrastructure only, not as the
+global prefix budget consumed by the conditional half-contraction endpoints.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the
