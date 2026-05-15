@@ -4388,10 +4388,13 @@ from `LipschitzOnWith (Real.toNNReal L) f C`, `‖gradF (x n)‖ <= L`, and
 `chewi1013_regret_bound_of_trajectory`,
 `chewi1013_regret_bound_of_trajectory_norm_bound`,
 `chewi1013_stepsize_rhs_bound`, and
-`chewi1013_regret_bound_of_trajectory_norm_bound_stepsize`.  This proves the
-fixed-comparator form of Chewi Theorem 10.13 and the displayed positive
-step-size corollary in the ordinary Hilbert norm, avoiding `sInf` until exact
-source-report packaging requires it.  The new `AlternatingBregman.lean` module
+`chewi1013_regret_bound_of_trajectory_norm_bound_stepsize`.  The newest
+source-facing infimum packet adds
+`chewi1013_regret_bound_inf_of_forall_comparator` and
+`chewi1013_regret_bound_inf_of_trajectory_norm_bound_stepsize`, using Mathlib
+`le_csInf` to convert the fixed-comparator theorem into Chewi's displayed
+`inf_{y in C}` regret bound under nonempty `C` and a uniform initial Bregman
+radius.  The new `AlternatingBregman.lean` module
 is imported by `StatInference.lean` and compiles through
 `IsBregmanProjectionStep`,
 `IsAlternatingBregmanProjectionTrajectory`, trajectory membership accessors,
@@ -4631,11 +4634,12 @@ Active aggressive target ladder:
    `Real.sq_sqrt`, `Real.sqrt_sq`,
    `ContinuousLinearMap.IsPositive`, and matrix `PosSemidef` APIs only when
    the generic supplied-Hessian interface is insufficient.
-5. If exact Theorem 10.13 source-report packaging is requested, add an `sInf`
-   wrapper for the fixed-comparator regret theorem and/or a proof-carrying
-   arbitrary norm/dual-norm interface.  If exact Lemma 11.2 reporting is
-   requested, package the finite telescope into source screenshots/report form;
-   do not block the main-text theorem lane on reports.
+5. Theorem 10.13 now has the source-shaped `sInf` fixed-comparator wrapper in
+   the ordinary Hilbert norm.  If exact source-report packaging is requested,
+   only the report anchors/screenshots and any arbitrary norm/dual-norm
+   generalization remain; do not redo the infimum closure.  If exact Lemma
+   11.2 reporting is requested, package the finite telescope into source
+   screenshots/report form; do not block the main-text theorem lane on reports.
 
 Verification gate remains: focused `lake env lean` during development,
 promoted `lake build StatInference` after theorem packets, proof-hole scan,

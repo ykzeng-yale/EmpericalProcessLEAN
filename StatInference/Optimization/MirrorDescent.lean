@@ -1946,5 +1946,75 @@ theorem chewi1013_regret_bound_of_trajectory_norm_bound_stepsize
       hL hRphi halphaPhi hh hT hD0_le hh_sq
   nlinarith
 
+/--
+Infimum closing step for Chewi Theorem 10.13.  If a regret bound holds against
+every comparator in a nonempty set, then it holds against the infimum of the
+linear comparator losses.
+-/
+theorem chewi1013_regret_bound_inf_of_forall_comparator
+    {C : Set E} {p x : ℕ -> E} {T : ℕ} {bound : ℝ}
+    (hC_nonempty : C.Nonempty)
+    (hcomp : ∀ y : E, y ∈ C ->
+      (∑ n ∈ Finset.range T, inner ℝ (p n) (x n)) ≤
+        (∑ n ∈ Finset.range T, inner ℝ (p n) y) + bound) :
+    (∑ n ∈ Finset.range T, inner ℝ (p n) (x n)) ≤
+      sInf {v : ℝ | ∃ y : E, y ∈ C ∧
+        v = ∑ n ∈ Finset.range T, inner ℝ (p n) y} + bound := by
+  let A : ℝ := ∑ n ∈ Finset.range T, inner ℝ (p n) (x n)
+  let S : Set ℝ := {v : ℝ | ∃ y : E, y ∈ C ∧
+    v = ∑ n ∈ Finset.range T, inner ℝ (p n) y}
+  have hS_nonempty : S.Nonempty := by
+    rcases hC_nonempty with ⟨y, hy⟩
+    exact ⟨∑ n ∈ Finset.range T, inner ℝ (p n) y, ⟨y, hy, rfl⟩⟩
+  have hlower : A - bound ≤ sInf S := by
+    apply le_csInf hS_nonempty
+    intro v hv
+    rcases hv with ⟨y, hy, rfl⟩
+    have hy_bound := hcomp y hy
+    dsimp [A] at hy_bound ⊢
+    linarith
+  dsimp [A, S] at hlower ⊢
+  linarith
+
+/--
+Chewi Theorem 10.13 in the displayed infimum form: online mirror descent with
+the positive source step size satisfies the Hilbert-norm regret bound against
+the best fixed comparator in `C`.
+-/
+theorem chewi1013_regret_bound_inf_of_trajectory_norm_bound_stepsize
+    {C : Set E} {phi : E -> ℝ} {gradPhi : E -> E}
+    {p x : ℕ -> E} {L Rphi alphaPhi h : ℝ} {T : ℕ}
+    (htraj : IsOnlineMirrorDescentTrajectory C phi gradPhi h p x)
+    (hphi : FirstOrderStrongConvexOn C phi gradPhi alphaPhi)
+    (hpnorm : ∀ n, n < T -> ‖p n‖ ≤ L)
+    (hC_nonempty : C.Nonempty)
+    (hL : 0 < L) (hRphi : 0 < Rphi)
+    (hh : 0 < h) (halphaPhi : 0 < alphaPhi)
+    (hT : T ≠ 0)
+    (hD0_le : ∀ y : E, y ∈ C ->
+      bregmanDivergence phi gradPhi y (x 0) ≤ Rphi ^ (2 : ℕ))
+    (hh_sq :
+      h ^ (2 : ℕ) =
+        2 * alphaPhi * Rphi ^ (2 : ℕ) /
+          (L ^ (2 : ℕ) * (T : ℝ))) :
+    (∑ n ∈ Finset.range T, inner ℝ (p n) (x n)) ≤
+      sInf {v : ℝ | ∃ y : E, y ∈ C ∧
+        v = ∑ n ∈ Finset.range T, inner ℝ (p n) y} +
+        L * Rphi * Real.sqrt (2 * (T : ℝ) / alphaPhi) := by
+  refine
+    chewi1013_regret_bound_inf_of_forall_comparator
+      (C := C) (p := p) (x := x) (T := T)
+      (bound := L * Rphi * Real.sqrt (2 * (T : ℝ) / alphaPhi))
+      hC_nonempty ?_
+  intro y hy
+  exact
+    chewi1013_regret_bound_of_trajectory_norm_bound_stepsize
+      (C := C) (phi := phi) (gradPhi := gradPhi)
+      (p := p) (x := x) (y := y)
+      (L := L) (Rphi := Rphi) (alphaPhi := alphaPhi)
+      (h := h) (T := T)
+      htraj hphi hpnorm hy hL hRphi hh halphaPhi hT
+      (hD0_le y hy) hh_sq
+
 end Optimization
 end StatInference

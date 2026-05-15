@@ -1696,6 +1696,10 @@ accessors, `chewi1013_young_lower_bound`,
 `chewi1013_regret_bound_of_trajectory_norm_bound`,
 `chewi1013_stepsize_rhs_bound`, and
 `chewi1013_regret_bound_of_trajectory_norm_bound_stepsize`.  The newest
+infimum closure adds `chewi1013_regret_bound_inf_of_forall_comparator` and
+`chewi1013_regret_bound_inf_of_trajectory_norm_bound_stepsize`, reusing
+Mathlib `le_csInf` to produce Chewi's displayed `inf_{y in C}` online-regret
+bound from the fixed-comparator theorem.  The newest
 Chapter 11 ABP packet compiles `IsBregmanProjectionStep`,
 `IsAlternatingBregmanProjectionTrajectory`, trajectory membership accessors,
 the two monotonicity halves, the combined monotonicity wrapper,

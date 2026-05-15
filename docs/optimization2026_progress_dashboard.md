@@ -2820,8 +2820,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `IsOnlineMirrorDescentTrajectory`, trajectory accessors,
   `chewi1013_young_lower_bound`, OMD model lower-bound and Bregman
   nonnegativity helpers, one-step regret, finite comparator telescope,
-  trajectory comparator-regret wrappers, and the displayed positive step-size
-  corollary in the ordinary Hilbert norm.  The new `AlternatingBregman.lean`
+  trajectory comparator-regret wrappers, the displayed positive step-size
+  corollary in the ordinary Hilbert norm, and the source-facing `sInf`
+  infimum closure `chewi1013_regret_bound_inf_of_forall_comparator` plus
+  `chewi1013_regret_bound_inf_of_trajectory_norm_bound_stepsize`.  This uses
+  Mathlib `le_csInf` to turn the fixed-comparator theorem into Chewi's
+  displayed `inf_{y in C}` regret form under nonempty `C` and a uniform
+  initial Bregman radius.  The new `AlternatingBregman.lean`
   module adds the source-shaped Bregman projection certificate, ABP trajectory,
   monotonicity halves, one-cycle decrease, finite Lemma 11.2 telescope with and
   without terminal term, and the finite-minimum display `(11.1)` in existential
