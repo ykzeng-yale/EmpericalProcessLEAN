@@ -3935,11 +3935,14 @@ missing matrix/measure API and prove the smallest affine transport,
 matrix-coordinate, inverse-shape, or volume-scaling certificate that removes it.
 
 This paragraph overrides any older "next target" language in historical
-Chapter 4/5 notes below: the current manual `/goal` target is the rest of
-Chapter 6 main text (6.18-6.25), then Chapters 7-13 by theorem-sized module
-packets.  Do not reroute to source-report packaging, Theorem 5.4/5.8/5.9/5.10,
-or Chapter 4 geometric-lower-bound polishing unless a current Chapter 6 proof
-explicitly needs that dependency.
+Chapter 4/5 notes below: the current manual `/goal` target has closed the main
+Chapter 6 theorem packet through Theorem 6.25 source packaging, including
+`chewi625_resisting_final_box_source_package_of_log_bound` and
+`chewi625_exists_resisting_feasibility_instance_of_log_bound`.  The next
+aggressive target is Chapter 7 Frank-Wolfe by theorem-sized module packets,
+then Chapters 8-13.  Do not reroute to source-report packaging, Theorem
+5.4/5.8/5.9/5.10, or Chapter 4 geometric-lower-bound polishing unless a current
+Chapter 7 proof explicitly needs that dependency.
 
 Stable background: the first `ProjectedSubgradient.lean` packet proves the
 supplied-interface Theorem 6.14 average-gap bound, including source-shaped

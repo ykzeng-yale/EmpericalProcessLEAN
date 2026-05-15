@@ -5144,10 +5144,14 @@ no-ball obstruction, cyclic coordinate schedule, full-cycle side-length/log
 iteration, final replay certificate, deterministic transcript replay, closed
 convex Definition 6.24-style feasibility instance, and topological
 `interior C` no-success wrapper
-`chewi625_deterministic_run_no_interior_success_of_log_bound`.  The next
-aggressive theorem packet should either package exact Theorem 6.25 for
-source/report use, or, if that becomes report/topology drag, open Chapter 7
-Frank-Wolfe in a theorem-sized module; add an arbitrary-`d > N`
+`chewi625_deterministic_run_no_interior_success_of_log_bound`.  It now also
+packages the same-run source theorem interfaces
+`chewi625_resisting_final_box_source_package_of_log_bound` and
+`chewi625_exists_resisting_feasibility_instance_of_log_bound`, which expose the
+closed convex feasibility instance, deterministic transcript, valid separation
+transcript, and no-interior-success conclusion behind an existential final set.
+The next aggressive theorem packet should open Chapter 7 Frank-Wolfe in a
+theorem-sized module, using Chapter 6 only for dependencies; add an arbitrary-`d > N`
 embedding/report wrapper for 6.21/6.22 only if the fully literal theorem
 statement or report needs it.  Search the local PSD, CoGM,
 ellipsoid, lower-bound, nonsmooth-lower-bound, and exercises modules first; if

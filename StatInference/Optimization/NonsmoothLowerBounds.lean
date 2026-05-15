@@ -2660,5 +2660,90 @@ theorem chewi625_deterministic_run_no_interior_success_of_log_bound {d : ℕ}
     hstrict.2 n hn
       (chewi625CoordinateBox_interior_subset_strict hy_interior)
 
+/--
+Source-shaped same-run package for Chewi Theorem 6.25.  If the deterministic
+algorithm follows the resisting transcript for `N` steps and
+`N ≤ m * d ≤ d * log₂(R / eps)` in logarithmic form, then the final post-hoc
+coordinate box is a Definition 6.24 feasibility instance, the resisting replies
+are valid separation vectors for that final instance, and none of the first
+`N` queries reaches its topological interior.
+-/
+theorem chewi625_resisting_final_box_source_package_of_log_bound {d : ℕ}
+    [NeZero d] {R eps : ℝ}
+    (hR_pos : 0 < R) (heps_pos : 0 < eps)
+    {queryOf : ℕ ->
+      (ℕ -> EuclideanSpace ℝ (Fin d)) -> EuclideanSpace ℝ (Fin d)}
+    (hcausal : IsPrefixCausalQueryFunctional queryOf)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {N m : ℕ}
+    (hresistingRun :
+      IsDeterministicFeasibilityRun
+        queryOf x (chewi625ReturnedCutVector (d := d) R x) N)
+    (hNm : N ≤ m * d)
+    (hM_log : (m : ℝ) * Real.log (2 : ℝ) ≤ Real.log (R / eps)) :
+    IsChewi625FeasibilityInstance (d := d) eps R
+        (chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x N)
+          (chewi625BoxUpper (d := d) R x N)) ∧
+      IsDeterministicFeasibilityRun
+        queryOf x (chewi625ReturnedCutVector (d := d) R x) N ∧
+      IsFeasibilitySeparationTranscript
+        (chewi625CoordinateBox
+          (chewi625BoxLower (d := d) R x N)
+          (chewi625BoxUpper (d := d) R x N))
+        x (chewi625ReturnedCutVector (d := d) R x) N ∧
+      ∀ n : ℕ, n < N ->
+        x n ∉ interior
+          (chewi625CoordinateBox
+            (chewi625BoxLower (d := d) R x N)
+            (chewi625BoxUpper (d := d) R x N)) := by
+  have hnoInterior :=
+    chewi625_deterministic_run_no_interior_success_of_log_bound
+      (d := d) (R := R) (eps := eps) hR_pos heps_pos
+      (queryOf := queryOf) hcausal
+      (x := x) (y := x)
+      (q := chewi625ReturnedCutVector (d := d) R x) (N := N) (m := m)
+      hresistingRun hresistingRun (by intro n hn; rfl) hNm hM_log
+  exact
+    ⟨hnoInterior.1,
+      hresistingRun,
+      chewi625BoxState_final_separationTranscript
+        (d := d) (R := R) hR_pos.le x N,
+      hnoInterior.2⟩
+
+/--
+Existential Theorem 6.25 lower-bound package: the resisting construction
+produces a closed convex feasibility instance and a valid separation transcript
+for the given deterministic algorithm, while every first-`N` query misses the
+interior of that instance.
+-/
+theorem chewi625_exists_resisting_feasibility_instance_of_log_bound {d : ℕ}
+    [NeZero d] {R eps : ℝ}
+    (hR_pos : 0 < R) (heps_pos : 0 < eps)
+    {queryOf : ℕ ->
+      (ℕ -> EuclideanSpace ℝ (Fin d)) -> EuclideanSpace ℝ (Fin d)}
+    (hcausal : IsPrefixCausalQueryFunctional queryOf)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {N m : ℕ}
+    (hresistingRun :
+      IsDeterministicFeasibilityRun
+        queryOf x (chewi625ReturnedCutVector (d := d) R x) N)
+    (hNm : N ≤ m * d)
+    (hM_log : (m : ℝ) * Real.log (2 : ℝ) ≤ Real.log (R / eps)) :
+    ∃ C : Set (EuclideanSpace ℝ (Fin d)),
+      ∃ q : ℕ -> EuclideanSpace ℝ (Fin d),
+        IsChewi625FeasibilityInstance (d := d) eps R C ∧
+          IsDeterministicFeasibilityRun queryOf x q N ∧
+          IsFeasibilitySeparationTranscript C x q N ∧
+          ∀ n : ℕ, n < N -> x n ∉ interior C := by
+  refine
+    ⟨chewi625CoordinateBox
+        (chewi625BoxLower (d := d) R x N)
+        (chewi625BoxUpper (d := d) R x N),
+      chewi625ReturnedCutVector (d := d) R x, ?_⟩
+  exact
+    chewi625_resisting_final_box_source_package_of_log_bound
+      (d := d) (R := R) (eps := eps) hR_pos heps_pos
+      (queryOf := queryOf) hcausal
+      (x := x) (N := N) (m := m) hresistingRun hNm hM_log
+
 end Optimization
 end StatInference
