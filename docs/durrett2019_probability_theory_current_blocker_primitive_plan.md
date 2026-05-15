@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V357
+## Live In-Thread Goal Prompt V358
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,16 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V357 adds the projected-scalar-CLT bridge variants
+Latest verified target V358 adds the projected-summand-CLT bridge variants
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_projectedSummandCLT_centeredGaussianCovarianceBilinDualTable`,
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_projectedSummandCLT_centeredGaussianCovarianceBilinDualTable`,
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_projectedSummandCLT_centeredProduct`,
+`durrett2019_theorem_3_10_7_multivariateCLT_of_projectedSummandCLT_centeredGaussianCovarianceBilinDualTable_tsq`,
+and
+`durrett2019_theorem_3_10_7_multivariateCLT_of_projectedSummandCLT_centeredGaussianCenteredProduct`.
+These let summand-level Cramér-Wold CLTs feed covariance-bilinear table and
+centered-product Gaussian source variants before or after the textbook `t^2`
+rewrite.  V357 adds the projected-scalar-CLT bridge variants
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_projectedScalarCLT_centeredGaussianCovarianceBilinDualTable`,
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_projectedScalarCLT_centeredGaussianCovarianceBilinDualTable`,
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_projectedScalarCLT_centeredProduct`,
@@ -334,8 +343,8 @@ normalized-sum characteristic-function bridge, the V353 nonzero-mean
 Gaussian ordinary characteristic-function bridge, the V354 covariance-table
 Gaussian ordinary characteristic-function bridge, the V355 centered
 Gaussian ordinary characteristic-function bridge, the V356 covariance-table
-projected-characteristic CLT consumers, or the V357 projected-scalar-CLT
-source bridges.  Next aggressive packet:
+projected-characteristic CLT consumers, the V357 projected-scalar-CLT source
+bridges, or the V358 projected-summand-CLT source bridges.  Next aggressive packet:
 continue Chapter 3 by closing a concrete source-facing gap around remaining
 Section 3.10 Gaussian-law wrappers, characteristic-function transport into
 later source statements, or remaining Lindeberg-Feller side conditions; touch
@@ -2829,6 +2838,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V357` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V358` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
