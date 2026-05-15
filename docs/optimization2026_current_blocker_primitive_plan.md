@@ -411,6 +411,17 @@ prove the measured slack-range tail logarithmic bound at a selected successor
 index.  Do not route this through the archived global prefix-budget
 summability gate unless a separate valid pre-decrement budget theorem has
 already been proved.
+The newest no-prefix selected-tail packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_selectedRangeTailBound_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+These compose the `rangeMem` measured-tail endpoint with the scalar
+`chewi1316_measuredTailLog_le_of_tailBound` bridge and the existing
+`chewi1316_exists_preliminary_tail_log_count_indices` selector.  The preferred
+future geometry target is now a plain eventual selected successor bound
+`dualLocalNorm rangeInvHess (rangeRestrict (xseq (N+1))) (rangeGrad (rangeRestrict xbar0)) <= tailBound`
+under the count inequality, plus the all-iterate range-feasibility invariant;
+manual measured-tail log and `M,N` plumbing should not be repeated.
 The newest selected-tail-bound packet adds the scalar log bridge
 `chewi1316_measuredTailLog_le_of_tailBound` plus
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,

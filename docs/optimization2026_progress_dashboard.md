@@ -229,6 +229,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   fixed-source/global-prefix route.  The current exact-source blocker is now
   to prove the actual range-feasibility/moving-center invariant and the
   selected successor measured-tail log estimate.
+  The no-prefix selected-tail packet adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_selectedRangeTailBound_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventualSelectedRangeTailBound_succ_noFactor_standardConstants`.
+  These compose the range-feasibility measured-tail endpoint with the scalar
+  tail-log bridge and internal `M,N` selector, so future geometry can target a
+  plain eventual selected successor dual-norm bound plus all-iterate range
+  feasibility.
   The selected-tail-bound packet adds `chewi1316_measuredTailLog_le_of_tailBound`
   and the range/source/concrete selected-bound handoffs
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,
