@@ -657,6 +657,62 @@ theorem durrett2019_theorem_2_1_11_canonical_iid_infinite_product_pairwise_indep
   exact hCoord.2.1.indepFun hij
 
 /--
+Durrett 2019, Theorem 2.1.11, one-based canonical iid infinite-product
+coordinates.
+
+Durrett writes iid samples as `X_1, X_2, ...`; on Lean's zero-based product
+space this is the shifted coordinate process `sample (i + 1)`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S) :
+    (∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> S => sample (i + 1)) (ν : Measure S)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure S))) ∧
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> S => sample (i + 1))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) ∧
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> S => fun i : ℕ => sample (i + 1))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure S))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> S => sample (i + 1)) (ν : Measure S)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) := by
+    intro i
+    simpa [Nat.succ_eq_add_one] using hCoord.1 (Nat.succ i)
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> S => sample (i + 1))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp
+        Nat.succ_injective hCoord.2.1)
+  refine ⟨hLaw, hindep, ?_⟩
+  exact hindep.hasLaw_infinitePi hLaw
+    (aemeasurable_pi_lambda _ fun i => (hLaw i).aemeasurable)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based canonical iid infinite-product
+coordinates are pairwise independent.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_infinite_product_pairwise_indepFun_oneBased
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S) :
+    Pairwise
+      ((_root_.ProbabilityTheory.IndepFun
+        (μ := Measure.infinitePi fun _ : ℕ => (ν : Measure S))) on
+        (fun i : ℕ => fun sample : ℕ -> S => sample (i + 1))) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased ν
+  intro i j hij
+  exact hCoord.2.1.indepFun hij
+
+/--
 Durrett 2019, Theorem 2.1.11, infinite iid product-law source criterion.
 
 If a sequence-valued random variable has joint law `ν^ℕ`, then its coordinate
@@ -5629,6 +5685,108 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
           ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (sample i)) := by
   simpa [div_eq_mul_inv, mul_comm] using
     durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_range_sum P
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based canonical iid product-space half-line
+Glivenko-Cantelli theorem.
+
+This matches Durrett's `X_1, X_2, ...` indexing on the canonical product space
+by using the shifted coordinate process `sample (i + 1)`.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_canonical_iid_oneBased
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    VdVWPGlivenkoCantelliClass
+      (Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))
+      (P : Measure ℝ) Set.univ realHalfLineIndicator
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased P
+  exact
+    durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun
+      (μ := Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))
+      (P := (P : Measure ℝ))
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) hCoord.1 hCoord.2.1
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based canonical iid product-space half-line
+Glivenko-Cantelli theorem in the exact outer-a.s. branch.
+-/
+theorem durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_canonical_iid_oneBased
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass
+      (Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))
+      (P : Measure ℝ) Set.univ realHalfLineIndicator
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased P
+  exact
+    durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun
+      (μ := Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))
+      (P := (P : Measure ℝ))
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) hCoord.1 hCoord.2.1
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based canonical iid product-space empirical
+distribution-function form.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_canonical_iid_oneBased
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    _root_.StatInference.RealEmpiricalCDFGlivenkoCantelliClass
+      (Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))
+      (P : Measure ℝ)
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) := by
+  exact _root_.StatInference.realEmpiricalCDFGlivenkoCantelliClass_of_realHalfLine
+    (durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_canonical_iid_oneBased P)
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based canonical iid product-space empirical
+distribution-function form in the exact outer-a.s. branch.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_oneBased
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn
+      (Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ))) Set.univ
+      (fun c => ProbabilityTheory.cdf (P : Measure ℝ) c)
+      (fun sample sampleSize c =>
+        empiricalDistributionFunction
+          (samplePath
+            (fun i => fun sequence : ℕ -> ℝ => sequence (i + 1))
+            sample sampleSize) c) := by
+  have hhalf :=
+    durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_canonical_iid_oneBased P
+  simpa [VdVWOuterAlmostSurePGlivenkoCantelliClass,
+    empiricalDistributionFunction, populationRiskOfFunction,
+    realHalfLineIndicator_integral_eq_cdf] using hhalf
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based canonical iid product-space empirical-CDF
+display in Durrett's range-sum notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_oneBased_range_sum
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn
+      (Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ))) Set.univ
+      (fun c => ProbabilityTheory.cdf (P : Measure ℝ) c)
+      (fun sample sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (sample (i + 1))) /
+          (sampleSize : ℝ)) := by
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_oneBased P
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based canonical iid product-space empirical-CDF
+display in the exact textbook notation `n^{-1} * sum_{m=1}^n 1{X_m <= c}`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_oneBased_inv_mul_range_sum
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn
+      (Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ))) Set.univ
+      (fun c => ProbabilityTheory.cdf (P : Measure ℝ) c)
+      (fun sample sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (sample (i + 1))) := by
+  simpa [div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_oneBased_range_sum P
 
 /--
 Durrett 2019, Theorem 2.4.9, non-atomic half-line

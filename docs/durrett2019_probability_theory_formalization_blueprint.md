@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V368`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V369`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -37,7 +37,18 @@ independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V368 adds
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V369 adds
+`durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased`,
+`durrett2019_theorem_2_1_11_canonical_iid_infinite_product_pairwise_indepFun_oneBased`,
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_canonical_iid_oneBased`,
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_canonical_iid_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_canonical_iid_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_oneBased_range_sum`,
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_canonical_iid_oneBased_inv_mul_range_sum`,
+the one-based canonical iid product-space and empirical-CDF wrappers matching
+Durrett's `X_1, X_2, ...` notation.  V368 adds
 `durrett2019_theorem_2_1_11_canonical_iid_infinite_product_pairwise_indepFun`,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_canonical_iid`,
 and
