@@ -425,7 +425,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_sourcePostDecrement_le_quadratic_of_nextNewton_pairMem`,
   pairwise quadratic post-step estimates needing only current/next range
   feasibility.  This begins removing the all-iterate feasibility assumption
-  from the honest actual recurrence stack.
+  from the honest actual recurrence stack.  The parameter-shift recurrence is
+  now localized too, through
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_delta_sqrt_pairMem`
+  and
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_standard_pairMem`.
+  The remaining reduction is finite prefix-budget induction: generate the
+  pairwise range feasibility locally, then call these recurrence wrappers
+  instead of assuming a global `∀ k` range-feasibility invariant.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds
