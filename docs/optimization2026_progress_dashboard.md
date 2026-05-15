@@ -1036,16 +1036,30 @@ This dashboard tracks the Chewi optimization formalization lane for
 	  The no-square-root radius packet adds
 	  `localNorm_sum_le_sum_localNorm_of_hessian_pos`,
 	  `sourceRadius_le_of_sum_steps_of_hessian_pos`,
-	  `sourceRadius_successor_half_of_newtonSteps_currentLocalNorm_budget_hessian_pos`,
-	  `chewi1316_polytopeSlackNegLog_rangeSourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor`,
-	  `chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor`, and
-	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps_preDecrementBudget`.
-	  Range source-radius-half and successor membership are now both
-	  discharged from the compiled range preliminary-next-Newton recurrence
-	  plus summable pre-decrement budget.  The canonical scalar packet adds
-	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`
-	  and
-	  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants`,
+		  `sourceRadius_successor_half_of_newtonSteps_currentLocalNorm_budget_hessian_pos`,
+		  `chewi1316_polytopeSlackNegLog_rangeSourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor`,
+		  `chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor`, and
+		  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps_preDecrementBudget`.
+		  Range source-radius-half and successor membership are now both
+		  discharged from the compiled range preliminary-next-Newton recurrence
+		  plus summable pre-decrement budget.  The selected finite-window packet
+		  adds `scaledPrefixBudget_le_of_selectedPrefixBudget`,
+		  `sourceLocalNorm_sum_newtonSteps_le_half_of_currentLocalNorm_selectedBudget_hessian_pos`,
+		  `sourceRadius_successor_half_of_newtonSteps_currentLocalNorm_selectedBudget_hessian_pos`,
+		  `chewi1316_polytopeSlackNegLog_range_successor_mem_of_preliminaryNextNewtonSteps_selectedPreDecrementBudget`,
+		  `chewi1316_polytopeSlackNegLog_rangeRestrict_successor_mem_of_preliminaryNextNewtonSteps_selectedPreDecrementBudget`,
+		  `chewi1316_polytopeSlackNegLog_rangeSourceRadiusHalf_of_preliminaryNextNewtonSteps_selectedPreDecrementBudget_noFactor`,
+		  `chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_preliminaryNextNewtonSteps_selectedPreDecrementBudget_noFactor`,
+		  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_selectedPreDecrementBudget`, and
+		  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five`.
+		  This consumes the honest actual quadratic finite-window prefix budget
+		  under `N + 1 <= 25`; do not restart the global prefix-budget or
+		  half-contraction route.  Next live §13.16 target is selected-window
+		  main-stage initializer promotion or the moving-center range-tail/count
+		  estimate that removes the short-window restriction.  The canonical scalar packet adds
+		  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`
+		  and
+		  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants`,
 	  fixing the auxiliary lambda sequence, `c0 = 1/200`, and
 	  `tailBound = 2 * sqrt m`.  The range-preliminary transport packet adds
 	  `barrierAffinePreimage_preliminaryPathGrad_eq`,

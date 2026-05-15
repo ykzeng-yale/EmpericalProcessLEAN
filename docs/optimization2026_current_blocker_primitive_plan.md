@@ -1287,7 +1287,25 @@ packet adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeSourceRadiusHalf_tailLambdaBudget_noFactor_of_preliminaryNextNewtonSteps_preDecrementBudget`.
 	This removes range source-radius-half as a separate direct-route gate when
 	the same range preliminary-next-Newton recurrence and summable
-	pre-decrement budget are supplied.  The canonical scalar packet adds
+	pre-decrement budget are supplied.  The selected finite-window budget packet
+	now also compiles:
+	`scaledPrefixBudget_le_of_selectedPrefixBudget`,
+	`sourceLocalNorm_sum_newtonSteps_le_half_of_currentLocalNorm_selectedBudget_hessian_pos`,
+	`sourceRadius_successor_half_of_newtonSteps_currentLocalNorm_selectedBudget_hessian_pos`,
+	`chewi1316_polytopeSlackNegLog_range_successor_mem_of_preliminaryNextNewtonSteps_selectedPreDecrementBudget`,
+	`chewi1316_polytopeSlackNegLog_rangeRestrict_successor_mem_of_preliminaryNextNewtonSteps_selectedPreDecrementBudget`,
+	`chewi1316_polytopeSlackNegLog_rangeSourceRadiusHalf_of_preliminaryNextNewtonSteps_selectedPreDecrementBudget_noFactor`,
+	`chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_preliminaryNextNewtonSteps_selectedPreDecrementBudget_noFactor`,
+	`chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_selectedPreDecrementBudget`, and
+	`chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_twenty_five`.
+	This is the current §13.16 frontier: the honest actual quadratic
+	finite-window prefix budget now feeds the selected range-tail estimate under
+	`N + 1 <= 25`, without assuming a global all-prefix budget or the unproved
+	half-contraction.  Next target: promote this selected finite-window tail
+	bound through the main-stage initializer by proving selected-window variants
+	of the measured-tail/decrement-step-eighth consumers, or prove the moving
+	center range-tail/count estimate that avoids the short-window restriction.
+	The canonical scalar packet adds
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_canonicalLambda`
 	and
 	`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_noFactor_standardConstants`.
