@@ -431,6 +431,17 @@ all-iterate range feasibility, the source preliminary Newton recurrence, and
 either a post-threshold or `∀ᶠ N in atTop` plain range-tail dual-norm bound.
 They choose the selected index internally and avoid both prefix-budget and
 manual selected-count hypotheses.
+The newest no-prefix lower-denominator packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`.
+These compose the reverse preliminary-path scaled-tail bridge
+`chewi1316_polytopeSlackNegLog_postThresholdRangeTailBound_of_sourcePreliminaryPath_abs_t_lower`
+with the no-prefix post-threshold consumer.  The next proof may now supply
+post-threshold lower bounds on `|t_N|` and the budget
+`(sqrt m + 1/8) / tau_N <= tailBound`; the standard `1/4 -> 1/8`
+source-decrement invariant is derived from `hxRange` and the source Newton
+recurrence.
 The newest selected-tail-bound packet adds the scalar log bridge
 `chewi1316_measuredTailLog_le_of_tailBound` plus
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,
