@@ -34880,6 +34880,92 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       htailBound_nonneg htau_pos htau_le hbudget hcount htailBoundLog
 
 /--
+Selected-index closed-form lower-denominator handoff with the standard tail
+bound fixed internally.  This is the source-shaped finite-window version of
+the lower-`|t|` route: callers supply only the selected logarithmic/count side
+for the explicit expression
+`(sqrt m + 1/8) / (1 - (1/200) / sqrt m)^(N+1)`.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_selectedClosedFormAbsTLowerTail_internalTailBound_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ} {N M : ℕ}
+    (hxRange : ∀ k : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq k) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        ((N + 1 : ℕ) : ℝ) * (1 / 200 : ℝ))
+    (htailBoundLog :
+      Real.log
+          ((16 : ℝ) *
+            (((Real.sqrt (m : ℝ) + (1 / 8 : ℝ)) /
+                  (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) ^ (N + 1)) +
+              1)) ≤
+        (M : ℝ) * Real.log (2 : ℝ)) :
+    ∃ tMain : ℝ,
+      0 < tMain ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq (N + 1)) ≤ 1 / 4 := by
+  let tailBound : ℝ :=
+    (Real.sqrt (m : ℝ) + (1 / 8 : ℝ)) /
+      (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) ^ (N + 1)
+  have hm_real_pos : 0 < (m : ℝ) := by
+    exact_mod_cast hm
+  have hm_real_one : (1 : ℝ) ≤ (m : ℝ) := by
+    exact_mod_cast hm
+  have hsqrt_pos : 0 < Real.sqrt (m : ℝ) :=
+    Real.sqrt_pos.2 hm_real_pos
+  have hsqrt_one : 1 ≤ Real.sqrt (m : ℝ) :=
+    Real.one_le_sqrt.mpr hm_real_one
+  have hdelta_le : (1 / 200 : ℝ) / Real.sqrt (m : ℝ) ≤ 1 / 200 := by
+    rw [div_le_iff₀ hsqrt_pos]
+    nlinarith
+  have hfactor_pos : 0 < 1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ) := by
+    have hdelta_lt_one : (1 / 200 : ℝ) / Real.sqrt (m : ℝ) < 1 :=
+      lt_of_le_of_lt hdelta_le (by norm_num)
+    nlinarith
+  have htailBound_nonneg : 0 ≤ tailBound := by
+    have hnum_nonneg : 0 ≤ Real.sqrt (m : ℝ) + (1 / 8 : ℝ) := by
+      nlinarith [Real.sqrt_nonneg (m : ℝ)]
+    have hden_nonneg :
+        0 ≤ (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) ^ (N + 1) :=
+      pow_nonneg hfactor_pos.le (N + 1)
+    exact div_nonneg hnum_nonneg hden_nonneg
+  have hbudget :
+      (Real.sqrt (m : ℝ) + (1 / 8 : ℝ)) /
+          (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) ^ (N + 1) ≤
+        tailBound := by
+    rfl
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_selectedClosedFormAbsTLowerTail_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (tailBound := tailBound) (N := N) (M := M)
+      hxRange hx0 ht0 htstep hnewton_next_source htailBound_nonneg
+      hbudget hcount (by simpa [tailBound] using htailBoundLog)
+
+/--
 Range-coordinate selected-tail-bound version of the measured-tail handoff.
 Future moving-center or bounded-polytope estimates can now supply a plain
 bound on the selected successor range dual norm; this wrapper handles the

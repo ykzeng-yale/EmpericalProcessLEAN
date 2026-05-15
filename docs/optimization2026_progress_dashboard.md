@@ -269,6 +269,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_selectedClosedFormAbsTLowerTail_succ_noFactor_standardConstants`.
   Range-feasibility/moving-center work should now budget directly against
   `(1 - (1/200) / sqrt m)^N` or the selected successor denominator.
+  The selected closed-form source-shape wrapper now adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_selectedClosedFormAbsTLowerTail_internalTailBound_succ_noFactor_standardConstants`.
+  It fixes the selected tail expression internally and discharges the
+  nonnegativity/reflexive budget proof, leaving only selected count/log
+  hypotheses.  This is finite-window infrastructure; because the denominator
+  decreases as the preliminary parameter decreases, it should not replace the
+  true moving-center/bounded-polytope long-window range-tail proof.
   The selected-tail-bound packet adds `chewi1316_measuredTailLog_le_of_tailBound`
   and the range/source/concrete selected-bound handoffs
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,

@@ -333,6 +333,16 @@ callers no longer need to prove `tau <= |t_N|`; they can state the tail
 budget directly with the explicit denominator
 `(1 - (1/200) / sqrt m)^N` or the selected successor denominator
 `(1 - (1/200) / sqrt m)^(N+1)`.
+The newest selected closed-form source-shape wrapper adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_selectedClosedFormAbsTLowerTail_internalTailBound_succ_noFactor_standardConstants`.
+It fixes the selected tail bound to
+`(sqrt m + 1/8) / (1 - (1/200) / sqrt m)^(N+1)` internally and discharges the
+tail-bound nonnegativity and reflexive budget side, leaving only the selected
+count/log hypotheses plus range feasibility.  This is useful finite selected
+window infrastructure, but it is not the long-window Chewi/Nesterov
+preliminary-stage proof: the denominator decreases with `N`, so this
+closed-form lower-`|t|` route should not be treated as a substitute for a
+moving-center or bounded-polytope range-tail invariant.
 The newest selected range source-radius packet adds
 `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourceRadiusHalf`,
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeSourceRadiusHalf_succ_noFactor_standardConstants`, and
@@ -377,6 +387,15 @@ route is the direct moving-center / bounded-polytope range-tail estimate that
 older route notes identify after the positive-orthant obstruction packets,
 reusing the compiled range-tail and source-start consumers rather than
 re-entering the false fixed-source radius/summability path.
+Search/agent check for this run: the scalar actual-budget recurrence
+`B_{n+1} <= B_n^2/(1-B_n)^2 + 1/200` supports uniform smallness and finite
+short-window prefix bounds, but it does not imply a summable total mass or the
+standard doubled half-contraction by itself.  Local consumers for geometric,
+contracting, and range-to-source budgets are already compiled; do not recreate
+them.  The next aggressive target remains a genuine long-window range-tail
+estimate, preferably a moving-center/bounded-polytope theorem producing the
+measured or selected slack-range tail bound consumed by the `rangeMem`
+source-start wrappers.
 The newest measured-tail packet adds
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_measuredRangeTailLogBound_noFactor`.
 It removes the need for a uniform guessed tail bound at this layer: for a
