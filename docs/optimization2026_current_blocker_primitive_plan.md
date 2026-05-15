@@ -494,6 +494,15 @@ so the next aggressive packet should either prove a valid scalar finite-window
 consequence that feeds an existing measured-tail/selected-index handoff, or
 switch to the moving-center bounded-polytope tail route instead of trying to
 force half-contraction.
+The scalar closure packet adds `real_quadratic_add_standard_le_one_hundredth`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_le_one_hundredth_of_quadratic_add_standard`,
+and
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_lt_one_of_quadratic_add_standard`.
+Thus the verified actual recurrence can now be iterated without carrying a
+separate `< 1` side condition: all actual next-pre-decrement budgets stay
+below `1 / 100`.  This is a boundedness invariant only; it still does not
+produce the prefix `tsum <= 1 / 2`, so the remaining §13.16 route is still
+finite-window/selected-index or moving-tail, not summability by contraction.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new

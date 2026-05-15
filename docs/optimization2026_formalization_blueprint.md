@@ -275,6 +275,14 @@ this verified additive recurrence to derive a finite-window/selected-index
 certificate, or route through the moving-center measured-tail wrappers; do not
 feed the conditional half-contraction consumers unless a separate theorem
 really proves that stronger assumption.
+The scalar closure layer now adds `real_quadratic_add_standard_le_one_hundredth`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_le_one_hundredth_of_quadratic_add_standard`,
+and
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_lt_one_of_quadratic_add_standard`.
+So the actual budget recurrence is self-iterable and keeps every `B_n` below
+`1 / 100`; this closes the recurring `< 1` side condition for future finite
+window arguments, but it deliberately does not claim the nonexistent
+summable/half-contraction budget.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the

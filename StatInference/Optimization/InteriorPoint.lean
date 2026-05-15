@@ -35723,6 +35723,187 @@ theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadr
   simpa [hdelta_sqrt] using hrec
 
 /--
+Scalar arithmetic for the standard preliminary actual-budget recurrence.  A
+budget at most `1/100` is mapped back below `1/100` by the quadratic
+Newton-step term plus the standard `1/200` parameter-shift cost.
+-/
+theorem real_quadratic_add_standard_le_one_hundredth
+    {u : ℝ} (hu_nonneg : 0 ≤ u) (hu : u ≤ 1 / 100) :
+    u ^ (2 : ℕ) / (1 - u) ^ (2 : ℕ) + 1 / 200 ≤ 1 / 100 := by
+  have hden_pos : 0 < 1 - u := by nlinarith
+  have hquad : u ^ (2 : ℕ) / (1 - u) ^ (2 : ℕ) ≤ 1 / 200 := by
+    rw [div_le_iff₀ (sq_pos_of_pos hden_pos)]
+    have hden_lower : (99 / 100 : ℝ) ≤ 1 - u := by nlinarith
+    have hden_nonneg : 0 ≤ 1 - u := le_of_lt hden_pos
+    have hden_sq_lower : (99 / 100 : ℝ) ^ (2 : ℕ) ≤ (1 - u) ^ (2 : ℕ) :=
+      (sq_le_sq₀ (by norm_num : (0 : ℝ) ≤ 99 / 100) hden_nonneg).2
+        hden_lower
+    have hu_sq : u ^ (2 : ℕ) ≤ (1 / 100 : ℝ) ^ (2 : ℕ) :=
+      (sq_le_sq₀ hu_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 100)).2 hu
+    have hconst :
+        (1 / 100 : ℝ) ^ (2 : ℕ) ≤
+          (1 / 200 : ℝ) * (99 / 100 : ℝ) ^ (2 : ℕ) := by
+      norm_num
+    have hmono :
+        (1 / 200 : ℝ) * (99 / 100 : ℝ) ^ (2 : ℕ) ≤
+          (1 / 200 : ℝ) * (1 - u) ^ (2 : ℕ) :=
+      mul_le_mul_of_nonneg_left hden_sq_lower (by norm_num)
+    exact hu_sq.trans (hconst.trans hmono)
+  linarith
+
+/--
+The actual finite-row preliminary next-pre-decrement budget remains uniformly
+small under the verified quadratic-plus-standard-shift recurrence.  This
+discharges the `< 1` side-condition needed to iterate the recurrence; it is a
+boundedness invariant, not a summability or half-contraction theorem.
+-/
+theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_le_one_hundredth_of_quadratic_add_standard
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq : ℕ -> ℝ}
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ k : ℕ,
+      tseq (k + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq k)
+    (hxRange : ∀ k : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq k) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hnewton_next_source : ∀ k : ℕ,
+      xseq (k + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (k + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq k)) :
+    ∀ n : ℕ,
+      chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+        aRow bSlack xbar0 xseq tseq n ≤ 1 / 100 := by
+  let B : ℕ -> ℝ :=
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+      aRow bSlack xbar0 xseq tseq
+  have hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) := by
+    simpa [← hx0] using hxRange 0
+  have hzero : B 0 ≤ 1 / 200 := by
+    let phiGrad : F -> F :=
+      barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogGrad
+    let invHess : F -> F →L[ℝ] F :=
+      chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack
+    let delta : ℝ := (1 / 200 : ℝ) / Real.sqrt (m : ℝ)
+    have hsqrt_pos : 0 < Real.sqrt (m : ℝ) := by
+      exact Real.sqrt_pos.2 (by exact_mod_cast hm)
+    have hdelta_nonneg : 0 ≤ delta :=
+      div_nonneg (by norm_num) (le_of_lt hsqrt_pos)
+    have hdelta_sqrt : delta * Real.sqrt (m : ℝ) = 1 / 200 := by
+      have hsqrt_ne : Real.sqrt (m : ℝ) ≠ 0 := ne_of_gt hsqrt_pos
+      simp [delta, hsqrt_ne]
+    have hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack :=
+      polytopeSlackSet_of_rangeRestrict_mem aRow bSlack hxbar0Range
+    have hgrad_bound :
+        dualLocalNorm invHess xbar0 (phiGrad xbar0) ≤
+          Real.sqrt (m : ℝ) := by
+      simpa [invHess, phiGrad] using
+        (chewi1314_polytopeSlackNegLog_selfConcordantBarrierOn_rangeInvHess
+          aRow bSlack).gradient_bound hxbar0Set
+    have hgrad_eq :
+        preliminaryPathGrad phiGrad xbar0 (tseq (0 + 1)) (xseq 0) =
+          delta • phiGrad xbar0 := by
+      rw [hx0, htstep 0, ht0]
+      rw [preliminaryPathGrad_self_eq]
+      simp [delta]
+    calc
+      B 0 =
+          dualLocalNorm invHess xbar0 (delta • phiGrad xbar0) := by
+            simp only [B, chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget,
+              newtonDecrement, invHess, phiGrad]
+            rw [hgrad_eq, hx0]
+      _ = delta * dualLocalNorm invHess xbar0 (phiGrad xbar0) := by
+            rw [chewi1314_polytopeSlackNegLog_rangePullInvHess_dualLocalNorm_smul
+              aRow bSlack hxbar0Range delta (phiGrad xbar0)]
+            rw [abs_of_nonneg hdelta_nonneg]
+      _ ≤ delta * Real.sqrt (m : ℝ) :=
+            mul_le_mul_of_nonneg_left hgrad_bound hdelta_nonneg
+      _ = 1 / 200 := hdelta_sqrt
+  have hB_nonneg : ∀ n : ℕ, 0 ≤ B n := by
+    intro n
+    change 0 ≤
+      chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+        aRow bSlack xbar0 xseq tseq n
+    simpa [chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget,
+      newtonDecrement] using
+      dualLocalNorm_nonneg
+        (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+        (xseq n)
+        (preliminaryPathGrad
+          (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad)
+          xbar0 (tseq (n + 1)) (xseq n))
+  intro n
+  induction n with
+  | zero =>
+      have hzero' : B 0 ≤ 1 / 100 := by nlinarith
+      simpa [B] using hzero'
+  | succ n ih =>
+      have ihB : B n ≤ 1 / 100 := by simpa [B] using ih
+      have hpre_lt_one : B n < 1 := by nlinarith
+      have hrec : B (n + 1) ≤
+          B n ^ (2 : ℕ) / (1 - B n) ^ (2 : ℕ) + 1 / 200 := by
+        simpa [B] using
+          chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_standard
+            (hm := hm) (aRow := aRow) (bSlack := bSlack)
+            (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+            n hxRange hnewton_next_source htstep
+            (by simpa [B] using hpre_lt_one)
+      have hscalar :
+          B n ^ (2 : ℕ) / (1 - B n) ^ (2 : ℕ) + 1 / 200 ≤ 1 / 100 :=
+        real_quadratic_add_standard_le_one_hundredth (hB_nonneg n) ihB
+      exact hrec.trans hscalar
+
+/--
+Corollary of the uniform `1/100` bound: every actual next-pre-decrement budget
+is below the domain threshold `1` needed by the quadratic recurrence.
+-/
+theorem chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_lt_one_of_quadratic_add_standard
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq : ℕ -> ℝ}
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ k : ℕ,
+      tseq (k + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq k)
+    (hxRange : ∀ k : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq k) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hnewton_next_source : ∀ k : ℕ,
+      xseq (k + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (k + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq k)) :
+    ∀ n : ℕ,
+      chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget
+        aRow bSlack xbar0 xseq tseq n < 1 := by
+  intro n
+  have hbound :=
+    chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_le_one_hundredth_of_quadratic_add_standard
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+      hx0 ht0 htstep hxRange hnewton_next_source n
+  nlinarith
+
+/--
 At the start of the finite-row preliminary path, the actual next-pre-decrement
 budget is at most the standard Chewi step constant `1/200`.
 -/

@@ -294,6 +294,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   consumers remain useful only behind a separately proved stronger theorem;
   the active route should derive a finite-window/selected-index consequence or
   use the existing moving-center measured-tail handoffs.
+  The scalar closure packet adds `real_quadratic_add_standard_le_one_hundredth`,
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_le_one_hundredth_of_quadratic_add_standard`,
+  and
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_lt_one_of_quadratic_add_standard`.
+  This proves every actual next-pre-decrement budget remains below `1 / 100`
+  under the verified recurrence, discharging the recurrence's own `< 1` side
+  condition while still leaving the finite-window/moving-tail budget as the
+  real Chapter 13 blocker.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing
