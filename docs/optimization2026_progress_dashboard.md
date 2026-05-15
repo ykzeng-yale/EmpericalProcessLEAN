@@ -472,11 +472,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   source slack coordinates.
   The `BddAbove`/`sSup` bridge now adds
   `chewi1316_polytopeSlackNegLog_feasibleSlackCoordinateImage`,
+  `chewi1316_polytopeSlackNegLog_bddAbove_feasibleSlackCoordinateImage_of_isCompact`,
   `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_bddAbove_slackCoordinateSup`,
   and
-  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_bddAboveSlackCoordinateSup_succ_noFactor_standardConstants`.
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_bddAboveSlackCoordinateSup_succ_noFactor_standardConstants`,
+  plus the compact feasible-range wrapper
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSlackCoordinateSup_succ_noFactor_standardConstants`.
   This is the direct entrypoint for compact/bounded feasible-range arguments
-  that naturally produce least-upper-bound data.
+  that naturally produce least-upper-bound data; the Mathlib reuse is
+  `IsCompact.bddAbove_image` with `PiLp.continuous_apply` for coordinates.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds

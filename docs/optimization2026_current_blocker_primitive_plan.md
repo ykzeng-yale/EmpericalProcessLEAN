@@ -759,12 +759,16 @@ These reduce the bounded-polytope obligation further: prove upper bounds
 and §13.16 initializer are then handled by existing compiled infrastructure.
 The newest `BddAbove`/`sSup` version adds
 `chewi1316_polytopeSlackNegLog_feasibleSlackCoordinateImage`,
+`chewi1316_polytopeSlackNegLog_bddAbove_feasibleSlackCoordinateImage_of_isCompact`,
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_bddAbove_slackCoordinateSup`,
 and
-`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_bddAboveSlackCoordinateSup_succ_noFactor_standardConstants`.
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_bddAboveSlackCoordinateSup_succ_noFactor_standardConstants`,
+with the compact-entry wrapper
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSlackCoordinateSup_succ_noFactor_standardConstants`.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
-data directly: show each feasible slack-coordinate image is `BddAbove`, then
-compare its `sSup` to `B * slack_i(xbar0)`.
+data directly: prove the feasible translated slack range is compact (or show
+each coordinate image is `BddAbove`), then compare its coordinate `sSup` values
+to `B * slack_i(xbar0)`.
 
 Archived route log below: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma
