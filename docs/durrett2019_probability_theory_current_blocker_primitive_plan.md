@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V361
+## Live In-Thread Goal Prompt V362
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,16 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V361 adds canonical product-sample covariance-table and
+Latest verified target V362 adds canonical product-sample coordinate-covariance
+and centered-product arbitrary-frequency displays:
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance`,
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCenteredProduct`,
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum`,
+and
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCenteredProduct_explicitMean_sum`.
+These remove the forced `t^2` display from the canonical coordinate-covariance,
+centered-product, and literal normalized-sum characteristic-function source
+forms.  V361 adds canonical product-sample covariance-table and
 arbitrary-frequency centered-product bridges:
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianSource_centeredGaussianCovarianceBilinDualTable`,
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianSource_centeredGaussianCovarianceBilinDualTable`,
@@ -383,7 +392,9 @@ projected-characteristic CLT consumers, the V357 projected-scalar-CLT source
 bridges, the V358 projected-summand-CLT source bridges, or the V359
 vector-Gaussian-source covariance-table/centered-product bridges, or the V360
 common-vector-law covariance-table/centered-product bridges, or the V361
-canonical product-sample covariance-table/centered-product bridges.  Next aggressive packet:
+canonical product-sample covariance-table/centered-product bridges, or the
+V362 canonical coordinate-covariance/centered-product arbitrary-frequency
+displays.  Next aggressive packet:
 continue Chapter 3 by closing a concrete source-facing gap around remaining
 Section 3.10 Gaussian-law wrappers, characteristic-function transport into
 later source statements, or remaining Lindeberg-Feller side conditions; touch
@@ -2877,6 +2888,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V361` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V362` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
