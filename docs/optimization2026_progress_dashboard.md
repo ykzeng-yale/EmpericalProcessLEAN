@@ -248,6 +248,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `ASGD.lean` eventual-bound interfaces, so future moving-center or
   bounded-polytope estimates can be supplied directly as `∀ᶠ N in atTop`
   range-tail bounds.
+  The newest slack-ratio geometry bridge adds
+  `chewi1314_polytopeSlackNegLog_range_sourceGrad_dualLocalNorm_le_positiveOrthant_sourceGrad`,
+  `chewi1314_polytopeSlackNegLog_range_sourceGrad_dualLocalNorm_le_sqrt_mul_of_slackRatio_le`,
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventuallySlackRatioBound_succ_noFactor_standardConstants`.
+  This converts an eventual translated-slack coordinate ratio envelope into
+  the source §13.16 main-stage initializer.  Reuse came from local
+  positive-orthant source-gradient dual norm, Euclidean coordinate-envelope,
+  range inverse-Hessian, and dual/primal Cauchy lemmas; no direct Mathlib
+  range-restriction result was available.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

@@ -431,6 +431,22 @@ interfaces heavily.  Future moving-center/bounded-polytope proofs can now
 state the tail estimate as a filter-eventual fact and let the compiled adapter
 extract the burn-in threshold before invoking the post-threshold §13.16
 handoff.
+The bounded-polytope geometry interface is now sharper: use the pointwise
+range/ambient bridge
+`chewi1314_polytopeSlackNegLog_range_sourceGrad_dualLocalNorm_le_positiveOrthant_sourceGrad`
+and its coordinate-envelope corollary
+`chewi1314_polytopeSlackNegLog_range_sourceGrad_dualLocalNorm_le_sqrt_mul_of_slackRatio_le`.
+The source §13.16 wrapper
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventuallySlackRatioBound_succ_noFactor_standardConstants`
+turns an eventual translated-slack coordinate ratio bound into the compiled
+main-stage initializer.  Search-first reuse result: no Mathlib theorem directly
+covered this affine-range restriction, but local
+`positiveOrthantNegLog_sourceGrad_dualLocalNorm_eq_norm_relative`,
+`euclideanSpace_norm_le_sqrt_fin_mul_of_abs_coord_le`, the range inverse-Hessian
+right-inverse theorem, and local dual/primal Cauchy primitives provide the
+whole bridge.  The remaining real blocker is no longer raw dual-norm plumbing:
+prove the eventual slack-ratio envelope from the bounded-polytope or
+moving-center trajectory invariant.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new

@@ -226,6 +226,17 @@ These reuse Mathlib `Filter.eventually_atTop` to turn a `∀ᶠ N in atTop`
 range-tail estimate into the existing post-threshold §13.16 handoff, matching
 the natural output shape of later moving-center/bounded-polytope asymptotic
 arguments.
+The latest source-shaped geometry bridge further reduces the remaining input
+to an eventual translated-slack coordinate ratio bound.  Reuse
+`chewi1314_polytopeSlackNegLog_range_sourceGrad_dualLocalNorm_le_positiveOrthant_sourceGrad`,
+`chewi1314_polytopeSlackNegLog_range_sourceGrad_dualLocalNorm_le_sqrt_mul_of_slackRatio_le`,
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventuallySlackRatioBound_succ_noFactor_standardConstants`.
+The proof relies on local positive-orthant source-gradient norm evaluation,
+finite Euclidean coordinate-envelope bounds, and the existing range
+inverse-Hessian/Cauchy stack; there is no direct Mathlib range-restriction
+lemma to import.  The next exact target should therefore prove the eventual
+slack-ratio envelope from bounded-polytope or moving-center invariants.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the
