@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V360`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V361`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -35,7 +35,16 @@ automation.
 Current active frontier: Chapter 3 weak convergence, characteristic functions,
 CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V360 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V361 adds
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianSource_centeredGaussianCovarianceBilinDualTable`,
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianSource_centeredGaussianCovarianceBilinDualTable`,
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianSource_centeredProduct`,
+`durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianSource_centeredGaussianCovarianceBilinDualTable`,
+`durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianSource_centeredGaussianCovarianceBilinDualTable_tsq`,
+and
+`durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianSource_centeredProduct`,
+the canonical product-sample covariance-table and arbitrary-frequency
+centered-product bridges.  V360 adds
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_commonVectorLawGaussianSource_centeredGaussianCovarianceBilinDualTable`,
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_commonVectorLawGaussianSource_centeredGaussianCovarianceBilinDualTable`,
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_commonVectorLawGaussianSource_centeredProduct`,
