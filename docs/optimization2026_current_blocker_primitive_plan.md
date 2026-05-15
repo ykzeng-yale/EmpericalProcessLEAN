@@ -637,6 +637,16 @@ The exact-tail finite-window wrapper
 now fixes the verified internal tail budget to `sqrt(m) * 3/2`, so finite
 source-start callers no longer need to pass an arbitrary `tailBound` plus the
 reflexive `sqrt(m) * 3/2 <= tailBound` side condition.
+The auto-log-index finite-window packet adds the scalar selector
+`chewi1316_exists_nat_mul_log_two_between` and the source initializer
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_exactSlackRatioTail_autoLogIndex_succ_noFactor_standardConstants`.
+Search-first reuse result: the proof uses Mathlib `Nat.le_ceil`,
+`Nat.ceil_lt_add_one`, and `Real.log_nonneg` rather than a new
+Archimedean primitive.  Finite-window callers now supply only `N + 1 <= 49`
+and the single overshoot-aware scalar window
+`(log (16 * (sqrt m * 3 / 2 + 1)) + log 2) * sqrt m <= (N + 1) / 200`;
+they no longer manually choose `M` or separately prove the log/count
+side-conditions.
 The old `K+1 <= 25` corollary is superseded by `K+1 <= 49` for finite-window
 work, but this remains a local-window prefix budget, not a global
 preliminary-stage summability theorem.

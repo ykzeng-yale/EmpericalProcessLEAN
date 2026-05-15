@@ -14912,6 +14912,49 @@ theorem chewi1316_exists_nat_mul_log_two_ge (A : ℝ) :
   exact (div_le_iff₀ hlog_pos).mp hM
 
 /--
+Ceiling-based base-two logarithmic budget choice with one-step overshoot
+control.  This is useful when a finite-window proof cannot afford the
+unbounded Archimedean choice from `chewi1316_exists_nat_mul_log_two_ge`.
+-/
+theorem chewi1316_exists_nat_mul_log_two_between {A B : ℝ}
+    (hA_nonneg : 0 ≤ A)
+    (hB : A + Real.log (2 : ℝ) ≤ B) :
+    ∃ M : ℕ,
+      A ≤ (M : ℝ) * Real.log (2 : ℝ) ∧
+      (M : ℝ) * Real.log (2 : ℝ) ≤ B := by
+  let logTwo : ℝ := Real.log (2 : ℝ)
+  have hlog_pos : 0 < logTwo := by
+    simpa [logTwo] using Real.log_pos (by norm_num : (1 : ℝ) < 2)
+  have hAdiv_nonneg : 0 ≤ A / logTwo :=
+    div_nonneg hA_nonneg hlog_pos.le
+  refine ⟨Nat.ceil (A / logTwo), ?_, ?_⟩
+  · have hceil : A / logTwo ≤ (Nat.ceil (A / logTwo) : ℝ) :=
+      Nat.le_ceil (A / logTwo)
+    have hmul := mul_le_mul_of_nonneg_right hceil hlog_pos.le
+    have hdiv_mul : A / logTwo * logTwo = A := by
+      field_simp [hlog_pos.ne']
+    have hmain :
+        A ≤ (Nat.ceil (A / logTwo) : ℝ) * logTwo := by
+      simpa [hdiv_mul] using hmul
+    simpa [logTwo] using hmain
+  · have hceil_lt :
+        (Nat.ceil (A / logTwo) : ℝ) < A / logTwo + 1 :=
+      Nat.ceil_lt_add_one hAdiv_nonneg
+    have hmul_lt :=
+      mul_lt_mul_of_pos_right hceil_lt hlog_pos
+    have hupper_lt :
+        (Nat.ceil (A / logTwo) : ℝ) * logTwo < A + logTwo := by
+      calc
+        (Nat.ceil (A / logTwo) : ℝ) * logTwo
+            < (A / logTwo + 1) * logTwo := hmul_lt
+        _ = A + logTwo := by
+          field_simp [hlog_pos.ne']
+    have hupper :
+        (Nat.ceil (A / logTwo) : ℝ) * logTwo ≤ B :=
+      (hupper_lt.le).trans (by simpa [logTwo] using hB)
+    simpa [logTwo] using hupper
+
+/--
 Archimedean integer choice for any positive scalar iteration unit.
 -/
 theorem chewi1316_exists_nat_mul_pos_ge {A scale : ℝ}
@@ -39345,6 +39388,76 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       (tailBound := Real.sqrt (m : ℝ) * (3 / 2 : ℝ))
       (N := N) (M := M) hx0 ht0 htstep hxRange hnewton_next_source hN
       le_rfl hcount htailBoundLog
+
+/--
+Finite-window exact-tail source-start initializer with an automatic base-two
+logarithmic index.  The caller only proves that the exact slack-ratio log
+budget, with one `log 2` ceiling overshoot, fits inside the current
+pre-decrement window.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_exactSlackRatioTail_autoLogIndex_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F} {tseq : ℕ -> ℝ}
+    {N : ℕ}
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ k : ℕ,
+      tseq (k + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq k)
+    (hxRange : ∀ k : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq k) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hnewton_next_source : ∀ k : ℕ,
+      xseq (k + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (k + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq k))
+    (hN : N + 1 ≤ 49)
+    (hlogWindow :
+      (Real.log ((16 : ℝ) * (Real.sqrt (m : ℝ) * (3 / 2 : ℝ) + 1)) +
+          Real.log (2 : ℝ)) *
+        Real.sqrt (m : ℝ) ≤
+      ((N + 1 : ℕ) : ℝ) * (1 / 200 : ℝ)) :
+    ∃ tMain : ℝ,
+      0 < tMain ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq (N + 1)) ≤ 1 / 4 := by
+  let logBudget : ℝ :=
+    Real.log ((16 : ℝ) * (Real.sqrt (m : ℝ) * (3 / 2 : ℝ) + 1))
+  have hlogBudget_nonneg : 0 ≤ logBudget := by
+    have htailBudget_ge_one :
+        1 ≤ Real.sqrt (m : ℝ) * (3 / 2 : ℝ) + 1 := by
+      nlinarith [Real.sqrt_nonneg (m : ℝ)]
+    have hinside_ge_one :
+        1 ≤ (16 : ℝ) * (Real.sqrt (m : ℝ) * (3 / 2 : ℝ) + 1) := by
+      nlinarith
+    simpa [logBudget] using Real.log_nonneg hinside_ge_one
+  obtain ⟨M, hMlog, hMupper⟩ :=
+    chewi1316_exists_nat_mul_log_two_between
+      (A := logBudget) (B := logBudget + Real.log (2 : ℝ))
+      hlogBudget_nonneg le_rfl
+  have hcount :
+      (M : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        ((N + 1 : ℕ) : ℝ) * (1 / 200 : ℝ) := by
+    have hmul :=
+      mul_le_mul_of_nonneg_right hMupper (Real.sqrt_nonneg (m : ℝ))
+    exact hmul.trans (by simpa [logBudget] using hlogWindow)
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_exactSlackRatioTail_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (N := N) (M := M) hx0 ht0 htstep hxRange hnewton_next_source hN
+      hcount (by simpa [logBudget] using hMlog)
 
 /--
 The actual next-pre-decrement sequence has the required prefix budget once its

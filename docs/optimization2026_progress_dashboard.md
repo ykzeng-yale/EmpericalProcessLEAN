@@ -391,6 +391,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   fixes the finite-window tail budget to the verified internal
   `sqrt(m) * 3/2` bound, removing a redundant caller-supplied `tailBound`
   comparison from source-start uses.
+  The newest auto-log-index finite-window packet adds
+  `chewi1316_exists_nat_mul_log_two_between` and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_exactSlackRatioTail_autoLogIndex_succ_noFactor_standardConstants`.
+  It reuses Mathlib `Nat.le_ceil`, `Nat.ceil_lt_add_one`, and
+  `Real.log_nonneg` to choose the base-two log index with one `log 2`
+  overshoot, so finite-window callers now pass one scalar window inequality
+  instead of manually supplying `M`, the log bound, and the count bound.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds
