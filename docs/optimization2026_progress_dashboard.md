@@ -257,6 +257,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   This converts an eventual translated-slack coordinate ratio envelope into
   the no-prefix range-tail initializer, so future moving-center work can
   target coordinate ratios directly without reintroducing a prefix budget.
+  The no-prefix source-radius packet adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySourceRadiusBound_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySourceRadiusHalf_succ_noFactor_standardConstants`.
+  This converts an eventual source local-norm radius bound around
+  `rangeRestrict xbar0` into the no-prefix slack-ratio/range-tail initializer.
+  The highest-leverage remaining proof is now the moving-center or
+  bounded-polytope invariant that supplies all-iterate range feasibility and an
+  eventual source-radius, preferably radius `1/2`.
   The no-prefix lower-denominator packet adds
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_postThresholdAbsTLowerTail_succ_noFactor_standardConstants`
   and

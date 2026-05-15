@@ -34456,6 +34456,150 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       heventuallyRangeTailBound
 
 /--
+Eventual source-radius handoff from preliminary Newton data and supplied range
+feasibility, with no prefix pre-decrement budget assumption.  A future
+moving-center/local-metric proof can provide an eventual source local-norm
+bound; the range slack-ratio bridge converts it to the coordinate envelope
+consumed by the no-prefix slack-ratio initializer.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySourceRadiusBound_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F} {tseq : ℕ -> ℝ}
+    {r tailBound : ℝ}
+    (hxRange : ∀ k : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq k) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hr_nonneg : 0 ≤ r)
+    (hbudget : Real.sqrt (m : ℝ) * (1 + r) ≤ tailBound)
+    (heventuallySourceRadiusBound :
+      ∀ᶠ Nout : ℕ in atTop,
+        localNorm
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM)
+            ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+            ((polytopeSlackCLM aRow).rangeRestrict (xseq Nout) -
+              (polytopeSlackCLM aRow).rangeRestrict xbar0) ≤ r) :
+    ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 := by
+  have hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) := by
+    simpa [hx0] using hxRange 0
+  have hB_nonneg : 0 ≤ (1 + r : ℝ) := by
+    linarith
+  have heventuallySlackRatioBound :
+      ∀ᶠ Nout : ℕ in atTop,
+        ∀ i : Fin m,
+          |((((polytopeSlackCLM aRow).rangeRestrict (xseq Nout) :
+                EuclideanSpace ℝ (Fin m)) + bSlack) i) /
+              ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+                EuclideanSpace ℝ (Fin m)) + bSlack) i)| ≤ (1 + r : ℝ) :=
+    heventuallySourceRadiusBound.mono (by
+      intro Nout hlocal
+      exact
+        chewi1314_polytopeSlackNegLog_range_slackRatio_le_one_add_of_sourceLocalNorm_le
+          (a := aRow) (b := bSlack)
+          (x0 := (polytopeSlackCLM aRow).rangeRestrict xbar0)
+          (y := (polytopeSlackCLM aRow).rangeRestrict (xseq Nout))
+          (r := r) hxbar0Range hlocal)
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySlackRatioBound_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (B := (1 + r : ℝ)) (tailBound := tailBound)
+      hxRange hx0 ht0 htstep hnewton_next_source hB_nonneg
+      hbudget heventuallySlackRatioBound
+
+/--
+Radius-half specialization of the no-prefix eventual source-radius handoff.
+This is the source shape expected from a moving-center proof that eventually
+keeps the preliminary iterates inside the source Dikin half-ball.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySourceRadiusHalf_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F} {tseq : ℕ -> ℝ}
+    {tailBound : ℝ}
+    (hxRange : ∀ k : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq k) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hbudget : Real.sqrt (m : ℝ) * (3 / 2 : ℝ) ≤ tailBound)
+    (heventuallySourceRadiusHalf :
+      ∀ᶠ Nout : ℕ in atTop,
+        localNorm
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM)
+            ((polytopeSlackCLM aRow).rangeRestrict xbar0)
+            ((polytopeSlackCLM aRow).rangeRestrict (xseq Nout) -
+              (polytopeSlackCLM aRow).rangeRestrict xbar0) ≤ 1 / 2) :
+    ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 := by
+  have hbudget' : Real.sqrt (m : ℝ) * (1 + (1 / 2 : ℝ)) ≤ tailBound := by
+    rw [show (1 : ℝ) + 1 / 2 = 3 / 2 by norm_num]
+    exact hbudget
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySourceRadiusBound_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (r := (1 / 2 : ℝ)) (tailBound := tailBound)
+      hxRange hx0 ht0 htstep hnewton_next_source
+      (by norm_num)
+      hbudget'
+      heventuallySourceRadiusHalf
+
+/--
 Post-threshold lower-`|t|` handoff from preliminary Newton data and supplied
 range feasibility.  The reverse preliminary-path scaled-tail estimate is
 converted into a post-threshold range-tail bound, then consumed by the
