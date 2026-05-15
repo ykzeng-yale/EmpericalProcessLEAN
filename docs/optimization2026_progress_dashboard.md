@@ -240,6 +240,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   The post-threshold range-tail variant now removes the `M` and count
   parameters from the tail assumption entirely; it only needs a plain tail
   bound for all output indices after `Nmin`.
+  The newest filter-eventual adapter packet adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventuallyRangeTailBound_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallyRangeTailBound_succ_noFactor_standardConstants`.
+  It reuses Mathlib `Filter.eventually_atTop`, consistent with local
+  `ASGD.lean` eventual-bound interfaces, so future moving-center or
+  bounded-polytope estimates can be supplied directly as `∀ᶠ N in atTop`
+  range-tail bounds.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

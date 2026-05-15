@@ -218,6 +218,14 @@ The existential selected-tail-bound endpoint
 now chooses `M` and the successor count index internally.  The remaining
 source-shaped geometry obligation is an eventual selected successor bound
 under that count inequality.
+The filter-eventual adapter layer now adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventuallyRangeTailBound_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallyRangeTailBound_succ_noFactor_standardConstants`.
+These reuse Mathlib `Filter.eventually_atTop` to turn a `∀ᶠ N in atTop`
+range-tail estimate into the existing post-threshold §13.16 handoff, matching
+the natural output shape of later moving-center/bounded-polytope asymptotic
+arguments.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the

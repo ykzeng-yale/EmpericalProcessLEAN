@@ -421,6 +421,16 @@ Even better, use
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_postThresholdRangeTailBound_succ_noFactor_standardConstants`
 when the moving-center/bounded-polytope proof gives a plain post-threshold
 tail bound independent of `M` and the count inequality.
+The newest eventual-tail adapter packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventuallyRangeTailBound_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallyRangeTailBound_succ_noFactor_standardConstants`.
+Search-first reuse result: Mathlib exposes `Filter.eventually_atTop`, and
+local `StatInference/Optimization/ASGD.lean` already uses `∀ᶠ N in atTop`
+interfaces heavily.  Future moving-center/bounded-polytope proofs can now
+state the tail estimate as a filter-eventual fact and let the compiled adapter
+extract the burn-in threshold before invoking the post-threshold §13.16
+handoff.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
