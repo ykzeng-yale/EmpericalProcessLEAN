@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V365
+## Live In-Thread Goal Prompt V366
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,17 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V365 lifts the textbook normalized-sum display from
+Latest verified target V366 adds Durrett centered-product normalized-sum CLT
+wrappers for vector-source and common-vector-law assumptions:
+`durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCenteredProduct_explicitMean_sum`,
+`durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianCenteredProduct_explicitMean_sum`,
+`durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCenteredProduct_sum`,
+and
+`durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianCenteredProduct_sum`.
+These let source assumptions stated as
+`E[(X_i - mu_i)(X_j - mu_j)] = Gamma_ij` consume the literal
+`(S_n - n * mu) / sqrt n` vector CLT endpoint before specializing to canonical
+product samples.  V365 lifts the textbook normalized-sum display from
 canonical product samples to arbitrary finite-coordinate source spaces:
 `durrett2019_theorem_3_10_7_finiteCoordinate_explicitMean_normalization_eq_sum`,
 `durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum`,
@@ -419,6 +429,7 @@ V362 canonical coordinate-covariance/centered-product arbitrary-frequency
 displays, or the V363 literal centered normalized-sum arbitrary-frequency
 display, or the V364 zero-mean coordinate-covariance literal normalized-sum
 wrappers, or the V365 vector/common-law explicit-mean normalized-sum CLT
+wrappers, or the V366 vector/common-law centered-product normalized-sum CLT
 wrappers.  Next aggressive packet:
 continue Chapter 3 by closing a concrete source-facing gap around remaining
 Section 3.10 Gaussian-law wrappers, characteristic-function transport into
@@ -2913,6 +2924,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V365` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V366` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V365`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V366`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -35,7 +35,14 @@ automation.
 Current active frontier: Chapter 3 weak convergence, characteristic functions,
 CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V365 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V366 adds
+`durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCenteredProduct_explicitMean_sum`,
+`durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianCenteredProduct_explicitMean_sum`,
+`durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCenteredProduct_sum`,
+and
+`durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianCenteredProduct_sum`,
+the vector-source and common-vector-law centered-product normalized-sum CLT
+wrappers.  V365 adds
 `durrett2019_theorem_3_10_7_finiteCoordinate_explicitMean_normalization_eq_sum`,
 `durrett2019_theorem_3_10_7_multivariateCLT_of_vectorGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum`,
 and
