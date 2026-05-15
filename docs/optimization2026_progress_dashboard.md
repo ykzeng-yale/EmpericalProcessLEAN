@@ -477,9 +477,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_bddAbove_feasibleSlackCoordinateImage_of_subset_isCompact`,
   `chewi1316_polytopeSlackNegLog_feasibleSlackCoordinateSup_le_slackCoordinateImageOnSup_of_subset_isCompact`,
   `chewi1316_polytopeSlackNegLog_slackCoordinateImageOnSup_le_of_forall_le`,
+  `chewi1316_polytopeSlackNegLog_slackCoordinate_le_center_add_radius_of_mem_closedBall`,
   `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_bddAbove_slackCoordinateSup`,
   `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateSup`,
   `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateUpperBound`,
+  `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_closedBall_slackCoordinateUpperBound`,
   and
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_bddAboveSlackCoordinateSup_succ_noFactor_standardConstants`,
   plus the compact feasible-range wrapper
@@ -489,11 +491,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   now strengthened by
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSupersetEnvelopeSlackCoordinateSup_succ_noFactor_standardConstants`
   and the pointwise envelope-upper-bound wrapper
-  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSupersetSlackCoordinateUpperBound_succ_noFactor_standardConstants`.
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSupersetSlackCoordinateUpperBound_succ_noFactor_standardConstants`,
+  plus the closed-ball envelope wrapper
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_closedBallSlackCoordinateUpperBound_succ_noFactor_standardConstants`.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,
-  `csSup_le_csSup`, `csSup_le`, and `PiLp.continuous_apply` for coordinates.
+  `csSup_le_csSup`, `csSup_le`, `isCompact_closedBall`,
+  `PiLp.norm_apply_le`, and `PiLp.continuous_apply` for coordinates.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds
