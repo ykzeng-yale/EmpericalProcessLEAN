@@ -422,6 +422,15 @@ future geometry target is now a plain eventual selected successor bound
 `dualLocalNorm rangeInvHess (rangeRestrict (xseq (N+1))) (rangeGrad (rangeRestrict xbar0)) <= tailBound`
 under the count inequality, plus the all-iterate range-feasibility invariant;
 manual measured-tail log and `M,N` plumbing should not be repeated.
+The newest no-prefix post-threshold packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_thresholdedEventualSelectedRangeTailBound_succ_noFactor_standardConstants`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_postThresholdRangeTailBound_succ_noFactor_standardConstants`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallyRangeTailBound_succ_noFactor_standardConstants`.
+These are the preferred consumers for the next geometry packet: supply
+all-iterate range feasibility, the source preliminary Newton recurrence, and
+either a post-threshold or `∀ᶠ N in atTop` plain range-tail dual-norm bound.
+They choose the selected index internally and avoid both prefix-budget and
+manual selected-count hypotheses.
 The newest selected-tail-bound packet adds the scalar log bridge
 `chewi1316_measuredTailLog_le_of_tailBound` plus
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,
