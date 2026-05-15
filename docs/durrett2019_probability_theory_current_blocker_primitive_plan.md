@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V350
+## Live In-Thread Goal Prompt V351
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,12 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V350 adds the canonical product-sample coordinate
+Latest verified target V351 adds the literal centered normalized-sum
+characteristic-function wrapper
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCenteredProduct_sum`.
+This rewrites the V350 projected characteristic-function endpoint into the
+textbook centered display `S_n / sqrt n` using the compiled canonical-product
+normalization algebra.  V350 adds the canonical product-sample coordinate
 covariance and centered-product characteristic-function wrappers
 `durrett2019_theorem_3_10_7_centeredProduct_eq_of_coordinateCovariance`,
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance`,
@@ -269,10 +274,11 @@ wrappers, or the V345 projected-scalar-CLT to characteristic-function bridge,
 or the V346 projected-summand-CLT to characteristic-function bridge, or the
 V347 vector-Gaussian-source characteristic-function bridge, the V348
 common-vector-law characteristic-function bridge, the V349 canonical-product
-characteristic-function bridge, or the V350 canonical coordinate-covariance and
-centered-product characteristic-function bridge.  Next aggressive packet:
-continue Chapter 3 by closing a concrete source-facing gap around literal
-normalized-sum characteristic-function displays, remaining Section 3.10
+characteristic-function bridge, the V350 canonical coordinate-covariance and
+centered-product characteristic-function bridge, or the V351 centered
+normalized-sum characteristic-function bridge.  Next aggressive packet:
+continue Chapter 3 by closing a concrete source-facing gap around nonzero-mean
+literal normalized-sum characteristic-function displays, remaining Section 3.10
 Gaussian-law wrappers, remaining Lindeberg-Feller side conditions, or
 characteristic-function transport into later source statements; touch Chapter 2
 only if a Chapter 3 theorem requires a missing source primitive.
@@ -2765,6 +2771,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V350` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V351` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
