@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V359
+## Live In-Thread Goal Prompt V360
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,18 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V359 adds vector-Gaussian-source covariance-table and
+Latest verified target V360 adds common-vector-law covariance-table and
+arbitrary-frequency centered-product bridges:
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_commonVectorLawGaussianSource_centeredGaussianCovarianceBilinDualTable`,
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_commonVectorLawGaussianSource_centeredGaussianCovarianceBilinDualTable`,
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_commonVectorLawGaussianSource_centeredProduct`,
+`durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianSource_centeredGaussianCovarianceBilinDualTable`,
+`durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianSource_centeredGaussianCovarianceBilinDualTable_tsq`,
+and
+`durrett2019_theorem_3_10_7_multivariateCLT_of_commonVectorLawGaussianSource_centeredProduct`.
+These let common-law source assumptions consume the V359/V358
+covariance-bilinear table and arbitrary-frequency centered-product routes
+directly.  V359 adds vector-Gaussian-source covariance-table and
 arbitrary-frequency centered-product bridges:
 `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedScalarCLT_centeredGaussianCovarianceBilinDualTable`,
 `durrett2019_theorem_3_10_7_multivariateCLT_of_projectedSummandCLT_centeredGaussianCovarianceBilinDualTable`,
@@ -359,7 +370,8 @@ Gaussian ordinary characteristic-function bridge, the V355 centered
 Gaussian ordinary characteristic-function bridge, the V356 covariance-table
 projected-characteristic CLT consumers, the V357 projected-scalar-CLT source
 bridges, the V358 projected-summand-CLT source bridges, or the V359
-vector-Gaussian-source covariance-table/centered-product bridges.  Next aggressive packet:
+vector-Gaussian-source covariance-table/centered-product bridges, or the V360
+common-vector-law covariance-table/centered-product bridges.  Next aggressive packet:
 continue Chapter 3 by closing a concrete source-facing gap around remaining
 Section 3.10 Gaussian-law wrappers, characteristic-function transport into
 later source statements, or remaining Lindeberg-Feller side conditions; touch
@@ -2853,6 +2865,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V359` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V360` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
