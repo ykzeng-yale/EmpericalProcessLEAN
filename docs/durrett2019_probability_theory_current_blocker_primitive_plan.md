@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V370
+## Live In-Thread Goal Prompt V371
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,18 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V370 adds arbitrary-source one-based iid support and
+Latest verified target V371 adds one-based Theorem 2.4.9 consumers for the
+other already-compiled source entrances: full infinite-product joint law
+(`*_of_hasLaw_infinitePi_oneBased`), identically distributed coordinates plus
+`iIndepFun` (`*_of_iIndepFun_identDistrib_oneBased`), and pairwise-identically
+distributed coordinates (`*_of_pairwise_identDistrib_oneBased`), including the
+shared source extractor
+`durrett2019_theorem_2_4_9_pairwise_identDistrib_oneBased_source`.  These
+wrappers cover the six half-line GC / outer-a.s. GC / empirical-CDF /
+range-sum / inverse-multiply range-sum endpoints for Durrett's one-based
+`X_1, X_2, ...` and `n^{-1} sum_{m=1}^n` displays without asking the next
+cycle to restate source extraction.  V370 adds arbitrary-source one-based iid
+support and
 Theorem 2.4.9 Glivenko-Cantelli wrappers matching Durrett's
 `X_1, X_2, ...` and `n^{-1} sum_{m=1}^n` notation without forcing the
 canonical product-space specialization:
@@ -477,7 +488,9 @@ wrappers, the V367 vector/common-law centered-product normalized-sum
 projected-characteristic wrappers, or the V368 canonical iid product-space
 half-line Glivenko-Cantelli wrappers, the V369 one-based canonical iid
 product-space Glivenko-Cantelli wrappers, or the V370 arbitrary-source
-one-based iid / empirical-CDF wrappers.  Next aggressive packet:
+one-based iid / empirical-CDF wrappers, or the V371 one-based full-joint-law,
+identDistrib+iIndepFun, and pairwise-identDistrib source wrappers.  Next
+aggressive packet:
 continue Chapter 2.1 / Theorem 2.4.9 only by closing a concrete missing
 source-facing shape around independence, product laws, canonical iid
 coordinates, empirical-CDF notation, or half-line Glivenko-Cantelli consumers;
@@ -2971,6 +2984,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V370` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V371` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

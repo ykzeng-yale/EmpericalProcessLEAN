@@ -32,14 +32,22 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V370` in
+Route from `Live In-Thread Goal Prompt V371` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Chapter 2.1
 independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V370 adds
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V371 adds one-based
+Theorem 2.4.9 consumers for full infinite-product joint laws
+(`*_of_hasLaw_infinitePi_oneBased`), identically distributed coordinates plus
+`iIndepFun` (`*_of_iIndepFun_identDistrib_oneBased`), and pairwise-identically
+distributed coordinates (`*_of_pairwise_identDistrib_oneBased`), including
+`durrett2019_theorem_2_4_9_pairwise_identDistrib_oneBased_source`.  These
+cover the six half-line GC / outer-a.s. GC / empirical-CDF / range-sum /
+inverse-multiply range-sum endpoints for Durrett's one-based display.  V370
+adds
 `durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun`,
 `durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_iIndepFun`,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun_oneBased`,
