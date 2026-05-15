@@ -632,6 +632,11 @@ the prefix estimate
 `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_length_div_ninety_nine_of_quadratic_add_standard`,
 and the half-budget corollary
 `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_length_le_forty_nine`.
+The exact-tail finite-window wrapper
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_exactSlackRatioTail_succ_noFactor_standardConstants`
+now fixes the verified internal tail budget to `sqrt(m) * 3/2`, so finite
+source-start callers no longer need to pass an arbitrary `tailBound` plus the
+reflexive `sqrt(m) * 3/2 <= tailBound` side condition.
 The old `K+1 <= 25` corollary is superseded by `K+1 <= 49` for finite-window
 work, but this remains a local-window prefix budget, not a global
 preliminary-stage summability theorem.
