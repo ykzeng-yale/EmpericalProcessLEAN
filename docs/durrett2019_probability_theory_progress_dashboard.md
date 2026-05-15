@@ -32,12 +32,18 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V363` in
+Route from `Live In-Thread Goal Prompt V364` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active theorem lane is Chapter 3 weak convergence, characteristic
 functions, CLT, and Lindeberg-Feller support in
 `StatInference/ProbabilityTheory/Basic.lean` and
-`StatInference/ProbabilityTheory/Multivariate.lean`.  V363 adds
+`StatInference/ProbabilityTheory/Multivariate.lean`.  V364 adds
+`durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_sum`,
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_sum`,
+and
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_sum`,
+the zero-mean coordinate-covariance literal normalized-sum source wrappers.
+V363 adds
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCenteredProduct_sum`,
 the literal centered normalized-sum arbitrary-frequency characteristic-function
 display for the canonical product sample.  V362 adds

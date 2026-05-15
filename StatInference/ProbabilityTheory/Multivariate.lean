@@ -7604,6 +7604,69 @@ theorem durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCo
       (Coordinate := Coordinate) mu n sample
 
 /--
+Durrett 2019, Theorem 3.10.7, canonical i.i.d. product-sample endpoint in the
+literal centered normalized-sum display from coordinate covariance assumptions.
+
+This is the zero-mean source form `S_n / sqrt n => chi`, written coordinatewise
+for a finite coordinate type.
+-/
+theorem durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_sum
+    {Coordinate Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hν_coordinate_memLp : ∀ coordinate,
+      MemLp (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate) 2 ν)
+    (hν_coordinate_mean : ∀ coordinate,
+      (∫ sampleVector, sampleVector coordinate ∂ν) = 0)
+    (hZ_aemeas : AEMeasurable Z Q)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_integrable : ∀ coordinate, Integrable (fun ω => Z ω coordinate) Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) Q =
+        Gamma i j)
+    (hν_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun sampleVector : Coordinate -> ℝ => sampleVector i)
+        (fun sampleVector : Coordinate -> ℝ => sampleVector j) ν =
+        Gamma i j) :
+    TendstoInDistribution
+      (fun (n : ℕ) sample =>
+        fun coordinate : Coordinate =>
+          (√(n : ℝ))⁻¹ *
+            (∑ i ∈ Finset.range n, sample i coordinate))
+      atTop Z (fun _ => Measure.infinitePi (fun _ : ℕ => ν)) Q := by
+  refine TendstoInDistribution.congr ?_ Filter.EventuallyEq.rfl
+    (durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum
+      (ν := ν) (Q := Q) (Z := Z) (mu := fun _ : Coordinate => 0)
+      (hcoordinate_meas := hcoordinate_meas)
+      (hν_coordinate_memLp := hν_coordinate_memLp)
+      (hν_coordinate_mean := hν_coordinate_mean)
+      (hZ_aemeas := hZ_aemeas)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (hZ_coordinate_integrable := hZ_coordinate_integrable)
+      (hZ_coordinate_mean := hZ_coordinate_mean)
+      (Gamma := Gamma)
+      (hZ_covariance := hZ_covariance)
+      (hν_covariance := hν_covariance))
+  intro n
+  exact Filter.Eventually.of_forall fun sample => by
+    ext coordinate
+    simp
+
+/--
 Durrett 2019, Theorem 3.10.7, canonical i.i.d. product-sample endpoint from the
 textbook nonzero-mean covariance definition.
 
@@ -8069,6 +8132,75 @@ theorem durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonical
 
 /--
 Durrett 2019, Theorem 3.10.7, canonical product-sample coordinate covariance
+source assumptions imply the literal centered normalized-sum
+characteristic-function display before the textbook `t^2` rewrite.
+
+This is the coordinate-covariance companion to the centered-product source
+display, with the Gaussian exponent left in arbitrary-frequency form.
+-/
+theorem durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_sum
+    {Coordinate Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hν_coordinate_memLp : ∀ coordinate,
+      MemLp (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate) 2 ν)
+    (hν_coordinate_mean : ∀ coordinate,
+      (∫ sampleVector, sampleVector coordinate ∂ν) = 0)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) Q =
+        Gamma i j)
+    (hν_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun sampleVector : Coordinate -> ℝ => sampleVector i)
+        (fun sampleVector : Coordinate -> ℝ => sampleVector j) ν =
+        Gamma i j) :
+    ∀ theta : Coordinate -> ℝ, ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun
+            ((Measure.infinitePi (fun _ : ℕ => ν)).map
+              (fun sample =>
+                ∑ coordinate, theta coordinate *
+                  ((√(n : ℝ))⁻¹ *
+                    (∑ i ∈ Finset.range n, sample i coordinate)))) t)
+        atTop
+        (𝓝 (Complex.exp
+          (-((durrett2019_theorem_3_10_7_covarianceTableQuadratic
+            (fun i => t * theta i) Gamma : ℂ) / 2)))) := by
+  intro theta t
+  have hbase :=
+    durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum
+      (ν := ν) (Q := Q) (Z := Z) (mu := fun _ : Coordinate => 0)
+      (hcoordinate_meas := hcoordinate_meas)
+      (hν_coordinate_memLp := hν_coordinate_memLp)
+      (hν_coordinate_mean := hν_coordinate_mean)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (hZ_coordinate_memLp := hZ_coordinate_memLp)
+      (hZ_coordinate_mean := hZ_coordinate_mean)
+      (Gamma := Gamma)
+      (hZ_covariance := hZ_covariance)
+      (hν_covariance := hν_covariance)
+      theta t
+  refine Tendsto.congr' (Filter.Eventually.of_forall fun n => ?_) hbase
+  simp
+
+/--
+Durrett 2019, Theorem 3.10.7, canonical product-sample coordinate covariance
 source assumptions imply the literal nonzero-mean normalized-sum
 characteristic-function display.
 
@@ -8166,6 +8298,73 @@ theorem durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canon
         hnorm
     simpa [Pi.sub_apply, smul_eq_mul] using hsum
   simp [hpopulation, hfun]
+
+/--
+Durrett 2019, Theorem 3.10.7, canonical product-sample coordinate covariance
+source assumptions imply the literal centered normalized-sum
+characteristic-function display in the textbook `t^2` exponent form.
+-/
+theorem durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_sum
+    {Coordinate Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hν_coordinate_memLp : ∀ coordinate,
+      MemLp (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate) 2 ν)
+    (hν_coordinate_mean : ∀ coordinate,
+      (∫ sampleVector, sampleVector coordinate ∂ν) = 0)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun ω => Z ω i) (fun ω => Z ω j) Q =
+        Gamma i j)
+    (hν_covariance : ∀ i j,
+      _root_.ProbabilityTheory.covariance
+        (fun sampleVector : Coordinate -> ℝ => sampleVector i)
+        (fun sampleVector : Coordinate -> ℝ => sampleVector j) ν =
+        Gamma i j) :
+    ∀ theta : Coordinate -> ℝ, ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun
+            ((Measure.infinitePi (fun _ : ℕ => ν)).map
+              (fun sample =>
+                ∑ coordinate, theta coordinate *
+                  ((√(n : ℝ))⁻¹ *
+                    (∑ i ∈ Finset.range n, sample i coordinate)))) t)
+        atTop
+        (𝓝 (Complex.exp
+          (-(((t : ℂ) ^ 2 *
+            (durrett2019_theorem_3_10_7_covarianceTableQuadratic
+              theta Gamma : ℂ)) / 2)))) := by
+  intro theta t
+  have hbase :=
+    durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_explicitMean_sum
+      (ν := ν) (Q := Q) (Z := Z) (mu := fun _ : Coordinate => 0)
+      (hcoordinate_meas := hcoordinate_meas)
+      (hν_coordinate_memLp := hν_coordinate_memLp)
+      (hν_coordinate_mean := hν_coordinate_mean)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (hZ_coordinate_memLp := hZ_coordinate_memLp)
+      (hZ_coordinate_mean := hZ_coordinate_mean)
+      (Gamma := Gamma)
+      (hZ_covariance := hZ_covariance)
+      (hν_covariance := hν_covariance)
+      theta t
+  refine Tendsto.congr' (Filter.Eventually.of_forall fun n => ?_) hbase
+  simp
 
 /--
 Durrett 2019, Theorem 3.10.7, canonical product-sample centered-product

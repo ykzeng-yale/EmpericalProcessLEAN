@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V363
+## Live In-Thread Goal Prompt V364
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,16 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V363 adds the literal centered normalized-sum
+Latest verified target V364 adds the zero-mean coordinate-covariance literal
+normalized-sum source wrappers
+`durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_sum`,
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_sum`,
+and
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_tsq_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance_sum`.
+These let canonical product samples stated with coordinate covariance and
+centered source sums use either the vector CLT endpoint, arbitrary-frequency
+projected characteristic functions, or the textbook `t^2` exponent directly.
+V363 adds the literal centered normalized-sum
 arbitrary-frequency characteristic-function display
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCenteredProduct_sum`.
 This removes the forced `t^2` display from the centered source form
@@ -400,7 +409,8 @@ common-vector-law covariance-table/centered-product bridges, or the V361
 canonical product-sample covariance-table/centered-product bridges, or the
 V362 canonical coordinate-covariance/centered-product arbitrary-frequency
 displays, or the V363 literal centered normalized-sum arbitrary-frequency
-display.  Next aggressive packet:
+display, or the V364 zero-mean coordinate-covariance literal normalized-sum
+wrappers.  Next aggressive packet:
 continue Chapter 3 by closing a concrete source-facing gap around remaining
 Section 3.10 Gaussian-law wrappers, characteristic-function transport into
 later source statements, or remaining Lindeberg-Feller side conditions; touch
@@ -2894,6 +2904,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V363` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V364` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
