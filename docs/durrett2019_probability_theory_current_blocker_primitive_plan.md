@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V362
+## Live In-Thread Goal Prompt V363
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,12 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V362 adds canonical product-sample coordinate-covariance
+Latest verified target V363 adds the literal centered normalized-sum
+arbitrary-frequency characteristic-function display
+`durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCenteredProduct_sum`.
+This removes the forced `t^2` display from the centered source form
+`S_n / sqrt n` at the characteristic-function level.  V362 adds canonical
+product-sample coordinate-covariance
 and centered-product arbitrary-frequency displays:
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCoordinateMeanCoordinateCovariance`,
 `durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCenteredProduct`,
@@ -394,7 +399,8 @@ vector-Gaussian-source covariance-table/centered-product bridges, or the V360
 common-vector-law covariance-table/centered-product bridges, or the V361
 canonical product-sample covariance-table/centered-product bridges, or the
 V362 canonical coordinate-covariance/centered-product arbitrary-frequency
-displays.  Next aggressive packet:
+displays, or the V363 literal centered normalized-sum arbitrary-frequency
+display.  Next aggressive packet:
 continue Chapter 3 by closing a concrete source-facing gap around remaining
 Section 3.10 Gaussian-law wrappers, characteristic-function transport into
 later source statements, or remaining Lindeberg-Feller side conditions; touch
@@ -2888,6 +2894,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V362` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V363` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

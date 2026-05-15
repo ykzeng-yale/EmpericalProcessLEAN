@@ -7788,6 +7788,97 @@ theorem durrett2019_theorem_3_10_7_multivariateCLT_of_canonicalProductGaussianCe
 /--
 Durrett 2019, Theorem 3.10.7, canonical product-sample centered-product source
 assumptions imply the literal centered normalized-sum characteristic-function
+display before the textbook `t^2` rewrite.
+
+This is the characteristic-function version of the textbook centered display
+`S_n / sqrt n`, with the Gaussian exponent left in arbitrary-frequency form.
+-/
+theorem durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCenteredProduct_sum
+    {Coordinate Ω' : Type*} [Fintype Coordinate]
+    [MeasurableSpace Ω']
+    [PseudoMetricSpace (Coordinate -> ℝ)]
+    [SecondCountableTopology (Coordinate -> ℝ)]
+    [BorelSpace (Coordinate -> ℝ)]
+    [OpensMeasurableSpace (Coordinate -> ℝ)]
+    [CompleteSpace (Coordinate -> ℝ)]
+    {ν : Measure (Coordinate -> ℝ)} [IsProbabilityMeasure ν]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {Z : Ω' -> Coordinate -> ℝ}
+    (hcoordinate_meas : ∀ coordinate,
+      Measurable (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate))
+    (hν_coordinate_memLp : ∀ coordinate,
+      MemLp (fun sampleVector : Coordinate -> ℝ => sampleVector coordinate) 2 ν)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_memLp : MemLp id 2 (Q.map Z))
+    (hZ_coordinate_memLp : ∀ coordinate, MemLp (fun ω => Z ω coordinate) 2 Q)
+    (hZ_coordinate_mean : ∀ coordinate, (∫ ω, Z ω coordinate ∂Q) = 0)
+    (hν_coordinate_mean : ∀ coordinate,
+      (∫ sampleVector, sampleVector coordinate ∂ν) = 0)
+    (Gamma : Coordinate -> Coordinate -> ℝ)
+    (hZ_centered_product : ∀ i j,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hν_centered_product : ∀ i j,
+      (∫ sampleVector, sampleVector i * sampleVector j ∂ν) = Gamma i j) :
+    ∀ theta : Coordinate -> ℝ, ∀ t : ℝ,
+      Tendsto
+        (fun n : ℕ =>
+          MeasureTheory.charFun
+            ((Measure.infinitePi (fun _ : ℕ => ν)).map
+              (fun sample =>
+                ∑ coordinate, theta coordinate *
+                  ((√(n : ℝ))⁻¹ *
+                    (∑ i ∈ Finset.range n, sample i coordinate)))) t)
+        atTop
+        (𝓝 (Complex.exp
+          (-((durrett2019_theorem_3_10_7_covarianceTableQuadratic
+            (fun i => t * theta i) Gamma : ℂ) / 2)))) := by
+  intro theta t
+  have hpopulation :
+      StatInference.AsymptoticStatistics.vaart1998_finiteCoordinatePopulationMoment
+          (Measure.infinitePi (fun _ : ℕ => ν))
+          (fun coordinate i sample => sample i coordinate) =
+        (fun _ : Coordinate => 0) := by
+    rw [StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateCanonicalSample_populationMoment_eq_integral
+      (ν := ν) hcoordinate_meas]
+    ext coordinate
+    exact hν_coordinate_mean coordinate
+  have hbase :=
+    durrett2019_theorem_3_10_7_projectedCharacteristicFunctions_of_canonicalProductGaussianCenteredProduct
+      (ν := ν) (Q := Q) (Z := Z)
+      (hcoordinate_meas := hcoordinate_meas)
+      (hν_coordinate_memLp := hν_coordinate_memLp)
+      (hZ_gaussian := hZ_gaussian) (hZ_memLp := hZ_memLp)
+      (hZ_coordinate_memLp := hZ_coordinate_memLp)
+      (hZ_coordinate_mean := hZ_coordinate_mean)
+      (hν_coordinate_mean := hν_coordinate_mean)
+      (Gamma := Gamma)
+      (hZ_centered_product := hZ_centered_product)
+      (hν_centered_product := hν_centered_product)
+      theta t
+  refine Tendsto.congr' (Filter.Eventually.of_forall fun n => ?_) hbase
+  have hfun :
+      (fun sample : ℕ -> Coordinate -> ℝ =>
+        ∑ coordinate, theta coordinate *
+          (√(n : ℝ) *
+            StatInference.AsymptoticStatistics.vaart1998_finiteCoordinateEmpiricalMoment
+              (fun coordinate i path => path i coordinate) n sample coordinate)) =
+      (fun sample : ℕ -> Coordinate -> ℝ =>
+        ∑ coordinate, theta coordinate *
+          ((√(n : ℝ))⁻¹ *
+            (∑ i ∈ Finset.range n, sample i coordinate))) := by
+    funext sample
+    have hnorm :=
+      durrett2019_theorem_3_10_7_canonicalProduct_explicitMean_normalization_eq_sum
+        (Coordinate := Coordinate) (fun _ : Coordinate => 0) n sample
+    have hsum :=
+      congrArg (fun v : Coordinate -> ℝ => ∑ coordinate, theta coordinate * v coordinate)
+        hnorm
+    simpa [Pi.sub_apply, smul_eq_mul] using hsum
+  simp [hpopulation, hfun]
+
+/--
+Durrett 2019, Theorem 3.10.7, canonical product-sample centered-product source
+assumptions imply the literal centered normalized-sum characteristic-function
 display.
 
 This is the characteristic-function version of the textbook centered display
