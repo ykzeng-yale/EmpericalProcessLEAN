@@ -274,6 +274,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   initializer.  Search-first result: no relevant Mathlib Newton-decrement
   theorem exists; next proof work should reuse local
   `chewi138_*newtonDecrement_step*` and preliminary-stage decrement wrappers.
+  The newest parameter-shift packet adds `polytopeSlackSet_of_rangeRestrict_mem`,
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_postDecrement_add_delta_sqrt`,
+  and
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_eighth_add_standard_of_postDecrement_le_eighth`.
+  This proves the accurate budget relation
+  `B_{n+1} <= postDecrement(t_{n+1}, x_{n+1}) + delta * sqrt(m)`, with the
+  standard corollary `B_{n+1} <= 1/8 + 1/200`; it confirms the next proof
+  should use a valid additive/finite-window recurrence, not a free raw
+  half-contraction.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

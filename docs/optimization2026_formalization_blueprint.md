@@ -255,6 +255,14 @@ scalar tail budget `sqrt(m) * 3/2 <= tailBound`.  Search-first contraction
 result: Mathlib does not provide the needed optimizer-decrement theorem; use
 the local `chewi138_*newtonDecrement_step*` and preliminary-stage decrement
 wrappers as the next proof ingredients.
+The parameter-shift budget layer now records the correct next-pre-decrement
+shape: `polytopeSlackSet_of_rangeRestrict_mem`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_postDecrement_add_delta_sqrt`,
+and
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_eighth_add_standard_of_postDecrement_le_eighth`.
+The actual next-pre-decrement budget at `t_{n+2}` is controlled by the
+post-step decrement at `t_{n+1}` plus the parameter-shift cost
+`delta * sqrt(m)`, giving `1/8 + 1/200` under standard constants.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the

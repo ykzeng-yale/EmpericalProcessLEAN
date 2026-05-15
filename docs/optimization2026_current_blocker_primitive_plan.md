@@ -471,6 +471,16 @@ proof: Mathlib has no Newton-decrement/self-concordant optimizer API to reuse;
 stay local and inspect the `chewi138_*newtonDecrement_step*` stack plus
 `chewi1316_preliminaryStage_newtonDecrement_le_eighth_of_*` wrappers before
 adding any new primitives.
+The parameter-shift packet adds `polytopeSlackSet_of_rangeRestrict_mem`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_postDecrement_add_delta_sqrt`,
+and
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_eighth_add_standard_of_postDecrement_le_eighth`.
+It proves the honest relation
+`B_{n+1} <= postDecrement(t_{n+1}, x_{n+1}) + delta * sqrt(m)`, hence under
+the standard constants `B_{n+1} <= 1/8 + 1/200` after a `1/8` post-step
+certificate.  This is not the raw half-contraction; future work should combine
+the local `1/8` preliminary-stage theorem with a valid scalar recurrence or
+finite-window budget, rather than assuming `B_{n+1} <= B_n / 2`.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
