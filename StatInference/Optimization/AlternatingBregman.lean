@@ -2072,6 +2072,134 @@ theorem chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhorn
     (antitone_nat_of_succ_le hobjective_succ_le) hN
 
 /--
+Concrete finite Sinkhorn Theorem 11.8 endpoint in the literal displayed KL
+form `KL(rowMarginal gamma^N || mu) <= KL(gammaStar || gamma^0) / N`.
+-/
+theorem chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {N : ℕ}
+    (hstep : ∀ n, n < N ->
+      gamma (n + 1) = columnNormalizedCoupling ν
+        (rowNormalizedCoupling μ (gamma n)))
+    (hstar_row : gammaStar ∈ finiteRowMarginalConstraint μ)
+    (hstar_col : gammaStar ∈ finiteColumnMarginalConstraint ν)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hstar_pos : ∀ x y, 0 < gammaStar x y)
+    (hgamma_pos : ∀ n, n ≤ N -> ∀ x y, 0 < gamma n x y)
+    (hgamma_mass : ∀ n, n < N -> (∑ x, μ x) = finiteCouplingMass (gamma n))
+    (htarget_mass : (∑ y, ν y) = ∑ x, μ x)
+    (hmono : ∀ n, n < N ->
+      finiteKL (rowMarginal (gamma N)) μ ≤
+        finiteKL (rowMarginal (gamma (n + 1))) μ)
+    (hN : N ≠ 0) :
+    finiteKL (rowMarginal (gamma N)) μ ≤
+      finiteCouplingKL gammaStar (gamma 0) / (N : ℝ) := by
+  simpa [sinkhornRowObjective] using
+    chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations
+      μ ν hstep hstar_row hstar_col hμ_pos hν_pos hstar_pos hgamma_pos
+      hgamma_mass htarget_mass
+      (by
+        intro n hn
+        simpa [sinkhornRowObjective] using hmono n hn)
+      hN
+
+/--
+Concrete finite Sinkhorn selected endpoint in literal row-marginal KL form.
+This version needs no monotonicity of the displayed KL objective.
+-/
+theorem chewi118_finiteSinkhorn_exists_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {N : ℕ}
+    (hstep : ∀ n, n < N ->
+      gamma (n + 1) = columnNormalizedCoupling ν
+        (rowNormalizedCoupling μ (gamma n)))
+    (hstar_row : gammaStar ∈ finiteRowMarginalConstraint μ)
+    (hstar_col : gammaStar ∈ finiteColumnMarginalConstraint ν)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hstar_pos : ∀ x y, 0 < gammaStar x y)
+    (hgamma_pos : ∀ n, n ≤ N -> ∀ x y, 0 < gamma n x y)
+    (hgamma_mass : ∀ n, n < N -> (∑ x, μ x) = finiteCouplingMass (gamma n))
+    (htarget_mass : (∑ y, ν y) = ∑ x, μ x)
+    (hN : N ≠ 0) :
+    ∃ n, n < N ∧
+      finiteKL (rowMarginal (gamma (n + 1))) μ ≤
+        finiteCouplingKL gammaStar (gamma 0) / (N : ℝ) := by
+  rcases
+    chewi118_finiteSinkhorn_exists_sinkhornRowObjective_le_of_concreteSinkhornNormalizations
+      μ ν hstep hstar_row hstar_col hμ_pos hν_pos hstar_pos hgamma_pos
+      hgamma_mass htarget_mass hN with
+    ⟨n, hn, hle⟩
+  exact ⟨n, hn, by simpa [sinkhornRowObjective] using hle⟩
+
+/--
+Concrete finite Sinkhorn last-iterate KL endpoint with monotonicity supplied as
+an antitone literal row-marginal KL sequence.
+-/
+theorem chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations_antitone
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {N : ℕ}
+    (hstep : ∀ n, n < N ->
+      gamma (n + 1) = columnNormalizedCoupling ν
+        (rowNormalizedCoupling μ (gamma n)))
+    (hstar_row : gammaStar ∈ finiteRowMarginalConstraint μ)
+    (hstar_col : gammaStar ∈ finiteColumnMarginalConstraint ν)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hstar_pos : ∀ x y, 0 < gammaStar x y)
+    (hgamma_pos : ∀ n, n ≤ N -> ∀ x y, 0 < gamma n x y)
+    (hgamma_mass : ∀ n, n < N -> (∑ x, μ x) = finiteCouplingMass (gamma n))
+    (htarget_mass : (∑ y, ν y) = ∑ x, μ x)
+    (hobjective_antitone :
+      Antitone fun n => finiteKL (rowMarginal (gamma n)) μ)
+    (hN : N ≠ 0) :
+    finiteKL (rowMarginal (gamma N)) μ ≤
+      finiteCouplingKL gammaStar (gamma 0) / (N : ℝ) := by
+  exact
+    chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations
+      μ ν hstep hstar_row hstar_col hμ_pos hν_pos hstar_pos hgamma_pos
+      hgamma_mass htarget_mass
+      (chewi118_last_le_of_antitone hobjective_antitone) hN
+
+/--
+Concrete finite Sinkhorn last-iterate KL endpoint with monotonicity supplied by
+adjacent nonincrease of the literal row-marginal KL sequence.
+-/
+theorem chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations_succ_le
+    {X Y : Type*} [Fintype X] [Fintype Y] [Nonempty X] [Nonempty Y]
+    (μ : X -> ℝ) (ν : Y -> ℝ)
+    {gamma : ℕ -> X -> Y -> ℝ} {gammaStar : X -> Y -> ℝ}
+    {N : ℕ}
+    (hstep : ∀ n, n < N ->
+      gamma (n + 1) = columnNormalizedCoupling ν
+        (rowNormalizedCoupling μ (gamma n)))
+    (hstar_row : gammaStar ∈ finiteRowMarginalConstraint μ)
+    (hstar_col : gammaStar ∈ finiteColumnMarginalConstraint ν)
+    (hμ_pos : ∀ x, 0 < μ x)
+    (hν_pos : ∀ y, 0 < ν y)
+    (hstar_pos : ∀ x y, 0 < gammaStar x y)
+    (hgamma_pos : ∀ n, n ≤ N -> ∀ x y, 0 < gamma n x y)
+    (hgamma_mass : ∀ n, n < N -> (∑ x, μ x) = finiteCouplingMass (gamma n))
+    (htarget_mass : (∑ y, ν y) = ∑ x, μ x)
+    (hobjective_succ_le : ∀ n,
+      finiteKL (rowMarginal (gamma (n + 1))) μ ≤
+        finiteKL (rowMarginal (gamma n)) μ)
+    (hN : N ≠ 0) :
+    finiteKL (rowMarginal (gamma N)) μ ≤
+      finiteCouplingKL gammaStar (gamma 0) / (N : ℝ) :=
+  chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations_antitone
+    μ ν hstep hstar_row hstar_col hμ_pos hν_pos hstar_pos hgamma_pos
+    hgamma_mass htarget_mass
+    (antitone_nat_of_succ_le hobjective_succ_le) hN
+
+/--
 Source-shaped certificate for Chewi Theorem 11.8 after interpreting Sinkhorn
 as mirror descent.  The concrete finite Sinkhorn/KL work is isolated in these
 fields: the zero-error Bregman recurrence, monotonicity of the marginal KL

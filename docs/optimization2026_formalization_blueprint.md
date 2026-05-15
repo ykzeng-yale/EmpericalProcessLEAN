@@ -2110,12 +2110,20 @@ has now promoted this last-iterate wrapper to
 `IsChewi118SinkhornMirrorDescentCertificate`,
 `IsChewi118SinkhornMirrorDescentCertificate.last_rowMarginalKL_le`, and
 `chewi118_sinkhorn_last_rowMarginalKL_le_of_mirrorDescent` in
-`AlternatingBregman.lean`.  The active remaining layer is to instantiate the
-certificate with finite row/column Sinkhorn normalization KL identities,
-terminal KL nonnegativity, monotone row-marginal KL gap, and the zero-error
-Bregman recurrence for Theorem 11.8, not redo RAM scalar recurrence, block
+`AlternatingBregman.lean`.  The concrete finite Sinkhorn endpoint has now been
+instantiated through the row/column normalization identities and zero-error
+entropy recurrence.  The newest literal KL display packet adds
+`chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations`,
+`chewi118_finiteSinkhorn_exists_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations`,
+`chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations_antitone`,
+and
+`chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations_succ_le`,
+so the source-facing rate is available directly for
+`finiteKL (rowMarginal gamma^N) mu` or a selected successor KL.  The active
+remaining terminal-iterate layer is the source proof of monotone row-marginal
+KL gaps for the concrete Sinkhorn trajectory, not RAM scalar recurrence, block
 averaging, 11.7 selector algebra, or the 11.8 endpoint algebra.  The newest
-monotonicity adapter now also exposes
+monotonicity adapter also exposes
 `chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations_succ_le`,
 so an adjacent nonincrease proof for the displayed row objective is sufficient
 for the concrete finite Sinkhorn rate wrapper.

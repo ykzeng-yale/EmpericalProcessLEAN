@@ -4312,6 +4312,16 @@ and
 `chewi118_finiteSinkhorn_last_sinkhornRowObjective_le_of_concreteSinkhornNormalizations_succ_le`,
 reducing the certificate field to adjacent nonincrease of the displayed row
 objective along the concrete Sinkhorn trajectory.
+The newest literal KL display packet adds
+`chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations`,
+`chewi118_finiteSinkhorn_exists_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations`,
+`chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations_antitone`,
+and
+`chewi118_finiteSinkhorn_last_rowMarginal_finiteKL_le_of_concreteSinkhornNormalizations_succ_le`.
+These wrappers unfold `sinkhornRowObjective` at the theorem boundary, so the
+concrete finite Sinkhorn Theorem 11.8 endpoints are now stated directly in the
+source orientation `finiteKL (rowMarginal gamma^N) mu` or selected successor
+row-marginal KL.
 The newest selected-rate packet adds `chewi118_exists_gap_le_of_recurrence`,
 `chewi118_exists_gap_le_of_oneStep`,
 `chewi118_finiteSinkhorn_exists_rowMarginalKL_le_of_entropyRecurrence_initialKL`,
@@ -4321,9 +4331,10 @@ and
 `chewi118_finiteSinkhorn_exists_sinkhornRowObjective_le_of_concreteSinkhornNormalizations`.
 This proves a Chewi 11.8 selected-iterate `D_0 / N` rate for concrete finite
 row-then-column Sinkhorn cycles without any row-objective monotonicity
-assumption.  Exact last-iterate reporting still needs the adjacent
-row-objective nonincrease/source proof, but the selected-rate theorem can now
-be used immediately when the source statement permits an existential iterate.
+assumption, now also in literal row-marginal KL form.  Exact last-iterate
+reporting still needs the adjacent row-marginal KL nonincrease/source proof,
+but the selected-rate theorem can now be used immediately when the source
+statement permits an existential iterate.
 `MirrorDescent.lean` now
 compiles through
 `mirrorProximalGradientModel`, `IsMirrorProximalGradientStep`,
