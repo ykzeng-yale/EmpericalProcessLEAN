@@ -442,6 +442,13 @@ post-threshold lower bounds on `|t_N|` and the budget
 `(sqrt m + 1/8) / tau_N <= tailBound`; the standard `1/4 -> 1/8`
 source-decrement invariant is derived from `hxRange` and the source Newton
 recurrence.
+The newest no-prefix selected lower-denominator packet adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_selectedAbsTLowerTail_succ_noFactor_standardConstants`.
+This is the finite-window sibling of the post-threshold lower-denominator
+handoff: future proofs can supply the denominator certificate only at the
+chosen successor index `N+1`, together with the selected count/log scalar
+inputs, while `hxRange` and the source Newton recurrence still discharge the
+standard decrement invariant internally.
 The newest selected-tail-bound packet adds the scalar log bridge
 `chewi1316_measuredTailLog_le_of_tailBound` plus
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,

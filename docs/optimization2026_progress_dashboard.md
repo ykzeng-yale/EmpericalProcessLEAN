@@ -250,6 +250,10 @@ This dashboard tracks the Chewi optimization formalization lane for
   These let the next moving-center proof provide post-threshold lower
   denominators for `|t_N|` and the `(sqrt m + 1/8) / tau_N` budget instead of
   a raw range-tail bound.
+  The selected lower-denominator packet adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_sourceDecrement_selectedAbsTLowerTail_succ_noFactor_standardConstants`.
+  This is the finite-window version: the denominator certificate is needed
+  only at the selected successor index `N+1`.
   The selected-tail-bound packet adds `chewi1316_measuredTailLog_le_of_tailBound`
   and the range/source/concrete selected-bound handoffs
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangePreliminaryNextNewtonSteps_preDecrementBudget_selectedRangeTailBound_succ_noFactor_standardConstants_of_rangeSqrtCoordModel`,
