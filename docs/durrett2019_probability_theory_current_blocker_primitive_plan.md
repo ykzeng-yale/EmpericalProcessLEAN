@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V354
+## Live In-Thread Goal Prompt V355
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,7 +19,15 @@ characteristic functions, `TendstoInDistribution`, local weak-convergence
 wrappers, Vaart finite-coordinate Cramér-Wold support, and the compiled Chapter
 2 product/iid support only when a later Chapter 3 source shape needs it.
 
-Latest verified target V354 adds the covariance-table and arbitrary-frequency
+Latest verified target V355 adds the centered covariance-table ordinary
+characteristic-function wrappers
+`durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_covarianceBilinDualTable`
+and
+`durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_tsq_of_covarianceBilinDualTable`,
+plus the arbitrary-frequency centered-product wrapper
+`durrett2019_theorem_3_10_7_centeredGaussianThetaCharacteristic_charFun_of_centeredProduct`.
+These close the centered Gaussian source variants parallel to the V354
+nonzero-mean route.  V354 adds the covariance-table and arbitrary-frequency
 centered-product variants of the nonzero-mean Gaussian projected scalar
 ordinary characteristic-function route:
 `durrett2019_theorem_3_10_7_gaussianThetaCharacteristic_charFun_of_covarianceBilinDualTable`,
@@ -306,7 +314,8 @@ characteristic-function bridge, the V350 canonical coordinate-covariance and
 centered-product characteristic-function bridge, or the V351 centered
 normalized-sum characteristic-function bridge, or the V352 nonzero-mean
 normalized-sum characteristic-function bridge, the V353 nonzero-mean
-Gaussian ordinary characteristic-function bridge, or the V354 covariance-table
+Gaussian ordinary characteristic-function bridge, the V354 covariance-table
+Gaussian ordinary characteristic-function bridge, or the V355 centered
 Gaussian ordinary characteristic-function bridge.  Next aggressive packet:
 continue Chapter 3 by closing a concrete source-facing gap around remaining
 Section 3.10 Gaussian-law wrappers, characteristic-function transport into
@@ -2801,6 +2810,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V354` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V355` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
