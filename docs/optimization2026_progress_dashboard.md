@@ -419,6 +419,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   Thus the verified finite-window route has standalone range-feasibility,
   source-radius-half, translated slack-ratio, and measured-tail log-index
   artifacts, not only a downstream selected-tail consumer.
+  The local recurrence refactor now adds
+  `chewi1316_polytopeSlackNegLog_range_postDecrement_le_quadratic_of_nextNewton_sqrtCoordModel_of_pairMem`
+  and
+  `chewi1316_polytopeSlackNegLog_sourcePostDecrement_le_quadratic_of_nextNewton_pairMem`,
+  pairwise quadratic post-step estimates needing only current/next range
+  feasibility.  This begins removing the all-iterate feasibility assumption
+  from the honest actual recurrence stack.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds
