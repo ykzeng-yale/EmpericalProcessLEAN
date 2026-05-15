@@ -708,6 +708,17 @@ feasibility form.  The remaining assumption-reduction target is finite prefix
 budget induction: derive each successor's local feasibility from the already
 proved local-window budget/radius facts, then call the pairwise recurrence
 instead of carrying an external global `∀ k` range-feasibility hypothesis.
+The newest finite-prefix packet adds
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_le_one_one_hundred_ninety_eight_of_quadratic_add_standard_prefixRange`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_length_div_ninety_nine_of_quadratic_add_standard_prefixRange`,
+`chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_length_le_forty_nine_prefixRange`, and
+`chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRatio_three_halves_length_le_forty_nine_prefixRange`.
+Thus the `K+1 <= 49` budget and selected range-tail route now need only
+finite range feasibility through the selected successor `N+1`, not global
+all-iterate feasibility.  The next blocker is to discharge that finite
+`hxRangePrefix` assumption itself by a simultaneous local feasibility/budget
+induction, reusing the pairwise recurrence and selected pre-decrement geometry
+wrappers rather than reopening scalar recurrence or range-tail plumbing.
 
 Archived route log below: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma

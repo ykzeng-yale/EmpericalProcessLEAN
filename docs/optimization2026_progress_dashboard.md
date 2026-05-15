@@ -432,7 +432,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_succ_le_quadratic_add_standard_pairMem`.
   The remaining reduction is finite prefix-budget induction: generate the
   pairwise range feasibility locally, then call these recurrence wrappers
-  instead of assuming a global `∀ k` range-feasibility invariant.
+  instead of assuming a global `∀ k` range-feasibility invariant.  The
+  finite-prefix packet now adds
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_le_one_one_hundred_ninety_eight_of_quadratic_add_standard_prefixRange`,
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_length_div_ninety_nine_of_quadratic_add_standard_prefixRange`,
+  `chewi1316_polytopeSlackNegLog_sourcePreDecrementNextBudget_prefix_le_half_of_length_le_forty_nine_prefixRange`, and
+  `chewi1316_polytopeSlackNegLog_selectedRangeTailBound_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRatio_three_halves_length_le_forty_nine_prefixRange`.
+  The `K+1 <= 49` budget and selected range-tail wrapper now consume only
+  finite feasibility through `N+1`; the next exact blocker is a simultaneous
+  proof that generates that finite feasibility locally.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds
