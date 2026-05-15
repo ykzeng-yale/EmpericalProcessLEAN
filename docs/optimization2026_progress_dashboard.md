@@ -258,6 +258,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   positive-orthant source-gradient dual norm, Euclidean coordinate-envelope,
   range inverse-Hessian, and dual/primal Cauchy lemmas; no direct Mathlib
   range-restriction result was available.
+  The prefix-budget packet now derives the eventual slack-ratio envelope with
+  constant `3/2` from the already compiled range source-radius-half invariant:
+  `positiveOrthant_ratio_abs_le_one_add_of_localNorm_sub_le`,
+  `chewi1314_polytopeSlackNegLog_range_slackRatio_le_one_add_of_sourceLocalNorm_le`,
+  `chewi1316_polytopeSlackNegLog_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventuallySlackRatioBound_three_halves_succ_noFactor`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
+  The remaining source-side blocker is now the actual preliminary
+  pre-decrement budget/decay proof feeding this initializer.
   The range-Hessian positivity bridge now adds
   `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
   `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing

@@ -237,6 +237,14 @@ finite Euclidean coordinate-envelope bounds, and the existing range
 inverse-Hessian/Cauchy stack; there is no direct Mathlib range-restriction
 lemma to import.  The next exact target should therefore prove the eventual
 slack-ratio envelope from bounded-polytope or moving-center invariants.
+The prefix-budget route now supplies that envelope with constant `3/2`:
+`positiveOrthant_ratio_abs_le_one_add_of_localNorm_sub_le`,
+`chewi1314_polytopeSlackNegLog_range_slackRatio_le_one_add_of_sourceLocalNorm_le`,
+`chewi1316_polytopeSlackNegLog_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventuallySlackRatioBound_three_halves_succ_noFactor`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
+This reuses the compiled range source-radius-half theorem and Mathlib
+`eventually_ge_atTop`, so downstream work should attack the actual
+pre-decrement budget/decay proof rather than reopening the slack-ratio bridge.
 The newest range-Hessian positivity bridge adds
 `chewi1314_polytopeSlackNegLog_rangeHess_isPositive` and
 `chewi1314_polytopeSlackNegLog_rangeHess_toLinearMap_isPositive`, exposing the

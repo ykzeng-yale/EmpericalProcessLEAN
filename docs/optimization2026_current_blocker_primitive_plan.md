@@ -447,6 +447,19 @@ right-inverse theorem, and local dual/primal Cauchy primitives provide the
 whole bridge.  The remaining real blocker is no longer raw dual-norm plumbing:
 prove the eventual slack-ratio envelope from the bounded-polytope or
 moving-center trajectory invariant.
+That envelope is now also available from the existing prefix pre-decrement
+budget in a concrete `3/2` form:
+`positiveOrthant_ratio_abs_le_one_add_of_localNorm_sub_le`,
+`chewi1314_polytopeSlackNegLog_range_slackRatio_le_one_add_of_sourceLocalNorm_le`,
+`chewi1316_polytopeSlackNegLog_sourcePreliminaryNextNewtonSteps_preDecrementBudget_eventuallySlackRatioBound_three_halves_succ_noFactor`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_preDecrementBudget_internalSlackRatioBound_three_halves_succ_noFactor_standardConstants`.
+Search-first reuse result: this packet uses the compiled source-radius-half
+certificate
+`chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_preliminaryNextNewtonSteps_preDecrementBudget_noFactor`,
+`eventually_ge_atTop`, and the local positive-orthant square-root coordinate
+norm identity.  Do not rebuild slack-coordinate ratio bounds from scratch.
+The next aggressive target is to discharge or improve the actual preliminary
+pre-decrement budget/decay assumption that feeds this concrete initializer.
 Range recurrence and range pre-decrement budget are now transported from the
 source-coordinate recurrence/budget by compiled wrappers.  If the next route
 proves a source-coordinate one-step decrement directly, use the new
