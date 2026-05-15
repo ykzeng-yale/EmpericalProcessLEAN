@@ -662,6 +662,11 @@ bounded-polytope facts directly as
 `chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine`
 and
 `chewi1316_polytopeSlackNegLog_slackRatio_three_halves_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine`.
+The measured-tail log-index packet adds
+`chewi1316_polytopeSlackNegLog_exists_logIndex_measuredRangeTailLog_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_exactSlackRatioTail`,
+which chooses a base-two logarithmic index satisfying both the Chewi count
+budget and the measured range-tail logarithmic bound from the exact
+`sqrt(m) * 3/2` tail estimate plus the single overshoot-aware scalar window.
 These are the reusable geometry artifacts behind the finite-window selected
 tail bound: from the honest actual quadratic budget and `N + 1 <= 49`, the
 range-restricted successor stays in the slack-range domain, lies within source

@@ -412,9 +412,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_rangeRestrict_sourceRadiusHalf_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine`
   and
   `chewi1316_polytopeSlackNegLog_slackRatio_three_halves_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine`.
+  The measured-tail log-index packet adds
+  `chewi1316_polytopeSlackNegLog_exists_logIndex_measuredRangeTailLog_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_length_le_forty_nine_exactSlackRatioTail`,
+  so the finite-window route can expose an actual selected `M` satisfying both
+  the count budget and the measured range-tail logarithmic bound.
   Thus the verified finite-window route has standalone range-feasibility,
-  source-radius-half, and translated slack-ratio artifacts, not only a
-  downstream selected-tail consumer.
+  source-radius-half, translated slack-ratio, and measured-tail log-index
+  artifacts, not only a downstream selected-tail consumer.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds
