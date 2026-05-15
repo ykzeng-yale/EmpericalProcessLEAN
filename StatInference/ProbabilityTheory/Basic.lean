@@ -779,6 +779,56 @@ theorem durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi
     (S := fun _ : ℕ => S) (ν := fun _ : ℕ => ν) hLaw hindep
 
 /--
+Durrett 2019, Theorem 2.1.11, one-based iid source extraction.
+
+If a zero-based Lean sequence is iid, then the shifted sequence
+`X_1, X_2, ...`, represented by `X (i + 1)`, is iid with the same marginal
+law.  This is the source-side counterpart of Durrett's one-based indexing.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    (∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) ν μ) ∧
+      _root_.ProbabilityTheory.iIndepFun
+        (μ := μ) (fun i : ℕ => fun ω => X (i + 1) ω) := by
+  have hLawShift : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) ν μ := by
+    intro i
+    simpa [Nat.succ_eq_add_one] using hLaw (Nat.succ i)
+  have hIndepShift :
+      _root_.ProbabilityTheory.iIndepFun
+        (μ := μ) (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hindep)
+  exact ⟨hLawShift, hIndepShift⟩
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based iid product-law form.
+
+The shifted source sequence `X (i + 1)` has joint law `ν^ℕ` whenever the full
+zero-based sequence is iid with common law `ν`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  exact durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi hShift.1 hShift.2
+
+/--
 Durrett 2019, Theorem 2.1.11, countable product-law criterion.
 
 For a sequence with known marginal laws, independence is equivalent to the
@@ -5236,6 +5286,130 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
           ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) :=
   durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum
     X hLaw (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based half-line Glivenko-Cantelli theorem
+under the standard iid-source independence assumption `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator
+      (fun i => fun ω => X (i + 1) ω) := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  exact
+    durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hShift.1 hShift.2
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based outer-a.s. half-line
+Glivenko-Cantelli theorem under `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass μ P Set.univ
+      realHalfLineIndicator (fun i => fun ω => X (i + 1) ω) := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  exact
+    durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hShift.1 hShift.2
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based source-facing empirical
+distribution-function form under `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    _root_.StatInference.RealEmpiricalCDFGlivenkoCantelliClass μ P
+      (fun i => fun ω => X (i + 1) ω) := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hShift.1 hShift.2
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based exact outer-a.s. empirical-CDF form
+under `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction
+          (samplePath (fun i => fun ω => X (i + 1) ω) ω sampleSize) c) := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hShift.1 hShift.2
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based exact outer-a.s. empirical-CDF
+range-sum display under `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) /
+          (sampleSize : ℝ)) := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hShift.1 hShift.2
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based exact outer-a.s. empirical-CDF display
+in the textbook notation `n^{-1} * sum_{m=1}^n 1{X_m <= c}` under
+`iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hShift.1 hShift.2
 
 /--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem from a full

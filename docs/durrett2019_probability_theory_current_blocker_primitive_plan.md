@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V369
+## Live In-Thread Goal Prompt V370
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,20 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V369 adds one-based canonical iid product-space wrappers
+Latest verified target V370 adds arbitrary-source one-based iid support and
+Theorem 2.4.9 Glivenko-Cantelli wrappers matching Durrett's
+`X_1, X_2, ...` and `n^{-1} sum_{m=1}^n` notation without forcing the
+canonical product-space specialization:
+`durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun_oneBased`,
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun_oneBased`,
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun_oneBased`.
+V369 adds one-based canonical iid product-space wrappers
 matching Durrett's `X_1, X_2, ...` and `sum_{m=1}^n` notation:
 `durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased`,
 `durrett2019_theorem_2_1_11_canonical_iid_infinite_product_pairwise_indepFun_oneBased`,
@@ -462,8 +475,9 @@ wrappers, or the V365 vector/common-law explicit-mean normalized-sum CLT
 wrappers, or the V366 vector/common-law centered-product normalized-sum CLT
 wrappers, the V367 vector/common-law centered-product normalized-sum
 projected-characteristic wrappers, or the V368 canonical iid product-space
-half-line Glivenko-Cantelli wrappers, or the V369 one-based canonical iid
-product-space Glivenko-Cantelli wrappers.  Next aggressive packet:
+half-line Glivenko-Cantelli wrappers, the V369 one-based canonical iid
+product-space Glivenko-Cantelli wrappers, or the V370 arbitrary-source
+one-based iid / empirical-CDF wrappers.  Next aggressive packet:
 continue Chapter 2.1 / Theorem 2.4.9 only by closing a concrete missing
 source-facing shape around independence, product laws, canonical iid
 coordinates, empirical-CDF notation, or half-line Glivenko-Cantelli consumers;
@@ -2957,6 +2971,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V369` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V370` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

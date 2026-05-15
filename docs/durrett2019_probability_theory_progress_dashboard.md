@@ -32,14 +32,26 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V369` in
+Route from `Live In-Thread Goal Prompt V370` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Chapter 2.1
 independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V369 adds
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V370 adds
+`durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun_oneBased`,
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun_oneBased`,
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun_oneBased`,
+the arbitrary-source one-based iid and empirical-CDF wrappers matching
+Durrett's `X_1, X_2, ...` and `n^{-1} sum_{m=1}^n` notation without forcing
+canonical product-space specialization.  V369 adds
 `durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased`,
 `durrett2019_theorem_2_1_11_canonical_iid_infinite_product_pairwise_indepFun_oneBased`,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_canonical_iid_oneBased`,
