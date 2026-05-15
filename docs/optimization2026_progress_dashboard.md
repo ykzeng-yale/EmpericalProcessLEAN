@@ -463,6 +463,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   eventual slack-ratio initializer, so a future geometry proof can provide a
   global feasible-point slack-ratio envelope instead of a finite-window log
   certificate or an actual-budget half-contraction.
+  The coordinate-upper-bound bridge now adds
+  `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_slackCoordinateUpperBound`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackCoordinateUpperBound_succ_noFactor_standardConstants`.
+  This is the most concrete bounded-polytope entrypoint so far: upper-bound
+  each feasible translated slack coordinate and compare those bounds to the
+  source slack coordinates.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds

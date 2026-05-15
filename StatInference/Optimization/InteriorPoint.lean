@@ -40931,6 +40931,68 @@ theorem chewi1316_exactSlackRatioTail_logWindow_impossible_of_length_le_forty_ni
   linarith
 
 /--
+Coordinate-upper-bound bridge for the bounded-polytope route.  If every
+feasible translated slack coordinate is bounded above by `upper i`, and those
+upper bounds are dominated by `B` times the corresponding source slack, then
+all feasible range points satisfy the source-relative slack-ratio envelope
+needed by the no-prefix §13.16 handoff.
+-/
+theorem chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_slackCoordinateUpperBound
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {upper : Fin m -> ℝ} {B : ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hslack_upper :
+      ∀ y : (polytopeSlackCLM aRow).range,
+        y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        ∀ i : Fin m,
+          (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) ≤ upper i)
+    (hupper_ratio : ∀ i : Fin m,
+      upper i ≤
+        B * ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+              EuclideanSpace ℝ (Fin m)) + bSlack) i)) :
+    ∀ y : (polytopeSlackCLM aRow).range,
+      y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ->
+      ∀ i : Fin m,
+        |(((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) /
+            ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+                EuclideanSpace ℝ (Fin m)) + bSlack) i)| ≤ B := by
+  intro y hy i
+  have hden_pos :
+      0 <
+        (((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+          EuclideanSpace ℝ (Fin m)) + bSlack) i :=
+    hxbar0Range i
+  have hnum_pos :
+      0 < (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) :=
+    hy i
+  have hnum_le :
+      (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) ≤
+        B * ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+              EuclideanSpace ℝ (Fin m)) + bSlack) i) :=
+    (hslack_upper y hy i).trans (hupper_ratio i)
+  have hdiv_le :
+      (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) /
+          ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+              EuclideanSpace ℝ (Fin m)) + bSlack) i) ≤ B := by
+    rw [div_le_iff₀ hden_pos]
+    exact hnum_le
+  have hdiv_pos :
+      0 <
+        (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) /
+          ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+              EuclideanSpace ℝ (Fin m)) + bSlack) i) :=
+    div_pos hnum_pos hden_pos
+  rw [abs_of_pos hdiv_pos]
+  exact hdiv_le
+
+/--
 Actual preliminary Newton source-start initializer from a global feasible
 slack-ratio envelope.  This is the bounded-polytope handoff: once a geometric
 argument bounds the source-relative slack ratios for every feasible range
@@ -41010,6 +41072,71 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       (B := B) (tailBound := tailBound)
       hxRange hx0 ht0 htstep hnewton_next_source hB_nonneg hbudget
       heventuallySlackRatioBound
+
+/--
+Actual preliminary Newton source-start initializer from coordinate upper
+bounds on the feasible slack range.  This is a more concrete bounded-polytope
+entrypoint than a raw slack-ratio envelope: prove coordinate upper bounds for
+the feasible translated slacks, compare them to the source slacks, and the
+compiled no-prefix §13.16 initializer follows.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackCoordinateUpperBound_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ} {upper : Fin m -> ℝ} {B tailBound : ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hB_nonneg : 0 ≤ B)
+    (hbudget : Real.sqrt (m : ℝ) * B ≤ tailBound)
+    (hslack_upper :
+      ∀ y : (polytopeSlackCLM aRow).range,
+        y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        ∀ i : Fin m,
+          (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) ≤ upper i)
+    (hupper_ratio : ∀ i : Fin m,
+      upper i ≤
+        B * ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+              EuclideanSpace ℝ (Fin m)) + bSlack) i)) :
+    ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 := by
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_globalSlackRatioBound_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (B := B) (tailBound := tailBound)
+      hxbar0Range hx0 ht0 htstep hnewton_next_source hB_nonneg hbudget
+      (chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_slackCoordinateUpperBound
+        (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+        (upper := upper) (B := B)
+        hxbar0Range hslack_upper hupper_ratio)
 
 /--
 The actual next-pre-decrement sequence has the required prefix budget once its

@@ -749,6 +749,14 @@ source-relative slack-ratio envelope for every feasible range point, plus the
 scalar budget `sqrt(m) * B <= tailBound`.  This is the preferred route over
 reopening the impossible finite-window log window or assuming an unproved
 actual-budget half-contraction.
+The next coordinate-envelope layer is also compiled:
+`chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_slackCoordinateUpperBound`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackCoordinateUpperBound_succ_noFactor_standardConstants`.
+These reduce the bounded-polytope obligation further: prove upper bounds
+`slack_i(y) <= upper_i` for every feasible translated range point, and prove
+`upper_i <= B * slack_i(xbar0)` coordinatewise.  The actual preliminary path
+and §13.16 initializer are then handled by existing compiled infrastructure.
 
 Archived route log below: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma

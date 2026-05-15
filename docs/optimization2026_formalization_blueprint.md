@@ -249,6 +249,13 @@ preliminary Newton path and reduces the remaining geometry obligation to a
 global source-relative slack-ratio bound over feasible range points.  This is
 the preferred long-window entrypoint when boundedness of the feasible range
 polytope is available.
+The coordinate-upper-bound specialization now compiles as
+`chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_slackCoordinateUpperBound`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackCoordinateUpperBound_succ_noFactor_standardConstants`.
+Use this when the bounded-polytope proof naturally gives finite coordinate
+upper bounds for feasible translated slacks; only the coordinate comparison to
+the source slacks remains.
 The no-prefix source-radius counterpart now compiles as
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySourceRadiusBound_succ_noFactor_standardConstants`
 and the half-radius specialization
