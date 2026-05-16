@@ -9191,6 +9191,53 @@ theorem durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscale
       (p := p) (C := C) (x := x) hp_pos hx_nonneg hscaled
 
 /--
+Durrett 2019, Theorem 2.5.12 scalar tail-first support: if the threshold
+`x^p` is at most one, the tail-first kernel is identically zero after summing.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_zero_of_rpow_le_one
+    {p x : ℝ} (hp_pos : 0 < p) (hx_nonneg : 0 ≤ x) (hxpow_le_one : x ^ p ≤ 1) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) = 0 := by
+  rw [durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_rpow_indicator
+    (p := p) (x := x) hp_pos hx_nonneg]
+  trans ∑' _k : ℕ, (0 : ℝ)
+  · refine tsum_congr fun k => ?_
+    change
+      Set.indicator
+        {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)}
+        (fun j : ℕ =>
+          x * (((j + 1 : ℕ) : ℝ) ^ (-(1 / p)))) k = 0
+    rw [Set.indicator_of_notMem]
+    have hone_le : (1 : ℝ) ≤ (((k + 1 : ℕ) : ℝ)) := by
+      exact_mod_cast Nat.succ_pos k
+    exact not_lt.mpr (hxpow_le_one.trans hone_le)
+  · simp
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar tail-first bound consumer with the
+correct small-`x` split: the full-prefix p-series estimate is only needed for
+`1 <= x`.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound_ge_one
+    {p C x : ℝ} (hp_pos : 0 < p) (hC_nonneg : 0 ≤ C) (hx_pos : 0 < x)
+    (hbound :
+      1 ≤ x →
+        (∑ k ∈ Finset.range (Nat.ceil (x ^ p)),
+          (((k + 1 : ℕ) : ℝ) ^ (-(1 / p)))) ≤ C * x ^ (p - 1)) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) ≤
+      C * x ^ p := by
+  have hx_nonneg : 0 ≤ x := le_of_lt hx_pos
+  by_cases hx_le_one : x ≤ 1
+  · have hxpow_le_one : x ^ p ≤ 1 :=
+      Real.rpow_le_one hx_nonneg hx_le_one (le_of_lt hp_pos)
+    rw [durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_zero_of_rpow_le_one
+      (p := p) (x := x) hp_pos hx_nonneg hxpow_le_one]
+    exact mul_nonneg hC_nonneg (Real.rpow_nonneg hx_nonneg p)
+  · have hx_ge_one : 1 ≤ x := le_of_lt (lt_of_not_ge hx_le_one)
+    exact
+      durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound
+        (p := p) (C := C) (x := x) hp_pos hx_pos (hbound hx_ge_one)
+
+/--
 Durrett 2019, Theorem 2.5.12 scalar truncated-square standard p-series
 indicator is bounded by the full reciprocal-square p-series term.
 -/

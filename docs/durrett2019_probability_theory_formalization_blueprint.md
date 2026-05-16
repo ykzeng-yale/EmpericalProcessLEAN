@@ -27,18 +27,19 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V433`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V434`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V433 advances
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V434 advances
 Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the endpoint
-reducers through V432 are compiled, and the remaining scalar estimates now
-reduce to unscaled p-series prefix/tail inequalities.  The source wrappers now
-only require the two unscaled quantitative p-series estimates displayed in the
-current blocker plan.  New compiled anchors through V433:
+reducers through V433 are compiled, and the tail-first small-`x` branch is now
+handled by a zero-sum theorem.  The source wrappers now only require the
+large-branch unscaled p-series prefix estimate and the unscaled
+truncated-square indicator tail estimate displayed in the current blocker
+plan.  New compiled anchors through V434:
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
@@ -110,9 +111,12 @@ and
 `durrett2019_theorem_2_5_12_truncatedSq_rpow_indicator_summable`,
 `durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound`,
 `durrett2019_theorem_2_5_12_truncatedSq_unscaled_rpow_indicator_summable`, and
-`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_unscaled_rpow_indicator`.
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_unscaled_rpow_indicator`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_zero_of_rpow_le_one`, and
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound_ge_one`.
 The next source work is only the ordinary real p-series/integral comparison
-for the two unscaled standard rpow prefix/tail inequalities.
+for the large-branch unscaled prefix estimate and the unscaled indicator tail
+estimate.
 
 Verified route history below is provenance, not live prompt text.  V425 added
 the truncated-mean Kronecker layer reducing normalized mean convergence to
