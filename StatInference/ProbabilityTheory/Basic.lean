@@ -4280,6 +4280,293 @@ theorem durrett2019_theorem_2_5_6_exists_tendsto_partialSum_of_eventually_not_ta
     hc.tendsto_limUnder⟩
 
 /--
+Durrett 2019, Theorem 2.5.6 support: tail-block sums split again after a
+second shifted block length.
+-/
+theorem durrett2019_theorem_2_5_6_tailBlockSum_add_eq_tailBlockSum_add_tailBlockSum
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} (M d n : ℕ) (ω : Ω) :
+    durrett2019_theorem_2_5_6_tailBlockSum X M (d + n) ω =
+      durrett2019_theorem_2_5_6_tailBlockSum X M d ω +
+        durrett2019_theorem_2_5_6_tailBlockSum X (M + d) n ω := by
+  simpa [durrett2019_theorem_2_5_6_tailBlockSum, Nat.add_assoc, Nat.add_comm,
+    Nat.add_left_comm] using
+    (Finset.sum_range_add (fun i : ℕ => X (M + (i + 1)) ω) d n)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: increasing the oscillation threshold
+shrinks the shifted tail-pair oscillation event.
+-/
+theorem durrett2019_theorem_2_5_6_tailPairOscillationEvent_threshold_mono
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {M : ℕ} {x y : ℝ}
+    (hxy : x ≤ y) :
+    durrett2019_theorem_2_5_6_tailPairOscillationEvent X M y ⊆
+      durrett2019_theorem_2_5_6_tailPairOscillationEvent X M x := by
+  intro ω hω
+  rcases hω with ⟨m, n, hmn⟩
+  exact ⟨m, n, lt_of_le_of_lt hxy hmn⟩
+
+/--
+Durrett 2019, Theorem 2.5.6 support: moving the tail base forward shrinks the
+tail-pair oscillation event.
+-/
+theorem durrett2019_theorem_2_5_6_tailPairOscillationEvent_base_mono
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {M N : ℕ} {x : ℝ}
+    (hMN : M ≤ N) :
+    durrett2019_theorem_2_5_6_tailPairOscillationEvent X N x ⊆
+      durrett2019_theorem_2_5_6_tailPairOscillationEvent X M x := by
+  intro ω hω
+  rcases hω with ⟨m, n, hmn⟩
+  let d : ℕ := N - M
+  have hMd : M + d = N := Nat.add_sub_of_le hMN
+  refine ⟨d + m, d + n, ?_⟩
+  have hdiff :
+      durrett2019_theorem_2_5_6_tailBlockSum X M (d + m) ω -
+          durrett2019_theorem_2_5_6_tailBlockSum X M (d + n) ω =
+        durrett2019_theorem_2_5_6_tailBlockSum X N m ω -
+          durrett2019_theorem_2_5_6_tailBlockSum X N n ω := by
+    rw [durrett2019_theorem_2_5_6_tailBlockSum_add_eq_tailBlockSum_add_tailBlockSum
+        (X := X) M d m ω,
+      durrett2019_theorem_2_5_6_tailBlockSum_add_eq_tailBlockSum_add_tailBlockSum
+        (X := X) M d n ω]
+    rw [hMd]
+    ring
+  rw [hdiff]
+  exact hmn
+
+/--
+Durrett 2019, Theorem 2.5.6 support: absence of a tail-pair oscillation event
+at one base gives eventual absence at all later bases.
+-/
+theorem durrett2019_theorem_2_5_6_eventually_not_tailPairOscillationEvent_of_not
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {ω : Ω} {M : ℕ} {eps : ℝ}
+    (hM : ω ∉ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps) :
+    ∀ᶠ N in atTop,
+      ω ∉ durrett2019_theorem_2_5_6_tailPairOscillationEvent X N eps := by
+  refine eventually_atTop.2 ⟨M, ?_⟩
+  intro N hMN hN
+  exact hM
+    (durrett2019_theorem_2_5_6_tailPairOscillationEvent_base_mono
+      (X := X) (M := M) (N := N) hMN hN)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: if the real probabilities of the
+shifted tail-pair oscillation events tend to zero, then their infinite
+intersection has probability zero.
+-/
+theorem durrett2019_theorem_2_5_6_measure_iInter_tailPairOscillationEvent_eq_zero_of_measureReal_tendsto_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {eps : ℝ}
+    (hlim :
+      Tendsto
+        (fun M : ℕ =>
+          P.real (durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps))
+        atTop (𝓝 (0 : ℝ))) :
+    P (⋂ M : ℕ, durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps) = 0 := by
+  have hreal :
+      P.real (⋂ M : ℕ, durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps) = 0 := by
+    refine le_antisymm ?_ measureReal_nonneg
+    exact ge_of_tendsto' hlim fun M =>
+      measureReal_mono (μ := P)
+        (Set.iInter_subset
+          (fun M : ℕ => durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps) M)
+        (measure_ne_top P _)
+  exact (measureReal_eq_zero_iff (measure_ne_top P _)).1 hreal
+
+/--
+Durrett 2019, Theorem 2.5.6 support: probability convergence to zero gives
+almost-sure existence of a non-oscillating tail base at a fixed threshold.
+-/
+theorem durrett2019_theorem_2_5_6_ae_exists_not_tailPairOscillationEvent_of_measureReal_tendsto_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {eps : ℝ}
+    (hlim :
+      Tendsto
+        (fun M : ℕ =>
+          P.real (durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps))
+        atTop (𝓝 (0 : ℝ))) :
+    ∀ᵐ ω ∂P, ∃ M : ℕ,
+      ω ∉ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps := by
+  have hzero :
+      P (⋂ M : ℕ, durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps) = 0 :=
+    durrett2019_theorem_2_5_6_measure_iInter_tailPairOscillationEvent_eq_zero_of_measureReal_tendsto_zero
+      (P := P) (X := X) hlim
+  rw [ae_iff]
+  have hset :
+      {ω : Ω | ¬ ∃ M : ℕ,
+        ω ∉ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps} =
+        {ω : Ω | ∀ M : ℕ,
+          ω ∈ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps} := by
+    ext ω
+    constructor
+    · intro h M
+      by_cases hmem :
+          ω ∈ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps
+      · exact hmem
+      · exact False.elim (h ⟨M, hmem⟩)
+    · intro h hbad
+      rcases hbad with ⟨M, hM⟩
+      exact hM (h M)
+  have hiInter :
+      (⋂ M : ℕ, durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps) =
+        {ω : Ω | ∀ M : ℕ,
+          ω ∈ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps} := by
+    ext ω
+    constructor
+    · intro h M
+      exact Set.mem_iInter.mp h M
+    · intro h
+      exact Set.mem_iInter.mpr h
+  rw [hset, ← hiInter]
+  exact hzero
+
+/--
+Durrett 2019, Theorem 2.5.6 support: the preceding fixed-threshold result in
+the eventual non-oscillation form used by the textbook proof.
+-/
+theorem durrett2019_theorem_2_5_6_ae_eventually_not_tailPairOscillationEvent_of_measureReal_tendsto_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {eps : ℝ}
+    (hlim :
+      Tendsto
+        (fun M : ℕ =>
+          P.real (durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps))
+        atTop (𝓝 (0 : ℝ))) :
+    ∀ᵐ ω ∂P, ∀ᶠ N in atTop,
+      ω ∉ durrett2019_theorem_2_5_6_tailPairOscillationEvent X N eps := by
+  filter_upwards
+    [durrett2019_theorem_2_5_6_ae_exists_not_tailPairOscillationEvent_of_measureReal_tendsto_zero
+      (P := P) (X := X) hlim] with ω hω
+  rcases hω with ⟨M, hM⟩
+  exact
+    durrett2019_theorem_2_5_6_eventually_not_tailPairOscillationEvent_of_not
+      (X := X) (ω := ω) hM
+
+/--
+Durrett 2019, Theorem 2.5.6 support: a countable inverse-natural grid of
+tail-pair non-oscillation bounds is enough for pointwise convergence of the
+one-based partial sums.
+-/
+theorem durrett2019_theorem_2_5_6_exists_tendsto_partialSum_of_grid_not_tailPairOscillationEvent
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {ω : Ω}
+    (hgrid :
+      ∀ k : ℕ, ∃ M : ℕ,
+        ω ∉ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M
+          (1 / ((k : ℝ) + 1))) :
+    ∃ s : ℝ,
+      Tendsto (fun n : ℕ => durrett2019_theorem_2_5_6_partialSum X n ω)
+        atTop (𝓝 s) := by
+  refine
+    durrett2019_theorem_2_5_6_exists_tendsto_partialSum_of_eventually_not_tailPairOscillationEvent
+      (X := X) (ω := ω) ?_
+  intro eps heps
+  rcases exists_nat_one_div_lt (K := ℝ) heps with ⟨k, hk⟩
+  rcases hgrid k with ⟨M, hM⟩
+  refine ⟨M, ?_⟩
+  intro hω
+  exact hM
+    (durrett2019_theorem_2_5_6_tailPairOscillationEvent_threshold_mono
+      (X := X) (M := M) (x := 1 / ((k : ℝ) + 1)) (y := eps)
+      (le_of_lt hk) hω)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: countably many fixed-threshold
+probability limits give the almost-sure inverse-natural non-oscillation grid.
+-/
+theorem durrett2019_theorem_2_5_6_ae_forall_nat_exists_not_tailPairOscillationEvent_of_measureReal_tendsto_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hlim_grid :
+      ∀ k : ℕ,
+        Tendsto
+          (fun M : ℕ =>
+            P.real (durrett2019_theorem_2_5_6_tailPairOscillationEvent X M
+              (1 / ((k : ℝ) + 1))))
+          atTop (𝓝 (0 : ℝ))) :
+    ∀ᵐ ω ∂P, ∀ k : ℕ, ∃ M : ℕ,
+      ω ∉ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M
+        (1 / ((k : ℝ) + 1)) := by
+  exact ae_all_iff.2 fun k =>
+    durrett2019_theorem_2_5_6_ae_exists_not_tailPairOscillationEvent_of_measureReal_tendsto_zero
+      (P := P) (X := X) (hlim_grid k)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: the inverse-natural probability grid
+implies almost-sure pointwise convergence of the one-based partial sums.
+-/
+theorem durrett2019_theorem_2_5_6_ae_exists_tendsto_partialSum_of_grid_tailPairOscillationEvent_measureReal_tendsto_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hlim_grid :
+      ∀ k : ℕ,
+        Tendsto
+          (fun M : ℕ =>
+            P.real (durrett2019_theorem_2_5_6_tailPairOscillationEvent X M
+              (1 / ((k : ℝ) + 1))))
+          atTop (𝓝 (0 : ℝ))) :
+    ∀ᵐ ω ∂P, ∃ s : ℝ,
+      Tendsto (fun n : ℕ => durrett2019_theorem_2_5_6_partialSum X n ω)
+        atTop (𝓝 s) := by
+  filter_upwards
+    [durrett2019_theorem_2_5_6_ae_forall_nat_exists_not_tailPairOscillationEvent_of_measureReal_tendsto_zero
+      (P := P) (X := X) hlim_grid] with ω hω
+  exact
+    durrett2019_theorem_2_5_6_exists_tendsto_partialSum_of_grid_not_tailPairOscillationEvent
+      (X := X) (ω := ω) hω
+
+/--
+Durrett 2019, Theorem 2.5.6 support: the summable-variance oscillation
+probability estimate at an arbitrary positive threshold.
+-/
+theorem durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_tendsto_zero_of_summable_variance_threshold
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {x : ℝ} (hx_pos : 0 < x)
+    (hX_mem : ∀ i, MemLp (X i) 2 P)
+    (hX_zero : ∀ i, ∫ ω, X i ω ∂P = 0)
+    (hvar_summable :
+      Summable fun i : ℕ =>
+        _root_.ProbabilityTheory.variance (X (i + 1)) P) :
+    Tendsto
+      (fun M : ℕ =>
+        P.real (durrett2019_theorem_2_5_6_tailPairOscillationEvent X M x))
+      atTop (𝓝 (0 : ℝ)) := by
+  have h :=
+    durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_tendsto_zero_of_summable_variance
+      (P := P) (X := X) hX_indep hX_meas
+      (eps := x / 2) (half_pos hx_pos) hX_mem hX_zero hvar_summable
+  have htwo : 2 * (x / 2) = x := by ring
+  simpa [htwo] using h
+
+/--
+Durrett 2019, Theorem 2.5.6: if the independent mean-zero real increments have
+finite second moments and summable variances, then the one-based random series
+partial sums converge almost surely.
+-/
+theorem durrett2019_theorem_2_5_6_random_series_partialSum_converges_ae_of_summable_variance
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hX_mem : ∀ i, MemLp (X i) 2 P)
+    (hX_zero : ∀ i, ∫ ω, X i ω ∂P = 0)
+    (hvar_summable :
+      Summable fun i : ℕ =>
+        _root_.ProbabilityTheory.variance (X (i + 1)) P) :
+    ∀ᵐ ω ∂P, ∃ s : ℝ,
+      Tendsto (fun n : ℕ => durrett2019_theorem_2_5_6_partialSum X n ω)
+        atTop (𝓝 s) := by
+  refine
+    durrett2019_theorem_2_5_6_ae_exists_tendsto_partialSum_of_grid_tailPairOscillationEvent_measureReal_tendsto_zero
+      (P := P) (X := X) ?_
+  intro k
+  have hpos : 0 < (1 / ((k : ℝ) + 1)) := by positivity
+  exact
+    durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_tendsto_zero_of_summable_variance_threshold
+      (P := P) (X := X) hX_indep hX_meas hpos hX_mem hX_zero hvar_summable
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

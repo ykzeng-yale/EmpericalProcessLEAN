@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V404
+## Live In-Thread Goal Prompt V405
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -14,12 +14,37 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Theorem 2.5.6 convergence of random
 series in `StatInference/ProbabilityTheory/Basic.lean`.  Reuse the compiled
 Chapter 2.1 independence/product-expectation bridges, Theorem 2.2.1
-variance-sum APIs, and V391-V404 first-crossing/block-tail/oscillation/pathwise-Cauchy infrastructure; do not route
+variance-sum APIs, and V391-V405 first-crossing/block-tail/oscillation/pathwise-Cauchy/a.s.-convergence infrastructure; do not route
 back to Theorem 2.4.9 or 2.5.5 source packaging
 unless search proves a concrete missing source display.
 
-Latest verified target V404 packages Durrett's pathwise Cauchy endpoint from
-eventual absence of shifted tail-pair oscillation events.  New compiled
+Latest verified target V405 packages the a.s. convergence endpoint for Durrett
+Theorem 2.5.6.  New compiled anchors:
+`durrett2019_theorem_2_5_6_tailBlockSum_add_eq_tailBlockSum_add_tailBlockSum`,
+`durrett2019_theorem_2_5_6_tailPairOscillationEvent_threshold_mono`,
+`durrett2019_theorem_2_5_6_tailPairOscillationEvent_base_mono`,
+`durrett2019_theorem_2_5_6_eventually_not_tailPairOscillationEvent_of_not`,
+`durrett2019_theorem_2_5_6_measure_iInter_tailPairOscillationEvent_eq_zero_of_measureReal_tendsto_zero`,
+`durrett2019_theorem_2_5_6_ae_exists_not_tailPairOscillationEvent_of_measureReal_tendsto_zero`,
+`durrett2019_theorem_2_5_6_ae_eventually_not_tailPairOscillationEvent_of_measureReal_tendsto_zero`,
+`durrett2019_theorem_2_5_6_exists_tendsto_partialSum_of_grid_not_tailPairOscillationEvent`,
+`durrett2019_theorem_2_5_6_ae_forall_nat_exists_not_tailPairOscillationEvent_of_measureReal_tendsto_zero`,
+`durrett2019_theorem_2_5_6_ae_exists_tendsto_partialSum_of_grid_tailPairOscillationEvent_measureReal_tendsto_zero`,
+`durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_tendsto_zero_of_summable_variance_threshold`,
+and
+`durrett2019_theorem_2_5_6_random_series_partialSum_converges_ae_of_summable_variance`.
+This closes the main source-facing Theorem 2.5.6 random-series convergence
+statement for one-based partial sums under independent mean-zero increments
+with finite second moments and summable variances.  It deliberately uses a
+countable inverse-natural threshold grid plus `ae_all_iff`; do not replace it
+with an invalid uncountable a.e. intersection over all real epsilons.  Next
+aggressive target: either add a thin source-display wrapper matching Durrett's
+exact `sum X_n converges a.s.` wording if the textbook crosswalk demands it, or
+move forward to the next Chapter 2 result after checking the local Markdown/PDF
+anchors.
+
+V404 packages Durrett's pathwise Cauchy endpoint from eventual absence of
+shifted tail-pair oscillation events.  Compiled
 anchors:
 `durrett2019_theorem_2_5_6_partialSum`,
 `durrett2019_theorem_2_5_6_tailBlockSum`,
@@ -34,9 +59,6 @@ and
 `durrett2019_theorem_2_5_6_exists_tendsto_partialSum_of_eventually_not_tailPairOscillationEvent`.
 The deterministic endpoint now reuses mathlib's `Metric.cauchySeq_iff` and
 `CauchySeq.tendsto_limUnder`; do not rebuild Cauchy-completeness machinery.
-Next aggressive target: turn probability convergence of the oscillation events
-into an a.s. eventual non-oscillation statement, then state the front-facing
-Theorem 2.5.6 a.s. convergence wrapper.
 
 V403 packages Durrett's oscillation step in shifted block form.  Compiled
 anchors:
