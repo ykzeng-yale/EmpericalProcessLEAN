@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V374
+## Live In-Thread Goal Prompt V375
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,8 +21,19 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V374 adds the closed-endpoint pointwise empirical-CDF
-proof-step counterpart to V373 in `StatInference/ProbabilityTheory/Basic.lean`:
+Latest verified target V375 adds the finite-cutpoint simultaneous closed and
+strict-left error bridge used in Durrett Theorem 2.4.9's proof after pointwise
+convergence has been established:
+`durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt`
+and
+`durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_iIndepFun`.
+This packages the textbook choice of a random burn-in `N_k(omega)` so that
+both `F_n(x_j) - F(x_j)` and `F_n(x_j-) - F(x_j-)` are small for all finitely
+many cutpoints at once.  Next work should use this bridge in the uniform
+grid/telescoping squeeze, not restate the pointwise strong laws.
+
+V374 adds the closed-endpoint pointwise empirical-CDF proof-step counterpart to
+V373 in `StatInference/ProbabilityTheory/Basic.lean`:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae`,
@@ -536,12 +547,13 @@ one-based iid / empirical-CDF wrappers, the V371 one-based full-joint-law,
 identDistrib+iIndepFun, and pairwise-identDistrib source wrappers, the V372
 strict-left empirical-CDF pointwise SLLN wrappers, the V373 exact-textbook
 strict-left source-entrance wrappers, or the V374 closed-endpoint pointwise
-empirical-CDF source wrappers.  Next
+empirical-CDF source wrappers, or the V375 finite-cutpoint simultaneous
+closed/strict-left error bridge.  Next
 aggressive packet:
-continue Chapter 2.1 / Theorem 2.4.9 only by closing a concrete missing
-source-facing shape around independence, product laws, canonical iid
-coordinates, empirical-CDF notation, or half-line Glivenko-Cantelli consumers;
-do not rebuild the compiled cutpoint-chain/grid proof route.
+continue Chapter 2.1 / Theorem 2.4.9 only by closing the next concrete
+uniform-grid squeeze step that consumes the finite-cutpoint error bridge, or a
+source-facing shape that directly feeds that step.  Do not rebuild the compiled
+pointwise, strict-left, product-law, or cutpoint-chain support.
 
 ## Historical V306 Prompt Notes
 
@@ -3031,6 +3043,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V374` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V375` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

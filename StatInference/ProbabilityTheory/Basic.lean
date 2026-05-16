@@ -5719,6 +5719,109 @@ theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_inv
       hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step: a finite set of cutpoints has one
+random burn-in after which both the closed and strict-left empirical-CDF
+errors are below a prescribed positive tolerance.
+
+This packages the textbook passage "pick `N_k(omega)`" after the pointwise
+strong laws for `F_n(x_j)` and `F_n(x_j-)`.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c ∈ cutpoints,
+          |empiricalDistributionFunction (samplePath X ω n) c -
+              ProbabilityTheory.cdf P c| < epsilon ∧
+            |empiricalLeftDistributionFunction (samplePath X ω n) c -
+              Function.leftLim (ProbabilityTheory.cdf P) c| < epsilon := by
+  classical
+  induction cutpoints using Finset.induction_on with
+  | empty =>
+      filter_upwards with ω
+      exact Eventually.of_forall fun _n c hc => by simp at hc
+  | insert a s ha ih =>
+      have hclosed :
+          ∀ᵐ ω ∂μ,
+            Tendsto
+              (fun n : ℕ =>
+                empiricalDistributionFunction (samplePath X ω n) a -
+                  ProbabilityTheory.cdf P a)
+              atTop (𝓝 0) :=
+        durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae
+          X a hLaw hindep
+      have hleft :
+          ∀ᵐ ω ∂μ,
+            Tendsto
+              (fun n : ℕ =>
+                empiricalLeftDistributionFunction (samplePath X ω n) a -
+                  Function.leftLim (ProbabilityTheory.cdf P) a)
+              atTop (𝓝 0) :=
+        durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae
+          X a hLaw hindep
+      filter_upwards [hclosed, hleft, ih] with ω hclosedω hleftω hrest
+      have hclosedEventually :
+          ∀ᶠ n in atTop,
+            |empiricalDistributionFunction (samplePath X ω n) a -
+                ProbabilityTheory.cdf P a| < epsilon := by
+        filter_upwards
+          [hclosedω.eventually (Metric.ball_mem_nhds (0 : ℝ) hepsilon)] with n hn
+        simpa [Metric.mem_ball, Real.dist_eq] using hn
+      have hleftEventually :
+          ∀ᶠ n in atTop,
+            |empiricalLeftDistributionFunction (samplePath X ω n) a -
+                Function.leftLim (ProbabilityTheory.cdf P) a| < epsilon := by
+        filter_upwards
+          [hleftω.eventually (Metric.ball_mem_nhds (0 : ℝ) hepsilon)] with n hn
+        simpa [Metric.mem_ball, Real.dist_eq] using hn
+      filter_upwards [hclosedEventually, hleftEventually, hrest] with
+        n hclosedn hleftn hrestn c hc
+      have hc' : c = a ∨ c ∈ s := by
+        simpa [Finset.mem_insert] using hc
+      rcases hc' with rfl | hcs
+      · exact ⟨hclosedn, hleftn⟩
+      · exact hrestn c hcs
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact one-based textbook notation
+under `iIndepFun`: a finite set of cutpoints has one random burn-in after
+which both `n^{-1} * sum 1{X_m <= c}` and `n^{-1} * sum 1{X_m < c}` are close
+to their CDF targets.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c ∈ cutpoints,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+              ProbabilityTheory.cdf P c| < epsilon ∧
+            |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X (i + 1) ω) -
+              Function.leftLim (ProbabilityTheory.cdf P) c| < epsilon := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  filter_upwards
+    [durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt
+      (fun i => fun ω => X (i + 1) ω) cutpoints hepsilon hShift.1
+      (fun _ _ hij => hShift.2.indepFun hij)] with ω hω
+  filter_upwards [hω] with n hn c hc
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
+    empiricalLeftDistributionFunction_samplePath_eq_range_sum,
+    div_eq_mul_inv, mul_comm] using hn c hc
+
+/--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem under the
 standard iid-source independence assumption `iIndepFun`.
 -/

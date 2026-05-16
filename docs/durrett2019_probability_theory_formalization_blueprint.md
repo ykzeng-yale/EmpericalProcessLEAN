@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V374`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V375`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -37,7 +37,16 @@ independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V374 adds closed-endpoint
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V375 adds the
+finite-cutpoint simultaneous closed and strict-left error bridge used in the
+proof of Durrett Theorem 2.4.9:
+`durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt`
+and
+`durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_iIndepFun`.
+This is the compiled `N_k(omega)` step for finitely many cutpoints after
+pointwise convergence of `F_n(x_j)` and `F_n(x_j-)`.  The next target should be
+the uniform grid/telescoping squeeze that consumes this finite-cutpoint bridge,
+not another pointwise SLLN wrapper.  V374 adds closed-endpoint
 pointwise empirical-CDF proof-step wrappers:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae`,
