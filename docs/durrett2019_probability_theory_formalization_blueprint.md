@@ -27,19 +27,18 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V424`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V425`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V424 advances
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V425 advances
 Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the V421-V422
 normalizer/truncation/Kronecker/Borel-Cantelli spine now has compiled reducers
-turning exact weighted base truncated second-moment summability and normalized
-truncated-mean convergence into the truncated normalized-sum endpoint, and V424
-transfers that endpoint through eventual equality to the original normalized
-sums.  New compiled anchors through V424:
+turning exact weighted base truncated second-moment summability and absolute
+scaled truncated-mean summability into the original normalized-sum endpoint.
+New compiled anchors through V425:
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
@@ -50,13 +49,20 @@ and
 `durrett2019_theorem_2_5_12_normalized_sum_tendsto_zero_of_eventuallyEq`,
 `durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_truncated_and_eventuallyEq`,
 and
-`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto`.
-The next source work is purely the actual analytic work from finite
-`p`-moment:
-weighted base truncated second-moment summability and normalized truncated-mean
-contribution.
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto`,
+`durrett2019_theorem_2_5_12_truncatedMean_normalized_sum_tendsto_zero_of_scaled_summable`,
+`durrett2019_theorem_2_5_12_truncatedMean_scaled_summable_of_abs_scaled_summable`,
+`durrett2019_theorem_2_5_12_truncatedMean_normalized_sum_tendsto_zero_of_abs_scaled_summable`,
+`durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_scaled_summable`,
+`durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_abs_scaled_summable`,
+and
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_abs_scaled_summable`.
+The next source work is two concrete finite-`p` analytic summability estimates:
+weighted base truncated second moments and absolute scaled truncated means.
 
-Verified route history below is provenance, not live prompt text.  V423 added
+Verified route history below is provenance, not live prompt text.  V424 added
+the finite-prefix original-sum transfer from truncated normalized sums under
+eventual equality.  V423 added
 the variance/mean assembly reducers and left the finite-prefix transfer plus
 analytic estimates as the next frontier.  V422
 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the

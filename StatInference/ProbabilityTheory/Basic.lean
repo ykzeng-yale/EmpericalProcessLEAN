@@ -8140,6 +8140,208 @@ theorem durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_ba
       (P := P) (X := X) (p := p) hp_pos hX_pow_int0 hX_ident)
 
 /--
+Durrett 2019, Theorem 2.5.12 deterministic mean layer: summability of the
+truncated means after division by the Marcinkiewicz-Zygmund normalizer implies
+the normalized truncated-mean contribution tends to zero.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedMean_normalized_sum_tendsto_zero_of_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hmean_scaled_summable :
+      Summable fun k : ℕ =>
+        durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1) /
+          durrett2019_theorem_2_5_12_normalizer p (k + 1)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1),
+          durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)) /
+          durrett2019_theorem_2_5_12_normalizer p (n + 1))
+      atTop (𝓝 0) := by
+  let q : ℕ -> ℝ := fun k =>
+    durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1) /
+      durrett2019_theorem_2_5_12_normalizer p (k + 1)
+  have hscaled_tendsto :
+      Tendsto
+        (fun n : ℕ => ∑ k ∈ Finset.range (n + 1), q k)
+        atTop (𝓝 (∑' k : ℕ, q k)) := by
+    have hq : Summable q := by
+      simpa [q] using hmean_scaled_summable
+    simpa using hq.tendsto_sum_tsum_nat.comp (tendsto_add_atTop_nat 1)
+  exact
+    durrett2019_theorem_2_5_9_normalized_sum_tendsto_zero
+      (x := fun k : ℕ => durrett2019_theorem_2_5_12_truncatedMean P X p k)
+      (a := durrett2019_theorem_2_5_12_normalizer p)
+      (L := ∑' k : ℕ, q k)
+      (fun k =>
+        durrett2019_theorem_2_5_12_normalizer_ne_zero
+          hp_pos (Nat.succ_pos k))
+      (by simpa [q] using hscaled_tendsto)
+      (durrett2019_theorem_2_5_12_normalizer_increment_nonneg hp_pos)
+      (durrett2019_theorem_2_5_12_normalizer_atTop hp_pos)
+
+/--
+Durrett 2019, Theorem 2.5.12 deterministic mean layer: absolute summability of
+the scaled truncated means implies ordinary summability of the scaled
+truncated means.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedMean_scaled_summable_of_abs_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hmean_abs_scaled_summable :
+      Summable fun k : ℕ =>
+        |durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)| /
+          durrett2019_theorem_2_5_12_normalizer p (k + 1)) :
+    Summable fun k : ℕ =>
+      durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1) /
+        durrett2019_theorem_2_5_12_normalizer p (k + 1) := by
+  refine hmean_abs_scaled_summable.of_norm_bounded_eventually_nat ?_
+  exact Eventually.of_forall fun k => by
+    have hpos :
+        0 < durrett2019_theorem_2_5_12_normalizer p (k + 1) :=
+      durrett2019_theorem_2_5_12_normalizer_pos hp_pos (Nat.succ_pos k)
+    rw [norm_div]
+    change
+      |durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)| /
+          |durrett2019_theorem_2_5_12_normalizer p (k + 1)| ≤
+        |durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)| /
+          durrett2019_theorem_2_5_12_normalizer p (k + 1)
+    rw [abs_of_pos hpos]
+
+/--
+Durrett 2019, Theorem 2.5.12 deterministic mean layer: absolute summability of
+the scaled truncated means is enough to remove the normalized truncated-mean
+contribution.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedMean_normalized_sum_tendsto_zero_of_abs_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hmean_abs_scaled_summable :
+      Summable fun k : ℕ =>
+        |durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)| /
+          durrett2019_theorem_2_5_12_normalizer p (k + 1)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1),
+          durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)) /
+          durrett2019_theorem_2_5_12_normalizer p (n + 1))
+      atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_12_truncatedMean_normalized_sum_tendsto_zero_of_scaled_summable
+    (P := P) (X := X) (p := p) hp_pos
+    (durrett2019_theorem_2_5_12_truncatedMean_scaled_summable_of_abs_scaled_summable
+      (P := P) (X := X) (p := p) hp_pos hmean_abs_scaled_summable)
+
+/--
+Durrett 2019, Theorem 2.5.12 source constructor with the mean estimate stated
+as scaled summability instead of a normalized-sum limit.
+-/
+theorem durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P)
+    (hmean_scaled_summable :
+      Summable fun k : ℕ =>
+        durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1) /
+          durrett2019_theorem_2_5_12_normalizer p (k + 1)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_truncated X p (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto
+    (P := P) (X := X) (p := p) hp_pos hX_indep hX_meas hX_ident
+    hbase_weighted_summable
+    (durrett2019_theorem_2_5_12_truncatedMean_normalized_sum_tendsto_zero_of_scaled_summable
+      (P := P) (X := X) (p := p) hp_pos hmean_scaled_summable)
+
+/--
+Durrett 2019, Theorem 2.5.12 source constructor with the mean estimate stated
+as absolute scaled summability.
+-/
+theorem durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_abs_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P)
+    (hmean_abs_scaled_summable :
+      Summable fun k : ℕ =>
+        |durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)| /
+          durrett2019_theorem_2_5_12_normalizer p (k + 1)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_truncated X p (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_scaled_summable
+    (P := P) (X := X) (p := p) hp_pos hX_indep hX_meas hX_ident
+    hbase_weighted_summable
+    (durrett2019_theorem_2_5_12_truncatedMean_scaled_summable_of_abs_scaled_summable
+      (P := P) (X := X) (p := p) hp_pos hmean_abs_scaled_summable)
+
+/--
+Durrett 2019, Theorem 2.5.12 original endpoint with the mean estimate stated
+as absolute scaled summability.
+-/
+theorem durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_abs_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P)
+    (hmean_abs_scaled_summable :
+      Summable fun k : ℕ =>
+        |durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)| /
+          durrett2019_theorem_2_5_12_normalizer p (k + 1)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto
+    (P := P) (X := X) (p := p) hp_pos hX_indep hX_meas hX_pow_int0 hX_ident
+    hbase_weighted_summable
+    (durrett2019_theorem_2_5_12_truncatedMean_normalized_sum_tendsto_zero_of_abs_scaled_summable
+      (P := P) (X := X) (p := p) hp_pos hmean_abs_scaled_summable)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
