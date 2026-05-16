@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V26` near the top of
+  `Live Goal Prompt V27` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -128,17 +128,26 @@ This dashboard tracks the Chewi optimization formalization lane for
   Search-first result: local code had the one-minus upper Riccati/local-norm
   sandwich but not the one-plus lower primitive needed by Chewi's integrated
   kernel, so the packet adds the missing scalar inverse-monotonicity proof and
-  reuses existing mixed-third derivative/local-norm APIs.
+  reuses existing mixed-third derivative/local-norm APIs.  The V27 consumer
+  packet then pushes this discharge through the generic §13.16 objective-gap
+  layer, adding `chewi1316_objective_gap_le_of_mixedThirdSelfConcordantOn`,
+  `chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_mixedThirdSelfConcordantOn`,
+  and
+  `chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_mixedThirdSelfConcordantOn`.
+  These are the preferred generic endpoints when a caller has mixed-third
+  self-concordance and central-path derivative data; do not route through a
+  supplied weighted `hquad_lower` premise unless deliberately testing an older
+  interface.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
   `hxseq_mem` or per-step decrement premise.  Next proof target: discharge one
-  remaining terminal certificate family for the V19/V21/V22/V23/V24/V25/V26
-  handoff, preferably terminal central-path optimality/centrality feeding the
-  new central-path weighted lower-model theorem into the existing objective-gap
-  consumers.  Do not repeat
+  remaining terminal certificate family for the V19/V21/V22/V23/V24/V25/V26/V27
+  handoff, preferably the finite-row slack-range specialization that replaces
+  the handoff's supplied `hlower` premise by the new mixed-third main-stage
+  objective-gap endpoint.  Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge
-  consumer wrappers.
+  consumer wrappers, or the generic mixed-third objective-gap consumers.
 - Cached Chapter 13 frontier history: the finite-row slack-range §13.16 handoff now
   compiles through source-pullback decrement transport and a point-dependent
   range sqrt-coordinate one-step wrapper.  New reusable declarations are

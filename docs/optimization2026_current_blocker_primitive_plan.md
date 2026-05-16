@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V26`, this file's top
+   the full book is complete, route from `Live Goal Prompt V27`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V26
+## Live Goal Prompt V27
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -298,23 +298,42 @@ adding the scalar inverse-monotonicity proof.  The proof reuses local
 self-concordance, segment membership, local norm positivity, and
 `localNorm_sq_eq_inner`.
 
+Current V27 packet pushes the V26 lower-model discharge through the generic
+§13.16 objective-gap consumers, so callers no longer supply the weighted
+pointwise `hquad_lower` gate separately at the main assembly level.  New
+compiled declarations:
+`chewi1316_objective_gap_le_of_mixedThirdSelfConcordantOn`,
+`chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_mixedThirdSelfConcordantOn`,
+and
+`chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_mixedThirdSelfConcordantOn`.
+Search-first result: existing V24/V25 consumers already had the right
+objective-gap algebra and large-parameter count APIs; the missing piece was
+only the composition from V26
+`chewi1316_centralPath_lowerModel_of_mixedThirdSelfConcordantOn` into those
+consumers.  Do not add more supplied lower-model wrappers before using these
+mixed-third endpoints.
+
 Next theorem-sized target: finish one remaining genuine terminal certificate
-family for the V19/V21/V22/V23/V24/V25/V26 auto handoff.  Prefer the terminal
-central-path optimality/centrality wrapper that feeds the new
-`chewi1316_centralPath_lowerModel_of_mixedThirdSelfConcordantOn` into the
-already compiled objective-gap consumers.  If that wrapper exposes a stronger
-analytic gap, use the V26 weighted lower-model theorem as the value-growth
-route and record the exact missing central-path or Hessian-derivative
-hypothesis.
+family for the V19/V21/V22/V23/V24/V25/V26/V27 auto handoff.  Prefer a
+finite-row slack-range specialization that replaces the handoff's supplied
+`hlower` premise by the new
+`chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_mixedThirdSelfConcordantOn`,
+using the already available range self-concordance, Hessian derivative,
+mixed-third, Hessian positivity, central-path gradient derivative, and
+interval-integrability APIs.  If that balloons, prove the smaller terminal
+centrality/Hessian-derivative wrapper that exposes exactly which finite-row
+hypothesis remains.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
 bridge/consumer wrappers, the weighted kernel route, or the one-plus Riccati
-lower/Hessian-lower discharge.  Search first near existing `*_standardPath`
-wrappers, `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
-definitions, and terminal centrality/Hessian-derivative wrappers; then
+lower/Hessian-lower discharge, or the generic mixed-third objective-gap
+consumers.  Search first near existing `*_standardPath` wrappers,
+`chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
+definitions, finite-row range Hessian derivative/mixed-third lemmas, and
+terminal centrality/Hessian-derivative wrappers; then
 formalize only the genuinely missing terminal analytic certificate.
-Older paragraphs below are cached route history and must not override this V26
+Older paragraphs below are cached route history and must not override this V27
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

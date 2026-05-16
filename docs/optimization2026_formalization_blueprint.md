@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V26` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V27` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -109,6 +109,16 @@ terminal §13.16 work should feed the new central-path weighted lower-model
 theorem into the existing objective-gap consumers by proving the remaining
 centrality/selected-parameter hypotheses, not by redoing the weighted kernel
 or Riccati lower layer.
+The V27 consumer packet adds
+`chewi1316_objective_gap_le_of_mixedThirdSelfConcordantOn`,
+`chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_mixedThirdSelfConcordantOn`,
+and
+`chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_mixedThirdSelfConcordantOn`,
+so the generic §13.16 objective-gap layer now consumes mixed-third
+self-concordance directly rather than a supplied weighted `hquad_lower`
+premise.  Next finite-row work should specialize this mixed-third main-stage
+endpoint to the slack-range/polytope setting and remove the `hlower` premise
+from the active standard-path handoff.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

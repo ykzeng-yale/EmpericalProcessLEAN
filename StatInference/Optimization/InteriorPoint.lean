@@ -11996,6 +11996,70 @@ theorem chewi1316_objective_gap_le_of_gradient_segment_weighted_quadratic_lower
       hcauchy hlower
 
 /--
+Chewi Lemma 13.16 assembly with the Lemma 13.6 lower-model term discharged
+directly from mixed-third self-concordance.  This composes the V26 one-plus
+Riccati/Hessian lower-bound layer with the existing objective-gap estimate, so
+callers no longer supply the weighted pointwise `hquad_lower` gate separately.
+-/
+theorem chewi1316_objective_gap_le_of_mixedThirdSelfConcordantOn
+    {s : Set E} {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ}
+    {phiGrad : E -> E} {a x center optimum : E} {t nu lambda : ℝ}
+    (ht_pos : 0 < t)
+    (hlambda_lt : lambda < 1)
+    (hcentral : t • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement : dualLocalNorm invHess x (t • a + phiGrad x) ≤ lambda)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (fun z => t • a + phiGrad z)
+        (hess (hessianSegmentPoint x center τ))
+        (hessianSegmentPoint x center τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hs : Convex ℝ s) (hx : x ∈ s) (hcenter_mem : center ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hdiff_ne : center - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ τ,
+      τ ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint x center τ))
+          (hessianSegmentPoint x center τ))
+    (hmixed : ∀ v : E, ∀ τ,
+      τ ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v ((hessDeriv (hessianSegmentPoint x center τ) (center - x)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x center v τ) :
+    inner ℝ a x - inner ℝ a optimum ≤
+      (1 / t) *
+        (nu + (((lambda + Real.sqrt nu) * lambda) / (1 - lambda))) := by
+  have hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (t • a + phiGrad x) (x - center) :=
+    chewi1316_centralPath_lowerModel_of_mixedThirdSelfConcordantOn
+      (s := s) (hess := hess) (phiGrad := phiGrad)
+      (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (a := a) (x := x) (center := center) (t := t)
+      hgrad hint hcentral hs hx hcenter_mem hsc hess_pos hdiff_ne
+      hhess_cont hhess hmixed
+  exact
+    chewi1316_objective_gap_le
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (t := t) (nu := nu) (lambda := lambda)
+      ht_pos hlambda_lt hcentral hbarrier_step hdecrement hphi_bound
+      hcauchy hlower
+
+/--
 Chewi Lemma 13.16 assembly with the V22 lower-model split.  Callers may
 provide the self-concordant value-growth certificate for the central-path
 objective and the first-order convex model, instead of constructing the
@@ -12211,6 +12275,69 @@ theorem chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_gradient_seg
       (hess := hess) (phiGrad := phiGrad) (a := a)
       (x := x) (center := center) (t := t)
       hgrad hint hcentral hquad_lower
+  exact
+    chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (t := t) (nu := nu) (eps := eps)
+      ht_pos heps_pos hnu_one hcentral hbarrier_step hdecrement
+      hphi_bound hcauchy hlower ht_large
+
+/--
+Large-parameter §13.16 endpoint with the lower-model term discharged directly
+from mixed-third self-concordance via the V26 weighted Lemma 13.6 route.
+-/
+theorem chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_mixedThirdSelfConcordantOn
+    {s : Set E} {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ}
+    {phiGrad : E -> E} {a x center optimum : E} {t nu eps : ℝ}
+    (ht_pos : 0 < t)
+    (heps_pos : 0 < eps)
+    (hnu_one : 1 ≤ nu)
+    (hcentral : t • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement :
+      dualLocalNorm invHess x (t • a + phiGrad x) ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (fun z => t • a + phiGrad z)
+        (hess (hessianSegmentPoint x center τ))
+        (hessianSegmentPoint x center τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hs : Convex ℝ s) (hx : x ∈ s) (hcenter_mem : center ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hdiff_ne : center - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ τ,
+      τ ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint x center τ))
+          (hessianSegmentPoint x center τ))
+    (hmixed : ∀ v : E, ∀ τ,
+      τ ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v ((hessDeriv (hessianSegmentPoint x center τ) (center - x)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x center v τ)
+    (ht_large : 2 * nu ≤ eps * t) :
+    inner ℝ a x - inner ℝ a optimum ≤ eps := by
+  have hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (t • a + phiGrad x) (x - center) :=
+    chewi1316_centralPath_lowerModel_of_mixedThirdSelfConcordantOn
+      (s := s) (hess := hess) (phiGrad := phiGrad)
+      (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (a := a) (x := x) (center := center) (t := t)
+      hgrad hint hcentral hs hx hcenter_mem hsc hess_pos hdiff_ne
+      hhess_cont hhess hmixed
   exact
     chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t
       (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
@@ -12732,6 +12859,78 @@ theorem chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_gradient_s
       (hess := hess) (phiGrad := phiGrad) (a := a)
       (x := x) (center := center) (t := tseq N)
       hgrad hint hcentral hquad_lower
+  exact
+    chewi1316_objective_gap_le_eps_of_mainStageParameter_large
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (tseq := tseq) (N := N) (t0 := t0) (c0 := c0)
+      (nu := nu) (eps := eps)
+      h0 hstep hr_pos ht0_pos heps_pos hnu_one hcentral
+      hbarrier_step hdecrement hphi_bound hcauchy hlower hlarge
+
+/--
+Main-stage closed-parameter endpoint with the Lemma 13.6 lower-model term
+discharged directly from mixed-third self-concordance via the V26 weighted
+Riccati/Hessian route.
+-/
+theorem chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_mixedThirdSelfConcordantOn
+    {s : Set E} {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ}
+    {phiGrad : E -> E} {a x center optimum : E}
+    {tseq : ℕ -> ℝ} {N : ℕ} {t0 c0 nu eps : ℝ}
+    (h0 : tseq 0 = t0)
+    (hstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 + c0 / Real.sqrt nu) * tseq n)
+    (hr_pos : 0 < 1 + c0 / Real.sqrt nu)
+    (ht0_pos : 0 < t0)
+    (heps_pos : 0 < eps)
+    (hnu_one : 1 ≤ nu)
+    (hcentral : tseq N • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement :
+      dualLocalNorm invHess x (tseq N • a + phiGrad x) ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (fun z => tseq N • a + phiGrad z)
+        (hess (hessianSegmentPoint x center τ))
+        (hessianSegmentPoint x center τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hs : Convex ℝ s) (hx : x ∈ s) (hcenter_mem : center ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hdiff_ne : center - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ τ,
+      τ ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint x center τ))
+          (hessianSegmentPoint x center τ))
+    (hmixed : ∀ v : E, ∀ τ,
+      τ ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v ((hessDeriv (hessianSegmentPoint x center τ) (center - x)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x center v τ)
+    (hlarge :
+      2 * nu ≤
+        eps * ((1 + c0 / Real.sqrt nu) ^ N * t0)) :
+    inner ℝ a x - inner ℝ a optimum ≤ eps := by
+  have hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (tseq N • a + phiGrad x) (x - center) :=
+    chewi1316_centralPath_lowerModel_of_mixedThirdSelfConcordantOn
+      (s := s) (hess := hess) (phiGrad := phiGrad)
+      (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (a := a) (x := x) (center := center) (t := tseq N)
+      hgrad hint hcentral hs hx hcenter_mem hsc hess_pos hdiff_ne
+      hhess_cont hhess hmixed
   exact
     chewi1316_objective_gap_le_eps_of_mainStageParameter_large
       (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
