@@ -22346,6 +22346,259 @@ theorem chewi1316_mainStage_newtonDecrement_le_quarter_of_centralPathGradient_sq
       hhess_model hinv_model hgrad_update hdelta_nonneg hdelta_le_c0
       hdelta_sqrt_le_c0 hlambda_old hlambda_old_le hphi_bound hc0_le
 
+set_option maxHeartbeats 4000000 in
+/--
+Sequence-level main-stage successor invariant in the source shape of Chewi
+§13.4.  The parameter update is increasing, `t_{n+1} = (1 + delta) t_n`,
+and `x_{n+1}` is the Newton step for the new central-path gradient.
+-/
+theorem chewi1316_mainStage_decrement_step_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {sqrtCoord : E -> E ≃L[ℝ] E}
+    {a : E} {xseq : ℕ -> E} {tseq : ℕ -> ℝ}
+    {delta c0 nu : ℝ}
+    (hs : Convex ℝ s)
+    (hxseq_mem : ∀ n : ℕ, xseq n ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hgrad_segment : ∀ n τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (centralPathGrad (tseq (n + 1)) a phiGrad)
+        (hess (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+        (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+    (hhess_model : ∀ ⦃z : E⦄, z ∈ s ->
+      hess z =
+        (ContinuousLinearMap.adjoint (sqrtCoord z).toContinuousLinearMap).comp
+          (sqrtCoord z).toContinuousLinearMap)
+    (hinv_model : ∀ ⦃z : E⦄, z ∈ s ->
+      invHess z =
+        (sqrtCoord z).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtCoord z).symm.toContinuousLinearMap))
+    (htstep : ∀ n : ℕ, tseq (n + 1) = (1 + delta) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep (centralPathGrad (tseq (n + 1)) a phiGrad)
+          invHess (xseq n))
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_le_c0 : delta * Real.sqrt nu ≤ c0)
+    (hphi_bound : ∀ n : ℕ,
+      dualLocalNorm invHess (xseq n) (phiGrad (xseq n)) ≤ Real.sqrt nu)
+    (hc0_le : c0 ≤ 1 / 16) :
+    ∀ n : ℕ,
+      newtonDecrement (centralPathGrad (tseq n) a phiGrad)
+          invHess (xseq n) ≤ 1 / 4 ->
+      newtonDecrement (centralPathGrad (tseq (n + 1)) a phiGrad)
+          invHess (xseq (n + 1)) ≤ 1 / 4 := by
+  intro n hdecrement
+  have hstep_mem :
+      newtonStep (centralPathGrad (tseq (n + 1)) a phiGrad)
+          invHess (xseq n) ∈ s := by
+    simpa [hnewton_next n] using hxseq_mem (n + 1)
+  have hgrad_n : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (centralPathGrad (tseq (n + 1)) a phiGrad)
+        (hess
+          (hessianSegmentPoint (xseq n)
+            (newtonStep (centralPathGrad (tseq (n + 1)) a phiGrad)
+              invHess (xseq n)) τ))
+        (hessianSegmentPoint (xseq n)
+          (newtonStep (centralPathGrad (tseq (n + 1)) a phiGrad)
+            invHess (xseq n)) τ) := by
+    intro τ hτ
+    simpa [hnewton_next n] using hgrad_segment n τ hτ
+  have hright : ∀ v : E, hess (xseq n) (invHess (xseq n) v) = v :=
+    hessianRightInverse_of_adjointSqrtCoord_invHess
+      (H := hess (xseq n)) (invH := invHess (xseq n))
+      (sqrtCoord := sqrtCoord (xseq n))
+      (hhess_model (hxseq_mem n)) (hinv_model (hxseq_mem n))
+  have hnewton_linear :
+      centralPathGrad (tseq (n + 1)) a phiGrad (xseq n) +
+          hess (xseq n)
+            (newtonStep (centralPathGrad (tseq (n + 1)) a phiGrad)
+                invHess (xseq n) - xseq n) =
+        0 :=
+    newton_linear_of_hessian_right_inverse
+      (hess := hess) (invHess := invHess)
+      (grad := centralPathGrad (tseq (n + 1)) a phiGrad)
+      (x := xseq n) hright
+  have hpost :
+      newtonDecrement (centralPathGrad (tseq (n + 1)) a phiGrad)
+          invHess
+          (newtonStep (centralPathGrad (tseq (n + 1)) a phiGrad)
+            invHess (xseq n)) ≤ 1 / 4 :=
+    chewi1316_mainStage_newtonDecrement_le_quarter_of_centralPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment
+      (hess := hess) (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (grad := centralPathGrad (tseq (n + 1)) a phiGrad)
+      (phiGrad := phiGrad) (invHess := invHess) (sqrtCoord := sqrtCoord)
+      (s := s) (x := xseq n) (a := a) (t := tseq n)
+      (tNext := tseq (n + 1)) (delta := delta)
+      (c0 := c0) (lambdaOld := (1 / 4 : ℝ)) (nu := nu)
+      hs (hxseq_mem n) hstep_mem hsc hhess_cont hhess hmixed
+      hgrad_n hnewton_linear hhess_model hinv_model (htstep n) rfl
+      hdelta_nonneg hdelta_le_c0 hdelta_sqrt_le_c0
+      hdecrement (by norm_num) (hphi_bound n) hc0_le
+  simpa [← hnewton_next n] using hpost
+
+/--
+Inducted main-stage decrement invariant: once the first main-stage point has
+Newton decrement at most `1/4`, every subsequent increasing-parameter Newton
+iterate keeps the same source bound.
+-/
+theorem chewi1316_mainStage_decrement_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {sqrtCoord : E -> E ≃L[ℝ] E}
+    {a : E} {xseq : ℕ -> E} {tseq : ℕ -> ℝ}
+    {delta c0 nu : ℝ}
+    (hs : Convex ℝ s)
+    (hxseq_mem : ∀ n : ℕ, xseq n ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hgrad_segment : ∀ n τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (centralPathGrad (tseq (n + 1)) a phiGrad)
+        (hess (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+        (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+    (hhess_model : ∀ ⦃z : E⦄, z ∈ s ->
+      hess z =
+        (ContinuousLinearMap.adjoint (sqrtCoord z).toContinuousLinearMap).comp
+          (sqrtCoord z).toContinuousLinearMap)
+    (hinv_model : ∀ ⦃z : E⦄, z ∈ s ->
+      invHess z =
+        (sqrtCoord z).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtCoord z).symm.toContinuousLinearMap))
+    (htstep : ∀ n : ℕ, tseq (n + 1) = (1 + delta) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep (centralPathGrad (tseq (n + 1)) a phiGrad)
+          invHess (xseq n))
+    (hdelta_nonneg : 0 ≤ delta)
+    (hdelta_le_c0 : delta ≤ c0)
+    (hdelta_sqrt_le_c0 : delta * Real.sqrt nu ≤ c0)
+    (hphi_bound : ∀ n : ℕ,
+      dualLocalNorm invHess (xseq n) (phiGrad (xseq n)) ≤ Real.sqrt nu)
+    (hc0_le : c0 ≤ 1 / 16)
+    (hinit :
+      newtonDecrement (centralPathGrad (tseq 0) a phiGrad)
+        invHess (xseq 0) ≤ 1 / 4) :
+    ∀ n : ℕ,
+      newtonDecrement (centralPathGrad (tseq n) a phiGrad)
+        invHess (xseq n) ≤ 1 / 4 := by
+  have hstep :=
+    chewi1316_mainStage_decrement_step_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (thirdMixed := thirdMixed) (phiGrad := phiGrad)
+      (invHess := invHess) (sqrtCoord := sqrtCoord)
+      (a := a) (xseq := xseq) (tseq := tseq)
+      (delta := delta) (c0 := c0) (nu := nu)
+      hs hxseq_mem hsc hhess_cont hhess hmixed hgrad_segment
+      hhess_model hinv_model htstep hnewton_next hdelta_nonneg
+      hdelta_le_c0 hdelta_sqrt_le_c0 hphi_bound hc0_le
+  intro n
+  induction n with
+  | zero =>
+      simpa using hinit
+  | succ n ih =>
+      exact hstep n ih
+
+set_option maxHeartbeats 4000000 in
+/--
+Main-stage objective-gap accuracy theorem.  It composes the iterated
+path-following decrement invariant with the already-compiled Chewi Lemma 13.16
+objective-gap stopping rule.
+-/
+theorem chewi1316_objective_gap_le_eps_of_mainStage_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment
+    [CompleteSpace E]
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {phiGrad : E -> E}
+    {invHess : E -> E →L[ℝ] E} {sqrtCoord : E -> E ≃L[ℝ] E}
+    {a center optimum : E} {xseq : ℕ -> E} {tseq : ℕ -> ℝ}
+    {t0 c0 nu eps : ℝ} {N : ℕ}
+    (hs : Convex ℝ s)
+    (hxseq_mem : ∀ n : ℕ, xseq n ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hgrad_segment : ∀ n τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (centralPathGrad (tseq (n + 1)) a phiGrad)
+        (hess (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+        (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+    (hhess_model : ∀ ⦃z : E⦄, z ∈ s ->
+      hess z =
+        (ContinuousLinearMap.adjoint (sqrtCoord z).toContinuousLinearMap).comp
+          (sqrtCoord z).toContinuousLinearMap)
+    (hinv_model : ∀ ⦃z : E⦄, z ∈ s ->
+      invHess z =
+        (sqrtCoord z).symm.toContinuousLinearMap.comp
+          (ContinuousLinearMap.adjoint
+            (sqrtCoord z).symm.toContinuousLinearMap))
+    (h0 : tseq 0 = t0)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 + c0 / Real.sqrt nu) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep (centralPathGrad (tseq (n + 1)) a phiGrad)
+          invHess (xseq n))
+    (hdelta_nonneg : 0 ≤ c0 / Real.sqrt nu)
+    (hdelta_le_c0 : c0 / Real.sqrt nu ≤ c0)
+    (hdelta_sqrt_le_c0 : (c0 / Real.sqrt nu) * Real.sqrt nu ≤ c0)
+    (hphi_bound : ∀ n : ℕ,
+      dualLocalNorm invHess (xseq n) (phiGrad (xseq n)) ≤ Real.sqrt nu)
+    (hc0_le : c0 ≤ 1 / 16)
+    (hinit :
+      newtonDecrement (centralPathGrad (tseq 0) a phiGrad)
+        invHess (xseq 0) ≤ 1 / 4)
+    (hr_pos : 0 < 1 + c0 / Real.sqrt nu)
+    (ht0_pos : 0 < t0)
+    (heps_pos : 0 < eps)
+    (hnu_one : 1 ≤ nu)
+    (hcentral : tseq N • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess (xseq N) v *
+        localNorm hess (xseq N) w)
+    (hlower :
+      (localNorm hess (xseq N) (xseq N - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess (xseq N) (xseq N - center)) ≤
+        inner ℝ (tseq N • a + phiGrad (xseq N)) (xseq N - center))
+    (hlarge :
+      2 * nu ≤ eps * ((1 + c0 / Real.sqrt nu) ^ N * t0)) :
+    inner ℝ a (xseq N) - inner ℝ a optimum ≤ eps := by
+  have hdecrement :
+      newtonDecrement (centralPathGrad (tseq N) a phiGrad)
+        invHess (xseq N) ≤ 1 / 4 :=
+    chewi1316_mainStage_decrement_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (thirdMixed := thirdMixed) (phiGrad := phiGrad)
+      (invHess := invHess) (sqrtCoord := sqrtCoord)
+      (a := a) (xseq := xseq) (tseq := tseq)
+      (delta := c0 / Real.sqrt nu) (c0 := c0) (nu := nu)
+      hs hxseq_mem hsc hhess_cont hhess hmixed hgrad_segment
+      hhess_model hinv_model htstep hnewton_next hdelta_nonneg
+      hdelta_le_c0 hdelta_sqrt_le_c0 hphi_bound hc0_le hinit N
+  exact
+    chewi1316_objective_gap_le_eps_of_mainStageParameter_large
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := xseq N) (center := center) (optimum := optimum)
+      (tseq := tseq) (N := N) (t0 := t0) (c0 := c0)
+      (nu := nu) (eps := eps)
+      h0 htstep hr_pos ht0_pos heps_pos hnu_one hcentral hbarrier_step
+      hdecrement (hphi_bound N) hcauchy hlower hlarge
+
 /--
 Preliminary-stage path-following invariant in the source shape of Chewi §13.4.
 This is the decreasing-parameter analogue of the main-stage invariant: the

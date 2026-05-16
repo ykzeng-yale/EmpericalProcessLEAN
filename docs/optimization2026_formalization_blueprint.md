@@ -587,10 +587,12 @@ The follow-up Lemma 13.16 assembly now compiles through
 `chewi1316_central_objective_gap_le`,
 `chewi1316_objective_gap_to_center_le`, and
 `chewi1316_objective_gap_le`, giving the source objective-gap estimate from
-supplied central-path optimality and Lemma 13.6/13.15 inputs.  The next live
-route is the main-stage update invariant: prove the pre-Newton decrement after
-the multiplicative `t` update and then feed it to the compiled Theorem 13.8
-Newton-step wrapper to preserve `lambda <= 1/4`.
+supplied central-path optimality and Lemma 13.6/13.15 inputs.  The generic
+main-stage sequence route is now compiled: it preserves `lambda <= 1/4` along
+the increasing-parameter Newton path and feeds that invariant to the
+closed-form objective-gap stopping rule.  The next live route is the
+finite-row/source-pullback specialization that composes this accuracy consumer
+with the concrete standard preliminary initializer.
 The newest main-stage algebra layer adds
 `chewi1316_preNewtonDecrement_le_update_bound`,
 `real_mainStage_newton_fraction_le_quarter`, and
@@ -647,6 +649,16 @@ the multiplicative `t_n` update.  The newest objective-gap stopping layer adds
 `chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t`, and
 `chewi1316_objective_gap_le_eps_of_mainStageParameter_large`, combining the
 closed-form `t_n` growth with the compiled objective-gap bound.  The newest
+generic main-stage sequence layer adds
+`chewi1316_mainStage_decrement_step_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
+`chewi1316_mainStage_decrement_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
+and
+`chewi1316_objective_gap_le_eps_of_mainStage_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`.
+It is the preferred bridge from a preliminary `tMain`/`x0` initializer and
+supplied Newton path data to an `eps` objective-gap theorem; future §13.16
+finite-row work should instantiate this layer rather than re-proving the
+main-stage recurrence.
+The newest
 preliminary-stage layer adds
 `chewi1316_preliminaryStageParameter_eq_pow_mul_of_delta`,
 `chewi1316_preliminaryStageParameter_pos_of_pos`,

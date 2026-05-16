@@ -132,12 +132,31 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V10
+## Live Goal Prompt V11
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: the finite-row slack-range §13.16 handoff now
+Current active frontier: the generic Chewi §13.16 main-stage sequence and
+objective-gap composition now compiles.  New declarations:
+`chewi1316_mainStage_decrement_step_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
+`chewi1316_mainStage_decrement_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
+and
+`chewi1316_objective_gap_le_eps_of_mainStage_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`.
+These turn the one-step increasing-parameter Newton invariant into a full
+`lambda_n <= 1/4` sequence invariant, then feed the compiled closed-form
+main-stage parameter growth and objective-gap stopping rule.  The next
+theorem-sized target is the finite-row/polytope specialization that composes
+the concrete standard preliminary initializer with this main-stage accuracy
+consumer: instantiate the main-stage path for the slack-range/source-pullback
+barrier, discharge the segment derivative/right-inverse/sqrt-coordinate model
+from existing range APIs, and conclude a source-facing LP objective gap
+`<= eps` under the textbook large-parameter stopping condition.  Do not add
+another preliminary path wrapper unless it removes a real supplied assumption
+needed by this final accuracy composition.
+
+Cached prior frontier before the main-stage accuracy packet: the finite-row
+slack-range §13.16 handoff now
 compiles through source-pullback preliminary decrement transport and a
 point-dependent range sqrt-coordinate one-step wrapper.  Reusable
 declarations are `chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn`,
