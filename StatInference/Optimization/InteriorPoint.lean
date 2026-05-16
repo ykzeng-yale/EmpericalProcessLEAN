@@ -44897,6 +44897,87 @@ theorem Chewi1316StandardSourcePreliminaryPath.rangeRestrict_mem_of_sourceMem
     hpath.start_point hpath.start_parameter hpath.parameter_step hpath.newton_step
 
 /--
+The standard decreasing preliminary-stage parameter sequence used in the
+finite-row Chewi §13.16 initialization path.
+-/
+noncomputable def chewi1316_standardPreliminaryTSeq (m : ℕ) : ℕ -> ℝ
+  | 0 => 1
+  | n + 1 =>
+      (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) *
+        chewi1316_standardPreliminaryTSeq m n
+
+@[simp] theorem chewi1316_standardPreliminaryTSeq_zero (m : ℕ) :
+    chewi1316_standardPreliminaryTSeq m 0 = 1 :=
+  rfl
+
+@[simp] theorem chewi1316_standardPreliminaryTSeq_succ (m n : ℕ) :
+    chewi1316_standardPreliminaryTSeq m (n + 1) =
+      (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) *
+        chewi1316_standardPreliminaryTSeq m n :=
+  rfl
+
+/--
+The concrete source preliminary Newton sequence obtained by following Chewi's
+decreasing preliminary central path from the strict source start.
+-/
+noncomputable def chewi1316_standardSourcePreliminaryXSeq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (xbar0 : F) : ℕ -> F
+  | 0 => xbar0
+  | n + 1 =>
+      newtonStep
+        (preliminaryPathGrad
+          (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad)
+          xbar0 (chewi1316_standardPreliminaryTSeq m (n + 1)))
+        (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+        (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 n)
+
+@[simp] theorem chewi1316_standardSourcePreliminaryXSeq_zero
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (xbar0 : F) :
+    chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 0 = xbar0 :=
+  rfl
+
+@[simp] theorem chewi1316_standardSourcePreliminaryXSeq_succ
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (xbar0 : F) (n : ℕ) :
+    chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 (n + 1) =
+      newtonStep
+        (preliminaryPathGrad
+          (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad)
+          xbar0 (chewi1316_standardPreliminaryTSeq m (n + 1)))
+        (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+        (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 n) :=
+  rfl
+
+/--
+The concrete recursive preliminary Newton sequence satisfies the packaged
+standard source preliminary path interface.
+-/
+theorem chewi1316_standardSourcePreliminaryPath
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (xbar0 : F) :
+    Chewi1316StandardSourcePreliminaryPath aRow bSlack xbar0
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+      (chewi1316_standardPreliminaryTSeq m) where
+  start_point := by
+    simp
+  start_parameter := by
+    simp
+  parameter_step := by
+    intro n
+    simp
+  newton_step := by
+    intro n
+    simp
+
+/--
 Source-feasible-start version of the bounded feasible-range actual-path
 eventual range-tail invariant.
 -/
@@ -45662,6 +45743,143 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
     (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
     hxbar0Set hpath.start_point hpath.start_parameter hpath.parameter_step
     hpath.newton_step hcompact_closed
+
+/--
+Concrete standard-path version of the bounded feasible-range §13.16
+initialization endpoint.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedFeasibleRange_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hbounded :
+      Bornology.IsBounded
+        (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))) :
+    ∃ tailBound : ℝ, ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 Nout) ≤ 1 / 4 :=
+  chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedFeasibleRange_sourcePath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj)
+    (xseq := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (tseq := chewi1316_standardPreliminaryTSeq m)
+    hxbar0Set
+    (chewi1316_standardSourcePreliminaryPath aRow bSlack xbar0)
+    hbounded
+
+/--
+Concrete standard-path version of the bounded strict source-polytope §13.16
+initialization endpoint.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hbounded_source : Bornology.IsBounded (polytopeSlackSet aRow bSlack)) :
+    ∃ tailBound : ℝ, ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 Nout) ≤ 1 / 4 :=
+  chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_sourcePath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj)
+    (xseq := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (tseq := chewi1316_standardPreliminaryTSeq m)
+    hxbar0Set
+    (chewi1316_standardSourcePreliminaryPath aRow bSlack xbar0)
+    hbounded_source
+
+/--
+Concrete standard-path version of the bounded closed-polytope §13.16
+initialization endpoint.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedClosedPolytope_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hbounded_closed : Bornology.IsBounded (closedPolytopeSlackSet aRow bSlack)) :
+    ∃ tailBound : ℝ, ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 Nout) ≤ 1 / 4 :=
+  chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedClosedPolytope_sourcePath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj)
+    (xseq := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (tseq := chewi1316_standardPreliminaryTSeq m)
+    hxbar0Set
+    (chewi1316_standardSourcePreliminaryPath aRow bSlack xbar0)
+    hbounded_closed
+
+/--
+Concrete standard-path version of the compact closed-polytope §13.16
+initialization endpoint.  This is the closest finite-row wrapper to the
+textbook preliminary stage under a compact linear-program feasible polytope
+and a strict source start.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactClosedPolytope_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hcompact_closed : IsCompact (closedPolytopeSlackSet aRow bSlack)) :
+    ∃ tailBound : ℝ, ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 Nout) ≤ 1 / 4 :=
+  chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactClosedPolytope_sourcePath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj)
+    (xseq := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (tseq := chewi1316_standardPreliminaryTSeq m)
+    hxbar0Set
+    (chewi1316_standardSourcePreliminaryPath aRow bSlack xbar0)
+    hcompact_closed
 
 /--
 Bounded feasible translated slack ranges yield a source-shaped finite tail

@@ -928,11 +928,22 @@ source-path packaged bounded/compact §13.16 endpoints:
 Use these as the preferred theorem-facing APIs when the preliminary Newton
 path is already bundled by its source start, standard parameter schedule, and
 source Newton recurrence; do not keep rethreading
-`hx0`/`ht0`/`htstep`/`hnewton_next_source` through final statements.  The next
-aggressive packet should either introduce the exact textbook §13.16
-compact-closed-polytope theorem wrapper around the `sourcePath` endpoint or
-package the concrete recursive preliminary sequence as a
-`Chewi1316StandardSourcePreliminaryPath`.
+`hx0`/`ht0`/`htstep`/`hnewton_next_source` through final statements.
+The standard recursive-path packet now adds
+`chewi1316_standardPreliminaryTSeq`,
+`chewi1316_standardSourcePreliminaryXSeq`,
+`chewi1316_standardSourcePreliminaryPath`, and concrete standard-path
+bounded/compact §13.16 endpoints:
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedFeasibleRange_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedClosedPolytope_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactClosedPolytope_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants`.
+These are now the preferred concrete preliminary-stage APIs: callers supply
+only strict source feasibility and boundedness/compactness of the relevant
+polytope, and the standard `t_n`/`x_n` recursion is fixed internally.  The
+next aggressive packet should compose this concrete initializer with the
+compiled Lemma 13.16 objective-gap/main-stage update layer toward the final
+finite-row LP accuracy theorem, rather than introducing another path wrapper.
 The source-space bounded-polytope bridge now adds
 `chewi1316_polytopeSlackNegLog_bounded_feasibleRange_of_bounded_polytopeSlackSet`
 and the endpoint
