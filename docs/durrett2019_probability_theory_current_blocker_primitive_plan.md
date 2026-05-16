@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V373
+## Live In-Thread Goal Prompt V374
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,20 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V373 adds exact-textbook `n^{-1} * sum` strict-left
+Latest verified target V374 adds the closed-endpoint pointwise empirical-CDF
+proof-step counterpart to V373 in `StatInference/ProbabilityTheory/Basic.lean`:
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_of_iIndepFun_identDistrib`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_of_pairwise_identDistrib`,
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_canonical_iid`.
+These package the textbook line `Y_n = 1{X_n <= x}` and
+`F_n(x) -> F(x)` under the same exact-textbook and source-entrance shapes as
+the strict-left layer.  V373 adds exact-textbook `n^{-1} * sum` strict-left
 empirical-CDF source entrances in `StatInference/ProbabilityTheory/Basic.lean`:
 `durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae`,
 `durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae_of_iIndepFun`,
@@ -521,8 +534,9 @@ half-line Glivenko-Cantelli wrappers, the V369 one-based canonical iid
 product-space Glivenko-Cantelli wrappers, or the V370 arbitrary-source
 one-based iid / empirical-CDF wrappers, the V371 one-based full-joint-law,
 identDistrib+iIndepFun, and pairwise-identDistrib source wrappers, the V372
-strict-left empirical-CDF pointwise SLLN wrappers, or the V373 exact-textbook
-strict-left source-entrance wrappers.  Next
+strict-left empirical-CDF pointwise SLLN wrappers, the V373 exact-textbook
+strict-left source-entrance wrappers, or the V374 closed-endpoint pointwise
+empirical-CDF source wrappers.  Next
 aggressive packet:
 continue Chapter 2.1 / Theorem 2.4.9 only by closing a concrete missing
 source-facing shape around independence, product laws, canonical iid
@@ -3017,6 +3031,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V373` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V374` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

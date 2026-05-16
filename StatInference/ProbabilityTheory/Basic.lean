@@ -5191,6 +5191,259 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       X hLaw hindep
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step: pointwise empirical-CDF convergence.
+
+This packages the line `Y_n = 1{X_n <= c}` and `F_n(c) -> F(c)` from the
+textbook proof.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) := by
+  simpa [empiricalDistributionFunction] using
+    realHalfLine_empiricalAverage_sub_cdf_tendsto_zero_ae_of_iid
+      X c hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in range-sum notation:
+`n^{-1} sum_{i < n} 1{X_i <= c} -> F(c)` almost surely.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realHalfLineIndicator c (X i ω)) /
+            (n : ℝ) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) := by
+  filter_upwards
+    [durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae
+      X c hLaw hindep] with ω hω
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using hω
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact textbook notation:
+`n^{-1} * sum_{i < n} 1{X_i <= c} -> F(c)` almost surely.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realHalfLineIndicator c (X i ω) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) := by
+  simpa [div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae
+      X c hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step under `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae
+    X c hLaw (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in range-sum notation under
+`iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realHalfLineIndicator c (X i ω)) /
+            (n : ℝ) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae
+    X c hLaw (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact textbook notation under
+`iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realHalfLineIndicator c (X i ω) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae
+    X c hLaw (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in one-based exact textbook notation
+under `iIndepFun`: `n^{-1} * sum_{m=1}^n 1{X_m <= c} -> F(c)` almost surely.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae
+      (fun i => fun ω => X (i + 1) ω) c hShift.1
+      (fun _ _ hij => hShift.2.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint law,
+in one-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_of_iIndepFun
+      X c hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from identically distributed
+coordinates plus `iIndepFun`, in one-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_of_iIndepFun
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from pairwise-identically distributed
+coordinates, in one-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) := by
+  have hLawAll :
+      ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) P μ :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  have hLawShift : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) P μ := by
+    intro i
+    exact hLawAll (i + 1)
+  have hIndepShift :
+      Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
+        (fun i : ℕ => fun ω => X (i + 1) ω)) := by
+    intro i j hij
+    have hne : Nat.succ i ≠ Nat.succ j := by
+      intro h
+      exact hij (Nat.succ.inj h)
+    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae
+      (fun i => fun ω => X (i + 1) ω) c hLawShift hIndepShift
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+one-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n,
+              realHalfLineIndicator c (sample (i + 1)) -
+            ProbabilityTheory.cdf (P : Measure ℝ) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased P
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
 Durrett 2019, Theorem 2.4.9 proof step: pointwise left empirical-CDF
 convergence.
 
