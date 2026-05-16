@@ -268,6 +268,7 @@ The least-upper-bound version now compiles as
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateSup`,
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateUpperBound`,
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_closedBall_slackCoordinateUpperBound`,
+`chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_sourceCenteredRadiusBound`,
 and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_bddAboveSlackCoordinateSup_succ_noFactor_standardConstants`,
 with compact feasible-range specialization
@@ -279,7 +280,9 @@ plus compact envelope-sup specialization
 and pointwise compact-envelope upper-bound specialization
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSupersetSlackCoordinateUpperBound_succ_noFactor_standardConstants`,
 with closed-ball envelope specialization
-`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_closedBallSlackCoordinateUpperBound_succ_noFactor_standardConstants`.
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_closedBallSlackCoordinateUpperBound_succ_noFactor_standardConstants`
+and source-centered radius specialization
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceCenteredRadiusBound_succ_noFactor_standardConstants`.
 Use this when the bounded-polytope proof supplies `BddAbove` coordinate images
 or compactness facts.  Prefer the compact-superset form when the strict
 positive-orthant feasible set is open but contained in a compact
@@ -289,10 +292,14 @@ feasible coordinate suprema, and prefer the pointwise envelope-upper-bound
 specialization when the geometry gives explicit coordinate bounds on the
 compact envelope.  Prefer the closed-ball specialization when the natural
 boundedness certificate is `feasible <= closedBall center R`; it derives
-coordinate upper bounds `slack_i(center) + R` by `PiLp.norm_apply_le`.  The compact bridge reuses Mathlib
+coordinate upper bounds `slack_i(center) + R` by `PiLp.norm_apply_le`.  Prefer
+the source-centered radius specialization when the radius center is exactly
+`(polytopeSlackCLM aRow).rangeRestrict xbar0`; it feeds the closed-ball bridge
+via `Metric.mem_closedBall` and leaves only the scalar comparison
+`R <= (B - 1) * slack_i(xbar0)`.  The compact bridge reuses Mathlib
 `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,
 `csSup_le_csSup`, `csSup_le`, `isCompact_closedBall`, `PiLp.norm_apply_le`,
-and coordinate continuity from `PiLp.continuous_apply`.
+`Metric.mem_closedBall`, and coordinate continuity from `PiLp.continuous_apply`.
 The remaining scalar comparison is against the compact envelope coordinate
 `sSup` or the explicit envelope coordinate upper bounds.
 The no-prefix source-radius counterpart now compiles as
