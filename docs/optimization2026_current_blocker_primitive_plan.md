@@ -839,12 +839,21 @@ These let a moving-center proof give only a range-subtype distance bound
 `R <= rho * slack_i(xbar0)`; `PiLp.norm_apply_le` turns that into the
 coordinate-displacement certificate above.
 The source-slack floor specialization now adds
+`chewi1316_polytopeSlackNegLog_exists_pos_sourceSlackFloor`,
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`
 and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`.
 These replace the per-coordinate comparison by a single floor certificate
 `sFloor <= slack_i(xbar0)` for all `i` plus the scalar radius side
 `R <= rho * sFloor`.
+The actual-budget/non-half-contraction route now also has
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`.
+This should be the preferred source-centered floor endpoint: it avoids the
+temporary half-contraction recurrence assumption and only leaves a feasible
+range radius bound, `R <= rho * sFloor`, the finite floor comparison, and the
+scalar tail budget `sqrt(m) * (1 + rho) <= tailBound`.  The floor existence
+lemma uses Mathlib `Finset.inf'`, `Finset.lt_inf'_iff`, and `Finset.inf'_le`
+to extract a positive finite lower bound directly from `hxbar0Range`.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
 data directly: prove the feasible translated slack range is compact (or show
 it sits inside a compact closure/envelope, or show each coordinate image is

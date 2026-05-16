@@ -549,11 +549,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   certificate `dist x_N xbar0 <= R` plus
   `R <= rho * slack_i(xbar0)`, reusing `PiLp.norm_apply_le`.
   The source-slack floor specialization now adds
+  `chewi1316_polytopeSlackNegLog_exists_pos_sourceSlackFloor`,
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`
   and
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`.
   These replace the coordinatewise radius comparison with a single source
   slack floor `sFloor` and scalar side `R <= rho * sFloor`.
+  The preferred non-half-contraction actual-budget endpoint now compiles as
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`.
+  It feeds the existing source-centered radius initializer with budget
+  `B = 1 + rho`, so future geometry only needs a feasible-range radius bound,
+  `R <= rho * sFloor`, the finite floor certificate, and
+  `sqrt(m) * (1 + rho) <= tailBound`.  The finite floor itself is automatic
+  from `hxbar0Range` by Mathlib `Finset.inf'`, `Finset.lt_inf'_iff`, and
+  `Finset.inf'_le`.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,

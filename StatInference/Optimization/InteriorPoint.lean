@@ -42389,6 +42389,82 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
         (R := R) (B := B) hxbar0Range hradius hR_ratio)
 
 /--
+Single-floor version of the actual preliminary Newton source-start initializer
+from a source-centered feasible-radius bound.  A scalar slack floor reduces the
+rowwise comparisons `R <= rho * slack_i(xbar0)` to the two scalar/finite
+obligations `R <= rho * sFloor` and `sFloor <= slack_i(xbar0)`.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ} {R rho sFloor tailBound : ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hrho : 0 ≤ rho)
+    (hbudget : Real.sqrt (m : ℝ) * (1 + rho) ≤ tailBound)
+    (hradius :
+      ∀ y : (polytopeSlackCLM aRow).range,
+        y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        dist y ((polytopeSlackCLM aRow).rangeRestrict xbar0) ≤ R)
+    (hR_floor : R ≤ rho * sFloor)
+    (hsourceSlack_floor : ∀ i : Fin m,
+      sFloor ≤
+        ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+          EuclideanSpace ℝ (Fin m)) + bSlack) i)) :
+    ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 := by
+  have hR_ratio : ∀ i : Fin m,
+      R ≤
+        ((1 + rho) - 1) *
+          ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+              EuclideanSpace ℝ (Fin m)) + bSlack) i) := by
+    intro i
+    calc
+      R ≤ rho * sFloor := hR_floor
+      _ ≤ rho *
+          ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+            EuclideanSpace ℝ (Fin m)) + bSlack) i) :=
+        mul_le_mul_of_nonneg_left (hsourceSlack_floor i) hrho
+      _ = ((1 + rho) - 1) *
+          ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+            EuclideanSpace ℝ (Fin m)) + bSlack) i) := by ring
+  exact
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceCenteredRadiusBound_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (R := R) (B := 1 + rho) (tailBound := tailBound)
+      hxbar0Range hx0 ht0 htstep hnewton_next_source
+      (by linarith) hbudget hradius hR_ratio
+
+/--
 Actual preliminary Newton source-start initializer from a source local-norm
 bound on the feasible translated slack range.  This is the Dikin-metric
 counterpart of the source-centered closed-ball handoff: a uniform local-norm
@@ -43917,6 +43993,49 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       (rho := rho) (tailBound := tailBound)
       hxbar0Range hx0 ht0 htstep hnewton_next_source hrec
       hrho hbudget heventuallyCoord
+
+/--
+A feasible source point in the translated positive orthant has a strictly
+positive finite slack floor.  This packages the finite-minimum step needed by
+the source-centered §13.16 radius-to-relative-slack handoff.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_pos_sourceSlackFloor
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m))) :
+    ∃ sFloor : ℝ, 0 < sFloor ∧
+      ∀ i : Fin m,
+        sFloor ≤
+          ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+            EuclideanSpace ℝ (Fin m)) + bSlack) i) := by
+  classical
+  let sourceSlack : Fin m -> ℝ := fun i =>
+    ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+      EuclideanSpace ℝ (Fin m)) + bSlack) i)
+  have hmem :
+      (((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+        EuclideanSpace ℝ (Fin m)) + bSlack) ∈ positiveOrthant (d := m) := by
+    simpa [barrierAffineRangeSet] using hxbar0Range
+  have hpos : ∀ i : Fin m, 0 < sourceSlack i := by
+    intro i
+    simpa [sourceSlack, positiveOrthant] using hmem i
+  by_cases hne : (Finset.univ : Finset (Fin m)).Nonempty
+  · refine ⟨(Finset.univ : Finset (Fin m)).inf' hne sourceSlack, ?_, ?_⟩
+    · exact (Finset.lt_inf'_iff _).2 (by
+        intro i _hi
+        exact hpos i)
+    · intro i
+      simpa [sourceSlack] using
+        (Finset.inf'_le (s := (Finset.univ : Finset (Fin m)))
+          (f := sourceSlack) (Finset.mem_univ i))
+  · refine ⟨1, by norm_num, ?_⟩
+    intro i
+    exact (hne ⟨i, Finset.mem_univ i⟩).elim
 
 /--
 Post-threshold source-centered radius handoff using a single source slack floor.
