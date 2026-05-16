@@ -286,7 +286,9 @@ with closed-ball envelope specialization
 and source-centered radius specialization
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceCenteredRadiusBound_succ_noFactor_standardConstants`,
 plus source-local-norm specialization
-`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceLocalNormBound_succ_noFactor_standardConstants`.
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceLocalNormBound_succ_noFactor_standardConstants`
+and exact-budget source-local-norm specialization
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceLocalNormBound_exactBudget_succ_noFactor_standardConstants`.
 Use this when the bounded-polytope proof supplies `BddAbove` coordinate images
 or compactness facts.  Prefer the compact-superset form when the strict
 positive-orthant feasible set is open but contained in a compact
@@ -304,7 +306,9 @@ via `Metric.mem_closedBall` and leaves only the scalar comparison
 when the boundedness certificate is a uniform Dikin radius around the source
 range point; it reuses
 `chewi1314_polytopeSlackNegLog_range_slackRatio_le_one_add_of_sourceLocalNorm_le`
-and leaves only `1 + r <= B` plus the usual tail budget.  The compact bridge reuses Mathlib
+and the exact-budget specialization leaves only
+`sqrt(m) * (1 + r) <= tailBound`, deriving nonnegativity from
+`localNorm_zero` at the source.  The compact bridge reuses Mathlib
 `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,
 `csSup_le_csSup`, `csSup_le`, `isCompact_closedBall`, `PiLp.norm_apply_le`,
 `Metric.mem_closedBall`, and coordinate continuity from `PiLp.continuous_apply`.
