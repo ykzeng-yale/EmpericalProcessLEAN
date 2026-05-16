@@ -3643,6 +3643,188 @@ theorem durrett2019_theorem_2_5_6_finite_block_kolmogorov_maximal_bound
   simpa [hvar_sum] using hbase
 
 /--
+Durrett 2019, Theorem 2.5.6 support: the finite shifted block maximal event
+appearing after applying Kolmogorov's maximal inequality to
+`X_{M+1}, ..., X_N`.
+-/
+def durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (M N : ℕ) (eps : ℝ) : Set Ω :=
+  durrett2019_theorem_2_5_5_maxCrossingEvent
+    (fun i => fun ω => X (M + (i + 1)) ω) (N - M) eps
+
+/--
+Durrett 2019, Theorem 2.5.6 support: the infinite tail maximal event obtained
+by taking the increasing union of the finite shifted block events.
+-/
+def durrett2019_theorem_2_5_6_tailMaxCrossingEvent
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (M : ℕ) (eps : ℝ) : Set Ω :=
+  ⋃ n : ℕ,
+    durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent X M (M + n) eps
+
+/--
+Durrett 2019, Theorem 2.5.6 support: the finite shifted block maximal event is
+measurable under measurable coordinates.
+-/
+theorem durrett2019_theorem_2_5_6_measurableSet_finiteBlockMaxCrossingEvent
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) {M N : ℕ} {eps : ℝ}
+    (heps_pos : 0 < eps) :
+    MeasurableSet
+      (durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent X M N eps) := by
+  exact
+    durrett2019_theorem_2_5_5_measurableSet_maxCrossingEvent
+      (X := fun i => fun ω => X (M + (i + 1)) ω)
+      (fun i => hX_meas (M + (i + 1))) (n := N - M) (x := eps) heps_pos
+
+/--
+Durrett 2019, Theorem 2.5.6 support: the infinite tail maximal event is
+measurable as a countable union of finite shifted block events.
+-/
+theorem durrett2019_theorem_2_5_6_measurableSet_tailMaxCrossingEvent
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) {M : ℕ} {eps : ℝ}
+    (heps_pos : 0 < eps) :
+    MeasurableSet
+      (durrett2019_theorem_2_5_6_tailMaxCrossingEvent X M eps) := by
+  rw [durrett2019_theorem_2_5_6_tailMaxCrossingEvent]
+  exact MeasurableSet.iUnion fun n =>
+    durrett2019_theorem_2_5_6_measurableSet_finiteBlockMaxCrossingEvent
+      (X := X) hX_meas (M := M) (N := M + n) (eps := eps) heps_pos
+
+/--
+Durrett 2019, Theorem 2.5.6 support: finite shifted block events increase with
+the terminal time.
+-/
+theorem durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent_mono
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {M N K : ℕ} {eps : ℝ}
+    (hNK : N ≤ K) :
+    durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent X M N eps ⊆
+      durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent X M K eps := by
+  intro ω hω
+  rcases hω with ⟨j, hj, hjcross⟩
+  refine ⟨j, ?_, hjcross⟩
+  have hj_bounds := Finset.mem_Icc.mp hj
+  refine Finset.mem_Icc.mpr ⟨hj_bounds.1, ?_⟩
+  exact hj_bounds.2.trans (Nat.sub_le_sub_right hNK M)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: finite shifted block events indexed by
+block length form an increasing sequence.
+-/
+theorem durrett2019_theorem_2_5_6_monotone_finiteBlockMaxCrossingEvent_add
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {M : ℕ} {eps : ℝ} :
+    Monotone fun n : ℕ =>
+      durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent X M (M + n) eps := by
+  intro n k hnk
+  exact
+    durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent_mono
+      (X := X) (M := M) (N := M + n) (K := M + k) (eps := eps)
+      (Nat.add_le_add_left hnk M)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: the finite block bound in the
+block-length parameterization used for the increasing-union limit step.
+-/
+theorem durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent_add_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {M n : ℕ} {eps : ℝ} (heps_pos : 0 < eps)
+    (hX_mem : ∀ i ∈ Finset.Icc (M + 1) (M + n), MemLp (X i) 2 P)
+    (hX_zero : ∀ i ∈ Finset.Icc (M + 1) (M + n), ∫ ω, X i ω ∂P = 0) :
+    P.real
+        (durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent X M (M + n) eps) ≤
+      (eps ^ 2)⁻¹ *
+        ∑ i ∈ Finset.range n,
+          _root_.ProbabilityTheory.variance (X (M + (i + 1))) P := by
+  simpa [durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent,
+    Nat.add_sub_cancel_left] using
+    durrett2019_theorem_2_5_6_finite_block_kolmogorov_maximal_bound
+      (P := P) (X := X) hX_indep hX_meas
+      (M := M) (N := M + n) (by exact Nat.le_add_right M n)
+      (eps := eps) heps_pos hX_mem hX_zero
+
+/--
+Durrett 2019, Theorem 2.5.6 support: if finite shifted block probabilities are
+bounded by a sequence with limit `B`, then the increasing-union tail event has
+probability at most `B`.
+-/
+theorem durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_tendsto_bounds
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {M : ℕ} {eps : ℝ}
+    {Bseq : ℕ -> ℝ} {B : ℝ}
+    (hbound : ∀ n : ℕ,
+      P.real
+          (durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent X M (M + n) eps) ≤
+        Bseq n)
+    (hB : Tendsto Bseq atTop (𝓝 B)) :
+    P.real (durrett2019_theorem_2_5_6_tailMaxCrossingEvent X M eps) ≤ B := by
+  have hmono :
+      Monotone fun n : ℕ =>
+        durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent X M (M + n) eps :=
+    durrett2019_theorem_2_5_6_monotone_finiteBlockMaxCrossingEvent_add
+      (X := X) (M := M) (eps := eps)
+  have hlim_enn :
+      Tendsto
+        (fun n : ℕ =>
+          P (durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent X M (M + n) eps))
+        atTop
+        (𝓝 (P (durrett2019_theorem_2_5_6_tailMaxCrossingEvent X M eps))) := by
+    simpa [durrett2019_theorem_2_5_6_tailMaxCrossingEvent] using
+      (tendsto_measure_iUnion_atTop (μ := P) hmono)
+  have hlim_real :
+      Tendsto
+        (fun n : ℕ =>
+          P.real
+            (durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent X M (M + n) eps))
+        atTop
+        (𝓝 (P.real (durrett2019_theorem_2_5_6_tailMaxCrossingEvent X M eps))) := by
+    simpa [measureReal_def] using
+      (ENNReal.tendsto_toReal (measure_ne_top P
+        (durrett2019_theorem_2_5_6_tailMaxCrossingEvent X M eps))).comp hlim_enn
+  exact le_of_tendsto_of_tendsto' hlim_real hB hbound
+
+/--
+Durrett 2019, Theorem 2.5.6 support: letting the terminal time tend to infinity
+in the finite Kolmogorov block bound gives the textbook tail-maximal
+probability bound, assuming the corresponding finite variance tails converge.
+-/
+theorem durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_variance_tail_limit
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {M : ℕ} {eps tail : ℝ} (heps_pos : 0 < eps)
+    (hX_mem : ∀ i, MemLp (X i) 2 P)
+    (hX_zero : ∀ i, ∫ ω, X i ω ∂P = 0)
+    (htail :
+      Tendsto
+        (fun n : ℕ =>
+          ∑ i ∈ Finset.range n,
+            _root_.ProbabilityTheory.variance (X (M + (i + 1))) P)
+        atTop (𝓝 tail)) :
+    P.real (durrett2019_theorem_2_5_6_tailMaxCrossingEvent X M eps) ≤
+      (eps ^ 2)⁻¹ * tail := by
+  refine
+    durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_tendsto_bounds
+      (P := P) (X := X) (M := M) (eps := eps)
+      (Bseq := fun n : ℕ =>
+        (eps ^ 2)⁻¹ *
+          ∑ i ∈ Finset.range n,
+            _root_.ProbabilityTheory.variance (X (M + (i + 1))) P)
+      (B := (eps ^ 2)⁻¹ * tail) ?_ ?_
+  · intro n
+    exact
+      durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent_add_bound
+        (P := P) (X := X) hX_indep hX_meas
+        (M := M) (n := n) (eps := eps) heps_pos
+        (fun i _hi => hX_mem i) (fun i _hi => hX_zero i)
+  · exact tendsto_const_nhds.mul htail
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

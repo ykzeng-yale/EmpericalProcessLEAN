@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V400
+## Live In-Thread Goal Prompt V401
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -14,24 +14,31 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Theorem 2.5.6 convergence of random
 series in `StatInference/ProbabilityTheory/Basic.lean`.  Reuse the compiled
 Chapter 2.1 independence/product-expectation bridges, Theorem 2.2.1
-variance-sum APIs, and V391-V400 first-crossing infrastructure; do not route
+variance-sum APIs, and V391-V401 first-crossing/block-tail infrastructure; do not route
 back to Theorem 2.4.9 or 2.5.5 source packaging
 unless search proves a concrete missing source display.
 
-Latest verified target V400 adds the final source-style statement of
-Kolmogorov's maximal inequality and the first Theorem 2.5.6 block estimate:
-`durrett2019_theorem_2_5_5_kolmogorov_maximal_inequality`.  Its hypotheses
-match the one-based textbook statement over `i in Finset.Icc 1 n`: independent
-random variables, coordinate measurability, `MemLp (X_i) 2`, and mean zero.
-The new support theorem
-`durrett2019_theorem_2_5_6_finite_block_kolmogorov_maximal_bound` applies
-Theorem 2.5.5 to the shifted block `X_{M+1}, ..., X_N` and rewrites the RHS
-using the compiled Theorem 2.2.1 variance-sum API.  This closes the
-front-facing Theorem 2.5.5 package and starts Theorem 2.5.6.  Next aggressive
-target: lift the finite block estimate toward the textbook limit step
-`P(sup_{m >= M} |S_m - S_M| > eps) <= eps^{-2} *
-sum_{i=M+1}^\infty Var(X_i)`, then package the Cauchy/a.s. convergence
-endpoint.
+Latest verified target V401 lifts the finite Theorem 2.5.6 block estimate to
+the increasing-union tail event.  New compiled anchors:
+`durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent`,
+`durrett2019_theorem_2_5_6_tailMaxCrossingEvent`,
+`durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent_mono`,
+`durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent_add_bound`,
+`durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_tendsto_bounds`,
+and
+`durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_variance_tail_limit`.
+The finite-to-infinite probability passage now reuses mathlib's
+`tendsto_measure_iUnion_atTop` through the local Durrett 1.1.1 continuity
+pattern; do not rebuild countable-union measure machinery.  Next aggressive
+target: derive the required variance-tail convergence from a summability
+hypothesis on `fun i => Var(X i)`, then connect the tail event to Durrett's
+oscillation/Cauchy almost-sure convergence endpoint.
+
+V400 adds the final source-style statement of Kolmogorov's maximal inequality
+and the first Theorem 2.5.6 block estimate:
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_inequality` and
+`durrett2019_theorem_2_5_6_finite_block_kolmogorov_maximal_bound`.  This closes
+the front-facing Theorem 2.5.5 package and starts Theorem 2.5.6.
 
 V399 adds `L^2` source-side reduction for Theorem
 2.5.5:

@@ -32,26 +32,30 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V400` in
+Route from `Live In-Thread Goal Prompt V401` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.5.6
 convergence of random series in `StatInference/ProbabilityTheory/Basic.lean`.
-V400 adds the final source-style statement of Kolmogorov's maximal inequality
-and the first Theorem 2.5.6 block estimate:
-`durrett2019_theorem_2_5_5_kolmogorov_maximal_inequality`.  Its hypotheses
-match the one-based textbook statement over `i in Finset.Icc 1 n`: independent
-random variables, coordinate measurability, `MemLp (X_i) 2`, and mean zero.
-The new support theorem
-`durrett2019_theorem_2_5_6_finite_block_kolmogorov_maximal_bound` applies
-Theorem 2.5.5 to the shifted block `X_{M+1}, ..., X_N` and rewrites the RHS
-using the compiled Theorem 2.2.1 variance-sum API.  This closes the
-front-facing Theorem 2.5.5 package and starts Theorem 2.5.6.  Next work should
-lift the finite block estimate toward the textbook limit step
-`P(sup_{m >= M} |S_m - S_M| > eps) <= eps^{-2} *
-sum_{i=M+1}^\infty Var(X_i)`, then package the Cauchy/a.s. convergence
-endpoint.
+V401 lifts the finite Theorem 2.5.6 block estimate to the increasing-union tail
+event.  New compiled anchors:
+`durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent`,
+`durrett2019_theorem_2_5_6_tailMaxCrossingEvent`,
+`durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent_mono`,
+`durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent_add_bound`,
+`durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_tendsto_bounds`,
+and
+`durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_variance_tail_limit`.
+The finite-to-infinite probability passage now reuses mathlib's
+`tendsto_measure_iUnion_atTop`; do not rebuild countable-union measure
+machinery.  Next work should derive the variance-tail convergence from a
+summability hypothesis on `fun i => Var(X i)` and then connect the tail event
+to Durrett's oscillation/Cauchy almost-sure convergence endpoint.
 
-Verified route history below is provenance, not live prompt text.  V399 adds
+Verified route history below is provenance, not live prompt text.  V400 adds
+the final source-style statement of Kolmogorov's maximal inequality and the
+first Theorem 2.5.6 block estimate:
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_inequality` and
+`durrett2019_theorem_2_5_6_finite_block_kolmogorov_maximal_bound`.  V399 adds
 `L^2` source-side reduction for Theorem 2.5.5:
 `durrett2019_theorem_2_5_5_partialSum_memLp_two_of_increment_memLp_two`,
 `durrett2019_theorem_2_5_5_partialSum_sq_integrable_of_increment_memLp_two`,
