@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V421
+## Live In-Thread Goal Prompt V422
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,23 +12,38 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V421 has opened Durrett
-Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the normalizer
-`a_n = n^(1/p)`, moving truncation `Y_k = X_k 1_{|X_k| <= k^(1/p)}`, centered
-and scaled centered truncations, measurability, `L^2`, mean-zero, independence,
-and the Kronecker endpoint from summable scaled variances now compile.  Next
-aggressive target: prove the source probability estimates, starting with the
-Borel-Cantelli eventual-equality transfer from `X_k` to `Y_k` using
-`sum P(|X_k|^p > k) < infinity` from iid finite `p`-moment; then package the
-scaled-variance summability estimate for
-`(Y_k - E Y_k) / k^(1/p)` and the truncated-mean contribution needed for the
-full `S_n / n^(1/p) -> 0` endpoint.  Reuse V406 random-series convergence, V410
-Kronecker normalization, V412-V415 moving truncation/eventual-equality support,
-V421 normalizer/truncation spine, and mathlib strong-law tail, p-series, and
-integral APIs before adding local analysis lemmas.  Do not route back to
-Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10, V416-V420 Theorem 2.5.11
-plumbing, or old app-level stale prompts unless search proves a concrete
-missing source display.
+in `StatInference/ProbabilityTheory/Basic.lean`.  V422 advances Durrett
+Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the normalizer and
+truncation spine from V421 now also has the source Borel-Cantelli
+eventual-equality transfer from `X_k` to
+`Y_k = X_k 1_{|X_k| <= k^(1/p)}` under iid finite `p`-moment, plus variance
+landing pads reducing scaled centered variances to base truncated second
+moments.  Next aggressive target: prove/package the actual scaled-variance
+summability estimate for `(Y_k - E Y_k) / k^(1/p)` from finite `p`-moment,
+then prove the deterministic truncated-mean contribution and the finite-prefix
+normalized-sum transfer needed for the full `S_n / n^(1/p) -> 0` endpoint.
+Reuse V406 random-series convergence, V410 Kronecker normalization, V412-V415
+moving truncation/eventual-equality support, V421-V422 2.5.12 spine, mathlib
+strong-law tail APIs, and p-series/integral-tail APIs before adding local
+analysis lemmas.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9,
+2.5.10, V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts
+unless search proves a concrete missing source display.
+
+Latest verified target V422 adds the first source-probability and variance
+landing-pad layer for Durrett Theorem 2.5.12.  New compiled anchors:
+`durrett2019_theorem_2_5_12_variance_scaledCenteredTruncated_le_truncated_sq`,
+`durrett2019_theorem_2_5_12_integral_truncated_sq_eq_base_truncated_sq_of_identDistrib`,
+`durrett2019_theorem_2_5_12_truncation_mismatch_subset_power_tail`,
+`durrett2019_theorem_2_5_12_measure_mismatch_le_power_tail`,
+`durrett2019_theorem_2_5_12_tsum_power_tail_ne_top_of_integrable_identDistrib`,
+`durrett2019_theorem_2_5_12_tsum_mismatch_ne_top_of_tsum_power_tail_ne_top`,
+and
+`durrett2019_theorem_2_5_12_ae_eventuallyEq_truncated_of_integrable_power_identDistrib`.
+The proof reuses mathlib `Real.rpow_inv_lt_iff_of_pos`,
+`ProbabilityTheory.tsum_prob_mem_Ioi_lt_top`, local identical-distribution
+composition, and V408/V415 Borel-Cantelli eventual-equality plumbing.  The
+remaining 2.5.12 blocker is now the variance-tail summability and deterministic
+mean/finite-prefix normalized transfer, not large-jump eventual equality.
 
 Latest verified target V421 adds the first Durrett Theorem 2.5.12
 Marcinkiewicz-Zygmund spine.  New compiled anchors:

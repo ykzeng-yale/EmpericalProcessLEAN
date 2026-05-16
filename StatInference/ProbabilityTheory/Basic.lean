@@ -7536,6 +7536,215 @@ theorem durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_
   · exact durrett2019_theorem_2_5_12_normalizer_atTop hp_pos
 
 /--
+Durrett 2019, Theorem 2.5.12 support: the variance of the scaled centered
+moving truncation is bounded by the scaled second moment of the uncentered
+moving truncation.
+-/
+theorem durrett2019_theorem_2_5_12_variance_scaledCenteredTruncated_le_truncated_sq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ} (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (k : ℕ) :
+    _root_.ProbabilityTheory.variance
+        (durrett2019_theorem_2_5_12_scaledCenteredTruncated P X p (k + 1)) P ≤
+      (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+        ∫ ω, (durrett2019_theorem_2_5_12_truncated X p (k + 1) ω) ^ 2 ∂P := by
+  have htrunc_meas :
+      Measurable (durrett2019_theorem_2_5_12_truncated X p (k + 1)) :=
+    durrett2019_theorem_2_5_12_measurable_truncated
+      (X := X) (p := p) (k := k + 1) (hX_meas (k + 1))
+  have hscaled_fun :
+      durrett2019_theorem_2_5_12_scaledCenteredTruncated P X p (k + 1) =
+        fun ω : Ω =>
+          ((durrett2019_theorem_2_5_12_normalizer p (k + 1))⁻¹) *
+            (durrett2019_theorem_2_5_12_truncated X p (k + 1) ω -
+              durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)) := by
+    ext ω
+    simp [durrett2019_theorem_2_5_12_scaledCenteredTruncated,
+      durrett2019_theorem_2_5_12_centeredTruncated, div_eq_mul_inv, mul_comm]
+  have hscaled_eq :
+      _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_2_5_12_scaledCenteredTruncated P X p (k + 1)) P =
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1))⁻¹) ^ 2) *
+          _root_.ProbabilityTheory.variance
+            (durrett2019_theorem_2_5_12_truncated X p (k + 1)) P := by
+    rw [hscaled_fun, _root_.ProbabilityTheory.variance_const_mul]
+    rw [_root_.ProbabilityTheory.variance_sub_const
+      htrunc_meas.aestronglyMeasurable
+      (durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1))]
+  calc
+    _root_.ProbabilityTheory.variance
+        (durrett2019_theorem_2_5_12_scaledCenteredTruncated P X p (k + 1)) P =
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1))⁻¹) ^ 2) *
+          _root_.ProbabilityTheory.variance
+            (durrett2019_theorem_2_5_12_truncated X p (k + 1)) P := hscaled_eq
+    _ ≤ (((durrett2019_theorem_2_5_12_normalizer p (k + 1))⁻¹) ^ 2) *
+        ∫ ω, (durrett2019_theorem_2_5_12_truncated X p (k + 1) ω) ^ 2 ∂P := by
+          exact mul_le_mul_of_nonneg_left
+            (_root_.ProbabilityTheory.variance_le_expectation_sq
+              (μ := P)
+              (X := durrett2019_theorem_2_5_12_truncated X p (k + 1))
+              htrunc_meas.aestronglyMeasurable)
+            (sq_nonneg _)
+    _ = (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+        ∫ ω, (durrett2019_theorem_2_5_12_truncated X p (k + 1) ω) ^ 2 ∂P := by
+          rw [inv_pow]
+
+/--
+Durrett 2019, Theorem 2.5.12 support: identical distribution transfers the
+second moment of the moving truncation from `X_k` to the same level applied to
+`X_0`.
+-/
+theorem durrett2019_theorem_2_5_12_integral_truncated_sq_eq_base_truncated_sq_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (k : ℕ) :
+    (∫ ω, (durrett2019_theorem_2_5_12_truncated X p k ω) ^ 2 ∂P) =
+      ∫ ω,
+        (durrett2019_theorem_2_5_8_truncated
+          (fun _ : ℕ => X 0)
+          (durrett2019_theorem_2_5_12_truncationLevel p k) 0 ω) ^ 2 ∂P := by
+  let sqTruncMap : ℝ -> ℝ :=
+    fun x =>
+      (Set.indicator
+        {y : ℝ | |y| ≤ durrett2019_theorem_2_5_12_truncationLevel p k}
+        (fun y => y) x) ^ 2
+  have htrunc_meas : Measurable
+      (fun x : ℝ =>
+        Set.indicator
+          {y : ℝ | |y| ≤ durrett2019_theorem_2_5_12_truncationLevel p k}
+          (fun y => y) x) :=
+    durrett2019_theorem_2_5_8_measurable_truncationMap
+      (A := durrett2019_theorem_2_5_12_truncationLevel p k)
+  have hsq_meas : Measurable sqTruncMap := by
+    simpa [sqTruncMap] using htrunc_meas.pow_const 2
+  have hident_sq :
+      _root_.ProbabilityTheory.IdentDistrib
+        (sqTruncMap ∘ X k) (sqTruncMap ∘ X 0) P P :=
+    (hX_ident k).comp hsq_meas
+  simpa [durrett2019_theorem_2_5_12_truncated,
+    durrett2019_theorem_2_5_8_truncated, sqTruncMap, Function.comp_def]
+    using hident_sq.integral_eq
+
+/--
+Durrett 2019, Theorem 2.5.12 support: a mismatch between `X_k` and the moving
+truncation can only occur on the power-tail event `k < |X_k|^p`.
+-/
+theorem durrett2019_theorem_2_5_12_truncation_mismatch_subset_power_tail
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p) (k : ℕ) :
+    {ω : Ω | X k ω ≠ durrett2019_theorem_2_5_12_truncated X p k ω} ⊆
+      {ω : Ω | (k : ℝ) < |X k ω| ^ p} := by
+  intro ω hneq
+  have hneq_fixed :
+      X k ω ≠
+        durrett2019_theorem_2_5_8_truncated X
+          (durrett2019_theorem_2_5_12_truncationLevel p k) k ω := by
+    simpa [durrett2019_theorem_2_5_12_truncated] using hneq
+  have htail :
+      durrett2019_theorem_2_5_12_truncationLevel p k < |X k ω| :=
+    durrett2019_theorem_2_5_8_truncation_mismatch_subset_tail
+      (X := X) (A := durrett2019_theorem_2_5_12_truncationLevel p k)
+      k hneq_fixed
+  have hpower :
+      ((k : ℝ) ^ p⁻¹) < |X k ω| ↔ (k : ℝ) < |X k ω| ^ p :=
+    Real.rpow_inv_lt_iff_of_pos
+      (by positivity : 0 ≤ (k : ℝ)) (abs_nonneg (X k ω)) hp_pos
+  exact hpower.1 (by
+    simpa [durrett2019_theorem_2_5_12_truncationLevel,
+      durrett2019_theorem_2_5_12_normalizer, one_div] using htail)
+
+/--
+Durrett 2019, Theorem 2.5.12 support: moving-truncation mismatch probabilities
+are bounded by the corresponding power-tail probabilities.
+-/
+theorem durrett2019_theorem_2_5_12_measure_mismatch_le_power_tail
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p) (k : ℕ) :
+    P {ω : Ω | X k ω ≠ durrett2019_theorem_2_5_12_truncated X p k ω} ≤
+      P {ω : Ω | (k : ℝ) < |X k ω| ^ p} :=
+  measure_mono
+    (durrett2019_theorem_2_5_12_truncation_mismatch_subset_power_tail
+      (X := X) hp_pos k)
+
+/--
+Durrett 2019, Theorem 2.5.12 support: a finite base `p`-moment plus identical
+distribution implies summability of the moving power-tail probabilities.
+-/
+theorem durrett2019_theorem_2_5_12_tsum_power_tail_ne_top_of_integrable_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P) :
+    (∑' k : ℕ, P {ω : Ω | (k : ℝ) < |X k ω| ^ p}) ≠ ∞ := by
+  have hpow_meas : Measurable (fun x : ℝ => |x| ^ p) :=
+    (continuous_abs.rpow_const fun _ => Or.inr hp_pos.le).measurable
+  have hbase_lt_top :
+      (∑' k : ℕ, P {ω : Ω | |X 0 ω| ^ p ∈ Set.Ioi (k : ℝ)}) < ∞ := by
+    letI : MeasureSpace Ω := { toMeasurableSpace := ‹MeasurableSpace Ω›, volume := P }
+    haveI : IsProbabilityMeasure (MeasureTheory.MeasureSpace.volume : Measure Ω) := by
+      change IsProbabilityMeasure P
+      infer_instance
+    simpa using
+      (_root_.ProbabilityTheory.tsum_prob_mem_Ioi_lt_top
+        (X := fun ω : Ω => |X 0 ω| ^ p)
+        hX_pow_int0
+        (fun ω => Real.rpow_nonneg (abs_nonneg (X 0 ω)) p))
+  have hseq_lt_top :
+      (∑' k : ℕ, P {ω : Ω | |X k ω| ^ p ∈ Set.Ioi (k : ℝ)}) < ∞ := by
+    convert hbase_lt_top using 2
+    ext k
+    have hident_pow :
+        _root_.ProbabilityTheory.IdentDistrib
+          (fun ω : Ω => |X k ω| ^ p) (fun ω : Ω => |X 0 ω| ^ p) P P :=
+      (hX_ident k).comp hpow_meas
+    simpa using hident_pow.measure_mem_eq measurableSet_Ioi
+  exact ne_top_of_lt (by simpa [Set.mem_Ioi] using hseq_lt_top)
+
+/--
+Durrett 2019, Theorem 2.5.12 support: summable power-tail probabilities imply
+summable moving-truncation mismatch probabilities.
+-/
+theorem durrett2019_theorem_2_5_12_tsum_mismatch_ne_top_of_tsum_power_tail_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (htail : (∑' k : ℕ, P {ω : Ω | (k : ℝ) < |X k ω| ^ p}) ≠ ∞) :
+    (∑' k : ℕ,
+      P {ω : Ω | X k ω ≠ durrett2019_theorem_2_5_12_truncated X p k ω}) ≠ ∞ := by
+  refine ne_top_of_le_ne_top htail ?_
+  exact ENNReal.tsum_le_tsum fun k =>
+    durrett2019_theorem_2_5_12_measure_mismatch_le_power_tail
+      (P := P) (X := X) hp_pos k
+
+/--
+Durrett 2019, Theorem 2.5.12 support: a finite base `p`-moment plus identical
+distribution imply eventual sample-path equality between `X_k` and
+`Y_k = X_k 1_{|X_k| <= k^(1/p)}`.
+-/
+theorem durrett2019_theorem_2_5_12_ae_eventuallyEq_truncated_of_integrable_power_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P) :
+    ∀ᵐ ω ∂P,
+      ∀ᶠ k in atTop,
+        X k ω = durrett2019_theorem_2_5_12_truncated X p k ω :=
+  durrett2019_theorem_2_5_8_ae_eventuallyEq_of_tsum_measure_ne_top
+    (P := P) (X := X)
+    (Y := fun k : ℕ => durrett2019_theorem_2_5_12_truncated X p k)
+    (durrett2019_theorem_2_5_12_tsum_mismatch_ne_top_of_tsum_power_tail_ne_top
+      (P := P) (X := X) hp_pos
+      (durrett2019_theorem_2_5_12_tsum_power_tail_ne_top_of_integrable_identDistrib
+        (P := P) (X := X) hp_pos hX_pow_int0 hX_ident))
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
