@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V396
+## Live In-Thread Goal Prompt V398
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -14,25 +14,45 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Theorem 2.5.5 Kolmogorov maximal
 inequality in `StatInference/ProbabilityTheory/Basic.lean`.  Reuse the
 compiled Chapter 2.1 independence/product-expectation bridges and the
-V391-V396 first-crossing infrastructure; do not route back to Theorem 2.4.9
+V391-V398 first-crossing infrastructure; do not route back to Theorem 2.4.9
 unless search proves a concrete missing source display.
 
-Latest verified target V396 adds the terminal-square finite-union bound and
-core chained maximal integral inequality:
+Latest verified target V398 adds source-facing increment mean-zero wrappers:
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_mean_zero`
+and
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_mean_zero_oneBased`.
+These derive terminal partial-sum mean zero from finite-range increment
+integrability and mean-zero assumptions before applying the V397 variance
+display.  Next aggressive target: reduce or discharge the remaining explicit
+side conditions feeding the textbook display, especially square-integrability
+of partial sums and mixed-term integrability, by reusing existing Chapter 2.1
+independence/product-expectation, local variance-sum, and mathlib `MemLp`
+finite-sum APIs.
+
+V397 packages the textbook division and variance display from the compiled
+V396 maximal integral inequality:
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_integral_div_bound`,
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_integral_div_bound_oneBased`,
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound`, and
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_oneBased`.
+The source-facing conclusion now has the textbook shape
+`P(max_{1 <= k <= n} |S_k| >= x) <= (x^2)^{-1} * Var(S_n)` once the
+terminal partial sum is mean-zero.
+
+V396 adds the terminal-square finite-union bound and core chained maximal
+integral inequality:
 `durrett2019_theorem_2_5_5_sum_firstCrossing_terminalSq_integrals_le_integral`,
 `durrett2019_theorem_2_5_5_kolmogorov_maximal_integral_bound`, and matching
 one-based wrappers.  The compiled route now proves
 `x^2 * P(max_{1 <= k <= n} |S_k| >= x) <= integral S_n^2` under the explicit
 integrability and mixed-term side conditions consumed by the existing
-first-crossing bridges.  Next aggressive target: package the textbook display
-`P(max_{1 <= k <= n} |S_k| >= x) <= x^{-2} * Var(S_n)` by adding the cheap
-positive-division wrapper and a source wrapper identifying `integral S_n^2`
-with variance under zero means; then reduce or discharge the remaining
-integrability side conditions where local/mathlib APIs make it immediate.
+first-crossing bridges.
 
 ## Recent Verified Route Notes
 
-V395 adds the square-expansion upper-comparison layer:
+V397 and V398 close the theorem-facing probability display and terminal
+mean-zero packaging for Durrett Theorem 2.5.5.  V395 adds the
+square-expansion upper-comparison layer:
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_add_mixed_le_terminalSq`,
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral_of_mixed_zero`,
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral`,
@@ -3325,6 +3345,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V396` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V398` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -27,23 +27,40 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V396`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V398`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.5.5 Kolmogorov
-maximal inequality in `StatInference/ProbabilityTheory/Basic.lean`.  V396 adds
+maximal inequality in `StatInference/ProbabilityTheory/Basic.lean`.  V398 adds
+source-facing increment mean-zero wrappers:
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_mean_zero`
+and
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_mean_zero_oneBased`.
+These derive terminal partial-sum mean zero from finite-range increment
+integrability and mean-zero assumptions before applying the V397 variance
+display.  Next work should reduce or discharge the remaining explicit side
+conditions feeding the textbook display, especially square-integrability of
+partial sums and mixed-term integrability, using Chapter 2.1
+independence/product-expectation, local variance-sum, and mathlib `MemLp`
+finite-sum APIs where available.
+
+Verified route history below is provenance, not live prompt text.  V397
+packages the textbook division and variance display from the compiled V396
+maximal integral inequality:
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_integral_div_bound`,
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_integral_div_bound_oneBased`,
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound`, and
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_oneBased`.
+The source-facing conclusion now has the textbook shape
+`P(max_{1 <= k <= n} |S_k| >= x) <= (x^2)^{-1} * Var(S_n)` once the
+terminal partial sum is mean-zero.  V396 adds
 the terminal-square finite-union bound and core chained maximal integral
 inequality:
 `durrett2019_theorem_2_5_5_sum_firstCrossing_terminalSq_integrals_le_integral`
 and `durrett2019_theorem_2_5_5_kolmogorov_maximal_integral_bound`, plus
-one-based wrappers.  Next work should package the textbook display
-`P(max_{1 <= k <= n} |S_k| >= x) <= x^{-2} * Var(S_n)` via positive division
-and a variance/second-moment wrapper under zero means, while reducing the
-remaining explicit integrability side conditions where immediate.
-
-Verified route history below is provenance, not live prompt text.  V395 adds
+one-based wrappers.  V395 adds
 the square-expansion upper-comparison layer:
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_add_mixed_le_terminalSq`,
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral_of_mixed_zero`,
