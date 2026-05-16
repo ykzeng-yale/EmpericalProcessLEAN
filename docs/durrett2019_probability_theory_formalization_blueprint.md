@@ -27,23 +27,30 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V393`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V394`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.5.5 Kolmogorov
-maximal inequality in `StatInference/ProbabilityTheory/Basic.lean`.  V393 adds
+maximal inequality in `StatInference/ProbabilityTheory/Basic.lean`.  V394 adds
+the maximal-crossing event decomposition and summed first-crossing lower bound:
+`durrett2019_theorem_2_5_5_maxCrossingEvent`,
+`durrett2019_theorem_2_5_5_firstCrossing_biUnion_eq_maxCrossingEvent`,
+`durrett2019_theorem_2_5_5_measureReal_maxCrossingEvent_eq_sum`, and
+`durrett2019_theorem_2_5_5_sq_mul_measureReal_maxCrossingEvent_le_sum_firstCrossing_integrals`,
+plus one-based wrappers.  Next work should prove
+`sum_k integral_{A_k} S_k^2 <= integral S_n^2` using the square expansion,
+V391 mixed-term zero, nonnegativity of `(S_n - S_k)^2`, and finite disjoint
+integral splitting, then package the full Theorem 2.5.5 display.
+
+Verified route history below is provenance, not live prompt text.  V393 adds
 the finite first-crossing disjoint-union layer:
 `durrett2019_theorem_2_5_5_measurableSet_firstCrossingEvent`,
 `durrett2019_theorem_2_5_5_firstCrossing_events_disjoint`,
 `durrett2019_theorem_2_5_5_firstCrossing_events_pairwiseDisjoint`,
 `durrett2019_theorem_2_5_5_measureReal_firstCrossing_biUnion_eq_sum`, and
-the one-based wrappers.  Next work should combine the finite sum layer with
-V391 mixed-term zero and V392 first-crossing mass lower bounds to assemble the
-full Theorem 2.5.5 display.
-
-Verified route history below is provenance, not live prompt text.  V392 adds
+the one-based wrappers.  V392 adds
 the single first-crossing square/mass lower bound for Durrett Theorem 2.5.5,
 showing that each first-crossing event contributes at least `x^2 * P(A_m)` to
 the squared partial-sum integral.  V391 starts the

@@ -1368,6 +1368,15 @@ def durrett2019_theorem_2_5_5_firstCrossingBlockSet
                   (Finset.mem_range.mp j.2))⟩| < x}
 
 /--
+Durrett 2019, Theorem 2.5.5 maximal-crossing event for zero-based partial
+sums.  The one-based textbook form is obtained by using the shifted sequence
+`fun i => X (i + 1)`.
+-/
+def durrett2019_theorem_2_5_5_maxCrossingEvent
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (n : ℕ) (x : ℝ) : Set Ω :=
+  {ω | ∃ k ∈ Finset.Icc 1 n, x ≤ |∑ i : Finset.range k, X i ω|}
+
+/--
 Durrett 2019, Theorem 2.5.5 support: the first-crossing block event is
 measurable as a finite intersection of threshold conditions on partial sums.
 -/
@@ -1693,6 +1702,197 @@ theorem durrett2019_theorem_2_5_5_measureReal_firstCrossing_biUnion_eq_sum_oneBa
   durrett2019_theorem_2_5_5_measureReal_firstCrossing_biUnion_eq_sum
     (P := P) (X := fun i => fun ω => X (i + 1) ω)
     (fun i => hX_meas (i + 1)) x s
+
+/--
+Durrett 2019, Theorem 2.5.5 support: the disjoint union of first-crossing
+events over `1, ..., n` is exactly the event that some partial sum up to `n`
+crosses the threshold.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_biUnion_eq_maxCrossingEvent
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {n : ℕ} {x : ℝ} (hx_pos : 0 < x) :
+    (⋃ m ∈ Finset.Icc 1 n,
+      {ω : Ω |
+        (fun i : Finset.range m => X i ω) ∈
+          durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}) =
+      durrett2019_theorem_2_5_5_maxCrossingEvent X n x := by
+  classical
+  ext ω
+  constructor
+  · intro hω
+    rw [durrett2019_theorem_2_5_5_maxCrossingEvent]
+    rcases Set.mem_iUnion.mp hω with ⟨m, hm⟩
+    rcases Set.mem_iUnion.mp hm with ⟨hm_mem, hmA⟩
+    exact ⟨m, hm_mem, hmA.1⟩
+  · intro hω
+    rw [durrett2019_theorem_2_5_5_maxCrossingEvent] at hω
+    let crosses : ℕ -> Prop := fun m =>
+      1 ≤ m ∧ m ≤ n ∧ x ≤ |∑ i : Finset.range m, X i ω|
+    have hcrosses : ∃ m, crosses m := by
+      rcases hω with ⟨k, hk_mem, hk_cross⟩
+      exact ⟨k, (Finset.mem_Icc.mp hk_mem).1, (Finset.mem_Icc.mp hk_mem).2, hk_cross⟩
+    let m : ℕ := Nat.find hcrosses
+    have hm_crosses : crosses m := Nat.find_spec hcrosses
+    have hm_mem : m ∈ Finset.Icc 1 n :=
+      Finset.mem_Icc.mpr ⟨hm_crosses.1, hm_crosses.2.1⟩
+    have hmA :
+        (fun i : Finset.range m => X i ω) ∈
+          durrett2019_theorem_2_5_5_firstCrossingBlockSet m x := by
+      rw [durrett2019_theorem_2_5_5_firstCrossingBlockSet]
+      constructor
+      · exact hm_crosses.2.2
+      · rw [Set.mem_iInter]
+        intro j
+        have hj_lt_m : j.1 < m := Finset.mem_range.mp j.2
+        have hj_prefix : |∑ i : Finset.range j.1, X i ω| < x := by
+          by_cases hj_zero : j.1 = 0
+          · have hsum_zero : (∑ i : Finset.range j.1, X i ω) = 0 := by
+              rw [hj_zero]
+              simp
+            calc
+              |∑ i : Finset.range j.1, X i ω| = 0 := by
+                rw [hsum_zero]
+                simp
+              _ < x := hx_pos
+          · have hj_pos : 1 ≤ j.1 := Nat.succ_le_of_lt (Nat.pos_of_ne_zero hj_zero)
+            have hj_le_n : j.1 ≤ n :=
+              (Nat.le_of_lt hj_lt_m).trans hm_crosses.2.1
+            have hj_not_crosses : ¬ crosses j.1 := by
+              intro hj_crosses
+              have hm_le_j : m ≤ j.1 := Nat.find_min' hcrosses hj_crosses
+              exact (Nat.not_le_of_gt hj_lt_m) hm_le_j
+            have hj_not_cross :
+                ¬ x ≤ |∑ i : Finset.range j.1, X i ω| := by
+              intro hj_cross
+              exact hj_not_crosses ⟨hj_pos, hj_le_n, hj_cross⟩
+            exact lt_of_not_ge hj_not_cross
+        simpa using hj_prefix
+    exact Set.mem_iUnion.mpr ⟨m, Set.mem_iUnion.mpr ⟨hm_mem, hmA⟩⟩
+
+/--
+Durrett 2019, Theorem 2.5.5 support in one-based textbook notation: the
+first-crossing decomposition of the maximal-crossing event for
+`X_1, X_2, ...`.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_biUnion_eq_maxCrossingEvent_oneBased
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {n : ℕ} {x : ℝ} (hx_pos : 0 < x) :
+    (⋃ m ∈ Finset.Icc 1 n,
+      {ω : Ω |
+        (fun i : Finset.range m => X (i + 1) ω) ∈
+          durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}) =
+      durrett2019_theorem_2_5_5_maxCrossingEvent
+        (fun i => fun ω => X (i + 1) ω) n x :=
+  durrett2019_theorem_2_5_5_firstCrossing_biUnion_eq_maxCrossingEvent
+    (X := fun i => fun ω => X (i + 1) ω) (n := n) (x := x) hx_pos
+
+/--
+Durrett 2019, Theorem 2.5.5 support: the maximal-crossing event is measurable
+when the coordinates are measurable.
+-/
+theorem durrett2019_theorem_2_5_5_measurableSet_maxCrossingEvent
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) {n : ℕ} {x : ℝ} (hx_pos : 0 < x) :
+    MeasurableSet (durrett2019_theorem_2_5_5_maxCrossingEvent X n x) := by
+  rw [← durrett2019_theorem_2_5_5_firstCrossing_biUnion_eq_maxCrossingEvent
+    (X := X) (n := n) (x := x) hx_pos]
+  exact
+    Finset.measurableSet_biUnion (Finset.Icc 1 n) fun m _hm =>
+      durrett2019_theorem_2_5_5_measurableSet_firstCrossingEvent
+        (X := X) hX_meas m x
+
+/--
+Durrett 2019, Theorem 2.5.5 support: the probability of the maximal-crossing
+event is the sum of the probabilities of the disjoint first-crossing events.
+-/
+theorem durrett2019_theorem_2_5_5_measureReal_maxCrossingEvent_eq_sum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) {n : ℕ} {x : ℝ} (hx_pos : 0 < x) :
+    P.real (durrett2019_theorem_2_5_5_maxCrossingEvent X n x) =
+      ∑ m ∈ Finset.Icc 1 n,
+        P.real
+          {ω : Ω |
+            (fun i : Finset.range m => X i ω) ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x} := by
+  rw [← durrett2019_theorem_2_5_5_firstCrossing_biUnion_eq_maxCrossingEvent
+    (X := X) (n := n) (x := x) hx_pos]
+  exact
+    durrett2019_theorem_2_5_5_measureReal_firstCrossing_biUnion_eq_sum
+      (P := P) (X := X) hX_meas x (Finset.Icc 1 n)
+
+/--
+Durrett 2019, Theorem 2.5.5 support in one-based textbook notation: the
+probability of the maximal-crossing event is the sum of first-crossing
+probabilities for `X_1, X_2, ...`.
+-/
+theorem durrett2019_theorem_2_5_5_measureReal_maxCrossingEvent_eq_sum_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) {n : ℕ} {x : ℝ} (hx_pos : 0 < x) :
+    P.real
+        (durrett2019_theorem_2_5_5_maxCrossingEvent
+          (fun i => fun ω => X (i + 1) ω) n x) =
+      ∑ m ∈ Finset.Icc 1 n,
+        P.real
+          {ω : Ω |
+            (fun i : Finset.range m => X (i + 1) ω) ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x} :=
+  durrett2019_theorem_2_5_5_measureReal_maxCrossingEvent_eq_sum
+    (P := P) (X := fun i => fun ω => X (i + 1) ω)
+    (fun i => hX_meas (i + 1)) (n := n) (x := x) hx_pos
+
+/--
+Durrett 2019, Theorem 2.5.5 support: after summing over the disjoint
+first-crossing decomposition, the maximal-crossing probability contributes at
+most the sum of the first-crossing stopped-square integrals.
+-/
+theorem durrett2019_theorem_2_5_5_sq_mul_measureReal_maxCrossingEvent_le_sum_firstCrossing_integrals
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) {n : ℕ} {x : ℝ} (hx_pos : 0 < x)
+    (hS_sq_int : ∀ m ∈ Finset.Icc 1 n,
+      Integrable (fun ω => (∑ i : Finset.range m, X i ω) ^ 2) P) :
+    x ^ 2 * P.real (durrett2019_theorem_2_5_5_maxCrossingEvent X n x) ≤
+      ∑ m ∈ Finset.Icc 1 n,
+        ∫ ω,
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X i ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω ∂P := by
+  classical
+  rw [durrett2019_theorem_2_5_5_measureReal_maxCrossingEvent_eq_sum
+    (P := P) (X := X) hX_meas (n := n) (x := x) hx_pos]
+  rw [Finset.mul_sum]
+  exact Finset.sum_le_sum fun m hm =>
+    durrett2019_theorem_2_5_5_firstCrossing_sq_mul_measureReal_le_integral
+      (P := P) (X := X) hX_meas (m := m) (x := x)
+      (le_of_lt hx_pos) (hS_sq_int m hm)
+
+/--
+Durrett 2019, Theorem 2.5.5 support in one-based textbook notation: summed
+first-crossing lower bound for `X_1, X_2, ...`.
+-/
+theorem durrett2019_theorem_2_5_5_sq_mul_measureReal_maxCrossingEvent_le_sum_firstCrossing_integrals_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) {n : ℕ} {x : ℝ} (hx_pos : 0 < x)
+    (hS_sq_int : ∀ m ∈ Finset.Icc 1 n,
+      Integrable (fun ω => (∑ i : Finset.range m, X (i + 1) ω) ^ 2) P) :
+    x ^ 2 *
+        P.real
+          (durrett2019_theorem_2_5_5_maxCrossingEvent
+            (fun i => fun ω => X (i + 1) ω) n x) ≤
+      ∑ m ∈ Finset.Icc 1 n,
+        ∫ ω,
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X (i + 1) ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ i : Finset.range m, X (i + 1) ω') ^ 2) ω ∂P :=
+  durrett2019_theorem_2_5_5_sq_mul_measureReal_maxCrossingEvent_le_sum_firstCrossing_integrals
+    (P := P) (X := fun i => fun ω => X (i + 1) ω)
+    (fun i => hX_meas (i + 1)) (n := n) (x := x) hx_pos hS_sq_int
 
 /--
 Durrett 2019, Theorem 2.5.5 support: the mixed term for the first-crossing
