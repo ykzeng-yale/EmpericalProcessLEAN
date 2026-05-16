@@ -540,6 +540,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   displacement directly through
   `chewi1314_polytopeSlackNegLog_range_sourceLocalNorm_le_sqrt_fin_mul_of_coord_abs_le`,
   with exact budget `sqrt(m) * (1 + sqrt(m) * rho) <= tailBound`.
+  The pathwise source-centered radius packet now adds
+  `chewi1316_polytopeSlackNegLog_slackCoordAbsSub_le_of_dist_le`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceCenteredRadiusBound_exactBudget_succ_noFactor_standardConstants`,
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceCenteredRadiusBound_exactBudget_succ_noFactor_standardConstants`.
+  These reduce pathwise coordinate control to the moving-center distance
+  certificate `dist x_N xbar0 <= R` plus
+  `R <= rho * slack_i(xbar0)`, reusing `PiLp.norm_apply_le`.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,

@@ -829,6 +829,15 @@ These compose the coordinate-to-Dikin bridge
 with the actual source-radius endpoint, so a future moving-center proof may
 state the source-slack coordinate displacement directly; the exact scalar
 budget is `sqrt(m) * (1 + sqrt(m) * rho) <= tailBound`.
+The pathwise source-centered radius handoff now adds
+`chewi1316_polytopeSlackNegLog_slackCoordAbsSub_le_of_dist_le`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceCenteredRadiusBound_exactBudget_succ_noFactor_standardConstants`,
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceCenteredRadiusBound_exactBudget_succ_noFactor_standardConstants`.
+These let a moving-center proof give only a range-subtype distance bound
+`dist x_N xbar0 <= R` plus coordinate comparisons
+`R <= rho * slack_i(xbar0)`; `PiLp.norm_apply_le` turns that into the
+coordinate-displacement certificate above.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
 data directly: prove the feasible translated slack range is compact (or show
 it sits inside a compact closure/envelope, or show each coordinate image is
