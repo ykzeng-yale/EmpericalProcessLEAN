@@ -7628,6 +7628,165 @@ theorem durrett2019_theorem_2_5_12_integral_truncated_sq_eq_base_truncated_sq_of
     using hident_sq.integral_eq
 
 /--
+Durrett 2019, Theorem 2.5.12 support: once the base moving-truncation second
+moments have the textbook weighted summability, the scaled centered
+truncations have summable variances.
+-/
+theorem durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P) :
+    Summable fun k : ℕ =>
+      _root_.ProbabilityTheory.variance
+        (durrett2019_theorem_2_5_12_scaledCenteredTruncated P X p (k + 1)) P := by
+  refine Summable.of_nonneg_of_le
+    (fun k => _root_.ProbabilityTheory.variance_nonneg _ _) ?_
+    hbase_weighted_summable
+  intro k
+  calc
+    _root_.ProbabilityTheory.variance
+        (durrett2019_theorem_2_5_12_scaledCenteredTruncated P X p (k + 1)) P ≤
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω, (durrett2019_theorem_2_5_12_truncated X p (k + 1) ω) ^ 2 ∂P :=
+      durrett2019_theorem_2_5_12_variance_scaledCenteredTruncated_le_truncated_sq
+        (P := P) (X := X) (p := p) hX_meas k
+    _ =
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P := by
+      rw [durrett2019_theorem_2_5_12_integral_truncated_sq_eq_base_truncated_sq_of_identDistrib
+        (P := P) (X := X) (p := p) hX_ident (k + 1)]
+
+/--
+Durrett 2019, Theorem 2.5.12 centered truncated endpoint with the remaining
+textbook weighted base-second-moment summability assumption exposed explicitly.
+-/
+theorem durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_centeredTruncated P X p (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_scaled_variance_summable
+    (P := P) (X := X) (p := p) hp_pos hX_indep hX_meas
+    (durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable
+      (P := P) (X := X) (p := p) hX_meas hX_ident hbase_weighted_summable)
+
+/--
+Durrett 2019, Theorem 2.5.12 deterministic assembly: centered truncated
+normalization plus the normalized sum of truncated means gives the normalized
+sum of the truncations.
+-/
+theorem durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ} {ω : Ω}
+    (hcenter :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_centeredTruncated P X p (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0))
+    (hmean :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1),
+          durrett2019_theorem_2_5_12_truncated X p (k + 1) ω) /
+          durrett2019_theorem_2_5_12_normalizer p (n + 1))
+      atTop (𝓝 0) := by
+  have hsum :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_centeredTruncated P X p (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1) +
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) := by
+    simpa using hcenter.add hmean
+  refine hsum.congr' ?_
+  exact Eventually.of_forall fun n => by
+    dsimp
+    simp [durrett2019_theorem_2_5_12_centeredTruncated]
+    ring
+
+/--
+Durrett 2019, Theorem 2.5.12 truncated endpoint with the remaining textbook
+weighted base-second-moment summability and mean-normalization assumptions
+exposed explicitly.
+-/
+theorem durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P)
+    (hmean :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_truncated X p (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) := by
+  filter_upwards
+    [durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable
+      (P := P) (X := X) (p := p) hp_pos hX_indep hX_meas hX_ident
+      hbase_weighted_summable] with ω hcenter
+  exact
+    durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean
+      (P := P) (X := X) (p := p) (ω := ω) hcenter hmean
+
+/--
 Durrett 2019, Theorem 2.5.12 support: a mismatch between `X_k` and the moving
 truncation can only occur on the power-tail event `k < |X_k|^p`.
 -/
@@ -7743,6 +7902,89 @@ theorem durrett2019_theorem_2_5_12_ae_eventuallyEq_truncated_of_integrable_power
       (P := P) (X := X) hp_pos
       (durrett2019_theorem_2_5_12_tsum_power_tail_ne_top_of_integrable_identDistrib
         (P := P) (X := X) hp_pos hX_pow_int0 hX_ident))
+
+/--
+Durrett 2019, Theorem 2.5.12 source constructor: the centered truncated
+Kronecker endpoint and the large-jump eventual equality are both available once
+the finite `p`-moment gives the power-tail summability and the remaining
+weighted base-second-moment summability estimate has been supplied.
+-/
+theorem durrett2019_theorem_2_5_12_centered_endpoint_and_eventuallyEq_of_base_truncated_sq_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P) :
+    (∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_centeredTruncated P X p (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0)) ∧
+      (∀ᵐ ω ∂P,
+        ∀ᶠ k in atTop,
+          X k ω = durrett2019_theorem_2_5_12_truncated X p k ω) :=
+  ⟨durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable
+      (P := P) (X := X) (p := p) hp_pos hX_indep hX_meas hX_ident
+      hbase_weighted_summable,
+    durrett2019_theorem_2_5_12_ae_eventuallyEq_truncated_of_integrable_power_identDistrib
+      (P := P) (X := X) (p := p) hp_pos hX_pow_int0 hX_ident⟩
+
+/--
+Durrett 2019, Theorem 2.5.12 source constructor: the truncated normalized-sum
+endpoint and the large-jump eventual equality are both available once the
+weighted base-second-moment summability and truncated-mean normalization
+estimates have been supplied.
+-/
+theorem durrett2019_theorem_2_5_12_truncated_endpoint_and_eventuallyEq_of_base_truncated_sq_summable_and_mean_tendsto
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P)
+    (hmean :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0)) :
+    (∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_truncated X p (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0)) ∧
+      (∀ᵐ ω ∂P,
+        ∀ᶠ k in atTop,
+          X k ω = durrett2019_theorem_2_5_12_truncated X p k ω) :=
+  ⟨durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto
+      (P := P) (X := X) (p := p) hp_pos hX_indep hX_meas hX_ident
+      hbase_weighted_summable hmean,
+    durrett2019_theorem_2_5_12_ae_eventuallyEq_truncated_of_integrable_power_identDistrib
+      (P := P) (X := X) (p := p) hp_pos hX_pow_int0 hX_ident⟩
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the

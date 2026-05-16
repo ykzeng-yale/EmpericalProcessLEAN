@@ -27,19 +27,37 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V422`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V423`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V422 advances
-Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the V421
-normalizer/truncation/Kronecker spine now also has the source
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V423 advances
+Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the V421-V422
+normalizer/truncation/Kronecker/Borel-Cantelli spine now has compiled reducers
+turning exact weighted base truncated second-moment summability and normalized
+truncated-mean convergence into the truncated normalized-sum endpoint, paired
+with eventual equality.  New compiled anchors through V423:
+`durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
+`durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
+`durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
+`durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto`,
+`durrett2019_theorem_2_5_12_centered_endpoint_and_eventuallyEq_of_base_truncated_sq_summable`,
+and
+`durrett2019_theorem_2_5_12_truncated_endpoint_and_eventuallyEq_of_base_truncated_sq_summable_and_mean_tendsto`.
+The next source work is the actual analytic work from finite `p`-moment:
+weighted base truncated second-moment summability and normalized truncated-mean
+contribution, followed by finite-prefix normalized-sum transfer from the
+truncated endpoint plus eventual equality to the original endpoint.
+
+Verified route history below is provenance, not live prompt text.  V422
+advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the
+V421 normalizer/truncation/Kronecker spine now also has the source
 Borel-Cantelli eventual-equality transfer from `X_k` to
 `Y_k = X_k 1_{|X_k| <= k^(1/p)}` under iid finite `p`-moment, plus variance
 landing pads reducing scaled centered variances to base truncated second
-moments.  New compiled anchors through V422:
+moments.  Compiled anchors through V422:
 `durrett2019_theorem_2_5_12_variance_scaledCenteredTruncated_le_truncated_sq`,
 `durrett2019_theorem_2_5_12_integral_truncated_sq_eq_base_truncated_sq_of_identDistrib`,
 `durrett2019_theorem_2_5_12_truncation_mismatch_subset_power_tail`,
@@ -48,11 +66,7 @@ moments.  New compiled anchors through V422:
 `durrett2019_theorem_2_5_12_tsum_mismatch_ne_top_of_tsum_power_tail_ne_top`,
 and
 `durrett2019_theorem_2_5_12_ae_eventuallyEq_truncated_of_integrable_power_identDistrib`.
-The next source work is the actual scaled-variance summability estimate from
-finite `p`-moment, followed by the deterministic truncated-mean contribution
-and finite-prefix normalized-sum transfer for the full source endpoint.
-
-Verified route history below is provenance, not live prompt text.  V421 opens
+V421 opens
 Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the
 normalizer `a_n = n^(1/p)`, moving truncation
 `Y_k = X_k 1_{|X_k| <= k^(1/p)}`, centered and scaled centered truncations,

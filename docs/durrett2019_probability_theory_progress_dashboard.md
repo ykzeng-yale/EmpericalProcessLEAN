@@ -32,16 +32,35 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V422` in
+Route from `Live In-Thread Goal Prompt V423` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V422 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
-`1 < p < 2`.  In addition to the V421 normalizer/truncation/Kronecker spine,
-the Borel-Cantelli eventual-equality transfer from `X_k` to
+V423 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
+`1 < p < 2`.  In addition to the V421-V422 normalizer/truncation/Kronecker/
+Borel-Cantelli spine, compiled reducer theorems now turn exact weighted base
+truncated second-moment summability and normalized truncated-mean convergence
+into the truncated normalized-sum endpoint, paired with the existing eventual
+equality.  New compiled anchors through V423:
+`durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
+`durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
+`durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
+`durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto`,
+`durrett2019_theorem_2_5_12_centered_endpoint_and_eventuallyEq_of_base_truncated_sq_summable`,
+and
+`durrett2019_theorem_2_5_12_truncated_endpoint_and_eventuallyEq_of_base_truncated_sq_summable_and_mean_tendsto`.
+The current blocker is now the actual analytic work from finite `p`-moment:
+weighted base truncated second-moment summability and normalized truncated-mean
+contribution, followed by finite-prefix normalized-sum transfer from the
+truncated endpoint plus eventual equality to the original endpoint.
+
+Verified route history below is provenance, not live prompt text.  V422
+advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`.
+In addition to the V421 normalizer/truncation/Kronecker spine, the
+Borel-Cantelli eventual-equality transfer from `X_k` to
 `Y_k = X_k 1_{|X_k| <= k^(1/p)}` now compiles under iid finite `p`-moment, and
 the first variance landing pads reduce scaled centered variances to base
-truncated second moments.  New compiled anchors through V422:
+truncated second moments.  Compiled anchors through V422:
 `durrett2019_theorem_2_5_12_variance_scaledCenteredTruncated_le_truncated_sq`,
 `durrett2019_theorem_2_5_12_integral_truncated_sq_eq_base_truncated_sq_of_identDistrib`,
 `durrett2019_theorem_2_5_12_truncation_mismatch_subset_power_tail`,
@@ -50,12 +69,7 @@ truncated second moments.  New compiled anchors through V422:
 `durrett2019_theorem_2_5_12_tsum_mismatch_ne_top_of_tsum_power_tail_ne_top`,
 and
 `durrett2019_theorem_2_5_12_ae_eventuallyEq_truncated_of_integrable_power_identDistrib`.
-The current blocker is the actual Theorem 2.5.12 scaled-variance summability
-estimate from finite `p`-moment, followed by the deterministic truncated-mean
-contribution and finite-prefix normalized-sum transfer for the full
-`S_n / n^(1/p) -> 0` endpoint.
-
-Verified route history below is provenance, not live prompt text.  V421 opens
+V421 opens
 Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`.  The
 normalizer `a_n = n^(1/p)`, moving truncation
 `Y_k = X_k 1_{|X_k| <= k^(1/p)}`, centered and scaled centered truncations,
