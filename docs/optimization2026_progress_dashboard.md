@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V13` near the top of
+  `Live Goal Prompt V14` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -43,22 +43,20 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/private/tmp/chewi-dual-seminorm` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
-- Latest Chapter 13 frontier: the source-coordinate main-stage handoff for
-  the finite-row slack-range §13.16 objective-gap theorem now compiles in
+- Latest Chapter 13 frontier: the concrete standard preliminary stage now
+  hands off to source-coordinate §13.16 main-stage objective-gap accuracy in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations
-  are `barrierAffineRange_centralPathGrad_dualLocalNorm_surjective_eq`,
-  `barrierAffineRange_centralPathGrad_adjoint_rightInverse_eq`,
-  `barrierAffineRange_centralPath_newtonStep_rangeRestrict_eq`,
-  `chewi1314_polytopeSlackNegLog_centralPath_newtonDecrement_rangePull_eq`,
-  `chewi1316_polytopeSlackNegLog_rangeMainStageNextNewtonSteps_of_sourcePullbackMainStageNextNewtonSteps`,
-  `chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_sourceInitial`,
+  are `Chewi1316SourceMainStageObjectiveGapHandoff`,
+  `chewi1316_sourceMainStageObjectiveGapHandoff_of_preliminaryInit`,
+  `chewi1316_sourceMainStageObjectiveGapHandoff_boundedFeasibleRange_standardPath`,
+  `chewi1316_sourceMainStageObjectiveGapHandoff_boundedPolytope_standardPath`,
+  `chewi1316_sourceMainStageObjectiveGapHandoff_boundedClosedPolytope_standardPath`,
   and
-  `chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_sourceMainStage_nextNewton_sourceInitial`.
-  This lets callers supply the actual main-stage Newton path and the initial
-  `lambda <= 1/4` certificate in source coordinates, as long as the source
-  objective is `adjoint rangeRestrict` applied to the range objective.  Next
-  proof target: connect the existing concrete standard preliminary initializer
-  endpoints to this source-main-stage objective-gap wrapper.
+  `chewi1316_sourceMainStageObjectiveGapHandoff_compactClosedPolytope_standardPath`.
+  Next proof target: package/discharge the remaining standard main-stage
+  centrality, barrier-step/lower-model, membership, and large-parameter
+  stopping assumptions around this handoff toward the final finite-row
+  textbook §13.16 accuracy theorem.
 - Cached Chapter 13 frontier history: the finite-row slack-range §13.16 handoff now
   compiles through source-pullback decrement transport and a point-dependent
   range sqrt-coordinate one-step wrapper.  New reusable declarations are
@@ -653,6 +651,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactClosedPolytope_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants`.
   These fix the standard preliminary recursion internally, so final theorem
   callers no longer need raw schedule/recurrence hypotheses or a path object.
+  The new preliminary/main-stage handoff packet compiles
+  `Chewi1316SourceMainStageObjectiveGapHandoff`,
+  `chewi1316_sourceMainStageObjectiveGapHandoff_of_preliminaryInit`,
+  `chewi1316_sourceMainStageObjectiveGapHandoff_boundedFeasibleRange_standardPath`,
+  `chewi1316_sourceMainStageObjectiveGapHandoff_boundedPolytope_standardPath`,
+  `chewi1316_sourceMainStageObjectiveGapHandoff_boundedClosedPolytope_standardPath`,
+  and
+  `chewi1316_sourceMainStageObjectiveGapHandoff_compactClosedPolytope_standardPath`.
+  These are now the active §13.16 bridge from the concrete standard
+  preliminary initializer to source-coordinate main-stage objective-gap
+  accuracy; remaining work is main-stage assumption packaging, not preliminary
+  rework.
   The source-space bounded-polytope bridge now compiles as
   `chewi1316_polytopeSlackNegLog_bounded_feasibleRange_of_bounded_polytopeSlackSet`
   and
