@@ -9062,6 +9062,156 @@ theorem durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_rpow_indicator
     (p := p) (x := x) hp_pos]
 
 /--
+Durrett 2019, Theorem 2.5.12 scalar tail-first support: the standard
+p-series indicator `tsum` is supported inside the finite prefix cut off at
+`ceil (x^p)`.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirst_rpow_indicator_tsum_eq_range_indicator_sum
+    {p x : ℝ} :
+    (∑' k : ℕ,
+      Set.indicator
+        {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)}
+        (fun j : ℕ =>
+          x * (((j + 1 : ℕ) : ℝ) ^ (-(1 / p)))) k) =
+      ∑ k ∈ Finset.range (Nat.ceil (x ^ p)),
+        Set.indicator
+          {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)}
+          (fun j : ℕ =>
+            x * (((j + 1 : ℕ) : ℝ) ^ (-(1 / p)))) k := by
+  refine tsum_eq_sum
+    (L := .unconditional ℕ)
+    (f := fun k : ℕ =>
+      Set.indicator
+        {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)}
+        (fun j : ℕ =>
+          x * (((j + 1 : ℕ) : ℝ) ^ (-(1 / p)))) k)
+    (s := Finset.range (Nat.ceil (x ^ p))) ?_
+  intro k hk
+  have hk_not_lt : ¬ k < Nat.ceil (x ^ p) := by
+    simpa [Finset.mem_range] using hk
+  have hceil_le_k_nat : Nat.ceil (x ^ p) ≤ k := le_of_not_gt hk_not_lt
+  have hceil_le_k : ((Nat.ceil (x ^ p) : ℕ) : ℝ) ≤ (k : ℝ) := by
+    exact_mod_cast hceil_le_k_nat
+  have hxpow_le_ceil : x ^ p ≤ ((Nat.ceil (x ^ p) : ℕ) : ℝ) :=
+    Nat.le_ceil (x ^ p)
+  have hk_le_succ : (k : ℝ) ≤ (((k + 1 : ℕ) : ℝ)) := by
+    exact_mod_cast Nat.le_succ k
+  change
+    Set.indicator
+      {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)}
+      (fun j : ℕ =>
+        x * (((j + 1 : ℕ) : ℝ) ^ (-(1 / p)))) k = 0
+  rw [Set.indicator_of_notMem]
+  exact not_lt.mpr (le_trans (le_trans hxpow_le_ceil hceil_le_k) hk_le_succ)
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar tail-first kernel as a finite standard
+p-series prefix sum with its source indicator.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_rpow_range_indicator_sum
+    {p x : ℝ} (hp_pos : 0 < p) (hx_nonneg : 0 ≤ x) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) =
+      ∑ k ∈ Finset.range (Nat.ceil (x ^ p)),
+        Set.indicator
+          {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)}
+          (fun j : ℕ =>
+            x * (((j + 1 : ℕ) : ℝ) ^ (-(1 / p)))) k := by
+  rw [durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_rpow_indicator
+    (p := p) (x := x) hp_pos hx_nonneg]
+  exact durrett2019_theorem_2_5_12_tailFirst_rpow_indicator_tsum_eq_range_indicator_sum
+    (p := p) (x := x)
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar tail-first bound consumer from a full
+finite standard p-series prefix bound.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_sum
+    {p C x : ℝ} (hp_pos : 0 < p) (hx_nonneg : 0 ≤ x)
+    (hbound :
+      (∑ k ∈ Finset.range (Nat.ceil (x ^ p)),
+        x * (((k + 1 : ℕ) : ℝ) ^ (-(1 / p)))) ≤ C * x ^ p) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) ≤
+      C * x ^ p := by
+  calc
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) =
+        ∑ k ∈ Finset.range (Nat.ceil (x ^ p)),
+          Set.indicator
+            {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)}
+            (fun j : ℕ =>
+              x * (((j + 1 : ℕ) : ℝ) ^ (-(1 / p)))) k := by
+          rw [durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_rpow_range_indicator_sum
+            (p := p) (x := x) hp_pos hx_nonneg]
+    _ ≤ ∑ k ∈ Finset.range (Nat.ceil (x ^ p)),
+          x * (((k + 1 : ℕ) : ℝ) ^ (-(1 / p))) := by
+          refine Finset.sum_le_sum ?_
+          intro k hk
+          by_cases hmem : k ∈ {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)}
+          · rw [Set.indicator_of_mem hmem]
+          · rw [Set.indicator_of_notMem hmem]
+            exact mul_nonneg hx_nonneg
+              (Real.rpow_nonneg (by positivity : 0 ≤ (((k + 1 : ℕ) : ℝ)))
+                (-(1 / p)))
+    _ ≤ C * x ^ p := hbound
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar truncated-square standard p-series
+indicator is bounded by the full reciprocal-square p-series term.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedSq_rpow_indicator_le_full
+    {p x : ℝ} (k : ℕ) :
+    Set.indicator
+        {j : ℕ | |x| ^ p ≤ (((j + 1 : ℕ) : ℝ))}
+        (fun j : ℕ =>
+          x ^ 2 * (((j + 1 : ℕ) : ℝ) ^ (-(2 / p)))) k ≤
+      x ^ 2 * (((k + 1 : ℕ) : ℝ) ^ (-(2 / p))) := by
+  by_cases hk : k ∈ {j : ℕ | |x| ^ p ≤ (((j + 1 : ℕ) : ℝ))}
+  · rw [Set.indicator_of_mem hk]
+  · rw [Set.indicator_of_notMem hk]
+    exact mul_nonneg (sq_nonneg x)
+      (Real.rpow_nonneg (by positivity : 0 ≤ (((k + 1 : ℕ) : ℝ))) (-(2 / p)))
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar truncated-square standard p-series
+indicator is summable when `p < 2`.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedSq_rpow_indicator_summable
+    {p x : ℝ} (hp_pos : 0 < p) (hp_lt_two : p < 2) :
+    Summable fun k : ℕ =>
+      Set.indicator
+        {j : ℕ | |x| ^ p ≤ (((j + 1 : ℕ) : ℝ))}
+        (fun j : ℕ =>
+          x ^ 2 * (((j + 1 : ℕ) : ℝ) ^ (-(2 / p)))) k := by
+  have hexp : 1 < 2 / p := by
+    rw [one_lt_div hp_pos]
+    linarith
+  have hbase :
+      Summable fun n : ℕ => (((n : ℝ) ^ (2 / p))⁻¹) :=
+    Real.summable_nat_rpow_inv.2 hexp
+  have hshift :
+      Summable fun k : ℕ => ((((k + 1 : ℕ) : ℝ) ^ (2 / p))⁻¹) :=
+    (summable_nat_add_iff 1).2 hbase
+  have hshift_neg :
+      Summable fun k : ℕ =>
+        (((k + 1 : ℕ) : ℝ) ^ (-(2 / p))) := by
+    refine hshift.congr fun k => ?_
+    have hk_nonneg : 0 ≤ (((k + 1 : ℕ) : ℝ)) := by positivity
+    exact (Real.rpow_neg hk_nonneg (2 / p)).symm
+  have hmajorant :
+      Summable fun k : ℕ =>
+        x ^ 2 * (((k + 1 : ℕ) : ℝ) ^ (-(2 / p))) :=
+    hshift_neg.mul_left (x ^ 2)
+  refine hmajorant.of_nonneg_of_le ?_ ?_
+  · intro k
+    by_cases hk : k ∈ {j : ℕ | |x| ^ p ≤ (((j + 1 : ℕ) : ℝ))}
+    · rw [Set.indicator_of_mem hk]
+      exact mul_nonneg (sq_nonneg x)
+        (Real.rpow_nonneg (by positivity : 0 ≤ (((k + 1 : ℕ) : ℝ))) (-(2 / p)))
+    · rw [Set.indicator_of_notMem hk]
+  · intro k
+    exact durrett2019_theorem_2_5_12_truncatedSq_rpow_indicator_le_full
+      (p := p) (x := x) k
+
+/--
 Durrett 2019, Theorem 2.5.12 scalar tail-first-moment kernel is eventually
 zero, since the normalizer diverges.
 -/

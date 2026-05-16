@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V431
+## Live In-Thread Goal Prompt V432
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,19 +12,33 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V431 advances Durrett
-Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: after V430's
-canonical threshold forms, the normalizer terms now rewrite to standard
-p-series powers `((k+1 : ℝ) ^ (-(1/p)))` and
-`((k+1 : ℝ) ^ (-(2/p)))`, with `tsum` bound consumers in that notation.
-Next aggressive target: prove the two quantitative p-series estimates directly
-for these standard rpow Nat-indicator sums via mathlib finite partial-sum/tail
-and `Mathlib.Analysis.SumIntegralComparisons` APIs.  The exact real goals are
+in `StatInference/ProbabilityTheory/Basic.lean`.  V432 advances Durrett
+Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: after V431's
+standard rpow normalization, the tail-first rpow indicator `tsum` is now
+localized to a finite `range (Nat.ceil (x^p))` prefix with a full-prefix bound
+consumer, and the truncated-square rpow indicator has a full p-series
+majorant plus summability.  Next aggressive target: import/reuse
+`Mathlib.Analysis.SumIntegralComparisons` and prove the two remaining
+quantitative estimates: a finite-prefix integral comparison for the tail-first
+sum and a p-series tail integral comparison for the truncated-square sum.  The
+exact real goals are
 `sum_k x 1_{(k+1)^(1/p) < x} / (k+1)^(1/p) <= C x^p` for `x >= 0`, `1 < p`,
 and `sum_k x^2 1_{x <= (k+1)^(1/p)} / (k+1)^(2/p) <= C x^p` for `x >= 0`,
 `p < 2`.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V432 adds the Theorem 2.5.12 finite-prefix and
+standard p-series majorant layer.  New compiled anchors:
+`durrett2019_theorem_2_5_12_tailFirst_rpow_indicator_tsum_eq_range_indicator_sum`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_rpow_range_indicator_sum`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_sum`,
+`durrett2019_theorem_2_5_12_truncatedSq_rpow_indicator_le_full`,
+and
+`durrett2019_theorem_2_5_12_truncatedSq_rpow_indicator_summable`.
+The remaining 2.5.12 blocker is now the actual real-analysis estimates: bound
+the finite prefix by an integral and bound the truncated-square p-series tail
+by an integral, then compose with the V431/V432 consumers.
 
 Latest verified target V431 adds the Theorem 2.5.12 standard p-series
 normalization layer.  New compiled anchors:
