@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V409
+## Live In-Thread Goal Prompt V410
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,14 +12,42 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`, with Theorem 2.5.9
-Kronecker's lemma next.  Reuse the compiled Chapter 2.1
-independence/product-expectation bridges, Theorem 2.2.1 variance-sum APIs, and
-V391-V409 first-crossing/block-tail/oscillation/pathwise-Cauchy/a.s.-convergence infrastructure; do not route
-back to Theorem 2.4.9 or 2.5.5 source packaging
-unless search proves a concrete missing source display.
+in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.9 Kronecker's
+lemma now has a compiled deterministic real-sequence core, including Abel
+summation, Toeplitz weighted averages, the monotone-divergent normalizer route,
+and the textbook one-based conclusion
+`(sum_{m <= n} x_m) / a_n -> 0` from convergence of `sum x_n / a_n`.
+Next aggressive target: use V410 Kronecker plus V406-V409 random-series
+convergence to start Durrett Theorem 2.5.10 strong law via the random-series
+route.  Reuse the compiled Chapter 2.1 independence/product-expectation
+bridges, Theorem 2.2.1 variance-sum APIs, V391-V410 first-crossing/block-tail/
+oscillation/pathwise-Cauchy/a.s.-convergence/Kronecker infrastructure, and
+local `Martingale.lean` Exercise 4.4.11 deterministic theorem shapes only when
+they shorten proof search.  Do not route back to Theorem 2.4.9, 2.5.5, or
+2.5.8 source packaging unless search proves a concrete missing source display.
 
-Latest verified target V409 packages the source-facing one-based sufficiency
+Latest verified target V410 packages Durrett Theorem 2.5.9 deterministic
+Kronecker support in `Basic.lean`.  New compiled anchors:
+`durrett2019_theorem_2_5_9_kronecker_summation_by_parts`,
+`durrett2019_theorem_2_5_9_kronecker_ratio_eq`,
+`durrett2019_theorem_2_5_9_weight_increment_sum_eq`,
+`durrett2019_theorem_2_5_9_constant_weighted_tendsto`,
+`durrett2019_theorem_2_5_9_weighted_average_eq_constant_add_centered`,
+`durrett2019_theorem_2_5_9_weighted_average_tendsto_of_centered_tendsto_zero`,
+`durrett2019_theorem_2_5_9_centered_toeplitz_remainder_tendsto_zero`,
+`durrett2019_theorem_2_5_9_weighted_average_tendsto_of_nonnegative_increments`,
+`durrett2019_theorem_2_5_9_kronecker_ratio_tendsto_zero_of_weighted_tendsto`,
+`durrett2019_theorem_2_5_9_kronecker_ratio_tendsto_zero_of_nonnegative_increments`,
+and `durrett2019_theorem_2_5_9_normalized_sum_tendsto_zero`.
+The proof reuses mathlib's finite-difference telescoping and
+`Asymptotics.IsLittleO.sum_range`, and ports the already-tested local
+Exercise 4.4.11 deterministic route into a Chapter 2.5 source-facing theorem.
+Mathlib did not expose a ready one-line Kronecker lemma for this exact display.
+Next target is Theorem 2.5.10 SLLN: instantiate `a_n = n`, build convergence
+of `sum (X_i - mu) / i` from the random-series theorem, then apply V410
+pathwise.
+
+V409 packages the source-facing one-based sufficiency
 direction of Durrett Theorem 2.5.8.  New compiled anchors:
 `durrett2019_theorem_2_5_8_integral_centered_truncated_eq_zero`,
 `durrett2019_theorem_2_5_8_variance_centered_truncated_eq_variance`,
@@ -33,9 +61,7 @@ The proof applies V406 to the centered truncations `Y_i - E Y_i`, using V408
 independence and `L^2` support, and uses `variance_sub_const` to translate
 Durrett's condition (iii) from `Var(Y_i)` to the centered variables.  The
 necessity direction is deliberately deferred to Durrett Example 3.4.12, as in
-the text.  Next aggressive target: formalize Theorem 2.5.9 Kronecker's lemma
-as a deterministic real sequence theorem, then use it to start Theorem 2.5.10
-strong law from the random-series route.
+the text.
 
 V408 adds Durrett Theorem 2.5.8 fixed-level truncation
 and large-jump mismatch support.  New compiled anchors:

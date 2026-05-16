@@ -32,12 +32,34 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V409` in
+Route from `Live In-Thread Goal Prompt V410` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`,
-with Theorem 2.5.9 Kronecker's lemma next.
-V409 packages the source-facing one-based sufficiency direction of Durrett
+with Theorem 2.5.10 SLLN next.  V410 packages the deterministic Chapter 2.5
+Kronecker lemma route.  New compiled anchors:
+`durrett2019_theorem_2_5_9_kronecker_summation_by_parts`,
+`durrett2019_theorem_2_5_9_kronecker_ratio_eq`,
+`durrett2019_theorem_2_5_9_weight_increment_sum_eq`,
+`durrett2019_theorem_2_5_9_constant_weighted_tendsto`,
+`durrett2019_theorem_2_5_9_weighted_average_eq_constant_add_centered`,
+`durrett2019_theorem_2_5_9_weighted_average_tendsto_of_centered_tendsto_zero`,
+`durrett2019_theorem_2_5_9_centered_toeplitz_remainder_tendsto_zero`,
+`durrett2019_theorem_2_5_9_weighted_average_tendsto_of_nonnegative_increments`,
+`durrett2019_theorem_2_5_9_kronecker_ratio_tendsto_zero_of_weighted_tendsto`,
+`durrett2019_theorem_2_5_9_kronecker_ratio_tendsto_zero_of_nonnegative_increments`,
+and `durrett2019_theorem_2_5_9_normalized_sum_tendsto_zero`.
+This proves the textbook one-based conclusion
+`(sum_{m <= n} x_m) / a_n -> 0` from convergence of `sum x_n / a_n`, under the
+monotone-divergent normalizer hypotheses.  The proof reuses mathlib's
+`Finset.sum_range_sub` and `Asymptotics.IsLittleO.sum_range`, plus the local
+Exercise 4.4.11 deterministic proof shape in `Martingale.lean`; no ready
+mathlib one-line Kronecker theorem was found for the exact Durrett display.
+Next work should use V410 Kronecker plus V406-V409 random-series convergence
+to start Durrett Theorem 2.5.10 SLLN via the random-series route.
+
+Verified route history below is provenance, not live prompt text.  V409
+packages the source-facing one-based sufficiency direction of Durrett
 Theorem 2.5.8.  New compiled anchors:
 `durrett2019_theorem_2_5_8_integral_centered_truncated_eq_zero`,
 `durrett2019_theorem_2_5_8_variance_centered_truncated_eq_variance`,
@@ -51,11 +73,7 @@ The proof applies V406 to the centered truncations `Y_i - E Y_i`, using V408
 independence and `L^2` support, and uses `variance_sub_const` to translate
 Durrett's condition (iii) from `Var(Y_i)` to the centered variables.  The
 necessity direction is deliberately deferred to Durrett Example 3.4.12, as in
-the text.  Next work should formalize Theorem 2.5.9 Kronecker's lemma as a
-deterministic real sequence theorem, then use it to start Theorem 2.5.10
-strong law from the random-series route.
-
-Verified route history below is provenance, not live prompt text.  V408 adds
+the text.  V408 adds
 Durrett Theorem 2.5.8 fixed-level truncation and large-jump mismatch support.
 Compiled anchors: `durrett2019_theorem_2_5_8_truncated`,
 `durrett2019_theorem_2_5_8_measurable_truncationMap`,

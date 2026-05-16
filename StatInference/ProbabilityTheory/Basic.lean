@@ -5137,6 +5137,372 @@ theorem durrett2019_theorem_2_5_8_random_series_converges_ae_of_three_series_suf
       (P := P) (X := X) (A := A) (a := mean)
       htail_zeroBased hcenter_converges (by simpa [mean] using hmean)
 
+/-! ## Durrett, Theorem 2.5.9 -/
+
+/--
+Durrett 2019, Theorem 2.5.9 support: Abel summation for Kronecker's lemma.
+
+Here `A` is the partial-sum process of the scaled series and `b` is the
+normalizing sequence.  The identity is stated before division, so no positivity
+side condition is needed.
+-/
+theorem durrett2019_theorem_2_5_9_kronecker_summation_by_parts
+    {A b : ℕ -> ℝ} (hA0 : A 0 = 0) (n : ℕ) :
+    (∑ k ∈ Finset.range (n + 1), b (k + 1) * (A (k + 1) - A k)) =
+      b (n + 1) * A (n + 1) -
+        ∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1)) := by
+  induction n with
+  | zero =>
+      simp [hA0]
+  | succ n ih =>
+      rw [Finset.sum_range_succ]
+      rw [ih]
+      rw [Finset.sum_range_succ]
+      ring
+
+/--
+Durrett 2019, Theorem 2.5.9 support: normalized Abel summation identity for
+Kronecker's lemma.
+-/
+theorem durrett2019_theorem_2_5_9_kronecker_ratio_eq
+    {A b : ℕ -> ℝ} (hA0 : A 0 = 0) {n : ℕ}
+    (hb : b (n + 1) ≠ 0) :
+    (∑ k ∈ Finset.range (n + 1), b (k + 1) * (A (k + 1) - A k)) / b (n + 1) =
+      A (n + 1) -
+        (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+          b (n + 1) := by
+  rw [durrett2019_theorem_2_5_9_kronecker_summation_by_parts hA0 n]
+  field_simp [hb]
+
+/--
+Durrett 2019, Theorem 2.5.9 support: first differences of the normalizer
+telescope.
+-/
+theorem durrett2019_theorem_2_5_9_weight_increment_sum_eq
+    {b : ℕ -> ℝ} (n : ℕ) :
+    (∑ k ∈ Finset.range n, (b (k + 2) - b (k + 1))) =
+      b (n + 1) - b 1 := by
+  simpa [Function.comp_def, Nat.add_assoc] using
+    (Finset.sum_range_sub (fun k : ℕ => b (k + 1)) n)
+
+/--
+Durrett 2019, Theorem 2.5.9 support: the constant part of the Toeplitz
+weighted average has the expected limit when the normalizer diverges.
+-/
+theorem durrett2019_theorem_2_5_9_constant_weighted_tendsto
+    {b : ℕ -> ℝ} {L : ℝ}
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n, L * (b (k + 2) - b (k + 1))) /
+          b (n + 1))
+      atTop (nhds L) := by
+  have hb_nonzero_eventually : ∀ᶠ n in atTop, b (n + 1) ≠ 0 := by
+    filter_upwards [hb_atTop.eventually_ge_atTop (1 : ℝ)] with n hn
+    exact ne_of_gt (zero_lt_one.trans_le hn)
+  have hratio :
+      Tendsto (fun n : ℕ => (1 : ℝ) - b 1 / b (n + 1)) atTop
+        (nhds ((1 : ℝ) - 0)) :=
+    tendsto_const_nhds.sub (tendsto_const_nhds.div_atTop hb_atTop)
+  have htarget :
+      Tendsto (fun n : ℕ => L * ((1 : ℝ) - b 1 / b (n + 1))) atTop
+        (nhds (L * 1)) :=
+    tendsto_const_nhds.mul (by simpa using hratio)
+  have htargetL :
+      Tendsto (fun n : ℕ => L * ((1 : ℝ) - b 1 / b (n + 1))) atTop
+        (nhds L) := by
+    simpa using htarget
+  refine htargetL.congr' ?_
+  filter_upwards [hb_nonzero_eventually] with n hb_ne
+  rw [← Finset.mul_sum]
+  rw [durrett2019_theorem_2_5_9_weight_increment_sum_eq (b := b) n]
+  field_simp [hb_ne]
+
+/--
+Durrett 2019, Theorem 2.5.9 support: split the Toeplitz weighted average into
+the constant limit part and the centered remainder.
+-/
+theorem durrett2019_theorem_2_5_9_weighted_average_eq_constant_add_centered
+    {A b : ℕ -> ℝ} {L : ℝ} (n : ℕ) :
+    (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+        b (n + 1) =
+      (∑ k ∈ Finset.range n, L * (b (k + 2) - b (k + 1))) /
+          b (n + 1) +
+        (∑ k ∈ Finset.range n,
+          (A (k + 1) - L) * (b (k + 2) - b (k + 1))) /
+          b (n + 1) := by
+  rw [← add_div]
+  rw [← Finset.sum_add_distrib]
+  congr 2 with k
+  ring
+
+/--
+Durrett 2019, Theorem 2.5.9 support: once the centered Toeplitz remainder tends
+to zero, the full weighted average of the scaled partial sums tends to the same
+limit.
+-/
+theorem durrett2019_theorem_2_5_9_weighted_average_tendsto_of_centered_tendsto_zero
+    {A b : ℕ -> ℝ} {L : ℝ}
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop)
+    (hcentered_tendsto :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            (A (k + 1) - L) * (b (k + 2) - b (k + 1))) /
+            b (n + 1))
+        atTop (nhds 0)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+          b (n + 1))
+      atTop (nhds L) := by
+  have hconstant :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, L * (b (k + 2) - b (k + 1))) /
+            b (n + 1))
+        atTop (nhds L) :=
+    durrett2019_theorem_2_5_9_constant_weighted_tendsto
+      (b := b) (L := L) hb_atTop
+  have hsum :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, L * (b (k + 2) - b (k + 1))) /
+              b (n + 1) +
+            (∑ k ∈ Finset.range n,
+              (A (k + 1) - L) * (b (k + 2) - b (k + 1))) /
+              b (n + 1))
+        atTop (nhds (L + 0)) :=
+    hconstant.add hcentered_tendsto
+  have hsumL :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, L * (b (k + 2) - b (k + 1))) /
+              b (n + 1) +
+            (∑ k ∈ Finset.range n,
+              (A (k + 1) - L) * (b (k + 2) - b (k + 1))) /
+              b (n + 1))
+        atTop (nhds L) := by
+    simpa using hsum
+  exact hsumL.congr fun n =>
+    (durrett2019_theorem_2_5_9_weighted_average_eq_constant_add_centered
+      (A := A) (b := b) (L := L) n).symm
+
+/--
+Durrett 2019, Theorem 2.5.9 support: the centered Toeplitz remainder vanishes
+when the scaled partial sums converge, the normalizer has nonnegative
+increments, and the normalizer diverges.
+-/
+theorem durrett2019_theorem_2_5_9_centered_toeplitz_remainder_tendsto_zero
+    {A b : ℕ -> ℝ} {L : ℝ}
+    (hA_tendsto : Tendsto (fun n : ℕ => A (n + 1)) atTop (nhds L))
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          (A (k + 1) - L) * (b (k + 2) - b (k + 1))) /
+          b (n + 1))
+      atTop (nhds 0) := by
+  let w : ℕ -> ℝ := fun k => b (k + 2) - b (k + 1)
+  let centered : ℕ -> ℝ := fun k => A (k + 1) - L
+  have hcentered_tendsto : Tendsto centered atTop (nhds 0) := by
+    simpa [centered] using
+      hA_tendsto.sub (tendsto_const_nhds : Tendsto (fun _ : ℕ => L) atTop (nhds L))
+  have hw_nonneg : 0 ≤ w := fun k => hb_increment_nonneg k
+  have hsumw_atTop : Tendsto (fun n : ℕ => ∑ k ∈ Finset.range n, w k) atTop atTop := by
+    have hb_sub :
+        Tendsto (fun n : ℕ => b (n + 1) - b 1) atTop atTop := by
+      simpa [sub_eq_add_neg] using
+        tendsto_atTop_add_const_right atTop (-(b 1)) hb_atTop
+    refine hb_sub.congr' ?_
+    exact Eventually.of_forall fun n => by
+      simp [w, durrett2019_theorem_2_5_9_weight_increment_sum_eq (b := b) n]
+  have hterm_little :
+      (fun k : ℕ => centered k * w k) =o[atTop] w := by
+    rw [Asymptotics.isLittleO_iff]
+    intro c hc
+    rcases Metric.tendsto_atTop.1 hcentered_tendsto c hc with ⟨N, hN⟩
+    filter_upwards [eventually_ge_atTop N] with k hk
+    have hcentered_norm_le : ‖centered k‖ ≤ c := by
+      exact le_of_lt (by simpa [dist_eq_norm] using hN k hk)
+    calc
+      ‖centered k * w k‖ = ‖centered k‖ * ‖w k‖ := norm_mul _ _
+      _ ≤ c * ‖w k‖ :=
+        mul_le_mul_of_nonneg_right hcentered_norm_le (norm_nonneg _)
+  have hsum_little :
+      (fun n : ℕ => ∑ k ∈ Finset.range n, centered k * w k) =o[atTop]
+        fun n : ℕ => ∑ k ∈ Finset.range n, w k :=
+    Asymptotics.IsLittleO.sum_range hterm_little hw_nonneg hsumw_atTop
+  have hdiv_zero :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, centered k * w k) /
+            (∑ k ∈ Finset.range n, w k))
+        atTop (nhds 0) :=
+    hsum_little.tendsto_div_nhds_zero
+  have hweight_ratio :
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, w k) / b (n + 1))
+        atTop (nhds 1) := by
+    simpa [w] using
+      durrett2019_theorem_2_5_9_constant_weighted_tendsto
+        (b := b) (L := (1 : ℝ)) hb_atTop
+  have hproduct :
+      Tendsto
+        (fun n : ℕ =>
+          ((∑ k ∈ Finset.range n, centered k * w k) /
+              (∑ k ∈ Finset.range n, w k)) *
+            ((∑ k ∈ Finset.range n, w k) / b (n + 1)))
+        atTop (nhds (0 * 1)) :=
+    hdiv_zero.mul hweight_ratio
+  have hproduct_zero :
+      Tendsto
+        (fun n : ℕ =>
+          ((∑ k ∈ Finset.range n, centered k * w k) /
+              (∑ k ∈ Finset.range n, w k)) *
+            ((∑ k ∈ Finset.range n, w k) / b (n + 1)))
+        atTop (nhds 0) := by
+    simpa using hproduct
+  refine hproduct_zero.congr' ?_
+  filter_upwards [hsumw_atTop.eventually_ne_atTop (0 : ℝ)] with n hsumw_ne
+  field_simp [hsumw_ne]
+  ring
+
+/--
+Durrett 2019, Theorem 2.5.9 support: the Toeplitz weighted average of the
+scaled partial sums converges to the same limit under the textbook
+monotone-divergent normalizer assumptions.
+-/
+theorem durrett2019_theorem_2_5_9_weighted_average_tendsto_of_nonnegative_increments
+    {A b : ℕ -> ℝ} {L : ℝ}
+    (hA_tendsto : Tendsto (fun n : ℕ => A (n + 1)) atTop (nhds L))
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+          b (n + 1))
+      atTop (nhds L) :=
+  durrett2019_theorem_2_5_9_weighted_average_tendsto_of_centered_tendsto_zero
+    (b := b) (L := L) hb_atTop
+    (durrett2019_theorem_2_5_9_centered_toeplitz_remainder_tendsto_zero
+      (A := A) (b := b) (L := L) hA_tendsto hb_increment_nonneg hb_atTop)
+
+/--
+Durrett 2019, Theorem 2.5.9 support: once the Toeplitz weighted average of the
+scaled partial sums converges to the same limit as the scaled partial sums
+themselves, Kronecker's normalized sums converge to zero.
+-/
+theorem durrett2019_theorem_2_5_9_kronecker_ratio_tendsto_zero_of_weighted_tendsto
+    {A b : ℕ -> ℝ} (hA0 : A 0 = 0) {L : ℝ}
+    (hb_eventually : ∀ᶠ n in atTop, b (n + 1) ≠ 0)
+    (hA_tendsto : Tendsto (fun n : ℕ => A (n + 1)) atTop (nhds L))
+    (hweighted_tendsto :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+            b (n + 1))
+        atTop (nhds L)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1), b (k + 1) * (A (k + 1) - A k)) /
+          b (n + 1))
+      atTop (nhds 0) := by
+  have hdiff :
+      Tendsto
+        (fun n : ℕ =>
+          A (n + 1) -
+            (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+              b (n + 1))
+        atTop (nhds (L - L)) :=
+    hA_tendsto.sub hweighted_tendsto
+  have hdiff0 :
+      Tendsto
+        (fun n : ℕ =>
+          A (n + 1) -
+            (∑ k ∈ Finset.range n, A (k + 1) * (b (k + 2) - b (k + 1))) /
+              b (n + 1))
+        atTop (nhds 0) := by
+    simpa using hdiff
+  refine hdiff0.congr' ?_
+  filter_upwards [hb_eventually] with n hb
+  exact (durrett2019_theorem_2_5_9_kronecker_ratio_eq hA0 hb).symm
+
+/--
+Durrett 2019, Theorem 2.5.9 deterministic Kronecker lemma: normalized sums
+converge to zero under the nonnegative-increment divergent normalizer
+assumptions.
+-/
+theorem durrett2019_theorem_2_5_9_kronecker_ratio_tendsto_zero_of_nonnegative_increments
+    {A b : ℕ -> ℝ} (hA0 : A 0 = 0) {L : ℝ}
+    (hA_tendsto : Tendsto (fun n : ℕ => A (n + 1)) atTop (nhds L))
+    (hb_increment_nonneg : ∀ k : ℕ, 0 ≤ b (k + 2) - b (k + 1))
+    (hb_atTop : Tendsto (fun n : ℕ => b (n + 1)) atTop atTop) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1), b (k + 1) * (A (k + 1) - A k)) /
+          b (n + 1))
+      atTop (nhds 0) := by
+  have hb_eventually : ∀ᶠ n in atTop, b (n + 1) ≠ 0 := by
+    filter_upwards [hb_atTop.eventually_ge_atTop (1 : ℝ)] with n hn
+    exact ne_of_gt (zero_lt_one.trans_le hn)
+  exact
+    durrett2019_theorem_2_5_9_kronecker_ratio_tendsto_zero_of_weighted_tendsto
+      (A := A) (b := b) hA0 hb_eventually hA_tendsto
+      (durrett2019_theorem_2_5_9_weighted_average_tendsto_of_nonnegative_increments
+        (A := A) (b := b) (L := L)
+        hA_tendsto hb_increment_nonneg hb_atTop)
+
+/--
+Durrett 2019, Theorem 2.5.9 textbook form.  If the scaled one-based series
+`sum x_n / a_n` converges, and `a_n` is eventually expressed as a
+nondecreasing divergent one-based normalizer, then
+`a_n^{-1} * sum_{m <= n} x_m` tends to zero.
+-/
+theorem durrett2019_theorem_2_5_9_normalized_sum_tendsto_zero
+    {x a : ℕ -> ℝ}
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0) {L : ℝ}
+    (hscaled_tendsto :
+      Tendsto
+        (fun n : ℕ => ∑ k ∈ Finset.range (n + 1), x (k + 1) / a (k + 1))
+        atTop (nhds L))
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop) :
+    Tendsto
+      (fun n : ℕ => (∑ k ∈ Finset.range (n + 1), x (k + 1)) / a (n + 1))
+      atTop (nhds 0) := by
+  let A : ℕ -> ℝ := fun n => ∑ k ∈ Finset.range n, x (k + 1) / a (k + 1)
+  have hA0 : A 0 = 0 := by
+    simp [A]
+  have hA_tendsto : Tendsto (fun n : ℕ => A (n + 1)) atTop (nhds L) := by
+    simpa [A] using hscaled_tendsto
+  have hK :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), a (k + 1) * (A (k + 1) - A k)) /
+            a (n + 1))
+        atTop (nhds 0) :=
+    durrett2019_theorem_2_5_9_kronecker_ratio_tendsto_zero_of_nonnegative_increments
+      (A := A) (b := a) hA0 hA_tendsto ha_increment_nonneg ha_atTop
+  refine hK.congr' ?_
+  exact Eventually.of_forall fun n => by
+    have hsum :
+        (∑ k ∈ Finset.range (n + 1), a (k + 1) * (A (k + 1) - A k)) =
+          ∑ k ∈ Finset.range (n + 1), x (k + 1) := by
+      refine Finset.sum_congr rfl ?_
+      intro k _hk
+      have hinc :
+          A (k + 1) - A k = x (k + 1) / a (k + 1) := by
+        simp [A, Finset.sum_range_succ]
+      calc
+        a (k + 1) * (A (k + 1) - A k)
+            = a (k + 1) * (x (k + 1) / a (k + 1)) := by
+              rw [hinc]
+        _ = x (k + 1) := by
+              field_simp [ha_nonzero k]
+    simp [hsum]
+
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
