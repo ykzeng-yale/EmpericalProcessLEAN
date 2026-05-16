@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V21`, this file's top
+   the full book is complete, route from `Live Goal Prompt V22`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V21
+## Live Goal Prompt V22
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -219,16 +219,29 @@ Search-first result: reuse the already compiled Chewi Lemma 13.15 finite-row
 range theorem `chewi1315_polytopeSlackNegLog_range_gradient_segment_inner_le`;
 no new self-concordance/Riccati proof is needed for this certificate.
 
-Next theorem-sized target: discharge one of the two remaining genuine terminal
-certificate families for the V19/V21 auto handoff: terminal central-path
-optimality at the selected parameter or the Lemma 13.6 lower-model inequality.
+Current V22 packet reduces the Lemma 13.6 lower-model terminal certificate to
+the genuine self-concordant value-growth inequality plus a reusable
+first-order convex lower-model bridge.  New compiled declarations:
+`chewi1316_lowerModel_of_value_gap_and_firstOrder`,
+`chewi1316_lowerModel_of_value_gap_and_firstOrderStrongConvexOn`, and
+`chewi1316_centralPath_lowerModel_of_value_gap_and_firstOrderStrongConvexOn`.
+Search-first result: local `FirstOrderStrongConvexOn.lower_model` is the right
+reuse for the first-order convexity part; mathlib convex-derivative slope APIs
+do not directly provide the Chewi §13.16 self-concordant value-growth display.
+
+Next theorem-sized target: finish one of the two remaining genuine terminal
+certificate families for the V19/V21/V22 auto handoff: terminal central-path
+optimality at the selected parameter, or the self-concordant value-growth
+certificate that feeds
+`chewi1316_centralPath_lowerModel_of_value_gap_and_firstOrderStrongConvexOn`.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
-induction, or standard-path auto packaging.  Search first near existing
-`*_standardPath` wrappers, `chewi1316_objective_gap_le_eps_*` consumers,
-central-path gradient definitions, and Lemma 13.6 local-norm/lower-model
-wrappers; then formalize only the genuinely missing terminal certificate.
-Older paragraphs below are cached route history and must not override this V21
+induction, standard-path auto packaging, or the first-order convex lower-model
+bridge.  Search first near existing `*_standardPath` wrappers,
+`chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
+definitions, and Lemma 13.6 self-concordant growth/local-norm wrappers; then
+formalize only the genuinely missing terminal analytic certificate.
+Older paragraphs below are cached route history and must not override this V22
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

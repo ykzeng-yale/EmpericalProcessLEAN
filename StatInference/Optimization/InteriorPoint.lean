@@ -10940,6 +10940,90 @@ theorem chewi1316_localNorm_le_decrement_div_one_sub
     (hlower.trans hinner_le)
 
 /--
+Bridge for the Lemma 13.6 lower-model terminal certificate.  Once the
+self-concordant growth argument supplies
+`r^2/(1+r) <= f x - f center`, the first-order convex lower model at `x`
+turns the value gap into the exact inner-product inequality used in Chewi
+§13.16.
+-/
+theorem chewi1316_lowerModel_of_value_gap_and_firstOrder
+    {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {f : E -> ℝ} {x center : E}
+    (hgrowth :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        f x - f center)
+    (hfirst :
+      f x + inner ℝ (grad x) (center - x) ≤ f center) :
+    (localNorm hess x (x - center)) ^ (2 : ℕ) /
+        (1 + localNorm hess x (x - center)) ≤
+      inner ℝ (grad x) (x - center) := by
+  have hgap_le :
+      f x - f center ≤ inner ℝ (grad x) (x - center) := by
+    calc
+      f x - f center ≤ -inner ℝ (grad x) (center - x) := by
+        linarith
+      _ = inner ℝ (grad x) (x - center) := by
+        have hneg : center - x = -(x - center) := by
+          abel
+        rw [hneg, inner_neg_right, neg_neg]
+  exact hgrowth.trans hgap_le
+
+/--
+The same lower-model bridge with the first-order convex interface supplying
+the model inequality.  This is the reusable split for the remaining §13.16
+blocker: prove the genuine self-concordant value-growth certificate, then
+this theorem supplies the source-shaped inner-product lower bound.
+-/
+theorem chewi1316_lowerModel_of_value_gap_and_firstOrderStrongConvexOn
+    {C : Set E} {hess : E -> E →L[ℝ] E}
+    {f : E -> ℝ} {grad : E -> E} {x center : E}
+    (hfirst : FirstOrderStrongConvexOn C f grad 0)
+    (hx : x ∈ C) (hcenter : center ∈ C)
+    (hgrowth :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        f x - f center) :
+    (localNorm hess x (x - center)) ^ (2 : ℕ) /
+        (1 + localNorm hess x (x - center)) ≤
+      inner ℝ (grad x) (x - center) := by
+  have hmodel := hfirst.lower_model (x := x) (y := center) hx hcenter
+  have hmodel0 :
+      f x + inner ℝ (grad x) (center - x) ≤ f center := by
+    simpa using hmodel
+  exact chewi1316_lowerModel_of_value_gap_and_firstOrder
+    (hess := hess) (grad := grad) (f := f) (x := x) (center := center)
+    hgrowth hmodel0
+
+/--
+Central-path specialization of the lower-model bridge for Chewi §13.16,
+where `f_t(z) = t * <a,z> + phi(z)` and
+`grad f_t(z) = t • a + phiGrad z`.
+-/
+theorem chewi1316_centralPath_lowerModel_of_value_gap_and_firstOrderStrongConvexOn
+    {C : Set E} {hess : E -> E →L[ℝ] E}
+    {phiValue : E -> ℝ} {phiGrad : E -> E}
+    {a x center : E} {t : ℝ}
+    (hfirst :
+      FirstOrderStrongConvexOn C
+        (fun z => t * inner ℝ a z + phiValue z)
+        (fun z => t • a + phiGrad z) 0)
+    (hx : x ∈ C) (hcenter : center ∈ C)
+    (hgrowth :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        (t * inner ℝ a x + phiValue x) -
+          (t * inner ℝ a center + phiValue center)) :
+    (localNorm hess x (x - center)) ^ (2 : ℕ) /
+        (1 + localNorm hess x (x - center)) ≤
+      inner ℝ (t • a + phiGrad x) (x - center) :=
+  chewi1316_lowerModel_of_value_gap_and_firstOrderStrongConvexOn
+    (C := C) (hess := hess)
+    (f := fun z => t * inner ℝ a z + phiValue z)
+    (grad := fun z => t • a + phiGrad z)
+    (x := x) (center := center) hfirst hx hcenter hgrowth
+
+/--
 First term in Chewi Lemma 13.16: a central-path optimality equation and the
 Lemma 13.15 barrier displacement bound imply
 `<a,x_*(t)> - <a,x_*> <= nu/t`.
