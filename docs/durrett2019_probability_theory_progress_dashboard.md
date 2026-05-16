@@ -32,29 +32,44 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V416` in
+Route from `Live In-Thread Goal Prompt V417` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V416 packages the abstract Theorem 2.5.11 route from random-series convergence
-or summable scaled variances to the normalized rate endpoint, plus the uniform
-variance-bound reduction to summability of inverse-square normalizer weights.
+V417 packages the exact Theorem 2.5.11 logarithmic normalizer, its nonzero,
+monotone-increment, and `atTop` obligations, the inverse-square algebra
+matching Durrett's log summand, and the source-shaped finite-variance bridge.
 New compiled anchors:
+`durrett2019_theorem_2_5_11_logNormalizer`,
+`durrett2019_theorem_2_5_11_logNormalizer_pos`,
+`durrett2019_theorem_2_5_11_logNormalizer_ne_zero`,
+`durrett2019_theorem_2_5_11_logNormalizer_eq_of_two_le`,
+`durrett2019_theorem_2_5_11_logNormalizer_le_of_two_le`,
+`durrett2019_theorem_2_5_11_logNormalizer_increment_nonneg`,
+`durrett2019_theorem_2_5_11_logNormalizer_atTop`,
+`durrett2019_theorem_2_5_11_logNormalizer_inv_sq_eq`,
+`durrett2019_theorem_2_5_11_logWeight`,
+`durrett2019_theorem_2_5_11_logNormalizer_weight_summable`, and
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound`.
+The next blocker is no longer normalizer plumbing: prove the log-series
+summability of `durrett2019_theorem_2_5_11_logWeight epsilon` for
+`epsilon > 0`, preferably through mathlib integral-test/sum-integral APIs, then
+derive the uniform variance bound from iid finite second moment and package the
+source theorem.
+
+Verified route history below is provenance, not live prompt text.  V416
+packages the abstract Theorem 2.5.11 route from random-series convergence or
+summable scaled variances to the normalized rate endpoint, plus the uniform
+variance-bound reduction to summability of inverse-square normalizer weights.
+Compiled anchors:
 `durrett2019_theorem_2_5_11_normalized_sum_tendsto_zero_of_scaled_series`,
 `durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_summable_scaled_variance`,
 `durrett2019_theorem_2_5_11_variance_div_le_inv_sq_mul_of_variance_le`,
 `durrett2019_theorem_2_5_11_scaled_variance_summable_of_variance_bound`,
 and
 `durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_variance_bound`.
-The next blocker is the exact logarithmic normalizer
-`a_n = n^(1/2) * (log n)^(1/2 + epsilon)` for `n >= 2`: prove its nonzero,
-monotone, and `atTop` obligations, prove summability of
-`1 / (n * (log n)^(1 + 2 epsilon))` from mathlib p-series/log-series APIs, and
-then package the source-facing iid finite-second-moment statement.
-
-Verified route history below is provenance, not live prompt text.  V415
-packages the truncated-to-original transfer and full source-facing one-based
-SLLN endpoint for Theorem 2.5.10.  New compiled anchors:
+V415 packages the truncated-to-original transfer and full source-facing
+one-based SLLN endpoint for Theorem 2.5.10.  New compiled anchors:
 `durrett2019_theorem_2_5_10_truncation_mismatch_subset_tail`,
 `durrett2019_theorem_2_5_10_measure_mismatch_le_tail`,
 `durrett2019_theorem_2_5_10_tsum_tail_ne_top_of_integrable_identDistrib`,

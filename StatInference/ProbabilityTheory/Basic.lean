@@ -6592,6 +6592,266 @@ theorem durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_variance_bo
     ha_nonzero ha_increment_nonneg ha_atTop
 
 /--
+Durrett 2019, Theorem 2.5.11 logarithmic normalizer.  The textbook only
+needs `a_n = sqrt n * (log n)^(1/2 + epsilon)` for `n >= 2`; setting
+`a_1 = a_2` gives a nonzero monotone one-based sequence without changing any
+limit statement.
+-/
+noncomputable def durrett2019_theorem_2_5_11_logNormalizer
+    (epsilon : ℝ) (n : ℕ) : ℝ :=
+  if n ≤ 1 then
+    Real.sqrt (2 : ℝ) * (Real.log (2 : ℝ)) ^ ((1 : ℝ) / 2 + epsilon)
+  else
+    Real.sqrt (n : ℝ) * (Real.log (n : ℝ)) ^ ((1 : ℝ) / 2 + epsilon)
+
+/--
+Durrett 2019, Theorem 2.5.11 support: the logarithmic normalizer is positive.
+-/
+theorem durrett2019_theorem_2_5_11_logNormalizer_pos
+    (epsilon : ℝ) (n : ℕ) :
+    0 < durrett2019_theorem_2_5_11_logNormalizer epsilon n := by
+  by_cases hn : n ≤ 1
+  · dsimp [durrett2019_theorem_2_5_11_logNormalizer]
+    rw [if_pos hn]
+    exact
+      mul_pos (Real.sqrt_pos.2 (by norm_num))
+        (Real.rpow_pos_of_pos (Real.log_pos (by norm_num : (1 : ℝ) < 2))
+          ((1 : ℝ) / 2 + epsilon))
+  · have htwo_le : 2 ≤ n := by omega
+    have hn_pos : 0 < (n : ℝ) := by exact_mod_cast (lt_of_lt_of_le (by decide : 0 < 2) htwo_le)
+    have hone_lt : (1 : ℝ) < n := by exact_mod_cast (lt_of_lt_of_le (by decide : 1 < 2) htwo_le)
+    dsimp [durrett2019_theorem_2_5_11_logNormalizer]
+    rw [if_neg hn]
+    exact
+      mul_pos (Real.sqrt_pos.2 hn_pos)
+        (Real.rpow_pos_of_pos (Real.log_pos hone_lt) ((1 : ℝ) / 2 + epsilon))
+
+/--
+Durrett 2019, Theorem 2.5.11 support: the logarithmic normalizer is nonzero.
+-/
+theorem durrett2019_theorem_2_5_11_logNormalizer_ne_zero
+    (epsilon : ℝ) (n : ℕ) :
+    durrett2019_theorem_2_5_11_logNormalizer epsilon n ≠ 0 :=
+  ne_of_gt (durrett2019_theorem_2_5_11_logNormalizer_pos epsilon n)
+
+/--
+Durrett 2019, Theorem 2.5.11 support: for `n >= 2`, the packaged normalizer
+is exactly the textbook logarithmic normalizer.
+-/
+theorem durrett2019_theorem_2_5_11_logNormalizer_eq_of_two_le
+    {epsilon : ℝ} {n : ℕ} (hn : 2 ≤ n) :
+    durrett2019_theorem_2_5_11_logNormalizer epsilon n =
+      Real.sqrt (n : ℝ) * (Real.log (n : ℝ)) ^ ((1 : ℝ) / 2 + epsilon) := by
+  have hn_not : ¬ n ≤ 1 := by omega
+  simp [durrett2019_theorem_2_5_11_logNormalizer, hn_not]
+
+/--
+Durrett 2019, Theorem 2.5.11 support: the logarithmic normalizer is monotone
+from index `2` onward.
+-/
+theorem durrett2019_theorem_2_5_11_logNormalizer_le_of_two_le
+    {epsilon : ℝ} (hepsilon_nonneg : 0 ≤ (1 : ℝ) / 2 + epsilon)
+    {m n : ℕ} (hm_two : 2 ≤ m) (hmn : m ≤ n) :
+    durrett2019_theorem_2_5_11_logNormalizer epsilon m ≤
+      durrett2019_theorem_2_5_11_logNormalizer epsilon n := by
+  have hn_two : 2 ≤ n := hm_two.trans hmn
+  rw [durrett2019_theorem_2_5_11_logNormalizer_eq_of_two_le (epsilon := epsilon) hm_two,
+    durrett2019_theorem_2_5_11_logNormalizer_eq_of_two_le (epsilon := epsilon) hn_two]
+  have hm_pos : 0 < (m : ℝ) := by
+    exact_mod_cast (lt_of_lt_of_le (by decide : 0 < 2) hm_two)
+  have hm_one : (1 : ℝ) ≤ m := by exact_mod_cast (by omega : 1 ≤ m)
+  have hmn_real : (m : ℝ) ≤ n := by exact_mod_cast hmn
+  have hlog_m_nonneg : 0 ≤ Real.log (m : ℝ) :=
+    Real.log_nonneg hm_one
+  have hlog_n_nonneg : 0 ≤ Real.log (n : ℝ) := by
+    apply Real.log_nonneg
+    exact_mod_cast (by omega : 1 ≤ n)
+  have hsqrt_le : Real.sqrt (m : ℝ) ≤ Real.sqrt (n : ℝ) :=
+    Real.sqrt_le_sqrt hmn_real
+  have hlog_le : Real.log (m : ℝ) ≤ Real.log (n : ℝ) :=
+    Real.log_le_log hm_pos hmn_real
+  have hpow_le :
+      (Real.log (m : ℝ)) ^ ((1 : ℝ) / 2 + epsilon) ≤
+        (Real.log (n : ℝ)) ^ ((1 : ℝ) / 2 + epsilon) :=
+    Real.rpow_le_rpow hlog_m_nonneg hlog_le hepsilon_nonneg
+  exact
+    mul_le_mul hsqrt_le hpow_le
+      (Real.rpow_nonneg hlog_m_nonneg ((1 : ℝ) / 2 + epsilon))
+      (Real.sqrt_nonneg _)
+
+/--
+Durrett 2019, Theorem 2.5.11 support: the one-based logarithmic normalizer has
+nonnegative increments when `epsilon > 0`.
+-/
+theorem durrett2019_theorem_2_5_11_logNormalizer_increment_nonneg
+    {epsilon : ℝ} (hepsilon_pos : 0 < epsilon) :
+    ∀ k : ℕ,
+      0 ≤ durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 2) -
+        durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 1) := by
+  intro k
+  have hepsilon_nonneg : 0 ≤ (1 : ℝ) / 2 + epsilon := by nlinarith
+  have hle :
+      durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 1) ≤
+        durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 2) := by
+    cases k with
+    | zero =>
+        have hleft :
+            durrett2019_theorem_2_5_11_logNormalizer epsilon (0 + 1) =
+              Real.sqrt (2 : ℝ) * (Real.log (2 : ℝ)) ^ ((1 : ℝ) / 2 + epsilon) := by
+          simp [durrett2019_theorem_2_5_11_logNormalizer]
+        have hright :
+            durrett2019_theorem_2_5_11_logNormalizer epsilon (0 + 2) =
+              Real.sqrt (2 : ℝ) * (Real.log (2 : ℝ)) ^ ((1 : ℝ) / 2 + epsilon) := by
+          simpa using
+            durrett2019_theorem_2_5_11_logNormalizer_eq_of_two_le
+              (epsilon := epsilon) (n := 2) (by norm_num : 2 ≤ 2)
+        rw [hleft, hright]
+    | succ k =>
+        exact
+          durrett2019_theorem_2_5_11_logNormalizer_le_of_two_le
+            (epsilon := epsilon) hepsilon_nonneg
+            (m := k.succ + 1) (n := k.succ + 2) (by omega) (by omega)
+  exact sub_nonneg.2 hle
+
+/--
+Durrett 2019, Theorem 2.5.11 support: the one-based logarithmic normalizer
+diverges to infinity when `epsilon > 0`.
+-/
+theorem durrett2019_theorem_2_5_11_logNormalizer_atTop
+    {epsilon : ℝ} (hepsilon_pos : 0 < epsilon) :
+    Tendsto
+      (fun n : ℕ =>
+        durrett2019_theorem_2_5_11_logNormalizer epsilon (n + 1))
+      atTop atTop := by
+  have hepsilon_nonneg : 0 ≤ (1 : ℝ) / 2 + epsilon := by nlinarith
+  let c : ℝ := (Real.log (2 : ℝ)) ^ ((1 : ℝ) / 2 + epsilon)
+  have hc_pos : 0 < c := by
+    exact Real.rpow_pos_of_pos (Real.log_pos (by norm_num : (1 : ℝ) < 2)) _
+  have hsqrt_atTop :
+      Tendsto (fun n : ℕ => Real.sqrt ((n + 1 : ℕ) : ℝ)) atTop atTop := by
+    exact
+      Real.tendsto_sqrt_atTop.comp
+        (tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 1))
+  have hminor_atTop :
+      Tendsto (fun n : ℕ => Real.sqrt ((n + 1 : ℕ) : ℝ) * c) atTop atTop :=
+    hsqrt_atTop.atTop_mul_const hc_pos
+  refine tendsto_atTop_mono' _ ?_ hminor_atTop
+  filter_upwards [eventually_ge_atTop 1] with n hn
+  have hn_two : 2 ≤ n + 1 := by omega
+  have hn_pos : 0 < (((n + 1 : ℕ) : ℝ)) := by
+    exact_mod_cast (lt_of_lt_of_le (by decide : 0 < 2) hn_two)
+  have hn_one : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by
+    exact_mod_cast (by omega : 1 ≤ n + 1)
+  have hlog_two_le :
+      Real.log (2 : ℝ) ≤ Real.log (((n + 1 : ℕ) : ℝ)) := by
+    apply Real.log_le_log (by norm_num : (0 : ℝ) < 2)
+    exact_mod_cast hn_two
+  have hpow_le :
+      c ≤ (Real.log (((n + 1 : ℕ) : ℝ)) ^ ((1 : ℝ) / 2 + epsilon)) := by
+    exact
+      Real.rpow_le_rpow
+        (Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 2))
+        hlog_two_le hepsilon_nonneg
+  have hsqrt_nonneg : 0 ≤ Real.sqrt (((n + 1 : ℕ) : ℝ)) :=
+    Real.sqrt_nonneg _
+  have hnorm_eq :=
+    durrett2019_theorem_2_5_11_logNormalizer_eq_of_two_le
+      (epsilon := epsilon) (n := n + 1) hn_two
+  rw [hnorm_eq]
+  exact mul_le_mul_of_nonneg_left hpow_le hsqrt_nonneg
+
+/--
+Durrett 2019, Theorem 2.5.11 support: for `n >= 2`, the inverse square of the
+logarithmic normalizer is the textbook logarithmic summand.
+-/
+theorem durrett2019_theorem_2_5_11_logNormalizer_inv_sq_eq
+    {epsilon : ℝ} {n : ℕ} (hn : 2 ≤ n) :
+    ((durrett2019_theorem_2_5_11_logNormalizer epsilon n) ^ 2)⁻¹ =
+      1 / ((n : ℝ) * (Real.log (n : ℝ)) ^ (1 + 2 * epsilon)) := by
+  rw [durrett2019_theorem_2_5_11_logNormalizer_eq_of_two_le (epsilon := epsilon) hn]
+  have hn_nonneg : 0 ≤ (n : ℝ) := by exact_mod_cast (Nat.zero_le n)
+  have hn_one : (1 : ℝ) ≤ n := by exact_mod_cast (by omega : 1 ≤ n)
+  have hlog_nonneg : 0 ≤ Real.log (n : ℝ) :=
+    Real.log_nonneg hn_one
+  have hpow_sq :
+      ((Real.log (n : ℝ)) ^ ((1 : ℝ) / 2 + epsilon)) ^ 2 =
+        (Real.log (n : ℝ)) ^ (1 + 2 * epsilon) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hlog_nonneg]
+    ring_nf
+  rw [mul_pow, Real.sq_sqrt hn_nonneg, hpow_sq]
+  ring
+
+/--
+Durrett 2019, Theorem 2.5.11 support: the shifted textbook logarithmic
+summand `1 / (n * (log n)^(1 + 2 epsilon))`, starting at `n = 2`.
+-/
+noncomputable def durrett2019_theorem_2_5_11_logWeight
+    (epsilon : ℝ) (k : ℕ) : ℝ :=
+  1 / (((k + 2 : ℕ) : ℝ) *
+    (Real.log (((k + 2 : ℕ) : ℝ)) ^ (1 + 2 * epsilon)))
+
+/--
+Durrett 2019, Theorem 2.5.11 support: the textbook logarithmic summability
+display gives summability of the inverse-square normalizer weights used by the
+random-series bridge.
+-/
+theorem durrett2019_theorem_2_5_11_logNormalizer_weight_summable
+    {epsilon : ℝ}
+    (hlog_weight_summable :
+      Summable (durrett2019_theorem_2_5_11_logWeight epsilon)) :
+    Summable fun k : ℕ =>
+      ((durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 1)) ^ 2)⁻¹ := by
+  have htail :
+      Summable fun k : ℕ =>
+        ((durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 1 + 1)) ^ 2)⁻¹ := by
+    refine hlog_weight_summable.congr ?_
+    intro k
+    rw [durrett2019_theorem_2_5_11_logWeight,
+      durrett2019_theorem_2_5_11_logNormalizer_inv_sq_eq
+      (epsilon := epsilon) (n := k + 2) (by omega : 2 ≤ k + 2)]
+  exact
+    (summable_nat_add_iff
+      (f := fun k : ℕ =>
+        ((durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 1)) ^ 2)⁻¹)
+      1).1 (by simpa [Nat.add_assoc] using htail)
+
+/--
+Durrett 2019, Theorem 2.5.11 source-shaped bridge: with the exact logarithmic
+normalizer, the finite-variance random-series proof reduces the theorem to the
+single textbook logarithmic summability display.
+-/
+theorem durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {C epsilon : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_mem : ∀ k : ℕ, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hX_zero : ∀ k : ℕ, ∫ ω, X k ω ∂P = 0)
+    (hvar_bound :
+      ∀ k : ℕ, _root_.ProbabilityTheory.variance (X k) P ≤ C)
+    (hepsilon_pos : 0 < epsilon)
+    (hlog_weight_summable :
+      Summable (durrett2019_theorem_2_5_11_logWeight epsilon)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            durrett2019_theorem_2_5_11_logNormalizer epsilon (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_variance_bound
+    (P := P) (X := X)
+    (a := durrett2019_theorem_2_5_11_logNormalizer epsilon) (C := C)
+    hX_indep hX_meas hX_mem hX_zero hvar_bound
+    (durrett2019_theorem_2_5_11_logNormalizer_weight_summable
+      (epsilon := epsilon) hlog_weight_summable)
+    (fun k =>
+      durrett2019_theorem_2_5_11_logNormalizer_ne_zero epsilon (k + 1))
+    (durrett2019_theorem_2_5_11_logNormalizer_increment_nonneg
+      (epsilon := epsilon) hepsilon_pos)
+    (durrett2019_theorem_2_5_11_logNormalizer_atTop
+      (epsilon := epsilon) hepsilon_pos)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
