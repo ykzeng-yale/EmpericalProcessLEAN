@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V378
+## Live In-Thread Goal Prompt V379
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,23 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V378 packages the V377 global middle-partition-with-tails
+Latest verified target V379 closes the countable supplied-partition gap for
+the V377/V378 textbook middle/tail route:
+`durrett2019_theorem_2_4_9_exists_middlePartitionWithTails`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation`,
+and
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun`.
+It uses `exists_real_tails_lt_of_isFiniteMeasure` for finite lower/upper
+tails, widens the tail cutpoints to a strict bounded middle interval, builds
+the arbitrary-law middle partition from
+`durrett2019_theorem_2_4_9_cutpointChain`, and feeds the canonical
+`1 / (scale + 1)` countable sequence into V378.  Next work should either make
+the existing empirical-CDF source endpoints reuse this textbook middle/tail
+route where useful, or move to the next missing Chapter 2.1/2.4.9
+source-entrance wrapper.  Do not rebuild tail tightness, cutpoint chains,
+fixed-tolerance squeezing, or the countable-scale handoff.
+
+V378 packages the V377 global middle-partition-with-tails
 squeeze into the countable-scale uniform-deviation interface:
 `durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt`,
 `durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_of_iIndepFun`,
@@ -32,8 +48,8 @@ This avoids the false uncountable-intersection route: V377 gives a separate
 a.e. event at each fixed tolerance, while V378 first normalizes the
 `2 * (tolerance / 2)` bound and then intersects only a countable sequence of
 supplied middle/tail partitions whose widths tend to zero.  Next work should
-prove or package the actual countable supplied-partition data for Durrett's
-arbitrary real law, then attach it to this V378 outer-a.s. endpoint.
+not reprove this countable-scale handoff; V379 supplies the arbitrary-law
+partition data and attaches it to this outer-a.s. endpoint.
 
 V377 adds the global middle-partition-with-tails squeeze that consumes V376
 and the lower/upper tail cells:

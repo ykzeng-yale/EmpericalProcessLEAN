@@ -6278,6 +6278,162 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUnifor
         hleftTail hrightTail hLaw hindep)
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step: arbitrary real laws supply a bounded
+middle partition together with lower and upper tail bounds at every positive
+scale.
+-/
+theorem durrett2019_theorem_2_4_9_exists_middlePartitionWithTails
+    {P : Measure ℝ} [IsProbabilityMeasure P]
+    {epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ∃ a b middleCells,
+      Nonempty
+        (SuppliedRealMiddleCDFPartition P (epsilon / 2) a b middleCells) ∧
+      P.real (Set.Iio a) < epsilon / 2 ∧
+      P.real (Set.Ioi b) < epsilon / 2 := by
+  classical
+  have hhalf : 0 < epsilon / 2 := by linarith
+  rcases _root_.StatInference.exists_real_tails_lt_of_isFiniteMeasure P hhalf with
+    ⟨a, b, hleftTail, hrightTail⟩
+  let lower : ℝ := min a b - 1
+  let upper : ℝ := max a b + 1
+  have hlower_le_a : lower ≤ a := by
+    dsimp [lower]
+    have hmin : min a b ≤ a := min_le_left a b
+    linarith
+  have hb_le_upper : b ≤ upper := by
+    dsimp [upper]
+    have hmax : b ≤ max a b := le_max_right a b
+    linarith
+  have hleftTail' : P.real (Set.Iio lower) < epsilon / 2 := by
+    have hsubset : Set.Iio lower ⊆ Set.Iio a := by
+      intro x hx
+      exact lt_of_lt_of_le hx hlower_le_a
+    exact lt_of_le_of_lt (measureReal_mono hsubset) hleftTail
+  have hrightTail' : P.real (Set.Ioi upper) < epsilon / 2 := by
+    have hsubset : Set.Ioi upper ⊆ Set.Ioi b := by
+      intro x hx
+      exact lt_of_le_of_lt hb_le_upper hx
+    exact lt_of_le_of_lt (measureReal_mono hsubset) hrightTail
+  have hlower_lt_upper : lower < upper := by
+    dsimp [lower, upper]
+    have hle : min a b ≤ max a b :=
+      le_trans (min_le_left a b) (le_max_left a b)
+    linarith
+  rcases
+      durrett2019_theorem_2_4_9_realMiddleCDFPartition_of_cutpoint_chain
+        (durrett2019_theorem_2_4_9_cutpointChain
+          (P := P) hhalf hlower_lt_upper) with
+    ⟨middleCells, partition⟩
+  exact ⟨lower, upper, middleCells, partition, hleftTail', hrightTail'⟩
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint: the countable
+middle-partition-with-tails construction gives the outer-a.s. empirical-CDF
+uniform-deviation statement.
+
+This is the source-proof route through the V377/V378 tail squeeze, rather than
+the older bracketing-number endpoint.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) := by
+  classical
+  let width : ℕ -> ℝ := fun scale => 1 / ((scale : ℝ) + 1)
+  have hwidth_pos : ∀ scale, 0 < width scale := by
+    intro scale
+    dsimp [width]
+    positivity
+  have hwidth_tendsto : Tendsto width atTop (𝓝 0) := by
+    simpa [width] using
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  have hExists :
+      ∀ scale,
+        ∃ a b middleCells,
+          Nonempty
+            (SuppliedRealMiddleCDFPartition P (width scale / 2)
+              a b middleCells) ∧
+          P.real (Set.Iio a) < width scale / 2 ∧
+          P.real (Set.Ioi b) < width scale / 2 := by
+    intro scale
+    exact
+      durrett2019_theorem_2_4_9_exists_middlePartitionWithTails
+        (hwidth_pos scale)
+  let a : ℕ -> ℝ := fun scale => Classical.choose (hExists scale)
+  have hExistsB :
+      ∀ scale,
+        ∃ b middleCells,
+          Nonempty
+            (SuppliedRealMiddleCDFPartition P (width scale / 2)
+              (a scale) b middleCells) ∧
+          P.real (Set.Iio (a scale)) < width scale / 2 ∧
+          P.real (Set.Ioi b) < width scale / 2 := by
+    intro scale
+    exact Classical.choose_spec (hExists scale)
+  let b : ℕ -> ℝ := fun scale => Classical.choose (hExistsB scale)
+  have hExistsMiddle :
+      ∀ scale,
+        ∃ middleCells,
+          Nonempty
+            (SuppliedRealMiddleCDFPartition P (width scale / 2)
+              (a scale) (b scale) middleCells) ∧
+          P.real (Set.Iio (a scale)) < width scale / 2 ∧
+          P.real (Set.Ioi (b scale)) < width scale / 2 := by
+    intro scale
+    exact Classical.choose_spec (hExistsB scale)
+  let middleCells : ℕ -> ℕ := fun scale => Classical.choose (hExistsMiddle scale)
+  have hSpec :
+      ∀ scale,
+        Nonempty
+          (SuppliedRealMiddleCDFPartition P (width scale / 2)
+            (a scale) (b scale) (middleCells scale)) ∧
+        P.real (Set.Iio (a scale)) < width scale / 2 ∧
+        P.real (Set.Ioi (b scale)) < width scale / 2 := by
+    intro scale
+    exact Classical.choose_spec (hExistsMiddle scale)
+  let partition : ∀ scale,
+      SuppliedRealMiddleCDFPartition P (width scale / 2)
+        (a scale) (b scale) (middleCells scale) :=
+    fun scale => Classical.choice (hSpec scale).1
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions
+      X width hwidth_pos hwidth_tendsto a b middleCells partition
+      (fun scale => (hSpec scale).2.1)
+      (fun scale => (hSpec scale).2.2)
+      hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint in one-based textbook
+notation: the V377/V378 middle-partition-with-tails route proves
+`sup_c |n^{-1} * sum_{i < n} 1{X_{i+1} <= c} - F(c)| -> 0` outer-a.s.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
+    div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
+      (fun i => fun ω => X (i + 1) ω) hShift.1
+      (fun _ _ hij => hShift.2.indepFun hij)
+
+/--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem under the
 standard iid-source independence assumption `iIndepFun`.
 -/

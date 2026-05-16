@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V378`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V379`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -37,7 +37,18 @@ independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V378 packages the V377
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V379 closes the
+countable supplied-partition gap for the V377/V378 textbook middle/tail route:
+`durrett2019_theorem_2_4_9_exists_middlePartitionWithTails`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation`,
+and
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun`.
+It uses finite tail cutpoints, arbitrary-law cutpoint chains, and the
+canonical `1 / (scale + 1)` countable width sequence to produce the exact
+outer-a.s. empirical-CDF uniform-deviation predicate through V378.  Next work
+should either make the existing empirical-CDF source endpoints reuse this
+textbook middle/tail route where useful, or move to the next missing Chapter
+2.1/2.4.9 source-entrance wrapper.  V378 packages the V377
 global middle-partition-with-tails squeeze into the countable-scale
 uniform-deviation interface:
 `durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt`,
@@ -47,9 +58,8 @@ and
 `durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions`.
 This is the correct a.e. route: fixed-tolerance V377 events are not
 intersected over all real tolerances; V378 intersects a countable sequence of
-supplied middle/tail partitions whose widths tend to zero.  The next target is
-to prove/package those countable supplied partitions for arbitrary real laws
-and feed them to V378.  V377 adds the global
+supplied middle/tail partitions whose widths tend to zero.  V379 supplies
+those partitions for arbitrary real laws and feeds them to V378.  V377 adds the global
 middle-partition-with-tails squeeze:
 `empiricalDistributionFunction_nonneg`,
 `empiricalDistributionFunction_le_one`,
