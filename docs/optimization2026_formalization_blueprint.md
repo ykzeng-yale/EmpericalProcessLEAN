@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V28` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V29` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -120,11 +120,17 @@ premise.  The V28 finite-row specialization adds
 `chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStageParameter_large_of_terminal_mem_and_mixedThird`,
 which instantiates the V27 endpoint for the slack range, discharges the
 terminal barrier-step certificate from feasibility, and removes the supplied
-`hlower` premise at a terminal range point.  Next finite-row work should
-connect this theorem to the standard-path handoff by reusing V18 terminal
-feasibility/decrement and V20 large-parameter stopping, after adding a
-zero-safe branch for the temporary nonzero terminal displacement side
-condition.
+`hlower` premise at a terminal range point.  The V29 packet adds the zero-safe
+terminal endpoint
+`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStageParameter_large_of_terminal_mem_and_mixedThird_zeroSafe`
+and the standard-main-stage wrapper
+`chewi1316_polytopeSlackNegLog_exists_standardSourceMainStage_objective_gap_le_eps_imp_of_preliminaryInit_and_terminal_mem_mixedThird`.
+It reuses `chewi1316_central_objective_gap_le` for the `center = x` branch and
+V18 standard-path terminal feasibility/decrement, so the concrete standard
+preliminary-to-main route no longer needs supplied `hlower` or barrier-step
+premises.  Next finite-row work should package this no-`hlower` route into the
+standard auto-handoff endpoint family and then use V20 large-parameter
+selection where an existential terminal main-stage index is needed.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

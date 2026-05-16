@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V28` near the top of
+  `Live Goal Prompt V29` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -144,14 +144,25 @@ This dashboard tracks the Chewi optimization formalization lane for
   removes the supplied `hlower` premise at a terminal range point.  It reuses
   local finite-row range Hessian derivative/mixed-third APIs,
   `hessianSegmentPsi_continuousOn_of_convex_continuousOn`, and
-  `centralPathGrad_hasFDerivAt`.
+  `centralPathGrad_hasFDerivAt`.  The V29 zero-safe/standard wrapper packet
+  adds
+  `chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStageParameter_large_of_terminal_mem_and_mixedThird_zeroSafe`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_standardSourceMainStage_objective_gap_le_eps_imp_of_preliminaryInit_and_terminal_mem_mixedThird`.
+  It reuses `chewi1316_central_objective_gap_le` for the `center = x` branch
+  and V18
+  `chewi1316_standardSourceMainStage_rangeRestrict_mem_and_range_decrement_le_quarter`
+  for terminal standard-path feasibility/decrement, so the concrete
+  preliminary-to-main-stage wrapper no longer needs supplied `hlower` or a
+  manually supplied barrier-step premise.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: connect the
-  V18 standard terminal feasibility/decrement and V20 large-parameter
-  stopping certificates to the V28 endpoint.  First remove the temporary
-  nonzero side condition by proving a zero-safe branch for `center = x`; then
-  package the standard-path objective-gap wrapper without supplied `hlower`.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: package this
+  mixed-third/no-`hlower` theorem into a named standard auto-handoff and push
+  it through the bounded/closed/compact standard-path endpoint family.  Then
+  use the V20 large-parameter selection lemmas where an existential terminal
+  index is needed; centrality of the selected terminal center remains the real
+  mathematical certificate.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

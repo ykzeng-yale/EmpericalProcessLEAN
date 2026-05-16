@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V28`, this file's top
+   the full book is complete, route from `Live Goal Prompt V29`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V28
+## Live Goal Prompt V29
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -329,14 +329,27 @@ main-stage declarations already prove terminal range/source decrement for the
 standard path, so the next packet should connect that standard-path decrement
 to the V28 terminal endpoint rather than redoing a generic induction.
 
-Next theorem-sized target: prove a standard-path finite-row wrapper that feeds
-V18 terminal feasibility/decrement and V20 large-parameter stopping into the
-V28 mixed-third endpoint.  First add a zero-safe terminal branch or wrapper
-that removes the temporary `hdiff_ne : center - x != 0` side condition: when
-`center = x`, use centrality plus the V21 barrier-step estimate directly; when
-`center != x`, call the V28 theorem.  Then package the standard source
-main-stage endpoint so the active handoff no longer carries a supplied
-`hlower` premise.
+Current V29 packet removes the temporary nonzero terminal-displacement side
+condition and connects the finite-row mixed-third endpoint to the concrete
+standard main-stage recursion.  New compiled declarations:
+`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStageParameter_large_of_terminal_mem_and_mixedThird_zeroSafe`
+and
+`chewi1316_polytopeSlackNegLog_exists_standardSourceMainStage_objective_gap_le_eps_imp_of_preliminaryInit_and_terminal_mem_mixedThird`.
+Search-first result: local `chewi1316_central_objective_gap_le` already closes
+the `center = x` branch from centrality and the V21 barrier-step estimate, so
+no new scalar algebra was needed.  The standard wrapper reuses V18
+`chewi1316_standardSourceMainStage_rangeRestrict_mem_and_range_decrement_le_quarter`
+to supply terminal range feasibility and decrement, then calls the V29
+zero-safe endpoint; the active standard preliminary-to-main handoff no longer
+needs a supplied `hlower` or a manually supplied barrier-step premise.
+
+Next theorem-sized target: package the V29 theorem into a named
+mixed-third/no-`hlower` standard auto-handoff and propagate it through the
+bounded/closed/compact standard-path endpoint family.  After that, use the V20
+large-parameter index-selection lemmas to choose `Nmain` where appropriate.
+The remaining genuine terminal mathematical certificate is centrality of the
+selected `center` for the terminal parameter; do not obscure it behind another
+supplied lower-model interface.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
@@ -347,7 +360,7 @@ consumers.  Search first near existing `*_standardPath` wrappers,
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers; then
 formalize only the genuinely missing terminal analytic certificate.
-Older paragraphs below are cached route history and must not override this V28
+Older paragraphs below are cached route history and must not override this V29
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

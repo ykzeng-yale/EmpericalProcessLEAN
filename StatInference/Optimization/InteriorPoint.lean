@@ -34627,6 +34627,96 @@ theorem chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStagePar
 
 set_option maxHeartbeats 4000000 in
 /--
+Zero-safe finite-row slack-range version of the mixed-third terminal endpoint.
+When the terminal iterate equals the central-path point, the objective gap is
+closed directly by the centrality equation and the finite-row barrier-step
+bound; otherwise the V28 mixed-third endpoint supplies the lower-model route.
+-/
+theorem chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStageParameter_large_of_terminal_mem_and_mixedThird_zeroSafe
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj x center optimum : (polytopeSlackCLM aRow).range}
+    {tseq : ℕ -> ℝ} {t0 c0 eps : ℝ} {N : ℕ}
+    (hx :
+      x ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (h0 : tseq 0 = t0)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) =
+        (1 + c0 / Real.sqrt (m : ℝ)) * tseq n)
+    (hc0_nonneg : 0 ≤ c0)
+    (ht0_pos : 0 < t0)
+    (heps_pos : 0 < eps)
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcentral :
+      tseq N • aObj +
+        barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad center = 0)
+    (hdecrement :
+      dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) x
+          (tseq N • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad x) ≤
+        1 / 4)
+    (hlarge :
+      2 * (m : ℝ) ≤
+        eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ N * t0)) :
+    inner ℝ aObj x - inner ℝ aObj optimum ≤ eps := by
+  by_cases hdiff : center - x = 0
+  · have hxcenter : x = center := (sub_eq_zero.mp hdiff).symm
+    subst x
+    have hsqrt_pos : 0 < Real.sqrt (m : ℝ) :=
+      Real.sqrt_pos.2 (by exact_mod_cast hm)
+    have hdelta_nonneg : 0 ≤ c0 / Real.sqrt (m : ℝ) :=
+      div_nonneg hc0_nonneg hsqrt_pos.le
+    have hr_pos : 0 < 1 + c0 / Real.sqrt (m : ℝ) := by
+      nlinarith
+    have ht_pos : 0 < tseq N :=
+      chewi1316_mainStageParameter_pos_of_pos
+        (tseq := tseq) (r := 1 + c0 / Real.sqrt (m : ℝ))
+        (t0 := t0) h0 htstep hr_pos ht0_pos N
+    have hclosed :=
+      chewi1316_mainStageParameter_eq_pow_mul_of_delta
+        (tseq := tseq) (t0 := t0) (c0 := c0) (nu := (m : ℝ))
+        h0 htstep N
+    have ht_large : 2 * (m : ℝ) ≤ eps * tseq N := by
+      simpa [hclosed] using hlarge
+    have hbarrier_step :
+        inner ℝ
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad center)
+            (optimum - center) ≤ (m : ℝ) :=
+      chewi1316_polytopeSlackNegLog_range_barrier_step_le_of_mem
+        (hm := hm) (a := aRow) (b := bSlack) hcenter_mem hoptimum_mem
+    have hcenter_gap :
+        inner ℝ aObj center - inner ℝ aObj optimum ≤ (m : ℝ) / tseq N :=
+      chewi1316_central_objective_gap_le
+        (grad := barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad)
+        (a := aObj) (center := center) (optimum := optimum)
+        (t := tseq N) (nu := (m : ℝ))
+        ht_pos hcentral hbarrier_step
+    have hm_nonneg : 0 ≤ (m : ℝ) := by exact_mod_cast Nat.zero_le m
+    have hdiv_le : (m : ℝ) / tseq N ≤ eps := by
+      rw [div_le_iff₀ ht_pos]
+      nlinarith [ht_large, hm_nonneg]
+    exact hcenter_gap.trans hdiv_le
+  · exact
+      chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStageParameter_large_of_terminal_mem_and_mixedThird
+        (hm := hm) (aRow := aRow) (bSlack := bSlack)
+        (aObj := aObj) (x := x) (center := center) (optimum := optimum)
+        (tseq := tseq) (t0 := t0) (c0 := c0) (eps := eps) (N := N)
+        hx h0 htstep hc0_nonneg ht0_pos heps_pos hcenter_mem hoptimum_mem
+        hcentral hdecrement hdiff hlarge
+
+set_option maxHeartbeats 4000000 in
+/--
 Finite-row slack-range §13.16 endpoint with both V21 and V22 terminal
 reductions.  Feasibility of `center` and `optimum` discharges the Lemma 13.15
 barrier-step term, while the first-order central-path model plus
@@ -36234,6 +36324,123 @@ theorem chewi1316_polytopeSlackNegLog_exists_standardSourceMainStage_objective_g
       hbarrier_step
       (by simpa [xmain, tmain] using hlower)
       hlarge
+
+set_option maxHeartbeats 4000000 in
+/--
+Concrete standard-main-stage objective-gap wrapper with the terminal
+lower-model certificate discharged by the finite-row mixed-third endpoint.
+The preliminary initializer supplies the selected starting point and its
+`1 / 4` decrement certificate; V18 gives terminal feasibility/decrement, V21
+gives the barrier-step certificate from terminal feasibility, and the V28
+zero-safe mixed-third endpoint removes the supplied `hlower` premise.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_standardSourceMainStage_objective_gap_le_eps_imp_of_preliminaryInit_and_terminal_mem_mixedThird
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj center optimum : (polytopeSlackCLM aRow).range}
+    {xpre : ℕ -> F}
+    (hxpre_mem : ∀ n : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xpre n) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hpre :
+      ∃ tailBound : ℝ, ∃ Midx Npre : ℕ, ∃ tMain : ℝ,
+        0 ≤ tailBound ∧
+        0 < tMain ∧
+        Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+          (Midx : ℝ) * Real.log (2 : ℝ) ∧
+        (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+          (Npre : ℝ) * (1 / 200 : ℝ) ∧
+        newtonDecrement
+          (centralPathGrad tMain
+            (ContinuousLinearMap.adjoint
+              (polytopeSlackCLM aRow).rangeRestrict aObj)
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xpre Npre) ≤ 1 / 4) :
+    ∃ tailBound : ℝ, ∃ Midx Npre : ℕ, ∃ tMain : ℝ,
+      0 ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Npre : ℝ) * (1 / 200 : ℝ) ∧
+      (∀ {eps c0 : ℝ} {Nmain : ℕ},
+        0 ≤ c0 ->
+        c0 ≤ 1 / 16 ->
+        0 < eps ->
+        chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad center = 0 ->
+        2 * (m : ℝ) ≤
+          eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ Nmain * tMain) ->
+        inner ℝ aObj
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (xpre Npre) tMain c0 Nmain)) -
+            inner ℝ aObj optimum ≤ eps) := by
+  rcases hpre with
+    ⟨tailBound, Midx, Npre, tMain, htail_nonneg, htMain_pos, hlog, hcount,
+      hinit⟩
+  refine ⟨tailBound, Midx, Npre, tMain, htail_nonneg, htMain_pos, hlog, hcount, ?_⟩
+  intro eps c0 Nmain hc0_nonneg hc0_le heps_pos hcentral hlarge
+  let xmain : ℕ -> F :=
+    chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+      (xpre Npre) tMain c0
+  let tmain : ℕ -> ℝ :=
+    chewi1316_standardSourceMainStageTSeq m c0 tMain
+  have hinit_range :
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict (xpre Npre)) ≤ 1 / 4 := by
+    simpa [chewi1314_polytopeSlackNegLog_centralPath_newtonDecrement_rangePull_eq]
+      using hinit
+  have hinv :=
+    chewi1316_standardSourceMainStage_rangeRestrict_mem_and_range_decrement_le_quarter
+      (hm := hm) (aRow := aRow) (bSlack := bSlack) (aObj := aObj)
+      (xStart := xpre Npre) (tStart := tMain) (c0 := c0)
+      (hxpre_mem Npre) hinit_range hc0_nonneg hc0_le
+  have hxmain :
+      (polytopeSlackCLM aRow).rangeRestrict (xmain Nmain) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) := by
+    simpa [xmain] using (hinv Nmain).1
+  have hdecrement_range :
+      dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict (xmain Nmain))
+          (tmain Nmain • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict (xmain Nmain))) ≤
+        1 / 4 := by
+    simpa [newtonDecrement, centralPathGrad, xmain, tmain] using
+      (hinv Nmain).2
+  exact
+    chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStageParameter_large_of_terminal_mem_and_mixedThird_zeroSafe
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (aObj := aObj)
+      (x := (polytopeSlackCLM aRow).rangeRestrict (xmain Nmain))
+      (center := center) (optimum := optimum)
+      (tseq := tmain) (t0 := tMain) (c0 := c0)
+      (eps := eps) (N := Nmain)
+      hxmain
+      (by simp [tmain])
+      (by intro n; simp [tmain])
+      hc0_nonneg htMain_pos heps_pos hcenter_mem hoptimum_mem
+      (by simpa [tmain] using hcentral)
+      hdecrement_range
+      (by simpa [tmain] using hlarge)
 
 /--
 No-membership standard-main-stage handoff for the concrete Chewi §13.16
