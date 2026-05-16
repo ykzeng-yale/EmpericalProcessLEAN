@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V420
+## Live In-Thread Goal Prompt V421
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,22 +12,42 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.11 now has the
-full source-shaped logarithmic-rate theorem for iid mean-zero variables with
-one finite second moment and every `epsilon > 0`; the logarithmic summability
-display is proved, so no separate summability assumption remains in the final
-source theorem.  Next aggressive target: start Durrett Theorem 2.5.12
-Marcinkiewicz-Zygmund rate for `1 < p < 2`, first by defining the moving
-truncation `Y_k = X_k 1_{|X_k| <= k^(1/p)}` and proving the reusable source
-plumbing: fixed/base identical-distribution tail mismatch via
-Borel-Cantelli, measurability/independence of the truncations, and the
-deterministic Kronecker endpoint with normalizer `a_n = n^(1/p)`.  Reuse V406
-random-series convergence, V410 Kronecker normalization, V412-V415 moving
-truncation/eventual-equality infrastructure, and mathlib p-series/integral
-tail APIs before adding local real-analysis lemmas.  Do not route back to
+in `StatInference/ProbabilityTheory/Basic.lean`.  V421 has opened Durrett
+Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the normalizer
+`a_n = n^(1/p)`, moving truncation `Y_k = X_k 1_{|X_k| <= k^(1/p)}`, centered
+and scaled centered truncations, measurability, `L^2`, mean-zero, independence,
+and the Kronecker endpoint from summable scaled variances now compile.  Next
+aggressive target: prove the source probability estimates, starting with the
+Borel-Cantelli eventual-equality transfer from `X_k` to `Y_k` using
+`sum P(|X_k|^p > k) < infinity` from iid finite `p`-moment; then package the
+scaled-variance summability estimate for
+`(Y_k - E Y_k) / k^(1/p)` and the truncated-mean contribution needed for the
+full `S_n / n^(1/p) -> 0` endpoint.  Reuse V406 random-series convergence, V410
+Kronecker normalization, V412-V415 moving truncation/eventual-equality support,
+V421 normalizer/truncation spine, and mathlib strong-law tail, p-series, and
+integral APIs before adding local analysis lemmas.  Do not route back to
 Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10, V416-V420 Theorem 2.5.11
 plumbing, or old app-level stale prompts unless search proves a concrete
 missing source display.
+
+Latest verified target V421 adds the first Durrett Theorem 2.5.12
+Marcinkiewicz-Zygmund spine.  New compiled anchors:
+`durrett2019_theorem_2_5_12_normalizer`,
+`durrett2019_theorem_2_5_12_normalizer_pos`,
+`durrett2019_theorem_2_5_12_normalizer_ne_zero`,
+`durrett2019_theorem_2_5_12_normalizer_increment_nonneg`,
+`durrett2019_theorem_2_5_12_normalizer_atTop`,
+`durrett2019_theorem_2_5_12_truncated`,
+`durrett2019_theorem_2_5_12_centeredTruncated`,
+`durrett2019_theorem_2_5_12_scaledCenteredTruncated`,
+`durrett2019_theorem_2_5_12_iIndepFun_centeredTruncated_of_iIndepFun`,
+`durrett2019_theorem_2_5_12_iIndepFun_scaledCenteredTruncated_of_iIndepFun`,
+and
+`durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_scaled_variance_summable`.
+The remaining Theorem 2.5.12 blocker is no longer random-series or normalizer
+plumbing: it is the source estimates for large-jump eventual equality, scaled
+variance summability, and deterministic mean contribution under iid finite
+`p`-moment hypotheses.
 
 Latest verified target V420 closes the Durrett Theorem 2.5.11 logarithmic
 series and packages source theorems without a separate summability hypothesis.

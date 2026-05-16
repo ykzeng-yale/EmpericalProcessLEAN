@@ -27,18 +27,41 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V420`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V421`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V420 closes the
-current source-shaped Durrett Theorem 2.5.11 route: exact logarithmic
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V421 opens
+Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the
+normalizer `a_n = n^(1/p)`, moving truncation
+`Y_k = X_k 1_{|X_k| <= k^(1/p)}`, centered and scaled centered truncations,
+measurability, `L^2`, mean-zero, independence, and the Kronecker endpoint from
+summable scaled variances all compile.  New compiled anchors through V421:
+`durrett2019_theorem_2_5_12_normalizer`,
+`durrett2019_theorem_2_5_12_normalizer_pos`,
+`durrett2019_theorem_2_5_12_normalizer_ne_zero`,
+`durrett2019_theorem_2_5_12_normalizer_increment_nonneg`,
+`durrett2019_theorem_2_5_12_normalizer_atTop`,
+`durrett2019_theorem_2_5_12_truncated`,
+`durrett2019_theorem_2_5_12_centeredTruncated`,
+`durrett2019_theorem_2_5_12_scaledCenteredTruncated`,
+`durrett2019_theorem_2_5_12_iIndepFun_centeredTruncated_of_iIndepFun`,
+`durrett2019_theorem_2_5_12_iIndepFun_scaledCenteredTruncated_of_iIndepFun`,
+and
+`durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_scaled_variance_summable`.
+The next source work is Theorem 2.5.12 source packaging: prove the
+Borel-Cantelli eventual-equality transfer from `X_k` to `Y_k` using iid finite
+`p`-moment tail summability, then package scaled-variance summability and the
+truncated-mean contribution for the full normalized-sum endpoint.
+
+Verified route history below is provenance, not live prompt text.  V420 closes
+the current source-shaped Durrett Theorem 2.5.11 route: exact logarithmic
 normalizer, source finite-variance bridge, iid finite-second-moment wrapper,
 Cauchy-condensation/p-series comparison, and the final positive-`epsilon`
 theorems without an external logarithmic-series summability hypothesis all
-compile.  New compiled anchors through V420:
+compile.  Compiled anchors through V420:
 `durrett2019_theorem_2_5_11_logNormalizer`,
 `durrett2019_theorem_2_5_11_logNormalizer_pos`,
 `durrett2019_theorem_2_5_11_logNormalizer_ne_zero`,
@@ -65,14 +88,7 @@ and
 `durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound_of_pos_epsilon`,
 and
 `durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance_of_pos_epsilon`.
-The next source work is Durrett Theorem 2.5.12: start the
-Marcinkiewicz-Zygmund `1 < p < 2` rate by defining the moving truncation at
-`k^(1/p)` and proving the reusable measurability, independence,
-Borel-Cantelli/eventual-equality, and Kronecker-normalizer support before the
-heavier variance-tail integral estimate.
-
-Verified route history below is provenance, not live prompt text.  V419
-packages the Cauchy-condensation and p-series reduction for Theorem 2.5.11's
+V419 packages the Cauchy-condensation and p-series reduction for Theorem 2.5.11's
 logarithmic-series proof.  V418
 packages the iid finite-second-moment source layer for Theorem 2.5.11.  V417
 packages Durrett Theorem 2.5.11's exact logarithmic normalizer layer and the
